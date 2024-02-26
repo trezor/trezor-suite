@@ -3,11 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import {
-    selectDeviceRequestedPin,
-    selectIsDeviceUnlocked,
-    selectIsNoPhysicalDeviceConnected,
-} from '@suite-common/wallet-core';
+import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
 import {
     AppTabsRoutes,
     ConnectDeviceStackParamList,
@@ -32,8 +28,6 @@ export const useDelayedNavigation = () => {
     const [isTimeoutFinished, setIsTimeoutFinished] = useState(false);
     const navigation = useNavigation<NavigationProp>();
 
-    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-    const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
     const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
     const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
 
@@ -45,15 +39,6 @@ export const useDelayedNavigation = () => {
 
         return () => clearTimeout(timerId);
     }, [navigation]);
-
-    // If device requests PIN, redirect to the PinMatrix screen.
-    useEffect(() => {
-        if (hasDeviceRequestedPin && !isDeviceUnlocked) {
-            navigation.navigate(RootStackRoutes.ConnectDevice, {
-                screen: ConnectDeviceStackRoutes.PinMatrix,
-            });
-        }
-    }, [hasDeviceRequestedPin, isDeviceUnlocked, navigation]);
 
     // If Device is authorized and loading accounts, redirect to the Home screen.
     useEffect(() => {

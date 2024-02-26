@@ -14,8 +14,9 @@ import {
 } from '@suite-native/navigation';
 import {
     selectIsPortfolioTrackerDevice,
-    selectIsNoPhysicalDeviceConnected,
+    selectDeviceRequestedPin,
     selectIsDeviceConnectedAndAuthorized,
+    selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 
@@ -30,6 +31,7 @@ export const useHandleDeviceConnection = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -56,8 +58,7 @@ export const useHandleDeviceConnection = () => {
             // This accidentally gets triggered by finishing onboarding with no device connected,
             // so this prevents from redirect being duplicated.
             const isPreviousRouteOnboarding =
-                navigation.getState()?.routes[navigation.getState().routes.length - 1].name ===
-                RootStackRoutes.Onboarding;
+                navigation.getState()?.routes.at(-1)?.name === RootStackRoutes.Onboarding;
             if (isPreviousRouteOnboarding) {
                 return;
             }
@@ -69,4 +70,14 @@ export const useHandleDeviceConnection = () => {
             });
         }
     }, [isNoPhysicalDeviceConnected, isOnboardingFinished, navigation]);
+
+    // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
+    // and then continue with the interaction. For T2, PIN is entered on device, but the screen is still displayed.
+    useEffect(() => {
+        if (hasDeviceRequestedPin) {
+            navigation.navigate(RootStackRoutes.ConnectDevice, {
+                screen: ConnectDeviceStackRoutes.PinMatrix,
+            });
+        }
+    }, [hasDeviceRequestedPin, navigation]);
 };
