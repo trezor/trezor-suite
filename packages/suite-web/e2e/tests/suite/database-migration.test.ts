@@ -87,7 +87,7 @@ describe('Database migration', () => {
         cy.getTestElement('@wallet/menu/wallet-send').click();
         cy.getTestElement(btcAddressInputSelector).should('be.visible').type(testData.btcAddress);
         cy.wait(500); // wait has to be for a state save to happen
-        cy.getTestElement('@account-subpage/back').last().click();
+        cy.getTestElement('@wallet/menu/close-button').last().click();
 
         // check and store address of first btc tx
         cy.get('[data-test^="@metadata/outputLabel"] > span').should('be.visible');
