@@ -8,7 +8,7 @@ import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { GraphDateFormatter, percentageDiff, PriceChangeIndicator } from '@suite-native/graph';
 import { FiatGraphPoint, FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 import { Translation } from '@suite-native/intl';
-import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryActive, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 
 const emptyGraphPoint: FiatGraphPointWithCryptoBalance = {
     value: 0,
@@ -56,6 +56,8 @@ const Balance = () => {
 export const PortfolioGraphHeader = () => {
     const firstGraphPoint = useAtomValue(referencePointAtom);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const isLoading = isDiscoveryActive || !isDeviceAuthorized;
 
     return (
         <Box>
@@ -63,7 +65,7 @@ export const PortfolioGraphHeader = () => {
                 <Text color="textSubdued" variant="hint">
                     <Translation id="moduleHome.graph.title" />
                 </Text>
-                {!isDiscoveryActive && (
+                {!isLoading && (
                     <>
                         <Box justifyContent="center" alignItems="center" style={{ width: '100%' }}>
                             <Balance />
