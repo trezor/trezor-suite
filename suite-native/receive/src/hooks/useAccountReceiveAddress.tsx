@@ -82,15 +82,22 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                     variant: 'default',
                     message: translate('moduleReceive.deviceCancelError'),
                 });
-                navigation.goBack();
+                if (navigation.canGoBack()) {
+                    navigation.goBack();
+                }
 
                 return false;
             }
 
             if (
                 !response.payload.success &&
-                // Method_Interrupted is returned when user cancels actions in connect and we want to ignore it here
-                response.payload.payload.code !== 'Method_Interrupted'
+                // Do not show alert for user cancelled actions
+                ![
+                    'Method_Interrupted',
+                    'Failure_PinInvalid',
+                    'Method_Cancel',
+                    'Failure_PinCancelled',
+                ].includes(response.payload.payload.code ?? '')
             ) {
                 showAlert({
                     title: response.payload.payload.code,
@@ -130,6 +137,8 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             if (wasVerificationSuccessful) {
                 analytics.report({ type: EventType.ConfirmedReceiveAdress });
                 setIsReceiveApproved(true);
+            } else {
+                setIsUnverifiedAddressRevealed(false);
             }
         }
     }, [isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
