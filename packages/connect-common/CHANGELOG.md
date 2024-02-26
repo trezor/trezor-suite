@@ -1,3 +1,19 @@
+# 0.0.29
+
+-   chore(repo): remove build:lib for some simple packages (#11276) (7febd10cf)
+-   chore(suite): autofix newlines (c82455e74)
+-   chore(utils): remove build step requirement from @trezor/utils (#11176) (6cd3d3c81)
+-   fix(connect-web): workaround to work with older content-script (5da505b02)
+-   fix(connect-web): reconnect message channel (ee98bb51c)
+-   chore(connect-web): refactor popupmanager (af1723e4f)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+
 # 0.0.28
 
 -   feat(suite): Rename Polygon to Polygon PoS (15a7fd38dc)
