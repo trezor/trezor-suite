@@ -1,4 +1,4 @@
-import { variables, Icon, Button, Link, Image } from '@trezor/components';
+import { variables, Icon, Link, Image } from '@trezor/components';
 import { useState, useRef } from 'react';
 import styled, { css } from 'styled-components';
 import { useOnClickOutside } from '@trezor/react-utils';
@@ -104,6 +104,10 @@ const VerticalDivider = styled.div`
     margin: 0 8px;
 `;
 
+const FooterText = styled(Text)`
+    padding-right: 10px;
+`;
+
 export const CoinmarketFooter = () => {
     const [toggled, setToggled] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -130,20 +134,18 @@ export const CoinmarketFooter = () => {
                                 </InvityLink>
                             </BoxLeft>
                             <BoxRight>
-                                <Link href={INVITY_URL}>
-                                    <Button variant="tertiary">invity.io</Button>
-                                </Link>
+                                <Link href={INVITY_URL}>invity.io</Link>
                                 <IconWrapper onClick={() => setToggled(false)}>
                                     <Icon icon="CROSS" size={16} />
                                 </IconWrapper>
                             </BoxRight>
                         </Header>
-                        <Text>
+                        <FooterText>
                             <Translation id="TR_BUY_FOOTER_TEXT_1" />
-                        </Text>
-                        <Text>
+                        </FooterText>
+                        <FooterText>
                             <Translation id="TR_BUY_FOOTER_TEXT_2" />
-                        </Text>
+                        </FooterText>
                     </FooterBox>
                 )}
 
