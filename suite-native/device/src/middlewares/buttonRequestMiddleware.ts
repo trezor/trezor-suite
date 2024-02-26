@@ -6,7 +6,7 @@ export const prepareButtonRequestMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, getState, next }) => {
         next(action);
 
-        if (action.type === UI.REQUEST_PIN || action.type === UI.INVALID_PIN) {
+        if (action.type === UI.REQUEST_PIN) {
             dispatch(
                 deviceActions.addButtonRequest({
                     device: selectDevice(getState()),

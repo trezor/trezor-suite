@@ -76,7 +76,7 @@ describe('buttonRequest middleware', () => {
                 payload: { buttonRequest: { code: 'PinMatrixRequestType_NewFirst' }, device },
             },
             { type: SUITE.LOCK_DEVICE, payload: false },
-            { type: deviceActions.addButtonRequest.type, payload: { device } },
+            { type: deviceActions.removeButtonRequests.type, payload: { device } },
         ]);
     });
 });

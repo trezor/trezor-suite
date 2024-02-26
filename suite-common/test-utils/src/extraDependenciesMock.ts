@@ -97,7 +97,6 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
-        addButtonRequest: mockActionType('addButtonRequest'),
         setDeviceMetadata: mockActionType('setDeviceMetadata'),
     },
     reducers: {

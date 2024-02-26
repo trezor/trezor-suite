@@ -54,7 +54,7 @@ const authDevice = createAction(
 
 const addButtonRequest = createAction(
     `${MODULE_PREFIX}/addButtonRequest`,
-    (payload: { device?: TrezorDevice; buttonRequest?: ButtonRequest }) => ({ payload }),
+    (payload: { device?: TrezorDevice; buttonRequest: ButtonRequest }) => ({ payload }),
 );
 
 const requestDeviceReconnect = createAction(`${MODULE_PREFIX}/requestDeviceReconnect`);
@@ -68,12 +68,11 @@ const updateSelectedDevice = createAction(
     (payload?: TrezorDevice) => ({ payload }),
 );
 
+// Remove button requests for specific device by button request code or all button requests if no code is provided.
 export const removeButtonRequests = createAction(
-    addButtonRequest.type,
-    ({ device }: { device: TrezorDevice | null }) => ({
-        payload: {
-            device,
-        },
+    `${MODULE_PREFIX}/removeButtonRequests`,
+    (payload: { device?: TrezorDevice; buttonRequestCode?: ButtonRequest['code'] }) => ({
+        payload,
     }),
 );
 

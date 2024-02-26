@@ -81,7 +81,6 @@ export const extraDependencies: ExtraDependencies = {
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
-        addButtonRequest: deviceActions.addButtonRequest.type,
         setDeviceMetadata: METADATA.SET_DEVICE_METADATA,
     },
     reducers: {
