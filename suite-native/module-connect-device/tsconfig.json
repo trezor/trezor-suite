@@ -12,6 +12,7 @@
         { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../device" },
+        { "path": "../device-mutex" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../link" },

@@ -2,7 +2,7 @@ import { memoize } from 'proxy-memoize';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getStatus } from '@suite-common/suite-utils';
-import { Device, Features } from '@trezor/connect';
+import { Device, Features, UI } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
@@ -14,6 +14,7 @@ import {
 } from '@suite-common/device-authenticity';
 
 import { deviceActions } from './deviceActions';
+import { authorizeDevice } from './deviceThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from './deviceConstants';
 
 export type State = {
@@ -328,6 +329,21 @@ const authFailed = (draft: State, device: TrezorDevice) => {
 };
 
 /**
+ * Action handler: authorizeDevice.pending
+ * Reset authFailed flag
+ * @param {State} draft
+ * @returns
+ */
+const resetAuthFailed = (draft: State) => {
+    const device = draft.selectedDevice;
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
+    draft.devices[index].authFailed = false;
+};
+
+/**
  * Action handler: SUITE.RECEIVE_AUTH_CONFIRM
  * @param {State} draft
  * @param {TrezorDevice} device
@@ -496,6 +512,12 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.authFailed, (state, { payload }) => {
             authFailed(state, payload);
         })
+        .addCase(authorizeDevice.pending, state => {
+            resetAuthFailed(state);
+        })
+        .addCase(UI.REQUEST_PIN, state => {
+            resetAuthFailed(state);
+        })
         .addCase(deviceActions.receiveAuthConfirm, (state, { payload }) => {
             authConfirm(state, payload.device, payload.success);
         })
@@ -548,6 +570,9 @@ export const selectDevice = (state: DeviceRootState) => state.device.selectedDev
 
 export const selectIsDeviceUnlocked = (state: DeviceRootState) =>
     !!state.device.selectedDevice?.features?.unlocked;
+
+export const selectDeviceAuthFailed = (state: DeviceRootState) =>
+    !!state.device.selectedDevice?.authFailed;
 
 export const selectDeviceType = (state: DeviceRootState) => state.device.selectedDevice?.type;
 
