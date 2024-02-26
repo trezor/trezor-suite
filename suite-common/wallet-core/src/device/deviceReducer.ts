@@ -583,7 +583,12 @@ export const selectDeviceRequestedPin = (state: DeviceRootState) => {
 
     if (!isDeviceProtectedByPin) return false;
 
-    return buttonRequestsCodes?.some(code => code?.startsWith('PinMatrixRequestType')) ?? false;
+    const pinEntryButtonRequestCodes: ButtonRequest['code'][] = [
+        'PinMatrixRequestType_Current', // T1 with PIN matrix in app
+        'ButtonRequest_PinEntry', // T2 with PIN entry on device
+    ];
+
+    return pinEntryButtonRequestCodes.includes(buttonRequestsCodes.at(-1));
 };
 
 export const selectIsUnacquiredDevice = (state: DeviceRootState) => {
