@@ -14,9 +14,10 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsDeviceUnlocked } from '@suite-common/wallet-core';
+import { selectIsDeviceUnlocked, selectDeviceAuthFailed } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 import { PIN_HELP_URL } from '../constants/pinFormConstants';
 
@@ -33,6 +34,7 @@ export const PinFormControlButtons = () => {
     const isDeviceUnlocked = useSelector(selectIsDeviceUnlocked);
     const { showAlert } = useAlert();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
+    const hasDeviceAuthFailed = useSelector(selectDeviceAuthFailed);
 
     useEffect(() => {
         // Connect doesn't have an event for correct pin entry,
@@ -55,6 +57,12 @@ export const PinFormControlButtons = () => {
             primaryButtonTitle: translate(
                 'moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain',
             ),
+            onPressPrimaryButton: () => {
+                if (hasDeviceAuthFailed) {
+                    // Ask for new PIN entry after 3 wrong attempts.
+                    requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
+                }
+            },
             secondaryButtonTitle: translate(
                 'moduleConnectDevice.pinScreen.wrongPinAlert.button.help',
             ),
@@ -62,9 +70,19 @@ export const PinFormControlButtons = () => {
                 openLink(PIN_HELP_URL);
             },
         });
-    }, [openLink, reset, showAlert, translate]);
+    }, [dispatch, hasDeviceAuthFailed, openLink, reset, showAlert, translate]);
 
     useEffect(() => {
+        // After third wrong PIN, UI.INVALID_PIN is no more reported
+        // and selectedDevice.authFailed is set to true instead.
+        if (hasDeviceAuthFailed) {
+            handleInvalidPin();
+        }
+    }, [handleInvalidPin, hasDeviceAuthFailed]);
+
+    useEffect(() => {
+        // UI.INVALID_PIN is emitted when user enters wrong PIN for first 3 attempts.
+        // See https://github.com/trezor/trezor-suite/blob/0498c2ef4c0a61ff56fc60cff0f545636592814d/packages/connect/src/core/index.ts#L598
         TrezorConnect.on(UI.INVALID_PIN, handleInvalidPin);
 
         return () => TrezorConnect.off(UI.INVALID_PIN, handleInvalidPin);
