@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect",
-    "version": "9.1.12",
+    "version": "9.1.13",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect",
     "description": "High-level javascript interface for Trezor hardware wallet.",
