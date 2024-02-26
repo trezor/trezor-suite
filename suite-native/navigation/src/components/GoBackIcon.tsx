@@ -12,7 +12,9 @@ export const GoBackIcon = ({ closeActionType = 'back' }: GoBackIconProps) => {
     const navigation = useNavigation();
 
     const handleGoBack = () => {
-        navigation.goBack();
+        if (navigation.canGoBack()) {
+            navigation.goBack();
+        }
     };
 
     return (
