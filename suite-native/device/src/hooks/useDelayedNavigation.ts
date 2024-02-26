@@ -28,7 +28,7 @@ type NavigationProp = StackToTabCompositeProps<
     RootStackParamList
 >;
 
-export const useAuthorizeDevice = () => {
+export const useDelayedNavigation = () => {
     const [isTimeoutFinished, setIsTimeoutFinished] = useState(false);
     const navigation = useNavigation<NavigationProp>();
 

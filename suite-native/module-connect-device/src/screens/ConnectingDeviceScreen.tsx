@@ -4,7 +4,7 @@ import { Text, VStack, Box } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import {
-    useAuthorizeDevice,
+    useDelayedNavigation,
     useDetectDeviceError,
     useReportDeviceConnectToAnalytics,
 } from '@suite-native/device';
@@ -20,7 +20,7 @@ const screenStyle = prepareNativeStyle(() => ({
 
 export const ConnectingDeviceScreen = () => {
     useDetectDeviceError();
-    useAuthorizeDevice();
+    useDelayedNavigation();
     useReportDeviceConnectToAnalytics();
     const { applyStyle } = useNativeStyles();
 
