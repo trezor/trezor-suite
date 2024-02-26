@@ -8,3 +8,4 @@ export * from './useAccountLabelForm';
 export * from './selectors';
 export * from './transactionCacheMiddleware';
 export * from './useTransactionCache';
+export * from './useIsAddCoinAccountEnabled';
