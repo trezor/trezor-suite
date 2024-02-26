@@ -1,3 +1,19 @@
+# 1.1.25
+
+-   chore(suite): autofix newlines (c82455e74)
+-   chore(utils): remove build step requirement from @trezor/utils (#11176) (6cd3d3c81)
+-   feat(connect): add support for StellarClaimClaimableBalanceOp. (51a3e294d)
+-   chore(repo): ESLint refactor + speed up 70% (#11143) (44fa12a79)
+-   chore: update various dependencies (no major update) (fecd89f6e)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: update prettier (00fe229e0)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+-   chore: updated deprecated jest syntax (d3f8043f0)
+
 # 1.1.21
 
 -   chore(transport): remove unused files (b69076a80)
