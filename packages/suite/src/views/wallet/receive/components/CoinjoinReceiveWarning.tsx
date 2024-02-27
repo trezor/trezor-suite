@@ -10,15 +10,17 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
-const StyledWarning = styled(Warning)`
+const InnerContainer = styled.div`
     justify-content: space-between;
-    margin-bottom: 16px;
     gap: 16px;
-
     ${variables.SCREEN_QUERY.MOBILE} {
         align-items: stretch;
         flex-direction: column;
     }
+`;
+
+const Container = styled.div`
+    margin-bottom: 16px;
 `;
 
 const InfoIcon = styled(Icon)`
@@ -83,50 +85,54 @@ export const CoinjoinReceiveWarning = () => {
     const decimals = getAccountDecimals(symbol) || 8;
 
     return (
-        <StyledWarning>
-            <Text>
-                <Heading>
-                    <InfoIcon icon="INFO" size={14} color={theme.TYPE_DARK_ORANGE} />
-                    <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
-                </Heading>
+        <Container>
+            <Warning>
+                <InnerContainer>
+                    <Text>
+                        <Heading>
+                            <InfoIcon icon="INFO" size={14} color={theme.TYPE_DARK_ORANGE} />
+                            <Translation id="TR_COINJOIN_RECEIVE_WARNING_TITLE" />
+                        </Heading>
 
-                <WarningList>
-                    <li>
-                        <Translation id="TR_COINJOIN_CEX_WARNING" />
-                    </li>
+                        <WarningList>
+                            <li>
+                                <Translation id="TR_COINJOIN_CEX_WARNING" />
+                            </li>
 
-                    <li>
-                        <Translation
-                            id="TR_UNECO_COINJOIN_RECEIVE_WARNING"
-                            values={{
-                                crypto: (
-                                    <FormattedCryptoAmount
-                                        value={formatAmount(
-                                            UNECONOMICAL_COINJOIN_THRESHOLD,
-                                            decimals,
-                                        )}
-                                        symbol={symbol}
-                                    />
-                                ),
-                                fiat: (
-                                    <FiatValue
-                                        amount={formatAmount(
-                                            UNECONOMICAL_COINJOIN_THRESHOLD,
-                                            decimals,
-                                        )}
-                                        symbol={symbol}
-                                    />
-                                ),
-                                isAccountWithRate,
-                            }}
-                        />
-                    </li>
-                </WarningList>
-            </Text>
+                            <li>
+                                <Translation
+                                    id="TR_UNECO_COINJOIN_RECEIVE_WARNING"
+                                    values={{
+                                        crypto: (
+                                            <FormattedCryptoAmount
+                                                value={formatAmount(
+                                                    UNECONOMICAL_COINJOIN_THRESHOLD,
+                                                    decimals,
+                                                )}
+                                                symbol={symbol}
+                                            />
+                                        ),
+                                        fiat: (
+                                            <FiatValue
+                                                amount={formatAmount(
+                                                    UNECONOMICAL_COINJOIN_THRESHOLD,
+                                                    decimals,
+                                                )}
+                                                symbol={symbol}
+                                            />
+                                        ),
+                                        isAccountWithRate,
+                                    }}
+                                />
+                            </li>
+                        </WarningList>
+                    </Text>
 
-            <StyledButton onClick={() => dispatch(hideCoinjoinReceiveWarning())}>
-                <Translation id="TR_GOT_IT" />
-            </StyledButton>
-        </StyledWarning>
+                    <StyledButton onClick={() => dispatch(hideCoinjoinReceiveWarning())}>
+                        <Translation id="TR_GOT_IT" />
+                    </StyledButton>
+                </InnerContainer>
+            </Warning>
+        </Container>
     );
 };

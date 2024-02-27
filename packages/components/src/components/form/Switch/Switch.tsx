@@ -8,6 +8,7 @@ import {
     getFocusShadowStyle,
     focusStyleTransition,
 } from '../../../utils/utils';
+import { UIHorizontalAlignment } from 'packages/components/src/config/types';
 
 const Wrapper = styled.div<Pick<SwitchProps, 'labelPosition' | 'isSmall'>>`
     display: flex;
@@ -100,7 +101,7 @@ export interface SwitchProps {
     isSmall?: boolean; // TODO: legacy prop
     className?: string;
     dataTest?: string;
-    labelPosition?: 'left' | 'right';
+    labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
 }
 
 export const Switch = ({

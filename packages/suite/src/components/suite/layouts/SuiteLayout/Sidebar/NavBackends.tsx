@@ -66,7 +66,7 @@ const BackendRow = ({
                 )}
                 <span>{type}</span>
             </div>
-            <StatusLight status={chain?.connected ? 'ok' : 'error'} />
+            <StatusLight variant={chain?.connected ? 'primary' : 'destructive'} />
         </RowWrapper>
     );
 };

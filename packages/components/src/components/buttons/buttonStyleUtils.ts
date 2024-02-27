@@ -2,18 +2,15 @@ import { css } from 'styled-components';
 
 import { Color, Colors, Elevation, spacings, spacingsPx } from '@trezor/theme';
 import { capitalizeFirstLetter } from '@trezor/utils';
+import type { UIHorizontalAlignment, UISize, UIVariant } from '../../config/types';
 
-export type ButtonVariant =
-    | 'primary'
-    | 'secondary'
-    | 'tertiary'
-    | 'info'
-    | 'warning'
-    | 'destructive';
-
-export type ButtonSize = 'large' | 'medium' | 'small' | 'tiny';
+export type ButtonVariant = Extract<
+    UIVariant,
+    'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'
+>;
+export type ButtonSize = Extract<UISize, 'large' | 'medium' | 'small' | 'tiny'>;
 export type ButtonState = 'normal' | 'hover';
-export type IconAlignment = 'left' | 'right';
+export type IconAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
 const mapElevationToButtonBackground = ({
     elevation,
@@ -21,7 +18,7 @@ const mapElevationToButtonBackground = ({
     state,
 }: {
     elevation: Elevation;
-    variant: 'destructive' | 'tertiary' | 'info' | 'warning';
+    variant: Extract<ButtonVariant, 'destructive' | 'tertiary' | 'info' | 'warning'>;
     state: ButtonState;
 }) => {
     const capitalizedVariant = capitalizeFirstLetter(variant);

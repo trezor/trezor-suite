@@ -8,6 +8,7 @@ import { TREZOR_RESELLERS_URL, TREZOR_SUPPORT_URL } from '@trezor/urls';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { useRef } from 'react';
 import { useSelector } from 'src/hooks/suite';
+import { typography } from '@trezor/theme';
 
 const HologramSubHeading = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -22,7 +23,7 @@ const AnimationWrapper = styled.div`
 const StyledWarning = styled(Warning)`
     width: calc(100% + 16px);
     margin: 0 -8px;
-    font-size: ${variables.FONT_SIZE.TINY};
+    ${typography.label}
 
     a {
         color: ${({ theme }) => theme.backgroundAlertYellowBold};

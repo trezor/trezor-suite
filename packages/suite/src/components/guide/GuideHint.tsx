@@ -44,7 +44,7 @@ export const GuideHint = ({ children }: BlockquoteHTMLAttributes<HTMLQuoteElemen
 
         return false;
     })?.filter(child => !!child);
-    const variant = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'learn';
+    const variant = message?.[0]?.startsWith(WARNING_EMOJI) ? 'warning' : 'primary';
 
     let updatedMessage: string[] | undefined;
     if (message?.[0]) {

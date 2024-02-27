@@ -26,12 +26,12 @@ const radioVariantStyles: Record<CheckboxVariant, VariantStyles> = {
         dotDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
         borderDisabledChecked: 'backgroundPrimarySubtleOnElevation1',
     },
-    'alert-red': {
+    destructive: {
         borderChecked: 'backgroundAlertRedSubtleOnElevation0',
         dotDisabledChecked: 'backgroundAlertRedSubtleOnElevation0',
         borderDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
     },
-    'alert-yellow': {
+    warning: {
         borderChecked: 'backgroundAlertYellowSubtleOnElevation0',
         dotDisabledChecked: 'backgroundAlertYellowSubtleOnElevation0',
         borderDisabledChecked: 'backgroundAlertYellowSubtleOnElevation1',
@@ -138,7 +138,7 @@ export const Radio = ({
 
             <RadioIcon variant={variant} tabIndex={0} />
 
-            {children && <Label isRed={variant === 'alert-red'}>{children}</Label>}
+            {children && <Label isRed={variant === 'destructive'}>{children}</Label>}
         </Container>
     );
 };

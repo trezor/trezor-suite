@@ -24,7 +24,7 @@ const RadioInner = styled.div`
     align-items: flex-start;
 `;
 
-const StyledWarning = styled(Warning)`
+const WarningWrapper = styled.div`
     margin: 12px 0;
 `;
 
@@ -82,9 +82,11 @@ export const SafetyChecksModal = ({ onCancel }: ModalProps) => {
                         <H3>
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL" />
                         </H3>
-                        <StyledWarning withIcon>
-                            <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
-                        </StyledWarning>
+                        <WarningWrapper>
+                            <Warning withIcon>
+                                <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_WARNING" />
+                            </Warning>
+                        </WarningWrapper>
                         <Paragraph type="hint">
                             <Translation id="TR_SAFETY_CHECKS_PROMPT_LEVEL_DESC" />
                         </Paragraph>

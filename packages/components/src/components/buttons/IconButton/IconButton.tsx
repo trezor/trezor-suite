@@ -27,7 +27,7 @@ export interface IconButtonProps
     icon: IconType;
     label?: React.ReactNode;
     iconSize?: number;
-    variant?: Exclude<ButtonVariant, 'danger'>;
+    variant?: ButtonVariant;
     bottomLabel?: React.ReactNode;
 }
 

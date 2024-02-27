@@ -1,52 +1,61 @@
 import { ReactNode, HTMLAttributes } from 'react';
-import styled, { DefaultTheme, css } from 'styled-components';
-import { borders, spacingsPx } from '@trezor/theme';
+import styled, { DefaultTheme } from 'styled-components';
+import {
+    CSSColor,
+    Color,
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+} from '@trezor/theme';
+import { useElevation } from '../ElevationContext/ElevationContext';
+import { ElevationContext } from '../ElevationContext/ElevationContext';
+import { UIVariant } from '../../config/types';
 
-// TODO: since the fate of Box is unclear, decouple it from the input state
-// later those "state" styles should be unified across components
-export const getBoxStateBorderColor = (
-    state: BoxProps['state'] | undefined,
-    theme: DefaultTheme,
-) => {
-    switch (state) {
-        case 'warning':
-            return theme.textAlertYellow;
-        case 'error':
-            return theme.borderAlertRed;
-        case 'success':
-            return theme.borderSecondary;
-        default:
-            return 'transparent';
-    }
+type BoxVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive' | 'info'>;
+
+type MapArgs = {
+    variant: BoxVariant;
+    theme: DefaultTheme;
 };
+
+const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+    const colorMap: Record<BoxVariant, Color> = {
+        primary: 'borderSecondary',
+        info: 'textAlertBlue',
+        warning: 'textAlertYellow',
+        destructive: 'borderAlertRed',
+    };
+
+    return theme[colorMap[variant]];
+};
+
 export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
-    state?: 'warning' | 'error' | 'success';
+    variant?: BoxVariant;
     children: ReactNode;
 }
 
-const Wrapper = styled.div<{ state: BoxProps['state'] }>`
+const Wrapper = styled.div<{ variant?: BoxVariant; elevation: Elevation }>`
     display: flex;
     flex: 1;
     border-radius: ${borders.radii.sm};
     padding: ${spacingsPx.md};
-    border: solid 1px ${({ theme }) => theme.borderOnElevation0};
+    background: ${mapElevationToBackground};
+    border: solid 1px ${mapElevationToBorder};
 
-    ${({ state, theme }) =>
-        state &&
-        css`
-            border-left: 6px solid ${getBoxStateBorderColor(state, theme)};
-        `}
-    ${({ state }) =>
-        !state &&
-        css`
-            padding-left: ${spacingsPx.lg};
-        `}
+    ${({ variant, theme }) =>
+        variant === undefined
+            ? `padding-left: ${spacingsPx.lg};`
+            : `border-left: 6px solid ${mapVariantToBackgroundColor({ variant, theme })};`}
 `;
 
-const Box = ({ state, children, ...rest }: BoxProps) => (
-    <Wrapper state={state} {...rest}>
-        {children}
-    </Wrapper>
-);
+export const Box = ({ variant, children, ...rest }: BoxProps) => {
+    const { elevation } = useElevation();
 
-export { Box };
+    return (
+        <Wrapper variant={variant} elevation={elevation} {...rest}>
+            <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
+        </Wrapper>
+    );
+};

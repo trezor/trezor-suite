@@ -3,7 +3,7 @@ import { Translation, StatusLight } from 'src/components/suite';
 
 const ActiveStatus = (
     <Tooltip content={<Translation id="TR_ACTIVE" />}>
-        <StatusLight status="ok" />
+        <StatusLight variant="primary" />
     </Tooltip>
 );
 

@@ -2,9 +2,9 @@ import { ReactNode } from 'react';
 import styled, { DefaultTheme, useTheme } from 'styled-components';
 import { Button, Icon, variables } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
-import { ButtonVariant } from '@trezor/components/src/components/buttons/buttonStyleUtils';
+import { UIVariant } from '@trezor/components/src/config/types';
 
-export type BannerVariant = Extract<ButtonVariant, 'info' | 'warning' | 'destructive'>;
+export type BannerVariant = Extract<UIVariant, 'info' | 'warning' | 'destructive'>;
 
 interface BannerProps {
     body: ReactNode;
