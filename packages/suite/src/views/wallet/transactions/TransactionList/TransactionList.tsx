@@ -14,7 +14,8 @@ import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction, Account } from 'src/types/wallet';
-import { TransactionListActions } from './TransactionListActions/TransactionListActions';
+import { SearchAction } from './TransactionListActions/SearchAction';
+import { ExportAction } from './TransactionListActions/ExportAction';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 import { Pagination } from 'src/components/wallet';
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
@@ -35,6 +36,10 @@ const PaginationWrapper = styled.div`
     margin-top: 20px;
 `;
 
+const ActionsWrapper = styled.div`
+    display: flex;
+    align-items: center;
+`;
 interface TransactionListProps {
     transactions: WalletAccountTransaction[];
     symbol: WalletAccountTransaction['symbol'];
@@ -181,14 +186,21 @@ export const TransactionList = ({
             ref={sectionRef}
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
-                <TransactionListActions
-                    account={account}
-                    searchQuery={searchQuery}
-                    setSearch={setSearchQuery}
-                    setSelectedPage={setSelectedPage}
-                    accountMetadata={accountMetadata}
-                    isExportable={isExportable}
-                />
+                <ActionsWrapper>
+                    <SearchAction
+                        account={account}
+                        searchQuery={searchQuery}
+                        setSearch={setSearchQuery}
+                        setSelectedPage={setSelectedPage}
+                    />
+                    {isExportable && (
+                        <ExportAction
+                            account={account}
+                            searchQuery={searchQuery}
+                            accountMetadata={accountMetadata}
+                        />
+                    )}
+                </ActionsWrapper>
             }
             data-test="@wallet/accounts/transaction-list"
         >
