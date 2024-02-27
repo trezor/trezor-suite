@@ -532,9 +532,9 @@ export const enhanceHistory = ({
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
-    fiat: CoinFiatRates[],
+    coins: CoinFiatRates[],
 ) => {
-    const coinFiatRates = fiat.find(f => f.symbol === account.symbol);
+    const coinFiatRates = coins.find(f => f.symbol === account.symbol && !f.tokenAddress);
     if (!coinFiatRates) return null;
 
     let totalBalance = new BigNumber(0);
@@ -548,7 +548,7 @@ export const getAccountFiatBalance = (
 
     // sum fiat value of all tokens
     account.tokens?.forEach(t => {
-        const tokenRates = fiat.find(
+        const tokenRates = coins.find(
             f => f.mainNetworkSymbol === account.symbol && f.tokenAddress === t.contract,
         );
         if (tokenRates && t.balance) {
