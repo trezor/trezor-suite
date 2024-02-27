@@ -14,6 +14,7 @@ import {
     Rate,
     RateType,
     TickerId,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
@@ -192,6 +193,25 @@ export const selectCoinsLegacy = memoize(
                 });
             }
         });
+
+        // Duplicate all values
+        coins.push(...coins);
+        coins.push(...coins);
+        // Shuffle coins randomly as a monkey test
+        coins.sort(() => Math.random() - 0.5);
+        // Add fake ETH at beginning
+        coins.unshift({
+            symbol: 'eth',
+            current: {
+                rates: {
+                    usd: 10000000,
+                },
+                ts: 1600000000000,
+                symbol: 'eth',
+            },
+            tokenAddress: 'fake-eth-token-address' as TokenAddress,
+        });
+        console.log('selectCoinsLegacy - coins', coins);
 
         return coins;
     },
