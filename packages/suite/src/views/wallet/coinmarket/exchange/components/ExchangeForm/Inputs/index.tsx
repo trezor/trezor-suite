@@ -123,6 +123,14 @@ const Inputs = () => {
     const symbol = tokenData?.symbol ?? account.symbol;
     const isBalanceZero = isZero(balance);
 
+    const fiatRateKey = getFiatRateKey(
+        account.symbol,
+        currency?.value as FiatCurrencyCode,
+        tokenData?.contract as TokenAddress,
+    );
+    const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    const isWithRate = !!currentRate?.rate || !!currentRate?.isLoading;
+
     const receiveCryptoNetworkSymbol =
         receiveCryptoSelect?.cryptoSymbol &&
         cryptoToNetworkSymbol(receiveCryptoSelect.cryptoSymbol);
@@ -138,8 +146,8 @@ const Inputs = () => {
     return (
         <InputsContainer responsiveSize="XL">
             <Row>
-                <SendCryptoInput />
-                {!tokenData && <FiatInput />}
+                <SendCryptoInput isWithRate={isWithRate} />
+                {isWithRate && <FiatInput />}
             </Row>
             <Row>
                 <Left>
