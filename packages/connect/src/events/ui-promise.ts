@@ -25,4 +25,5 @@ export type AnyUiPromise = UiPromiseMap[UiPromiseResponse['type']];
 export type UiPromiseCreator = <T extends UiPromiseResponse['type']>(
     type: T,
     device?: Device,
+    onInteractionTimeoutTriggered?: () => void,
 ) => UiPromise<T>;
