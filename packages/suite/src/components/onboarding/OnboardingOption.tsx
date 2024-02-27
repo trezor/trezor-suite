@@ -1,12 +1,20 @@
 import { ReactNode, HTMLAttributes } from 'react';
 import styled, { css } from 'styled-components';
-import { Icon, IconProps, variables } from '@trezor/components';
+import { Icon, IconProps, useElevation, variables } from '@trezor/components';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+} from '@trezor/theme';
 
-const Wrapper = styled.div`
+const Wrapper = styled.div<{ elevation: Elevation }>`
     display: flex;
-    padding: 24px 16px 24px 24px;
-    border-radius: 5px;
-    border: solid 1px ${({ theme }) => theme.STROKE_GREY};
+    padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.xl};
+    border-radius: ${borders.radii.xs};
+    border: solid 1px ${mapElevationToBorder};
+    background: ${mapElevationToBackground};
     align-items: center;
     width: 100%;
     cursor: pointer;
@@ -70,16 +78,20 @@ export const OnboardingOption = ({
     heading,
     description,
     ...rest
-}: OnboardingOptionProps) => (
-    <Wrapper {...rest}>
-        {icon && (
-            <IconWrapper>
-                <Icon icon={icon} size={48} />
-            </IconWrapper>
-        )}
-        <Content>
-            <Heading>{heading}</Heading>
-            {description && <Description>{description}</Description>}
-        </Content>
-    </Wrapper>
-);
+}: OnboardingOptionProps) => {
+    const { elevation } = useElevation();
+
+    return (
+        <Wrapper elevation={elevation} {...rest}>
+            {icon && (
+                <IconWrapper>
+                    <Icon icon={icon} size={48} />
+                </IconWrapper>
+            )}
+            <Content>
+                <Heading>{heading}</Heading>
+                {description && <Description>{description}</Description>}
+            </Content>
+        </Wrapper>
+    );
+};

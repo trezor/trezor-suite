@@ -3,8 +3,16 @@ import styled, { css, keyframes, useTheme } from 'styled-components';
 import { Image } from '../Image/Image';
 import { Icon } from '../assets/Icon/Icon';
 import { DeviceModelInternal } from '@trezor/connect';
-import { borders, spacingsPx, typography } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    nextElevation,
+    spacingsPx,
+    typography,
+} from '@trezor/theme';
 import { DeviceAnimation } from '../animations/DeviceAnimation';
+import { useElevation } from '../ElevationContext/ElevationContext';
 
 enum AnimationDirection {
     Up,
@@ -60,7 +68,6 @@ const Column = styled.div`
 
 const Title = styled.div`
     display: flex;
-    max-height: 20px;
     justify-content: center;
     ${typography.body};
     color: ${({ theme }) => theme.textDefault};
@@ -88,10 +95,10 @@ const CloseWrapper = styled.div`
     margin-left: ${spacingsPx.xs};
 `;
 
-const Close = styled.div`
+const Close = styled.div<{ elevation: Elevation }>`
     border-radius: 100%;
     cursor: pointer;
-    background: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
+    background: ${mapElevationToBackground};
     width: 36px;
     height: 36px;
     display: flex;
@@ -164,6 +171,7 @@ export const ConfirmOnDevice = ({
     deviceModelInternal,
     deviceUnitColor,
 }: ConfirmOnDeviceProps) => {
+    const { elevation } = useElevation();
     const hasSteps = steps && activeStep !== undefined;
     const theme = useTheme();
 
@@ -212,7 +220,11 @@ export const ConfirmOnDevice = ({
             <Right>
                 <CloseWrapper>
                     {onCancel && (
-                        <Close onClick={onCancel} data-test="@confirm-on-device/close-button">
+                        <Close
+                            elevation={nextElevation[elevation]}
+                            onClick={onCancel}
+                            data-test="@confirm-on-device/close-button"
+                        >
                             <Icon icon="CROSS" size={16} color={theme.textOnTertiary} />
                         </Close>
                     )}
