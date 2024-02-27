@@ -235,6 +235,7 @@ const initialRun = [
                 dashboardAssetsGridMode: true,
                 showDashboardT2B1PromoBanner: false,
                 showSettingsDesktopAppPromoBanner: true,
+                stakeEthBannerClosed: false,
             },
         },
     },

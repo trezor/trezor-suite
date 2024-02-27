@@ -1,4 +1,3 @@
-import { useLocation } from 'react-router-dom';
 import styled, { useTheme } from 'styled-components';
 import { Button, Card, Icon, Paragraph, variables, IconButton } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
@@ -53,7 +52,7 @@ export const StakeEthBanner = () => {
     const isDebug = useSelector(selectIsDebugModeActive);
     const { stakeEthBannerClosed } = useSelector(state => state.suite.flags);
     const hasSufficientEthForStaking = useSelector(selectSelectedAccountHasSufficientEthForStaking);
-    const { pathname } = useLocation();
+    const { pathname } = useSelector(state => state.router);
     const isShown = !stakeEthBannerClosed && pathname === '/accounts' && hasSufficientEthForStaking;
     const { ethApy } = useEverstakePoolStats();
 

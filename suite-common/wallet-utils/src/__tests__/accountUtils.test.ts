@@ -254,6 +254,7 @@ describe('account utils', () => {
             'sign-verify',
             'tokens',
             'token-definitions',
+            'staking',
         ]);
         expect(getNetworkFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);
     });
