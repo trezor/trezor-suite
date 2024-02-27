@@ -1,12 +1,47 @@
 import { forwardRef, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import { borders, spacings, Elevation, mapElevationToBackground } from '@trezor/theme';
+import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 
-const Wrapper = styled.div<{ elevation: Elevation; $paddingSize: number }>`
+type PaddingType = 'small' | 'none' | 'normal';
+
+type MapArgs = {
+    paddingType: PaddingType;
+};
+
+const mapPaddingTypeToLabelPadding = ({ paddingType }: MapArgs): number | string => {
+    const paddingMap: Record<PaddingType, number | string> = {
+        none: `${spacingsPx.xxs} 0`,
+        small: `${spacingsPx.xxs} ${spacingsPx.sm}`,
+        normal: `${spacingsPx.xs} ${spacingsPx.lg}`,
+    };
+
+    return paddingMap[paddingType];
+};
+const mapPaddingTypeToPadding = ({ paddingType }: MapArgs): number | string => {
+    const paddingMap: Record<PaddingType, number | string> = {
+        none: 0,
+        small: spacingsPx.sm,
+        normal: spacingsPx.lg,
+    };
+
+    return paddingMap[paddingType];
+};
+
+const Container = styled.div`
+    border-radius: ${borders.radii.md};
+    background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
+    padding: ${spacingsPx.xxxs};
+`;
+const LabelContainer = styled.div<{ paddingType: PaddingType }>`
+    padding: ${mapPaddingTypeToLabelPadding};
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
+const CardContainer = styled.div<{ elevation: Elevation; paddingType: PaddingType }>`
     display: flex;
     flex-direction: column;
-    padding: ${({ $paddingSize }) => $paddingSize}px;
+    padding: ${mapPaddingTypeToPadding};
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.md};
     box-shadow: ${({ theme, elevation }) => elevation === 1 && theme.boxShadowBase};
@@ -26,45 +61,43 @@ const Wrapper = styled.div<{ elevation: Elevation; $paddingSize: number }>`
     transition: background 0.3s, box-shadow 0.2s;
 `;
 
-const getPaddingSize = (paddingType?: PaddingType) => {
-    switch (paddingType) {
-        case 'small':
-            return spacings.sm;
-        case 'none':
-            return 0;
-        case 'normal':
-        default:
-            return spacings.lg;
-    }
-};
-
-type PaddingType = 'small' | 'none' | 'normal';
-
 export interface CardProps {
     paddingType?: PaddingType;
     onMouseEnter?: () => void;
     onMouseLeave?: () => void;
     onClick?: () => void;
-
     children?: ReactNode;
     className?: string;
-
+    label?: ReactNode;
     forceElevation?: Elevation;
 }
 
-export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', children, forceElevation, ...rest }, ref) => {
+const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: PaddingType }>(
+    ({ children, forceElevation, paddingType, ...rest }, ref) => {
         const { elevation } = useElevation(forceElevation);
 
         return (
-            <Wrapper
-                ref={ref}
-                elevation={elevation}
-                $paddingSize={getPaddingSize(paddingType)}
-                {...rest}
-            >
+            <CardContainer ref={ref} elevation={elevation} paddingType={paddingType} {...rest}>
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
-            </Wrapper>
+            </CardContainer>
+        );
+    },
+);
+
+export const Card = forwardRef<HTMLDivElement, CardProps>(
+    ({ paddingType = 'normal', label, ...rest }, ref) => {
+        const props = {
+            paddingType,
+            ...rest,
+        };
+
+        return label ? (
+            <Container>
+                <LabelContainer paddingType={paddingType}>{label}</LabelContainer>
+                <CardComponent {...props} ref={ref} />
+            </Container>
+        ) : (
+            <CardComponent {...props} ref={ref} />
         );
     },
 );

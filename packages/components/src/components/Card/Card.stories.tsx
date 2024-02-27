@@ -9,5 +9,15 @@ export default {
 export const Card: StoryObj = {
     args: {
         children: 'Some content',
+        label: '',
+        paddingType: 'normal',
+    },
+    argTypes: {
+        paddingType: {
+            options: ['small', 'none', 'normal'],
+            control: {
+                type: 'radio',
+            },
+        },
     },
 };
