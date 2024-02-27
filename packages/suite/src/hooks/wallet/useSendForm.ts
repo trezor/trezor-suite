@@ -89,7 +89,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // public variables, exported to SendFormContext
     const [isLoading, setLoading] = useState(false);
     const fiatRates = props.coins.find(
-        item => item.symbol === props.selectedAccount.account.symbol,
+        item => item.symbol === props.selectedAccount.account.symbol && !item.tokenAddress,
     );
 
     const [state, setState] = useState<UseSendFormState>(getStateFromProps(props));

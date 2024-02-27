@@ -106,7 +106,7 @@ export const useCoinmarketExchangeForm = ({
     const coinFees = fees[symbol];
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const fiatRates = coins.find(item => item.symbol === symbol);
+    const fiatRates = coins.find(item => item.symbol === symbol && !item.tokenAddress);
 
     const { getDraft, saveDraft, removeDraft } =
         useFormDraft<ExchangeFormState>('coinmarket-exchange');

@@ -66,7 +66,7 @@ const useAssetsFiatBalances = (
 
     return assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {
         if (!asset) return acc;
-        const fiatRates = coins.find(item => item.symbol === asset.symbol);
+        const fiatRates = coins.find(item => item.symbol === asset.symbol && !item.tokenAddress);
         const fiatBalance =
             toFiatCurrency(
                 accounts[asset.symbol]

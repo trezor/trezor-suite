@@ -198,7 +198,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     let swapFee: number | undefined;
     let swapFeeFiat: string | null = null;
     if (quote.isDex && quote.approvalGasEstimate && quote.swapGasEstimate && feePerByte) {
-        const fiatRates = coins.find(item => item.symbol === account.symbol);
+        const fiatRates = coins.find(item => item.symbol === account.symbol && !item.tokenAddress);
         approvalFee = quote.approvalGasEstimate * Number(feePerByte) * 1e-9;
         approvalFeeFiat = toFiatCurrency(
             approvalFee.toString(),
