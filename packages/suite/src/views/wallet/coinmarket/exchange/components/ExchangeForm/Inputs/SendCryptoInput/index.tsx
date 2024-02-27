@@ -19,9 +19,9 @@ import {
 import { useFormatters } from '@suite-common/formatters';
 import { spacingsPx } from '@trezor/theme';
 
-const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
-    ${({ isToken }) =>
-        !isToken &&
+const StyledInput = styled(NumberInput)<{ isWithRate: boolean }>`
+    ${({ isWithRate }) =>
+        isWithRate &&
         css`
             input {
                 border-top-right-radius: 0;
@@ -29,9 +29,13 @@ const StyledInput = styled(NumberInput)<{ isToken: boolean }>`
                 border-right: ${spacingsPx.xxxs} solid ${({ theme }) => theme.borderOnElevation1};
             }
         `}
-` as <T extends FieldValues>(props: NumberInputProps<T> & { isToken: boolean }) => ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843
+` as <T extends FieldValues>(props: NumberInputProps<T> & { isWithRate: boolean }) => ReactElement; // Styled wrapper doesn't preserve type argument, see https://github.com/styled-components/styled-components/issues/1803#issuecomment-1181765843
 
-const SendCryptoInput = () => {
+interface SendCryptoInputProps {
+    isWithRate: boolean;
+}
+
+const SendCryptoInput = ({ isWithRate }: SendCryptoInputProps) => {
     const { translationString } = useTranslation();
     const {
         control,
@@ -97,7 +101,7 @@ const SendCryptoInput = () => {
             inputState={getInputState(amountError || fiatError)}
             name={CRYPTO_INPUT}
             maxLength={formInputsMaxLength.amount}
-            isToken={!!tokenData}
+            isWithRate={isWithRate}
             rules={cryptoInputRules}
             bottomText={amountError?.message || null}
             innerAddon={<SendCryptoSelect />}

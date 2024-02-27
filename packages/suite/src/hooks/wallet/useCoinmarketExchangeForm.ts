@@ -51,6 +51,7 @@ import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/su
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -153,9 +154,17 @@ export const useCoinmarketExchangeForm = ({
 
     const values = useWatch({ control });
 
+    const { outputs } = getValues();
+
+    const token = outputs?.[0]?.token;
+
     const currency: { value: string; label: string } | undefined = getValues(FIAT_CURRENCY);
 
-    const fiatRateKey = getFiatRateKey(symbol, currency?.value as FiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(
+        symbol,
+        currency?.value as FiatCurrencyCode,
+        token as TokenAddress,
+    );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     useEffect(() => {
