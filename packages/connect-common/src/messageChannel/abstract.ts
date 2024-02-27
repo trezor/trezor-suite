@@ -170,13 +170,11 @@ export abstract class AbstractMessageChannel<
         // Don't verify channel in legacy mode
         if (!this.legacyMode) {
             if (!channel?.peer || channel.peer !== this.channel.here) {
-                this.logger?.warn('to wrong peer', channel?.peer, 'should be', this.channel.here);
-
+                // To wrong peer
                 return;
             }
             if (!channel?.here || this.channel.peer !== channel.here) {
-                this.logger?.warn('from wrong peer', channel?.here, 'should be', this.channel.peer);
-
+                // From wrong peer
                 return;
             }
         }
