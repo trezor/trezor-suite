@@ -2,7 +2,6 @@
     {
         "required": false,
         "version": [2, 7, 0],
-        "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 6, 1],
         "min_bootloader_version": [2, 1, 1],
         "bootloader_version": [2, 1, 4],
@@ -16,7 +15,6 @@
     {
         "required": false,
         "version": [2, 6, 4],
-        "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 6, 1],
         "min_bootloader_version": [2, 1, 1],
         "bootloader_version": [2, 1, 4],
@@ -29,7 +27,6 @@
     {
         "required": false,
         "version": [2, 6, 3],
-        "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 6, 1],
         "min_bootloader_version": [2, 1, 1],
         "bootloader_version": [2, 1, 4],
@@ -42,7 +39,6 @@
     {
         "required": true,
         "version": [2, 6, 2],
-        "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 6, 1],
         "min_bootloader_version": [2, 1, 1],
         "bootloader_version": [2, 1, 3],
