@@ -350,7 +350,10 @@ export const selectDevicelessAccounts = (state: AccountsRootState & DeviceRootSt
     ) as Account[];
 };
 
-export const selectAreAllDevicesDisconnectedOrAccountless = (
+/**
+ * Return true only if there is just a portfolio tracker device and that has empty accounts.
+ */
+export const selectIsDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
     const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
