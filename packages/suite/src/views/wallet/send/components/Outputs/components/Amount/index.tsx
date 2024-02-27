@@ -156,6 +156,8 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         ),
     );
 
+    const isWithRate = !!currentRate?.rate || !!currentRate?.isLoading;
+
     let decimals: number;
     if (token) {
         decimals = token.decimals;
@@ -268,7 +270,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                     />
                 </Left>
 
-                {(!token || (token && currentRate?.rate)) && (
+                {isWithRate && (
                     <FiatValue amount="1" symbol={symbol} fiatCurrency={localCurrencyOption.value}>
                         {({ rate }) =>
                             rate && (
