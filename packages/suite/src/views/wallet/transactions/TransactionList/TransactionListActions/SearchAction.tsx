@@ -15,8 +15,7 @@ import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from 'src/types/wallet';
 import { TooltipSymbol, Translation } from 'src/components/suite';
-import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { borders, spacingsPx } from '@trezor/theme';
 
 const Container = styled.div`
@@ -66,12 +65,11 @@ export interface SearchProps {
     account: Account;
     searchQuery: string;
     setSearch: Dispatch<SetStateAction<string>>;
-    setSelectedPage: Dispatch<SetStateAction<number>>;
+    fetchAll: () => Promise<void>;
 }
 
-export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage }: SearchProps) => {
+export const SearchAction = ({ account, searchQuery, setSearch, fetchAll }: SearchProps) => {
     const [isExpanded, setExpanded] = useState(false);
-    const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
     const theme = useTheme();
     const inputRef = useRef<HTMLInputElement | null>(null);
@@ -104,33 +102,20 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
 
     const onSearch = useCallback(
         async ({ target }: ChangeEvent<HTMLInputElement>) => {
-            setSelectedPage(1);
             setSearch(target.value);
 
-            if (!hasFetchedAll) {
-                setHasFetchedAll(true);
-
-                try {
-                    await dispatch(
-                        fetchTransactionsThunk({
-                            accountKey: account.key,
-                            page: 2,
-                            perPage: getTxsPerPage(account.networkType),
-                            noLoading: true,
-                            recursive: true,
-                        }),
-                    );
-                } catch (err) {
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'error',
-                            error: translationString('TR_SEARCH_FAIL'),
-                        }),
-                    );
-                }
+            try {
+                await fetchAll();
+            } catch (err) {
+                dispatch(
+                    notificationsActions.addToast({
+                        type: 'error',
+                        error: translationString('TR_SEARCH_FAIL'),
+                    }),
+                );
             }
         },
-        [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
+        [dispatch, fetchAll, setSearch, translationString],
     );
 
     const onSearchKeys = useCallback(
@@ -148,7 +133,6 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
     );
 
     useEffect(() => {
-        setHasFetchedAll(false);
         setExpanded(false);
         setSearch('');
 
