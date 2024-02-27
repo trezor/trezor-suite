@@ -36,10 +36,7 @@ import {
     FIAT_CURRENCY,
     UseCoinmarketExchangeFormProps,
 } from 'src/types/wallet/coinmarketExchangeForm';
-import {
-    getComposeAddressPlaceholder,
-    getTokensFiatValue,
-} from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getAmountLimits, splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
@@ -71,13 +68,11 @@ const useExchangeState = (
     const coinFees = fees[account.symbol];
     const levels = getFeeLevels(account.networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const tokensFiatValue: Awaited<ReturnType<typeof getTokensFiatValue>> = {};
 
     return {
         account,
         network,
         feeInfo,
-        tokensFiatValue,
         formValues: defaultFormValues,
     };
 };
@@ -139,11 +134,6 @@ export const useCoinmarketExchangeForm = ({
             );
             if (initState?.formValues && address) {
                 initState.formValues.outputs[0].address = address;
-
-                initState.tokensFiatValue = await getTokensFiatValue(
-                    account,
-                    exchangeInfo?.sellSymbols || new Set(),
-                );
 
                 setState(initState);
             }
@@ -407,7 +397,6 @@ export const useCoinmarketExchangeForm = ({
         formState,
         handleClearFormButtonClick,
         isDraft,
-        tokensFiatValue: state?.tokensFiatValue,
     };
 };
 

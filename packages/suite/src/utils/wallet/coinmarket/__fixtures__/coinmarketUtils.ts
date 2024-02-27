@@ -1,3 +1,5 @@
+import { TokenDefinitions } from '@suite-common/wallet-types';
+
 export const accountBtc = {
     index: 1,
     accountType: 'segwit',
@@ -43,7 +45,7 @@ export const accountEth = {
     ],
 };
 
-export const tokensFiatValue = {
-    '0x1234123412341234123412341234123412341234': 0,
-    '0x1234123412341234123412341234123412341235': 1,
+export const tokenDefinitions: TokenDefinitions = {
+    '0x1234123412341234123412341234123412341234': { isTokenKnown: false, error: false },
+    '0x1234123412341234123412341234123412341235': { isTokenKnown: true, error: false },
 };

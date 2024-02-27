@@ -9,7 +9,7 @@ import {
     getTagAndInfoNote,
     buildCryptoOption,
 } from '../coinmarketUtils';
-import { accountBtc, accountEth, tokensFiatValue } from '../__fixtures__/coinmarketUtils';
+import { accountBtc, accountEth, tokenDefinitions } from '../__fixtures__/coinmarketUtils';
 
 describe('coinmarket utils', () => {
     it('buildFiatOption', () => {
@@ -112,7 +112,7 @@ describe('coinmarket utils', () => {
             getSendCryptoOptions(
                 accountEth as Account,
                 new Set(['ETH', 'USDT@ETH', 'USDC@ETH', 'DAI@ETH']),
-                tokensFiatValue,
+                tokenDefinitions,
             ),
         ).toStrictEqual([
             {
