@@ -7,15 +7,7 @@ import {
     withTiming,
 } from 'react-native-reanimated';
 
-import {
-    Canvas,
-    vec,
-    RoundedRect,
-    LinearGradient,
-    Group,
-    rrect,
-    rect,
-} from '@shopify/react-native-skia';
+import { Canvas, vec, Rect, LinearGradient, Group, rrect, rect } from '@shopify/react-native-skia';
 
 import { useNativeStyles } from '@trezor/styles';
 import { nativeBorders } from '@trezor/theme';
@@ -48,11 +40,13 @@ export const BoxSkeleton = ({
         },
     ]);
 
-    const rct = useMemo(() => {
+    const shapeRect = useMemo(() => {
         const coreRect = rect(0, 0, width, height);
 
         return rrect(coreRect, borderRadius, borderRadius);
     }, [width, height, borderRadius]);
+
+    const gradientRect = useMemo(() => rect(0, 0, width, height), [width, height]);
 
     const gradientColors = useMemo(
         () => [
@@ -65,15 +59,15 @@ export const BoxSkeleton = ({
 
     return (
         <Canvas style={{ width, height }}>
-            <Group clip={rct}>
+            <Group clip={shapeRect}>
                 <Group transform={position}>
-                    <RoundedRect rect={rct}>
+                    <Rect rect={gradientRect}>
                         <LinearGradient
                             start={vec(0, height / 2)}
                             end={vec(width, height / 2)}
                             colors={gradientColors}
                         />
-                    </RoundedRect>
+                    </Rect>
                 </Group>
             </Group>
         </Canvas>
