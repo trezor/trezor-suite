@@ -5,6 +5,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsPassphraseEnabled: 'isPassphraseEnabled',
+    IsAddCoinAccountEnabled: 'isAddCoinAccountEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -17,11 +18,13 @@ export type FeatureFlagsRootState = {
 export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: Platform.OS === 'android',
     [FeatureFlag.IsPassphraseEnabled]: false,
+    [FeatureFlag.IsAddCoinAccountEnabled]: false,
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsPassphraseEnabled,
+    FeatureFlag.IsAddCoinAccountEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

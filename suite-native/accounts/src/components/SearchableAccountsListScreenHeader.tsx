@@ -6,15 +6,10 @@ import Animated, {
     withDelay,
     withTiming,
 } from 'react-native-reanimated';
-import { useSelector } from 'react-redux';
 
 import { ScreenSubHeader } from '@suite-native/navigation';
 import { Box, IconButton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import {
-    selectAreAllDevicesDisconnectedOrAccountless,
-    selectDeviceDiscovery,
-} from '@suite-common/wallet-core';
 
 import { AccountsSearchForm, SEARCH_INPUT_ANIMATION_DURATION } from './AccountsSearchForm';
 import { AddAccountButton } from './AddAccountsButton';
@@ -39,10 +34,6 @@ export const SearchableAccountsListScreenHeader = ({
     const isFirstRender = useSharedValue(true);
     const { applyStyle } = useNativeStyles();
 
-    const discovery = useSelector(selectDeviceDiscovery);
-    const areAllDevicesDisconnectedOrAccountless = useSelector(
-        selectAreAllDevicesDisconnectedOrAccountless,
-    );
     const [isSearchActive, setIsSearchActive] = useState(false);
 
     const handleHideFilter = () => {
@@ -86,10 +77,7 @@ export const SearchableAccountsListScreenHeader = ({
                 >
                     <ScreenSubHeader
                         content={title}
-                        rightIcon={
-                            !areAllDevicesDisconnectedOrAccountless &&
-                            !discovery && <AddAccountButton />
-                        }
+                        rightIcon={<AddAccountButton />}
                         leftIcon={
                             <IconButton
                                 iconName="search"

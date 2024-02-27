@@ -10,12 +10,21 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { IconButton } from '@suite-native/atoms';
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import { selectDeviceDiscovery, selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+
+import { useIsAddCoinAccountEnabled } from '../useIsAddCoinAccountEnabled';
 
 export const AddAccountButton = () => {
-    const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
+
+    const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
+    const discovery = useSelector(selectDeviceDiscovery);
+
+    const { isAddCoinAccountEnabled } = useIsAddCoinAccountEnabled();
+
+    const shouldShowAddAccountButton =
+        isSelectedDevicePortfolioTracker || (isAddCoinAccountEnabled && !discovery);
 
     const navigateToImportScreen = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -23,15 +32,18 @@ export const AddAccountButton = () => {
         });
     };
 
-    const navigateToAddCoinAccount = () =>
-        navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
-            screen: AddCoinAccountStackRoutes.AddCoinAccount,
-            params: {
-                flowType: 'accounts',
-            },
-        });
+    const navigateToAddCoinAccount = () => {
+        if (isAddCoinAccountEnabled) {
+            navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
+                screen: AddCoinAccountStackRoutes.AddCoinAccount,
+                params: {
+                    flowType: 'accounts',
+                },
+            });
+        }
+    };
 
-    return (
+    return shouldShowAddAccountButton ? (
         <IconButton
             iconName="plus"
             onPress={
@@ -40,5 +52,5 @@ export const AddAccountButton = () => {
             colorScheme="tertiaryElevation0"
             size="medium"
         />
-    );
+    ) : null;
 };
