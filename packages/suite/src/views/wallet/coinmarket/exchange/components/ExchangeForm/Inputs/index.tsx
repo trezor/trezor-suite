@@ -2,7 +2,7 @@ import { useCallback, useEffect } from 'react';
 import styled, { css } from 'styled-components';
 import BigNumber from 'bignumber.js';
 
-import { isZero, amountToSatoshi } from '@suite-common/wallet-utils';
+import { isZero, amountToSatoshi, getFiatRateKey } from '@suite-common/wallet-utils';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import SendCryptoInput from './SendCryptoInput';
 import FiatInput from './FiatInput';
@@ -20,9 +20,11 @@ import {
     isCryptoSymbolToken,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useSelector } from 'src/hooks/suite';
-import { selectDeviceAccounts } from '@suite-common/wallet-core';
+import { selectDeviceAccounts, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { spacingsPx } from '@trezor/theme';
+import { TokenAddress } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 const InputsContainer = styled(Wrapper)`
     gap: ${spacingsPx.sm} 0;
@@ -73,6 +75,7 @@ const Inputs = () => {
 
     const { outputs, receiveCryptoSelect } = getValues();
     const tokenAddress = outputs?.[0]?.token;
+    const currency = outputs?.[0]?.currency;
     const tokenData = account.tokens?.find(t => t.contract === tokenAddress);
 
     // Trigger validation once amountLimits are loaded after first submit

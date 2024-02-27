@@ -3,10 +3,21 @@ import { Controller } from 'react-hook-form';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { FIAT_CURRENCY } from 'src/types/wallet/coinmarketExchangeForm';
 import { buildCurrencyOptions } from '@suite-common/wallet-utils';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { useDispatch } from 'src/hooks/suite';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 const FiatSelect = () => {
-    const { control, setAmountLimits, updateFiatCurrency, defaultCurrency } =
+    const { account, control, setAmountLimits, getValues, updateFiatCurrency, defaultCurrency } =
         useCoinmarketExchangeFormContext();
+
+    const dispatch = useDispatch();
+
+    const { outputs } = getValues();
+
+    const token = outputs?.[0]?.token;
 
     return (
         <Controller
@@ -15,8 +26,19 @@ const FiatSelect = () => {
             defaultValue={defaultCurrency}
             render={({ field: { onChange, value } }) => (
                 <Select
-                    onChange={(selected: any) => {
+                    onChange={async (selected: any) => {
                         onChange(selected);
+                        await dispatch(
+                            updateFiatRatesThunk({
+                                ticker: {
+                                    symbol: account.symbol as NetworkSymbol,
+                                    tokenAddress: token as TokenAddress,
+                                },
+                                localCurrency: selected.value as FiatCurrencyCode,
+                                rateType: 'current',
+                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                            }),
+                        );
                         updateFiatCurrency(selected);
                         setAmountLimits(undefined);
                     }}
