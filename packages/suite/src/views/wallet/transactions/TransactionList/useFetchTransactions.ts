@@ -1,0 +1,214 @@
+import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { getTxsPerPage } from '@suite-common/suite-utils';
+import {
+    getIsPhishingTransaction,
+    selectNetworkTokenDefinitions,
+} from '@suite-common/token-definitions';
+import {
+    fetchAllTransactionsForAccountThunk,
+    fetchTransactionsPageThunk,
+    selectAccountTotalTransactions,
+    selectAccountTransactionsWithNulls,
+    selectIsLoadingAccountTransactions,
+} from '@suite-common/wallet-core';
+import { getSynchronize } from '@trezor/utils';
+
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
+
+import { shouldAttemptToLoadNextPageForVisibleTransactions } from './transaction-fetch-utils';
+
+const getPaging = (network: Account['networkType'], txFetched: number, txTotal: number) => {
+    const perPage = getTxsPerPage(network);
+    // There is no total in XRP, so always presume there could be one more tx and calculate page count accordingly
+    const totalItems = network === 'ripple' ? txFetched + 1 : txTotal;
+    const pagesTotal = Math.ceil(totalItems / perPage);
+    // Consider incomplete pages unfetched unless fetched tx count equals total
+    const page = txFetched === totalItems ? pagesTotal : Math.floor(txFetched / perPage);
+
+    return { page, pagesTotal, perPage };
+};
+
+export const useFetchTransactions = (
+    account: Account,
+    transactions: WalletAccountTransaction[],
+) => {
+    const accountKey = account.key;
+    const { page, pagesTotal, perPage } = getPaging(
+        account.networkType,
+        transactions.length,
+        account.history.total,
+    );
+
+    const [pagesFetched, setPagesFetched] = useState(page);
+    const [isFetching, setFetching] = useState(false);
+    const [fetchedAll, setFetchedAll] = useState(false);
+
+    useEffect(() => {
+        setPagesFetched(1);
+        setFetching(false);
+        setFetchedAll(false);
+    }, [accountKey]);
+
+    useEffect(() => {
+        if (page > pagesFetched) {
+            setPagesFetched(page);
+        }
+    }, [pagesFetched, page]);
+
+    const isLastPage = pagesFetched >= pagesTotal;
+
+    useEffect(() => {
+        if (!fetchedAll && isLastPage) {
+            setFetchedAll(true);
+        }
+    }, [fetchedAll, isLastPage]);
+
+    const synchronize = useMemo(getSynchronize, [accountKey]);
+    const dispatch = useDispatch();
+
+    const fetchCommon = useCallback(
+        (
+            page: number,
+            options: {
+                recursive?: boolean;
+            } = {},
+        ) => {
+            if (options.recursive) {
+                // NOTE: when recursion is requested, load all the transactions along but don't wait for it
+                dispatch(fetchAllTransactionsForAccountThunk({ accountKey }));
+            }
+
+            return dispatch(
+                fetchTransactionsPageThunk({
+                    accountKey: account.key,
+                    page,
+                    perPage,
+                }),
+            );
+        },
+        [dispatch, account.key, perPage, accountKey],
+    );
+
+    const fetchPage = useCallback(
+        (
+            page: number,
+            options: {
+                recursive?: boolean;
+                noLoading?: boolean;
+            } = {},
+        ) => {
+            synchronize(async () => {
+                setFetching(true);
+                await dispatch(
+                    fetchTransactionsPageThunk({
+                        accountKey: account.key,
+                        page,
+                        perPage,
+                        noLoading: Boolean(options.noLoading),
+                    }),
+                );
+                setFetching(false);
+            });
+        },
+        [account.key, dispatch, perPage, synchronize],
+    );
+
+    const fetchNext = useCallback(
+        () =>
+            synchronize(async () => {
+                if (fetchedAll) return;
+                setFetching(true);
+                await fetchCommon(pagesFetched + 1);
+                setFetching(false);
+                setPagesFetched(pagesFetched + 1);
+            }),
+        [synchronize, fetchCommon, pagesFetched, fetchedAll],
+    );
+
+    const fetchAll = useCallback(
+        () =>
+            synchronize(async () => {
+                if (fetchedAll) return;
+                setFetching(true);
+                await fetchCommon(pagesFetched + 1, {
+                    recursive: true,
+                });
+                setFetching(false);
+                setFetchedAll(true);
+            }),
+        [synchronize, fetchCommon, pagesFetched, fetchedAll],
+    );
+
+    return { fetchNext, pagesFetched, fetchPage, fetchAll, isFetching, fetchedAll };
+};
+
+export const useVisibleTransactionsRetriever = ({ account }: { account: Account }) => {
+    const allTransactions = useSelector(state =>
+        selectAccountTransactionsWithNulls(state, account.key),
+    );
+
+    const { fetchedAll, isFetching, pagesFetched, fetchPage } = useFetchTransactions(
+        account,
+        allTransactions,
+    );
+    const allAccountTransactions = useSelector(state =>
+        selectAccountTotalTransactions(state, account.key),
+    );
+    const transactionsIsLoading = useSelector(state =>
+        selectIsLoadingAccountTransactions(state, account.key),
+    );
+    const tokenDefinitions = useSelector(state =>
+        selectNetworkTokenDefinitions(state, account.symbol),
+    );
+
+    const visibleTransactions = useMemo(
+        () =>
+            tokenDefinitions
+                ? allTransactions.filter(
+                      transaction =>
+                          // NOTE: due to some weirdness, the transaction here can be `undefined`!
+                          transaction
+                              ? !getIsPhishingTransaction(transaction, tokenDefinitions)
+                              : false, // NOTE: when transaction is falsy, hide it
+                  )
+                : allTransactions,
+        [allTransactions, tokenDefinitions],
+    );
+
+    const perPage = getTxsPerPage(account.networkType);
+    const numberOfHidden = allTransactions.length - visibleTransactions.length;
+    const totalPossiblyVisible = allAccountTransactions - numberOfHidden;
+
+    useEffect(() => {
+        if (
+            shouldAttemptToLoadNextPageForVisibleTransactions({
+                totalNumberOfTransactions: allAccountTransactions,
+                currentNumberOfVisibleTransactions: visibleTransactions.length,
+                currentNumberOfTransactions: allTransactions.length,
+                perPage,
+                pagesFetched,
+            })
+        ) {
+            fetchPage(pagesFetched + 1);
+        }
+    }, [
+        account.networkType,
+        allAccountTransactions,
+        allTransactions.length,
+        fetchPage,
+        fetchedAll,
+        pagesFetched,
+        perPage,
+        totalPossiblyVisible,
+        visibleTransactions.length,
+    ]);
+
+    return {
+        allTransactions,
+        visibleTransactions,
+        visibleTotal: totalPossiblyVisible,
+        isFetching: isFetching || transactionsIsLoading,
+    };
+};
