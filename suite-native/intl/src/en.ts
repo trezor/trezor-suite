@@ -535,10 +535,17 @@ export const en = {
         },
     },
     transactions: {
+        title: 'Transactions',
+        receive: 'Receive',
         phishing: {
             badge: 'Caution!',
             warning:
                 "Caution! This transaction may be a scam. If you’re unsure, don't engage. <blogLink>Read more</blogLink>",
+        },
+        emptyState: {
+            title: 'No transactions',
+            subtitle: 'Get started by receiving coins',
+            button: 'Receive',
         },
     },
     deviceManager: {

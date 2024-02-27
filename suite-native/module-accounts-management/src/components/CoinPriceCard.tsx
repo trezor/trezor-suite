@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Box, Text, Card, RoundedIcon, Badge, Loader } from '@suite-native/atoms';
+import { Box, Text, Card, RoundedIcon, Badge, BoxSkeleton } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { networks } from '@suite-common/wallet-config';
 import { FiatAmountFormatter } from '@suite-native/formatters';
@@ -14,7 +14,7 @@ type CoinPriceCardProps = {
 };
 
 type PriceChangeIndicatorProps = {
-    valuePercentageChange: number;
+    valuePercentageChange: number | null;
 };
 
 const cardStyle = prepareNativeStyle(utils => ({
@@ -41,11 +41,13 @@ const indicatorContainer = prepareNativeStyle(utils => ({
 
 const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorProps) => {
     const { applyStyle } = useNativeStyles();
-    const priceHasIncreased = valuePercentageChange >= 0;
+
+    const percentageChange = valuePercentageChange ?? 0;
+    const priceHasIncreased = percentageChange >= 0;
 
     const icon = priceHasIncreased ? 'arrowUp' : 'arrowDown';
     const badgeVariant = priceHasIncreased ? 'green' : 'red';
-    const formattedPercentage = `${valuePercentageChange.toPrecision(3)} %`;
+    const formattedPercentage = `${percentageChange.toPrecision(3)} %`;
 
     return (
         <Box style={applyStyle(indicatorContainer)}>
@@ -53,13 +55,17 @@ const PriceChangeIndicator = ({ valuePercentageChange }: PriceChangeIndicatorPro
                 24h change
             </Text>
             <Box justifyContent="center" alignItems="center" flexDirection="row">
-                <Badge
-                    icon={icon}
-                    iconSize="extraSmall"
-                    size="medium"
-                    variant={badgeVariant}
-                    label={formattedPercentage}
-                />
+                {valuePercentageChange ? (
+                    <Badge
+                        icon={icon}
+                        iconSize="extraSmall"
+                        size="medium"
+                        variant={badgeVariant}
+                        label={formattedPercentage}
+                    />
+                ) : (
+                    <BoxSkeleton width={70} height={24} borderRadius={12} />
+                )}
             </Box>
         </Box>
     );
@@ -99,13 +105,8 @@ export const CoinPriceCard = ({ accountKey }: CoinPriceCardProps) => {
                     )}
                 </Box>
             </Box>
-            {valuePercentageChange ? (
-                <PriceChangeIndicator valuePercentageChange={valuePercentageChange} />
-            ) : (
-                <Box alignItems="center" justifyContent="center">
-                    <Loader size="large" />
-                </Box>
-            )}
+
+            <PriceChangeIndicator valuePercentageChange={valuePercentageChange} />
         </Card>
     );
 };
