@@ -106,7 +106,7 @@ export const useCoinmarketSellForm = ({
     const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const symbolForFiat = mapTestnetSymbol(symbol);
-    const fiatRates = coins.find(item => item.symbol === symbolForFiat);
+    const fiatRates = coins.find(item => item.symbol === symbolForFiat && !item.tokenAddress);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
 
     const [state, setState] = useState<ReturnType<typeof useSellState>>(undefined);

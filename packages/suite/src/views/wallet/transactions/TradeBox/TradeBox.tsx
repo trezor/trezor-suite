@@ -77,7 +77,7 @@ interface TradeBoxProps {
 export const TradeBox = ({ account }: TradeBoxProps) => {
     const network = getMainnets().find(n => n.symbol === account.symbol);
     const coins = useSelector(selectCoinsLegacy);
-    const fiatRates = coins.find(item => item.symbol === network?.symbol);
+    const fiatRates = coins.find(item => item.symbol === network?.symbol && !item.tokenAddress);
 
     if (!network) {
         return null;
