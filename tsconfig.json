@@ -101,6 +101,9 @@
         { "path": "suite-native/test-utils" },
         { "path": "suite-native/theme" },
         { "path": "suite-native/toasts" },
+        {
+            "path": "suite-native/token-definitions"
+        },
         { "path": "suite-native/transactions" },
         { "path": "suite-native/video-assets" },
         { "path": "packages/analytics" },

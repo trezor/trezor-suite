@@ -1,7 +1,12 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import { transactionsActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
+import {
+    transactionsActions,
+    accountsActions,
+    blockchainActions,
+    getTokenDefinitionThunk,
+} from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 
 import {
@@ -27,28 +32,6 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     localCurrency: selectLocalCurrency(getState()),
                 }),
             );
-        }
-
-        // Fetch fiat rates for all tokens of newly discovered ETH account.
-        if (
-            accountsActions.createIndexLabeledAccount.match(action) &&
-            action.payload.symbol === 'eth'
-        ) {
-            const localCurrency = selectLocalCurrency(getState());
-
-            const { tokens } = action.payload;
-            tokens?.forEach(token => {
-                dispatch(
-                    updateFiatRatesThunk({
-                        ticker: {
-                            symbol: 'eth',
-                            tokenAddress: token.contract as TokenAddress,
-                        },
-                        rateType: 'current',
-                        localCurrency,
-                    }),
-                );
-            });
         }
 
         if (transactionsActions.addTransaction.match(action)) {
@@ -79,6 +62,22 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                 fetchFiatRatesThunk({
                     rateType: 'current',
                     localCurrency: selectLocalCurrency(getState()),
+                }),
+            );
+        }
+
+        // If there is a new valid token present, download its fiat rates.
+        if (getTokenDefinitionThunk.fulfilled.match(action)) {
+            const { networkSymbol, contractAddress } = action.meta.arg;
+            const localCurrency = selectLocalCurrency(getState());
+            dispatch(
+                updateFiatRatesThunk({
+                    ticker: {
+                        symbol: networkSymbol,
+                        tokenAddress: contractAddress as TokenAddress,
+                    },
+                    rateType: 'current',
+                    localCurrency,
                 }),
             );
         }

@@ -15,9 +15,10 @@ import {
 import { Badge, Box, HStack, Text } from '@suite-native/atoms';
 import { useFormatters } from '@suite-common/formatters';
 import {
+    selectIsPhishingTransaction,
     selectIsTransactionPending,
-    selectIsTransactionZeroValuePhishing,
     selectTransactionBlockTimeById,
+    TokenDefinitionsRootState,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -161,8 +162,9 @@ export const TransactionListItemContainer = ({
         selectIsTransactionPending(state, txid, accountKey),
     );
 
-    const isZeroValuePhishing = useSelector((state: TransactionsRootState) =>
-        selectIsTransactionZeroValuePhishing(state, txid, accountKey),
+    const isPhishingTransaction = useSelector(
+        (state: TokenDefinitionsRootState & TransactionsRootState) =>
+            selectIsPhishingTransaction(state, txid, accountKey),
     );
 
     const iconColor: Color = isTransactionPending ? 'backgroundAlertYellowBold' : 'iconSubdued';
@@ -187,7 +189,7 @@ export const TransactionListItemContainer = ({
                     <HStack flexDirection="row" alignItems="center" spacing="extraSmall">
                         <Box style={applyStyle(titleStyle)}>
                             <Text variant="body">{transactionTitle}</Text>
-                            {isZeroValuePhishing && (
+                            {isPhishingTransaction && (
                                 <Badge
                                     label={translate('transactions.phishing.badge')}
                                     size="small"

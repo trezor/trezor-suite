@@ -30,6 +30,7 @@
         "@suite-native/module-settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",
+        "@suite-native/token-definitions": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/transport-native": "workspace:*",
         "@trezor/utils": "workspace:*",

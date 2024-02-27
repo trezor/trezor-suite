@@ -8761,6 +8761,7 @@ __metadata:
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
+    "@suite-native/token-definitions": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -8838,6 +8839,17 @@ __metadata:
     react-native-gesture-handler: "npm:2.15.0"
     react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
     react-native-safe-area-context: "npm:4.9.0"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/token-definitions@workspace:*, @suite-native/token-definitions@workspace:suite-native/token-definitions":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/token-definitions@workspace:suite-native/token-definitions"
+  dependencies:
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
   languageName: unknown
   linkType: soft
 

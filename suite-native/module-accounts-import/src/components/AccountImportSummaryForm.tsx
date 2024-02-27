@@ -7,6 +7,7 @@ import {
     AccountsRootState,
     selectAccountsByNetworkAndDeviceState,
     PORTFOLIO_TRACKER_DEVICE_STATE,
+    selectKnownNetworkTokens,
 } from '@suite-common/wallet-core';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
@@ -26,6 +27,7 @@ import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/walle
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
 import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { TokenDefinitionsRootState } from '@suite-common/wallet-core/src/token-definitions/tokenDefinitionsTypes';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
@@ -56,6 +58,14 @@ export const AccountImportSummaryForm = ({
     const navigation = useNavigation<NavigationProp>();
     const showImportError = useShowImportError(networkSymbol, navigation);
 
+    const areTokensDisplayed = useSelector((state: SettingsSliceRootState & FiatRatesRootState) =>
+        selectAnyOfTokensHasFiatRates(state, (accountInfo?.tokens as TokenInfoBranded[]) ?? []),
+    );
+
+    const knownTokens = useSelector((state: TokenDefinitionsRootState) =>
+        selectKnownNetworkTokens(state, networkSymbol),
+    );
+
     const deviceNetworkAccounts = useSelector((state: AccountsRootState) =>
         selectAccountsByNetworkAndDeviceState(state, PORTFOLIO_TRACKER_DEVICE_STATE, networkSymbol),
     );
@@ -80,14 +90,16 @@ export const AccountImportSummaryForm = ({
                 }),
             ).unwrap();
 
+            // Report  to analytics only those tokens that are known.
+            const validTokens =
+                accountInfo.tokens?.filter(({ contract }) => knownTokens.includes(contract)) ?? [];
+
             analytics.report({
                 type: EventType.AssetsSync,
                 payload: {
                     assetSymbol: networkSymbol,
-                    tokenSymbols: accountInfo?.tokens?.map(token => token.symbol as TokenSymbol),
-                    tokenAddresses: accountInfo?.tokens?.map(
-                        token => token.contract as TokenAddress,
-                    ),
+                    tokenSymbols: validTokens.map(token => token.symbol as TokenSymbol),
+                    tokenAddresses: validTokens.map(token => token.contract as TokenAddress),
                 },
             });
 
@@ -108,10 +120,6 @@ export const AccountImportSummaryForm = ({
             showImportError();
         }
     });
-
-    const areTokensDisplayed = useSelector((state: SettingsSliceRootState & FiatRatesRootState) =>
-        selectAnyOfTokensHasFiatRates(state, (accountInfo?.tokens as TokenInfoBranded[]) ?? []),
-    );
 
     return (
         <Form form={form}>

@@ -27,3 +27,4 @@ export * from './token-definitions/tokenDefinitionsSelectors';
 export * from './token-definitions/tokenDefinitionsReducer';
 export * from './token-definitions/tokenDefinitionsThunks';
 export * from './token-definitions/tokenDefinitionsMiddleware';
+export * from './token-definitions/tokenDefinitionsTypes';
