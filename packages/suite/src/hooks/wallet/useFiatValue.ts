@@ -3,6 +3,7 @@ import { useSelector } from 'src/hooks/suite';
 
 // TODO: do the calculation here
 export const useFiatValue = () => {
+    // Trigger test
     const coins = useSelector(selectCoinsLegacy);
     const localCurrency = useSelector(state => state.wallet.settings.localCurrency);
 
