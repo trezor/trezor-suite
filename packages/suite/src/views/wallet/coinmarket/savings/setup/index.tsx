@@ -71,7 +71,6 @@ const LabelText = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     padding-right: 20px;
-
 `;
 
 const LinkButton = styled(Button)`

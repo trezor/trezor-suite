@@ -9,7 +9,6 @@ import { typography } from '@trezor/theme';
 const Wrapper = styled.div`
     display: flex;
     margin-top: 10px;
-    padding: 0 10px;
     align-items: center;
     justify-content: space-between;
     font-size: ${variables.FONT_SIZE.TINY};
@@ -19,6 +18,8 @@ const Wrapper = styled.div`
 
 const Left = styled.div`
     display: flex;
+    padding-right: 10px;
+    align-items: center;
 `;
 
 const Right = styled.div``;
@@ -63,7 +64,7 @@ export const CoinmarketTransactionId = ({
                 <Value>{transactionId}</Value>
             </Left>
             <Right>
-                <Button variant="tertiary" onClick={copy}>
+                <Button size="tiny" variant="tertiary" onClick={copy}>
                     <Translation id="TR_COPY_TO_CLIPBOARD_TX_ID" />
                 </Button>
             </Right>
