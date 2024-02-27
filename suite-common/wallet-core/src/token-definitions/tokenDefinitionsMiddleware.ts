@@ -1,25 +1,15 @@
-import { Account, Timestamp, TokenAddress } from 'suite-common/wallet-types/src';
+import { Account } from 'suite-common/wallet-types/src';
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import {
-    NetworkSymbol,
-    getNetworkFeatures,
-    isEthereumBasedNetwork,
-    networks,
-} from '@suite-common/wallet-config';
+import { getNetworkFeatures, isEthereumBasedNetwork, networks } from '@suite-common/wallet-config';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
 import { selectSpecificTokenDefinition } from './tokenDefinitionsSelectors';
-import { updateFiatRatesThunk } from '../fiat-rates/fiatRatesThunks';
 
 export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
-    (action, { dispatch, extra, next, getState }) => {
-        const {
-            selectors: { selectLocalCurrency },
-        } = extra;
-
+    (action, { dispatch, next, getState }) => {
         next(action);
 
         if (
@@ -69,21 +59,6 @@ export const prepareTokenDefinitionsMiddleware = createMiddlewareWithExtraDeps(
                 });
             }
         }
-
-        if (getTokenDefinitionThunk.fulfilled.match(action)) {
-            dispatch(
-                updateFiatRatesThunk({
-                    ticker: {
-                        symbol: action.meta.arg.networkSymbol as NetworkSymbol,
-                        tokenAddress: action.meta.arg.contractAddress as TokenAddress,
-                    },
-                    localCurrency: selectLocalCurrency(getState()),
-                    rateType: 'current',
-                    lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
-                }),
-            );
-        }
-
         return action;
     },
 );
