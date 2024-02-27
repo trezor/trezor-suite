@@ -84,7 +84,7 @@ export const UnstakeEthForm = () => {
 
             <WarningsWrapper>
                 {errors[CRYPTO_INPUT] && (
-                    <StyledWarning variant="critical">
+                    <StyledWarning variant="destructive">
                         {errors[CRYPTO_INPUT]?.message}
                     </StyledWarning>
                 )}

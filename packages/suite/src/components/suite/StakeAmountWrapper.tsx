@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Tooltip, TOOLTIP_DELAY_LONG } from '@trezor/components';
+import { Tooltip, TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_NORMAL } from '@trezor/components';
 import { mediaQueries } from '@trezor/styles';
 import { Translation } from './Translation';
 import { goto } from 'src/actions/suite/routerActions';
@@ -16,7 +16,6 @@ const Container = styled.div`
     border-radius: 6px;
     transition: background 0.1s ease-in;
     cursor: pointer;
-
     ${mediaQueries.hover} {
         :hover {
             background: ${({ theme }) => theme.BG_GREY};
@@ -36,9 +35,9 @@ export const StakeAmountWrapper = ({ children }: StakeAmountWrapperProps) => {
         <Tooltip
             cursor="default"
             maxWidth={200}
-            delayShow={0}
-            delayHide={TOOLTIP_DELAY_LONG}
-            placement="top"
+            delayShow={TOOLTIP_DELAY_NORMAL}
+            delayHide={TOOLTIP_DELAY_NONE}
+            placement="bottom"
             interactive={false}
             hideOnClick={false}
             content={<Translation id="TR_STAKE_STAKED_AMOUNT" />}

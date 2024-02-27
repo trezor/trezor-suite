@@ -1,9 +1,8 @@
-import { UseFormReturn } from 'react-hook-form';
+import { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
 
-import { FormState as ReactHookFormState } from 'react-hook-form/dist/types/form';
-
-import { FeeLevel, Network } from '@trezor/connect';
+import { FeeLevel } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { Network } from '@suite-common/wallet-config';
 
 import { Output, PrecomposedLevels, RbfTransactionParams } from './transaction';
 import { FormOptions } from './sendForm';

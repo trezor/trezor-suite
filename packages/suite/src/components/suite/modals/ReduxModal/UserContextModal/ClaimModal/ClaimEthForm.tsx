@@ -90,7 +90,7 @@ export const ClaimEthForm = () => {
             />
 
             {errors[CRYPTO_INPUT] && (
-                <StyledWarning variant="critical">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
+                <StyledWarning variant="destructive">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
             )}
 
             <ClaimingPeriodWrapper>
