@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Modal, TextInput } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useSetAtom } from 'jotai';
 
@@ -9,25 +10,36 @@ import {
     PassphraseFormValues,
     formInputsMaxLength,
 } from '@suite-common/validators';
-import { Box, Button, VStack } from '@suite-native/atoms';
+import { Box, Button, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
+import {
+    createDeviceInstance,
+    selectDevice,
+    selectDeviceButtonRequestsCodes,
+} from '@suite-common/wallet-core';
+import TrezorConnect, { UI } from '@trezor/connect';
 
 import { isPassphraseModalVisibleAtom } from './isPassphraseModalVisibleAtom';
 
 const modalBackgroundOverlayStyle = prepareNativeStyle(utils => ({
     flex: 1,
+    justifyContent: 'center',
     backgroundColor: utils.transparentize(0.3, utils.colors.backgroundNeutralBold),
 }));
 
 const formStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderBottomLeftRadius: utils.borders.radii.large,
-    borderBottomRightRadius: utils.borders.radii.large,
+    borderRadius: utils.borders.radii.large,
+    margin: utils.spacings.medium,
 }));
 
 export const PassphraseFormModal = () => {
     const { translate } = useTranslate();
+    const dispatch = useDispatch();
+    const device = useSelector(selectDevice);
+    const buttonRequests = useSelector(selectDeviceButtonRequestsCodes);
+    const [shouldConfirmOnDevice, setShouldConfirmOnDevice] = useState(false);
 
     const passphraseInputRef = useRef<TextInput>(null);
 
@@ -48,14 +60,29 @@ export const PassphraseFormModal = () => {
         passphraseInputRef.current?.focus();
     }, [passphraseInputRef]);
 
-    const handleCreateHiddenWallet = handleSubmit(values => {
+    useEffect(() => {
+        buttonRequests.map(console.log);
+        if (buttonRequests.includes('ButtonRequest_ProtectCall')) {
+            console.log('enable passphrase');
+            setShouldConfirmOnDevice(true);
+        }
+    }, [buttonRequests]);
+
+    useEffect(() => {
+        TrezorConnect.on(UI.CLOSE_UI_WINDOW, () => console.log('should close the window now'));
+
+        return () => TrezorConnect.off(UI.INVALID_PIN, () => null);
+    }, []);
+
+    if (!device) return null;
+
+    const handleCreateHiddenWallet = handleSubmit(async values => {
         console.warn(values);
-        setIsPassphraseModalVisible(false);
-        // TODO create wallet
+        await dispatch(createDeviceInstance({ device }));
     });
 
     return (
-        <Modal transparent>
+        <Modal transparent animationType="fade">
             <Box style={applyStyle(modalBackgroundOverlayStyle)}>
                 <Form form={form}>
                     <VStack spacing="medium" padding="medium" style={applyStyle(formStyle)}>
@@ -68,6 +95,9 @@ export const PassphraseFormModal = () => {
                             autoCapitalize="none"
                             secureTextEntry
                         />
+                        {shouldConfirmOnDevice && (
+                            <Text textAlign={'center'}>Confirm on device</Text>
+                        )}
                         <VStack>
                             <Button
                                 accessibilityRole="button"
