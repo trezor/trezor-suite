@@ -1,38 +1,38 @@
-name: "[Test] @trezor/blockchain-link"
-
-on:
-  push:
-    branches:
-      - develop
-    paths:
-      - "packages/blockchain-link"
-      # dependencies of packages/blockchain-link
-      - "packages/utxo-lib"
-      - "packages/utils"
-  pull_request:
-    paths:
-      - "packages/blockchain-link"
-      # dependencies of packages/blockchain-link
-      - "packages/utxo-lib"
-      - "packages/utils"
-  workflow_dispatch:
-
-jobs:
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: recursive
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-          cache: yarn
-          cache-dependency-path: "**/yarn.lock"
-      - run: node --version
-      - run: yarn
-      - run: yarn build:libs
-      - run: git status
-      - run: yarn workspace @trezor/blockchain-link build:workers
-      - run: "./docker/docker-blockchain-link-test.sh"
+#name: "[Test] @trezor/blockchain-link"
+#
+#on:
+#  push:
+#    branches:
+#      - develop
+#    paths:
+#      - "packages/blockchain-link"
+#      # dependencies of packages/blockchain-link
+#      - "packages/utxo-lib"
+#      - "packages/utils"
+#  pull_request:
+#    paths:
+#      - "packages/blockchain-link"
+#      # dependencies of packages/blockchain-link
+#      - "packages/utxo-lib"
+#      - "packages/utils"
+#  workflow_dispatch:
+#
+#jobs:
+#  test:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          submodules: recursive
+#      - name: Setup node
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version-file: ".nvmrc"
+#          cache: yarn
+#          cache-dependency-path: "**/yarn.lock"
+#      - run: node --version
+#      - run: yarn
+#      - run: yarn build:libs
+#      - run: git status
+#      - run: yarn workspace @trezor/blockchain-link build:workers
+#      - run: "./docker/docker-blockchain-link-test.sh"

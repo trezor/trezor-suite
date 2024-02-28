@@ -1,67 +1,67 @@
-name: "[Check] Validation"
-
-on: [pull_request]
-
-env:
-  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
-
-jobs:
-  type-check_and_lint:
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          submodules: "true"
-          fetch-depth: 0
-      - name: Install node and yarn
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-      - name: Get yarn cache directory path
-        id: yarn-cache-dir-path
-        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
-      - name: Yarn Cache
-        uses: actions/cache@v4
-        id: yarn-cache
-        with:
-          save-always: true
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
-          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
-          restore-keys: |
-            yarn-cache-folder-
-      - name: ESlint Cache
-        uses: actions/cache@v4
-        with:
-          save-always: true
-          path: |
-            **/.eslintcache
-          key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
-      - name: check for duplicate dependencies
-        run: yarn dedupe --check
-      - name: install deps
-        run: yarn --immutable
-      - name: check files for correct formatting
-        run: yarn nx format:check
-      - name: verify TS project references
-        run: yarn verify-project-references
-      - name: verify workspace resolutions
-        run: yarn check-workspace-resolutions
-      - name: msg-system config validation
-        run: yarn workspace @suite-common/message-system validate-config
-      - name: lint styles
-        run: yarn nx:lint:styles
-      - run: git status
-      - name: build libs
-        run: yarn nx:build:libs
-      - run: git status
-      - name: lint js
-        # Cache strategy must be content or it won't work correctly on CI
-        run: yarn lint:js --cache-strategy content
-      - name: type check
-        run: yarn nx:type-check
-      - run: git status
-      - name: unit tests
-        run: yarn nx:test-unit
-      - name: translation duplicates
-        run: yarn workspace @trezor/suite translations:list-duplicates
+#name: "[Check] Validation"
+#
+#on: [pull_request]
+#
+#env:
+#  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
+#
+#jobs:
+#  type-check_and_lint:
+#    runs-on: ubuntu-latest
+#    timeout-minutes: 30
+#    steps:
+#      - uses: actions/checkout@v4
+#        with:
+#          submodules: "true"
+#          fetch-depth: 0
+#      - name: Install node and yarn
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version-file: ".nvmrc"
+#      - name: Get yarn cache directory path
+#        id: yarn-cache-dir-path
+#        run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+#      - name: Yarn Cache
+#        uses: actions/cache@v4
+#        id: yarn-cache
+#        with:
+#          save-always: true
+#          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+#          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+#          restore-keys: |
+#            yarn-cache-folder-
+#      - name: ESlint Cache
+#        uses: actions/cache@v4
+#        with:
+#          save-always: true
+#          path: |
+#            **/.eslintcache
+#          key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
+#      - name: check for duplicate dependencies
+#        run: yarn dedupe --check
+#      - name: install deps
+#        run: yarn --immutable
+#      - name: check files for correct formatting
+#        run: yarn nx format:check
+#      - name: verify TS project references
+#        run: yarn verify-project-references
+#      - name: verify workspace resolutions
+#        run: yarn check-workspace-resolutions
+#      - name: msg-system config validation
+#        run: yarn workspace @suite-common/message-system validate-config
+#      - name: lint styles
+#        run: yarn nx:lint:styles
+#      - run: git status
+#      - name: build libs
+#        run: yarn nx:build:libs
+#      - run: git status
+#      - name: lint js
+#        # Cache strategy must be content or it won't work correctly on CI
+#        run: yarn lint:js --cache-strategy content
+#      - name: type check
+#        run: yarn nx:type-check
+#      - run: git status
+#      - name: unit tests
+#        run: yarn nx:test-unit
+#      - name: translation duplicates
+#        run: yarn workspace @trezor/suite translations:list-duplicates

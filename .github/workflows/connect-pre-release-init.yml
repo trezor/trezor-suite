@@ -1,34 +1,34 @@
-name: "[Release] connect npm init"
-
-on:
-  workflow_dispatch:
-    inputs:
-      semver:
-        type: choice
-        description: semver
-        options:
-          - patch
-          - minor
-
-jobs:
-  pre-release:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          # Number of commits to fetch. 0 indicates all history for all branches and tags.
-          fetch-depth: 0
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-      - name: Run @trezor/connect create npm release branch
-        run: |
-          npm install -g yarn && yarn install && yarn build:libs
-          git config --global user.name "trezor-ci"
-          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
-          gh config set prompt disabled
-          node ./ci/scripts/connect-release-init-npm.js ${{ github.event.inputs.semver }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+#name: "[Release] connect npm init"
+#
+#on:
+#  workflow_dispatch:
+#    inputs:
+#      semver:
+#        type: choice
+#        description: semver
+#        options:
+#          - patch
+#          - minor
+#
+#jobs:
+#  pre-release:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#        with:
+#          # Number of commits to fetch. 0 indicates all history for all branches and tags.
+#          fetch-depth: 0
+#      - name: Setup node
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version-file: ".nvmrc"
+#      - name: Run @trezor/connect create npm release branch
+#        run: |
+#          npm install -g yarn && yarn install && yarn build:libs
+#          git config --global user.name "trezor-ci"
+#          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+#          gh config set prompt disabled
+#          node ./ci/scripts/connect-release-init-npm.js ${{ github.event.inputs.semver }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
