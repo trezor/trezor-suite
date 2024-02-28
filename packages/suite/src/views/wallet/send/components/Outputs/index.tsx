@@ -2,14 +2,13 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
 import { spacingsPx } from '@trezor/theme';
-import { Card, motionEasing } from '@trezor/components';
+import { Card, CoinLogo, motionEasing } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Address } from './components/Address';
 import { Amount } from './components/Amount';
 import { OpReturn } from './components/OpReturn';
 import { motionEasingStrings } from '@trezor/components/src/config/motion';
 import { useLayoutSize } from '../../../../../hooks/suite';
-import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { Translation } from 'src/components/suite';
 import { networks } from '@suite-common/wallet-config';
 
@@ -24,12 +23,11 @@ const Container = styled.div<{ $height: number }>`
     }
 `;
 
-const StyledCard = styled(Card)`
-    gap: ${spacingsPx.xs};
-`;
-
-const StyledEvmExplanationBox = styled(EvmExplanationBox)`
-    margin-bottom: ${spacingsPx.md};
+const StyledEvmExplanation = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: ${spacingsPx.sm};
 `;
 
 interface OutputsProps {
@@ -60,6 +58,8 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
         }
     }, [outputs]);
 
+    const isMatic = account.networkType === 'ethereum' && account.symbol === 'matic'; // TODO: POLYGON DEBUG
+
     return (
         <Container $height={height || 0}>
             <div ref={ref}>
@@ -78,41 +78,34 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                             ease: motionEasing.transition,
                         }}
                     >
-                        <StyledCard>
+                        <Card
+                            label={
+                                isMatic && (
+                                    <StyledEvmExplanation>
+                                        <CoinLogo symbol={account.symbol} size={16} />
+                                        <Translation
+                                            id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
+                                            values={{
+                                                network: networks[account.symbol].name,
+                                            }}
+                                        />
+                                    </StyledEvmExplanation>
+                                )
+                            }
+                        >
                             {output.type === 'opreturn' ? (
                                 <OpReturn outputId={index} />
                             ) : (
                                 <>
-                                    {account.networkType === 'ethereum' && (
-                                        <StyledEvmExplanationBox
-                                            symbol={account.symbol}
-                                            title={
-                                                <Translation
-                                                    id="TR_EVM_EXPLANATION_SEND_TITLE"
-                                                    values={{
-                                                        network: networks[account.symbol].name,
-                                                    }}
-                                                />
-                                            }
-                                        >
-                                            <Translation
-                                                id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
-                                                values={{
-                                                    network: networks[account.symbol].name,
-                                                }}
-                                            />
-                                        </StyledEvmExplanationBox>
-                                    )}
                                     <Address
                                         output={outputs[index]}
                                         outputId={index}
                                         outputsCount={outputs.length}
                                     />
-
                                     <Amount output={outputs[index]} outputId={index} />
                                 </>
                             )}
-                        </StyledCard>
+                        </Card>
                     </motion.div>
                 ))}
             </div>
