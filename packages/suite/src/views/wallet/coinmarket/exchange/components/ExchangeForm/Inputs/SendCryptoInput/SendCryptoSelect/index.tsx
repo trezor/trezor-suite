@@ -1,7 +1,7 @@
 import { Select, CoinLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
-import { getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
+import { NetworkSymbol, getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from 'src/types/wallet/coinmarketExchangeForm';
@@ -10,9 +10,11 @@ import {
     invityApiSymbolToSymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useSelector } from 'src/hooks/suite';
-import { selectTokenDefinitions } from '@suite-common/wallet-core';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectTokenDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 const Option = styled.div`
     display: flex;
@@ -30,18 +32,21 @@ const TokenLogo = styled.img`
 `;
 
 const SendCryptoSelect = () => {
-    const { control, setAmountLimits, account, setValue, exchangeInfo, composeRequest } =
+    const { control, setAmountLimits, account, setValue, getValues, exchangeInfo, composeRequest } =
         useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
+    const dispatch = useDispatch();
 
-    const { tokens } = account;
+    const { symbol, tokens } = account;
     const sendCryptoOptions = getSendCryptoOptions(
         account,
         exchangeInfo?.sellSymbols || new Set(),
         tokenDefinitions,
     );
 
+    const { outputs } = getValues();
+    const currency = outputs?.[0]?.currency;
     const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
 
     return (
@@ -51,25 +56,36 @@ const SendCryptoSelect = () => {
             defaultValue={sendCryptoOptions[0]}
             render={({ field: { onChange, value } }) => (
                 <Select
-                    onChange={(selected: any) => {
+                    onChange={async (selected: any) => {
                         setValue('setMaxOutputId', undefined);
                         onChange(selected);
                         setAmountLimits(undefined);
                         setValue(CRYPTO_INPUT, '');
                         setValue(FIAT_INPUT, '');
                         const token = selected.value;
+                        const invitySymbol = invityApiSymbolToSymbol(token).toLowerCase();
+                        const tokenData = tokens?.find(t => t.symbol === invitySymbol);
                         if (ethereumTypeNetworkSymbols.includes(token)) {
                             setValue(CRYPTO_TOKEN, null);
                             // set own account for non ERC20 transaction
                             setValue('outputs.0.address', account.descriptor);
                         } else {
                             // set the address of the token to the output
-                            const symbol = invityApiSymbolToSymbol(token).toLowerCase();
-                            const tokenData = tokens?.find(t => t.symbol === symbol);
                             setValue(CRYPTO_TOKEN, tokenData?.contract ?? null);
                             // set token address for ERC20 transaction to estimate the fees more precisely
                             setValue('outputs.0.address', tokenData?.contract ?? '');
                         }
+                        await dispatch(
+                            updateFiatRatesThunk({
+                                ticker: {
+                                    symbol: symbol as NetworkSymbol,
+                                    tokenAddress: tokenData?.contract as TokenAddress,
+                                },
+                                localCurrency: currency?.value as FiatCurrencyCode,
+                                rateType: 'current',
+                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                            }),
+                        );
                         composeRequest();
                     }}
                     formatOptionLabel={(option: any) => (

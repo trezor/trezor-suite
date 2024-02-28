@@ -6,15 +6,16 @@ import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
 import { Output } from 'src/types/wallet/sendForm';
-import { useSelector } from 'src/hooks/suite';
-import { selectTokenDefinitions } from '@suite-common/wallet-core';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectTokenDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import BigNumber from 'bignumber.js';
-import { TokenDefinitions } from '@suite-common/wallet-types';
+import { Timestamp, TokenAddress, TokenDefinitions } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { getShortFingerprint } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;
@@ -167,6 +168,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
     const localCurrency = useSelector(selectLocalCurrency);
     const tokensWithRates = enhanceTokensWithRates(account.tokens, localCurrency, account.symbol);
+    const dispatch = useDispatch();
 
     const sortedTokens = useMemo(() => {
         return tokensWithRates.sort(sortTokensWithRates);
@@ -199,6 +201,9 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
               }
             : undefined;
 
+    const values = getValues();
+    const fiatCurrency = values?.outputs?.[0]?.currency;
+
     return (
         <Controller
             control={control}
@@ -217,9 +222,20 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                     isClearable={false}
                     components={customComponents}
                     isClean
-                    onChange={(selected: Option['options'][0]) => {
+                    onChange={async (selected: Option['options'][0]) => {
                         // change selected value
                         onChange(selected.value);
+                        await dispatch(
+                            updateFiatRatesThunk({
+                                ticker: {
+                                    symbol: account.symbol as NetworkSymbol,
+                                    tokenAddress: selected.value as TokenAddress,
+                                },
+                                localCurrency: fiatCurrency?.value as FiatCurrencyCode,
+                                rateType: 'current',
+                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                            }),
+                        );
                         // clear errors in Amount input
                         clearErrors(amountInputName);
                         // remove Amount if isSetMaxActive or ETH data options are enabled
