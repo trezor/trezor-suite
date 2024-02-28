@@ -23,6 +23,12 @@ export const UI_REQUEST = {
     FIRMWARE_NOT_COMPATIBLE: 'ui-device_firmware_not_compatible',
     FIRMWARE_NOT_INSTALLED: 'ui-device_firmware_not_installed',
     FIRMWARE_PROGRESS: 'ui-firmware-progress',
+
+    /** connect is waiting for device to automatically disconnect */
+    FIRMWARE_DISCONNECT: 'ui-firmware_disconnect',
+    /** connect is waiting for device to be automatically reconnected */
+    FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
+
     DEVICE_NEEDS_BACKUP: 'ui-device_needs_backup',
 
     REQUEST_UI_WINDOW: 'ui-request_window',
@@ -255,6 +261,32 @@ export interface FirmwareProgress {
     };
 }
 
+/**
+ * Prompt user to disconnect device during firmware installation.
+ */
+export interface FirmwareDisconnect {
+    type: typeof UI_REQUEST.FIRMWARE_DISCONNECT;
+    payload: {
+        device: Device;
+        manual: boolean;
+    };
+}
+
+/**
+ * Prompt user to reconnect device during firmware installation.
+ */
+export interface FirmwareReconnect {
+    type: typeof UI_REQUEST.FIRMWARE_RECONNECT;
+    payload: {
+        device: Device;
+        /** older devices need manual action. default is false */
+        manual: boolean;
+        bootloader: boolean;
+        /** some flows might require confirmation on device screen */
+        confirmOnDevice: boolean;
+    };
+}
+
 export type UiEvent =
     | UiRequestWithoutPayload
     | UiRequestDeviceAction
@@ -269,6 +301,8 @@ export type UiEvent =
     | BundleProgress<any>
     | FirmwareProgress
     | FirmwareException
+    | FirmwareDisconnect
+    | FirmwareReconnect
     | UiRequestAddressValidation
     | UiRequestSetOperation;
 
