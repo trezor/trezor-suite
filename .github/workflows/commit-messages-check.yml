@@ -1,4 +1,4 @@
-name: "[Check]: Commit messagesss"
+name: "[Check]: Commit messagessss"
 
 on: [pull_request]
 
