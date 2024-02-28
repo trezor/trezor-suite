@@ -1,3 +1,23 @@
+# 2.1.26
+
+-   chore(suite): replace `selectCoinsLegacy` by fiat rates selectors (4e3ce7367)
+-   chore(suite): autofix newlines (c82455e74)
+-   chore(utils): remove build step requirement from @trezor/utils (#11176) (6cd3d3c81)
+-   chore(blockchain-link): remove unused error event (4c1b8df7d)
+-   refactor(blockchain-link): use `createDeferredManager` (037ecfe68)
+-   Fix: add missing keys that eslint was complaining about (#11167) (824c8b18b)
+-   chore(repo): ESLint refactor + speed up 70% (#11143) (44fa12a79)
+-   chore: update css-loader and remove it from resolutions (953de853e)
+-   chore: update various dependencies (no major update) (fecd89f6e)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: update prettier (00fe229e0)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+
 # 2.1.25
 
 -   feat(suite): Rename Polygon to Polygon PoS (15a7fd38dc)
