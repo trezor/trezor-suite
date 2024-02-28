@@ -24,8 +24,8 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
-        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "expo-constants": "15.4.5",
@@ -43,5 +43,8 @@
         "react-native": {
             "optional": true
         }
+    },
+    "devDependencies": {
+        "tsx": "^4.7.0"
     }
 }

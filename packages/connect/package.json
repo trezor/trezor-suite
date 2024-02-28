@@ -45,8 +45,8 @@
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
         "test:e2e:web": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts web",
         "test:e2e:node": "ts-node -O '{\"module\": \"commonjs\", \"moduleResolution\": \"node\"}' ./e2e/run.ts node",
-        "prepublishOnly": "yarn g:tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn g:tsx ../../scripts/prepublish.js"
+        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+        "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
         "@ethereumjs/common": "^4.2.0",
@@ -83,6 +83,7 @@
         "karma-sourcemap-loader": "^0.4.0",
         "karma-webpack": "^5.0.1",
         "ts-node": "^10.9.1",
+        "tsx": "^4.7.0",
         "webpack": "^5.90.1",
         "ws": "^8.16.0"
     },

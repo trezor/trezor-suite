@@ -9640,6 +9640,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
+    tsx: "npm:^4.7.0"
   languageName: unknown
   linkType: soft
 
@@ -9653,6 +9654,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     bignumber.js: "npm:^9.1.2"
+    tsx: "npm:^4.7.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -9678,6 +9680,7 @@ __metadata:
     ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
     tiny-worker: "npm:^2.3.0"
+    tsx: "npm:^4.7.0"
     webpack: "npm:^5.90.1"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
@@ -9770,6 +9773,7 @@ __metadata:
   dependencies:
     "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    tsx: "npm:^4.7.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -9957,6 +9961,7 @@ __metadata:
     html-webpack-plugin: "npm:^5.6.0"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.9"
+    tsx: "npm:^4.7.0"
     webpack: "npm:^5.90.1"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.10.0"
@@ -10031,6 +10036,7 @@ __metadata:
     karma-sourcemap-loader: "npm:^0.4.0"
     karma-webpack: "npm:^5.0.1"
     ts-node: "npm:^10.9.1"
+    tsx: "npm:^4.7.0"
     webpack: "npm:^5.90.1"
     ws: "npm:^8.16.0"
   peerDependencies:
@@ -10074,6 +10080,7 @@ __metadata:
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
     expo-constants: "npm:15.4.5"
+    tsx: "npm:^4.7.0"
     ua-parser-js: "npm:^1.0.37"
   peerDependencies:
     expo-localization: "*"
@@ -10110,6 +10117,7 @@ __metadata:
     long: "npm:^4.0.0"
     protobufjs: "npm:7.2.6"
     protobufjs-cli: "npm:^1.1.2"
+    tsx: "npm:^4.7.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -10118,6 +10126,8 @@ __metadata:
 "@trezor/protocol@workspace:*, @trezor/protocol@workspace:packages/protocol":
   version: 0.0.0-use.local
   resolution: "@trezor/protocol@workspace:packages/protocol"
+  dependencies:
+    tsx: "npm:^4.7.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -10164,6 +10174,7 @@ __metadata:
     "@sinclair/typebox-codegen": "npm:^0.8.13"
     ts-mixer: "npm:^6.0.3"
     ts-node: "npm:^10.9.2"
+    tsx: "npm:^4.7.0"
   languageName: unknown
   linkType: soft
 
@@ -10616,6 +10627,7 @@ __metadata:
     long: "npm:^4.0.0"
     protobufjs: "npm:7.2.6"
     ts-node: "npm:^10.9.1"
+    tsx: "npm:^4.7.0"
     usb: "npm:^2.11.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -10649,6 +10661,8 @@ __metadata:
 "@trezor/utils@workspace:*, @trezor/utils@workspace:^, @trezor/utils@workspace:packages/utils":
   version: 0.0.0-use.local
   resolution: "@trezor/utils@workspace:packages/utils"
+  dependencies:
+    tsx: "npm:^4.7.0"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -10680,6 +10694,7 @@ __metadata:
     minimaldata: "npm:^1.0.2"
     pushdata-bitcoin: "npm:^1.0.1"
     tiny-secp256k1: "npm:^1.1.6"
+    tsx: "npm:^4.7.0"
     typeforce: "npm:^1.18.0"
     varuint-bitcoin: "npm:^1.1.2"
     wif: "npm:^4.0.0"
@@ -33476,8 +33491,8 @@ __metadata:
   linkType: hard
 
 "tsx@npm:^4.7.0":
-  version: 4.7.0
-  resolution: "tsx@npm:4.7.0"
+  version: 4.7.1
+  resolution: "tsx@npm:4.7.1"
   dependencies:
     esbuild: "npm:~0.19.10"
     fsevents: "npm:~2.3.3"
@@ -33487,7 +33502,7 @@ __metadata:
       optional: true
   bin:
     tsx: dist/cli.mjs
-  checksum: 3e6ee0a0a8adb7b1cb58875f50b143b41df0132ade3a7cdda16a166ac473eee446197762ba6afb235ace4c6adae7e55f61a420ee55b17438717eea1e55e611c0
+  checksum: 3a462b595f31ae58b31f9c6e8c450577dc87660b1225012bd972b6b58d7d2f6c4034728763ebc53bb731acff68de8b0fa50586e4c1ec4c086226f1788ccf9b7d
   languageName: node
   linkType: hard
 
