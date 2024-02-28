@@ -1,3 +1,19 @@
+# 9.0.22
+
+-   fix(suite): allow for N screens to be shown on suite (not just hardcoded 2) (a0f1b3c4d)
+-   chore(suite): autofix newlines (c82455e74)
+-   chore(utils): remove build step requirement from @trezor/utils (#11176) (6cd3d3c81)
+-   chore(repo): ESLint refactor + speed up 70% (#11143) (44fa12a79)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: update prettier (00fe229e0)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+-   chore: updated deprecated jest syntax (d3f8043f0)
+
 # 9.0.21
 
 -   chore(suite): make better mapping for colors (481c82f56e)
