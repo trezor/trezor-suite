@@ -1,3 +1,13 @@
+# 1.0.15
+
+-   chore(repo): remove build:lib for some simple packages (#11276) (7febd10cf)
+-   chore(suite): autofix newlines (c82455e74)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+
 # 1.0.13
 
 -   fix(connect): point analytics to lib (e5ae31f62b)
