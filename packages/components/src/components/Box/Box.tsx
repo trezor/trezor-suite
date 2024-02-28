@@ -1,4 +1,4 @@
-import { ReactNode, HTMLAttributes } from 'react';
+import { ReactNode } from 'react';
 import styled, { DefaultTheme } from 'styled-components';
 import {
     CSSColor,
@@ -12,6 +12,7 @@ import {
 import { useElevation } from '../ElevationContext/ElevationContext';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 import { UIVariant } from '../../config/types';
+import { ComponentFrame, FrameProps } from '../common/ComponentFrame';
 
 type BoxVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive' | 'info'>;
 
@@ -31,10 +32,10 @@ const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
     return theme[colorMap[variant]];
 };
 
-export interface BoxProps extends HTMLAttributes<HTMLDivElement> {
+export type BoxProps = FrameProps & {
     variant?: BoxVariant;
     children: ReactNode;
-}
+};
 
 const Wrapper = styled.div<{ variant?: BoxVariant; elevation: Elevation }>`
     display: flex;
@@ -50,12 +51,14 @@ const Wrapper = styled.div<{ variant?: BoxVariant; elevation: Elevation }>`
             : `border-left: 6px solid ${mapVariantToBackgroundColor({ variant, theme })};`}
 `;
 
-export const Box = ({ variant, children, ...rest }: BoxProps) => {
+export const Box = ({ variant, children, margin, ...rest }: BoxProps) => {
     const { elevation } = useElevation();
 
     return (
-        <Wrapper variant={variant} elevation={elevation} {...rest}>
-            <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
-        </Wrapper>
+        <ComponentFrame margin={margin}>
+            <Wrapper variant={variant} elevation={elevation} {...rest}>
+                <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
+            </Wrapper>
+        </ComponentFrame>
     );
 };
