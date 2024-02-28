@@ -6,10 +6,6 @@ import { useSetAtom } from 'jotai';
 import { useGraphForAllDeviceAccounts, Graph, TimeSwitch } from '@suite-native/graph';
 import { selectFiatCurrency } from '@suite-native/module-settings';
 import { VStack } from '@suite-native/atoms';
-import {
-    selectIsDeviceDiscoveryActive,
-    selectIsDeviceDiscoveryEmpty,
-} from '@suite-common/wallet-core';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 
 import {
@@ -24,8 +20,6 @@ export type PortfolioGraphRef = {
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const fiatCurrency = useSelector(selectFiatCurrency);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
-    const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
 
     const loadingTakesLongerThanExpected = useIsDiscoveryDurationTooLong();
 
@@ -55,8 +49,6 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
         }),
         [refetch],
     );
-
-    if (isDeviceDiscoveryEmpty && isDiscoveryActive) return null;
 
     return (
         <VStack spacing="large">
