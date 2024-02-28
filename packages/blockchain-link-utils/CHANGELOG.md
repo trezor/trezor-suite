@@ -1,3 +1,16 @@
+# 1.0.15
+
+-   fix(suite): `fromWei` and `toWei`check errors (#11266) (99bb3324d)
+-   chore(suite): autofix newlines (c82455e74)
+-   chore: update various dependencies (no major update) (fecd89f6e)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+
 # 1.0.14
 
 -   Revert feat(blockchain-link); get sol token metadata from coingecko (61cf93cd62)
