@@ -1,3 +1,9 @@
+# 1.0.13
+
+-   chore(repo): remove build:lib for some simple packages (#11276) (7febd10cf)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+
 # 1.0.10
 
 -   chore(connect): use `tslib` as dependency in all public libs (606ecc63b)
