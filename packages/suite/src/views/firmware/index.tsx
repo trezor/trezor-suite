@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -13,9 +13,6 @@ import {
     FirmwareInitial,
     FirmwareInstallation,
 } from 'src/components/firmware';
-import { DeviceAcquire } from 'src/views/suite/device-acquire';
-import { DeviceUnknown } from 'src/views/suite/device-unknown';
-import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
 import { Translation, Modal } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
@@ -45,8 +42,17 @@ type FirmwareProps = {
 };
 
 export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
-    const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
-        useFirmware();
+    console.log('src/views/firmware/index.tsx: Firmware');
+
+    const {
+        resetReducer,
+        status,
+        setStatus,
+        error,
+        firmwareUpdate,
+        firmwareHashInvalid,
+        getTargetFirmwareType,
+    } = useFirmware();
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
@@ -63,19 +69,18 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
         resetReducer();
     };
 
-    const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
-
     // some of the application states can be reused here.
     // some don't make sense handling here as they are handled somewhere up the tree
     // some must be handled in lower layers because of specifics of fw update process (eg. device-disconnected)
     const getSuiteApplicationState = () => {
-        if (!device) return;
+        if (!device) return null;
+        return null;
         // device features cannot be read, device is probably used in another window
-        if (device.type === 'unacquired') return DeviceAcquire;
+        // if (device.type === 'unacquired') return DeviceAcquire;
         // Webusb unreadable device (HID)
-        if (device.type === 'unreadable') return DeviceUnreadable;
+        // if (device.type === 'unreadable') return DeviceUnreadable;
         // device features unknown (this shouldn't happened tho)
-        if (!device.features) return DeviceUnknown;
+        // if (!device.features) return DeviceUnknown;
     };
 
     const getComponent = () => {
@@ -110,8 +115,6 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
                 return (
                     <FirmwareInitial
-                        cachedDevice={cachedDevice}
-                        setCachedDevice={setCachedDevice}
                         standaloneFwUpdate
                         shouldSwitchFirmwareType={shouldSwitchFirmwareType}
                         willBeWiped={deviceWillBeWiped}
@@ -122,7 +125,12 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             case 'check-seed': // triggered from FirmwareInitial
                 return (
                     <CheckSeedStep
-                        onSuccess={() => setStatus('waiting-for-bootloader')}
+                        onSuccess={() => {
+                            setStatus('started');
+                            firmwareUpdate({
+                                firmwareType: getTargetFirmwareType(!!shouldSwitchFirmwareType),
+                            });
+                        }}
                         onClose={onClose}
                         willBeWiped={deviceWillBeWiped}
                     />
@@ -138,7 +146,6 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             case 'done':
                 return (
                     <FirmwareInstallation
-                        cachedDevice={cachedDevice}
                         standaloneFwUpdate
                         onSuccess={onClose}
                         onClose={onClose}

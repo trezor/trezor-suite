@@ -13,7 +13,6 @@ import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
 import { closeModalApp } from 'src/actions/suite/routerActions';
 import type { TrezorDevice } from 'src/types/suite';
 import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/onboarding';
-import { useCachedDevice } from 'src/hooks/firmware/useCachedDevice';
 import {
     FirmwareInstallation,
     FirmwareCloseButton,
@@ -39,9 +38,8 @@ export const FirmwareCustom = () => {
 
     const dispatch = useDispatch();
 
-    const { setStatus, firmwareCustom, resetReducer, status, error } = useFirmware();
+    const { setStatus, firmwareUpdate, resetReducer, status, error } = useFirmware();
     const { device: liveDevice } = useDevice();
-    const cachedDevice = useCachedDevice(liveDevice);
     const liveDeviceModelInternal = liveDevice?.features?.internal_model;
 
     const onFirmwareSelected = useCallback(
@@ -49,12 +47,12 @@ export const FirmwareCustom = () => {
             setFirmwareBinary(fw);
             // if there is no firmware installed, check-seed and waiting-for-bootloader steps could be skipped
             if (liveDevice?.firmware === 'none') {
-                firmwareCustom(fw);
+                firmwareUpdate({ binary: fw });
             } else {
                 setStatus('check-seed');
             }
         },
-        [liveDevice?.firmware, setStatus, firmwareCustom],
+        [liveDevice?.firmware, setStatus, firmwareUpdate],
     );
 
     const onSeedChecked = useCallback(() => {
@@ -63,9 +61,9 @@ export const FirmwareCustom = () => {
 
     const onInstall = useCallback(() => {
         if (firmwareBinary) {
-            firmwareCustom(firmwareBinary);
+            firmwareUpdate({ binary: firmwareBinary });
         }
-    }, [firmwareBinary, firmwareCustom]);
+    }, [firmwareBinary, firmwareUpdate]);
 
     const onClose = useCallback(() => {
         if (liveDevice?.status !== 'available') {
@@ -114,11 +112,11 @@ export const FirmwareCustom = () => {
                 case 'check-seed':
                     return <CheckSeedStep onSuccess={onSeedChecked} />;
                 case 'waiting-for-bootloader':
-                    return shouldDisplayConnectPrompt(cachedDevice) ? (
-                        <ConnectDevicePromptManager device={cachedDevice} />
+                    return shouldDisplayConnectPrompt(liveDevice) ? (
+                        <ConnectDevicePromptManager device={liveDevice} />
                     ) : (
                         <ReconnectDevicePrompt
-                            expectedDevice={cachedDevice}
+                            expectedDevice={liveDevice}
                             requestedMode="bootloader"
                             onSuccess={onInstall}
                             onClose={onClose}
@@ -135,7 +133,7 @@ export const FirmwareCustom = () => {
                 case 'validation':
                     return (
                         <FirmwareInstallation
-                            cachedDevice={cachedDevice}
+                            cachedDevice={liveDevice}
                             standaloneFwUpdate
                             customFirmware
                             onSuccess={onClose}
@@ -147,16 +145,7 @@ export const FirmwareCustom = () => {
                     throw new Error(`state "${status}" is not handled here`);
             }
         },
-        [
-            cachedDevice,
-            error,
-            liveDevice,
-            status,
-            onClose,
-            onFirmwareSelected,
-            onInstall,
-            onSeedChecked,
-        ],
+        [error, liveDevice, status, onClose, onFirmwareSelected, onInstall, onSeedChecked],
     );
 
     if (liveDevice?.type === 'unacquired') return <DeviceAcquire />;

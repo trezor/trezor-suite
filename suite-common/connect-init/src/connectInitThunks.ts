@@ -106,6 +106,7 @@ export const connectInitThunk = createThunk(
                 ...connectInitSettings,
                 pendingTransportEvent: selectIsPendingTransportEvent(getState()),
                 transports: selectDebugSettings(getState()).transports,
+                debug: true,
             });
         } catch (error) {
             let formattedError: string;

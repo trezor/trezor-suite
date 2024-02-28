@@ -1,18 +1,13 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { AcquiredDevice, FirmwareStatus } from '@suite-common/suite-types';
-import { Device, FirmwareType } from '@trezor/connect';
+import { FirmwareStatus } from '@suite-common/suite-types';
+import { FirmwareType } from '@trezor/connect';
 
 export const firmwareActionsPrefix = '@common/wallet-core/firmware';
 
 const setStatus = createAction(
     `${firmwareActionsPrefix}/set-update-status`,
     (payload: FirmwareStatus | 'error') => ({ payload }),
-);
-
-const setHash = createAction(
-    `${firmwareActionsPrefix}/set-hash`,
-    (payload: { hash: string; challenge: string }) => ({ payload }),
 );
 
 const setHashInvalid = createAction(
@@ -26,28 +21,13 @@ const setError = createAction(`${firmwareActionsPrefix}/set-error`, (payload?: s
     payload,
 }));
 
-const setTargetRelease = createAction(
-    `${firmwareActionsPrefix}/set-target-release`,
-    (payload: AcquiredDevice['firmwareRelease']) => ({ payload }),
-);
-
 const toggleHasSeed = createAction(`${firmwareActionsPrefix}/toggle-has-seed`);
-
-const setIntermediaryInstalled = createAction(
-    `${firmwareActionsPrefix}/set-intermediary-installed`,
-    (payload: boolean) => ({ payload }),
-);
 
 const setTargetType = createAction(
     `${firmwareActionsPrefix}/set-target-type`,
     (payload: FirmwareType) => ({
         payload,
     }),
-);
-
-const rememberPreviousDevice = createAction(
-    `${firmwareActionsPrefix}/remember-previous-device`,
-    (payload: Device) => ({ payload }),
 );
 
 const setIsCustomFirmware = createAction(
@@ -68,14 +48,10 @@ const toggleUseDevkit = createAction(
 
 export const firmwareActions = {
     setStatus,
-    setHash,
     setHashInvalid,
     setError,
-    setTargetRelease,
     toggleHasSeed,
-    setIntermediaryInstalled,
     setTargetType,
-    rememberPreviousDevice,
     setIsCustomFirmware,
     resetReducer,
     toggleUseDevkit,

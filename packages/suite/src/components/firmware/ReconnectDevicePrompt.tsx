@@ -15,12 +15,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';
-import {
-    useRebootRequest,
-    RebootRequestedMode,
-    RebootPhase,
-    RebootMethod,
-} from 'src/hooks/firmware/useRebootRequest';
+
 import type { TrezorDevice } from 'src/types/suite';
 import { AbortButton } from 'src/components/suite/modals/AbortButton';
 
@@ -128,9 +123,9 @@ const HeadingText = ({
     phase,
     method,
 }: {
-    requestedMode: RebootRequestedMode;
-    phase: RebootPhase;
-    method: RebootMethod;
+    requestedMode: string;
+    phase: string;
+    method: string;
 }) => {
     if (requestedMode === 'bootloader') {
         if (phase === 'done') {
@@ -155,7 +150,7 @@ const ReconnectLabel = ({
     requestedMode,
     device,
 }: {
-    requestedMode: RebootRequestedMode;
+    requestedMode: string;
     device?: TrezorDevice;
 }) => {
     const deviceFwVersion = getFirmwareVersion(device);
@@ -205,8 +200,8 @@ const RebootDeviceGraphics = ({
     requestedMode,
 }: {
     device?: TrezorDevice;
-    method: RebootMethod;
-    requestedMode: RebootRequestedMode;
+    method: string;
+    requestedMode: string;
 }) => {
     if (method === 'automatic') {
         return device ? <StyledConfirmImage device={device} /> : null;
@@ -240,7 +235,7 @@ const RebootDeviceGraphics = ({
 
 interface ReconnectDevicePromptProps {
     expectedDevice?: TrezorDevice;
-    requestedMode: RebootRequestedMode;
+    requestedMode: string;
     onSuccess?: () => void;
     onClose?: () => void;
 }
@@ -253,7 +248,11 @@ export const ReconnectDevicePrompt = ({
 }: ReconnectDevicePromptProps) => {
     const { device } = useDevice();
     const { isWebUSB } = useFirmware();
-    const { rebootPhase, rebootMethod } = useRebootRequest(device, requestedMode);
+
+    // todo!!!
+    // this should only consume UI.FIRMWARE_DISCONNECT and UI.FIRMWARE_RECONNECT connct events
+    const rebootMethod = 'automatic' as const;
+    const rebootPhase: string = 'done';
 
     const isRebootAutomatic = rebootMethod === 'automatic';
     const isAnimationVisible = requestedMode === 'bootloader' && rebootPhase !== 'done';

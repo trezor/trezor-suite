@@ -61,7 +61,11 @@ export const FirmwareStep = () => {
                 image="FIRMWARE"
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                innerActions={<FirmwareRetryButton onClick={() => firmwareUpdate(targetType)} />}
+                innerActions={
+                    <FirmwareRetryButton
+                        onClick={() => firmwareUpdate({ firmwareType: targetType })}
+                    />
+                }
                 outerActions={<OnboardingButtonBack onClick={() => resetReducer()} />}
             />
         );

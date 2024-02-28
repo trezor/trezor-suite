@@ -29,8 +29,7 @@ export const FirmwareInstallation = ({
     onClose,
 }: FirmwareInstallationProps) => {
     const { device } = useDevice();
-    const { status, installingProgress, resetReducer, isWebUSB, subsequentInstalling } =
-        useFirmware();
+    const { status, installingProgress, resetReducer, isWebUSB } = useFirmware();
     const cachedDeviceModelInternal = cachedDevice?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
@@ -115,7 +114,6 @@ export const FirmwareInstallation = ({
                         // Also in 'started' if the device has no fw (freshly unpacked device). In this case device won't ask for confirmation
                         // and starts installation right away. However it doesn't provide an installation progress till way later (we set status to 'installing' only after receiving UI.FIRMWARE_PROGRESS in firmware reducer)
                         <FirmwareProgressBar
-                            key={subsequentInstalling ? 1 : 0} // will reset the progress after an installation of intermediary fw (subsequent fw update will follow)
                             label={statusText}
                             total={100}
                             current={installingProgress || 0}

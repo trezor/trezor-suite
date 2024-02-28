@@ -215,6 +215,5 @@ describe('firmware middleware', () => {
 
         const result = store.getActions();
         result.shift();
-        expect(result[0].type).toEqual(firmwareActions.setTargetRelease.type);
     });
 });

@@ -93,8 +93,6 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setIntermediaryInstalled.type, payload: true },
-                { type: firmwareActions.setHash.type, payload: firmwareUpdateResponsePayload },
                 { type: firmwareActions.setStatus.type, payload: 'unplug' },
             ],
             state: { firmware: { status: 'unplug', error: undefined } },
@@ -268,14 +266,6 @@ export const actions = [
         initialState: {},
         result: {
             actions: [{ type: firmwareActions.toggleHasSeed.type }],
-        },
-    },
-    {
-        description: 'setTargetRelease',
-        action: () => firmwareActions.setTargetRelease(getSuiteDevice().firmwareRelease),
-        initialState: {},
-        result: {
-            actions: [{ type: firmwareActions.setTargetRelease.type }],
         },
     },
     {
