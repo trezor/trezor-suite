@@ -18,7 +18,7 @@ import {
     invityApiSymbolToSymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { useTranslation } from 'src/hooks/suite';
+import { useSelector, useTranslation } from 'src/hooks/suite';
 import { useFormatters } from '@suite-common/formatters';
 import {
     validateDecimals,
@@ -27,6 +27,7 @@ import {
     validateMin,
 } from 'src/utils/suite/validation';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { selectTokenDefinitions } from '@suite-common/wallet-core';
 
 const Option = styled.div`
     display: flex;
@@ -55,9 +56,9 @@ const CryptoInput = () => {
         setValue,
         setAmountLimits,
         composeRequest,
-        tokensFiatValue,
     } = useCoinmarketSellFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
 
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -134,7 +135,7 @@ const CryptoInput = () => {
                             options={getSendCryptoOptions(
                                 account,
                                 sellInfo?.supportedCryptoCurrencies || new Set(),
-                                tokensFiatValue,
+                                tokenDefinitions,
                             )}
                             isClean
                             isDisabled={account.networkType !== 'ethereum'}

@@ -8,6 +8,7 @@ import {
     networkToCryptoSymbol,
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { TokenDefinitions } from '@suite-common/wallet-types';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -46,7 +47,7 @@ export const symbolToInvityApiSymbol = (symbol?: string) => {
 export const getSendCryptoOptions = (
     account: Account,
     supportedSymbols: Set<CryptoSymbol>,
-    tokensFiatValue?: Record<string, number>,
+    tokenDefinitions?: TokenDefinitions,
 ) => {
     const cryptoSymbol = networkToCryptoSymbol(account.symbol);
     if (!cryptoSymbol) {
@@ -62,7 +63,7 @@ export const getSendCryptoOptions = (
 
     if (account.tokens) {
         account.tokens.forEach(token => {
-            if (!token.symbol) {
+            if (!token.symbol || token.balance === '0') {
                 return;
             }
 
@@ -75,9 +76,9 @@ export const getSendCryptoOptions = (
                 return;
             }
 
-            // exclude zero value tokens
-            const isZeroValueToken = tokensFiatValue && tokensFiatValue[token.contract] === 0;
-            if (isZeroValueToken) {
+            // exclude unknown tokens
+            const isTokenKnown = !tokenDefinitions || tokenDefinitions[token.contract].isTokenKnown;
+            if (!isTokenKnown) {
                 return;
             }
 
@@ -91,32 +92,6 @@ export const getSendCryptoOptions = (
     }
 
     return options;
-};
-
-export const getTokensFiatValue = async (account: Account, supportedCoins: Set<CryptoSymbol>) => {
-    const tokensFiatValue: Record<string, number> = {};
-
-    await Promise.all(
-        getSendCryptoOptions(account, supportedCoins || new Set()).map(option =>
-            (async () => {
-                if (!option.token?.contract) {
-                    return;
-                }
-
-                const rates = await TrezorConnect.blockchainGetCurrentFiatRates({
-                    coin: 'eth',
-                    currencies: ['usd'],
-                    token: option.token?.contract,
-                });
-
-                if (rates.success && rates.payload.rates.usd) {
-                    tokensFiatValue[option.token.contract] = rates.payload.rates.usd;
-                }
-            })(),
-        ),
-    );
-
-    return tokensFiatValue;
 };
 
 export const getUnusedAddressFromAccount = (account: Account) => {

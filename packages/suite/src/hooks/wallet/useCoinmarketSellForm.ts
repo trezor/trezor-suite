@@ -37,7 +37,6 @@ import {
 } from 'src/types/wallet/coinmarketSellForm';
 import {
     getComposeAddressPlaceholder,
-    getTokensFiatValue,
     mapTestnetSymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/sellUtils';
@@ -71,13 +70,11 @@ const useSellState = (
     const coinFees = fees[account.symbol];
     const levels = getFeeLevels(account.networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
-    const tokensFiatValue: Awaited<ReturnType<typeof getTokensFiatValue>> = {};
 
     return {
         account,
         network,
         feeInfo,
-        tokensFiatValue,
         formValues: defaultFormValues,
     };
 };
@@ -138,11 +135,6 @@ export const useCoinmarketSellForm = ({
             );
             if (initState.formValues && address) {
                 initState.formValues.outputs[0].address = address;
-
-                initState.tokensFiatValue = await getTokensFiatValue(
-                    account,
-                    sellInfo?.supportedCryptoCurrencies || new Set(),
-                );
 
                 setState(initState);
             }
@@ -411,7 +403,6 @@ export const useCoinmarketSellForm = ({
         handleClearFormButtonClick,
         formState,
         isDraft,
-        tokensFiatValue: state?.tokensFiatValue,
     };
 };
 

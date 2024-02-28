@@ -10,6 +10,8 @@ import {
     invityApiSymbolToSymbol,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useSelector } from 'src/hooks/suite';
+import { selectTokenDefinitions } from '@suite-common/wallet-core';
 
 const Option = styled.div`
     display: flex;
@@ -27,22 +29,16 @@ const TokenLogo = styled.img`
 `;
 
 const SendCryptoSelect = () => {
-    const {
-        control,
-        setAmountLimits,
-        account,
-        setValue,
-        exchangeInfo,
-        composeRequest,
-        tokensFiatValue,
-    } = useCoinmarketExchangeFormContext();
+    const { control, setAmountLimits, account, setValue, exchangeInfo, composeRequest } =
+        useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
+    const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
 
     const { tokens } = account;
     const sendCryptoOptions = getSendCryptoOptions(
         account,
         exchangeInfo?.sellSymbols || new Set(),
-        tokensFiatValue,
+        tokenDefinitions,
     );
 
     const ethereumTypeNetworkSymbols = getEthereumTypeNetworkSymbols();
