@@ -1,3 +1,15 @@
+# 1.0.6
+
+-   chore(repo): remove build:lib for some simple packages (#11276) (7febd10cf)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+-   chore(repo): config cleanups and improvements (TS, Nx...) (#11096) (acf9a7f19)
+
 # 1.0.4
 
 -   chore: remove `bytebuffer` dependency (9b2f9def0)
