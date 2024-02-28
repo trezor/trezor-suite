@@ -1,3 +1,17 @@
+# 2.0.7
+
+-   chore(suite): autofix newlines (c82455e74)
+-   chore(repo): ESLint refactor + speed up 70% (#11143) (44fa12a79)
+-   chore: update various dependencies (no major update) (fecd89f6e)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: update prettier (00fe229e0)
+-   chore: use global jest (a7e68797d)
+-   chore: upgrade jest to 29.7.0 (3c656dc0b)
+-   chore: upgrade jest (004938e24)
+-   chore: update root dependencies (fac6d99ec)
+
 # 2.0.4
 
 -   chore(utxo-lib): replace global.d.ts with global.ts (57b9b4fee)
