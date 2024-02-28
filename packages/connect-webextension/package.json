@@ -34,7 +34,8 @@
         "build:content-script": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/content-script.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "build": "yarn g:rimraf build && yarn build:content-script &&  yarn build:webextension && yarn build:inline && node ./webpack/inline-content-script.js"
+        "build": "yarn g:rimraf build && yarn build:content-script &&  yarn build:webextension && yarn build:inline && node ./webpack/inline-content-script.js",
+        "prepublish": "yarn build"
     },
     "dependencies": {
         "@trezor/connect": "workspace:*",
