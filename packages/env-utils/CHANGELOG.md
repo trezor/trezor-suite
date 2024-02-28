@@ -1,3 +1,13 @@
+# 1.0.14
+
+-   chore(repo): remove build:lib for some simple packages (#11276) (7febd10cf)
+-   chore(suite): autofix newlines (c82455e74)
+-   feat(suite-native): expo eas (#10898) (02009f17c)
+-   chore: use global tsx (c21d81f66)
+-   chore: update typescript and use global tsc (84bc9b8bd)
+-   chore: use global rimraf (5a6759eff)
+-   chore: update root dependencies (fac6d99ec)
+
 # 1.0.12
 
 -   chore: unify isCodesignBuild condition (fb80938756)
