@@ -28,7 +28,7 @@ const FiatSelect = () => {
                 <Select
                     onChange={async (selected: any) => {
                         onChange(selected);
-                        await dispatch(
+                        const updateFiatRatesResult = await dispatch(
                             updateFiatRatesThunk({
                                 ticker: {
                                     symbol: account.symbol as NetworkSymbol,
@@ -39,7 +39,11 @@ const FiatSelect = () => {
                                 lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
                             }),
                         );
-                        updateFiatCurrency(selected);
+                        if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
+                            const rate = updateFiatRatesResult.payload as number;
+
+                            updateFiatCurrency(selected, rate);
+                        }
                         setAmountLimits(undefined);
                     }}
                     data-test="@coinmarket/exchange/fiat-select"

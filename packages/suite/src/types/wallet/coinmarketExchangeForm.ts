@@ -36,7 +36,7 @@ export interface ExchangeFormContextValues extends UseFormReturn<ExchangeFormSta
     symbolsInfo?: CryptoSymbolInfo[];
     defaultCurrency: Option;
     composeRequest: SendContextValues['composeTransaction'];
-    updateFiatCurrency: (selectedCurrency: { value: string; label: string }) => void;
+    updateFiatCurrency: (selectedCurrency: { value: string; label: string }, rate: number) => void;
     updateSendCryptoValue: (fiatValue: string, decimals: number) => void;
     amountLimits?: AmountLimits;
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
