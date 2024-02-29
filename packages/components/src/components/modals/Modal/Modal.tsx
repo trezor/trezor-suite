@@ -124,19 +124,20 @@ const HeaderComponentsContainer = styled.div`
     }
 `;
 
-const Body = styled.div<{ isWithoutTopPadding: boolean }>`
+const ScrollContainer = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
     height: 100%;
-    margin-bottom: ${spacingsPx.xl};
-    padding: ${spacingsPx.xl} ${spacingsPx.md} 0;
-    padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
     overflow-y: auto;
 
     ::-webkit-scrollbar {
         display: none;
     }
+`;
+const Body = styled.div<{ isWithoutTopPadding: boolean }>`
+    padding: ${spacingsPx.xl} ${spacingsPx.md};
+    padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
 `;
 
 const Description = styled.div`
@@ -307,11 +308,12 @@ const Modal = ({
                     </Header>
                 )}
 
-                <Body isWithoutTopPadding={!heading && !!isCancelable}>
-                    {description && <Description>{description}</Description>}
-                    <Content id="modal-content">{children}</Content>
-                </Body>
-
+                <ScrollContainer>
+                    <Body isWithoutTopPadding={!heading && !!isCancelable}>
+                        {description && <Description>{description}</Description>}
+                        <Content id="modal-content">{children}</Content>
+                    </Body>
+                </ScrollContainer>
                 {(bottomBarComponents || areStepsShown) && (
                     <BottomBar>
                         {areStepsShown && (
