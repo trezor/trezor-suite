@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
-import { borders, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
+import { borders, palette, spacings, spacingsPx, typography, zIndices } from '@trezor/theme';
 
 import { Icon, IconType } from '../assets/Icon/Icon';
 
@@ -13,7 +13,7 @@ export const TOOLTIP_DELAY_SHORT = 200;
 export const TOOLTIP_DELAY_NORMAL = 500;
 export const TOOLTIP_DELAY_LONG = 1000;
 
-type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
+export type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 
 const getContainerPadding = (isLarge: boolean, isWithHeader: boolean) => {
     if (isLarge) {
@@ -36,11 +36,11 @@ const TooltipContainer = styled(motion.div)<{
     $isLarge: boolean;
     $isWithHeader: boolean;
 }>`
-    background: ${({ theme }) => theme.backgroundNeutralBold};
-    color: ${({ theme }) => theme.textOnPrimary};
+    background: ${palette.darkGray300};
+    color: ${palette.lightWhiteAlpha1000};
     border-radius: ${borders.radii.sm};
     text-align: left;
-    box-shadow: ${({ theme }) => theme.boxShadowElevated};
+    border: solid 1.5px ${palette.darkGray100};
     max-width: ${props => props.$maxWidth}px;
     ${typography.hint}
 

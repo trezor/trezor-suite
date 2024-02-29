@@ -5,6 +5,7 @@ export * from './colors';
 export * from './elevation';
 export * from './fontFamilies';
 export * from './fontWeights';
+export * from './palette';
 export * from './prepareTheme';
 export * from './sizes';
 export * from './spacings';
