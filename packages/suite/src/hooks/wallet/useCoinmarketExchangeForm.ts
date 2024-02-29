@@ -52,6 +52,7 @@ import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolU
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TokenAddress } from '@suite-common/wallet-types';
+import BigNumber from 'bignumber.js';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -247,14 +248,22 @@ export const useCoinmarketExchangeForm = ({
         [shouldSendInSats, fiatRate, getValues, network.decimals, setValue],
     );
 
-    const updateFiatCurrency = (currency: { label: string; value: string }) => {
-        if (!fiatRate?.rate || !currency) return;
+    const updateFiatCurrency = (currency: { label: string; value: string }, rate: number) => {
+        if (!rate || !currency) return;
         const amount = getValues(CRYPTO_INPUT) as string;
-        const cryptoAmount =
-            amount && shouldSendInSats ? formatAmount(amount, network.decimals) : amount;
-        const fiatValue = toFiatCurrency(cryptoAmount, currency.value, fiatRate, 2, false);
-        if (fiatValue) {
-            setValue(FIAT_INPUT, fiatValue, { shouldValidate: true });
+        const formattedAmount = new BigNumber(
+            shouldSendInSats ? formatAmount(amount, network.decimals) : amount,
+        );
+        if (
+            formattedAmount &&
+            !formattedAmount.isNaN() &&
+            formattedAmount.gt(0) // formatAmount() returns '-1' on error
+        ) {
+            const fiatValueBigNumber = formattedAmount.multipliedBy(rate);
+
+            setValue(FIAT_INPUT, fiatValueBigNumber.toFixed(2), {
+                shouldValidate: true,
+            });
         }
     };
 
