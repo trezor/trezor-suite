@@ -73,7 +73,7 @@ const packModule = (moduleName, modulePath, outputDirectory) => {
 
         // Run npm pack
         const fileName = `${moduleName}.tgz`;
-        const result = execSync(`yarn pack -o ${outputDirectory}/${fileName}`, {
+        execSync(`yarn pack -o ${outputDirectory}/${fileName}`, {
             encoding: 'utf8',
         });
 

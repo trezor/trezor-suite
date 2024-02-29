@@ -7,7 +7,7 @@ const child_process = require('child_process');
 
 const readFile = util.promisify(fs.readFile);
 
-const { getLocalAndRemoteChecksums } = require('./checkNpmAndLocal');
+const { getLocalAndRemoteChecksums } = require('./check-npm-and-local');
 
 const rootPath = path.join(__dirname, '..', '..');
 const packagesPath = path.join(rootPath, 'packages');
