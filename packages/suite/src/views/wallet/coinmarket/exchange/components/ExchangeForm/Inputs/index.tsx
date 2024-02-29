@@ -159,8 +159,9 @@ const Inputs = () => {
                         <FormattedCryptoAmount value={balance} symbol={symbol} />
                         <StyledFiatValue
                             amount={balance}
-                            symbol={symbol}
+                            symbol={account.symbol}
                             showApproximationIndicator
+                            tokenAddress={tokenData?.contract}
                         />
                     </Balance>
                 </Left>
