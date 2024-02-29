@@ -1,3 +1,5 @@
+import { S } from '@mobily/ts-belt';
+
 import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect, {
     Device,
@@ -546,7 +548,8 @@ export const onPassphraseSubmit = createThunk(
             dispatch(
                 deviceActions.updatePassphraseMode({
                     device,
-                    hidden: passphraseOnDevice || !!value,
+                    hidden: passphraseOnDevice || S.isEmpty(value),
+                    // hidden: passphraseOnDevice || !!value,
                     alwaysOnDevice: passphraseOnDevice,
                 }),
             );
