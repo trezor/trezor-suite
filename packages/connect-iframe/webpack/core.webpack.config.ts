@@ -8,7 +8,7 @@ const DIST = path.resolve(__dirname, '../build');
 
 export const config: webpack.Configuration = {
     target: 'web',
-    mode: 'production',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     entry: {
         core: path.resolve(__dirname, '../../connect/src/core/index.ts'),
     },

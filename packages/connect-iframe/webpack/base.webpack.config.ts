@@ -17,7 +17,7 @@ const commitHash =
 
 export const config: webpack.Configuration = {
     target: 'web',
-    mode: 'production',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     module: {
         rules: [
             {
@@ -30,7 +30,6 @@ export const config: webpack.Configuration = {
                     },
                 },
             },
-
             {
                 test: (input: string) => input.includes('background-sharedworker'),
                 loader: 'worker-loader',
@@ -131,13 +130,8 @@ export const config: webpack.Configuration = {
             ],
         }),
         new webpack.DefinePlugin({
-            process: {
-                env: {
-                    VERSION: JSON.stringify(version),
-                    COMMIT_HASH: JSON.stringify(commitHash),
-                    NODE_ENV: JSON.stringify(process.env.NODE_ENV),
-                },
-            },
+            'process.env.VERSION': JSON.stringify(version),
+            'process.env.COMMIT_HASH': JSON.stringify(commitHash),
         }),
     ],
 
