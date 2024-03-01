@@ -6,6 +6,7 @@ import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../assets/Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { UIHorizontalAlignment, UIVariant } from 'packages/components/src/config/types';
+import { FrameProps, ComponentFrame } from '../../common/ComponentFrame';
 
 interface VariantStyles {
     background: Color;
@@ -138,7 +139,7 @@ export const HiddenInput = styled.input`
 export type CheckboxVariant = Extract<UIVariant, 'primary' | 'destructive' | 'warning'>;
 export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
-export interface CheckboxProps {
+export interface CheckboxProps extends FrameProps {
     variant?: CheckboxVariant;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -158,6 +159,7 @@ export const Checkbox = ({
     'data-test': dataTest,
     className,
     children,
+    margin,
 }: CheckboxProps) => {
     const theme = useTheme();
 
@@ -168,32 +170,34 @@ export const Checkbox = ({
     };
 
     return (
-        <Container
-            isDisabled={isDisabled}
-            labelAlignment={labelAlignment}
-            onClick={onClick}
-            onKeyUp={handleKeyUp}
-            data-test={dataTest}
-            className={className}
-        >
-            <HiddenInput
-                checked={isChecked}
-                disabled={isDisabled}
-                readOnly
-                type="checkbox"
-                tabIndex={-1}
-            />
-
-            <CheckContainer tabIndex={0} variant={variant}>
-                <CheckIcon
-                    isVisible={!!isChecked}
-                    size={24}
-                    color={theme.iconOnPrimary}
-                    icon="CHECK"
+        <ComponentFrame margin={margin}>
+            <Container
+                isDisabled={isDisabled}
+                labelAlignment={labelAlignment}
+                onClick={onClick}
+                onKeyUp={handleKeyUp}
+                data-test={dataTest}
+                className={className}
+            >
+                <HiddenInput
+                    checked={isChecked}
+                    disabled={isDisabled}
+                    readOnly
+                    type="checkbox"
+                    tabIndex={-1}
                 />
-            </CheckContainer>
 
-            {children && <Label isRed={variant === 'destructive'}>{children}</Label>}
-        </Container>
+                <CheckContainer tabIndex={0} variant={variant}>
+                    <CheckIcon
+                        isVisible={!!isChecked}
+                        size={24}
+                        color={theme.iconOnPrimary}
+                        icon="CHECK"
+                    />
+                </CheckContainer>
+
+                {children && <Label isRed={variant === 'destructive'}>{children}</Label>}
+            </Container>
+        </ComponentFrame>
     );
 };
