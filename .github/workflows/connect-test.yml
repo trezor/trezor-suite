@@ -5,13 +5,15 @@ on:
   push:
     paths:
       - "packages/blockchain-link"
-      - "packages/connect/**"
       - "packages/connect-common/**"
       - "packages/connect-iframe/**"
       - "packages/connect-web/**"
+      - "packages/connect/**"
+      - "packages/protobuf"
+      - "packages/schema-utils"
       - "packages/transport"
-      - "packages/utxo-lib"
       - "packages/utils"
+      - "packages/utxo-lib"
       - "docker"
       - "submodules/trezor-common"
       - "yarn.lock"
