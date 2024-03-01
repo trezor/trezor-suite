@@ -187,7 +187,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
                             ),
                             max: (
                                 <CoinmarketFiatAmount
-                                    amount={quote.minFiat}
+                                    amount={quote.maxFiat}
                                     currency={quote.fiatCurrency}
                                 />
                             ),
