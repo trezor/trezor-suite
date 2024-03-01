@@ -71,6 +71,7 @@
         "native:ios": "yarn workspace @suite-native/app ios",
         "native:android:clean": "yarn workspace @suite-native/app android:clean",
         "native:pods": "yarn workspace @suite-native/app pods",
+        "native:prebuild": "yarn workspace @suite-native/app prebuild:clean",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
