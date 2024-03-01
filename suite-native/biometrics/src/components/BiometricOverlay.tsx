@@ -64,14 +64,16 @@ export const BiometricOverlay = () => {
     const titleTransKey = getBiometricsTranslationKey({ isFacialEnabled, isFingerprintEnabled });
 
     return (
-        <Box style={applyStyle(overlayWrapperStyle)}>
-            <Icon name="trezor" size="extraLarge" color="iconDefault" />
+        <>
+            <Box style={applyStyle(overlayWrapperStyle)}>
+                <Icon name="trezor" size="extraLarge" color="iconDefault" />
+            </Box>
             {isBiometricsAuthenticationCanceled && (
                 <TouchableOpacity onPress={handleReenable} style={applyStyle(bottomWrapperStyle)}>
                     <BiometricsIcons iconSize={32} showShadow />
                     <Text color="textPrimaryDefault">{translate(titleTransKey)}</Text>
                 </TouchableOpacity>
             )}
-        </Box>
+        </>
     );
 };
