@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react';
-import styled, { css } from 'styled-components';
+import React from 'react';
+import styled from 'styled-components';
 
 import { spacingsPx, zIndices } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
@@ -13,6 +13,7 @@ import { Translation } from 'src/components/suite';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
+import { useScrollShadow } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,42 +38,6 @@ const Row = styled.div`
     gap: ${spacingsPx.xs};
 `;
 
-const gradientBase = css<{ isVisible: boolean }>`
-    width: 100%;
-    height: 45px;
-    z-index: 1;
-    position: absolute;
-    pointer-events: none;
-    opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
-    transition: all 0.2s ease-in;
-`;
-
-const GradientBefore = styled.div`
-    ${gradientBase}
-    top: 0;
-    background: linear-gradient(
-        ${({ theme }) => theme.backgroundSurfaceElevationNegative},
-        rgba(0 0 0 / 0%)
-    );
-`;
-const GradientAfter = styled.div`
-    ${gradientBase}
-    bottom: 0;
-    background: linear-gradient(
-        rgba(0 0 0 / 0%),
-        ${({ theme }) => theme.backgroundSurfaceElevationNegative}
-    );
-`;
-
-const Gradients = styled.div`
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    width: 100%;
-    overflow: auto;
-    position: relative;
-`;
-
 const Scroll = styled.div`
     height: auto;
     overflow: hidden auto;
@@ -82,21 +47,9 @@ export const AccountsMenu = () => {
     const device = useSelector(selectDevice);
     const accounts = useSelector(state => state.wallet.accounts);
 
-    const [isScrolledToTop, setIsScrolledToTop] = useState(true);
-    const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
-
-    const containerRef = useRef<HTMLDivElement>(null);
-
     const { discovery } = useDiscovery();
-
-    const handleScroll = () => {
-        if (containerRef?.current) {
-            const { scrollTop, scrollHeight, clientHeight } = containerRef.current;
-
-            setIsScrolledToTop(scrollTop === 0);
-            setIsScrolledToBottom(Math.ceil(scrollTop + clientHeight) >= scrollHeight);
-        }
-    };
+    const { scrollElementRef, onScroll, ShadowTop, ShadowBottom, ShadowContainer } =
+        useScrollShadow();
 
     if (!device || !discovery) {
         return (
@@ -127,14 +80,14 @@ export const AccountsMenu = () => {
                 <CoinsFilter />
             </MenuHeader>
 
-            <Gradients>
-                <GradientBefore isVisible={!isScrolledToTop} />
-                <Scroll ref={containerRef} onScroll={handleScroll}>
+            <ShadowContainer>
+                <ShadowTop backgroundColor="backgroundSurfaceElevationNegative" />
+                <Scroll ref={scrollElementRef} onScroll={onScroll}>
                     <AccountsList />
                     <RefreshAfterDiscoveryNeeded />
                 </Scroll>
-                <GradientAfter isVisible={!isScrolledToBottom} />
-            </Gradients>
+                <ShadowBottom backgroundColor="backgroundSurfaceElevationNegative" />
+            </ShadowContainer>
         </Wrapper>
     );
 };
