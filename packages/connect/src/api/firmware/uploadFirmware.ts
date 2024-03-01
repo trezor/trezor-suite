@@ -22,6 +22,7 @@ const postProgressMessage = (
     postMessage(
         createUiMessage(UI.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
+            operation: 'flashing',
             progress,
         }),
     );

@@ -1287,6 +1287,13 @@ export const onCallFirmwareUpdate = async ({
             btcOnly,
         );
 
+        postMessage(
+            createUiMessage(UI.FIRMWARE_PROGRESS, {
+                device: device.toMessageObject(),
+                operation: 'downloading',
+                progress: 0,
+            }),
+        );
         return getBinary({
             // features and releases are used for sanity checking
             features: forDevice.features,
@@ -1298,6 +1305,15 @@ export const onCallFirmwareUpdate = async ({
             btcOnly,
             baseUrl: params.baseUrl!,
             intermediaryVersion: forDevice.firmwareRelease.intermediaryVersion,
+        }).then(res => {
+            postMessage(
+                createUiMessage(UI.FIRMWARE_PROGRESS, {
+                    device: device.toMessageObject(),
+                    operation: 'downloading',
+                    progress: 100,
+                }),
+            );
+            return res;
         });
     };
 
@@ -1428,6 +1444,14 @@ export const onCallFirmwareUpdate = async ({
 
     if (support.getFirmwareHash) {
         log.debug('onCallFirmwareUpdate', 'getFirmwareHash supported, proceed with check');
+
+        postMessage(
+            createUiMessage(UI.FIRMWARE_PROGRESS, {
+                device: device.toMessageObject(),
+                operation: 'validating',
+                progress: 0,
+            }),
+        );
         const { hash, challenge } = calculateFirmwareHash(
             device.features.major_version,
             stripped!,
@@ -1440,8 +1464,16 @@ export const onCallFirmwareUpdate = async ({
                 'FirmwareHash',
                 { challenge },
             );
-            console.log('=====getFirmwareHashResponse', getFirmwareHashResponse);
             await reconnectedDevice.release();
+
+            // needed? meh..
+            postMessage(
+                createUiMessage(UI.FIRMWARE_PROGRESS, {
+                    device: device.toMessageObject(),
+                    operation: 'validating',
+                    progress: 100,
+                }),
+            );
 
             if (
                 [
@@ -1453,14 +1485,12 @@ export const onCallFirmwareUpdate = async ({
                 return { check: 'mismatch' as const };
             }
             if (getFirmwareHashResponse.message.hash !== hash) {
-                // todo: error?
                 return { check: 'mismatch' as const };
             } else {
                 log.debug('onCallFirmwareUpdate', 'installed fw hash and calculated hash match');
                 return { check: 'valid' as const };
             }
         } catch (err) {
-            console.log('getFirmwareHashResponse eerrrr', err);
             // TrezorConnect error. Only 'softly' inform user that we were not able to
             // validate firmware hash
             return { check: 'other-error' as const, checkError: err.message };
