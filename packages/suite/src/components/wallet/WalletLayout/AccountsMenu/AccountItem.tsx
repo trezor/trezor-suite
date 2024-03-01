@@ -64,7 +64,7 @@ const Row = styled.div`
 const AccountName = styled.div<{ isSelected: boolean }>`
     display: flex;
     gap: ${spacingsPx.xxs};
-    width: 100%;
+    flex: 1;
     overflow-x: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
