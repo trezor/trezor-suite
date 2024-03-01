@@ -60,7 +60,8 @@ filteredFixtures.forEach(f => {
         // do complete setup if:
         // - fixture require different device than prev fixture, or
         // - fixture is retried
-        if (JSON.stringify(device) !== JSON.stringify(f.device) || retry) {
+        // FIXME: always reset for now, due to flaky tests with bridge bug
+        if (true || JSON.stringify(device) !== JSON.stringify(f.device) || retry) {
             device = f.device;
             await TrezorUserEnvLink.api.stopBridge();
             await TrezorUserEnvLink.api.stopEmu();
