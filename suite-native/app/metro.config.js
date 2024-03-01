@@ -27,6 +27,7 @@ const config = {
             stream: nodejs.stream,
             https: nodejs.https,
             http: nodejs.http,
+            zlib: nodejs.zlib,
         },
         resolveRequest: (context, moduleName, platform) => {
             if (moduleName.startsWith('@emurgo/cardano')) {
