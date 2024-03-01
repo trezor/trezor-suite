@@ -23,6 +23,7 @@ export const HDNodeResponse = Type.Object({
     childNum: Type.Number(),
     xpub: Type.String(),
     xpubSegwit: Type.Optional(Type.String()),
+    descriptorChecksum: Type.Optional(Type.String()),
     chainCode: Type.String(),
     publicKey: Type.String(),
     fingerprint: Type.Number(),

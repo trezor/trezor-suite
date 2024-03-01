@@ -23,6 +23,7 @@ import type { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import { Assert } from '@trezor/schema-utils';
+import { resolveDescriptorForTaproot } from './resolveDescriptorForTaproot';
 
 type MessageType = Messages.MessageType;
 type MessageKey = keyof MessageType;
@@ -212,12 +213,12 @@ export class DeviceCommands {
         }
 
         if (isTaprootPath(path)) {
-            // wrap regular xpub into bitcoind native descriptor
-            const fingerprint = Number(publicKey.root_fingerprint || 0)
-                .toString(16)
-                .padStart(8, '0');
-            const descriptorPath = `${fingerprint}${response.serializedPath.substring(1)}`;
-            response.xpubSegwit = `tr([${descriptorPath}]${response.xpub}/<0;1>/*)`;
+            const { checksum, xpub: xpubSegwit } = resolveDescriptorForTaproot({
+                response,
+                publicKey,
+            });
+            response.xpubSegwit = xpubSegwit;
+            response.descriptorChecksum = checksum;
         }
 
         return response;
@@ -687,7 +688,12 @@ export class DeviceCommands {
         coinInfo: CoinInfo,
         indexOrPath: number | number[],
         derivationType?: Messages.CardanoDerivationType,
-    ): Promise<{ descriptor: string; legacyXpub?: string; address_n: number[] }> {
+    ): Promise<{
+        descriptor: string;
+        legacyXpub?: string;
+        address_n: number[];
+        descriptorChecksum?: string;
+    }> {
         const address_n = Array.isArray(indexOrPath)
             ? indexOrPath
             : getAccountAddressN(coinInfo, indexOrPath);
@@ -699,6 +705,7 @@ export class DeviceCommands {
                 descriptor: resp.xpubSegwit || resp.xpub,
                 legacyXpub: resp.xpub,
                 address_n,
+                descriptorChecksum: resp.descriptorChecksum,
             };
         }
         if (coinInfo.type === 'ethereum') {

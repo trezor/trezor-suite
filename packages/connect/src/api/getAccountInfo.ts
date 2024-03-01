@@ -243,6 +243,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             const { address_n } = request;
             let { descriptor } = request;
             let legacyXpub: string | undefined;
+            let descriptorChecksum: string | undefined;
 
             if (this.disposed) break;
 
@@ -261,6 +262,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     if (accountDescriptor) {
                         descriptor = accountDescriptor.descriptor;
                         legacyXpub = accountDescriptor.legacyXpub;
+                        descriptorChecksum = accountDescriptor.descriptorChecksum;
                     }
                 } catch (error) {
                     if (this.hasBundle) {
@@ -320,6 +322,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                     descriptor, // override descriptor (otherwise eth checksum is lost)
                     legacyXpub,
                     utxo,
+                    descriptorChecksum,
                 };
                 responses.push(account);
 
