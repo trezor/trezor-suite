@@ -17,6 +17,7 @@ export interface AccountInfo extends AccountInfoBase {
     path?: string;
     legacyXpub?: string; // bitcoin-like descriptor in legacy format (xpub) used by labeling (metadata)
     utxo?: AccountUtxo[]; // bitcoin utxo
+    descriptorChecksum?: string;
 }
 export interface DiscoveryAccount {
     type: DiscoveryAccountType;
@@ -26,4 +27,5 @@ export interface DiscoveryAccount {
     empty?: boolean;
     balance?: string;
     addresses?: AccountAddresses;
+    descriptorChecksum?: string;
 }

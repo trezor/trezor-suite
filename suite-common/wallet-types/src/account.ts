@@ -73,6 +73,7 @@ export type Account = {
     path: string;
     unlockPath?: PROTO.UnlockPath; // parameter used to unlock SLIP-25/coinjoin keychain
     descriptor: string;
+    descriptorChecksum?: string;
     accountType: NonNullable<Network['accountType']>;
     symbol: NetworkSymbol;
     empty: boolean;
@@ -88,7 +89,7 @@ export type Account = {
     history: AccountInfo['history'];
     metadata: AccountEntityKeys;
     /**
-     * accountLabel was introduced by mobile app. In early stage of developement, it was not possible to connect device and work with
+     * accountLabel was introduced by mobile app. In early stage of development, it was not possible to connect device and work with
      * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
      */
     accountLabel?: string;

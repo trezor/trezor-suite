@@ -56,6 +56,7 @@ const composeCreateAccountActionPayload = ({
     path: discoveryItem.path,
     unlockPath: discoveryItem.unlockPath,
     descriptor: accountInfo.descriptor,
+    descriptorChecksum: accountInfo.descriptorChecksum,
     key: getAccountKey(accountInfo.descriptor, discoveryItem.coin, deviceState),
     accountType: discoveryItem.accountType,
     symbol: discoveryItem.coin,

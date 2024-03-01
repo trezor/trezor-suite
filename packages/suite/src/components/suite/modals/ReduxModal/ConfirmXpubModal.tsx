@@ -13,6 +13,11 @@ export const ConfirmXpubModal = (
 
     if (!account) return null;
 
+    const xpub =
+        account.descriptorChecksum !== undefined
+            ? `${account.descriptor}#${account.descriptorChecksum}`
+            : account.descriptor;
+
     return (
         <ConfirmValueModal
             account={account}
@@ -33,7 +38,7 @@ export const ConfirmXpubModal = (
             confirmStepLabel={<Translation id="TR_XPUB_MATCH" />}
             validateOnDevice={showXpub}
             copyButtonText={<Translation id="TR_XPUB_MODAL_CLIPBOARD" />}
-            value={account.descriptor}
+            value={xpub}
             valueDataTest="@xpub-modal/xpub-field"
             {...props}
         />
