@@ -209,6 +209,7 @@ export const PublicKey = Type.Object({
     node: HDNodeType,
     xpub: Type.String(),
     root_fingerprint: Type.Optional(Type.Number()),
+    descriptor: Type.Optional(Type.String()),
 });
 
 export type GetAddress = Static<typeof GetAddress>;
@@ -632,8 +633,8 @@ export const FirmwareUpload = Type.Object({
     hash: Type.Optional(Type.String()),
 });
 
-export type SelfTest = Static<typeof SelfTest>;
-export const SelfTest = Type.Object({
+export type ProdTestT1 = Static<typeof ProdTestT1>;
+export const ProdTestT1 = Type.Object({
     payload: Type.Optional(Type.String()),
 });
 
@@ -1694,6 +1695,7 @@ export enum Enum_Capability {
     Capability_ShamirGroups = 16,
     Capability_PassphraseEntry = 17,
     Capability_Solana = 18,
+    Capability_Translations = 19,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -1751,6 +1753,7 @@ export const Features = Type.Object({
     homescreen_width: Type.Optional(Type.Number()),
     homescreen_height: Type.Optional(Type.Number()),
     bootloader_locked: Type.Optional(Type.Boolean()),
+    language_version_matches: Type.Optional(Type.Boolean()),
 });
 
 export type LockDevice = Static<typeof LockDevice>;
@@ -2171,6 +2174,12 @@ export type NEMDecryptedMessage = Static<typeof NEMDecryptedMessage>;
 export const NEMDecryptedMessage = Type.Object({
     payload: Type.String(),
 });
+
+export type experimental_message = Static<typeof experimental_message>;
+export const experimental_message = Type.Object({});
+
+export type experimental_field = Static<typeof experimental_field>;
+export const experimental_field = Type.Object({});
 
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object({
@@ -2605,12 +2614,6 @@ export const TezosSignedTx = Type.Object({
     operation_hash: Type.String(),
 });
 
-export type experimental_message = Static<typeof experimental_message>;
-export const experimental_message = Type.Object({});
-
-export type experimental_field = Static<typeof experimental_field>;
-export const experimental_field = Type.Object({});
-
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object({
     BinanceGetAddress,
@@ -2671,7 +2674,7 @@ export const MessageType = Type.Object({
     FirmwareErase,
     FirmwareRequest,
     FirmwareUpload,
-    SelfTest,
+    ProdTestT1,
     CardanoBlockchainPointerType,
     CardanoNativeScript,
     CardanoGetNativeScriptHash,
@@ -2837,6 +2840,8 @@ export const MessageType = Type.Object({
     NEMSignedTx,
     NEMDecryptMessage,
     NEMDecryptedMessage,
+    experimental_message,
+    experimental_field,
     RippleGetAddress,
     RippleAddress,
     RipplePayment,
@@ -2885,8 +2890,6 @@ export const MessageType = Type.Object({
     TezosBallotOp,
     TezosSignTx,
     TezosSignedTx,
-    experimental_message,
-    experimental_field,
 });
 
 // custom type uint32/64 may be represented as string
