@@ -27,7 +27,7 @@ const GreenTxt = styled.span`
 `;
 
 const StyledWarning = styled(Warning)`
-    margin-top: ${spacingsPx.sm};
+    margin: ${spacingsPx.sm} 0 ${spacingsPx.sm} 0;
     justify-content: flex-start;
 `;
 
@@ -83,15 +83,15 @@ export const ClaimEthForm = () => {
                 </TxtRight>
             </AmountInfo>
 
+            {errors[CRYPTO_INPUT] && (
+                <StyledWarning variant="destructive">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
+            )}
+
             <FeesInfo
                 transactionInfo={transactionInfo}
                 symbol={symbol}
                 helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
             />
-
-            {errors[CRYPTO_INPUT] && (
-                <StyledWarning variant="destructive">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
-            )}
 
             <ClaimingPeriodWrapper>
                 <GreyP>

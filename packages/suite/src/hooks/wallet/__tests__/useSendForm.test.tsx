@@ -57,7 +57,7 @@ const initStore = ({ send, fees, selectedAccount, coinjoin, bitcoinAmountUnit }:
             wallet: {
                 send,
                 coinjoin,
-                settings: { bitcoinAmountUnit },
+                settings: { bitcoinAmountUnit, enabledNetworks: ['thol'] },
             },
         },
     });

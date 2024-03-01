@@ -29,7 +29,8 @@ type PrecomposedTransactionErrorExtended =
               | 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE'
               | 'AMOUNT_IS_NOT_ENOUGH'
               | 'AMOUNT_IS_TOO_LOW'
-              | 'AMOUNT_IS_LESS_THAN_RESERVE';
+              | 'AMOUNT_IS_LESS_THAN_RESERVE'
+              | 'TR_STAKE_NOT_ENOUGH_FUNDS';
       };
 
 export type TxNonFinalCardano = PrecomposedTransactionNonFinalCardano & {

@@ -25,9 +25,6 @@ export const allowedDomains = [
     'trezor-cardano-mainnet.blockfrost.io',
     'trezor-cardano-preview.blockfrost.io',
     'blockfrost.dev',
-    'eth-goerli.public.blastapi.io',
-    'ethereum-holesky.publicnode.com',
-    'mainnet.infura.io',
     'eth-api-b2c-stage.everstake.one',
     'eth-api-b2c.everstake.one',
 ];
