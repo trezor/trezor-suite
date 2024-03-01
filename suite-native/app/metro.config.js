@@ -1,7 +1,7 @@
 /* eslint-disable require-await */
 const nodejs = require('node-libs-browser');
 // Learn more https://docs.expo.io/guides/customizing-metro
-const { getDefaultConfig } = require('expo/metro-config');
+const { getSentryExpoConfig } = require('@sentry/react-native/metro');
 const { mergeConfig } = require('@react-native/metro-config');
 
 /**
@@ -45,4 +45,4 @@ const config = {
         },
     },
 };
-module.exports = mergeConfig(getDefaultConfig(__dirname), config);
+module.exports = mergeConfig(getSentryExpoConfig(__dirname), config);
