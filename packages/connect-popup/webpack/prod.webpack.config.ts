@@ -14,7 +14,7 @@ const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 const config: webpack.Configuration = {
     target: 'web',
-    mode: 'production',
+    mode: process.env.NODE_ENV === 'production' ? 'production' : 'development',
     entry: {
         popup: path.resolve(__dirname, '../src/index.tsx'),
         log: path.resolve(__dirname, '../src/log.tsx'),
@@ -73,7 +73,6 @@ const config: webpack.Configuration = {
         new DefinePlugin({
             'process.env.VERSION': JSON.stringify(version),
             'process.env.COMMIT_HASH': JSON.stringify(commitHash),
-            'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         }),
         new HtmlWebpackPlugin({
             chunks: ['popup'],
