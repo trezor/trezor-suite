@@ -2474,6 +2474,84 @@
         "CardanoSignTxFinished": {
             "fields": {}
         },
+        "CardanoSignMessageInit": {
+            "fields": {
+                "protocol_magic": {
+                    "type": "uint32",
+                    "id": 1
+                },
+                "network_id": {
+                    "type": "uint32",
+                    "id": 2
+                },
+                "signing_path": {
+                    "rule": "repeated",
+                    "type": "uint32",
+                    "id": 3,
+                    "options": {
+                        "packed": false
+                    }
+                },
+                "payload_size": {
+                    "rule": "required",
+                    "type": "uint32",
+                    "id": 4
+                },
+                "hash_payload": {
+                    "rule": "required",
+                    "type": "bool",
+                    "id": 5
+                },
+                "prefer_hex_display": {
+                    "rule": "required",
+                    "type": "bool",
+                    "id": 6
+                },
+                "address_parameters": {
+                    "type": "CardanoAddressParametersType",
+                    "id": 7
+                },
+                "derivation_type": {
+                    "rule": "required",
+                    "type": "CardanoDerivationType",
+                    "id": 8
+                }
+            }
+        },
+        "CardanoMessageItemAck": {
+            "fields": {}
+        },
+        "CardanoMessagePayloadChunk": {
+            "fields": {
+                "data": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                }
+            }
+        },
+        "CardanoMessageItemHostAck": {
+            "fields": {}
+        },
+        "CardanoSignMessageFinished": {
+            "fields": {
+                "signature": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 1
+                },
+                "address": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 2
+                },
+                "pub_key": {
+                    "rule": "required",
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
         "Success": {
             "fields": {
                 "message": {
@@ -7203,19 +7281,6 @@
                 }
             }
         },
-        "StellarClaimClaimableBalanceOp": {
-            "fields": {
-                "source_account": {
-                    "type": "string",
-                    "id": 1
-                },
-                "balance_id": {
-                    "rule": "required",
-                    "type": "bytes",
-                    "id": 2
-                }
-            }
-        },
         "StellarSignedTx": {
             "fields": {
                 "public_key": {
@@ -8332,9 +8397,6 @@
                 "MessageType_StellarPathPaymentStrictSendOp": {
                     "(wire_in)": true
                 },
-                "MessageType_StellarClaimClaimableBalanceOp": {
-                    "(wire_in)": true
-                },
                 "MessageType_StellarSignedTx": {
                     "(wire_out)": true
                 },
@@ -8424,6 +8486,21 @@
                 },
                 "MessageType_CardanoTxReferenceInput": {
                     "(wire_in)": true
+                },
+                "MessageType_CardanoSignMessageInit": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoMessagePayloadChunk": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoMessageItemAck": {
+                    "(wire_out)": true
+                },
+                "MessageType_CardanoMessageItemHostAck": {
+                    "(wire_in)": true
+                },
+                "MessageType_CardanoSignMessageFinished": {
+                    "(wire_out)": true
                 },
                 "MessageType_RippleGetAddress": {
                     "(wire_in)": true
@@ -8771,7 +8848,6 @@
                 "MessageType_StellarBumpSequenceOp": 221,
                 "MessageType_StellarManageBuyOfferOp": 222,
                 "MessageType_StellarPathPaymentStrictSendOp": 223,
-                "MessageType_StellarClaimClaimableBalanceOp": 225,
                 "MessageType_StellarSignedTx": 230,
                 "MessageType_CardanoGetPublicKey": 305,
                 "MessageType_CardanoPublicKey": 306,
@@ -8802,6 +8878,11 @@
                 "MessageType_CardanoTxInlineDatumChunk": 335,
                 "MessageType_CardanoTxReferenceScriptChunk": 336,
                 "MessageType_CardanoTxReferenceInput": 337,
+                "MessageType_CardanoSignMessageInit": 338,
+                "MessageType_CardanoMessagePayloadChunk": 339,
+                "MessageType_CardanoMessageItemAck": 340,
+                "MessageType_CardanoMessageItemHostAck": 341,
+                "MessageType_CardanoSignMessageFinished": 342,
                 "MessageType_RippleGetAddress": 400,
                 "MessageType_RippleAddress": 401,
                 "MessageType_RippleSignTx": 402,

@@ -945,6 +945,36 @@ export type CardanoTxBodyHash = {
 // CardanoSignTxFinished
 export type CardanoSignTxFinished = {};
 
+// CardanoSignMessageInit
+export type CardanoSignMessageInit = {
+    protocol_magic?: number;
+    network_id?: number;
+    signing_path: number[];
+    payload_size: number;
+    hash_payload: boolean;
+    prefer_hex_display: boolean;
+    address_parameters?: CardanoAddressParametersType;
+    derivation_type: CardanoDerivationType;
+};
+
+// CardanoMessageItemAck
+export type CardanoMessageItemAck = {};
+
+// CardanoMessagePayloadChunk
+export type CardanoMessagePayloadChunk = {
+    data: string;
+};
+
+// CardanoMessageItemHostAck
+export type CardanoMessageItemHostAck = {};
+
+// CardanoSignMessageFinished
+export type CardanoSignMessageFinished = {
+    signature: string;
+    address: string;
+    pub_key: string;
+};
+
 // Success
 export type Success = {
     message: string;
@@ -2245,12 +2275,6 @@ export type StellarBumpSequenceOp = {
     bump_to: UintType;
 };
 
-// StellarClaimClaimableBalanceOp
-export type StellarClaimClaimableBalanceOp = {
-    source_account?: string;
-    balance_id: string;
-};
-
 // StellarSignedTx
 export type StellarSignedTx = {
     public_key: string;
@@ -2488,6 +2512,11 @@ export type MessageType = {
     CardanoTxHostAck: CardanoTxHostAck;
     CardanoTxBodyHash: CardanoTxBodyHash;
     CardanoSignTxFinished: CardanoSignTxFinished;
+    CardanoSignMessageInit: CardanoSignMessageInit;
+    CardanoMessageItemAck: CardanoMessageItemAck;
+    CardanoMessagePayloadChunk: CardanoMessagePayloadChunk;
+    CardanoMessageItemHostAck: CardanoMessageItemHostAck;
+    CardanoSignMessageFinished: CardanoSignMessageFinished;
     Success: Success;
     Failure: Failure;
     ButtonRequest: ButtonRequest;
@@ -2648,7 +2677,6 @@ export type MessageType = {
     StellarAccountMergeOp: StellarAccountMergeOp;
     StellarManageDataOp: StellarManageDataOp;
     StellarBumpSequenceOp: StellarBumpSequenceOp;
-    StellarClaimClaimableBalanceOp: StellarClaimClaimableBalanceOp;
     StellarSignedTx: StellarSignedTx;
     TezosGetAddress: TezosGetAddress;
     TezosAddress: TezosAddress;

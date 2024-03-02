@@ -99,11 +99,12 @@ export const sendChunkedHexString = async (
     data: string,
     chunkSize: number,
     messageType: string,
+    responseType = 'CardanoTxItemAck',
 ) => {
     let processedSize = 0;
     while (processedSize < data.length) {
         const chunk = data.slice(processedSize, processedSize + chunkSize);
-        await typedCall(messageType, 'CardanoTxItemAck', {
+        await typedCall(messageType, responseType, {
             data: chunk,
         });
         processedSize += chunkSize;

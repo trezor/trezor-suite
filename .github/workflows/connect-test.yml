@@ -80,7 +80,7 @@ jobs:
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
-      methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
+      methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction,cardanoSignMessage"
 
   eos:
     needs: [build]

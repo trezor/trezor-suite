@@ -330,6 +330,19 @@ export default [
                 url: '/method/cardanoSignTransaction',
             },
             {
+                name: 'Sign message',
+                children: [
+                    {
+                        name: 'include key hash',
+                        url: '/method/cardanoSignMessage',
+                    },
+                    {
+                        name: 'include address',
+                        url: '/method/cardanoSignMessage-addressParameters',
+                    },
+                ],
+            },
+            {
                 name: 'Account info',
                 children: [
                     {

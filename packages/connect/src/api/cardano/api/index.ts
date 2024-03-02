@@ -3,3 +3,4 @@ export { default as cardanoGetNativeScriptHash } from './cardanoGetNativeScriptH
 export { default as cardanoGetPublicKey } from './cardanoGetPublicKey';
 export { default as cardanoSignTransaction } from './cardanoSignTransaction';
 export { default as cardanoComposeTransaction } from './cardanoComposeTransaction';
+export { default as cardanoSignMessage } from './cardanoSignMessage';

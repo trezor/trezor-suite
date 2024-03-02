@@ -1029,6 +1029,36 @@ export const CardanoTxBodyHash = Type.Object({
 export type CardanoSignTxFinished = Static<typeof CardanoSignTxFinished>;
 export const CardanoSignTxFinished = Type.Object({});
 
+export type CardanoSignMessageInit = Static<typeof CardanoSignMessageInit>;
+export const CardanoSignMessageInit = Type.Object({
+    protocol_magic: Type.Optional(Type.Number()),
+    network_id: Type.Optional(Type.Number()),
+    signing_path: Type.Array(Type.Number()),
+    payload_size: Type.Number(),
+    hash_payload: Type.Boolean(),
+    prefer_hex_display: Type.Boolean(),
+    address_parameters: Type.Optional(CardanoAddressParametersType),
+    derivation_type: EnumCardanoDerivationType,
+});
+
+export type CardanoMessageItemAck = Static<typeof CardanoMessageItemAck>;
+export const CardanoMessageItemAck = Type.Object({});
+
+export type CardanoMessagePayloadChunk = Static<typeof CardanoMessagePayloadChunk>;
+export const CardanoMessagePayloadChunk = Type.Object({
+    data: Type.String(),
+});
+
+export type CardanoMessageItemHostAck = Static<typeof CardanoMessageItemHostAck>;
+export const CardanoMessageItemHostAck = Type.Object({});
+
+export type CardanoSignMessageFinished = Static<typeof CardanoSignMessageFinished>;
+export const CardanoSignMessageFinished = Type.Object({
+    signature: Type.String(),
+    address: Type.String(),
+    pub_key: Type.String(),
+});
+
 export type Success = Static<typeof Success>;
 export const Success = Type.Object({
     message: Type.String(),
@@ -2708,6 +2738,11 @@ export const MessageType = Type.Object({
     CardanoTxHostAck,
     CardanoTxBodyHash,
     CardanoSignTxFinished,
+    CardanoSignMessageInit,
+    CardanoMessageItemAck,
+    CardanoMessagePayloadChunk,
+    CardanoMessageItemHostAck,
+    CardanoSignMessageFinished,
     Success,
     Failure,
     ButtonRequest,
