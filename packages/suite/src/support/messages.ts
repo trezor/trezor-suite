@@ -2784,11 +2784,6 @@ export default defineMessages({
         description: 'UI name of Bitcoin-only firmware type.',
         id: 'TR_FIRMWARE_TYPE_BITCOIN_ONLY',
     },
-    TR_DO_NOT_DISCONNECT: {
-        defaultMessage: 'Do not disconnect your Trezor.',
-        description: 'Message that is visible when installing process is in progress.',
-        id: 'TR_DO_NOT_DISCONNECT',
-    },
     TR_LABELING: {
         defaultMessage: 'Labeling',
         id: 'TR_LABELING',
@@ -6733,10 +6728,6 @@ export default defineMessages({
         id: 'TR_RUNNING_MULTIPLE_INSTANCES',
         defaultMessage:
             'It seems you are running multiple instances of the app. If you are using Suite in other window or tab, close it and refresh the app.',
-    },
-    TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION: {
-        id: 'TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION',
-        defaultMessage: 'Please wait for Trezor to restart and pair the device again.',
     },
     TR_BUG: {
         id: 'TR_BUG',
