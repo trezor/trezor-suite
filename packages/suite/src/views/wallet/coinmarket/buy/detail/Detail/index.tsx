@@ -67,7 +67,7 @@ const CoinmarketDetail = () => {
                     <WaitingForUser
                         trade={trade.data}
                         account={account}
-                        providerName={provider?.companyName}
+                        providerName={provider?.brandName || provider?.companyName}
                     />
                 )}
                 {showSuccess && <PaymentSuccessful account={account} />}
