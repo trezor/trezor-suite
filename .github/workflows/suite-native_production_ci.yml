@@ -22,8 +22,6 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'Both' }}
-    env:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -50,8 +48,6 @@ jobs:
     environment: production
     runs-on: ubuntu-latest
     if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'Both' }}
-    env:
-      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
