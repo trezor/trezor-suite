@@ -38,7 +38,7 @@ export type BlockchainOptions = {
     postMessage: (message: CoreEventMessage) => void;
     proxy?: Proxy;
     debug?: boolean;
-    onDisconnected?: (backend: Blockchain, pendingSubscriptions?: boolean) => void;
+    onDisconnected?: (pendingSubscriptions?: boolean) => void;
 };
 
 export class Blockchain {
@@ -99,7 +99,7 @@ export class Blockchain {
                 code: error.code,
             }),
         );
-        this.onDisconnected?.(this, !!pendingSubscriptions);
+        this.onDisconnected?.(!!pendingSubscriptions);
     }
 
     /** should be called only once, from Blockchain.init() method */
