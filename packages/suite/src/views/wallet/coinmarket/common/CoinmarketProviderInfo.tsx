@@ -39,6 +39,7 @@ interface CoinmarketProviderInfoProps {
         [name: string]: {
             logo: string;
             companyName: string;
+            brandName?: string;
         };
     };
 }
@@ -64,7 +65,7 @@ export const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProvid
                             </Bg>
                         </IconWrapper>
                     )}
-                    <Text>{provider.companyName}</Text>
+                    <Text>{provider.brandName || provider.companyName}</Text>
                 </>
             )}
         </Wrapper>
