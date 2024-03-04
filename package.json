@@ -69,13 +69,16 @@
         "prepare-release": "./scripts/prepare-release.sh",
         "native:android": "yarn workspace @suite-native/app android",
         "native:ios": "yarn workspace @suite-native/app ios",
-        "native:android:clean": "yarn workspace @suite-native/app android:clean",
-        "native:pods": "yarn workspace @suite-native/app pods",
+        "native:prebuild": "yarn workspace @suite-native/app prebuild:clean",
         "_______ Aliases _______": "Aliases for longer commands which we often have to run manually. Names don't have to be pretty or make total sense.",
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn message-system-sign-config",
-        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions"
+        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions",
+        "a": "yarn native:android",
+        "ios": "yarn native:ios",
+        "p": "yarn native:prebuild",
+        "s": "yarn native:start"
     },
     "lint-staged": {
         "packages/**/*.{ts,tsx}": [
