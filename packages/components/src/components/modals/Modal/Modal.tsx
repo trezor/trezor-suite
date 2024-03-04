@@ -2,7 +2,7 @@ import { useCallback, useState, ReactNode, useEffect } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 import { useEvent } from 'react-use';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 
 import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Stepper } from '../../loaders/Stepper/Stepper';
@@ -10,6 +10,7 @@ import { IconButton } from '../../buttons/IconButton/IconButton';
 import { H3 } from '../../typography/Heading/Heading';
 import { ButtonSize } from '../../buttons/buttonStyleUtils';
 import { ElevationContext } from '../../ElevationContext/ElevationContext';
+import { useScrollShadow } from '../../../utils/useScrollShadow';
 
 const CLOSE_ICON_SIZE = spacings.xxl;
 const CLOSE_ICON_MARGIN = 16;
@@ -23,7 +24,7 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     position: relative;
-    border-radius: 16px;
+    border-radius: ${borders.radii.md};
 
     /* when theme changes from light to dark */
     transition: background 0.3s;
@@ -124,19 +125,20 @@ const HeaderComponentsContainer = styled.div`
     }
 `;
 
-const Body = styled.div<{ isWithoutTopPadding: boolean }>`
+const ScrollContainer = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
     height: 100%;
-    margin-bottom: ${spacingsPx.xl};
-    padding: ${spacingsPx.xl} ${spacingsPx.md} 0;
-    padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
     overflow-y: auto;
 
     ::-webkit-scrollbar {
         display: none;
     }
+`;
+const Body = styled.div<{ isWithoutTopPadding: boolean }>`
+    padding: ${spacingsPx.xl} ${spacingsPx.md};
+    padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
 `;
 
 const Description = styled.div`
@@ -213,7 +215,8 @@ const Modal = ({
 }: ModalProps) => {
     const [componentsWidth, setComponentsWidth] = useState<number>();
     const theme = useTheme();
-
+    const { scrollElementRef, onScroll, ShadowContainer, ShadowTop, ShadowBottom } =
+        useScrollShadow();
     const showHeaderActions = !!headerComponent || isCancelable;
 
     useEffect(() => {
@@ -306,12 +309,21 @@ const Modal = ({
                         )}
                     </Header>
                 )}
-
-                <Body isWithoutTopPadding={!heading && !!isCancelable}>
-                    {description && <Description>{description}</Description>}
-                    <Content id="modal-content">{children}</Content>
-                </Body>
-
+                <ShadowContainer>
+                    <ShadowTop />
+                    <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
+                        <Body isWithoutTopPadding={!heading && !!isCancelable}>
+                            {description && <Description>{description}</Description>}
+                            <Content id="modal-content">{children}</Content>
+                        </Body>
+                    </ScrollContainer>
+                    <ShadowBottom
+                        style={{
+                            borderBottomLeftRadius: borders.radii.md,
+                            borderBottomRightRadius: borders.radii.md,
+                        }}
+                    />
+                </ShadowContainer>
                 {(bottomBarComponents || areStepsShown) && (
                     <BottomBar>
                         {areStepsShown && (
