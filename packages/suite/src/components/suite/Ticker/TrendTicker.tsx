@@ -22,8 +22,9 @@ const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
 
 interface TickerProps {
     symbol: NetworkSymbol;
+    compact?: boolean;
 }
-export const TrendTicker = ({ symbol }: TickerProps) => {
+export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
     const locale = useSelector(state => state.suite.settings.language);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbol, localCurrency);
@@ -56,7 +57,7 @@ export const TrendTicker = ({ symbol }: TickerProps) => {
                         {localizePercentage({ valueInFraction: percentageChange, locale })}
                     </PercentageWrapper>
                 ) : (
-                    <NoRatesTooltip />
+                    <NoRatesTooltip iconOnly={compact} />
                 )
             }
         </FiatValue>
