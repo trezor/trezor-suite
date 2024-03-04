@@ -21,8 +21,9 @@ const LastUpdate = styled.div`
 interface PriceTickerProps {
     symbol: string;
     tooltipPos?: 'top' | 'bottom';
+    compact?: boolean;
 }
-export const PriceTicker = ({ symbol, tooltipPos = 'top' }: PriceTickerProps) => {
+export const PriceTicker = ({ symbol, tooltipPos = 'top', compact = false }: PriceTickerProps) => {
     const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
 
     return (
@@ -52,7 +53,7 @@ export const PriceTicker = ({ symbol, tooltipPos = 'top' }: PriceTickerProps) =>
                         <FiatRateWrapper>{rate}</FiatRateWrapper>
                     </Tooltip>
                 ) : (
-                    <NoRatesTooltip />
+                    <NoRatesTooltip iconOnly={compact} />
                 )
             }
         </FiatValue>

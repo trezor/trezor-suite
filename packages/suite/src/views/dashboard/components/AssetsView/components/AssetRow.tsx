@@ -197,10 +197,10 @@ export const AssetRow = memo(
                     </FailedCol>
                 )}
                 <ExchangeRateWrapper isLastRow={isLastRow}>
-                    {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
+                    {!isTestnet(symbol) && <PriceTicker symbol={symbol} compact />}
                 </ExchangeRateWrapper>
                 <ExchangeRateWrapper7Days isLastRow={isLastRow}>
-                    {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
+                    {!isTestnet(symbol) && <TrendTicker symbol={symbol} compact />}
                 </ExchangeRateWrapper7Days>
                 <BuyButtonWrapper isLastRow={isLastRow}>
                     {!isTestnet(symbol) && (
