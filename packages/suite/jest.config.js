@@ -74,6 +74,8 @@ module.exports = {
     transform: {
         '(d3-|internmap).*\\.js$': ['babel-jest', babelConfig],
         '\\.(ts|tsx)$': ['babel-jest', babelConfig],
+        // Transform all other .js files *outside* of node_modules:
+        '^(?!.*node_modules).+\\.js$': ['babel-jest', babelConfig],
     },
     verbose: false,
     watchPlugins: ['jest-watch-typeahead/filename', 'jest-watch-typeahead/testname'],

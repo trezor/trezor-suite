@@ -4,7 +4,7 @@ import { defineConfig } from 'cypress';
 import fs from 'fs';
 import path from 'path';
 import { addMatchImageSnapshotPlugin } from 'cypress-image-snapshot/plugin';
-import { BridgeTransport } from '@trezor/transport';
+import { BridgeTransport } from '@trezor/transport/src';
 import * as messages from '@trezor/protobuf/src/messages';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
