@@ -29,7 +29,12 @@ export class BackendManager {
                 postMessage,
                 debug: DataManager.getSettings('debug'),
                 proxy: DataManager.getSettings('proxy'),
-                onDisconnected: this.onDisconnected.bind(this),
+                onDisconnected: pendingSubscriptions => {
+                    this.setInstance(coinInfo.shortcut, undefined);
+                    if (pendingSubscriptions) {
+                        this.planReconnect(coinInfo, postMessage, 0);
+                    }
+                },
             });
             this.setInstance(coinInfo.shortcut, backend);
         }
@@ -43,9 +48,10 @@ export class BackendManager {
             return backend;
         } catch (error) {
             this.setInstance(coinInfo.shortcut, undefined);
-            this.setPreferred(coinInfo.shortcut, undefined);
             if (reconnect) {
-                this.planReconnect(backend.coinInfo, backend.postMessage, reconnect.attempts);
+                this.planReconnect(coinInfo, postMessage, reconnect.attempts);
+            } else {
+                this.setPreferred(coinInfo.shortcut, undefined);
             }
             throw error;
         }
@@ -108,6 +114,11 @@ export class BackendManager {
         }, timeout);
         clearTimeout(this.reconnect[coinInfo.shortcut]?.handle);
         this.reconnect[coinInfo.shortcut] = { attempts: attempts + 1, handle };
+        if (attempts === 4) {
+            // Forget preferred backend as it couldn't be connected repeatedly,
+            // fourth attempt was chosen arbitrarily
+            this.setPreferred(coinInfo.shortcut, undefined);
+        }
         postMessage(createBlockchainMessage(BLOCKCHAIN.RECONNECTING, { coin: coinInfo, time }));
     }
 
@@ -117,13 +128,6 @@ export class BackendManager {
         delete this.reconnect[shortcut];
 
         return reconnect;
-    }
-
-    private onDisconnected(backend: Blockchain, pendingSubscriptions?: boolean) {
-        this.setInstance(backend.coinInfo.shortcut, undefined);
-        if (pendingSubscriptions) {
-            this.planReconnect(backend.coinInfo, backend.postMessage, 0);
-        }
     }
 
     private patchCoinInfo(coinInfo: CoinInfo): CoinInfo {
