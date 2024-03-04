@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
+import { LogBox } from 'react-native';
 
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
@@ -91,6 +92,8 @@ const AppComponent = () => {
             SplashScreen.hideAsync();
         }
     }, [isAppReady]);
+
+    LogBox.ignoreAllLogs();
 
     if (!isAppReady) return null;
 

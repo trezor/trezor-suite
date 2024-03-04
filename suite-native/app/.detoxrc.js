@@ -12,24 +12,25 @@ module.exports = {
     apps: {
         'ios.debug': {
             type: 'ios.app',
-            binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/YOUR_APP.app',
-            build: 'xcodebuild -workspace ios/YOUR_APP.xcworkspace -scheme YOUR_APP -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
+            binaryPath: 'ios/build/Build/Products/Debug-iphonesimulator/TrezorSuiteDebug.app',
+            build: 'xcodebuild -workspace ios/TrezorSuiteDebug.xcworkspace -scheme TrezorSuiteDebug -configuration Debug -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'ios.release': {
             type: 'ios.app',
-            binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/YOUR_APP.app',
-            build: 'xcodebuild -workspace ios/YOUR_APP.xcworkspace -scheme YOUR_APP -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
+            binaryPath: 'ios/build/Build/Products/Release-iphonesimulator/TrezorSuiteDebug.app',
+            build: 'xcodebuild -workspace ios/TrezorSuiteDebug.xcworkspace -scheme TrezorSuiteDebug -configuration Release -sdk iphonesimulator -derivedDataPath ios/build',
         },
         'android.debug': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
-            build: 'cd android && ./gradlew assembleDebug assembleAndroidTest -DtestBuildType=debug',
-            reversePorts: [8081],
+            build: 'cd android && ./gradlew :app:assembleDebug :app:assembleAndroidTest -DtestBuildType=debug',
+            reversePorts: [8081, 21325],
         },
         'android.release': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
-            build: 'cd android && ./gradlew assembleRelease assembleAndroidTest -DtestBuildType=release',
+            build: 'cd android && ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
+            reversePorts: [21325],
         },
     },
     devices: {
@@ -39,16 +40,10 @@ module.exports = {
                 type: 'iPhone 15',
             },
         },
-        attached: {
-            type: 'android.attached',
-            device: {
-                adbName: '.*',
-            },
-        },
         emulator: {
             type: 'android.emulator',
             device: {
-                avdName: 'Pixel_3a_API_30_x86',
+                avdName: 'Pixel_3a_API_31',
             },
         },
     },
@@ -60,14 +55,6 @@ module.exports = {
         'ios.sim.release': {
             device: 'simulator',
             app: 'ios.release',
-        },
-        'android.att.debug': {
-            device: 'attached',
-            app: 'android.debug',
-        },
-        'android.att.release': {
-            device: 'attached',
-            app: 'android.release',
         },
         'android.emu.debug': {
             device: 'emulator',

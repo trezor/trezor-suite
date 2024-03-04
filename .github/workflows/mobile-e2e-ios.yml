@@ -1,0 +1,105 @@
+name: "[Test] suite-native iOS E2E"
+on: [push, pull_request]
+
+jobs:
+  build-ios-app:
+    timeout-minutes: 90
+    runs-on: macos-latest
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+
+      # - name: Get build hash
+      #   id: get_build_hash
+      #   run: echo "build_hash=${{hashFiles('suite-native/app/package.json')}}-${{hashFiles('suite-native/app/app.config.ts')}}" >> $GITHUB_OUTPUT
+
+      # - name: Get build hash
+      #   run: echo "${{steps.get_build_hash.outputs.build_hash}}"
+
+      # TODO: move this to a custom action
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: install setuptools
+        run: pip install setuptools
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-macos-${{hashFiles('yarn.lock')}}
+
+      - name: Install Yarn dependencies
+        run: yarn --immutable && yarn build:libs
+
+      - name: Prebuild native expo project
+        working-directory: ./suite-native/app
+        run: yarn prebuild --clean
+
+      - name: Detox build
+        run: yarn build:e2e ios.sim.release
+        working-directory: ./suite-native/app
+
+      - name: Save build to cache
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            suite-native/app/ios/build/Build
+          key: ios_test_build
+
+  run_ios_e2e_tests:
+    runs-on: macos-latest
+    needs: build-ios-app
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          submodules: "true"
+
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Load node modules cache
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node_modules-macos-${{hashFiles('yarn.lock')}}
+
+      - name: read build from cache
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            suite-native/app/android/app/build/
+          key: ios_test_build
+
+      - name: Install macOS Detox dependencies
+        run: |
+          brew tap wix/brew
+          brew install applesimutils
+
+      - uses: addnab/docker-run-action@v3
+        with:
+          registry: gcr.io
+          image: test-image:latest
+          run: echo "hello world"
+
+      - name: Detox test
+        run: yarn test:e2e ios.sim.release --cleanup --headless --record-logs all
+
+      - name: "Store failed test screenshot artifacts"
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: failed-ios-tests-screenshots
+          path: suite-native/app/artifacts
