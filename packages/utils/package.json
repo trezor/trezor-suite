@@ -17,7 +17,7 @@
     "publishConfig": {
         "main": "lib/index"
     },
-    "main": "src/index",
+    "main": "src/index.ts",
     "files": [
         "lib/",
         "!**/*.map"
