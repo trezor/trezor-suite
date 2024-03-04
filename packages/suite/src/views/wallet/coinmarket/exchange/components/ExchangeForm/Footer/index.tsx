@@ -21,8 +21,7 @@ const Footer = () => {
     const hasValues = !!watch(CRYPTO_INPUT) && !!watch('receiveCryptoSelect')?.value;
     const formValues = getValues();
     const equalCrypto =
-        formValues.sendCryptoSelect.value.toUpperCase() ===
-        formValues.receiveCryptoSelect?.value?.toUpperCase();
+        formValues.sendCryptoSelect.cryptoSymbol === formValues.receiveCryptoSelect?.cryptoSymbol;
     const formIsValid = Object.keys(formState.errors).length === 0;
 
     return (
