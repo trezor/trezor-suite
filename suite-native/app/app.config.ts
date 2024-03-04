@@ -119,14 +119,15 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                     ],
                 },
             ],
-            [
-                '@sentry/react-native/expo',
-                {
-                    url: 'https://sentry.io/',
-                    project: 'suite-native',
-                    organization: 'satoshilabs',
-                },
-            ],
+            // [
+            //     '@sentry/react-native/expo',
+            //     {
+            //         url: 'https://sentry.io/',
+            //         authToken: process.env.SENTRY_AUTH_TOKEN,
+            //         project: 'suite-native',
+            //         organization: 'satoshilabs',
+            //     },
+            // ],
             [
                 'expo-barcode-scanner',
                 {
@@ -153,6 +154,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             './plugins/withRemoveXcodeLocalEnv.js',
             ['./plugins/withEnvFile.js', { buildType }],
             './plugins/withRemoveiOSNotificationEntitlement.js',
+            '@config-plugins/detox',
         ],
         extra: {
             commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || '',
