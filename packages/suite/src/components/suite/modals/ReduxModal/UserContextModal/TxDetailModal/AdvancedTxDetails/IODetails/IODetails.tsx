@@ -81,7 +81,7 @@ const RowGrid = styled(Grid)`
     padding-bottom: ${spacingsPx.xs};
 `;
 
-const GridItem = styled.div<{ isAccountOwned?: boolean }>`
+const GridItem = styled.div<{ $isAccountOwned?: boolean }>`
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
     max-width: 290px;
@@ -163,7 +163,7 @@ const IOGridRow = ({
     const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl();
 
     return (
-        <GridItem isAccountOwned={isAccountOwned}>
+        <GridItem $isAccountOwned={isAccountOwned}>
             <IOAddress
                 txAddress={addresses?.length ? addresses[0] : ''}
                 explorerUrl={explorerTxUrl}

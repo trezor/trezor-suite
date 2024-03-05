@@ -29,13 +29,13 @@ const InputsContainer = styled(Wrapper)`
     gap: ${spacingsPx.sm} 0;
 `;
 
-const Row = styled.div<{ spaceBefore?: boolean }>`
+const Row = styled.div<{ $spaceBefore?: boolean }>`
     display: flex;
     align-items: flex-start;
     width: 100%;
 
-    ${({ spaceBefore }) =>
-        spaceBefore &&
+    ${({ $spaceBefore }) =>
+        $spaceBefore &&
         css`
             margin-top: 24px;
         `}
@@ -172,11 +172,11 @@ const Inputs = () => {
                     />
                 </Right>
             </Row>
-            <Row spaceBefore>
+            <Row $spaceBefore>
                 <ReceiveCryptoSelect />
             </Row>
             {isReceiveTokenBalanceZero && (
-                <Row spaceBefore>
+                <Row $spaceBefore>
                     <StyledEvmExplanationBox
                         caret
                         elevation={elevation}

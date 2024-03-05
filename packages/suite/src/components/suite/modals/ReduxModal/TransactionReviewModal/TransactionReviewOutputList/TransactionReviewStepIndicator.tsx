@@ -10,11 +10,11 @@ const IndicatorWrapper = styled.div`
     align-items: center;
 `;
 
-const Dot = styled.div<{ color: string }>`
+const Dot = styled.div<{ $color: string }>`
     width: 9px;
     height: 9px;
     border-radius: 100%;
-    background: ${props => props.color};
+    background: ${props => props.$color};
 `;
 
 export interface TransactionReviewStepIndicatorProps {
@@ -30,9 +30,9 @@ export const TransactionReviewStepIndicator = ({
 
     return (
         <IndicatorWrapper>
-            {!state && <Dot color={theme.STROKE_GREY} />}
+            {!state && <Dot $color={theme.STROKE_GREY} />}
             {state === 'success' && <Icon color={theme.BG_GREEN} icon="CHECK" size={size} />}
-            {state === 'active' && <Dot color={theme.TYPE_ORANGE} />}
+            {state === 'active' && <Dot $color={theme.TYPE_ORANGE} />}
         </IndicatorWrapper>
     );
 };

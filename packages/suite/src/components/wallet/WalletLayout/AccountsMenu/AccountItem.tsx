@@ -60,7 +60,7 @@ const Row = styled.div`
     white-space: nowrap;
 `;
 
-const AccountName = styled.div<{ isSelected: boolean }>`
+const AccountName = styled.div<{ $isSelected: boolean }>`
     display: flex;
     gap: ${spacingsPx.xxs};
     flex: 1;
@@ -68,7 +68,7 @@ const AccountName = styled.div<{ isSelected: boolean }>`
     text-overflow: ellipsis;
     white-space: nowrap;
     ${typography.hint};
-    color: ${({ theme, isSelected }) => (isSelected ? theme.textDefault : theme.textSubdued)};
+    color: ${({ theme, $isSelected }) => ($isSelected ? theme.textDefault : theme.textSubdued)};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
 `;
@@ -150,7 +150,7 @@ export const AccountItem = forwardRef(
                 </Left>
                 <Right>
                     <Row>
-                        <AccountName isSelected={isSelected} data-test={`${dataTestKey}/label`}>
+                        <AccountName $isSelected={isSelected} data-test={`${dataTestKey}/label`}>
                             <AccountLabelContainer>
                                 <AccountLabel
                                     accountLabel={accountLabel}

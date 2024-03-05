@@ -17,9 +17,9 @@ const Wrapper = styled.div<Pick<NotificationViewProps, 'variant'> & { isTall: bo
     max-width: 430px;
 `;
 
-const BodyWrapper = styled.div<{ isTall: boolean }>`
+const BodyWrapper = styled.div<{ $isTall: boolean }>`
     flex: 1;
-    margin-top: ${({ isTall }) => isTall && '-4px'};
+    margin-top: ${({ $isTall }) => $isTall && '-4px'};
     margin-left: 14px;
 `;
 
@@ -103,7 +103,7 @@ const ToastNotification = ({
             ) : (
                 defaultIcon
             )}
-            <BodyWrapper isTall={isTall}>
+            <BodyWrapper $isTall={isTall}>
                 <Message>
                     <Translation id={message} values={messageValues} />
                 </Message>

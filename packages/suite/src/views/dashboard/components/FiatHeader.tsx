@@ -10,18 +10,18 @@ const ValueWrapper = styled.div`
     align-items: flex-end;
 `;
 
-const WholeValue = styled.div<{ size: 'large' | 'medium' }>`
-    ${({ size }) => (size === 'large' ? typography.titleLarge : typography.titleMedium)};
+const WholeValue = styled.div<{ $size: 'large' | 'medium' }>`
+    ${({ $size }) => ($size === 'large' ? typography.titleLarge : typography.titleMedium)};
     color: ${({ theme }) => theme.textDefault};
     font-variant-numeric: tabular-nums;
 `;
 
-const DecimalValue = styled.div<{ size: 'large' | 'medium' }>`
+const DecimalValue = styled.div<{ $size: 'large' | 'medium' }>`
     ${typography.hint};
     font-variant-numeric: tabular-nums;
     align-self: flex-end;
     letter-spacing: 0.565px;
-    margin-bottom: ${({ size }) => `${size === 'large' ? '6px' : '2px'}`};
+    margin-bottom: ${({ $size }) => `${$size === 'large' ? '6px' : '2px'}`};
     color: ${({ theme }) => theme.textSubdued};
 `;
 
@@ -47,8 +47,8 @@ export const FiatHeader = ({ size, fiatAmount, localCurrency }: FiatHeaderProps)
     return (
         <HiddenPlaceholder enforceIntensity={10}>
             <ValueWrapper>
-                <WholeValue size={size}>{whole}</WholeValue>
-                <DecimalValue size={size}>
+                <WholeValue $size={size}>{whole}</WholeValue>
+                <DecimalValue $size={size}>
                     {separator}
                     {fractional}
                 </DecimalValue>

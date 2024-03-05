@@ -26,13 +26,13 @@ export const findAnchorTransactionPage = (
     return Math.floor(orderOfTx / transactionsPerPage) + 1;
 };
 
-export const anchorOutlineStyles = css<{ shouldHighlight?: boolean }>`
+export const anchorOutlineStyles = css<{ $shouldHighlight?: boolean }>`
     transition: all 0.3s;
     transition-delay: 0.3s;
     outline: solid ${borders.widths.large} transparent;
 
-    ${({ shouldHighlight }) =>
-        shouldHighlight &&
+    ${({ $shouldHighlight }) =>
+        $shouldHighlight &&
         css`
             outline: solid ${borders.widths.large} ${({ theme }) => theme.backgroundAlertYellowBold};
             background: ${({ theme }) => theme.backgroundAlertYellowSubtleOnElevation1};

@@ -34,14 +34,14 @@ const LabelPart = styled.div`
     overflow: hidden;
 `;
 
-const DetailPartVisibleOnHover = styled.div<{ alwaysVisible?: boolean }>`
+const DetailPartVisibleOnHover = styled.div<{ $alwaysVisible?: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xs};
     color: ${({ theme }) => theme.textSubdued};
 
-    ${({ alwaysVisible }) =>
-        !alwaysVisible &&
+    ${({ $alwaysVisible }) =>
+        !$alwaysVisible &&
         css`
             opacity: 0;
             transition: opacity ${transitionSpeed};
@@ -53,7 +53,7 @@ const StyledCheckbox = styled(Checkbox)<{ isChecked: boolean; $isGrey: boolean }
     margin-right: ${spacingsPx.xs};
 `;
 
-const Wrapper = styled.div<{ isDisabled: boolean }>`
+const Wrapper = styled.div<{ $isDisabled: boolean }>`
     align-items: flex-start;
     border-radius: ${borders.radii.xs};
     display: flex;
@@ -62,8 +62,8 @@ const Wrapper = styled.div<{ isDisabled: boolean }>`
     transition: background ${transitionSpeed};
     cursor: pointer;
 
-    ${({ isDisabled }) =>
-        isDisabled &&
+    ${({ $isDisabled }) =>
+        $isDisabled &&
         css`
             color: ${({ theme }) => theme.textSubdued};
             cursor: default;
@@ -71,8 +71,8 @@ const Wrapper = styled.div<{ isDisabled: boolean }>`
 
     &:hover,
     &:focus-within {
-        ${({ isDisabled }) =>
-            !isDisabled &&
+        ${({ $isDisabled }) =>
+            !$isDisabled &&
             css`
                 background: ${({ theme }) => theme.backgroundSurfaceElevation2};
 
@@ -184,7 +184,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
     };
 
     return (
-        <Wrapper isDisabled={isDisabled} onClick={isDisabled ? undefined : handleCheckbox}>
+        <Wrapper $isDisabled={isDisabled} onClick={isDisabled ? undefined : handleCheckbox}>
             <Tooltip content={isDisabled && <Translation id="TR_UTXO_REGISTERED_IN_COINJOIN" />}>
                 <StyledCheckbox
                     $isGrey={!selectedUtxos.length}

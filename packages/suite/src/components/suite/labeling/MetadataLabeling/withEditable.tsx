@@ -11,11 +11,11 @@ import styled, { useTheme } from 'styled-components';
 import { Icon } from '@trezor/components';
 import { AutoScalingInput } from '@trezor/components/src/components/AutoScalingInput/AutoScalingInput';
 
-const IconWrapper = styled.div<{ bgColor: string }>`
+const IconWrapper = styled.div<{ $bgColor: string }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${props => props.bgColor};
+    background-color: ${props => props.$bgColor};
     border-radius: 4px;
     margin: 0 3px;
     padding: 4px;
@@ -111,7 +111,7 @@ export const withEditable =
                 </WrappedComponent>
 
                 <IconListWrapper>
-                    <IconWrapper bgColor={theme.BG_LIGHT_GREEN}>
+                    <IconWrapper $bgColor={theme.BG_LIGHT_GREEN}>
                         <Icon
                             useCursorPointer
                             size={14}
@@ -125,7 +125,7 @@ export const withEditable =
                         />
                     </IconWrapper>
 
-                    <IconWrapper bgColor={theme.BG_GREY}>
+                    <IconWrapper $bgColor={theme.BG_GREY}>
                         <Icon
                             useCursorPointer
                             size={14}
