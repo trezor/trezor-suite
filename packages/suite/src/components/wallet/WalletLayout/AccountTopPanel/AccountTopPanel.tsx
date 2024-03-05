@@ -14,7 +14,6 @@ import { useSelector } from 'src/hooks/suite';
 import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
-import { globalPaddingEraserStyle } from 'src/components/suite/layouts/SuiteLayout/utils';
 import { STAKE_SYMBOLS } from 'src/constants/suite/ethStaking';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccountAutocompoundBalance } from 'src/reducers/wallet/selectedAccountReducer';
@@ -26,10 +25,11 @@ const Container = styled.div`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.xxs};
-    width: fit-content;
     min-height: ${ACCOUNT_INFO_HEIGHT}px;
-
-    ${globalPaddingEraserStyle}
+    width: 100%;
+    padding-left: ${spacingsPx.md};
+    padding-right: ${spacingsPx.md};
+    margin-top: ${spacingsPx.lg};
 `;
 
 const AccountCryptoBalance = styled.div`
