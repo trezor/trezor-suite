@@ -18,10 +18,10 @@ import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
 import styled from 'styled-components';
 
-const Container = styled.div<{ isVisible?: boolean }>`
+const Container = styled.div<{ $isVisible?: boolean }>`
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-bottom: ${({ isVisible, theme }) =>
-        isVisible ? `solid 1px ${theme.borderOnElevation0}` : 'none'};
+    border-bottom: ${({ $isVisible, theme }) =>
+        $isVisible ? `solid 1px ${theme.borderOnElevation0}` : 'none'};
 `;
 
 export const SuiteBanners = () => {
@@ -90,7 +90,7 @@ export const SuiteBanners = () => {
     const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
 
     return (
-        <Container isVisible={banner !== null}>
+        <Container $isVisible={banner !== null}>
             {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />
