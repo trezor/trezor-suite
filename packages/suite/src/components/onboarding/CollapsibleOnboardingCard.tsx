@@ -33,17 +33,12 @@ const animationVariants = {
     },
 };
 
-const CardWrapper = styled(
-    ({ variant, withImage, disablePadding, expanded, expandable, nested, elevation, ...rest }) => (
-        <motion.div {...rest} />
-    ),
-)<{
-    variant?: CollapsibleOnboardingCardProps['variant'];
-    withImage?: boolean;
-    expanded?: CollapsibleOnboardingCardProps['expanded'];
-    expandable?: CollapsibleOnboardingCardProps['expandable'];
-    elevation: Elevation;
-}>`
+const CardWrapper = styled.div<
+    Pick<CollapsibleOnboardingCardProps, 'expanded' | 'expandable' | 'nested' | 'variant'> & {
+        $elevation: Elevation;
+        withImage: boolean;
+    }
+>`
     position: relative;
     padding: ${({ variant }) => (variant === 'large' ? '40px 80px' : '20px 30px')};
     width: ${({ variant }) => (variant === 'large' ? '100%' : 'auto')};
@@ -215,60 +210,65 @@ export const CollapsibleOnboardingCard = ({
         <CardWrapper
             expanded={expanded}
             expandable={expandable}
-            elevation={elevation}
+            $elevation={elevation}
             variant={variant}
             withImage={!!image}
             nested={nested}
-            animate={expanded ? 'expanded' : 'closed'}
-            transition={{ duration: 0.4, ease: motionEasing.transition }}
             onClick={expandable && !expanded ? onToggle : undefined}
             data-test="@components/collapsible-box"
             {...rest}
         >
-            <ElevationContext baseElevation={elevation}>
-                <CardWrapperInner expandable={expandable}>
-                    {expandable && (
-                        <CollapsibleCardInner
-                            variants={headerVariants}
+            <motion.div
+                animate={expanded ? 'expanded' : 'closed'}
+                transition={{ duration: 0.4, ease: motionEasing.transition }}
+            >
+                <ElevationContext baseElevation={elevation}>
+                    <CardWrapperInner expandable={expandable}>
+                        {expandable && (
+                            <CollapsibleCardInner
+                                variants={headerVariants}
+                                animate={expanded ? 'expanded' : 'closed'}
+                                transition={{ duration: 0.2, ease: 'linear' }}
+                            >
+                                {expandableIcon}
+
+                                <HeadingExpandable>{heading}</HeadingExpandable>
+
+                                {tag && <Tag>{tag}</Tag>}
+                            </CollapsibleCardInner>
+                        )}
+
+                        <motion.div
+                            initial={false} // Prevents animation on mount when expanded === false
+                            variants={expandable ? animationVariants : undefined}
                             animate={expanded ? 'expanded' : 'closed'}
-                            transition={{ duration: 0.2, ease: 'linear' }}
+                            transition={{ duration: 0.4, ease: motionEasing.transition }}
                         >
-                            {expandableIcon}
+                            {expandable && expanded && (
+                                <CloseIcon icon="CROSS" size={22} onClick={onToggle} />
+                            )}
 
-                            <HeadingExpandable>{heading}</HeadingExpandable>
+                            {heading && (
+                                <Heading withDescription={!!description}>{heading}</Heading>
+                            )}
 
-                            {tag && <Tag>{tag}</Tag>}
-                        </CollapsibleCardInner>
-                    )}
+                            {description && (
+                                <Description hasChildren={!!children}>
+                                    <Text>{description}</Text>
+                                </Description>
+                            )}
 
-                    <motion.div
-                        initial={false} // Prevents animation on mount when expanded === false
-                        variants={expandable ? animationVariants : undefined}
-                        animate={expanded ? 'expanded' : 'closed'}
-                        transition={{ duration: 0.4, ease: motionEasing.transition }}
-                    >
-                        {expandable && expanded && (
-                            <CloseIcon icon="CROSS" size={22} onClick={onToggle} />
-                        )}
+                            {image && (
+                                <CardImageWrapper>
+                                    <Image width={100} height={100} image={image} />
+                                </CardImageWrapper>
+                            )}
 
-                        {heading && <Heading withDescription={!!description}>{heading}</Heading>}
-
-                        {description && (
-                            <Description hasChildren={!!children}>
-                                <Text>{description}</Text>
-                            </Description>
-                        )}
-
-                        {image && (
-                            <CardImageWrapper>
-                                <Image width={100} height={100} image={image} />
-                            </CardImageWrapper>
-                        )}
-
-                        <ChildrenWrapper>{children}</ChildrenWrapper>
-                    </motion.div>
-                </CardWrapperInner>
-            </ElevationContext>
+                            <ChildrenWrapper>{children}</ChildrenWrapper>
+                        </motion.div>
+                    </CardWrapperInner>
+                </ElevationContext>
+            </motion.div>
         </CardWrapper>
     );
 };
