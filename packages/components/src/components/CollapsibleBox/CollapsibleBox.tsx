@@ -80,8 +80,8 @@ const Flex = styled.div`
 
 const easingValues = motionEasing.transition.join(', ');
 const ANIMATION_DURATION = 0.4;
-const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
-    transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
+const StyledIcon = styled(Icon)<{ $isCollapsed?: boolean }>`
+    transform: ${({ $isCollapsed }) => ($isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
 
     /* to sync with the expand animation */
     transition: transform ${ANIMATION_DURATION}s cubic-bezier(${easingValues});
@@ -156,7 +156,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 <IconWrapper>
                     {iconLabel && <IconLabel>{iconLabel}</IconLabel>}
                     <StyledIcon
-                        isCollapsed={isCollapsed}
+                        $isCollapsed={isCollapsed}
                         onClick={() => setIsCollapsed(current => !current)}
                         name="caretCircleDown"
                         size="medium"

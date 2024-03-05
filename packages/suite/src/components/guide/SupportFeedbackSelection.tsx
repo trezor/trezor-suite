@@ -28,7 +28,7 @@ const SectionHeader = styled.h3`
     padding: 0 0 18px;
 `;
 
-const SectionButton = styled.button<{ hasBackground?: boolean }>`
+const SectionButton = styled.button<{ $hasBackground?: boolean }>`
     left: auto;
     cursor: pointer;
     border-radius: ${borders.radii.xs};
@@ -37,8 +37,8 @@ const SectionButton = styled.button<{ hasBackground?: boolean }>`
     display: flex;
     align-items: center;
     padding: 13px;
-    background: ${({ hasBackground, theme }) =>
-        hasBackground ? theme.backgroundSurfaceElevation1 : 'none'};
+    background: ${({ $hasBackground, theme }) =>
+        $hasBackground ? theme.backgroundSurfaceElevation1 : 'none'};
     border: 0;
 
     transition: ${({ theme }) =>
@@ -146,7 +146,7 @@ export const SupportFeedbackSelection = () => {
                     </SectionHeader>
                     <SectionButton
                         onClick={handleBugButtonClick}
-                        hasBackground
+                        $hasBackground
                         data-test="@guide/feedback/bug"
                     >
                         <ButtonImage
@@ -166,7 +166,7 @@ export const SupportFeedbackSelection = () => {
                     </SectionButton>
                     <SectionButton
                         onClick={handleFeedbackButtonClick}
-                        hasBackground
+                        $hasBackground
                         data-test="@guide/feedback/suggestion"
                     >
                         <ButtonImage

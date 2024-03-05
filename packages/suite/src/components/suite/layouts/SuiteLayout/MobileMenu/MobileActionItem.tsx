@@ -22,9 +22,9 @@ const MobileIconWrapper = styled.div`
     margin-right: 16px;
 `;
 
-const Label = styled.span<{ isActive?: boolean }>`
+const Label = styled.span<{ $isActive?: boolean }>`
     padding: 16px 8px;
-    color: ${({ theme, isActive }) => (isActive ? theme.textDefault : theme.textSubdued)};
+    color: ${({ theme, $isActive }) => ($isActive ? theme.textDefault : theme.textSubdued)};
 `;
 
 const AlertDotWrapper = styled.div`
@@ -145,7 +145,7 @@ export const MobileActionItem = ({
     return (
         <MobileWrapper data-test={dataTest} onClick={onClick}>
             <MobileIconWrapper>{Content}</MobileIconWrapper>
-            <Label isActive={isActive}>{label}</Label>
+            <Label $isActive={isActive}>{label}</Label>
         </MobileWrapper>
     );
 };

@@ -107,8 +107,8 @@ const Heading = styled(H3)<HeadingProps>`
     ${({ $headingSize }) => HEADING_SIZES[$headingSize].css};
 `;
 
-const Subheading = styled.span<{ isWithMargin: boolean }>`
-    margin-left: ${({ isWithMargin }) => isWithMargin && spacingsPx.xl};
+const Subheading = styled.span<{ $isWithMargin: boolean }>`
+    margin-left: ${({ $isWithMargin }) => $isWithMargin && spacingsPx.xl};
     ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
 `;
@@ -270,7 +270,7 @@ const Modal = ({
                                 isWithBackButton={!!onBackClick}
                             >
                                 {preheading && (
-                                    <Subheading isWithMargin={!!headerIcon}>
+                                    <Subheading $isWithMargin={!!headerIcon}>
                                         {preheading}
                                     </Subheading>
                                 )}
@@ -287,7 +287,7 @@ const Modal = ({
                                 </Heading>
 
                                 {subheading && (
-                                    <Subheading isWithMargin={!!headerIcon}>
+                                    <Subheading $isWithMargin={!!headerIcon}>
                                         {subheading}
                                     </Subheading>
                                 )}

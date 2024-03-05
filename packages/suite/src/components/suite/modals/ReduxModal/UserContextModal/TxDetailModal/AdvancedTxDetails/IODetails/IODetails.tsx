@@ -34,7 +34,7 @@ const Wrapper = styled.div`
     ${blurFix}
 `;
 
-const StyledCollapsibleBox = styled(CollapsibleBox)<{ elevation: Elevation }>`
+const StyledCollapsibleBox = styled(CollapsibleBox)<{ $elevation: Elevation }>`
     background: none;
     box-shadow: none;
     border-radius: 0;
@@ -475,7 +475,7 @@ const CollapsibleIOSection = ({
 
     return inputs?.length || outputs?.length ? (
         <StyledCollapsibleBox
-            elevation={elevation}
+            $elevation={elevation}
             heading={heading}
             isOpen={opened}
             variant="large"

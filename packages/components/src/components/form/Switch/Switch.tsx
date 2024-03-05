@@ -60,19 +60,19 @@ const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isA
         `};
 `;
 
-const Handle = styled.button<{ disabled?: boolean } & Pick<SwitchProps, 'isChecked' | 'isSmall'>>`
+const Handle = styled.button<{ $disabled?: boolean; $isSmall: boolean; $isChecked: boolean }>`
     position: absolute;
     display: inline-block;
-    height: ${({ isSmall }) => (isSmall ? '14px' : '20px')};
-    width: ${({ isSmall }) => (isSmall ? '14px' : '20px')};
+    height: ${({ $isSmall }) => ($isSmall ? '14px' : '20px')};
+    width: ${({ $isSmall }) => ($isSmall ? '14px' : '20px')};
     border: none;
     left: 1px;
     border-radius: ${borders.radii.full};
     background: ${({ theme }) => theme.TYPE_WHITE};
-    transform: ${({ isChecked, isSmall }) =>
-        isChecked && `translateX(${isSmall ? '14px' : '20px'})`};
+    transform: ${({ $isChecked, $isSmall }) =>
+        $isChecked && `translateX(${$isSmall ? '14px' : '20px'})`};
     transition: transform 0.25s ease 0s;
-    cursor: ${({ disabled }) => !disabled && 'pointer'};
+    cursor: ${({ $disabled }) => !$disabled && 'pointer'};
 `;
 
 const CheckboxInput = styled.input`
@@ -137,10 +137,10 @@ export const Switch = ({
             >
                 <Handle
                     tabIndex={-1}
-                    isChecked={isChecked}
-                    disabled={isDisabled}
+                    $isChecked={isChecked}
+                    $disabled={isDisabled}
                     type="button"
-                    isSmall={isSmall}
+                    $isSmall={isSmall}
                 />
                 <CheckboxInput
                     id={id}

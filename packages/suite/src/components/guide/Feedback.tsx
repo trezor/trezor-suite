@@ -44,7 +44,7 @@ const RatingWrapper = styled.div`
     padding: 0 0 20px;
 `;
 
-const RatingItem = styled.button<{ selected?: boolean }>`
+const RatingItem = styled.button<{ $selected?: boolean }>`
     width: 48px;
     height: 47px;
     padding-top: 1px;
@@ -57,8 +57,8 @@ const RatingItem = styled.button<{ selected?: boolean }>`
     font-size: 30px;
     background-color: inherit;
 
-    ${({ selected, theme }) =>
-        selected &&
+    ${({ $selected, theme }) =>
+        $selected &&
         css`
             background: ${theme.BG_GREEN};
             border: 1px solid ${theme.BG_GREEN};
@@ -264,7 +264,7 @@ export const Feedback = ({ type }: FeedbackProps) => {
                             {ratingOptions.map(item => (
                                 <RatingItem
                                     key={item.id}
-                                    selected={rating?.id === item.id}
+                                    $selected={rating?.id === item.id}
                                     onClick={() => setRating(item)}
                                     data-test={`@guide/feedback/suggestion/${item.id}`}
                                 >
