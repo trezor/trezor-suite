@@ -18,7 +18,7 @@ export type FeatureFlagsRootState = {
 export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: Platform.OS === 'android',
     [FeatureFlag.IsPassphraseEnabled]: false,
-    [FeatureFlag.IsAddCoinAccountEnabled]: false,
+    [FeatureFlag.IsAddCoinAccountEnabled]: Platform.OS === 'android',
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
