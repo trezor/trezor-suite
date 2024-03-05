@@ -33,8 +33,8 @@ const FwVersion = styled.div`
     }
 `;
 
-const Version = styled.div<{ isNew?: boolean }>`
-    color: ${({ isNew, theme }) => (isNew ? theme.backgroundPrimaryDefault : theme.textSubdued)};
+const Version = styled.div<{ $isNew?: boolean }>`
+    color: ${({ $isNew, theme }) => ($isNew ? theme.backgroundPrimaryDefault : theme.textSubdued)};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
     margin-top: 6px;
@@ -81,7 +81,7 @@ export const FirmwareOffer = ({
     const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType || targetType);
 
     const nextVersionElement = (
-        <Version isNew data-test="@firmware/offer-version/new">
+        <Version $isNew data-test="@firmware/offer-version/new">
             {futureFirmwareType ? translationString(futureFirmwareType) : ''}
             {nextVersion ? ` ${nextVersion}` : ''}
             {useDevkit ? ' DEVKIT' : ''}

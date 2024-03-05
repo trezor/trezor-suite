@@ -136,9 +136,9 @@ const ScrollContainer = styled.div`
         display: none;
     }
 `;
-const Body = styled.div<{ isWithoutTopPadding: boolean }>`
+const Body = styled.div<{ $isWithoutTopPadding: boolean }>`
     padding: ${spacingsPx.xl} ${spacingsPx.md};
-    padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
+    padding-top: ${({ $isWithoutTopPadding }) => $isWithoutTopPadding && 0};
     display: flex;
     flex-direction: column;
 `;
@@ -314,7 +314,7 @@ const Modal = ({
                 <ShadowContainer>
                     <ShadowTop />
                     <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                        <Body isWithoutTopPadding={!heading && !!isCancelable}>
+                        <Body $isWithoutTopPadding={!heading && !!isCancelable}>
                             {description && <Description>{description}</Description>}
                             <Content id="modal-content">{children}</Content>
                         </Body>

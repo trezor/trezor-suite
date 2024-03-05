@@ -38,11 +38,11 @@ const PageNodeButtonIcon = styled(Icon)`
     margin: 0 18px 0 0;
 `;
 
-const Label = styled.div<{ isBold: boolean }>`
+const Label = styled.div<{ $isBold: boolean }>`
     width: 100%;
     font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${({ isBold }) =>
-        isBold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
+    font-weight: ${({ $isBold }) =>
+        $isBold ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     overflow: hidden;
     line-height: 16px;
@@ -88,7 +88,7 @@ export const GuideNode = ({ node, description }: GuideNodeProps) => {
     };
 
     const label = (
-        <Label isBold={!description}>
+        <Label $isBold={!description}>
             {getNodeTitle(node, language)}
             {description}
         </Label>
