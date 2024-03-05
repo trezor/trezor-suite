@@ -1,5 +1,4 @@
-import { TokenAddress } from 'suite-common/wallet-types/src';
-
+import { TokenAddress } from '@suite-common/wallet-types';
 import { Color } from '@trezor/theme';
 
 import { IconName, FlagIconName, CryptoIconName } from './icons';

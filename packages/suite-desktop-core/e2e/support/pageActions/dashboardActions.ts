@@ -1,5 +1,6 @@
 import { Page, Locator, expect as playwrightExpect } from '@playwright/test';
-import { NetworkSymbol } from 'suite-common/wallet-config/src';
+
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { waitForDataTestSelector } from '../common';
 

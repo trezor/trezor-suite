@@ -1,5 +1,6 @@
 import { Page } from '@playwright/test';
-import { BackendType, NetworkSymbol } from 'suite-common/wallet-config/src';
+
+import { BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { waitForDataTestSelector } from '../common';
 

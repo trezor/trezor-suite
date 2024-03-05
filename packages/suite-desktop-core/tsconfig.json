@@ -17,6 +17,9 @@
         {
             "path": "../../suite-common/suite-utils"
         },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
         { "path": "../coinjoin" },
         { "path": "../connect" },
         { "path": "../connect-common" },

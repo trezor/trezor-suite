@@ -1,4 +1,4 @@
-import { RateType } from 'suite-common/wallet-types';
+import { RateType } from '@suite-common/wallet-types';
 
 export const fiatRatesActionsPrefix = '@common/wallet-core/fiat-rates';
 

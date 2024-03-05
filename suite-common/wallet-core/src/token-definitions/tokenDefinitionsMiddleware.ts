@@ -1,6 +1,6 @@
-import { Account, Timestamp, TokenAddress } from 'suite-common/wallet-types/src';
 import { isAnyOf } from '@reduxjs/toolkit';
 
+import { Account, Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import {
     NetworkSymbol,
