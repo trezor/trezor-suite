@@ -139,6 +139,8 @@ const ScrollContainer = styled.div`
 const Body = styled.div<{ isWithoutTopPadding: boolean }>`
     padding: ${spacingsPx.xl} ${spacingsPx.md};
     padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
+    display: flex;
+    flex-direction: column;
 `;
 
 const Description = styled.div`

@@ -35,10 +35,12 @@ const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
 export type BoxProps = FrameProps & {
     variant?: BoxVariant;
     children: ReactNode;
+    forceElevation?: Elevation;
 };
 
 const Wrapper = styled.div<{ variant?: BoxVariant; elevation: Elevation }>`
     display: flex;
+    align-items: center;
     flex: 1;
     border-radius: ${borders.radii.sm};
     padding: ${spacingsPx.md};
@@ -51,8 +53,8 @@ const Wrapper = styled.div<{ variant?: BoxVariant; elevation: Elevation }>`
             : `border-left: 6px solid ${mapVariantToBackgroundColor({ variant, theme })};`}
 `;
 
-export const Box = ({ variant, children, margin, ...rest }: BoxProps) => {
-    const { elevation } = useElevation();
+export const Box = ({ variant, children, margin, forceElevation, ...rest }: BoxProps) => {
+    const { elevation } = useElevation(forceElevation);
 
     return (
         <ComponentFrame margin={margin}>
