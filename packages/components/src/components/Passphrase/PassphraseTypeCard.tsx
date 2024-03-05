@@ -83,12 +83,12 @@ const ArrowCol = styled(Col)`
     justify-content: center;
 `;
 
-const WalletTitle = styled.div<{ withMargin: boolean }>`
+const WalletTitle = styled.div<{ $withMargin: boolean }>`
     display: flex;
     ${typography.body}
     color: ${({ theme }) => theme.textDefault};
     align-items: center;
-    ${props => props.withMargin && `margin-bottom: ${spacingsPx.xxs};`}
+    ${props => props.$withMargin && `margin-bottom: ${spacingsPx.xxs};`}
 `;
 
 const Description = styled.div<{ $hasTopMargin?: boolean }>`
@@ -291,7 +291,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         </IconWrapper>
                         <Col>
                             <WalletTitle
-                                withMargin={props.type === 'hidden'}
+                                $withMargin={props.type === 'hidden'}
                                 data-test={props.type === 'hidden' && '@tooltip/passphrase-tooltip'}
                             >
                                 {props.type === 'hidden' ? (

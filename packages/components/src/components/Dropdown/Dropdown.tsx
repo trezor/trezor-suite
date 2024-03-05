@@ -27,14 +27,14 @@ const MoreIcon = styled(IconButton)<{ $isToggled: boolean }>`
     }
 `;
 
-const Container = styled.div<{ disabled?: boolean; $hasCustomChildren: boolean }>`
+const Container = styled.div<{ $disabled?: boolean; $hasCustomChildren: boolean }>`
     all: unset;
     width: fit-content;
     height: fit-content;
     transition: ${focusStyleTransition};
     border: 1px solid transparent;
     ${getFocusShadowStyle()};
-    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+    cursor: ${({ $disabled }) => ($disabled ? 'default' : 'pointer')};
 
     /** 
         This must be here to reduce clickable area to the "circle" of the (...) children.
@@ -230,7 +230,7 @@ export const Dropdown = forwardRef(
                 ref={toggleRef}
                 className={className}
                 tabIndex={renderOnClickPosition ? -1 : 0}
-                disabled={isDisabled}
+                $disabled={isDisabled}
                 onClick={onToggleClick}
                 onFocus={() => !isDisabled && !renderOnClickPosition && setToggled(true)}
                 onBlur={e => !menuRef.current?.contains(e.relatedTarget) && setToggled(false)}

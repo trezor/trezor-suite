@@ -122,7 +122,7 @@ export const Button = ({
 
     return (
         <ButtonContainer
-            variant={variant}
+            $variant={variant}
             size={size}
             $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
