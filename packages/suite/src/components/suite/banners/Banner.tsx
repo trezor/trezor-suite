@@ -59,11 +59,11 @@ const getIcon = (variant: BannerVariant, theme: DefaultTheme) => {
     }
 };
 
-const Wrapper = styled.div<{ variant: BannerVariant }>`
+const Wrapper = styled.div<{ $variant: BannerVariant }>`
     display: flex;
     gap: ${spacingsPx.xs};
-    background: ${({ theme, variant }) => getBackgroundColor(variant, theme)};
-    color: ${({ theme, variant }) => getForegroundColor(variant, theme)};
+    background: ${({ theme, $variant }) => getBackgroundColor($variant, theme)};
+    color: ${({ theme, $variant }) => getForegroundColor($variant, theme)};
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
     ${typography.highlight}
     border-radius: ${borders.radii.sm};
@@ -137,7 +137,7 @@ export const Banner = ({ body, variant, action, dismissal, className }: BannerPr
     const iconElement = getIcon(variant, theme);
 
     return (
-        <Wrapper variant={variant} className={className}>
+        <Wrapper $variant={variant} className={className}>
             <BlankLeft />
             <Body>
                 {iconElement && <IconWrapper>{iconElement}</IconWrapper>}

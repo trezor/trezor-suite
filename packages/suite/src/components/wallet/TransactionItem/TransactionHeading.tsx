@@ -36,10 +36,10 @@ const HeadingWrapper = styled.div`
     overflow: hidden;
 `;
 
-const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
+const ChevronIconWrapper = styled.div<{ $show: boolean; $animate: boolean }>`
     display: flex;
-    margin-left: ${({ animate }) => (animate ? '5px' : '3px')};
-    opacity: ${({ show }) => (show ? 1 : 0)};
+    margin-left: ${({ $animate }) => ($animate ? '5px' : '3px')};
+    opacity: ${({ $show }) => ($show ? 1 : 0)};
     transition:
         visibility 0s,
         opacity 0.15s linear,
@@ -51,9 +51,9 @@ const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
     }
 `;
 
-const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ isPhishingTransaction: boolean }>`
-    color: ${({ theme, isPhishingTransaction }) =>
-        isPhishingTransaction ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
+const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ $isPhishingTransaction: boolean }>`
+    color: ${({ theme, $isPhishingTransaction }) =>
+        $isPhishingTransaction ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
@@ -118,7 +118,7 @@ export const TransactionHeading = ({
                 value={targetAmount}
                 symbol={targetSymbol}
                 signValue={operation}
-                isPhishingTransaction={isPhishingTransaction}
+                $isPhishingTransaction={isPhishingTransaction}
             />
         );
     }
@@ -132,7 +132,7 @@ export const TransactionHeading = ({
                 value={formatNetworkAmount(abs, transaction.symbol)}
                 symbol={transaction.symbol}
                 signValue={transactionAmount}
-                isPhishingTransaction={isPhishingTransaction}
+                $isPhishingTransaction={isPhishingTransaction}
             />
         );
     }
@@ -166,14 +166,14 @@ export const TransactionHeading = ({
                             icon="WARNING"
                         />
                     )}
-                    <BlurWrapper isBlurred={isPhishingTransaction}>
+                    <BlurWrapper $isBlurred={isPhishingTransaction}>
                         <TransactionHeader transaction={transaction} isPending={isPending} />
                     </BlurWrapper>
                 </HeadingWrapper>
 
                 <ChevronIconWrapper
-                    show={txItemIsHovered}
-                    animate={nestedItemIsHovered || headingIsHovered}
+                    $show={txItemIsHovered}
+                    $animate={nestedItemIsHovered || headingIsHovered}
                 >
                     <Icon
                         size={nestedItemIsHovered || headingIsHovered ? 18 : 16}

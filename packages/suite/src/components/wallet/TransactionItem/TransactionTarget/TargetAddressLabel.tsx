@@ -5,7 +5,7 @@ import { Translation, AddressLabeling } from 'src/components/suite';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
+const TruncatedSpan = styled.span<{ $isBlurred?: boolean }>`
     overflow: hidden;
     text-overflow: ellipsis;
 `;

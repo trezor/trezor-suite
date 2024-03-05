@@ -28,13 +28,13 @@ const StyledCheckbox = styled(Checkbox)`
     }
 `;
 
-const Container = styled(Card)<{ checked: boolean }>`
+const Container = styled(Card)<{ $checked: boolean }>`
     position: relative;
 
     /* space for the checkbox */
     padding-bottom: ${spacingsPx.xxxxl};
     border: solid 1px
-        ${({ theme, checked }) => (checked ? theme.borderSecondary : theme.borderOnElevation1)};
+        ${({ theme, $checked }) => ($checked ? theme.borderSecondary : theme.borderOnElevation1)};
     transition:
         box-shadow 0.2s ease-in-out,
         border 0.1s;
@@ -103,7 +103,7 @@ export const BackupSeedCard = ({
     };
 
     return (
-        <Container forceElevation={2} checked={isChecked} data-test={dataTest}>
+        <Container forceElevation={2} $checked={isChecked} data-test={dataTest}>
             <Content>
                 <IconWrapper>
                     <Icon icon={icon} color={theme.iconDefault} />

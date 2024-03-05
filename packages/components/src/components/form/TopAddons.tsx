@@ -11,8 +11,8 @@ const Container = styled.div`
     padding-bottom: 6px;
 `;
 
-export const HoverAddon = styled.div<{ isVisible?: boolean }>`
-    opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+export const HoverAddon = styled.div<{ $isVisible?: boolean }>`
+    opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
     transition: opacity 0.1s ease-out;
 `;
 
@@ -36,7 +36,7 @@ export const TopAddons = ({ isHovered, addonRight, hoverAddon }: TopAddonsProps)
 
     return (
         <Container>
-            {hoverAddon && <HoverAddon isVisible={isHovered}>{hoverAddon}</HoverAddon>}
+            {hoverAddon && <HoverAddon $isVisible={isHovered}>{hoverAddon}</HoverAddon>}
             {addonRight && <RightAddon>{addonRight}</RightAddon>}
         </Container>
     );

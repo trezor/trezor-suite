@@ -16,14 +16,14 @@ import { TopAddons } from '../TopAddons';
 import { CharacterCount, CharacterCountProps } from './CharacterCount';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 
-const Wrapper = styled.div<{ hasBottomPadding: boolean }>`
+const Wrapper = styled.div<{ $hasBottomPadding: boolean }>`
     width: 100%;
     position: relative;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
-    padding-bottom: ${({ hasBottomPadding }) =>
-        hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
+    padding-bottom: ${({ $hasBottomPadding }) =>
+        $hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 `;
 
 const TextareaWrapper = styled(InputWrapper)<{
@@ -114,7 +114,7 @@ export const Textarea = ({
             className={className}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            hasBottomPadding={hasBottomPadding === true && bottomText === null}
+            $hasBottomPadding={hasBottomPadding === true && bottomText === null}
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
 

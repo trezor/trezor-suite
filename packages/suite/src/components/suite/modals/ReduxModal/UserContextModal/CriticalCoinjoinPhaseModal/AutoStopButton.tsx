@@ -11,13 +11,13 @@ import { borders, typography } from '@trezor/theme';
 
 const TRANSITION_CONFIG = '0.1s ease';
 
-const StyledIcon = styled(Icon)<{ isActivated: boolean }>`
+const StyledIcon = styled(Icon)<{ $isActivated: boolean }>`
     position: absolute;
     left: 6px;
     width: 15px;
     height: 15px;
     border: 1.5px solid
-        ${({ theme, isActivated }) => (isActivated ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+        ${({ theme, $isActivated }) => ($isActivated ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     border-radius: 50%;
     transition:
         background ${TRANSITION_CONFIG},
@@ -145,7 +145,7 @@ export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
             onMouseLeave={() => setIsHovered(false)}
         >
             <StyledIcon
-                isActivated={!!isActivated}
+                $isActivated={!!isActivated}
                 icon={icon}
                 size={iconSize}
                 color={isActivated ? theme.iconPrimaryDefault : undefined}

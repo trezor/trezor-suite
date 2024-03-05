@@ -25,7 +25,7 @@ const CaretContainer = styled.div`
     transition: background 0.15s;
 `;
 
-const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
+const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
     position: relative;
     display: flex;
     gap: ${spacingsPx.md};
@@ -45,8 +45,8 @@ const Wrapper = styled.div<{ isAnimationTriggered?: boolean }>`
         }
     }
 
-    ${({ isAnimationTriggered }) =>
-        isAnimationTriggered &&
+    ${({ $isAnimationTriggered }) =>
+        $isAnimationTriggered &&
         css`
             animation: ${SHAKE} 0.82s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
             transform: translate3d(0, 0, 0);
@@ -64,9 +64,9 @@ const DeviceLabel = styled.div`
     text-overflow: ellipsis;
 `;
 
-const DeviceWrapper = styled.div<{ isLowerOpacity: boolean }>`
+const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
     display: flex;
-    opacity: ${({ isLowerOpacity }) => isLowerOpacity && 0.4};
+    opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
 `;
 
 const StyledImage = styled(Image)`
@@ -167,12 +167,12 @@ export const DeviceSelector = () => {
         <Wrapper
             data-test="@menu/switch-device"
             onClick={handleSwitchDeviceClick}
-            isAnimationTriggered={isAnimationTriggered}
+            $isAnimationTriggered={isAnimationTriggered}
             tabIndex={0}
         >
             {selectedDevice && selectedDeviceModelInternal && (
                 <>
-                    <DeviceWrapper isLowerOpacity={deviceNeedsRefresh}>
+                    <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
                         {selectedDeviceModelInternal === DeviceModelInternal.T2B1 && (
                             <DeviceAnimation
                                 type="ROTATE"

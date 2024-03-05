@@ -33,32 +33,29 @@ const animationVariants = {
     },
 };
 
-const CardWrapper = styled(
-    ({ variant, withImage, disablePadding, expanded, expandable, nested, elevation, ...rest }) => (
-        <motion.div {...rest} />
-    ),
-)<{
-    variant?: CollapsibleOnboardingCardProps['variant'];
-    withImage?: boolean;
-    expanded?: CollapsibleOnboardingCardProps['expanded'];
-    expandable?: CollapsibleOnboardingCardProps['expandable'];
-    elevation: Elevation;
+const CardWrapper = styled.div<{
+    $expandable?: boolean;
+    $expanded?: boolean;
+    $nested?: boolean;
+    $variant?: 'small' | 'large';
+    $elevation: Elevation;
+    $withImage: boolean;
 }>`
     position: relative;
-    padding: ${({ variant }) => (variant === 'large' ? '40px 80px' : '20px 30px')};
-    width: ${({ variant }) => (variant === 'large' ? '100%' : 'auto')};
+    padding: ${({ $variant }) => ($variant === 'large' ? '40px 80px' : '20px 30px')};
+    width: ${({ $variant }) => ($variant === 'large' ? '100%' : 'auto')};
     border-radius: ${borders.radii.md};
     background: ${mapElevationToBackground};
     z-index: ${zIndices.base};
-    cursor: ${({ expanded }) => !expanded && 'pointer'};
+    cursor: ${({ $expanded }) => !$expanded && 'pointer'};
 
-    ${({ expandable, variant }) =>
-        !expandable &&
+    ${({ $expandable, $variant }) =>
+        !$expandable &&
         css`
             ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-                padding-left: ${variant === 'large' ? '40px' : '30px'};
-                padding-right: ${variant === 'large' ? '40px' : '30px'};
-                padding-bottom: ${variant === 'large' ? '40px' : '20px'};
+                padding-left: ${$variant === 'large' ? '40px' : '30px'};
+                padding-right: ${$variant === 'large' ? '40px' : '30px'};
+                padding-bottom: ${$variant === 'large' ? '40px' : '20px'};
             }
 
             ${variables.SCREEN_QUERY.MOBILE} {
@@ -67,9 +64,9 @@ const CardWrapper = styled(
             }
         `}
 
-    ${({ expanded, expandable, theme }) =>
-        expandable &&
-        !expanded &&
+    ${({ $expanded, $expandable, theme }) =>
+        $expandable &&
+        !$expanded &&
         css`
             background: ${theme.BG_GREY};
             box-shadow: rgb(0 0 0 / 0%) 0 2px 5px 0;
@@ -77,7 +74,7 @@ const CardWrapper = styled(
             padding: 16px 26px;
         `}
 
-    ${({ expanded, expandable, theme, variant }) =>
+    ${({ $expanded: expanded, $expandable: expandable, theme, $variant: variant }) =>
         expandable &&
         expanded &&
         css`
@@ -86,7 +83,7 @@ const CardWrapper = styled(
             padding: ${variant === 'large' ? '40px' : '20px 30px'};
         `}
 
-    ${({ nested, theme }) =>
+    ${({ $nested: nested, theme }) =>
         nested
             ? css`
                   padding: 0;
@@ -95,22 +92,22 @@ const CardWrapper = styled(
                   box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
               `}
 
-    ${({ withImage }) =>
+    ${({ $withImage: withImage }) =>
         withImage &&
         css`
             margin-top: 50px;
             padding-top: 80px;
         `}
 
-    ${({ variant }) =>
+    ${({ $variant: variant }) =>
         variant === 'small' &&
         css`
             max-width: 550px;
         `}
 `;
 
-const CardWrapperInner = styled.div<{ expandable: boolean }>`
-    overflow: ${({ expandable }) => expandable && 'hidden'};
+const CardWrapperInner = styled.div<{ $expandable: boolean }>`
+    overflow: ${({ $expandable }) => $expandable && 'hidden'};
 `;
 
 const Text = styled.span`
@@ -136,14 +133,14 @@ const ChildrenWrapper = styled.div`
     align-items: center;
 `;
 
-const Heading = styled(H2)<{ withDescription?: boolean }>`
+const Heading = styled(H2)<{ $withDescription?: boolean }>`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: ${({ withDescription }) => (withDescription ? '16px' : '36px')};
+    margin-bottom: ${({ $withDescription }) => ($withDescription ? '16px' : '36px')};
     text-align: center;
 `;
 
-const Description = styled.div<{ hasChildren?: boolean }>`
+const Description = styled.div<{ $hasChildren?: boolean }>`
     padding: 0 60px 36px;
     text-align: center;
 
@@ -213,62 +210,67 @@ export const CollapsibleOnboardingCard = ({
 
     return (
         <CardWrapper
-            expanded={expanded}
-            expandable={expandable}
-            elevation={elevation}
-            variant={variant}
-            withImage={!!image}
-            nested={nested}
-            animate={expanded ? 'expanded' : 'closed'}
-            transition={{ duration: 0.4, ease: motionEasing.transition }}
+            $expanded={expanded}
+            $expandable={expandable}
+            $elevation={elevation}
+            $variant={variant}
+            $withImage={!!image}
+            $nested={nested}
             onClick={expandable && !expanded ? onToggle : undefined}
             data-test="@components/collapsible-box"
             {...rest}
         >
-            <ElevationContext baseElevation={elevation}>
-                <CardWrapperInner expandable={expandable}>
-                    {expandable && (
-                        <CollapsibleCardInner
-                            variants={headerVariants}
+            <motion.div
+                animate={expanded ? 'expanded' : 'closed'}
+                transition={{ duration: 0.4, ease: motionEasing.transition }}
+            >
+                <ElevationContext baseElevation={elevation}>
+                    <CardWrapperInner $expandable={expandable}>
+                        {expandable && (
+                            <CollapsibleCardInner
+                                variants={headerVariants}
+                                animate={expanded ? 'expanded' : 'closed'}
+                                transition={{ duration: 0.2, ease: 'linear' }}
+                            >
+                                {expandableIcon}
+
+                                <HeadingExpandable>{heading}</HeadingExpandable>
+
+                                {tag && <Tag>{tag}</Tag>}
+                            </CollapsibleCardInner>
+                        )}
+
+                        <motion.div
+                            initial={false} // Prevents animation on mount when expanded === false
+                            variants={expandable ? animationVariants : undefined}
                             animate={expanded ? 'expanded' : 'closed'}
-                            transition={{ duration: 0.2, ease: 'linear' }}
+                            transition={{ duration: 0.4, ease: motionEasing.transition }}
                         >
-                            {expandableIcon}
+                            {expandable && expanded && (
+                                <CloseIcon icon="CROSS" size={22} onClick={onToggle} />
+                            )}
 
-                            <HeadingExpandable>{heading}</HeadingExpandable>
+                            {heading && (
+                                <Heading $withDescription={!!description}>{heading}</Heading>
+                            )}
 
-                            {tag && <Tag>{tag}</Tag>}
-                        </CollapsibleCardInner>
-                    )}
+                            {description && (
+                                <Description $hasChildren={!!children}>
+                                    <Text>{description}</Text>
+                                </Description>
+                            )}
 
-                    <motion.div
-                        initial={false} // Prevents animation on mount when expanded === false
-                        variants={expandable ? animationVariants : undefined}
-                        animate={expanded ? 'expanded' : 'closed'}
-                        transition={{ duration: 0.4, ease: motionEasing.transition }}
-                    >
-                        {expandable && expanded && (
-                            <CloseIcon icon="CROSS" size={22} onClick={onToggle} />
-                        )}
+                            {image && (
+                                <CardImageWrapper>
+                                    <Image width={100} height={100} image={image} />
+                                </CardImageWrapper>
+                            )}
 
-                        {heading && <Heading withDescription={!!description}>{heading}</Heading>}
-
-                        {description && (
-                            <Description hasChildren={!!children}>
-                                <Text>{description}</Text>
-                            </Description>
-                        )}
-
-                        {image && (
-                            <CardImageWrapper>
-                                <Image width={100} height={100} image={image} />
-                            </CardImageWrapper>
-                        )}
-
-                        <ChildrenWrapper>{children}</ChildrenWrapper>
-                    </motion.div>
-                </CardWrapperInner>
-            </ElevationContext>
+                            <ChildrenWrapper>{children}</ChildrenWrapper>
+                        </motion.div>
+                    </CardWrapperInner>
+                </ElevationContext>
+            </motion.div>
         </CardWrapper>
     );
 };

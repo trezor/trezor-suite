@@ -50,9 +50,9 @@ const PaymentItemDate = styled.div`
     width: 100%;
 `;
 
-const PaymentItemStatus = styled.div<{ isNextUp: boolean; isPaymentInfoAvailable: boolean }>`
-    margin: ${({ isPaymentInfoAvailable }) => (isPaymentInfoAvailable ? '13px 38px' : '0 auto')};
-    color: ${({ isNextUp, theme }) => (isNextUp ? theme.TYPE_ORANGE : theme.TYPE_LIGHT_GREY)};
+const PaymentItemStatus = styled.div<{ $isNextUp: boolean; $isPaymentInfoAvailable: boolean }>`
+    margin: ${({ $isPaymentInfoAvailable }) => ($isPaymentInfoAvailable ? '13px 38px' : '0 auto')};
+    color: ${({ $isNextUp, theme }) => ($isNextUp ? theme.TYPE_ORANGE : theme.TYPE_LIGHT_GREY)};
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -67,13 +67,13 @@ const PaymentItemStatusIcon = styled.div`
     display: flex;
 `;
 
-const PaymentItemStatusIconReactSVG = styled(Image)<{ isNextUp: boolean }>`
+const PaymentItemStatusIconReactSVG = styled(Image)<{ $isNextUp: boolean }>`
     & div {
         display: flex;
     }
 
     & path {
-        fill: ${({ isNextUp, theme }) => (isNextUp ? theme.TYPE_ORANGE : theme.TYPE_LIGHT_GREY)};
+        fill: ${({ $isNextUp, theme }) => ($isNextUp ? theme.TYPE_ORANGE : theme.TYPE_LIGHT_GREY)};
     }
 `;
 
@@ -146,14 +146,14 @@ export const PaymentDetail = ({
                         </PaymentItemDate>
                     </PaymentItemDateWrapper>
                     <PaymentItemStatus
-                        isNextUp={isNextUp}
-                        isPaymentInfoAvailable={!!savingsTradePayment.paymentInfo}
+                        $isNextUp={isNextUp}
+                        $isPaymentInfoAvailable={!!savingsTradePayment.paymentInfo}
                     >
                         {isNextUp ? (
                             <>
                                 <PaymentItemStatusIcon>
                                     <PaymentItemStatusIconReactSVG
-                                        isNextUp={isNextUp}
+                                        $isNextUp={isNextUp}
                                         image="HOURGLASS"
                                     />
                                 </PaymentItemStatusIcon>
@@ -163,7 +163,7 @@ export const PaymentDetail = ({
                             <>
                                 <PaymentItemStatusIcon>
                                     <PaymentItemStatusIconReactSVG
-                                        isNextUp={isNextUp}
+                                        $isNextUp={isNextUp}
                                         image="WATCH"
                                     />
                                 </PaymentItemStatusIcon>

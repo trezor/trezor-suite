@@ -17,11 +17,11 @@ export interface WarningProps {
 }
 
 type MapArgs = {
-    variant: WarningVariant;
+    $variant: WarningVariant;
     theme: DefaultTheme;
 };
 
-const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
         info: 'backgroundAlertBlueSubtleOnElevation0',
@@ -29,10 +29,10 @@ const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
         destructive: 'backgroundAlertRedSubtleOnElevation0',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
-const mapVariantToTextColor = ({ variant, theme }: MapArgs): CSSColor => {
+const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'textPrimaryDefault',
         info: 'textAlertBlue',
@@ -40,9 +40,9 @@ const mapVariantToTextColor = ({ variant, theme }: MapArgs): CSSColor => {
         destructive: 'textAlertRed',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
-const mapVariantToIconColor = ({ variant, theme }: MapArgs): CSSColor => {
+const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'iconPrimaryDefault',
         info: 'iconAlertBlue',
@@ -50,10 +50,10 @@ const mapVariantToIconColor = ({ variant, theme }: MapArgs): CSSColor => {
         destructive: 'iconAlertRed',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
-const mapVariantToIcon = ({ variant }: Pick<MapArgs, 'variant'>): IconType => {
+const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconType => {
     const iconMap: Record<WarningVariant, IconType> = {
         primary: 'LIGHTBULB',
         info: 'INFO',
@@ -61,10 +61,10 @@ const mapVariantToIcon = ({ variant }: Pick<MapArgs, 'variant'>): IconType => {
         destructive: 'WARNING',
     };
 
-    return iconMap[variant];
+    return iconMap[$variant];
 };
 
-const Wrapper = styled.div<{ variant: WarningVariant; withIcon?: boolean }>`
+const Wrapper = styled.div<{ $variant: WarningVariant; $withIcon?: boolean }>`
     align-items: center;
     background: ${mapVariantToBackgroundColor};
     border-radius: ${borders.radii.xs};
@@ -72,7 +72,7 @@ const Wrapper = styled.div<{ variant: WarningVariant; withIcon?: boolean }>`
     display: flex;
     ${typography.hint}
     gap: ${spacingsPx.sm};
-    justify-content: ${({ withIcon }) => !withIcon && 'center'};
+    justify-content: ${({ $withIcon }) => !$withIcon && 'center'};
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
     width: 100%;
 
@@ -93,12 +93,12 @@ export const Warning = ({
     const theme = useTheme();
 
     return (
-        <Wrapper variant={variant} withIcon={withIcon} className={className}>
+        <Wrapper $variant={variant} $withIcon={withIcon} className={className}>
             {withIcon && (
                 <Icon
                     size={20}
-                    icon={icon === undefined ? mapVariantToIcon({ variant }) : icon}
-                    color={mapVariantToIconColor({ variant, theme })}
+                    icon={icon === undefined ? mapVariantToIcon({ $variant: variant }) : icon}
+                    color={mapVariantToIconColor({ $variant: variant, theme })}
                 />
             )}
             {children}

@@ -25,8 +25,8 @@ const Description = styled.p`
     margin: 8px 0;
 `;
 
-const StyledSliderInput = styled(SliderInput)<{ width?: number }>`
-    width: ${({ width }) => width && `${width}px`};
+const StyledSliderInput = styled(SliderInput)<{ $width?: number }>`
+    width: ${({ $width }) => $width && `${$width}px`};
 `;
 
 interface SetupSliderProps
@@ -98,7 +98,7 @@ export const SetupSlider = ({
                     min={min}
                     max={max}
                     unit={unit}
-                    width={inputWidth}
+                    $width={inputWidth}
                 />
             </Row>
             <Description>{description}</Description>

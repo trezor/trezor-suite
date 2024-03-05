@@ -36,7 +36,7 @@ const NavListItem = styled(NavigationItem)`
             : ''}
 `;
 
-const StyledDivider = styled.div<{ elevation: Elevation }>`
+const StyledDivider = styled.div<{ $elevation: Elevation }>`
     margin: ${spacingsPx.xxs} 0; /* gap xxs + margin xxs = spacing xs around divider */
     width: 100%;
     border-bottom: 1px solid ${mapElevationToBorder};
@@ -52,7 +52,7 @@ const StyledDivider = styled.div<{ elevation: Elevation }>`
 const Divider = () => {
     const { elevation } = useElevation();
 
-    return <StyledDivider elevation={elevation} />;
+    return <StyledDivider $elevation={elevation} />;
 };
 
 export const CoinmarketLayoutNavigation = () => {

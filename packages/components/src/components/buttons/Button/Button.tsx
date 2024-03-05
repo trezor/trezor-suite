@@ -16,22 +16,22 @@ import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils'
 import { useElevation } from '../../ElevationContext/ElevationContext';
 
 interface ButtonContainerProps {
-    variant: ButtonVariant;
-    size: ButtonSize;
-    iconAlignment?: IconAlignment;
-    hasIcon?: boolean;
-    isFullWidth?: boolean;
-    elevation: Elevation;
+    $variant: ButtonVariant;
+    $size: ButtonSize;
+    $iconAlignment?: IconAlignment;
+    $hasIcon?: boolean;
+    $isFullWidth?: boolean;
+    $elevation: Elevation;
 }
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: ${({ iconAlignment }) => iconAlignment === 'right' && 'row-reverse'};
-    gap: ${({ hasIcon }) => hasIcon && spacingsPx.xs};
-    padding: ${({ size }) => getPadding(size, true)};
-    width: ${({ isFullWidth }) => isFullWidth && '100%'};
+    flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
+    gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
+    padding: ${({ $size }) => getPadding($size, true)};
+    width: ${({ $isFullWidth }) => $isFullWidth && '100%'};
     border-radius: ${borders.radii.full};
     transition:
         ${focusStyleTransition},
@@ -41,7 +41,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     border: 1px solid transparent;
 
     ${getFocusShadowStyle()}
-    ${({ variant, elevation }) => getVariantStyle(variant, elevation)}
+    ${({ $variant, $elevation }) => getVariantStyle($variant, $elevation)}
 
     &:disabled {
         background: ${({ theme }) => theme.BG_GREY};
@@ -83,7 +83,7 @@ export interface ButtonProps extends SelectedHTMLButtonProps {
     variant?: ButtonVariant;
     size?: ButtonSize;
     isDisabled?: boolean;
-    isLoading?: boolean;
+    $isLoading?: boolean;
     isFullWidth?: boolean;
     icon?: IconType;
     iconSize?: number;
@@ -98,7 +98,7 @@ export const Button = ({
     variant = 'primary',
     size = 'medium',
     isDisabled = false,
-    isLoading = false,
+    $isLoading: isLoading = false,
     isFullWidth = false,
     icon,
     iconSize,
@@ -122,13 +122,13 @@ export const Button = ({
 
     return (
         <ButtonContainer
-            variant={variant}
+            $variant={variant}
             size={size}
-            iconAlignment={iconAlignment}
+            $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
-            isFullWidth={isFullWidth}
+            $isFullWidth={isFullWidth}
             type={type}
-            hasIcon={!!icon || isLoading}
+            $hasIcon={!!icon || isLoading}
             elevation={elevation}
             {...rest}
         >

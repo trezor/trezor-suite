@@ -71,8 +71,8 @@ const LoaderWrapper = styled.div`
     min-height: 98px;
 `;
 
-const Version = styled.div<{ show: boolean }>`
-    visibility: ${({ show }) => (show ? 'visible' : 'hidden')};
+const Version = styled.div<{ $show: boolean }>`
+    visibility: ${({ $show }) => ($show ? 'visible' : 'hidden')};
     margin-top: 10px;
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
@@ -89,10 +89,10 @@ const StyledImage = styled(Image)`
     }
 `;
 
-const Col = styled.div<{ justify?: string }>`
+const Col = styled.div<{ $justify?: string }>`
     display: flex;
     flex: 1;
-    justify-content: ${({ justify }) => justify};
+    justify-content: ${({ $justify }) => $justify};
 `;
 
 interface Installer {
@@ -141,7 +141,7 @@ export const InstallBridge = () => {
         >
             <Metadata title="Download Bridge | Trezor Suite" />
             <Content>
-                <Version show={!!data.currentVersion}>
+                <Version $show={!!data.currentVersion}>
                     <Translation
                         id="TR_CURRENTLY_INSTALLED_TREZOR"
                         values={{ version: data.currentVersion }}
@@ -193,7 +193,7 @@ export const InstallBridge = () => {
 
             <Footer>
                 {transportAvailable && (
-                    <Col justify="flex-start">
+                    <Col $justify="flex-start">
                         <StyledButton
                             icon="ARROW_LEFT"
                             variant="tertiary"
@@ -206,14 +206,14 @@ export const InstallBridge = () => {
                 )}
                 {!isLoading && (
                     <>
-                        <Col justify="center">
+                        <Col $justify="center">
                             <Link variant="nostyle" href={GITHUB_BRIDGE_CHANGELOG_URL}>
                                 <StyledButton icon="LOG" variant="tertiary">
                                     <Translation id="TR_CHANGELOG" />
                                 </StyledButton>
                             </Link>
                         </Col>
-                        <Col justify="flex-end">
+                        <Col $justify="flex-end">
                             {data && target?.signature && (
                                 <TrezorLink variant="nostyle" href={data.uri + target.signature}>
                                     <StyledButton icon="SIGNATURE" variant="tertiary">

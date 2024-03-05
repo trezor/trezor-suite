@@ -95,7 +95,7 @@ const Round = ({ transaction }: { transaction: WalletAccountTransaction }) => {
     );
 };
 
-const StyledCollapsibleBox = styled(CollapsibleBox)<{ isPending: boolean }>`
+const StyledCollapsibleBox = styled(CollapsibleBox)<{ $isPending: boolean }>`
     background-color: ${({ theme }) => theme.BG_WHITE};
     box-shadow: none;
     border-radius: 12px;
@@ -130,8 +130,8 @@ const StyledCollapsibleBox = styled(CollapsibleBox)<{ isPending: boolean }>`
         padding: 8px;
     }
 
-    ${({ isPending }) =>
-        isPending &&
+    ${({ $isPending }) =>
+        $isPending &&
         css`
             border-left: 8px solid ${({ theme }) => theme.TYPE_ORANGE};
 
@@ -171,7 +171,7 @@ export const CoinjoinBatchItem = ({
     return (
         <StyledCollapsibleBox
             variant="large"
-            isPending={isPending}
+            $isPending={isPending}
             heading={
                 <>
                     <TxTypeIconWrapper>

@@ -26,7 +26,7 @@ const addonAnimation = keyframes`
     }
 `;
 
-const AddonContainer = styled.div<{ isFocused?: boolean }>`
+const AddonContainer = styled.div<{ $isFocused?: boolean }>`
     position: absolute;
     top: 16px;
     right: 16px;
@@ -34,13 +34,13 @@ const AddonContainer = styled.div<{ isFocused?: boolean }>`
     align-items: center;
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xxxs} ${spacingsPx.xs};
-    background: ${({ theme, isFocused }) =>
-        isFocused ? theme.backgroundSurfaceElevation0 : 'none'};
+    background: ${({ theme, $isFocused }) =>
+        $isFocused ? theme.backgroundSurfaceElevation0 : 'none'};
     letter-spacing: 0.4px;
     color: ${({ theme }) => theme.textPrimaryDefault};
     text-transform: uppercase;
     border: 0;
-    opacity: ${({ isFocused }) => isFocused && 0.6} !important;
+    opacity: ${({ $isFocused }) => $isFocused && 0.6} !important;
     cursor: pointer;
     transform: translateX(-10px);
     transition:
@@ -89,7 +89,7 @@ const MenuItemContainer = styled.li<MenuItemsProps & { elevation: Elevation }>`
     border-radius: ${borders.radii.xxs};
     background: ${({ isFocused, noHoverEffect, theme, elevation }) =>
         isFocused && !noHoverEffect
-            ? mapElevationToBackground({ theme, elevation: nextElevation[elevation] })
+            ? mapElevationToBackground({ theme, $elevation: nextElevation[elevation] })
             : undefined};
     color: ${({ isDisabled, theme }) => (!isDisabled ? theme.textDefault : theme.textDisabled)};
     white-space: nowrap;
@@ -132,7 +132,7 @@ const Addon = ({ label, icon, onClick, isKeyboardSelected, onMouseOver }: AddonC
     const theme = useTheme();
 
     return (
-        <AddonContainer onClick={onClick} isFocused={isKeyboardSelected} onMouseOver={onMouseOver}>
+        <AddonContainer onClick={onClick} $isFocused={isKeyboardSelected} onMouseOver={onMouseOver}>
             <span>{label}</span>
             <Icon icon={icon} size={spacings.sm} color={theme.iconPrimaryDefault} />
         </AddonContainer>

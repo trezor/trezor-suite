@@ -4,11 +4,11 @@ import { breakpointMediaQueries } from '@trezor/styles';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 
-const Wrapper = styled.div<{ isFullWidth?: boolean }>`
+const Wrapper = styled.div<{ $isFullWidth?: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.sm};
-    width: ${({ isFullWidth }) => (isFullWidth ? '100%' : 'auto')};
+    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
 
     ${breakpointMediaQueries.below_sm} {
         flex-direction: column;
@@ -35,16 +35,16 @@ const getTranslateValue = (index: number) => {
 const getPuckWidth = (optionsCount: number) =>
     `calc((100% - 8px - ${(optionsCount - 1) * spacings.xxs}px) / ${optionsCount})`;
 
-const Options = styled.div<{ optionsCount: number; isFullWidth?: boolean }>`
+const Options = styled.div<{ $optionsCount: number; $isFullWidth?: boolean }>`
     position: relative;
     display: grid;
-    grid-auto-columns: ${({ optionsCount }) => `minmax(${getPuckWidth(optionsCount)}, 1fr)`};
+    grid-auto-columns: ${({ $optionsCount }) => `minmax(${getPuckWidth($optionsCount)}, 1fr)`};
     grid-auto-flow: column;
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     border-radius: ${borders.radii.full};
-    width: ${({ isFullWidth }) => (isFullWidth ? '100%' : 'auto')};
+    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
 
     ${breakpointMediaQueries.below_sm} {
         grid-auto-flow: row;
@@ -53,17 +53,17 @@ const Options = styled.div<{ optionsCount: number; isFullWidth?: boolean }>`
     }
 `;
 
-const Puck = styled.div<{ optionsCount: number; selectedIndex: number }>`
+const Puck = styled.div<{ $optionsCount: number; $selectedIndex: number }>`
     position: absolute;
     left: 4px;
     top: 4px;
     bottom: 4px;
-    width: ${({ optionsCount }) => getPuckWidth(optionsCount)};
+    width: ${({ $optionsCount }) => getPuckWidth($optionsCount)};
     padding: ${spacingsPx.xxs} ${spacingsPx.xl};
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.full};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
-    transform: ${({ selectedIndex }) => `translateX(${getTranslateValue(selectedIndex)})`};
+    transform: ${({ $selectedIndex }) => `translateX(${getTranslateValue($selectedIndex)})`};
     transition:
         transform 0.175s cubic-bezier(1, 0.02, 0.38, 0.74),
         ${focusStyleTransition};
@@ -75,8 +75,9 @@ const Puck = styled.div<{ optionsCount: number; selectedIndex: number }>`
         right: 4px;
         top: 4px;
         width: auto;
-        height: ${({ optionsCount }) => getPuckWidth(optionsCount)};
-        transform: ${({ selectedIndex }) => `translateY(${getTranslateValue(selectedIndex)})`};
+        height: ${({ $optionsCount }) => getPuckWidth($optionsCount)};
+        transform: ${({ $selectedIndex: selectedIndex }) =>
+            `translateY(${getTranslateValue(selectedIndex)})`};
     }
 `;
 
@@ -86,7 +87,7 @@ const WidthMock = styled.span`
     ${typography.highlight}
 `;
 
-const Option = styled.div<{ isSelected: boolean; isDisabled: boolean }>`
+const Option = styled.div<{ $isSelected: boolean; $isDisabled: boolean }>`
     position: relative;
     display: flex;
     justify-content: center;
@@ -102,19 +103,19 @@ const Option = styled.div<{ isSelected: boolean; isDisabled: boolean }>`
     cursor: pointer;
 
     &:hover {
-        color: ${({ theme, isSelected, isDisabled }) =>
-            !isSelected && !isDisabled && theme.textDefault};
+        color: ${({ theme, $isSelected, $isDisabled }) =>
+            !$isSelected && !$isDisabled && theme.textDefault};
     }
 
-    ${({ isSelected }) =>
-        isSelected &&
+    ${({ $isSelected }) =>
+        $isSelected &&
         css`
             color: ${({ theme }) => theme.textPrimaryDefault};
             ${typography.highlight}
         `}
 
-    ${({ isDisabled }) =>
-        isDisabled &&
+    ${({ $isDisabled }) =>
+        $isDisabled &&
         css`
             color: ${({ theme }) => theme.textDisabled};
             pointer-events: none;
@@ -201,13 +202,13 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
     const selectedIndex = options.findIndex(option => option.value === selectedOptionIn);
 
     return (
-        <Wrapper className={className} isFullWidth={isFullWidth} {...rest}>
+        <Wrapper className={className} $isFullWidth={isFullWidth} {...rest}>
             {label && <Label>{label}</Label>}
 
-            <Options optionsCount={options.length} isFullWidth={isFullWidth}>
+            <Options $optionsCount={options.length} $isFullWidth={isFullWidth}>
                 <Puck
-                    optionsCount={options.length}
-                    selectedIndex={selectedIndex}
+                    $optionsCount={options.length}
+                    $selectedIndex={selectedIndex}
                     tabIndex={0}
                     onKeyDown={handleKeyboardNav}
                 />
@@ -216,8 +217,8 @@ export const SelectBar: <V extends ValueTypes>(props: SelectBarProps<V>) => JSX.
                     <Option
                         key={String(option.value)}
                         onClick={handleOptionClick(option)}
-                        isDisabled={!!isDisabled}
-                        isSelected={
+                        $isDisabled={!!isDisabled}
+                        $isSelected={
                             selectedOptionIn !== undefined
                                 ? selectedOptionIn === option.value
                                 : false

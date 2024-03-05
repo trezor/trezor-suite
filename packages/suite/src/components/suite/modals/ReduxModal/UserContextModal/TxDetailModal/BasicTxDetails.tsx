@@ -21,7 +21,7 @@ import {
     typography,
 } from '@trezor/theme';
 
-const Wrapper = styled.div<{ elevation: Elevation }>`
+const Wrapper = styled.div<{ $elevation: Elevation }>`
     background: ${mapElevationToBackground};
     padding: ${spacingsPx.lg};
     border-radius: ${borders.radii.xs};
@@ -39,7 +39,7 @@ const StatusWrapper = styled.div`
     align-items: center;
 `;
 
-const HeaderFirstRow = styled.div<{ elevation: Elevation }>`
+const HeaderFirstRow = styled.div<{ $elevation: Elevation }>`
     display: grid;
     grid-gap: ${spacingsPx.sm};
     grid-template-columns: minmax(55px, 70px) auto auto;
@@ -54,7 +54,7 @@ const HeaderFirstRow = styled.div<{ elevation: Elevation }>`
     }
 `;
 
-const Grid = styled.div<{ showRbfCols?: boolean }>`
+const Grid = styled.div<{ $showRbfCols?: boolean }>`
     display: grid;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     grid-gap: ${spacingsPx.sm};
@@ -91,7 +91,7 @@ const TxidValue = styled.div`
     ${typography.label}
 `;
 
-const IconWrapper = styled.div<{ elevation: Elevation }>`
+const IconWrapper = styled.div<{ $elevation: Elevation }>`
     background-color: ${mapElevationToBorder};
     border-radius: ${borders.radii.full};
     display: flex;
@@ -136,10 +136,10 @@ const TxSentStatus = styled(H3)`
     color: ${({ theme }) => theme.textDefault};
 `;
 
-const ConfirmationStatus = styled.div<{ confirmed: boolean; tiny?: boolean }>`
-    color: ${({ confirmed, theme }) =>
-        confirmed ? theme.textPrimaryDefault : theme.textAlertYellow};
-    ${({ tiny }) => (tiny ? typography.label : typography.callout)}
+const ConfirmationStatus = styled.div<{ $confirmed: boolean; $tiny?: boolean }>`
+    color: ${({ $confirmed, theme }) =>
+        $confirmed ? theme.textPrimaryDefault : theme.textAlertYellow};
+    ${({ $tiny }) => ($tiny ? typography.label : typography.callout)}
 `;
 
 const Circle = styled.div`
@@ -184,12 +184,12 @@ export const BasicTxDetails = ({
     const { elevation } = useElevation();
 
     return (
-        <Wrapper elevation={elevation}>
-            <HeaderFirstRow elevation={elevation}>
-                <MainIconWrapper elevation={elevation}>
+        <Wrapper $elevation={elevation}>
+            <HeaderFirstRow $elevation={elevation}>
+                <MainIconWrapper $elevation={elevation}>
                     <CoinLogo symbol={tx.symbol} size={48} />
 
-                    <NestedIconWrapper elevation={elevation}>
+                    <NestedIconWrapper $elevation={elevation}>
                         <Icon
                             size={14}
                             color={tx.type === 'failed' ? theme.iconAlertRed : theme.iconDefault}
@@ -207,7 +207,7 @@ export const BasicTxDetails = ({
                 <ConfirmationStatusWrapper>
                     {isConfirmed ? (
                         <StatusWrapper>
-                            <ConfirmationStatus confirmed>
+                            <ConfirmationStatus $confirmed>
                                 <Translation id="TR_CONFIRMED_TX" />
                             </ConfirmationStatus>
 
@@ -224,7 +224,7 @@ export const BasicTxDetails = ({
                             )}
                         </StatusWrapper>
                     ) : (
-                        <ConfirmationStatus confirmed={false}>
+                        <ConfirmationStatus $confirmed={false}>
                             <Translation id="TR_UNCONFIRMED_TX" />
                         </ConfirmationStatus>
                     )}
@@ -292,7 +292,7 @@ export const BasicTxDetails = ({
                         </Title>
 
                         <Value>
-                            <ConfirmationStatus confirmed={isFinal} tiny>
+                            <ConfirmationStatus $confirmed={isFinal} $tiny>
                                 <Translation
                                     id={isFinal ? 'TR_RBF_STATUS_FINAL' : 'TR_RBF_STATUS_NOT_FINAL'}
                                 />

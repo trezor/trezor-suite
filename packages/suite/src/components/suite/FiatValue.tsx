@@ -1,12 +1,12 @@
 import { ReactElement } from 'react';
 import styled from 'styled-components';
-import { HiddenPlaceholder } from 'src/components/suite';
 import { useFormatters } from '@suite-common/formatters';
 import type { FormatNumberOptions } from '@formatjs/intl';
 import {
     useFiatFromCryptoValue,
     useFiatFromCryptoValueParams,
 } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { HiddenPlaceholder } from './HiddenPlaceholder';
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     font-variant-numeric: tabular-nums;
