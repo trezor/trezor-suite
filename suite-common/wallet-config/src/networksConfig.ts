@@ -73,8 +73,7 @@ export const networks = {
             queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'token-definitions', 'staking'],
-        label: 'TR_NETWORK_ETHEREUM_LABEL',
-        tooltip: 'TR_NETWORK_ETHEREUM_TOOLTIP',
+        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -93,6 +92,7 @@ export const networks = {
             queryString: '',
         },
         features: ['sign-verify', 'tokens'],
+        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
     },
@@ -406,6 +406,7 @@ export const networks = {
         decimals: 6,
         testnet: false,
         features: ['tokens', 'staking'],
+        label: 'TR_INCLUDING_TOKENS',
         explorer: {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
@@ -466,6 +467,7 @@ export const networks = {
         decimals: 9,
         testnet: false,
         features: ['tokens' /* , 'staking' */],
+        label: 'TR_INCLUDING_TOKENS',
         explorer: {
             tx: 'https://explorer.solana.com/tx/',
             account: 'https://explorer.solana.com/address/',
@@ -507,7 +509,6 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        label: 'TR_NETWORK_POLYGON_LABEL',
         explorer: {
             tx: 'https://matic2.trezor.io/tx/',
             account: 'https://matic2.trezor.io/address/',
@@ -516,6 +517,7 @@ export const networks = {
             queryString: '',
         },
         features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
+        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
         isDebugOnly: true, // TODO: POLYGON DEBUG
