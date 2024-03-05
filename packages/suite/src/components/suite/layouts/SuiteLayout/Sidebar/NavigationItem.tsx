@@ -30,10 +30,10 @@ export const NavigationItemBase = styled.div.attrs(() => ({
     ${getFocusShadowStyle()}
 `;
 
-const Container = styled(NavigationItemBase)<{ elevation: Elevation; $isActive?: boolean }>`
+const Container = styled(NavigationItemBase)<{ $elevation: Elevation; $isActive?: boolean }>`
     ${({ theme, $isActive }) =>
         $isActive
-            ? css<{ elevation: Elevation }>`
+            ? css<{ $elevation: Elevation }>`
                   background-color: ${mapElevationToBackground};
                   box-shadow: ${theme.boxShadowBase};
                   color: ${theme.textDefault};
@@ -97,7 +97,7 @@ export const NavigationItem = ({
             data-test={dataTest! !== undefined ? dataTest : `@suite/menu/${goToRoute}`}
             className={className}
             tabIndex={0}
-            elevation={elevation}
+            $elevation={elevation}
         >
             <Icon name={icon} size="large" color="iconSubdued" />
             <Translation id={nameId} values={values} />

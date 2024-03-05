@@ -24,13 +24,13 @@ const HelperIcon = styled.div`
     align-items: center;
 `;
 
-const EapIcon = styled(HelperIcon)<{ isEapEnabled: boolean }>`
-    background-color: ${({ theme, isEapEnabled }) =>
-        isEapEnabled ? '#8247E5' : theme.backgroundAlertYellowBold};
+const EapIcon = styled(HelperIcon)<{ $isEapEnabled: boolean }>`
+    background-color: ${({ theme, $isEapEnabled }) =>
+        $isEapEnabled ? '#8247E5' : theme.backgroundAlertYellowBold};
 
     &:hover {
-        background-color: ${({ theme, isEapEnabled }) =>
-            isEapEnabled ? '#551ab8' : theme.iconAlertYellow};
+        background-color: ${({ theme, $isEapEnabled }) =>
+            $isEapEnabled ? '#551ab8' : theme.iconAlertYellow};
     }
 `;
 
@@ -55,7 +55,7 @@ export const HelperIcons = () => {
     return (
         <Container>
             {allowPrerelease && (
-                <EapIcon onClick={handleEapClick} isEapEnabled={isEapEnabled}>
+                <EapIcon onClick={handleEapClick} $isEapEnabled={isEapEnabled}>
                     <Tooltip cursor="pointer" content={translationString('TR_EARLY_ACCESS')}>
                         <Icon icon="EXPERIMENTAL" size={16} color={theme.iconOnSecondary} />
                     </Tooltip>

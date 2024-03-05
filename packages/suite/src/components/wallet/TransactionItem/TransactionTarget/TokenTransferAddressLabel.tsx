@@ -19,11 +19,11 @@ export const TokenTransferAddressLabel = ({
     }
     if (type === 'sent') {
         return (
-            <BlurWrapper isBlurred={isPhishingTransaction}>
+            <BlurWrapper $isBlurred={isPhishingTransaction}>
                 <AddressLabeling address={transfer.to} />
             </BlurWrapper>
         );
     }
 
-    return <BlurWrapper isBlurred={isPhishingTransaction}>{transfer.to}</BlurWrapper>;
+    return <BlurWrapper $isBlurred={isPhishingTransaction}>{transfer.to}</BlurWrapper>;
 };
