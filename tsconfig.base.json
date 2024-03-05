@@ -3,7 +3,6 @@
         "allowJs": true,
         "allowSyntheticDefaultImports": true,
         "allowUnreachableCode": false,
-        "baseUrl": ".",
         "jsx": "preserve",
         "module": "ESNext",
         "moduleResolution": "Bundler",
