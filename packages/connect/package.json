@@ -21,6 +21,7 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "browser": {
+        "./src/index.ts": "./src/index-browser.ts",
         "./src/index": "./src/index-browser.ts",
         "./src/utils/assets": "./src/utils/assets-browser.ts",
         "./src/workers/workers": "./src/workers/workers-browser.ts"
@@ -28,6 +29,7 @@
     "publishConfig": {
         "main": "lib/index.js",
         "browser": {
+            "./lib/index.js": "./lib/index-browser.js",
             "./lib/index": "./lib/index-browser.js",
             "./lib/utils/assets": "./lib/utils/assets-browser.js",
             "./lib/workers/workers": "./lib/workers/workers-browser.js"
