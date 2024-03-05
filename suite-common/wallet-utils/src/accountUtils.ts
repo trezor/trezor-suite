@@ -287,7 +287,7 @@ export const formatAmount = (amount: BigNumber.Value, decimals: number) => {
 
         return bAmount.div(10 ** decimals).toString(10);
     } catch (error) {
-        return '-1';
+        return '-1'; // TODO: this is definitely not correct return value
     }
 };
 
