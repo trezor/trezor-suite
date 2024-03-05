@@ -22,7 +22,7 @@
             "cache": true
         },
         "type-check": {
-            "dependsOn": ["^build:lib", "^type-check", "build:lib"],
+            "dependsOn": ["^type-check"],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/tsconfig.base.json",
@@ -32,7 +32,7 @@
             "cache": true
         },
         "test:unit": {
-            "dependsOn": ["^build:lib", "build:lib"],
+            "dependsOn": [],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/jest.config.base.js",

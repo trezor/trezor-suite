@@ -21,16 +21,6 @@ export const config: webpack.Configuration = {
     module: {
         rules: [
             {
-                test: /\.(js|ts)$/,
-                exclude: /node_modules/,
-                use: {
-                    loader: 'babel-loader',
-                    options: {
-                        presets: ['@babel/preset-typescript'],
-                    },
-                },
-            },
-            {
                 test: (input: string) => input.includes('background-sharedworker'),
                 loader: 'worker-loader',
                 options: {
@@ -78,6 +68,16 @@ export const config: webpack.Configuration = {
                 loader: 'worker-loader',
                 options: {
                     filename: './workers/blockfrost-worker.[contenthash].js',
+                },
+            },
+            {
+                test: /\.(js|ts)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['@babel/preset-typescript'],
+                    },
                 },
             },
         ],
