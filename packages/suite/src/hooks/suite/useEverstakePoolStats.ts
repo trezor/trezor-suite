@@ -1,8 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import BigNumber from 'bignumber.js';
-import { BACKUP_ETH_APY } from 'src/constants/suite/ethStaking';
+import { BACKUP_ETH_APY, STAKE_SYMBOLS } from 'src/constants/suite/ethStaking';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { useSelector } from './useSelector';
 
 export const useEverstakePoolStats = () => {
+    const enabledNetworks = useSelector(selectEnabledNetworks);
+    const areEthNetworksEnabled = useMemo(
+        () => enabledNetworks.some(symbol => STAKE_SYMBOLS.includes(symbol)),
+        [enabledNetworks],
+    );
     const [poolStats, setPoolStats] = useState<{ ethApy: string; nextRewardPayout: number | null }>(
         {
             ethApy: BACKUP_ETH_APY,
@@ -12,6 +19,8 @@ export const useEverstakePoolStats = () => {
     const [isPoolStatsLoading, setIsPoolStatsLoading] = useState(false);
 
     useEffect(() => {
+        if (!areEthNetworksEnabled) return;
+
         const abortController = new AbortController();
 
         const getEverstakePoolStats = async () => {
@@ -39,7 +48,7 @@ export const useEverstakePoolStats = () => {
                     ethApy: new BigNumber(stats.apr)
                         .times(100)
                         .toPrecision(3, BigNumber.ROUND_DOWN),
-                    nextRewardPayout: Math.round(stats.next_reward_payout_in / 60 / 60 / 24),
+                    nextRewardPayout: Math.ceil(stats.next_reward_payout_in / 60 / 60 / 24),
                 });
             } catch (e) {
                 if (!abortController.signal.aborted) {
@@ -55,7 +64,7 @@ export const useEverstakePoolStats = () => {
         return () => {
             abortController.abort();
         };
-    }, []);
+    }, [areEthNetworksEnabled]);
 
     return {
         ethApy: poolStats.ethApy,

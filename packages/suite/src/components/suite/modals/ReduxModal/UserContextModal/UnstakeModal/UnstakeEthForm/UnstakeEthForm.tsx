@@ -70,7 +70,28 @@ export const UnstakeEthForm = () => {
 
     return (
         <form onSubmit={handleSubmit(signTx)}>
+            {canClaim && (
+                <StyledWarning variant="info">
+                    <Translation
+                        id="TR_STAKE_CAN_CLAIM_WARNING"
+                        values={{
+                            amount: claimableAmount,
+                            symbol: symbol.toUpperCase(),
+                            br: <br />,
+                        }}
+                    />
+                </StyledWarning>
+            )}
+
             <Options symbol={symbol} />
+
+            <WarningsWrapper>
+                {errors[CRYPTO_INPUT] && (
+                    <StyledWarning variant="destructive">
+                        {errors[CRYPTO_INPUT]?.message}
+                    </StyledWarning>
+                )}
+            </WarningsWrapper>
 
             <DividerWrapper>
                 <Divider />
@@ -81,27 +102,6 @@ export const UnstakeEthForm = () => {
                 symbol={symbol}
                 helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
             />
-
-            <WarningsWrapper>
-                {errors[CRYPTO_INPUT] && (
-                    <StyledWarning variant="destructive">
-                        {errors[CRYPTO_INPUT]?.message}
-                    </StyledWarning>
-                )}
-
-                {canClaim && (
-                    <StyledWarning variant="info">
-                        <Translation
-                            id="TR_STAKE_CAN_CLAIM_WARNING"
-                            values={{
-                                amount: claimableAmount,
-                                symbol: symbol.toUpperCase(),
-                                br: <br />,
-                            }}
-                        />
-                    </StyledWarning>
-                )}
-            </WarningsWrapper>
 
             <UpToDaysWrapper>
                 {!Number.isNaN(unstakingPeriod) && (
