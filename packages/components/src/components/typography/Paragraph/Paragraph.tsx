@@ -9,8 +9,8 @@ export type ParagraphProps = {
     children: React.ReactNode;
 };
 
-const P = styled.div<{ type: TypographyStyle }>`
-    ${({ type }) => typography[type]}
+const P = styled.div<{ $type: TypographyStyle }>`
+    ${({ $type }) => typography[$type]}
 `;
 
 export const Paragraph = ({
@@ -19,7 +19,7 @@ export const Paragraph = ({
     'data-test': dataTest,
     children,
 }: ParagraphProps) => (
-    <P className={className} type={type} data-test={dataTest}>
+    <P className={className} $type={type} data-test={dataTest}>
         {children}
     </P>
 );

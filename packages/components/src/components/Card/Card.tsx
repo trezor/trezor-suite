@@ -6,26 +6,26 @@ import { ElevationContext, useElevation } from '../ElevationContext/ElevationCon
 type PaddingType = 'small' | 'none' | 'normal';
 
 type MapArgs = {
-    paddingType: PaddingType;
+    $paddingType: PaddingType;
 };
 
-const mapPaddingTypeToLabelPadding = ({ paddingType }: MapArgs): number | string => {
+const mapPaddingTypeToLabelPadding = ({ $paddingType }: MapArgs): number | string => {
     const paddingMap: Record<PaddingType, number | string> = {
         none: `${spacingsPx.xxs} 0`,
         small: `${spacingsPx.xxs} ${spacingsPx.sm}`,
         normal: `${spacingsPx.xs} ${spacingsPx.lg}`,
     };
 
-    return paddingMap[paddingType];
+    return paddingMap[$paddingType];
 };
-const mapPaddingTypeToPadding = ({ paddingType }: MapArgs): number | string => {
+const mapPaddingTypeToPadding = ({ $paddingType }: MapArgs): number | string => {
     const paddingMap: Record<PaddingType, number | string> = {
         none: 0,
         small: spacingsPx.sm,
         normal: spacingsPx.lg,
     };
 
-    return paddingMap[paddingType];
+    return paddingMap[$paddingType];
 };
 
 const Container = styled.div`
@@ -33,18 +33,18 @@ const Container = styled.div`
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     padding: ${spacingsPx.xxxs};
 `;
-const LabelContainer = styled.div<{ paddingType: PaddingType }>`
+const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
     padding: ${mapPaddingTypeToLabelPadding};
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const CardContainer = styled.div<{ elevation: Elevation; paddingType: PaddingType }>`
+const CardContainer = styled.div<{ $elevation: Elevation; $paddingType: PaddingType }>`
     display: flex;
     flex-direction: column;
     padding: ${mapPaddingTypeToPadding};
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.md};
-    box-shadow: ${({ theme, elevation }) => elevation === 1 && theme.boxShadowBase};
+    box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
 
     ${({ onClick, theme }) =>
         onClick !== undefined
@@ -77,7 +77,7 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: Padd
         const { elevation } = useElevation(forceElevation);
 
         return (
-            <CardContainer ref={ref} elevation={elevation} paddingType={paddingType} {...rest}>
+            <CardContainer ref={ref} $elevation={elevation} $paddingType={paddingType} {...rest}>
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
             </CardContainer>
         );
@@ -93,7 +93,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
 
         return label ? (
             <Container>
-                <LabelContainer paddingType={paddingType}>{label}</LabelContainer>
+                <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
                 <CardComponent {...props} ref={ref} />
             </Container>
         ) : (

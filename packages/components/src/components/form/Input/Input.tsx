@@ -54,10 +54,10 @@ const InputWrapper = styled.div`
 const getInputAddonPadding = (size: InputSize) =>
     size === 'small' ? spacingsPx.sm : spacingsPx.md;
 
-const InputAddon = styled.div<{ align: innerAddonAlignment; size: InputSize }>`
+const InputAddon = styled.div<{ $align: innerAddonAlignment; $size: InputSize }>`
     position: absolute;
-    inset: 0 ${({ align, size }) => (align === 'right' ? getInputAddonPadding(size) : 'auto')} 0
-        ${({ align, size }) => (align === 'left' ? getInputAddonPadding(size) : 'auto')};
+    inset: 0 ${({ $align, $size }) => ($align === 'right' ? getInputAddonPadding($size) : 'auto')} 0
+        ${({ $align, $size }) => ($align === 'left' ? getInputAddonPadding($size) : 'auto')};
     display: flex;
     align-items: center;
 `;
@@ -142,13 +142,13 @@ const Input = ({
 
             <InputWrapper>
                 {innerAddon && innerAddonAlign === 'left' && (
-                    <InputAddon align="left" ref={measureLeftAddon} size={size}>
+                    <InputAddon $align="left" ref={measureLeftAddon} $size={size}>
                         {innerAddon}
                     </InputAddon>
                 )}
 
                 {((innerAddon && innerAddonAlign === 'right') || hasShowClearButton) && (
-                    <InputAddon align="right" ref={measureRightAddon} size={size}>
+                    <InputAddon $align="right" ref={measureRightAddon} $size={size}>
                         {!hasShowClearButton && innerAddon}
 
                         {hasShowClearButton && (

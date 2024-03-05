@@ -1,22 +1,22 @@
 import styled from 'styled-components';
 import { borders, spacingsPx } from '@trezor/theme';
 
-const Container = styled.div<{ maxWidth: number }>`
+const Container = styled.div<{ $maxWidth: number }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
     width: 100%;
-    max-width: ${({ maxWidth }) => maxWidth}px;
+    max-width: ${({ $maxWidth }) => $maxWidth}px;
     padding: ${spacingsPx.xs};
 `;
 
-const Step = styled.div<{ isActive: boolean }>`
+const Step = styled.div<{ $isActive: boolean }>`
     width: 100%;
     height: 2px;
     border-radius: ${borders.radii.full};
     transition: background-color 0.2s;
-    background: ${({ theme, isActive }) =>
-        isActive ? theme.backgroundPrimaryDefault : theme.backgroundNeutralSubdued};
+    background: ${({ theme, $isActive }) =>
+        $isActive ? theme.backgroundPrimaryDefault : theme.backgroundNeutralSubdued};
 `;
 
 export interface StepperProps {
@@ -34,8 +34,8 @@ export const Stepper = ({ step, total, maxWidth = 200 }: StepperProps) => {
         .map((_, index) => {
             const isActive = index < step;
 
-            return <Step key={`${index}`} isActive={isActive} />;
+            return <Step key={`${index}`} $isActive={isActive} />;
         });
 
-    return <Container maxWidth={maxWidth}>{steps}</Container>;
+    return <Container $maxWidth={maxWidth}>{steps}</Container>;
 };

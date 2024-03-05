@@ -46,7 +46,7 @@ const CloseWrapper = styled.div`
     margin-left: ${spacingsPx.xs};
 `;
 
-const Close = styled.div<{ elevation: Elevation }>`
+const Close = styled.div<{ $elevation: Elevation }>`
     border-radius: 100%;
     cursor: pointer;
     background: ${mapElevationToBackground};
@@ -71,15 +71,15 @@ const Success = styled.div`
     justify-content: center;
 `;
 
-const Step = styled.div<{ isActive: boolean }>`
+const Step = styled.div<{ $isActive: boolean }>`
     width: 18px;
     height: 4px;
     border-radius: ${borders.radii.xxs};
     margin-right: ${spacingsPx.xxs};
     background: ${({ theme }) => theme.backgroundNeutralSubdued};
 
-    ${({ isActive }) =>
-        isActive &&
+    ${({ $isActive }) =>
+        $isActive &&
         css`
             background: ${({ theme }) => theme.iconPrimaryDefault};
         `}
@@ -153,7 +153,7 @@ export const ConfirmOnDeviceContent = ({
                         {Array.from(Array(steps).keys()).map((step, index) => (
                             <Step
                                 key={step}
-                                isActive={isStepActive(index, activeStep)}
+                                $isActive={isStepActive(index, activeStep)}
                                 data-test={`@prompts/confirm-on-device/step/${index}${
                                     isStepActive(index, activeStep) ? '/active' : ''
                                 }`}
@@ -167,7 +167,7 @@ export const ConfirmOnDeviceContent = ({
                 <CloseWrapper>
                     {onCancel && (
                         <Close
-                            elevation={elevation}
+                            $elevation={elevation}
                             onClick={onCancel}
                             data-test="@confirm-on-device/close-button"
                         >

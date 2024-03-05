@@ -88,7 +88,7 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
     }
 `;
 
-const Label = styled.div<{ disabled?: boolean; $width?: number }>`
+const Label = styled.div<{ $disabled?: boolean; $width?: number }>`
     position: relative;
     justify-self: center;
     padding-top: ${spacingsPx.xxxs};
@@ -96,17 +96,17 @@ const Label = styled.div<{ disabled?: boolean; $width?: number }>`
     text-align: center;
     color: ${({ theme }) => theme.textSubdued};
     ${typography.label}
-    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+    cursor: ${({ $disabled }) => ($disabled ? 'default' : 'pointer')};
 
     :first-child {
         text-align: left;
     }
 `;
 
-const LabelsWrapper = styled.div<{ count: number; $width?: number }>`
+const LabelsWrapper = styled.div<{ $count: number; $width?: number }>`
     display: grid;
-    grid-template-columns: ${({ count, $width }) =>
-        `repeat(${count}, ${$width ? `${$width}px` : '1fr'})`};
+    grid-template-columns: ${({ $count, $width }) =>
+        `repeat(${$count}, ${$width ? `${$width}px` : '1fr'})`};
     justify-content: space-between;
 `;
 
@@ -152,7 +152,7 @@ export const Range = ({
         return (
             <Label
                 key={value}
-                disabled={disabled}
+                $disabled={disabled}
                 $width={labelsElWidth}
                 onClick={() => handleLabelClick?.(Number.parseFloat(String(value)))}
                 ref={isLastElement ? lastLabelRef : undefined}
@@ -166,7 +166,7 @@ export const Range = ({
         <div className={className}>
             <Input {...props} type="range" disabled={disabled} trackStyle={trackStyle} />
             {labels?.length && (
-                <LabelsWrapper count={labels.length} $width={labelsElWidth}>
+                <LabelsWrapper $count={labels.length} $width={labelsElWidth}>
                     {labelComponents}
                 </LabelsWrapper>
             )}

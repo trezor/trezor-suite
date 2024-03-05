@@ -58,7 +58,7 @@ const BulletPointWrapper = styled.div`
     }
 `;
 
-const BulletPointNumber = styled.div<{ active?: boolean }>`
+const BulletPointNumber = styled.div<{ $active?: boolean }>`
     display: flex;
     flex: 0 0 auto;
     width: 28px;
@@ -73,18 +73,18 @@ const BulletPointNumber = styled.div<{ active?: boolean }>`
     background: ${({ theme }) => theme.BG_GREY};
     font-variant-numeric: tabular-nums;
 
-    ${({ active, theme }) =>
-        active &&
+    ${({ $active, theme }) =>
+        $active &&
         css`
             color: ${theme.TYPE_GREEN};
             background: ${theme.BG_LIGHT_GREEN};
         `}
 `;
 
-const BulletPointText = styled.span<{ active?: boolean }>`
+const BulletPointText = styled.span<{ $active?: boolean }>`
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme, active }) => (active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+    color: ${({ theme, $active }) => ($active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     text-align: left;
 `;
 
@@ -191,9 +191,9 @@ interface ReconnectStepProps {
 
 const ReconnectStep = ({ order, active, dataTest, children }: ReconnectStepProps) => (
     <BulletPointWrapper>
-        {order && <BulletPointNumber active={active}>{order}</BulletPointNumber>}
+        {order && <BulletPointNumber $active={active}>{order}</BulletPointNumber>}
 
-        <BulletPointText active={active} data-test={active ? dataTest : undefined}>
+        <BulletPointText $active={active} data-test={active ? dataTest : undefined}>
             {children}
         </BulletPointText>
     </BulletPointWrapper>

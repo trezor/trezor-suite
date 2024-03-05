@@ -6,18 +6,18 @@ import { CSSColor } from './types';
 
 type StyledComponentElevationProps = {
     theme: Colors; // this package does not depend on styled-components
-    elevation: Elevation;
+    $elevation: Elevation;
 };
 
 export const mapElevationToBackground = ({
     theme,
-    elevation,
+    $elevation,
 }: StyledComponentElevationProps): CSSColor =>
-    theme[`backgroundSurfaceElevation${elevation !== -1 ? elevation : 'Negative'}`];
+    theme[`backgroundSurfaceElevation${$elevation !== -1 ? $elevation : 'Negative'}`];
 
 export const mapElevationToBorder = ({
     theme,
-    elevation,
+    $elevation,
 }: StyledComponentElevationProps): CSSColor => {
     const map: Record<Elevation, Color> = {
         // @TODO fix colors borderOnElevation -> borderElevation
@@ -28,7 +28,7 @@ export const mapElevationToBorder = ({
         3: 'borderOnElevation0', // Todo: once we get tokens
     };
 
-    return theme[map[elevation]];
+    return theme[map[$elevation]];
 };
 
 // ---------------------------
