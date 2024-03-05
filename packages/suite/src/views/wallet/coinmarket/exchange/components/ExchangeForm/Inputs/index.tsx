@@ -21,7 +21,6 @@ import {
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useSelector } from 'src/hooks/suite';
 import { selectDeviceAccounts, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { spacingsPx } from '@trezor/theme';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -71,7 +70,6 @@ const Inputs = () => {
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const deviceAccounts = useSelector(selectDeviceAccounts);
     const { elevation } = useElevation();
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const { outputs, receiveCryptoSelect } = getValues();
     const tokenAddress = outputs?.[0]?.token;
@@ -177,27 +175,25 @@ const Inputs = () => {
             <Row spaceBefore>
                 <ReceiveCryptoSelect />
             </Row>
-            {isReceiveTokenBalanceZero &&
-                (receiveCryptoNetworkSymbol !== 'matic' || // TODO: POLYGON DEBUG
-                    (receiveCryptoNetworkSymbol === 'matic' && isDebug)) && (
-                    <Row spaceBefore>
-                        <StyledEvmExplanationBox
-                            caret
-                            elevation={elevation}
-                            symbol={receiveCryptoNetworkSymbol}
-                            title={<Translation id="TR_EVM_EXPLANATION_EXCHANGE_TITLE" />}
-                        >
-                            <Translation
-                                id="TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION"
-                                values={{
-                                    coin: receiveCryptoSelect.label,
-                                    network: networks[receiveCryptoNetworkSymbol].name,
-                                    networkSymbol: receiveCryptoNetworkSymbol.toUpperCase(),
-                                }}
-                            />
-                        </StyledEvmExplanationBox>
-                    </Row>
-                )}
+            {isReceiveTokenBalanceZero && (
+                <Row spaceBefore>
+                    <StyledEvmExplanationBox
+                        caret
+                        elevation={elevation}
+                        symbol={receiveCryptoNetworkSymbol}
+                        title={<Translation id="TR_EVM_EXPLANATION_EXCHANGE_TITLE" />}
+                    >
+                        <Translation
+                            id="TR_EVM_EXPLANATION_EXCHANGE_DESCRIPTION"
+                            values={{
+                                coin: receiveCryptoSelect.label,
+                                network: networks[receiveCryptoNetworkSymbol].name,
+                                networkSymbol: receiveCryptoNetworkSymbol.toUpperCase(),
+                            }}
+                        />
+                    </StyledEvmExplanationBox>
+                </Row>
+            )}
         </InputsContainer>
     );
 };

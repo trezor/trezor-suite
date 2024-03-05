@@ -520,7 +520,6 @@ export const networks = {
         label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
-        isDebugOnly: true, // TODO: POLYGON DEBUG
     },
 } as const;
 

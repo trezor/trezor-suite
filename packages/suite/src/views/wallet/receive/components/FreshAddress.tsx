@@ -182,8 +182,7 @@ export const FreshAddress = ({
                     <Translation id="RECEIVE_ADDRESS_REVEAL" />
                 </StyledButton>
             </Tooltip>
-            {/* TODO: POLYGON DEBUG */}
-            {account.networkType === 'ethereum' && account.symbol === 'matic' && (
+            {account.networkType === 'ethereum' && (
                 <StyledEvmExplanationBox
                     caret
                     symbol={account.symbol}
