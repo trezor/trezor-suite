@@ -1,3 +1,7 @@
+# 1.1.26
+
+-   chore(transport, trezor-user-env-link): remove cross-fetch (e489dce33)
+
 # 1.1.25
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)
