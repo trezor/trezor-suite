@@ -30,10 +30,8 @@ export class BackendManager {
                 debug: DataManager.getSettings('debug'),
                 proxy: DataManager.getSettings('proxy'),
                 onDisconnected: pendingSubscriptions => {
-                    this.setInstance(coinInfo.shortcut, undefined);
-                    if (pendingSubscriptions) {
-                        this.planReconnect(coinInfo, postMessage, 0);
-                    }
+                    const reconnectAttempts = pendingSubscriptions ? 0 : undefined;
+                    this.onDisconnect(coinInfo, postMessage, reconnectAttempts);
                 },
             });
             this.setInstance(coinInfo.shortcut, backend);
@@ -47,12 +45,7 @@ export class BackendManager {
 
             return backend;
         } catch (error) {
-            this.setInstance(coinInfo.shortcut, undefined);
-            if (reconnect) {
-                this.planReconnect(coinInfo, postMessage, reconnect.attempts);
-            } else {
-                this.setPreferred(coinInfo.shortcut, undefined);
-            }
+            this.onDisconnect(coinInfo, postMessage, reconnect?.attempts);
             throw error;
         }
     }
@@ -102,23 +95,31 @@ export class BackendManager {
         else this.preferred[shortcut] = url;
     }
 
-    private planReconnect(
+    private onDisconnect(
         coinInfo: CoinInfo,
         postMessage: BlockchainOptions['postMessage'],
-        attempts: number,
+        reconnectAttempt: number | undefined,
     ) {
-        const timeout = Math.min(2500 * attempts, 20000);
+        this.setInstance(coinInfo.shortcut, undefined);
+
+        if (reconnectAttempt === undefined || reconnectAttempt === 4) {
+            // Forget preferred backend when no reconnection is wanted
+            // or when it couldn't be connected repeatedly.
+            // Fourth attempt was chosen arbitrarily.
+            this.setPreferred(coinInfo.shortcut, undefined);
+        }
+
+        if (reconnectAttempt === undefined) {
+            return;
+        }
+
+        const timeout = Math.min(2500 * reconnectAttempt, 20000);
         const time = Date.now() + timeout;
         const handle = setTimeout(() => {
             this.getOrConnect(coinInfo, postMessage).catch(() => {});
         }, timeout);
         clearTimeout(this.reconnect[coinInfo.shortcut]?.handle);
-        this.reconnect[coinInfo.shortcut] = { attempts: attempts + 1, handle };
-        if (attempts === 4) {
-            // Forget preferred backend as it couldn't be connected repeatedly,
-            // fourth attempt was chosen arbitrarily
-            this.setPreferred(coinInfo.shortcut, undefined);
-        }
+        this.reconnect[coinInfo.shortcut] = { attempts: reconnectAttempt + 1, handle };
         postMessage(createBlockchainMessage(BLOCKCHAIN.RECONNECTING, { coin: coinInfo, time }));
     }
 
