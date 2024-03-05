@@ -2961,13 +2961,9 @@ export default defineMessages({
         defaultMessage: 'Ethereum',
         id: 'TR_NETWORK_ETHEREUM',
     },
-    TR_NETWORK_ETHEREUM_LABEL: {
-        defaultMessage: 'Incl. ERC-20 tokens',
-        id: 'TR_NETWORK_ETHEREUM_LABEL',
-    },
-    TR_NETWORK_ETHEREUM_TOOLTIP: {
-        defaultMessage: 'Supported tokens',
-        id: 'TR_NETWORK_ETHEREUM_TOOLTIP',
+    TR_INCLUDING_TOKENS: {
+        defaultMessage: 'Including tokens',
+        id: 'TR_INCLUDING_TOKENS',
     },
     TR_NETWORK_ETHEREUM_CLASSIC: {
         defaultMessage: 'Ethereum Classic',
@@ -3000,10 +2996,6 @@ export default defineMessages({
     TR_NETWORK_POLYGON: {
         defaultMessage: 'Polygon PoS',
         id: 'TR_NETWORK_POLYGON',
-    },
-    TR_NETWORK_POLYGON_LABEL: {
-        defaultMessage: 'Incl. MRC20 tokens',
-        id: 'TR_NETWORK_POLYGON_LABEL',
     },
     TR_NETWORK_STELLAR: {
         defaultMessage: 'Stellar',
