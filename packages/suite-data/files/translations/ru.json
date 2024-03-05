@@ -272,7 +272,6 @@
   "TR_ADD_TOKEN_TOAST_ERROR": "Действие не удалось: {error}",
   "TR_ADD_TOKEN_TOAST_SUCCESS": "Токен добавлен",
   "TR_ADD_TOKEN_TOKEN_NOT_VALID": "Это не похоже на действительный токен",
-  "TR_ADD_TOKEN_TOOLTIP": "Введите адрес контракта токена ERC20 (contract address)",
   "TR_ADD_WALLET": "Добавить кошелёк",
   "TR_ADVANCED": "Опасная зона",
   "TR_ADVANCED_RECOVERY": "Усовершенствованное восстановление",

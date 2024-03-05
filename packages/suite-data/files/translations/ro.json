@@ -234,7 +234,6 @@
   "TR_ADD_TOKEN_TOAST_ERROR": "Acțiune eșuată: {error}",
   "TR_ADD_TOKEN_TOAST_SUCCESS": "Token adăugat",
   "TR_ADD_TOKEN_TOKEN_NOT_VALID": "Acesta nu pare a fi un token valid.",
-  "TR_ADD_TOKEN_TOOLTIP": "Introduceți o adresă de contract de token ERC20",
   "TR_ADD_WALLET": "Adăugare portofel",
   "TR_ADVANCED": "Avansat",
   "TR_ADVANCED_RECOVERY": "recuperare avansată",

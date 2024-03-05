@@ -260,7 +260,6 @@
   "TR_ADD_TOKEN_TOAST_ERROR": "Actie mislukt: {error}",
   "TR_ADD_TOKEN_TOAST_SUCCESS": "Token toegevoegd",
   "TR_ADD_TOKEN_TOKEN_NOT_VALID": "Dit lijkt niet op een geldig token",
-  "TR_ADD_TOKEN_TOOLTIP": "Voer een ERC20 token contractcontract adres in",
   "TR_ADD_WALLET": "Wallet toevoegen",
   "TR_ADVANCED": "Geavanceerd",
   "TR_ADVANCED_RECOVERY": "geavanceerd herstel",

@@ -272,7 +272,6 @@
   "TR_ADD_TOKEN_TOAST_ERROR": "L’action a échoué : {error}",
   "TR_ADD_TOKEN_TOAST_SUCCESS": "Jeton ajouté",
   "TR_ADD_TOKEN_TOKEN_NOT_VALID": "Cela ne ressemble pas à un jeton valide",
-  "TR_ADD_TOKEN_TOOLTIP": "Entrer une adresse de contrat de jeton ERC20",
   "TR_ADD_WALLET": "Ajouter un portefeuille",
   "TR_ADVANCED": "Zone de danger",
   "TR_ADVANCED_RECOVERY": "Récupération avancée",

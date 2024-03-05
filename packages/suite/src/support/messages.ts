@@ -5446,7 +5446,7 @@ export default defineMessages({
     TR_ADD_TOKEN_DESCRIPTION: {
         id: 'TR_ADD_TOKEN_DESCRIPTION',
         defaultMessage:
-            "Enter a contract address of a token you wish to add to your wallet. This is typically a 42-character alphanumeric string starting with '0x'.",
+            'Enter a contract address of a token to add to your wallet. This is typically a 42-character alphanumeric string starting with "0x".',
     },
     TR_ADD_TOKEN_LABEL: {
         id: 'TR_ADD_TOKEN_LABEL',
@@ -5962,8 +5962,7 @@ export default defineMessages({
         id: 'METADATA_MODAL_HEADING',
     },
     METADATA_MODAL_DESCRIPTION: {
-        defaultMessage:
-            'Select a cloud storage provider to sync your labels or save them locally. Your data is encrypted by Trezor.',
+        defaultMessage: 'Select how to sync your labels. Your data is encrypted by Trezor.',
         id: 'METADATA_MODAL_DESCRIPTION',
     },
     TR_DISABLED_SWITCH_TOOLTIP: {
@@ -8056,7 +8055,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_21',
         description: '140 symbols max',
         defaultMessage:
-            "Bitcoin transactions are grouped together in 'blocks'. These blocks are organized in a chronological sequence comprising the blockchain",
+            'Bitcoin transactions are grouped together in blocks. These blocks are organized in a chronological sequence comprising the blockchain',
     },
     TR_LOADING_FACT_22: {
         id: 'TR_LOADING_FACT_22',
@@ -8465,7 +8464,7 @@ export default defineMessages({
     TR_EVM_EXPLANATION_SEND_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_SEND_DESCRIPTION',
         defaultMessage:
-            'Send only through the {network} network. The address must be on the {network} network for the crypto to be received.',
+            'Send only through the {network} network. The address must be on the {network} network for the sent crypto to be received.',
     },
     TR_EVM_EXPLANATION_EXCHANGE_TITLE: {
         id: 'TR_EVM_EXPLANATION_EXCHANGE_TITLE',

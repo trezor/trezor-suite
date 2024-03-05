@@ -272,7 +272,6 @@
   "TR_ADD_TOKEN_TOAST_ERROR": "Aktion fehlgeschlagen: {error}",
   "TR_ADD_TOKEN_TOAST_SUCCESS": "Token hinzugefügt",
   "TR_ADD_TOKEN_TOKEN_NOT_VALID": "Dies sieht nicht nach einem gültigen Token aus.",
-  "TR_ADD_TOKEN_TOOLTIP": "Gib eine ERC20-Token-Vertragsadresse ein.",
   "TR_ADD_WALLET": "Wallet hinzufügen",
   "TR_ADVANCED": "Gefahrenbereich",
   "TR_ADVANCED_RECOVERY": "Erweiterte Wiederherstellung",
