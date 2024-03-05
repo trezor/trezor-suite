@@ -24,7 +24,7 @@ Used only for version 9"
 echo "Backing up current production version $latest_version to rollback bucket"
 
 # sync the files to rollback bucket
-aws s3 sync "s3://connect.trezor.io/$latest_version/" "s3://rollback-connect.trezor.io/$latest_version/"
+aws s3 sync --delete "s3://connect.trezor.io/$latest_version/" "s3://rollback-connect.trezor.io/$latest_version/"
 
 echo "Uploading to s3://connect.trezor.io/$latest_version/ and s3://connect.trezor.io/$current_version/"
 
