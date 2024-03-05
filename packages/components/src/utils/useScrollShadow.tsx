@@ -8,6 +8,7 @@ const ShadowContainer = styled.div`
     position: relative;
     display: flex;
     flex-direction: column;
+    height: 100%;
 `;
 
 const gradientBase = css<{ isVisible: boolean; elevation: Elevation; backgroundColor?: Color }>`
