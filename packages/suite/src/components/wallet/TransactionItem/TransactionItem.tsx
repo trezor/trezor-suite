@@ -201,7 +201,7 @@ export const TransactionItem = memo(
                                 {!isUnknown && type !== 'failed' && previewTargets.length ? (
                                     <>
                                         {previewTargets.map((t, i) => (
-                                            <BlurWrapper isBlurred={isPhishingTransaction} key={i}>
+                                            <BlurWrapper $isBlurred={isPhishingTransaction} key={i}>
                                                 {t.type === 'target' && (
                                                     <TransactionTarget
                                                         // render first n targets, n = DEFAULT_LIMIT
@@ -259,7 +259,7 @@ export const TransactionItem = memo(
                                                     .slice(DEFAULT_LIMIT, DEFAULT_LIMIT + limit)
                                                     .map((t, i) => (
                                                         <BlurWrapper
-                                                            isBlurred={isPhishingTransaction}
+                                                            $isBlurred={isPhishingTransaction}
                                                             key={i}
                                                         >
                                                             {t.type === 'target' && (
@@ -348,7 +348,7 @@ export const TransactionItem = memo(
                                 )}
 
                                 {showFeeRow && (
-                                    <BlurWrapper isBlurred={isPhishingTransaction}>
+                                    <BlurWrapper $isBlurred={isPhishingTransaction}>
                                         <StyledFeeRow
                                             fee={fee}
                                             transaction={transaction}

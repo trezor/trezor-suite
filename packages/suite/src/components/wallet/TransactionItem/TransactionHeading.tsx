@@ -166,7 +166,7 @@ export const TransactionHeading = ({
                             icon="WARNING"
                         />
                     )}
-                    <BlurWrapper isBlurred={isPhishingTransaction}>
+                    <BlurWrapper $isBlurred={isPhishingTransaction}>
                         <TransactionHeader transaction={transaction} isPending={isPending} />
                     </BlurWrapper>
                 </HeadingWrapper>

@@ -119,8 +119,8 @@ export const CheckContainer = styled.div<{ $variant: CheckboxVariant }>`
     ${getFocusShadowStyle()}
 `;
 
-const CheckIcon = styled(Icon)<{ isVisible: boolean }>`
-    opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+const CheckIcon = styled(Icon)<{ $isVisible: boolean }>`
+    opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
     transition: opacity 0.1s;
 `;
 
@@ -198,7 +198,7 @@ export const Checkbox = ({
 
                 <CheckContainer tabIndex={0} $variant={variant}>
                     <CheckIcon
-                        isVisible={!!isChecked}
+                        $isVisible={!!isChecked}
                         size={24}
                         color={theme.iconOnPrimary}
                         icon="CHECK"
