@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Link as LinkComponent, LinkProps } from '../../../index';
 
-export default {
+const meta: Meta = {
     title: 'Typography/Link',
     component: LinkComponent,
 } as Meta;
+export default meta;
 
 export const Link: StoryObj<LinkProps> = {
     args: {

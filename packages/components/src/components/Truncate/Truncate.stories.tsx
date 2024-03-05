@@ -10,9 +10,10 @@ const Holder = styled.div`
     padding: 100px 0;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/Truncate',
 } as Meta;
+export default meta;
 
 export const Truncate: StoryObj<TruncateProps> = {
     render: ({ ...args }) => (

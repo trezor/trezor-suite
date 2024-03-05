@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { IconButton as IconButtonComponent, IconButtonProps } from './IconButton';
 
-export default {
+const meta: Meta = {
     title: 'Buttons/IconButton',
     component: IconButtonComponent,
 } as Meta;
+export default meta;
 
 export const IconButton: StoryObj<IconButtonProps> = {
     args: {

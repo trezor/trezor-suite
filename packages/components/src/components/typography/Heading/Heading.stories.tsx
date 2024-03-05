@@ -7,9 +7,10 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Typography/Heading',
 } as Meta;
+export default meta;
 
 export const Heading: StoryObj = {
     render: () => (

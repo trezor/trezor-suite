@@ -1,4 +1,4 @@
-import { Button, ButtonProps } from '../../../index';
+import { Button } from '../../../index';
 import { Meta, StoryFn } from '@storybook/react';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { StoryColumn } from '../../../support/Story';
@@ -13,9 +13,10 @@ const variants: Array<ButtonVariant> = [
     'destructive',
 ];
 
-export default {
+const meta: Meta<typeof Button> = {
     title: 'Buttons/Button/All',
-} as Meta<ButtonProps>;
+};
+export default meta;
 
 export const All: StoryFn = () => (
     <>

@@ -27,7 +27,7 @@ const Text = styled.div`
     padding-bottom: 10px;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Assets/Flags',
     parameters: {
         options: {
@@ -35,6 +35,7 @@ export default {
         },
     },
 } as Meta;
+export default meta;
 
 export const All: StoryFn = () => {
     const flags = Object.keys(FLAGS) as FlagType[];

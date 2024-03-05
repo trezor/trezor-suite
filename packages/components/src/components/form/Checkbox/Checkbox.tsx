@@ -5,7 +5,7 @@ import { borders, Color, spacingsPx, typography } from '@trezor/theme';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../assets/Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
-import { UIHorizontalAlignment, UIVariant } from 'packages/components/src/config/types';
+import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
 import { FrameProps, ComponentFrame } from '../../common/ComponentFrame';
 
 interface VariantStyles {

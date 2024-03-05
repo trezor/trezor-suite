@@ -14,10 +14,11 @@ const Wrapper = styled.div`
     }
 `;
 
-export default {
+const meta: Meta = {
     title: 'Form/RadioButton',
     component: RadioComponent,
 } as Meta;
+export default meta;
 
 export const RadioButton: StoryObj<RadioProps> = {
     render: ({ ...args }) => {

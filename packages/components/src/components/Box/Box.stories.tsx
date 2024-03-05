@@ -14,9 +14,10 @@ const Wrapper = styled.div`
     gap: 20px;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/Box',
 } as Meta;
+export default meta;
 
 export const Box: StoryObj = {
     render: () => (

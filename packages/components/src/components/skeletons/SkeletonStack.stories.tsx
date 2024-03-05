@@ -3,10 +3,11 @@ import { SkeletonStack as SkeletonStackComponent, SkeletonStackProps } from './S
 import { SkeletonCircle } from './SkeletonCircle';
 import { ElevationContext } from '../ElevationContext/ElevationContext';
 
-export default {
+const meta: Meta = {
     title: 'Skeletons/SkeletonStack',
     component: SkeletonStackComponent,
 } as Meta;
+export default meta;
 
 export const SkeletonStack: StoryObj<SkeletonStackProps> = {
     render: args => (

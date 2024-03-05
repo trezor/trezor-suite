@@ -9,10 +9,11 @@ const Center = styled.div`
     padding: 100px 0;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Assets/CoinLogos',
     component: CoinLogoComponent,
 } as Meta;
+export default meta;
 
 export const CoinLogo: StoryObj<CoinLogoProps> = {
     render: ({ symbol, size }) => (

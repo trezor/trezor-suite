@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { TextButton as TextButtonComponent, TextButtonProps } from './TextButton';
 
-export default {
+const meta: Meta = {
     title: 'Buttons/TextButton',
     component: TextButtonComponent,
 } as Meta;
+export default meta;
 
 export const TextButton: StoryObj<TextButtonProps> = {
     args: {

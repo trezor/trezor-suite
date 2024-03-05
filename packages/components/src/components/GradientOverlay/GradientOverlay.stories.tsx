@@ -13,7 +13,7 @@ const TestContainer = styled.div`
     margin: 10px 0;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/GradientOverlay',
     component: GradientOverlayComponent,
     decorators: [
@@ -41,6 +41,7 @@ export default {
         ),
     ],
 } as Meta;
+export default meta;
 
 export const GradientOverlay: StoryObj<GradientOverlayProps> = {
     args: {

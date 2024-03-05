@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { AutoScalingInput as Input } from './AutoScalingInput';
+import { Meta } from '@storybook/react';
 
 const Wrapper = styled.div`
     display: flex;
@@ -21,9 +22,10 @@ const BorderlessAutoScalingInput = styled(Input)`
     background-color: #ccc;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Form/AutoScalingInput',
 };
+export default meta;
 
 export const AutoScalingInput = {
     render: () => (

@@ -3,9 +3,10 @@ import { Meta, StoryFn } from '@storybook/react';
 import { TextButton } from '../../../index';
 import { StoryColumn } from '../../../support/Story';
 
-export default {
+const meta: Meta = {
     title: 'Buttons/TextButton/All',
 } as Meta;
+export default meta;
 
 export const All: StoryFn = () => (
     <>

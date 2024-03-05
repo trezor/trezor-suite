@@ -4,10 +4,11 @@ import {
     SkeletonRectangleProps,
 } from './SkeletonRectangle';
 
-export default {
+const meta: Meta = {
     title: 'Skeletons/SkeletonRectangle',
     component: SkeletonRectangleComponent,
 } as Meta;
+export default meta;
 
 export const SkeletonRectangle: StoryObj<SkeletonRectangleProps> = {
     args: {
