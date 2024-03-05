@@ -28,7 +28,11 @@ const GridTable = styled.div`
 `;
 
 // min-width: 0; // to resolve an issue with truncate text
-const GridItem = styled.div<{ revealed?: boolean; onClick?: () => void; align?: 'left' | 'right' }>`
+const GridItem = styled.div<{
+    $revealed?: boolean;
+    onClick?: () => void;
+    $align?: 'left' | 'right';
+}>`
     min-width: 0;
     display: flex;
     align-items: center;
@@ -37,7 +41,7 @@ const GridItem = styled.div<{ revealed?: boolean; onClick?: () => void; align?: 
     padding: ${spacingsPx.md} 0 ${spacingsPx.sm};
     font-variant-numeric: tabular-nums;
     ${typography.hint}
-    ${({ align }) => (align === 'right' ? `justify-content:flex-end` : '')};
+    ${({ $align }) => ($align === 'right' ? `justify-content:flex-end` : '')};
     cursor: ${({ onClick }) => onClick && 'pointer'};
 
     :nth-child(3n + 2) {
@@ -61,8 +65,8 @@ const GridItemAddress = styled(GridItem)`
     overflow: hidden;
 `;
 
-const AddressActions = styled.div<{ isVisible?: boolean }>`
-    opacity: ${({ isVisible }) => (isVisible ? '1' : '0')};
+const AddressActions = styled.div<{ $isVisible?: boolean }>`
+    opacity: ${({ $isVisible }) => ($isVisible ? '1' : '0')};
 `;
 
 const Gray = styled.span`
@@ -139,7 +143,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                <AddressActions isVisible={isHovered}>
+                <AddressActions $isVisible={isHovered}>
                     <Button
                         data-test={`@wallet/receive/reveal-address-button/${index}`}
                         variant="tertiary"
@@ -156,7 +160,7 @@ const Item = ({ addr, locked, symbol, onClick, metadataPayload, index }: ItemPro
             <GridItem
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                align="right"
+                $align="right"
             >
                 {!fresh && <FormattedCryptoAmount value={amount} symbol={symbol} />}
 
@@ -229,7 +233,7 @@ export const UsedAddresses = ({
                     <Translation id="RECEIVE_TABLE_ADDRESS" />
                 </HeaderItem>
                 <HeaderItem />
-                <HeaderItem align="right">
+                <HeaderItem $align="right">
                     <Translation id="RECEIVE_TABLE_RECEIVED" />
                 </HeaderItem>
 

@@ -67,7 +67,7 @@ const Row = ({
                     icon={iconContinuesName}
                 />
             )}
-            <DeviceDisplayText isPixelType={isPixelType}>{row.text}</DeviceDisplayText>
+            <DeviceDisplayText $isPixelType={isPixelType}>{row.text}</DeviceDisplayText>
             {showNextPageArrow && (
                 <StyledNextIcon {...iconConfig} isPixelType={isPixelType} icon={iconNextName} />
             )}

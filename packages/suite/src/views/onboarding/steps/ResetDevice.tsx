@@ -81,7 +81,7 @@ export const ResetDeviceStep = () => {
         >
             {!isWaitingForConfirmation ? (
                 // Show options to chose from only if we are not waiting for confirmation on the device (because that means user has already chosen )
-                <OptionsWrapper fullWidth={false}>
+                <OptionsWrapper $fullWidth={false}>
                     <OnboardingOption
                         icon="SEED_SINGLE"
                         data-test={

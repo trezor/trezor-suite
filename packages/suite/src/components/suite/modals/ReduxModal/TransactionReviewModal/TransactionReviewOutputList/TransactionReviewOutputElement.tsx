@@ -36,18 +36,18 @@ const OutputValue = styled.div`
     flex-wrap: wrap;
 `;
 
-const OutputLeft = styled.div<{ isCentered: boolean }>`
+const OutputLeft = styled.div<{ $isCentered: boolean }>`
     display: flex;
     width: 30px;
-    justify-content: ${({ isCentered }) => (isCentered ? 'center' : 'flex-start')};
-    padding-top: ${({ isCentered }) => (isCentered ? undefined : '5px')};
+    justify-content: ${({ $isCentered }) => ($isCentered ? 'center' : 'flex-start')};
+    padding-top: ${({ $isCentered }) => ($isCentered ? undefined : '5px')};
     flex-direction: column;
 `;
 
-const MultiIndicatorWrapper = styled.div<{ linesCount: number }>`
+const MultiIndicatorWrapper = styled.div<{ $linesCount: number }>`
     display: flex;
     align-self: flex-start;
-    height: ${({ linesCount }) => linesCount * 80}px;
+    height: ${({ $linesCount }) => $linesCount * 80}px;
     align-items: center;
     position: relative;
     z-index: ${zIndices.base};
@@ -176,9 +176,9 @@ export const TransactionReviewOutputElement = forwardRef<
 
         return (
             <OutputWrapper ref={ref}>
-                <OutputLeft isCentered={hasMultipleLines}>
+                <OutputLeft $isCentered={hasMultipleLines}>
                     {hasMultipleLines ? (
-                        <MultiIndicatorWrapper linesCount={lines.length - 1}>
+                        <MultiIndicatorWrapper $linesCount={lines.length - 1}>
                             {indicator}
                         </MultiIndicatorWrapper>
                     ) : (

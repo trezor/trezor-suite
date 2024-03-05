@@ -53,11 +53,11 @@ const GreenTxt = styled.span`
     color: ${({ theme }) => theme.textPrimaryDefault};
 `;
 
-const InputsWrapper = styled.div<{ isShown: boolean }>`
+const InputsWrapper = styled.div<{ $isShown: boolean }>`
     max-width: 442px;
     margin-left: auto;
     margin-bottom: ${spacingsPx.sm};
-    display: ${({ isShown }) => (isShown ? 'block' : 'none')};
+    display: ${({ $isShown }) => ($isShown ? 'block' : 'none')};
 `;
 
 type UnstakeOptions = 'all' | 'rewards' | 'other';
@@ -185,7 +185,7 @@ export const Options = ({ symbol }: OptionsProps) => {
             </RadioWrapper>
 
             {/* CSS display property is used, as conditional rendering resets form state */}
-            <InputsWrapper isShown={isOtherAmountSelected}>
+            <InputsWrapper $isShown={isOtherAmountSelected}>
                 <Inputs />
             </InputsWrapper>
         </div>

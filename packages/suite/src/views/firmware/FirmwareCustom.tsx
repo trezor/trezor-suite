@@ -22,8 +22,8 @@ import {
     SelectCustomFirmware,
 } from 'src/components/firmware';
 
-const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
-    width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};
+const StyledModal = styled(Modal)<{ $isNarrow: boolean }>`
+    width: ${({ $isNarrow }) => ($isNarrow ? '450px' : '620px')};
 `;
 
 const ModalContent = styled.div`
@@ -164,7 +164,7 @@ export const FirmwareCustom = () => {
 
     return (
         <StyledModal
-            isNarrow={status === 'initial'}
+            $isNarrow={status === 'initial'}
             isCancelable={isCancelable}
             onCancel={onClose}
             heading={<Translation id="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE" />}

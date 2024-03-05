@@ -121,7 +121,7 @@ const RateInfo = styled.div`
     }
 `;
 
-const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
+const TxDetailsButton = styled.button<{ $detailsOpen: boolean }>`
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -135,7 +135,7 @@ const TxDetailsButton = styled.button<{ detailsOpen: boolean }>`
     transition:
         background 0.15s,
         opacity 0.15s;
-    background: ${({ theme, detailsOpen }) => detailsOpen && theme.backgroundSurfaceElevation3};
+    background: ${({ theme, $detailsOpen }) => $detailsOpen && theme.backgroundSurfaceElevation3};
     cursor: pointer;
 
     &:hover {
@@ -177,14 +177,14 @@ const ReviewRbfLeftDetailsLineLeft = styled.div`
     }
 `;
 
-const ReviewRbfLeftDetailsLineRight = styled.div<{ color: string; uppercase?: boolean }>`
+const ReviewRbfLeftDetailsLineRight = styled.div<{ $color: string; $uppercase?: boolean }>`
     width: 45%;
     text-align: left;
-    color: ${props => props.color};
+    color: ${props => props.$color};
     font-weight: 500;
 
-    ${({ uppercase }) =>
-        uppercase &&
+    ${({ $uppercase }) =>
+        $uppercase &&
         `
         text-transform: uppercase;
   `};
@@ -273,7 +273,7 @@ export const TransactionReviewSummary = ({
                             <Translation id="TR_DELIVERY" />
                         </ReviewRbfLeftDetailsLineLeft>
 
-                        <ReviewRbfLeftDetailsLineRight color={theme.textSubdued}>
+                        <ReviewRbfLeftDetailsLineRight $color={theme.textSubdued}>
                             {formatDuration(estimateTime)}
                         </ReviewRbfLeftDetailsLineRight>
                     </LeftDetailsRow>
@@ -285,7 +285,7 @@ export const TransactionReviewSummary = ({
                             <Translation id="TR_GAS_LIMIT" />
                         </ReviewRbfLeftDetailsLineLeft>
 
-                        <ReviewRbfLeftDetailsLineRight color={theme.textSubdued}>
+                        <ReviewRbfLeftDetailsLineRight $color={theme.textSubdued}>
                             {tx.feeLimit}
                         </ReviewRbfLeftDetailsLineRight>
                     </LeftDetailsRow>
@@ -299,7 +299,7 @@ export const TransactionReviewSummary = ({
                         {network.networkType === 'solana' && <Translation id="TR_TX_FEE" />}
                     </ReviewRbfLeftDetailsLineLeft>
 
-                    <ReviewRbfLeftDetailsLineRight color={theme.textSubdued}>
+                    <ReviewRbfLeftDetailsLineRight $color={theme.textSubdued}>
                         {feePerByte} {getFeeUnits(network.networkType)}
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
@@ -319,8 +319,8 @@ export const TransactionReviewSummary = ({
                     </ReviewRbfLeftDetailsLineLeft>
 
                     <ReviewRbfLeftDetailsLineRight
-                        color={broadcast ? theme.textPrimaryDefault : theme.textAlertYellow}
-                        uppercase
+                        $color={broadcast ? theme.textPrimaryDefault : theme.textAlertYellow}
+                        $uppercase
                     >
                         <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
                     </ReviewRbfLeftDetailsLineRight>
@@ -333,8 +333,8 @@ export const TransactionReviewSummary = ({
                         </ReviewRbfLeftDetailsLineLeft>
 
                         <ReviewRbfLeftDetailsLineRight
-                            color={tx.rbf ? theme.textPrimaryDefault : theme.textAlertYellow}
-                            uppercase
+                            $color={tx.rbf ? theme.textPrimaryDefault : theme.textAlertYellow}
+                            $uppercase
                         >
                             <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
                         </ReviewRbfLeftDetailsLineRight>
@@ -346,7 +346,7 @@ export const TransactionReviewSummary = ({
 
                         <LeftDetailsRow>
                             <TxDetailsButton
-                                detailsOpen={detailsOpen}
+                                $detailsOpen={detailsOpen}
                                 onClick={() => onDetailsClick()}
                             >
                                 <Translation id="TR_TRANSACTION_DETAILS" />

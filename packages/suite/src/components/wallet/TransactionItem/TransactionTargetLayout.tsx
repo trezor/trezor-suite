@@ -20,7 +20,7 @@ const TargetWrapper = styled(motion.div)`
     justify-content: space-between;
 `;
 
-const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
+const TargetAmountsWrapper = styled.div<{ $paddingBottom?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -31,7 +31,7 @@ const TargetAmountsWrapper = styled.div<{ paddingBottom?: boolean }>`
     padding-top: 10px;
     margin-top: -10px;
     margin-bottom: -10px;
-    padding-bottom: ${({ paddingBottom }) => (paddingBottom ? '30px' : '10px')};
+    padding-bottom: ${({ $paddingBottom }) => ($paddingBottom ? '30px' : '10px')};
 `;
 
 const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
@@ -79,12 +79,12 @@ const TimelineDot = styled.div`
     background: ${({ theme }) => theme.iconSubdued};
 `;
 
-const TimelineLine = styled.div<{ show: boolean; top?: boolean }>`
+const TimelineLine = styled.div<{ $show: boolean; $top?: boolean }>`
     width: 1px;
-    background: ${({ show, theme }) => (show ? theme.borderDashed : 'transparent')};
+    background: ${({ $show, theme }) => ($show ? theme.borderDashed : 'transparent')};
 
-    ${({ top }) =>
-        top
+    ${({ $top }) =>
+        $top
             ? css`
                   height: ${spacingsPx.sm};
               `
@@ -119,16 +119,16 @@ export const TransactionTargetLayout = ({
     return (
         <TargetWrapper {...animation} {...rest}>
             <TimelineDotWrapper>
-                <TimelineLine top show={!singleRowLayout && !isFirst} />
+                <TimelineLine $top $show={!singleRowLayout && !isFirst} />
                 <TimelineDot />
-                <TimelineLine show={!singleRowLayout && !isLast} />
+                <TimelineLine $show={!singleRowLayout && !isLast} />
             </TimelineDotWrapper>
 
             <TargetAddress>
                 <StyledHiddenPlaceholder>{addressLabel}</StyledHiddenPlaceholder>
             </TargetAddress>
 
-            <TargetAmountsWrapper paddingBottom={!isLast}>
+            <TargetAmountsWrapper $paddingBottom={!isLast}>
                 {amount && !singleRowLayout && amount}
                 {fiatAmount && <FiatAmount>{fiatAmount}</FiatAmount>}
             </TargetAmountsWrapper>

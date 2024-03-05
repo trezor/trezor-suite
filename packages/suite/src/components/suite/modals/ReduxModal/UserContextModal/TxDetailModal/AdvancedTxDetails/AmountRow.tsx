@@ -11,7 +11,7 @@ const leftAlignedStyles = css`
     justify-self: flex-start;
 `;
 
-const Column = styled.div<{ textAlign: 'left' | 'right' }>`
+const Column = styled.div<{ $textAlign: 'left' | 'right' }>`
     display: flex;
     align-items: center;
     align-self: start;
@@ -19,7 +19,7 @@ const Column = styled.div<{ textAlign: 'left' | 'right' }>`
     white-space: nowrap;
     color: ${({ theme }) => `${theme.TYPE_LIGHT_GREY}`};
 
-    ${({ textAlign }) => (textAlign === 'left' ? leftAlignedStyles : rightAlignedStyles)};
+    ${({ $textAlign }) => ($textAlign === 'left' ? leftAlignedStyles : rightAlignedStyles)};
 `;
 
 interface AmountRowProps {
@@ -36,12 +36,12 @@ export const AmountRow = ({
     fourthColumn,
 }: AmountRowProps) => (
     <>
-        <Column textAlign="left">{firstColumn}</Column>
+        <Column $textAlign="left">{firstColumn}</Column>
 
-        <Column textAlign="left">{secondColumn}</Column>
+        <Column $textAlign="left">{secondColumn}</Column>
 
-        <Column textAlign="right">{thirdColumn}</Column>
+        <Column $textAlign="right">{thirdColumn}</Column>
 
-        <Column textAlign="right">{fourthColumn}</Column>
+        <Column $textAlign="right">{fourthColumn}</Column>
     </>
 );

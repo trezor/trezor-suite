@@ -77,13 +77,13 @@ const EnterSuiteButton = styled(Button)`
     padding-right: ${spacingsPx.xl};
 `;
 
-const Wrapper = styled.div<{ shouldWrap?: boolean }>`
+const Wrapper = styled.div<{ $shouldWrap?: boolean }>`
     display: flex;
     width: 100%;
     align-items: center;
 
-    ${({ shouldWrap }) =>
-        shouldWrap &&
+    ${({ $shouldWrap }) =>
+        $shouldWrap &&
         css`
             padding: 0;
             margin: 0;
@@ -142,7 +142,7 @@ export const FinalStep = () => {
             device={isWaitingForConfirm ? device : undefined}
             isActionAbortable={isActionAbortable}
         >
-            <Wrapper ref={wrapperRef} shouldWrap={width < 650}>
+            <Wrapper ref={wrapperRef} $shouldWrap={width < 650}>
                 <DeviceImageWrapper>
                     <DeviceAnimation
                         type="SUCCESS"

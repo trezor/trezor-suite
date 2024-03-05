@@ -135,7 +135,7 @@ const Label = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const Check = styled.div<{ visible: boolean }>`
+const Check = styled.div<{ $visible: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -148,7 +148,7 @@ const Check = styled.div<{ visible: boolean }>`
     right: -2px;
     opacity: 0;
     transition: opacity 0.2s ease-in-out;
-    ${props => props.visible && `opacity: 1;`}
+    ${props => props.$visible && `opacity: 1;`}
 `;
 
 interface CoinProps {
@@ -193,7 +193,7 @@ export const Coin = ({
         >
             <ImageWrapper>
                 <CoinLogo size={24} symbol={symbol} />
-                <Check visible={toggled}>
+                <Check $visible={toggled}>
                     <Icon size={8} color={theme.TYPE_WHITE} icon="CHECK" />
                 </Check>
             </ImageWrapper>
