@@ -45,7 +45,10 @@ export interface Success<T> {
 export type Response<T> = Promise<Success<T> | Unsuccessful>;
 
 export type DerivationPath = string | number[];
-export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())]);
+export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {
+    description: 'Derivation Path. minimum length is `1`',
+    default: `m/49'/0'/0'`,
+});
 
 // replace type `T` address_n field type `A` with address_n type `R`
 type ProtoWithExtendedAddressN<T, A, R> = Omit<Extract<T, { address_n: A }>, 'address_n'> & {

@@ -1,4 +1,3 @@
 # NextJS ignore file
 .next/
-.env
 !public/

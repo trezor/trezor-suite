@@ -5,24 +5,34 @@
     "private": true,
     "dependencies": {
         "@trezor/components": "workspace:^",
+        "@trezor/connect-web": "workspace:^",
+        "@trezor/protobuf": "workspace:^",
+        "@trezor/utils": "workspace:^",
         "next": "^14.1.1",
         "nextra": "^2.13.4",
         "nextra-theme-docs": "^2.13.4",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
+        "react-inspector": "^6.0.2",
         "react-markdown": "^9.0.1",
-        "styled-components": "^6.1.8"
+        "react-redux": "8.0.7",
+        "redux": "^4.2.1",
+        "redux-logger": "^3.0.6",
+        "redux-thunk": "^2.4.2",
+        "styled-components": "^5.3.10"
     },
     "scripts": {
         "dev": "next",
-        "build": "next build",
+        "build": "next build && rm -rf build && mv out build",
         "start": "next start",
+        "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
+        "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
         "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "devDependencies": {
         "@types/node": "20.11.24",
+        "@types/redux-logger": "^3.0.11",
         "autoprefixer": "^10.4.18",
-        "postcss": "^8.4.35",
-        "tailwindcss": "^3.4.1"
+        "postcss": "^8.4.35"
     }
 }

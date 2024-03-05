@@ -1,10 +1,20 @@
 import React from 'react';
+import { Provider } from 'react-redux';
 
+import { ThemeProvider } from 'styled-components';
 import type { AppProps } from 'next/app';
 
-import '../styles/globals.css';
+import { intermediaryTheme } from '@trezor/components';
 
-// eslint-disable-next-line import/no-default-export
+import '../styles/globals.css';
+import { store } from '../src/store';
+
 export default function MyApp({ Component, pageProps }: AppProps) {
-    return <Component {...pageProps} />;
+    return (
+        <ThemeProvider theme={intermediaryTheme.light}>
+            <Provider store={store}>
+                <Component {...pageProps} />
+            </Provider>
+        </ThemeProvider>
+    );
 }

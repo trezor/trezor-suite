@@ -1,3 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@font-face {
+    font-family: 'TT Satoshi';
+    src: url('../src/fonts/TTSatoshi-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'TT Satoshi';
+    src: url('../src/fonts/TTSatoshi-DemiBold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+body {
+    font-family: 'TT Satoshi', sans-serif;
+}
