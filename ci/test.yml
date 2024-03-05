@@ -303,6 +303,9 @@ connect-popup legacy npm package manual:
 
 connect-popup legacy npm package:
   extends: .connect-popup legacy npm package base
+  dependencies:
+    - install
+    - connect-web build
   only:
     <<: *run_everything_rules
 
@@ -426,6 +429,9 @@ connect-explorer-webextension manual:
 
 connect legacy fws:
   extends: .connect legacy fws base
+  dependencies:
+    - install
+    - connect-web build
   only:
     <<: *run_everything_rules
 
