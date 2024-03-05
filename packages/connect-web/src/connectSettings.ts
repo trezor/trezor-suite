@@ -1,5 +1,5 @@
-import { parseConnectSettings as parseSettings } from '@trezor/connect/lib/data/connectSettings';
-import type { ConnectSettings } from '@trezor/connect/lib/types';
+import { parseConnectSettings as parseSettings } from '@trezor/connect/src/data/connectSettings';
+import type { ConnectSettings } from '@trezor/connect/src/types';
 
 export const getEnv = () => {
     if (typeof chrome !== 'undefined' && typeof chrome.runtime?.onConnect !== 'undefined') {

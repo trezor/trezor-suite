@@ -8,7 +8,7 @@ import { TypedEmitter } from '@trezor/utils';
 import { scheduleAction } from '@trezor/utils';
 
 // TODO: so logger should be probably moved to connect common, or this file should be moved to connect
-// import type { Log } from '@trezor/connect/lib/utils/debug';
+// import type { Log } from '@trezor/connect/src/utils/debug';
 type Log = {
     log: (...args: any[]) => void;
     error: (...args: any[]) => void;

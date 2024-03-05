@@ -11,9 +11,9 @@ import {
     Manifest,
     UiResponseEvent,
     CallMethod,
-} from '@trezor/connect/lib/exports';
-import { factory } from '@trezor/connect/lib/factory';
-import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/lib/utils/debug';
+} from '@trezor/connect/src/exports';
+import { factory } from '@trezor/connect/src/factory';
+import { initLog, setLogWriter, LogMessage, LogWriter } from '@trezor/connect/src/utils/debug';
 // Import as src not lib due to webpack issues with inlining content script later
 import { ServiceWorkerWindowChannel } from '@trezor/connect-web/src/channels/serviceworker-window';
 import * as popup from '@trezor/connect-web/src/popup';
@@ -235,4 +235,4 @@ initProxyChannel();
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/lib/exports';
+export * from '@trezor/connect/src/exports';

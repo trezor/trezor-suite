@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/webusb/extensionPermissions.js
 
-import { config } from '@trezor/connect/lib/data/config';
-import { WEBEXTENSION } from '@trezor/connect/lib/events';
+import { config } from '@trezor/connect/src/data/config';
+import { WEBEXTENSION } from '@trezor/connect/src/events';
 
 // This file is hosted on https://connect.trezor.io/*/extension-permissions.html
 // It's included WITHIN webextension application in trezor-usb-permissions.html to allow pairing webusb and trezor.io domain properly.
