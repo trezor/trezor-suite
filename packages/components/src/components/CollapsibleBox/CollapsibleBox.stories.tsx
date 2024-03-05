@@ -7,10 +7,11 @@ const Content = styled.div`
     width: 400px;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/CollapsibleBox',
     component: CollapsibleBoxComponent,
 } as Meta;
+export default meta;
 
 export const CollapsibleBox: StoryObj = {
     args: {

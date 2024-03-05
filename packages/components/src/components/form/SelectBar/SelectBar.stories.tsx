@@ -10,11 +10,12 @@ const options = [
     { label: 'custom', value: 'custom' },
 ];
 
-export default {
+const meta: Meta = {
     title: 'Form/SelectBar',
     args: { selectedOption: 'low', label: 'fee' },
     component: SelectBarComponent,
 } as Meta;
+export default meta;
 
 export const SelectBar: StoryObj<SelectBarProps<string>> = {
     render: ({ ...args }) => {

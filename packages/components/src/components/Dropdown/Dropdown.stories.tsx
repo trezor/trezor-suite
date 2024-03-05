@@ -28,10 +28,11 @@ const StyledDropdown = styled(DropdownComponent)`
     overflow: hidden;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/Dropdown',
     component: DropdownComponent,
 } as Meta;
+export default meta;
 
 export const Dropdown: StoryObj<DropdownProps> = {
     render: args => (

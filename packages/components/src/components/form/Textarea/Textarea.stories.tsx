@@ -3,10 +3,11 @@ import { Meta, StoryObj } from '@storybook/react';
 import { ChangeEventHandler } from 'react';
 import { Textarea as TextareaComponent, TextareaProps } from './Textarea';
 
-export default {
+const meta: Meta = {
     title: 'Form/Textarea',
     component: TextareaComponent,
 } as Meta;
+export default meta;
 
 const Component = ({ ...args }) => {
     const [{ value }, updateArgs] = useArgs();

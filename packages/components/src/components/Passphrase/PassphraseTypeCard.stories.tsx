@@ -5,7 +5,7 @@ import {
 } from './PassphraseTypeCard';
 import { Meta, StoryObj } from '@storybook/react';
 
-export default {
+const meta: Meta = {
     title: 'Loaders/PassphraseTypeCard',
     decorators: [
         (Story: React.FC) => (
@@ -16,6 +16,7 @@ export default {
     ],
     component: PassphraseTypeCardComponent,
 } as Meta;
+export default meta;
 
 export const PassphraseTypeCard: StoryObj<PassphraseTypeCardProps> = {
     args: {

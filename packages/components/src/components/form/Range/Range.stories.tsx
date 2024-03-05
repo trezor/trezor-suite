@@ -3,9 +3,10 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Range as RangeComponent, RangeProps } from './Range';
 
-export default {
+const meta: Meta = {
     title: 'Form/Range',
 } as Meta;
+export default meta;
 
 export const Range: StoryObj<RangeProps> = {
     render: args => {

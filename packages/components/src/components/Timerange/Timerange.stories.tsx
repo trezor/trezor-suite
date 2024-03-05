@@ -9,10 +9,11 @@ const Center = styled.div`
     padding: 100px 0;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/Timerange',
     component: TimerangeComponent,
 } as Meta;
+export default meta;
 
 export const Timerange: StoryObj<TimerangeProps> = {
     render: args => (

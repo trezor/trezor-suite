@@ -9,7 +9,7 @@ const Wrapper = styled.div`
     gap: 20px;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/Warning',
     component: WarningComponent,
     render: ({ children, ...rest }) => (
@@ -29,6 +29,7 @@ export default {
         </Wrapper>
     ),
 } as Meta;
+export default meta;
 
 export const Warning: StoryObj<WarningProps> = {
     args: {

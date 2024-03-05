@@ -5,10 +5,11 @@ import { Button } from '../Button/Button';
 import { ButtonGroup } from './ButtonGroup';
 import { IconButton } from '../IconButton/IconButton';
 
-export default {
+const meta: Meta = {
     title: 'Buttons/ButtonGroup',
     component: ButtonGroup,
 } as Meta;
+export default meta;
 
 export const ButtonGroups: StoryFn = () => (
     <StoryColumn minWidth={350} maxWidth={420}>

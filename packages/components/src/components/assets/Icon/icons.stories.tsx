@@ -26,9 +26,10 @@ const IconText = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-export default {
+const meta: Meta = {
     title: 'Assets/Icons/All',
 } as Meta;
+export default meta;
 
 export const All = () => (
     <Wrapper>

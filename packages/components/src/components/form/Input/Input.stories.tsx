@@ -4,7 +4,7 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Input as InputComponent, InputProps } from './Input';
 
-export default {
+const meta: Meta = {
     title: 'Form/Input',
     args: {
         value: 'Input',
@@ -40,6 +40,7 @@ export default {
         },
     },
 } as Meta;
+export default meta;
 
 export const Input: StoryObj<InputProps> = {
     render: ({ ...args }) => {

@@ -7,9 +7,10 @@ import { useElevation } from './ElevationContext';
 import { Elevation, mapElevationToBackground } from '@trezor/theme';
 import { ReactNode } from 'react';
 
-export default {
+const meta: Meta = {
     title: 'Misc/ElevationContext',
 } as Meta;
+export default meta;
 
 const Wrapper = styled.div`
     padding-bottom: 20px;

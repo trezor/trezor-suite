@@ -1,10 +1,11 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Badge as BadgeComponent, BadgeProps } from './Badge';
 
-export default {
+const meta: Meta = {
     title: 'Misc/Badge',
     component: BadgeComponent,
 } as Meta;
+export default meta;
 
 export const Badge: StoryObj<BadgeProps> = {
     args: {

@@ -27,9 +27,10 @@ const SELECT_OPTIONS = [
     },
 ];
 
-export default {
+const meta: Meta = {
     title: 'Form/All',
 } as Meta;
+export default meta;
 
 export const All: StoryObj = {
     render: () => (

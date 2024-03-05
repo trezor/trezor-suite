@@ -13,10 +13,11 @@ const Buttons = () => (
     </>
 );
 
-export default {
+const meta: Meta = {
     title: 'Modals/DialogModal',
     component: ModalComponent,
 } as Meta;
+export default meta;
 
 export const DialogModal: StoryObj<DialogModalProps> = {
     args: {

@@ -16,10 +16,11 @@ const Addon = styled.span`
     color: white;
 `;
 
-export default {
+const meta: Meta = {
     title: 'Misc/Tooltip',
     component: TooltipComponent,
 } as Meta;
+export default meta;
 
 export const Tooltip: StoryObj<TooltipProps> = {
     render: args => (

@@ -8,7 +8,7 @@ import {
     getFocusShadowStyle,
     focusStyleTransition,
 } from '../../../utils/utils';
-import { UIHorizontalAlignment } from 'packages/components/src/config/types';
+import { UIHorizontalAlignment } from '../../../config/types';
 
 const Wrapper = styled.div<Pick<SwitchProps, 'labelPosition' | 'isSmall'>>`
     display: flex;

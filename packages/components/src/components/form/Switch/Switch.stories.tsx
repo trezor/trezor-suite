@@ -3,9 +3,10 @@ import { Meta, StoryObj } from '@storybook/react';
 
 import { Switch as SwitchComponent, SwitchProps } from './Switch';
 
-export default {
+const meta: Meta = {
     title: 'Form/Switch',
 } as Meta;
+export default meta;
 
 export const Switch: StoryObj<SwitchProps> = {
     render: ({ ...args }) => {

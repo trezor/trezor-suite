@@ -3,7 +3,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 import { ConfirmOnDevice as ConfirmOnDeviceComponent } from './ConfirmOnDevice';
 import { StoryColumn } from '../../support/Story';
 
-export default {
+const meta: Meta = {
     title: 'Misc/ConfirmOnDevice',
     parameters: {
         options: {
@@ -11,6 +11,7 @@ export default {
         },
     },
 } as Meta;
+export default meta;
 
 export const ConfirmOnDevice: StoryFn = () => (
     <>

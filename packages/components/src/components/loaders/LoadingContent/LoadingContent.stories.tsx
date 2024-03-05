@@ -1,9 +1,10 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { H1, LoadingContent as LoadingContentComponent, LoadingContentProps } from '../../../index';
 
-export default {
+const meta: Meta = {
     title: 'Loaders/LoadingContent',
 } as Meta;
+export default meta;
 
 export const LoadingContent: StoryObj<LoadingContentProps> = {
     render: ({ ...args }) => (

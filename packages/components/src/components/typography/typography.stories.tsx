@@ -2,9 +2,10 @@ import { StoryColumn } from '../../support/Story';
 import { H1, H2, Paragraph, Link } from '../../index';
 import { Meta, StoryFn } from '@storybook/react';
 
-export default {
+const meta: Meta = {
     title: 'Typography/All',
 } as Meta;
+export default meta;
 
 export const All: StoryFn = () => (
     <>

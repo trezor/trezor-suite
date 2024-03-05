@@ -15,7 +15,7 @@ import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
 import { TopAddons } from '../TopAddons';
 import { useElevation } from '../../ElevationContext/ElevationContext';
-import { UIHorizontalAlignment } from 'packages/components/src/config/types';
+import { UIHorizontalAlignment } from '../../../config/types';
 
 const Wrapper = styled.div<Pick<InputProps, 'width'> & { hasBottomPadding: boolean }>`
     display: inline-flex;
