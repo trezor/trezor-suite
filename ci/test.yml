@@ -304,7 +304,8 @@ connect-popup legacy npm package manual:
 connect-popup legacy npm package:
   extends: .connect-popup legacy npm package base
   only:
-    <<: *run_everything_rules
+    refs:
+      - schedules
 
 .e2e connect-explorer-webextension:
   stage: integration testing
@@ -427,7 +428,8 @@ connect-explorer-webextension manual:
 connect legacy fws:
   extends: .connect legacy fws base
   only:
-    <<: *run_everything_rules
+    refs:
+      - schedules
 
 connect legacy fws manual:
   extends: .connect legacy fws base
