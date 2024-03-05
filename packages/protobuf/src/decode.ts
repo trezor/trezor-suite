@@ -46,6 +46,10 @@ export function messageToJSON(
     MessageParam: Message<Record<string, unknown>>,
     fields: Type['fields'],
 ) {
+    // MessageParams was being called with undefined
+    if (!MessageParam) {
+        return {};
+    }
     // get rid of Message.prototype references
     const { ...message } = MessageParam;
     const res: { [key: string]: any } = {};
