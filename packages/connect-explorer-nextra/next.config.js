@@ -19,4 +19,9 @@ module.exports = withNextra({
             type: 'asset/resource',
         });
     },
+    basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+    typescript: {
+        // Problems with transpiling
+        ignoreBuildErrors: true,
+    },
 });

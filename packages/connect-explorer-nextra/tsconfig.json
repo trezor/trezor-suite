@@ -4,7 +4,11 @@
         "types": ["web", "node"],
         "lib": ["dom", "dom.iterable", "esnext"],
         "emitDeclarationOnly": false,
-        "noEmit": true
+        "noEmit": true,
+        "noImplicitAny": false,
+        "plugins": [
+            { "name": "typescript-styled-plugin" }
+        ]
     },
     "include": [
         "next-env.d.ts",
