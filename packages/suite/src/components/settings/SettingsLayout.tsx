@@ -1,5 +1,4 @@
 import { ReactNode, useMemo } from 'react';
-import styled from 'styled-components';
 import { useDiscovery, useDispatch, useLayout, useSelector } from 'src/hooks/suite';
 import { SettingsLoading } from 'src/views/settings/SettingsLoader';
 import {
@@ -10,11 +9,6 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { Translation } from 'src/components/suite';
-import { spacingsPx } from '@trezor/theme';
-
-const SettingsNavigation = styled(SubpageNavigation)`
-    margin-top: -${spacingsPx.lg};
-`;
 
 type SettingsLayoutProps = {
     title?: string;
@@ -22,10 +16,8 @@ type SettingsLayoutProps = {
     ['data-test']?: string;
 };
 
-export const SettingsLayout = ({ title, children, 'data-test': dataTest }: SettingsLayoutProps) => {
+const SettingsHeader = () => {
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-
-    useLayout(title || 'Settings', PageHeader);
 
     const dispatch = useDispatch();
 
@@ -64,16 +56,23 @@ export const SettingsLayout = ({ title, children, 'data-test': dataTest }: Setti
         [dispatch, isDebugModeActive],
     );
 
+    return (
+        <>
+            <PageHeader />
+            <SubpageNavigation items={settingsSubpages} />
+        </>
+    );
+};
+
+export const SettingsLayout = ({ title, children, 'data-test': dataTest }: SettingsLayoutProps) => {
+    useLayout(title || 'Settings', SettingsHeader);
+
     const { isDiscoveryRunning } = useDiscovery();
 
     return (
-        <>
-            <SettingsNavigation items={settingsSubpages} />
-
-            <div data-test={dataTest}>
-                <SettingsLoading isPresent={isDiscoveryRunning} />
-                <>{children}</>
-            </div>
-        </>
+        <div data-test={dataTest}>
+            <SettingsLoading isPresent={isDiscoveryRunning} />
+            <>{children}</>
+        </div>
     );
 };

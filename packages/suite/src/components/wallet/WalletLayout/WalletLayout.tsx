@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, useCallback } from 'react';
 import styled from 'styled-components';
 
 import { SkeletonRectangle } from '@trezor/components';
@@ -40,7 +40,18 @@ export const WalletLayout = ({
     const { translationString } = useTranslation();
     const l10nTitle = translationString(title);
 
-    useLayout(l10nTitle, PageHeader);
+    const WalletPageHeader = useCallback(
+        () => (
+            <>
+                <PageHeader />
+                {!isSubpage && <AccountTopPanel />}
+                {!isSubpage && <AccountNavigation />}
+            </>
+        ),
+        [isSubpage],
+    );
+
+    useLayout(l10nTitle, WalletPageHeader);
 
     const { status, account: selectedAccount, loader, network } = account;
 
@@ -84,15 +95,5 @@ export const WalletLayout = ({
 
     const pageContent = getPageContent();
 
-    return (
-        <>
-            {!isSubpage && (
-                <>
-                    <AccountTopPanel />
-                    <AccountNavigation />
-                </>
-            )}
-            {pageContent}
-        </>
-    );
+    return pageContent;
 };

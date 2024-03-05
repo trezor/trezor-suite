@@ -8,7 +8,6 @@ import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 import { HoverAnimation } from '../../HoverAnimation';
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
-import { globalPaddingEraserStyle } from './utils';
 
 const Container = styled.div<{ isFullWidth: boolean }>`
     position: sticky;
@@ -17,14 +16,15 @@ const Container = styled.div<{ isFullWidth: boolean }>`
     justify-content: flex-start;
     align-items: center;
     gap: ${spacingsPx.sm};
-    height: ${SUBPAGE_NAV_HEIGHT};
+    min-height: ${SUBPAGE_NAV_HEIGHT};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     padding: ${spacingsPx.xs} 0 ${spacingsPx.sm};
     border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
-    overflow: scroll hidden;
+    overflow: auto hidden;
     z-index: ${zIndices.pageHeader};
-
-    ${globalPaddingEraserStyle};
+    width: 100%;
+    padding-left: ${spacingsPx.md};
+    padding-right: ${spacingsPx.md};
 `;
 
 const MenuElement = styled.div<{ isActive: boolean }>`

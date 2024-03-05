@@ -26,6 +26,7 @@ const getSidePaddingWidth = (isFullWidth = false) =>
         isFullWidth ? 0 : SIDEBAR_WIDTH_NUMERIC
     }px) / 2`;
 
+// TODO can be removed when proven useless
 export const globalPaddingEraserStyle = css<{ isFullWidth?: boolean }>`
     padding-left: ${spacingsPx.md};
     padding-right: ${spacingsPx.md};
