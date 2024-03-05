@@ -89,7 +89,6 @@
   "TR_ADD_TOKEN_TOAST_ERROR": "İşlem başarısız: {error}",
   "TR_ADD_TOKEN_TOAST_SUCCESS": "Token eklendi",
   "TR_ADD_TOKEN_TOKEN_NOT_VALID": "Geçerli bir token'e benzemiyor",
-  "TR_ADD_TOKEN_TOOLTIP": "ERC20 sözleşme(contract) adresi ekle",
   "TR_ADD_WALLET": "Cüzdan ekle",
   "TR_ADVANCED": "Gelişmiş",
   "TR_ADVANCED_RECOVERY": "gelişmiş kurtarma",

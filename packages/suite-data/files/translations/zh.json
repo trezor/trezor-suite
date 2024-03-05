@@ -267,7 +267,6 @@
   "TR_ADD_TOKEN_TOAST_ERROR": "操作失败: {error}",
   "TR_ADD_TOKEN_TOAST_SUCCESS": "已添加令牌",
   "TR_ADD_TOKEN_TOKEN_NOT_VALID": "这看起来不像一个有效的代币",
-  "TR_ADD_TOKEN_TOOLTIP": "输入一个 ERC20 代币 的 合约地址",
   "TR_ADD_WALLET": "添加钱包",
   "TR_ADVANCED": "危险区域",
   "TR_ADVANCED_RECOVERY": "高级恢复",
