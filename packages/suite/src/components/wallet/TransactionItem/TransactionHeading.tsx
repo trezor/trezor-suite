@@ -36,10 +36,10 @@ const HeadingWrapper = styled.div`
     overflow: hidden;
 `;
 
-const ChevronIconWrapper = styled.div<{ show: boolean; animate: boolean }>`
+const ChevronIconWrapper = styled.div<{ $show: boolean; $animate: boolean }>`
     display: flex;
-    margin-left: ${({ animate }) => (animate ? '5px' : '3px')};
-    opacity: ${({ show }) => (show ? 1 : 0)};
+    margin-left: ${({ $animate }) => ($animate ? '5px' : '3px')};
+    opacity: ${({ $show }) => ($show ? 1 : 0)};
     transition:
         visibility 0s,
         opacity 0.15s linear,
@@ -172,8 +172,8 @@ export const TransactionHeading = ({
                 </HeadingWrapper>
 
                 <ChevronIconWrapper
-                    show={txItemIsHovered}
-                    animate={nestedItemIsHovered || headingIsHovered}
+                    $show={txItemIsHovered}
+                    $animate={nestedItemIsHovered || headingIsHovered}
                 >
                     <Icon
                         size={nestedItemIsHovered || headingIsHovered ? 18 : 16}

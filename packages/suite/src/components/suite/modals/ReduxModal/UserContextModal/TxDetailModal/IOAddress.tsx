@@ -28,18 +28,18 @@ const onHoverTextOverflowContainerHover = css`
     }
 `;
 
-const TextOverflowContainer = styled.div<{ shouldAllowCopy?: boolean }>`
+const TextOverflowContainer = styled.div<{ $shouldAllowCopy?: boolean }>`
     position: relative;
     display: inline-flex;
     align-items: center;
     max-width: 100%;
     overflow: hidden;
     color: ${({ theme }) => theme.textSubdued};
-    cursor: ${({ shouldAllowCopy }) => (shouldAllowCopy ? 'pointer' : 'cursor')};
+    cursor: ${({ $shouldAllowCopy }) => ($shouldAllowCopy ? 'pointer' : 'cursor')};
     user-select: none;
 
-    ${({ shouldAllowCopy }) =>
-        shouldAllowCopy &&
+    ${({ $shouldAllowCopy }) =>
+        $shouldAllowCopy &&
         css`
             @media (hover: none) {
                 ${onHoverTextOverflowContainerHover}
@@ -99,7 +99,7 @@ export const IOAddress = ({
                 onMouseLeave={() => setIsClicked(false)}
                 data-test="@tx-detail/txid-value"
                 id={txAddress}
-                shouldAllowCopy={shouldAllowCopy}
+                $shouldAllowCopy={shouldAllowCopy}
             >
                 {txAddress.length <= 5 ? (
                     <SpanTextEnd onClick={copy}>{txAddress}</SpanTextEnd>

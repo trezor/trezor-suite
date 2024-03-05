@@ -19,14 +19,14 @@ const Wrapper = styled.div`
     }
 `;
 
-const TabSelector = styled.div<{ elevation: Elevation }>`
+const TabSelector = styled.div<{ $elevation: Elevation }>`
     width: 100%;
     text-align: left;
     margin-bottom: ${spacingsPx.md};
     border-bottom: 1px solid ${mapElevationToBorder};
 `;
 
-const TabButton = styled.button<{ selected: boolean; elevation: Elevation }>`
+const TabButton = styled.button<{ $selected: boolean; $elevation: Elevation }>`
     border: none;
     background-color: inherit;
     padding-top: ${spacingsPx.sm};
@@ -35,14 +35,14 @@ const TabButton = styled.button<{ selected: boolean; elevation: Elevation }>`
     cursor: pointer;
 
     /* change styles if the button is selected */
-    color: ${({ selected, theme }) =>
-        selected ? `${theme.textPrimaryDefault}` : `${theme.textSubdued}`};
-    border-bottom: ${({ selected, theme }) =>
+    color: ${({ $selected, theme }) =>
+        $selected ? `${theme.textPrimaryDefault}` : `${theme.textSubdued}`};
+    border-bottom: ${({ $selected: selected, theme }) =>
         selected ? `2px solid ${theme.borderSecondary}` : 'none'};
 
     &:hover {
         border-bottom: 2px solid
-            ${({ selected, ...props }) => !selected && mapElevationToBorder(props)};
+            ${({ $selected, ...props }) => !$selected && mapElevationToBorder(props)};
     }
 `;
 
@@ -80,10 +80,10 @@ export const AdvancedTxDetails = ({
 
     return (
         <Wrapper>
-            <TabSelector elevation={elevation}>
+            <TabSelector $elevation={elevation}>
                 <TabButton
-                    elevation={elevation}
-                    selected={selectedTab === 'amount'}
+                    $elevation={elevation}
+                    $selected={selectedTab === 'amount'}
                     onClick={() => setSelectedTab('amount')}
                 >
                     <Translation id="TR_TX_TAB_AMOUNT" />
@@ -91,8 +91,8 @@ export const AdvancedTxDetails = ({
 
                 {network.networkType !== 'ripple' && (
                     <TabButton
-                        elevation={elevation}
-                        selected={selectedTab === 'io'}
+                        $elevation={elevation}
+                        $selected={selectedTab === 'io'}
                         onClick={() => setSelectedTab('io')}
                     >
                         <Translation id="TR_INPUTS_OUTPUTS" />
@@ -101,8 +101,8 @@ export const AdvancedTxDetails = ({
 
                 {chainedTxs && (
                     <TabButton
-                        elevation={elevation}
-                        selected={selectedTab === 'chained'}
+                        $elevation={elevation}
+                        $selected={selectedTab === 'chained'}
                         onClick={() => setSelectedTab('chained')}
                     >
                         <Translation id="TR_CHAINED_TXS" />

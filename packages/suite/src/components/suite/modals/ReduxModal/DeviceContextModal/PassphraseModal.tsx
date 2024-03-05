@@ -18,7 +18,7 @@ import type { TrezorDevice } from 'src/types/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import messages from 'src/support/messages';
 
-const Wrapper = styled.div<{ authConfirmation?: boolean }>`
+const Wrapper = styled.div<{ $authConfirmation?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;

@@ -22,11 +22,11 @@ const StyledCard = styled.div`
     overflow: hidden;
 `;
 
-const BgImgWrapper = styled.div<{ top: number; left: number }>`
+const BgImgWrapper = styled.div<{ $top: number; $left: number }>`
     opacity: ${({ theme }) => (theme.THEME === 'dark' ? '0.5' : '0.1')};
     position: absolute;
-    left: ${({ left = 0 }) => left}px;
-    top: ${({ top = 30 }) => top}px;
+    left: ${({ $left = 0 }) => $left}px;
+    top: ${({ $top = 30 }) => $top}px;
 `;
 
 const Flex = styled.div`
@@ -72,16 +72,16 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
 
     return (
         <StyledCard>
-            <BgImgWrapper top={30} left={-16}>
+            <BgImgWrapper $top={30} $left={-16}>
                 <Icon icon="PIGGY_BANK_FILLED" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
-            <BgImgWrapper top={103} left={126}>
+            <BgImgWrapper $top={103} $left={126}>
                 <Icon icon="CURRENCY_ETH" size={29} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
-            <BgImgWrapper top={103} left={273}>
+            <BgImgWrapper $top={103} $left={273}>
                 <Icon icon="MONEY" size={25} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
-            <BgImgWrapper top={-3} left={340}>
+            <BgImgWrapper $top={-3} $left={340}>
                 <Icon icon="COIN_FILLED" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
 

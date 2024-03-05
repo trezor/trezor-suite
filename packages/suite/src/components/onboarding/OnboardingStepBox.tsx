@@ -26,18 +26,18 @@ const InnerActions = styled.div`
     margin-bottom: ${spacingsPx.xxl};
 `;
 
-const OuterActions = styled.div<{ smallMargin?: boolean }>`
+const OuterActions = styled.div<{ $smallMargin?: boolean }>`
     display: flex;
-    margin-top: ${({ smallMargin }) => (smallMargin ? '0px' : '20px')};
+    margin-top: ${({ $smallMargin }) => ($smallMargin ? '0px' : '20px')};
     width: 100%;
     justify-content: center;
     z-index: ${zIndices.onboardingForeground};
 `;
 
-export const StyledBackdrop = styled(Backdrop)<{ show: boolean }>`
+export const StyledBackdrop = styled(Backdrop)<{ $show: boolean }>`
     transition: all 0.3s;
-    opacity: ${({ show }) => (show ? '1' : '0')};
-    pointer-events: ${({ show }) => (show ? 'initial' : 'none')};
+    opacity: ${({ $show }) => ($show ? '1' : '0')};
+    pointer-events: ${({ $show }) => ($show ? 'initial' : 'none')};
     z-index: ${zIndices.base};
 `;
 
@@ -78,7 +78,7 @@ export const OnboardingStepBox = ({
 
     return (
         <>
-            <StyledBackdrop show={isBackDropVisible} />
+            <StyledBackdrop $show={isBackDropVisible} />
             {!disableConfirmWrapper && (
                 <ConfirmWrapper data-test="@onboarding/confirm-on-device">
                     {deviceModelInternal && (
@@ -115,7 +115,7 @@ export const OnboardingStepBox = ({
                 )}
             </StyledCollapsibleCard>
 
-            {outerActions && <OuterActions smallMargin={nested}>{outerActions}</OuterActions>}
+            {outerActions && <OuterActions $smallMargin={nested}>{outerActions}</OuterActions>}
         </>
     );
 };

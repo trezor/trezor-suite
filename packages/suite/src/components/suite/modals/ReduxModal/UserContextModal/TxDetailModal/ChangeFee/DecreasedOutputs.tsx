@@ -28,21 +28,21 @@ const OutputInner = styled.div`
     flex-direction: column;
 `;
 
-const OutputLabel = styled.div<{ isChecked: boolean }>`
+const OutputLabel = styled.div<{ $isChecked: boolean }>`
     display: flex;
     align-items: center;
     font-size: ${variables.FONT_SIZE.NORMAL};
     line-height: 24px; /* icon height */
     font-weight: ${$props =>
-        $props.isChecked ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ isChecked, theme }) => (isChecked ? theme.TYPE_GREEN : 'inherit')};
+        $props.$isChecked ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ $isChecked, theme }) => ($isChecked ? theme.TYPE_GREEN : 'inherit')};
 `;
 
-const OutputAddress = styled.div<{ isChecked: boolean }>`
+const OutputAddress = styled.div<{ $isChecked: boolean }>`
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${$props =>
-        $props.isChecked ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ isChecked, theme }) => (isChecked ? theme.TYPE_DARK_GREY : 'inherit')};
+        $props.$isChecked ? variables.FONT_WEIGHT.DEMI_BOLD : variables.FONT_WEIGHT.MEDIUM};
+    color: ${({ $isChecked, theme }) => ($isChecked ? theme.TYPE_DARK_GREY : 'inherit')};
     padding-top: 2px;
 `;
 
@@ -137,7 +137,7 @@ export const DecreasedOutputs = () => {
                                         />
                                     )}
                                     <OutputInner>
-                                        <OutputLabel isChecked={isChecked}>
+                                        <OutputLabel $isChecked={isChecked}>
                                             <Translation
                                                 id="TR_REDUCE_FROM"
                                                 values={{
@@ -158,7 +158,7 @@ export const DecreasedOutputs = () => {
                                             />
                                             {isChecked && reducedAmount}
                                         </OutputLabel>
-                                        <OutputAddress isChecked={isChecked}>
+                                        <OutputAddress $isChecked={isChecked}>
                                             <HiddenPlaceholder>{o.address}</HiddenPlaceholder>
                                         </OutputAddress>
                                     </OutputInner>

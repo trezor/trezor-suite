@@ -11,15 +11,15 @@ import { isAscii } from '@trezor/utils';
 import { spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
 
-const Container = styled.div<{ isVertical?: boolean }>`
+const Container = styled.div<{ $isVertical?: boolean }>`
     display: flex;
-    flex-direction: ${({ isVertical }) => (isVertical ? 'column' : 'row')};
+    flex-direction: ${({ $isVertical }) => ($isVertical ? 'column' : 'row')};
     align-items: center;
     gap: ${spacingsPx.sm};
-    min-width: ${({ isVertical }) => isVertical && '200px'};
+    min-width: ${({ $isVertical }) => $isVertical && '200px'};
 
     ${breakpointMediaQueries.below_sm} {
-        min-width: ${({ isVertical }) => isVertical && '100%'};
+        min-width: ${({ $isVertical }) => $isVertical && '100%'};
     }
 `;
 
@@ -71,7 +71,7 @@ export const ChangeDeviceLabel = ({
         isDeviceLocked || (!placeholder && label === device?.label) || !!error || !label;
 
     return (
-        <Container isVertical={isVertical}>
+        <Container $isVertical={isVertical}>
             <Input
                 bottomText={error || null}
                 value={label}

@@ -51,12 +51,12 @@ const OptionLabel = styled.div`
     min-width: 60px;
 `;
 
-const OptionNetwork = styled.div<{ elevation: Elevation }>`
+const OptionNetwork = styled.div<{ $elevation: Elevation }>`
     padding: 2px 6px;
     margin-left: 10px;
     font-size: ${variables.FONT_SIZE.TINY};
-    background: ${({ theme, elevation }) =>
-        mapElevationToBackground({ theme, elevation: nextElevation[elevation] })};
+    background: ${({ theme, $elevation }) =>
+        mapElevationToBackground({ theme, $elevation: nextElevation[$elevation] })};
     border-radius: 4px;
 `;
 
@@ -169,7 +169,7 @@ const ReceiveCryptoSelect = () => {
                                 {option.cryptoSymbol &&
                                     isCryptoSymbolToken(option.cryptoSymbol) &&
                                     cryptoToNetworkSymbol(option.cryptoSymbol) && (
-                                        <OptionNetwork elevation={elevation}>
+                                        <OptionNetwork $elevation={elevation}>
                                             {
                                                 networks[
                                                     cryptoToNetworkSymbol(option.cryptoSymbol)!

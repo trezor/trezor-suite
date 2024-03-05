@@ -47,11 +47,11 @@ const InstanceTitle = styled.div`
     font-variant-numeric: tabular-nums;
 `;
 
-const Col = styled.div<{ grow?: number; centerItems?: boolean }>`
+const Col = styled.div<{ $grow?: number; $centerItems?: boolean }>`
     display: flex;
-    flex-grow: ${({ grow }) => grow || 0};
+    flex-grow: ${({ $grow }) => $grow || 0};
     flex-direction: column;
-    align-items: ${({ centerItems }) => (centerItems ? 'center' : 'flex-start')};
+    align-items: ${({ $centerItems }) => ($centerItems ? 'center' : 'flex-start')};
 
     :first-child {
         cursor: pointer;
@@ -127,7 +127,7 @@ export const WalletInstance = ({
             variant={isSelected ? 'primary' : undefined}
             {...rest}
         >
-            <Col grow={1} onClick={() => !editing && selectDeviceInstance(instance)} tabIndex={0}>
+            <Col $grow={1} onClick={() => !editing && selectDeviceInstance(instance)} tabIndex={0}>
                 {discoveryProcess && (
                     <InstanceType>
                         {!instance.useEmptyPassphrase && (
@@ -190,7 +190,7 @@ export const WalletInstance = ({
                         />
                     </SwitchCol>
 
-                    <ColEject centerItems>
+                    <ColEject $centerItems>
                         <Icon
                             data-test={`${dataTestBase}/eject-button`}
                             icon="EJECT"
