@@ -1,3 +1,7 @@
+# 0.0.30
+
+-   fix(connect): fix build of connect-web (50f35cb2a)
+
 # 0.0.29
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)
