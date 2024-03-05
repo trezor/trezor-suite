@@ -33,27 +33,29 @@ const animationVariants = {
     },
 };
 
-const CardWrapper = styled.div<
-    Pick<CollapsibleOnboardingCardProps, 'expanded' | 'expandable' | 'nested' | 'variant'> & {
-        $elevation: Elevation;
-        withImage: boolean;
-    }
->`
+const CardWrapper = styled.div<{
+    $expandable?: boolean;
+    $expanded?: boolean;
+    $nested?: boolean;
+    $variant?: 'small' | 'large';
+    $elevation: Elevation;
+    $withImage: boolean;
+}>`
     position: relative;
-    padding: ${({ variant }) => (variant === 'large' ? '40px 80px' : '20px 30px')};
-    width: ${({ variant }) => (variant === 'large' ? '100%' : 'auto')};
+    padding: ${({ $variant }) => ($variant === 'large' ? '40px 80px' : '20px 30px')};
+    width: ${({ $variant }) => ($variant === 'large' ? '100%' : 'auto')};
     border-radius: ${borders.radii.md};
     background: ${mapElevationToBackground};
     z-index: ${zIndices.base};
-    cursor: ${({ expanded }) => !expanded && 'pointer'};
+    cursor: ${({ $expanded }) => !$expanded && 'pointer'};
 
-    ${({ expandable, variant }) =>
-        !expandable &&
+    ${({ $expandable, $variant }) =>
+        !$expandable &&
         css`
             ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-                padding-left: ${variant === 'large' ? '40px' : '30px'};
-                padding-right: ${variant === 'large' ? '40px' : '30px'};
-                padding-bottom: ${variant === 'large' ? '40px' : '20px'};
+                padding-left: ${$variant === 'large' ? '40px' : '30px'};
+                padding-right: ${$variant === 'large' ? '40px' : '30px'};
+                padding-bottom: ${$variant === 'large' ? '40px' : '20px'};
             }
 
             ${variables.SCREEN_QUERY.MOBILE} {
@@ -62,9 +64,9 @@ const CardWrapper = styled.div<
             }
         `}
 
-    ${({ expanded, expandable, theme }) =>
-        expandable &&
-        !expanded &&
+    ${({ $expanded, $expandable, theme }) =>
+        $expandable &&
+        !$expanded &&
         css`
             background: ${theme.BG_GREY};
             box-shadow: rgb(0 0 0 / 0%) 0 2px 5px 0;
@@ -72,7 +74,7 @@ const CardWrapper = styled.div<
             padding: 16px 26px;
         `}
 
-    ${({ expanded, expandable, theme, variant }) =>
+    ${({ $expanded: expanded, $expandable: expandable, theme, $variant: variant }) =>
         expandable &&
         expanded &&
         css`
@@ -81,7 +83,7 @@ const CardWrapper = styled.div<
             padding: ${variant === 'large' ? '40px' : '20px 30px'};
         `}
 
-    ${({ nested, theme }) =>
+    ${({ $nested: nested, theme }) =>
         nested
             ? css`
                   padding: 0;
@@ -90,22 +92,22 @@ const CardWrapper = styled.div<
                   box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
               `}
 
-    ${({ withImage }) =>
+    ${({ $withImage: withImage }) =>
         withImage &&
         css`
             margin-top: 50px;
             padding-top: 80px;
         `}
 
-    ${({ variant }) =>
+    ${({ $variant: variant }) =>
         variant === 'small' &&
         css`
             max-width: 550px;
         `}
 `;
 
-const CardWrapperInner = styled.div<{ expandable: boolean }>`
-    overflow: ${({ expandable }) => expandable && 'hidden'};
+const CardWrapperInner = styled.div<{ $expandable: boolean }>`
+    overflow: ${({ $expandable }) => $expandable && 'hidden'};
 `;
 
 const Text = styled.span`
@@ -131,14 +133,14 @@ const ChildrenWrapper = styled.div`
     align-items: center;
 `;
 
-const Heading = styled(H2)<{ withDescription?: boolean }>`
+const Heading = styled(H2)<{ $withDescription?: boolean }>`
     font-size: 28px;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: ${({ withDescription }) => (withDescription ? '16px' : '36px')};
+    margin-bottom: ${({ $withDescription }) => ($withDescription ? '16px' : '36px')};
     text-align: center;
 `;
 
-const Description = styled.div<{ hasChildren?: boolean }>`
+const Description = styled.div<{ $hasChildren?: boolean }>`
     padding: 0 60px 36px;
     text-align: center;
 
@@ -208,12 +210,12 @@ export const CollapsibleOnboardingCard = ({
 
     return (
         <CardWrapper
-            expanded={expanded}
-            expandable={expandable}
+            $expanded={expanded}
+            $expandable={expandable}
             $elevation={elevation}
-            variant={variant}
-            withImage={!!image}
-            nested={nested}
+            $variant={variant}
+            $withImage={!!image}
+            $nested={nested}
             onClick={expandable && !expanded ? onToggle : undefined}
             data-test="@components/collapsible-box"
             {...rest}
@@ -223,7 +225,7 @@ export const CollapsibleOnboardingCard = ({
                 transition={{ duration: 0.4, ease: motionEasing.transition }}
             >
                 <ElevationContext baseElevation={elevation}>
-                    <CardWrapperInner expandable={expandable}>
+                    <CardWrapperInner $expandable={expandable}>
                         {expandable && (
                             <CollapsibleCardInner
                                 variants={headerVariants}
@@ -249,11 +251,11 @@ export const CollapsibleOnboardingCard = ({
                             )}
 
                             {heading && (
-                                <Heading withDescription={!!description}>{heading}</Heading>
+                                <Heading $withDescription={!!description}>{heading}</Heading>
                             )}
 
                             {description && (
-                                <Description hasChildren={!!children}>
+                                <Description $hasChildren={!!children}>
                                     <Text>{description}</Text>
                                 </Description>
                             )}
