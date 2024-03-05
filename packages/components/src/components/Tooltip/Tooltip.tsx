@@ -27,8 +27,8 @@ const getContainerPadding = (isLarge: boolean, isWithHeader: boolean) => {
     return spacingsPx.xs;
 };
 
-const Wrapper = styled.div<{ isFullWidth: boolean }>`
-    width: ${({ isFullWidth }) => (isFullWidth ? '100%' : 'auto')};
+const Wrapper = styled.div<{ $isFullWidth: boolean }>`
+    width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
 `;
 
 const TooltipContainer = styled(motion.div)<{
@@ -57,26 +57,26 @@ const HeaderContainer = styled.div`
     width: 100%;
 `;
 
-const TooltipTitle = styled.div<{ isLarge: boolean }>`
+const TooltipTitle = styled.div<{ $isLarge: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
     width: 100%;
     color: ${({ theme }) => theme.textSubdued};
-    ${({ isLarge }) => (isLarge ? typography.highlight : typography.hint)}
+    ${({ $isLarge }) => ($isLarge ? typography.highlight : typography.hint)}
 `;
 
 const Addon = styled.div`
     margin-left: auto;
 `;
 
-const Content = styled.div<{ dashed: boolean; cursor: Cursor }>`
-    cursor: ${({ cursor }) => cursor};
+const Content = styled.div<{ $dashed: boolean; $cursor: Cursor }>`
+    cursor: ${({ $cursor }) => $cursor};
 
     > * {
-        border-bottom: ${({ dashed, theme }) =>
-            dashed && `1.5px dashed ${transparentize(0.66, theme.TYPE_LIGHT_GREY)}`};
-        cursor: ${({ cursor }) => cursor};
+        border-bottom: ${({ $dashed, theme }) =>
+            $dashed && `1.5px dashed ${transparentize(0.66, theme.TYPE_LIGHT_GREY)}`};
+        cursor: ${({ $cursor }) => $cursor};
     }
 `;
 
@@ -170,7 +170,7 @@ export const Tooltip = ({
     }
 
     return (
-        <Wrapper isFullWidth={isFullWidth} className={className}>
+        <Wrapper $isFullWidth={isFullWidth} className={className}>
             <Tippy
                 zIndex={zIndices.tooltip}
                 placement={placement}
@@ -201,7 +201,7 @@ export const Tooltip = ({
                         {(title || addon) && (
                             <HeaderContainer>
                                 {title && (
-                                    <TooltipTitle isLarge={isLarge}>
+                                    <TooltipTitle $isLarge={isLarge}>
                                         {headerIcon && (
                                             <Icon icon={headerIcon} size={spacings.md} />
                                         )}
@@ -219,7 +219,7 @@ export const Tooltip = ({
                     </TooltipContainer>
                 )}
             >
-                <Content dashed={dashed} cursor={disabled ? 'default' : cursor}>
+                <Content $dashed={dashed} $cursor={disabled ? 'default' : cursor}>
                     {children}
                 </Content>
             </Tippy>

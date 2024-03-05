@@ -77,13 +77,13 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Row = styled.div<{ noBottomMargin?: boolean }>`
+const Row = styled.div<{ $noBottomMargin?: boolean }>`
     display: flex;
     white-space: nowrap;
     align-items: center;
     justify-content: space-between;
     padding: 0 8px;
-    margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? '0px' : '4px')};
+    margin-bottom: ${({ $noBottomMargin }) => ($noBottomMargin ? '0px' : '4px')};
 `;
 
 const Title = styled.span`
@@ -187,7 +187,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                             </Title>
                         </Row>
 
-                        <Row noBottomMargin>
+                        <Row $noBottomMargin>
                             <Title>
                                 <Translation id="TR_SENT" />
                             </Title>
@@ -210,7 +210,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                             <Value>{props.receivedAmount}</Value>
                         </Row>
 
-                        <Row noBottomMargin>
+                        <Row $noBottomMargin>
                             <Value>{props.sentAmount}</Value>
                         </Row>
                     </HighlightedAreaRight>
