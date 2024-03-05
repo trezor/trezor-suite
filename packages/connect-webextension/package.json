@@ -20,7 +20,10 @@
         "serviceworker",
         "webextension"
     ],
-    "main": "lib/index",
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
     "files": [
         "build/trezor-connect-webextension.js",
         "build/trezor-connect-webextension.min.js",

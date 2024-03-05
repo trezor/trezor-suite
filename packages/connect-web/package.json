@@ -19,7 +19,10 @@
         "javascript"
     ],
     "sideEffects": false,
-    "main": "lib/index",
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
     "files": [
         "lib/",
         "!**/*.map"
