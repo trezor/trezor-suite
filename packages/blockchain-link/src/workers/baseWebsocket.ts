@@ -3,7 +3,7 @@ import { createDeferred } from '@trezor/utils';
 import { createDeferredManager } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils';
 
-import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 
 interface Subscription<T> {
     id: string;

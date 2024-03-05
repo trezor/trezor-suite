@@ -1,5 +1,5 @@
 import { Network, networks } from '@trezor/utxo-lib';
-import { ElectrumAPI, BlockHeader, Version } from '@trezor/blockchain-link-types/lib/electrum';
+import { ElectrumAPI, BlockHeader, Version } from '@trezor/blockchain-link-types/src/electrum';
 import { JsonRpcClientOptions } from './json-rpc';
 import { BatchingJsonRpcClient } from './batching';
 import type { ISocket } from '../sockets/interface';

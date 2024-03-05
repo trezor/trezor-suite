@@ -16,7 +16,7 @@ import type {
     AccountUtxo as BlockbookAccountUtxo,
     Transaction as BlockbookTransaction,
     VinVout,
-} from '@trezor/blockchain-link-types/lib/blockbook';
+} from '@trezor/blockchain-link-types/src/blockbook';
 
 import { Addresses, filterTargets, enhanceVinVout, sumVinVout, transformTarget } from './utils';
 

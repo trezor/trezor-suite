@@ -1,5 +1,5 @@
 import { BackendWebsocketServerMock } from '@trezor/e2e-utils';
-import BlockchainLink from '../../lib';
+import BlockchainLink from '../../src';
 import { blockbookWorkerFactory, blockbookModuleFactory } from './worker';
 
 const backends = [

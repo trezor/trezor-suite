@@ -1,5 +1,5 @@
 import type { AccountAddresses } from '@trezor/blockchain-link';
-import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/lib/blockbook';
+import type { Transaction as BlockbookTransaction } from '@trezor/blockchain-link-types/src/blockbook';
 import type { PROTO } from '../../../constants';
 import type { AccountTransaction } from '../../account';
 import { DerivationPath, ProtoWithDerivationPath } from '../../params';

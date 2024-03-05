@@ -1,5 +1,5 @@
 import { throwError } from '@trezor/utils';
-import { RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
+import { RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { createAddressManager, getTransactions } from '../utils';
 import { transformTransaction } from '../../../../../blockchain-link-utils/lib/blockbook';
 import type { BaseWorker } from '../../baseWorker';
@@ -7,8 +7,8 @@ import type {
     ElectrumAPI,
     HistoryTx,
     StatusChange,
-} from '@trezor/blockchain-link-types/lib/electrum';
-import type { Subscribe, Unsubscribe } from '@trezor/blockchain-link-types/lib/messages';
+} from '@trezor/blockchain-link-types/src/electrum';
+import type { Subscribe, Unsubscribe } from '@trezor/blockchain-link-types/src/messages';
 
 type Payload<T extends { type: string; payload: any }> = Extract<
     T['payload'],

@@ -22,7 +22,7 @@ import {
 import { AccountLabels } from '@suite-common/metadata-types';
 import TrezorConnect from '@trezor/connect';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import { Transaction } from '@trezor/blockchain-link-types/lib/blockbook';
+import { Transaction } from '@trezor/blockchain-link-types/src/blockbook';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { accountsActions } from '../accounts/accountsActions';

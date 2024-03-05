@@ -9,18 +9,18 @@ import type {
     SolanaValidParsedTxWithMeta,
     ParsedTransactionWithMeta,
     SolanaTokenAccountInfo,
-} from '@trezor/blockchain-link-types/lib/solana';
-import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
-import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+} from '@trezor/blockchain-link-types/src/solana';
+import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { Connection, Message, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 import {
     transformTokenInfo,
     TOKEN_PROGRAM_PUBLIC_KEY,
-} from '@trezor/blockchain-link-utils/lib/solana';
+} from '@trezor/blockchain-link-utils/src/solana';
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 
 export type SolanaAPI = Connection;

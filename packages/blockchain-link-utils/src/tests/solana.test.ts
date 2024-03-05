@@ -1,7 +1,7 @@
 import { ParsedTransactionWithMeta } from '@solana/web3.js';
 
-import { TokenTransfer, Transaction } from '@trezor/blockchain-link-types/lib';
-import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/lib/solana';
+import { TokenTransfer, Transaction } from '@trezor/blockchain-link-types/src';
+import { SolanaValidParsedTxWithMeta } from '@trezor/blockchain-link-types/src/solana';
 
 import {
     extractAccountBalanceDiff,

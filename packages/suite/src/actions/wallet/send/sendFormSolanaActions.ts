@@ -25,7 +25,7 @@ import {
     buildTokenTransferTransaction,
     getAssociatedTokenAccountAddress,
 } from 'src/utils/wallet/solanaUtils';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/lib/solana';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
 
 const calculate = (
     availableBalance: string,

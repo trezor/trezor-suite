@@ -1,9 +1,9 @@
 import { throwError } from '@trezor/utils';
 import { discovery } from '@trezor/utxo-lib';
 import { Api, tryGetScripthash, discoverAddress } from '../utils';
-import type { GetAccountUtxo as Req } from '@trezor/blockchain-link-types/lib/messages';
-import type { GetAccountUtxo as Res } from '@trezor/blockchain-link-types/lib/responses';
-import type { Utxo } from '@trezor/blockchain-link-types/lib/electrum';
+import type { GetAccountUtxo as Req } from '@trezor/blockchain-link-types/src/messages';
+import type { GetAccountUtxo as Res } from '@trezor/blockchain-link-types/src/responses';
+import type { Utxo } from '@trezor/blockchain-link-types/src/electrum';
 
 const transformUtxo =
     (currentHeight: number, addressInfo: { address?: string; path?: string } = {}) =>

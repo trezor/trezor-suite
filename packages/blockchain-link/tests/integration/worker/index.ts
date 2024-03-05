@@ -9,7 +9,7 @@ export const rippleWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
             // eslint-disable-next-line import/no-extraneous-dependencies
-            require('@trezor/blockchain-link/lib/workers/ripple');
+            require('@trezor/blockchain-link/src/workers/ripple');
         });
         // return new TinyWorker('./build/module/blockbook-worker.js');
         // return new TinyWorker(() => {
@@ -27,7 +27,7 @@ export const blockbookWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
             // eslint-disable-next-line import/no-extraneous-dependencies
-            require('@trezor/blockchain-link/lib/workers/blockbook');
+            require('@trezor/blockchain-link/src/workers/blockbook');
         });
         // return new TinyWorker('./build/module/blockbook-worker.js');
         // return new TinyWorker(() => {
@@ -45,7 +45,7 @@ export const blockfrostWorkerFactory = () => {
     if (typeof Worker === 'undefined') {
         return new TinyWorker(() => {
             // eslint-disable-next-line import/no-extraneous-dependencies
-            require('@trezor/blockchain-link/lib/workers/blockfrost');
+            require('@trezor/blockchain-link/src/workers/blockfrost');
         });
         // return new TinyWorker('./build/module/blockfrost-worker.js');
     }
