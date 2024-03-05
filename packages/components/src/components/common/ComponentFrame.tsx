@@ -21,13 +21,13 @@ const Frame = styled.div<{ margin?: FrameProps['margin'] }>`
     ${({ margin }) =>
         margin &&
         `
-    ${margin.top && `margin-top: ${margin.top}px;`}
-    ${margin.bottom && `margin-bottom: ${margin.bottom}px;`}
-    ${margin.left && `margin-left: ${margin.left}px;`}
-    ${margin.right && `margin-right: ${margin.right}px;`}
+            ${margin.top ? `margin-top: ${margin.top}px;` : ''}
+            ${margin.bottom ? `margin-bottom: ${margin.bottom}px;` : ''}
+            ${margin.left ? `margin-left: ${margin.left}px;` : ''}
+            ${margin.right ? `margin-right: ${margin.right}px;` : ''}
   `};
 `;
 
-export const ComponentFrame = ({ children, margin }: ComponentFrameProps) => {
-    return <Frame margin={margin}>{children}</Frame>;
-};
+export const ComponentFrame = ({ children, margin }: ComponentFrameProps) => (
+    <Frame margin={margin}>{children}</Frame>
+);

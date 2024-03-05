@@ -88,6 +88,7 @@ const WalletsCount = styled(ColHeader)`
 const InstancesWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    gap: ${spacingsPx.xs};
 `;
 
 const DeviceHeader = styled.div`

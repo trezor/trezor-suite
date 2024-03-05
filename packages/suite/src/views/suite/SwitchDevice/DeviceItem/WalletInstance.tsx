@@ -39,30 +39,6 @@ const InstanceType = styled.div`
     max-width: 300px;
 `;
 
-const Wrapper = styled(Box)`
-    display: flex;
-    width: 100%;
-    align-items: center;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-
-    & + & {
-        margin-top: 10px;
-    }
-
-    :hover,
-    :focus-within {
-        background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-
-        ${InstanceType} > span {
-            text-decoration: underline;
-        }
-
-        ${InstanceType} div > span {
-            text-decoration: underline;
-        }
-    }
-`;
-
 const InstanceTitle = styled.div`
     font-weight: 500;
     line-height: 1.57;
@@ -144,7 +120,8 @@ export const WalletInstance = ({
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
 
     return (
-        <Wrapper
+        <Box
+            forceElevation={0} // @TODO delete when Checkbox has different background in dark mode
             data-test={dataTestBase}
             key={`${instance.label}${instance.instance}${instance.state}`}
             variant={isSelected ? 'primary' : undefined}
@@ -225,6 +202,6 @@ export const WalletInstance = ({
                     </ColEject>
                 </>
             )}
-        </Wrapper>
+        </Box>
     );
 };

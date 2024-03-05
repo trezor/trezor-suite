@@ -27,6 +27,7 @@ import {
 } from 'src/components/firmware';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
+import { spacingsPx } from '@trezor/theme';
 
 const Description = styled.div`
     align-items: center;
@@ -52,10 +53,10 @@ const WarningListWrapper = styled.div`
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    gap: 16px;
+    gap: ${spacingsPx.md};
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
-    margin-bottom: 8px;
-    padding-bottom: 16px;
+    margin: ${spacingsPx.xs} ${spacingsPx.md};
+    padding-bottom: ${spacingsPx.md};
 `;
 
 const Important = styled.div`

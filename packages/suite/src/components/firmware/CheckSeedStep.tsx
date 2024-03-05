@@ -8,6 +8,7 @@ import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 import { goto } from 'src/actions/suite/routerActions';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledCheckbox = styled(Checkbox)`
     margin: 16px 0;
@@ -29,7 +30,7 @@ const StyledSwitchWarning = styled(FirmwareSwitchWarning)`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    margin-bottom: 8px;
+    margin: ${spacingsPx.xs} ${spacingsPx.md};
     padding-bottom: 16px;
     text-transform: uppercase;
 `;
