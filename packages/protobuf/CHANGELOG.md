@@ -1,3 +1,9 @@
+# 1.0.10
+
+-   fix(protobuf): undefined in messageToJSON (5fa61491e)
+-   chore(connect): format json after re-generation (350daea70)
+-   feat(connect): update protobuf (450acf915)
+
 # 1.0.9
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)
