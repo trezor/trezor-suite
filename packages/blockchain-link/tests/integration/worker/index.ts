@@ -14,7 +14,7 @@ export const rippleWorkerFactory = () => {
         // return new TinyWorker('./build/module/blockbook-worker.js');
         // return new TinyWorker(() => {
         //     require('@babel/register')({ cache: true });
-        //     require('../../../lib/workers/ripple/index.js');
+        //     require('../../../src/workers/ripple/index.js');
         // });
     }
 
@@ -32,7 +32,7 @@ export const blockbookWorkerFactory = () => {
         // return new TinyWorker('./build/module/blockbook-worker.js');
         // return new TinyWorker(() => {
         //     require('@babel/register')({ cache: true });
-        //     require('../../../lib/workers/blockbook/index.js');
+        //     require('../../../src/workers/blockbook/index.js');
         // });
     }
 
