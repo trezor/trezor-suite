@@ -23,16 +23,16 @@ const ChevronContainer = styled.div`
     width: ${spacingsPx.xxxl};
 `;
 
-const ChevronIcon = styled(Icon)<{ isActive: boolean }>`
+const ChevronIcon = styled(Icon)<{ $isActive: boolean }>`
     padding: ${spacingsPx.sm};
     border-radius: 50%;
     transition:
         background 0.2s,
         transform 0.2s ease-in-out;
-    transform: ${({ isActive }) => (isActive ? 'rotate(0)' : 'rotate(-90deg)')};
+    transform: ${({ $isActive }) => ($isActive ? 'rotate(0)' : 'rotate(-90deg)')};
 `;
 
-const Header = styled.header<{ isOpen: boolean; onClick?: () => void }>`
+const Header = styled.header<{ $isOpen: boolean; onClick?: () => void }>`
     display: flex;
     padding: ${spacingsPx.xs};
     cursor: ${props => (props.onClick ? 'pointer' : 'default')};
@@ -113,7 +113,7 @@ export const AccountGroup = forwardRef(
                 <HeaderWrapper>
                     {heading !== null && (
                         <Header
-                            isOpen={isOpen}
+                            $isOpen={isOpen}
                             onClick={!keepOpen ? onClick : undefined}
                             data-test={`@account-menu/${type}`}
                         >
@@ -121,7 +121,7 @@ export const AccountGroup = forwardRef(
                                 {!keepOpen && (
                                     <ChevronIcon
                                         data-test="@account-menu/arrow"
-                                        isActive={isOpen}
+                                        $isActive={isOpen}
                                         size={18}
                                         color={theme.iconSubdued}
                                         icon="ARROW_DOWN"

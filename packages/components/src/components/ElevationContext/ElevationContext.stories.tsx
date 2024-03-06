@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     padding-bottom: 20px;
 `;
 
-const TextareaExtenderStyled = styled.div<{ elevation: Elevation }>`
+const TextareaExtenderStyled = styled.div<{ $elevation: Elevation }>`
     padding: 20px;
     border: 1px solid red;
     background-color: ${mapElevationToBackground};
@@ -29,7 +29,7 @@ const TextareaExtender = ({ children }: { children: ReactNode }) => {
     const { elevation } = useElevation();
 
     return (
-        <TextareaExtenderStyled elevation={elevation}>
+        <TextareaExtenderStyled $elevation={elevation}>
             Extending area on elevation {elevation}
             {children}
         </TextareaExtenderStyled>

@@ -17,8 +17,8 @@ import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 
-const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
-    background: ${({ theme, isSelected }) => isSelected && theme.backgroundSurfaceElevation1};
+const Wrapper = styled(NavigationItemBase)<{ $isSelected: boolean }>`
+    background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};
     gap: 0;
     display: flex;
     justify-content: space-between;
@@ -29,8 +29,8 @@ const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
 
     &:hover {
         position: relative;
-        background: ${({ theme, isSelected }) =>
-            !isSelected && theme.backgroundTertiaryPressedOnElevation0};
+        background: ${({ theme, $isSelected }) =>
+            !$isSelected && theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
 
@@ -60,7 +60,7 @@ const Row = styled.div`
     white-space: nowrap;
 `;
 
-const AccountName = styled.div<{ isSelected: boolean }>`
+const AccountName = styled.div<{ $isSelected: boolean }>`
     display: flex;
     gap: ${spacingsPx.xxs};
     flex: 1;
@@ -68,7 +68,7 @@ const AccountName = styled.div<{ isSelected: boolean }>`
     text-overflow: ellipsis;
     white-space: nowrap;
     ${typography.hint};
-    color: ${({ theme, isSelected }) => (isSelected ? theme.textDefault : theme.textSubdued)};
+    color: ${({ theme, $isSelected }) => ($isSelected ? theme.textDefault : theme.textSubdued)};
     line-height: 1.5;
     font-variant-numeric: tabular-nums;
 `;
@@ -138,7 +138,7 @@ export const AccountItem = forwardRef(
 
         return (
             <Wrapper
-                isSelected={isSelected}
+                $isSelected={isSelected}
                 ref={ref}
                 onClick={handleHeaderClick}
                 data-test={dataTestKey}
@@ -150,7 +150,7 @@ export const AccountItem = forwardRef(
                 </Left>
                 <Right>
                     <Row>
-                        <AccountName isSelected={isSelected} data-test={`${dataTestKey}/label`}>
+                        <AccountName $isSelected={isSelected} data-test={`${dataTestKey}/label`}>
                             <AccountLabelContainer>
                                 <AccountLabel
                                     accountLabel={accountLabel}
@@ -191,7 +191,11 @@ export const AccountItem = forwardRef(
                         </>
                     )}
                     {!isBalanceShown && (
-                        <SkeletonStack col margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+                        <SkeletonStack
+                            $col
+                            $margin="6px 0px 0px 0px"
+                            $childMargin="0px 0px 8px 0px"
+                        >
                             <SkeletonRectangle
                                 width="100px"
                                 height="16px"

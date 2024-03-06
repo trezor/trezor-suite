@@ -27,11 +27,11 @@ const Container = styled.div`
 const TRANSITION_DURATION = 0.26;
 const easingValues = motionEasing.transition.join(', '); // TODO: add to motionEasing
 
-const StyledTooltipSymbol = styled(TooltipSymbol)<{ isExpanded: boolean }>`
+const StyledTooltipSymbol = styled(TooltipSymbol)<{ $isExpanded: boolean }>`
     transition: all ${TRANSITION_DURATION * 1.5}s cubic-bezier(${easingValues});
 
-    ${({ isExpanded }) =>
-        !isExpanded &&
+    ${({ $isExpanded }) =>
+        !$isExpanded &&
         css`
             opacity: 0;
             transform: translateX(20px);
@@ -40,8 +40,8 @@ const StyledTooltipSymbol = styled(TooltipSymbol)<{ isExpanded: boolean }>`
 
 const INPUT_WIDTH = '38px';
 
-const StyledInput = styled(Input)<{ isExpanded: boolean }>`
-    width: ${({ isExpanded }) => (isExpanded ? '210px' : INPUT_WIDTH)};
+const StyledInput = styled(Input)<{ $isExpanded: boolean }>`
+    width: ${({ $isExpanded }) => ($isExpanded ? '210px' : INPUT_WIDTH)};
     margin-right: ${spacingsPx.xs};
     transition: width ${TRANSITION_DURATION}s cubic-bezier(${easingValues});
     overflow: hidden;
@@ -169,11 +169,11 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
         <Container>
             <StyledTooltipSymbol
                 content={<Translation id="TR_TRANSACTIONS_SEARCH_TOOLTIP" />}
-                isExpanded={isExpanded}
+                $isExpanded={isExpanded}
             />
 
             <StyledInput
-                isExpanded={isExpanded}
+                $isExpanded={isExpanded}
                 data-test="@wallet/accounts/search-icon"
                 size="small"
                 innerRef={inputRef}

@@ -21,6 +21,7 @@ import { useOnKeyDown } from './useOnKeyDown';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import { TransientProps } from '../../../utils/transientProps';
 
 const reactSelectClassNamePrefix = 'react-select';
 
@@ -76,7 +77,7 @@ const createSelectStyle = (
         padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
         borderRadius: borders.radii.xxs,
         background: isFocused
-            ? mapElevationToBackground({ theme, elevation: nextElevation[elevation] })
+            ? mapElevationToBackground({ theme, $elevation: nextElevation[elevation] })
             : 'transparent',
 
         color: theme.textDefault,
@@ -92,25 +93,27 @@ const createSelectStyle = (
     }),
 });
 
-type WrapperProps = Pick<
-    SelectProps,
-    'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'menuIsOpen' | 'isSearchable'
+type WrapperProps = TransientProps<
+    Pick<
+        SelectProps,
+        'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'menuIsOpen' | 'isSearchable'
+    >
 > & {
-    isWithLabel: boolean;
-    isWithPlaceholder: boolean;
-    hasBottomPadding: boolean;
-    elevation: Elevation;
+    $isWithLabel: boolean;
+    $isWithPlaceholder: boolean;
+    $hasBottomPadding: boolean;
+    $elevation: Elevation;
 };
 
 const Wrapper = styled.div<WrapperProps>`
     /* stylelint-disable selector-class-pattern */
     position: relative;
     width: 100%;
-    padding-bottom: ${({ hasBottomPadding }) =>
+    padding-bottom: ${({ $hasBottomPadding: hasBottomPadding }) =>
         hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 
-    ${({ isClean }) =>
-        !isClean &&
+    ${({ $isClean }) =>
+        !$isClean &&
         css`
             display: flex;
             flex-direction: column;
@@ -119,23 +122,24 @@ const Wrapper = styled.div<WrapperProps>`
 
     .${reactSelectClassNamePrefix}__dropdown-indicator {
         align-items: center;
-        color: ${({ theme, isDisabled }) => (isDisabled ? theme.iconDisabled : theme.iconSubdued)};
+        color: ${({ theme, $isDisabled }) =>
+            $isDisabled ? theme.iconDisabled : theme.iconSubdued};
         padding: 0;
         transition: transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1);
         cursor: pointer;
     }
 
     .${reactSelectClassNamePrefix}__control {
-        padding: ${({ isClean }) => (isClean ? 0 : `0 ${spacingsPx.md}`)};
+        padding: ${({ $isClean }) => ($isClean ? 0 : `0 ${spacingsPx.md}`)};
         display: flex;
         align-items: center;
         flex-wrap: nowrap;
-        height: ${({ isClean, size }) => (isClean ? 22 : size && INPUT_HEIGHTS[size])}px;
-        border-style: ${({ isClean }) => (isClean ? 'none' : 'solid')};
+        height: ${({ $isClean, $size }) => ($isClean ? 22 : $size && INPUT_HEIGHTS[$size])}px;
+        border-style: ${({ $isClean }) => ($isClean ? 'none' : 'solid')};
         box-shadow: none;
         cursor: pointer;
         ${baseInputStyle}
-        background-color: ${({ isClean }) => isClean && 'transparent !important'};
+        background-color: ${({ $isClean }) => $isClean && 'transparent !important'};
 
         &:hover:not(:focus-within) {
             border-color: transparent;
@@ -149,16 +153,17 @@ const Wrapper = styled.div<WrapperProps>`
     }
 
     .${reactSelectClassNamePrefix}__placeholder {
-        display: ${({ isWithPlaceholder }) => !isWithPlaceholder && 'none'};
-        color: ${({ theme, isDisabled }) => (isDisabled ? theme.textDisabled : theme.textSubdued)};
+        display: ${({ $isWithPlaceholder }) => !$isWithPlaceholder && 'none'};
+        color: ${({ theme, $isDisabled }) =>
+            $isDisabled ? theme.textDisabled : theme.textSubdued};
         ${typography.body}
     }
 
     .${reactSelectClassNamePrefix}__value-container {
         display: flex;
         flex-wrap: nowrap;
-        min-width: ${({ minValueWidth }) => minValueWidth};
-        justify-content: ${({ isClean }) => (isClean ? 'flex-end' : 'flex-start')};
+        min-width: ${({ $minValueWidth }) => $minValueWidth};
+        justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
         padding: 0;
         border: none;
     }
@@ -167,16 +172,17 @@ const Wrapper = styled.div<WrapperProps>`
         position: static;
         display: flex;
         align-items: center;
-        justify-content: ${({ isClean }) => (isClean ? 'flex-end' : 'flex-start')};
+        justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
         width: 100%;
         max-width: initial;
-        color: ${({ isDisabled, theme }) => (isDisabled ? theme.textDisabled : theme.textDefault)};
+        color: ${({ $isDisabled, theme }) =>
+            $isDisabled ? theme.textDisabled : theme.textDefault};
         border-style: none;
         transform: none;
         margin-left: 0;
 
         &:hover {
-            cursor: ${({ isSearchable }) => isSearchable && 'text'};
+            cursor: ${({ $isSearchable }) => $isSearchable && 'text'};
         }
     }
 
@@ -186,12 +192,12 @@ const Wrapper = styled.div<WrapperProps>`
         ${typography.body};
     }
 
-    ${({ isClean, size }) =>
-        !isClean &&
+    ${({ $isClean, $size }) =>
+        !$isClean &&
         css`
             .${reactSelectClassNamePrefix}__indicators {
                 position: absolute;
-                top: ${size === 'small' ? spacingsPx.xs : spacingsPx.md};
+                top: ${$size === 'small' ? spacingsPx.xs : spacingsPx.md};
                 right: ${spacingsPx.md};
             }
         `}
@@ -289,16 +295,16 @@ export const Select = ({
     return (
         <Wrapper
             className={className}
-            isClean={isClean}
-            elevation={elevation}
-            isSearchable={isSearchable}
-            size={size}
-            minValueWidth={minValueWidth}
-            isDisabled={isDisabled}
-            menuIsOpen={menuIsOpen}
-            isWithLabel={!!label}
-            isWithPlaceholder={!!placeholder}
-            hasBottomPadding={hasBottomPadding === true && bottomText === null}
+            $isClean={isClean}
+            $elevation={elevation}
+            $isSearchable={isSearchable}
+            $size={size}
+            $minValueWidth={minValueWidth}
+            $isDisabled={isDisabled}
+            $menuIsOpen={menuIsOpen}
+            $isWithLabel={!!label}
+            $isWithPlaceholder={!!placeholder}
+            $hasBottomPadding={hasBottomPadding === true && bottomText === null}
         >
             <ReactSelect
                 ref={selectRef}
@@ -324,7 +330,7 @@ export const Select = ({
             />
 
             {label && (
-                <SelectLabel $size={size} isDisabled={isDisabled}>
+                <SelectLabel $size={size} $isDisabled={isDisabled}>
                     {label}
                 </SelectLabel>
             )}

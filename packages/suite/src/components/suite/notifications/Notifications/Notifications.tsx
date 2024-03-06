@@ -22,7 +22,7 @@ const TabSelector = styled.div`
     flex-grow: 1;
 `;
 
-const TabButton = styled.button<{ selected: boolean }>`
+const TabButton = styled.button<{ $selected: boolean }>`
     border: none;
     background-color: inherit;
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -33,13 +33,13 @@ const TabButton = styled.button<{ selected: boolean }>`
     cursor: pointer;
 
     /* change styles if the button is selected */
-    color: ${({ selected, theme }) => (selected ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
+    color: ${({ $selected, theme }) => ($selected ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
     border-bottom: 2px solid;
-    border-color: ${({ selected, theme }) => (selected ? theme.TYPE_DARK_GREY : 'transparent')};
+    border-color: ${({ $selected, theme }) => ($selected ? theme.TYPE_DARK_GREY : 'transparent')};
     transition: border-color 0.1s;
 
     &:hover {
-        border-color: ${({ theme, selected }) => !selected && theme.STROKE_GREY};
+        border-color: ${({ theme, $selected }) => !$selected && theme.STROKE_GREY};
     }
 `;
 
@@ -79,13 +79,13 @@ export const Notifications = (props: NotificationsProps) => {
             <Header>
                 <TabSelector>
                     <TabButton
-                        selected={selectedTab === 'important'}
+                        $selected={selectedTab === 'important'}
                         onClick={() => setSelectedTab('important')}
                     >
                         <Translation id="NOTIFICATIONS_IMPORTANT_TITLE" />
                     </TabButton>
                     <TabButton
-                        selected={selectedTab === 'all'}
+                        $selected={selectedTab === 'all'}
                         onClick={() => setSelectedTab('all')}
                     >
                         <Translation id="NOTIFICATIONS_ALL_TITLE" />

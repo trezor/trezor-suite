@@ -5,31 +5,31 @@ import styled, { DefaultTheme } from 'styled-components';
 type StatusLightVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive'>;
 
 type MapArgs = {
-    variant: StatusLightVariant;
+    $variant: StatusLightVariant;
     theme: DefaultTheme;
 };
 
-const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<StatusLightVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
         warning: 'backgroundAlertRedSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
-const getInnerBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+const getInnerBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<StatusLightVariant, Color> = {
         primary: 'backgroundPrimaryDefault',
         warning: 'backgroundAlertYellowBold',
         destructive: 'backgroundAlertRedBold',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
-const Circle = styled.div<{ variant: StatusLightVariant }>`
+const Circle = styled.div<{ $variant: StatusLightVariant }>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -52,7 +52,7 @@ interface StatusLightProps {
 }
 
 export const StatusLight = ({ variant, className }: StatusLightProps) => (
-    <Circle variant={variant} className={className}>
+    <Circle $variant={variant} className={className}>
         <div />
     </Circle>
 );

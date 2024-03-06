@@ -27,9 +27,9 @@ const Header = styled.div`
     }
 `;
 
-const CryptoAmount = styled(FormattedCryptoAmount)<{ color?: string }>`
+const CryptoAmount = styled(FormattedCryptoAmount)<{ $color?: string }>`
     margin: 6px 0 4px;
-    color: ${({ theme, color }) => color || theme.TYPE_DARK_GREY};
+    color: ${({ theme, $color }) => $color || theme.TYPE_DARK_GREY};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-size: ${variables.FONT_SIZE.H3};
 `;
@@ -56,7 +56,7 @@ export const CryptoAmountWithHeader = ({
             {headerIcon && headerIcon} {header}
         </Header>
 
-        <CryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} color={color} />
+        <CryptoAmount value={formatNetworkAmount(value, symbol)} symbol={symbol} $color={color} />
         <FiatValue
             amount={formatNetworkAmount(value, symbol)}
             symbol={symbol}

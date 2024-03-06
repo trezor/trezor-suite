@@ -9,7 +9,7 @@ import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 import { HoverAnimation } from '../../HoverAnimation';
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
 
-const Container = styled.div<{ isFullWidth: boolean }>`
+const Container = styled.div<{ $isFullWidth: boolean }>`
     position: sticky;
     top: 64px;
     display: flex;
@@ -27,11 +27,11 @@ const Container = styled.div<{ isFullWidth: boolean }>`
     padding-right: ${spacingsPx.md};
 `;
 
-const MenuElement = styled.div<{ isActive: boolean }>`
+const MenuElement = styled.div<{ $isActive: boolean }>`
     position: relative;
     display: flex;
     align-items: center;
-    color: ${({ isActive, theme }) => !isActive && theme.textOnTertiary};
+    color: ${({ $isActive, theme }) => !$isActive && theme.textOnTertiary};
     white-space: nowrap;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -48,11 +48,12 @@ const Underline = styled(motion.div)`
     background: ${({ theme }) => theme.iconDefault};
 `;
 
-const StyledNavLink = styled.div<{ isActive: boolean; isNavigationDisabled: boolean }>`
+const StyledNavLink = styled.div<{ $isActive: boolean; $isNavigationDisabled: boolean }>`
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    opacity: ${({ isActive, isNavigationDisabled }) => !isActive && isNavigationDisabled && '.5'};
-    cursor: ${({ isActive, isNavigationDisabled }) =>
-        isActive || isNavigationDisabled ? 'default' : 'pointer'};
+    opacity: ${({ $isActive, $isNavigationDisabled }) =>
+        !$isActive && $isNavigationDisabled && '.5'};
+    cursor: ${({ $isActive, $isNavigationDisabled }) =>
+        $isActive || $isNavigationDisabled ? 'default' : 'pointer'};
 `;
 
 export type NavigationItem = {
@@ -78,7 +79,7 @@ export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) 
     const visibleItems = items.filter(item => !item.isHidden);
 
     return (
-        <Container isFullWidth={isLoggedOut} className={className}>
+        <Container $isFullWidth={isLoggedOut} className={className}>
             <LayoutGroup id={items[0].id}>
                 {visibleItems.map(item => {
                     const { id, title } = item;
@@ -88,12 +89,12 @@ export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) 
                     const onClick = isAccountLoading ? undefined : item.callback;
 
                     return (
-                        <MenuElement key={id} isActive={isActive}>
+                        <MenuElement key={id} $isActive={isActive}>
                             <HoverAnimation isHoverable={isHoverable}>
                                 <AppNavigationTooltip isActiveTab={isActive}>
                                     <StyledNavLink
-                                        isActive={isActive}
-                                        isNavigationDisabled={isAccountLoading}
+                                        $isActive={isActive}
+                                        $isNavigationDisabled={isAccountLoading}
                                         onClick={onClick}
                                         data-test={item['data-test']}
                                     >

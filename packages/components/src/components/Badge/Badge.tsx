@@ -20,50 +20,54 @@ export interface BadgeProps {
 }
 
 type MapArgs = {
-    variant: BadgeVariant;
+    $variant: BadgeVariant;
     theme: DefaultTheme;
 };
 
-type BadgeContainerProps = Required<Pick<BadgeProps, 'size' | 'variant' | 'hasAlert'>>;
+type BadgeContainerProps = {
+    $size: BadgeSize;
+    $variant: BadgeVariant;
+    $hasAlert: boolean;
+};
 
-const mapVariantToBackgroundColor = ({ variant, theme }: MapArgs): CSSColor => {
+const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<BadgeVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
         tertiary: 'backgroundNeutralSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
-const mapVariantToTextColor = ({ variant, theme }: MapArgs): CSSColor => {
+const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<BadgeVariant, Color> = {
         primary: 'textPrimaryDefault',
         tertiary: 'textSubdued',
         destructive: 'textAlertRed',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
-const mapVariantToIconColor = ({ variant, theme }: MapArgs): CSSColor => {
+const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<BadgeVariant, Color> = {
         primary: 'iconPrimaryDefault',
         tertiary: 'iconSubdued',
         destructive: 'iconAlertRed',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
-const mapVariantToPadding = ({ size }: { size: BadgeSize }): string => {
+const mapVariantToPadding = ({ $size }: { $size: BadgeSize }): string => {
     const colorMap: Record<BadgeSize, string> = {
         tiny: `0 ${spacings.xs - spacings.xxxs}px`,
         small: `0 ${spacingsPx.xs}`,
         medium: `${spacingsPx.xxxs} ${spacingsPx.xs}`,
     };
 
-    return colorMap[size];
+    return colorMap[$size];
 };
 
 const Container = styled.button<BadgeContainerProps>`
@@ -82,8 +86,8 @@ const Container = styled.button<BadgeContainerProps>`
 
     ${getFocusShadowStyle()}
 
-    ${({ theme, hasAlert }) =>
-        hasAlert &&
+    ${({ theme, $hasAlert }) =>
+        $hasAlert &&
         css`
             &:not(:focus-visible) {
                 border: 1px solid ${theme.borderAlertRed};
@@ -92,9 +96,10 @@ const Container = styled.button<BadgeContainerProps>`
         `}
 `;
 
-const Content = styled.span<Required<Pick<BadgeProps, 'size' | 'variant' | 'isDisabled'>>>`
-    color: ${({ isDisabled, theme }) => (isDisabled ? theme.textDisabled : mapVariantToTextColor)};
-    ${({ size }) => (size === 'medium' ? typography.hint : typography.label)};
+const Content = styled.span<{ $isDisabled: boolean; $variant: BadgeVariant; $size: BadgeSize }>`
+    color: ${({ $isDisabled, theme }) =>
+        $isDisabled ? theme.textDisabled : mapVariantToTextColor};
+    ${({ $size }) => ($size === 'medium' ? typography.hint : typography.label)};
 `;
 
 export const Badge = ({
@@ -110,20 +115,24 @@ export const Badge = ({
 
     return (
         <Container
-            size={size}
-            variant={variant}
+            $size={size}
+            $variant={variant}
             disabled={!!isDisabled}
-            hasAlert={!!hasAlert}
+            $hasAlert={!!hasAlert}
             className={className}
         >
             {icon && (
                 <Icon
                     name={icon}
-                    color={isDisabled ? 'iconDisabled' : mapVariantToIconColor({ variant, theme })}
+                    color={
+                        isDisabled
+                            ? 'iconDisabled'
+                            : mapVariantToIconColor({ $variant: variant, theme })
+                    }
                 />
             )}
 
-            <Content size={size} variant={variant} isDisabled={!!isDisabled}>
+            <Content $size={size} $variant={variant} $isDisabled={!!isDisabled}>
                 {children}
             </Content>
         </Container>

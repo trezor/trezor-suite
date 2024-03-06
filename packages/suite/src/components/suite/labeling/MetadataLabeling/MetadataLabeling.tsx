@@ -52,13 +52,13 @@ const LabelButton = styled(Button)`
     overflow: hidden;
 `;
 
-const ActionButton = styled(Button)<{ isValueVisible?: boolean; isVisible?: boolean }>`
-    margin-left: ${({ isValueVisible, isVisible, isLoading }) =>
-        isValueVisible || !isVisible || isLoading ? '12px' : '4px'};
-    visibility: ${({ isVisible }) => (isVisible ? 'visible' : 'hidden')};
+const ActionButton = styled(Button)<{ $isValueVisible?: boolean; $isVisible?: boolean }>`
+    margin-left: ${({ $isValueVisible, $isVisible, isLoading }) =>
+        $isValueVisible || !$isVisible || isLoading ? '12px' : '4px'};
+    visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 
     /* hack to keep button in place to prevent vertical jumping (if used display: none) */
-    width: ${({ isVisible }) => (isVisible ? 'auto' : '0')};
+    width: ${({ $isVisible }) => ($isVisible ? 'auto' : '0')};
 `;
 
 // @TODO this shouldn't be Button
@@ -106,7 +106,7 @@ const RelativeButton = styled(Button)`
     text-align: left;
 `;
 
-const RelativeLabel = styled(Label)<{ isVisible?: boolean }>`
+const RelativeLabel = styled(Label)<{ $isVisible?: boolean }>`
     position: relative;
     text-align: left;
 `;
@@ -397,9 +397,9 @@ export const MetadataLabeling = ({
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
-                            isVisible={isVisible}
+                            $isVisible={isVisible}
                             size="tiny"
-                            isValueVisible={!!payload.value}
+                            $isValueVisible={!!payload.value}
                             onClick={e => {
                                 e.stopPropagation();
                                 // by clicking on add label button, metadata.editing field is set
@@ -434,7 +434,7 @@ export const MetadataLabeling = ({
                             icon={!actionButtonsDisabled ? 'TAG' : undefined}
                             isLoading={actionButtonsDisabled}
                             isDisabled={actionButtonsDisabled}
-                            isVisible={isVisible}
+                            $isVisible={isVisible}
                             size="tiny"
                             onClick={e => {
                                 e.stopPropagation();

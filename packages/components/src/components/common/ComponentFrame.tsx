@@ -17,17 +17,17 @@ type ComponentFrameProps = FrameProps & {
     children: React.ReactNode;
 };
 
-const Frame = styled.div<{ margin?: FrameProps['margin'] }>`
-    ${({ margin }) =>
-        margin &&
+const Frame = styled.div<{ $margin?: FrameProps['margin'] }>`
+    ${({ $margin }) =>
+        $margin &&
         `
-            ${margin.top ? `margin-top: ${margin.top}px;` : ''}
-            ${margin.bottom ? `margin-bottom: ${margin.bottom}px;` : ''}
-            ${margin.left ? `margin-left: ${margin.left}px;` : ''}
-            ${margin.right ? `margin-right: ${margin.right}px;` : ''}
+            ${$margin.top ? `margin-top: ${$margin.top}px;` : ''}
+            ${$margin.bottom ? `margin-bottom: ${$margin.bottom}px;` : ''}
+            ${$margin.left ? `margin-left: ${$margin.left}px;` : ''}
+            ${$margin.right ? `margin-right: ${$margin.right}px;` : ''}
   `};
 `;
 
 export const ComponentFrame = ({ children, margin }: ComponentFrameProps) => (
-    <Frame margin={margin}>{children}</Frame>
+    <Frame $margin={margin}>{children}</Frame>
 );

@@ -21,7 +21,7 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
 import { DeviceModelInternal } from '@trezor/connect';
 
-const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
+const Wrapper = styled.div<{ $isWithTopPadding: boolean }>`
     display: flex;
     width: 100%;
     height: 100%;
@@ -31,7 +31,7 @@ const Wrapper = styled.div<{ isWithTopPadding: boolean }>`
     position: relative;
 
     ${variables.SCREEN_QUERY.ABOVE_TABLET} {
-        padding-top: ${({ isWithTopPadding }) => isWithTopPadding && '44px'};
+        padding-top: ${({ $isWithTopPadding }) => $isWithTopPadding && '44px'};
     }
 `;
 
@@ -179,7 +179,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             data-test="@firmware"
             heading={<Translation id={heading} />}
         >
-            <Wrapper isWithTopPadding={!isCancelable}>{Component}</Wrapper>
+            <Wrapper $isWithTopPadding={!isCancelable}>{Component}</Wrapper>
         </StyledModal>
     );
 };

@@ -25,16 +25,17 @@ const Dot = styled.span`
     line-height: 1;
 `;
 
-const StepConiainer = styled.div<{ isCurrent: boolean; isComplete: boolean }>`
+const StepConiainer = styled.div<{ $isCurrent: boolean; $isComplete: boolean }>`
     display: flex;
     justify-content: center;
     align-items: center;
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: ${({ theme, isCurrent, isComplete }) =>
-        !isCurrent && !isComplete && `1.5px solid ${theme.STROKE_GREY}`};
-    background: ${({ theme, isCurrent, isComplete }) => (isCurrent || isComplete) && theme.BG_GREY};
+    border: ${({ theme, $isCurrent, $isComplete }) =>
+        !$isCurrent && !$isComplete && `1.5px solid ${theme.STROKE_GREY}`};
+    background: ${({ theme, $isCurrent, $isComplete }) =>
+        ($isCurrent || $isComplete) && theme.BG_GREY};
 `;
 
 const Message = styled.p`
@@ -68,7 +69,7 @@ const Step = ({ phase, currentPhase }: StepProps) => {
     const isComplete = currentPhase > phase;
 
     return (
-        <StepConiainer isCurrent={isCurrent} isComplete={isComplete}>
+        <StepConiainer $isCurrent={isCurrent} $isComplete={isComplete}>
             {!isComplete && !isCurrent && <Dot>•</Dot>}
 
             {isCurrent && <Spinner size={16} />}

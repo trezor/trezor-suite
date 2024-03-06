@@ -2,20 +2,20 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 const Container = styled.div<{
-    valueInPercents: number;
-    size: number;
-    color?: string;
-    backgroundColor?: string;
+    $valueInPercents: number;
+    $size: number;
+    $color?: string;
+    $backgroundColor?: string;
 }>`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: ${({ size }) => `${size}px`};
-    height: ${({ size }) => `${size}px`};
+    width: ${({ $size }) => `${$size}px`};
+    height: ${({ $size }) => `${$size}px`};
     border-radius: 50%;
-    background: ${({ theme, valueInPercents, color, backgroundColor }) =>
-        `conic-gradient(${color || theme.BG_GREEN} ${3.6 * valueInPercents}deg, ${
-            backgroundColor || theme.STROKE_GREY
+    background: ${({ theme, $valueInPercents, $color, $backgroundColor }) =>
+        `conic-gradient(${$color || theme.BG_GREEN} ${3.6 * $valueInPercents}deg, ${
+            $backgroundColor || theme.STROKE_GREY
         } 0)`};
 `;
 
@@ -28,8 +28,21 @@ export interface ProgressPieProps {
     className?: string;
 }
 
-export const ProgressPie = ({ size = 16, children, ...props }: ProgressPieProps) => (
-    <Container size={size} {...props}>
+export const ProgressPie = ({
+    size = 16,
+    children,
+    valueInPercents,
+    backgroundColor,
+    className,
+    color,
+}: ProgressPieProps) => (
+    <Container
+        $size={size}
+        $valueInPercents={valueInPercents}
+        $backgroundColor={backgroundColor}
+        $color={color}
+        className={className}
+    >
         {children}
     </Container>
 );

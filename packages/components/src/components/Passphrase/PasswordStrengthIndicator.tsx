@@ -5,7 +5,7 @@ import type { ZXCVBNScore } from 'zxcvbn';
 import { colors } from '../../config';
 
 interface WrapperProps {
-    width?: number;
+    $width?: number;
 }
 
 const Wrapper = styled.div<WrapperProps>`
@@ -15,16 +15,16 @@ const Wrapper = styled.div<WrapperProps>`
     height: 5px;
     overflow: hidden;
     border-radius: 5px;
-    width: ${props => (props.width ? `${props.width}px` : '100%')};
+    width: ${props => (props.$width ? `${props.$width}px` : '100%')};
 `;
 
 interface LineProps {
-    width?: number;
-    isFilled: boolean;
+    $width?: number;
+    $isFilled: boolean;
 }
 
 const Line = styled.div<LineProps>`
-    background: ${props => (props.color && props.isFilled ? props.color : 'transparent')};
+    background: ${props => (props.color && props.$isFilled ? props.color : 'transparent')};
     display: flex;
     flex: 1;
     height: 5px;
@@ -81,7 +81,7 @@ export const PasswordStrengthIndicator = ({ password }: PasswordStrengthIndicato
             {[...Array(5)].map((_x, i) => (
                 <Line
                     key={i}
-                    isFilled={score !== undefined && i <= score}
+                    $isFilled={score !== undefined && i <= score}
                     color={getColor(score, password)}
                 />
             ))}

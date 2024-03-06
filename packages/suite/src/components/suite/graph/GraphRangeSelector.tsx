@@ -20,26 +20,26 @@ const Wrapper = styled.div`
     display: flex;
 `;
 
-const RangeItem = styled.div<{ selected: boolean; separated?: boolean }>`
+const RangeItem = styled.div<{ $selected: boolean; $separated?: boolean }>`
     display: flex;
     font-size: ${variables.FONT_SIZE.SMALL};
     text-align: center;
-    font-weight: ${({ selected }) => (selected ? 600 : 500)};
-    color: ${({ theme, selected }) => (selected ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
+    font-weight: ${({ $selected }) => ($selected ? 600 : 500)};
+    color: ${({ theme, $selected }) => ($selected ? theme.TYPE_DARK_GREY : theme.TYPE_LIGHT_GREY)};
     cursor: pointer;
     text-transform: uppercase;
     font-variant-numeric: tabular-nums;
-
-    &:hover {
-        color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    }
 
     & + & {
         margin-left: 12px;
     }
 
-    ${({ separated }) =>
-        separated &&
+    &:hover {
+        color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    }
+
+    ${({ $separated }) =>
+        $separated &&
         css`
             border-left: 1px solid ${colors.TYPE_LIGHTER_GREY};
             padding-left: 15px;
@@ -143,7 +143,7 @@ export const GraphRangeSelector = ({
             {RANGES.map(range => (
                 <RangeItem
                     key={range.label}
-                    selected={range.label === selectedRange.label}
+                    $selected={range.label === selectedRange.label}
                     onClick={() => {
                         setSelectedRange(range);
                         if (onSelectedRange) {
@@ -171,7 +171,7 @@ export const GraphRangeSelector = ({
                     />
                 }
             >
-                <RangeItem selected={selectedRange.label === 'range'} separated>
+                <RangeItem $selected={selectedRange.label === 'range'} $separated>
                     <Translation id="TR_RANGE" />
                 </RangeItem>
             </Dropdown>

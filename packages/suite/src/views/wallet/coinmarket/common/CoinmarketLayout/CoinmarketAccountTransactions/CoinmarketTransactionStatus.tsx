@@ -13,9 +13,9 @@ import {
     SavingsTradeItemStatus,
 } from 'invity-api';
 
-const Wrapper = styled.div<{ color: string }>`
+const Wrapper = styled.div<{ $color: string }>`
     display: flex;
-    color: ${props => props.color};
+    color: ${props => props.$color};
     align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
 `;
@@ -185,7 +185,7 @@ export const CoinmarketTransactionStatus = ({ trade, className, tradeType }: Sta
     }
 
     return (
-        <Wrapper color={data.color} className={className}>
+        <Wrapper $color={data.color} className={className}>
             <StyledIcon color={data.color} size={10} icon={data.icon} />
             <Text>
                 <Translation id={data.statusMessageId} />

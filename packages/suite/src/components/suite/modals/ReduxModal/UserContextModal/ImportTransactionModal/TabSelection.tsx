@@ -10,7 +10,7 @@ const TabSelector = styled.div`
     border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
 `;
 
-const TabButton = styled.button<{ selected: boolean }>`
+const TabButton = styled.button<{ $selected: boolean }>`
     border: none;
     background-color: inherit;
     font-size: ${variables.FONT_SIZE.NORMAL};
@@ -21,12 +21,13 @@ const TabButton = styled.button<{ selected: boolean }>`
     cursor: pointer;
 
     /* change styles if the button is selected */
-    color: ${({ selected, theme }) =>
-        selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
-    border-bottom: ${({ selected, theme }) => (selected ? `2px solid ${theme.BG_GREEN}` : 'none')};
+    color: ${({ $selected, theme }) =>
+        $selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
+    border-bottom: ${({ $selected, theme }) =>
+        $selected ? `2px solid ${theme.BG_GREEN}` : 'none'};
 
     &:hover {
-        border-bottom: 2px solid ${({ theme, selected }) => !selected && theme.STROKE_GREY};
+        border-bottom: 2px solid ${({ theme, $selected }) => !$selected && theme.STROKE_GREY};
     }
 `;
 
@@ -39,11 +40,11 @@ export interface TabSelectionProps {
 
 export const TabSelection = ({ selectedTab, setSelectedTab }: TabSelectionProps) => (
     <TabSelector>
-        <TabButton selected={selectedTab === 'upload'} onClick={() => setSelectedTab('upload')}>
+        <TabButton $selected={selectedTab === 'upload'} onClick={() => setSelectedTab('upload')}>
             <Translation id="TR_IMPORT_CSV_FROM_FILE" />
         </TabButton>
 
-        <TabButton selected={selectedTab === 'form'} onClick={() => setSelectedTab('form')}>
+        <TabButton $selected={selectedTab === 'form'} onClick={() => setSelectedTab('form')}>
             <Translation id="TR_IMPORT_CSV_FROM_TEXT" />
         </TabButton>
     </TabSelector>

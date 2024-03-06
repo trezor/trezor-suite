@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import { DeviceDisplayText } from './DeviceDisplayText';
 import { splitStringEveryNCharacters } from '@trezor/utils';
 
-const Row = styled.div<{ isAlignedRight?: boolean }>`
+const Row = styled.div<{ $isAlignedRight?: boolean }>`
     display: flex;
     align-items: center;
     gap: 8px;
-    justify-content: ${({ isAlignedRight }) => (isAlignedRight ? 'flex-end' : 'flex-start')};
+    justify-content: ${({ $isAlignedRight }) => ($isAlignedRight ? 'flex-end' : 'flex-start')};
 `;
 
 const ChunksContainer = styled.div`
@@ -42,9 +42,13 @@ export const DisplayChunks = ({
 }: DisplayChunksProps) => {
     const showChunksInRows = (chunks: string[][] | undefined, isNextAddress?: boolean) =>
         chunks?.map((row, rowIndex) => (
-            <Row key={rowIndex} isAlignedRight={rowIndex === 0 && isNextAddress}>
+            <Row key={rowIndex} $isAlignedRight={rowIndex === 0 && isNextAddress}>
                 {row.map((chunk, chunkIndex) => (
-                    <DeviceDisplayText isPixelType={isPixelType} key={chunkIndex} data-test="chunk">
+                    <DeviceDisplayText
+                        $isPixelType={isPixelType}
+                        key={chunkIndex}
+                        data-test="chunk"
+                    >
                         {chunk}
                     </DeviceDisplayText>
                 ))}

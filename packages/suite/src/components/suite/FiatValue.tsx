@@ -7,12 +7,16 @@ import {
     useFiatFromCryptoValue,
     useFiatFromCryptoValueParams,
 } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { HiddenPlaceholderProps } from './HiddenPlaceholder';
 
-const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
+const StyledHiddenPlaceholder = styled((props: HiddenPlaceholderProps) => (
+    <HiddenPlaceholder {...props} />
+))`
     font-variant-numeric: tabular-nums;
 `;
 
-const SameWidthNums = styled.span`
+// Do NOT use any prop from <HiddenPlaceholderProps>, its here just to fix types
+const SameWidthNums = styled.span<HiddenPlaceholderProps>`
     font-variant-numeric: tabular-nums;
 `;
 
@@ -69,23 +73,17 @@ export const FiatValue = ({
     const { FiatAmountFormatter } = useFormatters();
     const value = shouldConvert ? fiatAmount : amount;
 
+    const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
     if (value) {
-        const fiatValueContent = (
-            <>
+        const fiatValueComponent = (
+            <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈ </>}
                 <FiatAmountFormatter
                     currency={targetCurrency.toUpperCase()}
                     value={value}
                     {...fiatAmountFormatterOptions}
                 />
-            </>
-        );
-        const fiatValueComponent = disableHiddenPlaceholder ? (
-            <SameWidthNums className={className}>{fiatValueContent}</SameWidthNums>
-        ) : (
-            <StyledHiddenPlaceholder className={className}>
-                {fiatValueContent}
-            </StyledHiddenPlaceholder>
+            </WrapperComponent>
         );
 
         const fiatRateValue = ratesSource?.[targetCurrency] ?? null;

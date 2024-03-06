@@ -4,7 +4,7 @@ import { Image, Icon, IconProps, variables } from '@trezor/components';
 import { useGuide } from 'src/hooks/guide';
 import { DeviceModelInternal } from '@trezor/connect';
 
-const Wrapper = styled.div<{ isGuideOpen?: boolean }>`
+const Wrapper = styled.div<{ $isGuideOpen?: boolean }>`
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -16,7 +16,7 @@ const Wrapper = styled.div<{ isGuideOpen?: boolean }>`
     border-radius: 5px;
 
     @media only screen and (max-width: ${props =>
-            props.isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
+            props.$isGuideOpen ? variables.SCREEN_SIZE.XL : variables.SCREEN_SIZE.MD}) {
         display: none;
     }
 `;
@@ -76,7 +76,7 @@ export const DeviceMatrixExplanation = ({ items }: DeviceMatrixExplanationProps)
     const { isGuideOpen } = useGuide();
 
     return (
-        <Wrapper isGuideOpen={isGuideOpen}>
+        <Wrapper $isGuideOpen={isGuideOpen}>
             {items.map(item => (
                 <Item key={item.key}>
                     <ItemIconWrapper>

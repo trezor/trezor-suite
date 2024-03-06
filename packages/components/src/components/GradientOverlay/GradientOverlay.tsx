@@ -8,15 +8,15 @@ export interface GradientOverlayProps {
 }
 
 export const Gradient = styled.div<{
-    elevation: Elevation;
-    hiddenFrom?: GradientOverlayProps['hiddenFrom'];
+    $elevation: Elevation;
+    $hiddenFrom?: GradientOverlayProps['hiddenFrom'];
 }>`
     position: absolute;
     inset: 0;
     background-image: linear-gradient(
         to right,
         rgb(0 0 0 / 0%) 0%,
-        ${({ hiddenFrom, ...props }) => `${mapElevationToBackground(props)} ${hiddenFrom}`}
+        ${({ $hiddenFrom, ...props }) => `${mapElevationToBackground(props)} ${$hiddenFrom}`}
     );
 `;
 
@@ -25,8 +25,8 @@ export const GradientOverlay = ({ hiddenFrom = '50%', forcedElevation }: Gradien
 
     return (
         <Gradient
-            elevation={forcedElevation === undefined ? parentElevation : forcedElevation}
-            hiddenFrom={hiddenFrom}
+            $elevation={forcedElevation === undefined ? parentElevation : forcedElevation}
+            $hiddenFrom={hiddenFrom}
         />
     );
 };

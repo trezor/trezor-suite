@@ -4,9 +4,9 @@ import { H3, Paragraph, variables } from '@trezor/components';
 import { IconBorderedWrapper } from 'src/components/suite';
 import { spacingsPx } from '@trezor/theme';
 
-const StyledH3 = styled(H3)<{ size?: string }>`
+const StyledH3 = styled(H3)<{ $size?: string }>`
     margin-top: ${spacingsPx.lg};
-    font-size: ${({ size }) => size === 'small' && variables.FONT_SIZE.NORMAL};
+    font-size: ${({ $size }) => $size === 'small' && variables.FONT_SIZE.NORMAL};
 `;
 
 const GreyP = styled(Paragraph)`
@@ -36,7 +36,7 @@ export const StakingFeature = ({
     <div>
         <IconBorderedWrapper>{icon}</IconBorderedWrapper>
 
-        <StyledH3 size={titleSize}>{title}</StyledH3>
+        <StyledH3 $size={titleSize}>{title}</StyledH3>
 
         <GreyP>{description}</GreyP>
 

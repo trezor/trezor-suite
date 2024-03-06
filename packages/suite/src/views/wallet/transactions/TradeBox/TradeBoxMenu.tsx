@@ -15,9 +15,9 @@ const Wrapper = styled.div`
     gap: ${spacingsPx.sm};
 `;
 
-const StyledButton = styled(Button)<{ isHideable: boolean }>`
-    ${({ isHideable }) =>
-        isHideable &&
+const StyledButton = styled(Button)<{ $isHideable: boolean }>`
+    ${({ $isHideable }) =>
+        $isHideable &&
         css`
             ${variables.SCREEN_QUERY.MOBILE} {
                 display: none;
@@ -69,7 +69,7 @@ export const TradeBoxMenu = ({ account }: TradeBoxMenuProps) => {
                 )
                 .map(item => (
                     <StyledButton
-                        isHideable={!!item.isHideable}
+                        $isHideable={!!item.isHideable}
                         key={item.route}
                         variant="tertiary"
                         size="small"

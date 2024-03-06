@@ -2,8 +2,8 @@ import styled, { useTheme } from 'styled-components';
 import { SignValue } from '@suite-common/suite-types';
 import { isSignValuePositive } from '@suite-common/formatters';
 
-const StyledSign = styled.span<{ color: string }>`
-    color: ${({ color }) => color};
+const StyledSign = styled.span<{ $color: string }>`
+    color: ${({ $color }) => $color};
     width: 1ch;
     margin-right: 0.3ch;
 `;
@@ -33,17 +33,17 @@ export const Sign = ({
     const isValuePositive = isSignValuePositive(value);
 
     if (placeholderOnly) {
-        return <StyledSign color="transparent">+</StyledSign>;
+        return <StyledSign $color="transparent">+</StyledSign>;
     }
 
     if (isValuePositive) {
         return (
-            <StyledSign color={grayscale ? defaultColor : theme.textPrimaryDefault}>+</StyledSign>
+            <StyledSign $color={grayscale ? defaultColor : theme.textPrimaryDefault}>+</StyledSign>
         );
     }
 
     if (!isValuePositive && showMinusSign) {
-        return <StyledSign color={grayscale ? defaultColor : theme.textAlertRed}>–</StyledSign>;
+        return <StyledSign $color={grayscale ? defaultColor : theme.textAlertRed}>–</StyledSign>;
     }
 
     return null;

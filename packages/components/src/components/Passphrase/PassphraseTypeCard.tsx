@@ -20,7 +20,14 @@ import { Input } from '../form/Input/Input';
 import { Icon } from '../assets/Icon/Icon';
 import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
 
-const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModal'>>`
+type WalletType = 'standard' | 'hidden';
+
+type WrapperProps = {
+    $type: WalletType;
+    $singleColModal?: boolean;
+};
+
+const Wrapper = styled.div<WrapperProps>`
     display: flex;
     flex: 1;
 
@@ -34,26 +41,26 @@ const Wrapper = styled.div<Pick<PassphraseTypeCardProps, 'type' | 'singleColModa
         margin-top: ${spacingsPx.md};
     }
 
-    ${props =>
-        !props.singleColModal &&
+    ${({ $singleColModal }) =>
+        !$singleColModal &&
         css`
             padding: ${spacingsPx.sm};
 
             /* border: solid 1px ${({ theme }) => theme.STROKE_GREY}; */
         `}
 
-    ${props =>
-        props.type === 'standard' &&
+    ${({ $type }) =>
+        $type === 'standard' &&
         css`
             cursor: pointer;
         `}
 `;
 
-const IconWrapper = styled.div<Pick<PassphraseTypeCardProps, 'type'>>`
+const IconWrapper = styled.div<{ $type: WalletType }>`
     width: 38px;
     height: 38px;
-    background: ${({ theme, type }) =>
-        type === 'standard'
+    background: ${({ theme, $type }) =>
+        $type === 'standard'
             ? theme.backgroundPrimarySubtleOnElevation1
             : theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.sm};
@@ -76,15 +83,15 @@ const ArrowCol = styled(Col)`
     justify-content: center;
 `;
 
-const WalletTitle = styled.div<{ withMargin: boolean }>`
+const WalletTitle = styled.div<{ $withMargin: boolean }>`
     display: flex;
     ${typography.body}
     color: ${({ theme }) => theme.textDefault};
     align-items: center;
-    ${props => props.withMargin && `margin-bottom: ${spacingsPx.xxs};`}
+    ${props => props.$withMargin && `margin-bottom: ${spacingsPx.xxs};`}
 `;
 
-const Description = styled.div<Pick<PassphraseTypeCardProps, 'authConfirmation'>>`
+const Description = styled.div<{ $hasTopMargin?: boolean }>`
     display: flex;
     color: ${({ theme }) => theme.textSubdued};
     ${typography.label}
@@ -93,8 +100,8 @@ const Description = styled.div<Pick<PassphraseTypeCardProps, 'authConfirmation'>
 const InputWrapper = styled(Description)`
     width: 100%;
 
-    ${props =>
-        props.authConfirmation &&
+    ${({ $hasTopMargin }) =>
+        $hasTopMargin &&
         css`
             margin-top: ${spacingsPx.sm};
         `}
@@ -159,7 +166,7 @@ export type PassphraseTypeCardProps = {
     title?: ReactNode;
     description?: ReactNode;
     submitLabel: ReactNode;
-    type: 'standard' | 'hidden';
+    type: WalletType;
     offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
     authConfirmation?: boolean;
@@ -258,8 +265,8 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
 
     return (
         <Wrapper
-            type={props.type}
-            singleColModal={props.singleColModal}
+            $type={props.type}
+            $singleColModal={props.singleColModal}
             onClick={() => {
                 if (props.type === 'standard') {
                     submit(value);
@@ -275,7 +282,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                 // single col modal such as one for creating hidden wallet shows only input and submit button
                 <>
                     <Row>
-                        <IconWrapper type={props.type}>
+                        <IconWrapper $type={props.type}>
                             {props.type === 'standard' ? (
                                 <Icon size={24} icon="WALLET" color={theme.iconPrimaryDefault} />
                             ) : (
@@ -284,7 +291,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         </IconWrapper>
                         <Col>
                             <WalletTitle
-                                withMargin={props.type === 'hidden'}
+                                $withMargin={props.type === 'hidden'}
                                 data-test={props.type === 'hidden' && '@tooltip/passphrase-tooltip'}
                             >
                                 {props.type === 'hidden' ? (
@@ -326,7 +333,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                 <>
                     <Row>
                         {/* Show passphrase input */}
-                        <InputWrapper authConfirmation={props.authConfirmation}>
+                        <InputWrapper $hasTopMargin={props.authConfirmation}>
                             <PassphraseInput
                                 data-test="@passphrase/input"
                                 placeholder={intl.formatMessage({

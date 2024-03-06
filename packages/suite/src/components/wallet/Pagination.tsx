@@ -10,17 +10,17 @@ const Wrapper = styled.div`
     gap: ${spacingsPx.xxxs};
 `;
 
-const PageItem = styled.div<{ isActive?: boolean }>`
+const PageItem = styled.div<{ $isActive?: boolean }>`
     display: flex;
     align-items: center;
     justify-content: center;
     width: ${spacingsPx.xxl};
     height: ${spacingsPx.xxl};
     padding: ${spacingsPx.xxs} ${spacingsPx.xs};
-    background: ${({ isActive, theme }) =>
-        isActive ? theme.backgroundSecondaryDefault : 'transparent'};
+    background: ${({ $isActive, theme }) =>
+        $isActive ? theme.backgroundSecondaryDefault : 'transparent'};
     text-align: center;
-    color: ${({ isActive, theme }) => isActive && theme.textOnSecondary};
+    color: ${({ $isActive, theme }) => $isActive && theme.textOnSecondary};
     border-radius: ${borders.radii.md};
     transition:
         background 0.15s ease-out,
@@ -28,8 +28,8 @@ const PageItem = styled.div<{ isActive?: boolean }>`
     ${typography.hint};
     cursor: pointer;
 
-    ${({ isActive, theme }) =>
-        !isActive &&
+    ${({ $isActive, theme }) =>
+        !$isActive &&
         css`
             &:hover {
                 background: ${theme.backgroundTertiaryDefaultOnElevation0};
@@ -38,9 +38,9 @@ const PageItem = styled.div<{ isActive?: boolean }>`
         `};
 `;
 
-const Actions = styled.div<{ isActive: boolean }>`
+const Actions = styled.div<{ $isActive: boolean }>`
     display: flex;
-    visibility: ${props => (props.isActive ? 'auto' : 'hidden')};
+    visibility: ${props => (props.$isActive ? 'auto' : 'hidden')};
     ${typography.callout};
 `;
 
@@ -73,12 +73,12 @@ export const Pagination = ({
     if (!hasPages) {
         return (
             <Wrapper {...rest}>
-                <Actions isActive={showPrevious}>
+                <Actions $isActive={showPrevious}>
                     <PageItem onClick={() => onPageSelected(currentPage - 1)}>
                         ‹ <Translation id="TR_PAGINATION_NEWER" />
                     </PageItem>
                 </Actions>
-                <Actions isActive={!isLastPage}>
+                <Actions $isActive={!isLastPage}>
                     <PageItem onClick={() => onPageSelected(currentPage + 1)}>
                         <Translation id="TR_PAGINATION_OLDER" /> ›
                     </PageItem>
@@ -89,7 +89,7 @@ export const Pagination = ({
 
     return (
         <Wrapper {...rest}>
-            <Actions isActive={showPrevious}>
+            <Actions $isActive={showPrevious}>
                 {currentPage > 2 && <PageItem onClick={() => onPageSelected(1)}>«</PageItem>}
                 <PageItem onClick={() => onPageSelected(currentPage - 1)}>‹</PageItem>
             </Actions>
@@ -101,7 +101,7 @@ export const Pagination = ({
                         data-test={`@wallet/accounts/pagination/${i}`}
                         data-test-activated={i === currentPage ?? 'true'}
                         onClick={() => onPageSelected(i)}
-                        isActive={i === currentPage}
+                        $isActive={i === currentPage}
                     >
                         {i}
                     </PageItem>
@@ -120,13 +120,13 @@ export const Pagination = ({
                             {i + 1}
                         </PageItem>
                     ))}
-                    <PageItem onClick={() => onPageSelected(currentPage)} isActive>
+                    <PageItem onClick={() => onPageSelected(currentPage)} $isActive>
                         {currentPage}
                     </PageItem>
                 </>
             )}
 
-            <Actions isActive={currentPage < (totalPages || 1)}>
+            <Actions $isActive={currentPage < (totalPages || 1)}>
                 <PageItem onClick={() => onPageSelected(currentPage + 1)}>›</PageItem>
                 {totalPages && totalPages > 2 && (
                     <PageItem onClick={() => onPageSelected(totalPages)}>»</PageItem>

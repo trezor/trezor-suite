@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders } from '@trezor/theme';
 
-const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
+const Wrapper = styled.div<{ $size?: string; $isHoverable?: boolean }>`
     position: relative;
     display: flex;
     align-items: center;
@@ -24,7 +24,7 @@ const Wrapper = styled.div<{ size?: string; isHoverable?: boolean }>`
     }
 
     ${props =>
-        props.isHoverable &&
+        props.$isHoverable &&
         css`
             &:hover,
             &:focus,
@@ -48,7 +48,7 @@ export const HoverAnimation = ({
     className,
     children,
 }: HoverAnimationProps) => (
-    <Wrapper isHoverable={isHoverable} className={className}>
+    <Wrapper $isHoverable={isHoverable} className={className}>
         {children}
     </Wrapper>
 );

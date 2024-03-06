@@ -67,7 +67,7 @@ const CodeContainer = styled(Container)`
     white-space: pre;
 `;
 
-const MethodResult = styled.div<{ tab: string }>`
+const MethodResult = styled.div`
     position: relative;
     margin-top: 10px;
     flex: 1;
@@ -101,7 +101,7 @@ const Response = ({ code, docs, hasDocumentation, response, tab }: ResponseProps
     const { onTabChange } = actions;
 
     return (
-        <MethodResult tab={tab}>
+        <MethodResult>
             <div>
                 <MethodResultMenuItem data-tab="response" onClick={() => onTabChange('response')}>
                     Response

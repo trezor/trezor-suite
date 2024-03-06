@@ -4,18 +4,18 @@ import { useSelector } from 'src/hooks/suite';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 interface WrapperProps {
-    intensity: number;
-    discreetMode: boolean;
+    $intensity: number;
+    $discreetMode: boolean;
 }
 
 const Wrapper = styled.span<WrapperProps>`
     font-variant-numeric: tabular-nums;
 
-    ${(props: WrapperProps) =>
-        props.discreetMode &&
+    ${({ $intensity, $discreetMode }: WrapperProps) =>
+        $discreetMode &&
         css`
             transition: all 0.1s ease;
-            filter: blur(${intensity}px);
+            filter: blur(${$intensity}px);
 
             &:hover {
                 filter: none;
@@ -23,7 +23,7 @@ const Wrapper = styled.span<WrapperProps>`
         `}
 `;
 
-interface HiddenPlaceholderProps {
+export interface HiddenPlaceholderProps {
     enforceIntensity?: number;
     children: ReactNode;
     className?: string;
@@ -56,8 +56,8 @@ export const HiddenPlaceholder = ({
 
     return (
         <Wrapper
-            discreetMode={discreetMode}
-            intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
+            $discreetMode={discreetMode}
+            $intensity={enforceIntensity !== undefined ? enforceIntensity : automaticIntensity}
             className={className}
             ref={ref}
             data-test={rest['data-test']}

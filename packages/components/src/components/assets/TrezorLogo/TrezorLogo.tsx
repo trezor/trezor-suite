@@ -1,4 +1,3 @@
-import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import styled, { useTheme } from 'styled-components';
 import { LOGOS } from './trezorLogos';
@@ -11,21 +10,25 @@ export type TrezorLogoType =
     | 'suite_square'
     | 'suite_compact';
 
-const SvgWrapper = styled.div<Omit<TrezorLogoProps, 'type'>>`
+const SvgWrapper = styled.div<{
+    $width?: string | number;
+    $height?: string | number;
+}>`
     color: ${({ theme }) => theme.iconDefault};
     display: inline-block;
-    width: ${({ width }) => width};
-    height: ${({ height }) => height};
+    width: ${({ $width }) => $width};
+    height: ${({ $height }) => $height};
 
     div {
-        height: ${({ height }) => height};
+        height: ${({ $height }) => $height};
     }
 `;
 
-export interface TrezorLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
+export interface TrezorLogoProps {
     type: TrezorLogoType;
     width?: string | number;
     height?: string | number;
+    'data-test'?: string;
 }
 
 const Loading = () => <span className="loading" />;
@@ -35,8 +38,8 @@ export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: T
 
     return (
         <SvgWrapper
-            width={typeof width === 'number' ? `${width}px` : width}
-            height={typeof height === 'number' ? `${height}px` : height}
+            $width={typeof width === 'number' ? `${width}px` : width}
+            $height={typeof height === 'number' ? `${height}px` : height}
             {...rest}
         >
             <ReactSVG

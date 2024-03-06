@@ -12,9 +12,9 @@ import { useCoinjoinSessionBlockers } from 'src/hooks/coinjoin/useCoinjoinSessio
 import { FormattedNumber } from 'react-intl';
 import { spacingsPx, typography } from '@trezor/theme';
 
-export const Container = styled.div<{ isWide: boolean }>`
-    width: ${({ isWide }) => `calc(100% - ${isWide ? 12 : 8}px)`};
-    height: ${({ isWide }) => `calc(100% - ${isWide ? 12 : 8}px)`};
+export const Container = styled.div<{ $isWide: boolean }>`
+    width: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
+    height: ${({ $isWide }) => `calc(100% - ${$isWide ? 12 : 8}px)`};
     background: ${({ theme }) => theme.BG_WHITE};
     border-radius: 50%;
     transition:
@@ -209,7 +209,7 @@ export const CoinjoinProgressContent = ({
     };
 
     return (
-        <Container isWide={isSessionActive || isLoading}>
+        <Container $isWide={isSessionActive || isLoading}>
             <CenteringContainer>{getProgressContent()}</CenteringContainer>
         </Container>
     );
