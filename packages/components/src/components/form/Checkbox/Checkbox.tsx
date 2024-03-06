@@ -89,31 +89,25 @@ export const CheckContainer = styled.div<{ $variant: CheckboxVariant }>`
         box-shadow 0.1s ease-out;
 
     input:checked + && {
-        background: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].backgroundChecked]};
-        border-color: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].borderChecked]};
+        background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundChecked]};
+        border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderChecked]};
     }
 
     input:disabled:not(:checked) + && {
-        background: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].backgroundDisabled]};
-        border-color: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].borderDisabled]};
+        background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundDisabled]};
+        border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderDisabled]};
     }
 
     input:disabled:checked + && {
-        background: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].backgroundDisabledChecked]};
-        border-color: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].backgroundDisabledChecked]};
+        background: ${({ theme, $variant }) =>
+            theme[variantStyles[$variant].backgroundDisabledChecked]};
+        border-color: ${({ theme, $variant }) =>
+            theme[variantStyles[$variant].backgroundDisabledChecked]};
     }
 
     ${/* sc-selector */ Container}:hover input:not(:disabled):not(:checked) + && {
-        background: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].backgroundHover]};
-        border-color: ${({ theme, $variant: variant }) =>
-            theme[variantStyles[variant].borderHover]};
+        background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundHover]};
+        border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderHover]};
     }
 
     ${getFocusShadowStyle()}

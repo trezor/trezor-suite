@@ -2,18 +2,18 @@ import styled from 'styled-components';
 import { Icon, variables, SelectBar, Card } from '@trezor/components';
 
 interface ResponsiveSize {
-    responsiveSize: keyof typeof variables.SCREEN_SIZE;
+    $responsiveSize: keyof typeof variables.SCREEN_SIZE;
 }
 
 export const Wrapper = styled.div<ResponsiveSize>`
     display: flex;
     flex: 1;
 
-    @media screen and (min-width: ${props => variables.SCREEN_SIZE[props.responsiveSize]}) {
+    @media screen and (min-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
         flex-flow: wrap;
     }
 
-    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.responsiveSize]}) {
+    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
         flex-direction: column;
     }
 `;
@@ -40,13 +40,13 @@ export const Middle = styled.div<ResponsiveSize>`
     align-items: center;
     justify-content: center;
 
-    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.responsiveSize]}) {
+    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
         padding-bottom: 27px;
     }
 `;
 
 export const StyledIcon = styled(Icon)<ResponsiveSize>`
-    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.responsiveSize]}) {
+    @media screen and (max-width: ${props => variables.SCREEN_SIZE[props.$responsiveSize]}) {
         transform: rotate(90deg);
     }
 `;

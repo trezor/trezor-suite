@@ -37,9 +37,9 @@ const StyledCol = styled.div<{ $isLastRow?: boolean }>`
 
 const Col = (props: ComponentProps<typeof StyledCol>) => {
     const newProps = { ...props };
-    delete newProps.isLastRow;
+    delete newProps.$isLastRow;
 
-    return <StyledCol {...motionAnimation.expand} {...newProps} $isLastRow={props.isLastRow} />;
+    return <StyledCol {...motionAnimation.expand} {...newProps} $isLastRow={props.$isLastRow} />;
 };
 
 const CoinLogoWrapper = styled(Col)`
@@ -165,13 +165,13 @@ export const AssetRow = memo(
                     />
                 </CoinLogoWrapper>
 
-                <CoinNameWrapper isLastRow={isLastRow}>
+                <CoinNameWrapper $isLastRow={isLastRow}>
                     <AssetCoinName network={network} />
                 </CoinNameWrapper>
 
                 {!failed ? (
                     <CryptoBalanceWrapper
-                        isLastRow={isLastRow}
+                        $isLastRow={isLastRow}
                         data-test={`@asset-card/${symbol}/balance`}
                     >
                         <FiatBalanceWrapper>
@@ -185,7 +185,7 @@ export const AssetRow = memo(
                         </CoinBalanceContainer>
                     </CryptoBalanceWrapper>
                 ) : (
-                    <FailedCol isLastRow={isLastRow}>
+                    <FailedCol $isLastRow={isLastRow}>
                         <Translation id="TR_DASHBOARD_ASSET_FAILED" />
 
                         <Icon
@@ -196,13 +196,13 @@ export const AssetRow = memo(
                         />
                     </FailedCol>
                 )}
-                <ExchangeRateWrapper isLastRow={isLastRow}>
+                <ExchangeRateWrapper $isLastRow={isLastRow}>
                     {!isTestnet(symbol) && <PriceTicker symbol={symbol} compact />}
                 </ExchangeRateWrapper>
-                <ExchangeRateWrapper7Days isLastRow={isLastRow}>
+                <ExchangeRateWrapper7Days $isLastRow={isLastRow}>
                     {!isTestnet(symbol) && <TrendTicker symbol={symbol} compact />}
                 </ExchangeRateWrapper7Days>
-                <BuyButtonWrapper isLastRow={isLastRow}>
+                <BuyButtonWrapper $isLastRow={isLastRow}>
                     {!isTestnet(symbol) && (
                         <CoinmarketBuyButton
                             symbol={symbol}
@@ -226,22 +226,22 @@ export const AssetRowSkeleton = (props: { animate?: boolean }) => {
             <CoinLogoWrapper>
                 <AssetCoinLogoSkeleton />
             </CoinLogoWrapper>
-            <CoinNameWrapper isLastRow>
+            <CoinNameWrapper $isLastRow>
                 <Coin>
                     <SkeletonRectangle animate={animate} width={150} />
                 </Coin>
             </CoinNameWrapper>
-            <CryptoBalanceWrapper isLastRow>
+            <CryptoBalanceWrapper $isLastRow>
                 <SkeletonRectangle animate={animate} width={100} />
             </CryptoBalanceWrapper>
 
-            <ExchangeRateWrapper isLastRow>
+            <ExchangeRateWrapper $isLastRow>
                 <SkeletonRectangle animate={animate} />
             </ExchangeRateWrapper>
-            <ExchangeRateWrapper isLastRow>
+            <ExchangeRateWrapper $isLastRow>
                 <SkeletonRectangle animate={animate} width={50} />
             </ExchangeRateWrapper>
-            <BuyButtonWrapper isLastRow>
+            <BuyButtonWrapper $isLastRow>
                 <SkeletonRectangleLast animate={animate} width={58} height={38} borderRadius={19} />
             </BuyButtonWrapper>
         </AssetTableRowGrid>

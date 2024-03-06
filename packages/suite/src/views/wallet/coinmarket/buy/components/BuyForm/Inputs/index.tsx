@@ -105,7 +105,7 @@ const Inputs = () => {
     };
 
     return (
-        <Wrapper responsiveSize="LG">
+        <Wrapper $responsiveSize="LG">
             <Left>
                 <NumberInput
                     control={control}
@@ -145,8 +145,8 @@ const Inputs = () => {
                     data-test="@coinmarket/buy/fiat-input"
                 />
             </Left>
-            <Middle responsiveSize="LG">
-                <StyledIcon responsiveSize="LG" icon="TRANSFER" size={16} />
+            <Middle $responsiveSize="LG">
+                <StyledIcon $responsiveSize="LG" icon="TRANSFER" size={16} />
             </Middle>
             <Right>
                 <NumberInput

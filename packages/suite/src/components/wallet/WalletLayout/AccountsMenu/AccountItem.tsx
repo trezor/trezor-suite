@@ -191,7 +191,11 @@ export const AccountItem = forwardRef(
                         </>
                     )}
                     {!isBalanceShown && (
-                        <SkeletonStack col margin="6px 0px 0px 0px" childMargin="0px 0px 8px 0px">
+                        <SkeletonStack
+                            $col
+                            $margin="6px 0px 0px 0px"
+                            $childMargin="0px 0px 8px 0px"
+                        >
                             <SkeletonRectangle
                                 width="100px"
                                 height="16px"

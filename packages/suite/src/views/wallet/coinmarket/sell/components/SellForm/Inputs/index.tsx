@@ -90,11 +90,11 @@ const Inputs = () => {
     }, [amountLimits, trigger]);
 
     return (
-        <Wrapper responsiveSize="LG">
+        <Wrapper $responsiveSize="LG">
             <Left>
                 <CryptoInput />
             </Left>
-            <Middle responsiveSize="LG">
+            <Middle $responsiveSize="LG">
                 {!isLargeLayoutSize && (
                     <StyledCoinmarketFractionButtons
                         disabled={isBalanceZero}
@@ -102,7 +102,7 @@ const Inputs = () => {
                         onAllClick={setAllAmount}
                     />
                 )}
-                <StyledIcon responsiveSize="LG" icon="TRANSFER" size={16} />
+                <StyledIcon $responsiveSize="LG" icon="TRANSFER" size={16} />
                 {!isLargeLayoutSize && <EmptyDiv />}
             </Middle>
             <Right>

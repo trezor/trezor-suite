@@ -5,14 +5,15 @@ import { NotificationRenderer, NotificationViewProps, Translation } from 'src/co
 import { notificationsActions, NotificationEntry } from '@suite-common/toast-notifications';
 import { useDispatch } from 'src/hooks/suite';
 import { getNotificationIcon, getVariantColor } from 'src/utils/suite/notification';
+import { ToastNotificationVariant } from '../../../types/suite';
 
-const Wrapper = styled.div<Pick<NotificationViewProps, 'variant'> & { isTall: boolean }>`
+const Wrapper = styled.div<{ $variant: ToastNotificationVariant; $isTall: boolean }>`
     display: flex;
-    align-items: ${({ isTall }) => (isTall ? 'start' : 'center')};
+    align-items: ${({ $isTall }) => ($isTall ? 'start' : 'center')};
     font-size: ${variables.FONT_SIZE.SMALL};
     height: 100%;
-    padding: ${({ isTall }) => (isTall ? '16px 16px 12px 12px' : '12px 16px 12px 12px')};
-    border-left: 4px solid ${({ variant }) => getVariantColor(variant)};
+    padding: ${({ $isTall }) => ($isTall ? '16px 16px 12px 12px' : '12px 16px 12px 12px')};
+    border-left: 4px solid ${({ $variant }) => getVariantColor($variant)};
     word-break: break-word;
     max-width: 430px;
 `;
@@ -97,7 +98,7 @@ const ToastNotification = ({
     );
 
     return (
-        <Wrapper data-test={dataTestBase} variant={variant} isTall={isTall} ref={wrapperRef}>
+        <Wrapper data-test={dataTestBase} $variant={variant} $isTall={isTall} ref={wrapperRef}>
             {defaultIcon && typeof defaultIcon === 'string' ? (
                 <Icon icon={defaultIcon} size={24} color={getVariantColor(variant)} />
             ) : (

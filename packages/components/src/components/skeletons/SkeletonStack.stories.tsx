@@ -20,10 +20,10 @@ export const SkeletonStack: StoryObj<SkeletonStackProps> = {
         </SkeletonStackComponent>
     ),
     args: {
-        col: true,
-        grow: true,
-        margin: '20px',
-        childMargin: '20px',
-        alignItems: 'center',
+        $col: true,
+        $grow: true,
+        $margin: '20px',
+        $childMargin: '20px',
+        $alignItems: 'center',
     },
 };

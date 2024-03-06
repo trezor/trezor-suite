@@ -28,7 +28,7 @@ const CoinmarketP2p = (props: WithSelectedAccountLoadedProps) => {
             onClearFormButtonClick={isDirty || isDraft ? handleClearFormButtonClick : undefined}
         >
             <P2pFormContext.Provider value={coinmarketP2pContextValues}>
-                <Wrapper responsiveSize="LG">
+                <Wrapper $responsiveSize="LG">
                     <Form onSubmit={handleSubmit(onSubmit)}>
                         <Inputs />
                         <P2pInfo />

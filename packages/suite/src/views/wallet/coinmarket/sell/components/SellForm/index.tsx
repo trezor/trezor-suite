@@ -11,7 +11,7 @@ const SellForm = () => {
     const { onSubmit, handleSubmit, isLoading, noProviders } = useCoinmarketSellFormContext();
 
     return (
-        <Wrapper responsiveSize="LG">
+        <Wrapper $responsiveSize="LG">
             {isLoading && <CoinmarketSkeleton />}
             {!isLoading && noProviders && (
                 <NoProviders>
