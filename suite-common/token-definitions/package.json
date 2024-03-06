@@ -1,0 +1,25 @@
+{
+    "name": "@suite-common/token-definitions",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "nfts": "yarn g:tsx ./scripts/index.ts nft",
+        "coins": "yarn g:tsx ./scripts/index.ts coin",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build",
+        "test:unit": "yarn g:jest -c=../../jest.config.base.js"
+    },
+    "dependencies": {
+        "@suite-common/wallet-config": "workspace:*"
+    },
+    "devDependencies": {
+        "@types/fs-extra": "^11.0.4",
+        "ajv": "^8.12.0",
+        "fs-extra": "^11.2.0",
+        "json-schema-to-typescript": "^13.1.2",
+        "jws": "^4.0.0"
+    }
+}
