@@ -36,7 +36,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf -rf lib && yarn g:tsc --build ./tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf -rf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "publish:lib": "./scripts/publish-lib.sh",
         "test:unit": "jest",
         "test:e2e": "ts-node -O '{\"module\": \"commonjs\", \"esModuleInterop\": true}' ./e2e/run.ts",
