@@ -34,6 +34,38 @@ const ActionsWrapper = styled.div`
     align-items: center;
 `;
 
+const TEMPINFOPANEL = ({
+    info,
+    searched,
+    filtered,
+}: {
+    info: ReturnType<typeof useFetchTransactions>['TEMPINFO'];
+    searched: WalletAccountTransaction[];
+    filtered: WalletAccountTransaction[];
+}) => (
+    <div style={{ alignSelf: 'center', marginTop: '16px' }}>
+        FETCHED {info.pagesFetched}/{info.pagesTotal} PAGES ({info.txFetched}/{info.txTotal} TXS)
+        <br />
+        {info.txFetched} -&gt; FILTER -&gt; {filtered.length} -&gt; SEARCH -&gt; {searched.length}
+    </div>
+);
+
+const TEMPBUTTON = ({
+    fetchedAll,
+    fetchNext,
+}: {
+    fetchedAll: boolean;
+    fetchNext: () => unknown;
+}) => (
+    <button
+        disabled={fetchedAll}
+        onClick={fetchNext}
+        style={{ alignSelf: 'center', marginTop: '16px', padding: '12px' }}
+    >
+        LOAD MORE
+    </button>
+);
+
 interface TransactionListProps {
     account: Account;
     transactions: WalletAccountTransaction[];
@@ -77,7 +109,10 @@ export const TransactionList = ({
         [filteredTransactions, account.metadata, searchQuery, accountMetadata],
     );
 
-    const { fetchNext, fetchAll, fetchedAll } = useFetchTransactions(account, transactions);
+    const { fetchNext, fetchAll, fetchedAll, TEMPINFO } = useFetchTransactions(
+        account,
+        transactions,
+    );
 
     useEffect(() => {
         if (anchor) fetchAll();
@@ -171,7 +206,12 @@ export const TransactionList = ({
                 <>{areTransactionsAvailable ? <NoSearchResults /> : listItems}</>
             )}
 
-            {/* TODO add fetching logic */}
+            <TEMPINFOPANEL
+                info={TEMPINFO}
+                searched={searchedTransactions}
+                filtered={filteredTransactions}
+            />
+            <TEMPBUTTON fetchNext={fetchNext} fetchedAll={fetchedAll} />
         </StyledSection>
     );
 };
