@@ -30,7 +30,10 @@ jobs:
         id: yarn-cache
         with:
           save-always: true
-          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          path: |
+            ${{ steps.yarn-cache-dir-path.outputs.dir }}
+            node_modules/*/build/
+            node_modules/@*/*/build/
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
             yarn-cache-folder-
