@@ -1,5 +1,13 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { JavaScriptTypeBuilder, Static, TSchema, TObject, Optional, Kind } from '@sinclair/typebox';
+import {
+    JavaScriptTypeBuilder,
+    Static,
+    TSchema,
+    TObject,
+    Optional,
+    Kind,
+    TypeClone,
+} from '@sinclair/typebox';
 import { ValueErrorType, Errors, ValueError } from '@sinclair/typebox/errors';
 import { Mixin } from 'ts-mixer';
 
@@ -111,5 +119,5 @@ export function AssertWeak<T extends TSchema>(
 }
 
 export const Type = new CustomTypeBuilder();
-export { Optional };
+export { Optional, TypeClone };
 export type { Static, TObject, TSchema };

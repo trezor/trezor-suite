@@ -1775,16 +1775,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.4, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
-  version: 7.23.9
-  resolution: "@babel/runtime@npm:7.23.9"
-  dependencies:
-    regenerator-runtime: "npm:^0.14.0"
-  checksum: 9a520fe1bf72249f7dd60ff726434251858de15cccfca7aa831bd19d0d3fb17702e116ead82724659b8da3844977e5e13de2bae01eb8a798f2823a669f122be6
-  languageName: node
-  linkType: hard
-
-"@babel/runtime@npm:^7.23.8":
+"@babel/runtime@npm:^7.0.0, @babel/runtime@npm:^7.1.2, @babel/runtime@npm:^7.12.0, @babel/runtime@npm:^7.12.1, @babel/runtime@npm:^7.12.13, @babel/runtime@npm:^7.12.5, @babel/runtime@npm:^7.13.10, @babel/runtime@npm:^7.15.4, @babel/runtime@npm:^7.17.2, @babel/runtime@npm:^7.17.8, @babel/runtime@npm:^7.18.3, @babel/runtime@npm:^7.20.0, @babel/runtime@npm:^7.21.0, @babel/runtime@npm:^7.23.2, @babel/runtime@npm:^7.23.4, @babel/runtime@npm:^7.23.8, @babel/runtime@npm:^7.23.9, @babel/runtime@npm:^7.5.5, @babel/runtime@npm:^7.8.4, @babel/runtime@npm:^7.8.7, @babel/runtime@npm:^7.9.2":
   version: 7.24.0
   resolution: "@babel/runtime@npm:7.24.0"
   dependencies:
@@ -5305,17 +5296,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@popperjs/core@npm:^2.11.8":
+"@popperjs/core@npm:^2.11.8, @popperjs/core@npm:^2.9.0":
   version: 2.11.8
   resolution: "@popperjs/core@npm:2.11.8"
   checksum: ddd16090cde777aaf102940f05d0274602079a95ad9805bd20bc55dcc7c3a2ba1b99dd5c73e5cc2753c3d31250ca52a67d58059459d7d27debb983a9f552936c
-  languageName: node
-  linkType: hard
-
-"@popperjs/core@npm:^2.9.0":
-  version: 2.11.6
-  resolution: "@popperjs/core@npm:2.11.6"
-  checksum: 37f5b021d993ae5ad3c3913d6d9b1ab506912b91756ba3ca87bcc0e727b9fd9e1f4c6cf2675aac608aa856c7c5475842df4240770052d6104967c5c6473da7b9
   languageName: node
   linkType: hard
 
@@ -7175,6 +7159,13 @@ __metadata:
   version: 0.31.28
   resolution: "@sinclair/typebox@npm:0.31.28"
   checksum: 27c3af5539a12af9b3cda4432959c69fb500920f1dd3739700a1437cfa9de809a292398a0b3b871c7471e96e4088d58406105bed5407d089c91c56090c526013
+  languageName: node
+  linkType: hard
+
+"@sinclair/typebox@npm:^0.32.15":
+  version: 0.32.15
+  resolution: "@sinclair/typebox@npm:0.32.15"
+  checksum: 94994d0ab8440387c189d565ad0179ff5ca8ce6b232e941db4505298bc250326ee3fe27c02c5a2d8ad76fb9b163017d1d753cb6f86c6caa295c52ae50b92dd31
   languageName: node
   linkType: hard
 
@@ -10008,6 +9999,34 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-explorer-nextra@workspace:packages/connect-explorer-nextra":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-explorer-nextra@workspace:packages/connect-explorer-nextra"
+  dependencies:
+    "@sinclair/typebox": "npm:^0.32.15"
+    "@trezor/components": "workspace:^"
+    "@trezor/connect-web": "workspace:^"
+    "@trezor/protobuf": "workspace:^"
+    "@trezor/utils": "workspace:^"
+    "@types/node": "npm:20.11.24"
+    "@types/redux-logger": "npm:^3.0.11"
+    autoprefixer: "npm:^10.4.18"
+    next: "npm:^14.1.1"
+    nextra: "npm:^2.13.4"
+    nextra-theme-docs: "npm:^2.13.4"
+    postcss: "npm:^8.4.35"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
+    react-inspector: "npm:^6.0.2"
+    react-markdown: "npm:^9.0.1"
+    react-redux: "npm:8.0.7"
+    redux: "npm:^4.2.1"
+    redux-logger: "npm:^3.0.6"
+    redux-thunk: "npm:^2.4.2"
+    styled-components: "npm:^5.3.10"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-explorer-webextension@workspace:packages/connect-explorer-webextension":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer-webextension@workspace:packages/connect-explorer-webextension"
@@ -11281,16 +11300,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/d3-scale@npm:^4.0.2":
-  version: 4.0.3
-  resolution: "@types/d3-scale@npm:4.0.3"
-  dependencies:
-    "@types/d3-time": "npm:*"
-  checksum: 294e2fc71cab2d3b800c8fc1a5e1aa2cd7e6215b72d22b16240411330c6907f5e092e7924e0df5726bec89192f467b26448cded41ecdd68536bbbc54e93e53a8
-  languageName: node
-  linkType: hard
-
-"@types/d3-scale@npm:^4.0.3":
+"@types/d3-scale@npm:^4.0.2, @types/d3-scale@npm:^4.0.3":
   version: 4.0.8
   resolution: "@types/d3-scale@npm:4.0.8"
   dependencies:
@@ -12161,18 +12171,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/react@npm:*, @types/react@npm:16 || 17 || 18, @types/react@npm:18.2.55":
-  version: 18.2.55
-  resolution: "@types/react@npm:18.2.55"
-  dependencies:
-    "@types/prop-types": "npm:*"
-    "@types/scheduler": "npm:*"
-    csstype: "npm:^3.0.2"
-  checksum: bf8fe19e73575489e63c0726355f164157cd69e75f2a862436ad2c0586e732cb953a7255a6bc73145e8f9506ee7a723f9a569ca9a39c53984e5b12b84e1c718a
-  languageName: node
-  linkType: hard
-
-"@types/react@npm:>=16":
+"@types/react@npm:*, @types/react@npm:16 || 17 || 18, @types/react@npm:>=16":
   version: 18.2.61
   resolution: "@types/react@npm:18.2.61"
   dependencies:
@@ -12180,6 +12179,17 @@ __metadata:
     "@types/scheduler": "npm:*"
     csstype: "npm:^3.0.2"
   checksum: 74c2920ccca83fc51190ed4eda1066fa6a644197839dd37765fcce93cbd50b7a52b75815ce0083bb95195f886c80b57745314dd49ecbf235fa93d753ae2260bc
+  languageName: node
+  linkType: hard
+
+"@types/react@npm:18.2.55":
+  version: 18.2.55
+  resolution: "@types/react@npm:18.2.55"
+  dependencies:
+    "@types/prop-types": "npm:*"
+    "@types/scheduler": "npm:*"
+    csstype: "npm:^3.0.2"
+  checksum: bf8fe19e73575489e63c0726355f164157cd69e75f2a862436ad2c0586e732cb953a7255a6bc73145e8f9506ee7a723f9a569ca9a39c53984e5b12b84e1c718a
   languageName: node
   linkType: hard
 
@@ -13868,25 +13878,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"autoprefixer@npm:^10.4.17":
-  version: 10.4.17
-  resolution: "autoprefixer@npm:10.4.17"
-  dependencies:
-    browserslist: "npm:^4.22.2"
-    caniuse-lite: "npm:^1.0.30001578"
-    fraction.js: "npm:^4.3.7"
-    normalize-range: "npm:^0.1.2"
-    picocolors: "npm:^1.0.0"
-    postcss-value-parser: "npm:^4.2.0"
-  peerDependencies:
-    postcss: ^8.1.0
-  bin:
-    autoprefixer: bin/autoprefixer
-  checksum: ac4416e72643bf92c2a346af5a6a437eb39e3b852e5d48e1a0a3204a81cbf8eecc5489a9386cf63a288b7183fae3ad52cf3c24c458d7cbb5463e55e21dc7e6ed
-  languageName: node
-  linkType: hard
-
-"autoprefixer@npm:^10.4.18":
+"autoprefixer@npm:^10.4.17, autoprefixer@npm:^10.4.18":
   version: 10.4.18
   resolution: "autoprefixer@npm:10.4.18"
   dependencies:
@@ -14821,21 +14813,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"browserslist@npm:^4.0.0, browserslist@npm:^4.21.10, browserslist@npm:^4.22.2":
-  version: 4.22.2
-  resolution: "browserslist@npm:4.22.2"
-  dependencies:
-    caniuse-lite: "npm:^1.0.30001565"
-    electron-to-chromium: "npm:^1.4.601"
-    node-releases: "npm:^2.0.14"
-    update-browserslist-db: "npm:^1.0.13"
-  bin:
-    browserslist: cli.js
-  checksum: e3590793db7f66ad3a50817e7b7f195ce61e029bd7187200244db664bfbe0ac832f784e4f6b9c958aef8ea4abe001ae7880b7522682df521f4bc0a5b67660b5e
-  languageName: node
-  linkType: hard
-
-"browserslist@npm:^4.23.0":
+"browserslist@npm:^4.0.0, browserslist@npm:^4.21.10, browserslist@npm:^4.22.2, browserslist@npm:^4.23.0":
   version: 4.23.0
   resolution: "browserslist@npm:4.23.0"
   dependencies:
@@ -15314,14 +15292,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001565, caniuse-lite@npm:^1.0.30001578":
-  version: 1.0.30001583
-  resolution: "caniuse-lite@npm:1.0.30001583"
-  checksum: 8e7b5ffeb1229efacc1022fbe19eb136f39e4512363322d175e836fef9d798d7308a0763ce654670d45a55c3f25f34c12f87e90e1da34c5d9531fac2327d2063
-  languageName: node
-  linkType: hard
-
-"caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001587, caniuse-lite@npm:^1.0.30001591":
+"caniuse-lite@npm:^1.0.0, caniuse-lite@npm:^1.0.30001579, caniuse-lite@npm:^1.0.30001587, caniuse-lite@npm:^1.0.30001591":
   version: 1.0.30001593
   resolution: "caniuse-lite@npm:1.0.30001593"
   checksum: c179af389ca40b254939308099b9e8681d1ca1ad535e48a3e3035880e97fe2cca147e3481ca821112c11a8cde534d090daf5a3b072d73db9e9360c136bf84e55
@@ -16216,33 +16187,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"connect-explorer-nextra@workspace:packages/connect-explorer-nextra":
-  version: 0.0.0-use.local
-  resolution: "connect-explorer-nextra@workspace:packages/connect-explorer-nextra"
-  dependencies:
-    "@trezor/components": "workspace:^"
-    "@trezor/connect-web": "workspace:^"
-    "@trezor/protobuf": "workspace:^"
-    "@trezor/utils": "workspace:^"
-    "@types/node": "npm:20.11.24"
-    "@types/redux-logger": "npm:^3.0.11"
-    autoprefixer: "npm:^10.4.18"
-    next: "npm:^14.1.1"
-    nextra: "npm:^2.13.4"
-    nextra-theme-docs: "npm:^2.13.4"
-    postcss: "npm:^8.4.35"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
-    react-inspector: "npm:^6.0.2"
-    react-markdown: "npm:^9.0.1"
-    react-redux: "npm:8.0.7"
-    redux: "npm:^4.2.1"
-    redux-logger: "npm:^3.0.6"
-    redux-thunk: "npm:^2.4.2"
-    styled-components: "npm:^5.3.10"
-  languageName: unknown
-  linkType: soft
-
 "connect-history-api-fallback@npm:^1.5.0":
   version: 1.6.0
   resolution: "connect-history-api-fallback@npm:1.6.0"
@@ -17078,16 +17022,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"d3-array@npm:2 - 3, d3-array@npm:2.10.0 - 3, d3-array@npm:^3.1.6":
-  version: 3.2.2
-  resolution: "d3-array@npm:3.2.2"
-  dependencies:
-    internmap: "npm:1 - 2"
-  checksum: e940c7b77e5fbb8520a3b914b8121e668d12b58f1fbd15be83d819802b73da43540422fe66d17feec04e3280255b3aa5fac452f12b7f37f2378531a8bbb233bc
-  languageName: node
-  linkType: hard
-
-"d3-array@npm:2.5.0 - 3, d3-array@npm:3, d3-array@npm:^3.2.0":
+"d3-array@npm:2 - 3, d3-array@npm:2.10.0 - 3, d3-array@npm:2.5.0 - 3, d3-array@npm:3, d3-array@npm:^3.1.6, d3-array@npm:^3.2.0":
   version: 3.2.4
   resolution: "d3-array@npm:3.2.4"
   dependencies:
@@ -18469,13 +18404,6 @@ __metadata:
     conf: "npm:^10.2.0"
     type-fest: "npm:^2.17.0"
   checksum: bb29f12e5649b2d163b503f99a11e43782df5de8dc0d6a0b8950bdb5250a932b90f6a671d59dc1bd982102be0f3d58f348bd4732cfa4a7769a8270b525e97121
-  languageName: node
-  linkType: hard
-
-"electron-to-chromium@npm:^1.4.601":
-  version: 1.4.611
-  resolution: "electron-to-chromium@npm:1.4.611"
-  checksum: fb19491f64fe6ae9fe232129de66f6be2d9d4d0c052a3285ece1d95c8a4fa63b953d2fb659982d93824c3fc5dc34b15be46cd276ec82bd6c9cd16ceab41c161d
   languageName: node
   linkType: hard
 
@@ -30729,18 +30657,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"postcss@npm:^8.4.33, postcss@npm:~8.4.32":
-  version: 8.4.34
-  resolution: "postcss@npm:8.4.34"
-  dependencies:
-    nanoid: "npm:^3.3.7"
-    picocolors: "npm:^1.0.0"
-    source-map-js: "npm:^1.0.2"
-  checksum: ff4769ff6910f688b0672e0a8f83d1d0a9fee3f61aa33b61b6ade0d5dc2ef53ce1a80d78e2eab03f2d40a15e04bc028682857a4f15d31501d63c80473dee2981
-  languageName: node
-  linkType: hard
-
-"postcss@npm:^8.4.35":
+"postcss@npm:^8.4.33, postcss@npm:^8.4.35, postcss@npm:~8.4.32":
   version: 8.4.35
   resolution: "postcss@npm:8.4.35"
   dependencies:
@@ -34900,16 +34817,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"style-to-object@npm:^0.4.0":
-  version: 0.4.1
-  resolution: "style-to-object@npm:0.4.1"
-  dependencies:
-    inline-style-parser: "npm:0.1.1"
-  checksum: aa597acebfa44b8468d486385fc63007d49cb1da2b2ffe5d54021bccf2d47e2f5d18ff499dcb8f028087fc1a4ac86556bebf768ac91137d43ecbb47b8470410a
-  languageName: node
-  linkType: hard
-
-"style-to-object@npm:^0.4.1":
+"style-to-object@npm:^0.4.0, style-to-object@npm:^0.4.1":
   version: 0.4.4
   resolution: "style-to-object@npm:0.4.4"
   dependencies:

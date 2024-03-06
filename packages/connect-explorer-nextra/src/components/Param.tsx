@@ -59,11 +59,8 @@ export const Param = (props: ParamProps) => {
                         props.type
                     )}
                 </ParamType>
-                {props.required ? (
-                    <Badge variant="primary">Required</Badge>
-                ) : (
-                    <Badge variant="tertiary">Optional</Badge>
-                )}
+                {props.required === true && <Badge variant="primary">Required</Badge>}
+                {props.required === false && <Badge variant="tertiary">Optional</Badge>}
             </ParamRow>
             {props.description && (
                 <ParamDescription>
