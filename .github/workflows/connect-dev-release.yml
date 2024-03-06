@@ -18,6 +18,7 @@ on:
       - "packages/utils"
       - "submodules/trezor-common"
       - "yarn.lock"
+      - ".github/workflows/connect-dev-release.yml"
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
@@ -66,14 +67,17 @@ jobs:
           ASSET_PREFIX: /connect/${{ steps.extract_branch.outputs.branch }}
           # TODO: maybe we don't want to build it for production for every branch
           NODE_ENV: "production"
-          url: https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}
+          url: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}
         run: |
           yarn workspace @trezor/connect-explorer build
 
       - name: Build connect-examples webextension
+        env:
+          FULL_URL: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
         run: |
-          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}/"
-          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}/" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
+          echo "FULL_URL is set to ${FULL_URL}"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
           node ./packages/connect-examples/update-webextensions-sw.js
 
       - name: Build connect-explorer-webextension
@@ -83,14 +87,15 @@ jobs:
       # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
       - name: Upload connect-explorer to dev.suite.sldev.cz
         env:
-          DEPLOY_PATH: s3://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}
+          DEPLOY_PATH: s3://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}
         run: |
+          echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
           mkdir -p tmp_build_directory
           cp -R ./packages/connect-iframe/build/* tmp_build_directory/
           cp -R ./packages/connect-popup/build/* tmp_build_directory/
           cp -R ./packages/connect-web/build/* tmp_build_directory/
           cp -R ./packages/connect-explorer/build/* tmp_build_directory/
-          aws s3 sync --delete tmp_build_directory/ ${DEPLOY_PATH}
+          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
