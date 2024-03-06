@@ -1,9 +1,10 @@
 {
-    "name": "connect-explorer-nextra",
+    "name": "@trezor/connect-explorer-nextra",
     "packageManager": "yarn@4.0.2",
     "version": "1.0.0",
     "private": true,
     "dependencies": {
+        "@sinclair/typebox": "^0.32.15",
         "@trezor/components": "workspace:^",
         "@trezor/connect-web": "workspace:^",
         "@trezor/protobuf": "workspace:^",

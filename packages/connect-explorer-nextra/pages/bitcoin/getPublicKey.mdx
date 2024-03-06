@@ -1,5 +1,7 @@
 import { ApiPlayground } from '../../src/components/ApiPlayground';
 import { Param } from '../../src/components/Param';
+import { ParamsTable } from '../../src/components/ParamsTable';
+import { GetPublicKey } from '@trezor/connect/src/types/api/getPublicKey';
 
 <ApiPlayground method="/method/getPublicKey" />
 
@@ -20,42 +22,11 @@ const result = await TrezorConnect.getPublicKey(params);
 
 #### Exporting single public key
 
-<Param name="path" required type="string | Array<number>">
-    minimum length is `1`. [read more](../path.md)
-</Param>
-<Param name="coin" type="string">
-    determines network definition specified in
-    [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json)
-    file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get
-    network definition from `path`.
-</Param>
-<Param name="scriptType" type="string">
-    used to distinguish between various address formats (non-segwit, segwit, etc.).
-</Param>
-<Param name="ignoreXpubMagic" type="boolean">
-    ignore SLIP-0132 XPUB magic, use xpub/tpub prefix for all account types.
-</Param>
-<Param name="ecdsaCurveName" type="string">
-    ECDSA curve name to use
-</Param>
-<Param name="crossChain" type="boolean">
-    Advanced feature. Use it only if you are know what you are doing. Allows to generate address
-    between chains. For example Bitcoin path on Litecoin network will display cross chain address in
-    Litecoin format.
-</Param>
-<Param
-    name="unlockPath"
-    type="[PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)"
->
-    the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
-</Param>
-<Param name="suppressBackupWarning" type="boolean">
-    By default, this method will emit an event to show a warning if the wallet does not have a
-    backup. This option suppresses the message.
-</Param>
+<ParamsTable schema={GetPublicKey} />
+
 #### Exporting bundle of public keys
 
-<Param name="bundle" type="`Array` of Objects with `path`, `coin` and `crossChain` fields" />
+<Param name="bundle" type="`Array` of Objects with above schema" />
 
 ---
 

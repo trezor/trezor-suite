@@ -21,6 +21,7 @@ export function generate(code: string) {
     // Run generator
     let output = Codegen.TypeScriptToTypeBox.Generate(customTypePlaceholder + code, {
         useTypeBoxImport: false,
+        useIdentifiers: true,
     });
     // Remove placeholder declarations of custom types
     const lastKey = Object.keys(customTypesMapping)[Object.keys(customTypesMapping).length - 1];
@@ -47,12 +48,12 @@ export function generate(code: string) {
         );
         output = output.replace(new RegExp(`enum Enum${e} \\{`, 'g'), `enum ${e} {`);
         output = output.replace(
-            new RegExp(`Type\\.KeyOf\\(Enum${e}\\)`, 'g'),
-            `Type.KeyOfEnum(${e})`,
+            new RegExp(`Type\\.KeyOf\\(Enum${e}(,?.*)\\)`, 'g'),
+            `Type.KeyOfEnum(${e}$1)`,
         );
     });
     // Add import of lib
-    output = `import { Type, Static } from '@trezor/schema-utils';\n\n${output}`;
+    output = `import { Type, Static, TypeClone } from '@trezor/schema-utils';\n\n${output}`;
     // Add eslint ignore for camelcase, since some type names use underscores
     output = `/* eslint-disable camelcase */\n${output}`;
     // Add types for message schema
