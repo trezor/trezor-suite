@@ -1,6 +1,6 @@
-import { getFiatRatesForTimestamps, getTickerConfig } from '@suite-common/fiat-services';
+import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { resetTime } from '@suite-common/suite-utils';
-import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { networks, type NetworkSymbol } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
@@ -23,7 +23,7 @@ export const ensureHistoryRates = async (
     data: BlockchainAccountBalanceHistory[],
     fiatCurrency: FiatCurrencyCode,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
-    if (!getTickerConfig({ symbol })) return data;
+    if (!networks[symbol].coingeckoId) return data;
 
     const missingRates = data
         .filter(({ rates }) => !Object.keys(rates || {}).length)

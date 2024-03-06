@@ -1,5 +1,4 @@
 import { DeviceModelInternal } from '@trezor/connect';
-import type { ExtendedMessageDescriptor } from '@suite-common/intl-types';
 import type { Keys, Without } from '@trezor/type-utils';
 
 export const networks = {
@@ -34,6 +33,7 @@ export const networks = {
                 bip43Path: "m/44'/0'/i'",
             },
         },
+        coingeckoId: 'bitcoin',
     },
     ltc: {
         name: 'Litecoin',
@@ -57,6 +57,7 @@ export const networks = {
                 bip43Path: "m/44'/2'/i'",
             },
         },
+        coingeckoId: 'litecoin',
     },
     eth: {
         name: 'Ethereum',
@@ -76,6 +77,7 @@ export const networks = {
         label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: 'ethereum',
     },
     etc: {
         name: 'Ethereum Classic',
@@ -95,6 +97,7 @@ export const networks = {
         label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: 'ethereum-classic',
     },
     // Ripple
     xrp: {
@@ -112,6 +115,7 @@ export const networks = {
         features: [],
         customBackends: [],
         accountTypes: {},
+        coingeckoId: 'ripple',
     },
     bch: {
         name: 'Bitcoin Cash',
@@ -128,6 +132,7 @@ export const networks = {
         features: ['sign-verify'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: 'bitcoin-cash',
     },
     btg: {
         name: 'Bitcoin Gold',
@@ -148,6 +153,7 @@ export const networks = {
                 bip43Path: "m/44'/156'/i'",
             },
         },
+        coingeckoId: 'bitcoin-gold',
     },
     dash: {
         name: 'Dash',
@@ -164,6 +170,7 @@ export const networks = {
         features: ['sign-verify'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: 'dash',
     },
     dgb: {
         name: 'DigiByte',
@@ -184,6 +191,7 @@ export const networks = {
                 bip43Path: "m/44'/20'/i'",
             },
         },
+        coingeckoId: 'digibyte',
     },
     doge: {
         name: 'Dogecoin',
@@ -200,6 +208,7 @@ export const networks = {
         features: ['sign-verify'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: 'dogecoin',
     },
     nmc: {
         name: 'Namecoin',
@@ -216,6 +225,7 @@ export const networks = {
         features: ['sign-verify'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: 'namecoin',
     },
     vtc: {
         name: 'Vertcoin',
@@ -239,6 +249,7 @@ export const networks = {
                 bip43Path: "m/44'/28'/i'",
             },
         },
+        coingeckoId: 'vertcoin',
     },
     zec: {
         name: 'Zcash',
@@ -255,8 +266,81 @@ export const networks = {
         features: ['sign-verify'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: 'zcash',
     },
-    // Bitcoin testnet
+    ada: {
+        // icarus derivation
+        name: 'Cardano',
+        networkType: 'cardano',
+        bip43Path: "m/1852'/1815'/i'",
+        decimals: 6,
+        testnet: false,
+        features: ['tokens', 'staking'],
+        explorer: {
+            tx: 'https://explorer.blockfrost.dev/transaction/',
+            account: 'https://explorer.blockfrost.dev/account/',
+            token: 'https://explorer.blockfrost.dev/token/',
+            queryString: '',
+        },
+        support: {
+            [DeviceModelInternal.T2T1]: '2.4.3',
+            [DeviceModelInternal.T2B1]: '2.6.1',
+        },
+        customBackends: ['blockfrost'],
+        accountTypes: {
+            legacy: {
+                // icarus-trezor derivation
+                bip43Path: "m/1852'/1815'/i'",
+            },
+            ledger: {
+                // ledger derivation
+                bip43Path: "m/1852'/1815'/i'",
+            },
+        },
+        coingeckoId: 'cardano',
+    },
+    sol: {
+        name: 'Solana',
+        networkType: 'solana',
+        bip43Path: "m/44'/501'/i'/0'",
+        decimals: 9,
+        testnet: false,
+        features: ['tokens' /* , 'staking' */],
+        explorer: {
+            tx: 'https://explorer.solana.com/tx/',
+            account: 'https://explorer.solana.com/address/',
+            address: 'https://explorer.solana.com/address/',
+            queryString: '',
+        },
+        support: {
+            [DeviceModelInternal.T2T1]: '2.6.4',
+            [DeviceModelInternal.T2B1]: '2.6.4',
+        },
+        customBackends: ['solana'],
+        accountTypes: {},
+        coingeckoId: 'solana',
+    },
+    matic: {
+        name: 'Polygon PoS',
+        networkType: 'ethereum',
+        chainId: 137,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        label: 'TR_NETWORK_POLYGON_LABEL',
+        explorer: {
+            tx: 'https://matic2.trezor.io/tx/',
+            account: 'https://matic2.trezor.io/address/',
+            nft: 'https://matic2.trezor.io/nft/',
+            address: 'https://matic2.trezor.io/address/',
+            queryString: '',
+        },
+        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
+        customBackends: ['blockbook'],
+        accountTypes: {},
+        coingeckoId: 'polygon-pos',
+    },
+    // testnets
     test: {
         name: 'Bitcoin Testnet',
         networkType: 'bitcoin',
@@ -289,6 +373,7 @@ export const networks = {
                 bip43Path: "m/44'/1'/i'",
             },
         },
+        coingeckoId: undefined,
     },
     regtest: {
         name: 'Bitcoin Regtest',
@@ -323,6 +408,7 @@ export const networks = {
             },
         },
         isDebugOnly: true,
+        coingeckoId: undefined,
     },
     tsep: {
         name: 'Ethereum Sepolia',
@@ -342,6 +428,7 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: undefined,
     },
     tgor: {
         name: 'Ethereum Goerli',
@@ -361,6 +448,7 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'tokens', 'token-definitions', 'staking'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: undefined,
     },
     thol: {
         name: 'Ethereum Holesky',
@@ -380,6 +468,7 @@ export const networks = {
         features: ['rbf', 'sign-verify', 'tokens', 'token-definitions', 'staking'],
         customBackends: ['blockbook'],
         accountTypes: {},
+        coingeckoId: undefined,
     },
     txrp: {
         name: 'XRP Testnet',
@@ -397,37 +486,7 @@ export const networks = {
         features: ['tokens'],
         customBackends: [],
         accountTypes: {},
-    },
-    ada: {
-        // icarus derivation
-        name: 'Cardano',
-        networkType: 'cardano',
-        bip43Path: "m/1852'/1815'/i'",
-        decimals: 6,
-        testnet: false,
-        features: ['tokens', 'staking'],
-        label: 'TR_INCLUDING_TOKENS',
-        explorer: {
-            tx: 'https://explorer.blockfrost.dev/transaction/',
-            account: 'https://explorer.blockfrost.dev/account/',
-            token: 'https://explorer.blockfrost.dev/token/',
-            queryString: '',
-        },
-        support: {
-            [DeviceModelInternal.T2T1]: '2.4.3',
-            [DeviceModelInternal.T2B1]: '2.6.1',
-        },
-        customBackends: ['blockfrost'],
-        accountTypes: {
-            legacy: {
-                // icarus-trezor derivation
-                bip43Path: "m/1852'/1815'/i'",
-            },
-            ledger: {
-                // ledger derivation
-                bip43Path: "m/1852'/1815'/i'",
-            },
-        },
+        coingeckoId: undefined,
     },
     tada: {
         // icarus derivation
@@ -459,27 +518,7 @@ export const networks = {
                 bip43Path: "m/1852'/1815'/i'",
             },
         },
-    },
-    sol: {
-        name: 'Solana',
-        networkType: 'solana',
-        bip43Path: "m/44'/501'/i'/0'",
-        decimals: 9,
-        testnet: false,
-        features: ['tokens' /* , 'staking' */],
-        label: 'TR_INCLUDING_TOKENS',
-        explorer: {
-            tx: 'https://explorer.solana.com/tx/',
-            account: 'https://explorer.solana.com/address/',
-            address: 'https://explorer.solana.com/address/',
-            queryString: '',
-        },
-        support: {
-            [DeviceModelInternal.T2T1]: '2.6.4',
-            [DeviceModelInternal.T2B1]: '2.6.4',
-        },
-        customBackends: ['solana'],
-        accountTypes: {},
+        coingeckoId: undefined,
     },
     dsol: {
         name: 'Solana Devnet',
@@ -501,25 +540,7 @@ export const networks = {
         },
         customBackends: ['solana'],
         accountTypes: {},
-    },
-    matic: {
-        name: 'Polygon PoS',
-        networkType: 'ethereum',
-        chainId: 137,
-        bip43Path: "m/44'/60'/0'/0/i",
-        decimals: 18,
-        testnet: false,
-        explorer: {
-            tx: 'https://matic2.trezor.io/tx/',
-            account: 'https://matic2.trezor.io/address/',
-            nft: 'https://matic2.trezor.io/nft/',
-            address: 'https://matic2.trezor.io/address/',
-            queryString: '',
-        },
-        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
-        label: 'TR_INCLUDING_TOKENS',
-        customBackends: ['blockbook'],
-        accountTypes: {},
+        coingeckoId: undefined,
     },
 } as const;
 
@@ -556,12 +577,12 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     isHidden?: boolean;
     chainId?: number;
     features?: NetworkFeature[];
-    label?: ExtendedMessageDescriptor['id'];
-    tooltip?: ExtendedMessageDescriptor['id'];
+    label?: string[]; // Originally ExtendedMessageDescriptor['id'] but inferred type exceeds the maximum length for serialization
     support?: {
         [key in DeviceModelInternal]: string;
     };
     isDebugOnly?: boolean;
+    coingeckoId?: string;
 };
 
 // Transforms the network object into the previously used format so we don't have to change
