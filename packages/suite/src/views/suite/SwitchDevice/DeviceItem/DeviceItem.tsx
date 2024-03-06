@@ -106,10 +106,10 @@ const DeviceImageWrapper = styled.div`
     margin-right: 16px;
 `;
 
-const ExpandIcon = styled(Icon)<{ isActive: boolean }>`
+const ExpandIcon = styled(Icon)<{ $isActive: boolean }>`
     margin-left: 24px;
 
-    transform: ${({ isActive }) => (isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
+    transform: ${({ $isActive }) => ($isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
 `;
 
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
@@ -235,7 +235,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                                 icon="ARROW_UP"
                                 color={theme.TYPE_LIGHT_GREY}
                                 hoverColor={theme.TYPE_LIGHTER_GREY}
-                                isActive={!isExpanded}
+                                $isActive={!isExpanded}
                                 onClick={() => setIsExpanded(!isExpanded)}
                             />
                         )}
