@@ -1,3 +1,21 @@
+# 9.2.1
+
+Main motivation for this release was [issue](https://github.com/trezor/trezor-suite/issues/11442) introduced in 9.2.0 release in @trezor/connect-web npm package.
+
+-   fix(connect): fix build of connect-web (50f35cb) [related issue](https://github.com/trezor/trezor-suite/issues/11442)
+-   feat(connect): return checksum in the xpub for taproot (458ddf9)
+-   fix(connect-ui): analytics button to reflect state (cc59ef9)
+-   chore(connect): unify failed connection and disconnection (c863646)
+-   feat(connect): leave sticky backend after some time (021ec5c)
+-   chore(connect-iframe): fix conflicting variable webpack warning on build:lib (cdbdfb2)
+
+## Dependencies update
+
+-   npm-release: @trezor/blockchain-link 2.1.27
+-   npm-release: @trezor/connect-common 0.0.30
+-   npm-release: @trezor/transport 1.1.26
+-   npm-release: @trezor/protobuf 1.0.10
+
 # 9.2.0
 
 ## @trezor/connect-web npm package
