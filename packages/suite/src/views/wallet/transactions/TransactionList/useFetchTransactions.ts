@@ -93,5 +93,12 @@ export const useFetchTransactions = (
         [synchronize, fetchCommon, pagesFetched, fetchedAll],
     );
 
-    return { fetchNext, fetchAll, isFetching, fetchedAll };
+    const TEMPINFO = {
+        txTotal: account.networkType === 'ripple' ? NaN : account.history.total,
+        txFetched: transactions.length,
+        pagesTotal: account.networkType === 'ripple' ? NaN : pagesTotal,
+        pagesFetched,
+    };
+
+    return { fetchNext, fetchAll, isFetching, fetchedAll, TEMPINFO };
 };
