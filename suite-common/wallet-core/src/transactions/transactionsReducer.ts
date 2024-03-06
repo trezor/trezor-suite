@@ -16,7 +16,7 @@ import {
     selectBlockchainHeightBySymbol,
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
-import { selectTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
 import { TokenDefinitionsRootState } from '../token-definitions/tokenDefinitionsTypes';
 
 export interface TransactionsState {
@@ -297,7 +297,7 @@ export const selectIsPhishingTransaction = (
 
     if (!transaction) return false;
 
-    const tokenDefinitions = selectTokenDefinitions(state, transaction.symbol);
+    const tokenDefinitions = selectNetworkTokenDefinitions(state, transaction.symbol);
 
     if (!tokenDefinitions) return false;
 

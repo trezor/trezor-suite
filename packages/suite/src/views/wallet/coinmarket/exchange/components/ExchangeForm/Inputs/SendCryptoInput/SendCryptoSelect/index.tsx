@@ -12,7 +12,7 @@ import {
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTokenDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { selectCoinDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -35,14 +35,14 @@ const SendCryptoSelect = () => {
     const { control, setAmountLimits, account, setValue, getValues, exchangeInfo, composeRequest } =
         useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const dispatch = useDispatch();
 
     const { symbol, tokens } = account;
     const sendCryptoOptions = getSendCryptoOptions(
         account,
         exchangeInfo?.sellSymbols || new Set(),
-        tokenDefinitions,
+        coinDefinitions,
     );
 
     const { outputs } = getValues();
