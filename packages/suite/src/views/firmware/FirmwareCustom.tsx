@@ -26,12 +26,11 @@ const StyledModal = styled(Modal)<{ isNarrow: boolean }>`
     width: ${({ isNarrow }) => (isNarrow ? '450px' : '620px')};
 `;
 
-const ModalContent = styled.div<{ isNarrow: boolean }>`
+const ModalContent = styled.div`
     text-align: left;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: ${({ isNarrow }) => (isNarrow ? '380px' : '550px')};
 `;
 
 export const FirmwareCustom = () => {
@@ -180,7 +179,7 @@ export const FirmwareCustom = () => {
             }
             data-test="@firmware-custom"
         >
-            <ModalContent isNarrow={status === 'initial'}>
+            <ModalContent>
                 <Step />
             </ModalContent>
         </StyledModal>
