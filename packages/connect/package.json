@@ -21,8 +21,8 @@
     "sideEffects": false,
     "main": "src/index.ts",
     "browser": {
-        "./src/index.ts": "./src/index-browser.ts",
         "./src/index": "./src/index-browser.ts",
+        "./src/index.ts": "./src/index-browser.ts",
         "./src/utils/assets": "./src/utils/assets-browser.ts",
         "./src/workers/workers": "./src/workers/workers-browser.ts"
     },
