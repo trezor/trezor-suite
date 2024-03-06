@@ -18,6 +18,10 @@ on:
       - "submodules/trezor-common"
       - "yarn.lock"
 
+concurrency:
+  group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   # todo: meaning of 'build' job is questionable. only 'web' tests use part of this jobs output
   build:

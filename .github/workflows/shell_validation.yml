@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - "**.sh"
+concurrency:
+  group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 jobs:
   shellcheck:
     runs-on: ubuntu-20.04

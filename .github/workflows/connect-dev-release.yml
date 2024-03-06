@@ -19,6 +19,10 @@ on:
       - "submodules/trezor-common"
       - "yarn.lock"
 
+concurrency:
+  group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
 env:
   DEV_SERVER_HOSTNAME: "dev.suite.sldev.cz"
 
@@ -63,8 +67,8 @@ jobs:
           # TODO: maybe we don't want to build it for production for every branch
           NODE_ENV: "production"
           url: https://${ DEV_SERVER_HOSTNAME }/connect/${{ steps.extract_branch.outputs.branch }}
-          run: |
-            yarn workspace @trezor/connect-explorer build
+        run: |
+          yarn workspace @trezor/connect-explorer build
 
       - name: Build connect-examples webextension
         run: |
