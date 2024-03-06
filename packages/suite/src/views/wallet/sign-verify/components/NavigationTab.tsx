@@ -17,16 +17,16 @@ const NavLink = styled.div<{ $active?: boolean }>`
     border-bottom: 2px solid ${({ $active, theme }) => ($active ? theme.BG_GREEN : 'transparent')};
     transition: border-color 0.1s;
 
-    &:hover {
-        border-bottom: 2px solid ${({ theme, $active: active }) => !active && theme.STROKE_GREY};
-    }
-
     & + & {
         margin-left: 42px;
 
         @media (max-width: ${variables.SCREEN_SIZE.SM}) {
             margin-left: 30px;
         }
+    }
+
+    &:hover {
+        border-bottom: 2px solid ${({ theme, $active }) => !$active && theme.STROKE_GREY};
     }
 `;
 

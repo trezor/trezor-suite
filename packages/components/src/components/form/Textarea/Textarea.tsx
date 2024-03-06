@@ -27,9 +27,9 @@ const Wrapper = styled.div<{ $hasBottomPadding: boolean }>`
 `;
 
 const TextareaWrapper = styled(InputWrapper)<{
-    disabled?: boolean;
-    elevation: Elevation;
-    inputState?: InputState;
+    disabled?: boolean; // intentionally not transient, disabled is HTML <input> prop
+    $elevation: Elevation;
+    $inputState?: InputState;
 }>`
     ${baseInputStyle}
     padding: ${spacingsPx.xl} 0 ${spacingsPx.md};
@@ -39,19 +39,17 @@ const TextareaWrapper = styled(InputWrapper)<{
     }
 
     /* overwrites :read-only:not(:disabled) since it's always true for div */
-    ${({ disabled, theme, inputState, elevation }) =>
+    ${({ disabled, theme, $inputState, $elevation }) =>
         !disabled &&
         `
         &:read-only:not(:disabled) {
-            background-color: ${getInputStateBgColor(inputState, theme, elevation)};
+            background-color: ${getInputStateBgColor($inputState, theme, $elevation)};
             color: ${theme.textDefault};
         }
     `}
 `;
 
-const StyledTextarea = styled.textarea<
-    Pick<TextareaProps, 'inputState'> & { elevation: Elevation }
->`
+const StyledTextarea = styled.textarea<{ $inputState?: InputState; $elevation: Elevation }>`
     ${baseInputStyle}
     padding: 0 ${spacingsPx.md} 0;
     border: none;
@@ -118,15 +116,15 @@ export const Textarea = ({
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
 
-            <TextareaWrapper inputState={inputState} disabled={isDisabled} elevation={elevation}>
+            <TextareaWrapper $inputState={inputState} disabled={isDisabled} $elevation={elevation}>
                 <StyledTextarea
-                    elevation={elevation}
+                    $elevation={elevation}
                     spellCheck={false}
                     autoCorrect="off"
                     autoCapitalize="off"
                     maxLength={maxLength}
                     disabled={isDisabled}
-                    inputState={inputState}
+                    $inputState={inputState}
                     rows={rows}
                     data-test={dataTest}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs

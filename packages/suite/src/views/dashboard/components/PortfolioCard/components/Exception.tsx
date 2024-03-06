@@ -37,7 +37,7 @@ const Description = styled.div`
     text-align: center;
 `;
 
-const StyledImage = styled(props => <Image {...props} />)`
+const StyledImage = styled(Image)`
     margin: 24px 0;
 `;
 

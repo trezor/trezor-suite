@@ -61,7 +61,7 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
         position: absolute;
         content: '';
         top: 100%;
-        ${({ $positionX: positionX, $boxWidth }) => getTooltipArrowXPosition(positionX, $boxWidth)}
+        ${({ $positionX, $boxWidth }) => getTooltipArrowXPosition($positionX, $boxWidth)}
         margin-left: ${({ $positionX }) =>
             $positionX <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`};
         width: 0;

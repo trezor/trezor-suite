@@ -74,17 +74,17 @@ const CardWrapper = styled.div<{
             padding: 16px 26px;
         `}
 
-    ${({ $expanded: expanded, $expandable: expandable, theme, $variant: variant }) =>
-        expandable &&
-        expanded &&
+    ${({ $expanded, $expandable, theme, $variant }) =>
+        $expandable &&
+        $expanded &&
         css`
             background: ${theme.BG_WHITE};
             border-radius: 16px;
-            padding: ${variant === 'large' ? '40px' : '20px 30px'};
+            padding: ${$variant === 'large' ? '40px' : '20px 30px'};
         `}
 
-    ${({ $nested: nested, theme }) =>
-        nested
+    ${({ $nested, theme }) =>
+        $nested
             ? css`
                   padding: 0;
               `
@@ -92,8 +92,8 @@ const CardWrapper = styled.div<{
                   box-shadow: 0 2px 5px 0 ${theme.BOX_SHADOW_BLACK_20};
               `}
 
-    ${({ $withImage: withImage }) =>
-        withImage &&
+    ${({ $withImage }) =>
+        $withImage &&
         css`
             margin-top: 50px;
             padding-top: 80px;

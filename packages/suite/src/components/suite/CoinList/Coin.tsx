@@ -8,7 +8,7 @@ import type { Network } from 'src/types/wallet';
 import { typography } from '@trezor/theme';
 
 const SettingsWrapper = styled.div<{
-    toggled: boolean;
+    $toggled: boolean;
     onClick: ((e: MouseEvent) => void) | undefined;
 }>`
     display: flex;
@@ -33,7 +33,7 @@ const SettingsWrapper = styled.div<{
         `}
 
     ${props =>
-        !props.toggled &&
+        !props.$toggled &&
         css`
             pointer-events: none;
         `}
@@ -65,10 +65,10 @@ const ShiftToSettings = css`
 `;
 
 export const CoinWrapper = styled.button<{
-    toggled: boolean;
-    disabled: boolean;
-    forceHover: boolean;
-    hasSettings: boolean;
+    $toggled: boolean;
+    disabled: boolean; // intentionally not transient, button has disabled HTML Attribute
+    $forceHover: boolean;
+    $hasSettings: boolean;
 }>`
     display: flex;
     place-items: center flex-start;
@@ -90,17 +90,17 @@ export const CoinWrapper = styled.button<{
 
     &:hover {
         background: ${({ theme }) => theme.BG_GREY_ALT};
-        border-color: ${({ theme, toggled }) =>
-            toggled ? theme.BG_GREEN_HOVER : theme.TYPE_LIGHTER_GREY};
+        border-color: ${({ theme, $toggled }) =>
+            $toggled ? theme.BG_GREEN_HOVER : theme.TYPE_LIGHTER_GREY};
     }
 
-    ${({ disabled, forceHover, hasSettings, theme, toggled }) =>
+    ${({ disabled, $forceHover, $hasSettings, theme, $toggled }) =>
         !disabled &&
-        toggled &&
+        $toggled &&
         css`
             border-color: ${theme.backgroundPrimaryDefault};
-            ${forceHover && ShiftToSettings}
-            ${hasSettings &&
+            ${$forceHover && ShiftToSettings}
+            ${$hasSettings &&
             css`
                 @media (hover: hover) {
                     &:hover {
@@ -183,10 +183,10 @@ export const Coin = ({
 
     return (
         <CoinWrapper
-            toggled={toggled}
+            $toggled={toggled}
             disabled={disabled}
-            forceHover={forceHover}
-            hasSettings={!!onSettings}
+            $forceHover={forceHover}
+            $hasSettings={!!onSettings}
             onClick={onToggle}
             data-test={`@settings/wallet/network/${symbol}`}
             data-active={toggled}
@@ -209,7 +209,7 @@ export const Coin = ({
             )}
             <SettingsWrapper
                 onClick={onSettingsClick}
-                toggled={toggled}
+                $toggled={toggled}
                 data-test={`@settings/wallet/network/${symbol}/advance`}
             >
                 <Icon icon="SETTINGS" />

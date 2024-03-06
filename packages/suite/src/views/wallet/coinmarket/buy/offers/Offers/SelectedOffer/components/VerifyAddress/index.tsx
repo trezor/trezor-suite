@@ -84,7 +84,7 @@ const AccountName = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledFakeInput = styled.div<HTMLAttributes<HTMLDivElement> & { elevation: Elevation }>`
+const StyledFakeInput = styled.div<HTMLAttributes<HTMLDivElement> & { $elevation: Elevation }>`
     ${baseInputStyle}
     display: flex;
     margin-bottom: 20px;
@@ -96,7 +96,7 @@ const StyledFakeInput = styled.div<HTMLAttributes<HTMLDivElement> & { elevation:
 const FakeInput = (props: HTMLAttributes<HTMLDivElement>) => {
     const { elevation } = useElevation();
 
-    return <StyledFakeInput {...props} elevation={elevation} />;
+    return <StyledFakeInput {...props} $elevation={elevation} />;
 };
 
 const ButtonWrapper = styled.div`

@@ -8,21 +8,21 @@ import { Spinner } from '../../loaders/Spinner/Spinner';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 
 const TextButtonContainer = styled.button<{
-    size: ButtonSize;
-    iconAlignment: IconAlignment;
-    hasIcon: boolean;
+    $size: ButtonSize;
+    $iconAlignment: IconAlignment;
+    $hasIcon: boolean;
 }>`
     display: flex;
     align-items: center;
-    flex-direction: ${({ iconAlignment }) => iconAlignment === 'right' && 'row-reverse'};
-    gap: ${({ hasIcon }) => hasIcon && spacingsPx.xs};
-    height: ${({ size }) => (size === 'small' ? 22 : 26)}px;
+    flex-direction: ${({ $iconAlignment }) => $iconAlignment === 'right' && 'row-reverse'};
+    gap: ${({ $hasIcon }) => $hasIcon && spacingsPx.xs};
+    height: ${({ $size: size }) => (size === 'small' ? 22 : 26)}px;
     padding: 4px;
     border: 1px solid transparent;
     border-radius: ${borders.radii.xxs};
     background: none;
     color: ${({ theme }) => theme.textPrimaryDefault};
-    ${({ size }) => (size === 'small' ? typography.hint : typography.body)};
+    ${({ $size }) => ($size === 'small' ? typography.hint : typography.body)};
     white-space: nowrap;
     transition:
         ${focusStyleTransition},
@@ -64,7 +64,7 @@ export const TextButton = ({
     iconAlignment = 'left',
     size = 'large',
     isDisabled = false,
-    isLoading: isLoading = false,
+    isLoading = false,
     children,
     ...rest
 }: TextButtonProps) => {
@@ -74,9 +74,9 @@ export const TextButton = ({
 
     return (
         <TextButtonContainer
-            hasIcon={!!icon}
-            size={size}
-            iconAlignment={iconAlignment}
+            $hasIcon={!!icon}
+            $size={size}
+            $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
             {...rest}
         >

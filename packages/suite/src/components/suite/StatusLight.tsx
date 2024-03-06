@@ -19,14 +19,14 @@ const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => 
     return theme[colorMap[$variant]];
 };
 
-const getInnerBackgroundColor = ({ $variant: variant, theme }: MapArgs): CSSColor => {
+const getInnerBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<StatusLightVariant, Color> = {
         primary: 'backgroundPrimaryDefault',
         warning: 'backgroundAlertYellowBold',
         destructive: 'backgroundAlertRedBold',
     };
 
-    return theme[colorMap[variant]];
+    return theme[colorMap[$variant]];
 };
 
 const Circle = styled.div<{ $variant: StatusLightVariant }>`

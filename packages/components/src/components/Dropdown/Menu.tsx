@@ -51,15 +51,19 @@ const AddonContainer = styled.div<{ $isFocused?: boolean }>`
     ${typography.label};
 `;
 
-const Container = styled.ul<Pick<MenuProps, 'coords' | 'alignMenu'> & { elevation: Elevation }>`
+const Container = styled.ul<{
+    $coords?: Coords;
+    $alignMenu?: MenuAlignment;
+    $elevation: Elevation;
+}>`
     position: fixed;
     ${menuStyle};
 
-    ${({ coords }) =>
-        coords &&
+    ${({ $coords }) =>
+        $coords &&
         css`
-            top: ${coords.y}px;
-            left: ${coords.x}px;
+            top: ${$coords.y}px;
+            left: ${$coords.x}px;
         `}
 `;
 
@@ -417,10 +421,10 @@ export const Menu = forwardRef<HTMLUListElement, MenuProps>(
 
         return (
             <Container
-                elevation={elevation}
+                $elevation={elevation}
                 ref={ref}
-                alignMenu={alignMenu}
-                coords={coords}
+                $alignMenu={alignMenu}
+                $coords={coords}
                 tabIndex={content ? 0 : 1} // do not affect tab order when there is no content
                 onClick={e => e.stopPropagation()} // prevent closing the menu when clicking on the menu itself or within the menu
             >

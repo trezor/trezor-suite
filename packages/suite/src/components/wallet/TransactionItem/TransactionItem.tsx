@@ -33,14 +33,14 @@ import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 
 const Wrapper = styled(Card)<{
-    isPending: boolean;
-    shouldHighlight: boolean;
-    isPhishingTransaction: boolean;
+    $isPending: boolean;
+    $shouldHighlight: boolean;
+    $isPhishingTransaction: boolean;
 }>`
-    opacity: ${({ isPhishingTransaction }) => isPhishingTransaction && 0.6};
+    opacity: ${({ $isPhishingTransaction }) => $isPhishingTransaction && 0.6};
 
-    ${({ isPending }) =>
-        isPending &&
+    ${({ $isPending }) =>
+        $isPending &&
         css`
             border-left: 8px solid ${({ theme }) => theme.TYPE_ORANGE};
             padding-left: 16px;
@@ -161,10 +161,10 @@ export const TransactionItem = memo(
             <Wrapper
                 onMouseEnter={() => setTxItemIsHovered(true)}
                 onMouseLeave={() => setTxItemIsHovered(false)}
-                isPending={isPending}
+                $isPending={isPending}
                 ref={anchorRef}
-                shouldHighlight={shouldHighlight}
-                isPhishingTransaction={isPhishingTransaction}
+                $shouldHighlight={shouldHighlight}
+                $isPhishingTransaction={isPhishingTransaction}
                 className={className}
             >
                 <Body>

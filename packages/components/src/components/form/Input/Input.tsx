@@ -17,7 +17,7 @@ import { TopAddons } from '../TopAddons';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { UIHorizontalAlignment } from '../../../config/types';
 
-const Wrapper = styled.div<{ $width: number; $hasBottomPadding: boolean }>`
+const Wrapper = styled.div<{ $width?: number; $hasBottomPadding: boolean }>`
     display: inline-flex;
     flex-direction: column;
     width: ${({ $width }) => ($width ? `${$width}px` : '100%')};
