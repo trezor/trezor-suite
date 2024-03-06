@@ -8,12 +8,12 @@ const LoadingWrapper = styled.div`
     align-items: center;
 `;
 
-const LoaderCell = styled.div<Required<Omit<LoadingContentProps, 'isSuccessful'>>>`
-    width: ${({ size }) => 1.5 * size}px;
+const LoaderCell = styled.div<{ $size: number; $isLoading: boolean }>`
+    width: ${({ $size }) => 1.5 * $size}px;
     transition: all 0.25s ease-out 0.5s;
 
-    ${({ isLoading }) =>
-        !isLoading &&
+    ${({ $isLoading }) =>
+        !$isLoading &&
         css`
             width: 0;
             opacity: 0;
@@ -40,7 +40,7 @@ export const LoadingContent = ({
 
     return (
         <LoadingWrapper>
-            <LoaderCell isLoading={isLoading} size={size}>
+            <LoaderCell $isLoading={isLoading} $size={size}>
                 {isLoading ? (
                     <Spinner size={size} dataTest="@loading-content/loader" />
                 ) : (

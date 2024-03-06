@@ -2,12 +2,12 @@ import { CSSColor, Color, Colors, Elevation } from '@trezor/theme';
 
 type StyledComponentElevationProps = {
     theme: Colors; // this package does not depend on styled-components
-    elevation: Elevation;
+    $elevation: Elevation;
 };
 
 export const mapElevationToSkeletonForeground = ({
     theme,
-    elevation,
+    $elevation,
 }: StyledComponentElevationProps): CSSColor => {
     const map: Record<Elevation, Color> = {
         '-1': 'backgroundSurfaceElevation0',
@@ -17,5 +17,5 @@ export const mapElevationToSkeletonForeground = ({
         3: 'backgroundSurfaceElevation0',
     };
 
-    return theme[map[elevation]];
+    return theme[map[$elevation]];
 };
