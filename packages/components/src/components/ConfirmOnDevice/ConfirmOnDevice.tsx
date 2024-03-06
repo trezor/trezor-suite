@@ -47,8 +47,8 @@ const Wrapper = styled.div<{ $animation?: AnimationDirection }>`
             animation: ${SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         `}
 
-    ${({ $animation: animation }) =>
-        animation === AnimationDirection.Down &&
+    ${({ $animation }) =>
+        $animation === AnimationDirection.Down &&
         css`
             animation: ${SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         `}

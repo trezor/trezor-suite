@@ -198,7 +198,7 @@ export const TransactionList = ({
 
             {/* TODO: show this skeleton also while searching in txs */}
             {isLoading ? (
-                <SkeletonStack col childMargin="0px 0px 16px 0px">
+                <SkeletonStack $col $childMargin="0px 0px 16px 0px">
                     <SkeletonTransactionItem />
                     <SkeletonTransactionItem />
                     <SkeletonTransactionItem />

@@ -64,24 +64,24 @@ export const CoinmarketSkeleton = () => {
     const { shouldAnimate } = useLoadingSkeleton();
 
     return (
-        <Wrapper responsiveSize="LG">
+        <Wrapper $responsiveSize="LG">
             <SkeletonWrapper>
                 <Left>
                     <StyledSkeletonRectangle height="48px" width="100%" animate={shouldAnimate} />
                 </Left>
-                <Middle responsiveSize="LG">
-                    <StyledIcon responsiveSize="LG" icon="TRANSFER" size={16} />
+                <Middle $responsiveSize="LG">
+                    <StyledIcon $responsiveSize="LG" icon="TRANSFER" size={16} />
                 </Middle>
                 <Right>
                     <StyledSkeletonRectangle height="48px" width="100%" animate={shouldAnimate} />
                 </Right>
             </SkeletonWrapper>
             <SkeletonWrapper>
-                <Divider responsiveSize="LG" />
+                <Divider $responsiveSize="LG" />
             </SkeletonWrapper>
             <FooterSkeletonWrapper>
                 <StyledLeft>
-                    <SkeletonSpread childMargin="0 8px 0 0" alignItems="center">
+                    <SkeletonSpread $childMargin="0 8px 0 0" $alignItems="center">
                         <SkeletonRectangle height="20px" width="68px" animate={shouldAnimate} />
                         <SkeletonRectangle height="20px" width="180px" animate={shouldAnimate} />
                     </SkeletonSpread>

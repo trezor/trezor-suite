@@ -49,7 +49,7 @@ export const All: StoryFn = () => (
                 Text Button Icon
             </TextButton>
 
-            <TextButton icon="GHOST" data-test="text-button-loading" $isLoading>
+            <TextButton icon="GHOST" data-test="text-button-loading" isLoading>
                 Text Button loading
             </TextButton>
 

@@ -34,7 +34,8 @@ const StepConiainer = styled.div<{ $isCurrent: boolean; $isComplete: boolean }>`
     border-radius: 50%;
     border: ${({ theme, $isCurrent, $isComplete }) =>
         !$isCurrent && !$isComplete && `1.5px solid ${theme.STROKE_GREY}`};
-    background: ${({ theme, $isCurrent, $isComplete }) => ($isCurrent || $isComplete) && theme.BG_GREY};
+    background: ${({ theme, $isCurrent, $isComplete }) =>
+        ($isCurrent || $isComplete) && theme.BG_GREY};
 `;
 
 const Message = styled.p`

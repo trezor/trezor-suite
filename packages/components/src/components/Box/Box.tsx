@@ -47,10 +47,10 @@ const Wrapper = styled.div<{ $variant?: BoxVariant; $elevation: Elevation }>`
     background: ${mapElevationToBackground};
     border: solid 1px ${mapElevationToBorder};
 
-    ${({ $variant: variant, theme }) =>
-        variant === undefined
+    ${({ $variant, theme }) =>
+        $variant === undefined
             ? `padding-left: ${spacingsPx.lg};`
-            : `border-left: 6px solid ${mapVariantToBackgroundColor({ variant, theme })};`}
+            : `border-left: 6px solid ${mapVariantToBackgroundColor({ variant: $variant, theme })};`}
 `;
 
 export const Box = ({ variant, children, margin, forceElevation, ...rest }: BoxProps) => {

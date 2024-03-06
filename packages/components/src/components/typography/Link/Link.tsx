@@ -3,8 +3,11 @@ import styled, { css, useTheme } from 'styled-components';
 import { Icon, IconProps } from '../../assets/Icon/Icon';
 import { TypographyStyle, spacings, typography, typographyStylesBase } from '@trezor/theme';
 
-const A = styled.a<LinkProps>`
-    ${({ type }) => (type ? typography[type] : typography.body)}
+const A = styled.a<{
+    $type?: TypographyStyle;
+    $variant?: 'default' | 'nostyle' | 'underline';
+}>`
+    ${({ $type }) => ($type ? typography[$type] : typography.body)}
     text-decoration: none;
     cursor: pointer;
     color: ${({ theme }) => theme.textDefault};
@@ -16,14 +19,14 @@ const A = styled.a<LinkProps>`
         text-decoration: underline;
     }
 
-    ${props =>
-        props.variant === 'underline' &&
+    ${({ $variant }) =>
+        $variant === 'underline' &&
         css`
             text-decoration: underline;
         `}
 
-    ${props =>
-        props.variant === 'nostyle' &&
+    ${({ $variant }) =>
+        $variant === 'nostyle' &&
         css`
             color: inherit;
             font-weight: inherit;
@@ -43,7 +46,6 @@ const IconWrapper = styled.div`
 
 interface LinkProps {
     href?: string;
-    to?: any;
     target?: string;
     type?: TypographyStyle;
     onClick?: (event: MouseEvent<any>) => void;
@@ -63,7 +65,9 @@ const Link = ({
     type,
     onClick,
     'data-test': dataTest,
-    ...props
+    children,
+    className,
+    variant,
 }: LinkProps) => {
     const theme = useTheme();
 
@@ -79,9 +83,10 @@ const Link = ({
                 e.stopPropagation();
                 onClick?.(e);
             }}
-            {...props}
+            $variant={variant}
+            className={className}
         >
-            {props.children}
+            {children}
             {icon && (
                 <IconWrapper>
                     <Icon size={iconSize} icon={icon} color={theme.iconSubdued} {...iconProps} />

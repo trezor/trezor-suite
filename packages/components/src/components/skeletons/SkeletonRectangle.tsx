@@ -3,7 +3,7 @@ import { SkeletonBaseProps } from './types';
 import { getValue, shimmerEffect } from './utils';
 import { Elevation, borders, mapElevationToBackground } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
-import { TransientProps } from '../..';
+import { TransientProps } from '../../utils/transientProps';
 
 export type SkeletonRectangleProps = SkeletonBaseProps & {
     width?: string | number;
@@ -30,5 +30,14 @@ const StyledSkeletonRectangle = styled.div<
 export const SkeletonRectangle = (props: SkeletonRectangleProps) => {
     const { elevation } = useElevation();
 
-    return <StyledSkeletonRectangle {...props} $elevation={elevation} />;
+    return (
+        <StyledSkeletonRectangle
+            $elevation={elevation}
+            $borderRadius={props.borderRadius}
+            $width={props.width}
+            $height={props.height}
+            $animate={props.animate}
+            $background={props.background}
+        />
+    );
 };

@@ -20,7 +20,7 @@ export const AccountItemSkeleton = () => {
             </Left>
 
             <Right>
-                <StyledSkeletonStack col childMargin="0px 0px 8px 0px">
+                <StyledSkeletonStack $col $childMargin="0px 0px 8px 0px">
                     <SkeletonRectangle width="140px" animate={shouldAnimate} />
                     <SkeletonRectangle animate={shouldAnimate} />
                 </StyledSkeletonStack>

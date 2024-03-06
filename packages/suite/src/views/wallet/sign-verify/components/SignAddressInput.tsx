@@ -9,6 +9,7 @@ import {
 } from 'src/hooks/wallet/sign-verify/useSignAddressOptions';
 import { HiddenAddressRow } from './HiddenAddressRow';
 import { VerifyAddressButton } from './VerifyAddressButton';
+import { ComponentProps } from 'react';
 
 const HiddenAddressSingleValue = styled(HiddenAddressRow)`
     margin-left: 6px;
@@ -35,7 +36,7 @@ const Option = ({ data, value, isFocused, innerProps, ...rest }: any) => (
 
 const Input = ({ selectProps, ...rest }: any) => (
     <>
-        <HiddenCaretInput $hideCaret={!!selectProps.value} selectProps={selectProps} {...rest} />
+        <HiddenCaretInput $hideCaret={!!selectProps.value} {...rest} selectProps={selectProps} />
         {selectProps?.value && <VerifyAddressButton item={selectProps.value} />}
     </>
 );

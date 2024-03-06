@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Network } from 'src/types/wallet';
-import { Icon, variables, motionAnimation, SkeletonRectangle } from '@trezor/components';
+import { Icon, variables, SkeletonRectangle } from '@trezor/components';
 import {
     AmountUnitSwitchWrapper,
     CoinBalance,
@@ -35,14 +35,7 @@ const StyledCol = styled.div<{ $isLastRow?: boolean }>`
         $isLastRow ? 'none' : `1px solid ${theme.borderOnElevation1}`};
 `;
 
-const Col = (props: ComponentProps<typeof StyledCol>) => {
-    const newProps = { ...props };
-    delete newProps.isLastRow;
-
-    return <StyledCol {...motionAnimation.expand} {...newProps} $isLastRow={props.isLastRow} />;
-};
-
-const CoinLogoWrapper = styled(Col)`
+const CoinLogoWrapper = styled(StyledCol)`
     padding-left: 18px;
     text-overflow: ellipsis;
     border: none;
@@ -60,7 +53,7 @@ const CoinLogoWrapper = styled(Col)`
     }
 `;
 
-const CoinNameWrapper = styled(Col)`
+const CoinNameWrapper = styled(StyledCol)`
     ${typography.highlight}
     overflow: hidden;
     text-overflow: ellipsis;
@@ -77,7 +70,7 @@ const CoinBalanceContainer = styled.div`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const FailedCol = styled(Col)`
+const FailedCol = styled(StyledCol)`
     color: ${({ theme }) => theme.textAlertRed};
     ${typography.hint}
 
@@ -87,7 +80,7 @@ const FailedCol = styled(Col)`
     }
 `;
 
-const CryptoBalanceWrapper = styled(Col)`
+const CryptoBalanceWrapper = styled(StyledCol)`
     flex: 1;
     white-space: nowrap;
     flex-direction: column;
@@ -103,18 +96,18 @@ const CryptoBalanceWrapper = styled(Col)`
 
 const FiatBalanceWrapper = styled.div``;
 
-const ExchangeRateWrapper = styled(Col)`
+const ExchangeRateWrapper = styled(StyledCol)`
     font-variant-numeric: tabular-nums;
     justify-content: right;
     padding-right: ${spacingsPx.xxxl};
 `;
 
-const ExchangeRateWrapper7Days = styled(Col)`
+const ExchangeRateWrapper7Days = styled(StyledCol)`
     font-variant-numeric: tabular-nums;
     padding-right: 0;
 `;
 
-const BuyButtonWrapper = styled(Col)`
+const BuyButtonWrapper = styled(StyledCol)`
     justify-content: right;
 `;
 
@@ -165,13 +158,13 @@ export const AssetRow = memo(
                     />
                 </CoinLogoWrapper>
 
-                <CoinNameWrapper isLastRow={isLastRow}>
+                <CoinNameWrapper $isLastRow={isLastRow}>
                     <AssetCoinName network={network} />
                 </CoinNameWrapper>
 
                 {!failed ? (
                     <CryptoBalanceWrapper
-                        isLastRow={isLastRow}
+                        $isLastRow={isLastRow}
                         data-test={`@asset-card/${symbol}/balance`}
                     >
                         <FiatBalanceWrapper>
@@ -185,7 +178,7 @@ export const AssetRow = memo(
                         </CoinBalanceContainer>
                     </CryptoBalanceWrapper>
                 ) : (
-                    <FailedCol isLastRow={isLastRow}>
+                    <FailedCol $isLastRow={isLastRow}>
                         <Translation id="TR_DASHBOARD_ASSET_FAILED" />
 
                         <Icon
@@ -196,13 +189,13 @@ export const AssetRow = memo(
                         />
                     </FailedCol>
                 )}
-                <ExchangeRateWrapper isLastRow={isLastRow}>
+                <ExchangeRateWrapper $isLastRow={isLastRow}>
                     {!isTestnet(symbol) && <PriceTicker symbol={symbol} compact />}
                 </ExchangeRateWrapper>
-                <ExchangeRateWrapper7Days isLastRow={isLastRow}>
+                <ExchangeRateWrapper7Days $isLastRow={isLastRow}>
                     {!isTestnet(symbol) && <TrendTicker symbol={symbol} compact />}
                 </ExchangeRateWrapper7Days>
-                <BuyButtonWrapper isLastRow={isLastRow}>
+                <BuyButtonWrapper $isLastRow={isLastRow}>
                     {!isTestnet(symbol) && (
                         <CoinmarketBuyButton
                             symbol={symbol}
@@ -226,22 +219,22 @@ export const AssetRowSkeleton = (props: { animate?: boolean }) => {
             <CoinLogoWrapper>
                 <AssetCoinLogoSkeleton />
             </CoinLogoWrapper>
-            <CoinNameWrapper isLastRow>
+            <CoinNameWrapper $isLastRow>
                 <Coin>
                     <SkeletonRectangle animate={animate} width={150} />
                 </Coin>
             </CoinNameWrapper>
-            <CryptoBalanceWrapper isLastRow>
+            <CryptoBalanceWrapper $isLastRow>
                 <SkeletonRectangle animate={animate} width={100} />
             </CryptoBalanceWrapper>
 
-            <ExchangeRateWrapper isLastRow>
+            <ExchangeRateWrapper $isLastRow>
                 <SkeletonRectangle animate={animate} />
             </ExchangeRateWrapper>
-            <ExchangeRateWrapper isLastRow>
+            <ExchangeRateWrapper $isLastRow>
                 <SkeletonRectangle animate={animate} width={50} />
             </ExchangeRateWrapper>
-            <BuyButtonWrapper isLastRow>
+            <BuyButtonWrapper $isLastRow>
                 <SkeletonRectangleLast animate={animate} width={58} height={38} borderRadius={19} />
             </BuyButtonWrapper>
         </AssetTableRowGrid>

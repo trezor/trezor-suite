@@ -31,5 +31,12 @@ const StyledSkeletonCircle = styled.div<
 export const SkeletonCircle = (props: SkeletonCircleProps) => {
     const { elevation } = useElevation();
 
-    return <StyledSkeletonCircle {...props} $elevation={elevation} />;
+    return (
+        <StyledSkeletonCircle
+            $elevation={elevation}
+            $size={props.size}
+            $animate={props.animate}
+            $background={props.background}
+        />
+    );
 };

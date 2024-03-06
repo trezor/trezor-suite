@@ -35,8 +35,8 @@ const TokenSymbol = styled.span`
 `;
 
 interface ColProps {
-    justify?: 'left' | 'right';
-    isTestnet?: boolean;
+    $justify?: 'left' | 'right';
+    $isTestnet?: boolean;
 }
 
 const Col = styled.div<ColProps>`
@@ -45,16 +45,16 @@ const Col = styled.div<ColProps>`
     font-size: ${variables.FONT_SIZE.SMALL};
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
-    &:nth-child(${({ isTestnet }) => (isTestnet ? '-n + 3' : '-n + 4')}) {
+    &:nth-child(${({ $isTestnet }) => ($isTestnet ? '-n + 3' : '-n + 4')}) {
         /* first row */
         border-top: none;
     }
 
-    ${({ justify }) =>
-        justify &&
+    ${({ $justify }) =>
+        $justify &&
         css`
-            justify-content: ${justify === 'right' ? 'flex-end' : 'flex-start'};
-            text-align: ${justify === 'right' ? 'right' : 'left'};
+            justify-content: ${$justify === 'right' ? 'flex-end' : 'flex-start'};
+            text-align: ${$justify === 'right' ? 'right' : 'left'};
         `}
 `;
 
@@ -163,14 +163,14 @@ export const TokenList = ({
 
                                 return (
                                     <Fragment key={t.contract}>
-                                        <Col isTestnet={isTestnet}>
+                                        <Col $isTestnet={isTestnet}>
                                             {!noSymbol && <TokenSymbol>{t.symbol}</TokenSymbol>}
                                             <TokenName>
                                                 {!noSymbol && ` - `}
                                                 {t.name}
                                             </TokenName>
                                         </Col>
-                                        <Col isTestnet={isTestnet} justify="right">
+                                        <Col $isTestnet={isTestnet} $justify="right">
                                             {t.balance && (
                                                 <CryptoAmount
                                                     value={t.balance}
@@ -183,7 +183,7 @@ export const TokenList = ({
                                             )}
                                         </Col>
                                         {!isTestnet && (
-                                            <Col isTestnet={isTestnet} justify="right">
+                                            <Col $isTestnet={isTestnet} $justify="right">
                                                 {t.balance && t.symbol && t.fiatRate?.rate ? (
                                                     <FiatWrapper>
                                                         <FiatValue
@@ -197,7 +197,7 @@ export const TokenList = ({
                                                 )}
                                             </Col>
                                         )}
-                                        <Col isTestnet={isTestnet} justify="right">
+                                        <Col $isTestnet={isTestnet} $justify="right">
                                             <TrezorLink
                                                 href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
                                             >

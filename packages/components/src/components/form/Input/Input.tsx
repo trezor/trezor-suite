@@ -17,29 +17,29 @@ import { TopAddons } from '../TopAddons';
 import { useElevation } from '../../ElevationContext/ElevationContext';
 import { UIHorizontalAlignment } from '../../../config/types';
 
-const Wrapper = styled.div<Pick<InputProps, 'width'> & { hasBottomPadding: boolean }>`
+const Wrapper = styled.div<{ $width?: number; $hasBottomPadding: boolean }>`
     display: inline-flex;
     flex-direction: column;
-    width: ${({ width }) => (width ? `${width}px` : '100%')};
-    padding-bottom: ${({ hasBottomPadding }) =>
+    width: ${({ $width }) => ($width ? `${$width}px` : '100%')};
+    padding-bottom: ${({ $hasBottomPadding: hasBottomPadding }) =>
         hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 `;
 
 interface StyledInputProps extends BaseInputProps {
     $size: InputSize;
-    leftAddonWidth?: number;
-    rightAddonWidth?: number;
+    $leftAddonWidth?: number;
+    $rightAddonWidth?: number;
 }
 
 const getExtraAddonPadding = (size: InputSize) =>
     (size === 'small' ? spacings.sm : spacings.md) + spacings.xs;
 
-const StyledInput = styled.input<StyledInputProps & { isWithLabel: boolean }>`
+const StyledInput = styled.input<StyledInputProps & { $isWithLabel: boolean }>`
     padding: 0 ${spacingsPx.md};
-    padding-left: ${({ leftAddonWidth, $size }) =>
-        leftAddonWidth ? `${leftAddonWidth + getExtraAddonPadding($size)}px` : undefined};
-    padding-right: ${({ rightAddonWidth, $size }) =>
-        rightAddonWidth ? `${rightAddonWidth + getExtraAddonPadding($size)}px` : undefined};
+    padding-left: ${({ $leftAddonWidth, $size }) =>
+        $leftAddonWidth ? `${$leftAddonWidth + getExtraAddonPadding($size)}px` : undefined};
+    padding-right: ${({ $rightAddonWidth, $size }) =>
+        $rightAddonWidth ? `${$rightAddonWidth + getExtraAddonPadding($size)}px` : undefined};
     height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     ${baseInputStyle}
     ${({ $size }) => $size === 'small' && typography.hint};
@@ -135,7 +135,7 @@ const Input = ({
         <Wrapper
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
-            hasBottomPadding={hasBottomPadding === true && bottomText === null}
+            $hasBottomPadding={hasBottomPadding === true && bottomText === null}
             className={className}
         >
             <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
@@ -164,27 +164,27 @@ const Input = ({
                 )}
 
                 <StyledInput
-                    elevation={elevation}
+                    $elevation={elevation}
                     value={value}
                     autoComplete="off"
                     autoCorrect="off"
                     autoCapitalize="off"
                     spellCheck={false}
-                    inputState={inputState}
+                    $inputState={inputState}
                     disabled={isDisabled}
                     $size={size}
                     ref={innerRef}
                     data-lpignore="true"
-                    leftAddonWidth={leftAddonWidth}
-                    rightAddonWidth={rightAddonWidth}
-                    isWithLabel={!!label}
+                    $leftAddonWidth={leftAddonWidth}
+                    $rightAddonWidth={rightAddonWidth}
+                    $isWithLabel={!!label}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     data-test={dataTest}
                     {...rest}
                 />
 
                 {label && (
-                    <InputLabel $size={size} isDisabled={isDisabled}>
+                    <InputLabel $size={size} $isDisabled={isDisabled}>
                         {label}
                     </InputLabel>
                 )}

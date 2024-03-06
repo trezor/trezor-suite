@@ -10,7 +10,7 @@ const CoinmarketExchangeForm = () => {
     const { onSubmit, handleSubmit, isLoading, noProviders } = useCoinmarketExchangeFormContext();
 
     return (
-        <Wrapper responsiveSize="LG">
+        <Wrapper $responsiveSize="LG">
             {isLoading && <CoinmarketSkeleton />}
             {!isLoading && noProviders && (
                 <NoProviders>

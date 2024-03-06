@@ -20,14 +20,14 @@ const slideDown = keyframes`
     }
 `;
 
-export const Container = styled.div<Pick<BottomTextProps, 'inputState' | 'isDisabled'>>`
+export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: boolean }>`
     display: flex;
     align-items: center;
     gap: ${spacingsPx.xxs};
     padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
     min-height: ${BOTTOM_TEXT_MIN_HEIGHT}px;
-    color: ${({ inputState, isDisabled, theme }) =>
-        isDisabled ? theme.textDisabled : getInputStateTextColor(inputState, theme)};
+    color: ${({ $inputState, $isDisabled, theme }) =>
+        $isDisabled ? theme.textDisabled : getInputStateTextColor($inputState, theme)};
     ${typography.label}
     animation: ${slideDown} 0.18s ease-in-out forwards;
 `;
@@ -52,7 +52,7 @@ export const BottomText = ({
         : getInputStateTextColor(inputState, theme);
 
     return (
-        <Container inputState={inputState} isDisabled={isDisabled}>
+        <Container $inputState={inputState} $isDisabled={isDisabled}>
             {icon && <Icon name={icon} size="medium" color={iconColor} />}
 
             {children}
