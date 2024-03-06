@@ -17,7 +17,15 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: "true"
-          fetch-depth: 0
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+      - name: Fetch develop and some commits for Nx
+        # This step should fetch some reasonably small amount branches and commits that Nx affected needs
+        # It's much faster than doing git fetch depth=1 of all commits
+        run: |
+          git fetch origin ${{ steps.extract_branch.outputs.branch }} --deepen=150
+          git fetch origin develop --deepen=200
       - name: Install node and yarn
         uses: actions/setup-node@v4
         with:
