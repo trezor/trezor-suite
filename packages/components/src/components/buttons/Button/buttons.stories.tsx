@@ -70,7 +70,7 @@ export const All: StoryFn = () => (
                 >
                     {capitalizeFirstLetter(variant)} icon right
                 </Button>
-                <Button variant={variant} data-test={`button-${variant}-loading`} $isLoading>
+                <Button variant={variant} data-test={`button-${variant}-loading`} isLoading>
                     {capitalizeFirstLetter(variant)} loading
                 </Button>
                 <Button variant={variant} data-test={`button-${variant}-full-width`} isFullWidth>

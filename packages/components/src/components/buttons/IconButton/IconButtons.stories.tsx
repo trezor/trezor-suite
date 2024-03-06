@@ -58,7 +58,7 @@ export const IconButtons: StoryObj = {
                         icon="PALETTE"
                         variant={variant}
                         data-test={`button-${variant}-loading`}
-                        $isLoading
+                        isLoading
                     />
 
                     <IconButton

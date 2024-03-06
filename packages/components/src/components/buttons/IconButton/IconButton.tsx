@@ -39,7 +39,7 @@ export const IconButton = ({
     size = 'large',
     iconSize,
     isDisabled = false,
-    $isLoading: isLoading = false,
+    isLoading: isLoading = false,
     ...rest
 }: IconButtonProps) => {
     const theme = useTheme();

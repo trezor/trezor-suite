@@ -83,7 +83,7 @@ export interface ButtonProps extends SelectedHTMLButtonProps {
     variant?: ButtonVariant;
     size?: ButtonSize;
     isDisabled?: boolean;
-    $isLoading?: boolean;
+    isLoading?: boolean;
     isFullWidth?: boolean;
     icon?: IconType;
     iconSize?: number;
@@ -98,7 +98,7 @@ export const Button = ({
     variant = 'primary',
     size = 'medium',
     isDisabled = false,
-    $isLoading: isLoading = false,
+    isLoading = false,
     isFullWidth = false,
     icon,
     iconSize,
@@ -123,13 +123,13 @@ export const Button = ({
     return (
         <ButtonContainer
             $variant={variant}
-            size={size}
+            $size={size}
             $iconAlignment={iconAlignment}
             disabled={isDisabled || isLoading}
             $isFullWidth={isFullWidth}
             type={type}
             $hasIcon={!!icon || isLoading}
-            elevation={elevation}
+            $elevation={elevation}
             {...rest}
         >
             {!isLoading && icon && IconComponent}

@@ -27,6 +27,6 @@ export const SkeletonSpread: StoryObj<SkeletonSpreadProps> = {
         </Container>
     ),
     args: {
-        spaceAround: false,
+        $spaceAround: false,
     },
 };
