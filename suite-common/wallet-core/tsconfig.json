@@ -11,6 +11,7 @@
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
         { "path": "../toast-notifications" },
+        { "path": "../token-definitions" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },

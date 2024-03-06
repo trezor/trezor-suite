@@ -1,3 +1,4 @@
+import { DefinitionType } from '@suite-common/token-definitions';
 import { TokenDefinitions } from '@suite-common/wallet-types';
 
 export const accountBtc = {
@@ -45,7 +46,10 @@ export const accountEth = {
     ],
 };
 
-export const tokenDefinitions: TokenDefinitions = {
-    '0x1234123412341234123412341234123412341234': { isTokenKnown: false, error: false },
-    '0x1234123412341234123412341234123412341235': { isTokenKnown: true, error: false },
+export const coinDefinitions: TokenDefinitions[DefinitionType.COIN] = {
+    error: false,
+    data: [
+        '0x1234123412341234123412341234123412341236',
+        '0x1234123412341234123412341234123412341235',
+    ],
 };
