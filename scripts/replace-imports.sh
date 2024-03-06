@@ -15,3 +15,12 @@ else
     # Linux command with -i and -E for in-place editing without backup (GNU sed syntax) and extended regex
     find "$1" -type f -exec sed -i -E "$REGEX" {} +
 fi
+
+# Safety check to ensure that all occurrences of '@trezor/*/src' have been replaced
+SEARCH_PATTERN="@trezor\/[^/]+\/src"
+if grep -Rl "$SEARCH_PATTERN" "$1"; then
+    echo "Error: Some files still contain '@trezor/*/src'. Please review the replacements."
+    exit 1
+else
+    echo "All occurrences of '@trezor/*/src' have been successfully replaced."
+fi
