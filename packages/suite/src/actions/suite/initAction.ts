@@ -3,6 +3,7 @@ import * as trezorConnectActions from '@suite-common/connect-init';
 import {
     initBlockchainThunk,
     initDevices,
+    periodicCheckTokenDefinitionsThunk,
     periodicFetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 
@@ -60,7 +61,10 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         .unwrap()
         .catch(err => console.error(err));
 
-    // 7. init periodic fetching of fiat rates
+    // 7. fetch token definitions (has to be fetched before fiat rates)
+    await dispatch(periodicCheckTokenDefinitionsThunk());
+
+    // 8. init periodic fetching of fiat rates
     await dispatch(
         periodicFetchFiatRatesThunk({
             rateType: 'current',
@@ -74,14 +78,14 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         }),
     );
 
-    // 8. dispatch initial location change
+    // 9. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 9. fetch metadata. metadata is not saved together with other data in storage.
+    // 10. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
     dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
-    // 9. backend connected, suite is ready to use
+    // 11. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };

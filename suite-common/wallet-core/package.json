@@ -22,6 +22,7 @@
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
@@ -35,6 +36,7 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
+        "jws": "^4.0.0",
         "proxy-memoize": "2.0.2"
     }
 }

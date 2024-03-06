@@ -73,7 +73,14 @@ export const networks = {
             address: 'https://eth1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions', 'staking'],
+        features: [
+            'rbf',
+            'sign-verify',
+            'tokens',
+            'coin-definitions',
+            'nft-definitions',
+            'staking',
+        ],
         label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
@@ -275,7 +282,7 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
-        features: ['tokens', 'staking'],
+        features: ['tokens', 'staking', 'coin-definitions'],
         explorer: {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
@@ -306,7 +313,7 @@ export const networks = {
         bip43Path: "m/44'/501'/i'/0'",
         decimals: 9,
         testnet: false,
-        features: ['tokens' /* , 'staking' */],
+        features: ['tokens', 'coin-definitions' /* , 'staking' */],
         explorer: {
             tx: 'https://explorer.solana.com/tx/',
             account: 'https://explorer.solana.com/address/',
@@ -337,7 +344,7 @@ export const networks = {
             address: 'https://matic2.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: 'polygon-pos',
@@ -427,7 +434,7 @@ export const networks = {
             address: 'https://sepolia1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions'],
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions'],
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
@@ -447,7 +454,7 @@ export const networks = {
             address: 'https://goerli1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions', 'staking'],
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'staking'],
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
@@ -467,7 +474,7 @@ export const networks = {
             address: 'https://holesky1.trezor.io/address/',
             queryString: '',
         },
-        features: ['rbf', 'sign-verify', 'tokens', 'token-definitions', 'staking'],
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'staking'],
         customBackends: ['blockbook'],
         accountTypes: {},
         coingeckoId: undefined,
@@ -570,7 +577,8 @@ export type NetworkFeature =
     | 'amount-unit'
     | 'tokens'
     | 'staking'
-    | 'token-definitions';
+    | 'coin-definitions'
+    | 'nft-definitions';
 export type Network = Without<NetworkValue, 'accountTypes'> & {
     symbol: NetworkSymbol;
     accountType?: AccountType;
