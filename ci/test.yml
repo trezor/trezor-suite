@@ -275,9 +275,6 @@ connect-popup manual:
 .connect-popup legacy npm package base:
   extends: .e2e connect-popup
   stage: legacy testing
-  needs:
-    - install
-    - connect-web build
   retry: 0
   variables:
     COMPOSE_PROJECT_NAME: $CI_JOB_ID
@@ -297,6 +294,9 @@ connect-popup manual:
 
 connect-popup legacy npm package manual:
   extends: .connect-popup legacy npm package base
+  needs:
+    - install
+    - connect-web build
   except:
     <<: *run_everything_rules
   when: manual
