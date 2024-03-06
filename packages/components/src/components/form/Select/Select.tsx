@@ -324,7 +324,7 @@ export const Select = ({
             />
 
             {label && (
-                <SelectLabel $size={size} isDisabled={isDisabled}>
+                <SelectLabel $size={size} $isDisabled={isDisabled}>
                     {label}
                 </SelectLabel>
             )}

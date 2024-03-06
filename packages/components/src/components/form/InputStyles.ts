@@ -43,7 +43,7 @@ export const getInputStateBorderColor = (state: InputState | undefined, theme: D
 export const getInputStateBgColor = (
     state: InputState | undefined,
     theme: DefaultTheme,
-    elevation: Elevation,
+    $elevation: Elevation,
 ) => {
     switch (state) {
         case 'warning':
@@ -51,27 +51,27 @@ export const getInputStateBgColor = (
         case 'error':
             return theme.backgroundAlertRedSubtleOnElevation1;
         default:
-            return mapElevationToBackground({ theme, elevation });
+            return mapElevationToBackground({ theme, $elevation });
     }
 };
 
 export const INPUT_PADDING_TOP = '18px';
 
 export interface BaseInputProps {
-    inputState?: InputState;
-    disabled?: boolean;
-    isWithLabel?: boolean;
-    elevation: Elevation;
+    $inputState?: InputState;
+    disabled?: boolean; // intentionally not transient, disabled is HTML <input> prop
+    $isWithLabel?: boolean;
+    $elevation: Elevation;
 }
 
 export const baseInputStyle = css<BaseInputProps>`
     width: 100%;
-    padding-top: ${({ isWithLabel }) => isWithLabel && INPUT_PADDING_TOP};
-    background-color: ${({ elevation, theme, inputState }) =>
-        getInputStateBgColor(inputState, theme, elevation)};
+    padding-top: ${({ $isWithLabel }) => $isWithLabel && INPUT_PADDING_TOP};
+    background-color: ${({ $elevation, theme, $inputState }) =>
+        getInputStateBgColor($inputState, theme, $elevation)};
     border-radius: ${borders.radii.sm};
     border: solid ${INPUT_BORDER_WIDTH}px;
-    border-color: ${({ inputState, theme }) => getInputStateBorderColor(inputState, theme)};
+    border-color: ${({ $inputState, theme }) => getInputStateBorderColor($inputState, theme)};
     color: ${({ theme }) => theme.textDefault};
     ${typography.body}
     transition: border-color 0.1s;
@@ -125,10 +125,10 @@ export const RightLabel = styled.div`
 
 export const LABEL_TRANSFORM = 'translate(0px, -10px) scale(0.75)';
 
-export const Label = styled.label<{ $size?: InputSize; isDisabled?: boolean }>`
+export const Label = styled.label<{ $size?: InputSize; $isDisabled?: boolean }>`
     position: absolute;
     left: calc(${spacingsPx.md} + ${INPUT_BORDER_WIDTH}px);
-    color: ${({ theme, isDisabled }) => (isDisabled ? theme.textDisabled : theme.textSubdued)};
+    color: ${({ theme, $isDisabled }) => ($isDisabled ? theme.textDisabled : theme.textSubdued)};
     ${typography.body};
     line-height: ${({ $size }) => $size && `${INPUT_HEIGHTS[$size as InputSize]}px`};
     transition:

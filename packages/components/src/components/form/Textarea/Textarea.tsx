@@ -140,7 +140,7 @@ export const Textarea = ({
                     value={value}
                 />
 
-                {label && <TextareaLabel isDisabled={isDisabled}>{label}</TextareaLabel>}
+                {label && <TextareaLabel $isDisabled={isDisabled}>{label}</TextareaLabel>}
             </TextareaWrapper>
 
             {bottomText && (

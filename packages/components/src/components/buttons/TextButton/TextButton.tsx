@@ -64,7 +64,7 @@ export const TextButton = ({
     iconAlignment = 'left',
     size = 'large',
     isDisabled = false,
-    $isLoading: isLoading = false,
+    isLoading: isLoading = false,
     children,
     ...rest
 }: TextButtonProps) => {
