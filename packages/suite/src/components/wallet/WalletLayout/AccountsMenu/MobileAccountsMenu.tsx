@@ -49,11 +49,11 @@ const Search = styled.div`
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
 `;
 
-const Heading = styled(H2)<{ isInline?: boolean }>`
+const Heading = styled(H2)<{ $isInline?: boolean }>`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     ${props =>
-        props.isInline &&
+        props.$isInline &&
         css`
             font-size: 18px;
         `}
@@ -84,8 +84,8 @@ const ExpandedMobileWrapper = styled.div`
     padding-bottom: 16px;
 `;
 
-const StyledIcon = styled(Icon)<{ isActive: boolean }>`
-    transform: ${({ isActive }) => (isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
+const StyledIcon = styled(Icon)<{ $isActive: boolean }>`
+    transform: ${({ $isActive }) => ($isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
 `;
 
 export const MobileAccountsMenu = () => {
@@ -120,7 +120,7 @@ export const MobileAccountsMenu = () => {
                             <Translation id="TR_MY_ACCOUNTS" />
                         </Heading>
                         <StyledIcon
-                            isActive={isExpanded}
+                            $isActive={isExpanded}
                             size={20}
                             color={theme.TYPE_LIGHT_GREY}
                             onClick={() => {

@@ -103,18 +103,18 @@ const StyledTooltip = styled(Tooltip)`
     }
 `;
 
-const Badge = styled(Image)<{ isHighlighted: boolean }>`
+const Badge = styled(Image)<{ $isHighlighted: boolean }>`
     max-width: unset;
-    opacity: ${({ isHighlighted }) => (isHighlighted ? 1 : 0.6)};
+    opacity: ${({ $isHighlighted }) => ($isHighlighted ? 1 : 0.6)};
     transition: opacity 0.3s;
     cursor: pointer;
 `;
 
-const StoreTitle = styled(Image)<{ isDark: boolean }>`
+const StoreTitle = styled(Image)<{ $isDark: boolean }>`
     display: block;
     margin: 2px auto 6px;
-    ${({ isDark }) =>
-        isDark &&
+    ${({ $isDark }) =>
+        $isDark &&
         `
             filter: invert(1);
     `}
@@ -154,7 +154,7 @@ const StoreBadge = ({
             content={
                 <div>
                     <StoreTitle
-                        isDark={currentTheme === 'dark'}
+                        $isDark={currentTheme === 'dark'}
                         image={`${image}_TITLE`}
                         height={26}
                     />
@@ -176,7 +176,7 @@ const StoreBadge = ({
                     })
                 }
             >
-                <Badge image={`${image}_BADGE`} height={35} isHighlighted={showQR === type} />
+                <Badge image={`${image}_BADGE`} height={35} $isHighlighted={showQR === type} />
             </TrezorLink>
         </StyledTooltip>
     );

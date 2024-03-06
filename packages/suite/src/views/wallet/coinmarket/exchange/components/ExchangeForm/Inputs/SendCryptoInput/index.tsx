@@ -19,9 +19,9 @@ import {
 import { useFormatters } from '@suite-common/formatters';
 import { spacingsPx } from '@trezor/theme';
 
-const StyledInput = styled(NumberInput)<{ isWithRate: boolean }>`
-    ${({ isWithRate }) =>
-        isWithRate &&
+const StyledInput = styled(NumberInput)<{ $isWithRate: boolean }>`
+    ${({ $isWithRate }) =>
+        $isWithRate &&
         css`
             input {
                 border-top-right-radius: 0;

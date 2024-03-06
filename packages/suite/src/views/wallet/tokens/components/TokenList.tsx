@@ -19,10 +19,11 @@ import { Rate } from '@suite-common/wallet-types';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 
-const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
+const Wrapper = styled(Card)<{ $isTestnet?: boolean }>`
     display: grid;
     padding: 12px 16px;
-    grid-template-columns: ${props => (props.isTestnet ? 'auto auto 44px' : 'auto auto auto 44px')};
+    grid-template-columns: ${props =>
+        props.$isTestnet ? 'auto auto 44px' : 'auto auto auto 44px'};
     word-break: break-all;
 `;
 
@@ -79,9 +80,9 @@ const StyledNoRatesTooltip = styled(NoRatesTooltip)`
     justify-content: flex-end;
 `;
 
-const StyledQuestionTooltip = styled(QuestionTooltip)<{ addMarginTop: boolean }>`
-    ${({ addMarginTop }) =>
-        addMarginTop &&
+const StyledQuestionTooltip = styled(QuestionTooltip)<{ $addMarginTop: boolean }>`
+    ${({ $addMarginTop }) =>
+        $addMarginTop &&
         css`
             margin-top: ${spacingsPx.xxl};
         `}
@@ -150,10 +151,10 @@ export const TokenList = ({
                             <StyledQuestionTooltip
                                 label="TR_TOKEN_UNRECOGNIZED_BY_TREZOR"
                                 tooltip="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP"
-                                addMarginTop={!!knownTokens.length}
+                                $addMarginTop={!!knownTokens.length}
                             />
                         )}
-                        <Wrapper isTestnet={isTestnet} paddingType="none">
+                        <Wrapper $isTestnet={isTestnet} paddingType="none">
                             {tokens.map(t => {
                                 const symbolMatchesName =
                                     networkType === 'cardano' &&
