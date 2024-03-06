@@ -32,8 +32,21 @@ jobs:
           save-always: true
           path: |
             ${{ steps.yarn-cache-dir-path.outputs.dir }}
-            node_modules/*/build/
-            node_modules/@*/*/build/
+            node_modules/sodium-native
+            node_modules/tiny-secp256k1
+            node_modules/bcrypto
+            node_modules/cypress
+            node_modules/bigint-buffer
+            node_modules/secp256k1
+            node_modules/keccak
+            node_modules/utf-8-validate
+            node_modules/bufferutil
+            node_modules/esbuild
+            node_modules/electron
+            node_modules/usb
+            node_modules/blake-hash
+            .yarn/install-state.gz
+            node_modules/.yarn-state.yml
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
             yarn-cache-folder-
@@ -47,7 +60,9 @@ jobs:
       - name: check for duplicate dependencies
         run: yarn dedupe --check
       - name: install deps
-        run: yarn --immutable
+        run: |
+          yarn --immutable
+          yarn run patch-package
       - name: check files for correct formatting
         run: yarn nx format:check
       - name: verify TS project references

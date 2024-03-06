@@ -33246,7 +33246,17 @@ __metadata:
     typescript: "npm:5.3.3"
     version-bump-prompt: "npm:^6.1.0"
   dependenciesMeta:
+    core-js:
+      built: false
     core-js-pure:
+      built: false
+    es5-ext:
+      built: false
+    web3:
+      built: false
+    web3-bzz:
+      built: false
+    web3-shh:
       built: false
   languageName: unknown
   linkType: soft

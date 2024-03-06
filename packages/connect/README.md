@@ -1,7 +1,5 @@
 # @trezor/connect
 
-some change
-
 API version 9.2.1
 
 [![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml)
