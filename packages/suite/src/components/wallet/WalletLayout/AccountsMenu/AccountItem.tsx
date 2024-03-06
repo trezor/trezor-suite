@@ -17,8 +17,8 @@ import { Account } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 
-const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
-    background: ${({ theme, isSelected }) => isSelected && theme.backgroundSurfaceElevation1};
+const Wrapper = styled(NavigationItemBase)<{ $isSelected: boolean }>`
+    background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};
     gap: 0;
     display: flex;
     justify-content: space-between;
@@ -29,8 +29,8 @@ const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
 
     &:hover {
         position: relative;
-        background: ${({ theme, isSelected }) =>
-            !isSelected && theme.backgroundTertiaryPressedOnElevation0};
+        background: ${({ theme, $isSelected }) =>
+            !$isSelected && theme.backgroundTertiaryPressedOnElevation0};
     }
 `;
 
@@ -138,7 +138,7 @@ export const AccountItem = forwardRef(
 
         return (
             <Wrapper
-                isSelected={isSelected}
+                $isSelected={isSelected}
                 ref={ref}
                 onClick={handleHeaderClick}
                 data-test={dataTestKey}

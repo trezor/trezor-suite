@@ -51,9 +51,9 @@ const ChevronIconWrapper = styled.div<{ $show: boolean; $animate: boolean }>`
     }
 `;
 
-const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ isPhishingTransaction: boolean }>`
-    color: ${({ theme, isPhishingTransaction }) =>
-        isPhishingTransaction ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
+const StyledCryptoAmount = styled(FormattedCryptoAmount)<{ $isPhishingTransaction: boolean }>`
+    color: ${({ theme, $isPhishingTransaction }) =>
+        $isPhishingTransaction ? theme.TYPE_LIGHT_GREY : theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     white-space: nowrap;
@@ -118,7 +118,7 @@ export const TransactionHeading = ({
                 value={targetAmount}
                 symbol={targetSymbol}
                 signValue={operation}
-                isPhishingTransaction={isPhishingTransaction}
+                $isPhishingTransaction={isPhishingTransaction}
             />
         );
     }
@@ -132,7 +132,7 @@ export const TransactionHeading = ({
                 value={formatNetworkAmount(abs, transaction.symbol)}
                 symbol={transaction.symbol}
                 signValue={transactionAmount}
-                isPhishingTransaction={isPhishingTransaction}
+                $isPhishingTransaction={isPhishingTransaction}
             />
         );
     }

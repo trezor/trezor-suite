@@ -1,4 +1,4 @@
-import { forwardRef, ReactNode } from 'react';
+import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
@@ -63,9 +63,9 @@ const CardContainer = styled.div<{ $elevation: Elevation; $paddingType: PaddingT
 
 export interface CardProps {
     paddingType?: PaddingType;
-    onMouseEnter?: () => void;
-    onMouseLeave?: () => void;
-    onClick?: () => void;
+    onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
+    onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
+    onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
     children?: ReactNode;
     className?: string;
     label?: ReactNode;

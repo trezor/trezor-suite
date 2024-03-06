@@ -7,7 +7,7 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { CoinjoinLogsAnchor } from 'src/constants/suite/anchors';
 import { anchorOutlineStyles } from 'src/utils/suite/anchor';
 
-const SetupCard = styled(Card)<{ shouldHighlight?: boolean }>`
+const SetupCard = styled(Card)<{ $shouldHighlight?: boolean }>`
     position: relative;
     overflow: hidden;
     flex-direction: row;
@@ -22,7 +22,7 @@ export const CoinjoinLogs = () => {
     if (!showDebugMenu) return null;
 
     return (
-        <SetupCard ref={anchorRef} shouldHighlight={shouldHighlight}>
+        <SetupCard ref={anchorRef} $shouldHighlight={shouldHighlight}>
             <TextColumn
                 title={<Translation id="TR_COINJOIN_LOGS_TITLE" />}
                 description={<Translation id="TR_COINJOIN_LOGS_DESCRIPTION" />}
