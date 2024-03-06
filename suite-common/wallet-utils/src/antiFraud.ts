@@ -2,6 +2,8 @@ import BigNumber from 'bignumber.js';
 import { D } from '@mobily/ts-belt';
 
 import type { TokenDefinitions, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { getNetworkType } from '@suite-common/wallet-config';
 
 import { isNftTokenTransfer } from './transactionUtils';
 
@@ -16,19 +18,18 @@ export const getIsFakeTokenPhishing = (
 ) =>
     new BigNumber(transaction.amount).isEqualTo(0) && // native currency is zero
     D.isNotEmpty(transaction.tokens) && // there are tokens in tx
-    transaction.tokens.every(tokenTx => !isNftTokenTransfer(tokenTx)) && // non-nfts
-    !transaction.tokens.some(tokenTx => tokenDefinitions[tokenTx.contract]?.isTokenKnown); // all tokens are unknown
+    !transaction.tokens.some(tokenTx => {
+        const isNftTx = isNftTokenTransfer(tokenTx);
+        const definitions = isNftTx ? tokenDefinitions?.nft?.data : tokenDefinitions?.coin?.data;
 
-// TEMP: solution to tag all NFT txs on Polygon PoS as scam before we introduce NFT definitions
-export const getIsPolygonNftTransaction = (transaction: WalletAccountTransaction) =>
-    transaction.symbol === 'matic' &&
-    transaction.tokens.some(tokenTx => isNftTokenTransfer(tokenTx));
+        return isTokenDefinitionKnown(definitions, transaction.symbol, tokenTx.contract);
+    }); // all tokens are unknown
 
 export const getIsPhishingTransaction = (
     transaction: WalletAccountTransaction,
     tokenDefinitions: TokenDefinitions,
 ) =>
-    getIsZeroValuePhishing(transaction) ||
-    getIsPolygonNftTransaction(transaction) ||
-    (D.isNotEmpty(tokenDefinitions) && // at least one token definition is available
-        getIsFakeTokenPhishing(transaction, tokenDefinitions));
+    getNetworkType(transaction.symbol) === 'ethereum' &&
+    (getIsZeroValuePhishing(transaction) ||
+        (D.isNotEmpty(tokenDefinitions) && // at least one token definition is available
+            getIsFakeTokenPhishing(transaction, tokenDefinitions)));

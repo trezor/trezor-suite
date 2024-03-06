@@ -30,7 +30,7 @@ import { selectTransactions } from './transactionsReducer';
 import { transactionsActionsPrefix, transactionsActions } from './transactionsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -241,7 +241,7 @@ export const exportTransactionsThunk = createThunk(
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
         const localCurrency = selectors.selectLocalCurrency(getState());
-        const tokenDefinitions = selectTokenDefinitions(getState(), account.symbol);
+        const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
 
         // TODO: this is not nice (copy-paste)
         // metadata reducer is still not part of trezor-common and I can not import it

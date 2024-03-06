@@ -253,7 +253,8 @@ describe('account utils', () => {
             'rbf',
             'sign-verify',
             'tokens',
-            'token-definitions',
+            'coin-definitions',
+            'nft-definitions',
             'staking',
         ]);
         expect(getNetworkFeatures(coinjoinAcc)).toEqual(['rbf', 'amount-unit']);

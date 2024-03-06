@@ -10,6 +10,7 @@
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },
+        { "path": "../token-definitions" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         { "path": "../wallet-types" },

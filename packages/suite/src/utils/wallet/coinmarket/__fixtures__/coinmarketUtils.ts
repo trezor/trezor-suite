@@ -52,4 +52,5 @@ export const coinDefinitions: TokenDefinitions[DefinitionType.COIN] = {
         '0x1234123412341234123412341234123412341236',
         '0x1234123412341234123412341234123412341235',
     ],
+    isLoading: false,
 };

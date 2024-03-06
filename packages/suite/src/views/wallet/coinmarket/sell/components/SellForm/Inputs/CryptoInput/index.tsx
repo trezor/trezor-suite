@@ -27,7 +27,7 @@ import {
     validateMin,
 } from 'src/utils/suite/validation';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { selectTokenDefinitions } from '@suite-common/wallet-core';
+import { selectCoinDefinitions } from '@suite-common/wallet-core';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 
 const Option = styled.div`
@@ -59,7 +59,7 @@ const CryptoInput = () => {
         composeRequest,
     } = useCoinmarketSellFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
 
     const { CryptoAmountFormatter } = useFormatters();
 
@@ -136,7 +136,7 @@ const CryptoInput = () => {
                             options={getSendCryptoOptions(
                                 account,
                                 sellInfo?.supportedCryptoCurrencies || new Set(),
-                                tokenDefinitions,
+                                coinDefinitions,
                             )}
                             isClean
                             isDisabled={!hasNetworkTypeTradableTokens(account.networkType)}
