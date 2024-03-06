@@ -49,28 +49,3 @@ export const fiatCurrencies = {
 
 export type FiatCurrencyCode = keyof typeof fiatCurrencies;
 export type FiatCurrency = (typeof fiatCurrencies)[FiatCurrencyCode];
-
-/**
- * @deprecated Please use fiatCurrencies object instead
- */
-export const FIAT = {
-    tickers: [
-        { symbol: 'eth', coingeckoId: 'ethereum' },
-        { symbol: 'etc', coingeckoId: 'ethereum-classic' },
-        { symbol: 'xrp', coingeckoId: 'ripple' },
-        { symbol: 'ada', coingeckoId: 'cardano' },
-        { symbol: 'btc', coingeckoId: 'bitcoin' },
-        { symbol: 'ltc', coingeckoId: 'litecoin' },
-        { symbol: 'bch', coingeckoId: 'bitcoin-cash' },
-        { symbol: 'btg', coingeckoId: 'bitcoin-gold' },
-        { symbol: 'dash', coingeckoId: 'dash' },
-        { symbol: 'dgb', coingeckoId: 'digibyte' },
-        { symbol: 'doge', coingeckoId: 'dogecoin' },
-        { symbol: 'vtc', coingeckoId: 'vertcoin' },
-        { symbol: 'nmc', coingeckoId: 'namecoin' },
-        { symbol: 'zec', coingeckoId: 'zcash' },
-        { symbol: 'sol', coingeckoId: 'solana' },
-        { symbol: 'matic', coingeckoId: 'polygon-pos' },
-    ],
-    currencies: Object.keys(fiatCurrencies),
-} as const;

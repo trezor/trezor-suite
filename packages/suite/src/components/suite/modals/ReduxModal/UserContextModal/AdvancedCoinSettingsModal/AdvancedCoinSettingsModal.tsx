@@ -4,6 +4,7 @@ import { Modal, Translation } from 'src/components/suite';
 import { NETWORKS } from 'src/config/wallet';
 import { NetworkSymbol } from 'src/types/wallet';
 import { CustomBackends } from './CustomBackends/CustomBackends';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const Section = styled.div`
     display: flex;
@@ -56,7 +57,7 @@ export const AdvancedCoinSettingsModal = ({ coin, onCancel }: AdvancedCoinSettin
 
                         {network.label && (
                             <Subheader>
-                                <Translation id={network.label} />
+                                <Translation id={network.label as TranslationKey} />
                             </Subheader>
                         )}
                     </Header>

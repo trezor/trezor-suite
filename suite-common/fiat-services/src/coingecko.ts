@@ -1,5 +1,6 @@
+import { networks } from '@suite-common/wallet-config';
 import { LastWeekRates, TickerId } from '@suite-common/wallet-types';
-import { FIAT as FIAT_CONFIG, FiatCurrencyCode } from '@suite-common/suite-config';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
@@ -29,9 +30,6 @@ const fetchCoinGecko = async (url: string) => {
     }
 };
 
-export const getTickerConfig = (ticker: TickerId) =>
-    FIAT_CONFIG.tickers.find(t => t.symbol === ticker.symbol);
-
 /**
  * Build coinUrl using defined coin ids
  *
@@ -39,14 +37,14 @@ export const getTickerConfig = (ticker: TickerId) =>
  * @returns
  */
 const buildCoinUrl = (ticker: TickerId) => {
-    const config = getTickerConfig(ticker);
-    if (!config) {
-        console.error('buildCoinUrl: cannot find ticker config for ', ticker);
+    const { coingeckoId } = networks[ticker.symbol];
+    if (!coingeckoId) {
+        console.error('buildCoinUrl: cannot find coingecko asset platform id for ', ticker);
 
         return null;
     }
 
-    const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${config.coingeckoId}`;
+    const baseUrl = `${COINGECKO_API_BASE_URL}/coins/${coingeckoId}`;
 
     return ticker.tokenAddress ? `${baseUrl}/contract/${ticker.tokenAddress}` : baseUrl;
 };
