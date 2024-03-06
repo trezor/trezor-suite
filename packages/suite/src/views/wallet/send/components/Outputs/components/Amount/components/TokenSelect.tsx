@@ -7,7 +7,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
 import { Output } from 'src/types/wallet/sendForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTokenDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { selectCoinDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import BigNumber from 'bignumber.js';
 import { Timestamp, TokenAddress, TokenDefinitions } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
@@ -16,6 +16,7 @@ import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/to
 import { getShortFingerprint } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;
@@ -34,7 +35,7 @@ interface Option {
 export const buildTokenOptions = (
     tokens: Account['tokens'],
     symbol: Account['symbol'],
-    tokenDefinitions: TokenDefinitions,
+    coinDefinitions: TokenDefinitions['coin'],
 ) => {
     // ETH option
     const result: Option[] = [
@@ -45,7 +46,7 @@ export const buildTokenOptions = (
 
     if (tokens) {
         const unknownTokens: Option['options'] = [];
-        const hasNetworkFeatures = getNetworkFeatures(symbol).includes('token-definitions');
+        const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 
         tokens.forEach(token => {
             if (new BigNumber(token?.balance || '').eq('0')) {
@@ -54,7 +55,10 @@ export const buildTokenOptions = (
 
             const tokenName = token.symbol || 'N/A';
 
-            if (tokenDefinitions[token.contract]?.isTokenKnown || !hasNetworkFeatures) {
+            if (
+                !hasCoinDefinitions ||
+                isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract)
+            ) {
                 result[0].options.push({
                     value: token.contract,
                     label: tokenName.toUpperCase(),
@@ -165,7 +169,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         composeTransaction,
         watch,
     } = useSendFormContext();
-    const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, account.symbol));
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const localCurrency = useSelector(selectLocalCurrency);
     const tokensWithRates = enhanceTokensWithRates(account.tokens, localCurrency, account.symbol);
     const dispatch = useDispatch();
@@ -179,7 +183,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     const tokenValue = getDefaultValue(tokenInputName, output.token);
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const dataEnabled = getDefaultValue('options', []).includes('ethereumData');
-    const options = buildTokenOptions(sortedTokens, account.symbol, tokenDefinitions);
+    const options = buildTokenOptions(sortedTokens, account.symbol, coinDefinitions);
 
     // Amount needs to be re-validated again AFTER token change propagation (decimal places, available balance)
     // watch token change and use "useSendFormFields.setAmount" util for validation (if amount is set)

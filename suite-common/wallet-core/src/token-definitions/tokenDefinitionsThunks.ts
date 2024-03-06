@@ -1,18 +1,15 @@
 import { decode, verify } from 'jws';
+import { D } from '@mobily/ts-belt';
 
 import { createThunk } from '@suite-common/redux-utils';
-import {
-    NetworkSymbol,
-    getNetworkFeatures,
-    getTokenDefinitionsConfig,
-} from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getNetwork } from '@suite-common/wallet-utils';
 import {
     DefinitionType,
     JWS_SIGN_ALGORITHM,
-    StructureType,
     TOKEN_DEFINITIONS_PREFIX_URL,
     TOKEN_DEFINITIONS_SUFFIX_URL,
+    getSupportedDefinitionTypes,
 } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
 
@@ -26,18 +23,17 @@ export const getTokenDefinitionThunk = createThunk(
         params: {
             networkSymbol: NetworkSymbol;
             type: DefinitionType;
-            structure: StructureType;
         },
         { fulfillWithValue, rejectWithValue },
     ) => {
-        const { networkSymbol, structure, type } = params;
+        const { networkSymbol, type } = params;
         const { coingeckoId } = getNetwork(networkSymbol) || {};
 
         try {
             const env = isCodesignBuild() ? 'stable' : 'develop';
 
             const response = await fetch(
-                `${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.${structure}.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
+                `${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.simple.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
             );
 
             if (!response.ok) {

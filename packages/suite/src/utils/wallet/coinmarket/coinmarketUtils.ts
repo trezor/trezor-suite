@@ -8,8 +8,9 @@ import {
     networkToCryptoSymbol,
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { TokenDefinitions } from '@suite-common/wallet-types';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
+import { TokenDefinitions } from '@suite-common/wallet-types';
+import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -48,7 +49,7 @@ export const symbolToInvityApiSymbol = (symbol?: string) => {
 export const getSendCryptoOptions = (
     account: Account,
     supportedSymbols: Set<CryptoSymbol>,
-    tokenDefinitions?: TokenDefinitions,
+    coinDefinitions?: TokenDefinitions[DefinitionType.COIN],
 ) => {
     const cryptoSymbol = networkToCryptoSymbol(account.symbol);
     if (!cryptoSymbol) {
@@ -63,9 +64,7 @@ export const getSendCryptoOptions = (
     }[] = [{ value: cryptoSymbol, label: cryptoSymbol, cryptoSymbol }];
 
     if (account.tokens) {
-        const hasTokenDefinitions = getNetworkFeatures(account.symbol).includes(
-            'token-definitions',
-        );
+        const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes('coin-definitions');
 
         account.tokens.forEach(token => {
             if (!token.symbol || token.balance === '0') {
@@ -83,9 +82,9 @@ export const getSendCryptoOptions = (
 
             // exclude unknown tokens
             if (
-                hasTokenDefinitions &&
-                tokenDefinitions &&
-                !tokenDefinitions[token.contract]?.isTokenKnown
+                hasCoinDefinitions &&
+                coinDefinitions &&
+                !isTokenDefinitionKnown(coinDefinitions.data, account.symbol, token.contract)
             ) {
                 return;
             }

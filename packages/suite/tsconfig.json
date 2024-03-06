@@ -63,6 +63,9 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {

@@ -9,7 +9,7 @@ import {
 } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { selectTokenDefinitions } from '@suite-common/wallet-core';
+import { selectCoinDefinitions } from '@suite-common/wallet-core';
 import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { spacingsPx } from '@trezor/theme';
@@ -17,6 +17,7 @@ import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { Rate } from '@suite-common/wallet-types';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 
 const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
     display: grid;
@@ -107,7 +108,8 @@ export const TokenList = ({
     networkSymbol,
 }: TokenListProps) => {
     const theme = useTheme();
-    const tokenDefinitions = useSelector(state => selectTokenDefinitions(state, networkSymbol));
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, networkSymbol));
+
     const localCurrency = useSelector(selectLocalCurrency);
     const { account } = useSelector(state => state.wallet.selectedAccount);
 
@@ -119,13 +121,16 @@ export const TokenList = ({
 
     if (!tokens || tokens.length === 0) return null;
 
-    const hasNetworkFeatures = getNetworkFeatures(networkSymbol).includes('token-definitions');
+    const hasCoinDefinitions = getNetworkFeatures(networkSymbol).includes('coin-definitions');
     const { knownTokens, unknownTokens } = sortedTokens.reduce<{
         knownTokens: EnhancedTokenInfo[];
         unknownTokens: EnhancedTokenInfo[];
     }>(
         (acc, token) => {
-            if (tokenDefinitions[token.contract]?.isTokenKnown || !hasNetworkFeatures) {
+            if (
+                !hasCoinDefinitions ||
+                isTokenDefinitionKnown(coinDefinitions?.data, account.symbol, token.contract)
+            ) {
                 acc.knownTokens.push(token);
             } else {
                 acc.unknownTokens.push(token);

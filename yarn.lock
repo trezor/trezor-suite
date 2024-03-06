@@ -8030,6 +8030,19 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-common/token-definitions@workspace:*, @suite-common/token-definitions@workspace:suite-common/token-definitions":
+  version: 0.0.0-use.local
+  resolution: "@suite-common/token-definitions@workspace:suite-common/token-definitions"
+  dependencies:
+    "@suite-common/wallet-config": "workspace:*"
+    "@types/fs-extra": "npm:^11.0.4"
+    ajv: "npm:^8.12.0"
+    fs-extra: "npm:^11.2.0"
+    json-schema-to-typescript: "npm:^13.1.2"
+    jws: "npm:^4.0.0"
+  languageName: unknown
+  linkType: soft
+
 "@suite-common/transaction-cache-engine@workspace:*, @suite-common/transaction-cache-engine@workspace:suite-common/transaction-cache-engine":
   version: 0.0.0-use.local
   resolution: "@suite-common/transaction-cache-engine@workspace:suite-common/transaction-cache-engine"
@@ -8084,6 +8097,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -8097,6 +8111,7 @@ __metadata:
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
+    jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
   languageName: unknown
   linkType: soft
@@ -8108,6 +8123,7 @@ __metadata:
     "@suite-common/intl-types": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
@@ -8131,6 +8147,7 @@ __metadata:
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -10414,6 +10431,7 @@ __metadata:
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/toast-notifications": "workspace:*"
+    "@suite-common/token-definitions": "workspace:*"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
