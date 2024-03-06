@@ -10,57 +10,66 @@ import {
 } from '../../../utils/utils';
 import { UIHorizontalAlignment } from '../../../config/types';
 
-const Wrapper = styled.div<Pick<SwitchProps, 'labelPosition' | 'isSmall'>>`
+const Wrapper = styled.div<{
+    $isSmall?: boolean;
+    $labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
+}>`
     display: flex;
     align-items: center;
-    gap: ${({ isSmall }) => (isSmall ? spacingsPx.sm : spacingsPx.md)};
-    flex-direction: ${({ labelPosition }) => (labelPosition === 'left' ? 'row-reverse' : 'row')};
+    gap: ${({ $isSmall }) => ($isSmall ? spacingsPx.sm : spacingsPx.md)};
+    flex-direction: ${({ $labelPosition }) => ($labelPosition === 'left' ? 'row-reverse' : 'row')};
 `;
 
-const Container = styled.div<Pick<SwitchProps, 'isChecked' | 'isDisabled' | 'isAlert' | 'isSmall'>>`
+const Container = styled.div<{
+    $isChecked: boolean;
+    $isDisabled?: boolean;
+    $isSmall?: boolean;
+    $isAlert?: boolean;
+}>`
     display: flex;
     align-items: center;
-    height: ${({ isSmall }) => (isSmall ? '18px' : '24px')};
-    width: ${({ isSmall }) => (isSmall ? '32px' : '44px')};
+    height: ${({ $isSmall }) => ($isSmall ? '18px' : '24px')};
+    width: ${({ $isSmall }) => ($isSmall ? '32px' : '44px')};
     flex-shrink: 0;
     margin: 0;
     padding: 3px;
     position: relative;
-    background: ${({ isChecked, isDisabled, theme }) =>
-        getInputColor(theme, { checked: isChecked, disabled: isDisabled })};
+    background: ${({ $isChecked, $isDisabled, theme }) =>
+        getInputColor(theme, { checked: $isChecked, disabled: $isDisabled })};
     border-radius: ${borders.radii.sm};
     transition:
         background 0.2s ease 0s,
         ${focusStyleTransition};
-    cursor: ${({ isDisabled }) => !isDisabled && 'pointer'};
+    cursor: ${({ $isDisabled }) => !$isDisabled && 'pointer'};
     box-sizing: border-box;
-    border: 1px solid ${({ theme, isAlert }) => `${isAlert ? theme.borderAlertRed : 'transparent'}`};
+    border: 1px solid
+        ${({ theme, $isAlert }) => `${$isAlert ? theme.borderAlertRed : 'transparent'}`};
 
     button {
         box-shadow: ${({ theme }) => theme.boxShadowBase};
-        opacity: ${({ isDisabled }) => isDisabled && 0.66};
+        opacity: ${({ $isDisabled }) => $isDisabled && 0.66};
     }
 
-    ${({ isDisabled, theme, isChecked }) =>
-        !isDisabled &&
+    ${({ $isDisabled, theme, $isChecked }) =>
+        !$isDisabled &&
         css`
             ${getFocusShadowStyle('&:focus-within:has(:focus-visible)')}
 
             &:hover {
-                background: ${isChecked
+                background: ${$isChecked
                     ? theme.backgroundPrimaryPressed
                     : theme.backgroundNeutralSubdued};
             }
 
             &:focus-within:has(:focus-visible) {
-                background: ${isChecked
+                background: ${$isChecked
                     ? theme.backgroundPrimaryDefault
                     : theme.backgroundNeutralDisabled};
             }
         `};
 `;
 
-const Handle = styled.button<{ $disabled?: boolean; $isSmall: boolean; $isChecked: boolean }>`
+const Handle = styled.button<{ $disabled?: boolean; $isSmall?: boolean; $isChecked: boolean }>`
     position: absolute;
     display: inline-block;
     height: ${({ $isSmall }) => ($isSmall ? '14px' : '20px')};
@@ -86,10 +95,14 @@ const CheckboxInput = styled.input`
     width: 1px;
 `;
 
-const Label = styled.label<Pick<SwitchProps, 'isDisabled' | 'isAlert' | 'isSmall'>>`
-    color: ${({ isAlert, isDisabled, theme }) =>
-        getLabelColor(theme, { alert: isAlert, disabled: isDisabled })};
-    ${({ isSmall }) => (isSmall ? typography.label : typography.body)}
+const Label = styled.label<{
+    $isAlert?: boolean;
+    $isDisabled?: boolean;
+    $isSmall?: boolean;
+}>`
+    color: ${({ $isAlert, $isDisabled, theme }) =>
+        getLabelColor(theme, { alert: $isAlert, disabled: $isDisabled })};
+    ${({ $isSmall }) => ($isSmall ? typography.label : typography.body)}
 `;
 
 export interface SwitchProps {
@@ -123,17 +136,17 @@ export const Switch = ({
     };
 
     return (
-        <Wrapper labelPosition={labelPosition} className={className}>
+        <Wrapper $labelPosition={labelPosition} className={className}>
             <Container
-                isChecked={isChecked}
-                isDisabled={isDisabled}
-                isAlert={isAlert}
+                $isChecked={isChecked}
+                $isDisabled={isDisabled}
+                $isAlert={isAlert}
                 onClick={e => {
                     e.preventDefault();
                     handleChange();
                 }}
                 data-test={dataTest}
-                isSmall={isSmall}
+                $isSmall={isSmall}
             >
                 <Handle
                     tabIndex={-1}
@@ -154,7 +167,7 @@ export const Switch = ({
             </Container>
 
             {label && (
-                <Label isDisabled={isDisabled} isAlert={isAlert} isSmall={isSmall} htmlFor={id}>
+                <Label $isDisabled={isDisabled} $isAlert={isAlert} $isSmall={isSmall} htmlFor={id}>
                     {label}
                 </Label>
             )}

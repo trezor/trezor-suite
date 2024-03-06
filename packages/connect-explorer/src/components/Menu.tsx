@@ -20,11 +20,11 @@ const Style = createGlobalStyle`
     cursor: pointer;
     padding: 6px 0;
     color: rgb(117 117 117);
-    border-color: @color_green;
+    border-color: green;
     transition: color 0.3s;
-
+    
     &.selected {
-        color: @color_green;
+        color: green;
     }
 }
 

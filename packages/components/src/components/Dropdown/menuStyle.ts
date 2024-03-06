@@ -20,7 +20,7 @@ export const DROPDOWN_MENU = keyframes`
     }
 `;
 
-export const menuStyle = css<{ elevation: Elevation }>`
+export const menuStyle = css<{ $elevation: Elevation }>`
     display: flex;
     flex-direction: column;
     flex: 1;

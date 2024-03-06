@@ -53,7 +53,7 @@ export const Inputs = () => {
     };
 
     return (
-        <Wrapper responsiveSize="LG">
+        <Wrapper $responsiveSize="LG">
             <Left>
                 <NumberInput
                     control={control}

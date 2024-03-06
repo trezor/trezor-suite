@@ -37,8 +37,8 @@ const TabButton = styled.button<{ $selected: boolean; $elevation: Elevation }>`
     /* change styles if the button is selected */
     color: ${({ $selected, theme }) =>
         $selected ? `${theme.textPrimaryDefault}` : `${theme.textSubdued}`};
-    border-bottom: ${({ $selected: selected, theme }) =>
-        selected ? `2px solid ${theme.borderSecondary}` : 'none'};
+    border-bottom: ${({ $selected, theme }) =>
+        $selected ? `2px solid ${theme.borderSecondary}` : 'none'};
 
     &:hover {
         border-bottom: 2px solid

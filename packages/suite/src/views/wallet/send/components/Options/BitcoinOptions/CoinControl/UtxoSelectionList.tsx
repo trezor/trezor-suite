@@ -34,7 +34,8 @@ const Description = styled.div`
 `;
 
 const StyledIcon = styled(Icon)<{ $backgroundColor?: string }>`
-    background: ${({ $backgroundColor }) => $backgroundColor && transparentize(0.9, $backgroundColor)};
+    background: ${({ $backgroundColor }) =>
+        $backgroundColor && transparentize(0.9, $backgroundColor)};
     border-radius: 50%;
     margin-left: -8px;
     padding: 20px;

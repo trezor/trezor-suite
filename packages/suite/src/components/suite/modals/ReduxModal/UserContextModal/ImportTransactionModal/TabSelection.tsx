@@ -21,8 +21,8 @@ const TabButton = styled.button<{ $selected: boolean }>`
     cursor: pointer;
 
     /* change styles if the button is selected */
-    color: ${({ $selected: selected, theme }) =>
-        selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
+    color: ${({ $selected, theme }) =>
+        $selected ? `${theme.TYPE_GREEN}` : `${theme.TYPE_LIGHT_GREY}`};
     border-bottom: ${({ $selected, theme }) =>
         $selected ? `2px solid ${theme.BG_GREEN}` : 'none'};
 

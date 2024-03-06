@@ -11,12 +11,12 @@ import { goto } from 'src/actions/suite/routerActions';
 
 import { Modal } from './modals/Modal/Modal';
 
-const StyledImage = styled(Image)<{ $image: ImageType }>`
+const StyledImage = styled(Image)<{ image: ImageType }>`
     flex: 1;
     margin: 20px 0;
 
-    ${({ $image }) =>
-        $image === 'UNI_WARNING' &&
+    ${({ image }) =>
+        image === 'UNI_WARNING' &&
         css`
             max-height: 160px;
             flex: 0 0 auto;
@@ -77,7 +77,7 @@ export const DeviceInvalidModeLayout = ({
                 </>
             }
         >
-            <StyledImage $image={image} />
+            <StyledImage image={image} />
         </StyledModal>
     );
 };
