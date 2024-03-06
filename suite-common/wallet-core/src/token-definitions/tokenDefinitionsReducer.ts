@@ -10,42 +10,38 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
     builder => {
         builder
             .addCase(getTokenDefinitionThunk.pending, (state, action) => {
-                const { networkSymbol, contractAddress } = action.meta.arg;
+                const { networkSymbol } = action.meta.arg;
 
                 if (!state[networkSymbol]) {
-                    state[networkSymbol] = {};
-                }
-
-                const networkDefinitions = state[networkSymbol];
-
-                if (networkDefinitions) {
-                    networkDefinitions[contractAddress] = {
-                        isTokenKnown: undefined,
-                        error: false,
+                    state[networkSymbol] = {
+                        coin: { error: false, data: undefined, isLoading: true },
+                        nft: { error: false, data: undefined, isLoading: true },
                     };
                 }
             })
             .addCase(getTokenDefinitionThunk.fulfilled, (state, action) => {
-                const { networkSymbol, contractAddress } = action.meta.arg;
+                const { networkSymbol, type } = action.meta.arg;
 
-                const networkDefinitions = state[networkSymbol];
+                const definitions = state[networkSymbol];
 
-                if (networkDefinitions) {
-                    networkDefinitions[contractAddress] = {
-                        isTokenKnown: action.payload,
+                if (definitions) {
+                    definitions[type] = {
                         error: false,
+                        data: action.payload,
+                        isLoading: false,
                     };
                 }
             })
             .addCase(getTokenDefinitionThunk.rejected, (state, action) => {
-                const { networkSymbol, contractAddress } = action.meta.arg;
+                const { networkSymbol, type } = action.meta.arg;
 
-                const networkDefinitions = state[networkSymbol];
+                const definitions = state[networkSymbol];
 
-                if (networkDefinitions) {
-                    networkDefinitions[contractAddress] = {
-                        isTokenKnown: undefined,
+                if (definitions) {
+                    definitions[type] = {
                         error: true,
+                        data: undefined,
+                        isLoading: false,
                     };
                 }
             });
