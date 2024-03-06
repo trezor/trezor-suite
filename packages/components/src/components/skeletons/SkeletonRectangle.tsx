@@ -30,5 +30,14 @@ const StyledSkeletonRectangle = styled.div<
 export const SkeletonRectangle = (props: SkeletonRectangleProps) => {
     const { elevation } = useElevation();
 
-    return <StyledSkeletonRectangle {...props} $elevation={elevation} />;
+    return (
+        <StyledSkeletonRectangle
+            $elevation={elevation}
+            $borderRadius={props.borderRadius}
+            $width={props.width}
+            $height={props.height}
+            $animate={props.animate}
+            $background={props.background}
+        />
+    );
 };

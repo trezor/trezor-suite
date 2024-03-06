@@ -81,7 +81,7 @@ export const CoinmarketSkeleton = () => {
             </SkeletonWrapper>
             <FooterSkeletonWrapper>
                 <StyledLeft>
-                    <SkeletonSpread childMargin="0 8px 0 0" alignItems="center">
+                    <SkeletonSpread $childMargin="0 8px 0 0" $alignItems="center">
                         <SkeletonRectangle height="20px" width="68px" animate={shouldAnimate} />
                         <SkeletonRectangle height="20px" width="180px" animate={shouldAnimate} />
                     </SkeletonSpread>

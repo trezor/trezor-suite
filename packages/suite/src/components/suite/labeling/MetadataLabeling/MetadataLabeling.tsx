@@ -53,7 +53,7 @@ const LabelButton = styled(Button)`
 `;
 
 const ActionButton = styled(Button)<{ $isValueVisible?: boolean; $isVisible?: boolean }>`
-    margin-left: ${({ $isValueVisible, $isVisible, $isLoading }) =>
+    margin-left: ${({ $isValueVisible, $isVisible, isLoading: $isLoading }) =>
         $isValueVisible || !$isVisible || $isLoading ? '12px' : '4px'};
     visibility: ${({ $isVisible }) => ($isVisible ? 'visible' : 'hidden')};
 
