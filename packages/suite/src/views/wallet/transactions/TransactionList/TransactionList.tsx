@@ -35,20 +35,18 @@ const ActionsWrapper = styled.div`
 `;
 
 interface TransactionListProps {
-    transactions: WalletAccountTransaction[];
-    symbol: WalletAccountTransaction['symbol'];
-    isLoading?: boolean;
     account: Account;
-    customTotalItems?: number;
+    transactions: WalletAccountTransaction[];
+    transactionFilter?: (tx: WalletAccountTransaction) => boolean;
+    isLoading?: boolean;
     isExportable?: boolean;
 }
 
 export const TransactionList = ({
-    transactions,
-    isLoading,
     account,
-    symbol,
-    customTotalItems,
+    transactions,
+    transactionFilter,
+    isLoading,
     isExportable = true,
 }: TransactionListProps) => {
     const localCurrency = useSelector(selectLocalCurrency);
@@ -56,17 +54,27 @@ export const TransactionList = ({
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
     const network = getAccountNetwork(account);
 
+    // Filter
+    const filteredTransactions = useMemo(
+        () => (transactionFilter ? transactions.filter(transactionFilter) : transactions),
+        [transactions, transactionFilter],
+    );
+
     // Search
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchedTransactions, setSearchedTransactions] = useState(transactions);
+    const [searchedTransactions, setSearchedTransactions] = useState(filteredTransactions);
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, accountMetadata, searchQuery);
+            const results = advancedSearchTransactions(
+                filteredTransactions,
+                accountMetadata,
+                searchQuery,
+            );
             setSearchedTransactions(results);
         },
         200,
-        [transactions, account.metadata, searchQuery, accountMetadata],
+        [filteredTransactions, account.metadata, searchQuery, accountMetadata],
     );
 
     const { fetchNext, fetchAll, fetchedAll } = useFetchTransactions(account, transactions);
@@ -91,7 +99,7 @@ export const TransactionList = ({
                     <TransactionsGroup
                         key={dateKey}
                         dateKey={dateKey}
-                        symbol={symbol}
+                        symbol={account.symbol}
                         transactions={value}
                         localCurrency={localCurrency}
                         index={groupIndex}
@@ -119,10 +127,11 @@ export const TransactionList = ({
                     </TransactionsGroup>
                 );
             }),
-        [transactionsByDate, account.key, localCurrency, symbol, network, accountMetadata],
+        [transactionsByDate, account.key, localCurrency, account.symbol, network, accountMetadata],
     );
 
-    const areTransactionsAvailable = transactions.length > 0 && searchedTransactions.length === 0;
+    const areTransactionsAvailable =
+        filteredTransactions.length > 0 && searchedTransactions.length === 0;
 
     return (
         <StyledSection
