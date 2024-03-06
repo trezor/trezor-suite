@@ -31,7 +31,7 @@ export const SLIDE_DOWN = keyframes`
     }
 `;
 
-const Wrapper = styled.div<{ animation?: AnimationDirection }>`
+const Wrapper = styled.div<{ $animation?: AnimationDirection }>`
     display: flex;
     width: 300px;
     height: 62px;
@@ -41,14 +41,14 @@ const Wrapper = styled.div<{ animation?: AnimationDirection }>`
     box-shadow: ${({ theme }) => theme.boxShadowBase};
     align-items: center;
 
-    ${({ animation }) =>
-        animation === AnimationDirection.Up &&
+    ${({ $animation }) =>
+        $animation === AnimationDirection.Up &&
         css`
             animation: ${SLIDE_UP} 0.6s cubic-bezier(0.16, 1, 0.3, 1);
         `}
 
-    ${({ animation }) =>
-        animation === AnimationDirection.Down &&
+    ${({ $animation }) =>
+        $animation === AnimationDirection.Down &&
         css`
             animation: ${SLIDE_DOWN} 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         `}
@@ -70,7 +70,7 @@ export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) 
 
     return (
         <Wrapper
-            animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
+            $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
             data-test="@prompts/confirm-on-device"
         >
             <ElevationContext baseElevation={elevation}>

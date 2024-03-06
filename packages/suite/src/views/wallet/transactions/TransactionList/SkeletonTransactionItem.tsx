@@ -1,7 +1,7 @@
 import { SkeletonStack, SkeletonSpread, SkeletonRectangle } from '@trezor/components';
 
 export const SkeletonTransactionItem = () => (
-    <SkeletonStack col childMargin="0px 0px 8px 0px">
+    <SkeletonStack $col $childMargin="0px 0px 8px 0px">
         <SkeletonSpread>
             <SkeletonRectangle width="120px" height="18px" />
             <SkeletonRectangle width="80px" height="18px" />

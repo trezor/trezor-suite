@@ -38,8 +38,8 @@ const getTooltipArrowXPosition = (x: number, width: number): string => {
 };
 
 interface WrapperProps {
-    positionX: number;
-    boxWidth: number;
+    $positionX: number;
+    $boxWidth: number;
 }
 
 const CustomTooltipWrapper = styled.div<WrapperProps>`
@@ -51,19 +51,19 @@ const CustomTooltipWrapper = styled.div<WrapperProps>`
     border-radius: 4px;
     box-shadow: 0 3px 14px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_15};
     font-variant-numeric: tabular-nums;
-    ${({ positionX, boxWidth }) =>
-        positionX >= boxWidth - OFFSET_LIMIT_HORIZONTAL && `position: absolute; right: 0;`}
-    transform: translate(${({ positionX, boxWidth }) =>
-        getTooltipXPosition(positionX, boxWidth)}, -90px);
+    ${({ $positionX, $boxWidth }) =>
+        $positionX >= $boxWidth - OFFSET_LIMIT_HORIZONTAL && `position: absolute; right: 0;`}
+    transform: translate(${({ $positionX, $boxWidth }) =>
+        getTooltipXPosition($positionX, $boxWidth)}, -90px);
     line-height: 1.5;
 
     &::after {
         position: absolute;
         content: '';
         top: 100%;
-        ${({ positionX, boxWidth }) => getTooltipArrowXPosition(positionX, boxWidth)}
-        margin-left: ${({ positionX }) =>
-            positionX <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`};
+        ${({ $positionX, $boxWidth }) => getTooltipArrowXPosition($positionX, $boxWidth)}
+        margin-left: ${({ $positionX }) =>
+            $positionX <= OFFSET_LIMIT_HORIZONTAL ? `50px` : `-10px`};
         width: 0;
         height: 0;
         border-left: 10px solid transparent;
@@ -77,13 +77,13 @@ const Col = styled.div`
     flex-direction: column;
 `;
 
-const Row = styled.div<{ noBottomMargin?: boolean }>`
+const Row = styled.div<{ $noBottomMargin?: boolean }>`
     display: flex;
     white-space: nowrap;
     align-items: center;
     justify-content: space-between;
     padding: 0 8px;
-    margin-bottom: ${({ noBottomMargin }) => (noBottomMargin ? '0px' : '4px')};
+    margin-bottom: ${({ $noBottomMargin }) => ($noBottomMargin ? '0px' : '4px')};
 `;
 
 const Title = styled.span`
@@ -114,8 +114,8 @@ const HighlightedAreaRight = styled(HighlightedArea)`
     border-bottom-right-radius: 5px;
 `;
 
-const Sign = styled.span<{ color: string }>`
-    color: ${({ color }) => color};
+const Sign = styled.span<{ $color: string }>`
+    color: ${({ $color }) => $color};
     width: 1ch;
     margin-right: 4px;
 `;
@@ -162,8 +162,8 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
 
     return (
         <CustomTooltipWrapper
-            positionX={props.coordinate!.x!}
-            boxWidth={props.viewBox!.width!}
+            $positionX={props.coordinate!.x!}
+            $boxWidth={props.viewBox!.width!}
             data-test="@dashboard/customtooltip"
         >
             <Row>
@@ -187,7 +187,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                             </Title>
                         </Row>
 
-                        <Row noBottomMargin>
+                        <Row $noBottomMargin>
                             <Title>
                                 <Translation id="TR_SENT" />
                             </Title>
@@ -199,7 +199,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                     {props.balance && (
                         <Row>
                             <Value>
-                                <Sign color="transparent">+</Sign>
+                                <Sign $color="transparent">+</Sign>
                                 {props.balance}
                             </Value>
                         </Row>
@@ -210,7 +210,7 @@ export const GraphTooltipBase = (props: GraphTooltipBaseProps) => {
                             <Value>{props.receivedAmount}</Value>
                         </Row>
 
-                        <Row noBottomMargin>
+                        <Row $noBottomMargin>
                             <Value>{props.sentAmount}</Value>
                         </Row>
                     </HighlightedAreaRight>

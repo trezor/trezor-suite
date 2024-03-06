@@ -9,13 +9,13 @@ import { useElevation } from '../../ElevationContext/ElevationContext';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;
-    padding: ${({ size }) => getPadding(size, false)};
+    padding: ${({ $size }) => getPadding($size, false)};
 `;
 
-const Label = styled.span<{ isDisabled: boolean }>`
+const Label = styled.span<{ $isDisabled: boolean }>`
     position: absolute;
     bottom: -22px;
-    color: ${({ theme, isDisabled }) => (isDisabled ? theme.textDisabled : theme.textSubdued)};
+    color: ${({ theme, $isDisabled }) => ($isDisabled ? theme.textDisabled : theme.textSubdued)};
     white-space: nowrap;
 `;
 
@@ -63,16 +63,16 @@ export const IconButton = ({
             cursor="default"
         >
             <IconButtonContainer
-                variant={variant}
-                size={size}
+                $variant={variant}
+                $size={size}
                 disabled={isDisabled || isLoading}
-                elevation={elevation}
+                $elevation={elevation}
                 {...rest}
             >
                 {!isLoading && icon && IconComponent}
                 {isLoading && Loader}
 
-                {bottomLabel && <Label isDisabled={isDisabled}>{bottomLabel}</Label>}
+                {bottomLabel && <Label $isDisabled={isDisabled}>{bottomLabel}</Label>}
             </IconButtonContainer>
         </Tooltip>
     );

@@ -11,15 +11,15 @@ const Item = styled.div`
     text-align: left;
 `;
 
-const Items = styled.div<{ isHorizontal: DeviceAuthenticationExplainerProps['horizontal'] }>`
+const Items = styled.div<{ $isHorizontal: DeviceAuthenticationExplainerProps['horizontal'] }>`
     display: grid;
     gap: 40px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 
-    ${({ isHorizontal }) =>
-        isHorizontal &&
+    ${({ $isHorizontal }) =>
+        $isHorizontal &&
         css`
             @media only screen and (min-width: ${variables.SCREEN_SIZE.SM}) {
                 grid-template-columns: repeat(3, 1fr);
@@ -45,7 +45,7 @@ interface DeviceAuthenticationExplainerProps {
 export const DeviceAuthenticationExplainer = ({
     horizontal,
 }: DeviceAuthenticationExplainerProps) => (
-    <Items isHorizontal={horizontal}>
+    <Items $isHorizontal={horizontal}>
         {items.map(({ icon, text }) => (
             <Item key={icon}>
                 <Icon icon={icon} size={32} />

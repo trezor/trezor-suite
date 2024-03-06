@@ -67,5 +67,6 @@ export * from './components/ElevationContext/ElevationContext';
 export * from './constants/keyboardEvents';
 
 export * from './utils/useScrollShadow';
+export * from './utils/transientProps';
 
 export { colors, THEME, intermediaryTheme, type SuiteThemeColors };

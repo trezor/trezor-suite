@@ -14,7 +14,7 @@ const ProgressBarWrapper = styled.div`
     align-items: flex-start;
 `;
 
-const StepWrapper = styled.div<{ active: boolean }>`
+const StepWrapper = styled.div<{ $active: boolean }>`
     display: flex;
     flex-direction: column;
     padding: 0 ${spacingsPx.lg};
@@ -27,14 +27,14 @@ const StepWrapper = styled.div<{ active: boolean }>`
         padding: 0;
     }
 
-    ${({ active, theme }) =>
-        active &&
+    ${({ $active, theme }) =>
+        $active &&
         css`
             color: ${theme.textPrimaryDefault};
         `}
 `;
 
-const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
+const IconWrapper = styled.div<{ $stepCompleted?: boolean; $active?: boolean }>`
     display: flex;
     width: 32px;
     height: 32px;
@@ -45,13 +45,13 @@ const IconWrapper = styled.div<{ stepCompleted?: boolean; active?: boolean }>`
     font-variant-numeric: tabular-nums;
 
     ${props =>
-        props.stepCompleted &&
+        props.$stepCompleted &&
         css`
             background: transparent;
         `}
 
-    ${({ active, theme }) =>
-        active &&
+    ${({ $active, theme }) =>
+        $active &&
         css`
             background: ${theme.backgroundSurfaceElevation1};
             box-shadow: ${({ theme }) => theme.boxShadowBase};
@@ -113,8 +113,8 @@ export const OnboardingProgressBar = ({
 
                 return (
                     <Fragment key={step.key}>
-                        <StepWrapper active={stepActive}>
-                            <IconWrapper active={stepActive} stepCompleted={stepCompleted}>
+                        <StepWrapper $active={stepActive}>
+                            <IconWrapper $active={stepActive} $stepCompleted={stepCompleted}>
                                 {stepCompleted ? (
                                     <Icon icon="CHECK" color={theme.TYPE_GREEN} />
                                 ) : (

@@ -6,7 +6,7 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { useSelector, useAccountSearch, useTranslation } from 'src/hooks/suite';
 import { borders } from '@trezor/theme';
 
-const InputWrapper = styled.div<{ showCoinFilter: boolean }>`
+const InputWrapper = styled.div<{ $showCoinFilter: boolean }>`
     flex: 1;
 `;
 
@@ -39,7 +39,7 @@ export const AccountSearchBox = () => {
     };
 
     return (
-        <InputWrapper showCoinFilter={showCoinFilter}>
+        <InputWrapper $showCoinFilter={showCoinFilter}>
             <StyledInput
                 value={searchString ?? ''}
                 onChange={e => {

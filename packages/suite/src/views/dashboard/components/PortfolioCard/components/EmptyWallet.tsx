@@ -30,7 +30,7 @@ const Title = styled(H3)`
     }
 `;
 
-const StyledImage = styled(props => <Image {...props} />)`
+const StyledImage = styled(Image)`
     display: flex;
     margin-bottom: 24px;
 `;

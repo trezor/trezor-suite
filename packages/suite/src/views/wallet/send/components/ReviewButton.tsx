@@ -19,8 +19,8 @@ const StyledWarning = styled(Warning)`
     justify-content: flex-start;
 `;
 
-const ButtonReview = styled(TooltipButton)<{ isRed: boolean }>`
-    background: ${({ isRed, theme }) => isRed && theme.BUTTON_RED};
+const ButtonReview = styled(TooltipButton)<{ $isRed: boolean }>`
+    background: ${({ $isRed, theme }) => $isRed && theme.BUTTON_RED};
     display: flex;
     flex-direction: column;
     min-width: 200px;
@@ -30,7 +30,7 @@ const ButtonReview = styled(TooltipButton)<{ isRed: boolean }>`
     }
 
     &:hover {
-        background: ${({ isRed, theme }) => isRed && theme.BUTTON_RED_HOVER};
+        background: ${({ $isRed, theme }) => $isRed && theme.BUTTON_RED_HOVER};
     }
 `;
 
@@ -164,7 +164,7 @@ export const ReviewButton = () => {
 
             <ButtonReview
                 interactiveTooltip={!coinControlOpen}
-                isRed={anonymityWarningChecked}
+                $isRed={anonymityWarningChecked}
                 tooltipContent={tooltipContent}
                 data-test="@send/review-button"
                 isDisabled={isDisabled || isLoading}

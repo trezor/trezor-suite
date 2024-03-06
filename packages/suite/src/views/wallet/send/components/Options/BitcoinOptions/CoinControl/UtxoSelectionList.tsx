@@ -33,8 +33,9 @@ const Description = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
-const StyledIcon = styled(Icon)<{ backgroundColor?: string }>`
-    background: ${({ backgroundColor }) => backgroundColor && transparentize(0.9, backgroundColor)};
+const StyledIcon = styled(Icon)<{ $backgroundColor?: string }>`
+    background: ${({ $backgroundColor }) =>
+        $backgroundColor && transparentize(0.9, $backgroundColor)};
     border-radius: 50%;
     margin-left: -8px;
     padding: 20px;
@@ -71,7 +72,7 @@ export const UtxoSelectionList = ({
                         icon={icon}
                         size={20}
                         color={iconColor}
-                        backgroundColor={iconColor}
+                        $backgroundColor={iconColor}
                     />
                     <div>
                         <Heading>{heading}</Heading>

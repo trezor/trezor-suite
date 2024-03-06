@@ -7,14 +7,14 @@ import { selectDevice } from '@suite-common/wallet-core';
 
 import { useSelector, useAccountSearch } from 'src/hooks/suite';
 
-const StyledCoinLogo = styled(CoinLogo)<{ isSelected?: boolean }>`
+const StyledCoinLogo = styled(CoinLogo)<{ $isSelected?: boolean }>`
     display: block;
     border-radius: ${borders.radii.full};
     outline: 2px solid
-        ${({ isSelected, theme }) =>
-            isSelected ? theme.backgroundSecondaryPressed : 'transparent'};
+        ${({ $isSelected, theme }) =>
+            $isSelected ? theme.backgroundSecondaryPressed : 'transparent'};
     transition: outline 0.2s;
-    filter: ${({ isSelected }) => !isSelected && 'grayscale(100%)'};
+    filter: ${({ $isSelected }) => !$isSelected && 'grayscale(100%)'};
     cursor: pointer;
 
     &:hover {
@@ -93,7 +93,7 @@ export const CoinsFilter = () => {
                                     symbol={network}
                                     size={16}
                                     data-test-activated={coinFilter === network}
-                                    isSelected={isSelected}
+                                    $isSelected={isSelected}
                                     onClick={e => {
                                         e.stopPropagation();
                                         // select the coin or deactivate if it's already selected

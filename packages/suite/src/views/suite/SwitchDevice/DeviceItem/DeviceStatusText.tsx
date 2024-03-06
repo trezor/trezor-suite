@@ -6,12 +6,12 @@ import { spacingsPx, typography } from '@trezor/theme';
 import React, { MouseEventHandler } from 'react';
 import { Translation, WalletLabeling, useGetWalletLabel } from 'src/components/suite';
 
-const Container = styled.span<{ color: string; isAction?: boolean }>`
+const Container = styled.span<{ $color: string; $isAction?: boolean }>`
     ${typography.label}
-    color: ${({ color }) => color};
+    color: ${({ $color }) => $color};
 
-    ${({ isAction }) =>
-        isAction &&
+    ${({ $isAction }) =>
+        $isAction &&
         css`
             &:hover {
                 opacity: 0.8;
@@ -43,7 +43,7 @@ export const DeviceStatusText = ({
 
     if (connected && needsAttention && onRefreshClick) {
         return (
-            <Container isAction onClick={onRefreshClick} color={theme.textAlertYellow}>
+            <Container $isAction onClick={onRefreshClick} $color={theme.textAlertYellow}>
                 <TextRow>
                     <Icon icon="REFRESH" size={12} color={theme.textAlertYellow} />
                     <Translation id="TR_SOLVE_ISSUE" />
@@ -54,7 +54,7 @@ export const DeviceStatusText = ({
 
     return isDeviceStatusVisible ? (
         <Container
-            color={connected ? theme.textPrimaryDefault : theme.textSubdued}
+            $color={connected ? theme.textPrimaryDefault : theme.textSubdued}
             data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
         >
             <TextRow>

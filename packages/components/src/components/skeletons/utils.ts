@@ -11,13 +11,13 @@ const SHINE = keyframes`
     }
 `;
 
-export const shimmerEffect = css<{ elevation: Elevation }>`
+export const shimmerEffect = css<{ $elevation: Elevation }>`
     animation: ${SHINE} 1.5s ease infinite;
     background: linear-gradient(
         90deg,
-        ${({ theme, elevation }) => {
-            const start = mapElevationToSkeletonForeground({ theme, elevation });
-            const end = mapElevationToBackground({ theme, elevation });
+        ${({ theme, $elevation }) => {
+            const start = mapElevationToSkeletonForeground({ theme, $elevation });
+            const end = mapElevationToBackground({ theme, $elevation });
 
             return `${start}, ${end}, ${start}`;
         }}

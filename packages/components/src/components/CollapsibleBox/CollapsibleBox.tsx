@@ -16,15 +16,17 @@ const animationVariants = {
     },
 };
 
-const Wrapper = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
+const Wrapper = styled.div<{
+    $variant: 'small' | 'large'; // TODO: reevaluate variants
+}>`
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
     border-radius: ${borders.radii.sm};
 
     /* when theme changes from light to dark */
     transition: background 0.3s;
 
-    ${({ variant, theme }) =>
-        variant === 'large' &&
+    ${({ $variant, theme }) =>
+        $variant === 'large' &&
         css`
             border-radius: ${borders.radii.md};
             box-shadow: ${theme.boxShadowBase};
@@ -39,13 +41,15 @@ const IconWrapper = styled.div`
     transition: opacity 0.15s;
 `;
 
-const Header = styled.div<Pick<CollapsibleBoxProps, 'variant'>>`
+const Header = styled.div<{
+    $variant: 'small' | 'large'; // TODO: reevaluate variants
+}>`
     display: flex;
     justify-content: space-between;
     align-items: center;
     gap: ${spacingsPx.xl};
-    padding: ${({ variant }) =>
-        variant === 'small'
+    padding: ${({ $variant }) =>
+        $variant === 'small'
             ? `${spacingsPx.sm} ${spacingsPx.md}`
             : `${spacingsPx.md} ${spacingsPx.xl}`};
     cursor: pointer;
@@ -63,7 +67,9 @@ const IconLabel = styled.div`
     ${typography.hint}
 `;
 
-const Heading = styled.span<Pick<CollapsibleBoxProps, 'variant'>>`
+const Heading = styled.span<{
+    $variant: 'small' | 'large'; // TODO: reevaluate variants
+}>`
     display: flex;
     align-items: center;
     ${typography.body}
@@ -80,8 +86,8 @@ const Flex = styled.div`
 
 const easingValues = motionEasing.transition.join(', ');
 const ANIMATION_DURATION = 0.4;
-const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
-    transform: ${({ isCollapsed }) => (isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
+const StyledIcon = styled(Icon)<{ $isCollapsed?: boolean }>`
+    transform: ${({ $isCollapsed }) => ($isCollapsed ? 'rotate(0deg)' : 'rotate(180deg)')};
 
     /* to sync with the expand animation */
     transition: transform ${ANIMATION_DURATION}s cubic-bezier(${easingValues});
@@ -89,12 +95,12 @@ const StyledIcon = styled(Icon)<{ isCollapsed?: boolean }>`
 `;
 
 const Content = styled.div<{
-    variant: CollapsibleBoxProps['variant'];
+    $variant: CollapsibleBoxProps['variant'];
 }>`
     display: flex;
     flex-direction: column;
-    padding: ${({ variant }) =>
-        variant === 'small'
+    padding: ${({ $variant }) =>
+        $variant === 'small'
             ? `${spacingsPx.lg} ${spacingsPx.md}`
             : `${spacingsPx.xl} ${spacingsPx.md}`};
     border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
@@ -144,11 +150,11 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
     }, [isCollapsed, onCollapse]);
 
     return (
-        <Wrapper variant={variant} {...rest}>
-            <Header variant={variant} onClick={handleHeaderClick}>
+        <Wrapper $variant={variant} {...rest}>
+            <Header $variant={variant} onClick={handleHeaderClick}>
                 {(heading || subHeading) && (
                     <Flex>
-                        {heading && <Heading variant={variant}>{heading}</Heading>}
+                        {heading && <Heading $variant={variant}>{heading}</Heading>}
                         {subHeading && <SubHeading>{subHeading}</SubHeading>}
                     </Flex>
                 )}
@@ -156,7 +162,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 <IconWrapper>
                     {iconLabel && <IconLabel>{iconLabel}</IconLabel>}
                     <StyledIcon
-                        isCollapsed={isCollapsed}
+                        $isCollapsed={isCollapsed}
                         onClick={() => setIsCollapsed(current => !current)}
                         name="caretCircleDown"
                         size="medium"
@@ -177,7 +183,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 }}
                 data-test="@collapsible-box/body"
             >
-                <Content variant={variant}>{children}</Content>
+                <Content $variant={variant}>{children}</Content>
             </Collapser>
         </Wrapper>
     );

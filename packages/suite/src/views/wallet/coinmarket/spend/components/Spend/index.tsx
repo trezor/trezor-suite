@@ -46,7 +46,7 @@ const CoinmarketSpend = () => {
     const showIframe = !isDesktop();
 
     return (
-        <Wrapper responsiveSize="LG">
+        <Wrapper $responsiveSize="LG">
             {isLoading && <CoinmarketSkeleton />}
             {!isLoading && noProviders && (
                 <NoProviders>

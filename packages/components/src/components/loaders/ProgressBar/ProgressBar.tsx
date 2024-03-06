@@ -10,7 +10,7 @@ const Wrapper = styled.div`
 type ValueProps = {
     $max: number;
     $value: number;
-    isRed: boolean;
+    $isRed: boolean;
 };
 
 const Value = styled.div.attrs<ValueProps>(({ $max, $value }) => ({
@@ -18,7 +18,7 @@ const Value = styled.div.attrs<ValueProps>(({ $max, $value }) => ({
         width: `${(100 / $max) * $value}%`,
     },
 }))<ValueProps>`
-    background: ${({ theme, isRed }) => (isRed ? theme.borderAlertRed : theme.borderSecondary)};
+    background: ${({ theme, $isRed }) => ($isRed ? theme.borderAlertRed : theme.borderSecondary)};
     height: 5px;
     max-width: 100%;
     transition: width 0.5s;
@@ -34,7 +34,7 @@ export interface ProgressBarProps {
 // from parent component, no straightforward way to add width transition in Firefox)
 export const ProgressBar = ({ max = 100, value, isRed = false, ...props }: ProgressBarProps) => (
     <Wrapper {...props}>
-        <Value $max={max} $value={value} isRed={isRed} />
+        <Value $max={max} $value={value} $isRed={isRed} />
     </Wrapper>
 );
 

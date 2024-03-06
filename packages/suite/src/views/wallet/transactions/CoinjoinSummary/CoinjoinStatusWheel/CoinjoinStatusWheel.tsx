@@ -9,13 +9,13 @@ import { useDispatch } from 'src/hooks/suite';
 import { stopCoinjoinSession } from 'src/actions/wallet/coinjoinClientActions';
 import { typography } from '@trezor/theme';
 
-const Container = styled(Card)<{ isWide?: boolean }>`
+const Container = styled(Card)<{ $isWide?: boolean }>`
     position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: ${({ isWide }) => (isWide ? '240px' : '180px')};
+    width: ${({ $isWide }) => ($isWide ? '240px' : '180px')};
     height: 100%;
     padding: 10px;
     color: ${({ theme }) => theme.textSubdued};
@@ -45,7 +45,7 @@ export const CoinjoinStatusWheel = ({ accountKey }: CoinjoinStatusWheelProps) =>
     const dispatch = useDispatch();
 
     return (
-        <Container isWide={isSessionActive}>
+        <Container $isWide={isSessionActive}>
             <CoinjoinProgressWheel accountKey={accountKey} />
 
             {isSessionActive && !isResumeBlockedByLastingIssue && (

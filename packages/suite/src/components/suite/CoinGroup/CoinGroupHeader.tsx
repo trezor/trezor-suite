@@ -17,7 +17,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const SettingsWrapper = styled.div<{ disabled: boolean }>`
+const SettingsWrapper = styled.div<{ $disabled: boolean }>`
     border-radius: 100%;
     margin: -10px -10px -10px auto;
     padding: 10px;
@@ -25,7 +25,7 @@ const SettingsWrapper = styled.div<{ disabled: boolean }>`
     cursor: pointer;
 
     ${props =>
-        props.disabled &&
+        props.$disabled &&
         css`
             visibility: hidden;
         `}
@@ -48,7 +48,7 @@ export const CoinGroupHeader = ({
 }: CoinGroupHeaderProps) => (
     <Wrapper>
         {settingsMode && <Translation id="TR_SELECT_COIN_FOR_SETTINGS" />}
-        <SettingsWrapper onClick={toggleSettingsMode} disabled={!isAtLeastOneActive}>
+        <SettingsWrapper onClick={toggleSettingsMode} $disabled={!isAtLeastOneActive}>
             <Icon icon={settingsMode ? 'CROSS' : 'SETTINGS'} />
         </SettingsWrapper>
     </Wrapper>

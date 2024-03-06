@@ -5,21 +5,17 @@ import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 const { FONT_WEIGHT, FONT_SIZE } = variables;
 
-const NavLink = styled.div<{ active?: boolean }>`
+const NavLink = styled.div<{ $active?: boolean }>`
     cursor: pointer;
     font-size: ${FONT_SIZE.NORMAL};
-    color: ${({ active, theme }) => (active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
+    color: ${({ $active, theme }) => ($active ? theme.TYPE_GREEN : theme.TYPE_LIGHT_GREY)};
     font-weight: ${FONT_WEIGHT.MEDIUM};
     display: flex;
     align-items: center;
     padding: 14px 6px 12px;
     white-space: nowrap;
-    border-bottom: 2px solid ${({ active, theme }) => (active ? theme.BG_GREEN : 'transparent')};
+    border-bottom: 2px solid ${({ $active, theme }) => ($active ? theme.BG_GREEN : 'transparent')};
     transition: border-color 0.1s;
-
-    &:hover {
-        border-bottom: 2px solid ${({ theme, active }) => !active && theme.STROKE_GREY};
-    }
 
     & + & {
         margin-left: 42px;
@@ -27,6 +23,10 @@ const NavLink = styled.div<{ active?: boolean }>`
         @media (max-width: ${variables.SCREEN_SIZE.SM}) {
             margin-left: 30px;
         }
+    }
+
+    &:hover {
+        border-bottom: 2px solid ${({ theme, $active }) => !$active && theme.STROKE_GREY};
     }
 `;
 
@@ -65,7 +65,7 @@ export const NavigationTab = (props: NavigationTabProps) => {
     const { active, title, onClick, values, badge } = props;
 
     return (
-        <NavLink active={active} onClick={onClick} data-test={props['data-test']}>
+        <NavLink $active={active} onClick={onClick} data-test={props['data-test']}>
             <NavLinkText>
                 <Translation id={title} values={values} />
                 {badge && (

@@ -19,10 +19,11 @@ import { Rate } from '@suite-common/wallet-types';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 
-const Wrapper = styled(Card)<{ isTestnet?: boolean }>`
+const Wrapper = styled(Card)<{ $isTestnet?: boolean }>`
     display: grid;
     padding: 12px 16px;
-    grid-template-columns: ${props => (props.isTestnet ? 'auto auto 44px' : 'auto auto auto 44px')};
+    grid-template-columns: ${props =>
+        props.$isTestnet ? 'auto auto 44px' : 'auto auto auto 44px'};
     word-break: break-all;
 `;
 
@@ -34,8 +35,8 @@ const TokenSymbol = styled.span`
 `;
 
 interface ColProps {
-    justify?: 'left' | 'right';
-    isTestnet?: boolean;
+    $justify?: 'left' | 'right';
+    $isTestnet?: boolean;
 }
 
 const Col = styled.div<ColProps>`
@@ -44,16 +45,16 @@ const Col = styled.div<ColProps>`
     font-size: ${variables.FONT_SIZE.SMALL};
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
 
-    &:nth-child(${({ isTestnet }) => (isTestnet ? '-n + 3' : '-n + 4')}) {
+    &:nth-child(${({ $isTestnet }) => ($isTestnet ? '-n + 3' : '-n + 4')}) {
         /* first row */
         border-top: none;
     }
 
-    ${({ justify }) =>
-        justify &&
+    ${({ $justify }) =>
+        $justify &&
         css`
-            justify-content: ${justify === 'right' ? 'flex-end' : 'flex-start'};
-            text-align: ${justify === 'right' ? 'right' : 'left'};
+            justify-content: ${$justify === 'right' ? 'flex-end' : 'flex-start'};
+            text-align: ${$justify === 'right' ? 'right' : 'left'};
         `}
 `;
 
@@ -79,9 +80,9 @@ const StyledNoRatesTooltip = styled(NoRatesTooltip)`
     justify-content: flex-end;
 `;
 
-const StyledQuestionTooltip = styled(QuestionTooltip)<{ addMarginTop: boolean }>`
-    ${({ addMarginTop }) =>
-        addMarginTop &&
+const StyledQuestionTooltip = styled(QuestionTooltip)<{ $addMarginTop: boolean }>`
+    ${({ $addMarginTop }) =>
+        $addMarginTop &&
         css`
             margin-top: ${spacingsPx.xxl};
         `}
@@ -150,10 +151,10 @@ export const TokenList = ({
                             <StyledQuestionTooltip
                                 label="TR_TOKEN_UNRECOGNIZED_BY_TREZOR"
                                 tooltip="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP"
-                                addMarginTop={!!knownTokens.length}
+                                $addMarginTop={!!knownTokens.length}
                             />
                         )}
-                        <Wrapper isTestnet={isTestnet} paddingType="none">
+                        <Wrapper $isTestnet={isTestnet} paddingType="none">
                             {tokens.map(t => {
                                 const symbolMatchesName =
                                     networkType === 'cardano' &&
@@ -162,14 +163,14 @@ export const TokenList = ({
 
                                 return (
                                     <Fragment key={t.contract}>
-                                        <Col isTestnet={isTestnet}>
+                                        <Col $isTestnet={isTestnet}>
                                             {!noSymbol && <TokenSymbol>{t.symbol}</TokenSymbol>}
                                             <TokenName>
                                                 {!noSymbol && ` - `}
                                                 {t.name}
                                             </TokenName>
                                         </Col>
-                                        <Col isTestnet={isTestnet} justify="right">
+                                        <Col $isTestnet={isTestnet} $justify="right">
                                             {t.balance && (
                                                 <CryptoAmount
                                                     value={t.balance}
@@ -182,7 +183,7 @@ export const TokenList = ({
                                             )}
                                         </Col>
                                         {!isTestnet && (
-                                            <Col isTestnet={isTestnet} justify="right">
+                                            <Col $isTestnet={isTestnet} $justify="right">
                                                 {t.balance && t.symbol && t.fiatRate?.rate ? (
                                                     <FiatWrapper>
                                                         <FiatValue
@@ -196,7 +197,7 @@ export const TokenList = ({
                                                 )}
                                             </Col>
                                         )}
-                                        <Col isTestnet={isTestnet} justify="right">
+                                        <Col $isTestnet={isTestnet} $justify="right">
                                             <TrezorLink
                                                 href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
                                             >

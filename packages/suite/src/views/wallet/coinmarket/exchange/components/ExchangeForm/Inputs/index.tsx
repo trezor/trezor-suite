@@ -12,7 +12,7 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/coinmarketExchangeFor
 import { Wrapper, Left, Right } from 'src/views/wallet/coinmarket';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { useElevation, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { EvmExplanationBox } from 'src/components/wallet/EvmExplanationBox';
 import { networks } from '@suite-common/wallet-config';
 import {
@@ -29,13 +29,13 @@ const InputsContainer = styled(Wrapper)`
     gap: ${spacingsPx.sm} 0;
 `;
 
-const Row = styled.div<{ spaceBefore?: boolean }>`
+const Row = styled.div<{ $spaceBefore?: boolean }>`
     display: flex;
     align-items: flex-start;
     width: 100%;
 
-    ${({ spaceBefore }) =>
-        spaceBefore &&
+    ${({ $spaceBefore }) =>
+        $spaceBefore &&
         css`
             margin-top: 24px;
         `}
@@ -69,7 +69,6 @@ const Inputs = () => {
     } = useCoinmarketExchangeFormContext();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const deviceAccounts = useSelector(selectDeviceAccounts);
-    const { elevation } = useElevation();
 
     const { outputs, receiveCryptoSelect } = getValues();
     const tokenAddress = outputs?.[0]?.token;
@@ -145,7 +144,7 @@ const Inputs = () => {
             .every(ac => new BigNumber(ac.balance).isZero());
 
     return (
-        <InputsContainer responsiveSize="XL">
+        <InputsContainer $responsiveSize="XL">
             <Row>
                 <SendCryptoInput isWithRate={isWithRate} />
                 {isWithRate && <FiatInput />}
@@ -172,14 +171,13 @@ const Inputs = () => {
                     />
                 </Right>
             </Row>
-            <Row spaceBefore>
+            <Row $spaceBefore>
                 <ReceiveCryptoSelect />
             </Row>
             {isReceiveTokenBalanceZero && (
-                <Row spaceBefore>
+                <Row $spaceBefore>
                     <StyledEvmExplanationBox
                         caret
-                        elevation={elevation}
                         symbol={receiveCryptoNetworkSymbol}
                         title={<Translation id="TR_EVM_EXPLANATION_EXCHANGE_TITLE" />}
                     >

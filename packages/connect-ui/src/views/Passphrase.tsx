@@ -8,7 +8,7 @@ import { variables, PassphraseTypeCard } from '@trezor/components';
 
 import { View } from '../components/View';
 
-const Wrapper = styled.div<{ authConfirmation?: boolean }>`
+const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;

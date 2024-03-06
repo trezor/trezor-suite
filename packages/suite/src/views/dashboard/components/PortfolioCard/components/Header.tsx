@@ -10,12 +10,12 @@ import { GraphRange } from 'src/types/wallet/graph';
 import { FiatHeader } from '../../FiatHeader';
 import { spacingsPx } from '@trezor/theme';
 
-const Wrapper = styled.div<{ hideBorder: boolean }>`
+const Wrapper = styled.div<{ $hideBorder: boolean }>`
     display: flex;
     flex-flow: row wrap;
     padding: 20px;
-    ${({ hideBorder }) =>
-        !hideBorder &&
+    ${({ $hideBorder }) =>
+        !$hideBorder &&
         css`
             border-bottom: solid 1px ${({ theme }) => theme.STROKE_GREY};
         `}
@@ -103,7 +103,7 @@ export const Header = ({
     }
 
     return (
-        <Wrapper hideBorder={hideBorder}>
+        <Wrapper $hideBorder={hideBorder}>
             <Left>
                 <LoadingContent size={24} isLoading={isDiscoveryRunning || isMissingFiatRate}>
                     <FiatHeader

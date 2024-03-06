@@ -39,7 +39,7 @@ const Container = styled.div`
 `;
 
 export interface HeaderProps {
-    isBottomBorderShown: boolean;
+    $isBottomBorderShown: boolean;
 }
 
 const Header = styled.header<HeaderProps>`
@@ -49,8 +49,8 @@ const Header = styled.header<HeaderProps>`
     min-height: 52px;
     padding: ${spacingsPx.xs} ${spacingsPx.md};
     border-bottom: 1px solid
-        ${({ isBottomBorderShown, theme }) =>
-            isBottomBorderShown ? theme.borderOnElevation1 : 'transparent'};
+        ${({ $isBottomBorderShown, theme }) =>
+            $isBottomBorderShown ? theme.borderOnElevation1 : 'transparent'};
 `;
 
 const BACK_ICON_WIDTH = spacingsPx.xxxl;
@@ -62,9 +62,9 @@ const BackIcon = styled(Icon)`
 `;
 
 interface HeadingContainerProps {
-    isHeadingCentered?: boolean;
-    isWithBackButton?: boolean;
-    componentsWidth?: number;
+    $isHeadingCentered?: boolean;
+    $isWithBackButton?: boolean;
+    $componentsWidth?: number;
 }
 
 const HeadingContainer = styled.div<HeadingContainerProps>`
@@ -73,12 +73,12 @@ const HeadingContainer = styled.div<HeadingContainerProps>`
     align-items: start;
     text-align: left;
 
-    ${({ isHeadingCentered, componentsWidth, isWithBackButton }) =>
-        (isHeadingCentered || isWithBackButton) &&
+    ${({ $isHeadingCentered, $componentsWidth, $isWithBackButton }) =>
+        ($isHeadingCentered || $isWithBackButton) &&
         css`
             flex-grow: 1;
-            margin-right: -${componentsWidth}px;
-            margin-left: ${isWithBackButton && `-${BACK_ICON_WIDTH}`};
+            margin-right: -${$componentsWidth}px;
+            margin-left: ${$isWithBackButton && `-${BACK_ICON_WIDTH}`};
             padding: 0 ${spacingsPx.md};
             align-items: center;
             text-align: center;
@@ -92,11 +92,11 @@ const HEADING_SIZES: Record<string, { css: string; buttonSize: ButtonSize }> = {
 
 type HeadingSize = keyof typeof HEADING_SIZES;
 
-type HeadingProps = { isWithIcon?: boolean; $headingSize: HeadingSize };
+type HeadingProps = { $isWithIcon?: boolean; $headingSize: HeadingSize };
 
 const Heading = styled(H3)<HeadingProps>`
-    ${({ isWithIcon }) =>
-        isWithIcon &&
+    ${({ $isWithIcon }) =>
+        $isWithIcon &&
         css`
             padding-right: ${spacingsPx.md};
 
@@ -107,8 +107,8 @@ const Heading = styled(H3)<HeadingProps>`
     ${({ $headingSize }) => HEADING_SIZES[$headingSize].css};
 `;
 
-const Subheading = styled.span<{ isWithMargin: boolean }>`
-    margin-left: ${({ isWithMargin }) => isWithMargin && spacingsPx.xl};
+const Subheading = styled.span<{ $isWithMargin: boolean }>`
+    margin-left: ${({ $isWithMargin }) => $isWithMargin && spacingsPx.xl};
     ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
 `;
@@ -136,9 +136,9 @@ const ScrollContainer = styled.div`
         display: none;
     }
 `;
-const Body = styled.div<{ isWithoutTopPadding: boolean }>`
+const Body = styled.div<{ $isWithoutTopPadding: boolean }>`
     padding: ${spacingsPx.xl} ${spacingsPx.md};
-    padding-top: ${({ isWithoutTopPadding }) => isWithoutTopPadding && 0};
+    padding-top: ${({ $isWithoutTopPadding }) => $isWithoutTopPadding && 0};
     display: flex;
     flex-direction: column;
 `;
@@ -252,7 +252,7 @@ const Modal = ({
                 className={className}
             >
                 {(!!onBackClick || !!heading || showHeaderActions) && (
-                    <Header isBottomBorderShown={!!heading}>
+                    <Header $isBottomBorderShown={!!heading}>
                         {onBackClick && (
                             <BackIcon
                                 icon="ARROW_LEFT"
@@ -265,17 +265,17 @@ const Modal = ({
 
                         {heading && (
                             <HeadingContainer
-                                componentsWidth={componentsWidth}
-                                isHeadingCentered={isHeadingCentered}
-                                isWithBackButton={!!onBackClick}
+                                $componentsWidth={componentsWidth}
+                                $isHeadingCentered={isHeadingCentered}
+                                $isWithBackButton={!!onBackClick}
                             >
                                 {preheading && (
-                                    <Subheading isWithMargin={!!headerIcon}>
+                                    <Subheading $isWithMargin={!!headerIcon}>
                                         {preheading}
                                     </Subheading>
                                 )}
 
-                                <Heading $headingSize={headingSize} isWithIcon={!!headerIcon}>
+                                <Heading $headingSize={headingSize} $isWithIcon={!!headerIcon}>
                                     {headerIcon && (
                                         <Icon
                                             icon={headerIcon}
@@ -287,7 +287,7 @@ const Modal = ({
                                 </Heading>
 
                                 {subheading && (
-                                    <Subheading isWithMargin={!!headerIcon}>
+                                    <Subheading $isWithMargin={!!headerIcon}>
                                         {subheading}
                                     </Subheading>
                                 )}
@@ -314,7 +314,7 @@ const Modal = ({
                 <ShadowContainer>
                     <ShadowTop />
                     <ScrollContainer onScroll={onScroll} ref={scrollElementRef}>
-                        <Body isWithoutTopPadding={!heading && !!isCancelable}>
+                        <Body $isWithoutTopPadding={!heading && !!isCancelable}>
                             {description && <Description>{description}</Description>}
                             <Content id="modal-content">{children}</Content>
                         </Body>

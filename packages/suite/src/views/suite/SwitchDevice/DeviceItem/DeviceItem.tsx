@@ -54,17 +54,17 @@ const DeviceActions = styled.div`
     margin-left: 20px;
 `;
 
-const Col = styled.div<{ grow?: number }>`
+const Col = styled.div<{ $grow?: number }>`
     display: flex;
-    flex-grow: ${({ grow }) => grow || 0};
+    flex-grow: ${({ $grow }) => $grow || 0};
     align-items: flex-start;
     flex-direction: column;
 `;
 
-const WalletsWrapper = styled.div<{ enabled: boolean }>`
-    opacity: ${({ enabled }) => (enabled ? 1 : 0.5)};
-    pointer-events: ${({ enabled }) => (enabled ? 'unset' : 'none')};
-    padding-bottom: ${({ enabled }) => (enabled ? '0px' : '24px')};
+const WalletsWrapper = styled.div<{ $enabled: boolean }>`
+    opacity: ${({ $enabled }) => ($enabled ? 1 : 0.5)};
+    pointer-events: ${({ $enabled }) => ($enabled ? 'unset' : 'none')};
+    padding-bottom: ${({ $enabled }) => ($enabled ? '0px' : '24px')};
     margin-left: 37px;
     margin-top: 24px;
 
@@ -106,10 +106,10 @@ const DeviceImageWrapper = styled.div`
     margin-right: 16px;
 `;
 
-const ExpandIcon = styled(Icon)<{ isActive: boolean }>`
+const ExpandIcon = styled(Icon)<{ $isActive: boolean }>`
     margin-left: 24px;
 
-    transform: ${({ isActive }) => (isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
+    transform: ${({ $isActive }) => ($isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
 `;
 
 // TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
@@ -216,7 +216,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                             )}
                         </DeviceImageWrapper>
                     )}
-                    <Col grow={1}>
+                    <Col $grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>
                         <DeviceStatusText device={device} />
                     </Col>
@@ -235,7 +235,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                                 icon="ARROW_DOWN"
                                 color={theme.TYPE_LIGHT_GREY}
                                 hoverColor={theme.TYPE_LIGHTER_GREY}
-                                isActive={!isExpanded}
+                                $isActive={!isExpanded}
                                 onClick={() => setIsExpanded(!isExpanded)}
                             />
                         )}
@@ -246,7 +246,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                 <AnimatePresence initial={false}>
                     {!isUnknown && isExpanded && (
                         <motion.div {...motionAnimation.expand}>
-                            <WalletsWrapper enabled>
+                            <WalletsWrapper $enabled>
                                 {instancesWithState.length > 0 && (
                                     <WalletsTooltips>
                                         <WalletsCount>

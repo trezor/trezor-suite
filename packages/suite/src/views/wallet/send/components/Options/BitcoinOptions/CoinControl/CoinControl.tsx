@@ -44,9 +44,9 @@ const AmountWrapper = styled.div`
     text-align: right;
 `;
 
-const MissingToInput = styled.div<{ isVisible: boolean }>`
+const MissingToInput = styled.div<{ $isVisible: boolean }>`
     /* using visibility rather than display to prevent line height change */
-    visibility: ${({ isVisible }) => !isVisible && 'hidden'};
+    visibility: ${({ $isVisible }) => !$isVisible && 'hidden'};
 `;
 
 const Empty = styled.div`
@@ -193,7 +193,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                         <FormattedCryptoAmount value={formattedTotal} symbol={account.symbol} />
                     </GreyText>
 
-                    <MissingToInput isVisible={isMissingVisible}>
+                    <MissingToInput $isVisible={isMissingVisible}>
                         <Translation id={missingToInputId} values={missingToInputValues} />
                     </MissingToInput>
                 </AmountWrapper>

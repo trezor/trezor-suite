@@ -11,37 +11,43 @@ const ShadowContainer = styled.div`
     height: 100%;
 `;
 
-const gradientBase = css<{ isVisible: boolean; elevation: Elevation; backgroundColor?: Color }>`
+interface GradientProps {
+    $isVisible: boolean;
+    $elevation: Elevation;
+    $backgroundColor?: Color;
+}
+
+const gradientBase = css<GradientProps>`
     width: 100%;
     height: 45px;
     z-index: 1;
     position: absolute;
     pointer-events: none;
-    opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+    opacity: ${({ $isVisible }) => ($isVisible ? 1 : 0)};
     transition: all 0.2s ease-in;
 `;
 
-const GradientBefore = styled.div`
+const GradientBefore = styled.div<GradientProps>`
     ${gradientBase}
     top: 0;
     background: linear-gradient(
-        ${({ backgroundColor, elevation, theme }) =>
-            backgroundColor
-                ? theme[backgroundColor]
-                : mapElevationToBackground({ elevation, theme })},
+        ${({ $backgroundColor, $elevation, theme }) =>
+            $backgroundColor
+                ? theme[$backgroundColor]
+                : mapElevationToBackground({ $elevation, theme })},
         rgba(0 0 0 / 0%)
     );
 `;
 
-const GradientAfter = styled.div`
+const GradientAfter = styled.div<GradientProps>`
     ${gradientBase}
     bottom: 0;
     background: linear-gradient(
         rgba(0 0 0 / 0%),
-        ${({ backgroundColor, elevation, theme }) =>
-            backgroundColor
-                ? theme[backgroundColor]
-                : mapElevationToBackground({ elevation, theme })}
+        ${({ $backgroundColor, $elevation, theme }) =>
+            $backgroundColor
+                ? theme[$backgroundColor]
+                : mapElevationToBackground({ $elevation, theme })}
     );
 `;
 
@@ -78,18 +84,18 @@ export const useScrollShadow = () => {
 
     const ShadowTop = ({ backgroundColor, style }: ShadowProps) => (
         <GradientBefore
-            backgroundColor={backgroundColor}
-            elevation={elevation}
+            $backgroundColor={backgroundColor}
+            $elevation={elevation}
             style={style}
-            isVisible={!isScrolledToTop}
+            $isVisible={!isScrolledToTop}
         />
     );
     const ShadowBottom = ({ backgroundColor, style }: ShadowProps) => (
         <GradientAfter
-            backgroundColor={backgroundColor}
-            elevation={elevation}
+            $backgroundColor={backgroundColor}
+            $elevation={elevation}
             style={style}
-            isVisible={!isScrolledToBottom}
+            $isVisible={!isScrolledToBottom}
         />
     );
 

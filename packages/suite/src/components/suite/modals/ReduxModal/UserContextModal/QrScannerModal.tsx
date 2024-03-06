@@ -27,8 +27,8 @@ const Description = styled.div`
     }
 `;
 
-const ContentWrapper = styled.div<{ show: boolean }>`
-    display: ${props => (props.show ? 'flex' : 'none')};
+const ContentWrapper = styled.div<{ $show: boolean }>`
+    display: ${props => (props.$show ? 'flex' : 'none')};
     flex-direction: column;
     margin: 16px;
     overflow: hidden;
@@ -190,7 +190,7 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
             }
         >
             {isPasteMode && (
-                <ContentWrapper show>
+                <ContentWrapper $show>
                     <StyledTextarea
                         placeholder={`${translationString('TR_PASTE_URI')}…`}
                         onChange={e => {
@@ -201,7 +201,7 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
             )}
 
             {!isPasteMode && !readerLoaded && !error && (
-                <ContentWrapper show>
+                <ContentWrapper $show>
                     <CameraPlaceholder>
                         <IconWrapper>
                             <Icon icon="QR" size={100} />
@@ -211,7 +211,7 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
                 </ContentWrapper>
             )}
             {!isPasteMode && error && (
-                <ContentWrapper show>
+                <ContentWrapper $show>
                     <CameraPlaceholder>
                         <Error>
                             <ErrorTitle>
@@ -224,7 +224,7 @@ export const QrScannerModal = ({ onCancel, decision, allowPaste }: QrScannerModa
             )}
 
             {!isPasteMode && !error && (
-                <ContentWrapper show={readerLoaded}>
+                <ContentWrapper $show={readerLoaded}>
                     <Suspense fallback={<BundleLoader />}>
                         <StyledQrReader
                             delay={500}

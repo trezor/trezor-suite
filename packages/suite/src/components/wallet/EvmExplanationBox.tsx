@@ -1,10 +1,10 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Card, CoinLogo, useElevation, variables } from '@trezor/components';
+import { Card, CardProps, CoinLogo, useElevation, variables } from '@trezor/components';
 import { Elevation, mapElevationToBackground } from '@trezor/theme';
-import { HTMLAttributes, ReactNode, forwardRef, ComponentProps } from 'react';
+import { HTMLAttributes, ReactNode, forwardRef } from 'react';
 import styled, { css } from 'styled-components';
 
-const EvmExplanationBoxWrapper = styled(Card)<{ caret?: boolean; elevation: Elevation }>`
+const EvmExplanationBoxWrapper = styled(Card)<{ $caret?: boolean; $elevation: Elevation }>`
     position: relative;
     display: flex;
     flex-direction: row;
@@ -15,8 +15,8 @@ const EvmExplanationBoxWrapper = styled(Card)<{ caret?: boolean; elevation: Elev
     border-radius: 8px;
     line-height: 1.25;
 
-    ${({ caret, ...props }) =>
-        caret &&
+    ${({ $caret, $elevation, theme }) =>
+        $caret &&
         css`
             &::before {
                 position: absolute;
@@ -25,7 +25,7 @@ const EvmExplanationBoxWrapper = styled(Card)<{ caret?: boolean; elevation: Elev
                 height: 0;
                 top: -9px;
                 left: 14px;
-                border-bottom: 10px solid ${() => mapElevationToBackground(props)};
+                border-bottom: 10px solid ${() => mapElevationToBackground({ theme, $elevation })};
                 border-left: 9px solid transparent;
                 border-right: 9px solid transparent;
             }
@@ -46,26 +46,27 @@ const EvmExplanationDescription = styled.span`
     line-height: 18px;
 `;
 
-export interface EvmExplanationBoxProps extends Omit<HTMLAttributes<HTMLDivElement>, 'title'> {
+export interface EvmExplanationBoxProps
+    extends Omit<HTMLAttributes<HTMLDivElement>, 'title'>,
+        CardProps {
     title?: ReactNode;
     symbol: NetworkSymbol;
     caret?: boolean;
     children?: ReactNode;
 }
 
-export const EvmExplanationBox = forwardRef<
-    typeof EvmExplanationBoxWrapper,
-    ComponentProps<typeof EvmExplanationBoxWrapper>
->(({ symbol, title, caret, children, ...rest }, ref) => {
-    const { elevation } = useElevation();
+export const EvmExplanationBox = forwardRef<HTMLDivElement, EvmExplanationBoxProps>(
+    ({ symbol, title, caret, children, ...rest }, ref) => {
+        const { elevation } = useElevation();
 
-    return (
-        <EvmExplanationBoxWrapper ref={ref} caret={caret} {...rest} elevation={elevation}>
-            <CoinLogo symbol={symbol} size={38} />
-            <div>
-                <EvmExplanationTitle>{title}</EvmExplanationTitle>
-                <EvmExplanationDescription>{children}</EvmExplanationDescription>
-            </div>
-        </EvmExplanationBoxWrapper>
-    );
-});
+        return (
+            <EvmExplanationBoxWrapper ref={ref} $caret={caret} $elevation={elevation} {...rest}>
+                <CoinLogo symbol={symbol} size={38} />
+                <div>
+                    <EvmExplanationTitle>{title}</EvmExplanationTitle>
+                    <EvmExplanationDescription>{children}</EvmExplanationDescription>
+                </div>
+            </EvmExplanationBoxWrapper>
+        );
+    },
+);
