@@ -445,6 +445,9 @@ connect legacy fws manual:
 .connect canary fws base:
   extends: .connect matrix
   stage: canary testing
+  needs:
+    - install
+    - connect-web build
   variables:
     TESTS_FIRMWARE: "2-main"
 
