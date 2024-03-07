@@ -22,7 +22,6 @@ const Wrapper = styled.div<{
 
 const Container = styled.div<{
     $isChecked: boolean;
-    $label?: ReactNode;
     $isDisabled?: boolean;
     $isAlert?: boolean;
     $isSmall?: boolean; // TODO: legacy prop
