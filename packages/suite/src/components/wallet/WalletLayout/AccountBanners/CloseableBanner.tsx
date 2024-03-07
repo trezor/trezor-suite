@@ -8,10 +8,12 @@ const Heading = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 `;
 
 const StyledBox = styled(Box)`
     flex-direction: column;
+    align-items: flex-start;
     border-left-width: 10px;
     border-radius: ${borders.radii.lg};
 `;
