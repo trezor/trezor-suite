@@ -1,12 +1,12 @@
-import { useEffect, useState, ReactNode } from 'react';
 import { Icon, ProgressBar, variables } from '@trezor/components';
 import styled, { useTheme } from 'styled-components';
-import { borders } from '@trezor/theme';
+import { borders, spacingsPx } from '@trezor/theme';
+import { useFirmware } from 'src/hooks/suite';
 
 const Wrapper = styled.div`
     display: flex;
     border-radius: ${borders.radii.xs};
-    padding: 20px 24px;
+    padding: ${spacingsPx.lg} ${spacingsPx.xl};
     width: 100%;
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -21,88 +21,45 @@ const Wrapper = styled.div`
 
 const Label = styled.div`
     display: flex;
-    margin-right: 20px;
+    margin-right: ${spacingsPx.lg};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 const StyledProgressBar = styled(ProgressBar)`
     display: flex;
-    margin-right: 20px;
-    border-radius: 5px;
+    margin-right: ${spacingsPx.lg};
+    border-radius: ${borders.radii.xxs};
     background: ${({ theme }) => theme.STROKE_GREY_ALT};
     flex: 1;
 
     ${ProgressBar.Value} {
         height: 3px;
         position: relative;
-        border-radius: 5px;
+        border-radius: ${borders.radii.xxs};
     }
 `;
 const Percentage = styled.div`
     display: flex;
-    margin-left: 10px;
+    margin-left: ${spacingsPx.sm};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     font-variant-numeric: tabular-nums;
-    height: 24px;
+    height: ${spacingsPx.xl};
 `;
 
-interface FirmwareProgressBarProps {
-    current: number; // current progress
-    total: number; // total number of increments
-    label: ReactNode;
-    maintainCompletedState?: boolean; // will maintain 100% completed state, even if current becomes 0 after completion
-    fakeProgressDuration?: number; // Will increment progress each second till it hits `fakeProgressBarrier`.
-    fakeProgressBarrier?: number; // Barrier where fake progress will wait for real `current` progress to catch up.
-}
-
-export const FirmwareProgressBar = ({
-    label,
-    total,
-    current,
-    maintainCompletedState,
-    fakeProgressDuration,
-    fakeProgressBarrier = 90,
-}: FirmwareProgressBarProps) => {
+export const FirmwareProgressBar = () => {
     const theme = useTheme();
-    const [storedProgress, setStoreProgress] = useState(0);
-    const progress = (100 / total) * current;
-    const fakeIncrement = fakeProgressDuration ? total / fakeProgressDuration : 0;
-    const progressValue =
-        maintainCompletedState || fakeProgressDuration ? storedProgress : progress;
+    const { operation, progress } = useFirmware();
 
-    useEffect(() => {
-        // This hook is used only for calculating fake progress
-        if (fakeProgressDuration) {
-            const interval = setInterval(() => {
-                setStoreProgress(storedProgress =>
-                    storedProgress < fakeProgressBarrier
-                        ? Math.floor(storedProgress + fakeIncrement)
-                        : storedProgress,
-                );
-            }, 1000);
-
-            return () => {
-                clearInterval(interval);
-            };
-        }
-    }, [fakeIncrement, fakeProgressBarrier, fakeProgressDuration, total]);
-
-    useEffect(() => {
-        // This hook is used for maintaining complete state (when current == total).
-        // It will also make sure that real progress will replace the fake one if current, real progress  is greater
-        if (progress > storedProgress) {
-            setStoreProgress(progress);
-        }
-    }, [progress, storedProgress]);
+    const isDone = progress === 100;
 
     return (
         <Wrapper>
-            <Label>{label}</Label>
-            <StyledProgressBar value={progressValue} />
+            <Label>{operation}</Label>
+            <StyledProgressBar value={progress} />
             <Percentage>
-                {progress < 100 ? (
-                    `${fakeProgressDuration ? storedProgress : progress} %`
-                ) : (
+                {isDone ? (
                     <Icon icon="CHECK" color={theme.TYPE_GREEN} size={24} />
+                ) : (
+                    `${progress} %`
                 )}
             </Percentage>
         </Wrapper>

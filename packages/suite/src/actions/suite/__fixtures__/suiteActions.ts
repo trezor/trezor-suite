@@ -369,18 +369,6 @@ const handleDeviceConnect = [
         },
         device: CONNECT_DEVICE,
     },
-    {
-        description: `waiting-for-bootloader`,
-        state: {
-            device: {
-                selectedDevice: SUITE_DEVICE,
-            },
-            suite: {},
-            firmware: { status: 'waiting-for-bootloader' },
-        },
-        device: getConnectDevice({ path: '3', mode: 'bootloader' }),
-        result: deviceActions.selectDevice.type,
-    },
 ];
 
 const handleDeviceDisconnect = [

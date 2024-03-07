@@ -11,7 +11,6 @@ import { isCodesignBuild } from '@trezor/env-utils';
 import suiteMiddlewares from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
-import firmwareMiddlewares from 'src/middlewares/firmware';
 import backupMiddlewares from 'src/middlewares/backup';
 import recoveryMiddlewares from 'src/middlewares/recovery';
 import suiteReducers from 'src/reducers/suite';
@@ -48,7 +47,6 @@ const middleware = [
     ...suiteMiddlewares,
     ...walletMiddlewares,
     ...onboardingMiddlewares,
-    ...firmwareMiddlewares,
     ...backupMiddlewares,
     ...recoveryMiddlewares,
 ];

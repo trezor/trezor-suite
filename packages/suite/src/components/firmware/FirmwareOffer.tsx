@@ -7,13 +7,13 @@ import {
 } from '@suite-common/suite-utils';
 import { Icon, Tooltip, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { AcquiredDevice } from '@suite-common/suite-types';
 import { FirmwareType } from '@trezor/connect';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { FirmwareChangelog } from 'src/components/firmware';
 import { useFirmware, useTranslation, useSelector } from 'src/hooks/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
+import { spacingsPx } from '@trezor/theme';
 
 const FwVersionWrapper = styled.div`
     display: flex;
@@ -21,7 +21,7 @@ const FwVersionWrapper = styled.div`
     max-width: 364px;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0;
+    padding: ${spacingsPx.md} 0;
 `;
 
 const FwVersion = styled.div`
@@ -37,7 +37,7 @@ const Version = styled.div<{ $isNew?: boolean }>`
     color: ${({ $isNew, theme }) => ($isNew ? theme.backgroundPrimaryDefault : theme.textSubdued)};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-variant-numeric: tabular-nums;
-    margin-top: 6px;
+    margin-top: ${spacingsPx.xs};
 `;
 
 const Label = styled.div`
@@ -54,30 +54,29 @@ const StyledLink = styled(TrezorLink)`
 `;
 
 interface FirmwareOfferProps {
-    device: AcquiredDevice;
     customFirmware?: boolean;
     targetFirmwareType?: FirmwareType;
 }
 
-export const FirmwareOffer = ({
-    device,
-    customFirmware,
-    targetFirmwareType,
-}: FirmwareOfferProps) => {
+export const FirmwareOffer = ({ customFirmware, targetFirmwareType }: FirmwareOfferProps) => {
     const useDevkit = useSelector(state => state.firmware.useDevkit);
-    const { targetType } = useFirmware();
+    const { originalDevice, targetType } = useFirmware();
     const { translationString } = useTranslation();
 
-    const currentVersion = device.firmware !== 'none' ? getFirmwareVersion(device) : undefined;
+    if (!originalDevice?.firmwareRelease) {
+        return null;
+    }
+
+    const currentVersion = getFirmwareVersion(originalDevice);
     const nextVersion = customFirmware
         ? translationString('TR_CUSTOM_FIRMWARE_VERSION')
-        : getFwUpdateVersion(device);
+        : getFwUpdateVersion(originalDevice);
     const parsedChangelog = customFirmware
         ? null
-        : parseFirmwareChangelog(device.firmwareRelease?.release);
-    const changelogUrl = getChangelogUrl(device);
+        : parseFirmwareChangelog(originalDevice.firmwareRelease.release);
+    const changelogUrl = getChangelogUrl(originalDevice);
 
-    const currentFirmwareType = getSuiteFirmwareTypeString(device.firmwareType);
+    const currentFirmwareType = getSuiteFirmwareTypeString(originalDevice.firmwareType);
     const futureFirmwareType = getSuiteFirmwareTypeString(targetFirmwareType || targetType);
 
     const nextVersionElement = (

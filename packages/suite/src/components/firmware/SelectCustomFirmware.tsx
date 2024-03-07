@@ -1,17 +1,16 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 
-import { selectDeviceModel } from '@suite-common/wallet-core';
 import { Button } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { GITHUB_FW_BINARIES_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { DropZone } from 'src/components/suite/DropZone';
-import type { TrezorDevice, ExtendedMessageDescriptor } from 'src/types/suite';
+import type { ExtendedMessageDescriptor } from 'src/types/suite';
 import { validateFirmware } from 'src/utils/firmware';
 import { InstructionStep } from 'src/components/suite/InstructionStep';
-import { useSelector } from 'src/hooks/suite';
+import { useDevice } from 'src/hooks/suite';
 
 const Container = styled.div`
     width: 100%;
@@ -22,7 +21,7 @@ const StyledLink = styled(TrezorLink)`
 `;
 
 const StyledDropZone = styled(DropZone)`
-    min-height: 110px;
+    min-height: 120px;
 `;
 
 const InstallButton = styled(Button)`
@@ -30,14 +29,19 @@ const InstallButton = styled(Button)`
 `;
 
 type SelectCustomFirmwareProps = {
-    device?: TrezorDevice;
-    onSuccess: (fw: ArrayBuffer) => void;
+    isUploaded: boolean;
+    install: () => void;
+    setFirmwareBinary: Dispatch<SetStateAction<ArrayBuffer | undefined>>;
 };
 
-export const SelectCustomFirmware = ({ device, onSuccess }: SelectCustomFirmwareProps) => {
-    const [firmwareBinary, setFirmwareBinary] = useState<ArrayBuffer>();
-    const deviceModel = useSelector(selectDeviceModel);
+export const SelectCustomFirmware = ({
+    install,
+    isUploaded,
+    setFirmwareBinary,
+}: SelectCustomFirmwareProps) => {
+    const { device } = useDevice();
 
+    const deviceModel = device?.features?.internal_model;
     const githubUrl = deviceModel
         ? `${GITHUB_FW_BINARIES_URL}/${deviceModel.toLowerCase()}`
         : GITHUB_FW_BINARIES_URL;
@@ -52,12 +56,6 @@ export const SelectCustomFirmware = ({ device, onSuccess }: SelectCustomFirmware
             setError({ id: validationError });
         } else {
             setFirmwareBinary(fw);
-        }
-    };
-
-    const install = () => {
-        if (firmwareBinary) {
-            onSuccess(firmwareBinary);
         }
     };
 
@@ -87,7 +85,7 @@ export const SelectCustomFirmware = ({ device, onSuccess }: SelectCustomFirmware
                 <StyledDropZone accept=".bin" icon="BINARY" onSelect={onFirmwareUpload} />
             </InstructionStep>
 
-            <InstallButton variant="primary" isDisabled={!firmwareBinary} onClick={install}>
+            <InstallButton variant="primary" isDisabled={!isUploaded} onClick={install}>
                 <Translation id="TR_CUSTOM_FIRMWARE_BUTTON_INSTALL" />
             </InstallButton>
         </Container>
