@@ -1,8 +1,10 @@
 import Animated, { FadeInDown, FadeInUp, FadeOutUp } from 'react-native-reanimated';
+import { Pressable } from 'react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 import { Text, VStack } from '@suite-native/atoms';
+import { useTranslate } from '@suite-native/intl';
 
 type GraphErrorProps = {
     error: string;
@@ -36,23 +38,26 @@ const ErrorIcon = () => {
 
 export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
     const { applyStyle } = useNativeStyles();
+    const { translate } = useTranslate();
 
     return (
         <VStack spacing="small" alignItems="center" paddingHorizontal="medium">
             <ErrorIcon />
             <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
                 <Text variant="hint" color="textSubdued" textAlign="center">
-                    There are some troubles with loading graph points: {error}
+                    {translate('graph.errorMessage')}
+                    {error}
                 </Text>
-                <Text.Pressable
-                    variant="body"
-                    color="textSecondaryHighlight"
-                    textAlign="center"
-                    onPress={onTryAgain}
-                    style={applyStyle(tryAgainButtonStyle)}
-                >
-                    Try again
-                </Text.Pressable>
+                <Pressable onPress={onTryAgain}>
+                    <Text
+                        variant="body"
+                        color="textSecondaryHighlight"
+                        style={applyStyle(tryAgainButtonStyle)}
+                        textAlign="center"
+                    >
+                        {translate('graph.tryAgain')}
+                    </Text>
+                </Pressable>
             </Animated.View>
         </VStack>
     );
