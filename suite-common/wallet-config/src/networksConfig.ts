@@ -286,6 +286,7 @@ export const networks = {
             [DeviceModelInternal.T2T1]: '2.4.3',
             [DeviceModelInternal.T2B1]: '2.6.1',
         },
+        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockfrost'],
         accountTypes: {
             legacy: {
@@ -316,6 +317,7 @@ export const networks = {
             [DeviceModelInternal.T2T1]: '2.6.4',
             [DeviceModelInternal.T2B1]: '2.6.4',
         },
+        label: 'TR_INCLUDING_TOKENS',
         customBackends: ['solana'],
         accountTypes: {},
         coingeckoId: 'solana',
@@ -327,7 +329,7 @@ export const networks = {
         bip43Path: "m/44'/60'/0'/0/i",
         decimals: 18,
         testnet: false,
-        label: 'TR_NETWORK_POLYGON_LABEL',
+        label: 'TR_INCLUDING_TOKENS',
         explorer: {
             tx: 'https://matic2.trezor.io/tx/',
             account: 'https://matic2.trezor.io/address/',
