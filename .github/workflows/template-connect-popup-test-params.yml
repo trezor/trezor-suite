@@ -1,4 +1,4 @@
-name: "[Template] test Trezor popup with Trezor Explorer"
+name: "[Template] Connect e2e"
 
 on:
   workflow_call:
@@ -93,10 +93,8 @@ jobs:
 
       - name: Run connect popup test
         env:
-          # TODO: webextension does not load from dev.suite.sldev.czf
-          # URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          # TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          URL: https://connect.trezor.io/9/
+          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
           IS_WEBEXTENSION: true
         run: |
           ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
