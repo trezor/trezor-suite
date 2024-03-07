@@ -39,7 +39,7 @@ jobs:
         with:
           save-always: true
           path: |
-            **/.eslintcache
+            **/!(node_modules)/**/*.eslintcache
           key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
       - name: check for duplicate dependencies
         run: yarn dedupe --check
