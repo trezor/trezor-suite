@@ -22,7 +22,7 @@
             "cache": true
         },
         "type-check": {
-            "dependsOn": ["^type-check"],
+            "dependsOn": ["^build:lib", "^type-check", "build:lib"],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/tsconfig.base.json",
