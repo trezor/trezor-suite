@@ -90,7 +90,7 @@ suite-web build stable codesign:
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn message-system-sign-config"
-    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data build:libs"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data build:lib"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
     - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop-core/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
