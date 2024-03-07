@@ -85,7 +85,11 @@ export class UsbApi extends AbstractApi {
     }
 
     private devicesToDescriptors() {
-        return this.devices.map(d => ({ path: d.path, type: this.matchDeviceType(d.device) }));
+        return this.devices.map(d => ({
+            path: d.path,
+            type: this.matchDeviceType(d.device),
+            product: d.device.productId,
+        }));
     }
 
     public async enumerate() {

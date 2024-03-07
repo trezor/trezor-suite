@@ -345,10 +345,16 @@ export abstract class AbstractTransport extends TypedEmitter<{
     private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff {
         const connected = nextDescriptors.filter(
             nextDescriptor =>
-                !this.descriptors.find(descriptor => descriptor.path === nextDescriptor.path),
+                !this.descriptors.find(
+                    descriptor =>
+                        `${descriptor.path}${descriptor.product}` ===
+                        `${nextDescriptor.path}${nextDescriptor.product}`,
+                ),
         );
         const disconnected = this.descriptors.filter(
-            d => nextDescriptors.find(x => x.path === d.path) === undefined,
+            d =>
+                nextDescriptors.find(x => `${x.path}${x.product}` === `${d.path}${d.product}`) ===
+                undefined,
         );
         const changedSessions = nextDescriptors.filter(d => {
             const currentDescriptor = this.descriptors.find(x => x.path === d.path);

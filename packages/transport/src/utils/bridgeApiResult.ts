@@ -56,8 +56,8 @@ export function devices(res: UnknownPayload) {
             (o: any): Descriptor => ({
                 path: o.path,
                 session: o.session,
-                // @ts-expect-error - this is part of response too, might add it to type later
                 product: o.product,
+                // @ts-expect-error - this is part of response too, might add it to type later
                 vendor: o.vendor,
                 debug: o.debug,
                 debugSession: o.debugSession,
