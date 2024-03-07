@@ -7,8 +7,11 @@ import {
     useFiatFromCryptoValue,
     useFiatFromCryptoValueParams,
 } from 'src/hooks/suite/useFiatFromCryptoValue';
+import { HiddenPlaceholderProps } from './HiddenPlaceholder';
 
-const StyledHiddenPlaceholder = styled(props => <HiddenPlaceholder {...props} />)`
+const StyledHiddenPlaceholder = styled((props: HiddenPlaceholderProps) => (
+    <HiddenPlaceholder {...props} />
+))`
     font-variant-numeric: tabular-nums;
 `;
 

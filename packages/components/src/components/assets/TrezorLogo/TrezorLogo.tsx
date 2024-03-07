@@ -25,11 +25,11 @@ const SvgWrapper = styled.div<{
     }
 `;
 
-export interface TrezorLogoProp {
+export interface TrezorLogoProps {
     type: TrezorLogoType;
     width?: string | number;
     height?: string | number;
-    'data-test': string;
+    'data-test'?: string;
 }
 
 export const TrezorLogo = ({
@@ -37,7 +37,7 @@ export const TrezorLogo = ({
     width = 'auto',
     height = 'auto',
     'data-test': dataTest,
-}: TrezorLogoProp) => (
+}: TrezorLogoProps) => (
     <SvgWrapper
         $width={typeof width === 'number' ? `${width}px` : width}
         $height={typeof height === 'number' ? `${height}px` : height}
