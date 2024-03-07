@@ -21,12 +21,20 @@
         "./src/transports/udp": "./src/transports/udp.browser.ts",
         "./src/transports/webusb": "./src/transports/webusb.browser.ts"
     },
+    "react-native": {
+        "./src/transports/nodeusb": "./src/transports/nodeusb.browser.ts",
+        "./src/transports/webusb": "./src/transports/webusb.ts"
+    },
     "publishConfig": {
         "main": "./lib/index.js",
         "browser": {
             "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.ts",
             "./lib/transports/udp": "./lib/transports/udp.browser.ts",
             "./lib/transports/webusb": "./lib/transports/webusb.browser.ts"
+        },
+        "react-native": {
+            "./lib/transports/nodeusb": "./lib/transports/nodeusb.browser.js",
+            "./lib/transports/webusb": "./lib/transports/webusb.js"
         }
     },
     "files": [
