@@ -2542,6 +2542,13 @@ export default defineMessages({
         description: 'Text for Header and Button when submitting PIN',
         id: 'TR_ENTER_PIN',
     },
+
+    TR_ENTER_WIPECODE: {
+        defaultMessage: 'Enter Wipe Code',
+        description: 'Text for Header and Button when submitting wipe code',
+        id: 'TR_ENTER_WIPECODE',
+    },
+
     TR_ENTER_SEED_WORDS_INSTRUCTION: {
         defaultMessage:
             'Enter the words from your recovery seed here in the order displayed on your Trezor.',
