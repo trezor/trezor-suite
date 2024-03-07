@@ -11,7 +11,7 @@ import {
 import { UIHorizontalAlignment } from '../../../config/types';
 
 const Wrapper = styled.div<{
-    $isSmall?: boolean;
+    $isSmall?: boolean; // TODO: legacy prop
     $labelPosition?: Extract<UIHorizontalAlignment, 'left' | 'right'>;
 }>`
     display: flex;
@@ -22,9 +22,10 @@ const Wrapper = styled.div<{
 
 const Container = styled.div<{
     $isChecked: boolean;
+    $label?: ReactNode;
     $isDisabled?: boolean;
-    $isSmall?: boolean;
     $isAlert?: boolean;
+    $isSmall?: boolean; // TODO: legacy prop
 }>`
     display: flex;
     align-items: center;
@@ -53,23 +54,27 @@ const Container = styled.div<{
     ${({ $isDisabled, theme, $isChecked }) =>
         !$isDisabled &&
         css`
-            ${getFocusShadowStyle('&:focus-within:has(:focus-visible)')}
+            ${getFocusShadowStyle(':focus-within:has(:focus-visible)')}
 
-            &:hover {
-                background: ${$isChecked
-                    ? theme.backgroundPrimaryPressed
-                    : theme.backgroundNeutralSubdued};
-            }
-
-            &:focus-within:has(:focus-visible) {
+            :focus-within:has(:focus-visible) {
                 background: ${$isChecked
                     ? theme.backgroundPrimaryDefault
                     : theme.backgroundNeutralDisabled};
             }
+
+            :hover {
+                background: ${$isChecked
+                    ? theme.backgroundPrimaryPressed
+                    : theme.backgroundNeutralSubdued};
+            }
         `};
 `;
 
-const Handle = styled.button<{ $disabled?: boolean; $isSmall?: boolean; $isChecked: boolean }>`
+const Handle = styled.button<{
+    $disabled?: boolean;
+    $isChecked: boolean;
+    $isSmall?: boolean; // TODO: legacy prop
+}>`
     position: absolute;
     display: inline-block;
     height: ${({ $isSmall }) => ($isSmall ? '14px' : '20px')};
@@ -96,9 +101,9 @@ const CheckboxInput = styled.input`
 `;
 
 const Label = styled.label<{
-    $isAlert?: boolean;
     $isDisabled?: boolean;
-    $isSmall?: boolean;
+    $isAlert?: boolean;
+    $isSmall?: boolean; // TODO: legacy prop
 }>`
     color: ${({ $isAlert, $isDisabled, theme }) =>
         getLabelColor(theme, { alert: $isAlert, disabled: $isDisabled })};
@@ -151,7 +156,7 @@ export const Switch = ({
                 <Handle
                     tabIndex={-1}
                     $isChecked={isChecked}
-                    $disabled={isDisabled}
+                    disabled={isDisabled}
                     type="button"
                     $isSmall={isSmall}
                 />
