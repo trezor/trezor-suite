@@ -238,6 +238,9 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     // Click on submit button
     [popup] = await openPopup(context, explorerPage, isWebExtension);
 
+    log('clicking on analytics continue button');
+    await waitAndClick(popup, ['@analytics/continue-button']);
+
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 
@@ -335,6 +338,9 @@ test('passphrase mismatch', async ({ page }) => {
     });
 
     [popup] = await Promise.all([page.waitForEvent('popup')]);
+
+    log('clicking on analytics continue button');
+    await waitAndClick(popup, ['@analytics/continue-button']);
 
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);

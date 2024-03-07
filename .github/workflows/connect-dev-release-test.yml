@@ -1,5 +1,4 @@
-# TODO: add tests and call it [Build/Test]
-name: "[Build] connect"
+name: "[Build/Test] Connect Popup"
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -28,7 +27,7 @@ env:
   DEV_SERVER_HOSTNAME: "dev.suite.sldev.cz"
 
 jobs:
-  build-connect-explorer:
+  build-deploy-connect-explorer:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -108,3 +107,63 @@ jobs:
             packages/connect-examples/webextension-mv3/build-legacy
             packages/connect-examples/webextension-mv3-sw/build
             packages/connect-explorer/build-webextension
+
+  methods:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: methods.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  popup-close:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: popup-close.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  passphrase:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: passphrase.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  popup-pages:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: popup-pages.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  browser-support:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: browser-support.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  permissions:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: permissions.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  transport:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: transport.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  unchained:
+    needs: [build-deploy-connect-explorer]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: unchained.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz

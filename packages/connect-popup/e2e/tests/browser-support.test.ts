@@ -1,6 +1,7 @@
 import { test, expect, Page, devices } from '@playwright/test';
 import { ensureDirectoryExists } from '@trezor/node-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { log, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -45,7 +46,7 @@ test('unsupported browser', async ({ browser }) => {
     await context.close();
 });
 
-test('outdated-browser', async ({ browser }) => {
+test.only('outdated-browser', async ({ browser }) => {
     const context = await browser.newContext({
         userAgent:
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/50.0',
@@ -62,7 +63,11 @@ test('outdated-browser', async ({ browser }) => {
     await popup.click('text=I acknowledge and wish to continue');
     // only after this check react renders
     await popup.waitForSelector('#reactRenderIn');
-    await popup.waitForSelector('text=Pair devices');
+    log('clicking on analytics continue button');
+    await waitAndClick(popup, ['@analytics/continue-button']);
+    // In Firefox it should display Install Bridge page.
+    await popup.getByRole('heading', { name: 'Install Bridge' });
+    await popup.waitForTimeout(5555);
     await popup.close({ runBeforeUnload: true });
     await page.close();
     await context.close();
