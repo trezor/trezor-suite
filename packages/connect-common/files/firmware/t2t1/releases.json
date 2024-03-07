@@ -1,6 +1,20 @@
 [
     {
         "required": false,
+        "version": [2, 7, 0],
+        "min_bridge_version": [2, 0, 7],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "bootloader_version": [2, 1, 4],
+        "translations": ["de-DE", "es-ES", "fr-FR"],
+        "url": "firmware/t2t1/trezor-t2t1-2.7.0.bin",
+        "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.7.0-bitcoinonly.bin",
+        "fingerprint": "53a645218792e413ad06c27320b7d1adc944b690ce831301bbf11c30352d3278",
+        "fingerprint_bitcoinonly": "c94f07150a6f0bb2862d4c31c6059862aab14f0073dea581118eef51a983bc30",
+        "changelog": "* Add translations capability. \n* Allow for going back to previous word in recovery process. \n* Clear sign ETH staking transactions on Everstake pool. [Universal fw only] \n* Display descriptors for BTC Taproot public keys. \n* Fixed blank display delay on startup when display orientation is set to other than north. \n* Multiple Solana instructions improved. [Universal fw only]"
+    },
+    {
+        "required": false,
         "version": [2, 6, 4],
         "min_bridge_version": [2, 0, 7],
         "min_firmware_version": [2, 0, 8],
