@@ -10,7 +10,6 @@ interface BannerPointsProps {
 const Point = styled.div`
     display: flex;
     ${typography.hint}
-    text-align: center;
     color: ${({ theme }) => theme.textSubdued};
     gap: ${spacingsPx.md};
 
