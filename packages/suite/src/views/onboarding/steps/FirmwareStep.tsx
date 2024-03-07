@@ -61,7 +61,11 @@ export const FirmwareStep = () => {
                 image="FIRMWARE"
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                innerActions={<FirmwareRetryButton onClick={() => firmwareUpdate(targetType)} />}
+                innerActions={
+                    <FirmwareRetryButton
+                        onClick={() => firmwareUpdate({ firmwareType: targetType })}
+                    />
+                }
                 outerActions={<OnboardingButtonBack onClick={() => resetReducer()} />}
             />
         );
@@ -107,21 +111,15 @@ export const FirmwareStep = () => {
     switch (status) {
         // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
         case 'initial':
-        case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
-            return (
-                <FirmwareInitial
-                    cachedDevice={cachedDevice}
-                    setCachedDevice={setCachedDevice}
-                    onInstall={firmwareUpdate}
-                />
-            );
-        case 'waiting-for-confirmation': // waiting for confirming installation on a device
+        // case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
+        //     return (
+        //         <FirmwareInitial
+        //             cachedDevice={cachedDevice}
+        //             setCachedDevice={setCachedDevice}
+        //             onInstall={firmwareUpdate}
+        //         />
+        //     );
         case 'started': // called from firmwareUpdate()
-        case 'installing':
-        case 'wait-for-reboot':
-        case 'validation':
-        case 'unplug': // only relevant for T1B1, T2T1 auto restarts itself
-        case 'reconnect-in-normal': // only relevant for T1B1, T2T1 auto restarts itself
         case 'partially-done': // only relevant for T1B1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
         case 'done':
             return (

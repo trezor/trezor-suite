@@ -147,16 +147,7 @@ export const handleDeviceConnect = createThunk(
     `${DEVICE_MODULE_PREFIX}/handleDeviceConnect`,
     (device: Device, { dispatch, getState }) => {
         const selectedDevice = selectDeviceSelector(getState());
-        const firmware = selectFirmware(getState());
-        // We are waiting for device in bootloader mode (only in firmware update)
-        if (
-            selectedDevice &&
-            device.features &&
-            device.mode === 'bootloader' &&
-            ['reconnect-in-normal', 'waiting-for-bootloader'].includes(firmware.status)
-        ) {
-            dispatch(selectDeviceThunk(device));
-        }
+
         if (!selectedDevice) {
             dispatch(selectDeviceThunk(device));
         } else {

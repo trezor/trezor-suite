@@ -189,32 +189,4 @@ describe('firmware middleware', () => {
             payload: getSuiteDevice({ firmware: 'none' }),
         });
     });
-
-    it('FIRMWARE.SET_UPDATE_STATUS -> FIRMWARE.SET_TARGET_RELEASE', async () => {
-        const store = initStore(
-            getInitialState(
-                undefined,
-                {
-                    status: 'check-seed',
-                    error: undefined,
-                    firmwareChallenge: '123',
-                    firmwareHash: '345',
-                },
-                {
-                    selectedDevice: getSuiteDevice(),
-                },
-            ),
-        );
-
-        await store.dispatch({
-            type: firmwareActions.setStatus.type,
-            payload: 'waiting-for-bootloader',
-            firmwareChallenge: '123',
-            firmwareHash: '345',
-        });
-
-        const result = store.getActions();
-        result.shift();
-        expect(result[0].type).toEqual(firmwareActions.setTargetRelease.type);
-    });
 });
