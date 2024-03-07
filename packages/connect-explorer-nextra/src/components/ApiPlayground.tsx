@@ -1,16 +1,13 @@
 import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
+import { OptionalKind, Kind, TSchema } from '@sinclair/typebox';
 
 import { Card, CollapsibleBox, variables } from '@trezor/components';
 
 import { Method } from './Method';
 import { useActions } from '../hooks';
-import * as routerActions from '../actions/routerActions';
-
-interface ApiPlaygroundProps {
-    method: string;
-}
+import * as methodActions from '../actions/methodActions';
 
 const ApiPlaygroundWrapper = styled(Card)`
     display: block;
@@ -20,7 +17,7 @@ const ApiPlaygroundWrapper = styled(Card)`
     left: 2rem;
     right: 2rem;
     max-width: 54rem;
-    max-height: 32rem;
+    max-height: 48rem;
     overflow-x: auto;
     border-radius: 1rem;
     padding: 0;
@@ -36,13 +33,97 @@ const ApiPlaygroundWrapper = styled(Card)`
     }
 `;
 
-export const ApiPlayground = ({ method }: ApiPlaygroundProps) => {
+const schemaToFields = (schema: TSchema) => {
+    console.log(schema);
+
+    if (schema[Kind] === 'Object') {
+        return Object.keys(schema.properties).flatMap(key => {
+            const field = schema.properties[key];
+            if (field[Kind] === 'Object') {
+                return [
+                    {
+                        name: key,
+                        label: key,
+                        type: 'json',
+                        value: undefined,
+                    },
+                ];
+            }
+
+            return schemaToFields(field).map(field => {
+                return {
+                    ...field,
+                    name: [key, field.name].filter(v => v).join('.'),
+                };
+            });
+        });
+    } else if (schema[Kind] === 'Array') {
+        const fields = schemaToFields(schema.items);
+
+        return [
+            {
+                name: '',
+                type: 'array',
+                batch: [
+                    {
+                        type: '',
+                        fields,
+                    },
+                ],
+                items: schema[OptionalKind] === 'Optional' ? [] : [fields],
+            },
+        ];
+    } else if (schema[Kind] === 'Intersect') {
+        return schema.allOf?.flatMap(schemaToFields);
+    } else if (schema[Kind] === 'Union') {
+        const onlyLiterals = schema.anyOf?.every(s => s[Kind] === 'Literal');
+        if (onlyLiterals) {
+            const filtered = schema.anyOf?.filter((s, i) => s.const !== i.toString());
+            const options = filtered.length > 0 ? filtered : schema.anyOf;
+
+            return [
+                {
+                    type: 'select',
+                    value: schema.default,
+                    optional: schema[Optional] === 'Optional',
+                    data: options.map(s => ({ label: s.const, value: s.const })),
+                },
+            ];
+        }
+    }
+
+    const typeMap: Record<string, string> = {
+        String: 'input',
+        Number: 'number',
+        Uint: 'number',
+        Boolean: 'checkbox',
+    };
+
+    return [
+        {
+            type: typeMap[schema[Kind]] ?? 'input',
+            value: schema.default,
+            optional: schema[OptionalKind] === 'Optional',
+        },
+    ];
+};
+
+interface ApiPlaygroundProps {
+    method: string;
+    schema: TSchema;
+}
+export const ApiPlayground = ({ method, schema }: ApiPlaygroundProps) => {
     const actions = useActions({
-        ...routerActions,
+        onSetMethod: methodActions.onSetMethod,
     });
     useEffect(() => {
-        actions.onLocationChange({ pathname: method, search: window.location.search });
-    }, [actions, method]);
+        const fields = schemaToFields(schema);
+        actions.onSetMethod({
+            name: method,
+            fields,
+            submitButton: 'Submit',
+        });
+    }, [actions, method, schema]);
 
     return (
         <ApiPlaygroundWrapper>

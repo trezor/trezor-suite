@@ -2,7 +2,7 @@ import TrezorConnect from '@trezor/connect-web';
 
 import { GetState, Dispatch, Field } from '../types';
 
-export const TAB_CHANGE = 'method_tab_change';
+export const SET_METHOD = 'method_set';
 export const FIELD_CHANGE = 'method_field_change';
 export const FIELD_DATA_CHANGE = 'method_field_data_change';
 export const ADD_BATCH = 'method_add_batch';
@@ -10,19 +10,17 @@ export const REMOVE_BATCH = 'method_remove_batch';
 export const RESPONSE = 'method_response';
 
 export type MethodAction =
-    | { type: typeof TAB_CHANGE; tab: string }
+    | { type: typeof SET_METHOD; methodConfig: any }
     | { type: typeof FIELD_CHANGE; field: Field<any>; value: any }
     | { type: typeof FIELD_DATA_CHANGE; field: Field<any>; data: any }
     | { type: typeof ADD_BATCH; field: Field<any>; item: any }
     | { type: typeof REMOVE_BATCH; field: Field<any>; batch: any[] }
     | { type: typeof RESPONSE; response: any };
 
-export const onTabChange = (tab: string) => (dispatch: Dispatch) => {
-    dispatch({
-        type: TAB_CHANGE,
-        tab,
-    });
-};
+export const onSetMethod = (methodConfig: any) => ({
+    type: SET_METHOD,
+    methodConfig,
+});
 
 export const onFieldChange = (field: Field<any>, value: any) => ({
     type: FIELD_CHANGE,

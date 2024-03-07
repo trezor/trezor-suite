@@ -10,6 +10,7 @@ export const GetPublicKey = Type.Intersect([
             Type.String({
                 description:
                     'determines network definition specified in coins.json file. Coin shortcut, name or label can be used. If coin is not set API will try to get network definition from path.',
+                default: 'btc',
             }),
         ),
         crossChain: Type.Optional(Type.Boolean()),

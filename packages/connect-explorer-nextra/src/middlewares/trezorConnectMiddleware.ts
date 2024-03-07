@@ -2,7 +2,7 @@ import { MiddlewareAPI } from 'redux';
 
 import { Dispatch, AppState, Action } from '../types';
 import { getQueryVariable } from '../utils/windowUtils';
-import { ON_LOCATION_CHANGE } from '../actions';
+import { SET_METHOD } from '../actions';
 import { init } from '../actions/trezorConnectActions';
 
 export const trezorConnectMiddleware =
@@ -11,7 +11,7 @@ export const trezorConnectMiddleware =
 
         next(action);
 
-        if (action.type === ON_LOCATION_CHANGE && !prevConnectOptions) {
+        if (action.type === SET_METHOD && !prevConnectOptions) {
             const connectSrc = getQueryVariable('src');
             const options = {};
             if (connectSrc) {
