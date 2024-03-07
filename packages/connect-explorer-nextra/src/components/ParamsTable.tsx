@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Kind, OptionalKind, TIntersect, TObject, TSchema } from '@sinclair/typebox';
+import { Hint, Kind, OptionalKind, TIntersect, TObject, TSchema } from '@sinclair/typebox';
 
 import { Param } from './Param';
 
@@ -42,7 +42,12 @@ const getTypeName = (value: TSchema, hasDescendants?: boolean) => {
 
             return true;
         });
-        typeName = itemsFiltered?.map(v => getTypeName(v)).join(' | ');
+        if (itemsFiltered.length > 0) {
+            typeName = itemsFiltered?.map(v => getTypeName(v)).join(' | ');
+        } else if (value[Hint] === 'Enum') {
+            // TODO handle enums - need to add $id in schema-utils
+            typeName = 'Enum';
+        }
     } else if (value[Kind] === 'Intersect' && !hasDescendants) {
         typeName = value.anyOf?.map(v => getTypeName(v)).join(' & ');
     } else if (value[Kind] === 'Object' && value.$id) {

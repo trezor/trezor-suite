@@ -151,11 +151,18 @@ export const Method = () => {
 
     const json = response ? <Inspector data={response} expandLevel={10} table={false} /> : null;
 
+    // Move all booleans to the end while not breaking the order of other fields
+    const bools = fields.filter(f => f.type === 'checkbox');
+    const nonBools = fields.filter(f => f.type !== 'checkbox');
+
     return (
         <MethodContent>
             <div>
                 <Heading>Params</Heading>
-                {fields.map(field => getField(field, { actions }))}
+                {nonBools.map(field => getField(field, { actions }))}
+                <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px 0' }}>
+                    {bools.map(field => getField(field, { actions }))}
+                </div>
                 <Row>
                     <Button onClick={onSubmit} data-test="@submit-button">
                         {submitButton}

@@ -70,7 +70,7 @@ export type GetAddress = Static<typeof GetAddress>;
 export const GetAddress = Type.Object({
     path: DerivationPath,
     address: Type.Optional(Type.String()),
-    showOnTrezor: Type.Optional(Type.Boolean()),
+    showOnTrezor: Type.Optional(Type.Boolean({ default: true })),
     chunkify: Type.Optional(Type.Boolean()),
     useEventListener: Type.Optional(Type.Boolean()),
 });

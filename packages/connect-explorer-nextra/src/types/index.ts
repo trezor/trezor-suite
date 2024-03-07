@@ -4,10 +4,9 @@ import type { KnownDevice, UnknownDevice, UnreadableDevice } from '@trezor/conne
 
 import type { AppState as AppState$ } from '../reducers';
 import type { MethodAction } from '../actions/methodActions';
-import type { RouterAction } from '../actions/routerActions';
 import type { TrezorConnectAction } from '../actions/trezorConnectActions';
 
-export type Action = MethodAction | RouterAction | TrezorConnectAction;
+export type Action = MethodAction | TrezorConnectAction;
 
 export type AppState = AppState$;
 export type GetState = () => AppState$;
