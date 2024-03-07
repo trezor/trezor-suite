@@ -1,18 +1,13 @@
 import { isAnyOf } from '@reduxjs/toolkit';
 
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
-import {
-    transactionsActions,
-    accountsActions,
-    blockchainActions,
-    getTokenDefinitionThunk,
-} from '@suite-common/wallet-core';
+import { transactionsActions, accountsActions, blockchainActions } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 
 import {
     fetchFiatRatesThunk,
-    updateFiatRatesThunk,
     updateMissingTxFiatRatesThunk,
+    updateTokenFiatRatesThunk,
     updateTxsFiatRatesThunk,
 } from './fiatRatesThunks';
 
@@ -66,20 +61,26 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
             );
         }
 
-        // If there is a new valid token present, download its fiat rates.
-        if (getTokenDefinitionThunk.fulfilled.match(action)) {
-            const { networkSymbol, contractAddress } = action.meta.arg;
+        // Fetch fiat rates for all tokens of newly discovered ETH account.
+        if (
+            accountsActions.createIndexLabeledAccount.match(action) &&
+            action.payload.symbol === 'eth'
+        ) {
             const localCurrency = selectLocalCurrency(getState());
-            dispatch(
-                updateFiatRatesThunk({
-                    ticker: {
-                        symbol: networkSymbol,
-                        tokenAddress: contractAddress as TokenAddress,
-                    },
-                    rateType: 'current',
-                    localCurrency,
-                }),
-            );
+
+            const { tokens } = action.payload;
+            tokens?.forEach(token => {
+                dispatch(
+                    updateTokenFiatRatesThunk({
+                        ticker: {
+                            symbol: 'eth',
+                            tokenAddress: token.contract as TokenAddress,
+                        },
+                        rateType: 'current',
+                        localCurrency,
+                    }),
+                );
+            });
         }
 
         return next(action);
