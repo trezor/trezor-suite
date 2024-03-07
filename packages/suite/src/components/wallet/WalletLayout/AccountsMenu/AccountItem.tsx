@@ -29,7 +29,6 @@ const Wrapper = styled(NavigationItemBase)<{ isSelected: boolean }>`
 
     :hover {
         position: relative;
-        z-index: 2;
         background: ${({ theme, isSelected }) =>
             !isSelected && theme.backgroundTertiaryPressedOnElevation0};
     }
