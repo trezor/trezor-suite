@@ -1,9 +1,7 @@
-import { ImgHTMLAttributes } from 'react';
 import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 
 import { LOGOS } from './trezorLogos';
-import { TransientProps } from '../../..';
 
 export type TrezorLogoType =
     | 'horizontal'
@@ -27,17 +25,23 @@ const SvgWrapper = styled.div<{
     }
 `;
 
-export interface TrezorLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
+export interface TrezorLogoProp {
     type: TrezorLogoType;
     width?: string | number;
     height?: string | number;
+    'data-test': string;
 }
 
-export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: TrezorLogoProps) => (
+export const TrezorLogo = ({
+    type,
+    width = 'auto',
+    height = 'auto',
+    'data-test': dataTest,
+}: TrezorLogoProp) => (
     <SvgWrapper
         $width={typeof width === 'number' ? `${width}px` : width}
         $height={typeof height === 'number' ? `${height}px` : height}
-        {...rest}
+        data-test={dataTest}
     >
         <ReactSVG
             src={LOGOS[type.toUpperCase()]}
