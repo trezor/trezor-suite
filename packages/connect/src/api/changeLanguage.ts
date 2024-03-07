@@ -4,6 +4,7 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 import { Assert } from '@trezor/schema-utils';
 import { ChangeLanguage as ChangeLanguageSchema } from '../types/api/changeLanguage';
+
 export default class ChangeLanguage extends AbstractMethod<'changeLanguage', ChangeLanguageSchema> {
     init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
