@@ -10,7 +10,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Account } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import TrezorConnect, { AccountTransaction } from '@trezor/connect';
-import { transactionsActions } from '@suite-common/wallet-core';
+import { selectCoinDefinition, transactionsActions } from '@suite-common/wallet-core';
 import { networks } from '@suite-common/wallet-config';
 
 import { actionPrefix } from './fiatRatesActions';
@@ -138,6 +138,22 @@ export const updateFiatRatesThunk = createThunk(
         }
 
         return rate;
+    },
+);
+
+export const updateTokenFiatRatesThunk = createThunk(
+    `${actionPrefix}/updateTokenFiatRates`,
+    async (
+        { ticker, localCurrency, rateType = 'current' }: UpdateCurrentFiatRatesThunkPayload,
+        { getState, rejectWithValue, dispatch },
+    ) => {
+        const isTokenKnown = selectCoinDefinition(getState(), ticker.symbol, ticker.tokenAddress!);
+
+        if (!isTokenKnown) {
+            return rejectWithValue('Token not known');
+        }
+
+        return await dispatch(updateFiatRatesThunk({ ticker, localCurrency, rateType })).unwrap();
     },
 );
 
