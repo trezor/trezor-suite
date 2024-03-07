@@ -1,9 +1,11 @@
-import { useState } from 'react';
-
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { OnboardingButtonBack, OnboardingStepBox } from 'src/components/onboarding';
+import {
+    ConnectDevicePromptManager,
+    OnboardingButtonBack,
+    OnboardingStepBox,
+} from 'src/components/onboarding';
 import { Translation } from 'src/components/suite';
 import {
     FirmwareContinueButton,
@@ -13,7 +15,6 @@ import {
     Fingerprint,
 } from 'src/components/firmware';
 import { useSelector, useFirmware, useOnboarding } from 'src/hooks/suite';
-import { TrezorDevice } from 'src/types/suite';
 import { getSuiteFirmwareTypeString } from 'src/utils/firmware';
 
 export const FirmwareStep = () => {
@@ -28,7 +29,11 @@ export const FirmwareStep = () => {
         firmwareHashInvalid,
         targetType,
     } = useFirmware();
-    const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
+
+    const goToNextStepAndResetReducer = () => {
+        goToNextStep();
+        resetReducer();
+    };
 
     // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
@@ -55,21 +60,25 @@ export const FirmwareStep = () => {
     }
 
     // edge case 1 - Installation failed
-    if (error) {
+    if (status === 'error') {
         return (
             <OnboardingStepBox
                 image="FIRMWARE"
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                innerActions={<FirmwareRetryButton onClick={() => firmwareUpdate(targetType)} />}
+                innerActions={
+                    <FirmwareRetryButton
+                        onClick={() => firmwareUpdate({ firmwareType: targetType })}
+                    />
+                }
                 outerActions={<OnboardingButtonBack onClick={() => resetReducer()} />}
             />
         );
     }
 
     // edge case 2 - user has reconnected device that is already up to date
-    // include "validation" status to prevent displaying this during installation
-    if (!['validation', 'done'].includes(status) && device?.firmware === 'valid') {
+    // include "started" status to prevent displaying this during installation
+    if (!['started', 'done'].includes(status) && device?.firmware === 'valid') {
         const firmwareType = getSuiteFirmwareTypeString(device.firmwareType);
 
         return (
@@ -104,31 +113,19 @@ export const FirmwareStep = () => {
         );
     }
 
+    if (['initial', 'done'].includes(status) && (!device?.connected || !device?.features)) {
+        // Most users won't see this as they should come here with a connected device.
+        // This is just for people who want to shoot themselves in the foot and disconnect the device before proceeding with fw update flow
+        return <ConnectDevicePromptManager device={device} />;
+    }
+
     switch (status) {
         // check-seed is omitted as it is only relevant in separate fw update flow and it is not used in onboarding since user don't have any seed at that time
         case 'initial':
-        case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
-            return (
-                <FirmwareInitial
-                    cachedDevice={cachedDevice}
-                    setCachedDevice={setCachedDevice}
-                    onInstall={firmwareUpdate}
-                />
-            );
-        case 'waiting-for-confirmation': // waiting for confirming installation on a device
+            return <FirmwareInitial />;
         case 'started': // called from firmwareUpdate()
-        case 'installing':
-        case 'wait-for-reboot':
-        case 'validation':
-        case 'unplug': // only relevant for T1B1, T2T1 auto restarts itself
-        case 'reconnect-in-normal': // only relevant for T1B1, T2T1 auto restarts itself
-        case 'partially-done': // only relevant for T1B1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
         case 'done':
-            return (
-                <>
-                    <FirmwareInstallation cachedDevice={cachedDevice} onSuccess={goToNextStep} />
-                </>
-            );
+            return <FirmwareInstallation onSuccess={goToNextStepAndResetReducer} />;
         default:
             // 'ensure' type completeness
             throw new Error(`state "${status}" is not handled here`);

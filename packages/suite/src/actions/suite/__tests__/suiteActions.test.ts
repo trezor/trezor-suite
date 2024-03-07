@@ -154,12 +154,7 @@ describe('Suite Actions', () => {
 
     fixtures.handleDeviceConnect.forEach(f => {
         it(`handleDeviceConnect: ${f.description}`, async () => {
-            const state = getInitialState(
-                f.state.suite,
-                f.state.device,
-                undefined,
-                f.state.firmware as FirmwareState,
-            );
+            const state = getInitialState(f.state.suite, f.state.device, undefined);
             const store = initStore(state);
             await store.dispatch(handleDeviceConnect(f.device));
             if (!f.result) {

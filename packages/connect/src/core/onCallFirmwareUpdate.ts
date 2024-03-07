@@ -280,8 +280,7 @@ export const onCallFirmwareUpdate = async ({
 
     registerEvents(device, postMessage);
 
-    const { manual, upgrade, language } = getInstallationParams(device);
-
+    const { manual, upgrade, language } = getInstallationParams(device, params.binary);
     log.debug('onCallFirmwareUpdate', 'installation params', { manual, upgrade, language });
 
     const binary =
@@ -350,7 +349,7 @@ export const onCallFirmwareUpdate = async ({
                 // TranslationDataRequest is returned when language_data_length is sent and supported
                 // Once Success is returned, device is ready to receive FirmwareErase and FirmwareUpload commands
                 ['TranslationDataRequest', 'Success'],
-                { ...rebootParams, language_data_length: languageBlob.byteLength },
+                { ...rebootParams, language_data_length: languageBlob?.byteLength },
             );
 
             log.debug(
@@ -359,7 +358,7 @@ export const onCallFirmwareUpdate = async ({
                 rebootResponse.message,
             );
 
-            while (rebootResponse.type !== 'Success') {
+            while (languageBlob && rebootResponse.type !== 'Success') {
                 const start = rebootResponse.message.data_offset;
                 const end = rebootResponse.message.data_offset + rebootResponse.message.data_length;
                 const chunk = languageBlob.slice(start, end);
@@ -379,7 +378,6 @@ export const onCallFirmwareUpdate = async ({
         if (device.features.major_version === 1) {
             await createTimeoutPromise(2000);
         }
-
         reconnectedDevice = await waitForReconnectedDevice({
             params: { bootloader: true, manual: false },
             context: { deviceList, device, log, postMessage, abortSignal },
@@ -417,7 +415,6 @@ export const onCallFirmwareUpdate = async ({
             params: { manual },
             context: { deviceList, log, device: reconnectedDevice, postMessage },
         });
-
         reconnectedDevice = await waitForReconnectedDevice({
             params: { bootloader: true, manual: true },
             context: { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
@@ -443,7 +440,6 @@ export const onCallFirmwareUpdate = async ({
         params: { manual },
         context: { deviceList, log, device: reconnectedDevice, postMessage },
     });
-
     reconnectedDevice = await waitForReconnectedDevice({
         params: { bootloader: false, manual: false },
         context: { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },

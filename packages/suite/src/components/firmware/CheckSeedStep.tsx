@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Checkbox, variables } from '@trezor/components';
-import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingStepBox } from 'src/components/onboarding';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 import { goto } from 'src/actions/suite/routerActions';
@@ -44,19 +45,16 @@ type CheckSeedStepProps = {
 export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStepProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { hasSeed, toggleHasSeed } = useFirmware();
+    const [isChecked, setIsChecked] = useState(false);
 
-    if (!device?.connected || !device?.features) {
-        return <ConnectDevicePromptManager device={device} />;
-    }
-
+    const handleCheckboxClick = () => setIsChecked(prev => !prev);
     const getContent = () => {
-        const isBackedUp = !device.features.needs_backup && !device.features.unfinished_backup;
+        const isBackedUp = !device?.features?.needs_backup && !device?.features?.unfinished_backup;
 
         const noBackupHeading = (
             <Translation
                 id="TR_DEVICE_LABEL_IS_NOT_BACKED_UP"
-                values={{ deviceLabel: device.label }}
+                values={{ deviceLabel: device?.label }}
             />
         );
 
@@ -130,7 +128,7 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
                     <Button
                         onClick={onSuccess}
                         data-test="@firmware/confirm-seed-button"
-                        isDisabled={!device?.connected || !hasSeed}
+                        isDisabled={!device?.connected || !isChecked}
                     >
                         <Translation id={willBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'} />
                     </Button>
@@ -145,8 +143,8 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
                 </StyledSwitchWarning>
             )}
             <StyledCheckbox
-                isChecked={hasSeed}
-                onClick={toggleHasSeed}
+                isChecked={isChecked}
+                onClick={handleCheckboxClick}
                 data-test="@firmware/confirm-seed-checkbox"
             >
                 {checkbox}

@@ -1,4 +1,4 @@
-import { Firmware } from 'src/views/firmware';
+import { FirmwareUpdate } from 'src/views/firmware/FirmwareUpdate';
 import { FirmwareCustom } from 'src/views/firmware/FirmwareCustom';
 import { Recovery } from 'src/views/recovery';
 import { Backup } from 'src/views/backup';
@@ -12,12 +12,12 @@ import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import type { ForegroundAppRoute } from 'src/types/suite';
 
 // would not work if defined directly in the switch
-const FirmwareType = () => <Firmware shouldSwitchFirmwareType />;
+const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
 
 const getForegroundApp = (app: ForegroundAppRoute['app'], isViewOnlyModeVisible: boolean) => {
     switch (app) {
         case 'firmware':
-            return Firmware;
+            return FirmwareUpdate;
         case 'firmware-type':
             return FirmwareType;
         case 'firmware-custom':

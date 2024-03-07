@@ -7,6 +7,7 @@ export const FirmwareUpdate_v2 = Type.Union([
         binary: Type.Optional(Type.Undefined()),
         btcOnly: Type.Optional(Type.Boolean()),
         baseUrl: Type.Optional(Type.String()),
+        language: Type.Optional(Type.String()),
     }),
     Type.Object({
         binary: Type.ArrayBuffer(),

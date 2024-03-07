@@ -24,7 +24,7 @@ describe('Firmware', () => {
         // check seed screen
         cy.getTestElement('@modal/close-button').should('be.visible'); // modal is cancellable at this moment
         cy.wait(1000); // wait for animation to finish before taking a screenshot
-        cy.getTestElement('@firmware').matchImageSnapshot('check-seed');
+        cy.getTestElement('@firmware-modal').matchImageSnapshot('check-seed');
         cy.getTestElement('@firmware/confirm-seed-checkbox').click();
         cy.getTestElement('@firmware/confirm-seed-button').click();
 
