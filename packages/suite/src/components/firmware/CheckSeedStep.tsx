@@ -47,7 +47,6 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
     const { hasSeed, toggleHasSeed } = useFirmware();
 
     // unacquired device handled on higher level
-
     if (!device?.features) return null;
 
     const isBackedUp = !device.features.needs_backup && !device.features.unfinished_backup;

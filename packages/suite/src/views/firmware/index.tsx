@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 
@@ -12,10 +12,8 @@ import {
     FirmwareCloseButton,
     FirmwareInitial,
     FirmwareInstallation,
+    ReconnectDevicePrompt,
 } from 'src/components/firmware';
-import { DeviceAcquire } from 'src/views/suite/device-acquire';
-import { DeviceUnknown } from 'src/views/suite/device-unknown';
-import { DeviceUnreadable } from 'src/views/suite/device-unreadable';
 import { Translation, Modal } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
@@ -45,8 +43,15 @@ type FirmwareProps = {
 };
 
 export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
-    const { resetReducer, status, setStatus, error, firmwareUpdate, firmwareHashInvalid } =
-        useFirmware();
+    const {
+        resetReducer,
+        status,
+        error,
+        firmwareUpdate,
+        firmwareHashInvalid,
+        getTargetFirmwareType,
+        uiEvent,
+    } = useFirmware();
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
@@ -63,19 +68,19 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
         resetReducer();
     };
 
-    const [cachedDevice, setCachedDevice] = useState<TrezorDevice | undefined>(device);
-
     // some of the application states can be reused here.
     // some don't make sense handling here as they are handled somewhere up the tree
     // some must be handled in lower layers because of specifics of fw update process (eg. device-disconnected)
     const getSuiteApplicationState = () => {
-        if (!device) return;
+        if (!device) return null;
+
+        return null;
         // device features cannot be read, device is probably used in another window
-        if (device.type === 'unacquired') return DeviceAcquire;
+        // if (device.type === 'unacquired') return DeviceAcquire;
         // Webusb unreadable device (HID)
-        if (device.type === 'unreadable') return DeviceUnreadable;
+        // if (device.type === 'unreadable') return DeviceUnreadable;
         // device features unknown (this shouldn't happened tho)
-        if (!device.features) return DeviceUnknown;
+        // if (!device.features) return DeviceUnknown;
     };
 
     const getComponent = () => {
@@ -107,11 +112,8 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                 );
             }
             case 'initial':
-            case 'waiting-for-bootloader': // waiting for user to reconnect in bootloader
                 return (
                     <FirmwareInitial
-                        cachedDevice={cachedDevice}
-                        setCachedDevice={setCachedDevice}
                         standaloneFwUpdate
                         shouldSwitchFirmwareType={shouldSwitchFirmwareType}
                         willBeWiped={deviceWillBeWiped}
@@ -122,23 +124,20 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             case 'check-seed': // triggered from FirmwareInitial
                 return (
                     <CheckSeedStep
-                        onSuccess={() => setStatus('waiting-for-bootloader')}
+                        onSuccess={() => {
+                            firmwareUpdate({
+                                firmwareType: getTargetFirmwareType(!!shouldSwitchFirmwareType),
+                            });
+                        }}
                         onClose={onClose}
                         willBeWiped={deviceWillBeWiped}
                     />
                 );
-            case 'waiting-for-confirmation': // waiting for confirming installation on a device
             case 'started': // called from firmwareUpdate()
-            case 'installing':
-            case 'wait-for-reboot':
-            case 'unplug': // only relevant for T1B1, T2T1 auto restarts itself
-            case 'reconnect-in-normal': // only relevant for T1B1, T2T1 auto restarts itself
             case 'partially-done': // only relevant for T1B1, updating from very old fw is done in 2 fw updates, partially-done means first update was installed
-            case 'validation':
             case 'done':
                 return (
                     <FirmwareInstallation
-                        cachedDevice={cachedDevice}
                         standaloneFwUpdate
                         onSuccess={onClose}
                         onClose={onClose}
@@ -167,7 +166,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
         <StyledModal
             isCancelable={isCancelable}
             modalPrompt={
-                status === 'waiting-for-confirmation' && (
+                uiEvent?.payload?.confirmOnDevice === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={deviceModelInternal}
@@ -179,6 +178,39 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             data-test="@firmware"
             heading={<Translation id={heading} />}
         >
+            <div>status: {status}</div>
+            <ReconnectDevicePrompt
+                expectedDevice={device}
+                requestedMode="normal"
+                onClose={onClose}
+            />
+            <div>
+                event:
+                {(() => {
+                    if (!uiEvent) return '';
+                    if (uiEvent.type === 'ui-firmware_reconnect') {
+                        const { manual, bootloader, confirmOnDevice } = uiEvent.payload;
+
+                        return ` reconnect your device ${manual ? 'manually' : 'automagically'}  in ${bootloader ? 'bootloader' : 'normal'} mode. ${confirmOnDevice && 'action on device needed'}`;
+                    }
+                    if (uiEvent.type === 'ui-firmware_disconnect') {
+                        const { manual } = uiEvent.payload;
+
+                        return ` disconnect your device ${manual ? 'manually' : 'automagically'}`;
+                    }
+                    if (uiEvent.type === 'ui-firmware-progress') {
+                        const { operation, progress } = uiEvent.payload;
+
+                        return ` ${operation} ${progress}`;
+                    }
+                    if (uiEvent.type === 'button') {
+                        return 'button request: ' + uiEvent.payload.code;
+                    }
+
+                    return 'unknonw';
+                })()}
+            </div>
+
             <Wrapper $isWithTopPadding={!isCancelable}>{Component}</Wrapper>
         </StyledModal>
     );

@@ -20,11 +20,7 @@ import {
 } from 'src/components/onboarding';
 import { Translation } from '../suite';
 import { useDevice, useFirmware, useOnboarding, useSelector } from 'src/hooks/suite';
-import {
-    ReconnectDevicePrompt,
-    FirmwareInstallButton,
-    FirmwareOffer,
-} from 'src/components/firmware';
+import { FirmwareInstallButton, FirmwareOffer } from 'src/components/firmware';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 import { spacingsPx } from '@trezor/theme';
@@ -126,8 +122,6 @@ const getNoFirmwareInstalledSubheading = (device: AcquiredDevice) => {
 };
 
 interface FirmwareInitialProps {
-    cachedDevice?: TrezorDevice;
-    setCachedDevice: Dispatch<SetStateAction<TrezorDevice | undefined>>;
     // This component is shared between Onboarding flow and standalone fw update modal with few minor UI changes
     // If it is set to true, then you know it is being rendered in standalone fw update modal
     standaloneFwUpdate?: boolean;
@@ -138,8 +132,6 @@ interface FirmwareInitialProps {
 }
 
 export const FirmwareInitial = ({
-    cachedDevice,
-    setCachedDevice,
     onInstall,
     standaloneFwUpdate = false,
     shouldSwitchFirmwareType,
@@ -148,7 +140,8 @@ export const FirmwareInitial = ({
 }: FirmwareInitialProps) => {
     const [bitcoinOnlyOffer, setBitcoinOnlyOffer] = useState(false);
     const { device: liveDevice } = useDevice();
-    const { setStatus, status } = useFirmware();
+    const { setStatus, status, getTargetFirmwareType } = useFirmware();
+
     const { goToNextStep, updateAnalytics } = useOnboarding();
     const devices = useSelector(selectDevices);
 
@@ -156,20 +149,8 @@ export const FirmwareInitial = ({
     const devicesConnected = devices.filter(device => device?.connected);
     const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
 
-    useEffect(() => {
-        // When the user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
-        // This prompt (to reconnect a device in bootloader mode) is shown in modal which is visually layer above the content.
-        // We are caching the device in order to preserve the background content (screen with fw update offer) when the user
-        // disconnects the device and reconnects it in bl mode.
-        // (Device in BL mode doesn't provide us all the details and we don't want any flickering or reacting in general while the user is just following our instructions)
-        if (liveDevice?.connected && liveDevice?.mode !== 'bootloader' && liveDevice.features) {
-            // we never store state of the device while it is in bootloader, we want just "normal" mode
-            setCachedDevice(liveDevice);
-        }
-    }, [cachedDevice?.id, liveDevice, setCachedDevice]);
-
     // User is following instructions for disconnecting/reconnecting a device in bootloader mode; We'll use cached version of the device
-    const device = status === 'waiting-for-bootloader' ? cachedDevice : liveDevice;
+    const device = liveDevice;
 
     let content;
 
@@ -180,6 +161,7 @@ export const FirmwareInitial = ({
         return <StyledConnectDevicePrompt device={device} />;
     }
 
+    const targetType = getTargetFirmwareType(!!shouldSwitchFirmwareType);
     // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
     const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
     const currentFwVersion = getFirmwareVersion(device);
@@ -190,18 +172,10 @@ export const FirmwareInitial = ({
         availableFwVersion === currentFwVersion
     );
     const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
-    const targetFirmwareType =
-        // updating Bitcoin-only
-        (isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
-        // switching to Bitcoin-only
-        (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && isBitcoinOnlyAvailable) ||
-        // Bitcoin-only device
-        isBitcoinOnlyDevice(device)
-            ? FirmwareType.BitcoinOnly
-            : FirmwareType.Regular;
+    console.log('isCurrentlyBitcoinOnly', isCurrentlyBitcoinOnly);
 
-    const installFirmware = (type: FirmwareType) => {
-        onInstall(type);
+    const installFirmware = () => {
+        onInstall({ firmwareType: targetType });
         updateAnalytics({ firmware: 'install' });
     };
 
@@ -224,17 +198,18 @@ export const FirmwareInitial = ({
                     </Note>
                 </Description>
             ),
-            body: cachedDevice?.firmwareRelease ? (
-                <FirmwareOffer
-                    device={cachedDevice}
-                    targetFirmwareType={FirmwareType.BitcoinOnly}
-                />
+            body: device?.firmwareRelease ? (
+                <FirmwareOffer device={device} targetFirmwareType={FirmwareType.BitcoinOnly} />
             ) : undefined,
             innerActions: (
                 <FirmwareButtonsRow>
                     <FirmwareInstallButton
                         variant="secondary"
-                        onClick={() => installFirmware(FirmwareType.Regular)}
+                        onClick={() => {
+                            console.log('uaaa 3');
+
+                            installFirmware();
+                        }}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation
@@ -246,7 +221,10 @@ export const FirmwareInitial = ({
                     </FirmwareInstallButton>
 
                     <FirmwareInstallButton
-                        onClick={() => installFirmware(FirmwareType.BitcoinOnly)}
+                        onClick={() => {
+                            console.log('uaaa 4');
+                            installFirmware();
+                        }}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation
@@ -272,7 +250,12 @@ export const FirmwareInitial = ({
                     values={{
                         i: chunks => <i>{chunks}</i>,
                         button: chunks => (
-                            <TextButton onClick={() => setBitcoinOnlyOffer(true)}>
+                            <TextButton
+                                onClick={() => {
+                                    console.log('uaaa 5');
+                                    setBitcoinOnlyOffer(true);
+                                }}
+                            >
                                 {chunks}
                             </TextButton>
                         ),
@@ -280,12 +263,15 @@ export const FirmwareInitial = ({
                     }}
                 />
             ),
-            body: cachedDevice?.firmwareRelease ? (
-                <FirmwareOffer device={cachedDevice} targetFirmwareType={targetFirmwareType} />
+            body: device?.firmwareRelease ? (
+                <FirmwareOffer device={device} targetFirmwareType={targetType} />
             ) : undefined,
             innerActions: (
                 <FirmwareInstallButton
-                    onClick={() => installFirmware(targetFirmwareType)}
+                    onClick={() => {
+                        console.log('uaaa 6');
+                        installFirmware();
+                    }}
                     multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),
@@ -316,7 +302,7 @@ export const FirmwareInitial = ({
                         firmwareType: (
                             <Translation
                                 id={
-                                    targetFirmwareType === FirmwareType.BitcoinOnly
+                                    targetType === FirmwareType.BitcoinOnly
                                         ? 'TR_FIRMWARE_TYPE_BITCOIN_ONLY'
                                         : 'TR_FIRMWARE_TYPE_REGULAR'
                                 }
@@ -341,7 +327,7 @@ export const FirmwareInitial = ({
                         required: device.firmware === 'required',
                         standaloneFwUpdate,
                         reinstall: device.firmware === 'valid' || hasLatestAvailableFw,
-                        targetFirmwareType,
+                        targetFirmwareType: targetType,
                         shouldSwitchFirmwareType,
                         isBitcoinOnlyAvailable,
                     })}
@@ -372,15 +358,18 @@ export const FirmwareInitial = ({
                             </FirmwareSwitchWarning>
                         </WarningListWrapper>
                     )}
-                    <FirmwareOffer device={device} targetFirmwareType={targetFirmwareType} />
+                    <FirmwareOffer device={device} targetFirmwareType={targetType} />
                 </>
             ),
             innerActions: (
                 <FirmwareButtonsRow withCancelButton={willBeWiped} onClose={onClose}>
                     <FirmwareInstallButton
                         onClick={() => {
-                            setStatus(standaloneFwUpdate ? 'check-seed' : 'waiting-for-bootloader');
-                            updateAnalytics({ firmware: 'update' });
+                            console.log('uaaa 1');
+
+                            standaloneFwUpdate
+                                ? setStatus('check-seed')
+                                : updateAnalytics({ firmware: 'update' });
                         }}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
@@ -393,6 +382,7 @@ export const FirmwareInitial = ({
                     // Fw update is not mandatory, show skip button
                     <OnboardingButtonSkip
                         onClick={() => {
+                            console.log('uaaa 2');
                             goToNextStep();
                             updateAnalytics({ firmware: 'skip' });
                         }}
@@ -410,14 +400,14 @@ export const FirmwareInitial = ({
         return (
             <>
                 {/* Modal above a fw update offer. Instructs user to reconnect the device in bootloader */}
-                {status === 'waiting-for-bootloader' && (
+                {/* {status === 'waiting-for-bootloader' && (
                     <ReconnectDevicePrompt
                         expectedDevice={device}
                         requestedMode="bootloader"
-                        onSuccess={() => onInstall(targetFirmwareType)}
+                        onSuccess={() => onInstall()}
                         onClose={onClose}
                     />
-                )}
+                )} */}
 
                 <OnboardingStepBox
                     image="FIRMWARE"
@@ -426,7 +416,7 @@ export const FirmwareInitial = ({
                     innerActions={content.innerActions}
                     outerActions={content.outerActions}
                     disableConfirmWrapper={!!standaloneFwUpdate}
-                    device={status === 'waiting-for-confirmation' ? device : undefined}
+                    device={undefined}
                     isActionAbortable={false}
                     nested={!!standaloneFwUpdate}
                 >

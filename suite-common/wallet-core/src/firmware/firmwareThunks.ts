@@ -1,31 +1,12 @@
-import {
-    getBootloaderVersion,
-    getFirmwareVersion,
-    hasBitcoinOnlyFirmware,
-    isBitcoinOnlyDevice,
-} from '@trezor/device-utils';
-import { Await } from '@trezor/type-utils';
+import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import TrezorConnect, {
-    Device,
-    DeviceModelInternal,
-    FirmwareType,
-    Unsuccessful,
-} from '@trezor/connect';
+import TrezorConnect, { Device, FirmwareType, Unsuccessful } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import {
-    selectFirmwareChallenge,
-    selectFirmwareHash,
-    selectIntermediaryInstalled,
-    selectIsCustomFirmware,
-    selectPrevDevice,
-    selectTargetRelease,
-    selectUseDevkit,
-} from './firmwareReducer';
+import { selectUseDevkit } from './firmwareReducer';
 import { firmwareActionsPrefix, firmwareActions } from './firmwareActions';
 
 const handleFwHashError = createThunk(
@@ -54,88 +35,6 @@ const handleFwHashMismatch = createThunk(
         analytics.report({
             type: EventType.FirmwareValidateHashMismatch,
         });
-    },
-);
-
-/**
- * After installing a new firmware validate its hash (already saved into application state) with the result of
- * TrezorConnect.getFirmwareHash call
- */
-export const validateFirmwareHash = createThunk(
-    `${firmwareActionsPrefix}/validateFirmwareHash`,
-    async (device: Device, { getState, dispatch, extra }) => {
-        const {
-            selectors: { selectRouterApp },
-        } = extra;
-        const prevApp = selectRouterApp(getState());
-        const firmwareChallenge = selectFirmwareChallenge(getState());
-        const firmwareHash = selectFirmwareHash(getState());
-        const isCustom = selectIsCustomFirmware(getState());
-
-        if (!firmwareChallenge || !firmwareHash) {
-            // prevent false positives of invalid firmware hash. this should never happen though
-            console.error('firmwareChallenge or firmwareHash is missing');
-
-            return;
-        }
-
-        if (!isCustom) {
-            dispatch(firmwareActions.setStatus('validation'));
-            const fwHash = await TrezorConnect.getFirmwareHash({
-                device: {
-                    path: device.path,
-                },
-                challenge: firmwareChallenge,
-            });
-
-            // TODO: move this logic partially into TrezorConnect as described here:
-            // https://github.com/trezor/trezor-suite/issues/5896
-            // we don't want to have false negatives but more importantly false positives.
-            // Cases that should not lead to the big red error:
-            // - device disconnected, broken cable
-            // - errors from TrezorConnect in general
-            // Cases that should lead to the big red error:
-            // - device was unable to process 'GetFirmwareHash' message ('Unknown message')
-            // - errors from device in general
-            if (!fwHash.success) {
-                // Device error
-                // todo: add a more generic way how to handle all device errors
-                if (
-                    [
-                        'Unknown message', // T1B1
-                        'Unexpected message', // T2T1
-                    ].includes(fwHash.payload.error)
-                ) {
-                    handleFwHashMismatch(device);
-                } else {
-                    // TrezorConnect error. Only 'softly' inform user that we were not able to
-                    // validate firmware hash
-                    handleFwHashError(fwHash);
-                }
-
-                return;
-            }
-
-            if (fwHash.payload.hash !== firmwareHash) {
-                handleFwHashMismatch(device);
-
-                return;
-            }
-        }
-
-        // last version of firmware or custom firmware version was installed
-        if (
-            device.firmware === 'valid' ||
-            (device.firmware === 'outdated' && prevApp === 'firmware-custom')
-        ) {
-            dispatch(firmwareActions.setStatus('done'));
-            // at the moment, this should never happen. after firmware hash is validated using TrezorConnect.getFirmwareHash we know
-            // that device has either firmware 1.11.1 or higher or 2.5.1 or higher as this method is not available before that.
-            // and we also know that firmware update to the latest version (after 1.11.1 and 2.5.1) is straightforward without any need
-            // to update incrementally or using intermediary firmware.
-        } else if (['outdated', 'required'].includes(device.firmware!)) {
-            dispatch(firmwareActions.setStatus('partially-done'));
-        }
     },
 );
 
@@ -178,28 +77,74 @@ export const checkFirmwareAuthenticity = createThunk(
     },
 );
 
-export const rebootToBootloader = createThunk(
-    `${firmwareActionsPrefix}/rebootToBootloader`,
-    async (_, { dispatch, getState, extra }) => {
+export const firmwareUpdate_v2 = createThunk(
+    `${firmwareActionsPrefix}/firmwareUpdate_v2`,
+    async (
+        { firmwareType, binary }: { firmwareType?: FirmwareType; binary?: ArrayBuffer },
+        { dispatch, getState, extra },
+    ) => {
+        dispatch(firmwareActions.setStatus('started'));
+
+        console.log('firmwareUpdate_v2', firmwareType);
         const {
-            selectors: { selectDevice },
+            selectors: { selectDevice, selectDesktopBinDir },
         } = extra;
+
         const device = selectDevice(getState());
-
-        if (!device) return;
-
-        const response = await TrezorConnect.rebootToBootloader({
-            device: {
-                path: device.path,
-            },
-        });
-
-        if (!response.success) {
-            dispatch(
-                notificationsActions.addToast({ type: 'error', error: response.payload.error }),
-            );
+        const useDevkit = selectUseDevkit(getState());
+        const desktopBinDir = selectDesktopBinDir(getState());
+        if (!device) {
+            throw new Error('device is not connected');
         }
 
-        return response;
+        // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
+        const baseUrl = `${isDesktop() ? desktopBinDir : resolveStaticPath('connect/data')}${
+            useDevkit ? '/devkit' : ''
+        }`;
+
+        // update to same variant as is currently installed or to the regular one if device does not have any fw (new/wiped device),
+        // unless the user wants to switch firmware type
+        const getTargetFirmwareType = () => {
+            if (firmwareType) {
+                return firmwareType;
+            }
+
+            return hasBitcoinOnlyFirmware(device) || isBitcoinOnlyDevice(device)
+                ? FirmwareType.BitcoinOnly
+                : FirmwareType.Regular;
+        };
+
+        const targetFirmwareType = getTargetFirmwareType();
+        const toBitcoinOnlyFirmware = targetFirmwareType === FirmwareType.BitcoinOnly;
+
+        const firmwareUpdateReponse = await TrezorConnect.firmwareUpdate_v2({
+            device,
+
+            // from outside connect we need to know:
+            baseUrl,
+
+            // language probably optional (only if it should be changed)
+            language: 'de-DE',
+            // btc only probably optional (only if it should be changed)
+            btcOnly: toBitcoinOnlyFirmware,
+            // todo: how about custom fw?
+            binary,
+        });
+
+        if (!firmwareUpdateReponse.success) {
+            dispatch(firmwareActions.setStatus('error'));
+            dispatch(firmwareActions.setError(firmwareUpdateReponse.payload.error));
+        } else {
+            const { check } = firmwareUpdateReponse.payload;
+            if (check === 'mismatch') {
+                handleFwHashMismatch(device);
+            } else if (check === 'other-error') {
+                // TrezorConnect error. Only 'softly' inform user that we were not able to
+                // validate firmware hash
+                handleFwHashError(firmwareUpdateReponse.payload.checkError);
+            } else {
+                dispatch(firmwareActions.setStatus('done'));
+            }
+        }
     },
 );
