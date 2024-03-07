@@ -5,7 +5,7 @@ import { ERRORS } from '../constants';
 import { UI, createUiMessage } from '../events';
 import { Assert } from '@trezor/schema-utils';
 import { ChangeLanguage as ChangeLanguageSchema } from '../types/api/changeLanguage';
-import { httpRequest } from '../utils/assets';
+import { getLanguage } from './firmware/getLanguage';
 
 export default class ChangeLanguage extends AbstractMethod<'changeLanguage', ChangeLanguageSchema> {
     init() {
@@ -104,12 +104,12 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
             return this.uploadTranslationData(binary);
         }
 
-        const version = this.device.getVersion().join('.');
-        const model = this.device.features.internal_model;
-
-        const url = `${baseUrl}/firmware/translations/${model.toLowerCase()}/translation-${model.toUpperCase()}-${language}-${version}.bin`;
-
-        const downloadedBinary = await httpRequest(url, 'binary');
+        const downloadedBinary = await getLanguage({
+            language,
+            baseUrl: baseUrl!,
+            version: this.device.getVersion(),
+            internal_model: this.device.features.internal_model,
+        });
 
         return this.uploadTranslationData(downloadedBinary);
     }
