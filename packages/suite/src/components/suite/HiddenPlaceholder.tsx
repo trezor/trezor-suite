@@ -23,7 +23,7 @@ const Wrapper = styled.span<WrapperProps>`
         `}
 `;
 
-interface HiddenPlaceholderProps {
+export interface HiddenPlaceholderProps {
     enforceIntensity?: number;
     children: ReactNode;
     className?: string;
