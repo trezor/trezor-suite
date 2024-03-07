@@ -26,6 +26,12 @@
         "./src/utils/assets": "./src/utils/assets-browser.ts",
         "./src/workers/workers": "./src/workers/workers-browser.ts"
     },
+    "react-native": {
+        "./src/index": "./src/index.ts",
+        "./src/index.ts": "./src/index.ts",
+        "./src/utils/assets": "./src/utils/assets.native.ts",
+        "./src/workers/workers": "./src/workers/workers.native.ts"
+    },
     "publishConfig": {
         "main": "lib/index.js",
         "browser": {
@@ -33,6 +39,12 @@
             "./lib/index": "./lib/index-browser.js",
             "./lib/utils/assets": "./lib/utils/assets-browser.js",
             "./lib/workers/workers": "./lib/workers/workers-browser.js"
+        },
+        "react-native": {
+            "./lib/index": "./lib/index.js",
+            "./lib/index.ts": "./lib/index.js",
+            "./lib/utils/assets": "./lib/utils/assets.native.js",
+            "./lib/workers/workers": "./lib/workers/workers.native.js"
         }
     },
     "files": [
