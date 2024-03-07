@@ -176,6 +176,16 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
              * where transport.acquire, transport.release is called
              */
             this.transport.on(TRANSPORT.UPDATE, diff => {
+                diff.disconnected.forEach(descriptor => {
+                    const path = descriptor.path.toString();
+                    const device = this.devices[path];
+                    if (device) {
+                        device.disconnect();
+                        delete this.devices[path];
+                        this.emit(DEVICE.DISCONNECT, device.toMessageObject());
+                    }
+                });
+
                 diff.connected.forEach(async descriptor => {
                     const path = descriptor.path.toString();
                     const priority = DataManager.getSettings('priority');
@@ -255,16 +265,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     });
                 });
 
-                diff.disconnected.forEach(descriptor => {
-                    const path = descriptor.path.toString();
-                    const device = this.devices[path];
-                    if (device) {
-                        device.disconnect();
-                        delete this.devices[path];
-                        this.emit(DEVICE.DISCONNECT, device.toMessageObject());
-                    }
-                });
-
                 // whenever descriptors change we need to update them so that we can use them
                 // in subsequent transport.acquire calls
                 diff.descriptors.forEach(d => {
@@ -272,6 +272,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                         this.devices[d.path].originalDescriptor = {
                             session: d.session,
                             path: d.path,
+                            product: d.product,
                         };
                     }
                 });
@@ -423,6 +424,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 this.devices[d.path].originalDescriptor = {
                     session: d.session,
                     path: d.path,
+                    product: d.product,
                 };
                 this.devices[d.path].activitySessionID = d.session;
             }

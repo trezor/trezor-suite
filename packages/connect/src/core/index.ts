@@ -39,6 +39,7 @@ import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, Device as DeviceTyped } from '../types';
+import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 
 // Public variables
 let _core: Core; // Class with event emitter
@@ -137,72 +138,12 @@ const removeUiPromise = (promise: Deferred<any>) => {
 };
 
 /**
- * Handle incoming message.
- * @param {CoreMessage} message
- * @returns {void}
- * @memberof Core
- */
-const handleMessage = (message: CoreRequestMessage) => {
-    _log.debug('handleMessage', message);
-
-    switch (message.type) {
-        case POPUP.HANDSHAKE:
-            getPopupPromise(false).resolve();
-            break;
-        case POPUP.CLOSED:
-            onPopupClosed(message.payload ? message.payload.error : null);
-            break;
-
-        case TRANSPORT.DISABLE_WEBUSB:
-            disableWebUSBTransport();
-            break;
-
-        case TRANSPORT.REQUEST_DEVICE:
-            /**
-             * after pairing with device is requested in native context, for example see
-             * requestWebUSBDevice in connect-web/src/index, this is used to trigger transport
-             * enumeration
-             */
-            _deviceList?.enumerate();
-            break;
-
-        // messages from UI (popup/modal...)
-        case UI.RECEIVE_DEVICE:
-        case UI.RECEIVE_CONFIRMATION:
-        case UI.RECEIVE_PERMISSION:
-        case UI.RECEIVE_PIN:
-        case UI.RECEIVE_PASSPHRASE:
-        case UI.INVALID_PASSPHRASE_ACTION:
-        case UI.RECEIVE_ACCOUNT:
-        case UI.RECEIVE_FEE:
-        case UI.RECEIVE_WORD:
-        case UI.LOGIN_CHALLENGE_RESPONSE: {
-            const uiPromise = findUiPromise(message.type);
-            if (uiPromise) {
-                uiPromise.resolve(message);
-                removeUiPromise(uiPromise);
-            }
-            break;
-        }
-
-        // message from index
-        case IFRAME.CALL:
-            onCall(message).catch(error => {
-                _log.error('onCall', error);
-            });
-            break;
-
-        // no default
-    }
-};
-
-/**
  * Find device by device path. Returned device may be unacquired.
  * @param {AbstractMethod} method
  * @returns {Promise<Device>}
  * @memberof Core
  */
-const initDevice = async (method: AbstractMethod<any>) => {
+const initDevice = async (devicePath?: string) => {
     if (!_deviceList) {
         throw ERRORS.TypedError('Transport_Missing');
     }
@@ -231,8 +172,8 @@ const initDevice = async (method: AbstractMethod<any>) => {
         });
     }
 
-    if (method.devicePath) {
-        device = _deviceList.getDevice(method.devicePath);
+    if (devicePath) {
+        device = _deviceList.getDevice(devicePath);
         showDeviceSelection =
             !device || !!device?.unreadableError || (device.isUnacquired() && !!isUsingPopup);
     } else {
@@ -407,7 +348,7 @@ const onCall = async (message: IFrameCallMessage) => {
     // find device
     let device: Device;
     try {
-        device = await initDevice(method);
+        device = await initDevice(method.devicePath);
     } catch (error) {
         if (error.code === 'Transport_Missing') {
             // wait for popup handshake
@@ -1073,8 +1014,81 @@ const initDeviceList = async (transportReconnect?: boolean) => {
  * @memberof Core
  */
 export class Core extends EventEmitter {
+    abortController = new AbortController();
+
     handleMessage(message: CoreRequestMessage) {
-        handleMessage(message);
+        _log.debug('handleMessage', message);
+
+        switch (message.type) {
+            case POPUP.HANDSHAKE:
+                getPopupPromise(false).resolve();
+                break;
+            case POPUP.CLOSED:
+                onPopupClosed(message.payload ? message.payload.error : null);
+                break;
+
+            case TRANSPORT.DISABLE_WEBUSB:
+                disableWebUSBTransport();
+                break;
+
+            case TRANSPORT.REQUEST_DEVICE:
+                /**
+                 * after pairing with device is requested in native context, for example see
+                 * requestWebUSBDevice in connect-web/src/index, this is used to trigger transport
+                 * enumeration
+                 */
+                _deviceList?.enumerate();
+                break;
+
+            // messages from UI (popup/modal...)
+            case UI.RECEIVE_DEVICE:
+            case UI.RECEIVE_CONFIRMATION:
+            case UI.RECEIVE_PERMISSION:
+            case UI.RECEIVE_PIN:
+            case UI.RECEIVE_PASSPHRASE:
+            case UI.INVALID_PASSPHRASE_ACTION:
+            case UI.RECEIVE_ACCOUNT:
+            case UI.RECEIVE_FEE:
+            case UI.RECEIVE_WORD:
+            case UI.LOGIN_CHALLENGE_RESPONSE: {
+                const uiPromise = findUiPromise(message.type);
+                if (uiPromise) {
+                    uiPromise.resolve(message);
+                    removeUiPromise(uiPromise);
+                }
+                break;
+            }
+
+            // message from index
+            case IFRAME.CALL:
+                // firmwareUpdate is the only procedure that expects device disconnecting
+                // and reconnecting during the process. Due to this it can't be handled just
+                // like regular methods using onCall function. In onCall, disconnecting device
+                // means that call immediately returns error.
+                if (message.payload.method === 'firmwareUpdate_v2') {
+                    onCallFirmwareUpdate({
+                        params: message.payload,
+                        context: {
+                            deviceList: _deviceList!,
+                            postMessage,
+                            initDevice,
+                            log: _log,
+                            abortSignal: this.abortController.signal,
+                        },
+                    })
+                        .then(payload => {
+                            postMessage(createResponseMessage(message.id, true, payload));
+                        })
+                        .catch(error => {
+                            postMessage(createResponseMessage(message.id, false, { error }));
+                            _log.error('ononCallFirmwareUpdate', error);
+                        });
+                } else {
+                    onCall(message).catch(error => {
+                        _log.error('onCall', error);
+                    });
+                }
+        }
     }
 
     dispose() {
@@ -1083,6 +1097,7 @@ export class Core extends EventEmitter {
             clearTimeout(_deviceListInitTimeout);
         }
         this.removeAllListeners();
+        this.abortController.abort();
         if (_deviceList) {
             _deviceList.dispose();
         }
