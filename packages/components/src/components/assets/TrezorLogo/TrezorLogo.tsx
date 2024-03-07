@@ -3,6 +3,7 @@ import { ReactSVG } from 'react-svg';
 import styled from 'styled-components';
 
 import { LOGOS } from './trezorLogos';
+import { TransientProps } from '../../..';
 
 export type TrezorLogoType =
     | 'horizontal'
@@ -12,14 +13,17 @@ export type TrezorLogoType =
     | 'suite_square'
     | 'suite_compact';
 
-const SvgWrapper = styled.div<Omit<TrezorLogoProps, 'type'>>`
+const SvgWrapper = styled.div<{
+    $width?: string | number;
+    $height?: string | number;
+}>`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     display: inline-block;
-    width: ${({ width }) => width};
-    height: ${({ height }) => height};
+    width: ${({ $width }) => $width};
+    height: ${({ $height }) => $height};
 
     div {
-        height: ${({ height }) => height};
+        height: ${({ $height }) => $height};
     }
 `;
 
@@ -31,8 +35,8 @@ export interface TrezorLogoProps extends ImgHTMLAttributes<HTMLImageElement> {
 
 export const TrezorLogo = ({ type, width = 'auto', height = 'auto', ...rest }: TrezorLogoProps) => (
     <SvgWrapper
-        width={typeof width === 'number' ? `${width}px` : width}
-        height={typeof height === 'number' ? `${height}px` : height}
+        $width={typeof width === 'number' ? `${width}px` : width}
+        $height={typeof height === 'number' ? `${height}px` : height}
         {...rest}
     >
         <ReactSVG
