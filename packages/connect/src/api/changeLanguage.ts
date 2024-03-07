@@ -25,7 +25,6 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
         } else {
             this.params = {
                 language: payload.language,
-                baseUrl: payload.baseUrl || 'https://data.trezor.io',
             };
         }
     }
@@ -95,7 +94,7 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
     }
 
     async run() {
-        const { language, binary, baseUrl } = this.params;
+        const { language, binary } = this.params;
 
         if (language === 'en-US') {
             return this.uploadTranslationData(null);
@@ -107,7 +106,6 @@ export default class ChangeLanguage extends AbstractMethod<'changeLanguage', Cha
 
         const downloadedBinary = await getLanguage({
             language,
-            baseUrl: baseUrl!,
             version: this.device.getVersion(),
             internal_model: this.device.features.internal_model,
         });

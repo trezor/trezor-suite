@@ -4783,10 +4783,6 @@ export default defineMessages({
         id: 'TR_RECONNECT_IN_NORMAL',
         defaultMessage: 'Reconnect your device',
     },
-    TR_RECONNECT_IN_NORMAL_SUCCESS: {
-        id: 'TR_RECONNECT_IN_NORMAL_SUCCESS',
-        defaultMessage: 'Device is now ready',
-    },
     TR_VERSION: {
         id: 'TR_VERSION',
         defaultMessage: 'Version {version}',
@@ -4865,10 +4861,6 @@ export default defineMessages({
     TR_WIPE_AND_REINSTALL: {
         id: 'TR_WIPE_AND_REINSTALL',
         defaultMessage: 'Wipe device & reinstall',
-    },
-    TR_FIRMWARE_PARTIALLY_UPDATED: {
-        id: 'TR_FIRMWARE_PARTIALLY_UPDATED',
-        defaultMessage: 'Firmware partially updated',
     },
     TR_DISCREET: {
         id: 'TR_DISCREET',

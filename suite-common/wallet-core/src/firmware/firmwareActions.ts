@@ -1,18 +1,13 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { AcquiredDevice, FirmwareStatus } from '@suite-common/suite-types';
-import { Device, FirmwareType } from '@trezor/connect';
+import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
+import { FirmwareType } from '@trezor/connect';
 
 export const FIRMWARE_MODULE_PREFIX = '@common/wallet-core/firmware';
 
 const setStatus = createAction(
     `${FIRMWARE_MODULE_PREFIX}/set-update-status`,
     (payload: FirmwareStatus | 'error') => ({ payload }),
-);
-
-const setHash = createAction(
-    `${FIRMWARE_MODULE_PREFIX}/set-hash`,
-    (payload: { hash: string; challenge: string }) => ({ payload }),
 );
 
 const setHashInvalid = createAction(
@@ -26,28 +21,11 @@ const setError = createAction(`${FIRMWARE_MODULE_PREFIX}/set-error`, (payload?: 
     payload,
 }));
 
-const setTargetRelease = createAction(
-    `${FIRMWARE_MODULE_PREFIX}/set-target-release`,
-    (payload: AcquiredDevice['firmwareRelease']) => ({ payload }),
-);
-
-const toggleHasSeed = createAction(`${FIRMWARE_MODULE_PREFIX}/toggle-has-seed`);
-
-const setIntermediaryInstalled = createAction(
-    `${FIRMWARE_MODULE_PREFIX}/set-intermediary-installed`,
-    (payload: boolean) => ({ payload }),
-);
-
 const setTargetType = createAction(
     `${FIRMWARE_MODULE_PREFIX}/set-target-type`,
     (payload: FirmwareType) => ({
         payload,
     }),
-);
-
-const rememberPreviousDevice = createAction(
-    `${FIRMWARE_MODULE_PREFIX}/remember-previous-device`,
-    (payload: Device) => ({ payload }),
 );
 
 const setIsCustomFirmware = createAction(
@@ -66,17 +44,20 @@ const toggleUseDevkit = createAction(
     }),
 );
 
+const cacheDevice = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/cache-device`,
+    (payload: TrezorDevice) => ({
+        payload,
+    }),
+);
+
 export const firmwareActions = {
     setStatus,
-    setHash,
     setHashInvalid,
     setError,
-    setTargetRelease,
-    toggleHasSeed,
-    setIntermediaryInstalled,
     setTargetType,
-    rememberPreviousDevice,
     setIsCustomFirmware,
     resetReducer,
     toggleUseDevkit,
+    cacheDevice,
 };

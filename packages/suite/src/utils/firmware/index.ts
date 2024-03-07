@@ -1,7 +1,7 @@
 import { valid, satisfies } from 'semver';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { type AppState, type TrezorDevice, type ExtendedMessageDescriptor } from 'src/types/suite';
+import { type TrezorDevice, type ExtendedMessageDescriptor } from 'src/types/suite';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
@@ -13,25 +13,6 @@ export const getFormattedFingerprint = (fingerprint: string) =>
     ]
         .join('\n')
         .toUpperCase();
-
-export const getTextForStatus = (status: AppState['firmware']['status']) => {
-    switch (status) {
-        case 'started':
-        case 'installing':
-            return 'TR_INSTALLING';
-        case 'wait-for-reboot':
-            return 'TR_WAIT_FOR_REBOOT';
-        case 'validation':
-            return 'TR_VALIDATION';
-        case 'unplug':
-        case 'reconnect-in-normal':
-        case 'done':
-        case 'partially-done':
-            return 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED';
-        default:
-            return null;
-    }
-};
 
 // naming is based on fw version and chip, not model
 enum FirmwareFormat {
