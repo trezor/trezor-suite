@@ -121,6 +121,9 @@
         { "path": "packages/connect-common" },
         { "path": "packages/connect-explorer" },
         {
+            "path": "packages/connect-explorer-nextra"
+        },
+        {
             "path": "packages/connect-explorer-webextension"
         },
         { "path": "packages/connect-iframe" },

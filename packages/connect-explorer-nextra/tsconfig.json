@@ -16,8 +16,9 @@
         "**/*.tsx"
     ],
     "references": [
-        {
-            "path": "../components"
-        }
+        { "path": "../components" },
+        { "path": "../connect-web" },
+        { "path": "../protobuf" },
+        { "path": "../utils" }
     ]
 }

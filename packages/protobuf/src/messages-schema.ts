@@ -1,4 +1,3 @@
- 
 import { Type, Static, TypeClone } from '@trezor/schema-utils';
 
 export enum DeviceModelInternal {

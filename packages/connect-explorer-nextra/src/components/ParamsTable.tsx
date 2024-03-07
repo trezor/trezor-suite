@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Hint, Kind, OptionalKind, TIntersect, TObject, TSchema } from '@sinclair/typebox';
+import { Hint, Kind, Optional, TIntersect, TObject, TSchema } from '@sinclair/typebox';
 
 import { Param } from './Param';
 
@@ -77,7 +77,7 @@ const SingleParam = ({ name, value, schema }: SingleParamProps) => {
     // Required can also be undefined (for example union)
     let isRequired: boolean | undefined;
     if (schema?.required?.includes(name)) isRequired = true;
-    else if (value[OptionalKind] === 'Optional') isRequired = false;
+    else if (value[Optional] === 'Optional') isRequired = false;
 
     return (
         <>

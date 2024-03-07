@@ -101,6 +101,7 @@
         "webpack": "^5.90.1",
         "html-webpack-plugin": "^5.6.0",
         "@types/node": "18.17.15",
+        "@types/react": "18.2.55",
         "@sentry/types": "7.92.0"
     },
     "devDependencies": {
