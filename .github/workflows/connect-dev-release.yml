@@ -68,8 +68,10 @@ jobs:
           # TODO: maybe we don't want to build it for production for every branch
           NODE_ENV: "production"
           url: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}
+          __TREZOR_CONNECT_SRC: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          CONNECT_EXPLORER_ASSET_PREFIX: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
         run: |
-          yarn workspace @trezor/connect-explorer build
+          yarn workspace @trezor/connect-explorer-nextra build
 
       - name: Build connect-examples webextension
         env:
