@@ -91,6 +91,8 @@ const config: webpack.Configuration = {
         maxEntrypointSize: 1000 * 1000,
     },
     module: {
+        // Throw error on missing exports instead of warning
+        strictExportPresence: true,
         rules: [
             // TypeScript/JavaScript
             {
@@ -133,7 +135,7 @@ const config: webpack.Configuration = {
             },
             // Workers
             {
-                test: /\/workers\/(.*).ts$/,
+                test: /\/workers\/[^\/]+\/index\.ts$/,
                 use: [
                     {
                         loader: 'worker-loader',
