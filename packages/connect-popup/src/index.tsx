@@ -16,9 +16,9 @@ import {
     IFrameCallMessage,
     IFrameLogRequest,
     CoreEventMessage,
-} from '@trezor/connect/lib/exports';
-import type { Core } from '@trezor/connect/lib/core';
-import { config } from '@trezor/connect/lib/data/config';
+} from '@trezor/connect/src/exports';
+import type { Core } from '@trezor/connect/src/core';
+import { config } from '@trezor/connect/src/data/config';
 import { parseConnectSettings } from '@trezor/connect-iframe/src/connectSettings';
 import { initLogWriterWithSrcPath } from '@trezor/connect-iframe/src/sharedLoggerUtils';
 
@@ -37,7 +37,7 @@ import {
     showView,
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
-import { initLog, setLogWriter, LogWriter } from '@trezor/connect/lib/utils/debug';
+import { initLog, setLogWriter, LogWriter } from '@trezor/connect/src/utils/debug';
 
 const log = initLog('@trezor/connect-popup');
 const proxyLogger = initLog('@trezor/connect-webextension');

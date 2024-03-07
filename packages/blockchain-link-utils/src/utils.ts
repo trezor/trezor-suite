@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 
 import { isNotUndefined, topologicalSort } from '@trezor/utils';
-import type { Transaction, EnhancedVinVout } from '@trezor/blockchain-link-types/lib/common';
-import type { VinVout } from '@trezor/blockchain-link-types/lib/blockbook';
+import type { Transaction, EnhancedVinVout } from '@trezor/blockchain-link-types/src/common';
+import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
 
 export type Addresses = ({ address: string } | string)[] | string;
 

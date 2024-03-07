@@ -1,6 +1,6 @@
 import type { Network } from '@trezor/utxo-lib';
 import { sortTxsFromLatest } from '@trezor/blockchain-link-utils';
-import { sumAddressValues } from '@trezor/blockchain-link/lib/workers/electrum/methods/getAccountInfo';
+import { sumAddressValues } from '@trezor/blockchain-link/src/workers/electrum/methods/getAccountInfo';
 
 import { isTxConfirmed, doesTxContainAddress } from './backendUtils';
 import type {

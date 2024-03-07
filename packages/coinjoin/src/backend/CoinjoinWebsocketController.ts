@@ -1,4 +1,4 @@
-import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
+import { BlockbookAPI } from '@trezor/blockchain-link/src/workers/blockbook/websocket';
 
 import { HTTP_REQUEST_TIMEOUT, WS_CONNECT_TIMEOUT } from '../constants';
 import { resetIdentityCircuit } from '../utils/http';

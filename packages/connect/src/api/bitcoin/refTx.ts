@@ -12,7 +12,7 @@ import { TypedError } from '../../constants/errors';
 import type {
     TxInput as BitcoinJsInput,
     TxOutput as BitcoinJsOutput,
-} from '@trezor/utxo-lib/lib/transaction/base';
+} from '@trezor/utxo-lib/src/transaction/base';
 import type {
     CoinInfo,
     AccountAddresses,

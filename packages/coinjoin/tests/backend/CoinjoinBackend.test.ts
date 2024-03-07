@@ -1,4 +1,4 @@
-import { BlockbookAPI } from '@trezor/blockchain-link/lib/workers/blockbook/websocket';
+import { BlockbookAPI } from '@trezor/blockchain-link/src/workers/blockbook/websocket';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
 
 import { CoinjoinBackend } from '../../src';

@@ -1,6 +1,6 @@
 import WebSocket from 'ws';
 
-import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
+import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import type {
     BlockNotification,
     MempoolTransactionNotification,
@@ -8,17 +8,17 @@ import type {
     Send,
     FiatRatesNotification,
     FilterRequestParams,
-} from '@trezor/blockchain-link-types/lib/blockbook';
+} from '@trezor/blockchain-link-types/src/blockbook';
 import type {
     GetFiatRatesForTimestamps,
     GetFiatRatesTickersList,
     GetCurrentFiatRates,
-} from '@trezor/blockchain-link-types/lib/messages';
+} from '@trezor/blockchain-link-types/src/messages';
 import type {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
-} from '@trezor/blockchain-link-types/lib/params';
+} from '@trezor/blockchain-link-types/src/params';
 
 import { BaseWebsocket } from '../baseWebsocket';
 

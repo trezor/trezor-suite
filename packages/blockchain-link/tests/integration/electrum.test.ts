@@ -1,7 +1,7 @@
-import ElectrumWorker from '../../lib/workers/electrum';
-import type { Message } from '@trezor/blockchain-link-types/lib/messages';
-import type { Response } from '@trezor/blockchain-link-types/lib/responses';
-import { GET_ACCOUNT_INFO, HANDSHAKE } from '@trezor/blockchain-link-types/lib/constants/messages';
+import ElectrumWorker from '../../src/workers/electrum';
+import type { Message } from '@trezor/blockchain-link-types/src/messages';
+import type { Response } from '@trezor/blockchain-link-types/src/responses';
+import { GET_ACCOUNT_INFO, HANDSHAKE } from '@trezor/blockchain-link-types/src/constants/messages';
 
 const TCP_CONFIG = '127.0.0.1:50001:t';
 const NETWORK = 'REGTEST';

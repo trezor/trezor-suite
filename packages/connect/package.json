@@ -19,16 +19,21 @@
         "javascript"
     ],
     "sideEffects": false,
-    "main": "lib/index",
+    "main": "src/index.ts",
     "browser": {
-        "./lib/index": "./lib/index-browser",
-        "./lib/utils/assets": "./lib/utils/assets-browser",
-        "./lib/workers/workers": "./lib/workers/workers-browser"
+        "./src/index": "./src/index-browser.ts",
+        "./src/index.ts": "./src/index-browser.ts",
+        "./src/utils/assets": "./src/utils/assets-browser.ts",
+        "./src/workers/workers": "./src/workers/workers-browser.ts"
     },
-    "react-native": {
-        "./lib/index": "./lib/index",
-        "./lib/workers/workers": "./lib/workers/workers-react-native",
-        "./lib/utils/assets": "./lib/utils/assets-native"
+    "publishConfig": {
+        "main": "lib/index.js",
+        "browser": {
+            "./lib/index.js": "./lib/index-browser.js",
+            "./lib/index": "./lib/index-browser.js",
+            "./lib/utils/assets": "./lib/utils/assets-browser.js",
+            "./lib/workers/workers": "./lib/workers/workers-browser.js"
+        }
     },
     "files": [
         "lib/",
@@ -38,7 +43,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest --version && jest",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "version:beta": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
         "version:minor": "yarn g:tsx scripts/bump-version.ts minor",

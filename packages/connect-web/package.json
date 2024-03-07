@@ -19,7 +19,10 @@
         "javascript"
     ],
     "sideEffects": false,
-    "main": "lib/index",
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
     "files": [
         "lib/",
         "!**/*.map"
@@ -29,7 +32,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",

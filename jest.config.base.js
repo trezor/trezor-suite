@@ -42,4 +42,5 @@ module.exports = {
     // An array of regexp pattern strings that are matched against all module paths before those paths are
     // to be considered 'visible' to the module loader
     modulePathIgnorePatterns: ['libDev'],
+    moduleNameMapper: { '^uuid$': require.resolve('uuid') },
 };

@@ -4,12 +4,12 @@ import type {
     Send,
     BlockContent,
     BlockfrostTransaction,
-} from '@trezor/blockchain-link-types/lib/blockfrost';
+} from '@trezor/blockchain-link-types/src/blockfrost';
 import type {
     AccountInfoParams,
     EstimateFeeParams,
     AccountBalanceHistoryParams,
-} from '@trezor/blockchain-link-types/lib/params';
+} from '@trezor/blockchain-link-types/src/params';
 
 import { BaseWebsocket } from '../baseWebsocket';
 

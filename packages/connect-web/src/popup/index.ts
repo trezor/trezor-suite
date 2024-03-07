@@ -2,11 +2,11 @@
 
 import EventEmitter from 'events';
 import { createDeferred, Deferred } from '@trezor/utils';
-import { POPUP, IFRAME, UI, CoreEventMessage, IFrameLoaded } from '@trezor/connect/lib/events';
-import type { ConnectSettings } from '@trezor/connect/lib/types';
-import { getOrigin } from '@trezor/connect/lib/utils/urlUtils';
+import { POPUP, IFRAME, UI, CoreEventMessage, IFrameLoaded } from '@trezor/connect/src/events';
+import type { ConnectSettings } from '@trezor/connect/src/types';
+import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
 import { showPopupRequest } from './showPopupRequest';
-import { Log } from '@trezor/connect/lib/utils/debug';
+import { Log } from '@trezor/connect/src/utils/debug';
 
 import { ServiceWorkerWindowChannel } from '../channels/serviceworker-window';
 import {

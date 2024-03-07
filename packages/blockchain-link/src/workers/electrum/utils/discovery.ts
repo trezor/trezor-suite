@@ -1,5 +1,5 @@
 import { addressToScripthash } from './transform';
-import type { ElectrumAPI, HistoryTx } from '@trezor/blockchain-link-types/lib/electrum';
+import type { ElectrumAPI, HistoryTx } from '@trezor/blockchain-link-types/src/electrum';
 
 export type AddressHistory = {
     address: string;

@@ -1,5 +1,5 @@
-import type { Response } from '@trezor/blockchain-link-types/lib';
-import type { ElectrumAPI } from '@trezor/blockchain-link-types/lib/electrum';
+import type { Response } from '@trezor/blockchain-link-types/src';
+import type { ElectrumAPI } from '@trezor/blockchain-link-types/src/electrum';
 
 export * from './addressManager';
 export * from './discovery';

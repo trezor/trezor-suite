@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 
 // NOTE: @trezor/connect part is intentionally not imported from the index due to NormalReplacementPlugin
 // in packages/suite-build/configs/web.webpack.config.ts
-import * as ERRORS from '@trezor/connect/lib/constants/errors';
+import * as ERRORS from '@trezor/connect/src/constants/errors';
 import {
     POPUP,
     IFRAME,
@@ -19,11 +19,11 @@ import {
     UiResponseEvent,
     CallMethod,
     CoreEventMessage,
-} from '@trezor/connect/lib/events';
-import type { ConnectSettings, Manifest } from '@trezor/connect/lib/types';
-import { factory } from '@trezor/connect/lib/factory';
-import { initLog } from '@trezor/connect/lib/utils/debug';
-import { config } from '@trezor/connect/lib/data/config';
+} from '@trezor/connect/src/events';
+import type { ConnectSettings, Manifest } from '@trezor/connect/src/types';
+import { factory } from '@trezor/connect/src/factory';
+import { initLog } from '@trezor/connect/src/utils/debug';
+import { config } from '@trezor/connect/src/data/config';
 import { createDeferredManager } from '@trezor/utils';
 
 import * as iframe from './iframe';
@@ -331,4 +331,4 @@ const TrezorConnect = factory({
 });
 
 export default TrezorConnect;
-export * from '@trezor/connect/lib/exports';
+export * from '@trezor/connect/src/exports';

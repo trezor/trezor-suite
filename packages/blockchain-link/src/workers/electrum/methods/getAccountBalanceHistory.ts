@@ -2,11 +2,11 @@ import BigNumber from 'bignumber.js';
 import { discovery } from '@trezor/utxo-lib';
 import { sumVinVout } from '@trezor/blockchain-link-utils';
 import { Api, tryGetScripthash, getTransactions, discoverAddress, AddressHistory } from '../utils';
-import { transformTransaction } from '@trezor/blockchain-link-utils/lib/blockbook';
-import type { GetAccountBalanceHistory as Req } from '@trezor/blockchain-link-types/lib/messages';
-import type { GetAccountBalanceHistory as Res } from '@trezor/blockchain-link-types/lib/responses';
-import type { AccountAddresses, Transaction } from '@trezor/blockchain-link-types/lib/common';
-import type { HistoryTx } from '@trezor/blockchain-link-types/lib/electrum';
+import { transformTransaction } from '@trezor/blockchain-link-utils/src/blockbook';
+import type { GetAccountBalanceHistory as Req } from '@trezor/blockchain-link-types/src/messages';
+import type { GetAccountBalanceHistory as Res } from '@trezor/blockchain-link-types/src/responses';
+import type { AccountAddresses, Transaction } from '@trezor/blockchain-link-types/src/common';
+import type { HistoryTx } from '@trezor/blockchain-link-types/src/electrum';
 
 const transformAddress = (addr: AddressHistory) => ({
     address: addr.address,

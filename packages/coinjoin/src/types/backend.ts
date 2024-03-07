@@ -11,7 +11,7 @@ import type {
     Transaction as BlockbookTransaction,
     VinVout,
     FilterResponse,
-} from '@trezor/blockchain-link-types/lib/blockbook';
+} from '@trezor/blockchain-link-types/src/blockbook';
 
 import type { CoinjoinBackendClient } from '../backend/CoinjoinBackendClient';
 import type { MempoolController } from '../backend/CoinjoinMempoolController';

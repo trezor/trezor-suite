@@ -1,5 +1,5 @@
 import { AccountInfo, Response as ConnectResponse, Params } from '@trezor/connect';
-import { GetAccountInfo } from '@trezor/connect/lib/types/api/getAccountInfo';
+import { GetAccountInfo } from '@trezor/connect/src/types/api/getAccountInfo';
 
 import { accountInfoResult as btcAccountInfoResult } from './btc';
 import { accountInfoResult as xrpAccountInfoResult } from './xrp';

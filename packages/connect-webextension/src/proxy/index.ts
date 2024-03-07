@@ -10,9 +10,9 @@ import {
     ConnectSettings,
     Manifest,
     CallMethod,
-} from '@trezor/connect/lib/exports';
-import { factory } from '@trezor/connect/lib/factory';
-import { WindowServiceWorkerChannel } from '@trezor/connect-web/lib/channels/window-serviceworker';
+} from '@trezor/connect/src/exports';
+import { factory } from '@trezor/connect/src/factory';
+import { WindowServiceWorkerChannel } from '@trezor/connect-web/src/channels/window-serviceworker';
 
 const eventEmitter = new EventEmitter();
 let _channel: any;
@@ -129,4 +129,4 @@ const TrezorConnect = factory({
 
 // eslint-disable-next-line import/no-default-export
 export default TrezorConnect;
-export * from '@trezor/connect/lib/exports';
+export * from '@trezor/connect/src/exports';

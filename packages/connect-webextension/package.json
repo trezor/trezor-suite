@@ -20,7 +20,10 @@
         "serviceworker",
         "webextension"
     ],
-    "main": "lib/index",
+    "main": "src/index.ts",
+    "publishConfig": {
+        "main": "lib/index.js"
+    },
     "files": [
         "build/trezor-connect-webextension.js",
         "build/trezor-connect-webextension.min.js",
@@ -30,7 +33,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "build:content-script": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/content-script.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",

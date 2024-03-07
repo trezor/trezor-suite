@@ -19,28 +19,40 @@
         "blockbook",
         "javascript"
     ],
-    "main": "./lib/index.js",
     "files": [
         "lib/",
         "!lib/ui",
         "!**/*.map"
     ],
-    "types": "lib/index.d.ts",
-    "typings": "lib/index.d.ts",
+    "main": "src/index.ts",
     "browser": {
-        "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js",
-        "ws": "./lib/utils/ws.js"
+        "socks-proxy-agent": "./src/utils/socks-proxy-agent.ts",
+        "ws": "./src/utils/ws.ts"
     },
     "react-native": {
         "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
-        "ws": "@trezor/blockchain-link/lib/utils/ws-native.js",
-        "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
+        "ws": "@trezor/blockchain-link/src/utils/ws-native.ts",
+        "socks-proxy-agent": "@trezor/blockchain-link/src/utils/socks-proxy-agent.ts"
+    },
+    "publishConfig": {
+        "main": "./lib/index.js",
+        "types": "lib/index.d.ts",
+        "typings": "lib/index.d.ts",
+        "browser": {
+            "socks-proxy-agent": "./lib/utils/socks-proxy-agent.js",
+            "ws": "./lib/utils/ws.js"
+        },
+        "react-native": {
+            "__comment__": "Hotfix for issue where RN metro bundler resolve relatives paths wrong",
+            "ws": "@trezor/blockchain-link/lib/utils/ws-native.js",
+            "socks-proxy-agent": "@trezor/blockchain-link/lib/utils/socks-proxy-agent.js"
+        }
     },
     "scripts": {
         "dev": "webpack serve --config ./webpack/dev.js",
         "dev:electrum": "yarn g:tsx watch ./src/workers/electrum/devrun.ts",
         "dev:module": "USE_MODULES=true webpack serve --config ./webpack/dev.js",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build ./tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "build:workers": "yarn g:rimraf build && yarn build:workers-web && yarn build:workers-module",
         "build:workers-web": "webpack --config ./webpack/workers.web.js",
         "build:workers-module": "webpack --config ./webpack/workers.module.js",

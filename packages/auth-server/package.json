@@ -9,7 +9,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "dev": "yarn g:tsx watch ./src/index.ts",
-        "build": "rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
+        "build": "rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "start": "node ./lib/index.js"
     },
     "dependencies": {

@@ -27,7 +27,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts",
         "update:protobuf": "./scripts/protobuf-build.sh && yarn g:prettier --write \"{messages.json,src/messages.ts}\" && yarn g:eslint --fix src/messages.ts",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
