@@ -1,7 +1,6 @@
-import { D, pipe } from '@mobily/ts-belt';
-
-import { NetworkSymbol, isEthereumBasedNetwork, networks } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { TokenInfo } from '@trezor/connect';
 
 import { TokenDefinitionsRootState } from './tokenDefinitionsTypes';
 
@@ -37,26 +36,10 @@ export const selectIsSpecificCoinDefinitionKnown = (
     contractAddress: string,
 ) => !!selectCoinDefinition(state, networkSymbol, contractAddress);
 
-export const selectShouldFetchTokenDefinition = (
+export const selectFilterKnownTokens = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
-    contractAddress: string,
+    tokens: TokenInfo[],
 ) => {
-    const tokenDefinition = selectSpecificTokenDefinition(state, networkSymbol, contractAddress);
-    const network = networks[networkSymbol];
-
-    return isEthereumBasedNetwork(network) && (!tokenDefinition || tokenDefinition.error);
-};
-
-export const selectKnownNetworkTokens = (
-    state: TokenDefinitionsRootState,
-    networkSymbol: NetworkSymbol,
-) => {
-    const networkTokenDefinitions = selectTokenDefinitions(state, networkSymbol);
-
-    return pipe(
-        networkTokenDefinitions,
-        D.filter(tokenDefinition => !!tokenDefinition.isTokenKnown),
-        D.keys,
-    );
+    return tokens.filter(token => selectCoinDefinition(state, networkSymbol, token.contract));
 };
