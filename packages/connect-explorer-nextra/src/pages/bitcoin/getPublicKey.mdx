@@ -1,10 +1,10 @@
-import { ApiPlayground } from '../../src/components/ApiPlayground';
-import { Param } from '../../src/components/Param';
-import { ParamsTable } from '../../src/components/ParamsTable';
+import { ApiPlayground } from '../../components/ApiPlayground';
+import { Param } from '../../components/Param';
+import { ParamsTable } from '../../components/ParamsTable';
 import { GetPublicKey } from '@trezor/connect/src/types/api/getPublicKey';
 import { Bundle } from '@trezor/connect/src/types/params';
 
-<ApiPlayground method="/method/getPublicKey" />
+<ApiPlayground method="getPublicKey" schema={Bundle(GetPublicKey)} />
 
 ## Get public key
 

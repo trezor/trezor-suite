@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 
 import styled from 'styled-components';
-import { OptionalKind, Kind, TSchema } from '@sinclair/typebox';
+import { Optional, Kind, TSchema } from '@sinclair/typebox';
 
 import { Card, CollapsibleBox, variables } from '@trezor/components';
 
@@ -70,7 +70,7 @@ const schemaToFields = (schema: TSchema) => {
                         fields,
                     },
                 ],
-                items: schema[OptionalKind] === 'Optional' ? [] : [fields],
+                items: schema[Optional] === 'Optional' ? [] : [fields],
             },
         ];
     } else if (schema[Kind] === 'Intersect') {
@@ -103,7 +103,7 @@ const schemaToFields = (schema: TSchema) => {
         {
             type: typeMap[schema[Kind]] ?? 'input',
             value: schema.default,
-            optional: schema[OptionalKind] === 'Optional',
+            optional: schema[Optional] === 'Optional',
         },
     ];
 };
