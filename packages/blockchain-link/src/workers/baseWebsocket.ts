@@ -225,9 +225,8 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
             clearTimeout(this.pingTimeout);
         }
 
-        if (this.isConnected()) {
-            this.disconnect();
-        }
+        this.disconnect();
+
         this.ws?.removeAllListeners();
         this.messages.rejectAll(
             new CustomError('websocket_runtime_error', 'Websocket closed unexpectedly'),
