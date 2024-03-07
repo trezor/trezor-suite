@@ -41,6 +41,7 @@ export const ERROR_CODES = {
     Device_UsedElsewhere: 'Device is used in another window', // interruption: current session toked by other application
     Device_InvalidState: 'Passphrase is incorrect', // authorization error (device state comparison)
     Device_CallInProgress: 'Device call in progress', // thrown when trying to make another call while current is still running
+    Device_MultipleNotSupported: 'Multiple devices are not supported', // thrown by methods which require single device
 };
 
 export class TrezorError extends Error {
