@@ -159,11 +159,13 @@ export const getFiatRatesForNetworkInTimeFrame = async ({
     coin,
     fiatCurrency,
     forceRefetch,
+    isElectrumBackend,
 }: {
     timestamps: number[];
     coin: NetworkSymbol;
     fiatCurrency: FiatCurrencyCode;
     forceRefetch?: boolean;
+    isElectrumBackend: boolean;
 }) => {
     const cacheKey = `${coin}-${fiatCurrency}-${JSON.stringify(timestamps)}`;
 
@@ -171,7 +173,12 @@ export const getFiatRatesForNetworkInTimeFrame = async ({
         return fiatRatesCache[cacheKey];
     }
 
-    const fiatRates = await getFiatRatesForTimestamps({ symbol: coin }, timestamps, fiatCurrency);
+    const fiatRates = await getFiatRatesForTimestamps(
+        { symbol: coin },
+        timestamps,
+        fiatCurrency,
+        isElectrumBackend,
+    );
     if (G.isNullable(fiatRates)) return null;
 
     const formattedFiatRates = fiatRates.tickers.map((ticker, index) => ({
@@ -191,6 +198,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     numberOfPoints = NUMBER_OF_POINTS,
     fiatCurrency,
     forceRefetch,
+    isElectrumBackend,
 }: {
     accounts: AccountItem[];
     startOfTimeFrameDate: Date | null;
@@ -198,6 +206,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     numberOfPoints?: number;
     fiatCurrency: FiatCurrencyCode;
     forceRefetch?: boolean;
+    isElectrumBackend: boolean;
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
         accounts.map(({ coin, descriptor }) =>
@@ -245,6 +254,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                     coin,
                     fiatCurrency,
                     forceRefetch,
+                    isElectrumBackend,
                 }).then(res => {
                     if (res === null)
                         throw new Error(`Unable to fetch fiat rates for defined timestamps.`);

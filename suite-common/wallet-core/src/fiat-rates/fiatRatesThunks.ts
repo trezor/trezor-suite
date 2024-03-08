@@ -14,6 +14,7 @@ import { fiatRatesActionsPrefix, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
 import { transactionsActions } from '../transactions/transactionsActions';
 import { selectIsSpecificCoinDefinitionKnown } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectIsElectrumBackendSelected } from '../blockchain/blockchainSelectors';
 
 type UpdateTxsFiatRatesThunkPayload = {
     account: Account;
@@ -23,16 +24,22 @@ type UpdateTxsFiatRatesThunkPayload = {
 
 export const updateTxsFiatRatesThunk = createThunk(
     `${fiatRatesActionsPrefix}/updateTxsRates`,
-    async ({ account, txs, localCurrency }: UpdateTxsFiatRatesThunkPayload, { dispatch }) => {
+    async (
+        { account, txs, localCurrency }: UpdateTxsFiatRatesThunkPayload,
+        { dispatch, getState },
+    ) => {
         if (txs?.length === 0 || isTestnet(account.symbol)) return;
 
         const timestamps = txs.map(tx => tx.blockTime!);
+
+        const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
 
         try {
             const results = await getFiatRatesForTimestamps(
                 { symbol: account.symbol },
                 timestamps,
                 localCurrency,
+                isElectrumBackend,
             );
 
             if (results && 'tickers' in results) {
@@ -87,7 +94,9 @@ export const updateFiatRatesThunk = createThunk(
             }
         }
 
-        const rate = await fetchFn[rateType](ticker, localCurrency);
+        const isElectrumBackend = selectIsElectrumBackendSelected(getState(), ticker.symbol);
+
+        const rate = await fetchFn[rateType]({ ticker, localCurrency, isElectrumBackend });
 
         if (!rate) {
             throw new Error('Failed to fetch fiat rates');

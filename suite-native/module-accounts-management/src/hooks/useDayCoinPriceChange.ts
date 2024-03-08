@@ -8,6 +8,7 @@ import { percentageDiff } from '@suite-native/graph';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
+import { BlockchainRootState, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
 
 const UNIX_DAY = 24 * 60 * 60;
 const REFRESH_INTERVAL = 30_000;
@@ -18,6 +19,9 @@ export const useDayCoinPriceChange = (networkSymbol?: NetworkSymbol | null) => {
     const [valuePercentageChange, setValuePercentageChange] = useState<number | null>(null);
 
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const isElectrumBackend = useSelector((state: BlockchainRootState) =>
+        selectIsElectrumBackendSelected(state, networkSymbol ?? 'btc'),
+    );
 
     useEffect(() => {
         const getPrices = async () => {
@@ -29,6 +33,7 @@ export const useDayCoinPriceChange = (networkSymbol?: NetworkSymbol | null) => {
                 { symbol: networkSymbol },
                 [yesterdayTimestamp, currentTimestamp],
                 fiatCurrencyCode,
+                isElectrumBackend,
             );
 
             if (!timestampedFiatRates) return;
@@ -42,7 +47,7 @@ export const useDayCoinPriceChange = (networkSymbol?: NetworkSymbol | null) => {
         const refreshInterval = setInterval(getPrices, REFRESH_INTERVAL);
 
         return () => clearInterval(refreshInterval);
-    }, [networkSymbol, fiatCurrencyCode]);
+    }, [networkSymbol, fiatCurrencyCode, isElectrumBackend]);
 
     useEffect(() => {
         if (G.isNotNullable(currentValue) && G.isNotNullable(yesterdayValue)) {

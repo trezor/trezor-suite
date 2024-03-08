@@ -6,6 +6,7 @@ export * from './transactions/transactionsReducer';
 export * from './transactions/transactionsThunks';
 export * from './blockchain/blockchainActions';
 export * from './blockchain/blockchainReducer';
+export * from './blockchain/blockchainSelectors';
 export * from './blockchain/blockchainThunks';
 export * from './blockchain/blockchainMiddleware';
 export * from './fiat-rates/fiatRatesReducer';

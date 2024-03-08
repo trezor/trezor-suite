@@ -26,6 +26,7 @@ type useGraphForAccountsParams<TIsPortfolioGraph extends boolean = boolean> =
         endOfTimeFrameDate: Date;
         startOfTimeFrameDate: StartOfTimeFrameDate;
         isPortfolioGraph: TIsPortfolioGraph;
+        isElectrumBackend: boolean;
     };
 
 type CommonUseGraphReturnType = {
@@ -76,8 +77,14 @@ export function useGraphForAccounts(params: useGraphForAccountsParams<true>): {
 export function useGraphForAccounts(params: useGraphForAccountsParams): {
     graphPoints: FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[];
 } & CommonUseGraphReturnType {
-    const { accounts, fiatCurrency, endOfTimeFrameDate, startOfTimeFrameDate, isPortfolioGraph } =
-        params;
+    const {
+        accounts,
+        fiatCurrency,
+        endOfTimeFrameDate,
+        startOfTimeFrameDate,
+        isPortfolioGraph,
+        isElectrumBackend,
+    } = params;
     const [graphPoints, setGraphPoints] = useState<
         FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]
     >([]);
@@ -108,6 +115,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
                         startOfTimeFrameDate,
                         endOfTimeFrameDate,
                         forceRefetch,
+                        isElectrumBackend,
                     });
 
                     let events;
@@ -148,6 +156,7 @@ export function useGraphForAccounts(params: useGraphForAccountsParams): {
             startOfTimeFrameDate,
             isPortfolioGraph,
             isDiscoveryActive,
+            isElectrumBackend,
         ],
     );
 

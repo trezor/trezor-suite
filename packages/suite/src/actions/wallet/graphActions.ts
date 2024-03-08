@@ -23,6 +23,7 @@ import {
     deviceGraphDataFilterFn,
 } from 'src/utils/wallet/graph';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
 
 export type GraphAction =
     | {
@@ -93,11 +94,14 @@ export const fetchAccountGraphData =
             groupBy: 3600 * 24, // day
         });
 
+        const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
+
         if (response?.success) {
             const responseWithRates = await ensureHistoryRates(
                 account.symbol,
                 response.payload,
                 localCurrency,
+                isElectrumBackend,
             );
 
             const enhancedResponse = enhanceBlockchainAccountHistory(

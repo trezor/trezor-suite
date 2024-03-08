@@ -22,6 +22,7 @@ export const ensureHistoryRates = async (
     symbol: NetworkSymbol,
     data: BlockchainAccountBalanceHistory[],
     fiatCurrency: FiatCurrencyCode,
+    isElectrumBackend: boolean,
 ): Promise<BlockchainAccountBalanceHistory[]> => {
     if (!networks[symbol].coingeckoId) return data;
 
@@ -29,7 +30,12 @@ export const ensureHistoryRates = async (
         .filter(({ rates }) => !Object.keys(rates || {}).length)
         .map(({ time }) => time);
 
-    const rateDictionary = await getFiatRatesForTimestamps({ symbol }, missingRates, fiatCurrency)
+    const rateDictionary = await getFiatRatesForTimestamps(
+        { symbol },
+        missingRates,
+        fiatCurrency,
+        isElectrumBackend,
+    )
         .then(res => (res?.tickers || []).map(({ ts, rates }) => [ts, rates]))
         .then(res => Object.fromEntries(res));
 

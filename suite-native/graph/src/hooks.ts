@@ -9,8 +9,10 @@ import {
 } from '@suite-common/graph';
 import {
     AccountsRootState,
+    BlockchainRootState,
     selectAccountByKey,
     selectDeviceMainnetAccounts,
+    selectIsElectrumBackendSelected,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { analytics, EventType } from '@suite-native/analytics';
@@ -96,6 +98,10 @@ export const useGraphForSingleAccount = ({
 
     useWatchTimeframeChangeForAnalytics(accountGraphTimeframe, account?.symbol);
 
+    const isElectrumBackend = useSelector((state: BlockchainRootState) =>
+        selectIsElectrumBackendSelected(state, account?.symbol ?? 'btc'),
+    );
+
     return {
         ...useGraphForAccounts({
             accounts,
@@ -103,6 +109,7 @@ export const useGraphForSingleAccount = ({
             startOfTimeFrameDate,
             endOfTimeFrameDate,
             isPortfolioGraph: false,
+            isElectrumBackend,
         }),
         timeframe: accountGraphTimeframe,
         onSelectTimeFrame: handleSelectAccountTimeframe,
@@ -113,6 +120,9 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
     const dispatch = useDispatch();
     const accounts = useSelector(selectDeviceMainnetAccounts);
     const portfolioGraphTimeframe = useSelector(selectPortfolioGraphTimeframe);
+    const isElectrumBackend = useSelector((state: BlockchainRootState) =>
+        selectIsElectrumBackendSelected(state, 'btc'),
+    );
 
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         useGetTimeFrameForHistoryHours(portfolioGraphTimeframe);
@@ -141,6 +151,7 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
             startOfTimeFrameDate,
             endOfTimeFrameDate,
             isPortfolioGraph: true,
+            isElectrumBackend,
         }),
         timeframe: portfolioGraphTimeframe,
         onSelectTimeFrame: handleSelectPortfolioTimeframe,
