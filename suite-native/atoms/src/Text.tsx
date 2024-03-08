@@ -6,7 +6,7 @@ import {
     Platform,
 } from 'react-native';
 
-// @ts-expect-error This is not public RN API but I will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
+// @ts-expect-error This is not public RN API but it will make Text noticeable faster https://twitter.com/FernandoTheRojo/status/1707769877493121420
 import { NativeText } from 'react-native/Libraries/Text/TextNativeComponent';
 
 import { useNativeStyles, prepareNativeStyle, NativeStyleObject } from '@trezor/styles';
@@ -21,13 +21,6 @@ const DefaultTextComponent: typeof RNText = Platform.select({
     ios: RNText,
 });
 
-export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
-    variant?: TypographyStyle;
-    color?: Color;
-    textAlign?: TextStyle['textAlign'];
-    style?: NativeStyleObject;
-}
-
 // NativeText does not support all the props that are supported by the standard `react-native` Text.
 type UnsupportedNativeTextProps =
     | 'pressRetentionOffset'
@@ -35,6 +28,13 @@ type UnsupportedNativeTextProps =
     | 'onPress'
     | 'onPressIn'
     | 'onPressOut';
+
+export interface PressableTextProps extends Omit<RNTextProps, 'style'>, TestProps {
+    variant?: TypographyStyle;
+    color?: Color;
+    textAlign?: TextStyle['textAlign'];
+    style?: NativeStyleObject;
+}
 
 export type TextProps = Omit<PressableTextProps, UnsupportedNativeTextProps>;
 
@@ -105,4 +105,3 @@ export const BaseText = ({
 export const Text = (props: TextProps) => (
     <BaseText {...props} TextComponent={DefaultTextComponent} />
 );
-Text.Pressable = (props: PressableTextProps) => <BaseText {...props} TextComponent={RNText} />;
