@@ -72,7 +72,7 @@ export const ExampleCSV = () => {
 
             <AnimatePresence initial={false}>
                 {isExpanded && (
-                    <ExpandWrapper {...motionAnimation.expand}>
+                    <ExpandWrapper>
                         {/* CSV keys shouldn't be translated */}
                         <Paragraph type="hint">
                             address,amount,currency{isLabelingAvailable && ',label'}

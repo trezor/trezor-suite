@@ -113,7 +113,6 @@ export const DecreasedOutputs = () => {
 
     return (
         <AnimatePresence initial>
-            {/* <motion.div {...motionAnimation.expand}> */}
             <GreyCard>
                 <WarnHeader data-test="@send/decreased-outputs">
                     <Translation id={decreaseWarning} />
@@ -167,7 +166,6 @@ export const DecreasedOutputs = () => {
                     })}
                 </OutputsWrapper>
             </GreyCard>
-            {/* </motion.div> */}
         </AnimatePresence>
     );
 };

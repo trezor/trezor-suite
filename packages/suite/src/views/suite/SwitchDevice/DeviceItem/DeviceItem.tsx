@@ -245,69 +245,69 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
             {!needsAttention && (
                 <AnimatePresence initial={false}>
                     {!isUnknown && isExpanded && (
-                        // <motion.div {...motionAnimation.expand}>
-                        <WalletsWrapper $enabled>
-                            {instancesWithState.length > 0 && (
-                                <WalletsTooltips>
-                                    <WalletsCount>
-                                        <Translation
-                                            id="TR_COUNT_WALLETS"
-                                            values={{ count: instancesWithState.length }}
+                        <motion.div {...motionAnimation.expand} style={{ border: '1px solid red' }}>
+                            <WalletsWrapper $enabled>
+                                {instancesWithState.length > 0 && (
+                                    <WalletsTooltips>
+                                        <WalletsCount>
+                                            <Translation
+                                                id="TR_COUNT_WALLETS"
+                                                values={{ count: instancesWithState.length }}
+                                            />
+                                        </WalletsCount>
+                                        <ColRememberHeader
+                                            tooltipOpenGuide={instance => (
+                                                <OpenGuideFromTooltip
+                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
+                                                    instance={instance}
+                                                />
+                                            )}
+                                            tooltipContent={
+                                                <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
+                                            }
+                                        >
+                                            <Translation id="TR_REMEMBER_HEADING" />
+                                        </ColRememberHeader>
+                                        <ColEjectHeader
+                                            tooltipOpenGuide={instance => (
+                                                <OpenGuideFromTooltip
+                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
+                                                    instance={instance}
+                                                />
+                                            )}
+                                            tooltipContent={
+                                                <Translation id="TR_EJECT_WALLET_EXPLANATION" />
+                                            }
+                                        >
+                                            <Translation id="TR_EJECT_HEADING" />
+                                        </ColEjectHeader>
+                                    </WalletsTooltips>
+                                )}
+
+                                <InstancesWrapper>
+                                    {instancesWithState.map((instance, index) => (
+                                        <WalletInstance
+                                            key={`${instance.id}-${instance.instance}-${instance.state}`}
+                                            instance={instance}
+                                            enabled
+                                            selected={deviceUtils.isSelectedInstance(
+                                                selectedDevice,
+                                                instance,
+                                            )}
+                                            selectDeviceInstance={selectDeviceInstance}
+                                            index={index}
                                         />
-                                    </WalletsCount>
-                                    <ColRememberHeader
-                                        tooltipOpenGuide={instance => (
-                                            <OpenGuideFromTooltip
-                                                id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
-                                                instance={instance}
-                                            />
-                                        )}
-                                        tooltipContent={
-                                            <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
-                                        }
-                                    >
-                                        <Translation id="TR_REMEMBER_HEADING" />
-                                    </ColRememberHeader>
-                                    <ColEjectHeader
-                                        tooltipOpenGuide={instance => (
-                                            <OpenGuideFromTooltip
-                                                id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
-                                                instance={instance}
-                                            />
-                                        )}
-                                        tooltipContent={
-                                            <Translation id="TR_EJECT_WALLET_EXPLANATION" />
-                                        }
-                                    >
-                                        <Translation id="TR_EJECT_HEADING" />
-                                    </ColEjectHeader>
-                                </WalletsTooltips>
-                            )}
+                                    ))}
+                                </InstancesWrapper>
 
-                            <InstancesWrapper>
-                                {instancesWithState.map((instance, index) => (
-                                    <WalletInstance
-                                        key={`${instance.id}-${instance.instance}-${instance.state}`}
-                                        instance={instance}
-                                        enabled
-                                        selected={deviceUtils.isSelectedInstance(
-                                            selectedDevice,
-                                            instance,
-                                        )}
-                                        selectDeviceInstance={selectDeviceInstance}
-                                        index={index}
-                                    />
-                                ))}
-                            </InstancesWrapper>
-
-                            <AddWalletButton
-                                device={device}
-                                instances={instances}
-                                addDeviceInstance={addDeviceInstance}
-                                selectDeviceInstance={selectDeviceInstance}
-                            />
-                        </WalletsWrapper>
-                        // </motion.div>
+                                <AddWalletButton
+                                    device={device}
+                                    instances={instances}
+                                    addDeviceInstance={addDeviceInstance}
+                                    selectDeviceInstance={selectDeviceInstance}
+                                />
+                            </WalletsWrapper>
+                        </motion.div>
                     )}
                 </AnimatePresence>
             )}

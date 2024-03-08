@@ -114,7 +114,7 @@ export const TransactionTargetLayout = ({
     isLast,
     ...rest
 }: TransactionTargetLayoutProps) => {
-    const animation = useAnimation ? motionAnimation.expand : {};
+    const animation = {}
 
     return (
         <TargetWrapper {...animation} {...rest}>
