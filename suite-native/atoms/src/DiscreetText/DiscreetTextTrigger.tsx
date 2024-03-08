@@ -3,9 +3,9 @@ import { ReactNode } from 'react';
 
 import { useDiscreetMode } from './useDiscreetMode';
 
-type DiscreetTextProps = { children: ReactNode };
+type DiscreetTextTriggerProps = { children: ReactNode };
 
-export const DiscreetTextTrigger = ({ children }: DiscreetTextProps) => {
+export const DiscreetTextTrigger = ({ children }: DiscreetTextTriggerProps) => {
     const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
 
     const handlePress = () => {

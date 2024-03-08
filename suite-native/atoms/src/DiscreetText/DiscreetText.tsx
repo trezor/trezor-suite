@@ -9,16 +9,14 @@ import { Box } from '../Box';
 import { DiscreetCanvas } from './DiscreetCanvas';
 import { useDiscreetMode } from './useDiscreetMode';
 
-export type DiscreetTextContentProps = TextProps & {
+export type DiscreetTextProps = TextProps & {
     children?: string | null;
 };
 
-const discreetTextContentContainer = prepareNativeStyle<{ lineHeight: number }>(
-    (_, { lineHeight }) => ({
-        height: lineHeight,
-        justifyContent: 'center',
-    }),
-);
+const discreetTextContainer = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight }) => ({
+    height: lineHeight,
+    justifyContent: 'center',
+}));
 
 const textTemplateStyle = prepareNativeStyle(_ => ({
     opacity: 0,
@@ -33,7 +31,7 @@ export const DiscreetText = ({
     adjustsFontSizeToFit,
     style = {},
     ...restTextProps
-}: DiscreetTextContentProps) => {
+}: DiscreetTextProps) => {
     const { applyStyle } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
     const [width, setWidth] = useState(0);
@@ -48,7 +46,7 @@ export const DiscreetText = ({
 
     if (!isDiscreetMode)
         return (
-            <Box style={applyStyle(discreetTextContentContainer, { lineHeight })}>
+            <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
                 <Text
                     variant={variant}
                     color={color}
@@ -64,7 +62,7 @@ export const DiscreetText = ({
         );
 
     return (
-        <Box style={applyStyle(discreetTextContentContainer, { lineHeight })}>
+        <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
             <DiscreetCanvas
                 width={width}
                 height={lineHeight}
