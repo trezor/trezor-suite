@@ -7,7 +7,7 @@ import { close } from 'src/actions/suite/guideActions';
 import { useDispatch } from 'src/hooks/suite';
 import { IconButton, variables } from '@trezor/components';
 import { HeaderBreadcrumb, ContentScrolledContext } from 'src/components/guide';
-import { typography } from '@trezor/theme';
+import { typography, zIndices } from '@trezor/theme';
 
 const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     display: flex;
@@ -20,6 +20,7 @@ const HeaderWrapper = styled.div<{ noLabel?: boolean; isScrolled: boolean }>`
     border-bottom: 1px solid transparent;
     transition: all 0.5s ease;
     white-space: nowrap;
+    z-index: ${zIndices.base}; /* Prevents search bar from overlapping when scrolling */
 
     ${({ isScrolled }) =>
         isScrolled &&
