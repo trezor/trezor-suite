@@ -1,8 +1,8 @@
 import React from 'react';
 import styled from 'styled-components';
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
-import { Button, motionEasing } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { startDiscoveryThunk } from '@suite-common/wallet-core';
 
@@ -21,22 +21,6 @@ const DiscoveryButtonContainer = styled.div`
     align-items: center;
 `;
 
-const animationConfig: MotionProps = {
-    // initial: {
-    //     opacity: 0,
-    // },
-    // animate: {
-    //     opacity: 1,
-    // },
-    // exit: {
-    //     opacity: 0,
-    // },
-    // transition: {
-    //     ease: motionEasing.transition,
-    //     duration: 0.2,
-    // },
-};
-
 export const RefreshAfterDiscoveryNeeded = () => {
     const dispatch = useDispatch();
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
@@ -48,7 +32,7 @@ export const RefreshAfterDiscoveryNeeded = () => {
     return (
         <AnimatePresence>
             {isDiscoveryButtonVisible && (
-                <DiscoveryButtonContainer {...animationConfig}>
+                <DiscoveryButtonContainer>
                     <AccountsMenuNotice>
                         <Translation id="TR_DISCOVERY_NEW_COINS_TEXT" isNested={false} />
                     </AccountsMenuNotice>

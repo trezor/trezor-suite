@@ -15,9 +15,8 @@ import {
     motionEasing,
     variables,
 } from '@trezor/components';
-import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { colorVariants } from '@trezor/theme';
 import { rgba } from 'polished';
@@ -240,35 +239,12 @@ export const T2B1PromoBanner = () => {
             },
         });
 
-    const promoBannerAnimationConfig = {
-        initial: { opacity: 1, transform: 'scale(1)' },
-        exit: { opacity: 0, transform: 'scale(0.7)', marginBottom: -184 },
-        transition: {
-            duration: 0.33,
-            ease: motionEasing.transition,
-            height: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-            opacity: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-        },
-    };
-
     if (!shouldShowDashboardT2B1PromoBanner) return null;
 
     return (
         <AnimatePresence>
             {isVisible && (
-                <BannerWrapper
-                    key="container"
-                    {...promoBannerAnimationConfig}
-                    onAnimationComplete={() =>
-                        dispatch(setFlag('showDashboardT2B1PromoBanner', false))
-                    }
-                >
+                <BannerWrapper key="container">
                     <TrezorSafe3Logo image="TREZOR_SAFE_PROMO_LOGO" />
                     <NextGenerationText>
                         <NextGenerationTextBlock>Get the </NextGenerationTextBlock>

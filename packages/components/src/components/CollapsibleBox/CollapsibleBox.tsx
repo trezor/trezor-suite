@@ -1,20 +1,19 @@
 import { useState, useEffect, useCallback, ReactNode, FC } from 'react';
-import { motion } from 'framer-motion';
 import styled, { css } from 'styled-components';
 import { typography, spacingsPx, borders } from '@trezor/theme';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { motionEasing } from '../../config/motion';
 
-const animationVariants = {
-    closed: {
-        opacity: 0,
-        height: 0,
-    },
-    expanded: {
-        opacity: 1,
-        height: 'auto',
-    },
-};
+// const animationVariants = {
+//     closed: {
+//         opacity: 0,
+//         height: 0,
+//     },
+//     expanded: {
+//         opacity: 1,
+//         height: 'auto',
+//     },
+// };
 
 const Wrapper = styled.div<{
     $variant: 'small' | 'large'; // TODO: reevaluate variants

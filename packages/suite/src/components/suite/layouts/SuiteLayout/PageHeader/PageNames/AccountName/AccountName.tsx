@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { AnimatePresence, MotionProps, motion } from 'framer-motion';
-import { motionEasing } from '@trezor/components';
+import { AnimatePresence } from 'framer-motion';
 import { spacings } from '@trezor/theme';
 import { Account } from '@suite-common/wallet-types';
 import { ACCOUNT_INFO_HEIGHT } from 'src/components/wallet/WalletLayout/AccountTopPanel/AccountTopPanel';
@@ -12,51 +11,6 @@ import { AccountLabelHeader } from './AccountLabelHeader';
 const AnimationContainer = styled.div`
     display: flex;
 `;
-
-const detailsAnimConfig: MotionProps = {
-    // initial: {
-    //     y: 50,
-    //     opacity: 0,
-    //     rotateX: '45deg',
-    // },
-    // animate: {
-    //     y: 0,
-    //     opacity: 1,
-    //     rotateX: '0deg',
-    // },
-    // exit: {
-    //     y: 50,
-    //     opacity: 0,
-    //     rotateX: '45deg',
-    // },
-    // transition: {
-    //     ease: motionEasing.transition,
-    //     rotateX: { duration: 0.2 },
-    // },
-};
-
-const labelAnimConfig: MotionProps = {
-    // initial: {
-    //     y: -50,
-    //     opacity: 0,
-    //     rotateX: '-45deg',
-    // },
-    // animate: {
-    //     y: 0,
-    //     opacity: 1,
-    //     rotateX: '0deg',
-    // },
-    // exit: {
-    //     y: -50,
-    //     opacity: 0,
-    //     rotateX: '-45deg',
-    // },
-    // transition: {
-    //     ease: motionEasing.transition,
-    //     duration: 0.3,
-    //     rotateX: { duration: 0.2 },
-    // },
-};
 
 interface AccountNameProps {
     selectedAccount: Account;
@@ -88,11 +42,11 @@ export const AccountName = ({ selectedAccount }: AccountNameProps) => {
     return (
         <AnimatePresence initial={false} mode="popLayout">
             {isScrolled ? (
-                <AnimationContainer key="account-details" {...detailsAnimConfig}>
+                <AnimationContainer key="account-details">
                     <AccountDetails selectedAccount={selectedAccount} />
                 </AnimationContainer>
             ) : (
-                <AnimationContainer key="account-label" {...labelAnimConfig}>
+                <AnimationContainer key="account-label">
                     <AccountLabelHeader selectedAccount={selectedAccount} />
                 </AnimationContainer>
             )}

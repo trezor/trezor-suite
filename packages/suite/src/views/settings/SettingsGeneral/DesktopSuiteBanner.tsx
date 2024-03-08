@@ -104,33 +104,10 @@ export const DesktopSuiteBanner = () => {
         setIsVisible(false);
     };
 
-    const animationConfig: HTMLMotionProps<'div'> = {
-        initial: { opacity: 1, transform: 'scale(1)', marginBottom: 40, height: 'auto' },
-        exit: { opacity: 0, transform: 'scale(0.7)', marginBottom: -60, height: 60 },
-        transition: {
-            duration: 0.33,
-            ease: motionEasing.transition,
-            height: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-            opacity: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-        },
-    };
-
     return (
         <AnimatePresence>
             {isVisible && (
-                <Container
-                    key="container"
-                    onAnimationComplete={() =>
-                        dispatch(dispatch(setFlag('showSettingsDesktopAppPromoBanner', false)))
-                    }
-                    {...animationConfig}
-                >
+                <Container key="container">
                     <CloseButton
                         size={18}
                         icon="CROSS"

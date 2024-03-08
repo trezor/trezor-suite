@@ -87,7 +87,6 @@ export const CoinsFilter = () => {
                             cursor="pointer"
                             delayShow={TOOLTIP_DELAY_NORMAL}
                         >
-                            {/* <motion.div key={network} {...coinAnimcationConfig} layout> */}
                             <StyledCoinLogo
                                 data-test={`@account-menu/filter/${network}`}
                                 symbol={network}

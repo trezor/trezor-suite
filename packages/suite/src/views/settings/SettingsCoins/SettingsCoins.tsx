@@ -138,11 +138,9 @@ export const SettingsCoins = () => {
 
                     <AnimatePresence>
                         {isDiscoveryButtonVisible && (
-                            // <motion.div {...animation} key="discover-button">
                             <StyledButton onClick={startDiscovery}>
                                 <Translation id="TR_DISCOVERY_NEW_COINS" />
                             </StyledButton>
-                            // </motion.div>
                         )}
                     </AnimatePresence>
                 </StyledSectionItem>

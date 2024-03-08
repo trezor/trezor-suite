@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { useRef, useState, ReactElement, isValidElement } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, ReactElement, isValidElement } from 'react';
 import Tippy, { TippyProps } from '@tippyjs/react/headless';
 import { Instance } from 'tippy.js';
 import { transparentize } from 'polished';
@@ -80,21 +79,21 @@ const Content = styled.div<{ $dashed: boolean; $cursor: Cursor }>`
     }
 `;
 
-const animationStartOffset = 10;
-const getTranslateStyle = (placement: TippyProps['placement']) => {
-    switch (placement) {
-        case 'top':
-            return `translate(0px, ${animationStartOffset}px)`;
-        case 'bottom':
-            return `translate(0px, -${animationStartOffset}px)`;
-        case 'left':
-            return `translate(${animationStartOffset}px, 0px)`;
-        case 'right':
-            return `translate(-${animationStartOffset}px, 0px)`;
-        default:
-            return '';
-    }
-};
+// const animationStartOffset = 10;
+// const getTranslateStyle = (placement: TippyProps['placement']) => {
+//     switch (placement) {
+//         case 'top':
+//             return `translate(0px, ${animationStartOffset}px)`;
+//         case 'bottom':
+//             return `translate(0px, -${animationStartOffset}px)`;
+//         case 'left':
+//             return `translate(${animationStartOffset}px, 0px)`;
+//         case 'right':
+//             return `translate(-${animationStartOffset}px, 0px)`;
+//         default:
+//             return '';
+//     }
+// };
 export type TooltipDelay =
     | typeof TOOLTIP_DELAY_NONE
     | typeof TOOLTIP_DELAY_SHORT
@@ -140,7 +139,7 @@ export const Tooltip = ({
     isFullWidth = false,
     ...rest
 }: TooltipProps) => {
-    const [isShown, setIsShown] = useState(false);
+    // const [isShown, setIsShown] = useState(false);
 
     const tooltipRef = useRef<Element>(null);
 
@@ -150,19 +149,19 @@ export const Tooltip = ({
         content.setAttribute('data-test', '@tooltip');
     };
 
-    const animationVariants = {
-        shown: { opacity: 1, transform: 'translate(0px, 0px)' },
-        hidden: { opacity: 0, transform: `${getTranslateStyle(placement)}` },
-    };
+    // const animationVariants = {
+    //     shown: { opacity: 1, transform: 'translate(0px, 0px)' },
+    //     hidden: { opacity: 0, transform: `${getTranslateStyle(placement)}` },
+    // };
 
     const handleOnShow = (instance: Instance) => {
         onShow?.(instance);
-        setIsShown(true);
+        // setIsShown(true);
     };
 
     const handleOnHide = (instance: Instance) => {
         onHide?.(instance);
-        setIsShown(false);
+        // setIsShown(false);
     };
 
     if (!content || !children) {

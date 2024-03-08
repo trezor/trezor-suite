@@ -1,8 +1,5 @@
 import { SVGProps } from 'react';
-import { motion, AnimationProps, SVGMotionProps } from 'framer-motion';
-import styled, { useTheme } from 'styled-components';
-import { coinsColors } from '@trezor/theme';
-import { motionEasing } from '../../../config/motion';
+import styled from 'styled-components';
 import { CoinLogo, CoinLogoProps } from '../CoinLogo/CoinLogo';
 
 const Container = styled.div`
@@ -24,20 +21,20 @@ interface ProgressCircleProps
     size: number;
 }
 
-const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCircleProps) => {
-    const theme = useTheme();
+const ProgressCircle = ({ size }: ProgressCircleProps) => {
+    // const theme = useTheme();
 
     const dimensions = size * 2;
-    const strokeColor = symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.iconSubdued;
+    // const strokeColor = symbol && coinsColors[symbol] ? coinsColors[symbol] : theme.iconSubdued;
     const viewBox = `0 0 ${dimensions} ${dimensions}`;
 
-    const strokeWidth = dimensions / 6;
-    const radius = (dimensions - strokeWidth) / 2;
-    const circumference = Math.ceil(2 * Math.PI * radius);
-    const fillPercents =
-        percentageShare !== undefined
-            ? Math.abs(Math.ceil((circumference / 100) * (percentageShare - 100)))
-            : undefined;
+    // const strokeWidth = dimensions / 6;
+    // const radius = (dimensions - strokeWidth) / 2;
+    // const circumference = Math.ceil(2 * Math.PI * radius);
+    // const fillPercents =
+    //     percentageShare !== undefined
+    //         ? Math.abs(Math.ceil((circumference / 100) * (percentageShare - 100)))
+    //         : undefined;
 
     const svgProps: SVGProps<SVGSVGElement> = {
         viewBox,
@@ -45,20 +42,19 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
         height: dimensions,
     };
 
-    const circleConfig: SVGMotionProps<SVGCircleElement> = {
-        cx: size,
-        cy: size,
-        r: radius,
-        fill: 'transparent',
-        strokeWidth,
-    };
+    // const circleConfig: SVGMotionProps<SVGCircleElement> = {
+    //     cx: size,
+    //     cy: size,
+    //     r: radius,
+    //     fill: 'transparent',
+    //     strokeWidth,
+    // };
 
-    const delayModifier = 0.13;
-    const transition: AnimationProps['transition'] = {
-        duration: 0.8,
-        ease: motionEasing.transition,
-        delay: index * delayModifier,
-    };
+    // const transition: AnimationProps['transition'] = {
+    //     duration: 0.8,
+    //     ease: motionEasing.transition,
+    //     delay: index * delayModifier,
+    // };
 
     return (
         <>
@@ -69,7 +65,6 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
                     position: 'absolute',
                 }}
             >
-                {/* <motion.circle {...circleConfig} stroke={theme.backgroundSurfaceElevation0} /> */}
             </svg>
 
             {/* moving circle */}

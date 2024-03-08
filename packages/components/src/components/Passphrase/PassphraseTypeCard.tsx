@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback, ReactNode, ChangeEvent } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { AnimatePresence, motion } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 import { useKeyPress } from '@trezor/react-utils';
 import { setCaretPosition } from '@trezor/dom-utils';
@@ -13,7 +13,6 @@ import { isAndroid } from '@trezor/env-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
-import { motion as motionConfig } from '../../config';
 import { Button } from '../buttons/Button/Button';
 import { Checkbox } from '../form/Checkbox/Checkbox';
 import { Input } from '../form/Input/Input';
@@ -396,7 +395,6 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         {/* Submit button */}
                         {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
                         {(props.singleColModal || hiddenWalletTouched) && (
-                            // <motion.div {...motionConfig.motionAnimation.expand}>
                             <ActionButton
                                 data-test={`@passphrase/${
                                     props.type === 'hidden' ? 'hidden' : 'standard'
