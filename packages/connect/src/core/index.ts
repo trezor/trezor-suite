@@ -236,7 +236,7 @@ const initDevice = async (method: AbstractMethod<any>) => {
             !device || !!device?.unreadableError || (device.isUnacquired() && !!isUsingPopup);
     } else {
         const devices = _deviceList.asArray();
-        if (devices.length === 1 && !isWebUsb) {
+        if (devices.length === 1 && (!isWebUsb || !isUsingPopup)) {
             // there is only one device available. use it
             device = _deviceList.getDevice(devices[0].path);
             showDeviceSelection = !!device?.unreadableError || device.isUnacquired();
