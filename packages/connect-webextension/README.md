@@ -4,7 +4,7 @@
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-webextension.svg)](https://www.npmjs.org/package/@trezor/connect-webextension)
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect-webextension/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect-webextension/package.json)
 
-The @trezor/connect-webextension package provides an implementation of @trezor/connect designed specifically for use within web extensions. Key features include:
+The `@trezor/connect-webextension` package provides an implementation of `@trezor/connect` designed specifically for use within web extensions. Key features include:
 
 -   Compatibility with service worker environments.
 -   Full access to the TrezorConnect API.
