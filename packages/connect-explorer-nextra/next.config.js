@@ -8,6 +8,7 @@ const commitHash = require('child_process').execSync('git rev-parse HEAD').toStr
 module.exports = withNextra({
     basePath: process.env.CONNECT_EXPLORER_BASE_PATH,
     assetPrefix: process.env.CONNECT_EXPLORER_ASSET_PREFIX,
+    trailingSlash: true,
     output: 'export',
     images: {
         unoptimized: true,
