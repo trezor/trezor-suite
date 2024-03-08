@@ -1,7 +1,6 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "skipLibCheck": false,
         "outDir": "./libDev"
     },
     "include": ["."],

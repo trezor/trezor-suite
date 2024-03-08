@@ -9740,6 +9740,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
+    "@babel/preset-react": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.23.3"
     "@trezor/components": "workspace:*"
     "@trezor/connect-web": "workspace:*"
     "@trezor/connect-webextension": "workspace:^"
@@ -9751,6 +9753,7 @@ __metadata:
     "@types/react-router-dom": "npm:^5.1.7"
     "@types/styled-components": "npm:^5.1.34"
     babel-loader: "npm:^9.1.3"
+    babel-plugin-styled-components: "npm:^2.1.4"
     copy-webpack-plugin: "npm:^12.0.2"
     html-webpack-plugin: "npm:^5.6.0"
     markdown-it: "npm:^14.0.0"
@@ -9767,6 +9770,7 @@ __metadata:
     redux: "npm:^4.2.1"
     redux-logger: "npm:^3.0.6"
     redux-thunk: "npm:^2.4.2"
+    rimraf: "npm:^5.0.5"
     styled-components: "npm:^5.3.10"
     stylelint: "npm:^16.2.1"
     stylelint-config-standard: "npm:^36.0.0"
@@ -9783,13 +9787,16 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-iframe@workspace:packages/connect-iframe"
   dependencies:
+    "@babel/preset-typescript": "npm:^7.23.3"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-analytics": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/env-utils": "workspace:*"
+    babel-loader: "npm:^9.1.3"
     copy-webpack-plugin: "npm:^12.0.2"
     es6-promise: "npm:^4.2.8"
     html-webpack-plugin: "npm:^5.6.0"
+    rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.90.1"
     webpack-cli: "npm:^5.1.4"
@@ -9826,6 +9833,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-popup@workspace:packages/connect-popup"
   dependencies:
+    "@babel/plugin-proposal-class-properties": "npm:^7.18.6"
+    "@babel/preset-react": "npm:^7.23.3"
+    "@babel/preset-typescript": "npm:^7.23.3"
     "@playwright/browser-chromium": "npm:^1.41.2"
     "@playwright/browser-firefox": "npm:^1.41.2"
     "@playwright/browser-webkit": "npm:^1.41.2"
@@ -9844,16 +9854,19 @@ __metadata:
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.55"
+    babel-loader: "npm:^9.1.3"
     copy-webpack-plugin: "npm:^12.0.2"
     eth-phishing-detect: "npm:^1.2.0"
     html-webpack-plugin: "npm:^5.6.0"
     react-dom: "npm:18.2.0"
+    rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.90.1"
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
     webpack-merge: "npm:^5.10.0"
     webpack-plugin-serve: "npm:^1.6.0"
+    worker-loader: "npm:^3.0.8"
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
     react: 18.2.0
@@ -9888,6 +9901,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-web@workspace:packages/connect-web"
   dependencies:
+    "@babel/preset-typescript": "npm:^7.23.3"
     "@playwright/browser-chromium": "npm:^1.41.2"
     "@playwright/browser-firefox": "npm:^1.41.2"
     "@playwright/browser-webkit": "npm:^1.41.2"
@@ -9897,8 +9911,10 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.260"
     "@types/w3c-web-usb": "npm:^1.0.10"
+    babel-loader: "npm:^9.1.3"
     events: "npm:^3.3.0"
     html-webpack-plugin: "npm:^5.6.0"
+    rimraf: "npm:^5.0.5"
     selfsigned: "npm:^2.4.1"
     terser-webpack-plugin: "npm:^5.3.9"
     tsx: "npm:^4.7.0"
@@ -9906,6 +9922,7 @@ __metadata:
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.10.0"
     webpack-plugin-serve: "npm:^1.6.0"
+    worker-loader: "npm:^3.0.8"
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
     tslib: ^2.6.2
@@ -9916,6 +9933,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
+    "@babel/preset-typescript": "npm:^7.23.3"
     "@playwright/browser-chromium": "npm:^1.41.2"
     "@playwright/browser-firefox": "npm:^1.41.2"
     "@playwright/browser-webkit": "npm:^1.41.2"
@@ -9927,13 +9945,16 @@ __metadata:
     "@trezor/trezor-user-env-link": "workspace:*"
     "@trezor/utils": "workspace:*"
     "@types/chrome": "npm:^0.0.260"
+    babel-loader: "npm:^9.1.3"
     copy-webpack-plugin: "npm:^12.0.2"
     events: "npm:^3.3.0"
+    rimraf: "npm:^5.0.5"
     terser-webpack-plugin: "npm:^5.3.9"
     webpack: "npm:^5.90.1"
     webpack-cli: "npm:^5.1.4"
     webpack-merge: "npm:^5.9.0"
     webpack-plugin-serve: "npm:^1.6.0"
+    worker-loader: "npm:^3.0.8"
     xvfb-maybe: "npm:^0.2.1"
   peerDependencies:
     tslib: ^2.6.2
@@ -9944,6 +9965,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect@workspace:packages/connect"
   dependencies:
+    "@babel/preset-typescript": "npm:^7.23.3"
     "@ethereumjs/common": "npm:^4.2.0"
     "@ethereumjs/tx": "npm:^5.2.1"
     "@fivebinaries/coin-selection": "npm:2.2.1"
@@ -9960,6 +9982,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     "@types/karma": "npm:^6.3.8"
     "@types/parse-uri": "npm:^1.0.2"
+    babel-loader: "npm:^9.1.3"
     bignumber.js: "npm:^9.1.2"
     blakejs: "npm:^1.2.1"
     bs58: "npm:^5.0.0"
@@ -9975,6 +9998,7 @@ __metadata:
     karma-jasmine-async: "npm:^0.0.1"
     karma-sourcemap-loader: "npm:^0.4.0"
     karma-webpack: "npm:^5.0.1"
+    node-libs-browser: "npm:^2.2.1"
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.7.0"
     webpack: "npm:^5.90.1"
