@@ -1,5 +1,6 @@
 import { test, expect, firefox, chromium, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { waitAndClick, log } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -34,15 +35,30 @@ const fixtures = [
 
 fixtures.forEach(f => {
     test(`${f.browser.name()}: ${f.description}`, async () => {
+        log('start', test.info().title);
+
+        log('launching browser');
         const browserInstance = await f.browser.launch();
-        const page = await browserInstance.newPage();
+        const context = await browserInstance.newContext();
+        const page = await context.newPage();
+
+        log(`going to: ${url}${f.queryString}#/method/verifyMessage`);
         await page.goto(`${url}${f.queryString}#/method/verifyMessage`);
+        log('waiting for explorer to load');
+        await page.waitForSelector("button[data-test='@submit-button']", {
+            state: 'visible',
+        });
 
+        await page.locator("button[data-test='@submit-button']");
+
+        log('opening popup');
         [popup] = await Promise.all([
-            page.waitForEvent('popup'),
-            page.click("button[data-test='@submit-button']"),
+            context.waitForEvent('page'),
+            page.locator("button[data-test='@submit-button']").click({ timeout: 30000 }),
         ]);
-
+        log('waiting for analytics');
+        await waitAndClick(popup, ['@analytics/continue-button']);
+        log('testing expect');
         await f.expect();
         await browserInstance.close();
     });
