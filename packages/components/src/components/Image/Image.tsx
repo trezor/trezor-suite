@@ -51,13 +51,13 @@ const isSVG = (image: ImageType): image is SvgImage => image in SVG_IMAGES;
 
 export const Image = (props: ImageProps) => {
     if ('image' in props) {
-        const { image } = props;
+        const { image, ...rest } = props;
         if (isPNG(image)) {
             return (
                 <StyledImage
                     src={resolveStaticPath(`${PNG_PATH}/${PNG_IMAGES[image]}`)}
                     srcSet={buildSrcSet(PNG_PATH, PNG_IMAGES, image)}
-                    {...props}
+                    {...rest}
                 />
             );
         }
@@ -67,14 +67,16 @@ export const Image = (props: ImageProps) => {
                 <StyledImage
                     src={resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES[image]}`)}
                     srcSet={buildSrcSet(SVG_PATH, SVG_IMAGES, image)}
-                    {...props}
+                    {...rest}
                 />
             );
         }
     }
 
     if ('imageSrc' in props) {
-        return <StyledImage src={props.imageSrc} {...props} />;
+        const { imageSrc, ...rest } = props;
+
+        return <StyledImage src={imageSrc} {...rest} />;
     }
 
     return null;
