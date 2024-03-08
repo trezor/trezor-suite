@@ -21,6 +21,9 @@ const config: DocsThemeConfig = {
     footer: {
         text: 'Copyright belongs to Trezor company s.r.o. All rights reserved.',
     },
+    nextThemes: {
+        forcedTheme: 'light',
+    },
 };
 
 export default config;
