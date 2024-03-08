@@ -54,3 +54,18 @@ For more instructions [refer to this document](https://github.com/trezor/trezor-
 -   install node_modules: `yarn && yarn build:libs`
 -   generate certs `yarn workspace @trezor/connect-web predev`
 -   It is possible to run local dev server with iframe and popup using: `yarn workspace @trezor/connect-web dev` Note: don't forget to visit `https://localhost:8088/` and allow self-signed certificate. No UI is displayed here.
+
+## TrezorConnect Support Matrix
+
+The table below details the support for different environments by TrezorConnect for integrating Trezor devices, including the use of WebUSB and the need for Trezor Bridge.
+
+| Environment                   | Chrome | Firefox | Safari | Chrome Android | Firefox Android | Notes                                                                   |
+| ----------------------------- | :----: | :-----: | :----: | :------------: | :-------------: | ----------------------------------------------------------------------- |
+| Web (WebUSB)                  |   ✓    |    ✗    |   ✗    |       ✓        |        ✗        | WebUSB is fully supported where indicated. (Chromium based browsers)    |
+| Web (Bridge)                  |   ✓    |    ✓    |   ✗    |       ✗        |        ✗        | Trezor Bridge is required where WebUSB is not supported. (e.g. Firefox) |
+| WebExtension (WebUSB, Bridge) |   ✓    |    ✓    |   ✗    |       ✓        |        ✗        | Requires Trezor Bridge on platforms not supporting WebUSB.              |
+
+## Key Differences
+
+-   **WebUSB**: Allows direct communication with Trezor devices via the browser. Supported by most modern browsers but may have limitations on mobile devices and is not supported by Safari.
+-   **Trezor Bridge**: A service that runs with Trezor Suite or Standalone that facilitates communication between your Trezor device and a web browser. Required for browsers that do not support WebUSB or for a more stable connection on desktop environments.

@@ -1,6 +1,6 @@
 # Integrate @trezor/connect with a web extension
 
-**Note: only manifest version 2 is supported for now**
+**Note: Only manifest version 2 web extensions are supported by this package. For manifest version 3, use the [@trezor/connect-webextension](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-webextension) package**
 
 [Example of a web extension project for both Google Chrome & Firefox](../../../connect-examples/webextension/README.md)
 
