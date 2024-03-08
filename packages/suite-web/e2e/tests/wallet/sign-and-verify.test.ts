@@ -24,7 +24,7 @@ describe('Sign and verify', () => {
         cy.getTestElement('@account-menu/btc/normal/0').click();
 
         cy.getTestElement('@wallet/menu/extra-dropdown').click();
-        cy.getTestElement('@wallet/menu/wallet-sign-verify').click();
+        cy.getTestElement('@wallet/menu/wallet-sign-verify').should('be.visible').click();
     });
 
     /* Test case
