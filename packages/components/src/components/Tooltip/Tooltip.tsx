@@ -31,7 +31,7 @@ const Wrapper = styled.div<{ $isFullWidth: boolean }>`
     width: ${({ $isFullWidth }) => ($isFullWidth ? '100%' : 'auto')};
 `;
 
-const TooltipContainer = styled(motion.div)<{
+const TooltipContainer = styled.div<{
     $maxWidth: string | number;
     $isLarge: boolean;
     $isWithHeader: boolean;
@@ -192,10 +192,10 @@ export const Tooltip = ({
                         $isWithHeader={!!(title || addon)}
                         $maxWidth={maxWidth}
                         tabIndex={-1}
-                        variants={animationVariants}
-                        animate={isShown ? 'shown' : 'hidden'}
-                        transition={{ duration: 0.2, ease: 'easeInOut' }}
-                        onAnimationComplete={isShown ? () => {} : instance?.unmount}
+                        // variants={animationVariants}
+                        // animate={isShown ? 'shown' : 'hidden'}
+                        // transition={{ duration: 0.2, ease: 'easeInOut' }}
+                        // onAnimationComplete={isShown ? () => {} : instance?.unmount}
                         {...attrs}
                     >
                         {(title || addon) && (

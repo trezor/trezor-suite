@@ -14,6 +14,8 @@ import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
+import isValidProp from '@emotion/is-prop-valid';
+import { MotionConfig } from 'framer-motion';
 
 const getFullscreenApp = (route: AppState['router']['route']) => {
     switch (route?.app) {
@@ -32,7 +34,7 @@ interface PreloaderProps {
 
 // Preloader is a top level wrapper used in _app.tsx.
 // Decides which content should be displayed basing on route and prerequisites.
-export const Preloader = ({ children }: PreloaderProps) => {
+const _Preloader = ({ children }: PreloaderProps) => {
     const lifecycle = useSelector(state => state.suite.lifecycle);
     const transport = useSelector(state => state.suite.transport);
     const router = useSelector(state => state.router);
@@ -97,3 +99,9 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // everything is set.
     return <SuiteLayout>{children}</SuiteLayout>;
 };
+
+export const Preloader = (props: PreloaderProps) => (
+    <MotionConfig isValidProp={isValidProp}>
+        <_Preloader {...props} />
+    </MotionConfig>
+);

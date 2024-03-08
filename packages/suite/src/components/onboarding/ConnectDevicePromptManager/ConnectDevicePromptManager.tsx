@@ -25,7 +25,7 @@ const Wrapper = styled.div`
     align-items: center;
 `;
 
-const ContentWrapper = styled(motion.div)`
+const ContentWrapper = styled.div`
     display: flex;
 `;
 
@@ -89,9 +89,9 @@ export const ConnectDevicePromptManager = ({
             />
 
             <ContentWrapper
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
+                // initial={{ opacity: 0 }}
+                // animate={{ opacity: 1 }}
+                // transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
             >
                 {content ?? children}
             </ContentWrapper>

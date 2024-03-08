@@ -4,7 +4,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { motionEasing, variables } from '@trezor/components';
 import { Translation, TranslationKey } from 'src/components/suite/Translation';
 
-const Fact = styled(motion.p)`
+const Fact = styled.p`
     max-width: 460px;
     height: 42px;
     margin-top: 6px;
@@ -63,10 +63,10 @@ export const RotatingFacts = () => {
         <AnimatePresence mode="wait">
             <Fact
                 key={factIndex}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.4, ease: motionEasing.transition }}
+                // initial={{ opacity: 0 }}
+                // animate={{ opacity: 1 }}
+                // exit={{ opacity: 0 }}
+                // transition={{ duration: 0.4, ease: motionEasing.transition }}
             >
                 <Translation id={FACTS[factIndex]} />
             </Fact>

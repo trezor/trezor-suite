@@ -83,10 +83,7 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                 </SetupOptions>
                 <AnimatePresence initial={!coinjoinAccount.setup}>
                     {coinjoinAccount.setup && (
-                        <motion.div
-                            {...motionAnimation.expand}
-                            transition={{ duration: 0.4, ease: motionEasing.transition }}
-                        >
+                        
                             <CustomSetup>
                                 <AnonymityLevelSetup
                                     accountKey={accountKey}
@@ -101,7 +98,6 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                                     skipRounds={coinjoinAccount.setup.skipRounds}
                                 />
                             </CustomSetup>
-                        </motion.div>
                     )}
                 </AnimatePresence>
             </SetupContainer>

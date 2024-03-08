@@ -12,7 +12,7 @@ const FiatAmount = styled.span`
     ${typography.hint}
 `;
 
-const TargetWrapper = styled(motion.div)`
+const TargetWrapper = styled.div`
     display: flex;
 
     /* position: relative; */
@@ -42,7 +42,7 @@ const StyledHiddenPlaceholder = styled(HiddenPlaceholder)`
     text-overflow: ellipsis;
 `;
 
-const TargetAddress = styled(motion.div)`
+const TargetAddress = styled.div`
     display: flex;
     flex: 1;
     color: ${({ theme }) => theme.textSubdued};

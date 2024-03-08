@@ -10,7 +10,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
-const Container = styled(motion.div)`
+const Container = styled.div`
     position: relative;
     display: flex;
     align-items: center;

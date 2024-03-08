@@ -49,21 +49,21 @@ export const CoinsFilter = () => {
     const showCoinFilter = supportedNetworks.length > 1;
 
     const coinAnimcationConfig: MotionProps = {
-        initial: {
-            opacity: 0,
-        },
-        animate: {
-            opacity: 1,
-        },
-        exit: {
-            opacity: 0,
-        },
-        transition: {
-            ease: motionEasing.transition,
-            layout: {
-                ease: motionEasing.transition,
-            },
-        },
+        // initial: {
+        //     opacity: 0,
+        // },
+        // animate: {
+        //     opacity: 1,
+        // },
+        // exit: {
+        //     opacity: 0,
+        // },
+        // transition: {
+        //     ease: motionEasing.transition,
+        //     layout: {
+        //         ease: motionEasing.transition,
+        //     },
+        // },
     };
 
     if (!showCoinFilter) {
@@ -87,7 +87,7 @@ export const CoinsFilter = () => {
                             cursor="pointer"
                             delayShow={TOOLTIP_DELAY_NORMAL}
                         >
-                            <motion.div key={network} {...coinAnimcationConfig} layout>
+                            {/* <motion.div key={network} {...coinAnimcationConfig} layout> */}
                                 <StyledCoinLogo
                                     data-test={`@account-menu/filter/${network}`}
                                     symbol={network}
@@ -100,7 +100,7 @@ export const CoinsFilter = () => {
                                         setCoinFilter(coinFilter === network ? undefined : network);
                                     }}
                                 />
-                            </motion.div>
+                            {/* </motion.div> */}
                         </Tooltip>
                     );
                 })}

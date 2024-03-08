@@ -39,7 +39,7 @@ const MenuElement = styled.div<{ $isActive: boolean }>`
     }
 `;
 
-const Underline = styled(motion.div)`
+const Underline = styled.div`
     position: absolute;
     bottom: -${spacingsPx.sm};
     left: 0;
@@ -107,11 +107,11 @@ export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) 
                                 <Underline
                                     // TODO: get rid of the weird jump when switching tabs on the account page before enabling this
                                     // layoutId="underline"
-                                    transition={{
-                                        layout: {
-                                            ease: motionEasing.transition,
-                                        },
-                                    }}
+                                    // transition={{
+                                    //     layout: {
+                                    //         ease: motionEasing.transition,
+                                    //     },
+                                    // }}
                                 />
                             )}
                         </MenuElement>

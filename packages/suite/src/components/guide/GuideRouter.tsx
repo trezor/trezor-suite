@@ -51,7 +51,7 @@ const GuideWrapper = styled.div`
     }
 `;
 
-const MotionGuide = styled(motion.div)`
+const MotionGuide = styled.div`
     max-width: 100vw;
     height: 100%;
     border-left: 1px solid ${({ theme }) => theme.STROKE_GREY};
@@ -76,23 +76,23 @@ export const GuideRouter = () => {
                     {isGuideOpen && (
                         <MotionGuide
                             data-test="@guide/panel"
-                            initial={{
-                                width: isFirstRender ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0,
-                            }}
-                            animate={{
-                                width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
-                                transition: {
-                                    duration: GUIDE_ANIMATION_DURATION_MS / 1000,
-                                    bounce: 0,
-                                },
-                            }}
-                            exit={{
-                                width: 0,
-                                transition: {
-                                    duration: GUIDE_ANIMATION_DURATION_MS / 1000,
-                                    bounce: 0,
-                                },
-                            }}
+                            // initial={{
+                            //     width: isFirstRender ? variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH : 0,
+                            // }}
+                            // animate={{
+                            //     width: variables.LAYOUT_SIZE.GUIDE_PANEL_WIDTH,
+                            //     transition: {
+                            //         duration: GUIDE_ANIMATION_DURATION_MS / 1000,
+                            //         bounce: 0,
+                            //     },
+                            // }}
+                            // exit={{
+                            //     width: 0,
+                            //     transition: {
+                            //         duration: GUIDE_ANIMATION_DURATION_MS / 1000,
+                            //         bounce: 0,
+                            //     },
+                            // }}
                         >
                             {activeView === 'GUIDE_DEFAULT' && <Guide />}
                             {activeView === 'GUIDE_ARTICLE' && <GuideArticle />}

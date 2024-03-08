@@ -11,7 +11,7 @@ import { useRediscoveryNeeded, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 
-const DiscoveryButtonContainer = styled(motion.div)`
+const DiscoveryButtonContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,19 +22,19 @@ const DiscoveryButtonContainer = styled(motion.div)`
 `;
 
 const animationConfig: MotionProps = {
-    initial: {
-        opacity: 0,
-    },
-    animate: {
-        opacity: 1,
-    },
-    exit: {
-        opacity: 0,
-    },
-    transition: {
-        ease: motionEasing.transition,
-        duration: 0.2,
-    },
+    // initial: {
+    //     opacity: 0,
+    // },
+    // animate: {
+    //     opacity: 1,
+    // },
+    // exit: {
+    //     opacity: 0,
+    // },
+    // transition: {
+    //     ease: motionEasing.transition,
+    //     duration: 0.2,
+    // },
 };
 
 export const RefreshAfterDiscoveryNeeded = () => {

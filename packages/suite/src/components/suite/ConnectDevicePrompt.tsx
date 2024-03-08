@@ -7,7 +7,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import type { PrerequisiteType } from 'src/types/suite';
 import { motion } from 'framer-motion';
 
-const Wrapper = styled(motion.div)`
+const Wrapper = styled.div`
     display: flex;
     height: 122px;
     min-height: 122px;
@@ -96,9 +96,9 @@ export const ConnectDevicePrompt = ({
 
     return (
         <Wrapper
-            initial={{ opacity: 0, y: -50 }}
-            animate={{ opacity: 1, y: -0 }}
-            transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
+            // initial={{ opacity: 0, y: -50 }}
+            // animate={{ opacity: 1, y: -0 }}
+            // transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
             data-test="@connect-device-prompt"
         >
             <ImageWrapper>

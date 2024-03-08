@@ -107,7 +107,7 @@ const Content = styled.div<{
     overflow: hidden;
 `;
 
-const Collapser = styled(motion.div)`
+const Collapser = styled.div`
     overflow: hidden;
 `;
 
@@ -171,16 +171,16 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
             </Header>
 
             <Collapser
-                initial={false} // Prevents animation on mount when expanded === false
-                variants={animationVariants}
-                animate={!isCollapsed ? 'expanded' : 'closed'}
-                transition={{
-                    duration: ANIMATION_DURATION,
-                    ease: motionEasing.transition,
-                    opacity: {
-                        ease: isCollapsed ? motionEasing.enter : motionEasing.exit,
-                    },
-                }}
+                // initial={false} // Prevents animation on mount when expanded === false
+                // variants={animationVariants}
+                // animate={!isCollapsed ? 'expanded' : 'closed'}
+                // transition={{
+                //     duration: ANIMATION_DURATION,
+                //     ease: motionEasing.transition,
+                //     opacity: {
+                //         ease: isCollapsed ? motionEasing.enter : motionEasing.exit,
+                //     },
+                // }}
                 data-test="@collapsible-box/body"
             >
                 <Content $variant={variant}>{children}</Content>

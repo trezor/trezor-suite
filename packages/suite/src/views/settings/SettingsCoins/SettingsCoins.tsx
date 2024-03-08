@@ -35,43 +35,43 @@ const StyledSectionItem = styled(SectionItem)`
 `;
 
 const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps => ({
-    initial: {
-        height: 0,
-        opacity: 0,
-        translateY: 16,
-        translateX: -28,
-        scale: 0.96,
-    },
-    animate: {
-        height: 'auto',
-        opacity: 1,
-        translateY: 0,
-        translateX: 0,
-        scale: 1,
-        transition: {
-            ease: motionEasing.transition,
-            duration: 0.2,
-            opacity: {
-                duration: 0.35,
-                ease: motionEasing.transition,
-            },
-        },
-    },
-    exit: {
-        height: 0,
-        opacity: 0,
-        translateY: 16,
-        translateX: isConfirmed ? 0 : -24,
-        scale: 0.96,
-        transformOrigin: 'bottom left',
-        transition: {
-            ease: motionEasing.transition,
-            duration: 0.2,
-            opacity: {
-                ease: motionEasing.enter,
-            },
-        },
-    },
+    // initial: {
+    //     height: 0,
+    //     opacity: 0,
+    //     translateY: 16,
+    //     translateX: -28,
+    //     scale: 0.96,
+    // },
+    // animate: {
+    //     height: 'auto',
+    //     opacity: 1,
+    //     translateY: 0,
+    //     translateX: 0,
+    //     scale: 1,
+    //     transition: {
+    //         ease: motionEasing.transition,
+    //         duration: 0.2,
+    //         opacity: {
+    //             duration: 0.35,
+    //             ease: motionEasing.transition,
+    //         },
+    //     },
+    // },
+    // exit: {
+    //     height: 0,
+    //     opacity: 0,
+    //     translateY: 16,
+    //     translateX: isConfirmed ? 0 : -24,
+    //     scale: 0.96,
+    //     transformOrigin: 'bottom left',
+    //     transition: {
+    //         ease: motionEasing.transition,
+    //         duration: 0.2,
+    //         opacity: {
+    //             ease: motionEasing.enter,
+    //         },
+    //     },
+    // },
 });
 
 export const SettingsCoins = () => {
@@ -138,11 +138,11 @@ export const SettingsCoins = () => {
 
                     <AnimatePresence>
                         {isDiscoveryButtonVisible && (
-                            <motion.div {...animation} key="discover-button">
-                                <StyledButton onClick={startDiscovery}>
-                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
-                                </StyledButton>
-                            </motion.div>
+                            // <motion.div {...animation} key="discover-button">
+                            <StyledButton onClick={startDiscovery}>
+                                <Translation id="TR_DISCOVERY_NEW_COINS" />
+                            </StyledButton>
+                            // </motion.div>
                         )}
                     </AnimatePresence>
                 </StyledSectionItem>

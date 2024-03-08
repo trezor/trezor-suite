@@ -149,7 +149,7 @@ const Description = styled.div<{ $hasChildren?: boolean }>`
     }
 `;
 
-const CollapsibleCardInner = styled(motion.div)`
+const CollapsibleCardInner = styled.div`
     text-align: left;
     display: flex;
     align-items: center;
@@ -220,57 +220,43 @@ export const CollapsibleOnboardingCard = ({
             data-test="@components/collapsible-box"
             {...rest}
         >
-            <motion.div
-                animate={expanded ? 'expanded' : 'closed'}
-                transition={{ duration: 0.4, ease: motionEasing.transition }}
-            >
-                <ElevationContext baseElevation={elevation}>
-                    <CardWrapperInner $expandable={expandable}>
-                        {expandable && (
-                            <CollapsibleCardInner
-                                variants={headerVariants}
-                                animate={expanded ? 'expanded' : 'closed'}
-                                transition={{ duration: 0.2, ease: 'linear' }}
-                            >
-                                {expandableIcon}
-
-                                <HeadingExpandable>{heading}</HeadingExpandable>
-
-                                {tag && <Tag>{tag}</Tag>}
-                            </CollapsibleCardInner>
-                        )}
-
-                        <motion.div
-                            initial={false} // Prevents animation on mount when expanded === false
-                            variants={expandable ? animationVariants : undefined}
-                            animate={expanded ? 'expanded' : 'closed'}
-                            transition={{ duration: 0.4, ease: motionEasing.transition }}
+            <ElevationContext baseElevation={elevation}>
+                <CardWrapperInner $expandable={expandable}>
+                    {expandable && (
+                        <CollapsibleCardInner
+                        // variants={headerVariants}
+                        // animate={expanded ? 'expanded' : 'closed'}
+                        // transition={{ duration: 0.2, ease: 'linear' }}
                         >
-                            {expandable && expanded && (
-                                <CloseIcon icon="CROSS" size={22} onClick={onToggle} />
-                            )}
+                            {expandableIcon}
 
-                            {heading && (
-                                <Heading $withDescription={!!description}>{heading}</Heading>
-                            )}
+                            <HeadingExpandable>{heading}</HeadingExpandable>
 
-                            {description && (
-                                <Description $hasChildren={!!children}>
-                                    <Text>{description}</Text>
-                                </Description>
-                            )}
+                            {tag && <Tag>{tag}</Tag>}
+                        </CollapsibleCardInner>
+                    )}
 
-                            {image && (
-                                <CardImageWrapper>
-                                    <Image width={100} height={100} image={image} />
-                                </CardImageWrapper>
-                            )}
+                    {expandable && expanded && (
+                        <CloseIcon icon="CROSS" size={22} onClick={onToggle} />
+                    )}
 
-                            <ChildrenWrapper>{children}</ChildrenWrapper>
-                        </motion.div>
-                    </CardWrapperInner>
-                </ElevationContext>
-            </motion.div>
+                    {heading && <Heading $withDescription={!!description}>{heading}</Heading>}
+
+                    {description && (
+                        <Description $hasChildren={!!children}>
+                            <Text>{description}</Text>
+                        </Description>
+                    )}
+
+                    {image && (
+                        <CardImageWrapper>
+                            <Image width={100} height={100} image={image} />
+                        </CardImageWrapper>
+                    )}
+
+                    <ChildrenWrapper>{children}</ChildrenWrapper>
+                </CardWrapperInner>
+            </ElevationContext>
         </CardWrapper>
     );
 };

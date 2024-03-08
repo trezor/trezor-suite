@@ -22,7 +22,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { colorVariants } from '@trezor/theme';
 import { rgba } from 'polished';
 
-const BannerWrapper = styled(motion.div)`
+const BannerWrapper = styled.div`
     display: grid;
     grid-template-columns: 338px 1fr minmax(109px, 145px) 42px;
     grid-template-rows: 42px 1fr 0;

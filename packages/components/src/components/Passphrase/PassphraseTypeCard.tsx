@@ -396,7 +396,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         {/* Submit button */}
                         {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
                         {(props.singleColModal || hiddenWalletTouched) && (
-                            <motion.div {...motionConfig.motionAnimation.expand}>
+                            // <motion.div {...motionConfig.motionAnimation.expand}>
                                 <ActionButton
                                     data-test={`@passphrase/${
                                         props.type === 'hidden' ? 'hidden' : 'standard'
@@ -408,7 +408,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                 >
                                     {props.submitLabel}
                                 </ActionButton>
-                            </motion.div>
+                            // </motion.div>
                         )}
                         {/* Offer entering passphrase on a device */}
                         {props.offerPassphraseOnDevice && (

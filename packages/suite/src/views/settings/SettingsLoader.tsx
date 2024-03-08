@@ -5,7 +5,7 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const Container = styled(motion.div)`
+const Container = styled.div`
     background-color: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     border-radius: 48px;
     display: flex;
@@ -27,45 +27,45 @@ const Description = styled.div`
 `;
 
 const getContainerAnimation = (isPresent: boolean) => ({
-    initial: {
-        height: 0,
-        marginBottom: 0,
-    },
-    animate: {
-        height: 'auto',
-        marginBottom: spacings.lg,
-    },
-    exit: {
-        height: 0,
-        marginBottom: 0,
-    },
-    transition: {
-        duration: 0.3,
-        ease: isPresent ? motionEasing.enter : motionEasing.exit,
-    },
+    // initial: {
+    //     height: 0,
+    //     marginBottom: 0,
+    // },
+    // animate: {
+    //     height: 'auto',
+    //     marginBottom: spacings.lg,
+    // },
+    // exit: {
+    //     height: 0,
+    //     marginBottom: 0,
+    // },
+    // transition: {
+    //     duration: 0.3,
+    //     ease: isPresent ? motionEasing.enter : motionEasing.exit,
+    // },
 });
 
 const getContentAnimation = (isPresent: boolean) => ({
-    initial: {
-        opacity: 0,
-        scale: 0.9,
-    },
-    animate: {
-        opacity: 1,
-        scale: 1,
-    },
-    exit: {
-        opacity: 0,
-        scale: 0.9,
-    },
-    transition: {
-        duration: 0.3,
-        ease: isPresent ? motionEasing.enter : motionEasing.exit,
-        opacity: {
-            duration: isPresent ? 0.25 : 0.15,
-            ease: isPresent ? motionEasing.enter : motionEasing.exit,
-        },
-    },
+    // initial: {
+    //     opacity: 0,
+    //     scale: 0.9,
+    // },
+    // animate: {
+    //     opacity: 1,
+    //     scale: 1,
+    // },
+    // exit: {
+    //     opacity: 0,
+    //     scale: 0.9,
+    // },
+    // transition: {
+    //     duration: 0.3,
+    //     ease: isPresent ? motionEasing.enter : motionEasing.exit,
+    //     opacity: {
+    //         duration: isPresent ? 0.25 : 0.15,
+    //         ease: isPresent ? motionEasing.enter : motionEasing.exit,
+    //     },
+    // },
 });
 
 interface SettingsLoadingProps {

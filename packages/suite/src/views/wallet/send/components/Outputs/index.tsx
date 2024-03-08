@@ -64,20 +64,20 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
         <Container $height={height || 0}>
             <div ref={ref}>
                 {outputs.map((output, index) => (
-                    <motion.div
-                        layout
-                        key={output.id}
-                        initial={
-                            index === 0 || !hasRenderedOutputs || disableAnim
-                                ? undefined
-                                : { scale: 0.8, opacity: 0 }
-                        }
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{
-                            duration: 0.2,
-                            ease: motionEasing.transition,
-                        }}
-                    >
+                    // <motion.div
+                    //     layout
+                    //     key={output.id}
+                    //     initial={
+                    //         index === 0 || !hasRenderedOutputs || disableAnim
+                    //             ? undefined
+                    //             : { scale: 0.8, opacity: 0 }
+                    //     }
+                    //     animate={{ scale: 1, opacity: 1 }}
+                    //     transition={{
+                    //         duration: 0.2,
+                    //         ease: motionEasing.transition,
+                    //     }}
+                    // >
                         <Card
                             label={
                                 isMatic && (
@@ -106,7 +106,7 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                                 </>
                             )}
                         </Card>
-                    </motion.div>
+                    // </motion.div>
                 ))}
             </div>
         </Container>
