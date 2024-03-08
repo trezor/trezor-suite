@@ -68,7 +68,6 @@ export const AccountListItem = ({ account, areTokensDisplayed = false }: Account
                     )}
                 </Box>
             </Box>
-
             <Box style={applyStyle(valuesContainerStyle)}>
                 <CryptoToFiatAmountFormatter
                     value={account.availableBalance}

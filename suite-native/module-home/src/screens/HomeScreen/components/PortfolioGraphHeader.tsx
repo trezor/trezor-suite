@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 
-import { Box, HStack, Text, VStack } from '@suite-native/atoms';
+import { Box, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { GraphDateFormatter, percentageDiff, PriceChangeIndicator } from '@suite-native/graph';
 import { FiatGraphPoint, FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
@@ -46,7 +46,11 @@ const Balance = () => {
     // Reset selected point on unmount so it doesn't display on device change
     useEffect(() => () => setPoint(emptyGraphPoint), [setPoint]);
 
-    return <FiatBalanceFormatter value={fiatValue} />;
+    return (
+        <DiscreetTextTrigger>
+            <FiatBalanceFormatter value={fiatValue} />
+        </DiscreetTextTrigger>
+    );
 };
 
 export const PortfolioGraphHeader = () => {

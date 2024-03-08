@@ -1,21 +1,90 @@
-import { ReactNode } from 'react';
-import { Pressable } from 'react-native';
+import { useState } from 'react';
+import { LayoutChangeEvent } from 'react-native';
 
-import { DiscreetTextContent, DiscreetTextContentProps } from './DiscreetTextContent';
+import { typographyStylesBase } from '@trezor/theme';
+import { mergeNativeStyleObjects, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+import { Text, TextProps } from '../Text';
+import { Box } from '../Box';
+import { DiscreetCanvas } from './DiscreetCanvas';
 import { useDiscreetMode } from './useDiscreetMode';
 
-type DiscreetTextProps = { children: ReactNode } & DiscreetTextContentProps;
+export type DiscreetTextContentProps = TextProps & {
+    children?: string | null;
+};
 
-export const DiscreetText = ({ children, ...rest }: DiscreetTextProps) => {
-    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
+const discreetTextContentContainer = prepareNativeStyle<{ lineHeight: number }>(
+    (_, { lineHeight }) => ({
+        height: lineHeight,
+        justifyContent: 'center',
+    }),
+);
 
-    const handlePress = () => {
-        setIsDiscreetMode(!isDiscreetMode);
+const textTemplateStyle = prepareNativeStyle(_ => ({
+    opacity: 0,
+    height: 0,
+}));
+
+export const DiscreetText = ({
+    children = '',
+    color = 'textDefault',
+    variant = 'body',
+    ellipsizeMode,
+    adjustsFontSizeToFit,
+    style = {},
+    ...restTextProps
+}: DiscreetTextContentProps) => {
+    const { applyStyle } = useNativeStyles();
+    const { isDiscreetMode } = useDiscreetMode();
+    const [width, setWidth] = useState(0);
+
+    const handleLayout = ({ nativeEvent }: LayoutChangeEvent) => {
+        setWidth(nativeEvent.layout.width);
     };
 
+    const { lineHeight, fontSize } = typographyStylesBase[variant];
+
+    if (!children) return null;
+
+    if (!isDiscreetMode)
+        return (
+            <Box style={applyStyle(discreetTextContentContainer, { lineHeight })}>
+                <Text
+                    variant={variant}
+                    color={color}
+                    onLayout={handleLayout}
+                    ellipsizeMode={ellipsizeMode}
+                    adjustsFontSizeToFit={adjustsFontSizeToFit}
+                    style={style}
+                    {...restTextProps}
+                >
+                    {children}
+                </Text>
+            </Box>
+        );
+
     return (
-        <Pressable onPress={handlePress}>
-            <DiscreetTextContent {...rest}>{children}</DiscreetTextContent>
-        </Pressable>
+        <Box style={applyStyle(discreetTextContentContainer, { lineHeight })}>
+            <DiscreetCanvas
+                width={width}
+                height={lineHeight}
+                fontSize={fontSize}
+                text={children}
+                color={color}
+            />
+            {/* Plain Text needs to be always rendered so it shares its width with DiscreetCanvas. */}
+            {/* If the DiscreetMode is on, it is hidden with opacity and height set to zero. */}
+            <Text
+                ellipsizeMode={isDiscreetMode ? undefined : ellipsizeMode}
+                adjustsFontSizeToFit={!isDiscreetMode && adjustsFontSizeToFit}
+                variant={variant}
+                color={color}
+                onLayout={handleLayout}
+                style={mergeNativeStyleObjects([style, applyStyle(textTemplateStyle)])}
+                {...restTextProps}
+            >
+                {children}
+            </Text>
+        </Box>
     );
 };

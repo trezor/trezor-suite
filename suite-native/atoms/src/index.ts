@@ -12,6 +12,7 @@ export * from './Input/Input';
 export * from './CheckBox';
 export * from './Switch';
 export * from './DiscreetText/DiscreetText';
+export * from './DiscreetText/DiscreetTextTrigger';
 export * from './DiscreetText/DiscreetCanvas';
 export * from './DiscreetText/useDiscreetMode';
 export * from './ListItem/ListItem';

@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { atom, useAtomValue } from 'jotai';
 
-import { HStack, Text, VStack } from '@suite-native/atoms';
+import { DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { GraphDateFormatter, percentageDiff, PriceChangeIndicator } from '@suite-native/graph';
 import { FiatBalanceFormatter } from '@suite-native/formatters';
@@ -44,17 +44,23 @@ const CryptoBalance = ({ accountSymbol }: { accountSymbol: NetworkSymbol }) => {
     const selectedPoint = useAtomValue(selectedPointAtom);
 
     return (
-        <AccountDetailCryptoValue
-            networkSymbol={accountSymbol}
-            value={selectedPoint.cryptoBalance}
-        />
+        <DiscreetTextTrigger>
+            <AccountDetailCryptoValue
+                networkSymbol={accountSymbol}
+                value={selectedPoint.cryptoBalance}
+            />
+        </DiscreetTextTrigger>
     );
 };
 
 const FiatBalance = () => {
     const selectedPoint = useAtomValue(selectedPointAtom);
 
-    return <FiatBalanceFormatter value={String(selectedPoint.value)} />;
+    return (
+        <DiscreetTextTrigger>
+            <FiatBalanceFormatter value={String(selectedPoint.value)} />
+        </DiscreetTextTrigger>
+    );
 };
 
 export const AccountDetailGraphHeader = ({ accountKey }: AccountBalanceProps) => {
