@@ -1,6 +1,6 @@
 # @suite-native/app
 
-Trezor Suite native application.
+Trezor Suite native application. Hello there.
 
 ## Prerequisites
 
