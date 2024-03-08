@@ -1,0 +1,118 @@
+name: "[Template] Connect e2e"
+
+on:
+  workflow_call:
+    inputs:
+      test-name:
+        description: "Test name to be run (e.g. `analytics` or `popup-close`)"
+        type: "string"
+        required: true
+      DEV_SERVER_HOSTNAME:
+        description: "URL used by popup connect tests (e.g. dev.suite.sldev.cz)"
+        type: "string"
+        required: true
+      run-webextension:
+        description: "Flag to indicate whether to run the webextension job"
+        type: "boolean"
+        required: false
+
+jobs:
+  web:
+    name: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - run: yarn install
+
+      - run: yarn build:libs
+
+      - name: Make Docker Script Executable
+        run: chmod +x ./docker/docker-connect-popup-ci.sh
+
+      - name: Check Script Permissions
+        run: ls -l ./docker/docker-connect-popup-ci.sh
+
+      - name: Docker Version
+        run: docker --version
+
+      - name: Run connect popup test
+        env:
+          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+        run: |
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+
+      - name: Upload artifacts
+        # We upload test artifacts only if it fails and we use it to `Check Test Success` in next step.
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            packages/connect-popup/e2e/screenshots
+            packages/connect-popup/test-results
+
+      - name: Check Test Success
+        run: |
+          # If there is `test-results` it means it has failed.
+          if [ -f "packages/connect-popup/test-results" ]; then
+            echo "Tests failed"
+            exit 1
+          fi
+
+  webextension:
+    name: webextension
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-webextension }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Build webextension
+        run: |
+          yarn install --immutable
+          yarn build:libs
+          yarn workspace @trezor/connect-webextension build
+          yarn workspace @trezor/connect-iframe build:core-module
+          yarn workspace @trezor/connect-explorer build:webextension
+
+      - name: Make Docker Script Executable
+        run: chmod +x ./docker/docker-connect-popup-ci.sh
+
+      - name: Run connect popup test
+        env:
+          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          IS_WEBEXTENSION: true
+        run: |
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+
+      - name: Upload artifacts
+        # We upload test artifacts only if it fails and we use it to `Check Test Success` in next step.
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            packages/connect-popup/e2e/screenshots
+            packages/connect-popup/test-results
+
+      - name: Check Test Success
+        run: |
+          # If there is `test-results` it means it has failed.
+          if [ -f "packages/connect-popup/test-results" ]; then
+            echo "Tests failed"
+            exit 1
+          fi

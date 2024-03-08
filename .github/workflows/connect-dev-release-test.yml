@@ -1,5 +1,4 @@
-# TODO: add tests and call it [Build/Test]
-name: "[Build] connect"
+name: "[Build/Test] Connect Explorer"
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -21,6 +20,7 @@ on:
       - "submodules/trezor-common/**"
       - "yarn.lock"
       - ".github/workflows/connect-dev-release.yml"
+      - ".github/workflows/template-connect-popup-test-params.yml"
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
@@ -30,7 +30,7 @@ env:
   DEV_SERVER_HOSTNAME: "dev.suite.sldev.cz"
 
 jobs:
-  build-connect-explorer:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -81,7 +81,6 @@ jobs:
       - name: Build connect-explorer
         env:
           ASSET_PREFIX: /connect/${{ steps.extract_branch.outputs.branch }}
-          # TODO: maybe we don't want to build it for production for every branch
           NODE_ENV: "production"
           url: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}
           __TREZOR_CONNECT_SRC: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
@@ -125,3 +124,62 @@ jobs:
             packages/connect-examples/webextension-mv3/build-legacy
             packages/connect-examples/webextension-mv3-sw/build
             packages/connect-explorer/build-webextension
+
+  methods:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: methods.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  popup-close:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: popup-close.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  passphrase:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: passphrase.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  popup-pages:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: popup-pages.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  browser-support:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: browser-support.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  permissions:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: permissions.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  transport:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: transport.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  unchained:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: unchained.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
