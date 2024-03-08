@@ -8457,10 +8457,6 @@ export default defineMessages({
         defaultMessage:
             'This receive address is only for {network} coins and tokens. If someone sends you crypto from outside the {network} network, you may not receive them.',
     },
-    TR_EVM_EXPLANATION_SEND_TITLE: {
-        id: 'TR_EVM_EXPLANATION_SEND_TITLE',
-        defaultMessage: 'Send through the {network} network',
-    },
     TR_EVM_EXPLANATION_SEND_DESCRIPTION: {
         id: 'TR_EVM_EXPLANATION_SEND_DESCRIPTION',
         defaultMessage:
@@ -8735,10 +8731,6 @@ export default defineMessages({
     TR_STAKE_CLAIMING_PERIOD: {
         id: 'TR_STAKE_CLAIMING_PERIOD',
         defaultMessage: 'Claiming period',
-    },
-    TR_NOT_ENOUGH_FUNDS_FOR_TX: {
-        id: 'TR_NOT_ENOUGH_FUNDS_FOR_TX',
-        defaultMessage: 'Not enough funds to execute the transaction',
     },
     TR_STAKE_MIN_AMOUNT_TOOLTIP: {
         id: 'TR_STAKE_MIN_AMOUNT_TOOLTIP',
