@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     padding-bottom: 16px;
 `;
 
-const ExpandWrapper = styled(motion.div)`
+const ExpandWrapper = styled.div`
     width: 100%;
     background: ${({ theme }) => theme.BG_GREY};
     border-radius: ${borders.radii.xs};

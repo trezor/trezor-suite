@@ -245,7 +245,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
             {!needsAttention && (
                 <AnimatePresence initial={false}>
                     {!isUnknown && isExpanded && (
-                        <motion.div {...motionAnimation.expand}>
+                        // <motion.div {...motionAnimation.expand}>
                             <WalletsWrapper $enabled>
                                 {instancesWithState.length > 0 && (
                                     <WalletsTooltips>
@@ -307,7 +307,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                                     selectDeviceInstance={selectDeviceInstance}
                                 />
                             </WalletsWrapper>
-                        </motion.div>
+                        // </motion.div>
                     )}
                 </AnimatePresence>
             )}

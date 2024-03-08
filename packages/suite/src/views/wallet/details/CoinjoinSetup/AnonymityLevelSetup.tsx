@@ -22,13 +22,13 @@ const RedText = styled.span`
 `;
 
 const expandAnimation: HTMLMotionProps<'div'> = {
-    initial: { height: 0, marginTop: 0, opacity: 0 },
-    animate: { height: 'auto', marginTop: 24, opacity: 1 },
-    exit: { height: 0, marginTop: 0, opacity: 0 },
-    transition: {
-        duration: 0.3,
-        ease: motionEasing.transition,
-    },
+    // initial: { height: 0, marginTop: 0, opacity: 0 },
+    // animate: { height: 'auto', marginTop: 24, opacity: 1 },
+    // exit: { height: 0, marginTop: 0, opacity: 0 },
+    // transition: {
+    //     duration: 0.3,
+    //     ease: motionEasing.transition,
+    // },
 };
 
 const minPosition = 0;
@@ -138,7 +138,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
         >
             <AnimatePresence initial={!isErrorDisplayed}>
                 {isErrorDisplayed && (
-                    <motion.div {...expandAnimation}>
+                    // <motion.div {...expandAnimation}>
                         <Warning withIcon variant="destructive">
                             <Translation
                                 values={{
@@ -147,7 +147,7 @@ export const AnonymityLevelSetup = ({ accountKey, targetAnonymity }: AnonymityLe
                                 id="TR_LOW_ANONYMITY_WARNING"
                             />
                         </Warning>
-                    </motion.div>
+                    // </motion.div>
                 )}
             </AnimatePresence>
         </SetupSlider>

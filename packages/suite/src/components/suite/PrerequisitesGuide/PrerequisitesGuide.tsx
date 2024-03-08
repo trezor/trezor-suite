@@ -32,7 +32,7 @@ const Wrapper = styled.div`
     justify-content: center;
 `;
 
-const TipsContainer = styled(motion.div)`
+const TipsContainer = styled.div`
     display: flex;
 `;
 
@@ -95,9 +95,9 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
             />
 
             <TipsContainer
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
+                // initial={{ opacity: 0 }}
+                // animate={{ opacity: 1 }}
+                // transition={{ delay: 0.6, duration: 0.5, ease: motionEasing.enter }}
             >
                 <TipComponent />
             </TipsContainer>

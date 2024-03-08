@@ -69,7 +69,7 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
                     position: 'absolute',
                 }}
             >
-                <motion.circle {...circleConfig} stroke={theme.backgroundSurfaceElevation0} />
+                {/* <motion.circle {...circleConfig} stroke={theme.backgroundSurfaceElevation0} /> */}
             </svg>
 
             {/* moving circle */}
@@ -79,18 +79,7 @@ const ProgressCircle = ({ symbol, size, percentageShare, index = 0 }: ProgressCi
                     position: 'absolute',
                     transform: 'rotate(-90deg)',
                 }}
-            >
-                <motion.circle
-                    {...circleConfig}
-                    stroke={strokeColor}
-                    strokeDasharray={circumference}
-                    strokeDashoffset={circumference}
-                    animate={{
-                        strokeDashoffset: fillPercents,
-                    }}
-                    transition={transition}
-                />
-            </svg>
+            ></svg>
         </>
     );
 };

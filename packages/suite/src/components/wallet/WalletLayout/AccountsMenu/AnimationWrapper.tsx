@@ -30,18 +30,18 @@ export const AnimationWrapper = ({
     return (
         <AnimatePresence initial={false}>
             {opened && (
-                <motion.div
-                    initial={collapsed}
-                    animate={animate}
-                    exit={collapsed}
-                    onAnimationStart={onAnimationStart}
-                    onUpdate={onUpdate}
-                    onAnimationComplete={onAnimationComplete}
-                    transition={transition}
+                <div
+                    // initial={collapsed}
+                    // animate={animate}
+                    // exit={collapsed}
+                    // onAnimationStart={onAnimationStart}
+                    // onUpdate={onUpdate}
+                    // onAnimationComplete={onAnimationComplete}
+                    // transition={transition}
                     data-test={dataTest}
                 >
                     {children}
-                </motion.div>
+                </div>
             )}
         </AnimatePresence>
     );

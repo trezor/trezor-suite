@@ -9,53 +9,53 @@ import { AccountDetails } from './AccountDetails';
 import { SCROLL_WRAPPER_ID } from '../../../SuiteLayout';
 import { AccountLabelHeader } from './AccountLabelHeader';
 
-const AnimationContainer = styled(motion.div)`
+const AnimationContainer = styled.div`
     display: flex;
 `;
 
 const detailsAnimConfig: MotionProps = {
-    initial: {
-        y: 50,
-        opacity: 0,
-        rotateX: '45deg',
-    },
-    animate: {
-        y: 0,
-        opacity: 1,
-        rotateX: '0deg',
-    },
-    exit: {
-        y: 50,
-        opacity: 0,
-        rotateX: '45deg',
-    },
-    transition: {
-        ease: motionEasing.transition,
-        rotateX: { duration: 0.2 },
-    },
+    // initial: {
+    //     y: 50,
+    //     opacity: 0,
+    //     rotateX: '45deg',
+    // },
+    // animate: {
+    //     y: 0,
+    //     opacity: 1,
+    //     rotateX: '0deg',
+    // },
+    // exit: {
+    //     y: 50,
+    //     opacity: 0,
+    //     rotateX: '45deg',
+    // },
+    // transition: {
+    //     ease: motionEasing.transition,
+    //     rotateX: { duration: 0.2 },
+    // },
 };
 
 const labelAnimConfig: MotionProps = {
-    initial: {
-        y: -50,
-        opacity: 0,
-        rotateX: '-45deg',
-    },
-    animate: {
-        y: 0,
-        opacity: 1,
-        rotateX: '0deg',
-    },
-    exit: {
-        y: -50,
-        opacity: 0,
-        rotateX: '-45deg',
-    },
-    transition: {
-        ease: motionEasing.transition,
-        duration: 0.3,
-        rotateX: { duration: 0.2 },
-    },
+    // initial: {
+    //     y: -50,
+    //     opacity: 0,
+    //     rotateX: '-45deg',
+    // },
+    // animate: {
+    //     y: 0,
+    //     opacity: 1,
+    //     rotateX: '0deg',
+    // },
+    // exit: {
+    //     y: -50,
+    //     opacity: 0,
+    //     rotateX: '-45deg',
+    // },
+    // transition: {
+    //     ease: motionEasing.transition,
+    //     duration: 0.3,
+    //     rotateX: { duration: 0.2 },
+    // },
 };
 
 interface AccountNameProps {
