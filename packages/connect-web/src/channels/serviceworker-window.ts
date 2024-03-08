@@ -68,6 +68,7 @@ export class ServiceWorkerWindowChannel<
                     'https://connect.trezor.io',
                     'https://staging-connect.trezor.io',
                     'https://suite.corp.sldev.cz',
+                    'https://dev.suite.sldev.cz',
                     'http://localhost:8088',
                 ];
 
