@@ -19,6 +19,8 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { useToast } from '@suite-native/toasts';
+import { useTranslate } from '@suite-native/intl';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
@@ -26,6 +28,8 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const navigation = useNavigation();
+    const { translate } = useTranslate();
+    const { showToast } = useToast();
 
     const { showAlert } = useAlert();
 
@@ -73,6 +77,11 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 !response.payload.success &&
                 response.payload.payload.code === 'Failure_ActionCancelled'
             ) {
+                showToast({
+                    icon: 'warningCircle',
+                    variant: 'default',
+                    message: translate('moduleReceive.deviceCancelError'),
+                });
                 navigation.goBack();
 
                 return false;
@@ -103,7 +112,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
 
         return false;
-    }, [accountKey, freshAddress, dispatch, showAlert, navigation]);
+    }, [accountKey, freshAddress, dispatch, showToast, translate, navigation, showAlert]);
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTrackerDevice) {

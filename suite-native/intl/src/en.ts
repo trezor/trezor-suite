@@ -315,6 +315,7 @@ export const en = {
     moduleReceive: {
         screenTitle: '{coinSymbol} Receive address',
         accountNotFound: 'Account {accountKey} not found.',
+        deviceCancelError: 'Address confirmation canceled.',
         receiveAddressCard: {
             alert: {
                 success: 'Receive address has been confirmed on your Trezor.',
