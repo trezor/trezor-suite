@@ -33,7 +33,6 @@ module.exports = withNextra({
             }),
         );
     },
-    basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
     typescript: {
         // Problems with transpiling
         ignoreBuildErrors: true,
