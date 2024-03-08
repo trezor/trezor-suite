@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { HStack, VStack } from '@suite-native/atoms';
+import { DiscreetTextTrigger, HStack, VStack } from '@suite-native/atoms';
 import {
     EthereumTokenAmountFormatter,
     FiatBalanceFormatter,
@@ -43,9 +43,16 @@ export const AccountDetailTokenHeader = ({
         <VStack alignItems="center" spacing="small" marginVertical="medium">
             <HStack spacing="small" flexDirection="row" alignItems="center" justifyContent="center">
                 <CryptoIcon symbol={tokenAccount.contract} size="extraSmall" />
-                <EthereumTokenAmountFormatter value={tokenAccount?.balance} symbol={tokenSymbol} />
+                <DiscreetTextTrigger>
+                    <EthereumTokenAmountFormatter
+                        value={tokenAccount?.balance}
+                        symbol={tokenSymbol}
+                    />
+                </DiscreetTextTrigger>
             </HStack>
-            <FiatBalanceFormatter value={fiatValue} />
+            <DiscreetTextTrigger>
+                <FiatBalanceFormatter value={fiatValue} />
+            </DiscreetTextTrigger>
         </VStack>
     );
 };

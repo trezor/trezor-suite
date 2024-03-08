@@ -1,4 +1,4 @@
-import { Box, Text, useDiscreetMode } from '@suite-native/atoms';
+import { Box, DiscreetTextTrigger, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
 import { TransactionType } from '@suite-common/wallet-types';
 import {
@@ -61,8 +61,6 @@ export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
 }: TransactionDetailHeaderProps) => {
-    const { isDiscreetMode } = useDiscreetMode();
-
     const { type } = transaction;
     const { text } = transactionTypeInfo[type];
 
@@ -82,45 +80,51 @@ export const TransactionDetailHeader = ({
                     />
                 )}
             </Box>
-            <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit={!isDiscreetMode}>
-                <SignValueFormatter
-                    value={signValueMap[tokenTransfer ? tokenTransfer.type : transaction.type]}
-                    variant="titleMedium"
-                />
-                {tokenTransfer ? (
-                    <EthereumTokenAmountFormatter
-                        value={tokenTransfer.amount}
-                        symbol={tokenTransfer.symbol}
-                        decimals={tokenTransfer.decimals}
+            <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit={true}>
+                <Box flexDirection={'row'} alignItems={'center'}>
+                    <SignValueFormatter
+                        value={signValueMap[tokenTransfer ? tokenTransfer.type : transaction.type]}
                         variant="titleMedium"
-                        color="textDefault"
                     />
-                ) : (
-                    <CryptoAmountFormatter
-                        value={transaction.amount}
-                        network={transaction.symbol}
-                        isBalance={false}
-                        variant="titleMedium"
-                        color="textDefault"
-                    />
-                )}
+                    <DiscreetTextTrigger>
+                        {tokenTransfer ? (
+                            <EthereumTokenAmountFormatter
+                                value={tokenTransfer.amount}
+                                symbol={tokenTransfer.symbol}
+                                decimals={tokenTransfer.decimals}
+                                variant="titleMedium"
+                                color="textDefault"
+                            />
+                        ) : (
+                            <CryptoAmountFormatter
+                                value={transaction.amount}
+                                network={transaction.symbol}
+                                isBalance={false}
+                                variant="titleMedium"
+                                color="textDefault"
+                            />
+                        )}
+                    </DiscreetTextTrigger>
+                </Box>
             </Text>
             {transaction.rates && (
                 <Box flexDirection="row">
                     <Text>≈ </Text>
-                    {tokenTransfer ? (
-                        <EthereumTokenToFiatAmountFormatter
-                            contract={tokenTransfer.contract}
-                            value={tokenTransfer.amount}
-                            decimals={tokenTransfer.decimals}
-                        />
-                    ) : (
-                        <CryptoToFiatAmountFormatter
-                            value={transaction.amount}
-                            network={transaction.symbol}
-                            customRates={transaction.rates}
-                        />
-                    )}
+                    <DiscreetTextTrigger>
+                        {tokenTransfer ? (
+                            <EthereumTokenToFiatAmountFormatter
+                                contract={tokenTransfer.contract}
+                                value={tokenTransfer.amount}
+                                decimals={tokenTransfer.decimals}
+                            />
+                        ) : (
+                            <CryptoToFiatAmountFormatter
+                                value={transaction.amount}
+                                network={transaction.symbol}
+                                customRates={transaction.rates}
+                            />
+                        )}
+                    </DiscreetTextTrigger>
                 </Box>
             )}
         </Box>
