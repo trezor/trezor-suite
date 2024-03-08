@@ -4,6 +4,7 @@ import { UI, DEVICE, createUiMessage, CoreEventMessage } from '../../events';
 import { PROTO, ERRORS } from '../../constants';
 import type { Device } from '../../device/Device';
 import type { TypedCall } from '../../device/DeviceCommands';
+import { createTimeoutPromise } from '@trezor/utils';
 
 // firmware does not send button message but user still must press button to continue
 // with fw update.
@@ -22,6 +23,7 @@ const postProgressMessage = (
     postMessage(
         createUiMessage(UI.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
+            operation: 'flashing',
             progress,
         }),
     );
@@ -36,10 +38,31 @@ export const uploadFirmware = async (
     if (device.features.major_version === 1) {
         postConfirmationMessage(device);
         await typedCall('FirmwareErase', 'Success', {});
+
         postProgressMessage(device, 0, postMessage);
-        const { message } = await typedCall('FirmwareUpload', 'Success', {
+
+        let done: boolean = false;
+        let message = typedCall('FirmwareUpload', 'Success', {
             payload,
+        }).then(() => {
+            done = true;
         });
+
+        let i = 0;
+
+        const postProgressMessageIter = async () => {
+            i++;
+            postProgressMessage(device, Math.min(i * 2, 99), postMessage);
+            await createTimeoutPromise(300);
+            if (!done) {
+                postProgressMessageIter();
+            }
+        };
+
+        postProgressMessageIter();
+
+        await message;
+
         postProgressMessage(device, 100, postMessage);
 
         return message;

@@ -1,17 +1,19 @@
 import { useDispatch } from 'react-redux';
 
+import { FirmwareType } from '@trezor/connect';
+
 import {
     checkFirmwareAuthenticity,
-    firmwareCustom,
-    firmwareUpdate,
+    firmwareUpdate_v2,
     selectFirmware,
     firmwareActions,
 } from '@suite-common/wallet-core';
 import { FirmwareStatus } from '@suite-common/suite-types';
 
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useActions, useSelector, useDevice } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { MODAL } from 'src/actions/suite/constants';
+import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 export const useFirmware = () => {
     const dispatch = useDispatch();
@@ -24,10 +26,25 @@ export const useFirmware = () => {
         modal.windowType === 'ButtonRequest_FirmwareCheck';
 
     const actions = useActions({
-        firmwareUpdate,
-        firmwareCustom,
+        firmwareUpdate: firmwareUpdate_v2,
         checkFirmwareAuthenticity,
+        firmwareUpdate_v2,
     });
+
+    const { device } = useDevice();
+
+    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
+
+    const getTargetFirmwareType = (shouldSwitchFirmwareType: boolean) => {
+        const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
+        return (isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
+            // switching to Bitcoin-only
+            (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && isBitcoinOnlyAvailable) ||
+            // Bitcoin-only device
+            isBitcoinOnlyDevice(device)
+            ? FirmwareType.BitcoinOnly
+            : FirmwareType.Regular;
+    };
 
     return {
         ...firmware,
@@ -38,5 +55,6 @@ export const useFirmware = () => {
         resetReducer: () => dispatch(firmwareActions.resetReducer()),
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
+        getTargetFirmwareType,
     };
 };

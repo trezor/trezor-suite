@@ -37,7 +37,6 @@ describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () =>
             {
                 required: false,
                 version: [2, 5, 1],
-                min_bridge_version: [2, 0, 7],
                 min_firmware_version: [2, 0, 8],
                 min_bootloader_version: [2, 0, 0],
                 url: 'firmware/t2t1/trezor-t2t1-2.5.1.bin',

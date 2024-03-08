@@ -22,7 +22,6 @@ export type FirmwareRelease = {
     url: string;
     fingerprint: string;
     changelog: string;
-    min_bridge_version: VersionArray;
     version: VersionArray;
     min_firmware_version: VersionArray;
     min_bootloader_version: VersionArray;

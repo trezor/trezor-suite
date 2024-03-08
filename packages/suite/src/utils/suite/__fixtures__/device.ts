@@ -504,7 +504,6 @@ const parseFirmwareChangelog = [
             required: false,
             version: [1, 9, 4],
             bootloader_version: [1, 8, 0],
-            min_bridge_version: [2, 0, 25],
             min_firmware_version: [1, 6, 2],
             min_bootloader_version: [1, 5, 0],
             url: 'firmware/1/trezor-1.9.4.bin',

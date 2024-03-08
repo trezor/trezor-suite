@@ -47,7 +47,6 @@ export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
 const getRelease = (model: 1 | 2): FirmwareRelease => ({
     required: false,
     version: [model, 0, 0],
-    min_bridge_version: [2, 0, 25],
     min_firmware_version: [model, 0, 0],
     min_bootloader_version: [model, 0, 0],
     url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',

@@ -93,8 +93,6 @@ export const actions = [
         result: {
             actions: [
                 { type: firmwareActions.setStatus.type, payload: 'started' },
-                { type: firmwareActions.setIntermediaryInstalled.type, payload: true },
-                { type: firmwareActions.setHash.type, payload: firmwareUpdateResponsePayload },
                 { type: firmwareActions.setStatus.type, payload: 'unplug' },
             ],
             state: { firmware: { status: 'unplug', error: undefined } },
@@ -271,14 +269,6 @@ export const actions = [
         },
     },
     {
-        description: 'setTargetRelease',
-        action: () => firmwareActions.setTargetRelease(getSuiteDevice().firmwareRelease),
-        initialState: {},
-        result: {
-            actions: [{ type: firmwareActions.setTargetRelease.type }],
-        },
-    },
-    {
         description: 'resetReducer',
         action: () => firmwareActions.resetReducer(),
         initialState: {
@@ -295,19 +285,6 @@ export const actions = [
 
 // various cases to test reducer through actions
 export const reducerActions = [
-    {
-        description: 'SUITE.ADD_BUTTON_REQUEST, type=ButtonRequest_FirmwareUpdate',
-        initialState: {},
-        action: {
-            type: deviceActions.addButtonRequest.type,
-            payload: { buttonRequest: { code: 'ButtonRequest_FirmwareUpdate' } },
-        },
-        result: {
-            state: {
-                firmware: { status: 'waiting-for-confirmation' },
-            },
-        },
-    },
     {
         description: 'UI.FIRMWARE_PROGRESS',
         initialState: {},

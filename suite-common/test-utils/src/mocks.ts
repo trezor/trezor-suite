@@ -72,7 +72,6 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
         {
             required: false,
             version: [2, 0, 0],
-            min_bridge_version: [2, 0, 25],
             min_firmware_version: [2, 0, 0],
             min_bootloader_version: [2, 0, 0],
             url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
@@ -84,7 +83,6 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
     release: {
         required: false,
         version: [2, 0, 0],
-        min_bridge_version: [2, 0, 25],
         min_firmware_version: [2, 0, 0],
         min_bootloader_version: [2, 0, 0],
         url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
