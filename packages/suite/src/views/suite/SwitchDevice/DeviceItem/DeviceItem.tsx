@@ -232,7 +232,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                             <ExpandIcon
                                 useCursorPointer
                                 size={24}
-                                icon="ARROW_UP"
+                                icon="ARROW_DOWN"
                                 color={theme.TYPE_LIGHT_GREY}
                                 hoverColor={theme.TYPE_LIGHTER_GREY}
                                 isActive={!isExpanded}
