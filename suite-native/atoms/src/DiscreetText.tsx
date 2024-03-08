@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { LayoutChangeEvent } from 'react-native';
+import { ReactNode, useState } from 'react';
+import { LayoutChangeEvent, Pressable } from 'react-native';
 
 import { useAtom } from 'jotai';
 import { Blur, Canvas, Text as SkiaText, useFont } from '@shopify/react-native-skia';
@@ -69,6 +69,7 @@ export const DiscreetCanvas = ({ width, height, fontSize, text, color }: Discree
 };
 const discreetTextContainer = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight }) => ({
     height: lineHeight,
+    justifyContent: 'center',
 }));
 
 const textTemplateStyle = prepareNativeStyle(_ => ({
@@ -76,7 +77,7 @@ const textTemplateStyle = prepareNativeStyle(_ => ({
     height: 0,
 }));
 
-export const DiscreetText = ({
+export const DiscreetTextContent = ({
     children = '',
     color = 'textDefault',
     variant = 'body',
@@ -99,17 +100,19 @@ export const DiscreetText = ({
 
     if (!isDiscreetMode)
         return (
-            <Text
-                variant={variant}
-                color={color}
-                onLayout={handleLayout}
-                ellipsizeMode={ellipsizeMode}
-                adjustsFontSizeToFit={adjustsFontSizeToFit}
-                style={style}
-                {...restTextProps}
-            >
-                {children}
-            </Text>
+            <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
+                <Text
+                    variant={variant}
+                    color={color}
+                    onLayout={handleLayout}
+                    ellipsizeMode={ellipsizeMode}
+                    adjustsFontSizeToFit={adjustsFontSizeToFit}
+                    style={style}
+                    {...restTextProps}
+                >
+                    {children}
+                </Text>
+            </Box>
         );
 
     return (
@@ -135,5 +138,22 @@ export const DiscreetText = ({
                 {children}
             </Text>
         </Box>
+    );
+};
+
+export const DiscreetText = ({
+    children,
+    ...rest
+}: { children: ReactNode } & DiscreetTextProps) => {
+    const { isDiscreetMode, setIsDiscreetMode } = useDiscreetMode();
+
+    const handlePress = () => {
+        setIsDiscreetMode(!isDiscreetMode);
+    };
+
+    return (
+        <Pressable onPress={handlePress}>
+            <DiscreetTextContent {...rest}>{children}</DiscreetTextContent>
+        </Pressable>
     );
 };
