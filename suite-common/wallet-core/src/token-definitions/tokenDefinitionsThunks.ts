@@ -13,6 +13,7 @@ import {
     getSupportedDefinitionTypes,
 } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { Timeout } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 
@@ -110,13 +111,13 @@ export const initTokenDefinitionsThunk = createThunk(
     },
 );
 
-let tokenDefinitionsTimeout: ReturnType<typeof setTimeout> | null = null;
+let tokenDefinitionsTimeout: Timeout | null = null;
 
 export const periodicCheckTokenDefinitionsThunk = createThunk(
     `${actionsPrefix}/periodicCheckTokenDefinitionsThunk`,
     (_, { dispatch }) => {
         if (tokenDefinitionsTimeout) {
-            clearTimeout(tokenDefinitionsTimeout!);
+            clearTimeout(tokenDefinitionsTimeout);
         }
 
         tokenDefinitionsTimeout = setTimeout(() => {

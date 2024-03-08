@@ -3,7 +3,7 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import {
     createImportedDeviceThunk,
     initBlockchainThunk,
-    initTokenDefinitionsThunk,
+    periodicCheckTokenDefinitionsThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
@@ -33,7 +33,7 @@ export const applicationInit = createThunk(
 
             dispatch(initBlockchainThunk());
 
-            dispatch(initTokenDefinitionsThunk());
+            dispatch(periodicCheckTokenDefinitionsThunk());
 
             dispatch(
                 periodicFetchFiatRatesThunk({
