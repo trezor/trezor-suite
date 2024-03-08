@@ -45,6 +45,7 @@ export const TransactionReviewModalContent = ({
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
     const [detailsOpen, setDetailsOpen] = useState(false);
+    const [isSending, setIsSending] = useState(false);
 
     const deviceModelInternal = device?.features?.internal_model;
 
@@ -73,10 +74,6 @@ export const TransactionReviewModalContent = ({
 
     const ethereumStakeType =
         'ethereumStakeType' in precomposedForm ? precomposedForm.ethereumStakeType : null;
-    const actionText = getTransactionReviewModalActionText({
-        ethereumStakeType,
-        isRbfAction,
-    });
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(
@@ -140,7 +137,10 @@ export const TransactionReviewModalContent = ({
                 broadcast={precomposedForm.options.includes('broadcast')}
                 detailsOpen={detailsOpen}
                 onDetailsClick={() => setDetailsOpen(!detailsOpen)}
-                actionText={actionText}
+                actionText={getTransactionReviewModalActionText({
+                    ethereumStakeType,
+                    isRbfAction,
+                })}
             />
             <TransactionReviewOutputList
                 account={selectedAccount.account}
@@ -152,7 +152,13 @@ export const TransactionReviewModalContent = ({
                 outputs={outputs}
                 buttonRequestsCount={buttonRequestsCount}
                 isRbfAction={isRbfAction}
-                actionText={actionText}
+                actionText={getTransactionReviewModalActionText({
+                    ethereumStakeType,
+                    isRbfAction,
+                    isSending,
+                })}
+                isSending={isSending}
+                setIsSending={() => setIsSending(true)}
             />
             <TransactionReviewEvmExplanation account={selectedAccount.account} />
         </StyledModal>
