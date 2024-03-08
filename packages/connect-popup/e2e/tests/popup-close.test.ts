@@ -79,12 +79,10 @@ test.beforeAll(async () => {
         explorerPage = contexts.explorerPage;
         explorerUrl = contexts.explorerUrl;
 
-        if (connectSrc) {
-            await setConnectSettings(explorerPage, explorerUrl, {
-                trustedHost: false,
-                connectSrc,
-            });
-        }
+        await setConnectSettings(explorerPage, explorerUrl, {
+            trustedHost: false,
+            ...(connectSrc && { connectSrc }),
+        });
 
         await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
         await explorerPage.waitForSelector("button[data-test='@submit-button']", {
