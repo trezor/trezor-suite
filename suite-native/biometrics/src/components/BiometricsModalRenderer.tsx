@@ -1,12 +1,15 @@
-import { useBiometrics } from '../useBiometrics';
 import { useIsBiometricsOverlayVisible } from '../biometricsAtoms';
+import { useBiometrics } from '../useBiometrics';
 import { BiometricOverlay } from './BiometricOverlay';
 
 export const BiometricsModalRenderer = () => {
-    useBiometrics();
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
+    const { isBiometricsAuthenticationAllowed, requestAuthenticationCheck } = useBiometrics();
 
-    if (!isBiometricsOverlayVisible) return null;
-
-    return <BiometricOverlay />;
+    return isBiometricsOverlayVisible ? (
+        <BiometricOverlay
+            isBiometricsAuthButtonVisible={!isBiometricsAuthenticationAllowed}
+            onBiometricAuthPress={requestAuthenticationCheck}
+        />
+    ) : null;
 };

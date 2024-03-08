@@ -14,20 +14,11 @@ const isBiometricsInitialSetupFinishedAtom = atomWithUnecryptedStorage<boolean>(
 
 const isUserAuthenticatedAtom = atom(false);
 const isBiometricsOverlayVisibleAtom = atom(true);
-const isBiometricsAuthenticationCanceledAtom = atom(false);
 
 export const useIsUserAuthenticated = () => {
     const [isUserAuthenticated, setIsUserAuthenticated] = useAtom(isUserAuthenticatedAtom);
 
     return { isUserAuthenticated, setIsUserAuthenticated };
-};
-
-export const useIsBiometricsAuthenticationCanceled = () => {
-    const [isBiometricsAuthenticationCanceled, setIsBiometricsAuthenticationCanceled] = useAtom(
-        isBiometricsAuthenticationCanceledAtom,
-    );
-
-    return { isBiometricsAuthenticationCanceled, setIsBiometricsAuthenticationCanceled };
 };
 
 export const useIsBiometricsEnabled = () => {
