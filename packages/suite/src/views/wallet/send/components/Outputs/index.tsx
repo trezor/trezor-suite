@@ -78,34 +78,34 @@ export const Outputs = ({ disableAnim }: OutputsProps) => {
                     //         ease: motionEasing.transition,
                     //     }}
                     // >
-                        <Card
-                            label={
-                                isMatic && (
-                                    <StyledEvmExplanation>
-                                        <CoinLogo symbol={account.symbol} size={16} />
-                                        <Translation
-                                            id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
-                                            values={{
-                                                network: networks[account.symbol].name,
-                                            }}
-                                        />
-                                    </StyledEvmExplanation>
-                                )
-                            }
-                        >
-                            {output.type === 'opreturn' ? (
-                                <OpReturn outputId={index} />
-                            ) : (
-                                <>
-                                    <Address
-                                        output={outputs[index]}
-                                        outputId={index}
-                                        outputsCount={outputs.length}
+                    <Card
+                        label={
+                            isMatic && (
+                                <StyledEvmExplanation>
+                                    <CoinLogo symbol={account.symbol} size={16} />
+                                    <Translation
+                                        id="TR_EVM_EXPLANATION_SEND_DESCRIPTION"
+                                        values={{
+                                            network: networks[account.symbol].name,
+                                        }}
                                     />
-                                    <Amount output={outputs[index]} outputId={index} />
-                                </>
-                            )}
-                        </Card>
+                                </StyledEvmExplanation>
+                            )
+                        }
+                    >
+                        {output.type === 'opreturn' ? (
+                            <OpReturn outputId={index} />
+                        ) : (
+                            <>
+                                <Address
+                                    output={outputs[index]}
+                                    outputId={index}
+                                    outputsCount={outputs.length}
+                                />
+                                <Amount output={outputs[index]} outputId={index} />
+                            </>
+                        )}
+                    </Card>
                     // </motion.div>
                 ))}
             </div>

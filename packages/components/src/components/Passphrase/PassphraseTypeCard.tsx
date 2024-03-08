@@ -397,17 +397,17 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                         {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
                         {(props.singleColModal || hiddenWalletTouched) && (
                             // <motion.div {...motionConfig.motionAnimation.expand}>
-                                <ActionButton
-                                    data-test={`@passphrase/${
-                                        props.type === 'hidden' ? 'hidden' : 'standard'
-                                    }/submit-button`}
-                                    isDisabled={!enabled || isTooLong}
-                                    variant="primary"
-                                    onClick={() => submit(value)}
-                                    isFullWidth
-                                >
-                                    {props.submitLabel}
-                                </ActionButton>
+                            <ActionButton
+                                data-test={`@passphrase/${
+                                    props.type === 'hidden' ? 'hidden' : 'standard'
+                                }/submit-button`}
+                                isDisabled={!enabled || isTooLong}
+                                variant="primary"
+                                onClick={() => submit(value)}
+                                isFullWidth
+                            >
+                                {props.submitLabel}
+                            </ActionButton>
                             // </motion.div>
                         )}
                         {/* Offer entering passphrase on a device */}

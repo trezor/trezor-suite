@@ -114,59 +114,59 @@ export const DecreasedOutputs = () => {
     return (
         <AnimatePresence initial>
             {/* <motion.div {...motionAnimation.expand}> */}
-                <GreyCard>
-                    <WarnHeader data-test="@send/decreased-outputs">
-                        <Translation id={decreaseWarning} />
-                    </WarnHeader>
-                    <OutputsWrapper>
-                        {formValues.outputs.flatMap((o, i) => {
-                            if (typeof o.address !== 'string') return null;
-                            const isChecked = setMaxOutputId === i;
+            <GreyCard>
+                <WarnHeader data-test="@send/decreased-outputs">
+                    <Translation id={decreaseWarning} />
+                </WarnHeader>
+                <OutputsWrapper>
+                    {formValues.outputs.flatMap((o, i) => {
+                        if (typeof o.address !== 'string') return null;
+                        const isChecked = setMaxOutputId === i;
 
-                            return (
-                                // it's safe to use array index as key since outputs do not change
+                        return (
+                            // it's safe to use array index as key since outputs do not change
 
-                                <Output key={i}>
-                                    {useRadio && (
-                                        <StyledRadio
-                                            onClick={() => {
-                                                setValue('setMaxOutputId', i);
-                                                composeRequest();
+                            <Output key={i}>
+                                {useRadio && (
+                                    <StyledRadio
+                                        onClick={() => {
+                                            setValue('setMaxOutputId', i);
+                                            composeRequest();
+                                        }}
+                                        isChecked={isChecked}
+                                    />
+                                )}
+                                <OutputInner>
+                                    <OutputLabel $isChecked={isChecked}>
+                                        <Translation
+                                            id="TR_REDUCE_FROM"
+                                            values={{
+                                                value: (
+                                                    <FormattedCryptoAmount
+                                                        value={
+                                                            shouldSendInSats
+                                                                ? formatNetworkAmount(
+                                                                      o.amount,
+                                                                      account.symbol,
+                                                                  )
+                                                                : o.amount
+                                                        }
+                                                        symbol={account.symbol}
+                                                    />
+                                                ),
                                             }}
-                                            isChecked={isChecked}
                                         />
-                                    )}
-                                    <OutputInner>
-                                        <OutputLabel $isChecked={isChecked}>
-                                            <Translation
-                                                id="TR_REDUCE_FROM"
-                                                values={{
-                                                    value: (
-                                                        <FormattedCryptoAmount
-                                                            value={
-                                                                shouldSendInSats
-                                                                    ? formatNetworkAmount(
-                                                                          o.amount,
-                                                                          account.symbol,
-                                                                      )
-                                                                    : o.amount
-                                                            }
-                                                            symbol={account.symbol}
-                                                        />
-                                                    ),
-                                                }}
-                                            />
-                                            {isChecked && reducedAmount}
-                                        </OutputLabel>
-                                        <OutputAddress $isChecked={isChecked}>
-                                            <HiddenPlaceholder>{o.address}</HiddenPlaceholder>
-                                        </OutputAddress>
-                                    </OutputInner>
-                                </Output>
-                            );
-                        })}
-                    </OutputsWrapper>
-                </GreyCard>
+                                        {isChecked && reducedAmount}
+                                    </OutputLabel>
+                                    <OutputAddress $isChecked={isChecked}>
+                                        <HiddenPlaceholder>{o.address}</HiddenPlaceholder>
+                                    </OutputAddress>
+                                </OutputInner>
+                            </Output>
+                        );
+                    })}
+                </OutputsWrapper>
+            </GreyCard>
             {/* </motion.div> */}
         </AnimatePresence>
     );

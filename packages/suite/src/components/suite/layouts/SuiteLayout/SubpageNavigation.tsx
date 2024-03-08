@@ -105,13 +105,13 @@ export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) 
 
                             {isActive && (
                                 <Underline
-                                    // TODO: get rid of the weird jump when switching tabs on the account page before enabling this
-                                    // layoutId="underline"
-                                    // transition={{
-                                    //     layout: {
-                                    //         ease: motionEasing.transition,
-                                    //     },
-                                    // }}
+                                // TODO: get rid of the weird jump when switching tabs on the account page before enabling this
+                                // layoutId="underline"
+                                // transition={{
+                                //     layout: {
+                                //         ease: motionEasing.transition,
+                                //     },
+                                // }}
                                 />
                             )}
                         </MenuElement>

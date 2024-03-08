@@ -155,14 +155,14 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     return (
         <div
-            // initial={{ opacity: 0, height: 0, marginTop: 0 }}
-            // animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
-            // exit={{ opacity: 0, height: 0, marginTop: 0 }}
-            // transition={{
-            //     opacity: { duration: 0.15, ease: motionEasing.transition },
-            //     height: { duration: 0.2, ease: motionEasing.transition },
-            //     marginTop: { duration: 0.25, ease: motionEasing.transition },
-            // }}
+        // initial={{ opacity: 0, height: 0, marginTop: 0 }}
+        // animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
+        // exit={{ opacity: 0, height: 0, marginTop: 0 }}
+        // transition={{
+        //     opacity: { duration: 0.15, ease: motionEasing.transition },
+        //     height: { duration: 0.2, ease: motionEasing.transition },
+        //     marginTop: { duration: 0.25, ease: motionEasing.transition },
+        // }}
         >
             <Wrapper>
                 {useFeeLimit ? (

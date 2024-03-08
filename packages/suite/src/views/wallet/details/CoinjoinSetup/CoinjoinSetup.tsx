@@ -83,21 +83,20 @@ export const CoinjoinSetup = ({ accountKey }: CoinjoinSetupProps) => {
                 </SetupOptions>
                 <AnimatePresence initial={!coinjoinAccount.setup}>
                     {coinjoinAccount.setup && (
-                        
-                            <CustomSetup>
-                                <AnonymityLevelSetup
-                                    accountKey={accountKey}
-                                    targetAnonymity={coinjoinAccount.setup.targetAnonymity}
-                                />
-                                <MaxMiningFeeSetup
-                                    accountKey={accountKey}
-                                    maxMiningFee={coinjoinAccount.setup.maxFeePerVbyte}
-                                />
-                                <SkipRoundsSetup
-                                    accountKey={accountKey}
-                                    skipRounds={coinjoinAccount.setup.skipRounds}
-                                />
-                            </CustomSetup>
+                        <CustomSetup>
+                            <AnonymityLevelSetup
+                                accountKey={accountKey}
+                                targetAnonymity={coinjoinAccount.setup.targetAnonymity}
+                            />
+                            <MaxMiningFeeSetup
+                                accountKey={accountKey}
+                                maxMiningFee={coinjoinAccount.setup.maxFeePerVbyte}
+                            />
+                            <SkipRoundsSetup
+                                accountKey={accountKey}
+                                skipRounds={coinjoinAccount.setup.skipRounds}
+                            />
+                        </CustomSetup>
                     )}
                 </AnimatePresence>
             </SetupContainer>

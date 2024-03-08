@@ -88,18 +88,18 @@ export const CoinsFilter = () => {
                             delayShow={TOOLTIP_DELAY_NORMAL}
                         >
                             {/* <motion.div key={network} {...coinAnimcationConfig} layout> */}
-                                <StyledCoinLogo
-                                    data-test={`@account-menu/filter/${network}`}
-                                    symbol={network}
-                                    size={16}
-                                    data-test-activated={coinFilter === network}
-                                    $isSelected={isSelected}
-                                    onClick={e => {
-                                        e.stopPropagation();
-                                        // select the coin or deactivate if it's already selected
-                                        setCoinFilter(coinFilter === network ? undefined : network);
-                                    }}
-                                />
+                            <StyledCoinLogo
+                                data-test={`@account-menu/filter/${network}`}
+                                symbol={network}
+                                size={16}
+                                data-test-activated={coinFilter === network}
+                                $isSelected={isSelected}
+                                onClick={e => {
+                                    e.stopPropagation();
+                                    // select the coin or deactivate if it's already selected
+                                    setCoinFilter(coinFilter === network ? undefined : network);
+                                }}
+                            />
                             {/* </motion.div> */}
                         </Tooltip>
                     );

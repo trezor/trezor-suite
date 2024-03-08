@@ -133,20 +133,20 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                     <AnimatePresence>
                         {(!isGuideOpen || isGuideOnTop) && (
                             <MotionWelcome
-                                // initial={{
-                                //     width: isFirstRender ? '40vw' : 0,
-                                //     minWidth: isFirstRender ? '380px' : 0,
-                                // }}
-                                // animate={{
-                                //     width: '40vw',
-                                //     minWidth: '380px',
-                                //     transition: { duration: 0.3, bounce: 0 },
-                                // }}
-                                // exit={{
-                                //     width: 0,
-                                //     minWidth: 0,
-                                //     transition: { duration: 0.3, bounce: 0 },
-                                // }}
+                            // initial={{
+                            //     width: isFirstRender ? '40vw' : 0,
+                            //     minWidth: isFirstRender ? '380px' : 0,
+                            // }}
+                            // animate={{
+                            //     width: '40vw',
+                            //     minWidth: '380px',
+                            //     transition: { duration: 0.3, bounce: 0 },
+                            // }}
+                            // exit={{
+                            //     width: 0,
+                            //     minWidth: 0,
+                            //     transition: { duration: 0.3, bounce: 0 },
+                            // }}
                             >
                                 <Expander>
                                     <TrezorLogo type="suite" width="128px" />
