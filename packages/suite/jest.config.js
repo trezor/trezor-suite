@@ -32,6 +32,8 @@ module.exports = {
         '\\.(mp4)$': '<rootDir>/__mocks__/import-mp4.js',
         '\\.(svg)$': '<rootDir>/__mocks__/import-svg.js',
         uuid: require.resolve('uuid'), // https://stackoverflow.com/questions/73203367/jest-syntaxerror-unexpected-token-export-with-uuid-library
+        // Enforce usage of JS version of bcrypto in tests because on CI we don't build native modules because it's slowing yarn install
+        '^bcrypto/lib/(.*)$': 'bcrypto/lib/$1-browser',
     },
     moduleFileExtensions: ['js', 'ts', 'tsx'],
     coverageDirectory: './coverage',

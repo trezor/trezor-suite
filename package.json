@@ -150,6 +150,12 @@
     "dependenciesMeta": {
         "core-js-pure": {
             "built": false
+        },
+        "electron": {
+            "built": true
+        },
+        "trezor-suite": {
+            "built": true
         }
     },
     "packageManager": "yarn@4.0.2"

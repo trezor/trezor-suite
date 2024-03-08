@@ -3,6 +3,7 @@ const {
     testMatch,
     testPathIgnorePatterns,
     watchPathIgnorePatterns,
+    moduleNameMapper,
 } = require('./jest.config.base');
 
 const babelConfig = {
@@ -25,6 +26,7 @@ module.exports = {
     testMatch,
     testPathIgnorePatterns,
     watchPathIgnorePatterns,
+    moduleNameMapper,
     testEnvironment: 'jsdom',
     preset: 'jest-expo',
 

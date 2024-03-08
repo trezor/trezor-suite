@@ -5,7 +5,8 @@
             "{workspaceRoot}/nx.json",
             "{workspaceRoot}/.yarnrc.yml",
             "{workspaceRoot}/patches/*.patch",
-            "{workspaceRoot}/package.json"
+            "{workspaceRoot}/package.json",
+            "{workspaceRoot}/.github/workflows/*.yml"
         ],
         "default": ["{projectRoot}/**/*", "sharedGlobals"],
         "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
