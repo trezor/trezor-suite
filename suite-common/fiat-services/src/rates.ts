@@ -32,7 +32,7 @@ export const fetchCurrentFiatRates = async (
     ticker: TickerId,
     currency: FiatCurrencyCode,
 ): Promise<number | null | undefined> => {
-    const responseConnect = await scheduleAction(
+    const { success, payload } = await scheduleAction(
         () =>
             TrezorConnect.blockchainGetCurrentFiatRates({
                 coin: ticker.symbol,
@@ -42,20 +42,13 @@ export const fetchCurrentFiatRates = async (
         { timeout: CONNECT_FETCH_TIMEOUT },
     );
 
-    const rateFromConnect = responseConnect.success
-        ? responseConnect.payload.rates?.[currency]
-        : null;
+    const rate = success ? payload.rates?.[currency] : null;
 
-    if (rateFromConnect) {
-        return rateFromConnect;
-    }
+    if (rate) return rate;
 
-    const responseBlockbookService = blockbookService.isTickerSupported(ticker)
+    const response = blockbookService.isTickerSupported(ticker)
         ? await blockbookService.fetchCurrentFiatRates(ticker.symbol, undefined, currency)
-        : null;
-
-    const response =
-        responseBlockbookService ?? (await coingeckoService.fetchCurrentFiatRates(ticker));
+        : await coingeckoService.fetchCurrentFiatRates(ticker);
 
     return response?.rates?.[currency];
 };
@@ -65,27 +58,21 @@ export const fetchLastWeekFiatRates = async (
     currency: FiatCurrencyCode,
 ): Promise<number | null | undefined> => {
     const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
+    const timestamps = [weekAgoTimestamp];
 
-    const responseConnect = await getConnectFiatRatesForTimestamp(
+    const { success, payload } = await getConnectFiatRatesForTimestamp(
         ticker,
-        [weekAgoTimestamp],
+        timestamps,
         currency,
     );
 
-    const rateFromConnect = responseConnect.success
-        ? responseConnect.payload.tickers?.[0]?.rates?.[currency]
-        : null;
+    const rate = success ? payload.tickers?.[0]?.rates?.[currency] : null;
 
-    if (rateFromConnect) {
-        return rateFromConnect;
-    }
+    if (rate) return rate;
 
-    const responseBlockbookService = blockbookService.isTickerSupported(ticker)
+    const response = blockbookService.isTickerSupported(ticker)
         ? await blockbookService.fetchLastWeekRates(ticker.symbol, currency)
-        : null;
-
-    const response =
-        responseBlockbookService ?? (await coingeckoService.fetchLastWeekRates(ticker, currency));
+        : await coingeckoService.fetchLastWeekRates(ticker, currency);
 
     return response?.tickers?.[0]?.rates?.[currency];
 };
@@ -95,22 +82,23 @@ export const getFiatRatesForTimestamps = async (
     timestamps: number[],
     currency: FiatCurrencyCode,
 ): Promise<LastWeekRates | null> => {
-    const responseConnect = await getConnectFiatRatesForTimestamp(ticker, timestamps, currency);
+    const { success, payload } = await getConnectFiatRatesForTimestamp(
+        ticker,
+        timestamps,
+        currency,
+    );
 
-    if (responseConnect.success) {
+    if (success) {
         return {
             ts: new Date().getTime(),
             symbol: ticker.symbol,
-            tickers: responseConnect.payload.tickers,
+            tickers: payload.tickers,
         };
     }
 
-    const responseBlockbookService = blockbookService.isTickerSupported(ticker)
+    const response = blockbookService.isTickerSupported(ticker)
         ? await blockbookService.getFiatRatesForTimestamps(ticker.symbol, timestamps, currency)
-        : null;
+        : coingeckoService.getFiatRatesForTimestamps(ticker, timestamps, currency);
 
-    return (
-        responseBlockbookService ??
-        coingeckoService.getFiatRatesForTimestamps(ticker, timestamps, currency)
-    );
+    return response;
 };

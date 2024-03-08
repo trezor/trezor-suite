@@ -8,7 +8,7 @@ import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Account, TickerId, RateType, Timestamp } from '@suite-common/wallet-types';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { AccountTransaction } from '@trezor/connect';
-import { getNetworkFeatures, networks } from '@suite-common/wallet-config';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 
 import { fiatRatesActionsPrefix, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
@@ -53,29 +53,9 @@ export const updateTxsFiatRatesThunk = createThunk(
     },
 );
 
-const fetchFiatRate = (
-    ticker: TickerId,
-    fiatCurrency: FiatCurrencyCode,
-): Promise<number | undefined | null> => {
-    const { symbol } = ticker;
-
-    if (networks[symbol].testnet) return Promise.resolve(null);
-
-    return fetchCurrentFiatRates(ticker, fiatCurrency);
-};
-
-const fetchLastWeekRate = (
-    ticker: TickerId,
-    fiatCurrency: FiatCurrencyCode,
-): Promise<number | undefined | null> => {
-    if (networks[ticker.symbol].testnet) return Promise.resolve(null);
-
-    return fetchLastWeekFiatRates(ticker, fiatCurrency);
-};
-
-const fetchFn: Record<RateType, typeof fetchFiatRate> = {
-    current: fetchFiatRate,
-    lastWeek: fetchLastWeekRate,
+const fetchFn: Record<RateType, typeof fetchCurrentFiatRates> = {
+    current: fetchCurrentFiatRates,
+    lastWeek: fetchLastWeekFiatRates,
 };
 
 type UpdateCurrentFiatRatesThunkPayload = {
@@ -92,6 +72,8 @@ export const updateFiatRatesThunk = createThunk(
         { ticker, localCurrency, rateType, forceFetchToken }: UpdateCurrentFiatRatesThunkPayload,
         { getState },
     ) => {
+        if (isTestnet(ticker.symbol)) return;
+
         const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes('coin-definitions');
         if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
             const isTokenKnown = selectIsSpecificCoinDefinitionKnown(
