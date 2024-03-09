@@ -704,10 +704,23 @@ export enum CardanoCertificateType {
     STAKE_DEREGISTRATION = 1,
     STAKE_DELEGATION = 2,
     STAKE_POOL_REGISTRATION = 3,
+    STAKE_REGISTRATION_CONWAY = 7,
+    STAKE_DEREGISTRATION_CONWAY = 8,
+    VOTE_DELEGATION = 9,
 }
 
 export type EnumCardanoCertificateType = Static<typeof EnumCardanoCertificateType>;
 export const EnumCardanoCertificateType = Type.Enum(CardanoCertificateType);
+
+export enum CardanoDRepType {
+    KEY_HASH = 0,
+    SCRIPT_HASH = 1,
+    ABSTAIN = 2,
+    NO_CONFIDENCE = 3,
+}
+
+export type EnumCardanoDRepType = Static<typeof EnumCardanoDRepType>;
+export const EnumCardanoDRepType = Type.Enum(CardanoDRepType);
 
 export enum CardanoPoolRelayType {
     SINGLE_HOST_IP = 0,
@@ -851,6 +864,7 @@ export const CardanoSignTxInit = Type.Object({
     total_collateral: Type.Optional(Type.Uint()),
     reference_inputs_count: Type.Optional(Type.Number()),
     chunkify: Type.Optional(Type.Boolean()),
+    tag_cbor_sets: Type.Optional(Type.Boolean()),
 });
 
 export type CardanoTxInput = Static<typeof CardanoTxInput>;
@@ -929,6 +943,13 @@ export const CardanoPoolParametersType = Type.Object({
     relays_count: Type.Number(),
 });
 
+export type CardanoDRep = Static<typeof CardanoDRep>;
+export const CardanoDRep = Type.Object({
+    type: EnumCardanoDRepType,
+    key_hash: Type.Optional(Type.String()),
+    script_hash: Type.Optional(Type.String()),
+});
+
 export type CardanoTxCertificate = Static<typeof CardanoTxCertificate>;
 export const CardanoTxCertificate = Type.Object({
     type: EnumCardanoCertificateType,
@@ -937,6 +958,8 @@ export const CardanoTxCertificate = Type.Object({
     pool_parameters: Type.Optional(CardanoPoolParametersType),
     script_hash: Type.Optional(Type.String()),
     key_hash: Type.Optional(Type.String()),
+    deposit: Type.Optional(Type.Uint()),
+    drep: Type.Optional(CardanoDRep),
 });
 
 export type CardanoTxWithdrawal = Static<typeof CardanoTxWithdrawal>;
@@ -2695,6 +2718,7 @@ export const MessageType = Type.Object({
     CardanoPoolRelayParameters,
     CardanoPoolMetadataType,
     CardanoPoolParametersType,
+    CardanoDRep,
     CardanoTxCertificate,
     CardanoTxWithdrawal,
     CardanoCVoteRegistrationDelegation,

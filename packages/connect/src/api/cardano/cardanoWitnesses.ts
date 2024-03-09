@@ -29,7 +29,10 @@ export const gatherWitnessPaths = (
             if (
                 certificate.path &&
                 (certificate.type === PROTO.CardanoCertificateType.STAKE_DELEGATION ||
-                    certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION)
+                    certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION ||
+                    certificate.type === PROTO.CardanoCertificateType.STAKE_REGISTRATION_CONWAY ||
+                    certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY ||
+                    certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION)
             ) {
                 _insert(certificate.path);
             }

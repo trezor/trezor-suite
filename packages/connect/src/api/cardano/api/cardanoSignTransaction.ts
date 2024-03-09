@@ -50,6 +50,7 @@ const CardanoSignTransactionFeatures = Object.freeze({
     Babbage: ['0', '2.5.2'],
     CIP36Registration: ['0', '2.5.3'],
     CIP36RegistrationExternalPaymentAddress: ['0', '2.5.4'],
+    Conway: ['0', '2.6.5'],
 });
 
 export type CardanoSignTransactionParams = {
@@ -75,6 +76,7 @@ export type CardanoSignTransactionParams = {
     additionalWitnessRequests: Path[];
     derivationType: PROTO.CardanoDerivationType;
     includeNetworkId?: boolean;
+    tagCborSets?: boolean;
     unsignedTx?: { body: string; hash: string };
     testnet?: boolean;
     chunkify?: boolean;
@@ -233,6 +235,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                     ? payload.derivationType
                     : PROTO.CardanoDerivationType.ICARUS_TREZOR,
             includeNetworkId: payload.includeNetworkId,
+            tagCborSets: payload.tagCborSets,
             unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,
             testnet: 'testnet' in payload ? payload.testnet : undefined,
             chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
@@ -266,6 +269,13 @@ export default class CardanoSignTransaction extends AbstractMethod<
             if (certificate.key_hash) {
                 this._ensureFeatureIsSupported('KeyHashStakeCredential');
             }
+            if (
+                certificate.type === PROTO.CardanoCertificateType.STAKE_REGISTRATION_CONWAY ||
+                certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY ||
+                certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION
+            ) {
+                this._ensureFeatureIsSupported('Conway');
+            }
         });
 
         params.outputsWithData.forEach(({ output }) => {
@@ -293,6 +303,10 @@ export default class CardanoSignTransaction extends AbstractMethod<
 
         if (params.includeNetworkId) {
             this._ensureFeatureIsSupported('NetworkIdInTxBody');
+        }
+
+        if (params.tagCborSets) {
+            this._ensureFeatureIsSupported('Conway');
         }
 
         if (params.scriptDataHash) {
@@ -374,6 +388,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             derivation_type: this.params.derivationType,
             include_network_id: this.params.includeNetworkId,
             chunkify: this.params.chunkify,
+            tag_cbor_sets: this.params.tagCborSets,
         };
 
         // init

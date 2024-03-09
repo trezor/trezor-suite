@@ -36,6 +36,7 @@ const result = await TrezorConnect.cardanoSignTransaction(params);
 -   `derivationType` — _optional_ `CardanoDerivationType` enum. Determines used derivation type. Default is set to ICARUS_TREZOR=2.
 -   `includeNetworkId` — _optional_ `Boolean`. Determines whether `networkId` should be explicitly serialized into the transaction body. Default is `false`.
 -   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
+-   `tagCborSets` - _optional_ `boolean` determines if CBOR arrays intended to be sets will be encoded with tag 258. Default is set to `false`
 
 ### CardanoTxSigningMode
 
