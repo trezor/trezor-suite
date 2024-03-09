@@ -30,7 +30,6 @@
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
         { "path": "../feature-flags" },
-        { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../intl" },

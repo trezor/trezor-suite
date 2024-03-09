@@ -29,7 +29,6 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
-        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/helpers": "workspace:*",
         "@suite-native/intl": "workspace:*",

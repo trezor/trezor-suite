@@ -4,9 +4,9 @@ import {
     createImportedDeviceThunk,
     initBlockchainThunk,
     periodicCheckTokenDefinitionsThunk,
+    periodicFetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
-import { periodicFetchFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import { getJWSPublicKey } from '@suite-native/config';
 import { initMessageSystemThunk } from '@suite-common/message-system';

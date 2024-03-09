@@ -22,6 +22,7 @@ type UpdateTxsFiatRatesThunkPayload = {
     localCurrency: FiatCurrencyCode;
 };
 
+// TODO: Refactor this to batch requests as much as possible
 export const updateTxsFiatRatesThunk = createThunk(
     `${fiatRatesActionsPrefix}/updateTxsRates`,
     async (

@@ -7,10 +7,10 @@ import {
     selectAccounts,
     selectDeviceAccountsByNetworkSymbol,
     selectDeviceAccounts,
+    FiatRatesRootState,
 } from '@suite-common/wallet-core';
 import { TokenInfoBranded } from '@suite-common/wallet-types';
 import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 

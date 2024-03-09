@@ -8185,7 +8185,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -8263,7 +8262,6 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-accounts-import": "workspace:*"
@@ -8341,7 +8339,6 @@ __metadata:
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -8531,7 +8528,6 @@ __metadata:
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     proxy-memoize: "npm:2.0.2"
@@ -8549,25 +8545,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/fiat-rates@workspace:*, @suite-native/fiat-rates@workspace:suite-native/fiat-rates":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/fiat-rates@workspace:suite-native/fiat-rates"
-  dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:1.9.5"
-    "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    date-fns: "npm:^2.30.0"
-    proxy-memoize: "npm:2.0.2"
-  languageName: unknown
-  linkType: soft
-
 "@suite-native/formatters@workspace:*, @suite-native/formatters@workspace:suite-native/formatters":
   version: 0.0.0-use.local
   resolution: "@suite-native/formatters@workspace:suite-native/formatters"
@@ -8581,7 +8558,6 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -8729,7 +8705,6 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -8772,7 +8747,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/graph": "workspace:*"
@@ -9175,7 +9149,6 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/message-system": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
@@ -9283,7 +9256,6 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/fiat-rates": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"

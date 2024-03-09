@@ -2,12 +2,8 @@ import { useSelector } from 'react-redux';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import {
-    FiatRatesRootState,
-    getFiatRateKey,
-    selectFiatRatesByFiatRateKey,
-} from '@suite-native/fiat-rates';
-import { isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
+import { FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, selectFiatCurrency } from '@suite-native/module-settings';
 import { FiatRatesLegacy } from '@trezor/blockchain-link';
 import { TokenAddress } from '@suite-common/wallet-types';

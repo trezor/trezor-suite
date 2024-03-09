@@ -16,7 +16,6 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
-        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "proxy-memoize": "2.0.2",

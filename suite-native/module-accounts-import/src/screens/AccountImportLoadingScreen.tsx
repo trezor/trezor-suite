@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { updateFiatRatesThunk, updateTokenFiatRatesThunk } from '@suite-native/fiat-rates';
 import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import {
     AccountsImportStackParamList,
@@ -11,7 +10,8 @@ import {
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { Timestamp } from '@suite-common/wallet-types';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
@@ -76,6 +76,7 @@ export const AccountImportLoadingScreen = ({
                         ticker: {
                             symbol: networkSymbol,
                         },
+                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
                         rateType: 'current',
                         localCurrency: fiatCurrency,
                     }),
@@ -84,20 +85,6 @@ export const AccountImportLoadingScreen = ({
 
             if (!ignore) {
                 if (fetchedAccountInfo?.success) {
-                    if (networkSymbol === 'eth') {
-                        fetchedAccountInfo.payload.tokens?.forEach(token =>
-                            dispatch(
-                                updateTokenFiatRatesThunk({
-                                    ticker: {
-                                        symbol: 'eth',
-                                        tokenAddress: token.contract as TokenAddress,
-                                    },
-                                    rateType: 'current',
-                                    localCurrency: fiatCurrency,
-                                }),
-                            ),
-                        );
-                    }
                     setAccountInfo(fetchedAccountInfo.payload);
                 } else {
                     safelyShowImportError(fetchedAccountInfo.payload.error, getAccountInfo);

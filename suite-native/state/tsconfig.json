@@ -27,7 +27,6 @@
         { "path": "../device" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
-        { "path": "../fiat-rates" },
         { "path": "../graph" },
         { "path": "../message-system" },
         { "path": "../module-settings" },

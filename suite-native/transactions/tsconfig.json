@@ -31,7 +31,6 @@
         { "path": "../atoms" },
         { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
-        { "path": "../fiat-rates" },
         { "path": "../formatters" },
         { "path": "../helpers" },
         { "path": "../intl" },

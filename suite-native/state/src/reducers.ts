@@ -5,10 +5,10 @@ import {
     prepareBlockchainReducer,
     prepareDeviceReducer,
     prepareDiscoveryReducer,
+    prepareFiatRatesReducer,
     prepareTokenDefinitionsReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
-import { prepareFiatRatesReducer } from '@suite-native/fiat-rates';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
 import { logsSlice } from '@suite-common/logger';
 import {

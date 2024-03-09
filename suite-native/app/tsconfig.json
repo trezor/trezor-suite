@@ -32,7 +32,6 @@
         { "path": "../config" },
         { "path": "../device" },
         { "path": "../feature-flags" },
-        { "path": "../fiat-rates" },
         { "path": "../intl" },
         { "path": "../message-system" },
         { "path": "../module-accounts-import" },
