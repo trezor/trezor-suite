@@ -1,6 +1,6 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import type { TickerId, LastWeekRates } from '@suite-common/wallet-types';
+import type { TickerId, LastWeekRates, Timestamp } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import TrezorConnect from '@trezor/connect';
 import { scheduleAction } from '@trezor/utils';
@@ -15,6 +15,11 @@ type fiatRatesParams = {
     ticker: TickerId;
     localCurrency: FiatCurrencyCode;
     isElectrumBackend: boolean;
+};
+
+type fiatRatesResult = {
+    rate: number | undefined;
+    lastTickerTimestamp: Timestamp;
 };
 
 const getConnectFiatRatesForTimestamp = (
@@ -39,7 +44,7 @@ export const fetchCurrentFiatRates = async ({
     ticker,
     localCurrency,
     isElectrumBackend,
-}: fiatRatesParams): Promise<number | null | undefined> => {
+}: fiatRatesParams): Promise<fiatRatesResult | null> => {
     if (isBlockbookBasedNetwork(ticker.symbol)) {
         if (!isElectrumBackend) {
             const { success, payload } = await scheduleAction(
@@ -52,7 +57,12 @@ export const fetchCurrentFiatRates = async ({
                 { timeout: CONNECT_FETCH_TIMEOUT },
             );
 
-            const rate = success ? payload.rates?.[localCurrency] : null;
+            const rate = success
+                ? {
+                      rate: payload.rates?.[localCurrency],
+                      lastTickerTimestamp: payload.ts as Timestamp,
+                  }
+                : null;
 
             return rate;
         }
@@ -63,19 +73,26 @@ export const fetchCurrentFiatRates = async ({
             localCurrency,
         );
 
-        if (blockbookResponse) return blockbookResponse.rates?.[localCurrency];
+        if (blockbookResponse)
+            return {
+                rate: blockbookResponse.rates?.[localCurrency],
+                lastTickerTimestamp: blockbookResponse.ts as Timestamp,
+            };
     }
 
     const coingeckoResponse = await coingeckoService.fetchCurrentFiatRates(ticker);
 
-    return coingeckoResponse?.rates?.[localCurrency];
+    return {
+        rate: coingeckoResponse?.rates?.[localCurrency],
+        lastTickerTimestamp: coingeckoResponse?.ts as Timestamp,
+    };
 };
 
 export const fetchLastWeekFiatRates = async ({
     ticker,
     localCurrency,
     isElectrumBackend,
-}: fiatRatesParams): Promise<number | null | undefined> => {
+}: fiatRatesParams): Promise<fiatRatesResult | null> => {
     const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
     const timestamps = [weekAgoTimestamp];
 
@@ -87,19 +104,31 @@ export const fetchLastWeekFiatRates = async ({
                 localCurrency,
             );
 
-            const rate = success ? payload.tickers?.[0]?.rates?.[localCurrency] : null;
+            const rate = success
+                ? {
+                      rate: payload.tickers?.[0]?.rates?.[localCurrency],
+                      lastTickerTimestamp: payload.tickers?.[0]?.ts as Timestamp,
+                  }
+                : null;
 
             return rate;
         }
 
         const blockbookResponse = await blockbookService.fetchLastWeekRates('btc', localCurrency);
 
-        if (blockbookResponse) return blockbookResponse.tickers?.[0]?.rates?.[localCurrency];
+        if (blockbookResponse)
+            return {
+                rate: blockbookResponse.tickers?.[0]?.rates?.[localCurrency],
+                lastTickerTimestamp: blockbookResponse.tickers?.[0]?.ts as Timestamp,
+            };
     }
 
     const coingeckoResponse = await coingeckoService.fetchLastWeekRates(ticker, localCurrency);
 
-    return coingeckoResponse?.tickers?.[0]?.rates?.[localCurrency];
+    return {
+        rate: coingeckoResponse?.tickers?.[0]?.rates?.[localCurrency],
+        lastTickerTimestamp: coingeckoResponse?.tickers?.[0]?.ts as Timestamp,
+    };
 };
 
 export const getFiatRatesForTimestamps = async (

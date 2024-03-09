@@ -225,6 +225,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                         'btc-usd': {
                             error: null,
                             isLoading: false,
+                            lastTickerTimestamp: 1693235607743000,
                             lastSuccessfulFetchTimestamp: 1693235607743,
                             rate: 1,
                             ticker: {
@@ -234,6 +235,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                         'eth-usd': {
                             error: null,
                             isLoading: false,
+                            lastTickerTimestamp: 169323560946000,
                             lastSuccessfulFetchTimestamp: 1693235609465,
                             rate: 1,
                             ticker: {
@@ -243,6 +245,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                         'xrp-usd': {
                             error: null,
                             isLoading: false,
+                            lastTickerTimestamp: 1693235609467000,
                             lastSuccessfulFetchTimestamp: 1693235609467,
                             rate: 1,
                             ticker: {
@@ -254,6 +257,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                         'btc-usd': {
                             error: null,
                             isLoading: false,
+                            lastTickerTimestamp: 1693235707743000,
                             lastSuccessfulFetchTimestamp: 1693235707743,
                             rate: 1,
                             ticker: {
@@ -263,6 +267,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                         'eth-usd': {
                             error: null,
                             isLoading: false,
+                            lastTickerTimestamp: 1693235709465000,
                             lastSuccessfulFetchTimestamp: 1693235709465,
                             rate: 1,
                             ticker: {
@@ -272,6 +277,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                         'xrp-usd': {
                             error: null,
                             isLoading: false,
+                            lastTickerTimestamp: 1693235709467000,
                             lastSuccessfulFetchTimestamp: 1693235709467,
                             rate: 1,
                             ticker: {

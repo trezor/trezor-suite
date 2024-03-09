@@ -33,6 +33,7 @@ export type RateType = 'current' | 'lastWeek';
 
 export type Rate = {
     rate?: number;
+    lastTickerTimestamp: Timestamp;
     lastSuccessfulFetchTimestamp: Timestamp;
     isLoading: boolean;
     error: string | null;

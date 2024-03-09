@@ -17,8 +17,8 @@ import { withCoinmarket } from '../withCoinmarket';
 import { useEffect } from 'react';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { Timestamp } from '@suite-common/wallet-types';
 import { useDispatch } from 'src/hooks/suite';
+import { Timestamp } from '@suite-common/wallet-types';
 
 const Header = styled.div`
     font-weight: 500;

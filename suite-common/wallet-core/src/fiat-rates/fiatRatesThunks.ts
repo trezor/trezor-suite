@@ -97,7 +97,11 @@ export const updateFiatRatesThunk = createThunk(
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), ticker.symbol);
 
-        const rate = await fetchFn[rateType]({ ticker, localCurrency, isElectrumBackend });
+        const rate = await fetchFn[rateType]({
+            ticker,
+            localCurrency,
+            isElectrumBackend,
+        });
 
         if (!rate) {
             throw new Error('Failed to fetch fiat rates');

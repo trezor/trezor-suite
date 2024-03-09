@@ -39,7 +39,7 @@ export const Ticker = ({ symbol, tooltipPos = 'top' }: TickerProps) => {
     const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
     const isSuccessfullyFetched =
-        lastWeekRate?.lastSuccessfulFetchTimestamp && currentRate?.lastSuccessfulFetchTimestamp;
+        lastWeekRate?.lastTickerTimestamp && currentRate?.lastTickerTimestamp;
 
     // TODO: create selectIsRateGoingUp selector when wallet.settings is moved to suite-common
     const rateGoingUp = isSuccessfullyFetched ? currentRate.rate! >= lastWeekRate.rate! : false;

@@ -10,11 +10,11 @@ import {
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { Timestamp } from '@suite-common/wallet-types';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
+import { Timestamp } from '@suite-common/wallet-types';
 
 const LOADING_ANIMATION_DURATION = 5000;
 
@@ -76,9 +76,9 @@ export const AccountImportLoadingScreen = ({
                         ticker: {
                             symbol: networkSymbol,
                         },
-                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
                         rateType: 'current',
                         localCurrency: fiatCurrency,
+                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
                     }),
                 ),
             ]);

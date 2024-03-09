@@ -93,7 +93,7 @@ export const FiatValue = ({
         return children({
             value: fiatValueComponent,
             rate: fiatRateComponent,
-            timestamp: useCustomSource ? null : currentRate?.lastSuccessfulFetchTimestamp ?? null,
+            timestamp: useCustomSource ? null : currentRate?.lastTickerTimestamp ?? null,
         });
     }
     if (!children) return null;
