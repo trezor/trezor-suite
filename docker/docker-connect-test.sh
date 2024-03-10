@@ -119,7 +119,7 @@ export TESTS_FIRMWARE_URL=$FIRMWARE_URL
 export TESTS_FIRMWARE_MODEL=$FIRMWARE_MODEL
 
 runDocker() {
-  docker-compose -f ./docker/docker-compose.connect-test.yml up --abort-on-container-exit
+  docker-compose -f ./docker/docker-compose.connect-test.yml up -d
 }
 
 run() {
@@ -136,6 +136,8 @@ run() {
 
   if [ $DOCKER = true ]; then
     runDocker
+    echo "Running tests in docker"
+    $SCRIPT "$PATTERN"
   else
     $SCRIPT "$PATTERN"
   fi
