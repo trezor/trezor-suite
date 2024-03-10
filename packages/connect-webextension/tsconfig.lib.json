@@ -7,11 +7,23 @@
     },
     "include": ["./src"],
     "references": [
-        { "path": "../connect" },
-        { "path": "../connect-common" },
-        { "path": "../connect-web" },
-        { "path": "../utils" },
-        { "path": "../node-utils" },
-        { "path": "../trezor-user-env-link" }
+        {
+            "path": "../connect"
+        },
+        {
+            "path": "../connect-common"
+        },
+        {
+            "path": "../connect-web"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../node-utils"
+        },
+        {
+            "path": "../trezor-user-env-link"
+        }
     ]
 }

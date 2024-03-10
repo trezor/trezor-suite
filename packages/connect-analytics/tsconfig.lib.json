@@ -5,5 +5,9 @@
         "esModuleInterop": false
     },
     "include": ["./src"],
-    "references": [{ "path": "../analytics" }]
+    "references": [
+        {
+            "path": "../analytics"
+        }
+    ]
 }

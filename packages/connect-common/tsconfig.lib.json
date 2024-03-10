@@ -6,7 +6,11 @@
     },
     "include": ["./src"],
     "references": [
-        { "path": "../env-utils" },
-        { "path": "../utils" }
+        {
+            "path": "../env-utils"
+        },
+        {
+            "path": "../utils"
+        }
     ]
 }

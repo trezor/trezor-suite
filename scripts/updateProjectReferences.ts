@@ -28,9 +28,12 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
 
     const prettierConfig = await getPrettierConfig();
 
-    const serializeConfig = (config: any) => {
+    const serializeConfig = (config: any, stringifySpaces?: number) => {
         try {
-            return prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
+            return prettier.format(
+                JSON.stringify(config, null, stringifySpaces).replace(/\\\\/g, '/'),
+                prettierConfig,
+            );
         } catch (error) {
             console.error(error);
             process.exit(1);
@@ -135,7 +138,7 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
                     ) {
                         fs.writeFileSync(
                             workspaceLibConfigPath,
-                            await serializeConfig(workspaceLibConfig),
+                            await serializeConfig(workspaceLibConfig, 2),
                         );
                     }
                 } catch {

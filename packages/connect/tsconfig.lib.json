@@ -7,16 +7,38 @@
     },
     "include": ["./src"],
     "references": [
-        { "path": "../blockchain-link" },
-        { "path": "../blockchain-link-types" },
-        { "path": "../connect-analytics" },
-        { "path": "../connect-common" },
-        { "path": "../protobuf" },
-        { "path": "../protocol" },
-        { "path": "../schema-utils" },
-        { "path": "../transport" },
-        { "path": "../utils" },
-        { "path": "../utxo-lib" },
-        { "path": "../trezor-user-env-link" }
+        {
+            "path": "../blockchain-link"
+        },
+        {
+            "path": "../blockchain-link-types"
+        },
+        {
+            "path": "../connect-analytics"
+        },
+        {
+            "path": "../connect-common"
+        },
+        {
+            "path": "../protobuf"
+        },
+        {
+            "path": "../protocol"
+        },
+        {
+            "path": "../schema-utils"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../utxo-lib"
+        },
+        {
+            "path": "../trezor-user-env-link"
+        }
     ]
 }
