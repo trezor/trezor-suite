@@ -27,5 +27,8 @@
     "devDependencies": {
         "ripple-lib": "^1.10.1",
         "tsx": "^4.7.0"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

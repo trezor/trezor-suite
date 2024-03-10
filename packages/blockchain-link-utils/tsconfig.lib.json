@@ -1,8 +1,10 @@
 {
     "extends": "../../tsconfig.lib.json",
-    "compilerOptions": {
-        "outDir": "lib",
-        "importHelpers": true
-    },
-    "include": ["./src"]
+    "compilerOptions": { "outDir": "lib" },
+    "include": ["./src"],
+    "references": [
+        { "path": "../utils" },
+        { "path": "../blockchain-link-types" },
+        { "path": "../type-utils" }
+    ]
 }
