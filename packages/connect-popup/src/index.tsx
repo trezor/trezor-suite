@@ -45,6 +45,8 @@ const proxyLogger = initLog('@trezor/connect-webextension');
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 let renderConnectUIPromise: Promise<void> | undefined;
 
+console.log('this should trigger CI');
+
 // browser built-in functionality to quickly and safely escape the string
 const escapeHtml = (payload: any) => {
     if (!payload) return;
