@@ -89,6 +89,8 @@ export interface TransactionReviewOutputListProps {
     buttonRequestsCount: number;
     isRbfAction: boolean;
     actionText: TranslationKey;
+    isSending?: boolean;
+    setIsSending?: () => void;
 }
 
 export const TransactionReviewOutputList = ({
@@ -102,6 +104,8 @@ export const TransactionReviewOutputList = ({
     buttonRequestsCount,
     isRbfAction,
     actionText,
+    isSending,
+    setIsSending,
 }: TransactionReviewOutputListProps) => {
     const dispatch = useDispatch();
     const { networkType } = account;
@@ -141,6 +145,9 @@ export const TransactionReviewOutputList = ({
             },
         });
     const handleSend = () => {
+        if (networkType === 'solana') {
+            setIsSending?.();
+        }
         if (decision) {
             decision.resolve(true);
 
@@ -228,6 +235,7 @@ export const TransactionReviewOutputList = ({
                         <StyledButton
                             data-test="@modal/send"
                             isDisabled={!signedTx}
+                            isLoading={isSending}
                             onClick={handleSend}
                         >
                             <Translation id={actionText} />
