@@ -2,7 +2,7 @@ name: "[Test] connect"
 
 # run only if there are changes in connect or related libs paths
 on:
-  push:
+  pull_request:
     paths:
       - "packages/blockchain-link/**"
       - "packages/connect-common/**"
@@ -17,6 +17,10 @@ on:
       - "docker/**"
       - "submodules/trezor-common/**"
       - "yarn.lock"
+      - ".github/workflows/connect-test.yml"
+      - ".github/workflows/connect-test-params.yml"
+      - "docker/docker-connect-test.sh"
+      - "docker/docker-compose.connect-test.yml"
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
@@ -36,16 +40,22 @@ jobs:
           node-version-file: ".nvmrc"
           cache: yarn
           cache-dependency-path: "**/yarn.lock"
-      - run: sed -i "/\"node\"/d" package.json
-      - run: yarn install
-      - run: yarn build:libs
+      - run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+      - run: yarn workspaces focus @trezor/connect-iframe @trezor/connect-web
       - run: yarn workspace @trezor/connect-iframe build
       - run: yarn workspace @trezor/connect-web build
       # upload + download takes longer than doing yarn build:libs
-      - uses: actions/upload-artifact@v4
+      - name: Upload build connect-web
+        uses: actions/upload-artifact@v4
         with:
-          name: build-artifact
+          name: build-artifact-connect-web
           path: packages/connect-web/build
+      - name: Upload build connect-iframe
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact-connect-iframe
+          path: packages/connect-iframe/build
 
   api:
     needs: [build]

@@ -27,8 +27,6 @@ jobs:
       # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
       - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
-      # todo: ideally reuse libs from build step
-      - run: yarn build:libs
       - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
 
   web:
@@ -43,16 +41,21 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
-      - run: sed -i "/\"node\"/d" package.json
-      - run: yarn install
-      # todo: ideally reuse libs from build step
-      - run: yarn build:libs
-      - name: Retrieve build artifacts
+      - run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+      # Install dependecies only for @trezor/connect package
+      - run: yarn workspaces focus @trezor/connect
+      - name: Retrieve build connect-web
         uses: actions/download-artifact@v4
         with:
-          name: build-artifact
+          name: build-artifact-connect-web
           path: packages/connect-web/build
+      - name: Retrieve build connect-iframe
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact-connect-iframe
+          path: packages/connect-iframe/build
+      - run: cd packages/connect-iframe && tree .
       - name: "Echo download path"
         run: echo ${{steps.download.outputs.download-path}}
       - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
