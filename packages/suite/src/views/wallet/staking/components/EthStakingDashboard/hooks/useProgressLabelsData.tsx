@@ -32,7 +32,11 @@ export const useProgressLabelsData = ({
 
                     return 'done';
                 })(),
-                children: <Translation id="TR_TX_CONFIRMED" />,
+                children: isStakeConfirming ? (
+                    <Translation id="TR_TX_CONFIRMING" />
+                ) : (
+                    <Translation id="TR_TX_CONFIRMED" />
+                ),
             },
             {
                 id: 1,

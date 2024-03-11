@@ -3,7 +3,7 @@ import { Button, Divider, Paragraph, Warning } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
-import { useSelector, useValidatorsQueue } from 'src/hooks/suite';
+import { useDevice, useSelector, useValidatorsQueue } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
@@ -16,9 +16,8 @@ const GreyP = styled(Paragraph)`
 const DividerWrapper = styled.div`
     & > div {
         background: ${({ theme }) => theme.borderOnElevation1};
-        width: calc(100% + 64px);
-        margin-left: -${spacingsPx.xxl};
-        margin-bottom: ${spacingsPx.lg};
+        width: calc(100% + ${spacingsPx.xxl});
+        margin: 0 -${spacingsPx.md} ${spacingsPx.lg} -${spacingsPx.md};
     }
 `;
 
@@ -27,7 +26,7 @@ const StyledWarning = styled(Warning)`
 `;
 
 const WarningsWrapper = styled.div`
-    margin-top: ${spacingsPx.sm};
+    margin-bottom: ${spacingsPx.sm};
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.md};
@@ -43,6 +42,7 @@ const UpToDaysWrapper = styled.div`
 `;
 
 export const UnstakeEthForm = () => {
+    const { device, isLocked } = useDevice();
     const {
         validatorsQueue: { validatorWithdrawTime },
     } = useValidatorsQueue();
@@ -67,6 +67,8 @@ export const UnstakeEthForm = () => {
 
     const { canClaim = false, claimableAmount = '0' } =
         useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+    const isDisabled =
+        !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
     return (
         <form onSubmit={handleSubmit(signTx)}>
@@ -122,7 +124,7 @@ export const UnstakeEthForm = () => {
             <Button
                 type="submit"
                 isFullWidth
-                isDisabled={!(formIsValid && hasValues) || isSubmitting}
+                isDisabled={isDisabled}
                 isLoading={isComposing || isSubmitting}
                 onClick={handleSubmit(signTx)}
             >
