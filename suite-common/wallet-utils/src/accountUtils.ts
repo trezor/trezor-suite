@@ -378,19 +378,25 @@ export const findAccountsByNetwork = (symbol: NetworkSymbol, accounts: Account[]
 export const findAccountsByDescriptor = (descriptor: string, accounts: Account[]) =>
     accounts.filter(a => a.descriptor === descriptor);
 
-export const findAccountsByAddress = (address: string, accounts: Account[]) =>
-    accounts.filter(a => {
-        if (a.addresses) {
-            return (
-                a.addresses.used.find(u => u.address === address) ||
-                a.addresses.unused.find(u => u.address === address) ||
-                a.addresses.change.find(u => u.address === address) ||
-                a.descriptor === address
-            );
-        }
+export const findAccountsByAddress = (
+    networkSymbol: NetworkSymbol,
+    address: string,
+    accounts: Account[],
+) =>
+    accounts
+        .filter(account => account.symbol === networkSymbol)
+        .filter(a => {
+            if (a.addresses) {
+                return (
+                    a.addresses.used.find(u => u.address === address) ||
+                    a.addresses.unused.find(u => u.address === address) ||
+                    a.addresses.change.find(u => u.address === address) ||
+                    a.descriptor === address
+                );
+            }
 
-        return a.descriptor === address;
-    });
+            return a.descriptor === address;
+        });
 
 export const findAccountDevice = (account: Account, devices: TrezorDevice[]) =>
     devices.find(d => d.state === account.deviceState);

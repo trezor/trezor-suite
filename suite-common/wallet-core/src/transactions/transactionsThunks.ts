@@ -122,7 +122,7 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
         }>(
             (result, output) => {
                 if (output.addresses) {
-                    findAccountsByAddress(output.addresses[0], accounts).forEach(
+                    findAccountsByAddress(account.symbol, output.addresses[0], accounts).forEach(
                         affectedAccount => {
                             if (affectedAccount.key === account.key) return accounts;
                             if (!result[affectedAccount.key]) {

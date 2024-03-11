@@ -45,6 +45,7 @@ export const TokenTransfer = ({
             {...baseLayoutProps}
             addressLabel={
                 <TokenTransferAddressLabel
+                    networkSymbol={transaction.symbol}
                     isPhishingTransaction={isPhishingTransaction}
                     transfer={transfer}
                     type={transaction.type}
@@ -81,7 +82,9 @@ export const InternalTransfer = ({
     return (
         <TransactionTargetLayout
             {...baseLayoutProps}
-            addressLabel={<AddressLabeling address={transfer.to} />}
+            addressLabel={
+                <AddressLabeling address={transfer.to} networkSymbol={transaction.symbol} />
+            }
             amount={
                 !baseLayoutProps.singleRowLayout && (
                     <StyledFormattedCryptoAmount
@@ -157,6 +160,7 @@ export const TransactionTarget = ({
                     isDisabled={isActionDisabled}
                     defaultVisibleValue={
                         <TargetAddressLabel
+                            networkSymbol={transaction.symbol}
                             accountMetadata={accountMetadata}
                             target={target}
                             type={transaction.type}
