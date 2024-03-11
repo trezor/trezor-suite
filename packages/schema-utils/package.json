@@ -15,7 +15,7 @@
         "test:unit": "yarn g:jest",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
-        "build:lib": "rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "codegen": "ts-node --skip-project ./src/codegen.ts",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
@@ -28,5 +28,8 @@
     "dependencies": {
         "@sinclair/typebox": "^0.31.28",
         "ts-mixer": "^6.0.3"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

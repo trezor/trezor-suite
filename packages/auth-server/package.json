@@ -9,7 +9,7 @@
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "type-check": "yarn g:tsc --build",
         "dev": "yarn g:tsx watch ./src/index.ts",
-        "build": "rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "start": "node ./lib/index.js"
     },
     "dependencies": {
@@ -18,5 +18,8 @@
     },
     "devDependencies": {
         "@types/cors": "^2.8.17"
+    },
+    "peerDependencies": {
+        "tslib": "^2.6.2"
     }
 }

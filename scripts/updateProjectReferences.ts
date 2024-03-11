@@ -28,9 +28,12 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
 
     const prettierConfig = await getPrettierConfig();
 
-    const serializeConfig = (config: any) => {
+    const serializeConfig = (config: any, stringifySpaces?: number) => {
         try {
-            return prettier.format(JSON.stringify(config).replace(/\\\\/g, '/'), prettierConfig);
+            return prettier.format(
+                JSON.stringify(config, null, stringifySpaces).replace(/\\\\/g, '/'),
+                prettierConfig,
+            );
         } catch (error) {
             console.error(error);
             process.exit(1);
@@ -118,6 +121,33 @@ const rootTsConfigLocation = path.join(__dirname, '..', 'tsconfig.json');
 
             if (!readOnlyGlobs.some((path: string) => minimatch(workspace.location, path))) {
                 fs.writeFileSync(workspaceConfigPath, await serializeConfig(workspaceConfig));
+            }
+
+            // Copy references also to tsconfig.lib.json if exists
+            const workspaceLibConfigPath = path.resolve(workspacePath, 'tsconfig.lib.json');
+            if (fs.existsSync(workspaceLibConfigPath)) {
+                try {
+                    const workspaceLibConfig = JSON.parse(
+                        fs.readFileSync(workspaceLibConfigPath).toString(),
+                    );
+
+                    workspaceLibConfig.references = nextWorkspaceReferences;
+
+                    if (
+                        !readOnlyGlobs.some((path: string) => minimatch(workspace.location, path))
+                    ) {
+                        fs.writeFileSync(
+                            workspaceLibConfigPath,
+                            await serializeConfig(workspaceLibConfig, 2),
+                        );
+                    }
+                } catch {
+                    console.error(
+                        chalk.bold.red('Error while parsing file: '),
+                        workspaceLibConfigPath,
+                    );
+                    process.exit(1);
+                }
             }
         });
 
