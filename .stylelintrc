@@ -5,6 +5,8 @@
         "declaration-empty-line-before": null,
         "media-query-no-invalid": null,
         "media-feature-range-notation": null,
-        "no-empty-source": null
+        "no-empty-source": null,
+        "color-function-notation": null,
+        "alpha-value-notation": null
     }
 }
