@@ -32,6 +32,12 @@ export const getTokenDefinitionThunk = createThunk(
         const { coingeckoId } = getNetwork(networkSymbol) || {};
 
         try {
+            if (!coingeckoId) {
+                throw Error(
+                    'Cannot fetch token definitions for network without CoinGecko asset id!',
+                );
+            }
+
             const env = isCodesignBuild() ? 'stable' : 'develop';
 
             const response = await fetch(
