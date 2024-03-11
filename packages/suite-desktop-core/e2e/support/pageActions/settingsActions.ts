@@ -89,6 +89,10 @@ class SettingsActions {
         await window.getByTestId('@settings/menu/close').click();
         await window.getByTestId('@settings/menu/title').waitFor({ state: 'detached' });
     }
+    // asserts
+    async settingsChangedSuccessfully(window: Page) {
+        return (await waitForDataTestSelector(window, '@toast/settings-applied')) ?? true;
+    }
 }
 
 export const onSettingsPage = new SettingsActions();
