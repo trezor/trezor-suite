@@ -3,8 +3,10 @@ import BigNumber from 'bignumber.js';
 import { BACKUP_ETH_APY, STAKE_SYMBOLS } from 'src/constants/suite/ethStaking';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from './useSelector';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const useEverstakePoolStats = () => {
+    const isDebug = useSelector(selectIsDebugModeActive);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const areEthNetworksEnabled = useMemo(
         () => enabledNetworks.some(symbol => STAKE_SYMBOLS.includes(symbol)),
@@ -19,7 +21,7 @@ export const useEverstakePoolStats = () => {
     const [isPoolStatsLoading, setIsPoolStatsLoading] = useState(false);
 
     useEffect(() => {
-        if (!areEthNetworksEnabled) return;
+        if (!areEthNetworksEnabled || !isDebug) return;
 
         const abortController = new AbortController();
 
@@ -64,7 +66,7 @@ export const useEverstakePoolStats = () => {
         return () => {
             abortController.abort();
         };
-    }, [areEthNetworksEnabled]);
+    }, [areEthNetworksEnabled, isDebug]);
 
     return {
         ethApy: poolStats.ethApy,
