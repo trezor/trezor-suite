@@ -89,7 +89,27 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
             return enumerateResult;
         }
 
-        return sessionsClient.enumerateDone({ paths: enumerateResult.payload });
+        // todo: one mapping here and one mapping below, maybe this could be improved
+        const enumerateDoneResponse = await sessionsClient.enumerateDone({
+            paths: enumerateResult.payload.map(d => d.path),
+        });
+
+        if (!enumerateDoneResponse.success) {
+            return enumerateDoneResponse;
+        }
+
+        // sessions background only cares about sessions and paths. however from api layer we return more information
+        // that does not flow through sessions background, so I need to combine both results here
+        const descriptors = enumerateDoneResponse.payload.descriptors.map(d => ({
+            path: d.path,
+            session: d.session,
+            type: enumerateResult.payload.find(e => e.path === d.path)?.type,
+        }));
+
+        return {
+            ...enumerateDoneResponse,
+            payload: { ...enumerateDoneResponse.payload, descriptors },
+        };
     };
 
     const acquire = async (acquireInput: AcquireInput) => {
