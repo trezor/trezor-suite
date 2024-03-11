@@ -8,15 +8,17 @@ permissions:
 on:
   pull_request:
     paths:
-      - "packages/blockchain-link"
+      - "packages/blockchain-link/**"
       - "packages/connect/**"
       - "packages/connect-common/**"
       - "packages/connect-iframe/**"
+      - "packages/connect-explorer/**"
+      - "packages/connect-webextension/**"
       - "packages/connect-web/**"
-      - "packages/transport"
-      - "packages/utxo-lib"
-      - "packages/utils"
-      - "submodules/trezor-common"
+      - "packages/transport/**"
+      - "packages/utxo-lib/**"
+      - "packages/utils/**"
+      - "submodules/trezor-common/**"
       - "yarn.lock"
       - ".github/workflows/connect-dev-release.yml"
 

@@ -4,18 +4,18 @@ name: "[Test] connect"
 on:
   push:
     paths:
-      - "packages/blockchain-link"
+      - "packages/blockchain-link/**"
       - "packages/connect-common/**"
       - "packages/connect-iframe/**"
       - "packages/connect-web/**"
       - "packages/connect/**"
-      - "packages/protobuf"
-      - "packages/schema-utils"
-      - "packages/transport"
-      - "packages/utils"
-      - "packages/utxo-lib"
-      - "docker"
-      - "submodules/trezor-common"
+      - "packages/protobuf/**"
+      - "packages/schema-utils/**"
+      - "packages/transport/**"
+      - "packages/utils/**"
+      - "packages/utxo-lib/**"
+      - "docker/**"
+      - "submodules/trezor-common/**"
       - "yarn.lock"
 
 concurrency:
