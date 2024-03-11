@@ -38,3 +38,5 @@ export * from './topologicalSort';
 export * from './truncateMiddle';
 export * from './typedEventEmitter';
 export * from './urlToOnion';
+export * from './logs';
+export * from './logsManager';
