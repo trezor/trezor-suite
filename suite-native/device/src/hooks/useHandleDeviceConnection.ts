@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -13,12 +13,14 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
+    authorizeDevice,
     selectIsPortfolioTrackerDevice,
     selectDeviceRequestedPin,
     selectIsDeviceConnectedAndAuthorized,
     selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList | RootStackParamList,
@@ -34,16 +36,19 @@ export const useHandleDeviceConnection = () => {
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
 
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
         if (isOnboardingFinished && !isPortfolioTrackerDevice && !isDeviceConnectedAndAuthorized) {
+            requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
         }
     }, [
+        dispatch,
         isOnboardingFinished,
         isPortfolioTrackerDevice,
         isNoPhysicalDeviceConnected,
@@ -74,10 +79,10 @@ export const useHandleDeviceConnection = () => {
     // When trezor gets locked, it is necessary to display a PIN matrix for T1 so that it can be unlocked
     // and then continue with the interaction. For T2, PIN is entered on device, but the screen is still displayed.
     useEffect(() => {
-        if (hasDeviceRequestedPin) {
+        if (isOnboardingFinished && hasDeviceRequestedPin) {
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.PinMatrix,
             });
         }
-    }, [hasDeviceRequestedPin, navigation]);
+    }, [hasDeviceRequestedPin, isOnboardingFinished, navigation]);
 };
