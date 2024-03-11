@@ -74,7 +74,7 @@
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn message-system-sign-config",
-        "validate": "yarn verify-project-references && yarn nx:lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions",
+        "validate": "yarn verify-project-references && yarn lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions",
         "a": "yarn native:android",
         "ios": "yarn native:ios",
         "p": "yarn native:prebuild",
@@ -143,6 +143,7 @@
         "tar": "^6.2.0",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
+        "tslib": "^2.6.2",
         "tsx": "^4.7.0",
         "typescript": "5.3.3",
         "version-bump-prompt": "^6.1.0"

@@ -4,6 +4,7 @@
         "module": "commonjs",
         "moduleResolution": "node",
         "target": "es6",
+        "importHelpers": true,
 
         "composite": false,
         "incremental": false,

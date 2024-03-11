@@ -3,10 +3,42 @@
     "compilerOptions": {
         "outDir": "lib",
         "target": "es2019",
-        "lib": ["es2019", "webworker"],
-        // note: do not remove tslib from package.json. It might seem that it is not used
-        // but it is required due to importHelpers: true
-        "importHelpers": true
+        "lib": ["es2019", "webworker"]
     },
-    "include": ["./src"]
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../blockchain-link"
+        },
+        {
+            "path": "../blockchain-link-types"
+        },
+        {
+            "path": "../connect-analytics"
+        },
+        {
+            "path": "../connect-common"
+        },
+        {
+            "path": "../protobuf"
+        },
+        {
+            "path": "../protocol"
+        },
+        {
+            "path": "../schema-utils"
+        },
+        {
+            "path": "../transport"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../utxo-lib"
+        },
+        {
+            "path": "../trezor-user-env-link"
+        }
+    ]
 }

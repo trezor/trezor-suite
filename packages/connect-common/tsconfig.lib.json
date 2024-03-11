@@ -2,8 +2,15 @@
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
         "outDir": "./lib",
-        "importHelpers": true,
         "esModuleInterop": false
     },
-    "include": ["./src"]
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../env-utils"
+        },
+        {
+            "path": "../utils"
+        }
+    ]
 }

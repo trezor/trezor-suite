@@ -2,8 +2,21 @@
     "extends": "../../tsconfig.lib.json",
     "compilerOptions": {
         "outDir": "./lib",
-        "types": ["w3c-web-usb"],
-        "importHelpers": true
+        "types": ["w3c-web-usb"]
     },
-    "include": ["./src"]
+    "include": ["./src"],
+    "references": [
+        {
+            "path": "../protobuf"
+        },
+        {
+            "path": "../protocol"
+        },
+        {
+            "path": "../utils"
+        },
+        {
+            "path": "../trezor-user-env-link"
+        }
+    ]
 }
