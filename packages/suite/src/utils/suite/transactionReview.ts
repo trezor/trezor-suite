@@ -4,11 +4,13 @@ import { StakeFormState } from '@suite-common/wallet-types';
 interface getTransactionReviewModalActionTextParams {
     ethereumStakeType: StakeFormState['ethereumStakeType'] | null;
     isRbfAction: boolean;
+    isSending?: boolean;
 }
 
 export const getTransactionReviewModalActionText = ({
     ethereumStakeType,
     isRbfAction,
+    isSending,
 }: getTransactionReviewModalActionTextParams): TranslationKey => {
     switch (ethereumStakeType) {
         case 'stake':
@@ -22,6 +24,10 @@ export const getTransactionReviewModalActionText = ({
 
     if (isRbfAction) {
         return 'TR_REPLACE_TX';
+    }
+
+    if (isSending) {
+        return 'TR_CONFIRMING_TX';
     }
 
     return 'SEND_TRANSACTION';

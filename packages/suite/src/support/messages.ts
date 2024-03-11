@@ -6495,6 +6495,10 @@ export default defineMessages({
         id: 'TR_REPLACE_TX',
         defaultMessage: 'Replace transaction',
     },
+    TR_CONFIRMING_TX: {
+        id: 'TR_CONFIRMING_TX',
+        defaultMessage: 'Confirming transaction',
+    },
     TR_FINALIZE_TX: {
         id: 'TR_FINALIZE_TX',
         defaultMessage: 'Finalize transaction',

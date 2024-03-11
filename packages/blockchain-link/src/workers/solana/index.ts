@@ -13,8 +13,13 @@ import type {
 import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
-import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/lib/constants';
-import { Connection, Message, PublicKey } from '@solana/web3.js';
+import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
+import {
+    BlockheightBasedTransactionConfirmationStrategy,
+    Connection,
+    Message,
+    PublicKey,
+} from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 import {
@@ -95,6 +100,14 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
     const payload = await api.sendRawTransaction(Buffer.from(rawTx, 'hex'));
+    const { blockhash, lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
+    const confirmStrategy: BlockheightBasedTransactionConfirmationStrategy = {
+        blockhash,
+        lastValidBlockHeight,
+        signature: payload,
+    };
+
+    await api.confirmTransaction(confirmStrategy);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,
