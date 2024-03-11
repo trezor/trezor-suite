@@ -9,11 +9,12 @@ import { b2t } from '../libs/utils';
 
 import type { Module, Dependencies } from './index';
 
-const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
-const bridgeTest = app.commandLine.hasSwitch('bridge-test');
+const bridgeLegacy = app.commandLine.hasSwitch('bridge-legacy');
+const bridgeLegacyDev = app.commandLine.hasSwitch('bridge-legacy-dev');
+const bridgeLegacyTest = app.commandLine.hasSwitch('bridge-legacy-test');
 // bridge node is intended for internal testing
-const bridgeNode = app.commandLine.hasSwitch('bridge-node');
-const bridgeNodeTest = app.commandLine.hasSwitch('bridge-node-test');
+const bridgeTest = app.commandLine.hasSwitch('bridge-test');
+const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
 
 export const SERVICE_NAME = 'bridge';
 
@@ -33,9 +34,11 @@ const handleBridgeStatus = async (
 };
 
 const start = async (bridge: BridgeProcess | TrezordNode) => {
-    if (bridgeDev) {
+    if (bridgeLegacy) {
+        await bridge.start();
+    } else if (bridgeLegacyDev) {
         await bridge.startDev();
-    } else if (bridgeTest) {
+    } else if (bridgeLegacyTest) {
         await bridge.startTest();
     } else {
         await bridge.start();
@@ -43,25 +46,25 @@ const start = async (bridge: BridgeProcess | TrezordNode) => {
 };
 
 const getBridgeInstance = () => {
-    if (bridgeNode || bridgeNodeTest) {
-        return new TrezordNode({
-            port: 21325,
-            api: bridgeNodeTest ? 'udp' : 'usb',
-            assetPrefix: '../build/node-bridge',
-            // passing down ILogger where Log is expected.
-            // @ts-expect-error
-            logger: {
-                ...global.logger,
-                log: (...args) => logger.info('trezord-node', args.join(' ')),
-                info: (...args) => logger.info('trezord-node', args.join(' ')),
-                warn: (...args) => logger.warn('trezord-node', args.join(' ')),
-                debug: (...args) => logger.debug('trezord-node', args.join(' ')),
-                error: (...args) => logger.error('trezord-node', args.join(' ')),
-            },
-        });
+    if (bridgeLegacy || bridgeLegacyDev || bridgeLegacyTest) {
+        return new BridgeProcess();
     }
 
-    return new BridgeProcess();
+    return new TrezordNode({
+        port: 21325,
+        api: bridgeDev || bridgeTest ? 'udp' : 'usb',
+        assetPrefix: '../build/node-bridge',
+        // passing down ILogger where Log is expected.
+        // @ts-expect-error
+        logger: {
+            ...global.logger,
+            log: (...args) => logger.info('trezord-node', args.join(' ')),
+            info: (...args) => logger.info('trezord-node', args.join(' ')),
+            warn: (...args) => logger.warn('trezord-node', args.join(' ')),
+            debug: (...args) => logger.debug('trezord-node', args.join(' ')),
+            error: (...args) => logger.error('trezord-node', args.join(' ')),
+        },
+    });
 };
 
 const load = async ({ store, mainWindow }: Dependencies) => {
@@ -107,7 +110,10 @@ const load = async ({ store, mainWindow }: Dependencies) => {
     }
 
     try {
-        logger.info(SERVICE_NAME, `Starting (Dev: ${b2t(bridgeDev)})`);
+        logger.info(
+            SERVICE_NAME,
+            `Starting (Legacy dev: ${b2t(bridgeLegacyDev)}), Legacy test: ${b2t(bridgeLegacyTest)}), Legacy: ${b2t(bridgeLegacy)}, Test: ${b2t(bridgeTest)}`,
+        );
         await start(bridge);
         handleBridgeStatus(bridge, mainWindow);
     } catch (err) {
