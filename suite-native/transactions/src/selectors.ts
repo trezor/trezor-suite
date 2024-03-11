@@ -1,8 +1,8 @@
 import { memoizeWithArgs } from 'proxy-memoize';
 import { A, G, pipe } from '@mobily/ts-belt';
 
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import {
+    FiatRatesRootState,
     selectTransactionByTxidAndAccountKey,
     selectTransactionTargets,
     TransactionsRootState,

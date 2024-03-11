@@ -1,4 +1,4 @@
-import type { LastWeekRates, TimestampedRates, TickerId } from '@suite-common/wallet-types';
+import type { LastWeekRates, TimestampedRates } from '@suite-common/wallet-types';
 
 import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
@@ -74,9 +74,6 @@ const getLastWeekTimestamps = () =>
 
         return Math.floor(date.getTime() / 1000);
     });
-
-export const isTickerSupported = (ticker: TickerId): ticker is TickerId & { symbol: Ticker } =>
-    !!ENDPOINTS[ticker.symbol as Ticker];
 
 export const fetchCurrentFiatRates = getTickers;
 

@@ -60,7 +60,6 @@
             "path": "suite-native/ethereum-tokens"
         },
         { "path": "suite-native/feature-flags" },
-        { "path": "suite-native/fiat-rates" },
         { "path": "suite-native/formatters" },
         { "path": "suite-native/forms" },
         { "path": "suite-native/graph" },

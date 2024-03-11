@@ -20,7 +20,6 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
-        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/module-settings": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/styles": "workspace:*",

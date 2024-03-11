@@ -86,7 +86,7 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
         return null;
     }
 
-    const currentRateTimestamp = fiatRates?.lastSuccessfulFetchTimestamp;
+    const currentRateTimestamp = fiatRates?.lastTickerTimestamp;
     const getRateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
 
     return (

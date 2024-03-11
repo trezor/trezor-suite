@@ -33,16 +33,16 @@ Historical rates for transactions: On `addTransaction` action, which means after
 
 ### Current fiat rates
 
-Every rate stored in `wallet.fiat` reducer is checked in 2-minute interval. If the rate is older then 10 minutes then it is refetched. Although this shouldn't really be necessary thanks to live updates from Blockbook, the same logic is also used for ERC-20 tokens and XRP where we don't have a comfort of receiving these updates and we are relying on manual checks.
+Every rate stored in `wallet.fiat` reducer is checked in 3-minute interval. If the rate is older then 10 minutes then it is refetched.
 
 #### Current fiat rates for ERC-20 tokens
 
 List of tokens is part of the account object (`account.tokens`).
-Fiat rates for ERC-20 tokens are fetched on `ACCOUNT.CREATE` (fired during account discovery) and `ACCOUNT.UPDATE` (new token can appear after receiving a token transaction). These actions are intercepted in `fiatRatesMiddleware`.
+Fiat rates for ERC-20 tokens are fetched on `ACCOUNT.CREATE` (fired during account discovery) and `ACCOUNT.UPDATE` (new token can appear after receiving a token transaction). These actions are intercepted in `fiatRatesMiddleware`. We don't fetch rates for tokens without definitions.
 
 ### Weekly fiat rates
 
-Check for deciding if a weekly rate for a coin needs to be updated runs every hour. Fetched rates are cached also for 1 hour. Eg. If user opens app and there are already weekly fiat rates, no older than 1 hour, stored in persistent storage then Suite won't fire new fetch. If, after one hour, fetch fails then next one will be fired after another hour.
+Check for deciding if a weekly rate for a coin needs to be updated runs every hour. Fetched rates are cached also for 1 hour. Eg. If user opens app and there are already weekly fiat rates, no older than 1 hour, stored in redux state then Suite won't fire new fetch.
 
 ### Historical fiat rates (for transactions)
 

@@ -8,8 +8,8 @@ import {
     selectAccountLabel,
     selectAccountByKey,
     TransactionsRootState,
+    FiatRatesRootState,
 } from '@suite-common/wallet-core';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { TransactionList } from '@suite-native/transactions';
 import {
     selectAccountOrTokenAccountTransactions,

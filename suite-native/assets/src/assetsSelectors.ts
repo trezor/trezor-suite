@@ -5,14 +5,11 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
-    selectDeviceAccounts,
-} from '@suite-common/wallet-core';
-import {
     FiatRatesRootState,
+    selectDeviceAccounts,
     selectFiatRatesByFiatRateKey,
-    getFiatRateKey,
-} from '@suite-native/fiat-rates';
-import { toFiatCurrency } from '@suite-common/wallet-utils';
+} from '@suite-common/wallet-core';
+import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
 
 type Assets = Partial<Record<NetworkSymbol, string[]>>;

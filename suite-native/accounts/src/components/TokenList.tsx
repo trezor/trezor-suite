@@ -7,8 +7,8 @@ import {
     selectEthereumAccountsTokensWithFiatRates,
 } from '@suite-native/ethereum-tokens';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { AccountsRootState, FiatRatesRootState } from '@suite-common/wallet-core';
 
 import { TokenListItem } from './TokenListItem';
 
@@ -18,8 +18,9 @@ type TokenListProps = {
 };
 
 export const TokenList = ({ accountKey, onSelectAccount }: TokenListProps) => {
-    const accountTokens = useSelector((state: FiatRatesRootState & SettingsSliceRootState) =>
-        selectEthereumAccountsTokensWithFiatRates(state, accountKey),
+    const accountTokens = useSelector(
+        (state: FiatRatesRootState & SettingsSliceRootState & AccountsRootState) =>
+            selectEthereumAccountsTokensWithFiatRates(state, accountKey),
     );
 
     if (A.isEmpty(accountTokens)) return null;

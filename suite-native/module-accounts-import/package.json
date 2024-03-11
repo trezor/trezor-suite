@@ -32,7 +32,6 @@
         "@suite-native/config": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
-        "@suite-native/fiat-rates": "workspace:*",
         "@suite-native/formatters": "workspace:*",
         "@suite-native/forms": "workspace:*",
         "@suite-native/intl": "workspace:*",

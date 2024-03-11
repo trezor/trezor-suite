@@ -6,6 +6,7 @@
         { "path": "../wallet-config" },
         { "path": "../wallet-types" },
         { "path": "../../packages/connect" },
+        { "path": "../../packages/env-utils" },
         { "path": "../../packages/utils" }
     ]
 }

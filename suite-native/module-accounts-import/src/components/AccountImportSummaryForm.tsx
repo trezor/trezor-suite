@@ -8,6 +8,7 @@ import {
     selectAccountsByNetworkAndDeviceState,
     PORTFOLIO_TRACKER_DEVICE_STATE,
     selectFilterKnownTokens,
+    FiatRatesRootState,
 } from '@suite-common/wallet-core';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
 import { useAccountLabelForm, AccountFormValues } from '@suite-native/accounts';
@@ -25,7 +26,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
-import { FiatRatesRootState } from '@suite-native/fiat-rates';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
 import { TokenDefinitionsRootState } from '@suite-common/wallet-core/src/token-definitions/tokenDefinitionsTypes';
 

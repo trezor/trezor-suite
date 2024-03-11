@@ -1,6 +1,6 @@
 import { configureStore, Middleware } from '@reduxjs/toolkit';
 
-import { prepareFiatRatesMiddleware } from '@suite-native/fiat-rates';
+import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { messageSystemMiddleware } from '@suite-native/message-system';
 import { prepareButtonRequestMiddleware, prepareDeviceMiddleware } from '@suite-native/device';
 import { prepareDiscoveryMiddleware } from '@suite-native/discovery';

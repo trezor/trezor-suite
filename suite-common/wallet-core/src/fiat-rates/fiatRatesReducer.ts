@@ -28,6 +28,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 } else {
                     currentRate = {
                         lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                        lastTickerTimestamp: 0 as Timestamp,
                         isLoading: true,
                         error: null,
                         ticker,
@@ -51,7 +52,8 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
 
                 state[rateType][fiatRateKey] = {
                     ...currentRate,
-                    rate: action.payload,
+                    rate: action.payload.rate,
+                    lastTickerTimestamp: (action.payload.lastTickerTimestamp * 1000) as Timestamp,
                     lastSuccessfulFetchTimestamp,
                     isLoading: false,
                     error: null,

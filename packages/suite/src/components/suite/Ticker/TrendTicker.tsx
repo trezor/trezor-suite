@@ -36,7 +36,7 @@ export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
     const theme = useTheme();
 
     const isSuccessfullyFetched =
-        lastWeekRate?.lastSuccessfulFetchTimestamp && currentRate?.lastSuccessfulFetchTimestamp;
+        lastWeekRate?.lastTickerTimestamp && currentRate?.lastTickerTimestamp;
 
     // TODO: create selectIsRateGoingUp selector when wallet.settings is moved to suite-common
     const isRateGoingUp = isSuccessfullyFetched ? currentRate.rate! >= lastWeekRate.rate! : false;
