@@ -8672,6 +8672,10 @@ export default defineMessages({
         id: 'TR_TX_CONFIRMED',
         defaultMessage: 'Transaction confirmed',
     },
+    TR_TX_CONFIRMING: {
+        id: 'TR_TX_CONFIRMING',
+        defaultMessage: 'Confirming transaction',
+    },
     TR_STAKE_ADDING_TO_POOL: {
         id: 'TR_STAKE_ADDING_TO_POOL',
         defaultMessage: 'Adding to staking pool',
@@ -8776,5 +8780,9 @@ export default defineMessages({
     TR_STAKE_NOT_ENOUGH_FUNDS: {
         id: 'TR_STAKE_NOT_ENOUGH_FUNDS',
         defaultMessage: 'Not enough {symbol} to pay network fees',
+    },
+    TR_STAKE_PROVIDED_BY: {
+        id: 'TR_STAKE_PROVIDED_BY',
+        defaultMessage: 'Provided by',
     },
 });
