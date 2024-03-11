@@ -93,16 +93,21 @@ const unstake = async ({
     interchanges: number;
 }) => {
     try {
-        const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_pool: contractPool, contract_accounting: contractAccounting } =
-            Ethereum.selectNetwork(ethNetwork);
-        const contractPoolAddress = contractPool.options.address;
+        const accountInfo = await TrezorConnect.getAccountInfo({
+            coin: symbol,
+            details: 'tokenBalances',
+            descriptor: from,
+        });
+        if (!accountInfo.success) {
+            throw new Error(accountInfo.payload.error);
+        }
 
-        const autocompoundBalance = await contractAccounting.methods
-            .autocompoundBalanceOf(from)
-            .call();
+        const { autocompoundBalance } = accountInfo.payload.stakingPools?.[0] ?? {};
+        if (!autocompoundBalance) {
+            throw new Error('Failed to get the autocompound balance');
+        }
+
         const balance = new BigNumber(fromWei(autocompoundBalance, 'ether'));
-
         if (balance.lt(amount)) {
             throw new Error(`Max Amount For Unstake ${balance}`);
         }
@@ -114,6 +119,9 @@ const unstake = async ({
         }
 
         const amountWei = toWei(amount, 'ether');
+        const ethNetwork = getEthNetworkForWalletSdk(symbol);
+        const { contract_pool: contractPool } = Ethereum.selectNetwork(ethNetwork);
+        const contractPoolAddress = contractPool.options.address;
         const data = contractPool.methods
             .unstake(amountWei, interchanges, WALLET_SDK_SOURCE)
             .encodeABI();
@@ -130,7 +138,6 @@ const unstake = async ({
                 },
             },
         });
-
         if (!estimatedFee.success) {
             throw new Error(estimatedFee.payload.error);
         }
@@ -152,20 +159,31 @@ const unstake = async ({
 
 const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
     try {
-        const ethNetwork = getEthNetworkForWalletSdk(symbol);
-        const { contract_accounting: contractAccounting } = Ethereum.selectNetwork(ethNetwork);
-        const contractAccountingAddress = contractAccounting.options.address;
+        const accountInfo = await TrezorConnect.getAccountInfo({
+            coin: symbol,
+            details: 'tokenBalances',
+            descriptor: from,
+        });
+        if (!accountInfo.success) {
+            throw new Error(accountInfo.payload.error);
+        }
 
-        const rewards = await contractAccounting.methods.withdrawRequest(from).call();
-        const requested = new BigNumber(fromWei(rewards[0], 'ether'));
-        const readyForClaim = new BigNumber(fromWei(rewards[1], 'ether'));
+        const { withdrawTotalAmount, claimableAmount } =
+            accountInfo.payload.stakingPools?.[0] ?? {};
+        if (!withdrawTotalAmount || !claimableAmount) {
+            throw new Error('Failed to get the claimable or withdraw total amount');
+        }
 
+        const requested = new BigNumber(fromWei(withdrawTotalAmount, 'ether'));
+        const readyForClaim = new BigNumber(fromWei(claimableAmount, 'ether'));
         if (requested.isZero()) {
             throw new Error('No amount requested for unstake');
         }
-
         if (!readyForClaim.eq(requested)) throw new Error('Unstake request not filled yet');
 
+        const ethNetwork = getEthNetworkForWalletSdk(symbol);
+        const { contract_accounting: contractAccounting } = Ethereum.selectNetwork(ethNetwork);
+        const contractAccountingAddress = contractAccounting.options.address;
         const data = contractAccounting.methods.claimWithdrawRequest().encodeABI();
 
         // gasLimit calculation based on address, amount and data size
@@ -185,7 +203,6 @@ const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
                 },
             },
         });
-
         if (!estimatedFee.success) {
             throw new Error(estimatedFee.payload.error);
         }

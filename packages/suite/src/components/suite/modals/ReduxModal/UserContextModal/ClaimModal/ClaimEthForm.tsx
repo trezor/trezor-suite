@@ -4,7 +4,7 @@ import { Button, Paragraph, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { FeesInfo } from 'src/components/wallet/FeesInfo';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useSelector } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
@@ -44,6 +44,7 @@ const GreyP = styled(Paragraph)`
 `;
 
 export const ClaimEthForm = () => {
+    const { device, isLocked } = useDevice();
     const {
         account: { symbol },
         formState: { errors, isSubmitting },
@@ -61,6 +62,8 @@ export const ClaimEthForm = () => {
     const formIsValid = Object.keys(errors).length === 0;
     const transactionInfo = composedLevels?.[selectedFee];
     const { claimableAmount = '0' } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+    const isDisabled =
+        !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
     useEffect(() => {
         onClaimChange(claimableAmount);
@@ -104,7 +107,7 @@ export const ClaimEthForm = () => {
             <Button
                 type="submit"
                 isFullWidth
-                isDisabled={!(formIsValid && hasValues) || isSubmitting}
+                isDisabled={isDisabled}
                 isLoading={isComposing || isSubmitting}
                 onClick={handleSubmit(signTx)}
             >
