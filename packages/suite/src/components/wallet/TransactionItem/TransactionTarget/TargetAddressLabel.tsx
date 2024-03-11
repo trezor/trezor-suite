@@ -3,6 +3,7 @@ import { WalletAccountTransaction } from 'src/types/wallet';
 import { ArrayElement } from '@trezor/type-utils';
 import { Translation, AddressLabeling } from 'src/components/suite';
 import { AccountLabels } from 'src/types/suite/metadata';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
     overflow: hidden;
@@ -10,12 +11,18 @@ const TruncatedSpan = styled.span<{ isBlurred?: boolean }>`
 `;
 
 interface TargetAddressLabelProps {
+    networkSymbol: NetworkSymbol;
     target: ArrayElement<WalletAccountTransaction['targets']>;
     type: WalletAccountTransaction['type'];
     accountMetadata?: AccountLabels;
 }
 
-export const TargetAddressLabel = ({ target, type, accountMetadata }: TargetAddressLabelProps) => {
+export const TargetAddressLabel = ({
+    networkSymbol,
+    target,
+    type,
+    accountMetadata,
+}: TargetAddressLabelProps) => {
     const isLocalTarget = (type === 'sent' || type === 'self') && target.isAccountTarget;
 
     if (isLocalTarget) {
@@ -34,7 +41,7 @@ export const TargetAddressLabel = ({ target, type, accountMetadata }: TargetAddr
                 type === 'sent' ? (
                     // Using index as a key is safe as the array doesn't change (no filter/reordering, pushing new items)
 
-                    <AddressLabeling key={i} address={a} />
+                    <AddressLabeling key={i} address={a} networkSymbol={networkSymbol} />
                 ) : (
                     <span key={i}>{accountMetadata?.addressLabels[a] || a}</span>
                 ),
