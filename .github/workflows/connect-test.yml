@@ -19,6 +19,8 @@ on:
       - "yarn.lock"
       - ".github/workflows/connect-test.yml"
       - ".github/workflows/connect-test-params.yml"
+      - "docker/docker-connect-test.sh"
+      - "docker/docker-compose.connect-test.yml"
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
