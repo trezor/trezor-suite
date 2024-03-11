@@ -207,10 +207,12 @@ describe('Usb', () => {
                     {
                         path: '123',
                         session: null,
+                        type: 1,
                     },
                     {
                         path: 'bootloader1',
                         session: null,
+                        type: 1,
                     },
                 ],
             });

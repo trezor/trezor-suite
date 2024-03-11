@@ -79,14 +79,21 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             if (!enumerateResult.success) {
                 return enumerateResult;
             }
-            const occupiedPaths = enumerateResult.payload;
+            // partial descriptors with path
+            const descriptors = enumerateResult.payload;
 
             // inform sessions background about occupied paths and get descriptors back
             const enumerateDoneResponse = await this.sessionsClient.enumerateDone({
-                paths: occupiedPaths,
+                paths: descriptors.map(d => d.path),
             });
 
-            return this.success(enumerateDoneResponse.payload.descriptors);
+            return this.success(
+                descriptors.map(d => ({
+                    path: d.path,
+                    type: d.type,
+                    session: enumerateDoneResponse.payload.sessions[d.path],
+                })),
+            );
         });
     }
 
