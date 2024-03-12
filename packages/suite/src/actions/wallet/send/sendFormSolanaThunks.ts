@@ -3,7 +3,7 @@ import { G } from '@mobily/ts-belt';
 
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
-import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/lib/solana';
+import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';
 import {
     ExternalOutput,
     PrecomposedTransaction,
