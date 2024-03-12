@@ -84,6 +84,7 @@ install connect manual:
   needs: []
   script:
     - yarn install --immutable
+    - yarn message-system-sign-config
     - yarn test:unit
 
 test unit nightly:
