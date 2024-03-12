@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { Platform } from 'react-native';
 
+import { selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -85,6 +87,7 @@ export const BiometricsBottomSheet = () => {
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
     const { toggleBiometricsOption, isFacialEnabled, isFingerprintEnabled } =
         useBiometricsSettings();
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
 
     const [isVisible, setIsVisible] = useState(false);
 
@@ -106,13 +109,16 @@ export const BiometricsBottomSheet = () => {
                 }, SHOW_TIMEOUT);
             }
         };
-        checkBiometrics();
+
+        if (isDeviceAuthorized) {
+            checkBiometrics();
+        }
 
         return () => {
             clearTimeout(timerId);
             isMounted = false;
         };
-    }, [isBiometricsOptionEnabled, isBiometricsInitialSetupFinished]);
+    }, [isBiometricsOptionEnabled, isBiometricsInitialSetupFinished, isDeviceAuthorized]);
 
     const handleClose = () => {
         setIsVisible(false);
