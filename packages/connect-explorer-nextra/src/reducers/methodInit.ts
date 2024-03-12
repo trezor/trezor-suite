@@ -9,10 +9,11 @@ import {
     setAffectedValues,
     updateParams,
 } from './methodCommon';
-import { Field, FieldBasic } from '../types';
+import { Field, FieldBasic, isFieldBasic } from '../types';
+import { coinsSelect } from '../constants/coins';
 
 // Convert TypeBox schema to our fields
-const schemaToFields = (schema: TSchema): Field<any>[] => {
+const schemaToFields = (schema: TSchema, name = ''): Field<any>[] => {
     if (schema[Kind] === 'Object') {
         return Object.keys(schema.properties).flatMap(key => {
             const field = schema.properties[key];
@@ -27,13 +28,13 @@ const schemaToFields = (schema: TSchema): Field<any>[] => {
                 ];
             } */
 
-            return schemaToFields(field).map(field => {
+            return schemaToFields(field, key).map(field => {
                 const output = {
                     ...field,
                     name: [key, field.name].filter(v => v).join('.'),
                     optional: field.optional || schema[Optional] === 'Optional',
                 };
-                // TODO better handle optional parent
+                // If the array is optional, set the items to an empty array by default
                 if (output.type === 'array') {
                     if (output.optional) {
                         output.items = [];
@@ -80,18 +81,55 @@ const schemaToFields = (schema: TSchema): Field<any>[] => {
             ];
         }
 
-        if (schema.anyOf?.length > 0) {
-            // TODO complex union handling - currently only first option is used
+        if (schema.$id === 'DerivationPath' || schema.anyOf?.length == 1) {
             return schemaToFields(schema.anyOf[0]).map(field => ({
                 ...field,
                 optional: field.optional || schema[Optional] === 'Optional',
-                value: field.type === 'array' ? undefined : field.value ?? schema.default,
+                value: !isFieldBasic(field) ? undefined : field.value ?? schema.default,
             }));
+        } else if (schema.anyOf?.length > 1) {
+            return [
+                {
+                    name: '',
+                    type: 'union',
+                    options: schema.anyOf.map(schemaToFields),
+                    labels: schema.anyOf.map((s: TSchema) => s[Kind]),
+                    current: schemaToFields(schema.anyOf[0]).map((field, _i, array) => {
+                        if (isFieldBasic(field)) {
+                            field.value = field.value ?? schema.default;
+                        }
+                        if (array.length === 1) {
+                            field.optional = schema[Optional] === 'Optional';
+                        }
+
+                        return field;
+                    }),
+                    optional: schema[Optional] === 'Optional',
+                },
+            ];
         } else {
             return [];
         }
     }
 
+    // Special cases
+    if (name === 'coin') {
+        return [
+            {
+                name: '',
+                type: 'select',
+                value: 'btc',
+                optional: schema[Optional] === 'Optional',
+                affect: 'path',
+                data: coinsSelect.map(v => ({
+                    ...v,
+                    affectedValue: `${v.affectedValue}/0/0`,
+                })),
+            },
+        ];
+    }
+
+    // Mapping for common fields
     const typeMap: Record<string, FieldBasic<any>['type']> = {
         String: 'input',
         Number: 'number',

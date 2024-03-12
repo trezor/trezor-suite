@@ -48,6 +48,7 @@ export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {
     description: 'Derivation Path. minimum length is `1`',
     default: `m/49'/0'/0'`,
+    $id: 'DerivationPath',
 });
 
 // replace type `T` address_n field type `A` with address_n type `R`

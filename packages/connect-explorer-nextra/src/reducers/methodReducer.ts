@@ -6,8 +6,9 @@ import {
     RESPONSE,
     SET_METHOD,
     SET_SCHEMA,
+    SET_UNION,
 } from '../actions/methodActions';
-import type { Action, Field } from '../types';
+import { isFieldBasic, type Action, type Field } from '../types';
 import {
     MethodState,
     initialState,
@@ -23,24 +24,17 @@ const findFieldsNested = (
     field: Field<any>,
     currentDepth = 0,
 ): Field<any> | undefined => {
-    if (typeof field.key === 'string') {
-        const key = field.key.split('-');
-        const bundle = schema.find(f => f.name === key[currentDepth * 2] && f.type === 'array');
-        if (bundle?.type !== 'array') {
-            return;
-        }
-        const batch = bundle.items.find(
-            (_batch, index) => index === Number.parseInt(key[currentDepth * 2 + 1], 10),
-        );
-        if (!batch) return;
-        if (key.length > currentDepth * 2 + 2) {
-            return findFieldsNested(batch, field, currentDepth + 1);
-        }
-
-        return batch.find(f => f.name === field.name);
+    const remainingPath = field.path?.slice(currentDepth);
+    if (!remainingPath || remainingPath.length === 0) {
+        return schema.find(f => f.name === field.name);
     }
 
-    return schema.find(f => f.name === field.name);
+    const nextField = schema.find(f => f.name === remainingPath[0]);
+    if (nextField?.type === 'array' && typeof remainingPath[1] === 'number') {
+        return findFieldsNested(nextField.items[remainingPath[1]], field, currentDepth + 2);
+    } else if (nextField?.type === 'union') {
+        return findFieldsNested(nextField.current, field, currentDepth + 1);
+    }
 };
 
 // Find a field in the schema
@@ -55,7 +49,7 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
         ...state,
     };
     const field = findField(newState, _field);
-    if (!field || field.type === 'array') return state;
+    if (!field || !isFieldBasic(field)) return state;
     field.value = value;
     if (field.affect) {
         setAffectedValues(newState, field);
@@ -68,7 +62,7 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
 const onFieldDataChange = (state: MethodState, _field: Field<any>, data: any) => {
     const newState = state;
     const field = findField(newState, _field);
-    if (!field || field.type === 'array') return state;
+    if (!field || !isFieldBasic(field)) return state;
     field.data = data;
 
     return updateParams(newState);
@@ -101,6 +95,17 @@ const onRemoveBatch = (state: MethodState, _field: Field<any>, _batch: any) => {
     return updateParams(newState);
 };
 
+// Set union current
+const onSetUnion = (state: MethodState, _field: Field<any>, current: any) => {
+    const newState = JSON.parse(JSON.stringify(state));
+    const field = findField(newState, _field);
+    if (!field || field.type !== 'union') return state;
+    field.current = current;
+    prepareBundle(field);
+
+    return updateParams(newState);
+};
+
 export default function method(state: MethodState = initialState, action: Action) {
     switch (action.type) {
         case SET_METHOD:
@@ -120,6 +125,9 @@ export default function method(state: MethodState = initialState, action: Action
 
         case REMOVE_BATCH:
             return onRemoveBatch(state, action.field, action.batch);
+
+        case SET_UNION:
+            return onSetUnion(state, action.field, action.current);
 
         case RESPONSE:
             return {

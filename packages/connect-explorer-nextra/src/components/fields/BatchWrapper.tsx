@@ -21,7 +21,7 @@ const Fields = styled.div`
 `;
 
 export const BatchWrapper = ({ children, onRemove }: BatchWrapperProps) => (
-    <Wrapper>
+    <Wrapper paddingType="small">
         <Fields>{children}</Fields>
         <Icon icon="CROSS" onClick={() => onRemove()} />
     </Wrapper>
