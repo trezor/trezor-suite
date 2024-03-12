@@ -24,11 +24,16 @@ const getArray = (field: FieldWithBundle<any>, props: Props) => (
     >
         {field.items?.map((batch, index) => {
             const key = `${field.name}-${index}`;
-            const children = batch.map((batchField: any) => getField(batchField, props));
+            // Move all booleans to the end while not breaking the order of other fields
+            const bools = batch.filter(f => f.type === 'checkbox');
+            const nonBools = batch.filter(f => f.type !== 'checkbox');
+            const boolsChildren = bools.map((batchField: any) => getField(batchField, props));
+            const children = nonBools.map((batchField: any) => getField(batchField, props));
 
             return (
                 <BatchWrapper key={key} onRemove={() => props.actions.onBatchRemove(field, batch)}>
                     {children}
+                    <Checkboxes>{boolsChildren}</Checkboxes>
                 </BatchWrapper>
             );
         })}
@@ -95,11 +100,11 @@ const Container = styled.div`
     position: relative;
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
     border-radius: 12px;
-    flex: 1;
     width: 100%;
     padding: 10px;
     word-wrap: break-word;
     word-break: break-all;
+    min-height: 150px;
 
     ul,
     ol {
@@ -114,6 +119,12 @@ const CodeContainer = styled(Container)`
 const Heading = styled(H3)`
     font-size: 16px;
     font-weight: 600;
+`;
+
+const Checkboxes = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 10px;
 `;
 
 interface VerifyButtonProps {
@@ -160,9 +171,7 @@ export const Method = () => {
             <div>
                 <Heading>Params</Heading>
                 {nonBools.map(field => getField(field, { actions }))}
-                <div style={{ display: 'flex', flexWrap: 'wrap', padding: '10px 0' }}>
-                    {bools.map(field => getField(field, { actions }))}
-                </div>
+                <Checkboxes>{bools.map(field => getField(field, { actions }))}</Checkboxes>
                 <Row>
                     <Button onClick={onSubmit} data-test="@submit-button">
                         {submitButton}

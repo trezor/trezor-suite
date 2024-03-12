@@ -62,6 +62,7 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
             },
         };
     }
+    // @ts-expect-error field name must be key of options
     newState.options[field.name] = value;
 
     return newState;

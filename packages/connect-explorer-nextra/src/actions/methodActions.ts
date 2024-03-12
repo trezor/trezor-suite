@@ -1,8 +1,11 @@
+import { TSchema } from '@sinclair/typebox';
+
 import TrezorConnect from '@trezor/connect-web';
 
 import { GetState, Dispatch, Field } from '../types';
 
 export const SET_METHOD = 'method_set';
+export const SET_SCHEMA = 'schema_set';
 export const FIELD_CHANGE = 'method_field_change';
 export const FIELD_DATA_CHANGE = 'method_field_data_change';
 export const ADD_BATCH = 'method_add_batch';
@@ -11,6 +14,7 @@ export const RESPONSE = 'method_response';
 
 export type MethodAction =
     | { type: typeof SET_METHOD; methodConfig: any }
+    | { type: typeof SET_SCHEMA; method: keyof typeof TrezorConnect; schema: TSchema }
     | { type: typeof FIELD_CHANGE; field: Field<any>; value: any }
     | { type: typeof FIELD_DATA_CHANGE; field: Field<any>; data: any }
     | { type: typeof ADD_BATCH; field: Field<any>; item: any }
@@ -20,6 +24,12 @@ export type MethodAction =
 export const onSetMethod = (methodConfig: any) => ({
     type: SET_METHOD,
     methodConfig,
+});
+
+export const onSetSchema = (method: string, schema: TSchema) => ({
+    type: SET_SCHEMA,
+    method,
+    schema,
 });
 
 export const onFieldChange = (field: Field<any>, value: any) => ({
@@ -66,6 +76,7 @@ export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => 
         return;
     }
 
+    // @ts-expect-error params type is unknown
     const response = await connectMethod({
         ...method.params,
     });
@@ -84,7 +95,7 @@ export const onVerify = () => (dispatch: Dispatch, getState: GetState) => {
         message: method.params.message,
         hex: undefined,
         publicKey: undefined,
-    };
+    } as any;
 
     // ethereum extra field
     if ('hex' in method.params) {

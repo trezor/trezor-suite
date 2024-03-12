@@ -45,7 +45,8 @@ export const init =
         // The event `WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM` is coming from @trezor/connect-webextension/proxy
         // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
         // so Typescript cannot recognize it.
-        (TrezorConnect.on as any)(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
+        // @ts-expect-error
+        TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
             if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
                 dispatch({ type: ACTIONS.ON_HANDSHAKE_CONFIRMED });
             }

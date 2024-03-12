@@ -9990,6 +9990,7 @@ __metadata:
     "@trezor/connect-web": "workspace:^"
     "@trezor/connect-webextension": "workspace:^"
     "@trezor/protobuf": "workspace:^"
+    "@trezor/schema-utils": "workspace:^"
     "@trezor/utils": "workspace:^"
     "@types/redux-logger": "npm:^3.0.11"
     babel-plugin-styled-components: "npm:^2.1.4"
@@ -10420,7 +10421,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/schema-utils@workspace:*, @trezor/schema-utils@workspace:packages/schema-utils":
+"@trezor/schema-utils@workspace:*, @trezor/schema-utils@workspace:^, @trezor/schema-utils@workspace:packages/schema-utils":
   version: 0.0.0-use.local
   resolution: "@trezor/schema-utils@workspace:packages/schema-utils"
   dependencies:

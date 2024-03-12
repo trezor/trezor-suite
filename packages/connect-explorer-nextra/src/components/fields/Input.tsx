@@ -1,11 +1,11 @@
 import { Input as InputComponent } from '@trezor/components';
 
-import { Field } from '../../types';
+import { FieldBasic } from '../../types';
 import { Row } from './Row';
 
 interface InputProps {
-    onChange: (field: Field<any>, value: string) => void;
-    field: Field<any>;
+    onChange: (field: FieldBasic<any>, value: string) => void;
+    field: FieldBasic<any>;
     dataTest?: string;
 }
 
