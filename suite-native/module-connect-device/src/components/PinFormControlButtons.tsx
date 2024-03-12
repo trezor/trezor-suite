@@ -1,8 +1,17 @@
-import { useCallback, useEffect } from 'react';
+import { LayoutChangeEvent } from 'react-native';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import Animated, {
+    useAnimatedStyle,
+    withTiming,
+    useSharedValue,
+    FadeIn,
+    FadeOut,
+} from 'react-native-reanimated';
 
 import { useNavigation } from '@react-navigation/native';
 
+import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
 import { useTranslate } from '@suite-native/intl';
@@ -31,8 +40,20 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+const buttonsWrapperStyle = prepareNativeStyle(utils => ({
+    position: 'absolute',
+    width: '100%',
+    paddingTop: utils.spacings.large,
+}));
+
+const ANIMATION_DURATION = 100;
+
 export const PinFormControlButtons = () => {
+    const [containerHeight, setContainerHeight] = useState(0);
+    const animatedHeight = useSharedValue(0);
+
     const dispatch = useDispatch();
+    const { applyStyle } = useNativeStyles();
 
     const openLink = useOpenLink();
     const { translate } = useTranslate();
@@ -121,20 +142,41 @@ export const PinFormControlButtons = () => {
 
     const pinLength = watch('pin').length;
 
+    const cardAnimatedStyle = useAnimatedStyle(() => {
+        animatedHeight.value = withTiming(pinLength ? containerHeight : 0, {
+            duration: ANIMATION_DURATION,
+        });
+
+        return {
+            height: animatedHeight.value,
+        };
+    }, [pinLength, containerHeight]);
+
+    const handleOnLayout = (event: LayoutChangeEvent) =>
+        setContainerHeight(event.nativeEvent.layout.height);
+
     return (
-        <HStack spacing="medium">
+        <Animated.View style={cardAnimatedStyle}>
             {!!pinLength && (
-                <IconButton
-                    onPress={handleDelete}
-                    iconName="backspace"
-                    colorScheme="tertiaryElevation1"
-                />
+                <Animated.View
+                    entering={FadeIn.delay(ANIMATION_DURATION / 2)}
+                    exiting={FadeOut}
+                    style={applyStyle(buttonsWrapperStyle)}
+                >
+                    <HStack spacing="medium" onLayout={handleOnLayout} paddingBottom="large">
+                        <IconButton
+                            onPress={handleDelete}
+                            iconName="backspace"
+                            colorScheme="tertiaryElevation1"
+                        />
+                        <Box flex={1}>
+                            <Button onPress={onSubmit}>
+                                {translate('moduleConnectDevice.pinScreen.form.enterPin')}
+                            </Button>
+                        </Box>
+                    </HStack>
+                </Animated.View>
             )}
-            <Box flex={1}>
-                <Button onPress={onSubmit}>
-                    {translate('moduleConnectDevice.pinScreen.form.enterPin')}
-                </Button>
-            </Box>
-        </HStack>
+        </Animated.View>
     );
 };

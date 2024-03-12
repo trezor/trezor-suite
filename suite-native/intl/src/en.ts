@@ -232,7 +232,7 @@ export const en = {
                 entered: 'Entered',
                 digits: 'digits',
                 keypadInfo: 'Follow the keypad layout on your Trezor',
-                enterPin: 'Enter pin',
+                enterPin: 'Unlock',
                 submitting: 'Verifying your PIN',
             },
             wrongPinAlert: {
