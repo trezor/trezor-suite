@@ -3,9 +3,7 @@
 import { test, expect, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
-const connectUrl = process.env.URL
-    ? process.env.URL.replace('connect-explorer', 'connect')
-    : 'https://connect.trezor.io/9/';
+const connectUrl = process.env.URL ? process.env.URL : 'https://connect.trezor.io/9/';
 
 const url = `https://unchained-capital.github.io/caravan?trezor-connect-src=${connectUrl}`;
 
