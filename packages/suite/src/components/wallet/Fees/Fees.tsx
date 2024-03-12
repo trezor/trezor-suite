@@ -57,7 +57,7 @@ const FeeError = styled.div`
     text-align: right;
 `;
 
-const Label = styled.div<Pick<FeesProps<FormState>, 'rbfForm'>>`
+const Label = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -125,7 +125,7 @@ export const Fees = <TFieldValues extends FormState>({
     return (
         <Container>
             <FeeInfoRow>
-                <Label rbfForm={rbfForm}>
+                <Label>
                     <Translation id={label || (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')} />
 
                     <FeeDetails

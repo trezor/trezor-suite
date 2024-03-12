@@ -48,7 +48,7 @@ const DetailPartVisibleOnHover = styled.div<{ $alwaysVisible?: boolean }>`
         `};
 `;
 
-const StyledCheckbox = styled(Checkbox)<{ $isChecked: boolean; $isGrey: boolean }>`
+const StyledCheckbox = styled(Checkbox)`
     margin-top: ${spacingsPx.xxxs};
     margin-right: ${spacingsPx.xs};
 `;
@@ -187,8 +187,7 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
         <Wrapper $isDisabled={isDisabled} onClick={isDisabled ? undefined : handleCheckbox}>
             <Tooltip content={isDisabled && <Translation id="TR_UTXO_REGISTERED_IN_COINJOIN" />}>
                 <StyledCheckbox
-                    $isGrey={!selectedUtxos.length}
-                    $isChecked={isChecked}
+                    isChecked={isChecked}
                     isDisabled={isDisabled}
                     onClick={handleCheckbox}
                 />

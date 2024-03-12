@@ -52,9 +52,10 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
 `;
 
 interface ContentProps {
-    size: ButtonSize;
-    disabled: boolean;
+    $size: ButtonSize;
+    $disabled: boolean;
 }
+
 const getTypography = (size: ButtonSize) => {
     const map: Record<ButtonSize, string> = {
         large: typography.body,
@@ -71,7 +72,7 @@ const Content = styled.div<ContentProps>`
     overflow: hidden;
     text-overflow: ellipsis;
 
-    ${({ size }) => getTypography(size)};
+    ${({ $size }) => getTypography($size)};
 `;
 
 type SelectedHTMLButtonProps = Pick<
@@ -136,7 +137,7 @@ export const Button = ({
             {isLoading && Loader}
 
             {children && (
-                <Content size={size} disabled={isDisabled || isLoading}>
+                <Content $size={size} $disabled={isDisabled || isLoading}>
                     {children}
                 </Content>
             )}

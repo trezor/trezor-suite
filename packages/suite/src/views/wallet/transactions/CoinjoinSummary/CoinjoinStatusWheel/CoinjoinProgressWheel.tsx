@@ -53,14 +53,14 @@ const ProgressIndicator = styled.div`
 `;
 
 const Wheel = styled.div<{
-    progress: number;
-    isPaused: boolean;
-    isHoverDisabled: boolean;
-    hasCriticalError: boolean;
-    hasDottedOutline: boolean;
-    isWithoutProgressOutline: boolean;
-    isStartable: boolean;
-    isGreyedOut: boolean;
+    $progress: number;
+    $isPaused: boolean;
+    $isHoverDisabled: boolean;
+    $hasCriticalError: boolean;
+    $hasDottedOutline: boolean;
+    $isWithoutProgressOutline: boolean;
+    $isStartable: boolean;
+    $isGreyedOut: boolean;
 }>`
     position: relative;
     display: flex;
@@ -69,8 +69,8 @@ const Wheel = styled.div<{
     width: 94px;
     height: 94px;
     border-radius: 50%;
-    background: ${({ theme, progress }) =>
-        `conic-gradient(${theme.BG_GREEN} ${3.6 * progress}deg, ${rgba(
+    background: ${({ theme, $progress }) =>
+        `conic-gradient(${theme.BG_GREEN} ${3.6 * $progress}deg, ${rgba(
             theme.STROKE_GREY,
             0.6,
         )} 0)`};
@@ -79,8 +79,8 @@ const Wheel = styled.div<{
         opacity 0.05s;
     user-select: none;
 
-    ${({ isHoverDisabled }) =>
-        !isHoverDisabled &&
+    ${({ $isHoverDisabled }) =>
+        !$isHoverDisabled &&
         css`
             cursor: pointer;
 
@@ -91,8 +91,8 @@ const Wheel = styled.div<{
             }
         `}
 
-    ${({ isWithoutProgressOutline }) =>
-        isWithoutProgressOutline &&
+    ${({ $isWithoutProgressOutline }) =>
+        $isWithoutProgressOutline &&
         css`
             background: none;
             color: ${({ theme }) => theme.TYPE_GREEN};
@@ -106,17 +106,17 @@ const Wheel = styled.div<{
             }
         `}
 
-    ${({ hasDottedOutline }) =>
-        hasDottedOutline &&
+    ${({ $hasDottedOutline }) =>
+        $hasDottedOutline &&
         css`
             opacity: 0.3;
             background: ${({ theme }) => getOutlineSvg(theme)};
             cursor: not-allowed;
         `}
 
-    ${({ isStartable, isPaused, hasCriticalError, theme }) =>
-        (isStartable || isPaused) &&
-        !hasCriticalError &&
+    ${({ $isStartable, $isPaused, $hasCriticalError, theme }) =>
+        ($isStartable || $isPaused) &&
+        !$hasCriticalError &&
         css`
             &:hover {
                 ${ProgressContentContainer} {
@@ -130,23 +130,23 @@ const Wheel = styled.div<{
             }
         `}
 
-    ${({ isPaused, hasCriticalError, theme, progress }) =>
-        isPaused &&
+    ${({ $isPaused, $hasCriticalError, theme, $progress }) =>
+        $isPaused &&
         css`
-            background: ${`conic-gradient(${theme.TYPE_LIGHTER_GREY} ${3.6 * progress}deg, ${rgba(
+            background: ${`conic-gradient(${theme.TYPE_LIGHTER_GREY} ${3.6 * $progress}deg, ${rgba(
                 theme.STROKE_GREY,
                 0.6,
             )} 0)`};
 
             &:hover {
                 path {
-                    fill: ${!hasCriticalError && theme.TYPE_GREEN};
+                    fill: ${!$hasCriticalError && theme.TYPE_GREEN};
                 }
             }
         `}
 
-    ${({ isGreyedOut, theme }) =>
-        isGreyedOut &&
+    ${({ $isGreyedOut, theme }) =>
+        $isGreyedOut &&
         css`
             filter: grayscale(1);
             color: inherit;
@@ -258,14 +258,14 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
                 {isProgressIndicatorShown && <ProgressIndicator />}
 
                 <Wheel
-                    progress={sessionProgress}
-                    isPaused={isPaused}
-                    isHoverDisabled={isHoverDisabled}
-                    hasCriticalError={hasCriticalError}
-                    isGreyedOut={hasCriticalError}
-                    hasDottedOutline={hasDottedOutline}
-                    isWithoutProgressOutline={isWithoutProgressOutline}
-                    isStartable={isSessionStartable}
+                    $progress={sessionProgress}
+                    $isPaused={isPaused}
+                    $isHoverDisabled={isHoverDisabled}
+                    $hasCriticalError={hasCriticalError}
+                    $isGreyedOut={hasCriticalError}
+                    $hasDottedOutline={hasDottedOutline}
+                    $isWithoutProgressOutline={isWithoutProgressOutline}
+                    $isStartable={isSessionStartable}
                     onClick={handleWheelClick}
                     onMouseEnter={() => setIsWheelHovered(true)}
                     onMouseLeave={() => setIsWheelHovered(false)}

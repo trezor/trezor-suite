@@ -78,13 +78,15 @@ const GroupLabel = styled.li`
     }
 `;
 
-const MenuItemContainer = styled.li<{
+type MenuItemContainerProps = {
     $separatorBefore?: boolean;
     $noHoverEffect: boolean;
     $isFocused: boolean;
     $isDisabled?: boolean;
     $elevation: Elevation;
-}>`
+};
+
+const MenuItemContainer = styled.li<MenuItemContainerProps>`
     position: relative;
     display: flex;
     align-items: center;
@@ -173,7 +175,9 @@ const MenuItem = ({
     setToggled,
     isKeyboardSelected,
     onMouseOver,
-    ...rest
+    key,
+    'data-test': dataTest,
+    separatorBefore,
 }: MenuItemComponentProps) => {
     const { elevation } = useElevation();
 
@@ -196,7 +200,9 @@ const MenuItem = ({
             $noHoverEffect={!onClick}
             $isFocused={isKeyboardSelected}
             onMouseOver={onMouseOver}
-            {...rest}
+            key={key}
+            $separatorBefore={separatorBefore}
+            data-test={dataTest}
         >
             {icon && <Icon icon={icon} size={spacings.md} />}
             <span>{label}</span>

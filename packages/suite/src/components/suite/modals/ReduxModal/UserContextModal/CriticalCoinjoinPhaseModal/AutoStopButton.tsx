@@ -44,8 +44,8 @@ const getHoverStyle = (backgroundColor: string, strokeColor: string, fontColor?:
 `;
 
 const Container = styled.button<{
-    isActivated: boolean;
-    isHovered: boolean;
+    $isActivated: boolean;
+    $isHovered: boolean;
 }>`
     position: relative;
     display: flex;
@@ -70,10 +70,11 @@ const Container = styled.button<{
         ${({ theme }) => getHoverStyle(theme.BG_GREY, theme.TYPE_LIGHTER_GREY)}
     }
 
-    ${({ theme, isHovered }) => isHovered && getHoverStyle(theme.BG_GREY, theme.TYPE_LIGHTER_GREY)}
+    ${({ theme, $isHovered }) =>
+        $isHovered && getHoverStyle(theme.BG_GREY, theme.TYPE_LIGHTER_GREY)}
 
-    ${({ theme, isActivated, isHovered }) =>
-        isActivated &&
+    ${({ theme, $isActivated, $isHovered }) =>
+        $isActivated &&
         css`
             border-color: ${theme.BG_LIGHT_GREEN};
             background: ${theme.BG_LIGHT_GREEN};
@@ -83,7 +84,7 @@ const Container = styled.button<{
                 ${getHoverStyle(theme.BG_LIGHT_RED, theme.TYPE_RED, theme.TYPE_RED)}
             }
 
-            ${isHovered && getHoverStyle(theme.BG_LIGHT_RED, theme.TYPE_RED, theme.TYPE_RED)}
+            ${$isHovered && getHoverStyle(theme.BG_LIGHT_RED, theme.TYPE_RED, theme.TYPE_RED)}
         `};
 `;
 
@@ -138,8 +139,8 @@ export const AutoStopButton = ({ relatedAccountKey }: AutoStopButtonProps) => {
 
     return (
         <Container
-            isActivated={!!isActivated}
-            isHovered={isHovered}
+            $isActivated={!!isActivated}
+            $isHovered={isHovered}
             onClick={handleClick}
             onMouseEnter={() => setIsHovered(true)}
             onMouseLeave={() => setIsHovered(false)}
