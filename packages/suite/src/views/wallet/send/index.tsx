@@ -27,17 +27,20 @@ const SendLayout = styled(WalletLayout)`
 `;
 
 const FormGrid = styled.div`
-    display: grid;
-    grid-template-columns: minmax(500px, auto) minmax(340px, 420px);
     gap: ${spacingsPx.md};
 
-    > :not(:last-child) {
-        grid-column: 1;
-    }
+    ${breakpointMediaQueries.xl} {
+        display: grid;
+        grid-template-columns: minmax(500px, auto) minmax(340px, 420px);
 
-    > :last-child {
-        grid-column: 2;
-        grid-row: 1;
+        > :not(:last-child) {
+            grid-column: 1;
+        }
+
+        > :last-child {
+            grid-column: 2;
+            grid-row: 1;
+        }
     }
 
     ${breakpointMediaQueries.below_xl} {
