@@ -13,7 +13,7 @@
     },
     "targetDefaults": {
         "build:lib": {
-            "dependsOn": ["^build:lib"],
+            "dependsOn": [],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/tsconfig.base.json",
@@ -23,7 +23,12 @@
             "cache": true
         },
         "type-check": {
-            "dependsOn": ["^build:lib", "^type-check", "build:lib"],
+            "dependsOn": [
+                "^type-check",
+                "^guide-pull-content",
+                "guide-pull-content",
+                "@suite-common/message-system:build:lib"
+            ],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/tsconfig.base.json",
@@ -33,7 +38,7 @@
             "cache": true
         },
         "test:unit": {
-            "dependsOn": [],
+            "dependsOn": ["@suite-common/message-system:build:lib"],
             "inputs": [
                 "^prod",
                 "{workspaceRoot}/jest.config.base.js",
@@ -47,7 +52,7 @@
             "cache": true
         },
         "lint:styles": {
-            "inputs": ["default"],
+            "inputs": ["default", "{workspaceRoot}/.stylelintrc"],
             "outputs": ["{projectRoot}/.stylelintcache"],
             "cache": true
         }
