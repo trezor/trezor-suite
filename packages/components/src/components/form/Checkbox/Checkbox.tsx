@@ -60,10 +60,12 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
     },
 };
 
-export const Container = styled.div<{
+type ContainerProps = {
     $isDisabled?: boolean;
     $labelAlignment?: LabelAlignment;
-}>`
+};
+
+export const Container = styled.div<ContainerProps>`
     display: flex;
     align-items: flex-start;
     gap: ${spacingsPx.xs};

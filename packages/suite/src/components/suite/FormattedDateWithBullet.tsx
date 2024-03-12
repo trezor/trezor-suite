@@ -8,9 +8,9 @@ const Bullet = styled.span`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const HourWrapper = styled.div<Pick<BulletProps, 'timeLightColor'>>`
+const HourWrapper = styled.div<{ $timeLightColor?: boolean }>`
     display: inline-flex;
-    color: ${({ theme, timeLightColor }) => (timeLightColor ? theme.TYPE_LIGHT_GREY : 'inherit')};
+    color: ${({ theme, $timeLightColor }) => ($timeLightColor ? theme.TYPE_LIGHT_GREY : 'inherit')};
 `;
 
 const Timestamp = styled.span`
@@ -26,7 +26,7 @@ export const FormattedDateWithBullet = ({ className, ...props }: BulletProps) =>
     <Timestamp className={className}>
         <FormattedDate date {...props} />
         <Bullet>&bull;</Bullet>
-        <HourWrapper timeLightColor={props.timeLightColor}>
+        <HourWrapper $timeLightColor={props.timeLightColor}>
             <FormattedDate time {...props} />
         </HourWrapper>
     </Timestamp>

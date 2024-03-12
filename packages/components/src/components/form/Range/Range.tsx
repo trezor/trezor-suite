@@ -10,16 +10,21 @@ import styled, { css, CSSObject } from 'styled-components';
 
 import { borders, spacingsPx, typography } from '@trezor/theme';
 
-const track = css<Pick<RangeProps, 'trackStyle' | 'disabled'>>`
+type TrackProps = {
+    $trackStyle?: CSSObject;
+    disabled?: boolean; // intentionally not transient (no $), it is HTML attribute of the <input>
+};
+
+const track = css<TrackProps>`
     height: ${spacingsPx.xxs};
     background: ${({ theme, disabled }) =>
         disabled ? theme.backgroundNeutralDisabled : theme.backgroundPrimaryDefault};
     border-radius: ${borders.radii.full};
 
-    ${({ trackStyle }) => trackStyle}
+    ${({ $trackStyle }) => $trackStyle}
 `;
 
-const thumb = css<Pick<RangeProps, 'disabled'>>`
+const thumb = css<{ disabled?: boolean }>`
     appearance: none;
     background: white;
     border-radius: ${borders.radii.full};
@@ -44,7 +49,7 @@ const focusStyle = css`
     box-shadow: ${({ theme }) => theme.boxShadowFocused};
 `;
 
-const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
+const Input = styled.input<{ $trackStyle?: CSSObject; disabled?: boolean }>`
     margin: ${spacingsPx.sm} 0 ${spacingsPx.xs};
     padding: 10px 0;
     width: 100%;
@@ -80,7 +85,7 @@ const Input = styled.input<Pick<RangeProps, 'disabled' | 'trackStyle'>>`
     }
 `;
 
-const Label = styled.div<{ $disabled?: boolean; $width?: number }>`
+const Label = styled.div<{ disabled?: boolean; $width?: number }>`
     position: relative;
     justify-self: center;
     padding-top: ${spacingsPx.xxxs};
@@ -88,7 +93,7 @@ const Label = styled.div<{ $disabled?: boolean; $width?: number }>`
     text-align: center;
     color: ${({ theme }) => theme.textSubdued};
     ${typography.label}
-    cursor: ${({ $disabled }) => ($disabled ? 'default' : 'pointer')};
+    cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
 
     &:first-child {
         text-align: left;
@@ -144,7 +149,7 @@ export const Range = ({
         return (
             <Label
                 key={value}
-                $disabled={disabled}
+                disabled={disabled}
                 $width={labelsElWidth}
                 onClick={() => handleLabelClick?.(Number.parseFloat(String(value)))}
                 ref={isLastElement ? lastLabelRef : undefined}
@@ -156,7 +161,7 @@ export const Range = ({
 
     return (
         <div className={className}>
-            <Input {...props} type="range" disabled={disabled} trackStyle={trackStyle} />
+            <Input {...props} type="range" disabled={disabled} $trackStyle={trackStyle} />
             {labels?.length && (
                 <LabelsWrapper $count={labels.length} $width={labelsElWidth}>
                     {labelComponents}

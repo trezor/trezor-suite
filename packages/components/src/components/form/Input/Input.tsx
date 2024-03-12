@@ -21,8 +21,8 @@ const Wrapper = styled.div<{ $width?: number; $hasBottomPadding: boolean }>`
     display: inline-flex;
     flex-direction: column;
     width: ${({ $width }) => ($width ? `${$width}px` : '100%')};
-    padding-bottom: ${({ $hasBottomPadding: hasBottomPadding }) =>
-        hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
+    padding-bottom: ${({ $hasBottomPadding }) =>
+        $hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 `;
 
 interface StyledInputProps extends BaseInputProps {
