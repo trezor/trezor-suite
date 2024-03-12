@@ -47,8 +47,6 @@ export const PinForm = () => {
         },
     });
 
-    const pinLength = form.watch('pin').length;
-
     return (
         <Form form={form}>
             <VStack spacing="small" alignItems="center">
@@ -68,8 +66,8 @@ export const PinForm = () => {
                             ))}
                         </HStack>
                     ))}
-                    {!!pinLength && <PinFormControlButtons />}
                 </VStack>
+                <PinFormControlButtons />
                 {form.formState.isSubmitted && (
                     <VStack style={applyStyle(loaderWrapperStyle)} spacing="medium">
                         <Loader size="large" />
