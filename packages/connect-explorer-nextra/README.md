@@ -16,4 +16,4 @@ yarn dev
 yarn build
 ```
 
-Static files will be generated in `out/` directory.
+Static files will be generated in `build/` directory.

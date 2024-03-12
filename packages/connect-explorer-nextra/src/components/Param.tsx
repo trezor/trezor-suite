@@ -13,7 +13,6 @@ interface ParamProps {
     children?: React.ReactNode;
 }
 
-// mt-2 rounded-2xl bg-gradient-to-b from-neutral-100 to-transparent
 const ParamWrapper = styled.div`
     margin-top: 0.5rem;
     border-radius: 12px;

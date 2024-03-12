@@ -76,8 +76,11 @@ const SingleParam = ({ name, value, schema }: SingleParamProps) => {
 
     // Required can also be undefined (for example union)
     let isRequired: boolean | undefined;
-    if (schema?.required?.includes(name)) isRequired = true;
-    else if (value[Optional] === 'Optional') isRequired = false;
+    if (schema?.required?.includes(name)) {
+        isRequired = true;
+    } else if (value[Optional] === 'Optional') {
+        isRequired = false;
+    }
 
     return (
         <>
