@@ -33259,6 +33259,10 @@ __metadata:
   dependenciesMeta:
     core-js-pure:
       built: false
+    electron:
+      built: true
+    trezor-suite:
+      built: true
   languageName: unknown
   linkType: soft
 

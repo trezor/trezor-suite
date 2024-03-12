@@ -42,5 +42,10 @@ module.exports = {
     // An array of regexp pattern strings that are matched against all module paths before those paths are
     // to be considered 'visible' to the module loader
     modulePathIgnorePatterns: ['libDev'],
-    moduleNameMapper: { '^uuid$': require.resolve('uuid') },
+    moduleNameMapper: {
+        // Enforce usage of JS version of bcrypto in tests because on CI we don't build native modules because it's slowing yarn install
+        '^bcrypto/lib/(.*)$': 'bcrypto/lib/$1-browser',
+        // Enforce usage of CommonJS version of uuid because ESM version is not working in Jest
+        '^uuid$': require.resolve('uuid'), // https://stackoverflow.com/questions/73203367/jest-syntaxerror-unexpected-token-export-with-uuid-library
+    },
 };

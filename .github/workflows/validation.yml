@@ -51,8 +51,12 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
       - name: check for duplicate dependencies
         run: yarn dedupe --check
+        # We skip build of deps which is mostly unnecessary in CI and adds about 1 minute to yarn install
+        # You can whitelist some build in root package.json dependenciesMeta if necessary
       - name: install deps
-        run: yarn --immutable
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn --immutable
       - name: check files for correct formatting
         run: yarn nx format:check
       - name: verify TS project references
