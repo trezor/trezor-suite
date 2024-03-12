@@ -23,8 +23,13 @@ export interface FieldData {
     affectedValue: string;
 }
 
+// Field path
+// - string: object name
+// - number: batch index
+export type FieldPath = (string | number)[];
+
 export interface FieldCommon {
-    key?: string;
+    path?: FieldPath;
     name: string;
     optional?: boolean;
     omit?: boolean;
@@ -60,4 +65,16 @@ export interface FieldWithBundle<Value> extends FieldCommon {
     affect?: undefined;
 }
 
-export type Field<Value> = FieldBasic<Value> | FieldWithBundle<Value>;
+export interface FieldWithUnion<Value> extends FieldCommon {
+    type: 'union';
+    labels: string[];
+    options: Batch<Value>[];
+    current: Field<Value>[];
+    affect?: undefined;
+}
+
+export type Field<Value> = FieldBasic<Value> | FieldWithBundle<Value> | FieldWithUnion<Value>;
+
+export const isFieldBasic = <T>(field: Field<T>): field is FieldBasic<T> => {
+    return field.type !== 'array' && field.type !== 'union';
+};

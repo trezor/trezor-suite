@@ -10,6 +10,7 @@ export const FIELD_CHANGE = 'method_field_change';
 export const FIELD_DATA_CHANGE = 'method_field_data_change';
 export const ADD_BATCH = 'method_add_batch';
 export const REMOVE_BATCH = 'method_remove_batch';
+export const SET_UNION = 'method_set_union';
 export const RESPONSE = 'method_response';
 
 export type MethodAction =
@@ -19,6 +20,7 @@ export type MethodAction =
     | { type: typeof FIELD_DATA_CHANGE; field: Field<any>; data: any }
     | { type: typeof ADD_BATCH; field: Field<any>; item: any }
     | { type: typeof REMOVE_BATCH; field: Field<any>; batch: any[] }
+    | { type: typeof SET_UNION; field: Field<any>; current: any }
     | { type: typeof RESPONSE; response: any };
 
 export const onSetMethod = (methodConfig: any) => ({
@@ -54,6 +56,12 @@ export const onBatchRemove = (field: Field<any>, batch: any) => ({
     type: REMOVE_BATCH,
     field,
     batch,
+});
+
+export const onSetUnion = (field: Field<any>, current: any) => ({
+    type: SET_UNION,
+    field,
+    current,
 });
 
 export const onResponse = (response: any) => ({

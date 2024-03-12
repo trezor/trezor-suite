@@ -1,7 +1,7 @@
 import TrezorConnect from '@trezor/connect-web';
 import { setDeepValue } from '@trezor/schema-utils/src/utils';
 
-import { Field, FieldBasic } from '../types';
+import { Field, FieldBasic, isFieldBasic } from '../types';
 
 export interface MethodState {
     name?: keyof typeof TrezorConnect;
@@ -111,7 +111,18 @@ export const updateParamsNested = (schema: Field<any>[]) => {
                 arr.push(batchParams);
             });
             if (arr.length > 0 || !field.optional) {
-                setDeepValue(params, field.name?.split('.'), arr);
+                if (field.name) {
+                    setDeepValue(params, field.name.split('.'), arr);
+                } else {
+                    params = arr;
+                }
+            }
+        } else if (field.type === 'union') {
+            const innerParams = updateParamsNested(field.current);
+            if (field.name) {
+                setDeepValue(params, field.name.split('.'), innerParams);
+            } else {
+                params = innerParams;
             }
         } else {
             params = getParam(field, params);
@@ -143,11 +154,18 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
             : data.affectedValue;
 
         let root: Field<any>[] | undefined;
-        if (typeof field.key === 'string') {
-            const key = field.key.split('-');
-            const bundle = state.fields.find(f => f.name === key[0]);
-            if (bundle && bundle.type === 'array' && bundle.items) {
-                root = bundle.items?.find((_batch, index) => index === Number.parseInt(key[1], 10));
+        if (field?.path && field.path.length > 0) {
+            // Resolve neihboring fields by path
+            let depth = 0;
+            while (depth < field.path.length) {
+                const key = field.path?.[depth++];
+                const bundle = state.fields.find(f => f.name === key);
+                if (bundle?.type === 'array' && bundle.items) {
+                    const _index = field.path?.[depth++];
+                    root = bundle.items?.find((_batch, index) => index === _index);
+                } else if (bundle?.type === 'union') {
+                    root = bundle.current;
+                }
             }
         } else {
             root = state.fields;
@@ -155,7 +173,7 @@ export const setAffectedValues = (state: MethodState, field: Field<unknown>) => 
 
         affectedFieldNames.forEach((af, index) => {
             const affectedField = root?.find(f => f.name === af);
-            if (affectedField && affectedField.type !== 'array') {
+            if (affectedField && isFieldBasic(affectedField)) {
                 affectedField.value = values[index];
                 if (state.name === 'composeTransaction') {
                     affectedField.value = values;
@@ -178,14 +196,29 @@ export const prepareBundle = (field: Field<unknown>) => {
     if (field.type === 'array') {
         field.items.forEach((batch, index) => {
             batch.forEach(batchField => {
-                batchField.key = `${field.name}-${index}`;
-                if (field.key) {
-                    batchField.key = `${field.key}-${batchField.key}`;
+                batchField.path = [field.name, index];
+                if (field.path) {
+                    batchField.path = [...field.path, ...batchField.path];
                 }
-                if (batchField.type === 'array') {
+                if (batchField.type === 'array' || batchField.type === 'union') {
                     prepareBundle(batchField);
                 }
             });
+        });
+    } else if (field.type === 'union') {
+        field.current.forEach(batchField => {
+            if (field.name && batchField.name) {
+                batchField.name = field.name + '.' + batchField.name;
+            } else if (field.name) {
+                batchField.name = field.name;
+            }
+            batchField.path = [field.name];
+            if (field.path) {
+                batchField.path = [...field.path, ...batchField.path];
+            }
+            if (batchField.type === 'array' || batchField.type === 'union') {
+                prepareBundle(batchField);
+            }
         });
     }
 
