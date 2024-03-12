@@ -1,0 +1,76 @@
+{
+    "name": "@trezor/connect-explorer-theme",
+    "version": "2.13.4",
+    "private": true,
+    "exports": {
+        "./style.css": "./style.css",
+        ".": {
+            "import": "./dist/index.js",
+            "types": "./dist/index.d.mts"
+        }
+    },
+    "types": "./dist/index.d.mts",
+    "files": [
+        "dist",
+        "style.css"
+    ],
+    "scripts": {
+        "build": "tsup",
+        "build:all": "yarn build && yarn build:tailwind",
+        "build:tailwind": "yarn postcss css/styles.css -o style.css --verbose",
+        "clean": "rimraf ./dist ./style.css",
+        "dev": "concurrently \"yarn dev:layout\" \"yarn dev:tailwind\"",
+        "dev:layout": "tsup --watch",
+        "dev:tailwind": "TAILWIND_MODE=watch yarn postcss css/styles.css -o style.css --watch",
+        "prepublishOnly": "yarn build:all",
+        "types": "tsup --dts-only",
+        "types:check": "tsc --noEmit",
+        "postinstall": "yarn build:all"
+    },
+    "peerDependencies": {
+        "next": ">=9.5.3",
+        "nextra": "^2.13.4",
+        "react": ">=16.13.1",
+        "react-dom": ">=16.13.1"
+    },
+    "dependencies": {
+        "@headlessui/react": "^1.7.17",
+        "@popperjs/core": "^2.11.8",
+        "clsx": "^2.0.0",
+        "escape-string-regexp": "^5.0.0",
+        "flexsearch": "^0.7.31",
+        "focus-visible": "^5.2.0",
+        "git-url-parse": "^13.1.0",
+        "intersection-observer": "^0.12.2",
+        "match-sorter": "^6.3.1",
+        "next-seo": "^6.0.0",
+        "next-themes": "^0.2.1",
+        "scroll-into-view-if-needed": "^3.1.0",
+        "tsup": "^8.0.2",
+        "zod": "^3.22.3"
+    },
+    "devDependencies": {
+        "@tailwindcss/nesting": "^0.0.0-insiders.565cd3e",
+        "@testing-library/react": "^14.0.0",
+        "@types/flexsearch": "^0.7.3",
+        "@types/git-url-parse": "^9.0.1",
+        "@types/react": "^18.2.21",
+        "@types/react-dom": "^18.2.7",
+        "@vitejs/plugin-react": "^3.0.1",
+        "concurrently": "^8.0.0",
+        "jsdom": "^23.0.0",
+        "next": "^13.5.6",
+        "nextra": "^2.13.4",
+        "postcss": "^8.4.31",
+        "postcss-cli": "^10.1.0",
+        "postcss-import": "^15.1.0",
+        "postcss-lightningcss": "^1.0.0",
+        "react": "^18.2.0",
+        "react-dom": "^18.2.0",
+        "tailwindcss": "^3.3.3",
+        "vitest": "^0.34.0"
+    },
+    "sideEffects": [
+        "./src/polyfill.ts"
+    ]
+}
