@@ -20,7 +20,8 @@ interface GraphTooltipDashboardProps extends TooltipProps<number, any> {
 export const GraphTooltipDashboard = (props: GraphTooltipDashboardProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
-    if (!props.active || !props.payload) {
+    // Note: payload is [] when discovery is paused.
+    if (!props.active || !props.payload?.length) {
         return null;
     }
 
