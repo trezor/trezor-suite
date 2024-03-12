@@ -1,0 +1,16 @@
+name: "Checkout and Fetch for Nx"
+description: "Checks out the repo with submodules, extracts the branch name, and fetches additional commits for Nx."
+runs:
+  using: "composite"
+  steps:
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+    - name: Fetch develop and some commits for Nx
+      shell: bash
+      # This step should fetch some reasonably small amount branches and commits that Nx affected needs
+      # It's much faster than doing git fetch depth=1 of all commits
+      run: |
+        git fetch origin ${{ steps.extract_branch.outputs.branch }} --deepen=150
+        git fetch origin develop --deepen=200

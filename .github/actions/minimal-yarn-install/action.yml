@@ -1,0 +1,40 @@
+name: "Install Node and Yarn Dependencies without build"
+description: >
+  Installs Node.js and dependencies in without building building most of dependencies which is significantly faster.
+  Only whitelisted in root package.json are builded. It's not recommended to use this actions for building production versions,
+  because it can produce some unwanted behavior, but it's enough for running validation checks, tests, etc.
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      shell: bash
+      run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
+
+    - name: Yarn Cache
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+        restore-keys: |
+          yarn-cache-folder-
+
+    - name: Modify .yarnrc.yml to disable scripts
+      shell: bash
+      run: |
+        echo -e "\nenableScripts: false" >> .yarnrc.yml
+
+    # We don't need to run in hardened mode because it's enough to run hardened install only in "Setup and Cache Dependencies" step
+    - name: Modify .yarnrc.yml to disable hardened mode
+      shell: bash
+      run: |
+        echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+
+    - name: Install dependencies using Yarn
+      shell: bash
+      run: yarn --immutable

@@ -6,26 +6,15 @@ env:
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
 
 concurrency:
-  group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
 jobs:
-  type-check_and_lint:
+  setup-and-cache:
+    name: Setup and Cache Dependencies
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: "true"
-      - name: Extract branch name
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
-        id: extract_branch
-      - name: Fetch develop and some commits for Nx
-        # This step should fetch some reasonably small amount branches and commits that Nx affected needs
-        # It's much faster than doing git fetch depth=1 of all commits
-        run: |
-          git fetch origin ${{ steps.extract_branch.outputs.branch }} --deepen=150
-          git fetch origin develop --deepen=200
       - name: Install node and yarn
         uses: actions/setup-node@v4
         with:
@@ -35,49 +24,106 @@ jobs:
         run: echo "::set-output name=dir::$(yarn config get cacheFolder)"
       - name: Yarn Cache
         uses: actions/cache@v4
-        id: yarn-cache
         with:
-          save-always: true
           path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
             yarn-cache-folder-
+      # We can skip build for all deps because (even for whitelisted) because this is used only to validate yarn.lock and fill cache
+      - name: Install deps
+        run: |
+          yarn --immutable --mode=skip-build
+
+  type-check:
+    name: Type Checking
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Type Check
+        run: yarn nx:type-check
+
+  lint:
+    name: Linting and formatting
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+
       - name: ESlint Cache
         uses: actions/cache@v4
         with:
-          save-always: true
           path: |
             **/.eslintcache
+            !**/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
-      - name: check for duplicate dependencies
-        run: yarn dedupe --check
-        # We skip build of deps which is mostly unnecessary in CI and adds about 1 minute to yarn install
-        # You can whitelist some build in root package.json dependenciesMeta if necessary
-      - name: install deps
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn --immutable
-      - name: check files for correct formatting
-        run: yarn nx format:check
-      - name: verify TS project references
-        run: yarn verify-project-references
-      - name: verify workspace resolutions
-        run: yarn check-workspace-resolutions
-      - name: msg-system config validation
-        run: yarn workspace @suite-common/message-system validate-config
-      - name: lint styles
-        run: yarn nx:lint:styles
-      - run: git status
-      - name: build libs
-        run: yarn nx:build:libs
-      - run: git status
-      - name: lint js
-        # Cache strategy must be content or it won't work correctly on CI
+      - name: Lint JS
         run: yarn lint:js --cache-strategy content
-      - name: type check
-        run: yarn nx:type-check
-      - run: git status
-      - name: unit tests
+      - name: Lint Styles
+        run: yarn nx:lint:styles
+
+  unit-tests:
+    name: Unit Tests
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Unit Tests
         run: yarn nx:test-unit
-      - name: translation duplicates
+
+  build-libs-for-publishing:
+    name: "Build libs for publishing"
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Build Libs
+        run: yarn nx:build:libs
+
+  other-checks:
+    name: Other Checks
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Check Files for Correct Formatting
+        run: yarn nx format:check
+      - name: Verify TS Project References
+        run: yarn verify-project-references
+      - name: Verify Workspace Resolutions
+        run: yarn check-workspace-resolutions
+      - name: Msg-system Config Validation
+        run: yarn workspace @suite-common/message-system validate-config
+      - name: Translation Duplicates
         run: yarn workspace @trezor/suite translations:list-duplicates
