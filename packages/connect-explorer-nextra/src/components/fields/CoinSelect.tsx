@@ -1,11 +1,11 @@
 import { Select } from '@trezor/components';
 
-import type { Field } from '../../types';
+import type { FieldBasic } from '../../types';
 import { onFieldChange } from '../../actions/methodActions';
 import { Row } from './Row';
 
 interface CoinSelectProps {
-    field: Field<any>;
+    field: FieldBasic<any>;
     onChange: typeof onFieldChange;
 }
 

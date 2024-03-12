@@ -6,8 +6,10 @@ import styled from 'styled-components';
 import { Badge } from '@trezor/components';
 
 interface ParamProps {
+    id?: string;
     name: string;
     type: string | React.ReactNode;
+    typeLink?: string;
     required?: boolean;
     description?: string;
     children?: React.ReactNode;
@@ -22,7 +24,7 @@ const ParamWrapper = styled.div`
         transparent
     );
 `;
-const ParamRow = styled.div`
+const ParamRow = styled.a`
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -41,17 +43,26 @@ const ParamName = styled.h4`
     font-family: monospace;
     font-size: 0.875rem;
 `;
-const ParamType = styled.div`
+const ParamType = styled.div<{
+    isLink?: boolean;
+}>`
     flex: 1;
     font-size: 0.875rem;
+
+    ${({ isLink, theme }) =>
+        isLink &&
+        `
+        color: ${theme.TYPE_GREEN};
+        text-decoration: underline;
+    `}
 `;
 
 export const Param = (props: ParamProps) => {
     return (
-        <ParamWrapper>
-            <ParamRow>
+        <ParamWrapper id={props.id}>
+            <ParamRow href={props.typeLink}>
                 <ParamName>{props.name}</ParamName>
-                <ParamType>
+                <ParamType isLink={!!props.typeLink}>
                     {typeof props.type === 'string' ? (
                         <Markdown>{props.type}</Markdown>
                     ) : (

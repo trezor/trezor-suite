@@ -1,4 +1,13 @@
-import { JavaScriptTypeBuilder, TUnion, Hint, SchemaOptions, TLiteral } from '@sinclair/typebox';
+import {
+    JavaScriptTypeBuilder,
+    TUnion,
+    Hint,
+    SchemaOptions,
+    TLiteral,
+    TEnum,
+    TEnumKey,
+    TEnumValue,
+} from '@sinclair/typebox';
 
 // UnionToIntersection<A | B> = A & B
 type UnionToIntersection<U> = (U extends unknown ? (arg: U) => 0 : never) extends (
@@ -37,5 +46,16 @@ export class KeyofEnumBuilder extends JavaScriptTypeBuilder {
         const keys = Object.keys(schema).map(key => this.Literal(key));
 
         return this.Union(keys, { ...options, [Hint]: 'KeyOfEnum' }) as TKeyOfEnum<T>;
+    }
+
+    Enum<V extends TEnumValue, T extends Record<TEnumKey, V>>(
+        schema: T,
+        options?: SchemaOptions,
+    ): TEnum<T> {
+        const anyOf = Object.entries(schema)
+            .filter(([key, _value]) => typeof key === 'string' || !isNaN(key))
+            .map(([key, value]) => this.Literal(value, { $id: key }));
+
+        return this.Union(anyOf, { ...options, [Hint]: 'Enum' }) as TEnum<T>;
     }
 }

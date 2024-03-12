@@ -37,4 +37,23 @@ describe('enum', () => {
         const x: T2 = 'B';
         expect(x).toEqual('B');
     });
+
+    it('should work with normal enum', () => {
+        enum E {
+            A = 'a',
+            B = 'b',
+        }
+        const schema = Type.Enum(E);
+        type T = Static<typeof schema>;
+
+        const x: T = E.A;
+        expect(x).toEqual('a');
+
+        // @ts-expect-error
+        const y: T = 'C';
+        expect(y).toEqual('C');
+
+        expect(Validate(schema, 'a')).toBe(true);
+        expect(Validate(schema, 'b')).toBe(true);
+    });
 });

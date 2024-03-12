@@ -19,6 +19,7 @@
         "@trezor/connect-web": "workspace:^",
         "@trezor/connect-webextension": "workspace:^",
         "@trezor/protobuf": "workspace:^",
+        "@trezor/schema-utils": "workspace:^",
         "@trezor/utils": "workspace:^",
         "babel-plugin-styled-components": "^2.1.4",
         "copy-webpack-plugin": "^12.0.2",
