@@ -9,7 +9,6 @@ import {
     selectSelectedAccountHasSufficientEthForStaking,
 } from 'src/reducers/wallet/selectedAccountReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -52,7 +51,6 @@ const Text = styled.div`
 export const StakeEthBanner = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const isDebug = useSelector(selectIsDebugModeActive);
     const { stakeEthBannerClosed } = useSelector(state => state.suite.flags);
     const hasSufficientEthForStaking = useSelector(selectSelectedAccountHasSufficientEthForStaking);
     const { pathname } = useSelector(state => state.router);
@@ -68,8 +66,7 @@ export const StakeEthBanner = () => {
         dispatch(goto('wallet-staking', { preserveParams: true }));
     };
 
-    // TODO: remove isDebug for staking release
-    if (!isShown || !isDebug) return null;
+    if (!isShown) return null;
 
     return (
         <StyledCard>
