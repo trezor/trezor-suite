@@ -21,6 +21,7 @@ import {
 } from '@suite-common/wallet-core';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList | RootStackParamList,
@@ -34,6 +35,7 @@ export const useHandleDeviceConnection = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
 
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
@@ -41,7 +43,12 @@ export const useHandleDeviceConnection = () => {
     // At the moment when unauthorized physical device is selected,
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
-        if (isOnboardingFinished && !isPortfolioTrackerDevice && !isDeviceConnectedAndAuthorized) {
+        if (
+            isOnboardingFinished &&
+            !isPortfolioTrackerDevice &&
+            !isDeviceConnectedAndAuthorized &&
+            !isBiometricsOverlayVisible
+        ) {
             requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
             navigation.navigate(RootStackRoutes.ConnectDevice, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
@@ -53,6 +60,7 @@ export const useHandleDeviceConnection = () => {
         isPortfolioTrackerDevice,
         isNoPhysicalDeviceConnected,
         isDeviceConnectedAndAuthorized,
+        isBiometricsOverlayVisible,
         navigation,
     ]);
 
