@@ -3,8 +3,9 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Checkbox, H2, Icon, Divider } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Modal, Translation, TrezorLink } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const StyledModal = styled(Modal)`
     width: 500px;
@@ -62,6 +63,7 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
     const theme = useTheme();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
+    const account = useSelector(selectSelectedAccount);
 
     const handleOnCancel = () => {
         onCancel();
@@ -94,6 +96,7 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
                                     {chunks}
                                 </TrezorLink>
                             ),
+                            symbol: account?.symbol,
                         }}
                     />
                 </Flex>

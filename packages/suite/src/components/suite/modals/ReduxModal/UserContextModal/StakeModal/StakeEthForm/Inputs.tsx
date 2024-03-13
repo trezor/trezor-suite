@@ -120,7 +120,10 @@ export const Inputs = () => {
                 <StyledWarning variant="info">
                     <Translation
                         id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
-                        values={{ amount: MIN_ETH_FOR_WITHDRAWALS.toString() }}
+                        values={{
+                            amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
+                            symbol: account.symbol,
+                        }}
                     />
                 </StyledWarning>
             )}
@@ -128,7 +131,10 @@ export const Inputs = () => {
                 <StyledWarning variant="info">
                     <Translation
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
-                        values={{ amount: MIN_ETH_FOR_WITHDRAWALS.toString() }}
+                        values={{
+                            amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
+                            symbol: account.symbol,
+                        }}
                     />
                 </StyledWarning>
             )}

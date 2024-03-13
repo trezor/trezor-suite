@@ -9,6 +9,7 @@ import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { spacingsPx, borders } from '@trezor/theme';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const Flex = styled.div`
     display: flex;
@@ -64,6 +65,7 @@ export const StakeEthCard = () => {
     const { ethApy } = useEverstakePoolStats();
 
     const { discovery } = useDiscovery();
+    const account = useSelector(selectSelectedAccount);
     const { accounts } = useAccounts(discovery);
     const ethAccountWithSufficientBalanceForStaking = accounts.find(
         ({ symbol, formattedBalance }) =>
@@ -132,7 +134,10 @@ export const StakeEthCard = () => {
                 <StyledCard paddingType="none">
                     <Body>
                         <CardTitle>
-                            <Translation id="TR_STAKE_ETH_CARD_TITLE" />
+                            <Translation
+                                id="TR_STAKE_ETH_CARD_TITLE"
+                                values={{ symbol: account?.symbol }}
+                            />
                             <br />
                             <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
                         </CardTitle>
