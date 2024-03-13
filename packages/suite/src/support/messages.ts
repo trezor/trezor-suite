@@ -2202,7 +2202,7 @@ export default defineMessages({
         id: 'TR_CONFIRMED_TX',
     },
     TR_CONNECT_YOUR_DEVICE: {
-        defaultMessage: 'Connect your Trezor',
+        defaultMessage: 'Connect & unlock your Trezor',
         description: 'Prompt to user to connect his device.',
         id: 'TR_CONNECT_YOUR_DEVICE',
     },

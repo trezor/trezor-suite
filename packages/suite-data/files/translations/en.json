@@ -546,7 +546,7 @@
   "TR_CONNECTED_DIFFERENT_DEVICE": "Connected a different device?",
   "TR_CONNECTED_TO_PROVIDER": "Connected to {provider} as {user}",
   "TR_CONNECTED_TO_PROVIDER_LOCALLY": "Labels saved locally",
-  "TR_CONNECT_YOUR_DEVICE": "Connect your Trezor",
+  "TR_CONNECT_YOUR_DEVICE": "Connect & unlock your Trezor",
   "TR_CONTACT_OUR_SUPPORT_LINK": "contact Trezor support",
   "TR_CONTACT_SUPPORT": "Contact support",
   "TR_CONTACT_TREZOR_SUPPORT": "Contact Trezor Support",
