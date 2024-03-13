@@ -4,8 +4,9 @@ import { Button, Card, Icon, Paragraph } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { useDispatch, useEverstakePoolStats } from 'src/hooks/suite';
+import { useDispatch, useEverstakePoolStats, useSelector } from 'src/hooks/suite';
 import { DashboardSection } from 'src/components/dashboard';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxl};
@@ -50,6 +51,7 @@ const FlexRowChild = styled.div`
 export const EmptyStakingCard = () => {
     const theme = useTheme();
     const { ethApy } = useEverstakePoolStats();
+    const account = useSelector(selectSelectedAccount);
 
     const dispatch = useDispatch();
     const openStakingEthInANutshellModal = () =>
@@ -95,7 +97,10 @@ export const EmptyStakingCard = () => {
                         </GreenP>
                     </Flex>
                     <StyledP>
-                        <Translation id="TR_STAKE_STAKING_IS" />
+                        <Translation
+                            id="TR_STAKE_STAKING_IS"
+                            values={{ symbol: account?.symbol }}
+                        />
                     </StyledP>
                 </Header>
 

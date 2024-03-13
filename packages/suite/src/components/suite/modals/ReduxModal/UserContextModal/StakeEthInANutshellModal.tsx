@@ -2,9 +2,10 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Icon, IconType, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { spacingsPx } from '@trezor/theme';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const StyledModal = styled(Modal)`
     width: 380px;
@@ -62,6 +63,7 @@ interface StakeEthInANutshellModalProps {
 
 export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalProps) => {
     const theme = useTheme();
+    const account = useSelector(selectSelectedAccount);
 
     const dispatch = useDispatch();
     const proceedToStaking = () => {
@@ -85,7 +87,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                         <Icon icon={icon} color={theme.iconPrimaryDefault} />
 
                         <GreyP>
-                            <Translation id={translationId} />
+                            <Translation id={translationId} values={{ symbol: account?.symbol }} />
                         </GreyP>
                     </Flex>
                 ))}
