@@ -266,7 +266,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "La dirección del token ya se ha añadido.",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "La dirección no es válida.",
   "TR_ADD_TOKEN_LABEL": "Dirección del token",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Pegar dirección de token",
   "TR_ADD_TOKEN_SUBMIT": "Añadir token",
   "TR_ADD_TOKEN_TITLE": "Añadir token",
   "TR_ADD_TOKEN_TOAST_ERROR": "La acción ha fallado: {error}",

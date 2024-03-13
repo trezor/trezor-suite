@@ -2202,7 +2202,7 @@ export default defineMessages({
         id: 'TR_CONFIRMED_TX',
     },
     TR_CONNECT_YOUR_DEVICE: {
-        defaultMessage: 'Connect your Trezor',
+        defaultMessage: 'Connect & unlock your Trezor',
         description: 'Prompt to user to connect his device.',
         id: 'TR_CONNECT_YOUR_DEVICE',
     },
@@ -6560,7 +6560,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 and higher.',
+            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong> 1</strong> will show all transactions that have an amount of 1 and higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
@@ -8059,7 +8059,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_21',
         description: '140 symbols max',
         defaultMessage:
-            'Bitcoin transactions are grouped together in blocks. These blocks are organized in a chronological sequence comprising the blockchain',
+            'Bitcoin transactions are grouped together in blocks. These blocks are organized in a chronological sequence on the blockchain.',
     },
     TR_LOADING_FACT_22: {
         id: 'TR_LOADING_FACT_22',
@@ -8506,7 +8506,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE',
-        defaultMessage: 'See your money dance',
+        defaultMessage: 'Watch your money dance',
     },
     TR_STAKE_ETH_SEE_MONEY_DANCE_DESC: {
         id: 'TR_STAKE_ETH_SEE_MONEY_DANCE_DESC',
@@ -8595,12 +8595,12 @@ export default defineMessages({
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
         defaultMessage:
-            'We’ve left {amount} ETH out so you will be able to pay for withdrawal fees',
+            'We’ve left {amount} ETH out so you will be able to pay for withdrawal fees.',
     },
     TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
         id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
         defaultMessage:
-            'We recommend you to leave {amount} ETH so you will be able to pay for withdrawal fees',
+            "It's recommended to leave {amount} ETH so you will be able to pay for withdrawal fees.",
     },
     TR_STAKE_CONFIRM_ENTRY_PERIOD: {
         id: 'TR_STAKE_CONFIRM_ENTRY_PERIOD',
@@ -8771,7 +8771,7 @@ export default defineMessages({
     TR_STAKE_CAN_CLAIM_WARNING: {
         id: 'TR_STAKE_CAN_CLAIM_WARNING',
         defaultMessage:
-            'You can already claim {amount} {symbol}. {br}Please claim or wait until new unstake is processed',
+            'You can already claim {amount} {symbol}. {br}Please claim or wait until new unstake is processed.',
     },
     TR_STAKE_CLAIM_IN_NEXT_BLOCK: {
         id: 'TR_STAKE_CLAIM_IN_NEXT_BLOCK',

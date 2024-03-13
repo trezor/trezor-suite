@@ -267,7 +267,6 @@
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "無効なアドレス",
   "TR_ADD_TOKEN_DESCRIPTION": "ウォレットに追加したいトークンのコントラクトアドレスを入力してください。通常は'0x'で始まる42文字の英数字です。",
   "TR_ADD_TOKEN_LABEL": "トークンのアドレス",
-  "TR_ADD_TOKEN_PLACEHOLDER": "トークンアドレスを貼付け",
   "TR_ADD_TOKEN_SUBMIT": "トークンを追加",
   "TR_ADD_TOKEN_TITLE": "ERC20トークンを追加",
   "TR_ADD_TOKEN_TOAST_ERROR": "実行に失敗しました: {error}",

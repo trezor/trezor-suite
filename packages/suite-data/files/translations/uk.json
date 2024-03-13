@@ -133,7 +133,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Цю адресу токену вже додано",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Неправильна адреса",
   "TR_ADD_TOKEN_LABEL": "Адреса ERC20 токена",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Вставити адресу токена",
   "TR_ADD_TOKEN_SUBMIT": "Додати токен",
   "TR_ADD_TOKEN_TITLE": "Додати ERC20 токен",
   "TR_BACKUP_YOUR_DEVICE": "Зробіть резервну копію Вашого гаманця",

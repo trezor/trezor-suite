@@ -261,7 +261,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Adresa tokenu je již přidána",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Neplatná adresa",
   "TR_ADD_TOKEN_LABEL": "Adresa tokenu",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Vložit adresu tokenu",
   "TR_ADD_TOKEN_SUBMIT": "Přidat token",
   "TR_ADD_TOKEN_TITLE": "Přidat token",
   "TR_ADD_TOKEN_TOAST_ERROR": "Akce se nezdařila: {error}",
