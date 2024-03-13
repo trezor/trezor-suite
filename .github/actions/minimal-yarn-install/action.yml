@@ -1,8 +1,7 @@
 name: "Install Node and Yarn Dependencies without build"
 description: >
-  Installs Node.js and dependencies in without building building most of dependencies which is significantly faster.
-  Only whitelisted in root package.json are builded. It's not recommended to use this actions for building production versions,
-  because it can produce some unwanted behavior, but it's enough for running validation checks, tests, etc.
+  Installs Node.js and its dependencies without building most of the dependencies, which is significantly faster.
+  Only those whitelisted in the root package.json are built. It's not recommended to use these actions for building production versions, as they can produce some unwanted behavior. However, it's sufficient for running validation checks, tests, etc.
 runs:
   using: "composite"
   steps:
