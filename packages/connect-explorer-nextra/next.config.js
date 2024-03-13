@@ -2,7 +2,6 @@ const withNextra = require('nextra')({
     theme: 'nextra-theme-docs',
     themeConfig: './theme.config.tsx',
 });
-
 const commitHash = require('child_process').execSync('git rev-parse HEAD').toString().trim();
 
 module.exports = withNextra({

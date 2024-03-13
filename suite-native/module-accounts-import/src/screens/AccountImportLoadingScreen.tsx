@@ -11,10 +11,10 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { Timestamp } from '@suite-common/wallet-types';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
-import { Timestamp } from '@suite-common/wallet-types';
 
 const LOADING_ANIMATION_DURATION = 5000;
 
