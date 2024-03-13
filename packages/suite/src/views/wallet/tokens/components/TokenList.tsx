@@ -192,7 +192,7 @@ export const TokenList = ({
                                                         />
                                                     </FiatWrapper>
                                                 ) : (
-                                                    <StyledNoRatesTooltip />
+                                                    <StyledNoRatesTooltip iconOnly={true} />
                                                 )}
                                             </Col>
                                         )}
