@@ -1,10 +1,13 @@
 import { Dimensions } from 'react-native';
+import { ReactNode, useEffect, useState } from 'react';
+import { Device, BleError } from 'react-native-ble-plx';
 
-import { Text, VStack } from '@suite-native/atoms';
+import { Box, Button, Loader, Text, VStack } from '@suite-native/atoms';
 import { useTranslate } from '@suite-native/intl';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen } from '@suite-native/navigation';
+import { nativeBleManager } from '@trezor/transport-native';
 
 import { ConnectDeviceScreenHeader } from '../components/ConnectDeviceScreenHeader';
 
@@ -27,6 +30,31 @@ export const ConnectAndUnlockDeviceScreen = () => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
 
+    const [devices, setDevices] = useState<Device[]>([]);
+    const [scanError, setScanError] = useState<BleError | null>();
+    const [isScanRunning, setIsScanRunning] = useState<boolean>(false);
+
+    const scanDevices = async () => {
+        setScanError(null);
+        setIsScanRunning(true);
+        setDevices([]);
+
+        nativeBleManager.scanDevices(scannedDevices => {
+            setDevices(scannedDevices);
+        });
+    };
+
+    const stopScanning = async () => {
+        nativeBleManager.stopDeviceScan();
+        setIsScanRunning(false);
+    };
+
+    useEffect(() => {
+        return () => {
+            nativeBleManager.stopDeviceScan();
+        };
+    }, []);
+
     return (
         <Screen
             screenHeader={<ConnectDeviceScreenHeader />}
@@ -39,7 +67,44 @@ export const ConnectAndUnlockDeviceScreen = () => {
                 <Text variant="titleMedium" textAlign="center">
                     {translate('moduleConnectDevice.connectAndUnlockScreen.title')}
                 </Text>
-                <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
+                {!isScanRunning ? (
+                    <Button onPress={scanDevices}>Scan devices</Button>
+                ) : (
+                    <Button onPress={stopScanning}>Stop devices scan</Button>
+                )}
+                {isScanRunning && (
+                    <Box
+                        marginTop="large"
+                        flexDirection="row"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Text>Scanning for devices...</Text>
+                        <Loader />
+                    </Box>
+                )}
+                {scanError && (
+                    <Box
+                        marginTop="large"
+                        flexDirection="row"
+                        alignItems="center"
+                        justifyContent="center"
+                    >
+                        <Text>Scan error: {scanError.message}</Text>
+                    </Box>
+                )}
+                <Box>
+                    {devices.map(device => (
+                        <Box key={device.id}>
+                            <Text>{device.name}</Text>
+                            <Button
+                                onPress={() => nativeBleManager.openDevice({ deviceOrId: device })}
+                            >
+                                Connect
+                            </Button>
+                        </Box>
+                    ))}
+                </Box>
             </VStack>
         </Screen>
     );

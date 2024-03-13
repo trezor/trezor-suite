@@ -3398,7 +3398,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/config-plugins@npm:7.8.4, @expo/config-plugins@npm:~7.8.0, @expo/config-plugins@npm:~7.8.2":
+"@expo/config-plugins@npm:7.8.4, @expo/config-plugins@npm:^7.2.5, @expo/config-plugins@npm:~7.8.0, @expo/config-plugins@npm:~7.8.2":
   version: 7.8.4
   resolution: "@expo/config-plugins@npm:7.8.4"
   dependencies:
@@ -8309,6 +8309,7 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.6.2"
     react-native: "npm:0.73.2"
+    react-native-ble-plx: "npm:^3.1.2"
     react-native-flipper: "npm:^0.212.0"
     react-native-gesture-handler: "npm:2.15.0"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
@@ -29336,6 +29337,18 @@ __metadata:
     "@types/react": ">=18"
     react: ">=18"
   checksum: 71ce31f200982f641d363888a26e8fb52a199a589124f20295e9be870fa3aed26fcfa14d1dc766d83df666a15cb82359291bfda207bd55d5728ff376d217e079
+  languageName: node
+  linkType: hard
+
+"react-native-ble-plx@npm:^3.1.2":
+  version: 3.1.2
+  resolution: "react-native-ble-plx@npm:3.1.2"
+  dependencies:
+    "@expo/config-plugins": "npm:^7.2.5"
+  peerDependencies:
+    react: "*"
+    react-native: "*"
+  checksum: 75e3960fcc8c236d0e39fe07a5abd10f617ae8e1cd4114e2179d0e33876aad0932ce229a39e768914f859b5029445b4e44e21e03d5f031cb680f9eee060e9f43
   languageName: node
   linkType: hard
 

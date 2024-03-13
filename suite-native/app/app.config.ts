@@ -141,6 +141,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                     },
                 },
             ],
+            ['react-native-ble-plx', {}],
             '@trezor/react-native-usb/plugins/withUSBDevice.js',
             // Define FLIPPER_VERSION
             './plugins/withGradleProperties.js',
