@@ -29,7 +29,7 @@ jobs:
           key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
           restore-keys: |
             yarn-cache-folder-
-      # We can skip build for all deps because (even for whitelisted) because this is used only to validate yarn.lock and fill cache
+      # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
       - name: Install deps
         run: |
           yarn --immutable --mode=skip-build
