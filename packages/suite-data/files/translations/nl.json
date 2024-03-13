@@ -254,7 +254,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Token adres is al toegevoegd",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Ongeldig adres",
   "TR_ADD_TOKEN_LABEL": "ERC20 token adres",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Plak token adres",
   "TR_ADD_TOKEN_SUBMIT": "Token toevoegen",
   "TR_ADD_TOKEN_TITLE": "ERC20 token toevoegen",
   "TR_ADD_TOKEN_TOAST_ERROR": "Actie mislukt: {error}",

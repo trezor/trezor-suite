@@ -228,7 +228,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Adresa token-ului este deja adăugată",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Adresă nevalidă",
   "TR_ADD_TOKEN_LABEL": "Adresa token-ului ERC20",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Lipiți adresa token-ului",
   "TR_ADD_TOKEN_SUBMIT": "Adăugare token",
   "TR_ADD_TOKEN_TITLE": "Adăugați token ERC20",
   "TR_ADD_TOKEN_TOAST_ERROR": "Acțiune eșuată: {error}",

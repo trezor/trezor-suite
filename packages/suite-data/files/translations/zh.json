@@ -261,7 +261,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "代币地址已被添加",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "无效地址",
   "TR_ADD_TOKEN_LABEL": "ERC20 代币地址",
-  "TR_ADD_TOKEN_PLACEHOLDER": "粘贴代币地址",
   "TR_ADD_TOKEN_SUBMIT": "添加代币",
   "TR_ADD_TOKEN_TITLE": "添加 ERC20 代币",
   "TR_ADD_TOKEN_TOAST_ERROR": "操作失败: {error}",

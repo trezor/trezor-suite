@@ -266,7 +266,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Этот токен уже был добавлен",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Неверный адрес",
   "TR_ADD_TOKEN_LABEL": "Адрес токена ERC20",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Вставьте адрес токена",
   "TR_ADD_TOKEN_SUBMIT": "Добавить токен",
   "TR_ADD_TOKEN_TITLE": "Добавить токен ERC20",
   "TR_ADD_TOKEN_TOAST_ERROR": "Действие не удалось: {error}",

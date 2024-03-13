@@ -83,7 +83,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Bu Token adresi zaten eklenmiş",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Geçersiz adres",
   "TR_ADD_TOKEN_LABEL": "ERC20 token adresi",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Token adresini yapıştır",
   "TR_ADD_TOKEN_SUBMIT": "Token ekle",
   "TR_ADD_TOKEN_TITLE": "ERC20 tokeni ekle",
   "TR_ADD_TOKEN_TOAST_ERROR": "İşlem başarısız: {error}",

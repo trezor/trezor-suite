@@ -172,7 +172,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Adresa tokenu je už pridaná",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Neplatná adresa",
   "TR_ADD_TOKEN_LABEL": "Adresa tokenu ERC20",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Vložiť adresu tokenu",
   "TR_ADD_TOKEN_SUBMIT": "Pridať token",
   "TR_ADD_TOKEN_TITLE": "Pridanie tokenu ERC20",
   "TR_ADD_TOKEN_TOAST_ERROR": "Akcia sa nepodarila: {error}",

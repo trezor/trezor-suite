@@ -266,7 +266,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "L'indirizzo del token è già aggiunto",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Indirizzo non valido",
   "TR_ADD_TOKEN_LABEL": "Indirizzo del token ERC20",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Incolla indirizzo del token",
   "TR_ADD_TOKEN_SUBMIT": "Aggiungi token",
   "TR_ADD_TOKEN_TITLE": "Aggiungi token ERC20",
   "TR_ADD_TOKEN_TOAST_ERROR": "Azione fallita: {error}",

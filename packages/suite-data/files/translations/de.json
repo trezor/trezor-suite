@@ -266,7 +266,6 @@
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Token-Adresse wurde bereits hinzugefügt",
   "TR_ADD_TOKEN_ADDRESS_NOT_VALID": "Ungültige Adresse",
   "TR_ADD_TOKEN_LABEL": "Token-Adresse",
-  "TR_ADD_TOKEN_PLACEHOLDER": "Token-Adresse einfügen",
   "TR_ADD_TOKEN_SUBMIT": "Token hinzufügen",
   "TR_ADD_TOKEN_TITLE": "Token hinzufügen",
   "TR_ADD_TOKEN_TOAST_ERROR": "Aktion fehlgeschlagen: {error}",
