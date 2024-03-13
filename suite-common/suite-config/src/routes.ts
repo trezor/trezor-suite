@@ -16,6 +16,13 @@ export const routes = [
         isForegroundApp: true,
     },
     {
+        name: 'remember-wallet',
+        pattern: '/remember-wallet',
+        app: 'remember-wallet',
+        isFullscreenApp: true,
+        isForegroundApp: true,
+    },
+    {
         name: 'suite-index',
         pattern: '/',
         app: 'dashboard',

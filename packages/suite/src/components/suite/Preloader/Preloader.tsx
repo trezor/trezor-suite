@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { FC, ReactElement, ReactNode, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
@@ -14,13 +14,16 @@ import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
+import { RememberWallet } from '../../../views/remember-wallet/RememberWallet';
 
-const getFullscreenApp = (route: AppState['router']['route']) => {
+const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
         case 'start':
             return SuiteStart;
         case 'onboarding':
             return Onboarding;
+        case 'remember-wallet':
+            return RememberWallet;
         default:
             return undefined;
     }
@@ -65,7 +68,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
     const FullscreenApp = getFullscreenApp(router.route);
-    if (FullscreenApp) {
+    if (FullscreenApp !== undefined) {
         return <FullscreenApp />;
     }
 

@@ -4476,6 +4476,14 @@ export default defineMessages({
         defaultMessage: 'Remember',
         description: 'Heading above col with "remember wallet" buttons in switch wallets modal',
     },
+    TR_REMEMBER_CARD_CALL_TO_ACTION: {
+        id: 'TR_REMEMBER_CALL_TO_ACTION',
+        defaultMessage: 'View only balances in the app even <primary>after Trezor is disconnected?</primary>',
+    },
+    TR_REMEMBER_CARD_EXPLANATION: {
+        id: 'TR_REMEMBER_CARD_EXPLANATION',
+        defaultMessage: 'You\'ll still need to connect your Trezor to send or trade coins',
+    },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {symbol}',

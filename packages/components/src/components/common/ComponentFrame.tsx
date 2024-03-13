@@ -11,6 +11,7 @@ export type FrameProps = {
         left?: SpacingValues;
         right?: SpacingValues;
     };
+    maxWidth?: string;
 };
 
 type ComponentFrameProps = FrameProps & {
