@@ -8,7 +8,6 @@ import { useDiscovery, useEverstakePoolStats, useSelector } from 'src/hooks/suit
 import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { spacingsPx, borders } from '@trezor/theme';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const Flex = styled.div`
@@ -61,7 +60,6 @@ const FlexRowChild = styled.div`
 
 export const StakeEthCard = () => {
     const theme = useTheme();
-    const isDebug = useSelector(selectIsDebugModeActive);
     const { ethApy } = useEverstakePoolStats();
 
     const { discovery } = useDiscovery();
@@ -116,8 +114,7 @@ export const StakeEthCard = () => {
         [ethApy, theme.iconPrimaryDefault],
     );
 
-    // TODO: remove isDebug for staking release
-    if (!isShown || !isDebug) return null;
+    if (!isShown) return null;
 
     return (
         <>
