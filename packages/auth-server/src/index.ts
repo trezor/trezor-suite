@@ -3,6 +3,8 @@ import cors, { CorsOptions } from 'cors';
 
 const app = express();
 
+console.log('Hello there');
+
 app.use(express.json());
 
 const corsOptions: CorsOptions = {
