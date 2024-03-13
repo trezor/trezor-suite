@@ -2,7 +2,7 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { H2, TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/components';
+import { TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
@@ -55,14 +55,6 @@ const MotionWelcome = styled(motion.div)`
     overflow: hidden;
     min-width: 380px;
     max-width: 660px;
-`;
-
-const WelcomeTitle = styled(H2)`
-    font-size: 60px;
-    line-height: 1;
-    text-align: center;
-    font-weight: bold;
-    margin-top: 32px;
 `;
 
 const LinksContainer = styled.div`
@@ -149,11 +141,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                 }}
                             >
                                 <Expander>
-                                    <TrezorLogo type="suite" width="128px" />
-
-                                    <WelcomeTitle data-test="@welcome/title">
-                                        <Translation id="TR_ONBOARDING_WELCOME_HEADING" />
-                                    </WelcomeTitle>
+                                    <TrezorLogo type="symbol" width="57px" />
                                 </Expander>
 
                                 <LinksContainer>

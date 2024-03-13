@@ -7116,10 +7116,6 @@ export default defineMessages({
         id: 'TR_ONBOARDING_DOWNLOAD_DESKTOP_APP',
         defaultMessage: 'Download Desktop App',
     },
-    TR_ONBOARDING_WELCOME_HEADING: {
-        id: 'TR_ONBOARDING_WELCOME_HEADING',
-        defaultMessage: 'Welcome!',
-    },
     TR_DATA_ANALYTICS_CATEGORY_1: {
         id: 'TR_DATA_ANALYTICS_CATEGORY_1',
         defaultMessage: 'Platform',
