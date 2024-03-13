@@ -14,14 +14,8 @@ const SvgWrapper = styled.div<{
     $width?: string | number;
     $height?: string | number;
 }>`
-    color: ${({ theme }) => theme.iconDefault};
-    display: inline-block;
     width: ${({ $width }) => $width};
     height: ${({ $height }) => $height};
-
-    div {
-        height: ${({ $height }) => $height};
-    }
 `;
 
 export interface TrezorLogoProps {
