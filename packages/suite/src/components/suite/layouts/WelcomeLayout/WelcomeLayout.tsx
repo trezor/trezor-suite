@@ -140,7 +140,7 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                                     transition: { duration: 0.3, bounce: 0 },
                                 }}
                             >
-                                <Expander>
+                                <Expander data-test="@welcome/title">
                                     <TrezorLogo type="symbol" width="57px" />
                                 </Expander>
 
