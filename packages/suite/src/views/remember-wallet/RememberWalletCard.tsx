@@ -1,42 +1,43 @@
-import { Card, H3 } from '@trezor/components';
+import { Card, Text } from '@trezor/components';
 import { Translation } from '../../components/suite';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
-import { breakpointMediaQueries, mediaQueries } from '@trezor/styles';
+import { breakpointMediaQueries } from '@trezor/styles';
+import { PriceChartLine } from './PriceChartLine';
+import { DeviceStatusWithLabel } from '../../components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatusWithLabel';
 
-const GreenText = styled.span`
-    color: ${({ theme }) => theme.textPrimaryDefault};
-`;
-
-const Flex = styled.div`
+const StyledCard = styled(Card)`
     display: flex;
     flex-direction: column;
     gap: ${spacingsPx.md};
+
+    ${breakpointMediaQueries.below_sm} {
+    }
 `;
 
-const StyledCard = styled(Card)`
-    ${breakpointMediaQueries.below_sm}
-`
+const WindowWithChart = styled.div``;
 
-// TODO: mobile view
 export const RememberWalletCard = () => (
-    <Card maxWidth={'478px'}>
-        <Flex>
-            <H3>
-                <Translation
-                    id="TR_REMEMBER_CARD_CALL_TO_ACTION"
-                    values={{
-                        primary: chunks => (
-                            <>
-                                <br />
-                                <GreenText>{chunks}</GreenText>
-                            </>
-                        ),
-                    }}
-                />
-            </H3>
+    <StyledCard>
+        <WindowWithChart>
+            <DeviceStatusWithLabel />
 
-            <Translation id="TR_REMEMBER_CARD_EXPLANATION" />
-        </Flex>
-    </Card>
+            <PriceChartLine />
+        </WindowWithChart>
+
+        <Text typographyStyle="titleSmall">
+            <Translation
+                id="TR_REMEMBER_CARD_CALL_TO_ACTION"
+                values={{
+                    primary: chunks => (
+                        <>
+                            <br />
+                            <Text variant="primary">{chunks}</Text>
+                        </>
+                    ),
+                }} />
+        </Text>
+
+        <Translation id="TR_REMEMBER_CARD_EXPLANATION" />
+    </StyledCard>
 );
