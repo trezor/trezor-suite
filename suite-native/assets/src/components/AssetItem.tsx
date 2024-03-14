@@ -81,6 +81,7 @@ export const AssetItem = memo(
             if (accountsPerAsset === 1) {
                 navigation.navigate(RootStackRoutes.AccountDetail, {
                     accountKey: accountsForNetworkSymbol[0].key,
+                    closeActionType: 'back',
                 });
             } else if (onPress) {
                 onPress(cryptoCurrencySymbol);

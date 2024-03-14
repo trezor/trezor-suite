@@ -33,7 +33,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
     const { translate } = useTranslate();
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey });
+        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey, closeActionType: 'back' });
     };
 
     return (

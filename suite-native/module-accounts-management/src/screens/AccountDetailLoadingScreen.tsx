@@ -1,7 +1,15 @@
 import { Dimensions } from 'react-native';
 
+import { RouteProp, useRoute } from '@react-navigation/native';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Screen, ScreenSubHeader } from '@suite-native/navigation';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    Screen,
+    ScreenSubHeader,
+    GoBackIcon,
+} from '@suite-native/navigation';
 import { BoxSkeleton, Card, VStack } from '@suite-native/atoms';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
@@ -12,9 +20,15 @@ const cardStyle = prepareNativeStyle(utils => ({
 
 export const AccountDetailLoadingScreen = () => {
     const { applyStyle } = useNativeStyles();
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const { closeActionType } = route.params;
 
     return (
-        <Screen screenHeader={<ScreenSubHeader />}>
+        <Screen
+            screenHeader={
+                <ScreenSubHeader leftIcon={<GoBackIcon closeActionType={closeActionType} />} />
+            }
+        >
             <VStack spacing="extraLarge" alignItems="center">
                 <Card style={applyStyle(cardStyle)}>
                     <BoxSkeleton width={SCREEN_WIDTH - 32} height={70} />

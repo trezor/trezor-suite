@@ -1,7 +1,14 @@
 import { useSelector } from 'react-redux';
 
+import { RouteProp, useRoute } from '@react-navigation/native';
+
 import { Box, HStack, Text } from '@suite-native/atoms';
-import { ScreenSubHeader } from '@suite-native/navigation';
+import {
+    RootStackParamList,
+    RootStackRoutes,
+    ScreenSubHeader,
+    GoBackIcon,
+} from '@suite-native/navigation';
 import { AccountsRootState, selectAccountLabel } from '@suite-common/wallet-core';
 import { CryptoIcon } from '@suite-common/icons';
 import { useTranslate } from '@suite-native/intl';
@@ -19,6 +26,8 @@ export const TokenAccountDetailScreenSubHeader = ({
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
     );
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const { closeActionType } = route.params;
 
     return (
         <ScreenSubHeader
@@ -42,6 +51,7 @@ export const TokenAccountDetailScreenSubHeader = ({
                     </HStack>
                 </Box>
             }
+            leftIcon={<GoBackIcon closeActionType={closeActionType} />}
         />
     );
 };

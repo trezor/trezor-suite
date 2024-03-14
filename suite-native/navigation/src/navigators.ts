@@ -24,9 +24,12 @@ type AddCoinFlowParams = RequireAllOrNone<
     'networkSymbol' | 'accountType' | 'accountIndex'
 >;
 
-type ReceiveAccountsParams = {
+export type CloseActionType = 'back' | 'close';
+
+type AccountDetailParams = {
     accountKey?: AccountKey;
     tokenContract?: TokenAddress;
+    closeActionType: CloseActionType;
 } & AddCoinFlowParams;
 
 export type AccountsStackParamList = {
@@ -113,7 +116,7 @@ export type RootStackParamList = {
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.ConnectDevice]: NavigatorScreenParams<ConnectDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
-    [RootStackRoutes.ReceiveModal]: ReceiveAccountsParams;
+    [RootStackRoutes.ReceiveModal]: AccountDetailParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
     [RootStackRoutes.TransactionDetail]: {
         txid: string;
@@ -121,10 +124,7 @@ export type RootStackParamList = {
         tokenTransfer?: TokenTransfer;
     };
     [RootStackRoutes.DevUtilsStack]: undefined;
-    [RootStackRoutes.AccountDetail]: {
-        accountKey?: AccountKey;
-        tokenContract?: TokenAddress;
-    } & AddCoinFlowParams;
+    [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.DeviceInfo]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
 };

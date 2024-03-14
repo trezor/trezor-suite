@@ -1,4 +1,4 @@
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, RouteProp, useRoute } from '@react-navigation/native';
 
 import { IconButton } from '@suite-native/atoms';
 import {
@@ -7,6 +7,7 @@ import {
     RootStackRoutes,
     ScreenSubHeader,
     StackToStackCompositeNavigationProps,
+    GoBackIcon,
 } from '@suite-native/navigation';
 
 type AccountDetailScreenHeaderProps = {
@@ -25,6 +26,8 @@ export const AccountDetailScreenHeader = ({
     accountKey,
 }: AccountDetailScreenHeaderProps) => {
     const navigation = useNavigation<AccountDetailNavigationProps>();
+    const route = useRoute<RouteProp<RootStackParamList, RootStackRoutes.AccountDetail>>();
+    const { closeActionType } = route.params;
 
     const handleSettingsNavigation = () => {
         navigation.navigate(RootStackRoutes.AccountSettings, {
@@ -43,6 +46,7 @@ export const AccountDetailScreenHeader = ({
                     onPress={handleSettingsNavigation}
                 />
             }
+            leftIcon={<GoBackIcon closeActionType={closeActionType} />}
         />
     );
 };
