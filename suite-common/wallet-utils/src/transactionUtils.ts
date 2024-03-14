@@ -9,6 +9,7 @@ import {
     ChainedTransactions,
     PrecomposedTransactionFinal,
     AccountKey,
+    TokenAddress,
 } from '@suite-common/wallet-types';
 import {
     AccountAddress,
@@ -190,12 +191,25 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 
 export const sumTransactionsFiat = (
     transactions: WalletAccountTransaction[],
-    fiatCurrency: string,
+    fiatCurrency: FiatCurrencyCode,
+    historicFiatRates: RatesByTimestamps | undefined,
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
         const amount = formatNetworkAmount(tx.amount, tx.symbol);
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
+
+        const cryptoFiatRateKey = getFiatRateKey(
+            tx.symbol,
+            fiatCurrency,
+            tx.tokens[0]?.contract as TokenAddress,
+        );
+        const feeFiatRateKey = getFiatRateKey(tx.symbol, fiatCurrency);
+
+        const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+
+        const historicCryptoRate = historicFiatRates?.[cryptoFiatRateKey]?.[roundedTimestamp];
+        const historicFeeRate = historicFiatRates?.[feeFiatRateKey]?.[roundedTimestamp];
 
         if (tx.type === 'self') {
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
@@ -950,4 +964,22 @@ export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
     const symbol = !isSingleTokenTransaction || !transfer ? transaction.symbol : transfer.symbol;
 
     return symbol;
+};
+
+export const groupTokensTransactionsByContractAddress = (txs: WalletAccountTransaction[]) => {
+    const groupedTokensTxs: Record<TokenAddress, WalletAccountTransaction[]> = {};
+
+    txs.forEach(tx => {
+        if (tx.tokens && tx.tokens.length > 0) {
+            tx.tokens.forEach(token => {
+                const groupKey = token.contract as TokenAddress;
+                if (!groupedTokensTxs[groupKey]) {
+                    groupedTokensTxs[groupKey] = [];
+                }
+                groupedTokensTxs[groupKey].push(tx);
+            });
+        }
+    });
+
+    return groupedTokensTxs;
 };

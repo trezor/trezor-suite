@@ -8,6 +8,8 @@ import { fetchUrl } from './fetch';
 // a proxy for https://api.coingecko.com/api/v3
 const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
 
+const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
+
 interface HistoricalResponse extends LastWeekRates {
     symbol: string;
 }
@@ -109,8 +111,6 @@ export const getFiatRatesForTimestamps = async (
     timestamps: number[],
     fiatCurrencyCode: FiatCurrencyCode,
 ): Promise<HistoricalResponse | null> => {
-    if (timestamps.length < 2) return null;
-
     const coinUrl = buildCoinUrl(ticker);
     const urlEndpoint = `market_chart/range`;
     if (!coinUrl) return null;
@@ -118,9 +118,11 @@ export const getFiatRatesForTimestamps = async (
     // sort timestamps chronologically to get the minimum and maximum values
     const sortedTimestamps = [...timestamps].sort((ts1, ts2) => ts1 - ts2);
 
-    const params = `?vs_currency=${fiatCurrencyCode}&from=${sortedTimestamps[0]}&to=${
-        sortedTimestamps[sortedTimestamps.length - 1]
-    }`;
+    // adjust from and to timestamps to get better range of data
+    const fromTimestamp = sortedTimestamps[0] - ONE_DAY_IN_MS;
+    const toTimestamp = sortedTimestamps[sortedTimestamps.length - 1] + ONE_DAY_IN_MS;
+
+    const params = `?vs_currency=${fiatCurrencyCode}&from=${fromTimestamp}&to=${toTimestamp}`;
     const url = `${coinUrl}/${urlEndpoint}${params}`;
 
     // returns pairs of [timestamp, fiatRate]

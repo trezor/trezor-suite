@@ -1,6 +1,3 @@
-// This file is almost a duplicate with suite-native fiatRatesSelectors
-// There are some small differences such as removed memoization
-
 import { A, D, F, pipe } from '@mobily/ts-belt';
 
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -10,9 +7,9 @@ import {
     WalletAccountTransaction,
     FiatRateKey,
     Rate,
-    RateType,
     TickerId,
     FiatRates,
+    RateTypeWithoutHistoric,
 } from '@suite-common/wallet-types';
 import { getFiatRateKey, getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
@@ -29,19 +26,29 @@ type UnixTimestamp = number;
 
 export const selectFiatRates = (
     state: FiatRatesRootState,
-    rateType: RateType = 'current',
+    rateType: RateTypeWithoutHistoric = 'current',
 ): FiatRates | undefined => state.wallet.fiat?.[rateType];
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,
     fiatRateKey: FiatRateKey,
-    rateType: RateType = 'current',
+    rateType: RateTypeWithoutHistoric = 'current',
 ): Rate | undefined => state.wallet.fiat?.[rateType]?.[fiatRateKey];
+
+export const selectHistoricFiatRatesByTimestamp = (
+    state: FiatRatesRootState,
+    fiatRateKey: FiatRateKey,
+    timestamp: Timestamp,
+): number | undefined => {
+    const roundedTimestamp = roundTimestampToNearestPastHour(timestamp);
+
+    return state.wallet.fiat?.['historic']?.[fiatRateKey]?.[roundedTimestamp];
+};
 
 export const selectIsFiatRateLoading = (
     state: FiatRatesRootState,
     fiatRateKey: FiatRateKey,
-    rateType: RateType = 'current',
+    rateType: RateTypeWithoutHistoric = 'current',
 ) => {
     const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType);
 
@@ -52,7 +59,7 @@ export const selectIsTickerLoading = (
     state: FiatRatesRootState,
     ticker: TickerId,
     fiatCurrency: FiatCurrencyCode,
-    rateType: RateType = 'current',
+    rateType: RateTypeWithoutHistoric = 'current',
 ) => {
     const fiatRateKey = getFiatRateKeyFromTicker(ticker, fiatCurrency);
 
@@ -63,7 +70,7 @@ export const selectShouldUpdateFiatRate = (
     state: FiatRatesRootState,
     currentTimestamp: UnixTimestamp,
     fiatRateKey: FiatRateKey,
-    rateType: RateType = 'current',
+    rateType: RateTypeWithoutHistoric = 'current',
 ) => {
     const currentRate = selectFiatRatesByFiatRateKey(state, fiatRateKey, rateType);
 
@@ -102,7 +109,7 @@ export const selectTickersToBeUpdated = (
     state: FiatRatesRootState,
     currentTimestamp: UnixTimestamp,
     fiatCurrency: FiatCurrencyCode,
-    rateType: RateType,
+    rateType: RateTypeWithoutHistoric,
 ): TickerId[] => {
     const tickers = selectTickerFromAccounts(state);
 
@@ -126,7 +133,25 @@ export const selectTransactionsWithMissingRates = (
         accountTransactions,
         D.mapWithKey((accountKey, txs) => ({
             account: selectAccountByKey(state, accountKey as AccountKey),
-            txs: txs.filter(tx => !tx.rates?.[localCurrency]),
+            txs: txs.filter(tx => {
+                const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency as FiatCurrencyCode);
+                const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+                const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
+
+                const isMissingTokenRate = tx.tokens?.some(token => {
+                    const tokenFiatRateKey = getFiatRateKey(
+                        tx.symbol,
+                        localCurrency,
+                        token.contract as TokenAddress,
+                    );
+                    const historicTokenRate =
+                        historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+
+                    return historicTokenRate === undefined || historicTokenRate === 0;
+                });
+
+                return historicRate === undefined || historicRate === 0 || isMissingTokenRate;
+            }),
         })),
         D.filter(({ account, txs }) => !!account && !!txs.length),
         D.values,

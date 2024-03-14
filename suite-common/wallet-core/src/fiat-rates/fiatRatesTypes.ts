@@ -1,6 +1,13 @@
-import { FiatRateKey, Rate, RateType } from '@suite-common/wallet-types';
+import { FiatRateKey, Rate, Timestamp } from '@suite-common/wallet-types';
 
-export type FiatRatesState = Record<RateType, Record<FiatRateKey, Rate>>;
+type RatesByKey = Record<FiatRateKey, Rate>;
+type RatesByTimestamps = Record<FiatRateKey, Record<Timestamp, number>>;
+
+export type FiatRatesState = {
+    current: RatesByKey;
+    lastWeek: RatesByKey;
+    historic: RatesByTimestamps;
+};
 
 export type FiatRatesRootState = {
     wallet: {
