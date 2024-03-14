@@ -229,7 +229,7 @@ export default function Layout({ children, ...context }: NextraThemeLayoutProps)
     );
 }
 
-export { useConfig, PartialDocsThemeConfig as DocsThemeConfig };
+export { useConfig, type PartialDocsThemeConfig as DocsThemeConfig };
 export { useMDXComponents } from 'nextra/mdx';
 export { Callout, Steps, Tabs, Tab, Cards, Card, FileTree } from 'nextra/components';
 export { useTheme } from 'next-themes';
