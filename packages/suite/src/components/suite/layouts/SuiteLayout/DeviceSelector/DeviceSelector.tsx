@@ -1,22 +1,14 @@
-import { useState, useEffect, useRef, MouseEventHandler } from 'react';
-
+import { useState, useEffect, useRef } from 'react';
 import styled, { css } from 'styled-components';
-
-import { Image, Icon, DeviceAnimation } from '@trezor/components';
-import { selectDevicesCount, selectDevice, acquireDevice } from '@suite-common/wallet-core';
-import * as deviceUtils from '@suite-common/suite-utils';
+import { Icon } from '@trezor/components';
+import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import type { Timeout } from '@trezor/type-utils';
 import { SHAKE } from 'src/support/suite/styles/animations';
-import { TrezorDevice } from 'src/types/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-
-import { DeviceModelInternal } from '@trezor/connect';
-import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
-import { borders, spacingsPx, typography } from '@trezor/theme';
-import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { borders, spacingsPx } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import { useWalletLabeling } from '../../../labeling/WalletLabeling';
+import { DeviceStatusWithLabel } from './DeviceStatusWithLabel';
 
 const CaretContainer = styled.div`
     background: transparent;
@@ -55,52 +47,9 @@ const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
         `}
 `;
 
-const DeviceLabel = styled.div`
-    ${typography.body};
-    margin-bottom: -${spacingsPx.xxs};
-    min-width: 0;
-    color: ${({ theme }) => theme.textDefault};
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
-
-const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
-    display: flex;
-    opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
-`;
-
-const StyledImage = styled(Image)`
-    width: 24px;
-
-    /* do not apply the darkening filter in dark mode on device images */
-    filter: none;
-`;
-
-const DeviceDetail = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow: hidden;
-    align-self: center;
-`;
-
-const needsRefresh = (device?: TrezorDevice) => {
-    if (!device) return false;
-
-    const deviceStatus = deviceUtils.getStatus(device);
-    const needsAcquire =
-        device.type === 'unacquired' ||
-        deviceStatus === 'used-in-other-window' ||
-        deviceStatus === 'was-used-in-other-window';
-
-    return needsAcquire;
-};
-
 export const DeviceSelector = () => {
     const selectedDevice = useSelector(selectDevice);
-    const { walletLabel } = useSelector(state =>
-        selectLabelingDataForWallet(state, selectedDevice?.state),
-    );
+
     const deviceCount = useSelector(selectDevicesCount);
     const dispatch = useDispatch();
 
@@ -110,15 +59,6 @@ export const DeviceSelector = () => {
     const countChanged = localCount && localCount !== deviceCount;
     const shakeAnimationTimerRef = useRef<Timeout | undefined>(undefined);
     const stateAnimationTimerRef = useRef<Timeout | undefined>(undefined);
-
-    const deviceNeedsRefresh = needsRefresh(selectedDevice);
-    const selectedDeviceModelInternal = selectedDevice?.features?.internal_model;
-
-    const { defaultAccountLabelString } = useWalletLabeling();
-    const defaultWalletLabel =
-        selectedDevice !== undefined
-            ? defaultAccountLabelString({ device: selectedDevice })
-            : undefined;
 
     useEffect(
         () =>
@@ -156,13 +96,6 @@ export const DeviceSelector = () => {
             }),
         );
 
-    const handleRefreshClick: MouseEventHandler = e => {
-        e.stopPropagation();
-        if (deviceNeedsRefresh) {
-            dispatch(acquireDevice(selectedDevice));
-        }
-    };
-
     return (
         <Wrapper
             data-test="@menu/switch-device"
@@ -170,47 +103,12 @@ export const DeviceSelector = () => {
             $isAnimationTriggered={isAnimationTriggered}
             tabIndex={0}
         >
-            {selectedDevice && selectedDeviceModelInternal && (
-                <>
-                    <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
-                        {selectedDeviceModelInternal === DeviceModelInternal.T2B1 && (
-                            <DeviceAnimation
-                                type="ROTATE"
-                                height="34px"
-                                width="24px"
-                                deviceModelInternal={selectedDeviceModelInternal}
-                                deviceUnitColor={selectedDevice?.features?.unit_color}
-                            />
-                        )}
+            <DeviceStatusWithLabel />
 
-                        {selectedDeviceModelInternal !== DeviceModelInternal.T2B1 && (
-                            <StyledImage
-                                alt="Trezor"
-                                image={`TREZOR_${selectedDeviceModelInternal}`}
-                            />
-                        )}
-                    </DeviceWrapper>
-
-                    <DeviceDetail>
-                        <DeviceLabel>{selectedDevice.label}</DeviceLabel>
-
-                        <DeviceStatusText
-                            onRefreshClick={handleRefreshClick}
-                            device={selectedDevice}
-                            walletLabel={
-                                walletLabel === undefined || walletLabel.trim() === ''
-                                    ? defaultWalletLabel
-                                    : walletLabel
-                            }
-                        />
-                    </DeviceDetail>
-
-                    {selectedDevice.state && (
-                        <CaretContainer>
-                            <Icon size={20} icon="CARET_CIRCLE_DOWN" />
-                        </CaretContainer>
-                    )}
-                </>
+            {selectedDevice && selectedDevice.state && (
+                <CaretContainer>
+                    <Icon size={20} icon="CARET_CIRCLE_DOWN" />
+                </CaretContainer>
             )}
         </Wrapper>
     );
