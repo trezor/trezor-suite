@@ -1,5 +1,8 @@
 name: "[Test] suite-native iOS E2E"
-on: [push, pull_request]
+# on: [push, pull_request]
+concurrency:
+  group: ${{ github.workflow }}
+  cancel-in-progress: true
 
 jobs:
   build-ios-app:
@@ -13,7 +16,7 @@ jobs:
       - name: set Xcode version
         uses: maxim-lobanov/setup-xcode@v1
         with:
-          xcode-version: '14.3.1'
+          xcode-version: "14.2.0"
 
       # - name: Get build hash
       #   id: get_build_hash
@@ -43,7 +46,7 @@ jobs:
 
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
-        run: yarn prebuild --clean
+        run: yarn prebuild --clean --platform ios
 
       - name: Detox build
         run: yarn build:e2e ios.sim.release
