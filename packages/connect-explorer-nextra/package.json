@@ -28,7 +28,7 @@
         "redux": "^4.2.1",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.4.2",
-        "styled-components": "^5.3.10"
+        "styled-components": "^6.1.8"
     },
     "devDependencies": {
         "@types/redux-logger": "^3.0.11"
