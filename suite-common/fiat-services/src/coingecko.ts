@@ -1,5 +1,5 @@
 import { networks } from '@suite-common/wallet-config';
-import { LastWeekRates, TickerId } from '@suite-common/wallet-types';
+import { HistoricRates, TickerId } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { RateLimiter } from './limiter';
@@ -10,7 +10,7 @@ const COINGECKO_API_BASE_URL = 'https://cdn.trezor.io/dynamic/coingecko/api/v3';
 
 const ONE_DAY_IN_MS = 24 * 60 * 60 * 1000;
 
-interface HistoricalResponse extends LastWeekRates {
+interface HistoricalResponse extends HistoricRates {
     symbol: string;
 }
 

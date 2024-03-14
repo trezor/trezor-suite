@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import BigNumber from 'bignumber.js';
 
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
-import { selectDeviceSupportedNetworks, selectFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectDeviceSupportedNetworks } from '@suite-common/wallet-core';
 
 import { NETWORKS } from 'src/config/wallet';
 import { DashboardSection } from 'src/components/dashboard';
@@ -63,23 +63,19 @@ const useAssetsFiatBalances = (
     accounts: { [key: string]: Account[] },
 ) => {
     const localCurrency = useSelector(selectLocalCurrency);
-    const fiatRates = useSelector(selectFiatRates);
+    const currentRiatRates = useSelector(selectCurrentFiatRates);
 
     return assetsData.reduce<AssetFiatBalance[]>((acc, asset) => {
         if (!asset) return acc;
 
         const fiatRateKey = getFiatRateKey(asset.symbol as NetworkSymbol, localCurrency);
-        const fiatRate = fiatRates?.[fiatRateKey];
-        const fiatBalance =
-            toFiatCurrency(
-                accounts[asset.symbol]
-                    .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
-                    .toString() ?? '0',
-                localCurrency,
-                fiatRate,
-                2,
-                false,
-            ) ?? '0';
+        const fiatRate = currentRiatRates?.[fiatRateKey];
+        const amount =
+            accounts[asset.symbol]
+                .reduce((balance, account) => balance + Number(account.formattedBalance), 0)
+                .toString() ?? '0';
+
+        const fiatBalance = toFiatCurrency(amount, fiatRate?.rate, 2) ?? '0';
 
         return [...acc, { fiatBalance, symbol: asset.symbol }];
     }, []);

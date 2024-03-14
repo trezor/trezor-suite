@@ -3,14 +3,16 @@ import BigNumber from 'bignumber.js';
 
 import {
     formatNetworkAmount,
+    getFiatRateKey,
     isTestnet,
+    roundTimestampToNearestPastHour,
     sumTransactions,
     sumTransactionsFiat,
 } from '@suite-common/wallet-utils';
 import { useFormatters } from '@suite-common/formatters';
 import { variables, CollapsibleBox } from '@trezor/components';
 
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { WalletAccountTransaction } from 'src/types/wallet/index';
 import { HiddenPlaceholder, Translation } from 'src/components/suite';
@@ -28,6 +30,9 @@ import {
     TxTypeIconWrapper,
 } from './CommonComponents';
 import { borders } from '@trezor/theme';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { Timestamp } from '@suite-common/wallet-types';
 
 const CryptoAmount = styled(StyledFormattedCryptoAmount)`
     width: unset;
@@ -153,7 +158,7 @@ const StyledCollapsibleBox = styled(CollapsibleBox)<{ $isPending: boolean }>`
 
 type CoinjoinBatchItemProps = {
     transactions: WalletAccountTransaction[];
-    localCurrency: string;
+    localCurrency: FiatCurrencyCode;
     isPending: boolean;
 };
 
@@ -163,10 +168,17 @@ export const CoinjoinBatchItem = ({
     isPending,
 }: CoinjoinBatchItemProps) => {
     const lastTx = transactions[0];
-    const amount = sumTransactions(transactions);
-    const fiatAmount = sumTransactionsFiat(transactions, localCurrency);
     const { FiatAmountFormatter } = useFormatters();
-    const isMissingFiatRates = transactions.some(tx => !tx.rates?.[localCurrency]);
+    const historicFiatRates = useSelector(selectHistoricFiatRates);
+    const amount = sumTransactions(transactions);
+    const fiatAmount = sumTransactionsFiat(transactions, localCurrency, historicFiatRates);
+    const isMissingFiatRates = transactions.some(tx => {
+        const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency);
+        const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+        const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
+
+        return historicRate === undefined || historicRate === 0;
+    });
 
     return (
         <StyledCollapsibleBox

@@ -7,16 +7,16 @@ import {
     GraphData,
 } from 'src/types/wallet/graph';
 import { ObjectType, TypeName, sumFiatValueMapInPlace } from './utilsShared';
-import type { FiatRatesLegacy } from '@trezor/connect';
+import type { FiatRatesBySymbol } from '@trezor/connect';
 import { toFiatCurrency } from '@suite-common/wallet-utils';
 
 const calcFiatValueMap = (
     amount: string,
-    rates: FiatRatesLegacy,
+    rates: FiatRatesBySymbol,
 ): { [k: string]: string | undefined } => {
     const fiatValueMap: { [k: string]: string | undefined } = {};
     Object.keys(rates).forEach(fiatSymbol => {
-        fiatValueMap[fiatSymbol] = toFiatCurrency(amount, fiatSymbol, rates) ?? '0';
+        fiatValueMap[fiatSymbol] = toFiatCurrency(amount, rates?.['usd']) ?? '0';
     });
 
     return fiatValueMap;

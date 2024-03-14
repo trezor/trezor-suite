@@ -8,10 +8,17 @@ import {
     FiatRateKey,
     Rate,
     TickerId,
-    FiatRates,
     RateTypeWithoutHistoric,
+    Timestamp,
+    TokenAddress,
+    RatesByKey,
+    RatesByTimestamps,
 } from '@suite-common/wallet-types';
-import { getFiatRateKey, getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
+import {
+    getFiatRateKey,
+    getFiatRateKeyFromTicker,
+    roundTimestampToNearestPastHour,
+} from '@suite-common/wallet-utils';
 
 import {
     AccountsRootState,
@@ -24,10 +31,11 @@ import { FiatRatesRootState } from './fiatRatesTypes';
 
 type UnixTimestamp = number;
 
-export const selectFiatRates = (
-    state: FiatRatesRootState,
-    rateType: RateTypeWithoutHistoric = 'current',
-): FiatRates | undefined => state.wallet.fiat?.[rateType];
+export const selectCurrentFiatRates = (state: FiatRatesRootState): RatesByKey | undefined =>
+    state.wallet.fiat?.['current'];
+
+export const selectHistoricFiatRates = (state: FiatRatesRootState): RatesByTimestamps | undefined =>
+    state.wallet.fiat?.['historic'];
 
 export const selectFiatRatesByFiatRateKey = (
     state: FiatRatesRootState,
@@ -128,6 +136,7 @@ export const selectTransactionsWithMissingRates = (
     localCurrency: FiatCurrencyCode,
 ) => {
     const accountTransactions = selectTransactions(state);
+    const historicFiatRates = selectHistoricFiatRates(state);
 
     return pipe(
         accountTransactions,

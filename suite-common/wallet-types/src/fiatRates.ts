@@ -1,4 +1,4 @@
-import type { FiatRatesLegacy } from '@trezor/connect';
+import type { FiatRatesBySymbol } from '@trezor/connect';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
@@ -9,18 +9,12 @@ export interface TickerId {
     tokenAddress?: TokenAddress;
 }
 
-export interface CurrentFiatRates {
-    symbol: string;
-    rates: FiatRatesLegacy;
-    ts: number;
-}
-
 export interface TimestampedRates {
-    rates: FiatRatesLegacy;
+    rates: FiatRatesBySymbol;
     ts: number;
 }
 
-export interface LastWeekRates {
+export interface HistoricRates {
     symbol: string;
     tickers: TimestampedRates[];
     ts: number;
@@ -42,7 +36,7 @@ export type Rate = {
     ticker: TickerId;
 };
 
-export type fiatRatesResult = {
+export type FiatRatesResult = {
     rate?: number;
     lastTickerTimestamp: Timestamp;
 };
@@ -54,3 +48,5 @@ export type TickerResult = {
 };
 
 export type FiatRates = Record<FiatRateKey, Rate>;
+export type RatesByKey = Record<FiatRateKey, Rate>;
+export type RatesByTimestamps = Record<FiatRateKey, Record<Timestamp, number>>;

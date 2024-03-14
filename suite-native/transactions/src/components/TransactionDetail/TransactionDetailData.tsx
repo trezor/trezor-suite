@@ -104,7 +104,7 @@ export const TransactionDetailData = ({
                                 variant="body"
                                 color="textDefault"
                             />
-                            {transaction.rates && (
+                            {historicRate !== undefined && historicRate !== 0 && (
                                 <Box flexDirection="row">
                                     <Text variant="hint" color="textSubdued">
                                         ≈{' '}

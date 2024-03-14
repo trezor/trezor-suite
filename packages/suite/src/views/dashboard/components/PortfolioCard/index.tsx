@@ -18,7 +18,7 @@ import { Header } from './components/Header';
 import { Exception } from './components/Exception';
 import { EmptyWallet } from './components/EmptyWallet';
 import { DashboardGraph } from './components/DashboardGraph';
-import { selectFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const Body = styled.div`
@@ -46,7 +46,7 @@ const Wrapper = styled.div`
 `;
 
 const PortfolioCard = memo(() => {
-    const rates = useSelector(selectFiatRates);
+    const currentRiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
@@ -54,7 +54,7 @@ const PortfolioCard = memo(() => {
     const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
-    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, rates).toString();
+    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, currentRiatRates).toString();
 
     const discoveryStatus = getDiscoveryStatus();
 

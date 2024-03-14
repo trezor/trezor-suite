@@ -6,17 +6,21 @@ import {
     formatAmount,
     formatNetworkAmount,
     isNftTokenTransfer,
+    getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { ArrayElement } from '@trezor/type-utils';
 import { FiatValue, Translation, MetadataLabeling, AddressLabeling } from 'src/components/suite';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { TokenTransferAddressLabel } from './TokenTransferAddressLabel';
 import { TargetAddressLabel } from './TargetAddressLabel';
 import { AccountLabels } from 'src/types/suite/metadata';
 import { TransactionTargetLayout } from '../TransactionTargetLayout';
 import { StyledFormattedCryptoAmount, StyledFormattedNftAmount } from '../CommonComponents';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 interface BaseTransfer {
     singleRowLayout?: boolean;
@@ -37,6 +41,16 @@ export const TokenTransfer = ({
     isPhishingTransaction,
     ...baseLayoutProps
 }: TokenTransferProps) => {
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatRateKey = getFiatRateKey(
+        transaction.symbol,
+        fiatCurrencyCode,
+        transfer.contract as TokenAddress,
+    );
+    const historicRate = useSelector(state =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
+    );
+
     const operation = getTxOperation(transfer.type);
     const isNft = isNftTokenTransfer(transfer);
 
@@ -62,6 +76,16 @@ export const TokenTransfer = ({
                     />
                 )
             }
+            fiatAmount={
+                !isTestnet(transaction.symbol) && transfer.amount ? (
+                    <FiatValue
+                        amount={formatAmount(transfer.amount, transfer.decimals)}
+                        symbol={transaction.symbol}
+                        historicRate={historicRate}
+                        useHistoricRate
+                    />
+                ) : undefined
+            }
         />
     );
 };
@@ -76,6 +100,12 @@ export const InternalTransfer = ({
     transaction,
     ...baseLayoutProps
 }: InternalTransferProps) => {
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
+    const historicRate = useSelector(state =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
+    );
+
     const amount = transfer.amount && formatNetworkAmount(transfer.amount, transaction.symbol);
     const operation = getTxOperation(transfer.type);
 
@@ -99,8 +129,8 @@ export const InternalTransfer = ({
                     <FiatValue
                         amount={amount}
                         symbol={transaction.symbol}
-                        source={transaction.rates}
-                        useCustomSource
+                        historicRate={historicRate}
+                        useHistoricRate
                     />
                 ) : undefined
             }
@@ -127,6 +157,12 @@ export const TransactionTarget = ({
     ...baseLayoutProps
 }: TransactionTargetProps) => {
     const dispatch = useDispatch();
+
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
+    const historicRate = useSelector(state =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
+    );
 
     const targetAmount = getTargetAmount(target, transaction);
     const operation = getTxOperation(transaction.type);
@@ -197,8 +233,8 @@ export const TransactionTarget = ({
                     <FiatValue
                         amount={targetAmount}
                         symbol={transaction.symbol}
-                        source={transaction.rates}
-                        useCustomSource
+                        historicRate={historicRate}
+                        useHistoricRate
                     />
                 ) : undefined
             }

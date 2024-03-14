@@ -109,8 +109,7 @@ export const TransactionDetailHeader = ({
                         />
                     )}
                 </Box>
-
-                {transaction.rates && (
+                {historicRate !== undefined && historicRate !== 0 && (
                     <Box flexDirection="row">
                         <Text>≈ </Text>
                         {tokenTransfer ? (

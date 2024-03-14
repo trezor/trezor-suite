@@ -1,7 +1,7 @@
 import type {
     ServerInfo,
     BlockEvent,
-    FiatRatesLegacy,
+    FiatRatesBySymbol,
     NotificationEvent,
 } from '@trezor/blockchain-link';
 import type { CoinInfo } from '../types/coinInfo';
@@ -49,7 +49,7 @@ export interface BlockchainNotification {
 
 export interface BlockchainFiatRatesUpdate {
     coin: CoinInfo;
-    rates: FiatRatesLegacy;
+    rates: FiatRatesBySymbol;
 }
 
 export type BlockchainEvent =

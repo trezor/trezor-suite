@@ -805,6 +805,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         db.createObjectStore('historicRates');
 
         await updateAll(transaction, 'txs', tx => {
+            // @ts-expect-error
             delete tx.tx.rates;
 
             return tx;

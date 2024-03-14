@@ -1,17 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { FiatRatesLegacy } from '@trezor/connect';
-import { Rate } from '@suite-common/wallet-types';
-
-export const toFiatCurrency = (
-    amount: string,
-    fiatCurrency: string,
-    fiatRate: FiatRatesLegacy | Rate | undefined,
-    decimals = 2,
-    legacy = true,
-) => {
-    // calculate amount in local currency
-    const rate = legacy ? (fiatRate as FiatRatesLegacy)?.[fiatCurrency] : fiatRate?.rate;
+export const toFiatCurrency = (amount: string, rate?: number, decimals = 2) => {
     if (!rate) {
         return null;
     }
@@ -29,14 +18,7 @@ export const toFiatCurrency = (
     return decimals === -1 ? localAmount.toFixed() : localAmount.toFixed(decimals);
 };
 
-export const fromFiatCurrency = (
-    localAmount: string,
-    fiatCurrency: string,
-    fiatRate: FiatRatesLegacy | Rate | undefined,
-    decimals: number,
-    legacy = true,
-) => {
-    const rate = legacy ? (fiatRate as FiatRatesLegacy)?.[fiatCurrency] : fiatRate?.rate;
+export const fromFiatCurrency = (localAmount: string, decimals: number, rate?: number) => {
     if (!rate) {
         return null;
     }

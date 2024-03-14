@@ -270,13 +270,7 @@ export const useCoinmarketSellForm = ({
             const currency: typeof defaultCurrency | undefined = getValues(FIAT_CURRENCY_SELECT);
             if (!fiatRate?.rate || !currency) return;
 
-            const cryptoValue = fromFiatCurrency(
-                amount,
-                currency.value.toLowerCase(),
-                fiatRate,
-                network.decimals,
-                false,
-            );
+            const cryptoValue = fromFiatCurrency(amount, network.decimals, fiatRate.rate);
             const cryptoInputValue =
                 cryptoValue && shouldSendInSats
                     ? amountToSatoshi(cryptoValue, network.decimals)
