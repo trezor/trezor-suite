@@ -1,10 +1,11 @@
-import { Card, Text } from '@trezor/components';
+import { Card, Icon, Text, useElevation } from '@trezor/components';
 import { Translation } from '../../components/suite';
 import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
+import { Elevation, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
 import { breakpointMediaQueries } from '@trezor/styles';
 import { PriceChartLine } from './PriceChartLine';
 import { DeviceStatusWithLabel } from '../../components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatusWithLabel';
+import { ReactNode } from 'react';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -16,6 +17,29 @@ const StyledCard = styled(Card)`
 `;
 
 const WindowWithChart = styled.div``;
+
+const Callout = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: ${spacingsPx.sm};
+`;
+
+const StyledCircle = styled.div<{ $elevation: Elevation }>`
+    border-radius: 100%;
+    cursor: pointer;
+    background: ${mapElevationToBackground};
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+`;
+
+const Circle = ({ children }: { children: ReactNode }) => {
+    const { elevation } = useElevation();
+
+    return <StyledCircle $elevation={elevation}>{children}</StyledCircle>;
+};
 
 export const RememberWalletCard = () => (
     <StyledCard>
@@ -35,9 +59,17 @@ export const RememberWalletCard = () => (
                             <Text variant="primary">{chunks}</Text>
                         </>
                     ),
-                }} />
+                }}
+            />
         </Text>
 
-        <Translation id="TR_REMEMBER_CARD_EXPLANATION" />
+        <Callout>
+            <Circle>
+                <Icon icon="LINK" size={spacings.xl} />
+            </Circle>
+            <Text>
+                <Translation id="TR_REMEMBER_CARD_EXPLANATION" />
+            </Text>
+        </Callout>
     </StyledCard>
 );
