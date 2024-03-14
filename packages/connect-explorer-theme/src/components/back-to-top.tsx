@@ -1,7 +1,8 @@
-import cn from 'clsx'
-import { ArrowRightIcon } from 'nextra/icons'
 import type { ReactElement } from 'react'
 import { useEffect, useRef } from 'react'
+
+import cn from 'clsx'
+import { ArrowRightIcon } from 'nextra/icons'
 
 function scrollToTop() {
   window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -16,6 +17,7 @@ export function BackToTop({ className }: { className?: string }): ReactElement {
     }
 
     window.addEventListener('scroll', toggleVisible)
+
     return () => {
       window.removeEventListener('scroll', toggleVisible)
     }

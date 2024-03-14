@@ -1,6 +1,7 @@
 import type { Dispatch, ReactElement, ReactNode, SetStateAction } from 'react'
 import 'intersection-observer'
 import { createContext, useContext, useRef, useState } from 'react'
+
 import { IS_BROWSER } from '../constants'
 
 type ActiveAnchor = Record<
@@ -83,6 +84,7 @@ export const ActiveAnchorProvider = ({
           }
 
           if (ret[activeSlug]) ret[activeSlug].isActive = true
+
           return ret
         })
       },
@@ -92,6 +94,7 @@ export const ActiveAnchorProvider = ({
       }
     )
   }
+
   return (
     <ActiveAnchorContext.Provider value={activeAnchor}>
       <SetActiveAnchorContext.Provider value={setActiveAnchor}>

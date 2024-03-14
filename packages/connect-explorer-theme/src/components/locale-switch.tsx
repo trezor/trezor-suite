@@ -1,7 +1,9 @@
+import type { ReactElement } from 'react'
+
 import { addBasePath } from 'next/dist/client/add-base-path'
 import { useRouter } from 'next/router'
 import { GlobeIcon } from 'nextra/icons'
-import type { ReactElement } from 'react'
+
 import { useConfig } from '../contexts'
 import { Select } from './select'
 
@@ -21,6 +23,7 @@ export function LocaleSwitch({
   if (!options.length) return null
 
   const selected = options.find(l => locale === l.locale)
+
   return (
     <Select
       title="Change language"

@@ -1,6 +1,7 @@
-import cn from 'clsx'
 import type { ReactElement, ReactNode } from 'react'
 import { useEffect, useRef } from 'react'
+
+import cn from 'clsx'
 
 export function Collapse({
   children,

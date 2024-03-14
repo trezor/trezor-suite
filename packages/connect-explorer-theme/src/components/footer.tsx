@@ -1,11 +1,14 @@
-import cn from 'clsx'
 import type { ReactElement } from 'react'
+
+import cn from 'clsx'
+
 import { useConfig } from '../contexts'
 import { renderComponent } from '../utils'
 import { LocaleSwitch } from './locale-switch'
 
 export function Footer({ menu }: { menu?: boolean }): ReactElement {
   const config = useConfig()
+
   return (
     <footer className="nx-bg-gray-100 nx-pb-[env(safe-area-inset-bottom)] dark:nx-bg-neutral-900 print:nx-bg-transparent">
       <div

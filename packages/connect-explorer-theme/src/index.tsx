@@ -3,7 +3,6 @@ import { useMemo } from 'react';
 
 import { useRouter } from 'next/router';
 import type { NextraThemeLayoutProps, PageOpts } from 'nextra';
-
 import 'focus-visible';
 import cn from 'clsx';
 import { useFSRoute, useMounted } from 'nextra/hooks';
@@ -221,6 +220,7 @@ const InnerLayout = ({
     );
 };
 
+// eslint-disable-next-line import/no-default-export
 export default function Layout({ children, ...context }: NextraThemeLayoutProps): ReactElement {
     return (
         <ConfigProvider value={context}>

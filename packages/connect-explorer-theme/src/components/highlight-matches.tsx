@@ -1,6 +1,7 @@
-import escapeStringRegexp from 'escape-string-regexp'
 import type { ReactElement, ReactNode } from 'react'
 import { memo } from 'react'
+
+import escapeStringRegexp from 'escape-string-regexp'
 
 type MatchArgs = {
   value?: string

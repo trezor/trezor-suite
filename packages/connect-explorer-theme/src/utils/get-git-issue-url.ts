@@ -26,5 +26,6 @@ export const getGitIssueUrl = ({
       repo.name
     }/issues/new?title=${encodeURIComponent(title)}&labels=${labels || ''}`
   }
+
   return '#'
 }

@@ -1,8 +1,10 @@
-import cn from 'clsx'
-import type { Heading } from 'nextra'
 import type { ReactElement } from 'react'
 import { useEffect, useMemo, useRef } from 'react'
+
+import cn from 'clsx'
+import type { Heading } from 'nextra'
 import scrollIntoView from 'scroll-into-view-if-needed'
+
 import { useActiveAnchor, useConfig } from '../contexts'
 import { renderComponent } from '../utils'
 import { Anchor } from './anchor'

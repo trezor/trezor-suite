@@ -1,9 +1,11 @@
+import type { ReactElement, ReactNode } from 'react'
+import { createContext, useContext, useState } from 'react'
+
 import { ThemeProvider } from 'next-themes'
 import type { FrontMatter, PageMapItem, PageOpts } from 'nextra'
 import { metaSchema } from 'nextra/normalize-pages'
-import type { ReactElement, ReactNode } from 'react'
-import { createContext, useContext, useState } from 'react'
 import type { ZodError } from 'zod'
+
 import type { DocsThemeConfig } from '../constants'
 import { DEEP_OBJECT_KEYS, DEFAULT_THEME, themeSchema } from '../constants'
 import type { Context } from '../types'
@@ -36,6 +38,7 @@ function normalizeZodMessage(error: unknown): string {
         issue.path.length > 0 && `Path: "${issue.path.join('.')}"`
       const unionErrors =
         'unionErrors' in issue ? issue.unionErrors.map(normalizeZodMessage) : []
+
       return [
         [issue.message, themePath].filter(Boolean).join('. '),
         ...unionErrors
