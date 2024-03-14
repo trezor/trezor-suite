@@ -35,12 +35,12 @@ const PhishingBanner = styled.div`
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
     border-radius: ${borders.radii.xs};
     background: ${({ theme }) => theme.backgroundAlertRedBold};
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.textDefaultInverted};
     ${typography.hint};
 `;
 
 const HelpLink = styled(TrezorLink)`
-    color: ${({ theme }) => theme.textDefault};
+    color: ${({ theme }) => theme.textDefaultInverted};
     ${typography.hint}
 `;
 
