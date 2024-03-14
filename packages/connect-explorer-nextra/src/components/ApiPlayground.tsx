@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
 import { TSchema } from '@sinclair/typebox';
 
-import { Card, CollapsibleBox, variables } from '@trezor/components';
+import { Card, CollapsibleBox, SelectBar, variables } from '@trezor/components';
 
 import { Method } from './Method';
 import { useActions } from '../hooks';
 import * as methodActions from '../actions/methodActions';
+import { MethodState } from '../reducers/methodCommon';
 
 const ApiPlaygroundWrapper = styled(Card)`
     display: block;
@@ -34,20 +35,49 @@ const ApiPlaygroundWrapper = styled(Card)`
 `;
 
 interface ApiPlaygroundProps {
-    method: string;
-    schema: TSchema;
+    options: (
+        | {
+              title: string;
+              schema: TSchema;
+              method: string;
+          }
+        | {
+              title: string;
+              legacyConfig: Partial<MethodState>;
+          }
+    )[];
 }
-export const ApiPlayground = ({ method, schema }: ApiPlaygroundProps) => {
+export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
+    const [selectedOption, setSelectedOption] = useState(0);
     const actions = useActions({
         onSetSchema: methodActions.onSetSchema,
+        onSetMethod: methodActions.onSetMethod,
     });
     useEffect(() => {
-        actions.onSetSchema(method, schema);
-    }, [actions, method, schema]);
+        const option = options[selectedOption];
+        if ('legacyConfig' in option) {
+            actions.onSetMethod(option.legacyConfig);
+        } else {
+            const { method, schema } = option;
+            actions.onSetSchema(method, schema);
+        }
+    }, [actions, options, selectedOption]);
 
     return (
         <ApiPlaygroundWrapper>
             <CollapsibleBox heading="Method testing tool" variant="large">
+                {options.length > 1 && (
+                    <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
+                        <SelectBar
+                            selectedOption={selectedOption}
+                            onChange={(index: number) => setSelectedOption(index)}
+                            options={options.map((option, index) => ({
+                                value: index,
+                                label: option.title,
+                            }))}
+                        />
+                    </div>
+                )}
                 <Method />
             </CollapsibleBox>
         </ApiPlaygroundWrapper>

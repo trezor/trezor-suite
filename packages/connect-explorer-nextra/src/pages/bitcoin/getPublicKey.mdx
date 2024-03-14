@@ -3,8 +3,22 @@ import { Param } from '../../components/Param';
 import { ParamsTable } from '../../components/ParamsTable';
 import { GetPublicKey } from '@trezor/connect/src/types/api/getPublicKey';
 import { Bundle } from '@trezor/connect/src/types/params';
+import { Type } from '@trezor/schema-utils';
+import config from '../../data/methods/bitcoin/getPublicKey.ts';
 
-<ApiPlayground method="getPublicKey" schema={Bundle(GetPublicKey)} />
+<ApiPlayground
+    options={[
+        {
+            title: 'Simplified',
+            method: 'getPublicKey',
+            schema: Type.Pick(GetPublicKey, ['path', 'coin', 'showOnTrezor']),
+        },
+        { title: 'Full', method: 'getPublicKey', schema: GetPublicKey },
+        { title: 'Bundle', method: 'getPublicKey', schema: Bundle(GetPublicKey) },
+        { title: 'Legacy config', legacyConfig: config[0] },
+        { title: 'Legacy bundle', legacyConfig: config[1] },
+    ]}
+/>
 
 ## Get public key
 

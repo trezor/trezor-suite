@@ -46,6 +46,16 @@ const SingleParam = ({ name, value, schema, topLevelSchema, isTopLevel }: Single
         isRequired = false;
     }
 
+    let description;
+    if (value.description) {
+        description = value.description;
+    } else if (isTopLevel && topLevelSchema?.$id && name) {
+        description = descriptionDictionary[topLevelSchema?.$id + '.' + name];
+    }
+    if (!description && name) {
+        description = descriptionDictionary[name];
+    }
+
     return (
         <>
             <Param
@@ -55,7 +65,7 @@ const SingleParam = ({ name, value, schema, topLevelSchema, isTopLevel }: Single
                 type={typeName}
                 typeLink={typeLink}
                 required={isRequired}
-                description={value.description ?? descriptionDictionary[name]}
+                description={description}
             />
             {hasDescendants && (
                 <div style={{ marginLeft: 30 }}>
