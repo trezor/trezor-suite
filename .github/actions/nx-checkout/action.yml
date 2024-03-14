@@ -8,9 +8,27 @@ runs:
       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
       id: extract_branch
     - name: Fetch develop and some commits for Nx
+      if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
       shell: bash
       # This step should fetch some reasonably small amount branches and commits that Nx affected needs
       # It's much faster than doing git fetch depth=1 of all commits
       run: |
         git fetch origin ${{ steps.extract_branch.outputs.branch }} --deepen=150
         git fetch origin develop --deepen=200
+
+    # For PRs from forks we need to fetch everything or it will fail
+    - name: Fetch everything if it's PR from a fork
+      if: ${{ github.event.pull_request.head.repo.full_name != github.repository }}
+      shell: bash
+      run: |
+        git fetch --prune --unshallow --no-tags
+
+    - name: Derive appropriate SHAs for base and head for `nx affected` commands
+      uses: nrwl/nx-set-shas@v4
+      with:
+        main-branch-name: "develop"
+
+    - run: |
+        echo "BASE: ${{ env.NX_BASE }}"
+        echo "HEAD: ${{ env.NX_HEAD }}"
+      shell: bash
