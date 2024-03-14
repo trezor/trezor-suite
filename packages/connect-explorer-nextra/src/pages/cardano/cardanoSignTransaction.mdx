@@ -3,7 +3,7 @@ import { Param } from '../../components/Param';
 import { ParamsTable } from '../../components/ParamsTable';
 import { CardanoSignTransaction } from '@trezor/connect/src/types/api/cardano';
 
-<ApiPlayground method="cardanoSignTransaction" schema={CardanoSignTransaction} />
+<ApiPlayground options={[{ method: 'cardanoSignTransaction', schema: CardanoSignTransaction }]} />
 
 ## Cardano: Sign transaction
 

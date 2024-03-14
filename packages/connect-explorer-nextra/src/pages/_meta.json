@@ -1,5 +1,6 @@
 {
     "index": "Home",
     "bitcoin": "Bitcoin",
-    "cardano": "Cardano"
+    "cardano": "Cardano",
+    "other": "Other"
 }
