@@ -104,7 +104,7 @@ suite web migrations:
     CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
   parallel:
     matrix:
-      - TEST_GROUP: "@group:migrations"
+      - TEST_GROUP: "@group_migrations"
         CONTAINERS: "trezor-user-env-unix"
 
 suite web:
