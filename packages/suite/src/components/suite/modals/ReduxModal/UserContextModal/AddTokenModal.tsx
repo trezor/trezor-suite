@@ -134,7 +134,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 </Button>
             }
         >
-            <StyledP type="hint">
+            <StyledP typographyStyle="hint">
                 <Translation id="TR_ADD_TOKEN_DESCRIPTION" />
             </StyledP>
             <Input

@@ -42,7 +42,7 @@ export const WordAdvancedModal = ({ count, ...rest }: WordAdvancedModalProps) =>
             <ContentWrapper>
                 <WordInputAdvanced count={count} />
                 <BottomText>
-                    <Paragraph type="label">
+                    <Paragraph typographyStyle="label">
                         <Translation id="TR_ADVANCED_RECOVERY_NOT_SURE" />{' '}
                         <TrezorLink type="label" href={HELP_CENTER_ADVANCED_RECOVERY_URL}>
                             <Translation id="TR_LEARN_MORE" />

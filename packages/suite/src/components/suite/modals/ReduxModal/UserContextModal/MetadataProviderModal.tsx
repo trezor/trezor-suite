@@ -128,7 +128,7 @@ export const MetadataProviderModal = ({ onCancel, decision }: MetadataProviderMo
                 </Wrapper>
             }
         >
-            <StyledP type="hint">
+            <StyledP typographyStyle="hint">
                 <Translation id="METADATA_MODAL_DESCRIPTION" />
             </StyledP>
             {error && <Error>{error}</Error>}

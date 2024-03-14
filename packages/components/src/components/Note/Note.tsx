@@ -30,7 +30,7 @@ export const Note = ({ children, className }: NoteProps) => {
     return (
         <Row className={className}>
             <InfoIcon icon="INFO" size={14} color={theme.textSubdued} />
-            <StyledParagraph type="hint" $color={theme.textSubdued}>
+            <StyledParagraph typographyStyle="hint" $color={theme.textSubdued}>
                 {children}
             </StyledParagraph>
         </Row>

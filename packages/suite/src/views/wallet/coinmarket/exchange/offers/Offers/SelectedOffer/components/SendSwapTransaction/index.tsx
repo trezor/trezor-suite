@@ -354,7 +354,7 @@ const SendSwapTransactionComponent = () => {
                     <Translation id="TR_EXCHANGE_SWAP_DATA" />
                 </LabelText>
                 <BreakableValue>
-                    <Paragraph type="hint">
+                    <Paragraph typographyStyle="hint">
                         <Truncate>{dexTx.data}</Truncate>
                     </Paragraph>
                 </BreakableValue>

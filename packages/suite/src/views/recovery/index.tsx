@@ -146,7 +146,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
             case 'initial':
                 return (
                     <>
-                        <LeftAlignedP type="hint">
+                        <LeftAlignedP typographyStyle="hint">
                             <Translation id={seedBackupLengthMessage} />
                         </LeftAlignedP>
 
@@ -217,7 +217,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                 return modal.context !== '@modal/context-none' ? (
                     <>
                         {device.features.capabilities.includes('Capability_PassphraseEntry') && (
-                            <LeftAlignedP type="hint">
+                            <LeftAlignedP typographyStyle="hint">
                                 <Translation id="TR_ENTER_SEED_WORDS_ON_DEVICE" />
                             </LeftAlignedP>
                         )}
@@ -233,7 +233,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         <H2 data-test="@recovery/success-title">
                             <Translation id="TR_SEED_CHECK_SUCCESS_TITLE" />
                         </H2>
-                        <StyledP type="hint">
+                        <StyledP typographyStyle="hint">
                             <Translation id="TR_SEED_CHECK_SUCCESS_DESC" />
                         </StyledP>
                     </VerticalCenter>
@@ -243,7 +243,7 @@ export const Recovery = ({ onCancel }: ForegroundAppProps) => {
                         <H2>
                             <Translation id="TR_SEED_CHECK_FAIL_TITLE" />
                         </H2>
-                        <StyledP type="hint">
+                        <StyledP typographyStyle="hint">
                             <Translation
                                 id="TR_RECOVERY_ERROR"
                                 values={{ error: recovery.error }}

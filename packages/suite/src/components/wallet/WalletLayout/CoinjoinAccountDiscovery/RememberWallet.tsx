@@ -34,7 +34,7 @@ export const RememberWallet = ({ isChecked, onChange }: RememberWalletProps) => 
     <Container>
         <StyledImage image="FOLDER" width={50} />
         <Middle>
-            <Paragraph type="titleSmall">
+            <Paragraph typographyStyle="titleSmall">
                 <Translation id="TR_REMEMBER_WALLET_TITLE" />
             </Paragraph>
             <Note>

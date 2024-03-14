@@ -12,7 +12,7 @@ export const Paragraph: StoryObj<ParagraphProps> = {
         children: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
     },
     argTypes: {
-        type: {
+        typographyStyle: {
             control: 'radio',
             options: [
                 'titleLarge',
