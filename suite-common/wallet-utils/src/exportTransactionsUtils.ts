@@ -144,7 +144,7 @@ const makePdf = (
 const prepareContent = (
     data: Data,
     tokenDefinitions: TokenDefinitions,
-    historicFiatRates: RatesByTimestamps | undefined,
+    historicFiatRates?: RatesByTimestamps,
 ): Fields[] => {
     const { transactions, coin, localCurrency } = data;
 
@@ -293,7 +293,7 @@ const sanitizeCsvValue = (value: string) => {
 const prepareCsv = (
     data: Data,
     tokenDefinitions: TokenDefinitions,
-    historicFiatRates: RatesByTimestamps | undefined,
+    historicFiatRates?: RatesByTimestamps,
 ) => {
     const csvFields: Fields = {
         timestamp: 'Timestamp',
@@ -343,7 +343,7 @@ const prepareCsv = (
 const preparePdf = (
     data: Data,
     tokenDefinitions: TokenDefinitions,
-    historicFiatRates: RatesByTimestamps | undefined,
+    historicFiatRates?: RatesByTimestamps,
 ): TDocumentDefinitions => {
     const pdfFields = {
         dateTime: 'Date & Time',
@@ -438,7 +438,7 @@ const preparePdf = (
 export const formatData = async (
     data: Data,
     tokenDefinitions: TokenDefinitions,
-    historicFiatRates: RatesByTimestamps | undefined,
+    historicFiatRates?: RatesByTimestamps,
 ) => {
     const { coin, type, transactions } = data;
 

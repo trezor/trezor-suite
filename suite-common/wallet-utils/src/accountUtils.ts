@@ -564,7 +564,7 @@ export const enhanceHistory = ({
 export const getTokensFiatBalance = (
     account: Account,
     localCurrency: string,
-    rates: RatesByKey | undefined,
+    rates?: RatesByKey,
     tokens?: Account['tokens'],
 ) => {
     let totalBalance = new BigNumber(0);
@@ -592,7 +592,7 @@ export const getTokensFiatBalance = (
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
-    rates: RatesByKey | undefined,
+    rates?: RatesByKey,
 ) => {
     const coinFiatRateKey = getFiatRateKey(
         account.symbol as NetworkSymbol,
@@ -618,7 +618,7 @@ export const getAccountFiatBalance = (
 export const getTotalFiatBalance = (
     deviceAccounts: Account[],
     localCurrency: string,
-    rates: RatesByKey | undefined,
+    rates?: RatesByKey,
 ) => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
