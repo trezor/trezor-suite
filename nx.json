@@ -2,11 +2,9 @@
     "extends": "nx/presets/npm.json",
     "namedInputs": {
         "sharedGlobals": [
-            "{workspaceRoot}/nx.json",
             "{workspaceRoot}/.yarnrc.yml",
             "{workspaceRoot}/patches/*.patch",
-            "{workspaceRoot}/package.json",
-            "{workspaceRoot}/.github/workflows/*.yml"
+            "{workspaceRoot}/package.json"
         ],
         "default": ["{projectRoot}/**/*", "sharedGlobals"],
         "prod": ["default", "!{projectRoot}/**/*.test.{ts,tsx}"]
