@@ -307,7 +307,6 @@ export const onCallFirmwareUpdate = async ({
 
             const languageBlob = await getLanguage({
                 language: targetLanguage,
-                baseUrl: params.baseUrl!,
                 version: device.firmwareRelease.release.version,
                 internal_model: device.features.internal_model,
             });
