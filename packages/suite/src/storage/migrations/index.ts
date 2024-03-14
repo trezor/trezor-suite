@@ -800,4 +800,14 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
         // @ts-expect-error
         backendSettings.delete('tgor');
     }
+
+    if (oldVersion < 45) {
+        db.createObjectStore('historicRates');
+
+        await updateAll(transaction, 'txs', tx => {
+            delete tx.tx.rates;
+
+            return tx;
+        });
+    }
 };
