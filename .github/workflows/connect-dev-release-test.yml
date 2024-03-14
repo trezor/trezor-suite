@@ -5,6 +5,9 @@ permissions:
   contents: read # for actions/checkout
 
 on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
   pull_request:
     paths:
       - "packages/blockchain-link/**"
