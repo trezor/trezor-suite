@@ -130,17 +130,17 @@ in run_tests.js.
 
 At the moment, there are the following tags:
 
--   @group:[string]
+-   @group\_[string]
 -   @retry=[number]
 
 #### @group
 
 Assigning a @group allows run_tests.js script to sort the test files into groups and run them in parallel on CI. At the moment these groups exist:
 
--   `@group:metadata`
--   `@group:device-management`
--   `@group:suite`
--   `@group:settings`
+-   `@group_metadata`
+-   `@group_device-management`
+-   `@group_suite`
+-   `@group_settings`
 
 #### @retry
 
