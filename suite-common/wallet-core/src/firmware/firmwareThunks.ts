@@ -6,21 +6,8 @@ import TrezorConnect, { Device, FirmwareType, Unsuccessful } from '@trezor/conne
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-<<<<<<< HEAD
-import {
-    selectFirmwareChallenge,
-    selectFirmwareHash,
-    selectIntermediaryInstalled,
-    selectIsCustomFirmware,
-    selectPrevDevice,
-    selectTargetRelease,
-    selectUseDevkit,
-} from './firmwareReducer';
-import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-=======
 import { selectUseDevkit } from './firmwareReducer';
-import { firmwareActionsPrefix, firmwareActions } from './firmwareActions';
->>>>>>> d3c859838c (wip: suite)
+import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
 
 const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
@@ -90,13 +77,8 @@ export const checkFirmwareAuthenticity = createThunk(
     },
 );
 
-<<<<<<< HEAD
-export const rebootToBootloader = createThunk(
-    `${FIRMWARE_MODULE_PREFIX}/rebootToBootloader`,
-    async (_, { dispatch, getState, extra }) => {
-=======
 export const firmwareUpdate_v2 = createThunk(
-    `${firmwareActionsPrefix}/firmwareUpdate_v2`,
+    `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate_v2`,
     async (
         { firmwareType, binary }: { firmwareType?: FirmwareType; binary?: ArrayBuffer },
         { dispatch, getState, extra },
@@ -104,7 +86,6 @@ export const firmwareUpdate_v2 = createThunk(
         dispatch(firmwareActions.setStatus('started'));
 
         console.log('firmwareUpdate_v2', firmwareType);
->>>>>>> d3c859838c (wip: suite)
         const {
             selectors: { selectDevice, selectDesktopBinDir },
         } = extra;
@@ -150,6 +131,7 @@ export const firmwareUpdate_v2 = createThunk(
             binary,
         });
 
+        console.log('firmwareUpdateReponse: ', firmwareUpdateReponse);
         if (!firmwareUpdateReponse.success) {
             dispatch(firmwareActions.setStatus('error'));
             dispatch(firmwareActions.setError(firmwareUpdateReponse.payload.error));

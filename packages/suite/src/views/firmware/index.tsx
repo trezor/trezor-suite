@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
-
 import styled from 'styled-components';
 
 import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import { TrezorDevice } from 'src/types/suite';
 import {
     CheckSeedStep,
     FirmwareCloseButton,
@@ -17,7 +14,7 @@ import {
 import { Translation, Modal } from 'src/components/suite';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DEVICE, DeviceModelInternal, UI } from '@trezor/connect';
 
 const Wrapper = styled.div<{ $isWithTopPadding: boolean }>`
     display: flex;
@@ -55,10 +52,29 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
-    const deviceModelInternal = device?.features?.internal_model;
+    const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
     // Device will be wiped because Universal and Bitcoin-only firmware have different vendor headers on T2B1 or later devices.
     const deviceWillBeWiped =
         shouldSwitchFirmwareType && deviceModelInternal === DeviceModelInternal.T2B1;
+    const confirmOnDevice =
+        (uiEvent?.type === UI.FIRMWARE_RECONNECT && uiEvent.payload.bootloader) ||
+        (uiEvent?.type === DEVICE.BUTTON &&
+            uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
+    const showConfirmationPill =
+        uiEvent &&
+        !(uiEvent.type === UI.FIRMWARE_PROGRESS && uiEvent.payload.operation === 'downloading') &&
+        !(uiEvent.type === DEVICE.BUTTON && uiEvent.payload.code === 'ButtonRequest_Other');
+    const showReconnectPrompt =
+        (uiEvent?.type === DEVICE.BUTTON && uiEvent.payload.code === 'ButtonRequest_Other') ||
+        (uiEvent?.type === UI.FIRMWARE_DISCONNECT && uiEvent.payload.manual) ||
+        (uiEvent?.type === UI.FIRMWARE_RECONNECT && uiEvent.payload.manual) ||
+        (device?.mode === 'bootloader' &&
+            status === 'error' &&
+            error === 'Firmware install cancelled' &&
+            uiEvent?.type === DEVICE.BUTTON &&
+            uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
+
+    console.log('IS RENDERED: ', showConfirmationPill);
 
     const onClose = () => {
         if (device?.status !== 'available') {
@@ -67,6 +83,11 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
         dispatch(closeModalApp());
         resetReducer();
     };
+
+    const installTargetFirmware = () =>
+        firmwareUpdate({
+            firmwareType: getTargetFirmwareType(!!shouldSwitchFirmwareType),
+        });
 
     // some of the application states can be reused here.
     // some don't make sense handling here as they are handled somewhere up the tree
@@ -98,7 +119,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
         }
 
         switch (status) {
-            case 'error': {
+            case 'error':
                 return (
                     <OnboardingStepBox
                         image="FIRMWARE"
@@ -110,25 +131,20 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
                         nested
                     />
                 );
-            }
             case 'initial':
                 return (
                     <FirmwareInitial
                         standaloneFwUpdate
                         shouldSwitchFirmwareType={shouldSwitchFirmwareType}
                         willBeWiped={deviceWillBeWiped}
-                        onInstall={firmwareUpdate}
+                        onInstall={installTargetFirmware}
                         onClose={onClose}
                     />
                 );
             case 'check-seed': // triggered from FirmwareInitial
                 return (
                     <CheckSeedStep
-                        onSuccess={() => {
-                            firmwareUpdate({
-                                firmwareType: getTargetFirmwareType(!!shouldSwitchFirmwareType),
-                            });
-                        }}
+                        onSuccess={installTargetFirmware}
                         onClose={onClose}
                         willBeWiped={deviceWillBeWiped}
                     />
@@ -166,11 +182,12 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
         <StyledModal
             isCancelable={isCancelable}
             modalPrompt={
-                uiEvent?.payload?.confirmOnDevice === 'waiting-for-confirmation' && (
+                showConfirmationPill && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={deviceModelInternal}
-                        deviceUnitColor={device?.features?.unit_color}
+                        deviceUnitColor={uiEvent?.payload.device.features?.unit_color}
+                        isConfirmed={!confirmOnDevice}
                     />
                 )
             }
@@ -178,13 +195,15 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
             data-test="@firmware"
             heading={<Translation id={heading} />}
         >
-            <div>status: {status}</div>
-            <ReconnectDevicePrompt
-                expectedDevice={device}
-                requestedMode="normal"
-                onClose={onClose}
-            />
-            <div>
+            {/* <div>status: {status}</div> */}
+            {showReconnectPrompt && (
+                <ReconnectDevicePrompt
+                    requestedMode="bootloader"
+                    onClose={onClose}
+                    onSuccess={installTargetFirmware}
+                />
+            )}
+            {/* <div>
                 event:
                 {(() => {
                     if (!uiEvent) return '';
@@ -209,7 +228,7 @@ export const Firmware = ({ shouldSwitchFirmwareType }: FirmwareProps) => {
 
                     return 'unknonw';
                 })()}
-            </div>
+            </div> */}
 
             <Wrapper $isWithTopPadding={!isCancelable}>{Component}</Wrapper>
         </StyledModal>

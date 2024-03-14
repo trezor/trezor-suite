@@ -1,5 +1,13 @@
 import { FirmwareStatus } from '@suite-common/suite-types';
-import { FirmwareType, UI, DEVICE } from '@trezor/connect';
+import {
+    FirmwareType,
+    UI,
+    DEVICE,
+    FirmwareProgress,
+    FirmwareDisconnect,
+    FirmwareReconnect,
+    DeviceButtonRequest,
+} from '@trezor/connect';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
 import { firmwareActions } from './firmwareActions';
@@ -17,7 +25,7 @@ type FirmwareUpdateCommon = {
     firmwareHashInvalid: string[];
     isCustom: boolean;
     useDevkit: boolean;
-    uiEvent: any;
+    uiEvent?: DeviceButtonRequest | FirmwareProgress | FirmwareDisconnect | FirmwareReconnect;
 };
 
 export type FirmwareUpdateState =

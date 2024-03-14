@@ -20,6 +20,7 @@ import {
     ReconnectDevicePrompt,
     SelectCustomFirmware,
 } from 'src/components/firmware';
+import { DEVICE, UI } from '@trezor/connect';
 
 const StyledModal = styled(Modal)<{ $isNarrow: boolean }>`
     width: ${({ $isNarrow }) => ($isNarrow ? '450px' : '620px')};
@@ -37,29 +38,40 @@ export const FirmwareCustom = () => {
 
     const dispatch = useDispatch();
 
-    const { setStatus, firmwareUpdate, resetReducer, status, error } = useFirmware();
-    const { device: liveDevice } = useDevice();
-    const liveDeviceModelInternal = liveDevice?.features?.internal_model;
+    const { setStatus, firmwareUpdate, resetReducer, status, error, uiEvent } = useFirmware();
+    const { device } = useDevice();
+    const deviceModelInternal = device?.features?.internal_model;
+
+    const showReconnectPrompt =
+        (uiEvent?.type === DEVICE.BUTTON && uiEvent.payload.code === 'ButtonRequest_Other') ||
+        (uiEvent?.type === UI.FIRMWARE_DISCONNECT && uiEvent.payload.manual) ||
+        (uiEvent?.type === UI.FIRMWARE_RECONNECT && uiEvent.payload.manual) ||
+        (device?.mode === 'bootloader' &&
+            status === 'error' &&
+            error === 'Firmware install cancelled' &&
+            uiEvent?.type === DEVICE.BUTTON &&
+            uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
 
     const onFirmwareSelected = useCallback(
         (fw: ArrayBuffer) => {
             setFirmwareBinary(fw);
             // If there is no firmware installed, check-seed and waiting-for-bootloader steps could be skipped.
-            if (liveDevice?.firmware === 'none') {
+            if (device?.firmware === 'none') {
                 firmwareCustom(fw);
                 // No need to check seed on a device which is not initialized.
-            } else if (liveDevice?.mode === 'initialize') {
+            } else if (device?.mode === 'initialize') {
                 setStatus('waiting-for-bootloader');
             } else {
+                console.log('ELSE');
                 setStatus('check-seed');
             }
         },
-        [liveDevice?.firmware, liveDevice?.mode, setStatus, firmwareCustom],
+        [device?.firmware, device?.mode, setStatus, firmwareCustom],
     );
 
     const onSeedChecked = useCallback(() => {
         firmwareUpdate({ binary: firmwareBinary });
-    }, [setStatus, firmwareBinary]);
+    }, [firmwareUpdate, firmwareBinary]);
 
     const onInstall = useCallback(() => {
         if (firmwareBinary) {
@@ -68,12 +80,12 @@ export const FirmwareCustom = () => {
     }, [firmwareBinary, firmwareUpdate]);
 
     const onClose = useCallback(() => {
-        if (liveDevice?.status !== 'available') {
-            dispatch(acquireDevice(liveDevice));
+        if (device?.status !== 'available') {
+            dispatch(acquireDevice(device));
         }
         dispatch(closeModalApp());
         resetReducer();
-    }, [dispatch, liveDevice, resetReducer]);
+    }, [dispatch, device, resetReducer]);
 
     const shouldDisplayConnectPrompt = (device?: TrezorDevice) =>
         !device?.connected || !device?.features;
@@ -101,10 +113,10 @@ export const FirmwareCustom = () => {
                         />
                     );
                 case 'initial':
-                    return shouldDisplayConnectPrompt(liveDevice) ? (
-                        <ConnectDevicePromptManager device={liveDevice} />
+                    return shouldDisplayConnectPrompt(device) ? (
+                        <ConnectDevicePromptManager device={device} />
                     ) : (
-                        <SelectCustomFirmware device={liveDevice} onSuccess={onFirmwareSelected} />
+                        <SelectCustomFirmware device={device} onSuccess={onFirmwareSelected} />
                     );
                 case 'check-seed':
                     return <CheckSeedStep onSuccess={onSeedChecked} />;
@@ -124,7 +136,7 @@ export const FirmwareCustom = () => {
                 case 'done':
                     return (
                         <FirmwareInstallation
-                            cachedDevice={liveDevice}
+                            cachedDevice={device}
                             standaloneFwUpdate
                             customFirmware
                             onSuccess={onClose}
@@ -136,12 +148,12 @@ export const FirmwareCustom = () => {
                     throw new Error(`state "${status}" is not handled here`);
             }
         },
-        [error, liveDevice, status, onClose, onFirmwareSelected, onInstall, onSeedChecked],
+        [error, device, status, onClose, onFirmwareSelected, onSeedChecked],
     );
 
-    if (liveDevice?.type === 'unacquired') return <DeviceAcquire />;
-    if (liveDevice?.type === 'unreadable') return <DeviceUnreadable />;
-    if (liveDevice && !liveDevice.features) return <DeviceUnknown />;
+    if (device?.type === 'unacquired') return <DeviceAcquire />;
+    if (device?.type === 'unreadable') return <DeviceUnreadable />;
+    if (device && !device.features) return <DeviceUnknown />;
 
     return (
         <StyledModal
@@ -153,13 +165,20 @@ export const FirmwareCustom = () => {
                 status === 'waiting-for-confirmation' && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
-                        deviceModelInternal={liveDeviceModelInternal}
-                        deviceUnitColor={liveDevice?.features?.unit_color}
+                        deviceModelInternal={deviceModelInternal}
+                        deviceUnitColor={device?.features?.unit_color}
                     />
                 )
             }
             data-test="@firmware-custom"
         >
+            {showReconnectPrompt && (
+                <ReconnectDevicePrompt
+                    requestedMode="bootloader"
+                    onClose={onClose}
+                    onSuccess={onInstall}
+                />
+            )}
             <ModalContent>
                 <Step />
             </ModalContent>

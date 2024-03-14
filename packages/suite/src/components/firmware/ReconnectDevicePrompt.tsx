@@ -11,12 +11,10 @@ import {
     DeviceAnimation,
     AnimationDeviceType,
 } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';
-
-import type { TrezorDevice } from 'src/types/suite';
 import { AbortButton } from 'src/components/suite/modals/AbortButton';
 
 const StyledModal = styled(Modal)`
@@ -146,13 +144,7 @@ const HeadingText = ({
     );
 };
 
-const ReconnectLabel = ({
-    requestedMode,
-    device,
-}: {
-    requestedMode: string;
-    device?: TrezorDevice;
-}) => {
+const ReconnectLabel = ({ requestedMode, device }: { requestedMode: string; device?: Device }) => {
     const deviceFwVersion = getFirmwareVersion(device);
     const deviceModelInternal = device?.features?.internal_model;
 
@@ -199,7 +191,7 @@ const RebootDeviceGraphics = ({
     method,
     requestedMode,
 }: {
-    device?: TrezorDevice;
+    device?: Device;
     method: string;
     requestedMode: string;
 }) => {
@@ -234,25 +226,39 @@ const RebootDeviceGraphics = ({
 };
 
 interface ReconnectDevicePromptProps {
-    expectedDevice?: TrezorDevice;
     requestedMode: string;
-    onSuccess?: () => void;
     onClose?: () => void;
+    onSuccess?: () => void;
 }
 
 export const ReconnectDevicePrompt = ({
-    expectedDevice,
     requestedMode,
-    onSuccess,
     onClose,
+    onSuccess,
 }: ReconnectDevicePromptProps) => {
+    const { isWebUSB, error, status, uiEvent } = useFirmware();
     const { device } = useDevice();
-    const { isWebUSB, uiEvent } = useFirmware();
+
+    const getRebootPhase = () => {
+        if (device?.mode === 'bootloader' && uiEvent?.type === DEVICE.BUTTON) {
+            return 'done';
+        }
+
+        return device?.connected ? 'waiting-for-reboot' : 'disconnected';
+    };
+
+    const rebootPhase = getRebootPhase();
+
+    // const device = uiEvent?.payload.device;
 
     // todo!!!
     // this should only consume UI.FIRMWARE_DISCONNECT and UI.FIRMWARE_RECONNECT connct events
-    const rebootMethod = uiEvent?.payload.manual ? ('manual' as const) : ('automatic' as const);
-    const rebootPhase: string = 'done';
+    const rebootMethod =
+        (uiEvent?.type === UI.FIRMWARE_RECONNECT && uiEvent?.payload.manual) ||
+        (uiEvent?.type === UI.FIRMWARE_DISCONNECT && uiEvent?.payload.manual) ||
+        (status === 'error' && error === 'Cancelled')
+            ? ('manual' as const)
+            : ('automatic' as const);
 
     const isRebootAutomatic = rebootMethod === 'automatic';
     const isAnimationVisible = requestedMode === 'bootloader' && rebootPhase !== 'done';
@@ -266,7 +272,7 @@ export const ReconnectDevicePrompt = ({
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={deviceModelInternal}
                         deviceUnitColor={device?.features?.unit_color}
-                        isConfirmed={rebootPhase !== 'wait-for-confirm'}
+                        isConfirmed={uiEvent?.type !== 'button'}
                     />
                 )
             }
@@ -276,7 +282,7 @@ export const ReconnectDevicePrompt = ({
             <Wrapper data-test={`@firmware/reconnect-device/${requestedMode}`}>
                 {isAnimationVisible && (
                     <RebootDeviceGraphics
-                        device={expectedDevice}
+                        device={device}
                         method={rebootMethod}
                         requestedMode={requestedMode}
                     />
@@ -297,7 +303,7 @@ export const ReconnectDevicePrompt = ({
                                 <CenteredPointText>
                                     <Translation
                                         id="TR_CONFIRM_ACTION_ON_YOUR"
-                                        values={{ deviceLabel: expectedDevice?.label }}
+                                        values={{ deviceLabel: device?.label }}
                                     />
                                 </CenteredPointText>
                             ) : (
@@ -319,7 +325,7 @@ export const ReconnectDevicePrompt = ({
                                     >
                                         <ReconnectLabel
                                             requestedMode={requestedMode}
-                                            device={expectedDevice}
+                                            device={device}
                                         />
                                     </ReconnectStep>
                                 </>

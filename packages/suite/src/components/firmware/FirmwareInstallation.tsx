@@ -1,14 +1,13 @@
-import { useCallback, useMemo } from 'react';
 import { Button } from '@trezor/components';
-import { getTextForStatus } from 'src/utils/firmware';
+import { DeviceModelInternal, UI } from '@trezor/connect';
+
 import { Translation, WebUsbButton } from 'src/components/suite';
-import { useDevice, useFirmware } from 'src/hooks/suite';
-import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
+import { useFirmware } from 'src/hooks/suite';
+import { FirmwareOffer, FirmwareProgressBar } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { DeviceModelInternal } from '@trezor/connect';
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;
@@ -26,22 +25,12 @@ export const FirmwareInstallation = ({
     standaloneFwUpdate,
     customFirmware,
     onSuccess,
-    onClose,
 }: FirmwareInstallationProps) => {
-    const { status, resetReducer, isWebUSB, uiEvent } = useFirmware();
+    const { status, resetReducer, isWebUSB, uiEvent, operation, progress } = useFirmware();
     const cachedDeviceModelInternal = cachedDevice?.features?.internal_model;
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
-    const statusIntlId = getTextForStatus(status);
-    const statusText = statusIntlId ? <Translation id={statusIntlId} /> : null;
-
-    const getContinueAction = useCallback(() => {
-        if (status === 'done') {
-            onSuccess();
-        } else {
-            resetReducer();
-        }
-    }, [status, onSuccess, resetReducer]);
+    const continueAction = status === 'done' ? onSuccess : resetReducer;
 
     const getFakeProgressDuration = () => {
         if (cachedDevice?.firmware === 'none') {
@@ -53,30 +42,26 @@ export const FirmwareInstallation = ({
         return cachedDeviceModelInternal === DeviceModelInternal.T1B1 ? 25 : undefined; // 25s for T1B1, no fake progress for updating from older fw on other devices
     };
 
-    const InnerActionComponent = useMemo(() => {
-        if (uiEvent?.type === 'ui-firmware_reconnect') {
+    const getInnerActionComponent = () => {
+        if (uiEvent?.type === UI.FIRMWARE_RECONNECT && uiEvent.payload.manual && isWebUSB) {
             // Device needs to be paired twice when using web usb transport.
             // Once in bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
             // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time paired as a bootloader device).
             // Suite won't detect such a restarted device, which will be now in normal mode, till it is paired again.
-            return isWebUSB && <WebUsbButton />;
+            return <WebUsbButton />;
         }
-        switch (status) {
-            case 'done':
-            case 'partially-done':
-                return (
-                    <Button
-                        variant="primary"
-                        onClick={getContinueAction}
-                        data-test="@firmware/continue-button"
-                    >
-                        <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
-                    </Button>
-                );
-            default:
-                return undefined;
+        if (status === 'done') {
+            return (
+                <Button
+                    variant="primary"
+                    onClick={continueAction}
+                    data-test="@firmware/continue-button"
+                >
+                    <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
+                </Button>
+            );
         }
-    }, [status, uiEvent, isWebUSB, getContinueAction, standaloneFwUpdate]);
+    };
 
     return (
         <>
@@ -91,11 +76,23 @@ export const FirmwareInstallation = ({
                 }
                 device={undefined}
                 isActionAbortable={isActionAbortable}
-                innerActions={InnerActionComponent}
+                innerActions={getInnerActionComponent()}
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                meow
+                {cachedDevice?.firmwareRelease && (
+                    <FirmwareOffer device={cachedDevice} customFirmware={customFirmware} />
+                )}
+
+                {/* Progress bar shown in 'installing', 'wait-for-reboot', 'unplug', 'reconnect-in-normal', 'partially-done', 'done'
+                Also in 'started' if the device has no fw (freshly unpacked device). In this case device won't ask for confirmation
+                and starts installation right away. However it doesn't provide an installation progress till way later (we set status to 'installing' only after receiving UI.FIRMWARE_PROGRESS in firmware reducer)*/}
+                <FirmwareProgressBar
+                    label={operation}
+                    total={100}
+                    current={progress}
+                    fakeProgressDuration={getFakeProgressDuration()} // fake progress bar for T1B1 and devices without fw that will animate progress bar for up to xy seconds of installation
+                />
             </OnboardingStepBox>
         </>
     );
