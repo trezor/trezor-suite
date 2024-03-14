@@ -25,26 +25,27 @@ export type BackendSettings = Partial<{
     }>;
 }>;
 
-interface BlockchainReconnection {
-    time: number; // timestamp when it will be resolved
+export interface ConnectionStatus {
+    connected: boolean;
+    error?: string;
+    reconnectionTime?: number; // timestamp when it will be resolved
 }
 
-export interface Blockchain {
+export interface Blockchain extends ConnectionStatus {
     url?: string;
     explorer: {
         tx: string;
         account: string;
         queryString: string;
     };
-    connected: boolean;
-    subscribed?: boolean;
-    error?: string;
     blockHash: string;
     blockHeight: number;
     version: string;
-    reconnection?: BlockchainReconnection;
     syncTimeout?: Timeout;
     backends: BackendSettings;
+    identityConnections?: {
+        [identity: string]: ConnectionStatus;
+    };
 }
 
 export type BlockchainNetworks = {
