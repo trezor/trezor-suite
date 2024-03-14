@@ -33,8 +33,8 @@ export const en = {
         emptyState: {
             device: {
                 title: 'Your wallet is empty',
-                subtitle:
-                    'You need to get some coins first in Trezor Suite Desktop or Web version.',
+                subtitle: 'Start by receiving some assets.',
+                button: 'Receive assets',
             },
             portfolioTracker: {
                 title: 'Get started',
