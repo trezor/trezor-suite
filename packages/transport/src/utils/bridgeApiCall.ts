@@ -3,7 +3,7 @@ import { success, error, unknownError } from './result';
 import * as ERRORS from '../errors';
 
 import { PROTOCOL_MALFORMED } from '@trezor/protocol';
-import { applyContentTypeHeader } from './applyContentTypeHeader';
+import { applyBridgeApiCallHeaders } from './applyBridgeApiCallHeaders';
 
 export type HttpRequestOptions = {
     body?: Array<any> | Record<string, unknown> | string;
@@ -13,8 +13,6 @@ export type HttpRequestOptions = {
     signal?: AbortSignal;
     timeout?: number;
 };
-
-const IS_NODE = typeof process !== 'undefined' && typeof window === 'undefined';
 
 function contentType(body: string | unknown) {
     if (typeof body === 'string') {
@@ -54,24 +52,20 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         timeout: options.timeout,
     };
 
-    fetchOptions.headers = applyContentTypeHeader({
+    console.log('HERE');
+    fetchOptions.headers = applyBridgeApiCallHeaders({
         headers: fetchOptions.headers,
         contentType: contentType(options.body == null ? '' : options.body),
         skipContentTypeHeader: options.skipContentTypeHeader,
     });
 
-    // Node applications must spoof origin for bridge CORS
-    if (IS_NODE) {
-        fetchOptions.headers = {
-            ...fetchOptions.headers,
-            Origin: 'https://node.trezor.io',
-        };
-    }
-
     let res: Response;
     try {
         res = await fetch(options.url, fetchOptions);
+        console.log('🚀 ~ bridgeApiCall ~ res:', res);
     } catch (err) {
+        console.log('🚀 ~ bridgeApiCall ~ err:', err);
+
         return error({ error: ERRORS.HTTP_ERROR, message: err.message });
     }
 

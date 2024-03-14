@@ -1971,6 +1971,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@config-plugins/detox@npm:^7.0.0":
+  version: 7.0.0
+  resolution: "@config-plugins/detox@npm:7.0.0"
+  dependencies:
+    expo-build-properties: "npm:~0.11.0"
+  peerDependencies:
+    expo: ^50
+  checksum: 4f65bf69adaa51fd38ab757c93f89da8450ba6dd6dd443edb0260815dc36cf8c8e158905f3d4f1e88b2d341928074259ae6208d5e1bf178947c68d0e7b53e9c9
+  languageName: node
+  linkType: hard
+
 "@confio/ics23@npm:^0.6.8":
   version: 0.6.8
   resolution: "@confio/ics23@npm:0.6.8"
@@ -2116,17 +2127,6 @@ __metadata:
   version: 0.30.1
   resolution: "@cosmjs/utils@npm:0.30.1"
   checksum: 64ea16cdeba64d2b346a0b45ca47059ab4297fdf5c4e5fd89ec262eec488807f49f94dcdc294628142015ce4669c4eaf7426d1f8a6538146da5601dcc484cb19
-  languageName: node
-  linkType: hard
-
-"@config-plugins/detox@npm:^7.0.0":
-  version: 7.0.0
-  resolution: "@config-plugins/detox@npm:7.0.0"
-  dependencies:
-    expo-build-properties: "npm:~0.11.0"
-  peerDependencies:
-    expo: ^50
-  checksum: 4f65bf69adaa51fd38ab757c93f89da8450ba6dd6dd443edb0260815dc36cf8c8e158905f3d4f1e88b2d341928074259ae6208d5e1bf178947c68d0e7b53e9c9
   languageName: node
   linkType: hard
 
@@ -14948,7 +14948,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"bluebird@npm:^3.5.4, bluebird@npm:^3.5.5, bluebird@npm:^3.7.2":
+"bluebird@npm:^3.5.0, bluebird@npm:^3.5.4, bluebird@npm:^3.5.5, bluebird@npm:^3.7.2":
   version: 3.7.2
   resolution: "bluebird@npm:3.7.2"
   checksum: 007c7bad22c5d799c8dd49c85b47d012a1fe3045be57447721e6afbd1d5be43237af1db62e26cb9b0d9ba812d2e4ca3bac82f6d7e016b6b88de06ee25ceb96e7
@@ -29327,13 +29327,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"moment@npm:^2.19.3":
-  version: 2.30.1
-  resolution: "moment@npm:2.30.1"
-  checksum: ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
-  languageName: node
-  linkType: hard
-
 "mlly@npm:^1.2.0, mlly@npm:^1.4.0":
   version: 1.6.1
   resolution: "mlly@npm:1.6.1"
@@ -29350,6 +29343,13 @@ __metadata:
   version: 4.14.0
   resolution: "mock-fs@npm:4.14.0"
   checksum: 20facbc85bb62df02dbfc946b354fcdd8b2b2aeafef4986adab18dc9a23efccb34ce49d4dac22aaed1a24420fc50c53d77e90984cc888bcce314e18e0e21872a
+  languageName: node
+  linkType: hard
+
+"moment@npm:^2.19.3":
+  version: 2.30.1
+  resolution: "moment@npm:2.30.1"
+  checksum: ae42d876d4ec831ef66110bdc302c0657c664991e45cf2afffc4b0f6cd6d251dde11375c982a5c0564ccc0fa593fc564576ddceb8c8845e87c15f58aa6baca69
   languageName: node
   linkType: hard
 
@@ -29436,16 +29436,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"multipipe@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "multipipe@npm:4.0.0"
-  dependencies:
-    duplexer2: "npm:^0.1.2"
-    object-assign: "npm:^4.1.0"
-  checksum: 5a494ec2ce5bfdb389882ca595e3c4a33cae6c90dad879db2e3aa9a94484d8b164b0fb7b58ccf7593ae7e8c6213fd3f53a736b2c98e4f14c5ed1d38debc33f98
-  languageName: node
-  linkType: hard
-
 "multicodec@npm:^0.5.5":
   version: 0.5.7
   resolution: "multicodec@npm:0.5.7"
@@ -29473,6 +29463,16 @@ __metadata:
     multibase: "npm:^0.7.0"
     varint: "npm:^5.0.0"
   checksum: a482d9ba7ed0ad41db22ca589f228e4b7a30207a229a64dfc9888796752314fca00a8d03025fe40d6d73965bbb246f54b73626c5a235463e30c06c7bf7a8785f
+  languageName: node
+  linkType: hard
+
+"multipipe@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "multipipe@npm:4.0.0"
+  dependencies:
+    duplexer2: "npm:^0.1.2"
+    object-assign: "npm:^4.1.0"
+  checksum: 5a494ec2ce5bfdb389882ca595e3c4a33cae6c90dad879db2e3aa9a94484d8b164b0fb7b58ccf7593ae7e8c6213fd3f53a736b2c98e4f14c5ed1d38debc33f98
   languageName: node
   linkType: hard
 
@@ -32375,13 +32375,6 @@ __metadata:
   dependencies:
     proxy-compare: "npm:2.4.0"
   checksum: 680f2799bacc76098a4b44c9ac0448750e5f446dcd8bf8aa31d9663e2b197e97961139d2f30589cd42934ec697169e1cd19f00c00a24dc6a82e7581b097756f9
-  languageName: node
-  linkType: hard
-
-"pseudomap@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "pseudomap@npm:1.0.2"
-  checksum: 856c0aae0ff2ad60881168334448e898ad7a0e45fe7386d114b150084254c01e200c957cf378378025df4e052c7890c5bd933939b0e0d2ecfcc1dc2f0b2991f5
   languageName: node
   linkType: hard
 
@@ -38570,16 +38563,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uuid@npm:^3.0.1":
-  version: 3.4.0
-  resolution: "uuid@npm:3.4.0"
-  bin:
-    uuid: ./bin/uuid
-  checksum: 4f2b86432b04cc7c73a0dd1bcf11f1fc18349d65d2e4e32dd0fc658909329a1e0cc9244aa93f34c0cccfdd5ae1af60a149251a5f420ec3ac4223a3dab198fb2e
-  languageName: node
-  linkType: hard
-
-"uuid@npm:^3.3.2":
+"uuid@npm:^3.0.1, uuid@npm:^3.3.2":
   version: 3.4.0
   resolution: "uuid@npm:3.4.0"
   bin:
@@ -40327,13 +40311,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yallist@npm:^2.1.2":
-  version: 2.1.2
-  resolution: "yallist@npm:2.1.2"
-  checksum: 75fc7bee4821f52d1c6e6021b91b3e079276f1a9ce0ad58da3c76b79a7e47d6f276d35e206a96ac16c1cf48daee38a8bb3af0b1522a3d11c8ffe18f898828832
-  languageName: node
-  linkType: hard
-
 "yaeti@npm:^0.0.6":
   version: 0.0.6
   resolution: "yaeti@npm:0.0.6"
@@ -40409,7 +40386,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yargs@npm:17.7.2, yargs@npm:^17.3.1, yargs@npm:^17.6.2, yargs@npm:^17.7.2":
+"yargs-unparser@npm:^2.0.0":
+  version: 2.0.0
+  resolution: "yargs-unparser@npm:2.0.0"
+  dependencies:
+    camelcase: "npm:^6.0.0"
+    decamelize: "npm:^4.0.0"
+    flat: "npm:^5.0.2"
+    is-plain-obj: "npm:^2.1.0"
+  checksum: 68f9a542c6927c3768c2f16c28f71b19008710abd6b8f8efbac6dcce26bbb68ab6503bed1d5994bdbc2df9a5c87c161110c1dfe04c6a3fe5c6ad1b0e15d9a8a3
+  languageName: node
+  linkType: hard
+
+"yargs@npm:17.7.2, yargs@npm:^17.0.0, yargs@npm:^17.3.1, yargs@npm:^17.6.2, yargs@npm:^17.7.2":
   version: 17.7.2
   resolution: "yargs@npm:17.7.2"
   dependencies:

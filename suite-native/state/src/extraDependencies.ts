@@ -18,10 +18,11 @@ const transportsPerDeviceType = {
         ios: ['BridgeTransport', 'UdpTransport'],
         android: [new NativeUsbTransport()],
     }),
-    emulator: ['BridgeTransport', 'UdpTransport'],
+    emulator: ['BridgeTransport'],
 } as const;
 
 const transports = transportsPerDeviceType[deviceType];
+console.log('🚀 ~ transports:', transports);
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {

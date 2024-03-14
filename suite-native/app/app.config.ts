@@ -153,7 +153,14 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             './plugins/withRemoveXcodeLocalEnv.js',
             ['./plugins/withEnvFile.js', { buildType }],
             './plugins/withRemoveiOSNotificationEntitlement.js',
-            '@config-plugins/detox',
+
+            //TODO: conditionally
+            [
+                '@config-plugins/detox',
+                {
+                    subdomains: '*',
+                },
+            ],
         ],
         extra: {
             commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || '',
