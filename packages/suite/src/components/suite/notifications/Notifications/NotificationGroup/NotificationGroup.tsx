@@ -48,7 +48,7 @@ export const NotificationGroup = (props: NotificationGroupProps) => {
                 <EmptyHeadline>
                     <Translation id="NOTIFICATIONS_EMPTY_TITLE" />
                 </EmptyHeadline>
-                <EmptyDescriptionP type="hint">
+                <EmptyDescriptionP typographyStyle="hint">
                     <Translation id="NOTIFICATIONS_EMPTY_DESC" />
                 </EmptyDescriptionP>
             </EmptyWrapper>

@@ -102,7 +102,7 @@ export const CoinjoinProcessStep = ({
 }: CoinjoinProcessStepProps) => (
     <Container>
         <StyledImage image={image} width={80} />
-        <StepNumber type="hint">
+        <StepNumber typographyStyle="hint">
             <Translation id="TR_STEP" values={{ number }} />
         </StepNumber>
         <StepTitle>{title}</StepTitle>

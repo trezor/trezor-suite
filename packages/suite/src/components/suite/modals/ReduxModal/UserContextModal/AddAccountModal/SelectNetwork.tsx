@@ -31,7 +31,7 @@ export const SelectNetwork = ({
 
     return (
         <div>
-            <Title type="hint">{heading}</Title>
+            <Title typographyStyle="hint">{heading}</Title>
             <CoinList
                 onToggle={handleNetworkSelection}
                 networks={networks}

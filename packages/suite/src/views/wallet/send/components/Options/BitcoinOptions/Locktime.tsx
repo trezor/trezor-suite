@@ -121,11 +121,11 @@ export const Locktime = ({ close }: LocktimeProps) => {
                     <RbfIcon size={16} icon="RBF" />
 
                     <Center>
-                        <Paragraph type="highlight">
+                        <Paragraph typographyStyle="highlight">
                             <Translation id={rbfEnabled ? 'RBF_ON' : 'RBF_OFF'} />
                         </Paragraph>
 
-                        <Description type="hint">
+                        <Description typographyStyle="hint">
                             <Translation id="RBF_DESCRIPTION" />
                         </Description>
                     </Center>

@@ -20,7 +20,7 @@ const ConnectionInfo = ({ coin }: ConnectionInfoProps) => {
     const { connected, url, blockHash: hash, blockHeight: height, version } = blockchain[coin];
 
     return (
-        <Wrapper type="hint">
+        <Wrapper typographyStyle="hint">
             {connected ? (
                 <>
                     <Translation id="SETTINGS_ADV_COIN_CONN_INFO_URL" values={{ url }} />

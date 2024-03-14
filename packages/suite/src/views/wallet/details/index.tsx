@@ -119,13 +119,13 @@ const Details = () => {
                         />
                         <AccountTypeLabel>
                             {accountTypeName && (
-                                <Paragraph type="hint">
+                                <Paragraph typographyStyle="hint">
                                     <NoWrap>
                                         <Translation id={accountTypeName} />
                                     </NoWrap>
                                 </Paragraph>
                             )}
-                            <Paragraph type="label">
+                            <Paragraph typographyStyle="label">
                                 (<Translation id={accountTypeTech} />)
                             </Paragraph>
                         </AccountTypeLabel>
@@ -137,7 +137,7 @@ const Details = () => {
                             buttonLink={HELP_CENTER_BIP32_URL}
                         />
                         <AccountTypeLabel>
-                            <Paragraph type="hint">{account.path}</Paragraph>
+                            <Paragraph typographyStyle="hint">{account.path}</Paragraph>
                         </AccountTypeLabel>
                     </Row>
                     {!isCoinjoinAccount ? (

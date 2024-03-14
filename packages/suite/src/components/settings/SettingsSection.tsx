@@ -73,7 +73,7 @@ export const SettingsSection = ({
                     </Title>
                 )}
                 {description && !customHeader && (
-                    <Description type="label">{description}</Description>
+                    <Description typographyStyle="label">{description}</Description>
                 )}
             </Header>
 

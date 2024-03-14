@@ -20,7 +20,7 @@ export const ErrorPage = () => {
             <H2>
                 <Translation id="TR_404_TITLE" />
             </H2>
-            <Paragraph type="label">
+            <Paragraph typographyStyle="label">
                 <Translation id="TR_404_DESCRIPTION" />
             </Paragraph>
             <Image image="ERROR_404" />

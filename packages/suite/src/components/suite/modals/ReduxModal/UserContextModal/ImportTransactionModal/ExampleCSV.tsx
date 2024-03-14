@@ -74,15 +74,15 @@ export const ExampleCSV = () => {
                 {isExpanded && (
                     <ExpandWrapper {...motionAnimation.expand}>
                         {/* CSV keys shouldn't be translated */}
-                        <Paragraph type="hint">
+                        <Paragraph typographyStyle="hint">
                             address,amount,currency{isLabelingAvailable && ',label'}
                         </Paragraph>
-                        <Paragraph type="hint">
+                        <Paragraph typographyStyle="hint">
                             {addresses[0]},0.31337,{account.symbol.toUpperCase()}
                             {isLabelingAvailable &&
                                 `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_1')}`}
                         </Paragraph>
-                        <Paragraph type="hint">
+                        <Paragraph typographyStyle="hint">
                             {addresses[1]},0.1,USD
                             {isLabelingAvailable &&
                                 `,${translationString('TR_SENDFORM_LABELING_EXAMPLE_2')}`}

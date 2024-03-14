@@ -316,7 +316,7 @@ const SendApprovalTransactionComponent = () => {
                         <Translation id="TR_EXCHANGE_APPROVAL_DATA" />
                     </LabelText>
                     <BreakableValue>
-                        <Paragraph type="hint">
+                        <Paragraph typographyStyle="hint">
                             <Truncate>{dexTx.data}</Truncate>
                         </Paragraph>
                     </BreakableValue>

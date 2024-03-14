@@ -161,10 +161,12 @@ export const CoinjoinConfirmation = ({ account }: CoinjoinConfirmationProps) => 
                 </Tiles>
                 <FeeWrapper>
                     <TopFeeRow>
-                        <FeeHeading type="highlight">
+                        <FeeHeading typographyStyle="highlight">
                             <Translation id="TR_SERVICE_FEE" />
                         </FeeHeading>
-                        <Paragraph type="highlight">{coordinatorFeePercentage}</Paragraph>
+                        <Paragraph typographyStyle="highlight">
+                            {coordinatorFeePercentage}
+                        </Paragraph>
                     </TopFeeRow>
                     <Note>
                         <Translation id="TR_SERVICE_FEE_NOTE" />

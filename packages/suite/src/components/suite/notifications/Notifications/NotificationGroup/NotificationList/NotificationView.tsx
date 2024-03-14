@@ -81,10 +81,10 @@ export const NotificationView = ({
                 </SeenWrapper>
             )}
             <Text>
-                <TextP type={seen ? 'hint' : 'callout'} $seen={seen}>
+                <TextP typographyStyle={seen ? 'hint' : 'callout'} $seen={seen}>
                     <Translation id={message} values={messageValues} />
                 </TextP>
-                <DateP type="label" $seen={seen}>
+                <DateP typographyStyle="label" $seen={seen}>
                     <FormattedDateWithBullet value={id} />
                 </DateP>
             </Text>
