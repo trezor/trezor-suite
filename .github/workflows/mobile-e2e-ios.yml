@@ -5,9 +5,6 @@ jobs:
   build-ios-app:
     timeout-minutes: 90
     runs-on: macos-latest
-    env:
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -26,7 +23,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
+          # cache: yarn
 
       - name: install setuptools
         run: pip install setuptools
@@ -58,6 +55,9 @@ jobs:
   run_ios_e2e_tests:
     runs-on: macos-latest
     needs: build-ios-app
+    env:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      HOMEBREW_NO_INSTALL_CLEANUP: 1
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
