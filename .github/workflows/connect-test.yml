@@ -2,6 +2,9 @@ name: "[Test] connect"
 
 # run only if there are changes in connect or related libs paths
 on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
   pull_request:
     paths:
       - "packages/blockchain-link/**"
