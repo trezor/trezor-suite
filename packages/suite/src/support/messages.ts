@@ -4482,7 +4482,7 @@ export default defineMessages({
     },
     TR_REMEMBER_CARD_EXPLANATION: {
         id: 'TR_REMEMBER_CARD_EXPLANATION',
-        defaultMessage: 'You\'ll still need to connect your Trezor to send or trade coins',
+        defaultMessage: 'You\'ll still need to connect your <secondLine>Trezor to send or trade coins</secondLine>',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -8799,5 +8799,13 @@ export default defineMessages({
     TR_STAKE_PROVIDED_BY: {
         id: 'TR_STAKE_PROVIDED_BY',
         defaultMessage: 'Provided by',
+    },
+    TR_MODAL_REMEMBER_WALLET_YES: {
+        id: 'TR_MODAL_REMEMBER_WALLET_YES',
+        defaultMessage: 'Yes',
+    },
+    TR_MODAL_REMEMBER_WALLET_NOT_NOW: {
+        id: 'TR_MODAL_REMEMBER_WALLET_NOT_NOW',
+        defaultMessage: 'Not now',
     },
 });
