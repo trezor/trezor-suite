@@ -1,0 +1,40 @@
+name: "[Test] Transport e2e"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - "packages/transport/**"
+      - "packages/protobuf/**"
+      - "packages/protocol/**"
+      - "packages/trezor-user-env-link/**"
+      - "packages/utils/**"
+      - "docker/docker-compose.transport-test.yml"
+      - ".github/workflows/connect-transport-e2e-test.yml"
+      - "yarn.lock"
+
+jobs:
+  transport-e2e:
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+          yarn build:libs
+
+      - name: Run E2E tests
+        run: ./docker/docker-transport-test.sh
