@@ -9984,9 +9984,12 @@ __metadata:
     "@sinclair/typebox": "npm:^0.31.28"
     "@trezor/components": "workspace:^"
     "@trezor/connect-web": "workspace:^"
+    "@trezor/connect-webextension": "workspace:^"
     "@trezor/protobuf": "workspace:^"
     "@trezor/utils": "workspace:^"
     "@types/redux-logger": "npm:^3.0.11"
+    copy-webpack-plugin: "npm:^12.0.2"
+    html-webpack-plugin: "npm:^5.6.0"
     next: "npm:^14.1.1"
     nextra: "npm:^2.13.4"
     nextra-theme-docs: "npm:^2.13.4"
@@ -9999,6 +10002,8 @@ __metadata:
     redux-logger: "npm:^3.0.6"
     redux-thunk: "npm:^2.4.2"
     styled-components: "npm:^6.1.8"
+    webpack: "npm:^5.90.1"
+    webpack-cli: "npm:^5.1.4"
   languageName: unknown
   linkType: soft
 
