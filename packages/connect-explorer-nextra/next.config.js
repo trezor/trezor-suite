@@ -32,6 +32,15 @@ module.exports = withNextra({
                 'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
             }),
         );
+
+        if (process.env.BUILD_TARGET === 'webextension') {
+            config.plugins.push(
+                new webpack.NormalModuleReplacementPlugin(
+                    /@trezor\/connect-web$/,
+                    '@trezor/connect-webextension/lib/proxy',
+                ),
+            );
+        }
     },
     typescript: {
         // Problems with transpiling
