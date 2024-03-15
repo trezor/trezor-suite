@@ -94,13 +94,13 @@ export const TransactionReviewModalContent = ({
 
     // get estimate mining time
     let estimateTime;
-    const selected = fees[selectedAccount.account.symbol];
-    const matchedFeeLevel = selected.levels.find(
+    const symbolFees = fees[selectedAccount.account.symbol];
+    const matchedFeeLevel = symbolFees.levels.find(
         item => item.feePerUnit === precomposedTx.feePerByte,
     );
 
     if (networkType === 'bitcoin' && matchedFeeLevel) {
-        estimateTime = selected.blockTime * matchedFeeLevel.blocks * 60;
+        estimateTime = symbolFees.blockTime * matchedFeeLevel.blocks * 60;
     }
 
     const buttonRequestsCount = isCardano ? buttonRequests.length - 1 : buttonRequests.length;
