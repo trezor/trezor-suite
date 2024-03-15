@@ -23,6 +23,7 @@ const variantColorMap: Record<TextVariant, Color> = {
     info: 'textAlertBlue',
     warning: 'textAlertYellow',
     destructive: 'textAlertRed',
+    subdued: 'textSubdued',
 };
 
 type ColorProps = {
