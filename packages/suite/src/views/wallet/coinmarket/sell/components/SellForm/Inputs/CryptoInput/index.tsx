@@ -72,7 +72,7 @@ const CryptoInput = () => {
         cryptoSymbol,
     };
 
-    const { tokens } = account;
+    const { symbol, tokens } = account;
 
     const cryptoInputRules = {
         validate: {
@@ -113,18 +113,20 @@ const CryptoInput = () => {
                                 setValue(CRYPTO_INPUT, '');
                                 setValue(FIAT_INPUT, '');
                                 const token = selected.value;
+                                const invitySymbol = invityApiSymbolToSymbol(token).toLowerCase();
+                                const tokenData = tokens?.find(
+                                    t =>
+                                        t.symbol === invitySymbol &&
+                                        t.contract === selected.token?.contract,
+                                );
                                 if (ethereumTypeNetworkSymbols.includes(token)) {
                                     setValue(CRYPTO_TOKEN, null);
-                                    // set own account for non ERC20 transaction
+                                    setValue('outputs.0.address', account.descriptor);
+                                } else if (symbol === 'sol') {
+                                    setValue(CRYPTO_TOKEN, tokenData?.contract ?? null);
                                     setValue('outputs.0.address', account.descriptor);
                                 } else {
                                     // set the address of the token to the output
-                                    const symbol = invityApiSymbolToSymbol(token).toLowerCase();
-                                    const tokenData = tokens?.find(
-                                        t =>
-                                            t.symbol === symbol &&
-                                            t.contract === selected.token?.contract,
-                                    );
                                     setValue(CRYPTO_TOKEN, tokenData?.contract ?? null);
                                     // set token address for ERC20 transaction to estimate the fees more precisely
                                     setValue('outputs.0.address', tokenData?.contract ?? '');
