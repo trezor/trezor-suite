@@ -24,7 +24,11 @@ export const ReceiveAccountsScreen = () => {
     const navigation = useNavigation<NavigationProps>();
 
     const navigateToReceiveScreen = (accountKey: AccountKey, tokenContract?: TokenAddress) =>
-        navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey, tokenContract });
+        navigation.navigate(RootStackRoutes.ReceiveModal, {
+            accountKey,
+            tokenContract,
+            closeActionType: 'back',
+        });
 
     const [accountsFilterValue, setAccountsFilterValue] = useState<string>('');
 

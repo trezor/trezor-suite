@@ -252,12 +252,14 @@ export const useAddCoinAccount = () => {
                 networkSymbol,
                 accountType,
                 accountIndex,
+                closeActionType: 'close',
             });
         } else {
             navigation.replace(RootStackRoutes.AccountDetail, {
                 networkSymbol,
                 accountType,
                 accountIndex,
+                closeActionType: 'close',
             });
         }
     };

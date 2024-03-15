@@ -46,6 +46,7 @@ export const Assets = () => {
             navigation.navigate(RootStackRoutes.AccountDetail, {
                 accountKey,
                 tokenContract,
+                closeActionType: 'back',
             });
             setSelectedAssetSymbol(null);
         },

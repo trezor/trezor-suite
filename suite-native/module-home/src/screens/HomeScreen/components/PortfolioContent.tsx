@@ -38,7 +38,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
     };
 
     const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.ReceiveModal, {});
+        navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
     };
 
     useImperativeHandle(

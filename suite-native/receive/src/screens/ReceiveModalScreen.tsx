@@ -12,6 +12,7 @@ import {
     Screen,
     ScreenSubHeader,
     StackNavigationProps,
+    GoBackIcon,
 } from '@suite-native/navigation';
 import { AccountsList } from '@suite-native/accounts';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
@@ -59,6 +60,9 @@ const LoadingReceiveAccount = () => {
 };
 
 const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHeaderContent) => {
+    const {
+        params: { closeActionType },
+    } = useRoute<RouteProp<RootStackParamList, RootStackRoutes.ReceiveModal>>();
     const navigation = useNavigation();
     const accountLabel = useSelector((state: AccountsRootState) =>
         selectAccountLabel(state, accountKey),
@@ -100,6 +104,7 @@ const ReceiveModalScreenSubHeader = ({ accountKey, tokenContract }: ScreenSubHea
                     </HStack>
                 </>
             }
+            leftIcon={<GoBackIcon closeActionType={closeActionType} />}
         />
     );
 };

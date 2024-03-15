@@ -7,3 +7,4 @@ export * from './components/Screen';
 export * from './components/ScreenHeader';
 export * from './components/ScreenSubHeader';
 export * from './components/NavigationContainerWithAnalytics';
+export * from './components/GoBackIcon';

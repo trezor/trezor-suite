@@ -134,7 +134,7 @@ export const SelectAccountTypeScreen = ({
                                 key={`select-type-${item}`}
                                 title={translate(titleKey)}
                                 subtitle={translate(subtitleKey)}
-                                description={bulletsForKeyPath(descKey)}
+                                content={bulletsForKeyPath(descKey)}
                                 isSelected={selectedAccountType === item}
                                 isDefault={defaultType === item}
                                 data-testID={`@add-account/select-type/${item}`}

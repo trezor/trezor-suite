@@ -22,6 +22,7 @@ export const AccountsScreen = () => {
         navigation.navigate(RootStackRoutes.AccountDetail, {
             accountKey,
             tokenContract,
+            closeActionType: 'back',
         });
     };
 

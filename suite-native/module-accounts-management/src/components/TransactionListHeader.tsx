@@ -112,6 +112,7 @@ export const TransactionListHeader = memo(
             navigation.navigate(RootStackRoutes.ReceiveModal, {
                 accountKey,
                 tokenContract,
+                closeActionType: 'back',
             });
         };
 
