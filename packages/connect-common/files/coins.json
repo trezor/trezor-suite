@@ -1737,7 +1737,7 @@
             "bech32_prefix": "sys",
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://blockbook.elint.services"]
+                "url": ["https://blockbook.syscoin.org"]
             },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
