@@ -18,7 +18,7 @@ env:
   DEV_SERVER_HOSTNAME: "dev.suite.sldev.cz"
 
 jobs:
-  build-connect-explorer:
+  build-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -62,6 +62,10 @@ jobs:
         run: |
           yarn workspace @trezor/connect-popup build
 
+      - name: Build connect-webextension
+        run: |
+          yarn workspace @trezor/connect-webextension build
+
       - name: Build connect-explorer
         env:
           ASSET_PREFIX: /connect-nextra/${{ steps.extract_branch.outputs.branch }}
@@ -72,6 +76,10 @@ jobs:
           CONNECT_EXPLORER_BASE_PATH: /connect-nextra/${{ steps.extract_branch.outputs.branch }}
         run: |
           yarn workspace @trezor/connect-explorer-nextra build
+
+      - name: Build connect-explorer-webextension
+        run: |
+          yarn workspace @trezor/connect-explorer-nextra build:webextension
 
       - name: Upload connect-explorer-nextra to dev.suite.sldev.cz
         env:
@@ -84,3 +92,10 @@ jobs:
           cp -R ./packages/connect-web/build/* tmp_build_directory/
           cp -R ./packages/connect-explorer-nextra/build/* tmp_build_directory/
           aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: connect-explorer-nextra-webextension
+          path: |
+            packages/connect-explorer-nextra/build-webextension
