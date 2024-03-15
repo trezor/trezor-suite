@@ -66,7 +66,7 @@ const InputLabel = styled(Label)`
     /* move up when input is focused OR has a placeholder OR has value  */
     input:focus ~ &,
     input:not(:placeholder-shown) ~ &,
-    input:not([placeholder='']):placeholder-shown ~ & {
+    input:not([value='']) ~ & {
         transform: ${LABEL_TRANSFORM};
     }
 `;
