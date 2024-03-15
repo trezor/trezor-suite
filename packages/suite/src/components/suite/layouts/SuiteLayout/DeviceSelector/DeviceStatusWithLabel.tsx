@@ -7,18 +7,9 @@ import { TrezorDevice } from 'src/types/suite';
 import { useWalletLabeling } from '../../../labeling/WalletLabeling';
 import { DeviceModelInternal } from '@trezor/connect';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
-import { spacingsPx, typography } from '@trezor/theme';
 import { selectLabelingDataForWallet } from '../../../../../reducers/suite/metadataReducer';
 import { useDispatch, useSelector } from '../../../../../hooks/suite';
-
-const DeviceLabel = styled.div`
-    ${typography.body};
-    margin-bottom: -${spacingsPx.xxs};
-    min-width: 0;
-    color: ${({ theme }) => theme.textDefault};
-    overflow: hidden;
-    text-overflow: ellipsis;
-`;
+import { DeviceDetail } from '../../../../../views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 
 const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
     display: flex;
@@ -30,14 +21,6 @@ const StyledImage = styled(Image)`
 
     /* do not apply the darkening filter in dark mode on device images */
     filter: none;
-`;
-
-const DeviceDetail = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    overflow: hidden;
-    align-self: center;
 `;
 
 const needsRefresh = (device?: TrezorDevice) => {
@@ -99,9 +82,7 @@ export const DeviceStatusWithLabel = () => {
                 )}
             </DeviceWrapper>
 
-            <DeviceDetail>
-                <DeviceLabel>{selectedDevice.label}</DeviceLabel>
-
+            <DeviceDetail label={selectedDevice.label}>
                 <DeviceStatusText
                     onRefreshClick={handleRefreshClick}
                     device={selectedDevice}

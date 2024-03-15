@@ -73,6 +73,12 @@ const Link = ({
 
     const iconSize = typographyStylesBase[type || 'body'].fontSize;
 
+    const {
+        variant: iconVariant,
+        color: iconColor,
+        ...restIconVariant
+    } = iconProps ?? { variant: undefined };
+
     return (
         <A
             href={href}
@@ -89,7 +95,14 @@ const Link = ({
             {children}
             {icon && (
                 <IconWrapper>
-                    <Icon size={iconSize} icon={icon} color={theme.iconSubdued} {...iconProps} />
+                    <Icon
+                        size={iconSize}
+                        icon={icon}
+                        {...(variant !== undefined
+                            ? { variant: iconVariant }
+                            : { color: iconColor ?? theme.iconSubdued })}
+                        {...restIconVariant}
+                    />
                 </IconWrapper>
             )}
         </A>
