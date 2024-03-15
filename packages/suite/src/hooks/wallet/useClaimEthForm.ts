@@ -26,9 +26,9 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     const dispatch = useDispatch();
 
     const localCurrency = useSelector(selectLocalCurrency);
-    const fees = useSelector(state => state.wallet.fees);
 
     const { account, network } = selectedAccount;
+    const symbolFees = useSelector(state => state.wallet.fees[account.symbol]);
 
     // TODO: Implement fee switcher
     const selectedFee = 'normal';
@@ -46,9 +46,8 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     }, [account.symbol]);
 
     const state = useMemo(() => {
-        const coinFees = fees[account.symbol];
-        const levels = getFeeLevels(account.networkType, coinFees);
-        const feeInfo = { ...coinFees, levels };
+        const levels = getFeeLevels(account.networkType, symbolFees);
+        const feeInfo = { ...symbolFees, levels };
 
         return {
             account,
@@ -56,7 +55,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, fees, network]);
+    }, [account, defaultValues, symbolFees, network]);
 
     const methods = useForm<ClaimFormState>({
         mode: 'onChange',

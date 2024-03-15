@@ -49,11 +49,11 @@ StakeEthFormContext.displayName = 'StakeEthFormContext';
 export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeContextValues => {
     const dispatch = useDispatch();
 
-    const localCurrency = useSelector(selectLocalCurrency);
-    const fees = useSelector(state => state.wallet.fees);
-
     const { account, network } = selectedAccount;
     const { symbol } = account;
+
+    const localCurrency = useSelector(selectLocalCurrency);
+    const symbolFees = useSelector(state => state.wallet.fees[symbol]);
 
     const symbolForFiat = mapTestnetSymbol(symbol);
     const currentRate = useSelector(state =>
@@ -91,9 +91,8 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const isDraft = !!draft;
 
     const state = useMemo(() => {
-        const coinFees = fees[account.symbol];
-        const levels = getFeeLevels(account.networkType, coinFees);
-        const feeInfo = { ...coinFees, levels };
+        const levels = getFeeLevels(account.networkType, symbolFees);
+        const feeInfo = { ...symbolFees, levels };
 
         return {
             account,
@@ -101,7 +100,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, fees, network]);
+    }, [account, defaultValues, symbolFees, network]);
 
     const methods = useForm<StakeFormState>({
         mode: 'onChange',
