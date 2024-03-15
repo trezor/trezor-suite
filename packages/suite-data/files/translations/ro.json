@@ -841,8 +841,6 @@
   "TR_NETWORK_DOGECOIN": "Dogecoin",
   "TR_NETWORK_ETHEREUM": "Ethereum",
   "TR_NETWORK_ETHEREUM_CLASSIC": "Ethereum Clasic",
-  "TR_NETWORK_ETHEREUM_LABEL": "Include token-uri ERC-20",
-  "TR_NETWORK_ETHEREUM_TOOLTIP": "Token-uri acceptate",
   "TR_NETWORK_LITECOIN": "Litecoin",
   "TR_NETWORK_NAMECOIN": "Namecoin",
   "TR_NETWORK_NEM": "NEM",

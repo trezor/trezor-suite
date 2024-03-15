@@ -5967,11 +5967,11 @@ export default defineMessages({
     },
     TR_FIRMWARE_LANGUAGE_CHANGED: {
         id: 'TR_FIRMWARE_LANGUAGE_CHANGED',
-        defaultMessage: 'Device language sucessfully changed',
+        defaultMessage: 'Device language successfully changed',
     },
     TR_FIRMWARE_LANGUAGE_FETCH_ERROR: {
         id: 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR',
-        defaultMessage: 'Translations download failed',
+        defaultMessage: 'Translation download failed',
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP',
@@ -8494,7 +8494,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_CARD_TITLE: {
         id: 'TR_STAKE_ETH_CARD_TITLE',
-        defaultMessage: 'The easiest way to earn {symbol}.',
+        defaultMessage: 'The easiest way to earn ETH.',
     },
     TR_STAKE_ETH_EARN_REPEAT: {
         id: 'TR_STAKE_ETH_EARN_REPEAT',
@@ -8547,12 +8547,12 @@ export default defineMessages({
     TR_STAKE_STAKING_IS: {
         id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
-            "Staking is like a friendly gesture where you temporarily lock your Ethereum assets to support the blockchain's operation. As a sweet reward, you'll actually earn more {symbol} in return!",
+            "Staking is like a friendly gesture where you temporarily lock your Ethereum assets to support the blockchain's operation. As a sweet reward, you'll actually earn more ETH in return!",
     },
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
         defaultMessage:
-            'Stake any amount and watch that sweet {symbol} roll in. With our current APY rate of {apyPercent}%, your rewards earn too!',
+            'Stake any amount and watch that sweet ETH roll in. With our current APY rate of {apyPercent}%, your rewards earn too!',
     },
     TR_STAKE_LEARN_MORE: {
         id: 'TR_STAKE_LEARN_MORE',
@@ -8564,7 +8564,7 @@ export default defineMessages({
     },
     TR_STAKE_STAKED_ETH_AMOUNT_LOCKED: {
         id: 'TR_STAKE_STAKED_ETH_AMOUNT_LOCKED',
-        defaultMessage: 'The staked amount of {symbol} is locked and can’t be traded or sent.',
+        defaultMessage: 'The staked amount of ETH is locked and can’t be traded or sent.',
     },
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
@@ -8573,8 +8573,7 @@ export default defineMessages({
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
-        defaultMessage:
-            'Your rewards also earn. Keep them staked and watch your {symbol} rewards soar.',
+        defaultMessage: 'Your rewards also earn. Keep them staked and watch your ETH rewards soar.',
     },
     TR_STAKE_AVAILABLE: {
         id: 'TR_STAKE_AVAILABLE',
@@ -8591,13 +8590,12 @@ export default defineMessages({
     },
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
-        defaultMessage:
-            'We’ve left {amount} {symbol} out so you will be able to pay for withdrawal fees.',
+        defaultMessage: 'We’ve left {amount} ETH out so you can pay for withdrawal fees.',
     },
     TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
         id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
         defaultMessage:
-            "It's recommended to leave {amount} {symbol} so you will be able to pay for withdrawal fees.",
+            "It's recommended to leave {amount} ETH so you can pay for withdrawal fees.",
     },
     TR_STAKE_CONFIRM_ENTRY_PERIOD: {
         id: 'TR_STAKE_CONFIRM_ENTRY_PERIOD',
@@ -8614,7 +8612,7 @@ export default defineMessages({
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
         defaultMessage:
-            'Your {symbol} will be blocked during this period, and you can’t cancel this. <a>Learn more</a>',
+            'Your ETH will be blocked during this period, and you can’t cancel this. <a>Learn more</a>',
     },
     TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD: {
         id: 'TR_STAKE_ACKNOWLEDGE_ENTRY_PERIOD',
