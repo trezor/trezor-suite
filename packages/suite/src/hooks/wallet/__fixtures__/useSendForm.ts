@@ -1300,7 +1300,10 @@ export const signAndPush = [
                 payload: {
                     serializedTx: 'serializedABCD',
                 },
-            },
+            }, // ethereumSignTransaction
+            undefined, // pushTransaction
+            undefined, // getAccountInfo
+            undefined, // blockchainEstimateFee
         ],
         result: {
             formValues: {
@@ -1791,6 +1794,10 @@ export const feeChange = [
                 payload: {
                     levels: [{ feeLimit: '21009' }],
                 },
+            },
+            {
+                success: true,
+                payload: { levels: [{}] },
             },
         ],
         actionSequence: [

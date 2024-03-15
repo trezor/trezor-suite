@@ -121,10 +121,12 @@ describe('walletMiddleware', () => {
                 if (subscribe.called) {
                     // @ts-expect-error
                     const accounts = subscribe.accounts?.map(a => getWalletAccount(a));
-                    expect(TrezorConnect.blockchainSubscribe).toHaveBeenLastCalledWith({
-                        accounts,
-                        coin: subscribe.coin,
-                    });
+                    expect(TrezorConnect.blockchainSubscribe).toHaveBeenLastCalledWith(
+                        expect.objectContaining({
+                            accounts,
+                            coin: subscribe.coin,
+                        }),
+                    );
                 }
             }
 
