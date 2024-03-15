@@ -5967,11 +5967,11 @@ export default defineMessages({
     },
     TR_FIRMWARE_LANGUAGE_CHANGED: {
         id: 'TR_FIRMWARE_LANGUAGE_CHANGED',
-        defaultMessage: 'Device language sucessfully changed',
+        defaultMessage: 'Device language successfully changed',
     },
     TR_FIRMWARE_LANGUAGE_FETCH_ERROR: {
         id: 'TR_FIRMWARE_LANGUAGE_FETCH_ERROR',
-        defaultMessage: 'Translations download failed',
+        defaultMessage: 'Translation download failed',
     },
     TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP: {
         id: 'TR_UPDATE_FIRMWARE_HOMESCREEN_LATER_TOOLTIP',
@@ -8594,13 +8594,12 @@ export default defineMessages({
     },
     TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL: {
         id: 'TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL',
-        defaultMessage:
-            'We’ve left {amount} ETH out so you will be able to pay for withdrawal fees',
+        defaultMessage: 'We’ve left {amount} ETH out so you can pay for withdrawal fees.',
     },
     TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS: {
         id: 'TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS',
         defaultMessage:
-            'We recommend you to leave {amount} ETH so you will be able to pay for withdrawal fees',
+            "It's recommended to leave {amount} ETH so you can pay for withdrawal fees.",
     },
     TR_STAKE_CONFIRM_ENTRY_PERIOD: {
         id: 'TR_STAKE_CONFIRM_ENTRY_PERIOD',
