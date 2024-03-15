@@ -5,6 +5,9 @@ permissions:
   contents: read # for actions/checkout
 
 on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
   pull_request:
     paths:
       - "packages/blockchain-link/**"
@@ -19,7 +22,7 @@ on:
       - "packages/utils/**"
       - "submodules/trezor-common/**"
       - "yarn.lock"
-      - ".github/workflows/connect-dev-release.yml"
+      - ".github/workflows/connect-dev-release-test.yml"
       - ".github/workflows/template-connect-popup-test-params.yml"
 
 concurrency:
