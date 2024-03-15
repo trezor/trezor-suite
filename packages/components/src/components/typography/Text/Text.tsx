@@ -3,10 +3,14 @@ import { UIVariant } from '../../../config/types';
 import { CSSColor, Color, Colors, TypographyStyle, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 
-export type TextVariant = Extract<UIVariant, 'primary' | 'info' | 'warning' | 'destructive'>;
+export type TextVariant = Extract<
+    UIVariant,
+    'primary' | 'tertiary' | 'info' | 'warning' | 'destructive'
+>;
 
 const variantColorMap: Record<TextVariant, Color> = {
     primary: 'textPrimaryDefault',
+    tertiary: 'textSubdued',
     info: 'textAlertBlue',
     warning: 'textAlertYellow',
     destructive: 'textAlertRed',
@@ -18,7 +22,11 @@ type ColorProps = {
     $color?: string;
 };
 
-const getColor = ({ $variant, theme, $color }: ColorProps): CSSColor | 'inherit' | string => {
+const getColorForTextVariant = ({
+    $variant,
+    theme,
+    $color,
+}: ColorProps): CSSColor | 'inherit' | string => {
     if ($color !== undefined) {
         return $color;
     }
@@ -26,12 +34,14 @@ const getColor = ({ $variant, theme, $color }: ColorProps): CSSColor | 'inherit'
     return $variant === undefined ? 'inherit' : theme[variantColorMap[$variant]];
 };
 
-const StyledText = styled.span<{
+type StyledTextProps = {
     $variant?: TextVariant;
     $color?: string;
     $typographyStyle?: TypographyStyle;
-}>`
-    color: ${getColor};
+};
+
+const StyledText = styled.span<StyledTextProps>`
+    color: ${getColorForTextVariant};
     ${({ $typographyStyle }) => ($typographyStyle ? typography[$typographyStyle] : '')}
 `;
 
