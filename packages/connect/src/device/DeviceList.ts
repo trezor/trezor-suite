@@ -470,8 +470,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 error.code === 'Device_NotFound' ||
                 error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                 error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
-                error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE
+                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR
             ) {
                 // do nothing
                 // For example:
@@ -483,17 +482,23 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             } else if (error.message === TRANSPORT_ERROR.SESSION_WRONG_PREVIOUS) {
                 this.enumerate();
                 this._handleUsedElsewhere(descriptor);
-            } else if (error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0) {
+            } else if (
+                // device was claimed by another application on transport api layer (claimInterface in usb nomenclature) but never released (releaseInterface in usb nomenclature)
+                // the only remedy for this is to reconnect device manually
+                // or possibly there are 2 applications without common sessions background
+                error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
                 // catch one of trezord LIBUSB_ERRORs
+                error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0 ||
+                // we tried to initialize device (either automatically after enumeration or after user click)
+                // but it did not work out. this device is effectively unreadable and user should do something about it
+                error.code === 'Device_InitializeFailed'
+            ) {
                 const device = this._createUnreadableDevice(
                     this.creatingDevicesDescriptors[path],
                     error.message,
                 );
                 this.devices[path] = device;
                 this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-            } else if (error.code === 'Device_InitializeFailed') {
-                // firmware bug - device is in "show address" state which cannot be cancelled
-                this._handleUsedElsewhere(descriptor);
             } else if (error.code === 'Device_UsedElsewhere') {
                 // most common error - someone else took the device at the same time
                 this._handleUsedElsewhere(descriptor);

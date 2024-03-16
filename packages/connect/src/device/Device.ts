@@ -15,7 +15,7 @@ import {
     ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
 import { initLog } from '../utils/debug';
-import type { Transport, Descriptor } from '@trezor/transport';
+import { type Transport, type Descriptor, TRANSPORT_ERROR } from '@trezor/transport';
 import {
     Device as DeviceTyped,
     DeviceFirmwareStatus,
@@ -51,6 +51,8 @@ export type RunOptions = {
     useEmptyPassphrase?: boolean;
     useCardanoDerivation?: boolean;
 };
+
+export const GET_FEATURES_TIMEOUT = 3000;
 
 const parseRunOptions = (options?: RunOptions): RunOptions => {
     if (!options) options = {};
@@ -90,7 +92,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     originalDescriptor: Descriptor;
 
-    unreadableError?: string; // unreadable error like: HID device, LIBUSB_ERROR
+    /**
+     * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
+     * with some expected error, for example HID device, LIBUSB_ERROR, or it simply timeout out. such device can't be worked
+     * with and user needs to take some action. for example reconnect the device, update firmware or change transport type
+     */
+    unreadableError?: string;
 
     // @ts-expect-error: strictPropertyInitialization
     firmwareStatus: DeviceFirmwareStatus;
@@ -333,20 +340,21 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     );
                 } else {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
-                    // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
-                    // transport response is pending endlessly, calling any other message will end up with "device call in progress"
-                    // set the timeout for this call so whenever it happens "unacquired device" will be created instead
-                    // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                     await Promise.race([
                         this.getFeatures(),
+                        // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
+                        // transport response is pending endlessly, calling any other message will end up with "device call in progress"
+                        // set the timeout for this call so whenever it happens "unacquired device" will be created instead
+                        // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                         new Promise((_resolve, reject) =>
-                            setTimeout(() => reject(new Error('GetFeatures timeout')), 3000),
+                            setTimeout(
+                                () => reject(new Error('GetFeatures timeout')),
+                                GET_FEATURES_TIMEOUT,
+                            ),
                         ),
                     ]);
                 }
             } catch (error) {
-                // note: this happens on T1B1 with webusb if there was "select wallet dialog" and user reloads page.
-                // note this happens even before transport-refactor-2 branch
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
                     // handling corner-case T1B1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
@@ -355,6 +363,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     return this._runInner(() => Promise.resolve({}), options);
                 }
+
+                if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
+                    this.unreadableError = 'Connection timeout';
+                }
+
                 this.inconsistent = true;
                 delete this.runPromise;
 
