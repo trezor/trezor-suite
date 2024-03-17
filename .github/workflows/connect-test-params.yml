@@ -24,8 +24,6 @@ jobs:
         with:
           node-version-file: ".nvmrc"
           cache: yarn
-      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
-      - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
       - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
 
@@ -43,6 +41,9 @@ jobs:
           cache: yarn
       - run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
+      # We don't need to run in hardened mode because it's enough to run hardened install only in "Setup and Cache Dependencies" step
+      - run: |
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
       # Install dependecies only for @trezor/connect package
       - run: yarn workspaces focus @trezor/connect
       - name: Retrieve build connect-web

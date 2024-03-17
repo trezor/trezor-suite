@@ -45,6 +45,9 @@ jobs:
           cache-dependency-path: "**/yarn.lock"
       - run: |
           echo -e "\nenableScripts: false" >> .yarnrc.yml
+      # We don't need to run in hardened mode because it's enough to run hardened install only in "Setup and Cache Dependencies" step
+      - run: |
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
       - run: yarn workspaces focus @trezor/connect-iframe @trezor/connect-web
       - run: yarn workspace @trezor/connect-iframe build
       - run: yarn workspace @trezor/connect-web build
