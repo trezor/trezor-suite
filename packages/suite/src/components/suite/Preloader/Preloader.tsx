@@ -9,7 +9,7 @@ import type { AppState } from 'src/types/suite';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
-import { selectPrerequisite, selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
+import { selectPrerequisite, selectIsLoggedOut, selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
@@ -40,9 +40,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
 
-    const { viewOnlyPromoClosed, displayViewOnlyWalletPromo } = useSelector(
-        state => state.suite.flags,
-    );
+    const { viewOnlyPromoClosed, displayViewOnlyWalletPromo } = useSelector(selectSuiteFlags);
 
     const dispatch = useDispatch();
 
