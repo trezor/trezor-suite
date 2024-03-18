@@ -10,6 +10,11 @@ on:
         description: "Test pattern to use (e.g. `init` or `methods`)"
         type: "string"
         required: true
+      tests-firmware:
+        description: "Firmware version for the tests (example 2-latest, 2.2.0, 2-main)"
+        type: "string"
+        required: false
+        default: "2-latest"
 
 jobs:
   node:
@@ -27,7 +32,7 @@ jobs:
       # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
       - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
+      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f ${{ inputs.tests-firmware }} -i ${{ inputs.methods }}'
 
   web:
     name: web
@@ -58,4 +63,4 @@ jobs:
       - run: cd packages/connect-iframe && tree .
       - name: "Echo download path"
         run: echo ${{steps.download.outputs.download-path}}
-      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f 2-latest -i ${{ inputs.methods }}'
+      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f ${{ inputs.tests-firmware }} -i ${{ inputs.methods }}'
