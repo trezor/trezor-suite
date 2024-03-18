@@ -110,7 +110,7 @@ const calculate = (
 
 export const composeEthereumSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeEthereumSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments) => {
+    async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
@@ -151,7 +151,11 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
         } else {
             customFeeLimit = tokenInfo ? ERC20_BACKUP_GAS_LIMIT : ETH_BACKUP_GAS_LIMIT;
 
-            // TODO: catch error from blockbook/geth (invalid contract, not enough balance...)
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'estimated-fee-error',
+                }),
+            );
         }
 
         // FeeLevels are read-only

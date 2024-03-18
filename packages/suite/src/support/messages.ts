@@ -8789,6 +8789,10 @@ export default defineMessages({
         id: 'TOAST_SUCCESSFUL_CLAIM',
         defaultMessage: '{symbol} claimed successfully',
     },
+    TOAST_ESTIMATED_FEE_ERROR: {
+        id: 'TOAST_ESTIMATED_FEE_ERROR',
+        defaultMessage: 'Fee estimation from network failed. Using backup value.',
+    },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
         defaultMessage: 'Total stake pending:',
