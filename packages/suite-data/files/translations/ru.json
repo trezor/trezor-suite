@@ -1246,7 +1246,6 @@
   "TR_ONBOARDING_NEW_VERSION": "Устанавливаемая версия",
   "TR_ONBOARDING_STEP_WALLET": "Кошелек",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Не работает?",
-  "TR_ONBOARDING_WELCOME_HEADING": "Приветствуем!",
   "TR_ONCE_YOU_BEGIN_THIS_PROCESS": "Этот процесс занимает всего несколько минут, но вы не можете его приостановить или перезапустить после того, как вы начнете.",
   "TR_ONION_BACKEND_TOR_NEEDED": "Вы указали onion-адрес для своих бэкендов. Чтобы использовать onion-адреса, необходимо иметь доступ к сети Tor.",
   "TR_ONION_LINKS_DESCRIPTION": "При включении этой настройки все ссылки trezor.io будут открываться как ссылки .onion.",

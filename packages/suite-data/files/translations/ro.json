@@ -894,7 +894,6 @@
   "TR_ONBOARDING_NEW_VERSION": "Versiune nouă",
   "TR_ONBOARDING_STEP_WALLET": "Portofel",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Nu a funcționat?",
-  "TR_ONBOARDING_WELCOME_HEADING": "Bun venit!",
   "TR_ONCE_YOU_BEGIN_THIS_PROCESS": "Odată ce ați început acest proces, nu mai puteți să-l întrerupeți sau să-l repetați. Vă rugăm să vă asigurați că dispuneți de suficient timp pentru a face această copie de rezervă.",
   "TR_ONION_BACKEND_TOR_NEEDED": "Ați folosit o adresă onion pentru backend-urile dumneavoastră. Pentru a utiliza adrese onion, trebuie să aveți acces la rețeaua Tor.",
   "TR_ONION_LINKS_DESCRIPTION": "Cu această setare activată, toate linkurile trezor.io vor fi deschise ca linkuri .onion.",

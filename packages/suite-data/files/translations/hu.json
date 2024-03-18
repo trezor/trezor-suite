@@ -1252,7 +1252,6 @@
   "TR_ONBOARDING_NEW_VERSION": "Új verzió",
   "TR_ONBOARDING_STEP_WALLET": "Tárca",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Továbbra sem működik?",
-  "TR_ONBOARDING_WELCOME_HEADING": "Üdvözlünk!",
   "TR_ONCE_YOU_BEGIN_THIS_PROCESS": "Ez a folyamat mindössze néhány percig tart, de az elindítása után nem szakítható félbe és nem indítható újra",
   "TR_ONION_BACKEND_TOR_NEEDED": "Egy onion címet használtál a háttérszervereidhez. Az onion-címek használatához hozzá kell hogy férj a Tor hálózathoz.",
   "TR_ONION_LINKS_DESCRIPTION": "Ennek a beállításnak az engedélyezésével a trezor.io linkek .onion linkként fognak megnyílni.",
