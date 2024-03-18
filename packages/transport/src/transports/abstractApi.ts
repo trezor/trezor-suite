@@ -27,8 +27,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     private api: AbstractApi;
     protected acquirePromise?: Deferred<void>;
 
-    constructor({ messages, api, sessionsClient, signal }: ConstructorParams) {
-        super({ messages, signal });
+    constructor({ messages, api, sessionsClient, signal, logger }: ConstructorParams) {
+        super({ messages, signal, logger });
         this.sessionsClient = sessionsClient;
         this.api = api;
     }

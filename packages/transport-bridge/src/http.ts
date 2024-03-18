@@ -1,6 +1,6 @@
 import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-utils';
 import { Descriptor } from '@trezor/transport/src/types';
-import { arrayPartition } from '@trezor/utils';
+import { Log, arrayPartition } from '@trezor/utils';
 
 import { sessionsClient, createApi } from './core';
 
@@ -25,6 +25,7 @@ export class TrezordNode {
     port: number;
     server?: HttpServer<never>;
     api: ReturnType<typeof createApi>;
+    logger = new Log('@trezor/transport-bridge', true);
 
     constructor({ port, api }: { port: number; api: 'usb' | 'udp' }) {
         this.port = port || defaults.port;
@@ -37,7 +38,7 @@ export class TrezordNode {
         sessionsClient.on('descriptors', descriptors => {
             this.resolveListenSubscriptions(descriptors);
         });
-        this.api = createApi(api);
+        this.api = createApi(api, this.logger);
     }
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
@@ -54,7 +55,11 @@ export class TrezordNode {
 
     public start() {
         return new Promise<void>(resolve => {
-            const app = new HttpServer({ port: this.port, logger: console });
+            this.logger.info('Starting Trezor Bridge HTTP server');
+            const app = new HttpServer({
+                port: this.port,
+                logger: this.logger,
+            });
 
             app.use([
                 (_req, res, next) => {
