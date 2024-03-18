@@ -1,4 +1,4 @@
-import { HttpServer, parseBodyJSON, parseBodyText, allowOrigins } from '../http';
+import { HttpServer, parseBodyJSON, parseBodyText, allowReferers } from '../http';
 
 type Events = {
     foo: (arg: string) => void;
@@ -121,20 +121,20 @@ describe('HttpServer', () => {
         await new Promise(resolve => setTimeout(resolve, 500));
         expect(muteLogger.info).toHaveBeenLastCalledWith(
             expect.any(String),
-            'Request /foo aborted',
+            'Request GET /foo aborted',
         );
     });
 
-    test('allowOrigin middleware lets request with allowed origin through', async () => {
+    test('allowReferer middleware lets request with allowed referer through', async () => {
         const handler = jest.fn((_request, response) => {
             response.end('ok');
         });
 
-        server.get('/foo', [allowOrigins(['*']), allowOrigins(['*.meow.com']), handler]);
+        server.get('/foo', [allowReferers(['*']), allowReferers(['*.meow.com']), handler]);
 
         server.get('/foo-bar', [
             // empty string is allowed origin when referer is not defined
-            allowOrigins(['']),
+            allowReferers(['']),
             handler,
         ]);
         await server.start();

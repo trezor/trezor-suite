@@ -268,7 +268,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         }
 
         request.on('aborted', () => {
-            this.logger.info(`Request ${request.url} aborted`);
+            this.logger.info(`Request ${request.method} ${request.url} aborted`);
         });
 
         const { pathname } = url.parse(request.url, true);
@@ -279,12 +279,12 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
             return;
         }
-        this.logger.info(`Handling request for ${pathname}`);
+        this.logger.info(`Handling request for ${request.method} ${pathname}`);
 
         const route = this.findBestMatchingRoute(pathname, request.method);
         if (!route) {
-            this.emitter.emit('server/error', `Route not found for ${pathname}`);
-            this.logger.warn(`Route not found for ${pathname}`);
+            this.emitter.emit('server/error', `Route not found for ${request.method} ${pathname}`);
+            this.logger.warn(`Route not found for ${request.method} ${pathname}`);
 
             return;
         }
@@ -332,11 +332,11 @@ const checkOrigin = ({
     logger,
 }: {
     request: Parameters<Handler>[0];
-    allowedOrigin?: string[];
+    allowedOrigin: string[];
     pathname: string;
     logger: Logger;
 }) => {
-    const { referer } = request.headers;
+    const { origin } = request.headers;
     const origins = allowedOrigin ?? [];
     let isOriginAllowed = false;
     // Allow all origins
@@ -344,9 +344,45 @@ const checkOrigin = ({
         isOriginAllowed = true;
     }
 
+    if (origin) {
+        isOriginAllowed = origins.some(o => {
+            // match from the end to allow subdomains
+            return new URL(origin).hostname.endsWith(new URL(o).hostname);
+        });
+    }
+    if (!isOriginAllowed) {
+        logger.warn(`Origin rejected for ${pathname}`);
+        logger.warn(`- Received: origin: '${origin}'`);
+        logger.warn(`- Allowed origins: ${origins.map(o => `'${o}'`).join(', ')}`);
+
+        return false;
+    }
+
+    return true;
+};
+
+const checkReferer = ({
+    request,
+    allowedReferer,
+    pathname,
+    logger,
+}: {
+    request: Parameters<Handler>[0];
+    allowedReferer: string[];
+    pathname: string;
+    logger: Logger;
+}) => {
+    const { referer } = request.headers;
+    const referers = allowedReferer ?? [];
+    let isRefererAllowed = false;
+    // Allow all origins
+    if (referers.includes('*')) {
+        isRefererAllowed = true;
+    }
+
     // If referer is not defined, check if empty referrers are allowed
     else if (referer === undefined) {
-        isOriginAllowed = origins.includes('');
+        isRefererAllowed = referers.includes('');
     } else {
         // Domain of referer has to be in the allowed origins for that endpoint
         let domain: string;
@@ -359,21 +395,21 @@ const checkOrigin = ({
         }
 
         return (
-            origins.findIndex(origin => {
+            referers.findIndex(r => {
                 // Wildcard for subdomains
-                if (origin.startsWith('*')) {
-                    return domain.endsWith(origin.substring(1));
+                if (r.startsWith('*')) {
+                    return domain.endsWith(r.substring(1));
                 }
 
-                return origin.includes(domain);
+                return r.includes(domain);
             }) > -1
         );
     }
 
-    if (!isOriginAllowed) {
-        logger.warn(`Origin rejected for ${pathname}`);
-        logger.warn(`- Received: '${referer}'`);
-        logger.warn(`- Allowed origins: ${origins.map(o => `'${o}'`).join(', ')}`);
+    if (!isRefererAllowed) {
+        logger.warn(`Referer rejected for ${pathname}`);
+        logger.warn(`- Received: referer: '${referer}', origin: '${origin}'`);
+        logger.warn(`- Allowed referers: ${referers.map(o => `'${o}'`).join(', ')}`);
 
         return false;
     }
@@ -385,12 +421,30 @@ const checkOrigin = ({
  * Built-middleware "allow origin"
  */
 export const allowOrigins =
-    (allowedOrigin?: string[]): Handler =>
+    (allowedOrigin: string[]): Handler =>
     (request, _response, next, { logger }) => {
         if (
             checkOrigin({
                 request,
                 allowedOrigin,
+                pathname: request.url,
+                logger,
+            })
+        ) {
+            next(request, _response);
+        }
+    };
+
+/**
+ * Built-middleware "allow referers"
+ */
+export const allowReferers =
+    (allowedReferer: string[]): Handler =>
+    (request, _response, next, { logger }) => {
+        if (
+            checkReferer({
+                request,
+                allowedReferer,
                 pathname: request.url,
                 logger,
             })
