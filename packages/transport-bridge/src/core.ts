@@ -7,6 +7,7 @@ import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
+import { Log } from '@trezor/utils';
 
 export const sessionsBackground = new SessionsBackground();
 
@@ -19,11 +20,12 @@ sessionsBackground.on('descriptors', descriptors => {
     sessionsClient.emit('descriptors', descriptors);
 });
 
-export const createApi = (apiStr: 'usb' | 'udp') => {
+export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
     const api =
         apiStr === 'udp'
-            ? new UdpApi({})
+            ? new UdpApi({ logger })
             : new UsbApi({
+                  logger,
                   usbInterface: new WebUSB({
                       allowAllDevices: true, // return all devices, not only authorized
                   }),
