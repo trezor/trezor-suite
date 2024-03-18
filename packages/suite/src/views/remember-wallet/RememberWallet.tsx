@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { WelcomeLayout } from 'src/components/suite';
 import { RememberWalletCard } from './RememberWalletCard';
 
 const Content = styled.div`
@@ -10,9 +9,7 @@ const Content = styled.div`
 `;
 
 export const RememberWallet = () => (
-    <WelcomeLayout>
-        <Content data-test="@onboarding/remember-wallet">
-            <RememberWalletCard />
-        </Content>
-    </WelcomeLayout>
+    <Content data-test="@onboarding/remember-wallet">
+        <RememberWalletCard />
+    </Content>
 );

@@ -65,6 +65,10 @@ export interface Flags {
     showDashboardT2B1PromoBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
+
+    // View-Only Wallet Feature
+    displayViewOnlyWalletPromo: boolean; // after user accesses wallet with some balance for the first time
+    viewOnlyPromoClosed: boolean; // it's shown only once
 }
 
 export interface EvmSettings {
@@ -118,6 +122,8 @@ const initialState: SuiteState = {
         showDashboardT2B1PromoBanner: true,
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
+        displayViewOnlyWalletPromo: false,
+        viewOnlyPromoClosed: false,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},

@@ -5,17 +5,13 @@ import { ReactSVG } from 'react-svg';
 import { ICONS } from './icons';
 import { UIVariant } from '../../../config/types';
 import { CSSColor, Color, Colors } from '@trezor/theme';
-<<<<<<< HEAD
 import { TransientProps } from '../../../utils/transientProps';
-=======
->>>>>>> d2a467b90c (chore(suite): refactoring: split components for DeviceItem)
 
 export type IconVariant = Extract<
     UIVariant,
     'primary' | 'tertiary' | 'info' | 'warning' | 'destructive'
 >;
 
-<<<<<<< HEAD
 type ExclusiveColorOrVariant =
     | { variant?: IconVariant; color?: undefined }
     | {
@@ -24,8 +20,6 @@ type ExclusiveColorOrVariant =
           color?: string;
       };
 
-=======
->>>>>>> d2a467b90c (chore(suite): refactoring: split components for DeviceItem)
 const variantColorMap: Record<IconVariant, Color> = {
     primary: 'iconPrimaryDefault',
     tertiary: 'iconSubdued',
@@ -35,15 +29,8 @@ const variantColorMap: Record<IconVariant, Color> = {
 };
 
 type ColorProps = {
-<<<<<<< HEAD
     theme: Colors;
 } & TransientProps<ExclusiveColorOrVariant>;
-=======
-    $variant?: IconVariant;
-    theme: Colors;
-    $color?: string;
-};
->>>>>>> d2a467b90c (chore(suite): refactoring: split components for DeviceItem)
 
 const getColorForIconVariant = ({
     $variant,
@@ -60,19 +47,10 @@ const getColorForIconVariant = ({
 export type IconType = keyof typeof ICONS;
 
 type SvgWrapperProps = {
-<<<<<<< HEAD
     $hoverColor: WrapperProps['hoverColor'];
     $size: WrapperProps['size'];
     $useCursorPointer: WrapperProps['useCursorPointer'];
 } & TransientProps<ExclusiveColorOrVariant>;
-=======
-    $color: WrapperProps['color'] | undefined;
-    $variant: IconVariant | undefined;
-    $hoverColor: WrapperProps['hoverColor'];
-    $size: WrapperProps['size'];
-    $useCursorPointer: WrapperProps['useCursorPointer'];
-};
->>>>>>> d2a467b90c (chore(suite): refactoring: split components for DeviceItem)
 
 const SvgWrapper = styled.div<SvgWrapperProps>`
     display: flex;

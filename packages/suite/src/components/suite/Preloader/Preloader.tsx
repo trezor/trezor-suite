@@ -1,4 +1,4 @@
-import { FC, ReactElement, ReactNode, useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
@@ -22,8 +22,6 @@ const getFullscreenApp = (route: AppState['router']['route']): FC | undefined =>
             return SuiteStart;
         case 'onboarding':
             return Onboarding;
-        case 'remember-wallet':
-            return RememberWallet;
         default:
             return undefined;
     }
@@ -41,6 +39,10 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
+
+    const { viewOnlyPromoClosed, displayViewOnlyWalletPromo } = useSelector(
+        state => state.suite.flags,
+    );
 
     const dispatch = useDispatch();
 
@@ -95,6 +97,14 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // if a device is not connected or initialized
     if (isLoggedOut) {
         return <LoggedOutLayout>{children}</LoggedOutLayout>;
+    }
+
+    if (displayViewOnlyWalletPromo && !viewOnlyPromoClosed) {
+        return (
+            <WelcomeLayout>
+                <RememberWallet />
+            </WelcomeLayout>
+        );
     }
 
     // everything is set.
