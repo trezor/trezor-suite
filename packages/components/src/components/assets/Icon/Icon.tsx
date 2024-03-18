@@ -5,11 +5,20 @@ import { ReactSVG } from 'react-svg';
 import { ICONS } from './icons';
 import { UIVariant } from '../../../config/types';
 import { CSSColor, Color, Colors } from '@trezor/theme';
+import { TransientProps } from '../../../utils/transientProps';
 
 export type IconVariant = Extract<
     UIVariant,
     'primary' | 'tertiary' | 'info' | 'warning' | 'destructive'
 >;
+
+type ExclusiveColorOrVariant =
+    | { variant?: IconVariant; color?: undefined }
+    | {
+          variant?: undefined;
+          /** @deprecated Use only is case of absolute desperation. Prefer using `variant`. */
+          color?: string;
+      };
 
 const variantColorMap: Record<IconVariant, Color> = {
     primary: 'iconPrimaryDefault',
@@ -20,10 +29,8 @@ const variantColorMap: Record<IconVariant, Color> = {
 };
 
 type ColorProps = {
-    $variant?: IconVariant;
     theme: Colors;
-    $color?: string;
-};
+} & TransientProps<ExclusiveColorOrVariant>;
 
 const getColorForIconVariant = ({
     $variant,
@@ -40,12 +47,10 @@ const getColorForIconVariant = ({
 export type IconType = keyof typeof ICONS;
 
 type SvgWrapperProps = {
-    $color: WrapperProps['color'] | undefined;
-    $variant: IconVariant | undefined;
     $hoverColor: WrapperProps['hoverColor'];
     $size: WrapperProps['size'];
     $useCursorPointer: WrapperProps['useCursorPointer'];
-};
+} & TransientProps<ExclusiveColorOrVariant>;
 
 const SvgWrapper = styled.div<SvgWrapperProps>`
     display: flex;
@@ -95,14 +100,7 @@ export type IconProps = SVGAttributes<HTMLDivElement> & {
     hoverColor?: string;
     useCursorPointer?: boolean;
     'data-test'?: string;
-} & (
-        | { variant?: IconVariant; color?: undefined }
-        | {
-              variant?: undefined;
-              /** @deprecated Use only is case of absolute desperation. Prefer using `variant`. */
-              color?: string;
-          }
-    );
+} & ExclusiveColorOrVariant;
 
 export const Icon = forwardRef(
     (
@@ -130,8 +128,7 @@ export const Icon = forwardRef(
             $size={size}
             ref={ref}
             $useCursorPointer={onClick !== undefined || useCursorPointer}
-            $color={color}
-            $variant={variant}
+            {...(variant !== undefined ? { $variant: variant } : { $color: color })}
             data-test={dataTest}
         >
             <ReactSVG

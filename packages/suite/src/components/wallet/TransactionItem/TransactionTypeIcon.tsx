@@ -17,7 +17,7 @@ const ClockIcon = styled(Icon)`
     border-radius: 50%;
 `;
 
-interface TransactionTypeIconProps extends Omit<IconProps, 'icon'> {
+interface TransactionTypeIconProps extends Omit<IconProps, 'icon' | 'variant'> {
     type: WalletAccountTransaction['type'];
     isPending: boolean;
 }
