@@ -14,14 +14,9 @@ import { MenuProvider } from './menu';
 type Config<FrontMatterType = FrontMatter> = DocsThemeConfig &
     Pick<PageOpts<FrontMatterType>, 'flexsearch' | 'newNextLinkBehavior' | 'title' | 'frontMatter'>;
 
-const ConfigContext = createContext<Config>({
-    title: '',
-    frontMatter: {},
-    ...DEFAULT_THEME,
-});
+const ConfigContext = createContext<Config>({} as Config);
 
 export function useConfig<FrontMatterType = FrontMatter>() {
-    // @ts-expect-error TODO: fix Type 'Config<{ [key: string]: any; }>' is not assignable to type 'Config<FrontMatterType>'.
     return useContext<Config<FrontMatterType>>(ConfigContext);
 }
 
@@ -75,8 +70,7 @@ export const ConfigProvider = ({
             Object.entries(themeConfig).map(([key, value]) => [
                 key,
                 value && typeof value === 'object' && DEEP_OBJECT_KEYS.includes(key)
-                    ? // @ts-expect-error -- key has always object value
-                      { ...DEFAULT_THEME[key], ...value }
+                    ? { ...DEFAULT_THEME[key], ...value }
                     : value,
             ]),
         ),
@@ -95,6 +89,7 @@ export const ConfigProvider = ({
         isValidated = true;
     }
     const extendedConfig: Config = {
+        newNextLinkBehavior: false,
         ...theme,
         flexsearch: pageOpts.flexsearch,
         ...(typeof pageOpts.newNextLinkBehavior === 'boolean' && {

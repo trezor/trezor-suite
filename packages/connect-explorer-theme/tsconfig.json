@@ -1,24 +1,14 @@
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
-        "outDir": "dist",
-        "target": "es2016",
-        "module": "ESNext",
-        "declaration": false,
-        "noEmit": true,
-        "esModuleInterop": true,
-        "strict": true,
-        "skipLibCheck": true,
-        "allowJs": true,
-        "jsx": "react-jsx",
-        "moduleResolution": "node",
-        "lib": ["ESNext", "DOM", "DOM.Iterable"],
-        "types": ["vitest/globals"],
-        "resolveJsonModule": true,
         "paths": {
             "flexsearch": [
                 "./node_modules/@types/flexsearch"
             ]
-        }
+        },
+        "outDir": "./libDev",
+        "noImplicitAny": false,
+        "useUnknownInCatchVariables": false
     },
     "references": [{ "path": "../components" }]
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { DocsThemeConfig } from '@trezor/connect-explorer-theme';
+import type { DocsThemeConfig } from '@trezor/connect-explorer-theme';
 import { TrezorLogo } from '@trezor/components';
 
 const config: DocsThemeConfig = {

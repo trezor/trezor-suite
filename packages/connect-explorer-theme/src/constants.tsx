@@ -13,7 +13,7 @@ import { MatchSorterSearch } from './components/match-sorter-search';
 import type { NavBarProps } from './components/navbar';
 import { themeOptionsSchema, ThemeSwitch } from './components/theme-switch';
 import type { TOCProps } from './components/toc';
-import { useConfig } from './contexts';
+import { useConfig } from './contexts/config';
 import { getGitIssueUrl, useGitEditUrl } from './utils';
 
 export const DEFAULT_LOCALE = 'en-US';
