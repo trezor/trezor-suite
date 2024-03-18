@@ -24,8 +24,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          lfs: true
           submodules: recursive
+
+      # Pull only files needed for connect to save LFS bandwidth
+      - name: "Pull LFS files for connect"
+        run: git lfs pull --include "packages/connect-common/files/**/*"
 
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
