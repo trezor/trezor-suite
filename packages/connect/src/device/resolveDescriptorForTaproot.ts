@@ -6,15 +6,19 @@ interface Params {
     publicKey: Messages.PublicKey;
 }
 
+// This is here to keep backwards compatibility, suite and blockbooks are still using `'` over `h`
+export const replaceHardened = (descriptor: string) => {
+    const [match] = descriptor.match(/\[[a-fh0-9/]+\]/) ?? [];
+
+    return match ? descriptor.replace(match, match.replaceAll('h', "'")) : descriptor;
+};
+
 export const resolveDescriptorForTaproot = ({ response, publicKey }: Params) => {
     if (publicKey.descriptor !== null && publicKey.descriptor !== undefined) {
         const [xpub, checksum] = publicKey.descriptor.split('#');
 
         return {
-            xpub: xpub
-                // This is here to keep backwards compatibility, suite and blockbooks are still using `'` over `h`
-                .replace(/h\//g, "'/")
-                .replace(/h]/g, "']"),
+            xpub: replaceHardened(xpub),
             checksum,
         };
     } else {

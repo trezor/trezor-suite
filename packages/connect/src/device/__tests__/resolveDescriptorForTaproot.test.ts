@@ -1,4 +1,4 @@
-import { resolveDescriptorForTaproot } from '../resolveDescriptorForTaproot';
+import { resolveDescriptorForTaproot, replaceHardened } from '../resolveDescriptorForTaproot';
 import { HDNodeResponse } from '../../types/api/getPublicKey';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 
@@ -49,6 +49,32 @@ describe(resolveDescriptorForTaproot.name, () => {
         expect(response).toEqual({
             checksum: undefined,
             xpub: "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)",
+        });
+    });
+});
+
+const hardenedXpubs = [
+    [
+        'raw xpub, do nothing',
+        'xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p',
+        'xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p',
+    ],
+    [
+        'already correct, do nothing',
+        "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)",
+        "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)",
+    ],
+    [
+        'descriptor ending with h',
+        'tr([71d98c03/86h/0h/0h]xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33h/<0;1>/*)#gvfjd7ak',
+        "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33h/<0;1>/*)#gvfjd7ak",
+    ],
+];
+
+describe(replaceHardened.name, () => {
+    hardenedXpubs.forEach(([description, original, expected]) => {
+        it(description, () => {
+            expect(replaceHardened(original)).toEqual(expected);
         });
     });
 });
