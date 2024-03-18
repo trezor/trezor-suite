@@ -106,7 +106,7 @@ const calculate = (
 };
 
 export const composeTransaction =
-    (formValues: FormState, formState: ComposeActionContext) => async () => {
+    (formValues: FormState, formState: ComposeActionContext) => async (dispatch: Dispatch) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
@@ -149,6 +149,13 @@ export const composeTransaction =
             }
         } else {
             // TODO: catch error from blockbook/geth (invalid contract, not enough balance...)
+            if (estimatedFee.payload.error) return;
+            dispatch(
+                notificationsActions.addToast({
+                    type: 'metadata-unexpected-error',
+                    error: estimatedFee.payload.error,
+                }),
+            );
         }
 
         // FeeLevels are read-only
