@@ -51,4 +51,23 @@ describe(resolveDescriptorForTaproot.name, () => {
             xpub: "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)",
         });
     });
+
+    it('wont break when taproot xpub ends with "h" before the end', () => {
+        const response = resolveDescriptorForTaproot({
+            response: originalResponse,
+            publicKey: {
+                ...publicKey,
+
+                // This breaks the `publicKey` data-object integrity, but for this test its fine
+                descriptor:
+                    // ............................................... There is this "h" at the end before "/" which may break the "h" to "'" replacement ⬎
+                    'tr([71d98c03/86h/0h/0h]xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33h/<0;1>/*)#gvfjd7ak',
+            },
+        });
+
+        expect(response).toEqual({
+            checksum: 'gvfjd7ak',
+            xpub: "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33h/<0;1>/*)",
+        });
+    });
 });
