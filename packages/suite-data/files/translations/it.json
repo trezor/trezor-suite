@@ -1246,7 +1246,6 @@
   "TR_ONBOARDING_NEW_VERSION": "Nuova Versione",
   "TR_ONBOARDING_STEP_WALLET": "Portafoglio",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Ancora non funziona?",
-  "TR_ONBOARDING_WELCOME_HEADING": "Benvenuto!",
   "TR_ONCE_YOU_BEGIN_THIS_PROCESS": "Questo processo richiede solo qualche minuto, ma non puoi interromperlo o riavviarlo, una volta avviato.",
   "TR_ONION_BACKEND_TOR_NEEDED": "Hai utilizzato un indirizzo onion per i tuoi backend. Per utilizzarli, devi avere accesso alla rete di Tor.",
   "TR_ONION_LINKS_DESCRIPTION": "Con questa impostazione abilitata, tutti i link di trezor.io saranno aperti come link .onion.",

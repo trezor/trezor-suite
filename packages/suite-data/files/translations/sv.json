@@ -147,7 +147,6 @@
   "TR_OK": "OK",
   "TR_ONBOARDING_COINS_STEP_DESCRIPTION_BITCOIN_ONLY": "Välj vilka mynt som ska visas i Trezor Suite. Du kan ändra denna inställning när som helst.",
   "TR_ONBOARDING_NEW_VERSION": "Ny version",
-  "TR_ONBOARDING_WELCOME_HEADING": "Välkommen!",
   "TR_P2P_PAYMENT_METHODS": "Betalningsmetoder",
   "TR_PAYMENT_METHOD_CREDITCARD": "Kreditkort",
   "TR_PAYMENT_METHOD_PAY4FUN": "Pay4Fun",

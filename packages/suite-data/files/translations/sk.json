@@ -537,7 +537,6 @@
   "TR_ONBOARDING_NEW_VERSION": "Nová verzia",
   "TR_ONBOARDING_STEP_WALLET": "Peňaženka",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Stále nefunguje?",
-  "TR_ONBOARDING_WELCOME_HEADING": "Vitajte!",
   "TR_ONCE_YOU_BEGIN_THIS_PROCESS": "Tento proces trvá len niekoľko minút, ale po jeho začatí ho nemôžete pozastaviť ani reštartovať.",
   "TR_ONION_LINKS_DESCRIPTION": "Ak je toto nastavenie povolené, všetky odkazy trezor.io sa budú otvárať ako odkazy .onion.",
   "TR_ONION_LINKS_TITLE": "Otvorenie odkazov trezor.io ako odkazov .onion",

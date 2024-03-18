@@ -1253,7 +1253,6 @@
   "TR_ONBOARDING_NEW_VERSION": "Nova Versão",
   "TR_ONBOARDING_STEP_WALLET": "Carteira",
   "TR_ONBOARDING_TROUBLESHOOTING_FAILED": "Ainda não funciona?",
-  "TR_ONBOARDING_WELCOME_HEADING": "Bem-vindo!",
   "TR_ONCE_YOU_BEGIN_THIS_PROCESS": "Este processo leva apenas alguns minutos, mas você não pode pausá-lo ou reiniciá-lo uma vez que você começa.",
   "TR_ONION_BACKEND_TOR_NEEDED": "Você usou um endereço de cebola para os seus backends. Para usar endereços de cebola, você precisa ter acesso à rede Tor.",
   "TR_ONION_LINKS_DESCRIPTION": "Com esta configuração ativada, todos os links trezor.io serão abertos como links .onion.",
