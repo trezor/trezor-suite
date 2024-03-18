@@ -9,6 +9,7 @@ import {
     selectSelectedAccountHasSufficientEthForStaking,
 } from 'src/reducers/wallet/selectedAccountReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
+import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -51,7 +52,7 @@ const Text = styled.div`
 export const StakeEthBanner = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { stakeEthBannerClosed } = useSelector(state => state.suite.flags);
+    const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
     const hasSufficientEthForStaking = useSelector(selectSelectedAccountHasSufficientEthForStaking);
     const { pathname } = useSelector(state => state.router);
     const isShown = !stakeEthBannerClosed && pathname === '/accounts' && hasSufficientEthForStaking;

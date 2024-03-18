@@ -7,6 +7,7 @@ import { getBip43Type } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
 import { BannerPoints } from './BannerPoints';
 import styled from 'styled-components';
+import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 interface TaprootBannerProps {
     account?: Account;
@@ -17,7 +18,7 @@ const Dark = styled.span`
 `;
 
 export const TaprootBanner = ({ account }: TaprootBannerProps) => {
-    const { taprootBannerClosed } = useSelector(state => state.suite.flags);
+    const { taprootBannerClosed } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     const isVisible =

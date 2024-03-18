@@ -15,6 +15,7 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { SecurityCard, SecurityCardProps } from '../SecurityCard';
+import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 const Content = styled.div`
     display: grid;
@@ -33,7 +34,7 @@ const Content = styled.div`
 const SecurityFeatures = () => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const device = useSelector(selectDevice);
-    const flags = useSelector(state => state.suite.flags);
+    const { discreetModeCompleted, securityStepsHidden } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     const { isLocked } = useDevice();
@@ -42,7 +43,6 @@ const SecurityFeatures = () => {
     const discoveryStatus = getDiscoveryStatus();
     const isDisabledGlobal = discoveryStatus && discoveryStatus.status === 'loading';
 
-    const { discreetModeCompleted, securityStepsHidden } = flags;
     let needsBackup;
     let pinEnabled;
     let hiddenWalletCreated;
