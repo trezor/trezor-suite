@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
-    selectAreAllDevicesDisconnectedOrAccountless,
+    selectIsDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected,
     selectIsDeviceAuthorized,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
@@ -17,8 +17,8 @@ export const EmptyHomeRenderer = () => {
 
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const areAllDevicesDisconnectedOrAccountless = useSelector(
-        selectAreAllDevicesDisconnectedOrAccountless,
+    const isDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected = useSelector(
+        selectIsDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected,
     );
     const isDeviceReadyToUse = useSelector(selectIsDeviceReadyToUse);
 
@@ -30,7 +30,7 @@ export const EmptyHomeRenderer = () => {
 
     if (isUsbDeviceConnectFeatureEnabled) {
         // Crossroads should be displayed only if there is no real device connected and portfolio tracker has no accounts.
-        if (areAllDevicesDisconnectedOrAccountless) {
+        if (isDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected) {
             return <EmptyPortfolioCrossroads />;
         }
 

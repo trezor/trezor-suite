@@ -6,7 +6,7 @@ import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     selectDeviceId,
-    selectAreAllDevicesDisconnectedOrAccountless,
+    selectIsDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
@@ -43,8 +43,8 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
 export const DeviceSwitch = () => {
     const { applyStyle } = useNativeStyles();
 
-    const areAllDevicesDisconnectedOrAccountless = useSelector(
-        selectAreAllDevicesDisconnectedOrAccountless,
+    const isDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected = useSelector(
+        selectIsDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected,
     );
     const deviceId = useSelector(selectDeviceId);
 
@@ -59,7 +59,11 @@ export const DeviceSwitch = () => {
             <HStack justifyContent="space-between" alignItems="center" spacing="medium">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
                     <DeviceItemContent
-                        deviceId={areAllDevicesDisconnectedOrAccountless ? undefined : deviceId}
+                        deviceId={
+                            isDeviceDiscoveryEmptyAndNoPhysicalDeviceConnected
+                                ? undefined
+                                : deviceId
+                        }
                         headerTextVariant="highlight"
                         isPortfolioLabelDisplayed={false}
                     />
