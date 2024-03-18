@@ -5,12 +5,12 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { useSelector, useEverstakePoolStats, useValidatorsQueue } from 'src/hooks/suite';
 import { Divider, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
+import { useDaysTo } from 'src/hooks/suite/useDaysTo';
 import { StakingCard } from './StakingCard';
 import { ApyCard } from './ApyCard';
 import { PayoutCard } from './PayoutCard';
 import { ClaimCard } from './claim/ClaimCard';
 import { Transactions } from './Transactions';
-import { useDaysTo } from '../hooks/useDaysTo';
 
 const FlexCol = styled.div`
     display: flex;

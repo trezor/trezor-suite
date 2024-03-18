@@ -3,9 +3,10 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Checkbox, H2, Icon, Divider } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Modal, Translation, TrezorLink } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useValidatorsQueue } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useDaysTo } from 'src/hooks/suite/useDaysTo';
 
 const StyledModal = styled(Modal)`
     width: 500px;
@@ -64,6 +65,11 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
+    const { validatorsQueue } = useValidatorsQueue();
+    const { daysToAddToPoolInitial } = useDaysTo({
+        selectedAccountKey: account?.descriptor ?? '',
+        validatorsQueue,
+    });
 
     const handleOnCancel = () => {
         onCancel();
@@ -83,7 +89,12 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
             <VStack>
                 <Flex>
                     <Icon icon="CLOCK" size={24} color={theme.iconAlertYellow} />
-                    <Translation id="TR_STAKE_ENTERING_POOL_MAY_TAKE" values={{ days: 35 }} />
+                    <Translation
+                        id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
+                        values={{
+                            days: isNaN(daysToAddToPoolInitial) ? '30+' : daysToAddToPoolInitial,
+                        }}
+                    />
                 </Flex>
                 <Flex>
                     <Icon icon="HAND" size={24} color={theme.iconAlertYellow} />
