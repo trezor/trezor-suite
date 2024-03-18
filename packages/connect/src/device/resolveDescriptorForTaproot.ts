@@ -10,11 +10,14 @@ export const resolveDescriptorForTaproot = ({ response, publicKey }: Params) => 
     if (publicKey.descriptor !== null && publicKey.descriptor !== undefined) {
         const [xpub, checksum] = publicKey.descriptor.split('#');
 
+        // This is here to keep backwards compatibility, suite and blockbooks are still using `'` over `h`
+        const [beforeOpeningSquareBracket, afterOpeningSquareBracket] = xpub.split('[');
+        const [path, afterClosingSquareBracket] = afterOpeningSquareBracket.split(']');
+
+        const correctedPath = path.replace(/h/g, "'"); // .replaceAll()
+
         return {
-            xpub: xpub
-                // This is here to keep backwards compatibility, suite and blockbooks are still using `'` over `h`
-                .replace(/h\//g, "'/")
-                .replace(/h]/g, "']"),
+            xpub: `${beforeOpeningSquareBracket}[${correctedPath}]${afterClosingSquareBracket}`,
             checksum,
         };
     } else {
