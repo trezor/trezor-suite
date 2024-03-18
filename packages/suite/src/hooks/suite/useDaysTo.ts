@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useSelector } from 'src/hooks/suite';
+import { useSelector } from './useSelector';
 import {
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
@@ -50,8 +50,17 @@ export const useDaysTo = ({ selectedAccountKey, validatorsQueue }: UseDaysToPara
         return daysToWait <= 0 ? 1 : daysToWait;
     }, [unstakeTxs, validatorsQueue.validatorWithdrawTime]);
 
+    const daysToAddToPoolInitial = useMemo(() => {
+        const secondsToWait =
+            validatorsQueue.validatorAddingDelay + validatorsQueue.validatorActivationTime;
+        const daysToWait = secondsToDays(secondsToWait);
+
+        return daysToWait <= 0 ? 1 : daysToWait;
+    }, [validatorsQueue.validatorActivationTime, validatorsQueue.validatorAddingDelay]);
+
     return {
         daysToAddToPool,
         daysToUnstake,
+        daysToAddToPoolInitial,
     };
 };
