@@ -42,7 +42,7 @@ export const DeviceAuthenticityConfig = Type.Intersect([
  */
 export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
-    timestamp: '2023-02-28T12:00:00+00:00',
+    timestamp: '2023-03-18T12:00:00+00:00',
     T2B1: {
         rootPubKeys: [
             '04ca97480ac0d7b1e6efafe518cd433cec2bf8ab9822d76eafd34363b55d63e60380bff20acc75cde03cffcb50ab6f8ce70c878e37ebc58ff7cca0a83b16b15fa5',
@@ -60,6 +60,9 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '04fdbce7dafecc7808c2e047b5ad6b688c9e37529dfefbe96ba8a092895b5e669e93165abac1720f8fd5d607e35f4663cacf9bacd6e90aa97524401af65490f401',
             '04c408e8a873c12256278c360bd7f35533e703b2f65daecf665a4711ebe6297f82ae2bf8ca60ff7261a69939c10a5cf81c17b7c5aac93cbd73136609c00ecd1666',
             '04850fa71163c60bb92b254d9d4a0c664c1ffef9f5d7ea00c4fa4169b0661dc1918bb2d24b2b4d1202701a753552868aaff9514ae81128671e615a96f0ce90a29c',
+            '04c99f57eaaca8db0245a46dba5288a4c0b0d6acdd1346feef7770ec6b88d28d6640ee19c3f6d984e8fcfceda11b1e4accefda32b950dcd1785fbd16c2e45493a3',
+            '049c288f4de8a239be83955ed260f40c1a4126fb7dc513601dde4cb11f7363d6a259e73cb1bd9283a450ae608d1832c5fd0cbd9526c0285e720fa45494cae981fd',
+            '04ac1815177cc1f07700e5f18c05522427413f404bacc987eb1cf9d86f96b9e0cc53ef5941eafd483102eea321205d7dd9271ac2d0fca75a9a43deb824b51f1596',
         ],
         debug: {
             // debug keys are used **only** to validate emulator or dev. firmware
