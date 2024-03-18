@@ -67,7 +67,9 @@ export const GraphTooltipAccount = ({
     ...props
 }: GraphTooltipAccountProps) => {
     const formatters = useFormatters();
-    if (!active || !payload) {
+
+    // Note: payload is [] when discovery is paused.
+    if (!active || !payload?.length) {
         return null;
     }
 
