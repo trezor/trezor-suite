@@ -70,4 +70,22 @@ describe(resolveDescriptorForTaproot.name, () => {
             xpub: "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33h/<0;1>/*)",
         });
     });
+
+    it("work for descriptor in non-extended version. The checksum won't be shown tho.", () => {
+        const response = resolveDescriptorForTaproot({
+            response: originalResponse,
+            publicKey: {
+                ...publicKey,
+
+                // descriptor is xpub in non-extended form
+                descriptor:
+                    'xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p',
+            },
+        });
+
+        expect(response).toEqual({
+            checksum: undefined, // code is defensive, it will work but it wont provide checksum
+            xpub: "tr([71d98c03/86'/0'/0']xpub6CXYpDGLuWpjqFXRTbo8LMYVsiiRjwWiDY7iwDkq1mk4GDYE7TWmSBCnNmbcVYQK4T56RZRRwhCAG7ucTBHAG2rhWHpXdMQtkZVDeVuv33p/<0;1>/*)",
+        });
+    });
 });
