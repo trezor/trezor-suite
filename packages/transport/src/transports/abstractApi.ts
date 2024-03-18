@@ -27,8 +27,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     private api: AbstractApi;
     protected acquirePromise?: Deferred<void>;
 
-    constructor({ messages, api, sessionsClient, signal, logger }: ConstructorParams) {
-        super({ messages, signal, logger });
+    constructor({ messages, api, sessionsClient, signal, logger, instanceId }: ConstructorParams) {
+        super({ messages, signal, logger, instanceId });
         this.sessionsClient = sessionsClient;
         this.api = api;
     }
@@ -84,7 +84,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
             // inform sessions background about occupied paths and get descriptors back
             const enumerateDoneResponse = await this.sessionsClient.enumerateDone({
-                descriptors,
+                descriptors: descriptors.map(d => ({ ...d, instanceId: this.instanceId })),
             });
 
             return this.success(enumerateDoneResponse.payload.descriptors);

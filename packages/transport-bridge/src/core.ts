@@ -92,10 +92,13 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         return enumerateDoneResponse;
     };
 
-    const acquire = async (acquireInput: AcquireInput) => {
+    const acquire = async (acquireInput: AcquireInput, { instanceId }: { instanceId?: string }) => {
+        console.log('acquire, instanceId:', instanceId, 'acquireInput:', acquireInput);
+
         const acquireIntentResult = await sessionsClient.acquireIntent({
             path: acquireInput.path,
             previous: acquireInput.previous === 'null' ? null : acquireInput.previous,
+            instanceId,
         });
         if (!acquireIntentResult.success) {
             return acquireIntentResult;
@@ -106,7 +109,7 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         if (!openDeviceResult.success) {
             return openDeviceResult;
         }
-        await sessionsClient.acquireDone({ path: acquireInput.path });
+        await sessionsClient.acquireDone({ path: acquireInput.path, instanceId });
 
         return acquireIntentResult;
     };

@@ -66,7 +66,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         super();
 
         let { transports } = DataManager.getSettings();
-        const { debug } = DataManager.getSettings();
+        const { debug, instanceId } = DataManager.getSettings();
         this.messages = DataManager.getProtobufMessages();
 
         // we fill in `transports` with a reasonable fallback in src/index.
@@ -104,6 +104,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                                 latestVersion: getBridgeInfo().version.join('.'),
                                 messages: this.messages,
                                 logger: transportLogger,
+                                instanceId,
                             }),
                         );
                         break;

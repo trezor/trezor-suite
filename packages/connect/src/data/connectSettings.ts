@@ -141,5 +141,9 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings._extendWebextensionLifetime = input._extendWebextensionLifetime;
     }
 
+    if (typeof input.instanceId === 'string') {
+        settings.instanceId = input.instanceId;
+    }
+
     return settings;
 };

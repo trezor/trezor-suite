@@ -166,6 +166,9 @@ export class BridgeTransport extends AbstractTransport {
 
                 const response = await this.post('/acquire', {
                     params: `${input.path}/${previous}`,
+                    body: {
+                        instanceId: this.instanceId,
+                    },
                     timeout: true,
                     signal,
                 });

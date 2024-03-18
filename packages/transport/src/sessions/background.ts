@@ -195,6 +195,7 @@ export class SessionsBackground extends TypedEmitter<{
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
         this.descriptors[payload.path].session = `${this.lastSession}`;
+        this.descriptors[payload.path].instanceId = payload.instanceId!;
 
         return Promise.resolve(
             this.success({

@@ -10,6 +10,8 @@ export type Descriptor = {
     type?: DEVICE_TYPE;
     /** only important for T1 over old bridge (trezord-go), defacto part of 'path'. More explanation in https://github.com/trezor/trezor-suite/compare/transport-descriptor-product */
     product?: number;
+    /** connectSettings.instanceId */
+    instanceId: string;
 };
 
 export interface Logger {

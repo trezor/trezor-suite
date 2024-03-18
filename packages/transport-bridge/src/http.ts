@@ -112,10 +112,15 @@ export class TrezordNode {
             ]);
 
             app.post('/acquire/:path/:previous', [
+                parseBodyJSON,
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     this.api
-                        .acquire({ path: req.params.path, previous: req.params.previous })
+                        .acquire(
+                            { path: req.params.path, previous: req.params.previous },
+                            // @ts-expect-error
+                            { instanceId: req.body.instanceId },
+                        )
                         .then(result => {
                             if (!result.success) {
                                 res.statusCode = 400;
@@ -240,6 +245,8 @@ export class TrezordNode {
                         devices: enumerateResult.success ? enumerateResult.payload.descriptors : [],
                         logs: app.logger.getLog().slice(-20),
                     };
+
+                    console.log(props);
 
                     res.end(str(props));
                 },

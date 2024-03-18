@@ -23,7 +23,7 @@ export type EnumerateDoneResponse = BackgroundResponse<{
     descriptors: Descriptor[];
 }>;
 
-export type AcquireIntentRequest = AcquireInput;
+export type AcquireIntentRequest = AcquireInput & { instanceId?: string };
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
     { session: string },
@@ -32,7 +32,7 @@ export type AcquireIntentResponse = BackgroundResponseWithError<
 
 export type AcquireDoneRequest = {
     path: string;
-};
+} & { instanceId?: string };
 
 export type AcquireDoneResponse = BackgroundResponseWithError<
     {

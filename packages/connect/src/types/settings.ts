@@ -39,4 +39,5 @@ export interface ConnectSettings {
     useCoreInPopup?: boolean;
     /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
+    instanceId?: string;
 }

@@ -1,5 +1,6 @@
 import { parseConnectSettings as parseSettings } from '@trezor/connect/src/data/connectSettings';
 import type { ConnectSettings } from '@trezor/connect/src/types';
+import { getWeakRandomId } from '@trezor/utils';
 
 export const getEnv = () => {
     if (typeof chrome !== 'undefined' && typeof chrome.runtime?.onConnect !== 'undefined') {
@@ -68,6 +69,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}): Conn
     if (typeof input.env !== 'string') {
         settings.env = getEnv();
     }
+
+    // todo: is there something which identifies specific tab better than title?
+    const instanceId = `${getWeakRandomId(4)} ${document.title.substring(0, 20)}`;
+
+    settings.instanceId = instanceId;
 
     return parseSettings(settings);
 };

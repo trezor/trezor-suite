@@ -28,6 +28,7 @@ export const Device = ({ device }: DeviceProps) => {
             <div>model: {modelName}</div>
             <div>path: {device.path}</div>
             <div>session: {device.session ? device.session : 'none'}</div>
+            <div>app: {device.instanceId} </div>
         </div>
     );
 };
