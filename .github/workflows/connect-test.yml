@@ -66,12 +66,37 @@ jobs:
     with:
       test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
 
+  legacy-canary-firmware-api:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
+
   management:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
       methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
+
+  legacy-canary-firmware-management:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
 
   btc-sign:
     needs: [build]
@@ -80,12 +105,38 @@ jobs:
       test-pattern: methods
       methods: "signTransaction"
 
+  legacy-canary-firmware-btc-sign:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "signTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
+
   btc-others:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
       methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
+
+  legacy-canary-firmware-btc-others:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
 
   stellar:
     needs: [build]
@@ -94,12 +145,38 @@ jobs:
       test-pattern: methods
       methods: "stellarGetAddress,stellarSignTransaction"
 
+  legacy-canary-firmware-stellar:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "stellarGetAddress,stellarSignTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
+
   cardano:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
       methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
+
+  legacy-canary-firmware-cardano:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
 
   eos:
     needs: [build]
@@ -108,12 +185,38 @@ jobs:
       test-pattern: methods
       methods: "eosGetPublicKey,eosSignTransaction"
 
+  legacy-canary-firmware-eos:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "eosGetPublicKey,eosSignTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
+
   ethereum:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
       methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
+
+  legacy-canary-firmware-ethereum:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
 
   nem:
     needs: [build]
@@ -122,12 +225,38 @@ jobs:
       test-pattern: methods
       methods: "nemGetAddress,nemSignTransaction"
 
+  legacy-canary-firmware-nem:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "nemGetAddress,nemSignTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
+
   ripple:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
       methods: "rippleGetAddress,rippleSignTransaction"
+
+  legacy-canary-firmware-ripple:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "rippleGetAddress,rippleSignTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
 
   tezos:
     needs: [build]
@@ -136,9 +265,35 @@ jobs:
       test-pattern: methods
       methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
 
+  legacy-canary-firmware-tezos:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
+
   binance:
     needs: [build]
     uses: ./.github/workflows/connect-test-params.yml
     with:
       test-pattern: methods
       methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
+
+  legacy-canary-firmware-binance:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: methods
+      methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      matrix:
+        firmware: ["2.2.0", "2-main"]
+      fail-fast: false
