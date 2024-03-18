@@ -74,10 +74,10 @@ const StyledGrayTop = styled.div<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.xxs};
 `;
 
-const WindowGrayTop = () => {
+const WindowGrayTop = ({ children }: { children: ReactNode }) => {
     const { elevation } = useElevation();
 
-    return <StyledGrayTop $elevation={elevation} />;
+    return <StyledGrayTop $elevation={elevation}>{children}</StyledGrayTop>;
 };
 
 const WindowChart = styled.div``;
@@ -172,7 +172,7 @@ export const RememberWalletCard = () => {
                     <Circle>
                         <Icon icon="LINK" size={spacings.xl} />
                     </Circle>
-                    <Text variant="subdued">
+                    <Text variant="tertiary">
                         <Translation
                             id="TR_REMEMBER_CARD_EXPLANATION"
                             values={{

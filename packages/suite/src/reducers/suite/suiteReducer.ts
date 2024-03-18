@@ -122,7 +122,7 @@ const initialState: SuiteState = {
         showDashboardT2B1PromoBanner: true,
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
-        displayViewOnlyWalletPromo: false,
+        displayViewOnlyWalletPromo: true, // Todo: default should be false, just for testing !!!!!!
         viewOnlyPromoClosed: false,
     },
     evmSettings: {

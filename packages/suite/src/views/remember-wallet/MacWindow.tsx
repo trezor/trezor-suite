@@ -1,5 +1,11 @@
 import { ElevationContext, useElevation } from '@trezor/components';
-import { Elevation, borders, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+} from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled from 'styled-components';
 
@@ -7,7 +13,7 @@ const Window = styled.div<{ $elevation: Elevation }>`
     width: 258px;
     height: 184px;
     border: 1px solid ${mapElevationToBorder};
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background-color: ${mapElevationToBackground};
     border-bottom: 0;
     border-top-left-radius: ${borders.radii.sm};
     border-top-right-radius: ${borders.radii.sm};
