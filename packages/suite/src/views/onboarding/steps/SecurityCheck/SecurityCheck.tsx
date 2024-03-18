@@ -18,6 +18,7 @@ import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { selectIsOnboadingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { typography } from '@trezor/theme';
+import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
     max-width: 840px;
@@ -144,7 +145,7 @@ const firmwareInstalledChecklist = [
 export const SecurityCheck = () => {
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
-    const initialRun = useSelector(state => state.suite.flags.initialRun);
+    const { initialRun } = useSelector(selectSuiteFlags);
     const {
         isDeviceAuthenticityCheckDisabled,
         debug: { isUnlockedBootloaderAllowed },

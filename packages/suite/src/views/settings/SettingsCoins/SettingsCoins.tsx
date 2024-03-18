@@ -19,6 +19,7 @@ import {
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { spacingsPx } from '@trezor/theme';
+import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 const StyledButton = styled(Button)`
     margin-top: ${spacingsPx.xl};
@@ -75,7 +76,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 });
 
 export const SettingsCoins = () => {
-    const { firmwareTypeBannerClosed } = useSelector(state => state.suite.flags);
+    const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
 
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();

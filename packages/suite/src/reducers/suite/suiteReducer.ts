@@ -359,4 +359,6 @@ export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState
 export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
     state.suite.flags.initialRun || state.device?.selectedDevice?.mode !== 'normal';
 
+export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
+
 export default suiteReducer;
