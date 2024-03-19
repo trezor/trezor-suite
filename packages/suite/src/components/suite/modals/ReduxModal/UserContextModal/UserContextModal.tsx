@@ -43,6 +43,7 @@ import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
 import type { ReduxModalProps } from '../ReduxModal';
 import { CryptoSymbol } from 'invity-api';
+import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -215,6 +216,8 @@ export const UserContextModal = ({
             return <UnstakeModal onCancel={onCancel} />;
         case 'claim':
             return <ClaimModal onCancel={onCancel} />;
+        case 'everstake':
+            return <EverstakeModal onCancel={onCancel} />;
         default:
             return null;
     }
