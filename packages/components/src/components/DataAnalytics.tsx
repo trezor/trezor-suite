@@ -7,20 +7,27 @@ import { Button } from './buttons/Button/Button';
 import { CollapsibleBox } from './CollapsibleBox/CollapsibleBox';
 import { Card } from './Card/Card';
 import { Switch } from './form/Switch/Switch';
+import { spacingsPx } from '@trezor/theme';
 
 const StyledCard = styled(Card)`
     max-width: 550px;
-    padding: 20px 30px;
+    padding: ${spacingsPx.lg} ${spacingsPx.xxl};
 `;
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+    gap: ${spacingsPx.xl};
 `;
 
 const SwitchWrapper = styled.div`
     display: flex;
-    margin-bottom: 36px;
+`;
+
+const ContentWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.sm};
 `;
 
 const ButtonWrapper = styled.div`
@@ -33,7 +40,7 @@ const StyledButton = styled(Button)`
 `;
 
 const Label = styled.span`
-    margin-left: 20px;
+    margin-left: ${spacingsPx.lg};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
@@ -45,7 +52,6 @@ const Heading = styled.h2`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    margin-bottom: 16px;
     text-align: left;
 `;
 
@@ -53,16 +59,12 @@ const Description = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-
-    margin-bottom: 20px;
-
-    /* text-align: center; */
 `;
 
 const Category = styled.div`
     display: grid;
     grid-template-columns: 1fr 4fr;
-    grid-gap: 20px;
+    grid-gap: ${spacingsPx.lg};
     width: 100%;
 `;
 const CategoryItems = styled.div`
@@ -127,57 +129,59 @@ export const DataAnalytics = ({
     return (
         <StyledCard data-test="@analytics/consent" className={className}>
             <Wrapper>
-                <Heading>
-                    <FormattedMessage
-                        id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
-                        defaultMessage="Anonymous data collection"
-                    />
-                </Heading>
-                <Description>
-                    <FormattedMessage
-                        id="TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION"
-                        values={{
-                            analytics: analyticsLink || (chunks => chunks),
-                            tos: tosLink || (chunks => chunks),
-                        }}
-                        defaultMessage="All data is anonymous and is used only for product development purposes. Read more in our <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>."
-                    />
-                </Description>
-
-                <CollapsibleBox
-                    variant="small"
-                    heading={
+                <ContentWrapper>
+                    <Heading>
                         <FormattedMessage
-                            id="TR_WHAT_DATA_WE_COLLECT"
-                            defaultMessage="What data do we collect"
+                            id="TR_ONBOARDING_DATA_COLLECTION_HEADING"
+                            defaultMessage="Anonymous data collection"
                         />
-                    }
-                >
-                    <Category>
-                        {collectedData.map((category, i) => (
-                            <Fragment key={i}>
-                                <CategoryName>{category.name}</CategoryName>
-                                <CategoryItems>
-                                    <Label>{category.item}</Label>
-                                </CategoryItems>
-                            </Fragment>
-                        ))}
-                    </Category>
-                </CollapsibleBox>
-
-                <SwitchWrapper>
-                    <Switch
-                        isChecked={trackingEnabled}
-                        onChange={() => setTrackingEnabled(!trackingEnabled)}
-                        dataTest="@analytics/toggle-switch"
-                    />
-                    <Label>
+                    </Heading>
+                    <Description>
                         <FormattedMessage
-                            id="TR_ONBOARDING_ALLOW_ANALYTICS"
-                            defaultMessage="Allow anonymous data collection"
+                            id="TR_ONBOARDING_DATA_COLLECTION_DESCRIPTION"
+                            values={{
+                                analytics: analyticsLink || (chunks => chunks),
+                                tos: tosLink || (chunks => chunks),
+                            }}
+                            defaultMessage="All data is anonymous and is used only for product development purposes. Read more in our <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>."
                         />
-                    </Label>
-                </SwitchWrapper>
+                    </Description>
+
+                    <CollapsibleBox
+                        variant="small"
+                        heading={
+                            <FormattedMessage
+                                id="TR_WHAT_DATA_WE_COLLECT"
+                                defaultMessage="What data do we collect"
+                            />
+                        }
+                    >
+                        <Category>
+                            {collectedData.map((category, i) => (
+                                <Fragment key={i}>
+                                    <CategoryName>{category.name}</CategoryName>
+                                    <CategoryItems>
+                                        <Label>{category.item}</Label>
+                                    </CategoryItems>
+                                </Fragment>
+                            ))}
+                        </Category>
+                    </CollapsibleBox>
+
+                    <SwitchWrapper>
+                        <Switch
+                            isChecked={trackingEnabled}
+                            onChange={() => setTrackingEnabled(!trackingEnabled)}
+                            dataTest="@analytics/toggle-switch"
+                        />
+                        <Label>
+                            <FormattedMessage
+                                id="TR_ONBOARDING_ALLOW_ANALYTICS"
+                                defaultMessage="Allow anonymous data collection"
+                            />
+                        </Label>
+                    </SwitchWrapper>
+                </ContentWrapper>
 
                 <ButtonWrapper>
                     <StyledButton
