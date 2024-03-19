@@ -263,6 +263,11 @@ export const en = {
                     'Follow the keypad layout on your Trezor device to enter your PIN on your mobile display. Your PIN will be hidden on your mobile display for your security. <link>Learn more here</link>.',
             },
         },
+        pinCanceledDuringDiscovery: {
+            title: 'Some of your balances have not been loaded.',
+            subtitle: 'You need to unlock your device in order to finish loading your balances',
+            button: 'Enter PIN again',
+        },
     },
     moduleDevice: {
         IncompatibleDeviceModalAppendix: {
