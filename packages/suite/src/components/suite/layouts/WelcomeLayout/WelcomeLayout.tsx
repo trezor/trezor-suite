@@ -198,6 +198,27 @@ const LayoutContent = ({ children }: WelcomeLayoutProps) => {
     const bannerMessage = useSelector(selectBannerMessage);
 
     return (
+        <Wrapper>
+            {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+
+            <Body data-test="@welcome-layout/body">
+                <Left />
+
+                <ElevationContext baseElevation={elevation}>
+                    <Right>{children}</Right>
+
+                    <GuideButton />
+                    <GuideRouter />
+                </ElevationContext>
+            </Body>
+        </Wrapper>
+    );
+};
+
+// WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
+// used in Preloader and Onboarding
+export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
+    return (
         <ElevationContext baseElevation={-2}>
             <Wrapper>
                 {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
