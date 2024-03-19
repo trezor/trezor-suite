@@ -10,6 +10,7 @@ export const mapElevationToSkeletonForeground = ({
     $elevation,
 }: StyledComponentElevationProps): CSSColor => {
     const map: Record<Elevation, Color> = {
+        '-2': 'backgroundSurfaceElevation0', // ... just to satisfy Typescript, shall never be used
         '-1': 'backgroundSurfaceElevation0',
         0: 'backgroundSurfaceElevationNegative',
         1: 'backgroundSurfaceElevation0',

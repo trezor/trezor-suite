@@ -4,7 +4,6 @@ import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/w
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
@@ -16,6 +15,7 @@ import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
+import { ThemeColorVariant } from '@trezor/theme';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -74,7 +74,7 @@ export interface EvmSettings {
 
 export interface SuiteSettings {
     theme: {
-        variant: Exclude<SuiteThemeVariant, 'system'>;
+        variant: ThemeColorVariant;
     };
     language: Locale;
     torOnionLinks: boolean;

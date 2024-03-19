@@ -11,7 +11,7 @@ type InvertedThemeProviderProps = {
 
 export const InvertedThemeProvider = ({ children }: InvertedThemeProviderProps) => {
     const activeColorScheme = useActiveColorScheme();
-    const invertedColorScheme = activeColorScheme === 'dark' ? 'standard' : 'dark';
+    const invertedColorScheme = activeColorScheme === 'dark' ? 'light' : 'dark';
     const theme = prepareNativeTheme({ colorVariant: invertedColorScheme });
 
     return <ThemeProvider theme={theme}>{children}</ThemeProvider>;

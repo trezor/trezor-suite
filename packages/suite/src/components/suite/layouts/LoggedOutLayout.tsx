@@ -15,6 +15,7 @@ import {
     PageWrapper,
     Wrapper,
 } from './SuiteLayout/SuiteLayout';
+import { ElevationContext } from '@trezor/components';
 
 interface LoggedOutLayout {
     children: ReactNode;
@@ -30,28 +31,30 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
     useClearAnchorHighlightOnClick(wrapperRef);
 
     return (
-        <Wrapper ref={wrapperRef}>
-            <PageWrapper>
-                <ModalContextProvider>
-                    <Metadata title={title} />
-                    <ModalSwitcher />
+        <ElevationContext baseElevation={-2}>
+            <Wrapper ref={wrapperRef}>
+                <PageWrapper>
+                    <ModalContextProvider>
+                        <Metadata title={title} />
+                        <ModalSwitcher />
 
-                    <LayoutContext.Provider value={setLayoutPayload}>
-                        <Body data-test="@suite-layout/body">
-                            <Columns>
-                                <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
-                                    {TopMenu && <TopMenu />}
+                        <LayoutContext.Provider value={setLayoutPayload}>
+                            <Body data-test="@suite-layout/body">
+                                <Columns>
+                                    <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
+                                        {TopMenu && <TopMenu />}
 
-                                    <ContentWrapper>{children}</ContentWrapper>
-                                </AppWrapper>
-                            </Columns>
-                        </Body>
-                    </LayoutContext.Provider>
+                                        <ContentWrapper>{children}</ContentWrapper>
+                                    </AppWrapper>
+                                </Columns>
+                            </Body>
+                        </LayoutContext.Provider>
 
-                    {!isMobileLayout && <GuideButton />}
-                </ModalContextProvider>
-            </PageWrapper>
-            <GuideRouter />
-        </Wrapper>
+                        {!isMobileLayout && <GuideButton />}
+                    </ModalContextProvider>
+                </PageWrapper>
+                <GuideRouter />
+            </Wrapper>
+        </ElevationContext>
     );
 };
