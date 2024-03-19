@@ -106,7 +106,7 @@ const getAccountInfoDetailsLevel = (coin: NetworkSymbol) => {
 };
 
 const getCardanoSupportedAccountTypesThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/addAccountsByDescriptorThunk`,
+    `${DISCOVERY_MODULE_PREFIX}/getCardanoSupportedAccountTypesThunk`,
     async (
         {
             deviceState,
