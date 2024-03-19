@@ -56,8 +56,8 @@ export const StakeEthBanner = () => {
     const hasSufficientEthForStaking = useSelector(selectSelectedAccountHasSufficientEthForStaking);
     const { pathname } = useSelector(state => state.router);
     const isShown = !stakeEthBannerClosed && pathname === '/accounts' && hasSufficientEthForStaking;
-    const { ethApy } = useEverstakePoolStats();
     const account = useSelector(selectSelectedAccount);
+    const { ethApy } = useEverstakePoolStats(account?.symbol);
 
     const closeBanner = () => {
         dispatch(setFlag('stakeEthBannerClosed', true));

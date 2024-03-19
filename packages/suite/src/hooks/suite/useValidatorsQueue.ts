@@ -1,7 +1,9 @@
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { isTestnet } from '@suite-common/wallet-utils';
 import { useEffect, useState } from 'react';
 import { ValidatorsQueueState } from 'src/types/wallet/stake';
 
-export const useValidatorsQueue = () => {
+export const useValidatorsQueue = (symbol: NetworkSymbol = 'eth') => {
     const [validatorsQueue, setValidatorsQueue] = useState<ValidatorsQueueState>({});
     const [isValidatorsQueueLoading, setIsValidatorsQueueLoading] = useState(false);
 
@@ -12,10 +14,7 @@ export const useValidatorsQueue = () => {
             try {
                 setIsValidatorsQueueLoading(true);
                 const response = await fetch(
-                    // Stage URL. Works only with VPN.
-                    'https://eth-api-b2c-stage.everstake.one/api/v1/validators/queue',
-                    // TODO: Prod URL. Switch to it before deploying to production.
-                    // 'https://eth-api-b2c.everstake.one/api/v1/validators/queue',
+                    `https://eth-api-b2c${isTestnet(symbol) ? '-stage' : ''}.everstake.one/api/v1/validators/queue`,
                     {
                         method: 'GET',
                         signal: abortController.signal,
@@ -54,7 +53,7 @@ export const useValidatorsQueue = () => {
         return () => {
             abortController.abort();
         };
-    }, []);
+    }, [symbol]);
 
     return { validatorsQueue, isValidatorsQueueLoading };
 };

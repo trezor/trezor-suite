@@ -38,12 +38,11 @@ const FlexRow = styled.div`
 `;
 
 export const StakingDashboard = () => {
-    const { ethApy, nextRewardPayout } = useEverstakePoolStats();
-    const { validatorsQueue, isValidatorsQueueLoading } = useValidatorsQueue();
-
-    const { key: selectedAccountKey } = useSelector(selectSelectedAccount) ?? {};
+    const account = useSelector(selectSelectedAccount);
+    const { validatorsQueue, isValidatorsQueueLoading } = useValidatorsQueue(account?.symbol);
+    const { ethApy, nextRewardPayout } = useEverstakePoolStats(account?.symbol);
     const { daysToAddToPool, daysToUnstake } = useDaysTo({
-        selectedAccountKey: selectedAccountKey ?? '',
+        selectedAccountKey: account?.key ?? '',
         validatorsQueue,
     });
 
