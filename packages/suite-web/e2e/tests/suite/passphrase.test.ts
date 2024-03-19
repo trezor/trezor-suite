@@ -64,7 +64,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/menu/wallet-receive').click({ timeout: 10000 });
         // click reveal address
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@modal/confirm-address/address-field')
+        cy.getTestElement('@device-display/chunked-text')
             .find('[data-test*="chunk"]')
             .then(chunks => {
                 let fullAddress = '';
@@ -118,7 +118,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/used-address/0').should('not.exist');
         cy.getTestElement('@wallet/receive/reveal-address-button').should('not.be.disabled');
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@modal/confirm-address/address-field')
+        cy.getTestElement('@device-display/chunked-text')
             .find('[data-test*="chunk"]')
             .then(chunks => {
                 let fullAddress = '';
@@ -151,7 +151,7 @@ describe('Passphrase', () => {
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
 
         // should display confirm passphrase modal
-        cy.getTestElement('@modal/confirm-address/address-field')
+        cy.getTestElement('@device-display/chunked-text')
             .find('[data-test*="chunk"]')
             .then(chunks => {
                 let fullAddress = '';

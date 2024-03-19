@@ -9,6 +9,7 @@ import { amountToSatoshi } from '@suite-common/wallet-utils';
 import { TransactionReviewStepIndicatorProps } from './TransactionReviewStepIndicator';
 import { zIndices } from '@trezor/theme';
 import { DeviceDisplay } from '../../../../DeviceDisplay/DeviceDisplay';
+import { DisplayMode } from 'src/types/suite';
 
 const OutputWrapper = styled.div`
     display: flex;
@@ -147,7 +148,7 @@ export type TransactionReviewOutputElementProps = {
     token?: TokenInfo;
     account?: Account;
     state?: TransactionReviewStepIndicatorProps['state'];
-    valueDataTest?: string;
+    displayMode?: DisplayMode;
 };
 
 export const TransactionReviewOutputElement = forwardRef<
@@ -165,7 +166,7 @@ export const TransactionReviewOutputElement = forwardRef<
             fiatVisible = false,
             account,
             state,
-            valueDataTest,
+            displayMode,
         },
         ref,
     ) => {
@@ -199,11 +200,11 @@ export const TransactionReviewOutputElement = forwardRef<
                             <OutputValue>
                                 <TruncateWrapper condition={hasExpansion}>
                                     {isActive &&
+                                    displayMode &&
                                     (line.id === 'address' || line.id === 'regular_legacy') ? (
                                         <DeviceDisplay
-                                            valueDataTest={valueDataTest}
+                                            displayMode={displayMode}
                                             address={line.value}
-                                            network={network}
                                         />
                                     ) : (
                                         <OutputValueWrapper>

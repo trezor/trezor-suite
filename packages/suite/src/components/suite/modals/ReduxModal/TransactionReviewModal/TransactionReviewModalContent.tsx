@@ -157,6 +157,7 @@ export const TransactionReviewModalContent = ({
                 })}
                 isSending={isSending}
                 setIsSending={() => setIsSending(true)}
+                ethereumStakeType={ethereumStakeType || undefined}
             />
             <TransactionReviewEvmExplanation account={selectedAccount.account} />
         </StyledModal>

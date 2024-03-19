@@ -43,9 +43,9 @@ describe('Check coins XPUB', () => {
 
             cy.getTestElement('@wallet/menu/wallet-details').click();
             cy.getTestElement('@wallets/details/show-xpub-button').click();
-            cy.getTestElement('@xpub-modal/xpub-field').should('exist');
+            cy.getTestElement('@device-display/paginated-text').should('exist');
             if (coin !== 'ada') {
-                cy.getTestElement('@xpub-modal/xpub-field')
+                cy.getTestElement('@device-display/paginated-text')
                     .should('be.visible')
                     .invoke('text')
                     .should('contain', 'zpub');

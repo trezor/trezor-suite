@@ -10,7 +10,7 @@ import { QrCode } from 'src/components/suite/QrCode';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Translation, Modal } from 'src/components/suite';
 import { MODAL } from 'src/actions/suite/constants';
-import { ThunkAction } from 'src/types/suite';
+import { DisplayMode, ThunkAction } from 'src/types/suite';
 import { DeviceDisconnected } from './DeviceDisconnected';
 import { TransactionReviewStepIndicator } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewStepIndicator';
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
@@ -75,7 +75,7 @@ export interface ConfirmValueModalProps extends Pick<ModalProps, 'onCancel' | 'h
     isConfirmed?: boolean;
     validateOnDevice: () => ThunkAction;
     value: string;
-    valueDataTest?: string;
+    displayMode: DisplayMode;
 }
 
 export const ConfirmValueModal = ({
@@ -89,7 +89,7 @@ export const ConfirmValueModal = ({
     onCancel,
     validateOnDevice,
     value,
-    valueDataTest,
+    displayMode,
 }: ConfirmValueModalProps) => {
     const device = useSelector(selectDevice);
     const modalContext = useSelector(state => state.modal.context);
@@ -164,7 +164,7 @@ export const ConfirmValueModal = ({
                             lines={outputLines}
                             state={state}
                             account={account}
-                            valueDataTest={valueDataTest}
+                            displayMode={displayMode}
                         />
                         <Tooltip content={buttonTooltipContent()}>
                             <StyledButton
