@@ -16,6 +16,9 @@ import { ReactNode } from 'react';
 import { DeviceConnectionText } from '../suite/SwitchDevice/DeviceItem/DeviceConnectionText';
 import { DeviceDetail } from '../suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { MacWindow } from './MacWindow';
+import { useDispatch, useSelector } from '../../hooks/suite';
+import { selectDevice, toggleRememberDevice } from '@suite-common/wallet-core';
+import { setFlag } from '../../actions/suite/suiteActions';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -106,7 +109,7 @@ const ChartText = styled.div`
     margin: ${spacingsPx.xs};
 `;
 
-const Buttons = styled.div`
+const ButtonsContainer = styled.div`
     display: flex;
     gap: ${spacingsPx.sm};
 `;
@@ -142,6 +145,33 @@ const Top = () => {
             </ElevationContext>
             <LargeDeviceImage alt="Trezor" image={`TREZOR_T2T1`} />
         </StyledTop>
+    );
+};
+
+const Buttons = () => {
+    const dispatch = useDispatch();
+    const device = useSelector(selectDevice);
+
+    const onYes = () => {
+        if (device !== undefined) {
+            dispatch(toggleRememberDevice({ device, forceRemember: true }));
+            dispatch(setFlag('viewOnlyPromoClosed', true));
+        }
+    };
+
+    const onNo = () => {
+        dispatch(setFlag('viewOnlyPromoClosed', true));
+    };
+
+    return (
+        <ButtonsContainer>
+            <Button variant="primary" isFullWidth onClick={onYes}>
+                <Translation id="TR_MODAL_REMEMBER_WALLET_YES" />
+            </Button>
+            <Button variant="tertiary" isFullWidth onClick={onNo}>
+                <Translation id="TR_MODAL_REMEMBER_WALLET_NOT_NOW" />
+            </Button>
+        </ButtonsContainer>
     );
 };
 
@@ -186,14 +216,7 @@ export const RememberWalletCard = () => {
                         />
                     </Text>
                 </Callout>
-                <Buttons>
-                    <Button variant="primary" isFullWidth>
-                        <Translation id="TR_MODAL_REMEMBER_WALLET_YES" />
-                    </Button>
-                    <Button variant="tertiary" isFullWidth>
-                        <Translation id="TR_MODAL_REMEMBER_WALLET_NOT_NOW" />
-                    </Button>
-                </Buttons>
+                <Buttons />
             </Bottom>
         </StyledCard>
     );
