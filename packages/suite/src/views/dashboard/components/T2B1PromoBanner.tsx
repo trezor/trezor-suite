@@ -27,7 +27,7 @@ const BannerWrapper = styled(motion.div)`
     grid-template-columns: 338px 1fr minmax(109px, 145px) 42px;
     grid-template-rows: 42px 1fr 0;
     column-gap: 8px;
-    background-color: ${colorVariants.standard.backgroundPrimaryDefault};
+    background-color: ${colorVariants.light.backgroundPrimaryDefault};
     height: 168px;
     width: 100%;
     border-radius: 12px;
@@ -88,7 +88,7 @@ const NextGenerationText = styled.p`
 `;
 
 const NextGenerationTextBlock = styled.span`
-    color: ${colorVariants.standard.textOnPrimary};
+    color: ${colorVariants.light.textOnPrimary};
 `;
 
 const imgUrl = resolveStaticPath(`${SVG_PATH}/${SVG_IMAGES.TREZOR_SAFE_PROMO_UNDERLINE}`);
@@ -179,7 +179,7 @@ const ButtonClose = styled(IconButton)`
     z-index: 1;
 
     /* stylelint-disable color-function-notation */
-    background: ${rgba(colorVariants.standard.textOnPrimary, 0.16)};
+    background: ${rgba(colorVariants.light.textOnPrimary, 0.16)};
     /* stylelint-enable color-function-notation */
     height: 42px;
     width: 42px;
@@ -192,7 +192,7 @@ const ButtonClose = styled(IconButton)`
     svg {
         height: 24px;
         width: 24px;
-        fill: ${colorVariants.standard.textOnPrimary};
+        fill: ${colorVariants.light.textOnPrimary};
     }
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {

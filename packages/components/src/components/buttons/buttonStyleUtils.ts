@@ -25,6 +25,7 @@ const mapElevationToButtonBackground = ({
     const capitalizedState = capitalizeFirstLetter(state);
 
     const map: Record<Elevation, Color> = {
+        '-2': `interactionBackground${capitalizedVariant}DefaultHoverOnElevation3`, // ... just to satisfy Typescript, shall never be used
         '-1': `interactionBackground${capitalizedVariant}DefaultHoverOnElevation3`, // For example left menu is negative elevation
 
         // Button lies always on elevation so for example Button that lies has elevation 0, lies on elevation -1.

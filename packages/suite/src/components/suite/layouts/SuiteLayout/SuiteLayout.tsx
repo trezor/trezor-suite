@@ -1,7 +1,7 @@
 import { useRef, useState, ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { variables } from '@trezor/components';
+import { ElevationContext, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { Metadata } from 'src/components/suite';
@@ -101,40 +101,46 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const isAccountPage = !!selectedAccount;
 
     return (
-        <Wrapper ref={wrapperRef}>
-            <PageWrapper>
-                <ModalContextProvider>
-                    <Metadata title={title} />
+        <ElevationContext baseElevation={-2}>
+            <Wrapper ref={wrapperRef}>
+                <PageWrapper>
+                    <ModalContextProvider>
+                        <Metadata title={title} />
 
-                    <ModalSwitcher />
+                        <ModalSwitcher />
 
-                    <SuiteBanners />
-                    <CoinjoinBars />
+                        <SuiteBanners />
+                        <CoinjoinBars />
 
-                    {isMobileLayout && <MobileMenu />}
+                        {isMobileLayout && <MobileMenu />}
 
-                    <DiscoveryProgress />
+                        <DiscoveryProgress />
 
-                    <LayoutContext.Provider value={setLayoutPayload}>
-                        <Body data-test="@suite-layout/body">
-                            <Columns>
-                                {!isMobileLayout && <Sidebar />}
+                        <LayoutContext.Provider value={setLayoutPayload}>
+                            <Body data-test="@suite-layout/body">
+                                <Columns>
+                                    {!isMobileLayout && <Sidebar />}
 
-                                <AppWrapper data-test="@app" ref={scrollRef} id={SCROLL_WRAPPER_ID}>
-                                    {isMobileLayout && isAccountPage && <MobileAccountsMenu />}
-                                    {TopMenu && <TopMenu />}
+                                    <AppWrapper
+                                        data-test="@app"
+                                        ref={scrollRef}
+                                        id={SCROLL_WRAPPER_ID}
+                                    >
+                                        {isMobileLayout && isAccountPage && <MobileAccountsMenu />}
+                                        {TopMenu && <TopMenu />}
 
-                                    <ContentWrapper>{children}</ContentWrapper>
-                                </AppWrapper>
-                            </Columns>
-                        </Body>
-                    </LayoutContext.Provider>
+                                        <ContentWrapper>{children}</ContentWrapper>
+                                    </AppWrapper>
+                                </Columns>
+                            </Body>
+                        </LayoutContext.Provider>
 
-                    {!isMobileLayout && <GuideButton />}
-                </ModalContextProvider>
-            </PageWrapper>
+                        {!isMobileLayout && <GuideButton />}
+                    </ModalContextProvider>
+                </PageWrapper>
 
-            <GuideRouter />
-        </Wrapper>
+                <GuideRouter />
+            </Wrapper>
+        </ElevationContext>
     );
 };

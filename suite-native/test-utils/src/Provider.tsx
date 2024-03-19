@@ -8,7 +8,7 @@ type ProviderProps = {
     children: ReactNode;
 };
 const renderer = createRenderer();
-const theme = prepareNativeTheme({ colorVariant: 'standard' });
+const theme = prepareNativeTheme({ colorVariant: 'light' });
 
 export const Provider = ({ children }: ProviderProps) => (
     <SafeAreaProvider>

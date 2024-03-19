@@ -193,9 +193,8 @@ const Right = ({ children }: { children: ReactNode }) => {
     );
 };
 
-// WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
-// used in Preloader and Onboarding
-export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
+const LayoutContent = ({ children }: WelcomeLayoutProps) => {
+    const { elevation } = useElevation();
     const bannerMessage = useSelector(selectBannerMessage);
 
     return (
@@ -203,11 +202,9 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
             {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
             <Body data-test="@welcome-layout/body">
-                <ElevationContext baseElevation={-1}>
-                    <Left />
-                </ElevationContext>
+                <Left />
 
-                <ElevationContext baseElevation={0}>
+                <ElevationContext baseElevation={elevation}>
                     <Right>{children}</Right>
 
                     <GuideButton />
@@ -215,5 +212,15 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                 </ElevationContext>
             </Body>
         </Wrapper>
+    );
+};
+
+// WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
+// used in Preloader and Onboarding
+export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
+    return (
+        <ElevationContext baseElevation={-2}>
+            <LayoutContent>{children}</LayoutContent>
+        </ElevationContext>
     );
 };
