@@ -66,9 +66,9 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
     const account = useSelector(selectSelectedAccount);
 
     const dispatch = useDispatch();
-    const proceedToStaking = () => {
+    const proceedToEverstakeModal = () => {
         onCancel();
-        dispatch(openModal({ type: 'stake' }));
+        dispatch(openModal({ type: 'everstake' }));
     };
 
     return (
@@ -92,7 +92,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                     </Flex>
                 ))}
             </VStack>
-            <Button isFullWidth onClick={proceedToStaking}>
+            <Button isFullWidth onClick={proceedToEverstakeModal}>
                 <Translation id="TR_GOT_IT" />
             </Button>
         </StyledModal>
