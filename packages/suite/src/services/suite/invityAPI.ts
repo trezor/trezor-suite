@@ -41,7 +41,7 @@ import {
     FormResponse,
     CryptoSymbolsResponse,
 } from 'invity-api';
-import { isDesktop } from '@trezor/env-utils';
+import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
 
 export const SavingsTradeKYCFinalStatuses: SavingsKYCStatus[] = ['Failed', 'Verified'];
@@ -149,25 +149,21 @@ class InvityAPI {
 
     private options(body: BodyType = {}, method = 'POST', apiHeaderValue?: string): any {
         const apiHeader = isDesktop() ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
-        if (method === 'POST') {
-            return {
-                method,
-                mode: 'cors',
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Content-Type': 'application/json',
-                    [apiHeader]: apiHeaderValue || this.getInvityAPIKey(),
-                },
-                body: JSON.stringify(body),
-            };
-        }
 
         return {
             method,
             mode: 'cors',
             headers: {
                 [apiHeader]: apiHeaderValue || this.getInvityAPIKey(),
+                'X-Suite-Version': getSuiteVersion(),
+                ...(method === 'POST' && {
+                    'Cache-Control': 'no-cache',
+                    'Content-Type': 'application/json',
+                }),
             },
+            ...(method === 'POST' && {
+                body: JSON.stringify(body),
+            }),
         };
     }
 
