@@ -5,7 +5,6 @@ import { borders } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
-    background: ${({ theme }) => theme.BG_GREY};
     border-radius: ${borders.radii.xs};
     padding: 20px 24px;
     width: 100%;
