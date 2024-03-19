@@ -15,6 +15,7 @@
     "dependencies": {
         "@sinclair/typebox": "^0.31.28",
         "@trezor/components": "workspace:^",
+        "@trezor/connect-explorer-theme": "workspace:^",
         "@trezor/connect-web": "workspace:^",
         "@trezor/connect-webextension": "workspace:^",
         "@trezor/protobuf": "workspace:^",

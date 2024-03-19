@@ -1,7 +1,6 @@
 import React from 'react';
 
-import { DocsThemeConfig } from 'nextra-theme-docs';
-
+import type { DocsThemeConfig } from '@trezor/connect-explorer-theme';
 import { TrezorLogo } from '@trezor/components';
 
 const config: DocsThemeConfig = {
