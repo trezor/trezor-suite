@@ -53,7 +53,7 @@ describe.skip('Passphrase - legacy flow', () => {
         cy.getTestElement('@switch-device/wallet-on-index/2').click();
         cy.getTestElement('@dashboard/receive-button').click();
         cy.getTestElement('@wallet/receive/reveal-address-button').click();
-        cy.getTestElement('@modal/confirm-address/address-field');
+        cy.getTestElement('@device-display/chunked-text');
     });
 });
 

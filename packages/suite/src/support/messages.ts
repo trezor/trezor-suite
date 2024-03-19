@@ -7330,6 +7330,18 @@ export default defineMessages({
         id: 'TR_STAKING_WITHDRAW',
         defaultMessage: 'Withdraw',
     },
+    TR_STAKE_ON_EVERSTAKE: {
+        id: 'TR_STAKE_ON_EVERSTAKE',
+        defaultMessage: 'Stake {symbol} on Everstake?',
+    },
+    TR_CLAIM_FROM_EVERSTAKE: {
+        id: 'TR_CLAIM_FROM_EVERSTAKE',
+        defaultMessage: 'Claim {symbol} from Everstake?',
+    },
+    TR_UNSTAKE_FROM_EVERSTAKE: {
+        id: 'TR_UNSTAKE_FROM_EVERSTAKE',
+        defaultMessage: 'Unstake {symbol} from Everstake?',
+    },
     TR_TX_WITHDRAWAL: {
         id: 'TR_TX_WITHDRAWAL',
         defaultMessage: 'Withdrawal',

@@ -61,7 +61,7 @@ describe('Passphrase with cardano', () => {
         cy.task('pressYes');
         cy.wait(501);
         cy.task('pressYes');
-        cy.getTestElement('@modal/confirm-address/address-field').should(
+        cy.getTestElement('@device-display/paginated-text').should(
             'contain',
             correctPassphraseAddr,
         );

@@ -14,6 +14,9 @@ import {
     OutputElementLine,
 } from './TransactionReviewOutputElement';
 import type { Account } from 'src/types/wallet';
+import { StakeType } from '@suite-common/wallet-types';
+import { useDisplayMode, useTranslation } from 'src/hooks/suite';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const getFeeLabel = (networkType: Account['networkType']) => {
     switch (networkType) {
@@ -26,18 +29,39 @@ const getFeeLabel = (networkType: Account['networkType']) => {
     }
 };
 
+const getDisplayModeStringsMap = (): Record<
+    StakeType,
+    { value: TranslationKey; confirmLabel: TranslationKey }
+> => ({
+    stake: {
+        value: 'TR_STAKE_ON_EVERSTAKE',
+        confirmLabel: 'TR_STAKE_STAKE',
+    },
+    unstake: {
+        value: 'TR_UNSTAKE_FROM_EVERSTAKE',
+        confirmLabel: 'TR_STAKE_UNSTAKE',
+    },
+    claim: {
+        value: 'TR_CLAIM_FROM_EVERSTAKE',
+        confirmLabel: 'TR_STAKE_CLAIM',
+    },
+});
+
 export type TransactionReviewOutputProps = {
     state: TransactionReviewStepIndicatorProps['state'];
     symbol: Network['symbol'];
     account: Account;
     isRbf: boolean;
+    ethereumStakeType?: StakeType;
 } & ReviewOutput;
 
 export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionReviewOutputProps>(
     (props, ref) => {
-        const { type, state, label, value, symbol, token, account } = props;
+        const { type, state, label, value, symbol, token, account, ethereumStakeType } = props;
         let outputLabel: ReactNode = label;
         const { networkType } = account;
+        const { translationString } = useTranslation();
+        const displayMode = useDisplayMode(ethereumStakeType);
 
         if (type === 'locktime') {
             const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);
@@ -158,6 +182,22 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     plainValue: true,
                 },
             ];
+        } else if (type === 'address' && ethereumStakeType) {
+            const displayModeStringsMap = getDisplayModeStringsMap();
+
+            outputLines = [
+                {
+                    id: 'address',
+                    label: outputLabel,
+                    value: translationString(displayModeStringsMap[ethereumStakeType].value, {
+                        symbol: symbol.toUpperCase(),
+                    }),
+                    confirmLabel: (
+                        <Translation id={displayModeStringsMap[ethereumStakeType].confirmLabel} />
+                    ),
+                    plainValue: true,
+                },
+            ];
         } else if (type === 'address') {
             outputLines = [
                 {
@@ -201,6 +241,7 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                 fiatSymbol={symbol}
                 hasExpansion={hasExpansion}
                 fiatVisible={fiatVisible}
+                displayMode={displayMode}
             />
         );
     },

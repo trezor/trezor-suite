@@ -20,7 +20,7 @@ import { getOutputState } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { ReviewOutput } from 'src/types/wallet/transaction';
 import { spacingsPx } from '@trezor/theme';
-import { StakeFormState } from '@suite-common/wallet-types';
+import { StakeFormState, StakeType } from '@suite-common/wallet-types';
 
 const Content = styled.div`
     display: flex;
@@ -91,6 +91,7 @@ export interface TransactionReviewOutputListProps {
     actionText: TranslationKey;
     isSending?: boolean;
     setIsSending?: () => void;
+    ethereumStakeType?: StakeType;
 }
 
 export const TransactionReviewOutputList = ({
@@ -106,6 +107,7 @@ export const TransactionReviewOutputList = ({
     actionText,
     isSending,
     setIsSending,
+    ethereumStakeType,
 }: TransactionReviewOutputListProps) => {
     const dispatch = useDispatch();
     const { networkType } = account;
@@ -214,6 +216,7 @@ export const TransactionReviewOutputList = ({
                                     symbol={symbol}
                                     account={account}
                                     isRbf={isRbfAction}
+                                    ethereumStakeType={ethereumStakeType}
                                 />
                             );
                         })}

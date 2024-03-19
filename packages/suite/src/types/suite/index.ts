@@ -125,3 +125,9 @@ export interface TorBootstrap {
     total: number;
     isSlow?: boolean;
 }
+
+export enum DisplayMode {
+    CHUNKS = 1,
+    PAGINATED_TEXT,
+    SINGLE_WRAPPED_TEXT,
+}

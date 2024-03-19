@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
+import { useDisplayMode, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
 
@@ -13,6 +13,7 @@ interface ConfirmAddressModalProps
 
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const account = useSelector(selectSelectedAccount);
+    const displayMode = useDisplayMode();
 
     const validateAddress = useCallback(
         () => showAddress(addressPath, value),
@@ -36,7 +37,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
             validateOnDevice={validateAddress}
             value={value}
             copyButtonDataTest="@metadata/copy-address-button"
-            valueDataTest="@modal/confirm-address/address-field"
+            displayMode={displayMode}
             {...props}
         />
     );
