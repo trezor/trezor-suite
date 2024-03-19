@@ -198,8 +198,9 @@ const LayoutContent = ({ children }: WelcomeLayoutProps) => {
     const bannerMessage = useSelector(selectBannerMessage);
 
     return (
-        <Wrapper>
-            {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+        <ElevationContext baseElevation={-2}>
+            <Wrapper>
+                {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
             <Body data-test="@welcome-layout/body">
                 <Left />
@@ -207,11 +208,12 @@ const LayoutContent = ({ children }: WelcomeLayoutProps) => {
                 <ElevationContext baseElevation={elevation}>
                     <Right>{children}</Right>
 
-                    <GuideButton />
-                    <GuideRouter />
-                </ElevationContext>
-            </Body>
-        </Wrapper>
+                        <GuideButton />
+                        <GuideRouter />
+                    </ElevationContext>
+                </Body>
+            </Wrapper>
+        </ElevationContext>
     );
 };
 
