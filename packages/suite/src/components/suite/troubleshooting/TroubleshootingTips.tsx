@@ -1,14 +1,13 @@
 import { useMemo, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Translation, TrezorLink } from 'src/components/suite';
-import { variables, Button, CollapsibleBox } from '@trezor/components';
+import { variables, Button, CollapsibleBox, useElevation } from '@trezor/components';
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@trezor/env-utils';
+import { Elevation, mapElevationToBorder, nextElevation } from '@trezor/theme';
 
-const WhiteCollapsibleBox = styled(CollapsibleBox)`
-    background: ${({ theme }) => theme.BG_WHITE};
-`;
+const WhiteCollapsibleBox = styled(CollapsibleBox)``;
 
 const ItemLabel = styled.span`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
@@ -56,12 +55,12 @@ const ItemAction = styled.div`
     padding-left: 24px;
 `;
 
-const ContactSupport = styled.div`
+const ContactSupport = styled.div<{ $elevation: Elevation }>`
     display: flex;
     justify-content: space-between;
     margin: 24px -16px 0;
     padding: 20px 20px 0;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${mapElevationToBorder};
     align-items: center;
 `;
 
@@ -101,6 +100,8 @@ export const TroubleshootingTips = ({
     opened,
     'data-test': dataTest,
 }: TroubleshootingTipsProps) => {
+    const { elevation } = useElevation();
+
     const memoizedItems = useMemo(
         () =>
             items
@@ -140,7 +141,7 @@ export const TroubleshootingTips = ({
                 </StyledButton>
             )}
 
-            <ContactSupport>
+            <ContactSupport $elevation={elevation}>
                 <FooterText>
                     <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
                 </FooterText>
