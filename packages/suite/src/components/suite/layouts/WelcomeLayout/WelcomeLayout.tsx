@@ -203,16 +203,16 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
             {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
             <Body data-test="@welcome-layout/body">
-                <ElevationContext baseElevation={0}>
+                <ElevationContext baseElevation={-1}>
                     <Left />
                 </ElevationContext>
 
-                <ElevationContext baseElevation={1}>
+                <ElevationContext baseElevation={0}>
                     <Right>{children}</Right>
-                </ElevationContext>
 
-                <GuideButton />
-                <GuideRouter />
+                    <GuideButton />
+                    <GuideRouter />
+                </ElevationContext>
             </Body>
         </Wrapper>
     );
