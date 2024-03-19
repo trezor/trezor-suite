@@ -5,7 +5,7 @@ import { variables, Button, CollapsibleBox, useElevation } from '@trezor/compone
 import { TREZOR_SUPPORT_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@trezor/env-utils';
-import { Elevation, mapElevationToBorder, nextElevation } from '@trezor/theme';
+import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
 const WhiteCollapsibleBox = styled(CollapsibleBox)``;
 

@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
 import { selectDevice } from '@suite-common/wallet-core';
-import { Icon, Tooltip, variables, H2 } from '@trezor/components';
+import { Icon, Tooltip, variables, H2, useElevation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 
 import { goto } from 'src/actions/suite/routerActions';
@@ -17,7 +17,7 @@ import { SecurityCheckFail } from './SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { selectIsOnboadingActive } from 'src/reducers/onboarding/onboardingReducer';
-import { typography } from '@trezor/theme';
+import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 const StyledCard = styled(CollapsibleOnboardingCard)`
@@ -31,8 +31,8 @@ const Content = styled.div`
     align-items: flex-start;
 `;
 
-const DeviceNameSection = styled.div`
-    border-bottom: 1px solid ${({ theme }) => theme.STROKE_GREY};
+const DeviceNameSection = styled.div<{ $elevation: Elevation }>`
+    border-bottom: 1px solid ${mapElevationToBorder};
     margin-top: 8px;
     padding-bottom: 24px;
     width: 100%;
@@ -69,13 +69,13 @@ const IconWrapper = styled.div`
     margin: 0 1px 2px 6px;
 `;
 
-const Buttons = styled.div`
+const Buttons = styled.div<{ $elevation: Elevation }>`
     display: flex;
     flex-wrap: wrap;
     gap: 24px;
     justify-content: space-between;
     padding-top: 24px;
-    border-top: 2px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 2px solid ${mapElevationToBorder};
     width: 100%;
 `;
 
@@ -135,6 +135,7 @@ const noFirmwareChecklist = [
         content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
     },
 ] as const;
+
 const firmwareInstalledChecklist = [
     {
         icon: 'INFO',
@@ -142,7 +143,13 @@ const firmwareInstalledChecklist = [
     },
 ] as const;
 
-export const SecurityCheck = () => {
+export const SecurityCheckContent = ({
+    goToDeviceAuthentication,
+    isAuthenticityCheckSupported,
+}: {
+    goToDeviceAuthentication: () => void;
+    isAuthenticityCheckSupported: boolean;
+}) => {
     const recovery = useSelector(state => state.recovery);
     const device = useSelector(selectDevice);
     const { initialRun } = useSelector(selectSuiteFlags);
@@ -153,11 +160,12 @@ export const SecurityCheck = () => {
     const isOnboardingActive = useSelector(selectIsOnboadingActive);
 
     const [isFailed, setIsFailed] = useState(false);
-    const [isDeviceAuthenticityCheck, setIsDeviceAuthenticityCheck] = useState(false);
 
     const { goToNextStep, goToSuite, rerun, updateAnalytics } = useOnboarding();
     const theme = useTheme();
     const dispatch = useDispatch();
+
+    const { elevation } = useElevation();
 
     const deviceStatus = getConnectedDeviceStatus(device);
     const initialized = deviceStatus === 'initialized';
@@ -173,17 +181,17 @@ export const SecurityCheck = () => {
     const checklistItems = isFirmwareInstalled ? firmwareInstalledChecklist : noFirmwareChecklist;
 
     const toggleView = () => setIsFailed(current => !current);
-    const goToDeviceAuthentication = () => setIsDeviceAuthenticityCheck(true);
 
-    const isAuthenticityCheckSupported =
-        device?.features?.internal_model === DeviceModelInternal.T2B1;
     const isDeviceAuthenticationNeeded =
+        device !== undefined &&
         isAuthenticityCheckSupported &&
         initialRun &&
         !isDeviceAuthenticityCheckDisabled &&
         (!isUnlockedBootloaderAllowed || device.features?.bootloader_locked !== false);
+
     const handleContinueButtonClick = () =>
         isDeviceAuthenticationNeeded ? goToDeviceAuthentication() : goToSuite();
+
     const handleSetupButtonClick = () => {
         if (isRecoveryInProgress) {
             rerun();
@@ -203,6 +211,63 @@ export const SecurityCheck = () => {
         }
     }, [initialized, isRecoveryInProgress, updateAnalytics]);
 
+    return isFailed ? (
+        <SecurityCheckFail goBack={toggleView} />
+    ) : (
+        <SecurityCheckLayout>
+            <Content>
+                <DeviceNameSection $elevation={elevation}>
+                    <Text>
+                        <Translation id="TR_YOU_HAVE_CONNECTED" />
+                    </Text>
+                    <DeviceName>{device?.name}</DeviceName>
+                    <OnboardingButtonSkip onClick={toggleView}>
+                        <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
+                    </OnboardingButtonSkip>
+                </DeviceNameSection>
+                <StyledH2>
+                    <Translation id={headingText} />
+                </StyledH2>
+                <SecurityChecklist items={checklistItems} />
+            </Content>
+            <Buttons $elevation={elevation}>
+                <StyledSecurityCheckButton variant="tertiary" onClick={toggleView}>
+                    <Translation id={secondaryButtonText} />
+                </StyledSecurityCheckButton>
+                {initialized ? (
+                    <StyledSecurityCheckButton
+                        data-test="@onboarding/exit-app-button"
+                        onClick={handleContinueButtonClick}
+                    >
+                        <Translation id="TR_YES_CONTINUE" />
+                    </StyledSecurityCheckButton>
+                ) : (
+                    <SecurityCheckButtonWithSecondLine
+                        onClick={handleSetupButtonClick}
+                        data-test="@analytics/continue-button"
+                    >
+                        <Translation id={primaryButtonTopText} />
+                        <TimeEstimateWrapper>
+                            <IconWrapper>
+                                <Icon size={12} icon="CLOCK_ACTIVE" color={theme.iconOnPrimary} />
+                            </IconWrapper>
+                            <Translation id="TR_TAKES_N_MINUTES" />
+                        </TimeEstimateWrapper>
+                    </SecurityCheckButtonWithSecondLine>
+                )}
+            </Buttons>
+        </SecurityCheckLayout>
+    );
+};
+
+export const SecurityCheck = () => {
+    const device = useSelector(selectDevice);
+
+    const [isDeviceAuthenticityCheck, setIsDeviceAuthenticityCheck] = useState(false);
+
+    const isAuthenticityCheckSupported =
+        device?.features?.internal_model === DeviceModelInternal.T2B1;
+
     // Edge case:
     // Devices A and B are connected, only device A supports authenticity check.
     // Device A disconnects while on the first screen of the check.
@@ -216,59 +281,14 @@ export const SecurityCheck = () => {
         return <DeviceAuthenticity />;
     }
 
+    const goToDeviceAuthentication = () => setIsDeviceAuthenticityCheck(true);
+
     return (
         <StyledCard>
-            {isFailed ? (
-                <SecurityCheckFail goBack={toggleView} />
-            ) : (
-                <SecurityCheckLayout>
-                    <Content>
-                        <DeviceNameSection>
-                            <Text>
-                                <Translation id="TR_YOU_HAVE_CONNECTED" />
-                            </Text>
-                            <DeviceName>{device?.name}</DeviceName>
-                            <OnboardingButtonSkip onClick={toggleView}>
-                                <Translation id="TR_CONNECTED_DIFFERENT_DEVICE" />
-                            </OnboardingButtonSkip>
-                        </DeviceNameSection>
-                        <StyledH2>
-                            <Translation id={headingText} />
-                        </StyledH2>
-                        <SecurityChecklist items={checklistItems} />
-                    </Content>
-                    <Buttons>
-                        <StyledSecurityCheckButton variant="tertiary" onClick={toggleView}>
-                            <Translation id={secondaryButtonText} />
-                        </StyledSecurityCheckButton>
-                        {initialized ? (
-                            <StyledSecurityCheckButton
-                                data-test="@onboarding/exit-app-button"
-                                onClick={handleContinueButtonClick}
-                            >
-                                <Translation id="TR_YES_CONTINUE" />
-                            </StyledSecurityCheckButton>
-                        ) : (
-                            <SecurityCheckButtonWithSecondLine
-                                onClick={handleSetupButtonClick}
-                                data-test="@analytics/continue-button"
-                            >
-                                <Translation id={primaryButtonTopText} />
-                                <TimeEstimateWrapper>
-                                    <IconWrapper>
-                                        <Icon
-                                            size={12}
-                                            icon="CLOCK_ACTIVE"
-                                            color={theme.iconOnPrimary}
-                                        />
-                                    </IconWrapper>
-                                    <Translation id="TR_TAKES_N_MINUTES" />
-                                </TimeEstimateWrapper>
-                            </SecurityCheckButtonWithSecondLine>
-                        )}
-                    </Buttons>
-                </SecurityCheckLayout>
-            )}
+            <SecurityCheckContent
+                goToDeviceAuthentication={goToDeviceAuthentication}
+                isAuthenticityCheckSupported={isAuthenticityCheckSupported}
+            />
         </StyledCard>
     );
 };
