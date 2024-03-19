@@ -4470,6 +4470,14 @@ export default defineMessages({
         defaultMessage: 'Remember',
         description: 'Heading above col with "remember wallet" buttons in switch wallets modal',
     },
+    TR_REMEMBER_CARD_CALL_TO_ACTION: {
+        id: 'TR_REMEMBER_CALL_TO_ACTION',
+        defaultMessage: 'View only balances in the app even <primary>after Trezor is disconnected?</primary>',
+    },
+    TR_REMEMBER_CARD_EXPLANATION: {
+        id: 'TR_REMEMBER_CARD_EXPLANATION',
+        defaultMessage: 'You\'ll still need to connect your <secondLine>Trezor to send or trade coins</secondLine>',
+    },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
         defaultMessage: 'Receive {symbol}',
@@ -8819,5 +8827,13 @@ export default defineMessages({
     TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE: {
         id: 'TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE',
         defaultMessage: 'I acknowledge and consent to staking with Everstake',
+    },
+    TR_MODAL_REMEMBER_WALLET_YES: {
+        id: 'TR_MODAL_REMEMBER_WALLET_YES',
+        defaultMessage: 'Yes',
+    },
+    TR_MODAL_REMEMBER_WALLET_NOT_NOW: {
+        id: 'TR_MODAL_REMEMBER_WALLET_NOT_NOW',
+        defaultMessage: 'Not now',
     },
 });
