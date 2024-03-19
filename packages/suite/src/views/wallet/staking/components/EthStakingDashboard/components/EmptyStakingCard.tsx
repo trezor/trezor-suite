@@ -50,8 +50,8 @@ const FlexRowChild = styled.div`
 
 export const EmptyStakingCard = () => {
     const theme = useTheme();
-    const { ethApy } = useEverstakePoolStats();
     const account = useSelector(selectSelectedAccount);
+    const { ethApy } = useEverstakePoolStats(account?.symbol);
 
     const dispatch = useDispatch();
     const openStakingEthInANutshellModal = () =>

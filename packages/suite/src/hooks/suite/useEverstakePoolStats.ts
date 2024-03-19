@@ -3,8 +3,10 @@ import BigNumber from 'bignumber.js';
 import { BACKUP_ETH_APY, STAKE_SYMBOLS } from 'src/constants/suite/ethStaking';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { useSelector } from './useSelector';
+import { isTestnet } from '@suite-common/wallet-utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
-export const useEverstakePoolStats = () => {
+export const useEverstakePoolStats = (symbol: NetworkSymbol = 'eth') => {
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const areEthNetworksEnabled = useMemo(
         () => enabledNetworks.some(symbol => STAKE_SYMBOLS.includes(symbol)),
@@ -28,10 +30,7 @@ export const useEverstakePoolStats = () => {
                 setIsPoolStatsLoading(true);
 
                 const response = await fetch(
-                    // Stage URL. Works only with VPN.
-                    'https://eth-api-b2c-stage.everstake.one/api/v1/stats',
-                    // TODO: Prod URL. Switch to it before deploying to production.
-                    // 'https://eth-api-b2c.everstake.one/api/v1/validators/queue',
+                    `https://eth-api-b2c${isTestnet(symbol) ? '-stage' : ''}.everstake.one/api/v1/stats`,
                     {
                         method: 'GET',
                         signal: abortController.signal,
@@ -64,7 +63,7 @@ export const useEverstakePoolStats = () => {
         return () => {
             abortController.abort();
         };
-    }, [areEthNetworksEnabled]);
+    }, [areEthNetworksEnabled, symbol]);
 
     return {
         ethApy: poolStats.ethApy,

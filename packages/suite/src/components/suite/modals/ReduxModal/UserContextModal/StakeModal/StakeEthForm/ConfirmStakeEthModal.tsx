@@ -65,7 +65,7 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
-    const { validatorsQueue } = useValidatorsQueue();
+    const { validatorsQueue } = useValidatorsQueue(account?.symbol);
     const { daysToAddToPoolInitial } = useDaysTo({
         selectedAccountKey: account?.descriptor ?? '',
         validatorsQueue,

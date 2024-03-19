@@ -60,7 +60,7 @@ const FlexRowChild = styled.div`
 
 export const StakeEthCard = () => {
     const theme = useTheme();
-    const { ethApy } = useEverstakePoolStats();
+    const { ethApy } = useEverstakePoolStats('eth');
 
     const { discovery } = useDiscovery();
     const account = useSelector(selectSelectedAccount);

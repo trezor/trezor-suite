@@ -43,10 +43,6 @@ const UpToDaysWrapper = styled.div`
 
 export const UnstakeEthForm = () => {
     const { device, isLocked } = useDevice();
-    const {
-        validatorsQueue: { validatorWithdrawTime },
-    } = useValidatorsQueue();
-    const unstakingPeriod = Math.round(validatorWithdrawTime / 60 / 60 / 24);
 
     const {
         account,
@@ -60,6 +56,10 @@ export const UnstakeEthForm = () => {
     } = useUnstakeEthFormContext();
 
     const { symbol } = account;
+    const {
+        validatorsQueue: { validatorWithdrawTime },
+    } = useValidatorsQueue(symbol);
+    const unstakingPeriod = Math.round(validatorWithdrawTime / 60 / 60 / 24);
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
