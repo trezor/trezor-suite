@@ -106,6 +106,10 @@ const IconWrapper = styled.div`
     padding-right: 3px;
 `;
 
+const CoinmarketTagWrapper = styled.div`
+    margin: 0 16px 2px;
+`;
+
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -230,7 +234,9 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
                                 value={receiveStringAmount}
                                 symbol={cryptoToCoinSymbol(receive!)}
                             />
-                            <CoinmarketTag tag={tag} />
+                            <CoinmarketTagWrapper>
+                                <CoinmarketTag tag={tag} />
+                            </CoinmarketTagWrapper>
                         </H3>
                     )}
                 </Column>

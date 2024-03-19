@@ -102,6 +102,10 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
+const CoinmarketTagWrapper = styled.div`
+    margin: 0 16px 2px;
+`;
+
 export function getQuoteError(quote: SellFiatTrade, amountInCrypto: boolean) {
     if (quote.error) {
         if (amountInCrypto) {
@@ -239,7 +243,9 @@ export const SellQuote = ({ className, quote, amountInCrypto }: QuoteProps) => {
                                     symbol={cryptoToCoinSymbol(quote.cryptoCurrency!)}
                                 />
                             )}
-                            <CoinmarketTag tag={tag} />
+                            <CoinmarketTagWrapper>
+                                <CoinmarketTag tag={tag} />
+                            </CoinmarketTagWrapper>
                         </H3>
                     )}
                 </Column>
