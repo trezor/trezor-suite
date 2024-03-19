@@ -300,11 +300,11 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.SettingsGeneralChangeTheme;
           payload: {
-              previousTheme: 'light' | 'dark';
+              previousTheme: 'light' | 'dark' | 'debug';
               previousAutodetectTheme: boolean;
-              theme: 'light' | 'dark';
+              theme: 'light' | 'dark' | 'debug';
               autodetectTheme: boolean;
-              platformTheme: 'light' | 'dark';
+              platformTheme: 'light' | 'dark' | 'debug';
           };
       }
     | {
