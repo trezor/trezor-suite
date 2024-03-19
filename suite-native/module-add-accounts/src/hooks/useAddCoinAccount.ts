@@ -141,7 +141,7 @@ export const useAddCoinAccount = () => {
             icon: 'warningCircleLight',
             pictogramVariant: 'red',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.tooManyAccounts.actionPrimary'),
-            onPressPrimaryButton: () => hideAlert(),
+            onPressPrimaryButton: hideAlert,
         });
 
     const showAnotherEmptyAccountAlert = () =>
@@ -153,7 +153,7 @@ export const useAddCoinAccount = () => {
             primaryButtonTitle: translate(
                 'moduleAddAccounts.alerts.anotherEmptyAccount.actionPrimary',
             ),
-            onPressPrimaryButton: () => hideAlert(),
+            onPressPrimaryButton: hideAlert,
             secondaryButtonTitle: translate(
                 'moduleAddAccounts.alerts.anotherEmptyAccount.actionSecondary',
             ),
@@ -172,7 +172,7 @@ export const useAddCoinAccount = () => {
             icon: 'warningCircleLight',
             pictogramVariant: 'red',
             primaryButtonTitle: translate('moduleAddAccounts.alerts.generalError.actionPrimary'),
-            onPressPrimaryButton: () => hideAlert(),
+            onPressPrimaryButton: hideAlert,
         });
 
     const setDefaultAccountToBeAdded = (network: Network) => {
