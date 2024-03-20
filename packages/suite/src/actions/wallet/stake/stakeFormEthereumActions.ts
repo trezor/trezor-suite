@@ -10,6 +10,7 @@ import {
     getExternalComposeOutput,
     formatAmount,
     isPending,
+    getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import {
     StakeFormState,
@@ -127,6 +128,7 @@ export const composeTransaction =
             from: account.descriptor,
             amount,
             symbol: account.symbol,
+            identity: getAccountIdentity(account),
         });
 
         if (!stakeTxGasLimit.success) return stakeTxGasLimit.error;
@@ -253,6 +255,8 @@ export const signTransaction =
             nonce = formValues.rbfParams.ethereumNonce.toString();
         }
 
+        const identity = getAccountIdentity(account);
+
         // transform to TrezorConnect.ethereumSignTransaction params
         const { ethereumStakeType } = formValues;
         let txData;
@@ -260,6 +264,7 @@ export const signTransaction =
             txData = await prepareStakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
+                identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
                 nonce,
@@ -270,6 +275,7 @@ export const signTransaction =
             txData = await prepareUnstakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
+                identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
                 nonce,
@@ -281,6 +287,7 @@ export const signTransaction =
             txData = await prepareClaimEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
+                identity,
                 gasPrice: transactionInfo.feePerByte,
                 nonce,
                 chainId: network.chainId,

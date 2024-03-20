@@ -8,7 +8,7 @@ import {
     stakeActions,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { formatNetworkAmount } from '@suite-common/wallet-utils';
+import { formatNetworkAmount, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 import {
     StakeFormState,
@@ -62,7 +62,10 @@ const pushTransaction =
         const device = selectDevice(getState());
         if (!signedTx || !precomposedTx || !account) return;
 
-        const sentTx = await TrezorConnect.pushTransaction(signedTx);
+        const sentTx = await TrezorConnect.pushTransaction({
+            ...signedTx,
+            identity: tryGetAccountIdentity(account),
+        });
 
         // close modal regardless result
         dispatch(modalActions.onCancel());
