@@ -19,10 +19,6 @@ html {
     -webkit-tap-highlight-color: transparent;
 }
 
-body {
-    @apply nx-w-full nx-bg-white dark:nx-bg-dark dark:nx-text-gray-100;
-}
-
 a,
 summary,
 button,

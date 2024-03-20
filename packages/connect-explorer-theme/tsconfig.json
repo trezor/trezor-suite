@@ -10,5 +10,8 @@
         "noImplicitAny": false,
         "useUnknownInCatchVariables": false
     },
-    "references": [{ "path": "../components" }]
+    "references": [
+        { "path": "../components" },
+        { "path": "../theme" }
+    ]
 }

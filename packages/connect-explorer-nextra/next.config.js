@@ -1,3 +1,4 @@
+const path = require('path');
 const withNextra = require('nextra')({
     theme: '@trezor/connect-explorer-theme',
     themeConfig: './theme.config.tsx',
@@ -41,6 +42,11 @@ module.exports = withNextra({
                 ),
             );
         }
+        config.resolve.alias = {
+            ...config.resolve.alias,
+            'styled-components': path.resolve(__dirname, '../../node_modules', 'styled-components'),
+            'next-themes': path.resolve(__dirname, '../../node_modules', 'next-themes'),
+        };
     },
     typescript: {
         // Problems with transpiling

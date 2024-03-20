@@ -10,13 +10,22 @@ import { MDXProvider } from 'nextra/mdx';
 import './polyfill';
 import type { PageTheme } from 'nextra/normalize-pages';
 import { normalizePages } from 'nextra/normalize-pages';
+import { createGlobalStyle } from 'styled-components';
 
-import { Banner, Breadcrumb, Head, NavLinks, Sidebar, SkipNavContent } from './components';
+import { ElevationContext } from '@trezor/components';
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
+
+import { Banner, Breadcrumb, Head, NavLinks, Navbar, Sidebar, SkipNavContent } from './components';
 import { DEFAULT_LOCALE, PartialDocsThemeConfig } from './constants';
 import { ActiveAnchorProvider, ConfigProvider, useConfig } from './contexts';
 import { getComponents } from './mdx-components';
 import { renderComponent } from './utils';
 
+const GlobalStyle = createGlobalStyle<{ $elevation: Elevation }>`
+    body {
+        background: ${mapElevationToBackground}
+    }
+`;
 interface BodyProps {
     themeContext: PageTheme;
     breadcrumb: ReactNode;
@@ -165,11 +174,10 @@ const InnerLayout = ({
             />
             <Head />
             <Banner />
-            {themeContext.navbar &&
-                renderComponent(config.navbar.component, {
-                    flatDirectories,
-                    items: topLevelNavbarItems,
-                })}
+            {themeContext.navbar && (
+                <Navbar flatDirectories={flatDirectories} items={topLevelNavbarItems} />
+            )}
+
             <div
                 className={cn(
                     'nx-mx-auto nx-flex',
@@ -222,9 +230,14 @@ const InnerLayout = ({
 
 // eslint-disable-next-line import/no-default-export
 export default function Layout({ children, ...context }: NextraThemeLayoutProps): ReactElement {
+    const baseElevation = 0;
+
     return (
         <ConfigProvider value={context}>
-            <InnerLayout {...context.pageOpts}>{children}</InnerLayout>
+            <GlobalStyle $elevation={baseElevation} />
+            <ElevationContext baseElevation={baseElevation}>
+                <InnerLayout {...context.pageOpts}>{children}</InnerLayout>
+            </ElevationContext>
         </ConfigProvider>
     );
 }

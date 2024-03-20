@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import cn from 'clsx';
 import type { Heading } from 'nextra';
 import scrollIntoView from 'scroll-into-view-if-needed';
+import styled from 'styled-components';
 
 import { useActiveAnchor, useConfig } from '../contexts';
 import { renderComponent } from '../utils';
@@ -14,6 +15,10 @@ export type TOCProps = {
     headings: Heading[];
     filePath: string;
 };
+
+const Container = styled.div`
+    top: 160px;
+`;
 
 const linkClassName = cn(
     'nx-text-xs nx-font-medium nx-text-gray-500 hover:nx-text-gray-900 dark:nx-text-gray-400 dark:hover:nx-text-gray-100',
@@ -50,10 +55,10 @@ export function TOC({ headings, filePath }: TOCProps): ReactElement {
     }, [activeSlug]);
 
     return (
-        <div
+        <Container
             ref={tocRef}
             className={cn(
-                'nextra-scrollbar nx-sticky nx-top-16 nx-overflow-y-auto nx-pr-4 nx-pt-6 nx-text-sm [hyphens:auto]',
+                'nextra-scrollbar nx-sticky nx-overflow-y-auto nx-pr-4 nx-pt-6 nx-text-sm [hyphens:auto]',
                 'nx-max-h-[calc(100vh-var(--nextra-navbar-height)-env(safe-area-inset-bottom))] ltr:-nx-mr-4 rtl:-nx-ml-4',
             )}
         >
@@ -123,6 +128,6 @@ export function TOC({ headings, filePath }: TOCProps): ReactElement {
                     {config.toc.backToTop && <BackToTop className={linkClassName} />}
                 </div>
             )}
-        </div>
+        </Container>
     );
 }

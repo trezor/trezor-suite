@@ -3,7 +3,8 @@ import Markdown from 'react-markdown';
 
 import styled from 'styled-components';
 
-import { Badge } from '@trezor/components';
+import { Badge, useElevation } from '@trezor/components';
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
 
 interface ParamProps {
     id?: string;
@@ -15,14 +16,10 @@ interface ParamProps {
     children?: React.ReactNode;
 }
 
-const ParamWrapper = styled.div`
+const ParamWrapper = styled.div<{ $elevation: Elevation }>`
     margin-top: 0.5rem;
     border-radius: 12px;
-    background-image: linear-gradient(
-        to bottom,
-        ${({ theme }) => theme.backgroundSurfaceElevation2},
-        transparent
-    );
+    background-image: linear-gradient(to bottom, ${mapElevationToBackground}, transparent);
 `;
 const ParamRow = styled.a`
     display: flex;
@@ -32,10 +29,10 @@ const ParamRow = styled.a`
     padding: 0.5rem 1rem;
     gap: 1rem;
 `;
-const ParamDescription = styled.div`
+const ParamDescription = styled.div<{ $elevation: Elevation }>`
     margin: 0 0.5rem;
     padding: 0.5rem 1rem;
-    background: white;
+    background: ${mapElevationToBackground};
     border-radius: 12px;
 `;
 const ParamName = styled.h4`
@@ -57,9 +54,27 @@ const ParamType = styled.div<{
     `}
 `;
 
-export const Param = (props: ParamProps) => {
+export const ParamDescriptionComponent = (props: Pick<ParamProps, 'description' | 'children'>) => {
+    const { elevation } = useElevation();
+
     return (
-        <ParamWrapper id={props.id}>
+        <>
+            {props.description && (
+                <ParamDescription $elevation={elevation}>
+                    <Markdown>{props.description}</Markdown>
+                </ParamDescription>
+            )}
+            {props.children && (
+                <ParamDescription $elevation={elevation}>{props.children}</ParamDescription>
+            )}
+        </>
+    );
+};
+export const Param = (props: ParamProps) => {
+    const { elevation } = useElevation();
+
+    return (
+        <ParamWrapper id={props.id} $elevation={elevation}>
             <ParamRow href={props.typeLink}>
                 <ParamName>{props.name}</ParamName>
                 <ParamType isLink={!!props.typeLink}>
@@ -72,12 +87,7 @@ export const Param = (props: ParamProps) => {
                 {props.required === true && <Badge variant="primary">Required</Badge>}
                 {props.required === false && <Badge variant="tertiary">Optional</Badge>}
             </ParamRow>
-            {props.description && (
-                <ParamDescription>
-                    <Markdown>{props.description}</Markdown>
-                </ParamDescription>
-            )}
-            {props.children && <ParamDescription>{props.children}</ParamDescription>}
+            <ParamDescriptionComponent {...props} />
         </ParamWrapper>
     );
 };

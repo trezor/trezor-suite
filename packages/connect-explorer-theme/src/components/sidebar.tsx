@@ -9,6 +9,7 @@ import { useFSRoute, useMounted } from 'nextra/hooks';
 import { ArrowRightIcon, ExpandIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import scrollIntoView from 'scroll-into-view-if-needed';
+import styled from 'styled-components';
 
 import { useActiveAnchor, useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';
@@ -49,6 +50,10 @@ type FolderProps = {
     item: PageItem | MenuItem | Item;
     anchors: Heading[];
 };
+
+const Container = styled.div`
+    top: 160px;
+`;
 
 const Folder = memo(function FolderInner(props: FolderProps) {
     const level = useContext(FolderLevelContext);
@@ -396,10 +401,10 @@ export function Sidebar({
                 )}
                 onClick={() => setMenu(false)}
             />
-            <aside
+            <Container
                 className={cn(
                     'nextra-sidebar-container nx-flex nx-flex-col',
-                    'md:nx-top-16 md:nx-shrink-0 motion-reduce:nx-transform-none',
+                    'md:nx-shrink-0 motion-reduce:nx-transform-none',
                     'nx-transform-gpu nx-transition-all nx-ease-in-out',
                     'print:nx-hidden',
                     showSidebar ? 'md:nx-w-64' : 'md:nx-w-20',
@@ -500,7 +505,7 @@ export function Sidebar({
                         )}
                     </div>
                 )}
-            </aside>
+            </Container>
         </>
     );
 }
