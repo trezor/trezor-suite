@@ -17,10 +17,10 @@ import { Timeout } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 
-const actionsPrefix = '@common/wallet-core/token-definitions';
+const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
 
 export const getTokenDefinitionThunk = createThunk(
-    `${actionsPrefix}/getNftTokenDefinition`,
+    `${TOKEN_DEFINITIONS_MODULE}/getNftTokenDefinition`,
     async (
         params: {
             networkSymbol: NetworkSymbol;
@@ -81,7 +81,7 @@ export const getTokenDefinitionThunk = createThunk(
 );
 
 export const initTokenDefinitionsThunk = createThunk(
-    `${actionsPrefix}/initTokenDefinitionsThunk`,
+    `${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`,
     (_, { getState, dispatch, extra }) => {
         const enabledNetworks = extra.selectors.selectEnabledNetworks(getState());
 
@@ -120,7 +120,7 @@ export const initTokenDefinitionsThunk = createThunk(
 let tokenDefinitionsTimeout: Timeout | null = null;
 
 export const periodicCheckTokenDefinitionsThunk = createThunk(
-    `${actionsPrefix}/periodicCheckTokenDefinitionsThunk`,
+    `${TOKEN_DEFINITIONS_MODULE}/periodicCheckTokenDefinitionsThunk`,
     (_, { dispatch }) => {
         if (tokenDefinitionsTimeout) {
             clearTimeout(tokenDefinitionsTimeout);

@@ -3,64 +3,64 @@ import { createAction } from '@reduxjs/toolkit';
 import { AcquiredDevice, FirmwareStatus } from '@suite-common/suite-types';
 import { Device, FirmwareType } from '@trezor/connect';
 
-export const firmwareActionsPrefix = '@common/wallet-core/firmware';
+export const FIRMWARE_MODULE_PREFIX = '@common/wallet-core/firmware';
 
 const setStatus = createAction(
-    `${firmwareActionsPrefix}/set-update-status`,
+    `${FIRMWARE_MODULE_PREFIX}/set-update-status`,
     (payload: FirmwareStatus | 'error') => ({ payload }),
 );
 
 const setHash = createAction(
-    `${firmwareActionsPrefix}/set-hash`,
+    `${FIRMWARE_MODULE_PREFIX}/set-hash`,
     (payload: { hash: string; challenge: string }) => ({ payload }),
 );
 
 const setHashInvalid = createAction(
-    `${firmwareActionsPrefix}/set-hash-invalid`,
+    `${FIRMWARE_MODULE_PREFIX}/set-hash-invalid`,
     (payload: string) => ({
         payload,
     }),
 );
 
-const setError = createAction(`${firmwareActionsPrefix}/set-error`, (payload?: string) => ({
+const setError = createAction(`${FIRMWARE_MODULE_PREFIX}/set-error`, (payload?: string) => ({
     payload,
 }));
 
 const setTargetRelease = createAction(
-    `${firmwareActionsPrefix}/set-target-release`,
+    `${FIRMWARE_MODULE_PREFIX}/set-target-release`,
     (payload: AcquiredDevice['firmwareRelease']) => ({ payload }),
 );
 
-const toggleHasSeed = createAction(`${firmwareActionsPrefix}/toggle-has-seed`);
+const toggleHasSeed = createAction(`${FIRMWARE_MODULE_PREFIX}/toggle-has-seed`);
 
 const setIntermediaryInstalled = createAction(
-    `${firmwareActionsPrefix}/set-intermediary-installed`,
+    `${FIRMWARE_MODULE_PREFIX}/set-intermediary-installed`,
     (payload: boolean) => ({ payload }),
 );
 
 const setTargetType = createAction(
-    `${firmwareActionsPrefix}/set-target-type`,
+    `${FIRMWARE_MODULE_PREFIX}/set-target-type`,
     (payload: FirmwareType) => ({
         payload,
     }),
 );
 
 const rememberPreviousDevice = createAction(
-    `${firmwareActionsPrefix}/remember-previous-device`,
+    `${FIRMWARE_MODULE_PREFIX}/remember-previous-device`,
     (payload: Device) => ({ payload }),
 );
 
 const setIsCustomFirmware = createAction(
-    `${firmwareActionsPrefix}/set-is-custom`,
+    `${FIRMWARE_MODULE_PREFIX}/set-is-custom`,
     (payload: boolean) => ({
         payload,
     }),
 );
 
-const resetReducer = createAction(`${firmwareActionsPrefix}/reset-reducer`);
+const resetReducer = createAction(`${FIRMWARE_MODULE_PREFIX}/reset-reducer`);
 
 const toggleUseDevkit = createAction(
-    `${firmwareActionsPrefix}/toggle-use-devkit`,
+    `${FIRMWARE_MODULE_PREFIX}/toggle-use-devkit`,
     (payload: boolean) => ({
         payload,
     }),

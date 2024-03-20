@@ -4,14 +4,14 @@ import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { AccountTransaction } from '@trezor/connect';
 import { enhanceTransaction } from '@suite-common/wallet-utils';
 
-export const transactionsActionsPrefix = '@common/wallet-core/transactions';
+export const TRANSACTIONS_MODULE_PREFIX = '@common/wallet-core/transactions';
 
 const fetchError = createAction(
-    `${transactionsActionsPrefix}/fetchError`,
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchError`,
     (payload: { error: string | null }) => ({ payload }),
 );
-const fetchSuccess = createAction(`${transactionsActionsPrefix}/fetchSuccess`);
-const fetchInit = createAction(`${transactionsActionsPrefix}/fetchInit`);
+const fetchSuccess = createAction(`${TRANSACTIONS_MODULE_PREFIX}/fetchSuccess`);
+const fetchInit = createAction(`${TRANSACTIONS_MODULE_PREFIX}/fetchInit`);
 
 type UpdateTransactionFiatRatePayload = Array<{
     txid: string;
@@ -21,29 +21,29 @@ type UpdateTransactionFiatRatePayload = Array<{
 }>;
 
 const updateTransactionFiatRate = createAction(
-    `${transactionsActionsPrefix}/updateTransactionFiatRate`,
+    `${TRANSACTIONS_MODULE_PREFIX}/updateTransactionFiatRate`,
     (payload: UpdateTransactionFiatRatePayload) => ({
         payload,
     }),
 );
 
 const resetTransaction = createAction(
-    `${transactionsActionsPrefix}/resetTransaction`,
+    `${TRANSACTIONS_MODULE_PREFIX}/resetTransaction`,
     (payload: { account: Account }) => ({ payload }),
 );
 
 const replaceTransaction = createAction(
-    `${transactionsActionsPrefix}/replaceTransaction`,
+    `${TRANSACTIONS_MODULE_PREFIX}/replaceTransaction`,
     (payload: { key: string; txid: string; tx: WalletAccountTransaction }) => ({ payload }),
 );
 
 const removeTransaction = createAction(
-    `${transactionsActionsPrefix}/removeTransaction`,
+    `${TRANSACTIONS_MODULE_PREFIX}/removeTransaction`,
     (payload: { account: Account; txs: { txid: string }[] }) => ({ payload }),
 );
 
 const addTransaction = createAction(
-    `${transactionsActionsPrefix}/addTransaction`,
+    `${TRANSACTIONS_MODULE_PREFIX}/addTransaction`,
     ({
         transactions,
         account,

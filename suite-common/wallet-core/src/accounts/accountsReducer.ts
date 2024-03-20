@@ -8,7 +8,7 @@ import { Account, AccountKey } from '@suite-common/wallet-types';
 import { AccountType, networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
-import { formattedAccountTypeMap } from './constants';
+import { formattedAccountTypeMap } from './accountsConstants';
 import {
     DeviceRootState,
     selectDevice,

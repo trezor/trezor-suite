@@ -12,7 +12,7 @@ import { AccountKey } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 import { BlockchainNotification } from '@trezor/connect';
 
-const actionsPrefix = '@native/blockchain';
+const BLOCKCHAIN_MODULE_PREFIX = '@suite-native/blockchain';
 
 const accountLastFetchTime: Record<AccountKey, number> = {};
 const ACCOUNT_LAST_FETCH_TIME_LIMIT_MS = 1000 * 10;
@@ -31,7 +31,7 @@ const shouldRefetchAccount = ({
 };
 
 export const syncAccountsWithBlockchainThunk = createThunk(
-    `${actionsPrefix}/syncAccountsThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/syncAccountsThunk`,
     async ({ symbol }: { symbol: NetworkSymbol }, { getState, dispatch }) => {
         const accounts = selectDeviceAccountsByNetworkSymbol(getState(), symbol);
         const accountForRefetch = accounts.filter(({ key }) =>
@@ -52,7 +52,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 );
 
 export const syncAllAccountsWithBlockchainThunk = createThunk(
-    `${actionsPrefix}/syncAllAccountsThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/syncAllAccountsThunk`,
     async (_, { getState, dispatch }) => {
         const accountsSymbols = selectAccountsSymbols(getState());
 
@@ -65,7 +65,7 @@ export const syncAllAccountsWithBlockchainThunk = createThunk(
 );
 
 export const onBlockchainConnectThunk = createThunk(
-    `${actionsPrefix}/onBlockchainConnectThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async ({ symbol }: { symbol: string }, { dispatch }) => {
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
@@ -79,7 +79,7 @@ export const onBlockchainConnectThunk = createThunk(
 );
 
 export const onBlockchainNotificationThunk = createThunk(
-    `${actionsPrefix}/onNotificationThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState }) => {
         const { descriptor } = payload.notification;
         const symbol = payload.coin.shortcut.toLowerCase();

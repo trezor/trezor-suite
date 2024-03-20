@@ -25,7 +25,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { selectAccounts } from '../accounts/accountsReducer';
 import { fetchAndUpdateAccountThunk } from '../accounts/accountsThunks';
-import { blockchainActionsPrefix, blockchainActions } from './blockchainActions';
+import { BLOCKCHAIN_MODULE_PREFIX, blockchainActions } from './blockchainActions';
 import { selectBlockchainState, selectNetworkBlockchainInfo } from './blockchainReducer';
 
 const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
@@ -43,7 +43,7 @@ const sortLevels = (levels: FeeLevel[]) =>
 
 // shouldn't this be in fee thunks instead?
 export const preloadFeeInfoThunk = createThunk(
-    `${blockchainActionsPrefix}/preloadFeeInfoThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/preloadFeeInfoThunk`,
     async (_, { dispatch }) => {
         // Fetch default fee levels
         const networks = networksCompatibility.filter(n => !n.isHidden && !n.accountType);
@@ -79,7 +79,7 @@ export const preloadFeeInfoThunk = createThunk(
 
 // shouldn't this be in fee thunks instead?
 export const updateFeeInfoThunk = createThunk(
-    `${blockchainActionsPrefix}/updateFeeInfoThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/updateFeeInfoThunk`,
     async (symbol: string, { dispatch, getState, extra }) => {
         const {
             selectors: { selectFeeInfo },
@@ -147,7 +147,7 @@ export const updateFeeInfoThunk = createThunk(
 
 // call TrezorConnect.unsubscribe, it doesn't cost anything and should emit BLOCKCHAIN.CONNECT or BLOCKCHAIN.ERROR event
 export const reconnectBlockchainThunk = createThunk(
-    `${blockchainActionsPrefix}/reconnectBlockchainThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/reconnectBlockchainThunk`,
     (coin: NetworkSymbol) => TrezorConnect.blockchainUnsubscribeFiatRates({ coin }),
 );
 
@@ -165,7 +165,7 @@ const setBackendsToConnect = (backends: CustomBackend[]) =>
     );
 
 export const setCustomBackendThunk = createThunk(
-    `${blockchainActionsPrefix}/setCustomBackendThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/setCustomBackendThunk`,
     (coin: NetworkSymbol, { getState }) => {
         const blockchain = selectBlockchainState(getState());
         const backends = [getBackendFromSettings(coin, blockchain[coin].backends)];
@@ -175,7 +175,7 @@ export const setCustomBackendThunk = createThunk(
 );
 
 export const initBlockchainThunk = createThunk(
-    `${blockchainActionsPrefix}/initBlockchainThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/initBlockchainThunk`,
     async (_, { dispatch, getState }) => {
         await dispatch(preloadFeeInfoThunk());
 
@@ -207,7 +207,7 @@ export const initBlockchainThunk = createThunk(
 // called from WalletMiddleware after ACCOUNT.ADD/UPDATE action
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribeBlockchainThunk = createThunk(
-    `${blockchainActionsPrefix}/subscribeBlockchainThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
     ({ symbol }: { symbol: NetworkSymbol; fiatRates?: boolean }, { getState }) => {
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
@@ -226,7 +226,7 @@ export const subscribeBlockchainThunk = createThunk(
 
 // called from WalletMiddleware after ACCOUNT.REMOVE action
 export const unsubscribeBlockchainThunk = createThunk(
-    `${blockchainActionsPrefix}/unsubscribeBlockchainThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/unsubscribeBlockchainThunk`,
     (removedAccounts: Account[], { getState }) => {
         // collect unique symbols
         const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
@@ -257,7 +257,7 @@ const tryClearTimeout = (timeout?: Timeout) => {
 };
 
 export const syncAccountsWithBlockchainThunk = createThunk(
-    `${blockchainActionsPrefix}/syncAccountsThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/syncAccountsThunk`,
     async (symbol: NetworkSymbol, { getState, dispatch }) => {
         const accounts = selectAccounts(getState());
         const blockchain = selectBlockchainState(getState());
@@ -283,7 +283,7 @@ export const syncAccountsWithBlockchainThunk = createThunk(
 );
 
 export const onBlockchainConnectThunk = createThunk(
-    `${blockchainActionsPrefix}/onBlockchainConnectThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainConnectThunk`,
     async (symbol: string, { dispatch }) => {
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
@@ -296,7 +296,7 @@ export const onBlockchainConnectThunk = createThunk(
 );
 
 export const onBlockMinedThunk = createThunk(
-    `${blockchainActionsPrefix}/onBlockMinedThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockMinedThunk`,
     (block: BlockchainBlock, { dispatch }) => {
         const symbol = block.coin.shortcut.toLowerCase();
         const network = getNetwork(symbol);
@@ -318,7 +318,7 @@ export const onBlockMinedThunk = createThunk(
 );
 
 export const onBlockchainNotificationThunk = createThunk(
-    `${blockchainActionsPrefix}/onNotificationThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/onNotificationThunk`,
     (payload: BlockchainNotification, { dispatch, getState, extra }) => {
         const {
             selectors: { selectBitcoinAmountUnit, selectDevices },
@@ -374,7 +374,7 @@ export const onBlockchainNotificationThunk = createThunk(
 );
 
 export const onBlockchainDisconnectThunk = createThunk(
-    `${blockchainActionsPrefix}/onBlockchainDisconnectThunk`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/onBlockchainDisconnectThunk`,
     (error: BlockchainError, { getState }) => {
         const network = getNetwork(error.coin.shortcut.toLowerCase());
         if (!network) return;

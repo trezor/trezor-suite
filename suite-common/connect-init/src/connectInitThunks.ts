@@ -9,13 +9,13 @@ import { getSynchronize } from '@trezor/utils';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
-const actionsPrefix = '@common/connect-init';
+const CONNECT_INIT_MODULE = '@common/connect-init';
 
 // If you are looking where connectInitSettings is defined, it is defined in packages/suite/src/support/extraDependencies.ts
 // or in suite-native/state/src/extraDependencies.ts depends on which platform this connectInitThunk runs.
 
 export const connectInitThunk = createThunk(
-    `${actionsPrefix}/initThunk`,
+    `${CONNECT_INIT_MODULE}/initThunk`,
     async (_, { dispatch, getState, extra }) => {
         const {
             selectors: {

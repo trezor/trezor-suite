@@ -7,10 +7,10 @@ import {
 } from '@suite-common/wallet-core';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 
-const actionPrefix = '@suite-native/device';
+const DEVICE_MODULE_PREFIX = '@suite-native/device';
 
 export const wipeDisconnectedDevicesDataThunk = createThunk(
-    `${actionPrefix}/wipeDisconnectedDevicesDataThunk`,
+    `${DEVICE_MODULE_PREFIX}/wipeDisconnectedDevicesDataThunk`,
     (_, { getState, dispatch }) => {
         const devicelessAccounts = selectDevicelessAccounts(getState());
         const devicelessDiscoveries = selectDevicelessDiscoveries(getState());
