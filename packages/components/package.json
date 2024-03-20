@@ -17,9 +17,9 @@
         "storybook-build": "storybook build -c .storybook -o .build-storybook"
     },
     "dependencies": {
+        "@floating-ui/react": "^0.26.9",
         "@suite-common/icons": "workspace:*",
         "@suite-common/validators": "workspace:*",
-        "@tippyjs/react": "^4.2.6",
         "@trezor/connect": "workspace:*",
         "@trezor/dom-utils": "workspace:*",
         "@trezor/env-utils": "workspace:*",
@@ -40,7 +40,6 @@
         "react-truncate": "^2.4.0",
         "react-use": "^17.5.0",
         "styled-components": "^6.1.8",
-        "tippy.js": "^6.3.7",
         "zxcvbn": "^4.4.2"
     },
     "devDependencies": {

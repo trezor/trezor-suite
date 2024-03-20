@@ -58,6 +58,7 @@ export * from './components/skeletons/types';
 export * from './components/typography/Text/Text';
 export * from './components/Timerange/Timerange';
 export * from './components/Tooltip/Tooltip';
+export * from './components/Tooltip/TooltipDelay';
 export * from './components/Truncate/Truncate';
 export * from './components/typography/Heading/Heading';
 export * from './components/typography/Link/Link';

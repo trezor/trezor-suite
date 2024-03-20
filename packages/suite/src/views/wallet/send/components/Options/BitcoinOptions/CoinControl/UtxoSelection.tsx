@@ -232,7 +232,6 @@ export const UtxoSelection = ({ transaction, utxo }: UtxoSelectionProps) => {
                         <TransactionTimestamp showDate transaction={transaction} />
                     ) : (
                         <Tooltip
-                            interactive={false}
                             cursor="pointer"
                             content={<Translation id="TR_LOADING_TRANSACTION_DETAILS" />}
                         >

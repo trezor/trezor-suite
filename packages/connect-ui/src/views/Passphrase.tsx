@@ -65,6 +65,8 @@ export const Passphrase = (props: PassphraseProps) => {
         features.capabilities &&
         features.capabilities.includes('Capability_PassphraseEntry');
 
+    const appendTo = document.getElementById('react')!.shadowRoot!.getElementById('reactRenderIn')!;
+
     return (
         <View title="">
             {/* todo: this part could be shared with suite? */}
@@ -116,11 +118,7 @@ export const Passphrase = (props: PassphraseProps) => {
                         type="hidden"
                         offerPassphraseOnDevice={offerPassphraseOnDevice}
                         onSubmit={onPassphraseSubmit}
-                        learnMoreTooltipAppendTo={() =>
-                            document
-                                .getElementById('react')!
-                                .shadowRoot!.getElementById('reactRenderIn')!
-                        }
+                        learnMoreTooltipAppendTo={appendTo}
                     />
                 </WalletsWrapper>
             </Wrapper>

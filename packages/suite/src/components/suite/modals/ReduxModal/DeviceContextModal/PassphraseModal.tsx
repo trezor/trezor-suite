@@ -121,13 +121,12 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                     offerPassphraseOnDevice={onDeviceOffer}
                     onSubmit={onSubmit}
                     singleColModal
-                    learnMoreTooltipOnClick={instance => (
+                    learnMoreTooltipOnClick={
                         <OpenGuideFromTooltip
                             dataTest="@tooltip/guideAnchor"
                             id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                            instance={instance}
                         />
-                    )}
+                    }
                 />
             </TinyModal>
         );
@@ -150,13 +149,12 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                     singleColModal
                     offerPassphraseOnDevice={onDeviceOffer}
                     onSubmit={onSubmit}
-                    learnMoreTooltipOnClick={instance => (
+                    learnMoreTooltipOnClick={
                         <OpenGuideFromTooltip
                             dataTest="@tooltip/guideAnchor"
                             id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                            instance={instance}
                         />
-                    )}
+                    }
                 />
             </TinyModal>
         );
@@ -187,13 +185,12 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
                         type="hidden"
                         offerPassphraseOnDevice={onDeviceOffer}
                         onSubmit={onSubmit}
-                        learnMoreTooltipOnClick={instance => (
+                        learnMoreTooltipOnClick={
                             <OpenGuideFromTooltip
                                 dataTest="@tooltip/guideAnchor"
                                 id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                                instance={instance}
                             />
-                        )}
+                        }
                     />
                 </WalletsWrapper>
             </Wrapper>

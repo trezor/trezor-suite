@@ -93,12 +93,9 @@ export const Raw = ({ network }: RawProps) => {
         <StyledCard>
             <H3>
                 <Tooltip
-                    addon={instance => (
-                        <OpenGuideFromTooltip
-                            id="/3_send-and-receive/transactions-in-depth/send-raw.md"
-                            instance={instance}
-                        />
-                    )}
+                    addon={
+                        <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/send-raw.md" />
+                    }
                     content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
                     dashed
                 >
