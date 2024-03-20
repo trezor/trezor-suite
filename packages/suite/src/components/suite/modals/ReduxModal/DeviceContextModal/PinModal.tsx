@@ -26,7 +26,8 @@ export const PinModal = ({ device, ...rest }: PinModalProps) => {
 
     if (!device.features) return null;
 
-    const onCancel = () => TrezorConnect.cancel('pin-cancelled');
+    const onCancel = () =>
+        isWipeCode ? TrezorConnect.cancel('wipe-cancelled') : TrezorConnect.cancel('pin-cancelled');
 
     return (
         <StyledModal
