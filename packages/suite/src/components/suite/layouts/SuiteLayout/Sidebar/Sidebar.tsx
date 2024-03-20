@@ -7,6 +7,7 @@ import { QuickActions } from './QuickActions';
 import { ElevationContext, useElevation } from '@trezor/components';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
+import { RememberWalletNotification } from '../../../../../views/remember-wallet/RememberWalletNotification';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     display: flex;
@@ -29,6 +30,7 @@ export const Sidebar = () => {
         <Container $elevation={elevation}>
             <ElevationContext baseElevation={elevation}>
                 <DeviceSelector />
+                <RememberWalletNotification />
                 <Navigation />
                 <AccountsMenu />
                 <QuickActions />
