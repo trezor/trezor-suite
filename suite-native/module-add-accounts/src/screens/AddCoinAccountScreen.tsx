@@ -22,7 +22,7 @@ export const AddCoinAccountScreen = ({
     const {
         supportedNetworkSymbols,
         onSelectedNetworkItem,
-        networkWithTypeToBeAdded,
+        networkSymbolWithTypeToBeAdded,
         clearNetworkWithTypeToBeAdded,
         navigateToAccountTypeSelectionScreen,
         addCoinAccount,
@@ -30,23 +30,27 @@ export const AddCoinAccountScreen = ({
 
     const { flowType } = route.params;
 
-    const accountTypeName = networkWithTypeToBeAdded
-        ? translate(accountTypeTranslationKeys[networkWithTypeToBeAdded[1]].titleKey)
+    const accountTypeName = networkSymbolWithTypeToBeAdded
+        ? translate(accountTypeTranslationKeys[networkSymbolWithTypeToBeAdded[1]].titleKey)
         : '';
 
     const handleTypeSelectionTap = () => {
-        if (networkWithTypeToBeAdded) {
-            navigateToAccountTypeSelectionScreen(networkWithTypeToBeAdded[0], flowType);
+        if (networkSymbolWithTypeToBeAdded) {
+            navigateToAccountTypeSelectionScreen(
+                networkSymbolWithTypeToBeAdded[0],
+                flowType,
+                networkSymbolWithTypeToBeAdded[1],
+            );
         }
     };
 
     const handleConfirmTap = () => {
-        if (networkWithTypeToBeAdded) {
+        if (networkSymbolWithTypeToBeAdded) {
             // Timeout is needed so AccountTypeDecisionBootomSheet has time to hide otherwise app crashes
             setTimeout(() => {
                 addCoinAccount({
-                    network: networkWithTypeToBeAdded[0],
-                    accountType: networkWithTypeToBeAdded[1],
+                    networkSymbol: networkSymbolWithTypeToBeAdded[0],
+                    accountType: networkSymbolWithTypeToBeAdded[1],
                     flowType,
                 });
             }, 100);
@@ -81,12 +85,12 @@ export const AddCoinAccountScreen = ({
             </Card>
             <AccountTypeDecisionBootomSheet
                 coinName={
-                    G.isNotNullable(networkWithTypeToBeAdded)
-                        ? networkWithTypeToBeAdded[0].symbol
+                    G.isNotNullable(networkSymbolWithTypeToBeAdded)
+                        ? networkSymbolWithTypeToBeAdded[0]
                         : ''
                 }
                 typeName={accountTypeName}
-                isVisible={G.isNotNullable(networkWithTypeToBeAdded)}
+                isVisible={G.isNotNullable(networkSymbolWithTypeToBeAdded)}
                 onClose={clearNetworkWithTypeToBeAdded}
                 onTypeSelectionTap={handleTypeSelectionTap}
                 onConfirmTap={handleConfirmTap}

@@ -2,7 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
 
 import { AccountKey, TokenAddress, XpubAddress } from '@suite-common/wallet-types';
-import { AccountType, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, TokenTransfer } from '@trezor/connect';
 
 import {
@@ -100,7 +100,7 @@ export type AddCoinAccountStackParamList = {
     };
     [AddCoinAccountStackRoutes.SelectAccountType]: {
         accountType: AccountType;
-        network: Network;
+        networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
     };
 };
