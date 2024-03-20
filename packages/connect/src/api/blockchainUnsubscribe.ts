@@ -54,6 +54,8 @@ export default class BlockchainUnsubscribe extends AbstractMethod<'blockchainUns
             this.params.identity,
         );
 
-        return backend.unsubscribe(this.params.accounts);
+        const { accounts } = this.params;
+
+        return accounts ? backend.unsubscribeAccounts(accounts) : backend.unsubscribeAll();
     }
 }
