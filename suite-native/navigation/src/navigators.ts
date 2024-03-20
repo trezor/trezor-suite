@@ -92,7 +92,7 @@ export type AccountsImportStackParamList = {
     };
 };
 
-export type AddCoinFlowType = 'receive' | 'accounts';
+export type AddCoinFlowType = 'home' | 'receive' | 'accounts';
 
 export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinAccount]: {
