@@ -67,13 +67,15 @@ const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }
 );
 
 const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: DetailsProps) => {
-    const [fee, setFee] = useState<string | undefined>(selectedLevel.feeLimit);
+    const [gasLimit, setGasLimit] = useState<string | undefined>(selectedLevel.feeLimit);
+    const [gasPrice, setGasPrice] = useState<string | undefined>(selectedLevel.feePerUnit);
 
     const isComposedTx = transactionInfo && transactionInfo.type !== 'error';
 
     useEffect(() => {
         if (isComposedTx) {
-            setFee(transactionInfo.feeLimit);
+            setGasLimit(transactionInfo.feeLimit);
+            setGasPrice(transactionInfo.feePerByte);
         }
     }, [isComposedTx, transactionInfo]);
 
@@ -83,14 +85,17 @@ const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Detail
                 <Label>
                     <Translation id="TR_GAS_LIMIT" />:
                 </Label>
-                <FeeItem>{isComposedTx ? transactionInfo.feeLimit : fee}</FeeItem>
+                <FeeItem>{isComposedTx ? transactionInfo.feeLimit : gasLimit}</FeeItem>
             </span>
 
             <span>
                 <Label>
                     <Translation id="TR_GAS_PRICE" />:
                 </Label>
-                <FeeItem>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</FeeItem>
+                <FeeItem>
+                    {isComposedTx ? transactionInfo.feePerByte : gasPrice}
+                    {getFeeUnits(networkType)}
+                </FeeItem>
             </span>
         </Wrapper>
     );

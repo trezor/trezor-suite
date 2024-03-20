@@ -21,6 +21,10 @@ const Left = styled.div`
 
 const StyledButton = styled(Button)`
     margin-right: 8px;
+
+    & > div {
+        display: inline-flex;
+    }
 `;
 
 export const EthereumOptions = () => {
