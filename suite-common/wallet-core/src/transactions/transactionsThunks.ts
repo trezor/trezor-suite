@@ -18,6 +18,7 @@ import {
     getRbfParams,
     replaceEthereumSpecific,
     advancedSearchTransactions,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { AccountLabels } from '@suite-common/metadata-types';
 import TrezorConnect from '@trezor/connect';
@@ -354,6 +355,7 @@ export const fetchTransactionsThunk = createThunk(
         const { marker } = account;
         const result = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
             page, // useful for every network except ripple

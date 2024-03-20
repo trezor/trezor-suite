@@ -15,6 +15,7 @@ import {
     formatAmount,
     isPending,
     getNetwork,
+    getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@suite-common/wallet-constants';
@@ -132,6 +133,7 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: account.symbol,
+            identity: getAccountIdentity(account),
             request: {
                 blocks: [2],
                 specific: {
