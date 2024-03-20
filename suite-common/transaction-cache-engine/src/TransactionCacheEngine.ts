@@ -119,6 +119,7 @@ export class TransactionCacheEngine {
             const result = await TrezorConnect.getAccountInfo({
                 coin,
                 descriptor,
+                // TODO add identity when used for eth-like coins
                 details: 'txs',
                 page,
                 pageSize,
@@ -276,6 +277,7 @@ export class TransactionCacheEngine {
                 TrezorConnect.blockchainSubscribe({
                     accounts: accountDescriptors,
                     coin,
+                    // TODO add identity when used for eth-like coins
                 });
             }),
         );
@@ -287,6 +289,7 @@ export class TransactionCacheEngine {
         TrezorConnect.blockchainUnsubscribe({
             accounts: [{ descriptor }],
             coin,
+            // TODO add identity when used for eth-like coins
         });
     }
 }

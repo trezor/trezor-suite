@@ -17,6 +17,7 @@ import {
 import { AccountKey } from '@suite-common/wallet-types';
 import { analytics, EventType } from '@suite-native/analytics';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
 import { timeSwitchItems } from './components/TimeSwitch';
 import { TimeframeHoursValue } from './types';
@@ -92,6 +93,7 @@ export const useGraphForSingleAccount = ({
             {
                 coin: account.symbol,
                 descriptor: account.descriptor,
+                identity: tryGetAccountIdentity(account),
             },
         ] as AccountItem[];
     }, [account]);
@@ -132,6 +134,7 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
             accounts.map(account => ({
                 coin: account.symbol,
                 descriptor: account.descriptor,
+                identity: tryGetAccountIdentity(account),
             })),
         [accounts],
     );
