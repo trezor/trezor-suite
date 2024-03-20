@@ -196,8 +196,31 @@ export class TrezordNode {
             ]);
 
             app.get('/status', [
+                async (_req, res) => {
+                    const enumerateResult = await this.api.enumerate();
+                    const props = {
+                        intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
+                        version: this.version,
+                        devices: enumerateResult.success ? enumerateResult.payload.descriptors : [],
+                        logs: app.logger.getLog().slice(-20),
+                    };
+
+                    res.end(JSON.stringify(props, null, 2));
+                },
+            ]);
+
+            app.get('/logs', [
                 (_req, res) => {
-                    res.end(`hello, I am bridge in node, version: ${this.version}`);
+                    res.writeHead(200, {
+                        'Content-Type': 'text/plain',
+                        'Content-Disposition': 'attachment; filename=trezor-bridge.txt',
+                    });
+                    res.end(
+                        app.logger
+                            .getLog()
+                            .map(l => l.message.join('. '))
+                            .join('.\n'),
+                    );
                 },
             ]);
 
