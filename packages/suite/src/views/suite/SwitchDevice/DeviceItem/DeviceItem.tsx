@@ -256,12 +256,9 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                                             />
                                         </WalletsCount>
                                         <ColRememberHeader
-                                            tooltipOpenGuide={instance => (
-                                                <OpenGuideFromTooltip
-                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
-                                                    instance={instance}
-                                                />
-                                            )}
+                                            tooltipOpenGuide={
+                                                <OpenGuideFromTooltip id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md" />
+                                            }
                                             tooltipContent={
                                                 <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
                                             }
@@ -269,12 +266,9 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                                             <Translation id="TR_REMEMBER_HEADING" />
                                         </ColRememberHeader>
                                         <ColEjectHeader
-                                            tooltipOpenGuide={instance => (
-                                                <OpenGuideFromTooltip
-                                                    id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md"
-                                                    instance={instance}
-                                                />
-                                            )}
+                                            tooltipOpenGuide={
+                                                <OpenGuideFromTooltip id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md" />
+                                            }
                                             tooltipContent={
                                                 <Translation id="TR_EJECT_WALLET_EXPLANATION" />
                                             }

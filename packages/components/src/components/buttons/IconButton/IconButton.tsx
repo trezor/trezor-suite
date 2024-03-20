@@ -4,8 +4,9 @@ import { Icon, IconType } from '../../assets/Icon/Icon';
 import { Spinner } from '../../loaders/Spinner/Spinner';
 import { ButtonContainer, ButtonProps } from '../Button/Button';
 import { ButtonVariant, getIconColor, getIconSize, getPadding } from '../buttonStyleUtils';
-import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT, Tooltip } from '../../Tooltip/Tooltip';
+import { TOOLTIP_DELAY_NONE, TOOLTIP_DELAY_SHORT } from '../../Tooltip/TooltipDelay';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import { Tooltip } from '../../Tooltip/Tooltip';
 
 const IconButtonContainer = styled(ButtonContainer)`
     position: relative;

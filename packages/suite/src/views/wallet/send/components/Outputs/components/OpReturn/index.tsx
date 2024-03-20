@@ -93,12 +93,9 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     return (
         <Container>
             <Tooltip
-                addon={instance => (
-                    <OpenGuideFromTooltip
-                        id="/3_send-and-receive/transactions-in-depth/op_return.md"
-                        instance={instance}
-                    />
-                )}
+                addon={
+                    <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/op_return.md" />
+                }
                 content={<Translation id="OP_RETURN_TOOLTIP" />}
                 dashed
             >

@@ -88,12 +88,9 @@ export const BitcoinOptions = () => {
                 <Left>
                     {!locktimeEnabled && (
                         <Tooltip
-                            addon={instance => (
-                                <OpenGuideFromTooltip
-                                    id="/3_send-and-receive/transactions-in-depth/locktime.md"
-                                    instance={instance}
-                                />
-                            )}
+                            addon={
+                                <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/locktime.md" />
+                            }
                             content={<Translation id="LOCKTIME_ADD_TOOLTIP" />}
                             cursor="pointer"
                         >
@@ -117,12 +114,9 @@ export const BitcoinOptions = () => {
                         network.features?.includes('rbf') &&
                         !locktimeEnabled && (
                             <Tooltip
-                                addon={instance => (
-                                    <OpenGuideFromTooltip
-                                        id="/3_send-and-receive/5_replace-by-fee-rbf.md"
-                                        instance={instance}
-                                    />
-                                )}
+                                addon={
+                                    <OpenGuideFromTooltip id="/3_send-and-receive/5_replace-by-fee-rbf.md" />
+                                }
                                 content={<Translation id="RBF_TOOLTIP" />}
                                 cursor="pointer"
                             >
@@ -162,12 +156,9 @@ export const BitcoinOptions = () => {
 
                     {!utxoSelectionEnabled && (
                         <Tooltip
-                            addon={instance => (
-                                <OpenGuideFromTooltip
-                                    id="/5_coinjoin-and-coin-control/coin-control.md"
-                                    instance={instance}
-                                />
-                            )}
+                            addon={
+                                <OpenGuideFromTooltip id="/5_coinjoin-and-coin-control/coin-control.md" />
+                            }
                             content={<Translation id="TR_COIN_CONTROL_TOOLTIP" />}
                             cursor="pointer"
                         >

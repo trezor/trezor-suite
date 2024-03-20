@@ -160,7 +160,6 @@ export const CoinjoinProgressContent = ({
             if (isCriticalPhase) {
                 return (
                     <Tooltip
-                        interactive={false}
                         maxWidth={160}
                         offset={40}
                         cursor="pointer"

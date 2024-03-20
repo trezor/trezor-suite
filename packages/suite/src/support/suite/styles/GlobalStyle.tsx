@@ -1,6 +1,5 @@
 import { typography } from '@trezor/theme';
 import animations from './animations';
-import tooltips from './tooltips';
 import { SuiteThemeColors } from '@trezor/components';
 import { createGlobalStyle } from 'styled-components';
 
@@ -52,7 +51,11 @@ const GlobalStyle = createGlobalStyle<{ theme: SuiteThemeColors }>`
     }
 
     ${animations}
-    ${tooltips}
+    
+    /* https://floating-ui.com/docs/misc#handling-large-content */
+    .floating {
+        max-width: calc(100vw - 10px);
+    }
 `;
 
 export default GlobalStyle;

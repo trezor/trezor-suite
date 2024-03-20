@@ -163,7 +163,6 @@ export const ReviewButton = () => {
             )}
 
             <ButtonReview
-                interactiveTooltip={!coinControlOpen}
                 $isRed={anonymityWarningChecked}
                 tooltipContent={tooltipContent}
                 data-test="@send/review-button"

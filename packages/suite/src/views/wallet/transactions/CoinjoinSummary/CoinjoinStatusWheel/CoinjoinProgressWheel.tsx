@@ -253,7 +253,7 @@ export const CoinjoinProgressWheel = ({ accountKey }: CoinjoinProgressWheelProps
     const hasDottedOutline = isAccountEmpty || coinjoinSessionBlocker === 'ANONYMITY_ERROR';
 
     return (
-        <Tooltip content={getTooltipMessage()} hideOnClick={false}>
+        <Tooltip content={getTooltipMessage()}>
             <>
                 {isProgressIndicatorShown && <ProgressIndicator />}
 
