@@ -31,15 +31,21 @@ export const useFirmware = () => {
 
     // Device in its state before installation is cached when installation begins. Until then, use access device as normal.
     const originalDevice = firmware.cachedDevice || device;
+    // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first, and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
+    // These events are emitted later during the installation process as well, but we don't want to show the prompt again - that is why we must check the device mode or bootloader property.
+    const showManualReconnectPrompt =
+        ((firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && device?.mode !== 'bootloader') ||
+            (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+                firmware.uiEvent.payload.bootloader)) &&
+        firmware.uiEvent.payload.manual;
     const showReconnectPrompt =
-        // T1 (ButtonRequest_ProtectCall) in reboot_and_wait flow, T2 (ButtonRequest_Other) in reboot_and_wait and reboot_and_upgrade flows:
+        // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow, T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code &&
             ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(
                 firmware.uiEvent.payload.code,
             )) ||
-        // Manual flow:
-        (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && firmware.uiEvent.payload.manual);
+        showManualReconnectPrompt;
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
@@ -78,8 +84,7 @@ export const useFirmware = () => {
             }
         }
         if (
-            (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT &&
-                !firmware.uiEvent.payload.manual) ||
+            (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && device?.mode === 'bootloader') ||
             (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
                 !firmware.uiEvent.payload.bootloader)
         ) {
@@ -114,6 +119,7 @@ export const useFirmware = () => {
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
         getTargetFirmwareType,
+        showManualReconnectPrompt,
         confirmOnDevice,
         showReconnectPrompt,
         showConfirmationPill,

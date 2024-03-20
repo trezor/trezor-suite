@@ -181,12 +181,12 @@ interface ReconnectDevicePromptProps {
 }
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
-    const { isWebUSB, status, uiEvent } = useFirmware();
+    const { showManualReconnectPrompt, isWebUSB, status, uiEvent } = useFirmware();
     const { device } = useDevice();
 
     const isManualRebootRequired =
         //Automatic reboot not supported:
-        (uiEvent?.type === UI.FIRMWARE_DISCONNECT && uiEvent?.payload.manual) ||
+        showManualReconnectPrompt ||
         // Automatic reboot cancelled or device disconnected:
         status === 'error';
 

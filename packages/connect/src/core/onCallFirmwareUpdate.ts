@@ -9,6 +9,7 @@ import {
     uploadFirmware,
     getLanguage,
     calculateFirmwareHash,
+    parseFirmwareHeaders,
     shouldStripFwHeaders,
     stripFwHeaders,
 } from '../api/firmware';
@@ -17,6 +18,7 @@ import { CommonParams, IntermediaryVersion } from '../types';
 import { PROTO, ERRORS } from '../constants';
 import type { Log } from '../utils/debug';
 import type { Device } from '../device/Device';
+import { isNewer } from '@trezor/utils/src/versionUtils';
 
 type PostMessage = (message: CoreEventMessage) => void;
 
@@ -96,13 +98,22 @@ const waitForDisconnectedDevice = async ({
     });
 };
 
-const getInstallationParams = (device: Device) => {
+const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
     // we can detect support properly only if device was not connected in bootloader mode
     if (!device.features.bootloader_mode) {
+        const fwHeaders = binary ? parseFirmwareHeaders(Buffer.from(binary)) : undefined;
+        const isUpdatingToNewerVersion = !binary
+            ? device.firmwareRelease?.isNewer
+            : fwHeaders?.version &&
+              isNewer(fwHeaders?.version, [
+                  device.features.major_version,
+                  device.features.minor_version,
+                  device.features.patch_version,
+              ]);
         const support = {
             reboot_and_wait: device.atLeast(['1.10.0', '2.6.0']),
             // reboot_and_upgrade strictly requires updating to a higher version
-            reboot_and_upgrade: device.atLeast('2.6.3') && !!device.firmwareRelease?.isNewer,
+            reboot_and_upgrade: device.atLeast('2.6.3') && isUpdatingToNewerVersion,
             language_data_length: device.atLeast('2.6.5'),
         };
 
@@ -260,7 +271,7 @@ export const onCallFirmwareUpdate = async ({
 
     registerEvents(device, postMessage);
 
-    const { manual, upgrade, language } = getInstallationParams(device);
+    const { manual, upgrade, language } = getInstallationParams(device, params.binary);
 
     log.debug('onCallFirmwareUpdate', 'installation params', { manual, upgrade, language });
 
