@@ -182,7 +182,7 @@ interface ReconnectDevicePromptProps {
 }
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
-    const { isWebUSB, status, uiEvent } = useFirmware();
+    const { showManualReconnectPrompt, isWebUSB, status, uiEvent } = useFirmware();
     const { device } = useDevice();
 
     const isManualRebootRequired =
