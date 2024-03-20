@@ -11,6 +11,7 @@ export type FiatGraphPointWithCryptoBalance = {
 
 export type AccountItem = {
     coin: NetworkSymbol;
+    identity?: string;
     descriptor: string;
 };
 

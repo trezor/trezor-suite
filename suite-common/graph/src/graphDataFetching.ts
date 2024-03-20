@@ -48,17 +48,20 @@ export const addBalanceForAccountMovementHistory = (
     return historyWithBalance;
 };
 
-export const getLatestAccountBalance = async ({
+const getLatestAccountBalance = async ({
     coin,
+    identity,
     descriptor,
 }: {
     coin: NetworkSymbol;
+    identity?: string;
     descriptor: string;
 }) => {
     const networkType = getNetworkType(coin);
 
     const accountInfo = await TrezorConnect.getAccountInfo({
         coin,
+        identity,
         descriptor,
         suppressBackupWarning: true,
     });
@@ -78,13 +81,15 @@ export const getLatestAccountBalance = async ({
 
 const accountBalanceHistoryCache: Record<string, AccountHistoryBalancePoint[]> = {};
 
-export const getAccountBalanceHistory = async ({
+const getAccountBalanceHistory = async ({
     coin,
+    identity,
     descriptor,
     endOfTimeFrameDate,
     forceRefetch,
 }: {
     coin: NetworkSymbol;
+    identity?: string;
     descriptor: string;
     endOfTimeFrameDate: Date;
     forceRefetch?: boolean;
@@ -105,6 +110,7 @@ export const getAccountBalanceHistory = async ({
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
+            identity,
             descriptor,
             to: endTimeFrameTimestamp,
             groupBy: 1,
@@ -125,7 +131,7 @@ export const getAccountBalanceHistory = async ({
 
     const [accountMovementHistory, latestAccountBalance] = await Promise.all([
         getBalanceHistory(),
-        getLatestAccountBalance({ coin, descriptor }),
+        getLatestAccountBalance({ coin, identity, descriptor }),
     ]);
 
     const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
@@ -209,10 +215,11 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     isElectrumBackend: boolean;
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
-        accounts.map(({ coin, descriptor }) =>
+        accounts.map(({ coin, descriptor, identity }) =>
             getAccountBalanceHistory({
                 coin,
                 descriptor,
+                identity,
                 endOfTimeFrameDate,
                 forceRefetch,
             }).then(balanceHistory => ({

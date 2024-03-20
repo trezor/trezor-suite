@@ -112,7 +112,7 @@ export const getAccountMovementEvents = async ({
     startOfTimeFrameDate: Date | null;
     endOfTimeFrameDate: Date;
 }) => {
-    const { coin, descriptor } = account;
+    const { coin, identity, descriptor } = account;
 
     const getBalanceHistory = async () => {
         if (getNetworkType(coin) === 'ripple') {
@@ -123,6 +123,7 @@ export const getAccountMovementEvents = async ({
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
+            identity,
             descriptor,
             from: startOfTimeFrameDate ? getUnixTime(startOfTimeFrameDate) : undefined,
             to: getUnixTime(endOfTimeFrameDate),
