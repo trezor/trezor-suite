@@ -222,15 +222,15 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
     async (
         {
             network,
-            accountType,
             deviceState,
         }: {
             network: Network;
-            accountType: AccountType;
             deviceState: string;
         },
         { dispatch, getState },
     ): Promise<Account | undefined> => {
+        const accountType = network.accountType ?? NORMAL_ACCOUNT_TYPE;
+
         const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
             getState(),
             network.symbol,
