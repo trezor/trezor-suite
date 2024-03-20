@@ -23,6 +23,7 @@ import {
     getPendingAccount,
     isCardanoTx,
     getNetwork,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, { SignedTransaction } from '@trezor/connect';
 import { cloneObject, getSynchronize } from '@trezor/utils';
@@ -208,7 +209,10 @@ export const pushSendFormTransactionThunk = createThunk(
             ? dispatch(findLabelsToBeMovedOrDeleted({ prevTxid: precomposedTx.prevTxid }))
             : undefined;
 
-        const sentTx = await TrezorConnect.pushTransaction(signedTx);
+        const sentTx = await TrezorConnect.pushTransaction({
+            ...signedTx,
+            identity: tryGetAccountIdentity(selectedAccount),
+        });
 
         // close modal regardless result
         dispatch(onModalCancel());
@@ -371,11 +375,8 @@ export const pushSendFormTransactionThunk = createThunk(
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 export const pushSendFormRawTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
-    async ({ tx, coin }: { tx: string; coin: NetworkSymbol }, { dispatch }) => {
-        const sentTx = await TrezorConnect.pushTransaction({
-            tx,
-            coin,
-        });
+    async (payload: { tx: string; coin: NetworkSymbol; identity?: string }, { dispatch }) => {
+        const sentTx = await TrezorConnect.pushTransaction(payload);
 
         if (sentTx.success) {
             dispatch(
@@ -384,7 +385,7 @@ export const pushSendFormRawTransactionThunk = createThunk(
                     txid: sentTx.payload.txid,
                 }),
             );
-            dispatch(syncAccountsWithBlockchainThunk(coin));
+            dispatch(syncAccountsWithBlockchainThunk(payload.coin));
         } else {
             console.warn(sentTx.payload.error);
             dispatch(

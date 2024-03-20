@@ -3,7 +3,11 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { AccountInfo, BundleProgress, UI } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import {
+    tryGetAccountIdentity,
+    getDerivationType,
+    isTrezorConnectBackendType,
+} from '@suite-common/wallet-utils';
 import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
@@ -243,6 +247,10 @@ export const getBundleThunk = createThunk(
                 bundle.push({
                     path: configNetwork.bip43Path.replace('i', index.toString()),
                     coin: configNetwork.symbol,
+                    identity: tryGetAccountIdentity({
+                        networkType: configNetwork.networkType,
+                        deviceState: discovery.deviceState,
+                    }),
                     details: 'txs',
                     index,
                     pageSize: getTxsPerPage(configNetwork.networkType),

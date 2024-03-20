@@ -37,6 +37,7 @@ export type DiscoveryItem = {
     path: string;
     unlockPath?: Account['unlockPath'];
     coin: Account['symbol'];
+    identity?: string;
     details?: 'basic' | 'tokens' | 'tokenBalances' | 'txids' | 'txs';
     pageSize?: number;
     suppressBackupWarning?: boolean;

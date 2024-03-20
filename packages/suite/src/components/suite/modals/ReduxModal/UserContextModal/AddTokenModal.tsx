@@ -7,7 +7,7 @@ import { addToken } from 'src/actions/wallet/tokenActions';
 import { Modal } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { isAddressValid } from '@suite-common/wallet-utils';
+import { tryGetAccountIdentity, isAddressValid } from '@suite-common/wallet-utils';
 import { Account } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
@@ -41,6 +41,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             setIsFetching(true);
             const response = await TrezorConnect.getAccountInfo({
                 coin: acc.symbol,
+                identity: tryGetAccountIdentity(acc),
                 descriptor: acc.descriptor,
                 details: 'tokenBalances',
                 contractFilter: contractAddress,

@@ -3,8 +3,14 @@ import type {
     CustomBackend,
     BlockchainNetworks,
     BackendSettings,
+    Account,
 } from '@suite-common/wallet-types';
-import { TREZOR_CONNECT_BACKENDS, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
+import {
+    TREZOR_CONNECT_BACKENDS,
+    BackendType,
+    NetworkSymbol,
+    getNetworkType,
+} from '@suite-common/wallet-config';
 
 export const getDefaultBackendType = (coin: NetworkSymbol) => {
     if (coin === 'ada' || coin === 'tada') {
@@ -52,3 +58,10 @@ export const isTrezorConnectBackendType = (type?: BackendType) => {
 
     return !!TREZOR_CONNECT_BACKENDS.find(b => b === type);
 };
+
+export const shouldUseIdentities = (symbol: NetworkSymbol) => getNetworkType(symbol) === 'ethereum';
+
+export const getAccountIdentity = (account: Pick<Account, 'deviceState'>) => account.deviceState;
+
+export const tryGetAccountIdentity = (account: Pick<Account, 'networkType' | 'deviceState'>) =>
+    account.networkType === 'ethereum' ? getAccountIdentity(account) : undefined;

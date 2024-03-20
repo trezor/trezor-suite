@@ -1,6 +1,6 @@
 import { NotificationCard, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 import { useBackendReconnection } from 'src/hooks/settings/backends';
 
@@ -50,12 +50,13 @@ export const BackendDisconnected = () => {
 
     const {
         network: { symbol },
-        account: { deviceState: identity },
+        account,
     } = selectedAccount;
 
+    const identity = tryGetAccountIdentity(account);
+
     const chain =
-        (symbol === 'eth' ? blockchain[symbol]?.identityConnections?.[identity] : undefined) ??
-        blockchain[symbol];
+        (identity && blockchain[symbol]?.identityConnections?.[identity]) ?? blockchain[symbol];
 
     if (!chain || chain.connected) return null;
 
