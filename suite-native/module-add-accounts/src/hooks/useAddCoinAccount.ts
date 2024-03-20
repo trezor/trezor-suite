@@ -210,7 +210,7 @@ export const useAddCoinAccount = () => {
         });
 
         // Do not allow adding more than 10 accounts of the same type
-        if (currentAccountTypeAccounts.length > LIMIT) {
+        if (currentAccountTypeAccounts.length >= LIMIT) {
             showTooManyAccountsAlert();
 
             return false;
@@ -248,20 +248,26 @@ export const useAddCoinAccount = () => {
         accountType: AccountType;
         accountIndex: number;
     }) => {
-        if (flowType === 'receive') {
-            navigation.replace(RootStackRoutes.ReceiveModal, {
-                networkSymbol,
-                accountType,
-                accountIndex,
-                closeActionType: 'close',
-            });
-        } else {
-            navigation.replace(RootStackRoutes.AccountDetail, {
-                networkSymbol,
-                accountType,
-                accountIndex,
-                closeActionType: 'close',
-            });
+        switch (flowType) {
+            case 'accounts':
+                navigation.replace(RootStackRoutes.AccountDetail, {
+                    networkSymbol,
+                    accountType,
+                    accountIndex,
+                    closeActionType: 'close',
+                });
+                break;
+
+            case 'home':
+            case 'receive':
+                navigation.replace(RootStackRoutes.ReceiveModal, {
+                    networkSymbol,
+                    accountType,
+                    accountIndex,
+                    closeActionType: 'close',
+                });
+
+                break;
         }
     };
 
@@ -313,6 +319,13 @@ export const useAddCoinAccount = () => {
         ).unwrap();
 
         if (!account) {
+            let screen = 'accounts';
+            if (flowType === 'home') {
+                screen = AppTabsRoutes.HomeStack;
+            } else if (flowType === 'receive') {
+                screen = AppTabsRoutes.ReceiveStack;
+            }
+
             showGeneralErrorAlert();
             navigation.dispatch(
                 CommonActions.reset({
@@ -321,10 +334,7 @@ export const useAddCoinAccount = () => {
                         {
                             name: RootStackRoutes.AppTabs,
                             params: {
-                                screen:
-                                    flowType === 'accounts'
-                                        ? AppTabsRoutes.AccountsStack
-                                        : AppTabsRoutes.ReceiveStack,
+                                screen,
                             },
                         },
                     ],

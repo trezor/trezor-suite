@@ -5,8 +5,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useTranslate } from '@suite-native/intl';
 import {
     AddCoinAccountStackRoutes,
-    AppTabsRoutes,
-    ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -30,17 +28,11 @@ export const EmptyConnectedDeviceState = () => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
 
-    const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.ReceiveStack,
-            params: {
-                screen: ReceiveStackRoutes.ReceiveAccounts,
-            },
-        });
+    const handleAddAccount = () => {
         navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
             screen: AddCoinAccountStackRoutes.AddCoinAccount,
             params: {
-                flowType: 'receive',
+                flowType: 'home',
             },
         });
     };
@@ -55,7 +47,7 @@ export const EmptyConnectedDeviceState = () => {
                     title={translate('moduleHome.emptyState.device.title')}
                     subtitle={translate('moduleHome.emptyState.device.subtitle')}
                 />
-                <Button size="large" onPress={handleReceive}>
+                <Button size="large" onPress={handleAddAccount}>
                     {translate('moduleHome.emptyState.device.button')}
                 </Button>
             </VStack>
