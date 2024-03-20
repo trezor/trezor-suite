@@ -31,12 +31,14 @@ export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
 type StakeTxBaseArgs = {
     from: string;
     symbol: NetworkSymbol;
+    identity?: string;
 };
 
 const stake = async ({
     from,
     amount,
     symbol,
+    identity,
 }: StakeTxBaseArgs & {
     amount: string;
 }) => {
@@ -55,6 +57,7 @@ const stake = async ({
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: symbol,
+            identity,
             request: {
                 blocks: [2],
                 specific: {
@@ -86,6 +89,7 @@ const stake = async ({
 const unstake = async ({
     from,
     amount,
+    identity,
     interchanges,
     symbol,
 }: StakeTxBaseArgs & {
@@ -95,6 +99,7 @@ const unstake = async ({
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: symbol,
+            identity,
             details: 'tokenBalances',
             descriptor: from,
         });
@@ -130,6 +135,7 @@ const unstake = async ({
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: symbol,
+            identity,
             request: {
                 blocks: [2],
                 specific: {
@@ -157,10 +163,11 @@ const unstake = async ({
     }
 };
 
-const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
+const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs) => {
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: symbol,
+            identity,
             details: 'tokenBalances',
             descriptor: from,
         });
@@ -190,6 +197,7 @@ const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: symbol,
+            identity,
             request: {
                 blocks: [2],
                 specific: {
@@ -273,6 +281,7 @@ const transformTx = (
 
 interface PrepareStakeEthTxParams {
     symbol: NetworkSymbol;
+    identity?: string;
     from: string;
     amount: string;
     gasPrice: string;
@@ -296,12 +305,14 @@ export const prepareStakeEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    identity,
 }: PrepareStakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await stake({
             from,
             amount,
             symbol,
+            identity,
         });
         const transformedTx = transformTx(tx, gasPrice, nonce, chainId);
 
@@ -330,12 +341,14 @@ export const prepareUnstakeEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    identity,
     interchanges = 0,
 }: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await unstake({
             from,
             amount,
+            identity,
             interchanges,
             symbol,
         });
@@ -359,13 +372,14 @@ interface PrepareClaimEthTxParams extends Omit<PrepareStakeEthTxParams, 'amount'
 
 export const prepareClaimEthTx = async ({
     symbol,
+    identity,
     from,
     gasPrice,
     nonce,
     chainId,
 }: PrepareClaimEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await claimWithdrawRequest({ from, symbol });
+        const tx = await claimWithdrawRequest({ from, symbol, identity });
         const transformedTx = transformTx(tx, gasPrice, nonce, chainId);
 
         return {
@@ -387,6 +401,7 @@ interface GetStakeTxGasLimitParams {
     from: string;
     amount: string;
     symbol: NetworkSymbol;
+    identity?: string;
 }
 
 export type GetStakeTxGasLimitResponse =
@@ -404,6 +419,7 @@ export const getStakeTxGasLimit = async ({
     from,
     amount,
     symbol,
+    identity,
 }: GetStakeTxGasLimitParams): Promise<GetStakeTxGasLimitResponse> => {
     const genericError: PrecomposedLevels = {
         normal: {
@@ -425,7 +441,7 @@ export const getStakeTxGasLimit = async ({
 
         let txData;
         if (ethereumStakeType === 'stake') {
-            txData = await stake({ from, amount, symbol });
+            txData = await stake({ from, amount, symbol, identity });
         }
         if (ethereumStakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.
@@ -434,10 +450,11 @@ export const getStakeTxGasLimit = async ({
                 amount,
                 interchanges: 0,
                 symbol,
+                identity,
             });
         }
         if (ethereumStakeType === 'claim') {
-            txData = await claimWithdrawRequest({ from, symbol });
+            txData = await claimWithdrawRequest({ from, symbol, identity });
         }
 
         if (!txData) {
