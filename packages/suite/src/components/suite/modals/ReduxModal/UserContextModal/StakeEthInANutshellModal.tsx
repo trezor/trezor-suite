@@ -87,7 +87,10 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                         <Icon icon={icon} color={theme.iconPrimaryDefault} />
 
                         <GreyP>
-                            <Translation id={translationId} values={{ symbol: account?.symbol }} />
+                            <Translation
+                                id={translationId}
+                                values={{ symbol: account?.symbol.toUpperCase() }}
+                            />
                         </GreyP>
                     </Flex>
                 ))}

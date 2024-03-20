@@ -99,7 +99,7 @@ export const EmptyStakingCard = () => {
                     <StyledP>
                         <Translation
                             id="TR_STAKE_STAKING_IS"
-                            values={{ symbol: account?.symbol }}
+                            values={{ symbol: account?.symbol.toUpperCase() }}
                         />
                     </StyledP>
                 </Header>
