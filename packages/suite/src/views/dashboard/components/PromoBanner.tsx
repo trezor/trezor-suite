@@ -146,10 +146,12 @@ const StoreBadge = ({
     shownQRState: [showQR, setShowQr],
 }: StoreBadgeProps) => {
     const { isMobileLayout } = useLayoutSize();
+    const [isTooltipOpen, setIsTooltipOpen] = useState(false);
     const currentTheme = useSelector(state => state.suite.settings.theme.variant);
 
     return (
         <StyledTooltip
+            isOpen={isTooltipOpen}
             disabled={isMobileLayout}
             content={
                 <div>
@@ -161,23 +163,32 @@ const StoreBadge = ({
                     <QR value={url} />
                 </div>
             }
-            onShow={() => setShowQr(type)}
-            onHide={() => setShowQr(undefined)}
         >
-            <TrezorLink
-                href={url}
-                variant="nostyle"
-                onClick={() =>
-                    analytics.report({
-                        type: EventType.GetMobileApp,
-                        payload: {
-                            platform: analyticsPayload,
-                        },
-                    })
-                }
+            <span
+                onMouseEnter={() => {
+                    setIsTooltipOpen(true);
+                    setShowQr(type);
+                }}
+                onMouseLeave={() => {
+                    setIsTooltipOpen(false);
+                    setShowQr(undefined);
+                }}
             >
-                <Badge image={`${image}_BADGE`} height={35} $isHighlighted={showQR === type} />
-            </TrezorLink>
+                <TrezorLink
+                    href={url}
+                    variant="nostyle"
+                    onClick={() =>
+                        analytics.report({
+                            type: EventType.GetMobileApp,
+                            payload: {
+                                platform: analyticsPayload,
+                            },
+                        })
+                    }
+                >
+                    <Badge image={`${image}_BADGE`} height={35} $isHighlighted={showQR === type} />
+                </TrezorLink>
+            </span>
         </StyledTooltip>
     );
 };

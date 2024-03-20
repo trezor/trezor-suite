@@ -3,10 +3,12 @@ import styled, { css, useTheme } from 'styled-components';
 import { Icon, IconProps } from '../../assets/Icon/Icon';
 import { TypographyStyle, spacings, typography, typographyStylesBase } from '@trezor/theme';
 
-const A = styled.a<{
+type AProps = {
     $type?: TypographyStyle;
     $variant?: 'default' | 'nostyle' | 'underline';
-}>`
+};
+
+const A = styled.a<AProps>`
     ${({ $type }) => ($type ? typography[$type] : typography.body)}
     text-decoration: none;
     cursor: pointer;
