@@ -11,6 +11,8 @@ import {
     getCustomBackends,
     getNetwork,
     isTrezorConnectBackendType,
+    shouldUseIdentities,
+    getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import TrezorConnect, {
     BlockchainBlock,
@@ -18,7 +20,7 @@ import TrezorConnect, {
     BlockchainNotification,
     FeeLevel,
 } from '@trezor/connect';
-import { arrayDistinct } from '@trezor/utils';
+import { arrayDistinct, arrayToDictionary } from '@trezor/utils';
 import type { Account, CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { Timeout } from '@trezor/type-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -218,10 +220,13 @@ export const subscribeBlockchainThunk = createThunk(
         ).filter(a => isTrezorConnectBackendType(a.backendType)); // do not subscribe accounts with unsupported backend type
         if (!accountsToSubscribe.length) return;
 
-        return TrezorConnect.blockchainSubscribe({
-            accounts: accountsToSubscribe,
-            coin: symbol,
-        });
+        const paramsArray = shouldUseIdentities(symbol)
+            ? Object.entries(arrayToDictionary(accountsToSubscribe, getAccountIdentity, true)).map(
+                  ([identity, accounts]) => ({ accounts, coin: symbol, identity }),
+              )
+            : [{ accounts: accountsToSubscribe, coin: symbol }];
+
+        return Promise.all(paramsArray.map(params => TrezorConnect.blockchainSubscribe(params)));
     },
 );
 
@@ -231,25 +236,46 @@ export const unsubscribeBlockchainThunk = createThunk(
     (removedAccounts: Account[], { getState }) => {
         // collect unique symbols
         const symbols = removedAccounts.map(({ symbol }) => symbol).filter(arrayDistinct);
-
-        const accounts = selectAccounts(getState());
-        const promises = symbols.map(symbol => {
-            const accountsToSubscribe = findAccountsByNetwork(symbol, accounts).filter(a =>
+        const allAccounts = selectAccounts(getState());
+        const paramsArray = symbols.flatMap<{
+            coin: NetworkSymbol;
+            identity?: string;
+            accounts: Account[];
+        }>(symbol => {
+            const accountsToSubscribe = findAccountsByNetwork(symbol, allAccounts).filter(a =>
                 isTrezorConnectBackendType(a.backendType),
             ); // do not unsubscribe accounts with unsupported backend type
-            if (accountsToSubscribe.length) {
-                // there are some accounts left, update subscription
-                return TrezorConnect.blockchainSubscribe({
-                    accounts: accountsToSubscribe,
-                    coin: symbol,
-                });
-            }
 
-            // there are no accounts left for this coin, disconnect backend
-            return TrezorConnect.blockchainDisconnect({ coin: symbol });
+            if (shouldUseIdentities(symbol)) {
+                const accountIdentities = arrayToDictionary(
+                    accountsToSubscribe,
+                    getAccountIdentity,
+                    true,
+                );
+
+                return removedAccounts
+                    .filter(acc => acc.symbol === symbol)
+                    .map(getAccountIdentity)
+                    .filter(arrayDistinct)
+                    .map(identity => ({
+                        coin: symbol,
+                        identity,
+                        accounts: accountIdentities[identity] ?? [],
+                    }));
+            } else {
+                return [{ coin: symbol, accounts: accountsToSubscribe }];
+            }
         });
 
-        return Promise.all(promises as Promise<any>[]);
+        return Promise.all(
+            paramsArray.map(({ accounts, ...rest }) =>
+                accounts.length
+                    ? // there are some accounts left, update subscription
+                      TrezorConnect.blockchainSubscribe({ ...rest, accounts })
+                    : // there are no accounts left for this coin, disconnect backend
+                      TrezorConnect.blockchainDisconnect(rest),
+            ),
+        );
     },
 );
 

@@ -6,6 +6,7 @@ import {
     findAccountDevice,
     formatNetworkAmount,
     formatTokenAmount,
+    tryGetAccountIdentity,
     getAccountTransactions,
     getAreSatoshisUsed,
     isAccountOutdated,
@@ -53,6 +54,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     const promises = customTokens.map(t =>
         TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'tokenBalances',
             contractFilter: t.contract,
@@ -87,6 +89,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
         // basic check returns only small amount of data without full transaction history
         const basic = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'basic',
             suppressBackupWarning: true,
@@ -107,6 +110,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         const response = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
             page: 1, // useful for every network except ripple

@@ -78,7 +78,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     if (props.sendRaw) {
         return (
             <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
-                <Raw network={selectedAccount.network} />
+                <Raw account={selectedAccount.account} />
             </WalletLayout>
         );
     }
