@@ -234,7 +234,7 @@ export class Blockchain {
         return this.link.estimateFee(request);
     }
 
-    async subscribe(accounts?: SubscriptionAccountInfo[]) {
+    subscribeBlocks() {
         // set block listener if it wasn't set before
         if (this.link.listenerCount('block') === 0) {
             this.link.on('block', block => {
@@ -247,6 +247,10 @@ export class Blockchain {
             });
         }
 
+        return this.link.subscribe({ type: 'block' });
+    }
+
+    subscribeAccounts(accounts: SubscriptionAccountInfo[]) {
         // set notification listener if it wasn't set before
         if (this.link.listenerCount('notification') === 0) {
             this.link.on('notification', notification => {
@@ -257,11 +261,6 @@ export class Blockchain {
                     }),
                 );
             });
-        }
-
-        const blockSubscription = await this.link.subscribe({ type: 'block' });
-        if (!accounts) {
-            return blockSubscription;
         }
 
         return this.link.subscribe({
@@ -288,18 +287,13 @@ export class Blockchain {
         });
     }
 
-    async unsubscribe(accounts?: SubscriptionAccountInfo[]) {
-        if (!accounts) {
-            this.link.removeAllListeners('block');
-            this.link.removeAllListeners('fiatRates');
-            this.link.removeAllListeners('notification');
+    unsubscribeBlocks() {
+        this.link.removeAllListeners('block');
 
-            // remove all subscriptions
-            await this.link.unsubscribe({ type: 'fiatRates' });
+        return this.link.unsubscribe({ type: 'block' });
+    }
 
-            return this.link.unsubscribe({ type: 'block' });
-        }
-
+    unsubscribeAccounts(accounts: SubscriptionAccountInfo[]) {
         // unsubscribe only requested accounts
         return this.link.unsubscribe({ type: 'accounts', accounts });
     }
@@ -308,6 +302,13 @@ export class Blockchain {
         this.link.removeAllListeners('fiatRates');
 
         return this.link.unsubscribe({ type: 'fiatRates' });
+    }
+
+    async unsubscribeAll() {
+        this.link.removeAllListeners('notification');
+        await this.unsubscribeFiatRates();
+
+        return this.unsubscribeBlocks();
     }
 
     pushTransaction(tx: string) {

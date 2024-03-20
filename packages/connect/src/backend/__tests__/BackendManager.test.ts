@@ -66,7 +66,7 @@ describe('backend/BackendManager', () => {
     it('reconnect backend automatically when subscribed', async () => {
         const backend = await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
-        const { subscribed } = await backend.subscribe();
+        const { subscribed } = await backend.subscribeBlocks();
         expect(subscribed).toBe(true);
 
         await delay(1000);
@@ -83,7 +83,7 @@ describe('backend/BackendManager', () => {
     it('reconnect backend infinitely when cannot reconnect', async () => {
         const backend = await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
-        const { subscribed } = await backend.subscribe();
+        const { subscribed } = await backend.subscribeBlocks();
         expect(subscribed).toBe(true);
 
         await delay(1000);
