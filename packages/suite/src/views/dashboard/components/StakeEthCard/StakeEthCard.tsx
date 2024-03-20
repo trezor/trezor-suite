@@ -4,11 +4,10 @@ import { variables, H3, Icon, Card } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature, Divider } from 'src/components/suite';
 import { Footer } from './components/Footer';
-import { useDiscovery, useEverstakePoolStats, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useEverstakePoolStats } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { spacingsPx, borders } from '@trezor/theme';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const Flex = styled.div`
     display: flex;
@@ -58,16 +57,18 @@ const FlexRowChild = styled.div`
     flex: 1 0 200px;
 `;
 
+const bannerSymbol = 'eth';
+
 export const StakeEthCard = () => {
     const theme = useTheme();
-    const { ethApy } = useEverstakePoolStats('eth');
+    const { ethApy } = useEverstakePoolStats(bannerSymbol);
 
     const { discovery } = useDiscovery();
-    const account = useSelector(selectSelectedAccount);
     const { accounts } = useAccounts(discovery);
     const ethAccountWithSufficientBalanceForStaking = accounts.find(
         ({ symbol, formattedBalance }) =>
-            symbol === 'eth' && MIN_ETH_BALANCE_FOR_STAKING.isLessThanOrEqualTo(formattedBalance),
+            symbol === bannerSymbol &&
+            MIN_ETH_BALANCE_FOR_STAKING.isLessThanOrEqualTo(formattedBalance),
     );
     const isSufficientEthForStaking = Boolean(
         ethAccountWithSufficientBalanceForStaking?.formattedBalance,
@@ -133,7 +134,7 @@ export const StakeEthCard = () => {
                         <CardTitle>
                             <Translation
                                 id="TR_STAKE_ETH_CARD_TITLE"
-                                values={{ symbol: account?.symbol }}
+                                values={{ symbol: bannerSymbol.toUpperCase() }}
                             />
                             <br />
                             <Translation id="TR_STAKE_ETH_EARN_REPEAT" />

@@ -107,7 +107,7 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
                                     {chunks}
                                 </TrezorLink>
                             ),
-                            symbol: account?.symbol,
+                            symbol: account?.symbol.toUpperCase(),
                         }}
                     />
                 </Flex>

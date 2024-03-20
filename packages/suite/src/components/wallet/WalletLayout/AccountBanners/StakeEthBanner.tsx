@@ -84,7 +84,10 @@ export const StakeEthBanner = () => {
                         <Paragraph>
                             <Translation
                                 id="TR_STAKE_ANY_AMOUNT_ETH"
-                                values={{ apyPercent: ethApy, symbol: account?.symbol }}
+                                values={{
+                                    apyPercent: ethApy,
+                                    symbol: account?.symbol.toUpperCase(),
+                                }}
                             />
                         </Paragraph>
                     </Text>
