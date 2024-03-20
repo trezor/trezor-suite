@@ -6,8 +6,8 @@ import { ExtractByEventType, Requests } from '../../support/types';
 
 let requests: Requests;
 
-const windowWidth = 1080;
-const windowHeight = 1440;
+const windowWidth = 1440;
+const windowHeight = 2560;
 
 describe('Analytics Events', () => {
     beforeEach(() => {
