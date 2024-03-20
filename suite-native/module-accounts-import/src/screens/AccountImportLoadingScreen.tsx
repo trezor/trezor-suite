@@ -10,8 +10,9 @@ import {
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { PORTFOLIO_TRACKER_DEVICE_STATE, updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
@@ -67,6 +68,9 @@ export const AccountImportLoadingScreen = ({
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({
                     coin: networkSymbol,
+                    identity: shouldUseIdentities(networkSymbol)
+                        ? getAccountIdentity({ deviceState: PORTFOLIO_TRACKER_DEVICE_STATE })
+                        : undefined,
                     descriptor: xpubAddress,
                     details: 'txs',
                     suppressBackupWarning: true,
