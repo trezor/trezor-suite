@@ -158,7 +158,7 @@ export class TrezordNode {
             ]);
 
             app.post('/post/:session', [
-                parseBodyJSON,
+                parseBodyText,
                 (req, res) => {
                     this.api
                         .send({
