@@ -2,7 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import url from 'url';
 
-import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-utils';
+import {
+    HttpServer,
+    allowOrigins,
+    parseBodyJSON,
+    parseBodyText,
+    Handler,
+} from '@trezor/node-utils';
 import { Descriptor } from '@trezor/transport/src/types';
 import { Log, arrayPartition } from '@trezor/utils';
 
@@ -76,10 +82,34 @@ export class TrezordNode {
             });
 
             app.use([
-                (_req, res, next) => {
-                    // todo: limit to whitelisted domains
-                    res.setHeader('Access-Control-Allow-Origin', '*');
-                    next(_req, res);
+                (req, res, next, context) => {
+                    // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
+                    if (
+                        !req.headers.origin &&
+                        req.headers.host &&
+                        [`127.0.0.1:${this.port}`, `localhost:${this.port}`].includes(
+                            req.headers.host,
+                        )
+                    ) {
+                        next(req, res);
+                    } else {
+                        allowOrigins(['https://sldev.cz', 'https://trezor.io', 'http://localhost'])(
+                            req,
+                            res,
+                            next,
+                            context,
+                        );
+                    }
+                },
+            ]);
+
+            // origin was checked in previous app.use. if it didn't not satisfy the check, it did not move on to this handler
+            app.use([
+                (req, res, next) => {
+                    if (req.headers.origin) {
+                        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+                    }
+                    next(req, res);
                 },
             ]);
 
