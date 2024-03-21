@@ -7,8 +7,12 @@ permissions:
 on:
   pull_request:
     paths:
+      - "packages/connect-explorer-theme/**"
       - "packages/connect-explorer-nextra/**"
       - ".github/workflows/connect-nextra-dev-release.yml"
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
@@ -66,6 +70,10 @@ jobs:
         run: |
           yarn workspace @trezor/connect-webextension build
 
+      - name: Build connect-explorer-theme
+        run: |
+          yarn workspace @trezor/connect-explorer-theme build:all
+
       - name: Build connect-explorer
         env:
           ASSET_PREFIX: /connect-nextra/${{ steps.extract_branch.outputs.branch }}
@@ -76,10 +84,6 @@ jobs:
           CONNECT_EXPLORER_BASE_PATH: /connect-nextra/${{ steps.extract_branch.outputs.branch }}
         run: |
           yarn workspace @trezor/connect-explorer-nextra build
-
-      - name: Build connect-explorer-webextension
-        run: |
-          yarn workspace @trezor/connect-explorer-nextra build:webextension
 
       - name: Upload connect-explorer-nextra to dev.suite.sldev.cz
         env:
@@ -92,6 +96,10 @@ jobs:
           cp -R ./packages/connect-web/build/* tmp_build_directory/
           cp -R ./packages/connect-explorer-nextra/build/* tmp_build_directory/
           aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
+
+      - name: Build connect-explorer-webextension
+        run: |
+          yarn workspace @trezor/connect-explorer-nextra build:webextension
 
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
