@@ -237,7 +237,7 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
             accountType,
         );
 
-        const index = accounts.length + 1;
+        const index = accounts.length;
 
         if (index > LIMIT) {
             return undefined;
