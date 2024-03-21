@@ -122,15 +122,9 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                 return;
             }
 
-            // calculate new Amount, Fiat input times currency rate
-            // NOTE: get fresh values (currencyValue may be outdated)
-            const fiatCurrency = currencyValue.value;
-
             const decimals = token ? token.decimals : network.decimals;
 
-            const amount = fiatRate?.rate
-                ? fromFiatCurrency(value, fiatCurrency, fiatRate, decimals, false)
-                : null;
+            const amount = fiatRate?.rate ? fromFiatCurrency(value, decimals, fiatRate.rate) : null;
 
             const formattedAmount = shouldSendInSats
                 ? amountToSatoshi(amount || '0', decimals)
@@ -148,7 +142,6 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
         [
             isSetMaxActive,
             error,
-            currencyValue.value,
             token,
             network.decimals,
             fiatRate,

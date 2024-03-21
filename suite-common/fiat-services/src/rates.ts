@@ -1,6 +1,6 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import type { TickerId, LastWeekRates, Timestamp } from '@suite-common/wallet-types';
+import type { TickerId, HistoricRates, Timestamp } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import TrezorConnect from '@trezor/connect';
 import { scheduleAction } from '@trezor/utils';
@@ -11,13 +11,13 @@ import * as blockbookService from './blockbook';
 
 const CONNECT_FETCH_TIMEOUT = 10_000;
 
-type fiatRatesParams = {
+type FiatRatesParams = {
     ticker: TickerId;
     localCurrency: FiatCurrencyCode;
     isElectrumBackend: boolean;
 };
 
-type fiatRatesResult = {
+type FiatRatesResult = {
     rate: number | undefined;
     lastTickerTimestamp: Timestamp;
 };
@@ -44,7 +44,7 @@ export const fetchCurrentFiatRates = async ({
     ticker,
     localCurrency,
     isElectrumBackend,
-}: fiatRatesParams): Promise<fiatRatesResult | null> => {
+}: FiatRatesParams): Promise<FiatRatesResult | null> => {
     if (isBlockbookBasedNetwork(ticker.symbol)) {
         if (!isElectrumBackend) {
             const { success, payload } = await scheduleAction(
@@ -92,7 +92,7 @@ export const fetchLastWeekFiatRates = async ({
     ticker,
     localCurrency,
     isElectrumBackend,
-}: fiatRatesParams): Promise<fiatRatesResult | null> => {
+}: FiatRatesParams): Promise<FiatRatesResult | null> => {
     const weekAgoTimestamp = getUnixTime(subWeeks(new Date(), 1));
     const timestamps = [weekAgoTimestamp];
 
@@ -136,7 +136,7 @@ export const getFiatRatesForTimestamps = async (
     timestamps: number[],
     localCurrency: FiatCurrencyCode,
     isElectrumBackend: boolean,
-): Promise<LastWeekRates | null> => {
+): Promise<HistoricRates | null> => {
     if (isBlockbookBasedNetwork(ticker.symbol)) {
         if (!isElectrumBackend) {
             const { success, payload } = await getConnectFiatRatesForTimestamp(

@@ -72,7 +72,10 @@ export const TransactionDetailListItem = ({
             </Box>
             <Box style={applyStyle(valuesContainerStyle)}>
                 {tokenTransfer ? (
-                    <TokenTransferListItemValues tokenTransfer={tokenTransfer} />
+                    <TokenTransferListItemValues
+                        tokenTransfer={tokenTransfer}
+                        transaction={transaction}
+                    />
                 ) : (
                     <TransactionListItemValues accountKey={accountKey} transaction={transaction} />
                 )}

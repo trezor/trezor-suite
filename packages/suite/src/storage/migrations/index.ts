@@ -752,4 +752,13 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return metadata;
         });
     }
+
+    if (oldVersion < 44) {
+        await updateAll(transaction, 'txs', tx => {
+            // @ts-expect-error
+            delete tx.tx.rates;
+
+            return tx;
+        });
+    }
 };

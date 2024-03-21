@@ -58,14 +58,14 @@ Most straightforward usage is to just pass `amount` and `symbol`, if you need to
 <FiatValue amount={amount} symbol={assetSymbol} tokenAddress={tokenTransfer?.address} />
 ```
 
-For converting to fiat amount using rates from custom source use `useCustomSource` in combination with `source` property:
+For converting to fiat amount using rates from history use `useHistoricRate` in combination with `historicRate` property:
 
 ```jsx
 <FiatValue
     amount={targetAmount}
     symbol={transaction.symbol}
-    source={transaction.rates}
-    useCustomSource
+    historicRate={historicRate}
+    useHistoricRate
 />
 ```
 

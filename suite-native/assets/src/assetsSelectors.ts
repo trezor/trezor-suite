@@ -67,8 +67,7 @@ export const selectDeviceAssetsWithBalances = memoize(
                 const fiatBalance =
                     toFiatCurrency(
                         deviceBalancesPerNetwork[networkSymbol]?.toString() ?? '0',
-                        fiatCurrencyCode,
-                        { [fiatCurrencyCode]: fiatRate?.rate },
+                        fiatRate?.rate,
                     ) ?? '0';
 
                 const network = networks[networkSymbol];

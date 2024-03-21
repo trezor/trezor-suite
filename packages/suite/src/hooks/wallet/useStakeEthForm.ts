@@ -199,9 +199,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             setIsAdviceForWithdrawalWarningShown(false);
 
             if (currentRate) {
-                const fiatValue = toFiatCurrency(amount, localCurrency, {
-                    [localCurrency]: currentRate?.rate,
-                });
+                const fiatValue = toFiatCurrency(amount, currentRate?.rate);
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             }
 
@@ -211,14 +209,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
             shouldShowAdvice(amount, account.formattedBalance);
         },
-        [
-            account.formattedBalance,
-            composeRequest,
-            currentRate,
-            localCurrency,
-            setValue,
-            shouldShowAdvice,
-        ],
+        [account.formattedBalance, composeRequest, currentRate, setValue, shouldShowAdvice],
     );
 
     const onFiatAmountChange = useCallback(
@@ -228,14 +219,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             setIsAdviceForWithdrawalWarningShown(false);
             if (!currentRate) return;
 
-            const cryptoValue = fromFiatCurrency(
-                amount,
-                localCurrency,
-                {
-                    [localCurrency]: currentRate?.rate,
-                },
-                network.decimals,
-            );
+            const cryptoValue = fromFiatCurrency(amount, network.decimals, currentRate?.rate);
             setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
             setValue(OUTPUT_AMOUNT, cryptoValue || '', {
                 shouldDirty: true,
@@ -248,7 +232,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
             account.formattedBalance,
             composeRequest,
             currentRate,
-            localCurrency,
             network.decimals,
             setValue,
             shouldShowAdvice,
@@ -310,11 +293,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
                 setValue(OUTPUT_AMOUNT, max, { shouldValidate: true, shouldDirty: true });
                 clearErrors(CRYPTO_INPUT);
 
-                const fiatValue = currentRate
-                    ? toFiatCurrency(max, localCurrency, {
-                          [localCurrency]: currentRate?.rate,
-                      })
-                    : '';
+                const fiatValue = currentRate ? toFiatCurrency(max, currentRate?.rate) : '';
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true, shouldDirty: true });
             }
 

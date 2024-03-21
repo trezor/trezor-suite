@@ -1,10 +1,21 @@
 import { testMocks } from '@suite-common/test-utils';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { AccountTransaction } from '@trezor/connect';
+import { TransferType } from '@trezor/blockchain-link-types';
 
 import { TXS } from './transactions';
 
 const { getWalletAccount } = testMocks;
+
+export const token = {
+    type: 'sent' as TransferType,
+    from: 'A',
+    to: 'B',
+    name: 'Token name',
+    symbol: 'TKNNME',
+    amount: '1',
+    decimals: 0,
+};
 
 export const analyzeTransactions = [
     {

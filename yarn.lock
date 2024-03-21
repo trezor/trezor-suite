@@ -8642,6 +8642,7 @@ __metadata:
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
+    "@trezor/blockchain-link-types": "workspace:^"
     "@trezor/connect": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -10100,7 +10101,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/blockchain-link-types@workspace:*, @trezor/blockchain-link-types@workspace:packages/blockchain-link-types":
+"@trezor/blockchain-link-types@workspace:*, @trezor/blockchain-link-types@workspace:^, @trezor/blockchain-link-types@workspace:packages/blockchain-link-types":
   version: 0.0.0-use.local
   resolution: "@trezor/blockchain-link-types@workspace:packages/blockchain-link-types"
   dependencies:

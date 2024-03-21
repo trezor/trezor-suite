@@ -17,6 +17,7 @@ import {
     parseTransactionMonthKey,
     MonthKey,
     generateTransactionMonthKey,
+    groupTokensTransactionsByContractAddress,
 } from '../transactionUtils';
 
 const { getWalletTransaction } = testMocks;
@@ -123,6 +124,74 @@ describe('transaction utils', () => {
             { type: 'single-tx', tx: f8 },
             { type: 'joint-batch', rounds: [j9, j10, j11] },
         ]);
+    });
+
+    it('groupTokensTransactionsByContractAddress', () => {
+        const groupedTokensTxs = groupTokensTransactionsByContractAddress([
+            getWalletTransaction({ symbol: 'eth' }),
+            getWalletTransaction({ symbol: 'eth' }),
+            getWalletTransaction({ symbol: 'eth' }),
+            getWalletTransaction({
+                symbol: 'eth',
+                tokens: [
+                    {
+                        ...fixtures.token,
+                        contract: '0x01',
+                    },
+                ],
+            }),
+            getWalletTransaction({
+                symbol: 'eth',
+                tokens: [
+                    {
+                        ...fixtures.token,
+                        contract: '0x02',
+                    },
+                ],
+            }),
+            getWalletTransaction({
+                symbol: 'eth',
+                tokens: [
+                    {
+                        ...fixtures.token,
+                        contract: '0x02',
+                    },
+                ],
+            }),
+        ]);
+        expect(groupedTokensTxs).toEqual({
+            '0x01': [
+                getWalletTransaction({
+                    symbol: 'eth',
+                    tokens: [
+                        {
+                            ...fixtures.token,
+                            contract: '0x01',
+                        },
+                    ],
+                }),
+            ],
+            '0x02': [
+                getWalletTransaction({
+                    symbol: 'eth',
+                    tokens: [
+                        {
+                            ...fixtures.token,
+                            contract: '0x02',
+                        },
+                    ],
+                }),
+                getWalletTransaction({
+                    symbol: 'eth',
+                    tokens: [
+                        {
+                            ...fixtures.token,
+                            contract: '0x02',
+                        },
+                    ],
+                }),
+            ],
+        });
     });
 
     fixtures.analyzeTransactions.forEach(f => {

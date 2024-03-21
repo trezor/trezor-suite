@@ -8,7 +8,12 @@ import type {
     EstimateFeeParams,
     AccountInfoParams,
 } from './params';
-import type { AccountBalanceHistory, FiatRatesLegacy, TokenStandard, StakingPool } from './common';
+import type {
+    AccountBalanceHistory,
+    FiatRatesBySymbol,
+    TokenStandard,
+    StakingPool,
+} from './common';
 import type {
     Tx as BlockbookTx,
     Vin,
@@ -152,12 +157,12 @@ export interface AddressNotification {
 }
 
 export interface FiatRatesNotification {
-    rates: FiatRatesLegacy;
+    rates: FiatRatesBySymbol;
 }
 
 export interface TimestampedFiatRates {
     ts: number;
-    rates: FiatRatesLegacy;
+    rates: FiatRatesBySymbol;
 }
 
 export interface FiatRatesForTimestamp {

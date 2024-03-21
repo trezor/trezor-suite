@@ -2,7 +2,16 @@ import { useState, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Network, WalletAccountTransaction } from 'src/types/wallet';
 import { DayHeader } from './DayHeader';
-import { sumTransactions, sumTransactionsFiat } from '@suite-common/wallet-utils';
+import {
+    getFiatRateKey,
+    roundTimestampToNearestPastHour,
+    sumTransactions,
+    sumTransactionsFiat,
+} from '@suite-common/wallet-utils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { useSelector } from 'src/hooks/suite';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 const TransactionsGroupWrapper = styled.div`
     display: flex;
@@ -36,9 +45,24 @@ export const TransactionsGroup = ({
     ...rest
 }: TransactionsGroupProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const historicFiatRates = useSelector(selectHistoricFiatRates);
     const totalAmountPerDay = sumTransactions(transactions);
-    const totalFiatAmountPerDay = sumTransactionsFiat(transactions, localCurrency);
-    const isMissingFiatRates = transactions.some(tx => !tx.rates?.[localCurrency]);
+    const totalFiatAmountPerDay = sumTransactionsFiat(
+        transactions,
+        localCurrency,
+        historicFiatRates,
+    );
+    const isMissingFiatRates = transactions.some(tx => {
+        const fiatRateKey = getFiatRateKey(
+            tx.symbol,
+            localCurrency as FiatCurrencyCode,
+            tx.tokens[0]?.contract as TokenAddress,
+        );
+        const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+        const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp as Timestamp];
+
+        return !historicRate;
+    });
 
     return (
         <TransactionsGroupWrapper

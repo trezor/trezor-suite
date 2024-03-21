@@ -88,6 +88,7 @@ const renderTokenTransferItem = ({
     txid,
 }: RenderTokenTransferItemParams) => (
     <TokenTransferListItem
+        transaction={tokenTransfer.originalTransaction}
         tokenTransfer={tokenTransfer}
         txid={txid}
         accountKey={accountKey}

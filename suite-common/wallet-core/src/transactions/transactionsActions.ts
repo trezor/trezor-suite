@@ -13,20 +13,6 @@ const fetchError = createAction(
 const fetchSuccess = createAction(`${transactionsActionsPrefix}/fetchSuccess`);
 const fetchInit = createAction(`${transactionsActionsPrefix}/fetchInit`);
 
-type UpdateTransactionFiatRatePayload = Array<{
-    txid: string;
-    account: Account;
-    updateObject: Partial<WalletAccountTransaction>;
-    ts: number;
-}>;
-
-const updateTransactionFiatRate = createAction(
-    `${transactionsActionsPrefix}/updateTransactionFiatRate`,
-    (payload: UpdateTransactionFiatRatePayload) => ({
-        payload,
-    }),
-);
-
 const resetTransaction = createAction(
     `${transactionsActionsPrefix}/resetTransaction`,
     (payload: { account: Account }) => ({ payload }),
@@ -79,5 +65,4 @@ export const transactionsActions = {
     replaceTransaction,
     removeTransaction,
     resetTransaction,
-    updateTransactionFiatRate,
 } as const;

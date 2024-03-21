@@ -23,7 +23,7 @@ import {
     ReceiveInfo,
     TokenAddress,
     TxFinalCardano,
-    FiatRates,
+    RatesByKey,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -558,7 +558,7 @@ export const enhanceHistory = ({
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
-    rates: FiatRates | undefined,
+    rates: RatesByKey | undefined,
 ) => {
     const coinFiatRateKey = getFiatRateKey(
         account.symbol as NetworkSymbol,
@@ -570,7 +570,7 @@ export const getAccountFiatBalance = (
     let totalBalance = new BigNumber(0);
 
     // account fiat balance
-    const balance = toFiatCurrency(account.formattedBalance, localCurrency, coinFiatRate, 2, false);
+    const balance = toFiatCurrency(account.formattedBalance, coinFiatRate.rate, 2);
 
     // sum fiat value of all tokens
     account.tokens?.forEach(t => {
@@ -582,7 +582,7 @@ export const getAccountFiatBalance = (
 
         const tokenFiatRate = rates?.[tokenFiatRateKey];
         if (tokenFiatRate?.rate && t.balance) {
-            const tokenBalance = toFiatCurrency(t.balance, localCurrency, tokenFiatRate, 2, false);
+            const tokenBalance = toFiatCurrency(t.balance, tokenFiatRate.rate, 2);
             if (tokenBalance) {
                 totalBalance = totalBalance.plus(tokenBalance);
             }
@@ -597,7 +597,7 @@ export const getAccountFiatBalance = (
 export const getTotalFiatBalance = (
     deviceAccounts: Account[],
     localCurrency: string,
-    rates: FiatRates | undefined,
+    rates: RatesByKey | undefined,
 ) => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {

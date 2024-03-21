@@ -25,6 +25,7 @@
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:^",
         "@trezor/connect": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",

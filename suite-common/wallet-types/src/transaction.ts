@@ -15,7 +15,6 @@ import {
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { TranslationKey } from '@suite-common/intl-types';
 
-import { TimestampedRates } from './fiatRates';
 import { Account } from './account';
 
 export type { PrecomposedTransactionFinalCardano } from '@trezor/connect';
@@ -175,7 +174,6 @@ export interface WalletAccountTransaction extends AccountTransaction {
     deviceState: string;
     descriptor: string;
     symbol: NetworkSymbol;
-    rates?: TimestampedRates['rates'];
     rbfParams?: RbfTransactionParams;
     /**
      * prepending txs have deadline (blockHeight) when they should be removed from UI

@@ -13,6 +13,8 @@ type EthereumTokenToFiatAmountFormatterProps = {
     isDiscreetText?: boolean;
     decimals?: number;
     signValue?: SignValue;
+    historicRate?: number;
+    useHistoricRate?: boolean;
 } & FormatterProps<number | string> &
     TextProps;
 
@@ -24,6 +26,8 @@ export const EthereumTokenToFiatAmountFormatter = ({
     signValue,
     ellipsizeMode,
     numberOfLines,
+    historicRate,
+    useHistoricRate,
     ...rest
 }: EthereumTokenToFiatAmountFormatterProps) => {
     const { FiatAmountFormatter } = useFormatters();
@@ -32,6 +36,8 @@ export const EthereumTokenToFiatAmountFormatter = ({
         network: 'eth',
         tokenAddress: contract,
         tokenDecimals: decimals,
+        historicRate,
+        useHistoricRate,
     });
 
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? 0);

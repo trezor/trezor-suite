@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 44
+
+-   remove rates for all transactions since we are using selectors to get rates
+
 ## 43
 
 -   fixes bug cannot set properties of undefined (setting 'passwords') introduced by migration 41

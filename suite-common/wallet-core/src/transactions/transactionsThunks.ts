@@ -31,6 +31,7 @@ import { transactionsActionsPrefix, transactionsActions } from './transactionsAc
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -240,6 +241,7 @@ export const exportTransactionsThunk = createThunk(
         const { utils, selectors } = extra;
         // Get state of transactions
         const allTransactions = selectTransactions(getState());
+        const historicFiatRates = selectHistoricFiatRates(getState());
         const localCurrency = selectors.selectLocalCurrency(getState());
         const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
 
@@ -286,6 +288,7 @@ export const exportTransactionsThunk = createThunk(
                 localCurrency,
             },
             tokenDefinitions,
+            historicFiatRates,
         );
 
         // Save file

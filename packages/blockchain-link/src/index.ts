@@ -372,7 +372,7 @@ export type {
     AccountBalanceHistory,
     AnonymitySet,
     BlockchainSettings,
-    FiatRatesLegacy,
+    FiatRatesBySymbol,
     ServerInfo,
     SubscriptionAccountInfo,
     Target,

@@ -4,10 +4,12 @@ import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
 
 import { updateFiatRatesThunk } from './fiatRatesThunks';
 import { FiatRatesState } from './fiatRatesTypes';
+import { fiatRatesActions } from './fiatRatesActions';
 
 export const fiatRatesInitialState: FiatRatesState = {
     current: {},
     lastWeek: {},
+    historic: {},
 };
 
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
@@ -73,6 +75,15 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     ...currentRate,
                     isLoading: false,
                     error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
+                };
+            })
+            .addCase(fiatRatesActions.addFiatRatesForTimestamps, (state, action) => {
+                const { ticker, localCurrency, rates } = action.payload;
+                const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
+
+                state['historic'][fiatRateKey] = {
+                    ...state['historic'][fiatRateKey],
+                    ...rates.reduce((acc, rate) => ({ ...acc, [rate.timestamp]: rate.rate }), {}),
                 };
             });
     },

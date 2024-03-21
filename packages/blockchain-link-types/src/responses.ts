@@ -4,7 +4,7 @@ import type {
     ServerInfo,
     AccountInfo,
     Utxo,
-    FiatRatesLegacy,
+    FiatRatesBySymbol,
     Transaction,
     AccountBalanceHistory,
     ChannelMessage,
@@ -70,7 +70,7 @@ export interface GetCurrentFiatRates {
     type: typeof RESPONSES.GET_CURRENT_FIAT_RATES;
     payload: {
         ts: number;
-        rates: FiatRatesLegacy;
+        rates: FiatRatesBySymbol;
     };
 }
 
@@ -79,7 +79,7 @@ export interface GetFiatRatesForTimestamps {
     payload: {
         tickers: {
             ts: number;
-            rates: FiatRatesLegacy;
+            rates: FiatRatesBySymbol;
         }[];
     };
 }
@@ -135,7 +135,7 @@ export interface NotificationEvent {
 export interface FiatRatesEvent {
     type: 'fiatRates';
     payload: {
-        rates: FiatRatesLegacy;
+        rates: FiatRatesBySymbol;
     };
 }
 

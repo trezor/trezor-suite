@@ -9,6 +9,9 @@ import {
     ChainedTransactions,
     PrecomposedTransactionFinal,
     AccountKey,
+    TokenAddress,
+    RatesByTimestamps,
+    Timestamp,
 } from '@suite-common/wallet-types';
 import {
     AccountAddress,
@@ -21,7 +24,9 @@ import { arrayPartition } from '@trezor/utils';
 import { AccountLabels } from '@suite-common/metadata-types';
 
 import { formatAmount, formatNetworkAmount } from './accountUtils';
-import { toFiatCurrency } from './fiatConverterUtils';
+import { toFiatCurrency } from '../src/fiatConverterUtils';
+import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
@@ -191,47 +196,53 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 export const sumTransactionsFiat = (
     transactions: WalletAccountTransaction[],
     fiatCurrency: string,
+    historicFiatRates: RatesByTimestamps | undefined,
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
         const amount = formatNetworkAmount(tx.amount, tx.symbol);
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
+        const fiatRateKey = getFiatRateKey(
+            tx.symbol,
+            fiatCurrency as FiatCurrencyCode,
+            tx.tokens[0]?.contract as TokenAddress,
+        );
+        const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+        const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp as Timestamp];
+
         if (tx.type === 'self') {
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(
-                    toFiatCurrency(cardanoWithdrawal, fiatCurrency, tx.rates, -1) ?? 0,
+                    toFiatCurrency(cardanoWithdrawal, historicRate, -1) ?? 0,
                 );
             }
 
             const cardanoDeposit = formatCardanoDeposit(tx);
             if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(
-                    toFiatCurrency(cardanoDeposit, fiatCurrency, tx.rates, -1) ?? 0,
+                    toFiatCurrency(cardanoDeposit, historicRate, -1) ?? 0,
                 );
             }
         }
 
         // count in only if Inputs/Outputs includes my account (EVM does not need to)
         if (tx.targets.length && tx.type === 'sent') {
-            totalAmount = totalAmount.minus(
-                toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
-            );
+            totalAmount = totalAmount.minus(toFiatCurrency(amount, historicRate, -1) ?? 0);
         }
 
         if (tx.type === 'recv' || tx.type === 'joint') {
-            totalAmount = totalAmount.plus(toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0);
+            totalAmount = totalAmount.plus(toFiatCurrency(amount, historicRate, -1) ?? 0);
         }
 
         if (isTxFeePaid(tx)) {
-            totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
+            totalAmount = totalAmount.minus(toFiatCurrency(fee, historicRate, -1) ?? 0);
         }
 
         tx.internalTransfers.forEach(internalTx => {
             const amountInternal = formatNetworkAmount(internalTx.amount, tx.symbol);
-            const amountInternalFiat =
-                toFiatCurrency(amountInternal, fiatCurrency, tx.rates, -1) ?? 0;
+            const amountInternalFiat = toFiatCurrency(amountInternal, historicRate, -1) ?? 0;
 
             if (internalTx.type === 'sent') {
                 totalAmount = totalAmount.minus(amountInternalFiat);
@@ -662,7 +673,6 @@ export const getOriginalTransaction = ({
     deviceState,
     symbol,
     rbfParams,
-    rates,
     ...tx
 }: WalletAccountTransaction): AccountTransaction => tx;
 
@@ -950,4 +960,22 @@ export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
     const symbol = !isSingleTokenTransaction || !transfer ? transaction.symbol : transfer.symbol;
 
     return symbol;
+};
+
+export const groupTokensTransactionsByContractAddress = (txs: WalletAccountTransaction[]) => {
+    const groupedTokensTxs: Record<TokenAddress, WalletAccountTransaction[]> = {};
+
+    txs.forEach(tx => {
+        if (tx.tokens && tx.tokens.length > 0) {
+            tx.tokens.forEach(token => {
+                const groupKey = token.contract as TokenAddress;
+                if (!groupedTokensTxs[groupKey]) {
+                    groupedTokensTxs[groupKey] = [];
+                }
+                groupedTokensTxs[groupKey].push(tx);
+            });
+        }
+    });
+
+    return groupedTokensTxs;
 };

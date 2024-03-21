@@ -64,14 +64,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                         const cryptoValue = shouldSendInSats
                             ? formatAmount(output.amount, network.decimals)
                             : output.amount;
-                        output.fiat =
-                            toFiatCurrency(
-                                cryptoValue,
-                                output.currency.value,
-                                fiatRate,
-                                2,
-                                false,
-                            ) || '';
+                        output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
                     }
                 } else if (
                     Object.keys(fiatCurrencies).find(c => c === currency) &&
@@ -83,10 +76,8 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                     // calculate Amount from Fiat
                     const cryptoValue = fromFiatCurrency(
                         output.fiat,
-                        currency,
-                        fiatRate,
                         network.decimals,
-                        false,
+                        fiatRate.rate,
                     );
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats

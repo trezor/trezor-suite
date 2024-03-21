@@ -5,9 +5,13 @@ import BigNumber from 'bignumber.js';
 
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TransactionTarget } from '@trezor/connect';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Network } from '@suite-common/wallet-config';
 import {
     ExportFileType,
+    RatesByTimestamps,
+    Timestamp,
+    TokenAddress,
     TokenDefinitions,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
@@ -16,6 +20,7 @@ import { formatNetworkAmount, formatAmount } from './accountUtils';
 import { getNftTokenId, isNftTokenTransfer } from './transactionUtils';
 import { localizeNumber } from './localizeNumberUtils';
 import { getIsPhishingTransaction } from './antiFraud';
+import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];
@@ -136,7 +141,11 @@ const makePdf = (
         });
     });
 
-const prepareContent = (data: Data, tokenDefinitions: TokenDefinitions): Fields[] => {
+const prepareContent = (
+    data: Data,
+    tokenDefinitions: TokenDefinitions,
+    historicFiatRates: RatesByTimestamps | undefined,
+): Fields[] => {
     const { transactions, coin } = data;
 
     return transactions
@@ -157,6 +166,13 @@ const prepareContent = (data: Data, tokenDefinitions: TokenDefinitions): Fields[
                 type: t.type.toUpperCase(),
                 txid: t.txid,
             };
+            const fiatRateKey = getFiatRateKey(
+                t.symbol,
+                data.localCurrency as FiatCurrencyCode,
+                t.tokens[0]?.contract as TokenAddress,
+            );
+            const roundedTimestamp = roundTimestampToNearestPastHour(t.blockTime as Timestamp);
+            const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp as Timestamp];
 
             let hasFeeBeenAlreadyUsed = t.type === 'recv'; // TODO: use similar logic as in TransactionItem
             let tokens: Array<Fields | null> = [];
@@ -177,13 +193,10 @@ const prepareContent = (data: Data, tokenDefinitions: TokenDefinitions): Fields[
                         amount: target.isAddress ? target.amount : '',
                         symbol: target.isAddress ? coin.toUpperCase() : '',
                         fiat:
-                            target.isAddress &&
-                            target.amount &&
-                            t.rates &&
-                            t.rates[data.localCurrency]
+                            target.isAddress && target.amount && historicRate
                                 ? localizeNumber(
                                       new BigNumber(target.amount)
-                                          .multipliedBy(t.rates[data.localCurrency]!)
+                                          .multipliedBy(historicRate)
                                           .toNumber(),
                                       undefined,
                                       2,
@@ -231,10 +244,10 @@ const prepareContent = (data: Data, tokenDefinitions: TokenDefinitions): Fields[
                         amount: internal.amount,
                         symbol: coin.toUpperCase(), // if symbol not available, use contract address
                         fiat:
-                            internal.amount && t.rates && t.rates[data.localCurrency]
+                            internal.amount && historicRate
                                 ? localizeNumber(
                                       new BigNumber(internal.amount)
-                                          .multipliedBy(t.rates[data.localCurrency]!)
+                                          .multipliedBy(historicRate)
                                           .toNumber(),
                                       undefined,
                                       2,
@@ -262,7 +275,11 @@ const sanitizeCsvValue = (value: string) => {
     return value;
 };
 
-const prepareCsv = (data: Data, tokenDefinitions: TokenDefinitions) => {
+const prepareCsv = (
+    data: Data,
+    tokenDefinitions: TokenDefinitions,
+    historicFiatRates: RatesByTimestamps | undefined,
+) => {
     const csvFields: Fields = {
         timestamp: 'Timestamp',
         date: 'Date',
@@ -279,7 +296,7 @@ const prepareCsv = (data: Data, tokenDefinitions: TokenDefinitions) => {
         other: 'Other',
     };
 
-    const content = prepareContent(data, tokenDefinitions);
+    const content = prepareContent(data, tokenDefinitions, historicFiatRates);
 
     const lines: string[] = [];
 
@@ -308,7 +325,11 @@ const prepareCsv = (data: Data, tokenDefinitions: TokenDefinitions) => {
     return lines.join(CSV_NEWLINE);
 };
 
-const preparePdf = (data: Data, tokenDefinitions: TokenDefinitions): TDocumentDefinitions => {
+const preparePdf = (
+    data: Data,
+    tokenDefinitions: TokenDefinitions,
+    historicFiatRates: RatesByTimestamps | undefined,
+): TDocumentDefinitions => {
     const pdfFields = {
         dateTime: 'Date & Time',
         type: 'Type',
@@ -321,7 +342,7 @@ const preparePdf = (data: Data, tokenDefinitions: TokenDefinitions): TDocumentDe
     const fieldKeys = Object.keys(pdfFields);
     const fieldValues = Object.values(pdfFields);
 
-    const content = prepareContent(data, tokenDefinitions);
+    const content = prepareContent(data, tokenDefinitions, historicFiatRates);
 
     const lines: any[] = [];
     content.forEach(item => {
@@ -399,17 +420,21 @@ const preparePdf = (data: Data, tokenDefinitions: TokenDefinitions): TDocumentDe
     };
 };
 
-export const formatData = async (data: Data, tokenDefinitions: TokenDefinitions) => {
+export const formatData = async (
+    data: Data,
+    tokenDefinitions: TokenDefinitions,
+    historicFiatRates: RatesByTimestamps | undefined,
+) => {
     const { coin, type, transactions } = data;
 
     switch (type) {
         case 'csv': {
-            const csv = prepareCsv(data, tokenDefinitions);
+            const csv = prepareCsv(data, tokenDefinitions, historicFiatRates);
 
             return new Blob([csv], { type: 'text/csv;charset=utf-8' });
         }
         case 'pdf': {
-            const pdfLayout = preparePdf(data, tokenDefinitions);
+            const pdfLayout = preparePdf(data, tokenDefinitions, historicFiatRates);
             const pdfMake = await loadPdfMake();
             const pdf = await makePdf(pdfLayout, pdfMake);
 

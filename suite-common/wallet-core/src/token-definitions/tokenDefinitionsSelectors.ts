@@ -1,6 +1,7 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import { TokenInfo } from '@trezor/connect';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 import { TokenDefinitionsRootState } from './tokenDefinitionsTypes';
 
@@ -22,7 +23,7 @@ export const selectNftDefinitions = (
 export const selectCoinDefinition = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
-    contractAddress: string,
+    contractAddress: TokenAddress,
 ) =>
     isTokenDefinitionKnown(
         state.wallet.tokenDefinitions?.[networkSymbol]?.coin?.data,
@@ -33,7 +34,7 @@ export const selectCoinDefinition = (
 export const selectIsSpecificCoinDefinitionKnown = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
-    contractAddress: string,
+    contractAddress: TokenAddress,
 ) => !!selectCoinDefinition(state, networkSymbol, contractAddress);
 
 export const selectFilterKnownTokens = (
@@ -41,5 +42,7 @@ export const selectFilterKnownTokens = (
     networkSymbol: NetworkSymbol,
     tokens: TokenInfo[],
 ) => {
-    return tokens.filter(token => selectCoinDefinition(state, networkSymbol, token.contract));
+    return tokens.filter(token =>
+        selectCoinDefinition(state, networkSymbol, token.contract as TokenAddress),
+    );
 };
