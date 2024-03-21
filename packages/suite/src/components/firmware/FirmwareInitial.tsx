@@ -45,10 +45,6 @@ const TextButton = styled.button`
     text-decoration: underline;
 `;
 
-const StyledConnectDevicePrompt = styled(ConnectDevicePromptManager)`
-    margin-top: 120px;
-`;
-
 const WarningListWrapper = styled.div`
     display: flex;
     align-items: flex-start;
@@ -178,7 +174,7 @@ export const FirmwareInitial = ({
         // Most users won't see this as they should come here with a connected device.
         // This is just for people who want to shoot themselves in the foot and disconnect the device before proceeding with fw update flow
         // Be aware that disconnection after fw installation () is completed is fine and won't be caught by this, because device variable will point to cached device
-        return <StyledConnectDevicePrompt device={device} />;
+        return <ConnectDevicePromptManager device={device} />;
     }
 
     // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
