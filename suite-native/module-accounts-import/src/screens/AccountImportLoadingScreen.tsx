@@ -11,7 +11,7 @@ import {
 } from '@suite-native/navigation';
 import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { Timestamp } from '@suite-common/wallet-types';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
@@ -86,6 +86,21 @@ export const AccountImportLoadingScreen = ({
             if (!ignore) {
                 if (fetchedAccountInfo?.success) {
                     setAccountInfo(fetchedAccountInfo.payload);
+
+                    //fetch fiat rates for all tokens of newly discovered account
+                    fetchedAccountInfo.payload.tokens?.forEach(token =>
+                        dispatch(
+                            updateFiatRatesThunk({
+                                ticker: {
+                                    symbol: networkSymbol,
+                                    tokenAddress: token.contract as TokenAddress,
+                                },
+                                rateType: 'current',
+                                localCurrency: fiatCurrency,
+                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                            }),
+                        ),
+                    );
                 } else {
                     safelyShowImportError(fetchedAccountInfo.payload.error, getAccountInfo);
                 }
