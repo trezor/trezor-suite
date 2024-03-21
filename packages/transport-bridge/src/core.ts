@@ -48,8 +48,13 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         for (let i = 0; i < buffers.length; i++) {
             const bufferSegment = buffers[i];
 
-            await api.write(path, bufferSegment);
+            const result = await api.write(path, bufferSegment);
+            if (!result.success) {
+                return result;
+            }
         }
+
+        return { success: true as const };
     };
 
     const readUtil = async ({ path }: { path: string }) => {
@@ -65,11 +70,14 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
                 protocolV1.decode,
             );
 
-            return protocolBridge
-                .encode(message.buffer, { messageType: message.typeId })[0]
-                .toString('hex');
+            return {
+                success: true as const,
+                payload: protocolBridge
+                    .encode(message.buffer, { messageType: message.typeId })[0]
+                    .toString('hex'),
+            };
         } catch (err) {
-            return { success: false as const, error: err.message };
+            return { success: false as const, error: err.message as string };
         }
     };
 
@@ -91,6 +99,12 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         });
         if (!acquireIntentResult.success) {
             return acquireIntentResult;
+        }
+
+        const openDeviceResult = await api.openDevice(acquireInput.path, true);
+
+        if (!openDeviceResult.success) {
+            return openDeviceResult;
         }
         await sessionsClient.acquireDone({ path: acquireInput.path });
 
@@ -119,11 +133,18 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
             return sessionsResult;
         }
         const { path } = sessionsResult.payload;
-        await api.openDevice(path, false);
-        await writeUtil({ path, data });
-        const message = await readUtil({ path });
 
-        return { success: true as const, payload: message };
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
+
+        const writeResult = await writeUtil({ path, data });
+        if (!writeResult.success) {
+            return writeResult;
+        }
+
+        return readUtil({ path });
     };
 
     const send = async ({ session, data }: { session: string; data: string }) => {
@@ -136,10 +157,12 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         }
         const { path } = sessionsResult.payload;
 
-        await api.openDevice(path, false);
-        await writeUtil({ path, data });
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
 
-        return { success: true as const };
+        return writeUtil({ path, data });
     };
 
     const receive = async ({ session }: { session: string }) => {
@@ -152,11 +175,12 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         }
         const { path } = sessionsResult.payload;
 
-        await api.openDevice(path, false);
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
 
-        const message = await readUtil({ path });
-
-        return { success: true as const, payload: message };
+        return readUtil({ path });
     };
 
     return {
