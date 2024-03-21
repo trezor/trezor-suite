@@ -212,7 +212,7 @@ const changeDevice = (
                 !isUnlocked(d.features) &&
                 isDeviceUnlocked
             ) {
-                // if device with passhprase disabled is not authorized (no state) and becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
+                // if device with passphrase disabled is not authorized (no state) and becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
                 return merge(d, {
                     ...device,
                     ...extended,
