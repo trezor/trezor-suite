@@ -46,14 +46,17 @@ export const FirmwareCustom = () => {
     const onFirmwareSelected = useCallback(
         (fw: ArrayBuffer) => {
             setFirmwareBinary(fw);
-            // if there is no firmware installed, check-seed and waiting-for-bootloader steps could be skipped
+            // If there is no firmware installed, check-seed and waiting-for-bootloader steps could be skipped.
             if (liveDevice?.firmware === 'none') {
                 firmwareCustom(fw);
+                // No need to check seed on a device which is not initialized.
+            } else if (liveDevice?.mode === 'initialize') {
+                setStatus('waiting-for-bootloader');
             } else {
                 setStatus('check-seed');
             }
         },
-        [liveDevice?.firmware, setStatus, firmwareCustom],
+        [liveDevice?.firmware, liveDevice?.mode, setStatus, firmwareCustom],
     );
 
     const onSeedChecked = useCallback(() => {
