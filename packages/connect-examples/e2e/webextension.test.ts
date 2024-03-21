@@ -34,14 +34,7 @@ test('Basic web extension MV2', async () => {
         type: 'bridge-start',
     });
 
-    const pathToExtension = path.join(
-        __dirname,
-        '..',
-        '..',
-        'connect-examples',
-        'webextension-mv2',
-        'build',
-    );
+    const pathToExtension = path.join(__dirname, '..', 'webextension-mv2', 'build');
 
     const userDataDir = '/tmp/test-user-data-dir';
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
@@ -130,14 +123,7 @@ test('Basic web extension MV3', async () => {
         type: 'bridge-start',
     });
 
-    const pathToExtension = path.join(
-        __dirname,
-        '..',
-        '..',
-        'connect-examples',
-        'webextension-mv3',
-        'build',
-    );
+    const pathToExtension = path.join(__dirname, '..', 'webextension-mv3', 'build');
 
     const userDataDir = '/tmp/test-user-data-dir';
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
