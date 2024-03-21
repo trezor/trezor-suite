@@ -155,6 +155,7 @@ export const FirmwareInitial = ({
     // todo: move to utils device.ts
     const devicesConnected = devices.filter(device => device?.connected);
     const multipleDevicesConnected = [...new Set(devicesConnected.map(d => d.path))].length > 1;
+    const shouldCheckSeed = liveDevice?.mode !== 'initialize';
 
     useEffect(() => {
         // When the user choses to install a new firmware update we will ask him/her to reconnect a device in bootloader mode.
@@ -379,7 +380,7 @@ export const FirmwareInitial = ({
                 <FirmwareButtonsRow withCancelButton={willBeWiped} onClose={onClose}>
                     <FirmwareInstallButton
                         onClick={() => {
-                            setStatus(standaloneFwUpdate ? 'check-seed' : 'waiting-for-bootloader');
+                            setStatus(shouldCheckSeed ? 'check-seed' : 'waiting-for-bootloader');
                             updateAnalytics({ firmware: 'update' });
                         }}
                         multipleDevicesConnected={multipleDevicesConnected}
