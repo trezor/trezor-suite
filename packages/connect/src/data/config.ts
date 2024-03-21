@@ -38,7 +38,7 @@ export const config = {
         },
         {
             origin: 'bpcdaglidgnlggelgbjfagekoapjmccp',
-            label: 'Rainbow',
+            label: 'Rainbow DEV',
             icon: '',
         },
         {
