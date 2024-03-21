@@ -15,7 +15,11 @@ import { SettingsSliceRootState } from '@suite-native/module-settings';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 
 import { GroupedAccounts } from './types';
-import { filterAccountsByLabelAndNetworkNames, groupAccountsByNetworkAccountType } from './utils';
+import {
+    filterAccountsByLabelAndNetworkNames,
+    groupAccountsByNetworkAccountType,
+    sortAccountsByNetworksAndAccountTypes,
+} from './utils';
 
 export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWithArgs(
     (
@@ -26,6 +30,7 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWi
 
         return pipe(
             accounts,
+            sortAccountsByNetworksAndAccountTypes,
             A.map(account => ({
                 ...account,
                 // Select only tokens with fiat rates To apply filter only one those tokens later.
@@ -47,6 +52,7 @@ export const selectDeviceNetworkAccountsGroupedByAccountType = memoizeWithArgs(
     (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
         pipe(
             selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
+            sortAccountsByNetworksAndAccountTypes,
             groupAccountsByNetworkAccountType,
         ) as GroupedAccounts,
     { size: D.keys(networks).length },

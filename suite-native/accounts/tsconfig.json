@@ -28,6 +28,7 @@
             "path": "../../suite-common/wallet-utils"
         },
         { "path": "../atoms" },
+        { "path": "../config" },
         { "path": "../ethereum-tokens" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
