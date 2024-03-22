@@ -2980,10 +2980,6 @@ export default defineMessages({
         defaultMessage: 'Ethereum Sepolia',
         id: 'TR_NETWORK_ETHEREUM_SEPOLIA',
     },
-    TR_NETWORK_ETHEREUM_GOERLI: {
-        defaultMessage: 'Ethereum Goerli',
-        id: 'TR_NETWORK_ETHEREUM_GOERLI',
-    },
     TR_NETWORK_ETHEREUM_HOLESKY: {
         defaultMessage: 'Ethereum Holesky',
         id: 'TR_NETWORK_ETHEREUM_HOLESKY',
