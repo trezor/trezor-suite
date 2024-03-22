@@ -1856,7 +1856,7 @@
   "TR_TRANSACTIONS_NOT_AVAILABLE": "Transaction history not available",
   "TR_TRANSACTIONS_SEARCH_TIP_1": "Tip: You can search for transaction IDs, addresses, labels, amounts and dates.",
   "TR_TRANSACTIONS_SEARCH_TIP_10": "Tip: Combine AND (&) and OR (|) operators for more complex searches. For example <strong>> {lastYear}-01-01 & < {lastYear}-01-31 | > {lastYear}-12-01 & < {lastYear}-12-31</strong> will show all transactions in January or December {lastYear}.",
-  "TR_TRANSACTIONS_SEARCH_TIP_2": "Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong> 1</strong> will show all transactions that have an amount of 1 and higher.",
+  "TR_TRANSACTIONS_SEARCH_TIP_2": "Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 and higher.",
   "TR_TRANSACTIONS_SEARCH_TIP_3": "Tip: You can search for exact amounts using the equal (=) symbol. For example <strong>= 0.01</strong> will show only transactions that have an amount of exactly 0.01.",
   "TR_TRANSACTIONS_SEARCH_TIP_4": "Tip: You can exclude an amount by using the exclamation mark and equal symbols together (!=). For example <strong>!= -0.01</strong> will show all transactions except the ones with an amount of -0.01.",
   "TR_TRANSACTIONS_SEARCH_TIP_5": "Tip: Dates can be searched using the <strong>YYYY-MM-DD</strong> format. For example <strong>{lastYear}-12-14</strong> will show all transactions on December 14th, {lastYear}.",

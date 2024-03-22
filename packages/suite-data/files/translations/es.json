@@ -1588,7 +1588,7 @@
   "TR_SENDING_SYMBOL_TO_SELF": "Enviándome {multiple, select, true {varios tokens} false {{symbol}} other {{symbol}}}",
   "TR_SEND_ADDRESS_SECTION": "Para",
   "TR_SEND_NOT_ANONYMIZED_COINS": "Enviar monedas no anonimizadas",
-  "TR_SEND_RECIPIENT_ADDRESS": "{index, selectordinal, one {#st} two {#nd} few {#rd} other {#th} } Destinatario",
+  "TR_SEND_RECIPIENT_ADDRESS": "{index, selectordinal, other {#º} } Destinatario",
   "TR_SENT": "Enviado",
   "TR_SENT_SYMBOL": "Se han enviado {multiple, select, true {varios tokens} false {{symbol}} other {{symbol}}}",
   "TR_SENT_SYMBOL_TO_SELF": "Me he enviado {multiple, select, true {varios tokens} false {{symbol}} other {{symbol}}}",
