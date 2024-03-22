@@ -18,7 +18,7 @@ import { Divider } from './Divider';
 import { VStack } from './Stack';
 
 type AccordionItemProps = {
-    title: string;
+    title: ReactNode;
     content: ReactNode;
 };
 

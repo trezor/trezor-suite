@@ -1,4 +1,5 @@
 import { ActivityIndicator, ActivityIndicatorProps } from 'react-native';
+import { ReactNode } from 'react';
 
 import { useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
@@ -8,7 +9,7 @@ import { Text } from './Text';
 
 type LoaderProps = {
     size?: ActivityIndicatorProps['size'];
-    title?: string;
+    title?: ReactNode;
     color?: Color;
 };
 

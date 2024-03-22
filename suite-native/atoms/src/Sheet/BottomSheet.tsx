@@ -16,8 +16,8 @@ export type BottomSheetProps = {
     isCloseDisplayed?: boolean;
     onClose: (isVisible: boolean) => void;
     children: ReactNode;
-    title?: string;
-    subtitle?: string;
+    title?: ReactNode;
+    subtitle?: ReactNode;
 } & BoxProps;
 
 type WrapperStyleProps = {

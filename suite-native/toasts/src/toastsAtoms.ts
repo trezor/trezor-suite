@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { A } from '@mobily/ts-belt';
 import { atom } from 'jotai';
 
@@ -9,7 +11,7 @@ export type Toast = {
     id: number;
     icon: IconName;
     variant: ToastVariant;
-    message: string;
+    message: ReactNode;
 };
 
 export type ToastWithoutId = Omit<Toast, 'id'>;
