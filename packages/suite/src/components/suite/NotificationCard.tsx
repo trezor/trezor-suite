@@ -9,7 +9,7 @@ import {
     ButtonProps,
     useElevation,
     IconType,
-    ElevationContext,
+    ElevationUp,
 } from '@trezor/components';
 import { Elevation, borders, spacingsPx, typography } from '@trezor/theme';
 import { TrezorLink } from './TrezorLink';
@@ -150,7 +150,7 @@ export const NotificationCard = ({
             $elevation={elevation}
             data-test={props['data-test']}
         >
-            <ElevationContext baseElevation={elevation}>
+            <ElevationUp>
                 <IconWrapper>
                     {isLoading ? (
                         <Spinner size={22} />
@@ -166,7 +166,7 @@ export const NotificationCard = ({
                 </IconWrapper>
                 <Body>{children}</Body>
                 {buttonProps && <CardButton size="tiny" variant={buttonVariant} {...buttonProps} />}
-            </ElevationContext>
+            </ElevationUp>
         </Wrapper>
     );
 };

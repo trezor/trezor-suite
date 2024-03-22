@@ -23,7 +23,7 @@ const switchStyle = prepareNativeStyle<SwitchStyleProps>((utils, { isDeviceManag
     height: SCREEN_HEADER_HEIGHT,
     paddingVertical: utils.spacings.small,
     paddingHorizontal: utils.spacings.medium,
-    borderColor: utils.colors.borderOnElevation1,
+    borderColor: utils.colors.borderElevation2,
     borderWidth: utils.borders.widths.small,
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,

@@ -18,7 +18,7 @@ const sheetTriggerStyle = prepareNativeStyle(utils => ({
     paddingVertical: utils.spacings.large,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderTopWidth: utils.borders.widths.small,
-    borderTopColor: utils.colors.borderOnElevation0,
+    borderTopColor: utils.colors.borderElevation1,
 }));
 
 export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {

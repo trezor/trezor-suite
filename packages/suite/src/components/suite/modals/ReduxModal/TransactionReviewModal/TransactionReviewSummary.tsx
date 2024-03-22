@@ -86,7 +86,7 @@ const AccountWrapper = styled.div`
 `;
 
 const Separator = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
     margin: 10px 0 0;
     padding: 0 0 10px;
     width: 100%;

@@ -35,7 +35,7 @@ const TextareaWrapper = styled(InputWrapper)<{
     padding: ${spacingsPx.xl} 0 ${spacingsPx.md};
 
     &:focus-within {
-        border-color: ${({ theme }) => theme.borderOnElevation0};
+        border-color: ${({ theme }) => theme.borderElevation1};
     }
 
     /* overwrites :read-only:not(:disabled) since it's always true for div */

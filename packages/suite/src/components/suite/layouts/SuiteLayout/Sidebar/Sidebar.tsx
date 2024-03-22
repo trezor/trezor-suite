@@ -4,7 +4,7 @@ import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { Navigation } from './Navigation';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { QuickActions } from './QuickActions';
-import { ElevationContext, useElevation } from '@trezor/components';
+import { ElevationUp, useElevation } from '@trezor/components';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
 import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
@@ -27,12 +27,12 @@ export const Sidebar = () => {
 
     return (
         <Container $elevation={elevation}>
-            <ElevationContext baseElevation={elevation}>
+            <ElevationUp>
                 <DeviceSelector />
                 <Navigation />
                 <AccountsMenu />
                 <QuickActions />
-            </ElevationContext>
+            </ElevationUp>
         </Container>
     );
 };

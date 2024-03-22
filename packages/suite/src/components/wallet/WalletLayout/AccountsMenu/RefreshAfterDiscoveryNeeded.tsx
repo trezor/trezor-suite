@@ -16,7 +16,7 @@ const DiscoveryButtonContainer = styled(motion.div)`
     flex-direction: column;
     justify-content: center;
     margin: 0 ${spacingsPx.sm} ${spacingsPx.xxl} ${spacingsPx.sm};
-    border-top: solid 1px ${({ theme }) => theme.borderOnElevation0};
+    border-top: solid 1px ${({ theme }) => theme.borderElevation1};
     ${typography.hint}
     align-items: center;
 `;

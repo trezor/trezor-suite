@@ -21,7 +21,7 @@ const dotStyle = prepareNativeStyle<{ isSubmitted: boolean }>((utils, { isSubmit
 const enteredDigitsStyle = prepareNativeStyle(utils => ({
     borderRadius: utils.borders.radii.round,
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderColor: utils.colors.borderOnElevation0,
+    borderColor: utils.colors.borderElevation1,
     paddingHorizontal: utils.spacings.medium,
 }));
 

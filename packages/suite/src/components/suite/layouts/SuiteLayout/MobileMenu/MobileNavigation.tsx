@@ -19,7 +19,7 @@ const Container = styled.div`
     flex-direction: column;
     padding: 16px;
     flex: 1;
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
 const MenuItem = styled.div<ComponentProps>`
@@ -29,7 +29,7 @@ const MenuItem = styled.div<ComponentProps>`
     cursor: ${({ isDisabled, isActive }) => (!isDisabled && !isActive ? 'pointer' : 'default')};
 
     & + & {
-        border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+        border-top: 1px solid ${({ theme }) => theme.borderElevation2};
     }
 `;
 

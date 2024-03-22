@@ -30,7 +30,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
         backgroundChecked: 'backgroundPrimaryDefault',
         borderChecked: 'backgroundPrimaryDefault',
         backgroundDisabled: 'backgroundSurfaceElevationNegative',
-        borderDisabled: 'borderOnElevation0',
+        borderDisabled: 'borderElevation1',
         backgroundDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
         borderDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
     },

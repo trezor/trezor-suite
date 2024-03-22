@@ -54,7 +54,7 @@ const CheckIconContainer = styled.div<{ $isDone: boolean }>`
     overflow: hidden;
     border: 1px solid
         ${({ theme, $isDone }) =>
-            $isDone ? theme.backgroundPrimarySubtleOnElevation1 : theme.borderOnElevation1};
+            $isDone ? theme.backgroundPrimarySubtleOnElevation1 : theme.borderElevation2};
 `;
 
 const CheckIconBackground = styled.div`
@@ -71,7 +71,7 @@ const Line = styled.div`
     width: 100%;
     height: 1px;
     margin: ${spacingsPx.md} 0;
-    background: ${({ theme }) => theme.borderOnElevation1};
+    background: ${({ theme }) => theme.borderElevation2};
 `;
 
 export interface SecurityCardProps extends CardProps {

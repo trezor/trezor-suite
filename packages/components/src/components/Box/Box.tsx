@@ -9,8 +9,7 @@ import {
     mapElevationToBorder,
     spacingsPx,
 } from '@trezor/theme';
-import { useElevation } from '../ElevationContext/ElevationContext';
-import { ElevationContext } from '../ElevationContext/ElevationContext';
+import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { UIVariant } from '../../config/types';
 import { ComponentFrame, FrameProps } from '../common/ComponentFrame';
 

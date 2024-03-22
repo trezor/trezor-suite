@@ -73,7 +73,7 @@ const Label = styled.div`
 
 const Divider = styled.div`
     flex-grow: 1;
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
     margin: ${spacingsPx.md} ${spacingsPx.lg};
 
     @media (max-width: ${variables.SCREEN_SIZE.XL}) {

@@ -10,7 +10,7 @@ const Wrapper = styled.div`
     gap: ${spacingsPx.md};
     justify-content: space-between;
     padding-top: ${spacingsPx.xl};
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
     margin-top: ${spacingsPx.xxl};
 `;
 

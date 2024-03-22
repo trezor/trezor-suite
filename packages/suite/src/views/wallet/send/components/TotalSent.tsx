@@ -16,7 +16,7 @@ const StyledCard = styled(Card)`
     height: min-content;
     background: transparent;
     box-shadow: none;
-    border: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border: 1px solid ${({ theme }) => theme.borderElevation1};
 `;
 
 const Left = styled.div`

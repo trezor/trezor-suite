@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { Elevation, borders, mapElevationToBackground, zIndices } from '@trezor/theme';
 import {
-    ElevationContext,
+    ElevationUp,
     H2,
     Icon,
     Image,
@@ -33,14 +33,16 @@ const animationVariants = {
     },
 };
 
-const CardWrapper = styled.div<{
+type CardWrapperProps = {
     $expandable?: boolean;
     $expanded?: boolean;
     $nested?: boolean;
     $variant?: 'small' | 'large';
     $elevation: Elevation;
     $withImage: boolean;
-}>`
+};
+
+const CardWrapper = styled.div<CardWrapperProps>`
     position: relative;
     padding: ${({ $variant }) => ($variant === 'large' ? '40px 80px' : '20px 30px')};
     width: ${({ $variant }) => ($variant === 'large' ? '100%' : 'auto')};
@@ -224,7 +226,7 @@ export const CollapsibleOnboardingCard = ({
                 animate={expanded ? 'expanded' : 'closed'}
                 transition={{ duration: 0.4, ease: motionEasing.transition }}
             >
-                <ElevationContext baseElevation={elevation}>
+                <ElevationUp>
                     <CardWrapperInner $expandable={expandable}>
                         {expandable && (
                             <CollapsibleCardInner
@@ -269,7 +271,7 @@ export const CollapsibleOnboardingCard = ({
                             <ChildrenWrapper>{children}</ChildrenWrapper>
                         </motion.div>
                     </CardWrapperInner>
-                </ElevationContext>
+                </ElevationUp>
             </motion.div>
         </CardWrapper>
     );

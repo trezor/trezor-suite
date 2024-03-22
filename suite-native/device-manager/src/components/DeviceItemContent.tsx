@@ -27,7 +27,7 @@ const DeviceItemIcon = ({ deviceId }: DeviceItemIconProps) => {
 
     // TODO: when we enable remember mode, icon representing disconnected device have to be handled.
     const connectedDeviceIcon: IconName =
-        activeColorScheme === 'light' ? 'trezorConnectedLight' : 'trezorConnectedDark';
+        activeColorScheme === 'standard' ? 'trezorConnectedLight' : 'trezorConnectedDark';
 
     switch (deviceId) {
         case undefined:

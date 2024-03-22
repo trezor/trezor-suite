@@ -16,7 +16,7 @@ import {
 
 const FeedbackBorder = styled.div`
     height: 1px;
-    background-color: ${({ theme }) => theme.borderOnElevation0};
+    background-color: ${({ theme }) => theme.borderElevation1};
     margin: 0 ${spacingsPx.md};
 `;
 const FeedbackLinkWrapper = styled.div`

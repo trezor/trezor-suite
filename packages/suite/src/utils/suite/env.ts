@@ -1,6 +1,5 @@
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { ThemeColorVariant } from '@trezor/theme';
 
 export const submitRequestForm = async (
     formMethod: 'GET' | 'POST' | 'IFRAME',
@@ -53,8 +52,7 @@ const getDarkThemeQuery = (): MediaQueryList | undefined => {
     return matchMedia && matchMedia('(prefers-color-scheme: dark)');
 };
 
-export const getOsTheme = (): ThemeColorVariant =>
-    getDarkThemeQuery()?.matches ? 'dark' : 'light';
+export const getOsTheme = () => (getDarkThemeQuery()?.matches ? 'dark' : 'light');
 
 export const watchOsTheme = (callback: (theme: Exclude<SuiteThemeVariant, 'system'>) => void) => {
     const onThemeChange = (e: MediaQueryListEvent) => callback(e.matches ? 'dark' : 'light');

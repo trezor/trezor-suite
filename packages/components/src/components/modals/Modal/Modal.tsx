@@ -50,7 +50,7 @@ const Header = styled.header<HeaderProps>`
     padding: ${spacingsPx.xs} ${spacingsPx.md};
     border-bottom: 1px solid
         ${({ $isBottomBorderShown, theme }) =>
-            $isBottomBorderShown ? theme.borderOnElevation1 : 'transparent'};
+            $isBottomBorderShown ? theme.borderElevation2 : 'transparent'};
 `;
 
 const BACK_ICON_WIDTH = spacingsPx.xxxl;
@@ -164,7 +164,7 @@ const BottomBar = styled.footer`
     flex-wrap: wrap;
     gap: ${spacingsPx.xs};
     padding: ${spacingsPx.md};
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
 const BottomBarComponents = styled.div`

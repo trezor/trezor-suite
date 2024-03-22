@@ -28,7 +28,7 @@ const Flex = styled.div`
 
 const DividerWrapper = styled.div`
     & > div {
-        background: ${({ theme }) => theme.borderOnElevation1};
+        background: ${({ theme }) => theme.borderElevation2};
         margin: ${spacingsPx.lg} 0 ${spacingsPx.md} auto;
         max-width: 428px;
         width: 100%;

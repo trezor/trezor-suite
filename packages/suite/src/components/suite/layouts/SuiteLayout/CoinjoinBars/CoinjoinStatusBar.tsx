@@ -35,7 +35,7 @@ const Container = styled.div<{ $isClickable: boolean }>`
     height: 28px;
     padding: 0 ${SPACING}px;
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
     font-size: ${variables.FONT_SIZE.TINY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     transition: background 0.15s;

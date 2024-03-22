@@ -36,7 +36,7 @@ const ClaimingPeriodWrapper = styled.div`
     justify-content: space-between;
     padding: ${spacingsPx.lg} 0 ${spacingsPx.md};
     margin-top: ${spacingsPx.xl};
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
 const GreyP = styled(Paragraph)`

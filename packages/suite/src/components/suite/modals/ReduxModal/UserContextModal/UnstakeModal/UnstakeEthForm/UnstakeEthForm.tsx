@@ -15,7 +15,7 @@ const GreyP = styled(Paragraph)`
 
 const DividerWrapper = styled.div`
     & > div {
-        background: ${({ theme }) => theme.borderOnElevation1};
+        background: ${({ theme }) => theme.borderElevation2};
         width: calc(100% + ${spacingsPx.xxl});
         margin: 0 -${spacingsPx.md} ${spacingsPx.lg} -${spacingsPx.md};
     }
@@ -38,7 +38,7 @@ const UpToDaysWrapper = styled.div`
     align-items: center;
     margin-top: 16px;
     padding: ${spacingsPx.lg} 0 ${spacingsPx.md};
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
 export const UnstakeEthForm = () => {

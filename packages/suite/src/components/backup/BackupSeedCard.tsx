@@ -34,7 +34,7 @@ const Container = styled(Card)<{ $checked: boolean }>`
     /* space for the checkbox */
     padding-bottom: ${spacingsPx.xxxxl};
     border: solid 1px
-        ${({ theme, $checked }) => ($checked ? theme.borderSecondary : theme.borderOnElevation1)};
+        ${({ theme, $checked }) => ($checked ? theme.borderSecondary : theme.borderElevation2)};
     transition:
         box-shadow 0.2s ease-in-out,
         border 0.1s;

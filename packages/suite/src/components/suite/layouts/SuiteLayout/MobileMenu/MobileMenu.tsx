@@ -16,7 +16,7 @@ const Wrapper = styled.div`
     padding: 6px 8px;
     align-items: center;
     background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
 
     ${variables.SCREEN_QUERY.ABOVE_LAPTOP} {
         padding: 10px 16px;

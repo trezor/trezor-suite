@@ -18,7 +18,7 @@ const meta: Meta = {
     component: GradientOverlayComponent,
     decorators: [
         (Story: React.FC) => (
-            <ElevationContext baseElevation={0}>
+            <ElevationContext baseElevation={-1}>
                 <Card>
                     <TestContainer>
                         OpenStreetMap (OSM) is a free, open geographic database updated and

@@ -23,7 +23,7 @@ export const GreyP = styled(Paragraph)`
 export const InfoBox = styled.div`
     margin: -10px -10px ${spacingsPx.md} -10px;
     padding: 6px;
-    border: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border: 1px solid ${({ theme }) => theme.borderElevation2};
     border-radius: ${borders.radii.md};
     position: relative;
 
@@ -45,7 +45,7 @@ export const InfoBox = styled.div`
         position: absolute;
         bottom: -7px;
         left: 12px;
-        background-color: ${({ theme }) => theme.borderOnElevation1};
+        background-color: ${({ theme }) => theme.borderElevation2};
         height: 14px;
         width: 16px;
         clip-path: polygon(100% 50%, 0 50%, 50% 100%);

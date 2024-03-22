@@ -118,7 +118,7 @@ const MenuItemContainer = styled.li<MenuItemContainerProps>`
                 width: 100%;
                 top: -${spacingsPx.xs};
                 left: 0;
-                border-top: 1px solid ${theme.borderOnElevation1};
+                border-top: 1px solid ${theme.borderElevation2};
                 content: '';
             }
         `}
