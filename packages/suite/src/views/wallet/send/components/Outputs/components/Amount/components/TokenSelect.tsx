@@ -7,7 +7,11 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
 import { Output } from 'src/types/wallet/sendForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectCoinDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import {
+    selectCoinDefinitions,
+    updateFiatRatesThunk,
+    selectFiatRates,
+} from '@suite-common/wallet-core';
 import BigNumber from 'bignumber.js';
 import { Timestamp, TokenAddress, TokenDefinitions } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
@@ -171,7 +175,13 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     } = useSendFormContext();
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const localCurrency = useSelector(selectLocalCurrency);
-    const tokensWithRates = enhanceTokensWithRates(account.tokens, localCurrency, account.symbol);
+    const fiatRates = useSelector(selectFiatRates);
+    const tokensWithRates = enhanceTokensWithRates(
+        account.tokens,
+        localCurrency,
+        account.symbol,
+        fiatRates,
+    );
     const dispatch = useDispatch();
 
     const sortedTokens = useMemo(() => {
