@@ -70,7 +70,9 @@ export const onBlockchainConnectThunk = createThunk(
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
 
-        await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true }));
+        await dispatch(
+            subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
+        );
 
         // update accounts for connected network
         await dispatch(syncAccountsWithBlockchainThunk({ symbol: network.symbol }));
