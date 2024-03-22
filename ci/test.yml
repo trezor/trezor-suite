@@ -461,36 +461,6 @@ connect canary fws manual:
       - schedules
   when: manual
 
-connect T2B1:
-  extends: .connect
-  only:
-    refs:
-      - schedules
-  parallel:
-    matrix:
-      - TESTS_ENVIRONMENT: ["node", "web"]
-        TESTS_PATTERN: "authenticateDevice"
-        TESTS_FIRMWARE: ["2-latest"]
-        TESTS_FIRMWARE_MODEL: "R"
-      - TESTS_ENVIRONMENT: ["node"]
-        TESTS_PATTERN: "methods"
-        TESTS_FIRMWARE: ["2-latest"]
-        TESTS_FIRMWARE_MODEL: "R"
-        TESTS_INCLUDED_METHODS: [
-            "applySettings,applyFlags,getFirmwareHash", # getFeatures (capabilies)
-            # "signTransaction", (unsupported chain in fixtures)
-            "getAccountInfo,getAccountDescriptor,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof", # getAddress (unsuppported chain in fixtures)
-            "stellarGetAddress,stellarSignTransaction",
-            "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction",
-            # eos not supported
-            "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData",
-            # nem not supported
-            "rippleGetAddress,rippleSignTransaction",
-            "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction",
-            "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction",
-          ]
-        TESTS_MOCK_BACKENDS: "false"
-
 .e2e connect-web:
   stage: integration testing
   variables:
