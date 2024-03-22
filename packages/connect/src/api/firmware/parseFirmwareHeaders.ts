@@ -6,24 +6,26 @@
  */
 export const parseFirmwareHeaders = (buff: Buffer) => {
     const vendorHeader = buff.subarray(0, 4).toString('utf8');
+    let trezorImageHeader = '';
+
     let restbuff: Buffer | undefined;
     if (vendorHeader === 'TRZV') {
         const vendorHeaderLength = buff.readUInt32LE(4);
-        const trezorImageHeader = buff
+        trezorImageHeader = buff
             .subarray(vendorHeaderLength, vendorHeaderLength + 4)
             .toString('utf8');
-        if (trezorImageHeader !== 'TRZF') {
-            throw new Error(`unexpected header ${vendorHeader}`);
-        }
-
         restbuff = buff.subarray(vendorHeaderLength + 4);
     } else if (vendorHeader === 'TRZR') {
         restbuff = buff.subarray(256 + 4);
+        trezorImageHeader = buff.subarray(256 + 4, 256 + 8).toString('utf8');
     } else {
-        throw new Error(`unexpected header ${vendorHeader}`);
+        restbuff = buff.subarray(4);
+        trezorImageHeader = buff.subarray(0, 4).toString('utf8');
     }
 
-    // skip vender header
+    if (trezorImageHeader !== 'TRZF') {
+        throw new Error(`unexpected header ${vendorHeader}`);
+    }
 
     // we don't need this value
     // const trezorImageHeaderLength = restbuff.readUint32LE(0);
