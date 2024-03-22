@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -27,7 +27,7 @@ type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
-    title?: string;
+    title?: ReactNode;
     isDisabled?: boolean;
 };
 

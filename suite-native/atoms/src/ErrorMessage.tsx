@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 
@@ -5,7 +7,7 @@ import { Box } from './Box';
 import { Text } from './Text';
 
 type ErrorMessageProps = {
-    errorMessage: string;
+    errorMessage: ReactNode;
 };
 
 const errorMessageStyle = prepareNativeStyle(utils => ({

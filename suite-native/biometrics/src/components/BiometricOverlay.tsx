@@ -3,7 +3,7 @@ import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
-import { useTranslate, TxKeyPath } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 
 import { BiometricsIcons } from './BiometricsIcons';
 import { useBiometricsSettings } from '../useBiometricsSettings';
@@ -58,7 +58,6 @@ export const BiometricOverlay = ({
     onBiometricAuthPress,
 }: BiometricOverlayProps) => {
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
     const { isFacialEnabled, isFingerprintEnabled } = useBiometricsSettings();
 
     const titleTransKey = getBiometricsTranslationKey({ isFacialEnabled, isFingerprintEnabled });
@@ -74,7 +73,7 @@ export const BiometricOverlay = ({
                     style={applyStyle(bottomWrapperStyle)}
                 >
                     <BiometricsIcons iconSize={32} showShadow />
-                    <Text color="textPrimaryDefault">{translate(titleTransKey)}</Text>
+                    <Text color="textPrimaryDefault">{<Translation id={titleTransKey} />}</Text>
                 </TouchableOpacity>
             )}
         </>
