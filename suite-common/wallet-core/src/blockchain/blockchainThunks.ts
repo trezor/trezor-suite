@@ -211,7 +211,16 @@ export const initBlockchainThunk = createThunk(
 // or after BLOCKCHAIN.CONNECT event (blockchainActions.onConnect)
 export const subscribeBlockchainThunk = createThunk(
     `${BLOCKCHAIN_MODULE_PREFIX}/subscribeBlockchainThunk`,
-    ({ symbol }: { symbol: NetworkSymbol; fiatRates?: boolean }, { getState }) => {
+    async (
+        { symbol, onConnect }: { symbol: NetworkSymbol; fiatRates?: boolean; onConnect?: boolean },
+        { getState },
+    ) => {
+        const useIdentities = shouldUseIdentities(symbol);
+
+        if (onConnect && useIdentities) {
+            await TrezorConnect.blockchainSubscribe({ coin: symbol, blocks: true });
+        }
+
         // do NOT subscribe if there are no accounts
         // it leads to websocket disconnection
         const accountsToSubscribe = findAccountsByNetwork(
@@ -220,11 +229,16 @@ export const subscribeBlockchainThunk = createThunk(
         ).filter(a => isTrezorConnectBackendType(a.backendType)); // do not subscribe accounts with unsupported backend type
         if (!accountsToSubscribe.length) return;
 
-        const paramsArray = shouldUseIdentities(symbol)
+        const paramsArray = useIdentities
             ? Object.entries(arrayToDictionary(accountsToSubscribe, getAccountIdentity, true)).map(
-                  ([identity, accounts]) => ({ accounts, coin: symbol, identity }),
+                  ([identity, accounts]) => ({
+                      accounts,
+                      coin: symbol,
+                      identity,
+                      blocks: false,
+                  }),
               )
-            : [{ accounts: accountsToSubscribe, coin: symbol }];
+            : [{ accounts: accountsToSubscribe, coin: symbol, blocks: true }];
 
         return Promise.all(paramsArray.map(params => TrezorConnect.blockchainSubscribe(params)));
     },
@@ -240,6 +254,7 @@ export const unsubscribeBlockchainThunk = createThunk(
         const paramsArray = symbols.flatMap<{
             coin: NetworkSymbol;
             identity?: string;
+            blocks?: boolean;
             accounts: Account[];
         }>(symbol => {
             const accountsToSubscribe = findAccountsByNetwork(symbol, allAccounts).filter(a =>
@@ -260,10 +275,11 @@ export const unsubscribeBlockchainThunk = createThunk(
                     .map(identity => ({
                         coin: symbol,
                         identity,
+                        blocks: false,
                         accounts: accountIdentities[identity] ?? [],
                     }));
             } else {
-                return [{ coin: symbol, accounts: accountsToSubscribe }];
+                return [{ coin: symbol, accounts: accountsToSubscribe, blocks: true }];
             }
         });
 
@@ -314,7 +330,10 @@ export const onBlockchainConnectThunk = createThunk(
     async (symbol: string, { dispatch }) => {
         const network = getNetwork(symbol.toLowerCase());
         if (!network) return;
-        await dispatch(subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true }));
+
+        await dispatch(
+            subscribeBlockchainThunk({ symbol: network.symbol, fiatRates: true, onConnect: true }),
+        );
         await dispatch(updateFeeInfoThunk(network.symbol));
         // update accounts for connected network
         await dispatch(syncAccountsWithBlockchainThunk(network.symbol));
