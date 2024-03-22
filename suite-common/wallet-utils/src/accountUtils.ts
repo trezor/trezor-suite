@@ -151,8 +151,6 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
             return 'TR_NETWORK_ETHEREUM';
         case 'tsep':
             return 'TR_NETWORK_ETHEREUM_SEPOLIA';
-        case 'tgor':
-            return 'TR_NETWORK_ETHEREUM_GOERLI';
         case 'thol':
             return 'TR_NETWORK_ETHEREUM_HOLESKY';
         case 'etc':

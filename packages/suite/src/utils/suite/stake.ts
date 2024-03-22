@@ -19,7 +19,6 @@ export const WALLET_SDK_SOURCE = '1';
 export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
     const ethNetworks = {
         thol: 'holesky',
-        tgor: 'goerli',
         eth: 'mainnet',
     };
 

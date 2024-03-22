@@ -115,11 +115,11 @@ describe('Analytics Events', () => {
         cy.getTestElement('@theme/color-scheme-select/input').click();
         cy.getTestElement('@theme/color-scheme-select/option/dark').click();
 
-        // disable btc, enable ethereum and goerli
+        // disable btc, enable ethereum and holesky
         cy.getTestElement('@settings/menu/wallet').click();
         cy.getTestElement('@settings/wallet/network/btc').click();
         cy.getTestElement('@settings/wallet/network/eth').click();
-        cy.getTestElement('@settings/wallet/network/tgor').click();
+        cy.getTestElement('@settings/wallet/network/thol').click();
 
         // custom eth backend
         cy.getTestElement('@settings/wallet/network/eth/advance').click();
@@ -196,7 +196,7 @@ describe('Analytics Events', () => {
             EventType.SuiteReady,
         ).then(suiteReadyEvent => {
             expect(suiteReadyEvent.language).to.equal('cs');
-            expect(suiteReadyEvent.enabledNetworks).to.equal('eth,tgor');
+            expect(suiteReadyEvent.enabledNetworks).to.equal('eth,thol');
             expect(suiteReadyEvent.customBackends).to.equal('eth');
             expect(suiteReadyEvent.localCurrency).to.equal('czk');
             expect(suiteReadyEvent.bitcoinUnit).to.equal('sat');
