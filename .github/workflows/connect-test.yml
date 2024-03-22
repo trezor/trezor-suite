@@ -73,6 +73,7 @@ jobs:
     with:
       test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -93,6 +94,7 @@ jobs:
       test-pattern: methods
       methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -113,6 +115,7 @@ jobs:
       test-pattern: methods
       methods: "signTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -133,6 +136,7 @@ jobs:
       test-pattern: methods
       methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -153,6 +157,7 @@ jobs:
       test-pattern: methods
       methods: "stellarGetAddress,stellarSignTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -173,6 +178,7 @@ jobs:
       test-pattern: methods
       methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -193,6 +199,7 @@ jobs:
       test-pattern: methods
       methods: "eosGetPublicKey,eosSignTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -213,6 +220,7 @@ jobs:
       test-pattern: methods
       methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -233,6 +241,7 @@ jobs:
       test-pattern: methods
       methods: "nemGetAddress,nemSignTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -253,6 +262,7 @@ jobs:
       test-pattern: methods
       methods: "rippleGetAddress,rippleSignTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -273,6 +283,7 @@ jobs:
       test-pattern: methods
       methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
@@ -293,7 +304,62 @@ jobs:
       test-pattern: methods
       methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
       tests-firmware: ${{ matrix.firmware }}
+
     strategy:
       matrix:
         firmware: ["2.2.0", "2-main"]
       fail-fast: false
+
+  connect-T2B1:
+    needs: [build]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/connect-test-params.yml
+    with:
+      test-pattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.pattern }}
+      tests-firmware: "2-latest"
+      test-firmware-model: "R"
+      node-environment: ${{ matrix.node-environment }}
+      web-environment: ${{ matrix.web-environment }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - pattern: "authenticateDevice"
+            methods: ""
+            node-environment: true
+            web-environment: true
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "applySettings,applyFlags,getFirmwareHash"
+          # "signTransaction", (unsupported chain in fixtures)
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "getAccountInfo,getAccountDescriptor,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "stellarGetAddress,stellarSignTransaction"
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
+          # eos not supported
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "rippleGetAddress,rippleSignTransaction"
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
+          - pattern: "methods"
+            web-environment: false
+            node-environment: true
+            methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
