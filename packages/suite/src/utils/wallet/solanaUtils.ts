@@ -44,6 +44,11 @@ const encodeTokenTransferInstructionData = (instruction: {
 
 type PriorityFees = { computeUnitPrice: string; computeUnitLimit: string };
 
+export const dummyPriorityFeesForFeeEstimation: PriorityFees = {
+    computeUnitPrice: '100000',
+    computeUnitLimit: '50000',
+};
+
 const addPriorityFees = async (transaction: Transaction, priorityFees: PriorityFees) => {
     const { ComputeBudgetProgram } = await loadSolanaLib();
     transaction.add(
@@ -62,7 +67,7 @@ export const buildTransferTransaction = async (
     amountInSol: string,
     blockhash: string,
     lastValidBlockHeight: number,
-    priorityFees?: PriorityFees,
+    priorityFees: PriorityFees,
 ) => {
     const { Transaction, SystemProgram, PublicKey } = await loadSolanaLib();
     const transaction = new Transaction({
@@ -71,9 +76,7 @@ export const buildTransferTransaction = async (
         feePayer: new PublicKey(fromAddress),
     });
 
-    if (priorityFees) {
-        await addPriorityFees(transaction, priorityFees);
-    }
+    await addPriorityFees(transaction, priorityFees);
 
     transaction.add(
         SystemProgram.transfer({
@@ -231,7 +234,7 @@ export const buildTokenTransferTransaction = async (
     toTokenAccount: TokenAccount | undefined,
     blockhash: string,
     lastValidBlockHeight: number,
-    priorityFees?: PriorityFees,
+    priorityFees: PriorityFees,
 ): Promise<TokenTransferTxWithDestinationAddress> => {
     const { Transaction, PublicKey } = await loadSolanaLib();
 
@@ -241,9 +244,7 @@ export const buildTokenTransferTransaction = async (
         feePayer: new PublicKey(fromAddress),
     });
 
-    if (priorityFees) {
-        await addPriorityFees(transaction, priorityFees);
-    }
+    await addPriorityFees(transaction, priorityFees);
 
     // Token transaction building logic
 

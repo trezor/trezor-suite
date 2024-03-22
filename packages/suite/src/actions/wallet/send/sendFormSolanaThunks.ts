@@ -25,6 +25,7 @@ import {
     buildTransferTransaction,
     buildTokenTransferTransaction,
     getAssociatedTokenAccountAddress,
+    dummyPriorityFeesForFeeEstimation,
 } from 'src/utils/wallet/solanaUtils';
 
 import {
@@ -164,7 +165,7 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
                       recipientTokenAccount,
                       blockhash,
                       lastValidBlockHeight,
-                      undefined,
+                      dummyPriorityFeesForFeeEstimation,
                   )
                 : undefined;
 
@@ -181,7 +182,7 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
                       formValues.outputs[0].amount || '0',
                       blockhash,
                       lastValidBlockHeight,
-                      undefined,
+                      dummyPriorityFeesForFeeEstimation,
                   )
         ).compileMessage();
 
