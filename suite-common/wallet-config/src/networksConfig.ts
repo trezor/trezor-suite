@@ -282,7 +282,7 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
-        features: ['tokens', 'staking', 'coin-definitions'],
+        features: ['tokens', 'staking' /* coin-definitions */],
         explorer: {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
@@ -313,7 +313,7 @@ export const networks = {
         bip43Path: "m/44'/501'/i'/0'",
         decimals: 9,
         testnet: false,
-        features: ['tokens', 'coin-definitions' /* , 'staking' */],
+        features: ['tokens', 'coin-definitions' /*, 'staking' */],
         explorer: {
             tx: 'https://explorer.solana.com/tx/',
             account: 'https://explorer.solana.com/address/',
