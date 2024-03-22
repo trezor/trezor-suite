@@ -9,7 +9,7 @@ import {
 } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { selectCoinDefinitions } from '@suite-common/wallet-core';
+import { selectCoinDefinitions, selectFiatRates } from '@suite-common/wallet-core';
 import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { spacingsPx } from '@trezor/theme';
@@ -110,13 +110,18 @@ export const TokenList = ({
 }: TokenListProps) => {
     const theme = useTheme();
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, networkSymbol));
-
+    const fiatRates = useSelector(selectFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const { account } = useSelector(state => state.wallet.selectedAccount);
 
     if (!account) return null;
 
-    const tokensWithRates = enhanceTokensWithRates(tokens, localCurrency, account.symbol);
+    const tokensWithRates = enhanceTokensWithRates(
+        tokens,
+        localCurrency,
+        account.symbol,
+        fiatRates,
+    );
 
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
