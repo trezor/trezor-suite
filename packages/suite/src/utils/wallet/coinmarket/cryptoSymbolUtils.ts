@@ -7,6 +7,7 @@ const networkToCryptoSymbols: Partial<Record<NetworkSymbol, CryptoSymbol>> = {
     eth: 'ETH',
     etc: 'ETC',
     xrp: 'XRP',
+    txrp: 'TXRP',
     bch: 'BCH',
     btg: 'BTG',
     dash: 'DASH',
