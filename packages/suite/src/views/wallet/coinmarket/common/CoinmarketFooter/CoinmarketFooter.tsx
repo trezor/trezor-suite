@@ -14,7 +14,7 @@ const Wrapper = styled.div`
     justify-content: center;
     padding-top: 20px;
     margin-top: auto;
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
 `;
 
 const Left = styled.div`

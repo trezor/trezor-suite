@@ -8,5 +8,5 @@ export const useSystemColorScheme = (): ThemeColorVariant => {
         return 'dark';
     }
 
-    return 'light';
+    return 'standard';
 };

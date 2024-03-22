@@ -19,7 +19,7 @@ const progressBarWrapperStyle = prepareNativeStyle(utils => ({
     borderWidth: utils.borders.widths.small,
     alignItems: 'center',
     height: 20,
-    borderColor: utils.colors.borderOnElevation0,
+    borderColor: utils.colors.borderElevation1,
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
 }));
 

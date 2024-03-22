@@ -33,7 +33,7 @@ const Header = styled.div`
 `;
 
 const Body = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
 const FlexRow = styled.div`

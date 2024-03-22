@@ -15,7 +15,7 @@ const Container = styled.div`
         height: 0;
     }
 
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
 export type NavPages = 'sign' | 'verify';

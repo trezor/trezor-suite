@@ -11,7 +11,7 @@ import {
 } from '@trezor/theme';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { motionEasing } from '../../config/motion';
-import { ElevationContext, useElevation } from '../..';
+import { ElevationUp, useElevation } from './../ElevationContext/ElevationContext';
 
 const animationVariants = {
     closed: {
@@ -204,7 +204,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 data-test="@collapsible-box/body"
             >
                 <Content $elevation={elevation} $variant={variant}>
-                    <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
+                    <ElevationUp>{children}</ElevationUp>
                 </Content>
             </Collapser>
         </Wrapper>

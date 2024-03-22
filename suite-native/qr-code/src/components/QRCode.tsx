@@ -22,7 +22,7 @@ const qrCodeContainerStyle = prepareNativeStyle(_ => ({
     height: QRCODE_SIZE + QRCODE_PADDING,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colorVariants.light.backgroundSurfaceElevation1,
+    backgroundColor: colorVariants.standard.backgroundSurfaceElevation1,
 }));
 
 export const QRCode = ({ data }: QRCodeProps) => {
@@ -32,8 +32,8 @@ export const QRCode = ({ data }: QRCodeProps) => {
         <Box alignItems="center">
             <View style={applyStyle(qrCodeContainerStyle)}>
                 <ReactQRCode
-                    bgColor={colorVariants.light.backgroundSurfaceElevation1}
-                    fgColor={colorVariants.light.backgroundNeutralBold}
+                    bgColor={colorVariants.standard.backgroundSurfaceElevation1}
+                    fgColor={colorVariants.standard.backgroundNeutralBold}
                     level="Q"
                     size={QRCODE_SIZE}
                     value={data}

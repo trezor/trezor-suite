@@ -21,7 +21,7 @@ const RadioWrapper = styled.div`
         & > div:nth-of-type(2) {
             padding: 14px 0;
             margin-left: ${spacingsPx.xxs};
-            border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+            border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
             flex: 1 0 auto;
         }
     }

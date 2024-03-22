@@ -28,7 +28,7 @@ const useThemeOptions = () => {
     };
     const darkOption: Option = { value: 'dark', label: translationString('TR_COLOR_SCHEME_DARK') };
     const lightOption: Option = {
-        value: 'light',
+        value: 'standard',
         label: translationString('TR_COLOR_SCHEME_LIGHT'),
     };
     const debugOption: Option = { value: 'debug', label: 'Debug' };
@@ -41,7 +41,7 @@ const useThemeOptions = () => {
     const getOption = (theme: ThemeColorVariantWithSystem) => {
         const map: Record<ThemeColorVariantWithSystem, Option> = {
             debug: debugOption,
-            light: lightOption,
+            standard: lightOption,
             dark: darkOption,
             system: systemOption,
         };
@@ -62,7 +62,8 @@ export const Theme = () => {
     const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Theme);
     const { optionGroups, getOption } = useThemeOptions();
 
-    const selectedValue = getOption(autodetectTheme ? 'system' : theme.variant);
+    const themeVariant = autodetectTheme ? 'system' : theme.variant;
+    const selectedValue = getOption(themeVariant === 'light' ? 'standard' : themeVariant);
 
     const onChange = ({ value }: { value: SuiteThemeVariant }) => {
         const platformTheme = getOsTheme();

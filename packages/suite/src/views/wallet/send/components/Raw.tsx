@@ -27,7 +27,7 @@ const StyledTextarea = styled(Textarea)`
 
     > :first-child {
         background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-        border-color: ${({ theme }) => theme.borderOnElevation1};
+        border-color: ${({ theme }) => theme.borderElevation2};
     }
 `;
 

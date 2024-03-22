@@ -21,7 +21,7 @@ import styled from 'styled-components';
 const Container = styled.div<{ $isVisible?: boolean }>`
     background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
     border-bottom: ${({ $isVisible, theme }) =>
-        $isVisible ? `solid 1px ${theme.borderOnElevation0}` : 'none'};
+        $isVisible ? `solid 1px ${theme.borderElevation1}` : 'none'};
 `;
 
 export const SuiteBanners = () => {

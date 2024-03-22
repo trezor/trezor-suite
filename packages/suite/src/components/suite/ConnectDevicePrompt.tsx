@@ -7,7 +7,7 @@ import {
     motionEasing,
     LottieAnimation,
     useElevation,
-    ElevationContext,
+    ElevationUp,
 } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -142,7 +142,7 @@ export const ConnectDevicePrompt = ({
             transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
             data-test="@connect-device-prompt"
         >
-            <ElevationContext baseElevation={elevation}>
+            <ElevationUp>
                 <ConnectImage connected={connected} showWarning={showWarning} />
 
                 <Text>
@@ -154,7 +154,7 @@ export const ConnectDevicePrompt = ({
                         </Button>
                     )}
                 </Text>
-            </ElevationContext>
+            </ElevationUp>
         </Wrapper>
     );
 };

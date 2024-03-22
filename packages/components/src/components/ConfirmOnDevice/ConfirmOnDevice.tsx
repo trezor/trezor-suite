@@ -3,7 +3,7 @@ import styled, { css, keyframes } from 'styled-components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { borders, spacingsPx } from '@trezor/theme';
 
-import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
+import { ElevationUp } from '../ElevationContext/ElevationContext';
 import { ConfirmOnDeviceContent } from './ConfirmOnDeviceContent';
 
 enum AnimationDirection {
@@ -65,17 +65,13 @@ export interface ConfirmOnDeviceProps {
     deviceUnitColor?: number;
 }
 
-export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) => {
-    const { elevation } = useElevation();
-
-    return (
-        <Wrapper
-            $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
-            data-test="@prompts/confirm-on-device"
-        >
-            <ElevationContext baseElevation={elevation}>
-                <ConfirmOnDeviceContent {...rest} />
-            </ElevationContext>
-        </Wrapper>
-    );
-};
+export const ConfirmOnDevice = ({ isConfirmed, ...rest }: ConfirmOnDeviceProps) => (
+    <Wrapper
+        $animation={isConfirmed ? AnimationDirection.Down : AnimationDirection.Up}
+        data-test="@prompts/confirm-on-device"
+    >
+        <ElevationUp>
+            <ConfirmOnDeviceContent {...rest} />
+        </ElevationUp>
+    </Wrapper>
+);

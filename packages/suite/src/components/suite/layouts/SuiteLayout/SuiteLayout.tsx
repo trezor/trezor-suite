@@ -1,7 +1,7 @@
 import { useRef, useState, ReactNode } from 'react';
 import styled from 'styled-components';
 
-import { ElevationContext, variables } from '@trezor/components';
+import { ElevationContext, ElevationDown, ElevationUp, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { SuiteBanners } from 'src/components/suite/banners';
 import { Metadata } from 'src/components/suite';
@@ -101,7 +101,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     const isAccountPage = !!selectedAccount;
 
     return (
-        <ElevationContext baseElevation={-2}>
+        <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef}>
                 <PageWrapper>
                     <ModalContextProvider>
@@ -119,17 +119,21 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                         <LayoutContext.Provider value={setLayoutPayload}>
                             <Body data-test="@suite-layout/body">
                                 <Columns>
-                                    {!isMobileLayout && <Sidebar />}
+                                    <ElevationDown>{!isMobileLayout && <Sidebar />}</ElevationDown>
 
                                     <AppWrapper
                                         data-test="@app"
                                         ref={scrollRef}
                                         id={SCROLL_WRAPPER_ID}
                                     >
-                                        {isMobileLayout && isAccountPage && <MobileAccountsMenu />}
-                                        {TopMenu && <TopMenu />}
+                                        <ElevationUp>
+                                            {isMobileLayout && isAccountPage && (
+                                                <MobileAccountsMenu />
+                                            )}
+                                            {TopMenu && <TopMenu />}
 
-                                        <ContentWrapper>{children}</ContentWrapper>
+                                            <ContentWrapper>{children}</ContentWrapper>
+                                        </ElevationUp>
                                     </AppWrapper>
                                 </Columns>
                             </Body>

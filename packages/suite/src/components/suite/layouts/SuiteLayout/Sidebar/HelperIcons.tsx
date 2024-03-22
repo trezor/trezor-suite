@@ -11,7 +11,7 @@ const Container = styled.div`
     gap: ${spacingsPx.xxxs};
     justify-content: space-between;
     align-items: stretch;
-    border-right: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-right: 1px solid ${({ theme }) => theme.borderElevation1};
     padding: ${spacingsPx.xxxs};
 `;
 

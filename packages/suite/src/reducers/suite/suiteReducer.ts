@@ -15,7 +15,7 @@ import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
-import { ThemeColorVariant } from '@trezor/theme';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -74,7 +74,7 @@ export interface EvmSettings {
 
 export interface SuiteSettings {
     theme: {
-        variant: ThemeColorVariant;
+        variant: Exclude<SuiteThemeVariant, 'system'> | 'debug';
     };
     language: Locale;
     torOnionLinks: boolean;

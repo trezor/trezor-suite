@@ -31,7 +31,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
     useClearAnchorHighlightOnClick(wrapperRef);
 
     return (
-        <ElevationContext baseElevation={-2}>
+        <ElevationContext baseElevation={-1}>
             <Wrapper ref={wrapperRef}>
                 <PageWrapper>
                     <ModalContextProvider>

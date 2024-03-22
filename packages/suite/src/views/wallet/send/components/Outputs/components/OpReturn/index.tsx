@@ -31,7 +31,7 @@ const Inputs = styled.div`
 
 const StyledTextarea = styled(Textarea)`
     > :nth-child(1) {
-        border-color: ${({ theme }) => theme.borderOnElevation1};
+        border-color: ${({ theme }) => theme.borderElevation2};
     }
 `;
 
