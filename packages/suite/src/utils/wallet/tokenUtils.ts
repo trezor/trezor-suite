@@ -40,13 +40,13 @@ export const enhanceTokensWithRates = (
             fiatCurrency,
             token.contract as TokenAddress,
         );
-        const tokenFiatRate = rates?.[tokenFiatRateKey];
+        const fiatRate = rates?.[tokenFiatRateKey];
 
-        const fiatValue = new BigNumber(token.balance || 0).multipliedBy(tokenFiatRate?.rate || 0);
+        const fiatValue = new BigNumber(token.balance || 0).multipliedBy(fiatRate?.rate || 0);
 
         return {
             ...token,
-            tokenFiatRate,
+            fiatRate,
             fiatValue,
         };
     });
