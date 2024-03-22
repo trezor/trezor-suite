@@ -46,83 +46,104 @@ jobs:
           BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
           echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
-  build-deploy:
+  # build-deploy:
+  #   needs: [extract-branch]
+  #   uses: ./.github/workflows/template-connect-build-deploy.yml
+  #   with:
+  #     awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+  #     awsRegion: "eu-central-1"
+  #     serverHostname: "dev.suite.sldev.cz"
+  #     serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
+
+  # methods:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: methods.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     run-webextension: ${{ github.event_name == 'schedule' }}
+  #     build-overview: true
+
+  # popup-close:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: popup-close.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     run-webextension: true
+
+  # passphrase:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: passphrase.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     # currently flaky, run only in nightly
+  #     run-webextension: ${{ github.event_name == 'schedule' }}
+
+  # popup-pages:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: popup-pages.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  # browser-support:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: browser-support.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  # permissions:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: permissions.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  # transport:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: transport.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  # unchained:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: unchained.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     run-web: ${{ github.event_name == 'schedule' }}
+  #     run-webextension: false
+
+  # webextension-examples:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: webextension-example.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     run-webextension: ${{ github.event_name == 'schedule' }}
+  #     run-web: false
+
+  # Tests with legacy npm package and new popup
+  legacy-npm-browser-support:
+    # TODO: add build-deploy,
     needs: [extract-branch]
-    uses: ./.github/workflows/template-connect-build-deploy.yml
-    with:
-      awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
-      awsRegion: "eu-central-1"
-      serverHostname: "dev.suite.sldev.cz"
-      serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
-
-  methods:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: methods.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: ${{ github.event_name == 'schedule' }}
-      build-overview: true
-
-  popup-close:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: popup-close.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
-
-  passphrase:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: passphrase.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      # currently flaky, run only in nightly
-      run-webextension: ${{ github.event_name == 'schedule' }}
-
-  popup-pages:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: popup-pages.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-
-  browser-support:
-    needs: [build-deploy]
+    # if: github.event_name == 'schedule'
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
       test-name: browser-support.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      custom-connect-url: https://connect.trezor.io/9.1.12/
 
-  permissions:
-    needs: [build-deploy]
+  legacy-npm-popup-close:
+    # TODO: add build-deploy,
+    needs: [extract-branch]
+    # if: github.event_name == 'schedule'
     uses: ./.github/workflows/template-connect-popup-test-params.yml
     with:
-      test-name: permissions.test
+      test-name: popup-close-legacy.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-
-  transport:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: transport.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-
-  unchained:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: unchained.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-web: ${{ github.event_name == 'schedule' }}
-      run-webextension: false
-
-  webextension-examples:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: webextension-example.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: ${{ github.event_name == 'schedule' }}
-      run-web: false
+      custom-connect-url: https://connect.trezor.io/9.1.12/?trezor-connect-src=https://dev.suite.sldev.cz/connect/${{ needs.extract-branch.outputs.branch }}/
