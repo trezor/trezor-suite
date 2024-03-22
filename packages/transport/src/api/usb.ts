@@ -1,4 +1,4 @@
-import { AbstractApi, AbstractApiConstructorParams } from './abstract';
+import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
 import { AsyncResultWithTypedError } from '../types';
 import {
     CONFIGURATION_ID,
@@ -6,6 +6,7 @@ import {
     INTERFACE_ID,
     T1_HID_VENDOR,
     TREZOR_USB_DESCRIPTORS,
+    WEBUSB_BOOTLOADER_PRODUCT,
 } from '../constants';
 import { createTimeoutPromise } from '@trezor/utils';
 
@@ -72,10 +73,26 @@ export class UsbApi extends AbstractApi {
         };
     }
 
+    private matchDeviceType(device: USBDevice) {
+        const isBootloader = device.productId === WEBUSB_BOOTLOADER_PRODUCT;
+        if (device.deviceVersionMajor === 2) {
+            if (isBootloader) {
+                return DEVICE_TYPE.TypeT2Boot;
+            } else {
+                return DEVICE_TYPE.TypeT2;
+            }
+        } else {
+            if (isBootloader) {
+                return DEVICE_TYPE.TypeT1WebusbBoot;
+            } else {
+                return DEVICE_TYPE.TypeT1Webusb;
+            }
+        }
+    }
+
     public async enumerate() {
         try {
             const devices = await this.usbInterface.getDevices();
-
             const [hidDevices, nonHidDevices] = this.filterDevices(devices);
 
             if (hidDevices.length) {
@@ -85,7 +102,9 @@ export class UsbApi extends AbstractApi {
             }
             this.devices = this.createDevices(nonHidDevices);
 
-            return this.success(this.devices.map(d => d.path));
+            return this.success(
+                this.devices.map(d => ({ path: d.path, type: this.matchDeviceType(d.device) })),
+            );
         } catch (err) {
             // this shouldn't throw
             return this.unknownError(err, []);

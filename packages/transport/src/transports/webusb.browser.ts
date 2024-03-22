@@ -23,7 +23,7 @@ export class WebUsbTransport extends AbstractApiTransport {
                 usbInterface: navigator.usb,
                 logger,
             }),
-
+            logger,
             // sessions client with a request fn facilitating communication with a session backend (shared worker in case of webusb)
             sessionsClient: new SessionsClient({
                 // @ts-expect-error

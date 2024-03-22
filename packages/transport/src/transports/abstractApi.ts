@@ -27,8 +27,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     private api: AbstractApi;
     protected acquirePromise?: Deferred<void>;
 
-    constructor({ messages, api, sessionsClient, signal }: ConstructorParams) {
-        super({ messages, signal });
+    constructor({ messages, api, sessionsClient, signal, logger }: ConstructorParams) {
+        super({ messages, signal, logger });
         this.sessionsClient = sessionsClient;
         this.api = api;
     }
@@ -79,14 +79,21 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             if (!enumerateResult.success) {
                 return enumerateResult;
             }
-            const occupiedPaths = enumerateResult.payload;
+            // partial descriptors with path
+            const descriptors = enumerateResult.payload;
 
             // inform sessions background about occupied paths and get descriptors back
             const enumerateDoneResponse = await this.sessionsClient.enumerateDone({
-                paths: occupiedPaths,
+                paths: descriptors.map(d => d.path),
             });
 
-            return this.success(enumerateDoneResponse.payload.descriptors);
+            return this.success(
+                descriptors.map(d => ({
+                    path: d.path,
+                    type: d.type,
+                    session: enumerateDoneResponse.payload.sessions[d.path],
+                })),
+            );
         });
     }
 
@@ -113,8 +120,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
                 this.acquiredUnconfirmed[path] = acquireIntentResponse.payload.session;
 
-                const reset = !!input.previous;
-                const openDeviceResult = await this.api.openDevice(path, reset);
+                const openDeviceResult = await this.api.openDevice(path, true);
 
                 if (!openDeviceResult.success) {
                     if (this.listenPromise) {
@@ -175,64 +181,67 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
     }
 
-    public call({ session, name, data, protocol }: AbstractTransportMethodParams<'call'>) {
-        return this.scheduleAction(
-            async () => {
-                const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
-                    session,
-                });
-                if (!getPathBySessionResponse.success) {
-                    // session not found means that device was disconnected
-                    if (getPathBySessionResponse.error === 'session not found') {
-                        return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
-                    }
-
-                    return this.error({ error: ERRORS.UNEXPECTED_ERROR });
+    public call({
+        session,
+        name,
+        data,
+        protocol,
+        scheduleActionParams,
+    }: AbstractTransportMethodParams<'call'>) {
+        return this.scheduleAction(async () => {
+            const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
+                session,
+            });
+            if (!getPathBySessionResponse.success) {
+                // session not found means that device was disconnected
+                if (getPathBySessionResponse.error === 'session not found') {
+                    return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
                 }
-                const { path } = getPathBySessionResponse.payload;
 
-                try {
-                    const { encode, decode } = protocol || v1Protocol;
-                    const buffers = buildBuffers(this.messages, name, data, encode);
-                    for (let i = 0; i < buffers.length; i++) {
-                        const chunk = buffers[i];
+                return this.error({ error: ERRORS.UNEXPECTED_ERROR });
+            }
+            const { path } = getPathBySessionResponse.payload;
 
-                        await this.api.write(path, chunk).then(result => {
-                            if (!result.success) {
-                                throw new Error(result.error);
+            try {
+                const { encode, decode } = protocol || v1Protocol;
+                const buffers = buildBuffers(this.messages, name, data, encode);
+                for (let i = 0; i < buffers.length; i++) {
+                    const chunk = buffers[i];
+
+                    await this.api.write(path, chunk).then(result => {
+                        if (!result.success) {
+                            throw new Error(result.error);
+                        }
+                    });
+                }
+
+                const message = await receiveAndParse(
+                    this.messages,
+                    () =>
+                        this.api.read(path).then(result => {
+                            if (result.success) {
+                                return result.payload;
                             }
-                        });
-                    }
+                            throw new Error(result.error);
+                        }),
+                    decode,
+                );
 
-                    const message = await receiveAndParse(
-                        this.messages,
-                        () =>
-                            this.api.read(path).then(result => {
-                                if (result.success) {
-                                    return result.payload;
-                                }
-                                throw new Error(result.error);
-                            }),
-                        decode,
-                    );
-
-                    return this.success(message);
-                } catch (err) {
-                    // if user revokes usb permissions in browser we need a way how propagate that the device was technically disconnected,
-                    if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
-                        this.enumerate();
-                    }
-
-                    return this.unknownError(err, [
-                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
-                        ERRORS.DEVICE_NOT_FOUND,
-                        ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
-                        ERRORS.INTERFACE_DATA_TRANSFER,
-                    ]);
+                return this.success(message);
+            } catch (err) {
+                // if user revokes usb permissions in browser we need a way how propagate that the device was technically disconnected,
+                if (err.message === ERRORS.DEVICE_DISCONNECTED_DURING_ACTION) {
+                    this.enumerate();
                 }
-            },
-            { timeout: undefined },
-        );
+
+                return this.unknownError(err, [
+                    ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
+                    ERRORS.DEVICE_NOT_FOUND,
+                    ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
+                    ERRORS.INTERFACE_DATA_TRANSFER,
+                ]);
+            }
+        }, scheduleActionParams);
     }
 
     public send({ data, session, name, protocol }: AbstractTransportMethodParams<'send'>) {

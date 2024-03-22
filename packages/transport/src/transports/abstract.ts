@@ -48,6 +48,7 @@ export interface AbstractTransportParams {
     messages?: Record<string, any>;
     signal?: AbortSignal;
     logger?: Logger;
+    instanceId?: string;
 }
 
 export const isTransportInstance = (transport?: AbstractTransport) => {
@@ -146,6 +147,12 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     protected logger: Logger;
 
+    /**
+     * instanceId is used to identify transport instance in sessions background (there mostly for debugging). It is
+     * also shown on bridge status page
+     */
+    protected instanceId: string | undefined;
+
     constructor(params?: AbstractTransportParams) {
         const { messages, signal, logger } = params || {};
 
@@ -170,6 +177,8 @@ export abstract class AbstractTransport extends TypedEmitter<{
             warn: (..._args: string[]) => {},
             error: (..._args: string[]) => {},
         };
+
+        this.instanceId = params?.instanceId;
     }
 
     /**
@@ -317,6 +326,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
+        scheduleActionParams?: ScheduleActionParams;
     }): AbortableCall<
         MessageFromTrezor,
         // bridge

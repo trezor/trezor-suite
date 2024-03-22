@@ -137,5 +137,9 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.useCoreInPopup = input.useCoreInPopup;
     }
 
+    if (typeof input.instanceId === 'string') {
+        settings.instanceId = input.instanceId;
+    }
+
     return settings;
 };

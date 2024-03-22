@@ -79,6 +79,8 @@ export function acquire(res: UnknownPayload) {
 }
 
 export function call(res: UnknownPayload) {
+    // todo: old bridge may return MALFORMED_PROTOCOL_FORMAT as string,
+    // new bridge returns { error: MALFORMED_PROTOCOL_FORMAT }
     if (!isString(res)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }

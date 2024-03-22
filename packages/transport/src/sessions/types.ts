@@ -24,7 +24,7 @@ export type EnumerateDoneResponse = BackgroundResponse<{
     descriptors: Descriptor[];
 }>;
 
-export type AcquireIntentRequest = AcquireInput;
+export type AcquireIntentRequest = AcquireInput & { instanceId?: string };
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
     { session: string },

@@ -1,6 +1,14 @@
-import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-utils';
+import languageHeaderParser from 'accept-language-parser';
+
+import {
+    HttpServer,
+    allowOrigins,
+    parseBodyJSON,
+    parseBodyText,
+    Handler,
+} from '@trezor/node-utils';
 import { Descriptor } from '@trezor/transport/src/types';
-import { arrayPartition } from '@trezor/utils';
+import { Log, arrayPartition } from '@trezor/utils';
 
 import { sessionsClient, createApi } from './core';
 
@@ -15,7 +23,7 @@ export class TrezordNode {
     version = '3.0.0';
     serviceName = 'trezord-node';
     /** last known descriptors state */
-    descriptors: string;
+    descriptors: Descriptor[];
     /** pending /listen subscriptions that are supposed to be resolved whenever descriptors change is detected */
     listenSubscriptions: {
         descriptors: string;
@@ -25,11 +33,12 @@ export class TrezordNode {
     port: number;
     server?: HttpServer<never>;
     api: ReturnType<typeof createApi>;
+    logger = new Log('@trezor/transport-bridge', true);
 
     constructor({ port, api }: { port: number; api: 'usb' | 'udp' }) {
         this.port = port || defaults.port;
 
-        this.descriptors = '{}';
+        this.descriptors = [];
 
         this.listenSubscriptions = [];
 
@@ -37,47 +46,71 @@ export class TrezordNode {
         sessionsClient.on('descriptors', descriptors => {
             this.resolveListenSubscriptions(descriptors);
         });
-        this.api = createApi(api);
+        this.api = createApi(api, this.logger);
     }
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
-        this.descriptors = JSON.stringify(descriptors);
+        this.descriptors = descriptors;
         const [affected, unaffected] = arrayPartition(
             this.listenSubscriptions,
-            subscription => subscription.descriptors !== this.descriptors,
+            subscription => subscription.descriptors !== JSON.stringify(this.descriptors),
         );
         affected.forEach(subscription => {
-            subscription.res.end(this.descriptors);
+            subscription.res.end(str(this.descriptors));
         });
         this.listenSubscriptions = unaffected;
     }
 
     public start() {
         return new Promise<void>(resolve => {
-            const app = new HttpServer({ port: this.port, logger: console });
+            this.logger.info('Starting Trezor Bridge HTTP server');
+            const app = new HttpServer({
+                port: this.port,
+                logger: this.logger,
+            });
 
             app.use([
-                (_req, res, next) => {
-                    // todo: limit to whitelisted domains
-                    res.setHeader('Access-Control-Allow-Origin', '*');
-                    next(_req, res);
+                (req, res, next, context) => {
+                    // directly navigating to status page of bridge in browser. when request is not issued by js, there is no origin header
+                    if (
+                        !req.headers.origin &&
+                        req.headers.host &&
+                        [`127.0.0.1:${this.port}`, `localhost:${this.port}`].includes(
+                            req.headers.host,
+                        )
+                    ) {
+                        next(req, res);
+                    } else {
+                        allowOrigins(['https://sldev.cz', 'https://trezor.io', 'http://localhost'])(
+                            req,
+                            res,
+                            next,
+                            context,
+                        );
+                    }
+                },
+            ]);
+
+            // origin was checked in previous app.use. if it didn't not satisfy the check, it did not move on to this handler
+            app.use([
+                (req, res, next) => {
+                    if (req.headers.origin) {
+                        res.setHeader('Access-Control-Allow-Origin', req.headers.origin);
+                    }
+                    next(req, res);
                 },
             ]);
 
             app.post('/enumerate', [
                 (_req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
-                    this.api
-                        .enumerate()
-                        .then(result => {
-                            if (!result.success) {
-                                throw new Error(result.error);
-                            }
-                            res.end(str(result.payload.descriptors));
-                        })
-                        .catch(err => {
-                            res.end(str({ error: err.message }));
-                        });
+                    this.api.enumerate().then(result => {
+                        if (!result.success) {
+                            res.statusCode = 400;
+                            return res.end(str({ error: result.error }));
+                        }
+                        res.end(str(result.payload.descriptors));
+                    });
                 },
             ]);
 
@@ -96,12 +129,18 @@ export class TrezordNode {
             ]);
 
             app.post('/acquire/:path/:previous', [
+                parseBodyJSON,
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     this.api
-                        .acquire({ path: req.params.path, previous: req.params.previous })
+                        .acquire(
+                            { path: req.params.path, previous: req.params.previous },
+                            // @ts-expect-error
+                            { instanceId: req.body.instanceId },
+                        )
                         .then(result => {
                             if (!result.success) {
+                                res.statusCode = 400;
                                 return res.end(str({ error: result.error }));
                             }
                             res.end(str({ session: result.payload.session }));
@@ -120,6 +159,7 @@ export class TrezordNode {
                         })
                         .then(result => {
                             if (!result.success) {
+                                res.statusCode = 400;
                                 return res.end(str({ error: result.error }));
                             }
                             res.end(str({ session: req.params.session }));
@@ -138,6 +178,7 @@ export class TrezordNode {
                         })
                         .then(result => {
                             if (!result.success) {
+                                res.statusCode = 400;
                                 return res.end(str({ error: result.error }));
                             }
                             res.end(str(result.payload));
@@ -150,6 +191,7 @@ export class TrezordNode {
                 (req, res) => {
                     this.api.receive({ session: req.params.session }).then(result => {
                         if (!result.success) {
+                            res.statusCode = 400;
                             return res.end(str({ error: result.error }));
                         }
                         res.end(str(result.payload));
@@ -168,6 +210,7 @@ export class TrezordNode {
                         })
                         .then(result => {
                             if (!result.success) {
+                                res.statusCode = 400;
                                 return res.end(str({ error: result.error }));
                             }
                             res.end();
@@ -184,8 +227,35 @@ export class TrezordNode {
             ]);
 
             app.get('/status', [
+                async (req, res) => {
+                    const language =
+                        languageHeaderParser.parse(req.headers['accept-language'])[0]?.code || 'en';
+
+                    const enumerateResult = await this.api.enumerate();
+                    const props = {
+                        intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
+                        version: this.version,
+                        devices: enumerateResult.success ? enumerateResult.payload.descriptors : [],
+                        language,
+                        logs: app.logger.getLog().slice(-20),
+                    };
+
+                    res.end(JSON.stringify(props, null, 2));
+                },
+            ]);
+
+            app.get('/logs', [
                 (_req, res) => {
-                    res.end(`hello, I am bridge in node, version: ${this.version}`);
+                    res.writeHead(200, {
+                        'Content-Type': 'text/plain',
+                        'Content-Disposition': 'attachment; filename=trezor-bridge.txt',
+                    });
+                    res.end(
+                        app.logger
+                            .getLog()
+                            .map(l => l.message.join('. '))
+                            .join('.\n'),
+                    );
                 },
             ]);
 

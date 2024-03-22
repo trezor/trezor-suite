@@ -6868,6 +6868,10 @@ export default defineMessages({
         id: 'TR_DEVICE_CONNECTED_WRONG_STATE',
         defaultMessage: 'Device detected in incorrect state',
     },
+    TR_DEVICE_UNREADABLE: {
+        id: 'TR_DEVICE_UNREADABLE',
+        defaultMessage: "Couldn't read from connected device",
+    },
     TR_DEVICE_CONNECTED_BOOTLOADER: {
         id: 'TR_DEVICE_CONNECTED_BOOTLOADER',
         defaultMessage: 'Device connected in bootloader',

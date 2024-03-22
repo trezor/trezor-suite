@@ -166,6 +166,9 @@ export class BridgeTransport extends AbstractTransport {
 
                 const response = await this.post('/acquire', {
                     params: `${input.path}/${previous}`,
+                    body: {
+                        instanceId: this.instanceId,
+                    },
                     timeout: true,
                     signal,
                 });
@@ -225,29 +228,32 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
-    public call({ session, name, data, protocol }: AbstractTransportMethodParams<'call'>) {
-        return this.scheduleAction(
-            async signal => {
-                const { encode, decode } = protocol || bridgeProtocol;
-                const [bytes] = buildBuffers(this.messages, name, data, encode);
-                const response = await this.post(`/call`, {
-                    params: session,
-                    body: bytes.toString('hex'),
-                    signal,
-                });
-                if (!response.success) {
-                    return response;
-                }
-                const message = await receiveAndParse(
-                    this.messages,
-                    () => Promise.resolve(Buffer.from(response.payload, 'hex')),
-                    decode,
-                );
+    public call({
+        session,
+        name,
+        data,
+        protocol,
+        scheduleActionParams,
+    }: AbstractTransportMethodParams<'call'>) {
+        return this.scheduleAction(async signal => {
+            const { encode, decode } = protocol || bridgeProtocol;
+            const [bytes] = buildBuffers(this.messages, name, data, encode);
+            const response = await this.post(`/call`, {
+                params: session,
+                body: bytes.toString('hex'),
+                signal,
+            });
+            if (!response.success) {
+                return response;
+            }
+            const message = await receiveAndParse(
+                this.messages,
+                () => Promise.resolve(Buffer.from(response.payload, 'hex')),
+                decode,
+            );
 
-                return this.success(message);
-            },
-            { timeout: undefined },
-        );
+            return this.success(message);
+        }, scheduleActionParams);
     }
 
     public send({ session, name, data, protocol }: AbstractTransportMethodParams<'send'>) {

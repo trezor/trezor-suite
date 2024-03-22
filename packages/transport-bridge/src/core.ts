@@ -7,6 +7,7 @@ import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
+import { Log, createTimeoutPromise } from '@trezor/utils';
 
 export const sessionsBackground = new SessionsBackground();
 
@@ -19,11 +20,12 @@ sessionsBackground.on('descriptors', descriptors => {
     sessionsClient.emit('descriptors', descriptors);
 });
 
-export const createApi = (apiStr: 'usb' | 'udp') => {
+export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
     const api =
         apiStr === 'udp'
-            ? new UdpApi({})
+            ? new UdpApi({ logger })
             : new UsbApi({
+                  logger,
                   usbInterface: new WebUSB({
                       allowAllDevices: true, // return all devices, not only authorized
                   }),
@@ -46,8 +48,13 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         for (let i = 0; i < buffers.length; i++) {
             const bufferSegment = buffers[i];
 
-            await api.write(path, bufferSegment);
+            const result = await api.write(path, bufferSegment);
+            if (!result.success) {
+                return result;
+            }
         }
+
+        return { success: true as const };
     };
 
     const readUtil = async ({ path }: { path: string }) => {
@@ -63,11 +70,14 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
                 protocolV1.decode,
             );
 
-            return protocolBridge
-                .encode(message.buffer, { messageType: message.typeId })[0]
-                .toString('hex');
+            return {
+                success: true as const,
+                payload: protocolBridge
+                    .encode(message.buffer, { messageType: message.typeId })[0]
+                    .toString('hex'),
+            };
         } catch (err) {
-            return { success: false as const, error: err.message };
+            return { success: false as const, error: err.message as string };
         }
     };
 
@@ -79,23 +89,56 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
             return enumerateResult;
         }
 
-        return sessionsClient.enumerateDone({ paths: enumerateResult.payload });
+        // todo: one mapping here and one mapping below, maybe this could be improved
+        const enumerateDoneResponse = await sessionsClient.enumerateDone({
+            paths: enumerateResult.payload.map(d => d.path),
+        });
+
+        if (!enumerateDoneResponse.success) {
+            return enumerateDoneResponse;
+        }
+
+        // sessions background only cares about sessions and paths. however from api layer we return more information
+        // that does not flow through sessions background, so I need to combine both results here
+        const descriptors = enumerateDoneResponse.payload.descriptors.map(d => ({
+            path: d.path,
+            session: d.session,
+            type: enumerateResult.payload.find(e => e.path === d.path)?.type,
+        }));
+
+        return {
+            ...enumerateDoneResponse,
+            payload: { ...enumerateDoneResponse.payload, descriptors },
+        };
     };
 
-    const acquire = async (acquireInput: AcquireInput) => {
+    const acquire = async (acquireInput: AcquireInput, { instanceId }: { instanceId?: string }) => {
         const acquireIntentResult = await sessionsClient.acquireIntent({
             path: acquireInput.path,
             previous: acquireInput.previous === 'null' ? null : acquireInput.previous,
+            instanceId,
         });
         if (!acquireIntentResult.success) {
             return acquireIntentResult;
         }
+
+        const openDeviceResult = await api.openDevice(acquireInput.path, true);
+
+        if (!openDeviceResult.success) {
+            return openDeviceResult;
+        }
+
+        // waiting for a while fixes almost all issues during 'non-cooperative' force acquire from another window
+        await createTimeoutPromise(500);
+
         await sessionsClient.acquireDone({ path: acquireInput.path });
 
         return acquireIntentResult;
     };
 
     const release = async ({ session, path }: ReleaseInput) => {
+        await api.closeDevice(path);
+
         await sessionsClient.releaseIntent({ session });
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
@@ -103,8 +146,6 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         if (!sessionsResult.success) {
             return sessionsResult;
         }
-
-        await api.closeDevice(path);
 
         return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
     };
@@ -117,11 +158,18 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
             return sessionsResult;
         }
         const { path } = sessionsResult.payload;
-        await api.openDevice(path, false);
-        await writeUtil({ path, data });
-        const message = await readUtil({ path });
 
-        return { success: true as const, payload: message };
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
+
+        const writeResult = await writeUtil({ path, data });
+        if (!writeResult.success) {
+            return writeResult;
+        }
+
+        return readUtil({ path });
     };
 
     const send = async ({ session, data }: { session: string; data: string }) => {
@@ -134,10 +182,12 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         }
         const { path } = sessionsResult.payload;
 
-        await api.openDevice(path, false);
-        await writeUtil({ path, data });
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
 
-        return { success: true as const };
+        return writeUtil({ path, data });
     };
 
     const receive = async ({ session }: { session: string }) => {
@@ -150,11 +200,12 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         }
         const { path } = sessionsResult.payload;
 
-        await api.openDevice(path, false);
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
 
-        const message = await readUtil({ path });
-
-        return { success: true as const, payload: message };
+        return readUtil({ path });
     };
 
     return {

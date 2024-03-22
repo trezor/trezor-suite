@@ -2,17 +2,22 @@
     "name": "@trezor/transport-bridge",
     "version": "3.0.0",
     "main": "src/index",
+    "module": "src/index",
     "license": "See LICENSE.md in repo root",
     "private": true,
     "sideEffects": false,
     "scripts": {
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "build:js": "yarn g:rimraf ./dist && yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
+        "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
+        "build:node:module": "yarn esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node18 --external:usb",
+        "build:node": "yarn build:node:bin && yarn build:node:module",
+        "build:js": "yarn g:rimraf ./dist && yarn build:node",
         "build:bin": "yarn g:rimraf -rf build && yarn pkg ./dist/bin.js --config package.json",
         "build": "yarn build:js && yarn build:bin"
     },
     "devDependencies": {
+        "@types/accept-language-parser": "^1.5.6",
         "esbuild": "^0.20.0",
         "pkg": "^5.8.1"
     },
@@ -21,6 +26,7 @@
         "@trezor/protocol": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "accept-language-parser": "1.5.0",
         "usb": "^2.11.0"
     },
     "pkg": {

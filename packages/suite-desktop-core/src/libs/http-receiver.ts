@@ -1,7 +1,7 @@
 import * as url from 'url';
 
 import { xssFilters } from '@trezor/utils';
-import { HttpServer, allowOrigins } from '@trezor/node-utils';
+import { HttpServer, allowReferers } from '@trezor/node-utils';
 
 import { HTTP_ORIGINS_DEFAULT } from './constants';
 
@@ -48,7 +48,7 @@ export const createHttpReceiver = () => {
     ]);
 
     httpReceiver.get('/oauth', [
-        allowOrigins(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
+        allowReferers(['', '127.0.0.1', 'www.dropbox.com']), // No referer is sent by Google, Dropbox sends referer when using Safari
         (request, response) => {
             const { search } = url.parse(request.url, true);
             if (search) {
@@ -70,7 +70,7 @@ export const createHttpReceiver = () => {
     ]);
 
     httpReceiver.get('/buy-redirect', [
-        allowOrigins(['', 'localhost:3000', '*.invity.io', 'invity.io']),
+        allowReferers(['', 'localhost:3000', '*.invity.io', 'invity.io']),
         (request, response) => {
             const { query } = url.parse(request.url, true);
             if (query && query.p) {
@@ -83,7 +83,7 @@ export const createHttpReceiver = () => {
     ]);
 
     httpReceiver.get('/buy-post', [
-        allowOrigins(['']), // No referer
+        allowReferers(['']), // No referer
         (request, response) => {
             try {
                 const { searchParams } = new URL(request.url, 'http://127.0.0.1:21335'); // hostname is not important here, just to be able to validate relative URL
@@ -115,7 +115,7 @@ export const createHttpReceiver = () => {
     ]);
 
     httpReceiver.get('/sell-redirect', [
-        allowOrigins(['']), // No referer
+        allowReferers(['']), // No referer
         (request, response) => {
             const { query } = url.parse(request.url, true);
             if (query && query.p) {
@@ -128,7 +128,7 @@ export const createHttpReceiver = () => {
     ]);
 
     httpReceiver.get('/spend-iframe', [
-        allowOrigins(['']), // Opened in a new tab, no referer
+        allowReferers(['']), // Opened in a new tab, no referer
         (_request, response) => {
             const regex = /^https:\/\/(.+\.|)bitrefill\.com$/;
             const template = `<!DOCTYPE html>
@@ -195,7 +195,7 @@ export const createHttpReceiver = () => {
     ]);
 
     httpReceiver.get('/spend-handle-message', [
-        allowOrigins(HTTP_ORIGINS_DEFAULT),
+        allowReferers(HTTP_ORIGINS_DEFAULT),
         (request, response) => {
             const { query } = url.parse(request.url, true);
             httpReceiver.emit('spend/message', {

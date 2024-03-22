@@ -15,7 +15,7 @@ import {
     ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
 import { initLog } from '../utils/debug';
-import type { Transport, Descriptor } from '@trezor/transport';
+import { type Transport, type Descriptor, TRANSPORT_ERROR } from '@trezor/transport';
 import {
     Device as DeviceTyped,
     DeviceFirmwareStatus,
@@ -50,6 +50,8 @@ export type RunOptions = {
     useEmptyPassphrase?: boolean;
     useCardanoDerivation?: boolean;
 };
+
+export const GET_FEATURES_TIMEOUT = 3000;
 
 const parseRunOptions = (options?: RunOptions): RunOptions => {
     if (!options) options = {};
@@ -88,7 +90,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     originalDescriptor: Descriptor;
 
-    unreadableError?: string; // unreadable error like: HID device, LIBUSB_ERROR
+    /**
+     * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
+     * with some expected error, for example HID device, LIBUSB_ERROR, or it simply timeout out. such device can't be worked
+     * with and user needs to take some action. for example reconnect the device, update firmware or change transport type
+     */
+    unreadableError?: string;
 
     // @ts-expect-error: strictPropertyInitialization
     firmwareStatus: DeviceFirmwareStatus;
@@ -217,18 +224,17 @@ export class Device extends TypedEmitter<DeviceEvents> {
             if (this.commands) {
                 this.commands.dispose();
                 if (this.commands.callPromise) {
+                    console.log('device.relase -> await  commands.callPromise.promise');
                     await this.commands.callPromise.promise;
                 }
             }
 
-            if (this.releasePromise) {
-                await this.releasePromise;
-            }
             this.releasePromise = this.transport.release({
                 session: this.activitySessionID,
                 path: this.originalDescriptor.path,
             });
 
+            console.log('device.relase -> await this.releasePromise.promise');
             const releaseResponse = await this.releasePromise.promise;
             this.releasePromise = undefined;
             if (releaseResponse.success) {
@@ -236,10 +242,21 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.originalDescriptor.session = null;
             }
         }
+        console.log('device.release done');
     }
 
     async cleanup() {
+        // this cleanup is called even if initial call to acquire device (GetFeatures) fails, in that
+        // case, listener would be removed, features are never updated and device never emits connect-device (acquired)
+        // event again.
+
+        const deviceAcquiredListener = this.listeners(DEVICE.ACQUIRED)[0];
         this.removeAllListeners();
+
+        if (deviceAcquiredListener) {
+            this.on(DEVICE.ACQUIRED, deviceAcquiredListener);
+        }
+
         // make sure that Device_CallInProgress will not be thrown
         delete this.runPromise;
         await this.release();
@@ -256,7 +273,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const runPromise = createDeferred();
         this.runPromise = runPromise;
 
+        console.log('run -> _runInner');
         this._runInner(fn, options).catch(err => {
+            console.log('run -> _runInner catch err', err);
             runPromise.reject(err);
         });
 
@@ -307,6 +326,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
             delete this.runPromise;
         }
 
+        if (this.commands?.callPromise) {
+            this.commands.callPromise.abort();
+        }
         // session was acquired by another instance. but another might not have power to release interface
         // so it only notified about its session acquiral and the interrupted instance should cooperate
         // and release device too.
@@ -323,50 +345,54 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         if (!this.isUsedHere() || this.commands?.disposed || !this.getExternalState()) {
             // acquire session
+            console.log('_runInner, acquire');
             await this.acquire();
 
             // update features
             try {
                 if (fn) {
+                    console.log('_runInner, initialize (branch 1)');
                     await this.initialize(
                         !!options.useEmptyPassphrase,
                         !!options.useCardanoDerivation,
                     );
                 } else {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
-                    // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
-                    // transport response is pending endlessly, calling any other message will end up with "device call in progress"
-                    // set the timeout for this call so whenever it happens "unacquired device" will be created instead
-                    // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
+                    console.log('_runInner, getFeatures (branch 2)');
                     await Promise.race([
                         this.getFeatures(),
+                        // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
+                        // transport response is pending endlessly, calling any other message will end up with "device call in progress"
+                        // set the timeout for this call so whenever it happens "unacquired device" will be created instead
+                        // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                         new Promise((_resolve, reject) =>
-                            setTimeout(() => reject(new Error('GetFeatures timeout')), 3000),
+                            setTimeout(
+                                () => reject(new Error('GetFeatures timeout')),
+                                GET_FEATURES_TIMEOUT,
+                            ),
                         ),
                     ]);
                 }
             } catch (error) {
-                // note: this happens on T1B1 with webusb if there was "select wallet dialog" and user reloads page.
-                // note this happens even before transport-refactor-2 branch
+                console.log('_runInner catch', error);
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
                     // handling corner-case T1B1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
                     // this time add empty "fn" param to force Initialize message
                     this.inconsistent = true;
+                    console.log('inconsistent branch meow');
 
                     return this._runInner(() => Promise.resolve({}), options);
                 }
+
+                if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
+                    this.unreadableError = 'Connection timeout';
+                }
+
                 this.inconsistent = true;
                 delete this.runPromise;
 
-                return Promise.reject(
-                    ERRORS.TypedError(
-                        'Device_InitializeFailed',
-                        `Initialize failed: ${error.message} ${
-                            error.code ? `, code: ${error.code}` : ''
-                        }`,
-                    ),
-                );
+                return Promise.reject(ERRORS.TypedError('Device_InitializeFailed', error.message));
             }
         }
 
@@ -378,6 +404,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         // if we were waiting for device to be acquired, it should be guaranteed here that it had already happened
         // (features are reloaded too)
+        console.log(
+            'this.listeners(DEVICE.ACQUIRED).length',
+            this.listeners(DEVICE.ACQUIRED).length,
+        );
         if (this.listeners(DEVICE.ACQUIRED).length > 0) {
             this.emit(DEVICE.ACQUIRED);
         }
@@ -519,6 +549,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         const { message } = await this.getCommands().typedCall('Initialize', 'Features', payload);
+        console.log('initialize response, ', message);
         this._updateFeatures(message);
     }
 

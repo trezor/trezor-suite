@@ -37,4 +37,5 @@ export interface ConnectSettings {
     proxy?: Proxy;
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
+    instanceId?: string;
 }

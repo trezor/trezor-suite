@@ -74,6 +74,8 @@ const getMessageId = ({
             return 'TR_TREZOR_BRIDGE_IS_NOT_RUNNING';
         case 'device-bootloader':
             return 'TR_DEVICE_CONNECTED_BOOTLOADER';
+        case 'device-unreadable':
+            return 'TR_DEVICE_UNREADABLE';
         default: {
             if (connected) {
                 return !showWarning ? 'TR_DEVICE_CONNECTED' : 'TR_DEVICE_CONNECTED_WRONG_STATE';
