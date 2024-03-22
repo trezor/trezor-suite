@@ -17,7 +17,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { Alert, useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     XpubFormContext,
     xpubFormValidationSchema,
@@ -97,11 +97,15 @@ export const XpubScanScreen = ({
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         if (networkSymbol === 'btc' && isBtcTestnetXpub(xpubAddress)) {
             showDelayedAlert({
-                title: translate('moduleAccountImport.xpubScanScreen.alert.xpub.title'),
-                description: translate('moduleAccountImport.xpubScanScreen.alert.xpub.description'),
+                title: <Translation id="moduleAccountImport.xpubScanScreen.alert.xpub.title" />,
+                description: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.alert.xpub.description" />
+                ),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleAccountImport.xpubScanScreen.confirmButton'),
+                primaryButtonTitle: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
+                ),
                 onPressPrimaryButton: () => null,
             });
 
@@ -115,16 +119,18 @@ export const XpubScanScreen = ({
             isAddressValid(xpubAddress, networkSymbol)
         ) {
             showDelayedAlert({
-                title: translate('moduleAccountImport.xpubScanScreen.alert.address.title'),
-                description: translate(
-                    'moduleAccountImport.xpubScanScreen.alert.address.description',
+                title: <Translation id="moduleAccountImport.xpubScanScreen.alert.address.title" />,
+                description: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.alert.address.description" />
                 ),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleAccountImport.xpubScanScreen.confirmButton'),
+                primaryButtonTitle: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
+                ),
                 onPressPrimaryButton: () => null,
-                secondaryButtonTitle: translate(
-                    'moduleAccountImport.xpubScanScreen.alert.address.hintButton',
+                secondaryButtonTitle: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.alert.address.hintButton" />
                 ),
                 onPressSecondaryButton: () => {
                     hideAlert();

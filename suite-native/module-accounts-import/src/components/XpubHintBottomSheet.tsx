@@ -2,7 +2,7 @@ import { BottomSheet, Box, Button, Text, VStack } from '@suite-native/atoms';
 import { Video, VideoName } from '@suite-native/video-assets';
 import { NetworkType } from '@suite-common/wallet-config';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 
 type XpubHintBottomSheetProps = {
     networkType: NetworkType;
@@ -15,12 +15,17 @@ export const XpubHintBottomSheet = ({
     isVisible,
     handleClose,
 }: XpubHintBottomSheetProps) => {
-    const { translate } = useTranslate();
     const isAddressBased = isAddressBasedNetwork(networkType);
     const video: VideoName = isAddressBased ? 'xpubImportBTC' : 'xpubImportETH';
-    const title = isAddressBased
-        ? translate('moduleAccountImport.xpubScanScreen.hintBottomSheet.title.address')
-        : translate('moduleAccountImport.xpubScanScreen.hintBottomSheet.title.xpub');
+    const title = (
+        <Translation
+            id={
+                isAddressBased
+                    ? 'moduleAccountImport.xpubScanScreen.hintBottomSheet.title.address'
+                    : 'moduleAccountImport.xpubScanScreen.hintBottomSheet.title.xpub'
+            }
+        />
+    );
 
     const textTranslationTag: TxKeyPath = isAddressBased
         ? 'moduleAccountImport.xpubScanScreen.hintBottomSheet.text.address'
@@ -49,7 +54,7 @@ export const XpubHintBottomSheet = ({
                         data-testID="@accounts-import/xpub-help-modal/confirm-btn"
                         onPress={handleClose}
                     >
-                        {translate('moduleAccountImport.xpubScanScreen.confirmButton')}
+                        <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
                     </Button>
                 </Box>
             </Box>

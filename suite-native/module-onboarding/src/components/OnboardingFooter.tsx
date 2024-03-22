@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { useRoute } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
 
@@ -12,10 +14,10 @@ const wrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 type OnboardingFooterProps = {
-    nextButtonTitle?: string;
+    nextButtonTitle?: ReactNode;
     redirectTarget: () => void;
 } & RequireAllOrNone<
-    { backButtonTitle?: string; onBack?: () => void },
+    { backButtonTitle?: ReactNode; onBack?: () => void },
     'backButtonTitle' | 'onBack'
 >;
 

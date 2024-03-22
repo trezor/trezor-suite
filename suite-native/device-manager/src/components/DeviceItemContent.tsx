@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { Icon, IconName } from '@suite-common/icons';
 import { HStack, Box, Text } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     selectDeviceNameById,
     DeviceRootState,
@@ -44,7 +44,6 @@ export const DeviceItemContent = ({
     isPortfolioLabelDisplayed = true,
     headerTextVariant = 'body',
 }: DeviceItemContentProps) => {
-    const { translate } = useTranslate();
     const deviceName = useSelector((state: DeviceRootState) =>
         selectDeviceNameById(state, deviceId),
     );
@@ -54,9 +53,9 @@ export const DeviceItemContent = ({
 
     const isPortfolioTrackerDevice = deviceId === PORTFOLIO_TRACKER_DEVICE_ID;
 
-    const deviceHeader =
-        (isPortfolioTrackerDevice ? deviceName : deviceLabel) ??
-        translate('deviceManager.defaultHeader');
+    const deviceHeader = (isPortfolioTrackerDevice ? deviceName : deviceLabel) ?? (
+        <Translation id="deviceManager.defaultHeader" />
+    );
 
     return (
         <HStack alignItems="center" spacing="medium">

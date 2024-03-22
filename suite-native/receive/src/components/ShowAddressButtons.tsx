@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 
 import { VStack, TextButton, Button } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 
 type ShowAddressButtonsProps = {
@@ -14,7 +14,6 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const openLink = useOpenLink();
-    const { translate } = useTranslate();
 
     const handleOpenEduLink = () => {
         openLink('https://trezor.io/learn/a/verifying-trezor-suite-lite-addresses');
@@ -23,14 +22,16 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     return (
         <VStack spacing="large">
             <Button iconLeft="eye" size="large" onPress={onShowAddress}>
-                {translate(
-                    isPortfolioTrackerDevice
-                        ? 'moduleReceive.receiveAddressCard.showAddress.buttonTracker'
-                        : 'moduleReceive.receiveAddressCard.showAddress.button',
-                )}
+                <Translation
+                    id={
+                        isPortfolioTrackerDevice
+                            ? 'moduleReceive.receiveAddressCard.showAddress.buttonTracker'
+                            : 'moduleReceive.receiveAddressCard.showAddress.button'
+                    }
+                />
             </Button>
             <TextButton size="small" onPress={handleOpenEduLink} iconRight="arrowUpRight">
-                {translate('moduleReceive.receiveAddressCard.showAddress.learnMore')}
+                <Translation id="moduleReceive.receiveAddressCard.showAddress.learnMore" />
             </TextButton>
         </VStack>
     );

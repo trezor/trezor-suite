@@ -1,10 +1,12 @@
+import { ReactNode } from 'react';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, StepsProgressBar, Text } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 type OnboardingScreenHeaderProps = {
-    title: string;
-    subtitle?: string;
+    title: ReactNode;
+    subtitle?: ReactNode;
     activeStep: number;
 };
 

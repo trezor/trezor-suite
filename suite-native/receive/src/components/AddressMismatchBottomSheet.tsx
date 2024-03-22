@@ -1,5 +1,5 @@
 import { BottomSheet, Button, VStack, Box, Text, BulletListItem } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
 import { ReceiveAddressBottomSheetHeader } from './ReceiveAddressBottomSheetHeader';
@@ -14,7 +14,6 @@ export const AddressMismatchBottomSheet = ({
     onClose,
 }: AddressMismatchBottomSheetProps) => {
     const openLink = useOpenLink();
-    const { translate } = useTranslate();
 
     const handleOpenSupportLink = () => openLink('https://trezor.io/learn/c/trezor-suite-lite');
 
@@ -27,10 +26,10 @@ export const AddressMismatchBottomSheet = ({
         >
             <VStack spacing="large">
                 <ReceiveAddressBottomSheetHeader
-                    title={translate('moduleReceive.bottomSheets.addressMismatch.title')}
-                    description={translate(
-                        'moduleReceive.bottomSheets.addressMismatch.description',
-                    )}
+                    title={<Translation id="moduleReceive.bottomSheets.addressMismatch.title" />}
+                    description={
+                        <Translation id="moduleReceive.bottomSheets.addressMismatch.description" />
+                    }
                 />
 
                 <VStack spacing="small">
@@ -38,10 +37,10 @@ export const AddressMismatchBottomSheet = ({
                         <Translation id="moduleReceive.bottomSheets.addressMismatch.remember" />
                     </Text>
                     <BulletListItem color="textSubdued">
-                        {translate('moduleReceive.bottomSheets.addressMismatch.trustDevice')}
+                        <Translation id="moduleReceive.bottomSheets.addressMismatch.trustDevice" />
                     </BulletListItem>
                     <BulletListItem color="textSubdued">
-                        {translate('moduleReceive.bottomSheets.addressMismatch.contactSupport')}
+                        <Translation id="moduleReceive.bottomSheets.addressMismatch.contactSupport" />
                     </BulletListItem>
                 </VStack>
 
@@ -52,11 +51,11 @@ export const AddressMismatchBottomSheet = ({
                             colorScheme="tertiaryElevation0"
                             onPress={handleOpenSupportLink}
                         >
-                            {translate(
-                                'moduleReceive.bottomSheets.addressMismatch.reportIssueButton',
-                            )}
+                            <Translation id="moduleReceive.bottomSheets.addressMismatch.reportIssueButton" />
                         </Button>
-                        <Button onPress={onClose}>{translate('generic.buttons.close')}</Button>
+                        <Button onPress={onClose}>
+                            <Translation id="generic.buttons.close" />
+                        </Button>
                     </VStack>
                 </Box>
             </VStack>

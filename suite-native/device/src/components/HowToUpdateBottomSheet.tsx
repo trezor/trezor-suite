@@ -1,11 +1,13 @@
+import { ReactNode } from 'react';
+
 import { BottomSheet, VStack, Box, Button, Text } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { useOpenLink } from '@suite-native/link';
 
 export type HowToUpdateBottomSheetProps = {
     isVisible: boolean;
     onClose: (isVisible: boolean) => void;
-    title?: string;
+    title?: ReactNode;
 };
 
 export const HowToUpdateBottomSheet = ({
@@ -13,7 +15,6 @@ export const HowToUpdateBottomSheet = ({
     onClose,
     title,
 }: HowToUpdateBottomSheetProps) => {
-    const { translate } = useTranslate();
     const openLink = useOpenLink();
 
     const handleHelpClick = () => {
@@ -45,7 +46,7 @@ export const HowToUpdateBottomSheet = ({
                     onPress={handleHelpClick}
                     iconRight="arrowUpRight"
                 >
-                    {translate('deviceInfo.updateHowTo.button')}
+                    <Translation id="deviceInfo.updateHowTo.button" />
                 </Button>
             </VStack>
         </BottomSheet>
