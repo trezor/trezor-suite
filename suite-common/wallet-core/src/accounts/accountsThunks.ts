@@ -20,11 +20,11 @@ import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { accountsActions } from './accountsActions';
 import { selectAccountByKey, selectAccounts } from './accountsReducer';
-import { accountsActionsPrefix } from './constants';
+import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
 export const disableAccountsThunk = createThunk(
-    `${accountsActionsPrefix}/disableAccountsThunk`,
+    `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,
     (_, { dispatch, extra, getState }) => {
         const {
             selectors: { selectEnabledNetworks },
@@ -74,7 +74,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
-    `${accountsActionsPrefix}/fetchAndUpdateAccountThunk`,
+    `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
     async ({ accountKey }: { accountKey: AccountKey }, { dispatch, extra, getState }) => {
         const {
             selectors: { selectDevices, selectBitcoinAmountUnit },

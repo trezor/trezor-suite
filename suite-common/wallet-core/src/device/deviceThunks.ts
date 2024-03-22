@@ -33,7 +33,7 @@ import {
     selectDeviceById,
     selectDevices,
 } from './deviceReducer';
-import { deviceActions, MODULE_PREFIX } from './deviceActions';
+import { deviceActions, DEVICE_MODULE_PREFIX } from './deviceActions';
 import { selectFirmware } from '../firmware/firmwareReducer';
 import { checkFirmwareAuthenticity } from '../firmware/firmwareThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
@@ -46,7 +46,7 @@ import { selectAccountByKey } from '../accounts/accountsReducer';
  * @param {(Device | TrezorDevice | undefined)} device
  */
 export const selectDeviceThunk = createThunk(
-    `${MODULE_PREFIX}/selectDevice`,
+    `${DEVICE_MODULE_PREFIX}/selectDevice`,
     (device: Device | TrezorDevice | undefined, { dispatch, getState }) => {
         let payload: TrezorDevice | typeof undefined;
         const devices = selectDevices(getState());
@@ -79,7 +79,7 @@ export const selectDeviceThunk = createThunk(
  * Use `forgetDevice` to forget a device regardless if its current state.
  */
 export const toggleRememberDevice = createThunk(
-    `${MODULE_PREFIX}/toggleRememberDevice`,
+    `${DEVICE_MODULE_PREFIX}/toggleRememberDevice`,
     ({ device, forceRemember }: { device: TrezorDevice; forceRemember?: true }, { dispatch }) => {
         analytics.report({
             type: device.remember ? EventType.SwitchDeviceForget : EventType.SwitchDeviceRemember,
@@ -102,7 +102,7 @@ export const toggleRememberDevice = createThunk(
  * @param {boolean} [useEmptyPassphrase=false]
  */
 export const createDeviceInstance = createThunk(
-    `${MODULE_PREFIX}/createDeviceInstance`,
+    `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
     async (
         {
             device,
@@ -144,7 +144,7 @@ export const createDeviceInstance = createThunk(
  * @param {Device} device
  */
 export const handleDeviceConnect = createThunk(
-    `${MODULE_PREFIX}/handleDeviceConnect`,
+    `${DEVICE_MODULE_PREFIX}/handleDeviceConnect`,
     (device: Device, { dispatch, getState }) => {
         const selectedDevice = selectDeviceSelector(getState());
         const firmware = selectFirmware(getState());
@@ -170,7 +170,7 @@ export const handleDeviceConnect = createThunk(
  * @param {Device} device
  */
 export const handleDeviceDisconnect = createThunk(
-    `${MODULE_PREFIX}/handleDeviceDisconnect`,
+    `${DEVICE_MODULE_PREFIX}/handleDeviceDisconnect`,
     (device: Device, { dispatch, getState, extra }) => {
         const {
             selectors: { selectRouterApp },
@@ -216,7 +216,7 @@ export const handleDeviceDisconnect = createThunk(
  * @param {Device} device
  */
 export const forgetDisconnectedDevices = createThunk(
-    `${MODULE_PREFIX}/forgetDisconnectedDevices`,
+    `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
     (device: Device, { dispatch, getState }) => {
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
@@ -256,7 +256,7 @@ export const observeSelectedDevice = () => (dispatch: any, getState: any) => {
  * this is the only place where useEmptyPassphrase should be always set to "true"
  */
 export const acquireDevice = createThunk(
-    `${MODULE_PREFIX}/acquireDevice`,
+    `${DEVICE_MODULE_PREFIX}/acquireDevice`,
     async (requestedDevice: TrezorDevice | undefined, { dispatch, getState }) => {
         const selectedDevice = selectDeviceSelector(getState());
         if (!selectedDevice && !requestedDevice) return;
@@ -284,7 +284,7 @@ export const acquireDevice = createThunk(
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
 export const authorizeDevice = createThunk(
-    `${MODULE_PREFIX}/authorizeDevice`,
+    `${DEVICE_MODULE_PREFIX}/authorizeDevice`,
     async (_, { dispatch, getState, extra }): Promise<boolean> => {
         const {
             selectors: { selectCheckFirmwareAuthenticity },
@@ -358,7 +358,7 @@ export const authorizeDevice = createThunk(
  * Called from `suiteMiddleware`
  */
 export const authConfirm = createThunk(
-    `${MODULE_PREFIX}/authConfirm`,
+    `${DEVICE_MODULE_PREFIX}/authConfirm`,
     async (_, { dispatch, getState }) => {
         const device = selectDeviceSelector(getState());
         if (!device) return false;
@@ -405,7 +405,7 @@ export const authConfirm = createThunk(
 );
 
 export const switchDuplicatedDevice = createThunk(
-    `${MODULE_PREFIX}/switchDuplicatedDevice`,
+    `${DEVICE_MODULE_PREFIX}/switchDuplicatedDevice`,
     async (
         { device, duplicate }: { device: TrezorDevice; duplicate: TrezorDevice },
         { dispatch, extra },
@@ -431,7 +431,7 @@ export const switchDuplicatedDevice = createThunk(
 );
 
 export const initDevices = createThunk(
-    `${MODULE_PREFIX}/initDevices`,
+    `${DEVICE_MODULE_PREFIX}/initDevices`,
     (_, { dispatch, getState }) => {
         const devices = selectDevices(getState());
         const device = selectDeviceSelector(getState());
@@ -452,7 +452,7 @@ export const initDevices = createThunk(
 );
 
 export const createImportedDeviceThunk = createThunk(
-    `${MODULE_PREFIX}/createImportedDevice`,
+    `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
     (_, { getState, dispatch }) => {
         const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
@@ -463,7 +463,7 @@ export const createImportedDeviceThunk = createThunk(
 );
 
 export const confirmAddressOnDeviceThunk = createThunk(
-    `${MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
+    `${DEVICE_MODULE_PREFIX}/confirmAddressOnDeviceThunk`,
     async (
         {
             accountKey,
@@ -534,7 +534,7 @@ export const confirmAddressOnDeviceThunk = createThunk(
 );
 
 export const onPassphraseSubmit = createThunk(
-    `${MODULE_PREFIX}/onPassphraseSubmit`,
+    `${DEVICE_MODULE_PREFIX}/onPassphraseSubmit`,
     (
         { value, passphraseOnDevice }: { value: string; passphraseOnDevice: boolean },
         { dispatch, getState },

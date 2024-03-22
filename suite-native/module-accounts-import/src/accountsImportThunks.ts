@@ -10,7 +10,7 @@ import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
 
 import { paymentTypeToAccountType } from './constants';
 
-const actionPrefix = '@accountsImport';
+const ACCOUNTS_IMPORT_MODULE_PREFIX = '@suite-native/accountsImport';
 
 type ImportAssetThunkPayload = {
     accountInfo: AccountInfo;
@@ -31,7 +31,7 @@ const getAccountTypeFromDescriptor = (
 };
 
 export const importAccountThunk = createThunk(
-    `${actionPrefix}/importAccountThunk`,
+    `${ACCOUNTS_IMPORT_MODULE_PREFIX}/importAccountThunk`,
     ({ accountInfo, accountLabel, coin }: ImportAssetThunkPayload, { dispatch, getState }) => {
         const deviceState = PORTFOLIO_TRACKER_DEVICE_STATE;
 

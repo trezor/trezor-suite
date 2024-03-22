@@ -1,6 +1,6 @@
 import { RateType } from '@suite-common/wallet-types';
 
-export const fiatRatesActionsPrefix = '@common/wallet-core/fiat-rates';
+export const FIAT_RATES_MODULE_PREFIX = '@common/wallet-core/fiat-rates';
 
 const ONE_MINUTE_IN_MS = 60 * 1000;
 const ONE_HOUR_IN_MS = 60 * ONE_MINUTE_IN_MS;

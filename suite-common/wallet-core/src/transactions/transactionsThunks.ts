@@ -27,7 +27,7 @@ import { createThunk } from '@suite-common/redux-utils';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { selectTransactions } from './transactionsReducer';
-import { transactionsActionsPrefix, transactionsActions } from './transactionsActions';
+import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
@@ -44,7 +44,7 @@ interface ReplaceTransactionThunkParams {
 }
 
 export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams>(
-    `${transactionsActionsPrefix}/replaceTransactionThunk`,
+    `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
     ({ precomposedTx, newTxid, signedTransaction }, { getState, dispatch }) => {
         if (!precomposedTx.prevTxid) return; // ignore if it's not a replacement tx
 
@@ -110,7 +110,7 @@ interface AddFakePendingTransactionParams {
 }
 
 export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams>(
-    `${transactionsActionsPrefix}/addFakePendingTransaction`,
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     ({ transaction, precomposedTx, account }, { dispatch, getState }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
@@ -175,7 +175,7 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
 );
 
 export const addFakePendingCardanoTxThunk = createThunk(
-    `${transactionsActionsPrefix}/addFakePendingTransaction`,
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         {
             precomposedTx,
@@ -220,7 +220,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
 );
 
 export const exportTransactionsThunk = createThunk(
-    `${transactionsActionsPrefix}/exportTransactions`,
+    `${TRANSACTIONS_MODULE_PREFIX}/exportTransactions`,
     async (
         {
             account,
@@ -296,7 +296,7 @@ export const exportTransactionsThunk = createThunk(
 );
 
 export const fetchTransactionsThunk = createThunk(
-    `${transactionsActionsPrefix}/fetchTransactionsThunk`,
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsThunk`,
     async (
         {
             accountKey,
