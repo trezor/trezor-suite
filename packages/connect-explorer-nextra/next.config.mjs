@@ -1,11 +1,18 @@
-const path = require('path');
-const withNextra = require('nextra')({
+import path from 'path';
+import rehypeSectionize from '@hbsnow/rehype-sectionize';
+import nextra from 'nextra';
+import { execSync } from 'child_process';
+
+const withNextra = nextra({
     theme: '@trezor/connect-explorer-theme',
     themeConfig: './theme.config.tsx',
+    mdxOptions: {
+        rehypePlugins: [[rehypeSectionize]],
+    },
 });
-const commitHash = require('child_process').execSync('git rev-parse HEAD').toString().trim();
+const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
-module.exports = withNextra({
+export default withNextra({
     basePath: process.env.CONNECT_EXPLORER_BASE_PATH,
     assetPrefix: process.env.CONNECT_EXPLORER_ASSET_PREFIX,
     trailingSlash: true,
@@ -44,8 +51,8 @@ module.exports = withNextra({
         }
         config.resolve.alias = {
             ...config.resolve.alias,
-            'styled-components': path.resolve(__dirname, '../../node_modules', 'styled-components'),
-            'next-themes': path.resolve(__dirname, '../../node_modules', 'next-themes'),
+            'styled-components': path.resolve('../../node_modules', 'styled-components'),
+            'next-themes': path.resolve('../../node_modules', 'next-themes'),
         };
     },
     typescript: {

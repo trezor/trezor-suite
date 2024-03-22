@@ -16,9 +16,10 @@ import { Anchor } from './anchor';
 
 const Container = styled.div<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.full};
-    margin: 0 -${spacingsPx.xl};
+    margin: 0 -${spacingsPx.sm};
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     background-color: ${mapElevationToBackground};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
     margin-top: ${spacingsPx.xxl};
     flex-direction: row;
     display: flex;
@@ -98,14 +99,6 @@ export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
 
     return (
         <div className="nextra-nav-container nx-sticky nx-top-0 nx-z-20 nx-w-full nx-bg-transparent print:nx-hidden">
-            <div
-                className={cn(
-                    'nextra-nav-container-blur',
-                    'nx-pointer-events-none nx-absolute nx-z-[-1] nx-h-full nx-w-full nx-bg-white dark:nx-bg-dark',
-                    'nx-shadow-[0_2px_4px_rgba(0,0,0,.02),0_1px_0_rgba(0,0,0,.06)] dark:nx-shadow-[0_-1px_0_rgba(255,255,255,.1)_inset]',
-                    'contrast-more:nx-shadow-[0_0_0_1px_#000] contrast-more:dark:nx-shadow-[0_0_0_1px_#fff]',
-                )}
-            />
             <nav className="nx-mx-auto nx-flex nx-h-[var(--nextra-navbar-height)] nx-max-w-[90rem] nx-items-start nx-justify-end nx-gap-2 nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]">
                 <Container $elevation={elevation}>
                     {config.logoLink ? (

@@ -13,6 +13,7 @@
         "type-check": "yarn g:tsc --build tsconfig.json"
     },
     "dependencies": {
+        "@hbsnow/rehype-sectionize": "^1.0.7",
         "@sinclair/typebox": "^0.31.28",
         "@trezor/components": "workspace:^",
         "@trezor/connect-explorer-theme": "workspace:^",

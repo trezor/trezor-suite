@@ -41,13 +41,13 @@ const ParamName = styled.h4`
     font-size: 0.875rem;
 `;
 const ParamType = styled.div<{
-    isLink?: boolean;
+    $isLink?: boolean;
 }>`
     flex: 1;
     font-size: 0.875rem;
 
-    ${({ isLink, theme }) =>
-        isLink &&
+    ${({ $isLink, theme }) =>
+        $isLink &&
         `
         color: ${theme.TYPE_GREEN};
         text-decoration: underline;
@@ -55,17 +55,17 @@ const ParamType = styled.div<{
 `;
 
 export const ParamDescriptionComponent = (props: Pick<ParamProps, 'description' | 'children'>) => {
-    const { elevation } = useElevation();
+    const { parentElevation } = useElevation();
 
     return (
         <>
             {props.description && (
-                <ParamDescription $elevation={elevation}>
+                <ParamDescription $elevation={parentElevation}>
                     <Markdown>{props.description}</Markdown>
                 </ParamDescription>
             )}
             {props.children && (
-                <ParamDescription $elevation={elevation}>{props.children}</ParamDescription>
+                <ParamDescription $elevation={parentElevation}>{props.children}</ParamDescription>
             )}
         </>
     );
@@ -77,7 +77,7 @@ export const Param = (props: ParamProps) => {
         <ParamWrapper id={props.id} $elevation={elevation}>
             <ParamRow href={props.typeLink}>
                 <ParamName>{props.name}</ParamName>
-                <ParamType isLink={!!props.typeLink}>
+                <ParamType $isLink={!!props.typeLink}>
                     {typeof props.type === 'string' ? (
                         <Markdown>{props.type}</Markdown>
                     ) : (

@@ -3,17 +3,17 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { TSchema } from '@sinclair/typebox';
 
-import { Card, CollapsibleBox, SelectBar, variables } from '@trezor/components';
+import { CollapsibleBox, SelectBar, variables } from '@trezor/components';
 
 import { Method } from './Method';
 import { useActions } from '../hooks';
 import * as methodActions from '../actions/methodActions';
 import { MethodState } from '../reducers/methodCommon';
 
-const ApiPlaygroundWrapper = styled(Card)`
+const ApiPlaygroundWrapper = styled.div`
     display: block;
     position: fixed;
-    z-index: 50;
+    z-index: 10;
     bottom: 2rem;
     left: 2rem;
     right: 2rem;
@@ -32,6 +32,11 @@ const ApiPlaygroundWrapper = styled(Card)`
     @media (min-width: 90rem) {
         left: calc(50% - 27rem);
     }
+`;
+
+const CollapsibleBoxStyled = styled(CollapsibleBox)`
+    margin: 0;
+    border: 0;
 `;
 
 interface ApiPlaygroundProps {
@@ -65,7 +70,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
 
     return (
         <ApiPlaygroundWrapper>
-            <CollapsibleBox heading="Method testing tool" variant="large">
+            <CollapsibleBoxStyled heading="Method testing tool" variant="large">
                 {options.length > 1 && (
                     <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
                         <SelectBar
@@ -79,7 +84,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                     </div>
                 )}
                 <Method />
-            </CollapsibleBox>
+            </CollapsibleBoxStyled>
         </ApiPlaygroundWrapper>
     );
 };

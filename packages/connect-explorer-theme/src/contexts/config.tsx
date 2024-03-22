@@ -63,7 +63,6 @@ export const ConfigProvider = ({
 }): ReactElement => {
     const [menu, setMenu] = useState(false);
     // Merge only on first load
-
     theme ||= {
         ...DEFAULT_THEME,
         ...Object.fromEntries(
@@ -98,8 +97,6 @@ export const ConfigProvider = ({
         title: pageOpts.title,
         frontMatter: pageOpts.frontMatter,
     };
-
-    // const { nextThemes } = extendedConfig;
 
     return (
         <ConfigContext.Provider value={extendedConfig}>

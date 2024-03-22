@@ -11,6 +11,8 @@ import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 import scrollIntoView from 'scroll-into-view-if-needed';
 import styled from 'styled-components';
 
+import { variables } from '@trezor/components';
+
 import { useActiveAnchor, useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';
 import { Anchor } from './anchor';
@@ -52,7 +54,9 @@ type FolderProps = {
 };
 
 const Container = styled.div`
-    top: 160px;
+    ${variables.SCREEN_QUERY.ABOVE_TABLET} {
+        top: var(--nextra-navbar-height);
+    }
 `;
 
 const Folder = memo(function FolderInner(props: FolderProps) {
@@ -465,11 +469,9 @@ export function Sidebar({
                     <div
                         className={cn(
                             'nx-sticky nx-bottom-0',
-                            'nx-bg-white dark:nx-bg-dark', // when banner is showed, sidebar links can be behind menu, set bg color as body bg color
-                            'nx-mx-4 nx-py-4 nx-shadow-[0_-12px_16px_#fff]',
+                            'nx-mx-4 nx-py-4',
                             'nx-flex nx-items-center nx-gap-2',
-                            'dark:nx-border-neutral-800 dark:nx-shadow-[0_-12px_16px_#111]',
-                            'contrast-more:nx-border-neutral-400 contrast-more:nx-shadow-none contrast-more:dark:nx-shadow-none',
+                            'dark:nx-border-neutral-800',
                             showSidebar
                                 ? cn(hasI18n && 'nx-justify-end', 'nx-border-t')
                                 : 'nx-py-4 nx-flex-wrap nx-justify-center',

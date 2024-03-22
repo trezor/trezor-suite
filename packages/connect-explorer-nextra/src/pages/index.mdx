@@ -2,14 +2,11 @@ import { Card } from '@trezor/components';
 
 # Trezor Connect SDK
 
-<Card>
-    There are couple of options how to integrate Trezor devices with your project. This page walks
-    you through installation and lets you explore SDK API.
-</Card>
+There are couple of options how to integrate Trezor devices with your project. This page walks
+you through installation and lets you explore SDK API.
 
 ## Chose your SDK
 
-<Card>
 Depending on your environment you need to chose the right package.
 
 | package                                                                                                           | environment                       |
@@ -31,11 +28,8 @@ If you are still unsure which package is the right one you may refer to the foll
 | [electron in renderer layer with popup](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/electron-renderer-with-popup) | @trezor/connect-web          |
 | [Trezor Suite (desktop) electron app](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-desktop/README.md)                         | @trezor/connect              |
 
-</Card>
-
 ## Quick start
 
-<Card>
 Import from your selected package
 
 ```javascript
@@ -72,8 +66,6 @@ TrezorConnect.manifest({
 
 If you need more customization, refer to [init method documentation](./methods/init.md)
 
-</Card>
-
 ## API methods
 
 -   [List of methods](methods.md)
@@ -84,38 +76,27 @@ If you need more customization, refer to [init method documentation](./methods/i
 
 ## How it works under the hood
 
-<Card>
     There is a major difference between node.js based package (`@trezor/connect`) and web based
     packages (`@trezor/connect-web` and `@trezor/connect-webextension`). In the former the entire
     SDK logic is a module of the 3rd party application whereas in the latter, there is strict
     isolation between 3rd party application code and SDK core logic.
-</Card>
 
 ### Node.js
 
-<Card>
 In node.js core SDK is loaded as a javascript module without any specificities.
 
 ![connect schema when used in node](../../public/schema-connect.jpg)
 
-</Card>
-
 ### Web
 
-<Card>
 `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io
 into your app. User input, if needed, is served by popup.html page opened on trezor.io on behalf of your application. This way users input such as pin or passphrase is isolated from you and persistent connection between your app and core SDK is kept so events such as device connected/disconnected or blockchain subscriptions are available.
 
 ![connect schema when used on web](../../public/schema-connect-web.jpg)
 
-</Card>
-
 ### Webextension
 
-<Card>
 In case of `@trezor/connect-webextension`, TrezorConnect object is created in a service worker. In this env we can't inject iframe so in order to uphold the same security model as with
 `@trezor/connect-web` we open popup.html and load core SDK logic into it. This however does not build persistent connection between SDK and 3rd party application meaning that events cannot be used.
 
 ![connect schema when used in webextension](../../public/schema-connect-webextension.jpg)
-
-</Card>
