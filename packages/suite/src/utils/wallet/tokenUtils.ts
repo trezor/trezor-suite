@@ -1,9 +1,7 @@
 import BigNumber from 'bignumber.js';
 
-import { Account, Rate, TokenAddress } from '@suite-common/wallet-types';
+import { Account, Rate, TokenAddress, FiatRates } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
-import { useSelector } from 'src/hooks/suite';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -32,18 +30,23 @@ export const enhanceTokensWithRates = (
     tokens: Account['tokens'],
     fiatCurrency: FiatCurrencyCode,
     symbol: NetworkSymbol,
+    rates: FiatRates | undefined,
 ) => {
     if (!tokens?.length) return [];
 
     const tokensWithRates = tokens.map(token => {
-        const fiatRateKey = getFiatRateKey(symbol, fiatCurrency, token.contract as TokenAddress);
-        const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+        const tokenFiatRateKey = getFiatRateKey(
+            symbol,
+            fiatCurrency,
+            token.contract as TokenAddress,
+        );
+        const tokenFiatRate = rates?.[tokenFiatRateKey];
 
-        const fiatValue = new BigNumber(token.balance || 0).multipliedBy(fiatRate?.rate || 0);
+        const fiatValue = new BigNumber(token.balance || 0).multipliedBy(tokenFiatRate?.rate || 0);
 
         return {
             ...token,
-            fiatRate,
+            tokenFiatRate,
             fiatValue,
         };
     });
