@@ -138,6 +138,7 @@ jobs:
       test-name: methods.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
       run-webextension: true
+      build-overview: true
 
   popup-close:
     needs: [build-deploy]
