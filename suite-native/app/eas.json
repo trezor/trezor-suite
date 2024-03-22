@@ -7,7 +7,7 @@
     "build": {
         "develop": {
             "env": {
-                "ENVIRONMENT_EXPO": "develop"
+                "EXPO_PUBLIC_ENVIRONMENT": "develop"
             },
             "autoIncrement": true,
             "ios": {
@@ -19,7 +19,7 @@
         },
         "production": {
             "env": {
-                "ENVIRONMENT_EXPO": "production"
+                "EXPO_PUBLIC_ENVIRONMENT": "production"
             },
             "autoIncrement": true,
             "android": {
