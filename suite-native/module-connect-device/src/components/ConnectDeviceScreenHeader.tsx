@@ -13,7 +13,7 @@ import {
 } from '@suite-native/navigation';
 import { Box, IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     selectDevice,
     selectDeviceModel,
@@ -38,7 +38,6 @@ export const ConnectDeviceScreenHeader = ({
 }: ConnectDeviceScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
-    const { translate } = useTranslate();
     const { showAlert, hideAlert } = useAlert();
 
     const device = useSelector(selectDevice);
@@ -49,12 +48,14 @@ export const ConnectDeviceScreenHeader = ({
         if (isDiscoveryActive) {
             // Do not allow to cancel PIN entry while discovery is in progress
             showAlert({
-                title: translate('moduleConnectDevice.pinCanceledDuringDiscovery.title'),
-                description: translate('moduleConnectDevice.pinCanceledDuringDiscovery.subtitle'),
+                title: <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.title" />,
+                description: (
+                    <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.subtitle" />
+                ),
                 icon: 'warningCircleLight',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate(
-                    'moduleConnectDevice.pinCanceledDuringDiscovery.button',
+                primaryButtonTitle: (
+                    <Translation id="moduleConnectDevice.pinCanceledDuringDiscovery.button" />
                 ),
                 onPressPrimaryButton: hideAlert,
             });
@@ -74,16 +75,7 @@ export const ConnectDeviceScreenHeader = ({
                 navigation.goBack();
             }
         }
-    }, [
-        device,
-        deviceModel,
-        dispatch,
-        isDiscoveryActive,
-        navigation,
-        showAlert,
-        hideAlert,
-        translate,
-    ]);
+    }, [device, deviceModel, dispatch, isDiscoveryActive, navigation, showAlert, hideAlert]);
 
     // Handle hardware back button press same as cancel button
     useEffect(() => {

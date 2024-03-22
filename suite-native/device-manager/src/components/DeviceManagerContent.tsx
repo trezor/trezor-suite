@@ -18,7 +18,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { DeviceManagerModal } from './DeviceManagerModal';
@@ -35,8 +35,6 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const DeviceManagerContent = () => {
     const navigation = useNavigation<NavigationProp>();
-
-    const { translate } = useTranslate();
 
     const devices = useSelector(selectDevices);
     const selectedDeviceId = useSelector(selectDeviceId);
@@ -83,7 +81,7 @@ export const DeviceManagerContent = () => {
                         <Translation id="deviceManager.connectDevice.sectionTitle" />
                     </Text>
                     <Button colorScheme="tertiaryElevation1" onPress={handleConnectDevice}>
-                        {translate('deviceManager.connectDevice.connectButton')}
+                        <Translation id="deviceManager.connectDevice.connectButton" />
                     </Button>
                 </VStack>
             )}

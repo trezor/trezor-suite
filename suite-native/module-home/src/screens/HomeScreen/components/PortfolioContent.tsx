@@ -13,7 +13,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 
@@ -22,7 +22,6 @@ export type PortfolioContentRef = {
 };
 
 export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) => {
-    const { translate } = useTranslate();
     const graphRef = useRef<PortfolioGraphRef>(null);
 
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
@@ -64,7 +63,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
                             size="large"
                             onPress={handleImportAssets}
                         >
-                            {translate('moduleHome.buttons.syncMyCoins')}
+                            <Translation id="moduleHome.buttons.syncMyCoins" />
                         </Button>
                     </Box>
                 )}
@@ -78,7 +77,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
                                 onPress={handleReceive}
                                 iconLeft="receive"
                             >
-                                {translate('moduleHome.buttons.receive')}
+                                <Translation id="moduleHome.buttons.receive" />
                             </Button>
                         </Box>
                     </>

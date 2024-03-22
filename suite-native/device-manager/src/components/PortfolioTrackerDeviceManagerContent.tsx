@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { analytics, EventType } from '@suite-native/analytics';
 import { Button, Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
     RootStackParamList,
@@ -24,7 +24,6 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PortfolioTrackerDeviceManagerContent = () => {
-    const { translate } = useTranslate();
     const openLink = useOpenLink();
 
     const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
@@ -60,10 +59,14 @@ export const PortfolioTrackerDeviceManagerContent = () => {
         });
     };
 
-    const syncButtonTitle = translate(
-        isDeviceDiscoveryEmpty
-            ? 'deviceManager.syncCoinsButton.syncMyCoins'
-            : 'deviceManager.syncCoinsButton.syncAnother',
+    const syncButtonTitle = (
+        <Translation
+            id={
+                isDeviceDiscoveryEmpty
+                    ? 'deviceManager.syncCoinsButton.syncMyCoins'
+                    : 'deviceManager.syncCoinsButton.syncAnother'
+            }
+        />
     );
 
     return (
@@ -80,14 +83,14 @@ export const PortfolioTrackerDeviceManagerContent = () => {
                     iconRight="link"
                     onPress={handleOpenEduLink}
                 >
-                    {translate('deviceManager.portfolioTracker.learnBasics')}
+                    <Translation id="deviceManager.portfolioTracker.learnBasics" />
                 </Button>
                 <Button
                     colorScheme="tertiaryElevation1"
                     iconRight="link"
                     onPress={handleOpenEshopLink}
                 >
-                    {translate('deviceManager.portfolioTracker.exploreShop')}
+                    <Translation id="deviceManager.portfolioTracker.exploreShop" />
                 </Button>
             </VStack>
         </DeviceManagerModal>

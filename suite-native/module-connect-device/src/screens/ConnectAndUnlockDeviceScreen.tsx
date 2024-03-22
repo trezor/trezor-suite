@@ -5,7 +5,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useIsFocused } from '@react-navigation/native';
 
 import { Text, VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen } from '@suite-native/navigation';
@@ -30,7 +30,6 @@ const animationStyle = prepareNativeStyle(() => ({
 }));
 
 export const ConnectAndUnlockDeviceScreen = () => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const dispatch = useDispatch();
 
@@ -55,7 +54,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
         >
             <VStack style={applyStyle(screenContentStyle)}>
                 <Text variant="titleMedium" textAlign="center">
-                    {translate('moduleConnectDevice.connectAndUnlockScreen.title')}
+                    <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
                 </Text>
                 <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
             </VStack>

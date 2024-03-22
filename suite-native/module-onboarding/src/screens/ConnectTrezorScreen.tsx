@@ -7,7 +7,7 @@ import {
     OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 
@@ -24,7 +24,6 @@ const animationStyle = prepareNativeStyle(() => ({
 }));
 
 export const ConnectTrezorScreen = () => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
 
     const navigation =
@@ -38,13 +37,13 @@ export const ConnectTrezorScreen = () => {
 
     return (
         <OnboardingScreen
-            title={translate('moduleOnboarding.connectTrezorScreen.title')}
-            subtitle={translate('moduleOnboarding.connectTrezorScreen.subtitle')}
+            title={<Translation id="moduleOnboarding.connectTrezorScreen.title" />}
+            subtitle={<Translation id="moduleOnboarding.connectTrezorScreen.subtitle" />}
             activeStep={1}
             footer={
                 <OnboardingFooter
-                    backButtonTitle={translate('generic.buttons.back')}
-                    nextButtonTitle={translate('generic.buttons.next')}
+                    backButtonTitle={<Translation id="generic.buttons.back" />}
+                    nextButtonTitle={<Translation id="generic.buttons.next" />}
                     redirectTarget={handleRedirect}
                     onBack={navigation.goBack}
                 />

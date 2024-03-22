@@ -11,7 +11,7 @@ import {
 } from '@suite-common/validators';
 import { Box, Button, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { isPassphraseModalVisibleAtom } from './isPassphraseModalVisibleAtom';
 
@@ -27,8 +27,6 @@ const formStyle = prepareNativeStyle(utils => ({
 }));
 
 export const PassphraseFormModal = () => {
-    const { translate } = useTranslate();
-
     const passphraseInputRef = useRef<TextInput>(null);
 
     const setIsPassphraseModalVisible = useSetAtom(isPassphraseModalVisibleAtom);
@@ -74,7 +72,7 @@ export const PassphraseFormModal = () => {
                                 accessibilityLabel="confirm passphrase"
                                 onPress={handleCreateHiddenWallet}
                             >
-                                {translate('passphrase.modal.enterWallet')}
+                                <Translation id="passphrase.modal.enterWallet" />
                             </Button>
                             <Button
                                 accessibilityRole="button"
@@ -82,7 +80,7 @@ export const PassphraseFormModal = () => {
                                 colorScheme="dangerElevation1"
                                 onPress={() => setIsPassphraseModalVisible(false)}
                             >
-                                {translate('generic.buttons.close')}
+                                <Translation id="generic.buttons.close" />
                             </Button>
                         </VStack>
                     </VStack>

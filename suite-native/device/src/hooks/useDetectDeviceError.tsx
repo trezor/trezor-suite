@@ -14,7 +14,7 @@ import {
     selectHasDeviceFirmwareInstalled,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { selectIsDeviceFirmwareSupported } from '../selectors';
 import { IncompatibleDeviceModalAppendix } from '../components/IncompatibleDeviceModalAppendix';
@@ -26,7 +26,6 @@ export const useDetectDeviceError = () => {
 
     const dispatch = useDispatch();
     const { hideAlert, showAlert } = useAlert();
-    const { translate } = useTranslate();
 
     const selectedDevice = useSelector(selectDevice);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
@@ -58,27 +57,27 @@ export const useDetectDeviceError = () => {
     useEffect(() => {
         if (isUnacquiredDevice) {
             showAlert({
-                title: translate('moduleDevice.unacquiredDeviceModal.title'),
-                description: translate('moduleDevice.unacquiredDeviceModal.description'),
+                title: <Translation id="moduleDevice.unacquiredDeviceModal.title" />,
+                description: <Translation id="moduleDevice.unacquiredDeviceModal.description" />,
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleDevice.unacquiredDeviceModal.button'),
+                primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
                 appendix: <UnacquiredDeviceModalAppendix />,
                 onPressPrimaryButton: () => dispatch(acquireDevice()),
             });
         } else {
             hideAlert();
         }
-    }, [isUnacquiredDevice, translate, dispatch, hideAlert, showAlert]);
+    }, [isUnacquiredDevice, dispatch, hideAlert, showAlert]);
 
     useEffect(() => {
         if (!isDeviceFirmwareSupported && !isPortfolioTrackerDevice && !wasDeviceEjectedByUser) {
             showAlert({
-                title: translate('moduleDevice.unsupportedFirmwareModal.title'),
-                description: translate('moduleDevice.unsupportedFirmwareModal.description'),
+                title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
+                description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('generic.buttons.eject'),
+                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 primaryButtonVariant: 'tertiaryElevation1',
                 appendix: <IncompatibleDeviceModalAppendix />,
                 onPressPrimaryButton: () => {
@@ -96,19 +95,18 @@ export const useDetectDeviceError = () => {
         wasDeviceEjectedByUser,
         dispatch,
         showAlert,
-        translate,
         handleDisconnect,
     ]);
 
     useEffect(() => {
         if (isConnectedDeviceUninitialized && !wasDeviceEjectedByUser && !isUnacquiredDevice) {
             showAlert({
-                title: translate('moduleDevice.noSeedModal.title'),
-                description: translate('moduleDevice.noSeedModal.description'),
+                title: <Translation id="moduleDevice.noSeedModal.title" />,
+                description: <Translation id="moduleDevice.noSeedModal.description" />,
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonVariant: 'tertiaryElevation1',
-                primaryButtonTitle: translate('generic.buttons.eject'),
+                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 appendix: <IncompatibleDeviceModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
@@ -124,19 +122,18 @@ export const useDetectDeviceError = () => {
         isUnacquiredDevice,
         wasDeviceEjectedByUser,
         showAlert,
-        translate,
         handleDisconnect,
     ]);
 
     useEffect(() => {
         if (isDeviceInBootloader && hasDeviceFirmwareInstalled && !wasDeviceEjectedByUser) {
             showAlert({
-                title: translate('moduleDevice.bootloaderModal.title'),
-                description: translate('moduleDevice.bootloaderModal.description'),
+                title: <Translation id="moduleDevice.bootloaderModal.title" />,
+                description: <Translation id="moduleDevice.bootloaderModal.description" />,
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
                 primaryButtonVariant: 'tertiaryElevation1',
-                primaryButtonTitle: translate('generic.buttons.eject'),
+                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 appendix: <BootloaderModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
@@ -152,7 +149,6 @@ export const useDetectDeviceError = () => {
         hasDeviceFirmwareInstalled,
         wasDeviceEjectedByUser,
         showAlert,
-        translate,
         handleDisconnect,
     ]);
 

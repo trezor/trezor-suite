@@ -7,7 +7,7 @@ import {
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 const wrapperStyle = prepareNativeStyle(() => ({
     paddingHorizontal: 0,
@@ -30,7 +30,6 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey, closeActionType: 'back' });
@@ -49,7 +48,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                 </Box>
                 <Box style={applyStyle(receiveButtonStyle)}>
                     <Button iconLeft="receive" onPress={handleReceive} size="large">
-                        {translate('transactions.emptyState.button')}
+                        <Translation id="transactions.emptyState.button" />
                     </Button>
                 </Box>
             </Card>

@@ -5,7 +5,7 @@ import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { useTranslate } from '@suite-native/intl';
+import { useTranslate, Translation } from '@suite-native/intl';
 
 import { XpubQRCodeCard } from './XpubQRCodeCard';
 
@@ -40,16 +40,23 @@ export const XpubQRCodeBottomSheet = ({
             : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.copyMessage',
     );
 
-    const showButtonTitle = translate(
-        isAddressBased
-            ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton'
-            : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton',
+    const showButtonTitle = (
+        <Translation
+            id={
+                isAddressBased
+                    ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton'
+                    : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton'
+            }
+        />
     );
-
-    const sheetTitle = translate(
-        isAddressBased
-            ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.title'
-            : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.title',
+    const sheetTitle = (
+        <Translation
+            id={
+                isAddressBased
+                    ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.title'
+                    : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.title'
+            }
+        />
     );
 
     const handleShowXpub = () => {
@@ -69,9 +76,7 @@ export const XpubQRCodeBottomSheet = ({
                 <Box style={applyStyle(buttonStyle)}>
                     {isXpubShown ? (
                         <Button size="large" onPress={handleCopyXpub}>
-                            {translate(
-                                'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.copyButton',
-                            )}
+                            <Translation id="moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.copyButton" />
                         </Button>
                     ) : (
                         <Button size="large" iconLeft="eye" onPress={handleShowXpub}>
