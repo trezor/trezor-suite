@@ -4,7 +4,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 class AccountsPage {
     clickAllAccountArrows() {
-        cy.getTestElement('@account-menu/arrow').click({ multiple: true });
+        cy.getTestElement('@account-menu/add-account').click({ multiple: true });
     }
 
     applyCoinFilter(coin: NetworkSymbol) {
