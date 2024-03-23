@@ -5,7 +5,7 @@ import type { InvityServerEnvironment } from '@suite-common/invity';
 import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
+import { TRANSPORT, DEVICE, TransportInfo, ConnectSettings } from '@trezor/connect';
 
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
@@ -278,7 +278,7 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
                 changeLock(draft, SUITE.LOCK_TYPE.UI, action.payload);
                 break;
 
-            case SUITE.LOCK_DEVICE:
+            case DEVICE.LOCK:
                 changeLock(draft, SUITE.LOCK_TYPE.DEVICE, action.payload);
                 break;
 

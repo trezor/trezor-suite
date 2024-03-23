@@ -381,6 +381,8 @@ const onCall = async (message: IFrameCallMessage) => {
         return Promise.resolve();
     }
 
+    postMessage(createDeviceMessage(DEVICE.LOCK, true));
+
     if (!_deviceList && !DataManager.getSettings('transportReconnect')) {
         // transport is missing try to initialize it once again
         await initDeviceList(false);
@@ -724,6 +726,8 @@ const onCall = async (message: IFrameCallMessage) => {
             }
             postMessage(response);
         }
+
+        postMessage(createDeviceMessage(DEVICE.LOCK, false));
     }
 };
 
