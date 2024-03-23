@@ -15,7 +15,7 @@ import {
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { selectSelectedProviderForLabels } from 'src/reducers/suite/metadataReducer';
 import { Account } from '@suite-common/wallet-types';
-import type { AbstractMetadataProvider } from 'src/types/suite/metadata';
+import type { AbstractMetadataProvider, PasswordManagerState } from 'src/types/suite/metadata';
 
 export type MetadataAction =
     | { type: typeof METADATA.ENABLE }
@@ -125,7 +125,7 @@ export const setMetadata =
     }: {
         provider: MetadataProvider;
         fileName: string;
-        data: WalletLabels | AccountLabels | undefined;
+        data: WalletLabels | AccountLabels | PasswordManagerState | undefined;
     }) =>
     (dispatch: Dispatch) => {
         dispatch({
@@ -145,7 +145,7 @@ export const encryptAndSaveMetadata = async ({
     fileName,
     providerInstance,
 }: {
-    data: AccountLabels | WalletLabels;
+    data: AccountLabels | WalletLabels | PasswordManagerState;
     aesKey: string;
     fileName: string;
     providerInstance: AbstractMetadataProvider;

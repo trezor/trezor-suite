@@ -31,7 +31,8 @@ import type { BackupAction } from 'src/actions/backup/backupActions';
 import type { RecoveryAction } from 'src/actions/recovery/recoveryActions';
 import type { SUITE } from 'src/actions/suite/constants';
 import type { GuideAction } from 'src/actions/suite/guideActions';
-
+import type { PasswordsAction
+ } from 'src/actions/passwords/passwordsActions';
 // reexport
 export type { ExtendedMessageDescriptor } from 'src/components/suite/Translation';
 export type { AppState } from 'src/reducers/store';
@@ -90,7 +91,8 @@ export type Action =
     | ProtocolAction
     | DiscoveryAction
     | DeviceAction
-    | DeviceAuthenticityAction;
+    | DeviceAuthenticityAction
+    | PasswordsAction;
 
 export type ThunkAction = TAction<any, AppState, any, Action>;
 

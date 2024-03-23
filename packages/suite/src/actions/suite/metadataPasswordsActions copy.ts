@@ -1,19 +1,18 @@
-import { METADATA, METADATA_PROVIDER } from 'src/actions/suite/constants';
 import { cloneObject } from '@trezor/utils';
 
+import { METADATA } from 'src/actions/suite/constants';
 import { Dispatch, GetState } from 'src/types/suite';
 import { ProviderErrorAction, PasswordEntry, PasswordManagerState } from 'src/types/suite/metadata';
 import * as metadataUtils from 'src/utils/suite/metadata';
 import { selectSelectedProviderForPasswords } from 'src/reducers/suite/metadataReducer';
 
 import * as metadataActions from './metadataActions';
-import * as metadataProviderActions from './metadataProviderActions';
 
 export const fetchPasswords =
     (fileName: string, key: Buffer) => async (dispatch: Dispatch, _getState: GetState) => {
         const provider = dispatch(
-            metadataProviderActions.getProviderInstance({
-                clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
+            metadataActions.getProviderInstance({
+                clientId: METADATA.DROPBOX_PASSWORDS_CLIENT_ID,
                 dataType: 'passwords',
             }),
         );
@@ -26,7 +25,7 @@ export const fetchPasswords =
         const response = await provider.getProviderDetails();
         if (!response.success) {
             return dispatch(
-                metadataProviderActions.handleProviderError({
+                metadataActions.handleProviderError({
                     error: response,
                     action: ProviderErrorAction.LOAD,
                     clientId: provider.clientId,
@@ -58,7 +57,6 @@ export const fetchPasswords =
                         });
                     } catch (err) {
                         const error = provider.error('OTHER_ERROR', err.message);
-
                         return reject(error);
                     }
                 }
@@ -69,18 +67,12 @@ export const fetchPasswords =
     };
 
 export const addPasswordMetadata =
-    (nextId: number, payload: PasswordEntry, fileName: string, aesKey: string) =>
+    (payload: PasswordEntry, fileName: string, aesKey: string) =>
     (dispatch: Dispatch, getState: GetState) => {
         // const device = selectDevice(getState());
         const provider = selectSelectedProviderForPasswords(getState());
-        const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
-                clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
-                dataType: 'passwords',
-            }),
-        );
 
-        if (!providerInstance || !provider)
+        if (!provider)
             return Promise.resolve({
                 success: false,
                 error: 'provider missing',
@@ -105,7 +97,8 @@ export const addPasswordMetadata =
 
         if ('extVersion' in metadata) {
             console.log('metadata meow', metadata);
-            metadata.entries[nextId] = payload;
+            const nextId = Object.keys(metadata.entries).length + 1;
+            metadata.entries[Object.keys(metadata.entries).length + 1] = payload;
 
             dispatch(
                 metadataActions.setMetadata({
@@ -115,56 +108,14 @@ export const addPasswordMetadata =
                 }),
             );
 
-            metadataActions.encryptAndSaveMetadata({
-                providerInstance,
-                fileName,
-                data: metadata,
-                aesKey,
-            });
-        } else {
-            return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
-        }
-    };
-
-// todo: dry a bit
-export const removePasswordMetadata =
-    (index: number, fileName: string, aesKey: string) =>
-    (dispatch: Dispatch, getState: GetState) => {
-        // const device = selectDevice(getState());
-        const provider = selectSelectedProviderForPasswords(getState());
-        const providerInstance = dispatch(
-            metadataProviderActions.getProviderInstance({
-                clientId: METADATA_PROVIDER.DROPBOX_PASSWORDS_CLIENT_ID,
-                dataType: 'passwords',
-            }),
-        );
-
-        if (!providerInstance || !provider)
-            return Promise.resolve({
-                success: false,
-                error: 'provider missing',
-            });
-
-        const metadata = cloneObject(provider.data[fileName]);
-
-        if (metadata && 'extVersion' in metadata) {
-            console.log('metadata meow', metadata);
-            delete metadata.entries[index];
-
-            dispatch(
-                metadataActions.setMetadata({
+            return dispatch(
+                metadataActions.encryptAndSaveMetadata({
                     provider,
                     fileName,
                     data: metadata,
+                    aesKey,
                 }),
             );
-
-            metadataActions.encryptAndSaveMetadata({
-                providerInstance,
-                fileName,
-                data: metadata,
-                aesKey,
-            });
         } else {
             return Promise.resolve({ success: false, error: 'trying to edit wrong object' });
         }

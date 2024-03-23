@@ -250,15 +250,27 @@ type Password = {
 };
 
 export type PasswordEntry = {
-    export: boolean;
-    key_value: string;
+    // todo: remove
+    export?: boolean;
+    // todo: remove
+    key_value?: string;
     nonce: string;
     note?: string;
     password: Password;
     safe_note?: Password;
-    success: boolean;
+    // todo: remove
+    success?: boolean;
     title: string;
     username: string;
+    tags: number[];
+};
+
+export type PasswordEntryDecoded = {
+    title: string;
+    username: string;
+    password: string;
+    note: string;
+    safe_note: string;
     tags: number[];
 };
 

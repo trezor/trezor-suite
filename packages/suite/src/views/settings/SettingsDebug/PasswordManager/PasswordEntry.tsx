@@ -5,51 +5,55 @@ import { Button } from '@trezor/components';
 
 import * as metadataUtils from 'src/utils/suite/metadata';
 import type { PasswordEntry as PasswordEntryType } from 'src/types/suite/metadata';
+import { PATH } from 'src/actions/suite/constants/metadataPasswordsConstants';
+import { getDisplayKey } from 'src/utils/suite/passwords';
+import { usePasswords } from 'src/hooks/suite';
+import { EntryForm } from './EntryForm';
 
-const PasswordEntryRow = styled.div`
+export const PasswordEntryRow = styled.div`
     margin-bottom: 4px;
-`;
-
-const PasswordEntryBody = styled.div`
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
     margin-left: 8px;
 `;
 
-const PasswordEntryTitle = styled.div`
+export const PasswordEntryCol = styled.div`
     font-size: 14px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
-const PasswordEntryUsername = styled.div`
-    font-size: 14px;
+const Row = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
 `;
-
-const PasswordEntryPassword = styled.div`
-    font-size: 14px;
-`;
-
-const HD_HARDENED = 0x80000000;
-const PATH = [10016 + HD_HARDENED, 0];
 
 interface PasswordEntryProps extends PasswordEntryType {
     devicePath: string;
+    onEncrypted: (entry: PasswordEntryType) => void;
+    formActive: undefined | number;
+    setFormActive: (id?: number) => void;
+    index: number;
 }
-
-const getDisplayKey = (title: string, username: string) =>
-    // todo: implement this for the other category too: https://github.com/trezor/trezor-password-manager/blob/6266f685226bc5d5e0d8c7f08490b282f64ad1d1/source/background/classes/trezor_mgmt.js#L389-L390
-    `Unlock ${title} for user ${username}?`;
 
 export const PasswordEntry = ({
     username,
     title,
     nonce,
+    note,
     password,
+    safe_note,
     devicePath,
+    onEncrypted,
+    formActive,
+    setFormActive,
+    index,
 }: PasswordEntryProps) => {
-    const [decodedPassword, setDecodedPassword] = useState('');
+    const [decryptedPassword, setDecryptedPassword] = useState('');
+    const [decryptedSafeNote, setDecryptedSafeNote] = useState('');
     const [inProgress, setInProgress] = useState(false);
-
-    const decode = () => {
+    const decrypt = () => {
         if (inProgress) return;
         setInProgress(true);
         TrezorConnect.cipherKeyValue({
@@ -65,11 +69,21 @@ export const PasswordEntry = ({
         })
             .then(result => {
                 if (result.success) {
-                    const decrypted = metadataUtils.decrypt(
+                    const decryptionKey = Buffer.from(result.payload.value, 'hex');
+                    const decryptedPassword = metadataUtils.decrypt(
                         Buffer.from(password.data),
-                        Buffer.from(result.payload.value, 'hex'),
+                        decryptionKey,
                     );
-                    setDecodedPassword(decrypted);
+
+                    setDecryptedPassword(decryptedPassword);
+
+                    if (safe_note) {
+                        const decryptedSafeNote = metadataUtils.decrypt(
+                            Buffer.from(safe_note.data),
+                            decryptionKey,
+                        );
+                        setDecryptedSafeNote(decryptedSafeNote);
+                    }
                 }
             })
             .finally(() => {
@@ -77,23 +91,66 @@ export const PasswordEntry = ({
             });
     };
 
+    const { removePassword } = usePasswords();
+
     return (
         <>
             <PasswordEntryRow>
-                <PasswordEntryBody>
-                    <PasswordEntryTitle>{title}</PasswordEntryTitle>
-                    <PasswordEntryUsername>{username}</PasswordEntryUsername>
-                    <PasswordEntryPassword>
-                        {!decodedPassword ? (
-                            <Button onClick={decode} type="button" variant="tertiary">
-                                {inProgress ? '....' : 'decode'}
+                <PasswordEntryCol>{note || title}</PasswordEntryCol>
+
+                <PasswordEntryCol>{username}</PasswordEntryCol>
+                <PasswordEntryCol>{decryptedSafeNote}</PasswordEntryCol>
+                <PasswordEntryCol>{decryptedPassword}</PasswordEntryCol>
+                <PasswordEntryCol>
+                    {!decryptedPassword ? (
+                        <Button size="tiny" onClick={decrypt} type="button" variant="tertiary">
+                            {inProgress ? '....' : 'decrypt'}
+                        </Button>
+                    ) : formActive === index ? (
+                        <Row>
+                            <Button
+                                size="tiny"
+                                onClick={() => removePassword(index)}
+                                type="button"
+                                variant="destructive"
+                                icon="CROSS"
+                            >
+                                Remove
                             </Button>
-                        ) : (
-                            decodedPassword
-                        )}
-                    </PasswordEntryPassword>
-                </PasswordEntryBody>
+                        </Row>
+                    ) : (
+                        <Row>
+                            <Button
+                                size="tiny"
+                                onClick={() => setFormActive(index)}
+                                type="button"
+                                variant="tertiary"
+                                icon="PENCIL"
+                            >
+                                Edit
+                            </Button>
+                        </Row>
+                    )}
+                </PasswordEntryCol>
             </PasswordEntryRow>
+            {formActive === index && (
+                <EntryForm
+                    cancel={() => setFormActive(undefined)}
+                    onEncrypted={args => {
+                        onEncrypted(args);
+                        setDecryptedPassword('');
+                        setDecryptedSafeNote('');
+                    }}
+                    entry={{
+                        title,
+                        username,
+                        password: decryptedPassword,
+                        note: decryptedSafeNote,
+                        tags: [],
+                        safe_note: decryptedSafeNote,
+                    }}
+                />
+            )}
         </>
     );
 };

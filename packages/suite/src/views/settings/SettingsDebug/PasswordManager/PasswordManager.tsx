@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Button } from '@trezor/components';
-import { selectDevice } from '@suite-common/wallet-core';
 
 import { SectionItem, TextColumn, ActionColumn } from 'src/components/suite';
-import { useSelector, usePasswords } from 'src/hooks/suite';
+import { usePasswords } from 'src/hooks/suite';
+import { getNextId } from 'src/utils/suite/passwords';
 
-import { PasswordEntry as PasswordEntryComponent } from './PasswordEntry';
 import { Tag } from './Tag';
+import { EntryForm } from './EntryForm';
+import { PasswordsList } from './PasswordsList';
 
 const PasswordManagerBody = styled.div`
     display: flex;
@@ -22,18 +23,11 @@ const TagsList = styled.div`
     gap: 4px;
 `;
 
-const PasswordsList = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    flex: 1;
-`;
-
 export const PasswordManager = () => {
     const {
         entries,
-        entriesByTag,
         tags,
+        entriesByTag,
         isSomeTagSelected,
         isAllTagSelected,
         extVersion,
@@ -45,8 +39,10 @@ export const PasswordManager = () => {
         disconnect,
         selectedProvider,
         providerConnecting,
+        savePasswords,
     } = usePasswords();
-    const device = useSelector(selectDevice);
+
+    const [formActive, setFormActive] = useState<undefined | number>();
 
     if (providerConnecting) {
         return <SectionItem>Connecting...</SectionItem>;
@@ -100,26 +96,41 @@ export const PasswordManager = () => {
                                         />
                                     ))}
                                 </TagsList>
-                                <PasswordsList>
-                                    {(isSomeTagSelected && !isAllTagSelected
-                                        ? Object.entries(entriesByTag)
-                                        : Object.entries(entries)
-                                    ).map(([key, entry]) => (
-                                        <PasswordEntryComponent
-                                            {...entry}
-                                            devicePath={device!.path}
-                                            key={key}
-                                        />
-                                    ))}
-                                    {!Object.entries(entries).length && (
-                                        <TextColumn
-                                            description={`No passwords found in file ${fileName}`}
-                                        />
-                                    )}
-                                </PasswordsList>
+                                <PasswordsList
+                                    isSomeTagSelected={isSomeTagSelected}
+                                    isAllTagSelected={isAllTagSelected}
+                                    formActive={formActive}
+                                    entriesByTag={entriesByTag}
+                                    entries={entries}
+                                    savePasswords={savePasswords}
+                                    setFormActive={setFormActive}
+                                    fileName={fileName}
+                                    nextId={getNextId(entries)}
+                                />
                             </PasswordManagerBody>
                         ) : (
-                            <div> no data</div>
+                            <div style={{ display: 'flex', justifyContent: 'center', flex: 1 }}>
+                                {formActive !== 0 && (
+                                    <Button
+                                        size="tiny"
+                                        onClick={() => setFormActive(0)}
+                                        type="button"
+                                        variant="tertiary"
+                                        icon="PENCIL"
+                                    >
+                                        Add a password
+                                    </Button>
+                                )}
+                                {formActive === 0 && (
+                                    <EntryForm
+                                        cancel={() => setFormActive(undefined)}
+                                        onEncrypted={entry => {
+                                            savePasswords(getNextId(entries), entry);
+                                            setFormActive(getNextId(entries));
+                                        }}
+                                    />
+                                )}
+                            </div>
                         )}
                     </>
                 )}

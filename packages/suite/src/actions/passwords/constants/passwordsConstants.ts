@@ -1,0 +1,1 @@
+export const SET_FILENAME = '@passwords/set-filename'

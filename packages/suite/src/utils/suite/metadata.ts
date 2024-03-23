@@ -78,7 +78,7 @@ export const arrayBufferToBuffer = (ab: ArrayBuffer) => {
     return buffer;
 };
 
-export const encrypt = async (input: Record<string, any>, aesKey: string | Buffer) => {
+export const encrypt = async (input: Record<string, any> | string, aesKey: string | Buffer) => {
     if (typeof aesKey === 'string') {
         aesKey = Buffer.from(aesKey, 'hex');
     }

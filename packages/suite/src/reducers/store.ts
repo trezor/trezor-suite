@@ -19,6 +19,7 @@ import walletReducers from 'src/reducers/wallet';
 import onboardingReducers from 'src/reducers/onboarding';
 import recoveryReducers from 'src/reducers/recovery';
 import backupReducers from 'src/reducers/backup';
+import passwordsReducer from 'src/reducers/passwords/passwordsReducer';
 
 // toastMiddleware can be used only in suite-desktop and suite-web
 // it's not included into `@suite-middlewares` index
@@ -38,6 +39,7 @@ const rootReducer = combineReducers({
     firmware: firmwareReducer,
     backup: backupReducers,
     desktop: desktopReducer,
+    passwords: passwordsReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
