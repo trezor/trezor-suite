@@ -19,6 +19,7 @@ export const UI_RESPONSE = {
     INVALID_PASSPHRASE_ACTION: 'ui-invalid_passphrase_action',
     CHANGE_SETTINGS: 'ui-change_settings',
     LOGIN_CHALLENGE_RESPONSE: 'ui-login_challenge_response',
+    EJECT_DEVICE: 'ui-eject_device',
 } as const;
 
 export interface UiResponsePopupHandshake {
@@ -100,6 +101,11 @@ export interface UiResponseLoginChallenge {
     };
 }
 
+export interface UiResponseEjectDevice {
+    type: typeof UI_RESPONSE.EJECT_DEVICE;
+    payload: undefined;
+}
+
 export type UiResponseEvent =
     | UiResponsePopupHandshake
     | UiResponsePermission
@@ -111,7 +117,8 @@ export type UiResponseEvent =
     | UiResponsePassphraseAction
     | UiResponseAccount
     | UiResponseFee
-    | UiResponseLoginChallenge;
+    | UiResponseLoginChallenge
+    | UiResponseEjectDevice;
 
 export type UiResponseMessage = UiResponseEvent & { event: typeof UI_EVENT };
 
