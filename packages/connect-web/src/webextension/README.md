@@ -128,3 +128,18 @@ Chrome extension requires a special `trezor-usb-permissions.html` file served fr
 This page will be displayed in case where user is using Trezor without `Trezor Bridge` installed and `navigator.usb` is available.
 
 Lastly, you have to place [this](./trezor-usb-permissions.js) Javascript file into your `vendor/` directory. This directory could be changed, but then you need to remember to change script src accordingly inside `trezor-usb-permissions.html` file.
+
+# TrezorConnect Support Matrix
+
+The table below details the support for different environments by TrezorConnect for integrating Trezor devices, including the use of WebUSB and the need for Trezor Bridge.
+
+| Environment                   | Chrome | Firefox | Chrome Android | Firefox Android | Safari | Edge | Notes                                                                   |
+| ----------------------------- | :----: | :-----: | :------------: | :-------------: | :----: | :--: | ----------------------------------------------------------------------- |
+| Web (WebUSB)                  |   ✓    |    ✗    |       ✗        |        ✗        |   ✗    |  ✓   | WebUSB is fully supported where indicated.                              |
+| Web (Bridge)                  |   ✓    |    ✓    |       ✗        |        ✗        |   ✓    |  ✓   | Trezor Bridge is required for Safari and where WebUSB is not supported. |
+| WebExtension (WebUSB, Bridge) |   ✓    |    ✓    |       ✗        |        ✗        |   ✗    |  ✗   | Requires Trezor Bridge on platforms not supporting WebUSB.              |
+
+## Key Differences
+
+-   **WebUSB**: Allows direct communication with Trezor devices via the browser. Supported by most modern browsers but may have limitations on mobile devices and is not supported by Safari.
+-   **Trezor Bridge**: A service that runs with Trezor Suite or Standalone that facilitates communication between your Trezor device and a web browser. Required for browsers that do not support WebUSB or for a more stable connection on desktop environments.
