@@ -8,6 +8,16 @@ export interface AbstractApiConstructorParams {
     logger?: Logger;
 }
 
+// https://github.dev/trezor/trezord-go/blob/db03d99230f5b609a354e3586f1dfc0ad6da16f7/core/core.go#L46-L47
+export enum DEVICE_TYPE {
+    TypeT1Hid = 0,
+    TypeT1Webusb = 1,
+    TypeT1WebusbBoot = 2,
+    TypeT2 = 3,
+    TypeT2Boot = 4,
+    TypeEmulator = 5,
+}
+
 /**
  * This class defines unifying shape for native communication interfaces such as
  * - navigator.bluetooth
@@ -35,7 +45,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      * enumerate connected devices
      */
     abstract enumerate(): AsyncResultWithTypedError<
-        string[],
+        { path: string; type: DEVICE_TYPE }[],
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
         | typeof ERRORS.UNEXPECTED_ERROR

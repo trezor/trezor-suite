@@ -15,7 +15,7 @@ export class TrezordNode {
     version = '3.0.0';
     serviceName = 'trezord-node';
     /** last known descriptors state */
-    descriptors: string;
+    descriptors: Descriptor[];
     /** pending /listen subscriptions that are supposed to be resolved whenever descriptors change is detected */
     listenSubscriptions: {
         descriptors: string;
@@ -30,7 +30,7 @@ export class TrezordNode {
     constructor({ port, api }: { port: number; api: 'usb' | 'udp' }) {
         this.port = port || defaults.port;
 
-        this.descriptors = '{}';
+        this.descriptors = [];
 
         this.listenSubscriptions = [];
 
@@ -42,13 +42,13 @@ export class TrezordNode {
     }
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
-        this.descriptors = JSON.stringify(descriptors);
+        this.descriptors = descriptors;
         const [affected, unaffected] = arrayPartition(
             this.listenSubscriptions,
-            subscription => subscription.descriptors !== this.descriptors,
+            subscription => subscription.descriptors !== JSON.stringify(this.descriptors),
         );
         affected.forEach(subscription => {
-            subscription.res.end(this.descriptors);
+            subscription.res.end(str(this.descriptors));
         });
         this.listenSubscriptions = unaffected;
     }
