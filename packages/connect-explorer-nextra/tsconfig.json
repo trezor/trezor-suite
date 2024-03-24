@@ -21,6 +21,7 @@
         { "path": "../connect-webextension" },
         { "path": "../protobuf" },
         { "path": "../schema-utils" },
+        { "path": "../theme" },
         { "path": "../utils" }
     ]
 }

@@ -6,6 +6,8 @@ import cn from 'clsx';
 import { Code, Pre, Table, Td, Th, Tr } from 'nextra/components';
 import type { Components } from 'nextra/mdx';
 
+import { Card } from '@trezor/components';
+
 import { Anchor, Collapse } from './components';
 import type { AnchorProps } from './components/anchor';
 import type { DocsThemeConfig } from './constants';
@@ -55,9 +57,9 @@ function HeadingLink({
                 className === 'sr-only'
                     ? 'nx-sr-only'
                     : cn(
-                          'nx-font-semibold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100',
+                          'nx-font-semibold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100 nx-mb-2',
                           {
-                              h2: 'nx-mt-10 nx-border-b nx-pb-1 nx-text-3xl nx-border-neutral-200/70 contrast-more:nx-border-neutral-400 dark:nx-border-primary-100/10 contrast-more:dark:nx-border-neutral-400',
+                              h2: 'nx-mt-10 nx-pb-1 nx-text-3xl',
                               h3: 'nx-mt-8 nx-text-2xl',
                               h4: 'nx-mt-8 nx-text-xl',
                               h5: 'nx-mt-8 nx-text-lg',
@@ -177,10 +179,6 @@ export const Link = ({ href = '', className, ...props }: AnchorProps) => (
     />
 );
 
-const A = ({ href = '', ...props }) => (
-    <Anchor href={href} newWindow={EXTERNAL_HREF_REGEX.test(href)} {...props} />
-);
-
 export const getComponents = ({
     isRawLayout,
     components,
@@ -188,16 +186,35 @@ export const getComponents = ({
     isRawLayout?: boolean;
     components?: DocsThemeConfig['components'];
 }): Components => {
-    if (isRawLayout) {
-        return { a: A };
-    }
-
     const context = { index: 0 };
 
     return {
+        section: props => {
+            const maxRank = 2;
+            if (
+                !isRawLayout &&
+                props.className === 'heading' &&
+                props['data-heading-rank'] <= maxRank
+            ) {
+                const children = props?.children as ReactNode[];
+                const showInCard = (el: ReactNode) =>
+                    !(el as ReactElement).props?.['data-heading-rank'] ||
+                    (el as ReactElement).props?.['data-heading-rank'] > maxRank;
+
+                return (
+                    <>
+                        {children?.[0]}
+                        <Card>{children?.slice(1)?.filter(el => showInCard(el))}</Card>
+                        {children?.slice(1)?.filter(el => !showInCard(el))}
+                    </>
+                );
+            }
+
+            return <section {...props} />;
+        },
         h1: props => (
             <h1
-                className="nx-mt-2 nx-text-4xl nx-font-bold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100"
+                className="nx-mt-2 nx-mb-2 nx-text-4xl nx-font-bold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100"
                 {...props}
             />
         ),
@@ -241,7 +258,7 @@ export const getComponents = ({
         td: Td,
         details: Details,
         summary: Summary,
-        pre: Pre,
+        pre: props => <Pre className={cn('nx-bg-neutral-500/5')} {...props} />,
         code: Code,
         ...components,
     };

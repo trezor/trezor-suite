@@ -1,7 +1,6 @@
 import type { ReactElement, ReactNode } from 'react';
 import { createContext, useContext, useState } from 'react';
 
-import { ThemeProvider } from 'next-themes';
 import type { FrontMatter, PageMapItem, PageOpts } from 'nextra';
 import { metaSchema } from 'nextra/normalize-pages';
 import type { ZodError } from 'zod';
@@ -99,19 +98,9 @@ export const ConfigProvider = ({
         frontMatter: pageOpts.frontMatter,
     };
 
-    const { nextThemes } = extendedConfig;
-
     return (
-        <ThemeProvider
-            attribute="class"
-            disableTransitionOnChange
-            defaultTheme={nextThemes.defaultTheme}
-            storageKey={nextThemes.storageKey}
-            forcedTheme={nextThemes.forcedTheme}
-        >
-            <ConfigContext.Provider value={extendedConfig}>
-                <MenuProvider value={{ menu, setMenu }}>{children}</MenuProvider>
-            </ConfigContext.Provider>
-        </ThemeProvider>
+        <ConfigContext.Provider value={extendedConfig}>
+            <MenuProvider value={{ menu, setMenu }}>{children}</MenuProvider>
+        </ConfigContext.Provider>
     );
 };

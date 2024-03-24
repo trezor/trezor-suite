@@ -1,7 +1,9 @@
+import { Card } from '@trezor/components';
+
 # Trezor Connect SDK
 
-    There are couple of options how to integrate Trezor devices with your project. This page walks
-    you through installation and lets you explore SDK API.
+There are couple of options how to integrate Trezor devices with your project. This page walks
+you through installation and lets you explore SDK API.
 
 ## Chose your SDK
 
@@ -74,8 +76,10 @@ If you need more customization, refer to [init method documentation](./methods/i
 
 ## How it works under the hood
 
-There is a major difference between node.js based package (`@trezor/connect`) and web based packages (`@trezor/connect-web` and `@trezor/connect-webextension`).
-In the former the entire SDK logic is a module of the 3rd party application whereas in the latter, there is strict isolation between 3rd party application code and SDK core logic.
+    There is a major difference between node.js based package (`@trezor/connect`) and web based
+    packages (`@trezor/connect-web` and `@trezor/connect-webextension`). In the former the entire
+    SDK logic is a module of the 3rd party application whereas in the latter, there is strict
+    isolation between 3rd party application code and SDK core logic.
 
 ### Node.js
 

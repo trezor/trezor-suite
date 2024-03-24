@@ -1,14 +1,30 @@
 import type { ReactElement, ReactNode } from 'react';
 
 import { Menu, Transition } from '@headlessui/react';
+import styled from 'styled-components';
 import cn from 'clsx';
 import { useFSRoute } from 'nextra/hooks';
 import { ArrowRightIcon, MenuIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
 
+import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
+import { TrezorLogo, useElevation } from '@trezor/components';
+
 import { useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';
 import { Anchor } from './anchor';
+
+const Container = styled.div<{ $elevation: Elevation }>`
+    border-radius: ${borders.radii.full};
+    margin: 0 -${spacingsPx.sm};
+    padding: ${spacingsPx.md} ${spacingsPx.xl};
+    background-color: ${mapElevationToBackground};
+    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    margin-top: ${spacingsPx.xxl};
+    flex-direction: row;
+    display: flex;
+    flex: 1;
+`;
 
 export type NavBarProps = {
     flatDirectories: Item[];
@@ -76,110 +92,118 @@ function NavbarMenu({
 
 export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
     const config = useConfig();
+    const { elevation } = useElevation();
+
     const activeRoute = useFSRoute();
     const { menu, setMenu } = useMenu();
 
     return (
         <div className="nextra-nav-container nx-sticky nx-top-0 nx-z-20 nx-w-full nx-bg-transparent print:nx-hidden">
-            <div
-                className={cn(
-                    'nextra-nav-container-blur',
-                    'nx-pointer-events-none nx-absolute nx-z-[-1] nx-h-full nx-w-full nx-bg-white dark:nx-bg-dark',
-                    'nx-shadow-[0_2px_4px_rgba(0,0,0,.02),0_1px_0_rgba(0,0,0,.06)] dark:nx-shadow-[0_-1px_0_rgba(255,255,255,.1)_inset]',
-                    'contrast-more:nx-shadow-[0_0_0_1px_#000] contrast-more:dark:nx-shadow-[0_0_0_1px_#fff]',
-                )}
-            />
-            <nav className="nx-mx-auto nx-flex nx-h-[var(--nextra-navbar-height)] nx-max-w-[90rem] nx-items-center nx-justify-end nx-gap-2 nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]">
-                {config.logoLink ? (
-                    <Anchor
-                        href={typeof config.logoLink === 'string' ? config.logoLink : '/'}
-                        className="nx-flex nx-items-center hover:nx-opacity-75 ltr:nx-mr-auto rtl:nx-ml-auto"
-                    >
-                        {renderComponent(config.logo)}
-                    </Anchor>
-                ) : (
-                    <div className="nx-flex nx-items-center ltr:nx-mr-auto rtl:nx-ml-auto">
-                        {renderComponent(config.logo)}
-                    </div>
-                )}
-                {items.map(pageOrMenu => {
-                    if (pageOrMenu.display === 'hidden') return null;
+            <nav className="nx-mx-auto nx-flex nx-h-[var(--nextra-navbar-height)] nx-max-w-[90rem] nx-items-start nx-justify-end nx-gap-2 nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]">
+                <Container $elevation={elevation}>
+                    {config.logoLink ? (
+                        <Anchor
+                            href={typeof config.logoLink === 'string' ? config.logoLink : '/'}
+                            className="nx-flex nx-items-center hover:nx-opacity-75 ltr:nx-mr-auto rtl:nx-ml-auto"
+                        >
+                            <TrezorLogo type="horizontal" width={150} />
+                        </Anchor>
+                    ) : (
+                        <div className="nx-flex nx-items-center ltr:nx-mr-auto rtl:nx-ml-auto">
+                            <TrezorLogo type="horizontal" width={150} />
+                        </div>
+                    )}
+                    {items.map(pageOrMenu => {
+                        if (pageOrMenu.display === 'hidden') return null;
 
-                    if (pageOrMenu.type === 'menu') {
-                        const currentMenu = pageOrMenu as MenuItem;
+                        if (pageOrMenu.type === 'menu') {
+                            const currentMenu = pageOrMenu as MenuItem;
+
+                            return (
+                                <NavbarMenu
+                                    key={currentMenu.title}
+                                    className={cn(
+                                        classes.link,
+                                        'nx-flex nx-gap-1',
+                                        classes.inactive,
+                                    )}
+                                    menu={currentMenu}
+                                >
+                                    {currentMenu.title}
+                                    <ArrowRightIcon
+                                        className="nx-h-[18px] nx-min-w-[18px] nx-rounded-sm nx-p-0.5"
+                                        pathClassName="nx-origin-center nx-transition-transform nx-rotate-90"
+                                    />
+                                </NavbarMenu>
+                            );
+                        }
+                        const page = pageOrMenu as PageItem;
+                        let href = page.href || page.route || '#';
+
+                        // If it's a directory
+                        if (page.children) {
+                            href = (page.withIndexPage ? page.route : page.firstChildRoute) || href;
+                        }
+
+                        const isActive =
+                            page.route === activeRoute || activeRoute.startsWith(page.route + '/');
 
                         return (
-                            <NavbarMenu
-                                key={currentMenu.title}
-                                className={cn(classes.link, 'nx-flex nx-gap-1', classes.inactive)}
-                                menu={currentMenu}
+                            <Anchor
+                                href={href}
+                                key={href}
+                                className={cn(
+                                    classes.link,
+                                    'nx-relative -nx-ml-2 nx-hidden nx-whitespace-nowrap nx-p-2 md:nx-inline-block',
+                                    !isActive || page.newWindow ? classes.inactive : classes.active,
+                                )}
+                                newWindow={page.newWindow}
+                                aria-current={!page.newWindow && isActive}
                             >
-                                {currentMenu.title}
-                                <ArrowRightIcon
-                                    className="nx-h-[18px] nx-min-w-[18px] nx-rounded-sm nx-p-0.5"
-                                    pathClassName="nx-origin-center nx-transition-transform nx-rotate-90"
-                                />
-                            </NavbarMenu>
+                                <span className="nx-absolute nx-inset-x-0 nx-text-center">
+                                    {page.title}
+                                </span>
+                                <span className="nx-invisible nx-font-medium">{page.title}</span>
+                            </Anchor>
                         );
-                    }
-                    const page = pageOrMenu as PageItem;
-                    let href = page.href || page.route || '#';
+                    })}
 
-                    // If it's a directory
-                    if (page.children) {
-                        href = (page.withIndexPage ? page.route : page.firstChildRoute) || href;
-                    }
+                    {renderComponent(config.search.component, {
+                        directories: flatDirectories,
+                        className: 'nx-hidden md:nx-inline-block mx-min-w-[200px]',
+                    })}
 
-                    const isActive =
-                        page.route === activeRoute || activeRoute.startsWith(page.route + '/');
-
-                    return (
+                    {config.project.link ? (
                         <Anchor
-                            href={href}
-                            key={href}
-                            className={cn(
-                                classes.link,
-                                'nx-relative -nx-ml-2 nx-hidden nx-whitespace-nowrap nx-p-2 md:nx-inline-block',
-                                !isActive || page.newWindow ? classes.inactive : classes.active,
-                            )}
-                            newWindow={page.newWindow}
-                            aria-current={!page.newWindow && isActive}
+                            className="nx-p-2 nx-text-current"
+                            href={config.project.link}
+                            newWindow
                         >
-                            <span className="nx-absolute nx-inset-x-0 nx-text-center">
-                                {page.title}
-                            </span>
-                            <span className="nx-invisible nx-font-medium">{page.title}</span>
+                            {renderComponent(config.project.icon)}
                         </Anchor>
-                    );
-                })}
+                    ) : null}
 
-                {renderComponent(config.search.component, {
-                    directories: flatDirectories,
-                    className: 'nx-hidden md:nx-inline-block mx-min-w-[200px]',
-                })}
+                    {config.chat.link ? (
+                        <Anchor
+                            className="nx-p-2 nx-text-current"
+                            href={config.chat.link}
+                            newWindow
+                        >
+                            {renderComponent(config.chat.icon)}
+                        </Anchor>
+                    ) : null}
 
-                {config.project.link ? (
-                    <Anchor className="nx-p-2 nx-text-current" href={config.project.link} newWindow>
-                        {renderComponent(config.project.icon)}
-                    </Anchor>
-                ) : null}
+                    {renderComponent(config.navbar.extraContent)}
 
-                {config.chat.link ? (
-                    <Anchor className="nx-p-2 nx-text-current" href={config.chat.link} newWindow>
-                        {renderComponent(config.chat.icon)}
-                    </Anchor>
-                ) : null}
-
-                {renderComponent(config.navbar.extraContent)}
-
-                <button
-                    type="button"
-                    aria-label="Menu"
-                    className="nextra-hamburger -nx-mr-2 nx-rounded nx-p-2 active:nx-bg-gray-400/20 md:nx-hidden"
-                    onClick={() => setMenu(!menu)}
-                >
-                    <MenuIcon className={cn({ open: menu })} />
-                </button>
+                    <button
+                        type="button"
+                        aria-label="Menu"
+                        className="nextra-hamburger -nx-mr-2 nx-rounded nx-p-2 active:nx-bg-gray-400/20 md:nx-hidden"
+                        onClick={() => setMenu(!menu)}
+                    >
+                        <MenuIcon className={cn({ open: menu })} />
+                    </button>
+                </Container>
             </nav>
         </div>
     );

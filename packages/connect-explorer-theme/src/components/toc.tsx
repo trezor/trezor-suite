@@ -4,6 +4,9 @@ import { useEffect, useMemo, useRef } from 'react';
 import cn from 'clsx';
 import type { Heading } from 'nextra';
 import scrollIntoView from 'scroll-into-view-if-needed';
+import styled from 'styled-components';
+
+import { variables } from '@trezor/components';
 
 import { useActiveAnchor, useConfig } from '../contexts';
 import { renderComponent } from '../utils';
@@ -14,6 +17,12 @@ export type TOCProps = {
     headings: Heading[];
     filePath: string;
 };
+
+const Container = styled.div`
+    ${variables.SCREEN_QUERY.ABOVE_TABLET} {
+        top: var(--nextra-navbar-height);
+    }
+`;
 
 const linkClassName = cn(
     'nx-text-xs nx-font-medium nx-text-gray-500 hover:nx-text-gray-900 dark:nx-text-gray-400 dark:hover:nx-text-gray-100',
@@ -50,10 +59,10 @@ export function TOC({ headings, filePath }: TOCProps): ReactElement {
     }, [activeSlug]);
 
     return (
-        <div
+        <Container
             ref={tocRef}
             className={cn(
-                'nextra-scrollbar nx-sticky nx-top-16 nx-overflow-y-auto nx-pr-4 nx-pt-6 nx-text-sm [hyphens:auto]',
+                'nextra-scrollbar nx-sticky nx-overflow-y-auto nx-pr-4 nx-pt-6 nx-text-sm [hyphens:auto]',
                 'nx-max-h-[calc(100vh-var(--nextra-navbar-height)-env(safe-area-inset-bottom))] ltr:-nx-mr-4 rtl:-nx-ml-4',
             )}
         >
@@ -96,10 +105,8 @@ export function TOC({ headings, filePath }: TOCProps): ReactElement {
             {hasMetaInfo && (
                 <div
                     className={cn(
-                        hasHeadings &&
-                            'nx-mt-8 nx-border-t nx-bg-white nx-pt-8 nx-shadow-[0_-12px_16px_white] dark:nx-bg-dark dark:nx-shadow-[0_-12px_16px_#111]',
-                        'nx-sticky nx-bottom-0 nx-flex nx-flex-col nx-items-start nx-gap-2 nx-pb-8 dark:nx-border-neutral-800',
-                        'contrast-more:nx-border-t contrast-more:nx-border-neutral-400 contrast-more:nx-shadow-none contrast-more:dark:nx-border-neutral-400',
+                        hasHeadings && 'nx-mt-8 nx-pt-8',
+                        'nx-sticky nx-bottom-0 nx-flex nx-flex-col nx-items-start nx-gap-2 nx-pb-8',
                     )}
                 >
                     {config.feedback.content ? (
@@ -123,6 +130,6 @@ export function TOC({ headings, filePath }: TOCProps): ReactElement {
                     {config.toc.backToTop && <BackToTop className={linkClassName} />}
                 </div>
             )}
-        </div>
+        </Container>
     );
 }
