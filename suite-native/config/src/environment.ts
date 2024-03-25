@@ -4,4 +4,6 @@ export const isProduction = () => process.env.EXPO_PUBLIC_ENVIRONMENT === 'produ
 
 export const isDevelopOrDebugEnv = () => isDebugEnv() || isDevelopEnv();
 
+export const getJWSPublicKey = () => process.env.EXPO_PUBLIC_JWS_PUBLIC_KEY;
+
 export const getEnv = () => process.env.EXPO_PUBLIC_ENVIRONMENT;
