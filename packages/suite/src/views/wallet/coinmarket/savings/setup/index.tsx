@@ -70,6 +70,7 @@ const LabelText = styled.div`
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    padding-right: 20px;
 `;
 
 const LinkButton = styled(Button)`

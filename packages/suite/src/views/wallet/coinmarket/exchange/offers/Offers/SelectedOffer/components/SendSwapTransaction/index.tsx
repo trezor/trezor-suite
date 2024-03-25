@@ -15,11 +15,14 @@ import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmark
 import useDebounce from 'react-use/lib/useDebounce';
 import BigNumber from 'bignumber.js';
 import { FieldError } from 'react-hook-form';
+import { BottomText } from '@trezor/components/src/components/form/BottomText';
+import { TranslationKey } from '@suite-common/intl-types';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
+    margin-top: ${spacingsPx.xs};
 `;
 
 const LabelText = styled.div`
@@ -104,6 +107,9 @@ const SlippageSettingsButton = styled.button`
 `;
 
 const StyledInput = styled(Input)`
+    align-self: center;
+    margin-left: ${spacingsPx.xs};
+
     input {
         display: flex;
         flex: 1;
@@ -160,7 +166,9 @@ const SendSwapTransactionComponent = () => {
     const [slippageSettings, setSlippageSettings] = useState(false);
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage || '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);
-    const [customSlippageError, setCustomSlippageError] = useState<FieldError | undefined>();
+    const [customSlippageError, setCustomSlippageError] = useState<
+        (FieldError & { message: TranslationKey }) | undefined
+    >();
     useDebounce(
         () => {
             if (
@@ -300,11 +308,15 @@ const SendSwapTransactionComponent = () => {
                                     name="CustomSlippage"
                                     data-test="CustomSlippage"
                                     onChange={changeCustomSlippage}
-                                    bottomText={customSlippageError?.message || null}
                                 />
                             </RightColumn>
                         )}
                     </PaddedColumns>
+                    {customSlippageError?.message ? (
+                        <BottomText inputState={customSlippageError && 'error'}>
+                            <Translation id={customSlippageError?.message} />
+                        </BottomText>
+                    ) : null}
                 </SlippageSettingsRow>
             )}
             <Row>

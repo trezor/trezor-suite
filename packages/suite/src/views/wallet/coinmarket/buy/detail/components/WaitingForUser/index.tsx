@@ -29,7 +29,6 @@ const Description = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     margin: 17px 0 10px;
-    max-width: 200px;
     text-align: center;
 `;
 
