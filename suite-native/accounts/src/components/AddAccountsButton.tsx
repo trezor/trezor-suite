@@ -12,8 +12,7 @@ import {
 } from '@suite-native/navigation';
 import { IconButton } from '@suite-native/atoms';
 import { selectDeviceDiscovery, selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
-
-import { useIsAddCoinAccountEnabled } from '../useIsAddCoinAccountEnabled';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 type AddAccountButtonProps = {
     flowType: AddCoinFlowType;
@@ -25,11 +24,10 @@ export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
 
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const discovery = useSelector(selectDeviceDiscovery);
-
-    const { isAddCoinAccountEnabled } = useIsAddCoinAccountEnabled();
+    const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const shouldShowAddAccountButton =
-        isSelectedDevicePortfolioTracker || (isAddCoinAccountEnabled && !discovery);
+        isSelectedDevicePortfolioTracker || (isDeviceConnectEnabled && !discovery);
 
     const navigateToImportScreen = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -38,14 +36,12 @@ export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
     };
 
     const navigateToAddCoinAccount = () => {
-        if (isAddCoinAccountEnabled) {
-            navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
-                screen: AddCoinAccountStackRoutes.AddCoinAccount,
-                params: {
-                    flowType,
-                },
-            });
-        }
+        navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
+            screen: AddCoinAccountStackRoutes.AddCoinAccount,
+            params: {
+                flowType,
+            },
+        });
     };
 
     return shouldShowAddAccountButton ? (
