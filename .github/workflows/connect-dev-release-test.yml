@@ -31,6 +31,7 @@ concurrency:
 
 env:
   DEV_SERVER_HOSTNAME: "dev.suite.sldev.cz"
+  CONNECT_LEGACY_VERSION: "9.2.2"
 
 jobs:
   build-deploy:
@@ -189,3 +190,22 @@ jobs:
     with:
       test-name: unchained.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  # Tests with legacy npm package and new popup
+  legacy-npm-browser-support:
+    needs: [build-deploy]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: browser-support.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      custom-connect-url: https://dev.suite.sldev.cz/connect/release/${CONNECT_LEGACY_VERSION}/
+
+  legacy-npm-popup-close:
+    needs: [build-deploy]
+    if: github.event_name == 'schedule'
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: popup-close-legacy.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      custom-connect-url: https://dev.suite.sldev.cz/connect/release/${CONNECT_LEGACY_VERSION}/

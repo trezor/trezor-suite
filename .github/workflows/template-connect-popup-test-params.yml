@@ -15,6 +15,10 @@ on:
         description: "Flag to indicate whether to run the webextension job"
         type: "boolean"
         required: false
+      custom-connect-url:
+        description: "Optional custom URL for testing legacy versions of Connect npm with new po"
+        type: "string"
+        required: false
 
 jobs:
   web:
@@ -44,7 +48,8 @@ jobs:
 
       - name: Run connect popup test
         env:
-          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          #  When testing legacy custom-connect-url it will use connect version from npm legacy version with current popup.
+          URL: ${{ inputs.custom-connect-url || ('https://' + inputs.DEV_SERVER_HOSTNAME + '/connect/' + steps.extract_branch.outputs.branch + '/') }}
           TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
         run: |
           ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
