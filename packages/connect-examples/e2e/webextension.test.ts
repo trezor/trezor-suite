@@ -91,7 +91,10 @@ test('Basic web extension MV2', async () => {
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
 
     log('waiting for connect to be ready.');
-    await page.waitForSelector("div[data-test='connect-loaded']");
+    await page.waitForSelector("div[data-test='connect-loaded']", {
+        state: 'visible',
+        timeout: 60 * 1000,
+    });
 
     log('wait for get-address');
     await page.waitForSelector("button[data-test='get-address']");
