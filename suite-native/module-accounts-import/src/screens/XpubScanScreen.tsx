@@ -5,7 +5,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 import { useFocusEffect } from '@react-navigation/native';
 
 import { Box, Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
-import { isProduction } from '@suite-native/config';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
     AccountsImportStackParamList,
@@ -216,7 +216,7 @@ export const XpubScanScreen = ({
                         )}
                     </VStack>
                 </Form>
-                {!isProduction() && (
+                {isDevelopOrDebugEnv() && (
                     <DevXpub symbol={networkSymbol} onSelect={goToAccountImportScreen} />
                 )}
             </Box>
