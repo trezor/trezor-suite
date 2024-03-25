@@ -1,3 +1,4 @@
+import bs58 from 'bs58';
 import type {
     Response,
     AccountInfo,
@@ -19,6 +20,8 @@ import {
     Connection,
     Message,
     PublicKey,
+    Transaction as SolanaTransaction,
+    sendAndConfirmRawTransaction,
 } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
@@ -100,15 +103,24 @@ const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidPar
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
-    const payload = await api.sendRawTransaction(Buffer.from(rawTx, 'hex'));
+
+    const txBuffer = Buffer.from(rawTx, 'hex');
+
+    const transaction = SolanaTransaction.from(txBuffer);
+    if (transaction.signature == null) {
+        throw new Error('Transaction signature is null.');
+    }
+
+    const signature = bs58.encode(transaction.signature);
     const { blockhash, lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
+
     const confirmStrategy: BlockheightBasedTransactionConfirmationStrategy = {
         blockhash,
         lastValidBlockHeight,
-        signature: payload,
+        signature,
     };
 
-    await api.confirmTransaction(confirmStrategy);
+    const payload = await sendAndConfirmRawTransaction(api, txBuffer, confirmStrategy);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,

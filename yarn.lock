@@ -10147,6 +10147,7 @@ __metadata:
     "@trezor/utxo-lib": "workspace:*"
     "@types/web": "npm:^0.0.138"
     bignumber.js: "npm:^9.1.2"
+    bs58: "npm:^5.0.0"
     events: "npm:^3.3.0"
     fs-extra: "npm:^11.2.0"
     html-webpack-plugin: "npm:^5.6.0"
