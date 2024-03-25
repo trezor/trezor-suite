@@ -21,6 +21,8 @@ jobs:
     name: Build and release iOS
     environment: production
     runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_ENVIRONMENT: production
     if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'Both' }}
     steps:
       - uses: actions/checkout@v4
@@ -47,6 +49,8 @@ jobs:
     name: Build and release Android
     environment: production
     runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_ENVIRONMENT: production
     if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'Both' }}
     steps:
       - uses: actions/checkout@v4
@@ -62,7 +66,7 @@ jobs:
       - name: Install libs
         run: yarn install
       - name: Build on EAS Android
-        run: EXPO_PUBLIC_ENVIRONMENT=production eas build
+        run: eas build
           --platform android
           --profile production
           --non-interactive

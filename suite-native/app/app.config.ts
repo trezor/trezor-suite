@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable import/no-default-export */
 /* eslint-disable import/no-anonymous-default-export */
 import { ExpoConfig, ConfigContext } from 'expo/config';
@@ -48,17 +49,28 @@ const projectIds = {
     debug: '',
 } as const satisfies Record<BuildType, string>;
 
+const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
+const isCI = process.env.CI == 'true' || process.env.CI == '1';
+
+console.info(`Running in CI: ${isCI}`);
+console.info(`EXPO_PUBLIC_ENVIRONMENT`, process.env.EXPO_PUBLIC_ENVIRONMENT);
+console.info(`Build type: ${buildType}`);
+
+if (isCI) {
+    if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
+        throw new Error('Missing EXPO_PUBLIC_ENVIRONMENT env variable');
+    }
+    if (!process.env.SENTRY_AUTH_TOKEN && buildType !== 'debug') {
+        throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
+    }
+}
+
 export default ({ config }: ConfigContext): ExpoConfig => {
-    const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
     const name = appNames[buildType];
     const bundleIdentifier = bundleIdentifiers[buildType];
     const projectId = projectIds[buildType];
     const appIconIos = appIconsIos[buildType];
     const appIconAndroid = appIconsAndroid[buildType];
-
-    if (!process.env.SENTRY_AUTH_TOKEN && buildType !== 'debug') {
-        throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
-    }
 
     return {
         ...config,
