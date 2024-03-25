@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -e
 
+xhost +
+
 LOCAL_USER_ID="$(id -u "$USER")"
 export LOCAL_USER_ID
 HEADLESS=false

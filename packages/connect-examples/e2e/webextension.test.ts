@@ -10,8 +10,19 @@ export const log = (...val: string[]) => {
 };
 
 let dir: string;
+let browserContext: any = null;
+
 test.beforeAll(async () => {
     dir = await ensureDirectoryExists('./screenshots/web-extension');
+});
+
+test.afterEach(async () => {
+    if (browserContext) {
+        // BrowserContext has to start fresh each test.
+        // https://playwright.dev/docs/api/class-browsercontext#browser-context-close
+        await browserContext.close();
+        await new Promise(resolve => setTimeout(resolve, 1000));
+    }
 });
 
 test('Basic web extension MV2', async () => {
@@ -44,7 +55,7 @@ test('Basic web extension MV2', async () => {
     log('path to extension: ', pathToExtension);
 
     const userDataDir = '/tmp/test-user-data-dir';
-    const browserContext = await chromium.launchPersistentContext(userDataDir, {
+    browserContext = await chromium.launchPersistentContext(userDataDir, {
         // https://playwright.dev/docs/chrome-extensions#headless-mode
         // By default, Chrome's headless mode in Playwright does not support Chrome extensions.
         // To overcome this limitation, you can run Chrome's persistent context with a new headless mode.
@@ -146,7 +157,7 @@ test('Basic web extension MV3', async () => {
     const pathToExtension = path.join(__dirname, '..', 'webextension-mv3', 'build');
 
     const userDataDir = '/tmp/test-user-data-dir';
-    const browserContext = await chromium.launchPersistentContext(userDataDir, {
+    browserContext = await chromium.launchPersistentContext(userDataDir, {
         // https://playwright.dev/docs/chrome-extensions#headless-mode
         // By default, Chrome's headless mode in Playwright does not support Chrome extensions.
         // To overcome this limitation, you can run Chrome's persistent context with a new headless mode.
