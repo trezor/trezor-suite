@@ -49,7 +49,7 @@ const projectIds = {
 } as const satisfies Record<BuildType, string>;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-    const buildType = (process.env.ENVIRONMENT_EXPO as BuildType) ?? 'debug';
+    const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
     const name = appNames[buildType];
     const bundleIdentifier = bundleIdentifiers[buildType];
     const projectId = projectIds[buildType];
