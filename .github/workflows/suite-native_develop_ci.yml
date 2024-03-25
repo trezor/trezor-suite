@@ -20,7 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      EXPO_PUBLIC_ENVIRONMENT: develop
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -35,7 +34,7 @@ jobs:
       - name: Install libs
         run: yarn install
       - name: Build on EAS Android
-        run: eas build
+        run: NODE_ENV=develop eas build
           --platform android
           --profile develop
           --non-interactive
@@ -43,7 +42,7 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native/app
       - name: Build on EAS iOS
-        run: eas build
+        run: NODE_ENV=develop eas build
           --platform ios
           --profile develop
           --non-interactive
