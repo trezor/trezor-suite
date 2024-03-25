@@ -3,7 +3,7 @@ import { Alert } from 'react-native';
 import * as Sentry from '@sentry/react-native';
 
 import { isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
-import { Button, Card, ListItem, VStack } from '@suite-native/atoms';
+import { Button, Text, Card, ListItem, VStack } from '@suite-native/atoms';
 import {
     Screen,
     StackProps,
@@ -38,6 +38,7 @@ export const DevUtilsScreen = ({
                             />
                         </>
                     )}
+                    {!isProduction() && <Text>{JSON.stringify(process.env)}</Text>}
                     {isDebugEnv() && (
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo
