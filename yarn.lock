@@ -10030,7 +10030,7 @@ __metadata:
   dependencies:
     "@types/cors": "npm:^2.8.17"
     cors: "npm:^2.8.5"
-    express: "npm:^4.18.2"
+    express: "npm:^4.19.2"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -10580,7 +10580,7 @@ __metadata:
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
     events: "npm:^3.3.0"
-    express: "npm:^4.18.2"
+    express: "npm:^4.19.2"
     uuid: "npm:^9.0.1"
     ws: "npm:^8.16.0"
   languageName: unknown
@@ -14930,7 +14930,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:^1.16.0, body-parser@npm:^1.19.0":
+"body-parser@npm:1.20.2, body-parser@npm:^1.16.0, body-parser@npm:^1.19.0":
   version: 1.20.2
   resolution: "body-parser@npm:1.20.2"
   dependencies:
@@ -16718,6 +16718,13 @@ __metadata:
   version: 0.5.0
   resolution: "cookie@npm:0.5.0"
   checksum: aae7911ddc5f444a9025fbd979ad1b5d60191011339bce48e555cb83343d0f98b865ff5c4d71fecdfb8555a5cafdc65632f6fce172f32aaf6936830a883a0380
+  languageName: node
+  linkType: hard
+
+"cookie@npm:0.6.0":
+  version: 0.6.0
+  resolution: "cookie@npm:0.6.0"
+  checksum: c1f8f2ea7d443b9331680598b0ae4e6af18a618c37606d1bbdc75bec8361cce09fe93e727059a673f2ba24467131a9fb5a4eec76bb1b149c1b3e1ccb268dc583
   languageName: node
   linkType: hard
 
@@ -20751,7 +20758,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"express@npm:^4.14.0, express@npm:^4.17.3, express@npm:^4.18.2":
+"express@npm:^4.14.0, express@npm:^4.17.3":
   version: 4.18.2
   resolution: "express@npm:4.18.2"
   dependencies:
@@ -20787,6 +20794,45 @@ __metadata:
     utils-merge: "npm:1.0.1"
     vary: "npm:~1.1.2"
   checksum: 869ae89ed6ff4bed7b373079dc58e5dddcf2915a2669b36037ff78c99d675ae930e5fe052b35c24f56557d28a023bb1cbe3e2f2fb87eaab96a1cedd7e597809d
+  languageName: node
+  linkType: hard
+
+"express@npm:^4.19.2":
+  version: 4.19.2
+  resolution: "express@npm:4.19.2"
+  dependencies:
+    accepts: "npm:~1.3.8"
+    array-flatten: "npm:1.1.1"
+    body-parser: "npm:1.20.2"
+    content-disposition: "npm:0.5.4"
+    content-type: "npm:~1.0.4"
+    cookie: "npm:0.6.0"
+    cookie-signature: "npm:1.0.6"
+    debug: "npm:2.6.9"
+    depd: "npm:2.0.0"
+    encodeurl: "npm:~1.0.2"
+    escape-html: "npm:~1.0.3"
+    etag: "npm:~1.8.1"
+    finalhandler: "npm:1.2.0"
+    fresh: "npm:0.5.2"
+    http-errors: "npm:2.0.0"
+    merge-descriptors: "npm:1.0.1"
+    methods: "npm:~1.1.2"
+    on-finished: "npm:2.4.1"
+    parseurl: "npm:~1.3.3"
+    path-to-regexp: "npm:0.1.7"
+    proxy-addr: "npm:~2.0.7"
+    qs: "npm:6.11.0"
+    range-parser: "npm:~1.2.1"
+    safe-buffer: "npm:5.2.1"
+    send: "npm:0.18.0"
+    serve-static: "npm:1.15.0"
+    setprototypeof: "npm:1.2.0"
+    statuses: "npm:2.0.1"
+    type-is: "npm:~1.6.18"
+    utils-merge: "npm:1.0.1"
+    vary: "npm:~1.1.2"
+  checksum: 3fcd792536f802c059789ef48db3851b87e78fba103423e524144d79af37da7952a2b8d4e1a007f423329c7377d686d9476ac42e7d9ea413b80345d495e30a3a
   languageName: node
   linkType: hard
 
