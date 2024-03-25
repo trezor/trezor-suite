@@ -52,10 +52,6 @@ const projectIds = {
 const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
 const isCI = process.env.CI == 'true' || process.env.CI == '1';
 
-console.info(`Running in CI: ${isCI}`);
-console.info(`EXPO_PUBLIC_ENVIRONMENT`, process.env.EXPO_PUBLIC_ENVIRONMENT);
-console.info(`Build type: ${buildType}`);
-
 if (isCI) {
     if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
         throw new Error('Missing EXPO_PUBLIC_ENVIRONMENT env variable');
