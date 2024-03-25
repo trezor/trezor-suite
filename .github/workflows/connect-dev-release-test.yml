@@ -222,8 +222,37 @@ jobs:
 
       - name: Build example webextensions MV2 and MV3
         env:
-          URL: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}
-        run: node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${URL}" --npm-src "${URL}/trezor-connect.js"
+          # URL: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          URL: https://connect.trezor.io/9/
+        run: |
+          echo "${URL}"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${URL}" --npm-src "${URL}trezor-connect.js"
+          # node ./packages/connect-examples/update-webextensions.js
 
       - name: Run e2e tests
         run: ./docker/docker-connect-webextension-ci.sh
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            packages/connect-examples/e2e/screenshots/
+
+      - name: Upload webextensions artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webextension-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            packages/connect-examples/webextension-mv2/build
+            packages/connect-examples/webextension-mv3/build
+
+      - name: Check Test Success
+        run: |
+          # If there is `test-results` it means it has failed.
+          if [ -f "packages/connect-examples/test-results" ]; then
+            echo "Tests failed"
+            exit 1
+          fi

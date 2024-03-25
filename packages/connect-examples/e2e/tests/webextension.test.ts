@@ -13,7 +13,7 @@ let dir: string;
 let browserContext: any = null;
 
 test.beforeAll(async () => {
-    dir = await ensureDirectoryExists('./screenshots/web-extension');
+    dir = await ensureDirectoryExists('./e2e/screenshots/');
 });
 
 test.afterEach(async () => {
@@ -50,7 +50,7 @@ test('Basic web extension MV2', async () => {
         type: 'bridge-start',
     });
 
-    const pathToExtension = path.join(__dirname, '..', 'webextension-mv2', 'build');
+    const pathToExtension = path.join(__dirname, '..', '..', 'webextension-mv2', 'build');
 
     log('path to extension: ', pathToExtension);
 
@@ -90,11 +90,15 @@ test('Basic web extension MV2', async () => {
     log(`going to: chrome-extension://${extensionId}/connect-manager.html`);
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
 
+    await page.screenshot({ path: `${dir}/web-extension-mv2-2.png` });
+
     log('waiting for connect to be ready.');
     await page.waitForSelector("div[data-test='connect-loaded']", {
         state: 'visible',
         timeout: 60 * 1000,
     });
+
+    await page.screenshot({ path: `${dir}/web-extension-mv2-3.png` });
 
     log('wait for get-address');
     await page.waitForSelector("button[data-test='get-address']");
@@ -157,7 +161,7 @@ test('Basic web extension MV3', async () => {
         type: 'bridge-start',
     });
 
-    const pathToExtension = path.join(__dirname, '..', 'webextension-mv3', 'build');
+    const pathToExtension = path.join(__dirname, '..', '..', 'webextension-mv3', 'build');
 
     const userDataDir = '/tmp/test-user-data-dir';
     browserContext = await chromium.launchPersistentContext(userDataDir, {

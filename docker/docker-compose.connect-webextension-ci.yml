@@ -9,7 +9,7 @@ services:
 
   test-run:
     image: mcr.microsoft.com/playwright:v1.41.2-jammy
-    container_name: explorer-test-runner
+    container_name: webextension-test-runner
     ipc: host
     depends_on:
       - trezor-user-env-unix
