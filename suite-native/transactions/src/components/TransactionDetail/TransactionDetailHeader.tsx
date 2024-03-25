@@ -67,50 +67,52 @@ export const TransactionDetailHeader = ({
     const hasTransactionSign = type === 'sent' || type === 'recv';
 
     return (
-        <Box alignItems="center">
-            <Box flexDirection="row" alignItems="center" marginBottom="small">
-                <Text variant="hint" color="textSubdued">
-                    {text}
-                </Text>
-                {hasTransactionSign && (
-                    <Icon
-                        name={transactionTypeInfo[type].iconName}
-                        color="iconSubdued"
-                        size="medium"
-                    />
-                )}
-            </Box>
-            <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit={true}>
-                <Box flexDirection={'row'} alignItems={'center'}>
+        <DiscreetTextTrigger>
+            <Box alignItems="center">
+                <Box flexDirection="row" alignItems="center" marginBottom="small">
+                    <Text variant="hint" color="textSubdued">
+                        {text}
+                    </Text>
+                    {hasTransactionSign && (
+                        <Icon
+                            name={transactionTypeInfo[type].iconName}
+                            color="iconSubdued"
+                            size="medium"
+                        />
+                    )}
+                </Box>
+                <Box flexDirection="row" paddingHorizontal="large">
                     <SignValueFormatter
                         value={signValueMap[tokenTransfer ? tokenTransfer.type : transaction.type]}
                         variant="titleMedium"
                     />
-                    <DiscreetTextTrigger>
-                        {tokenTransfer ? (
-                            <EthereumTokenAmountFormatter
-                                value={tokenTransfer.amount}
-                                symbol={tokenTransfer.symbol}
-                                decimals={tokenTransfer.decimals}
-                                variant="titleMedium"
-                                color="textDefault"
-                            />
-                        ) : (
-                            <CryptoAmountFormatter
-                                value={transaction.amount}
-                                network={transaction.symbol}
-                                isBalance={false}
-                                variant="titleMedium"
-                                color="textDefault"
-                            />
-                        )}
-                    </DiscreetTextTrigger>
+                    <Text> </Text>
+                    {tokenTransfer ? (
+                        <EthereumTokenAmountFormatter
+                            value={tokenTransfer.amount}
+                            symbol={tokenTransfer.symbol}
+                            decimals={tokenTransfer.decimals}
+                            variant="titleMedium"
+                            color="textDefault"
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                        />
+                    ) : (
+                        <CryptoAmountFormatter
+                            value={transaction.amount}
+                            network={transaction.symbol}
+                            isBalance={false}
+                            variant="titleMedium"
+                            color="textDefault"
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                        />
+                    )}
                 </Box>
-            </Text>
-            {transaction.rates && (
-                <Box flexDirection="row">
-                    <Text>≈ </Text>
-                    <DiscreetTextTrigger>
+
+                {transaction.rates && (
+                    <Box flexDirection="row">
+                        <Text>≈ </Text>
                         {tokenTransfer ? (
                             <EthereumTokenToFiatAmountFormatter
                                 contract={tokenTransfer.contract}
@@ -124,9 +126,9 @@ export const TransactionDetailHeader = ({
                                 customRates={transaction.rates}
                             />
                         )}
-                    </DiscreetTextTrigger>
-                </Box>
-            )}
-        </Box>
+                    </Box>
+                )}
+            </Box>
+        </DiscreetTextTrigger>
     );
 };
