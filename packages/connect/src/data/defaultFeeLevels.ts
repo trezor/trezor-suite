@@ -97,8 +97,8 @@ const SOLANA_FEE_INFO: FeeInfoWithLevels = {
         {
             label: 'normal',
             feePerUnit: '100000',
-            feeLimit: '50000',
-            feePerTx: '10000',
+            feeLimit: '200000',
+            feePerTx: '25000',
             blocks: -1,
         },
     ],

@@ -1,9 +1,12 @@
-import { Connection, Message, PublicKey, VersionedTransaction } from '@solana/web3.js';
+import { Connection, Message, PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 const COMPUTE_BUDGET_PROGRAM_ID = 'ComputeBudget111111111111111111111111111111';
 const DEFAULT_COMPUTE_UNIT_PRICE = 100_000; // micro-lamports, value taken from other wallets
-const DEFAULT_COMPUTE_UNIT_LIMIT = 50_000; // sending tokens with token account creation requires ~28K units
+// sending tokens with token account creation requires ~28K units. However we over-reserve for now
+// since otherwise the transactions don't seem to go through otherwise. This can perhaps be changed
+// if e.g. https://github.com/anza-xyz/agave/pull/187 is merged.
+const DEFAULT_COMPUTE_UNIT_LIMIT = 200_000;
 
 export const getBaseFee = async (api: Connection, message: Message) => {
     // Remove ComputeBudget instructions from the message when estimating the base fee
@@ -39,13 +42,7 @@ export const getPriorityFee = async (api: Connection, message: Message) => {
         lockedWritableAccounts: affectedAccounts.map(a => new PublicKey(a)),
     });
 
-    // https://solana.com/developers/guides/advanced/how-to-request-optimal-compute#special-considerations
-    const simulationResult = await api.simulateTransaction(new VersionedTransaction(message));
-    const simulatedUnitsConsumed = simulationResult.value.unitsConsumed;
-    const computeUnitLimit =
-        simulatedUnitsConsumed != null
-            ? Math.ceil(simulatedUnitsConsumed * 1.2) // 20% buffer - 10% is recommended by the article above, but we double it just to be sure
-            : DEFAULT_COMPUTE_UNIT_LIMIT;
+    const computeUnitLimit = DEFAULT_COMPUTE_UNIT_LIMIT;
 
     const networkPriorityFee = recentFees.map(a => a.prioritizationFee).sort((a, b) => b - a)[
         Math.floor(recentFees.length / 4)

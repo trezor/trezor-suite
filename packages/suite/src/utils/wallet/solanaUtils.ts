@@ -46,7 +46,7 @@ type PriorityFees = { computeUnitPrice: string; computeUnitLimit: string };
 
 export const dummyPriorityFeesForFeeEstimation: PriorityFees = {
     computeUnitPrice: '100000',
-    computeUnitLimit: '50000',
+    computeUnitLimit: '200000',
 };
 
 const addPriorityFees = async (transaction: Transaction, priorityFees: PriorityFees) => {
