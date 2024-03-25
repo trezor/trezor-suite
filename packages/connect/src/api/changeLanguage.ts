@@ -9,6 +9,7 @@ import { httpRequest } from '../utils/assets';
 
 export default class ChangeLanguage extends AbstractMethod<'changeLanguage', ChangeLanguageSchema> {
     init() {
+        this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useEmptyPassphrase = true;
         this.requiredPermissions = ['management'];
         this.useDeviceState = false;
