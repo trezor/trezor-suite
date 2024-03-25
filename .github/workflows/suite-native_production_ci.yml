@@ -36,7 +36,7 @@ jobs:
       - name: Install libs
         run: yarn install
       - name: Build on EAS iOS
-        run: NODE_ENV=production eas build
+        run: EXPO_PUBLIC_ENVIRONMENT=production eas build
           --platform ios
           --profile production
           --non-interactive
@@ -62,7 +62,7 @@ jobs:
       - name: Install libs
         run: yarn install
       - name: Build on EAS Android
-        run: NODE_ENV=production eas build
+        run: EXPO_PUBLIC_ENVIRONMENT=production eas build
           --platform android
           --profile production
           --non-interactive
