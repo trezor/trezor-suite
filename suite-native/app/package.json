@@ -103,6 +103,7 @@
         "@babel/core": "^7.20.0",
         "@babel/plugin-transform-export-namespace-from": "^7.23.4",
         "@react-native/babel-preset": "0.73.21",
+        "babel-plugin-transform-inline-environment-variables": "^0.4.4",
         "babel-plugin-transform-remove-console": "^6.9.4"
     },
     "private": true
