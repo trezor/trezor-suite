@@ -73,6 +73,8 @@ describe('bridge', () => {
                     payload: '1',
                 });
                 session = acquireResult.payload;
+                // WIP: this is just a test.
+                expect(false).toBeTruthy();
             });
 
             test(`call(GetFeatures)`, async () => {
