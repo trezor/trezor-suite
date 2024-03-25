@@ -13,14 +13,8 @@ export type DiscreetTextProps = TextProps & {
     children?: string | null;
 };
 
-const discreetTextContainer = prepareNativeStyle<{ lineHeight: number }>((_, { lineHeight }) => ({
-    height: lineHeight,
-    justifyContent: 'center',
-}));
-
-const textTemplateStyle = prepareNativeStyle(_ => ({
-    opacity: 0,
-    height: 0,
+const textStyle = prepareNativeStyle((_, { isDiscreetMode }) => ({
+    opacity: isDiscreetMode ? 0 : 1,
 }));
 
 export const DiscreetText = ({
@@ -35,54 +29,45 @@ export const DiscreetText = ({
     const { applyStyle } = useNativeStyles();
     const { isDiscreetMode } = useDiscreetMode();
     const [width, setWidth] = useState(0);
+    const [height, setHeight] = useState(0);
 
     const handleLayout = ({ nativeEvent }: LayoutChangeEvent) => {
         setWidth(nativeEvent.layout.width);
+        setHeight(nativeEvent.layout.height);
     };
 
-    const { lineHeight, fontSize } = typographyStylesBase[variant];
-
+    const { fontSize } = typographyStylesBase[variant];
     if (!children) return null;
 
-    if (!isDiscreetMode)
-        return (
-            <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
+    return (
+        <Box>
+            {isDiscreetMode && (
+                <DiscreetCanvas
+                    width={width}
+                    height={height}
+                    fontSize={fontSize}
+                    text={children}
+                    color={color}
+                />
+            )}
+
+            {/* Plain Text needs to be always rendered so it shares its width with DiscreetCanvas. */}
+            {/* If the DiscreetMode is on, it is hidden with opacity set to zero. */}
+            <Box onLayout={handleLayout}>
                 <Text
                     variant={variant}
                     color={color}
-                    onLayout={handleLayout}
                     ellipsizeMode={ellipsizeMode}
                     adjustsFontSizeToFit={adjustsFontSizeToFit}
-                    style={style}
+                    style={mergeNativeStyleObjects([
+                        style,
+                        applyStyle(textStyle, { isDiscreetMode }),
+                    ])}
                     {...restTextProps}
                 >
                     {children}
                 </Text>
             </Box>
-        );
-
-    return (
-        <Box style={applyStyle(discreetTextContainer, { lineHeight })}>
-            <DiscreetCanvas
-                width={width}
-                height={lineHeight}
-                fontSize={fontSize}
-                text={children}
-                color={color}
-            />
-            {/* Plain Text needs to be always rendered so it shares its width with DiscreetCanvas. */}
-            {/* If the DiscreetMode is on, it is hidden with opacity and height set to zero. */}
-            <Text
-                ellipsizeMode={isDiscreetMode ? undefined : ellipsizeMode}
-                adjustsFontSizeToFit={!isDiscreetMode && adjustsFontSizeToFit}
-                variant={variant}
-                color={color}
-                onLayout={handleLayout}
-                style={mergeNativeStyleObjects([style, applyStyle(textTemplateStyle)])}
-                {...restTextProps}
-            >
-                {children}
-            </Text>
         </Box>
     );
 };
