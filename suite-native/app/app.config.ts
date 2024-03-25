@@ -2,6 +2,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 import { ExpoConfig, ConfigContext } from 'expo/config';
 
+import { getEnv } from '@suite-native/config';
+
 import { suiteNativeVersion } from './package.json';
 
 type BuildType = 'debug' | 'develop' | 'production';
@@ -49,7 +51,7 @@ const projectIds = {
 } as const satisfies Record<BuildType, string>;
 
 export default ({ config }: ConfigContext): ExpoConfig => {
-    const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
+    const buildType = (getEnv() as BuildType) ?? 'debug';
     const name = appNames[buildType];
     const bundleIdentifier = bundleIdentifiers[buildType];
     const projectId = projectIds[buildType];
