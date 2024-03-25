@@ -130,6 +130,8 @@ const MethodContent = styled.section`
     & > div {
         display: flex;
         flex-direction: column;
+        max-width: 100%;
+        overflow: hidden;
     }
 `;
 
@@ -138,6 +140,7 @@ const Container = styled.div`
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
     border-radius: 12px;
     width: 100%;
+    overflow-x: scroll;
     padding: 10px;
     word-wrap: break-word;
     word-break: break-all;

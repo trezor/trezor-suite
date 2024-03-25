@@ -12,8 +12,16 @@ interface SingleParamProps {
     schema?: TSchema;
     topLevelSchema: TObject | TIntersect | TSchema;
     isTopLevel?: boolean;
+    descriptions?: Record<string, string>;
 }
-const SingleParam = ({ name, value, schema, topLevelSchema, isTopLevel }: SingleParamProps) => {
+const SingleParam = ({
+    name,
+    value,
+    schema,
+    topLevelSchema,
+    isTopLevel,
+    descriptions,
+}: SingleParamProps) => {
     // Show descendants for complex objects
     const complexObjects = ['Object', 'Union', 'Intersect'];
     let hasDescendants = complexObjects.includes(value[Kind]);
@@ -50,10 +58,20 @@ const SingleParam = ({ name, value, schema, topLevelSchema, isTopLevel }: Single
     if (value.description) {
         description = value.description;
     } else if (isTopLevel && topLevelSchema?.$id && name) {
-        description = descriptionDictionary[topLevelSchema?.$id + '.' + name];
+        const key = topLevelSchema?.$id + '.' + name;
+        if (descriptions?.[key]) description = descriptions[key];
+        if (descriptionDictionary[key]) description = descriptionDictionary[key];
     }
     if (!description && name) {
-        description = descriptionDictionary[name];
+        if (descriptions?.[name]) description = descriptions[name];
+        if (descriptionDictionary[name]) description = descriptionDictionary[name];
+    }
+
+    if (value[Kind] === 'Intersect') {
+        return value.allOf?.map((param: TSchema, i: number) => (
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            <ParamsTable key={i} schema={param} topLevelSchema={topLevelSchema} />
+        ));
     }
 
     return (
@@ -80,19 +98,21 @@ const SingleParam = ({ name, value, schema, topLevelSchema, isTopLevel }: Single
 type ParamsTableProps = {
     schema: TObject | TIntersect | TSchema;
     topLevelSchema?: TObject | TIntersect | TSchema;
+    descriptions?: Record<string, string>;
 };
-export const ParamsTable = ({ schema, topLevelSchema }: ParamsTableProps) => {
+export const ParamsTable = ({ schema, topLevelSchema, descriptions }: ParamsTableProps) => {
     const topLevelSchemaCurrent = topLevelSchema ?? schema;
+    const common = { topLevelSchema: topLevelSchemaCurrent, descriptions };
     if (schema[Kind] === 'Union') {
         return schema.anyOf?.map((param: TSchema, i: number) => (
             <>
                 {i > 0 && <h3>or</h3>}
-                <ParamsTable key={i} schema={param} topLevelSchema={topLevelSchemaCurrent} />
+                <ParamsTable key={i} schema={param} {...common} />
             </>
         ));
     } else if (schema[Kind] === 'Intersect') {
         return schema.allOf?.map((param: TSchema, i: number) => (
-            <ParamsTable key={i} schema={param} topLevelSchema={topLevelSchemaCurrent} />
+            <ParamsTable key={i} schema={param} {...common} />
         ));
     } else if (schema[Kind] === 'Object') {
         return Object.entries(schema.properties)?.map(([name, value]: [string, any]) => (
@@ -101,13 +121,17 @@ export const ParamsTable = ({ schema, topLevelSchema }: ParamsTableProps) => {
                 value={value}
                 schema={schema}
                 key={name}
-                topLevelSchema={topLevelSchemaCurrent}
                 isTopLevel={topLevelSchema === undefined}
+                {...common}
             />
         ));
-    } else if (schema[Kind] === 'Array') {
-        return <SingleParam name="" value={schema.items} topLevelSchema={topLevelSchemaCurrent} />;
     } else {
-        return <SingleParam name="" value={schema} topLevelSchema={topLevelSchemaCurrent} />;
+        return (
+            <SingleParam
+                name=""
+                value={schema[Kind] === 'Array' ? schema.items : schema}
+                {...common}
+            />
+        );
     }
 };
