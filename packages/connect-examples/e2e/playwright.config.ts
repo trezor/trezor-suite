@@ -1,4 +1,4 @@
-import { PlaywrightTestConfig } from '@playwright/test';
+import { PlaywrightTestConfig, devices } from '@playwright/test';
 
 export const config: PlaywrightTestConfig = {
     testDir: 'e2e',
@@ -9,5 +9,6 @@ export const config: PlaywrightTestConfig = {
         headless: process.env.HEADLESS === 'true',
         ignoreHTTPSErrors: true,
         trace: 'retain-on-failure',
+        ...devices['Desktop Chrome'],
     },
 };
