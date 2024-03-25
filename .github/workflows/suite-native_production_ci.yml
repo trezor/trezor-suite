@@ -23,6 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'Both' }}
     steps:
       - uses: actions/checkout@v4
@@ -51,6 +52,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
     if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'Both' }}
     steps:
       - uses: actions/checkout@v4

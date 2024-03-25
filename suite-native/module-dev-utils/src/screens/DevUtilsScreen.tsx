@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
+import { getEnv, isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
 import { Button, Card, ListItem, VStack } from '@suite-native/atoms';
 import {
     Screen,
@@ -27,16 +27,10 @@ export const DevUtilsScreen = ({
             <Card>
                 <VStack spacing="medium">
                     {!isDebugEnv() && (
-                        <>
-                            <ListItem
-                                subtitle={`${process.env.EXPO_PUBLIC_ENVIRONMENT}-${getSuiteVersion()}, commit ${getCommitHash()}`}
-                                title="Build version"
-                            />
-                            <ListItem
-                                subtitle={process.env.EXPO_PUBLIC_JWS_PUBLIC_KEY}
-                                title="JWT"
-                            />
-                        </>
+                        <ListItem
+                            subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash()}`}
+                            title="Build version"
+                        />
                     )}
                     {isDebugEnv() && (
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
