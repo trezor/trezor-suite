@@ -96,7 +96,7 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                         },
                         rateType: 'current',
                         localCurrency,
-                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
                 );
             });

@@ -69,7 +69,7 @@ const fetchFn: Record<RateType, typeof fetchCurrentFiatRates> = {
 type UpdateCurrentFiatRatesThunkPayload = {
     ticker: TickerId;
     localCurrency: FiatCurrencyCode;
-    lastSuccessfulFetchTimestamp: Timestamp;
+    fetchAttemptTimestamp: Timestamp;
     rateType: RateType;
     forceFetchToken?: boolean;
 };
@@ -148,7 +148,7 @@ export const fetchFiatRatesThunk = createThunk(
                         ticker,
                         localCurrency,
                         rateType,
-                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
                 ),
             ),

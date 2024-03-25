@@ -36,7 +36,7 @@ const FiatSelect = () => {
                                 },
                                 localCurrency: selected.value as FiatCurrencyCode,
                                 rateType: 'current',
-                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                                fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
                         );
                         if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
