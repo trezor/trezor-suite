@@ -78,7 +78,7 @@ export const AccountImportLoadingScreen = ({
                         },
                         rateType: 'current',
                         localCurrency: fiatCurrency,
-                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
                 ),
             ]);
@@ -97,7 +97,7 @@ export const AccountImportLoadingScreen = ({
                                 },
                                 rateType: 'current',
                                 localCurrency: fiatCurrency,
-                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                                fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
                         ),
                     );

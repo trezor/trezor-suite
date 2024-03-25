@@ -247,7 +247,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                                 },
                                 localCurrency: fiatCurrency?.value as FiatCurrencyCode,
                                 rateType: 'current',
-                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                                fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
                         );
                         // clear errors in Amount input

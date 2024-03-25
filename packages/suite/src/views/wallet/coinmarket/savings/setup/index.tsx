@@ -131,7 +131,7 @@ const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
                     },
                     localCurrency: fiatCurrency?.toLowerCase() as FiatCurrencyCode,
                     rateType: 'current',
-                    lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                    fetchAttemptTimestamp: Date.now() as Timestamp,
                 }),
             );
         };
