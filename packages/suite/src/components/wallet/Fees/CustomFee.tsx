@@ -21,6 +21,7 @@ import { useTranslation } from 'src/hooks/suite';
 import { InputError } from '../InputError';
 import { validateDecimals } from 'src/utils/suite/validation';
 import { motion } from 'framer-motion';
+import { BottomText } from '@trezor/components/src/components/form/BottomText';
 
 const Wrapper = styled.div`
     display: flex;
@@ -174,14 +175,6 @@ export const CustomFee = <TFieldValues extends FormState>({
                         data-test={FEE_LIMIT}
                         onChange={changeFeeLimit}
                         rules={feeLimitRules}
-                        bottomText={
-                            feeLimitError?.message ? (
-                                <InputError
-                                    message={feeLimitError?.message}
-                                    button={validationButtonProps}
-                                />
-                            ) : null
-                        }
                     />
                 ) : (
                     <input type="hidden" {...register(FEE_LIMIT as FieldPath<TFieldValues>)} />
@@ -197,6 +190,16 @@ export const CustomFee = <TFieldValues extends FormState>({
                     bottomText={feePerUnitError?.message || null}
                 />
             </Wrapper>
+            {useFeeLimit && feeLimitError?.message ? (
+                <div style={{ marginTop: '-1.5rem' }}>
+                    <BottomText inputState="error">
+                        <InputError
+                            message={feeLimitError?.message}
+                            button={validationButtonProps}
+                        />
+                    </BottomText>
+                </div>
+            ) : null}
 
             {feeDifferenceWarning && <StyledNote>{feeDifferenceWarning}</StyledNote>}
         </motion.div>

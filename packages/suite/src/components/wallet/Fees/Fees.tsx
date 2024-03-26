@@ -8,7 +8,7 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { SelectBar } from '@trezor/components';
+import { Icon, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
 import { FormState } from '@suite-common/wallet-types';
 import { spacingsPx, typography } from '@trezor/theme';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -62,11 +62,24 @@ const Label = styled.div`
     flex-direction: column;
     justify-content: space-between;
     gap: ${spacingsPx.xxs};
+`;
+
+const HeadingWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: ${spacingsPx.xxs};
     text-transform: capitalize;
 `;
 
 const StyledSelectBar = styled(SelectBar<FeeLevel['label']>)`
     margin-top: ${spacingsPx.lg};
+`;
+
+const HelperTextWrapper = styled(Paragraph)`
+    color: ${({ theme }) => theme.textSubdued};
+    font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
 const FEE_LEVELS_TRANSLATIONS = {
@@ -96,6 +109,7 @@ export interface FeesProps<TFieldValues extends FormState> {
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     label?: ExtendedMessageDescriptor['id'];
     rbfForm?: boolean;
+    helperText?: React.ReactNode;
 }
 
 export const Fees = <TFieldValues extends FormState>({
@@ -107,6 +121,7 @@ export const Fees = <TFieldValues extends FormState>({
     composedLevels,
     label,
     rbfForm,
+    helperText,
     ...props
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
@@ -126,14 +141,30 @@ export const Fees = <TFieldValues extends FormState>({
         <Container>
             <FeeInfoRow>
                 <Label>
-                    <Translation id={label || (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')} />
+                    <HeadingWrapper>
+                        <Translation
+                            id={label || (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')}
+                        />
+                        {networkType === 'ethereum' && (
+                            <Tooltip
+                                maxWidth={328}
+                                content={<Translation id="TR_STAKE_MAX_FEE_DESC" />}
+                            >
+                                {/* TODO: Add new info icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
+                                <Icon icon="INFO" size={14} />
+                            </Tooltip>
+                        )}
+                    </HeadingWrapper>
+                    {helperText && <HelperTextWrapper>{helperText}</HelperTextWrapper>}
 
-                    <FeeDetails
-                        networkType={networkType}
-                        feeInfo={feeInfo}
-                        selectedLevel={selectedLevel}
-                        transactionInfo={transactionInfo}
-                    />
+                    {transactionInfo !== undefined && (
+                        <FeeDetails
+                            networkType={networkType}
+                            feeInfo={feeInfo}
+                            selectedLevel={selectedLevel}
+                            transactionInfo={transactionInfo}
+                        />
+                    )}
                 </Label>
 
                 {transactionInfo !== undefined && transactionInfo.type !== 'error' && (
