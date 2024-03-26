@@ -37,6 +37,6 @@ export const AccountBanners = ({ account }: AccountBannersProps) => (
         <AccountOutOfSync account={account} />
         <EvmExplanationBanner account={account} />
         <TaprootBanner account={account} />
-        <StakeEthBanner />
+        <StakeEthBanner account={account} />
     </BannersWrapper>
 );
