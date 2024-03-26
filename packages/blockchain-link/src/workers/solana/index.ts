@@ -14,12 +14,7 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/lib/messages';
 import { CustomError } from '@trezor/blockchain-link-types/lib/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import {
-    BlockheightBasedTransactionConfirmationStrategy,
-    Connection,
-    Message,
-    PublicKey,
-} from '@solana/web3.js';
+import { Connection, Message, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 import {
@@ -28,6 +23,7 @@ import {
 } from '@trezor/blockchain-link-utils/lib/solana';
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 import { getBaseFee, getPriorityFee } from './fee';
+import { confirmTransaction } from './transactionConfirmation';
 
 export type SolanaAPI = Connection;
 
@@ -100,19 +96,17 @@ const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidPar
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
-    const payload = await api.sendRawTransaction(Buffer.from(rawTx, 'hex'));
-    const { blockhash, lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
-    const confirmStrategy: BlockheightBasedTransactionConfirmationStrategy = {
-        blockhash,
-        lastValidBlockHeight,
-        signature: payload,
-    };
 
-    await api.confirmTransaction(confirmStrategy);
+    const { lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
+
+    const txBuffer = Buffer.from(rawTx, 'hex');
+    const signature = await api.sendRawTransaction(txBuffer);
+
+    await confirmTransaction(api, signature, lastValidBlockHeight);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,
-        payload,
+        payload: signature,
     } as const;
 };
 
