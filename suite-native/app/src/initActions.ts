@@ -17,7 +17,7 @@ let isAlreadyInitialized = false;
 
 export const applicationInit = createThunk(
     `@app/init-actions`,
-    async (_, { dispatch, getState }) => {
+    async ({ showAlert }: { showAlert: any }, { dispatch, getState }) => {
         if (isAlreadyInitialized) {
             return;
         }
@@ -33,7 +33,7 @@ export const applicationInit = createThunk(
 
             dispatch(initBlockchainThunk());
 
-            dispatch(periodicCheckTokenDefinitionsThunk());
+            dispatch(periodicCheckTokenDefinitionsThunk({ showAlert }));
 
             dispatch(
                 periodicFetchFiatRatesThunk({

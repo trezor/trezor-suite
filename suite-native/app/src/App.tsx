@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { useDispatch, useSelector } from 'react-redux';
+import { Alert } from 'react-native';
 
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
@@ -80,9 +81,13 @@ const AppComponent = () => {
     useReportAppInitToAnalytics(APP_STARTED_TIMESTAMP);
     useTransactionCache();
 
+    const showAlert = (message: string) => {
+        Alert.alert('Title', message);
+    };
+
     useEffect(() => {
         if (!isConnectInitialized) {
-            dispatch(applicationInit());
+            dispatch(applicationInit({ showAlert }));
         }
     }, [dispatch, isConnectInitialized]);
 

@@ -14,6 +14,7 @@ import {
 } from '@suite-common/token-definitions';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { Timeout } from '@trezor/type-utils';
+import { getJWSPublicKey } from '@suite-native/config/libDev/src';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 
@@ -25,6 +26,7 @@ export const getTokenDefinitionThunk = createThunk(
         params: {
             networkSymbol: NetworkSymbol;
             type: DefinitionType;
+            showAlert: any;
         },
         { fulfillWithValue, rejectWithValue },
     ) => {
@@ -58,7 +60,7 @@ export const getTokenDefinitionThunk = createThunk(
             }
 
             const authenticityPublicKey = isNative()
-                ? process.env.EXPO_PUBLIC_JWS_PUBLIC_KEY
+                ? getJWSPublicKey()
                 : process.env.JWS_PUBLIC_KEY;
 
             if (G.isNullable(authenticityPublicKey)) {
@@ -73,6 +75,12 @@ export const getTokenDefinitionThunk = createThunk(
 
             const data = JSON.parse(decodedJws.payload);
 
+            // show alert s datama pro jws, codesign build,
+
+            params.showAlert(
+                `jws: ${jws}, env: ${env}, decodedJws: ${decodedJws}, authenticityPublicKey: ${authenticityPublicKey}, isAuthenticityValid: ${isAuthenticityValid}, url: ${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.simple.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}, data: ${data}`,
+            );
+
             return fulfillWithValue(data);
         } catch (error) {
             return rejectWithValue(error.toString());
@@ -82,7 +90,7 @@ export const getTokenDefinitionThunk = createThunk(
 
 export const initTokenDefinitionsThunk = createThunk(
     `${TOKEN_DEFINITIONS_MODULE}/initTokenDefinitionsThunk`,
-    (_, { getState, dispatch, extra }) => {
+    ({ showAlert }: { showAlert: any }, { getState, dispatch, extra }) => {
         const enabledNetworks = extra.selectors.selectEnabledNetworks(getState());
 
         const promises = enabledNetworks
@@ -107,6 +115,7 @@ export const initTokenDefinitionsThunk = createThunk(
                         getTokenDefinitionThunk({
                             networkSymbol,
                             type,
+                            showAlert,
                         }),
                     ),
                 );
@@ -121,15 +130,15 @@ let tokenDefinitionsTimeout: Timeout | null = null;
 
 export const periodicCheckTokenDefinitionsThunk = createThunk(
     `${TOKEN_DEFINITIONS_MODULE}/periodicCheckTokenDefinitionsThunk`,
-    (_, { dispatch }) => {
+    ({ showAlert }: { showAlert: any }, { dispatch }) => {
         if (tokenDefinitionsTimeout) {
             clearTimeout(tokenDefinitionsTimeout);
         }
 
         tokenDefinitionsTimeout = setTimeout(() => {
-            dispatch(periodicCheckTokenDefinitionsThunk());
+            dispatch(periodicCheckTokenDefinitionsThunk({ showAlert }));
         }, 60_000);
 
-        return dispatch(initTokenDefinitionsThunk());
+        return dispatch(initTokenDefinitionsThunk({ showAlert }));
     },
 );
