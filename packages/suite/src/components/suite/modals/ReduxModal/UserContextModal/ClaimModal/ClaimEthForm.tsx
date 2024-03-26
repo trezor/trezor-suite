@@ -2,13 +2,13 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, Paragraph, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
-import { FeesInfo } from 'src/components/wallet/FeesInfo';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { spacingsPx } from '@trezor/theme';
+import ClaimFees from './Fees';
 
 const AmountInfo = styled.div`
     display: flex;
@@ -48,8 +48,6 @@ export const ClaimEthForm = () => {
     const {
         account: { symbol },
         formState: { errors, isSubmitting },
-        composedLevels,
-        selectedFee,
         watch,
         isComposing,
         handleSubmit,
@@ -60,7 +58,6 @@ export const ClaimEthForm = () => {
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-    const transactionInfo = composedLevels?.[selectedFee];
     const { claimableAmount = '0' } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
@@ -90,11 +87,7 @@ export const ClaimEthForm = () => {
                 <StyledWarning variant="destructive">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
             )}
 
-            <FeesInfo
-                transactionInfo={transactionInfo}
-                symbol={symbol}
-                helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
-            />
+            <ClaimFees />
 
             <ClaimingPeriodWrapper>
                 <GreyP>
