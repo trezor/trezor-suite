@@ -1,27 +1,28 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import BigNumber from 'bignumber.js';
 import { BACKUP_ETH_APY, STAKE_SYMBOLS } from 'src/constants/suite/ethStaking';
-import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
-import { useSelector } from './useSelector';
 import { isTestnet } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-export const useEverstakePoolStats = (symbol: NetworkSymbol = 'eth') => {
-    const enabledNetworks = useSelector(selectEnabledNetworks);
-    const areEthNetworksEnabled = useMemo(
-        () => enabledNetworks.some(symbol => STAKE_SYMBOLS.includes(symbol)),
-        [enabledNetworks],
-    );
+export const useEverstakePoolStats = (symbol?: NetworkSymbol) => {
     const [poolStats, setPoolStats] = useState<{ ethApy: string; nextRewardPayout: number | null }>(
         {
-            ethApy: BACKUP_ETH_APY,
+            ethApy: '',
             nextRewardPayout: null,
         },
     );
+
+    useEffect(() => {
+        setPoolStats({
+            ethApy: '',
+            nextRewardPayout: null,
+        });
+    }, [symbol]);
+
     const [isPoolStatsLoading, setIsPoolStatsLoading] = useState(false);
 
     useEffect(() => {
-        if (!areEthNetworksEnabled) return;
+        if (!symbol || !STAKE_SYMBOLS.includes(symbol)) return;
 
         const abortController = new AbortController();
 
@@ -50,6 +51,10 @@ export const useEverstakePoolStats = (symbol: NetworkSymbol = 'eth') => {
                     nextRewardPayout: Math.ceil(stats.next_reward_payout_in / 60 / 60 / 24),
                 });
             } catch (e) {
+                setPoolStats({
+                    ethApy: BACKUP_ETH_APY,
+                    nextRewardPayout: null,
+                });
                 if (!abortController.signal.aborted) {
                     console.error(e);
                 }
@@ -63,7 +68,7 @@ export const useEverstakePoolStats = (symbol: NetworkSymbol = 'eth') => {
         return () => {
             abortController.abort();
         };
-    }, [areEthNetworksEnabled, symbol]);
+    }, [symbol]);
 
     return {
         ethApy: poolStats.ethApy,

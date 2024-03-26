@@ -4,12 +4,10 @@ import { spacingsPx } from '@trezor/theme';
 import { Translation, IconBorderedWrapper } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector, useEverstakePoolStats } from 'src/hooks/suite';
-import {
-    selectSelectedAccount,
-    selectSelectedAccountHasSufficientEthForStaking,
-} from 'src/reducers/wallet/selectedAccountReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
+import { STAKE_SYMBOLS } from 'src/constants/suite/ethStaking';
+import { Account } from '@suite-common/wallet-types';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -49,14 +47,15 @@ const Text = styled.div`
     line-height: 24px;
 `;
 
-export const StakeEthBanner = () => {
+interface StakeEthBannerProps {
+    account?: Account;
+}
+
+export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
-    const hasSufficientEthForStaking = useSelector(selectSelectedAccountHasSufficientEthForStaking);
     const { pathname } = useSelector(state => state.router);
-    const isShown = !stakeEthBannerClosed && pathname === '/accounts' && hasSufficientEthForStaking;
-    const account = useSelector(selectSelectedAccount);
     const { ethApy } = useEverstakePoolStats(account?.symbol);
 
     const closeBanner = () => {
@@ -67,7 +66,14 @@ export const StakeEthBanner = () => {
         dispatch(goto('wallet-staking', { preserveParams: true }));
     };
 
-    if (!isShown) return null;
+    if (
+        pathname !== '/accounts' ||
+        stakeEthBannerClosed ||
+        !account ||
+        !STAKE_SYMBOLS.includes(account.symbol)
+    ) {
+        return null;
+    }
 
     return (
         <StyledCard>
