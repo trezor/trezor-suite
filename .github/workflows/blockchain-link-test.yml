@@ -1,21 +1,18 @@
 name: "[Test] @trezor/blockchain-link"
 
 on:
-  push:
-    branches:
-      - develop
-    paths:
-      - "packages/blockchain-link"
-      # dependencies of packages/blockchain-link
-      - "packages/utxo-lib"
-      - "packages/utils"
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
   pull_request:
     paths:
       - "packages/blockchain-link"
       # dependencies of packages/blockchain-link
       - "packages/utxo-lib"
       - "packages/utils"
-  workflow_dispatch:
+      - "docker/docker-blockchain-link-test.sh"
+      - ".github/workflows/blockchain-link-test.yml"
+      - "yarn.lock"
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
@@ -28,15 +25,21 @@ jobs:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+
       - name: Setup node
         uses: actions/setup-node@v4
         with:
           node-version-file: ".nvmrc"
-          cache: yarn
-          cache-dependency-path: "**/yarn.lock"
-      - run: node --version
-      - run: yarn
-      - run: yarn build:libs
-      - run: git status
-      - run: yarn workspace @trezor/blockchain-link build:workers
-      - run: "./docker/docker-blockchain-link-test.sh"
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/blockchain-link
+
+      - name: Build @trezor/blockchain-link
+        run: |
+          yarn workspace @trezor/blockchain-link build:lib
+          yarn workspace @trezor/blockchain-link build:workers
+
+      - name: Run E2E tests
+        run: ./docker/docker-blockchain-link-test.sh
