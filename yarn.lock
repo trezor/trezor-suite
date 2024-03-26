@@ -8793,6 +8793,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     "@trezor/utils": "workspace:*"
+    expo-haptics: "npm:^12.8.1"
     expo-image: "npm:1.10.6"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
@@ -20542,7 +20543,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"expo-haptics@npm:12.8.1":
+"expo-haptics@npm:12.8.1, expo-haptics@npm:^12.8.1":
   version: 12.8.1
   resolution: "expo-haptics@npm:12.8.1"
   peerDependencies:

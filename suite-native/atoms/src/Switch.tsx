@@ -8,6 +8,7 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
+import * as Haptics from 'expo-haptics';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { ACCESSIBILITY_FONTSIZE_MULTIPLIER } from './Text';
@@ -80,6 +81,8 @@ export const Switch = ({ isChecked, onChange, isDisabled = false }: SwitchProps)
     const handlePress = () => {
         if (isDisabled) return;
         onChange(!isChecked);
+
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     };
 
     return (
