@@ -2,7 +2,7 @@ import { Connection, Message, PublicKey } from '@solana/web3.js';
 import BigNumber from 'bignumber.js';
 
 const COMPUTE_BUDGET_PROGRAM_ID = 'ComputeBudget111111111111111111111111111111';
-const DEFAULT_COMPUTE_UNIT_PRICE = 100_000; // micro-lamports, value taken from other wallets
+const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = 100_000; // micro-lamports, value taken from other wallets
 // sending tokens with token account creation requires ~28K units. However we over-reserve for now
 // since otherwise the transactions don't seem to go through otherwise. This can perhaps be changed
 // if e.g. https://github.com/anza-xyz/agave/pull/187 is merged.
@@ -32,6 +32,8 @@ export const getBaseFee = async (api: Connection, message: Message) => {
     return result.value;
 };
 
+// More about Solana priority fees here:
+// https://solana.com/developers/guides/advanced/how-to-use-priority-fees#how-do-i-estimate-priority-fees
 export const getPriorityFee = async (api: Connection, message: Message) => {
     const affectedAccounts = message
         .getAccountKeys()
@@ -49,7 +51,7 @@ export const getPriorityFee = async (api: Connection, message: Message) => {
     ]; // 25th percentile because many 0 priority fees are expected
 
     const computeUnitPrice = new BigNumber(
-        Math.max(networkPriorityFee, DEFAULT_COMPUTE_UNIT_PRICE),
+        Math.max(networkPriorityFee, DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS),
     );
 
     const fee = computeUnitPrice
