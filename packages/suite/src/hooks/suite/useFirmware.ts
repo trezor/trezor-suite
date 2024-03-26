@@ -1,19 +1,18 @@
 import { useDispatch } from 'react-redux';
 
-import { FirmwareType, UI } from '@trezor/connect';
-
+import { FirmwareStatus } from '@suite-common/suite-types';
 import {
     checkFirmwareAuthenticity,
     firmwareUpdate,
     selectFirmware,
     firmwareActions,
 } from '@suite-common/wallet-core';
-import { FirmwareStatus } from '@suite-common/suite-types';
+import { DEVICE, FirmwareType, UI } from '@trezor/connect';
+import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 import { useActions, useSelector, useDevice, useTranslation } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { MODAL } from 'src/actions/suite/constants';
-import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
 export const useFirmware = () => {
     const { translationString } = useTranslation();
@@ -21,6 +20,7 @@ export const useFirmware = () => {
     const firmware = useSelector(selectFirmware);
     const transport = useSelector(state => state.suite.transport);
     const modal = useSelector(state => state.modal);
+    const { device } = useDevice();
 
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
@@ -31,9 +31,32 @@ export const useFirmware = () => {
         checkFirmwareAuthenticity,
     });
 
-    const { device } = useDevice();
-
     const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
+    const confirmOnDevice =
+        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT && firmware.uiEvent.payload.bootloader) ||
+        (firmware.uiEvent?.type === DEVICE.BUTTON &&
+            firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
+    const showReconnectPrompt =
+        (firmware.uiEvent?.type === DEVICE.BUTTON &&
+            firmware.uiEvent.payload.code === 'ButtonRequest_Other') ||
+        (firmware.uiEvent?.type === DEVICE.BUTTON &&
+            firmware.uiEvent.payload.code === 'ButtonRequest_ProtectCall') ||
+        (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && firmware.uiEvent.payload.manual) ||
+        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+            firmware.uiEvent.payload.manual &&
+            firmware.uiEvent.payload.confirmOnDevice) ||
+        (device?.mode === 'bootloader' &&
+            firmware.status === 'error' &&
+            firmware.error === 'Firmware install cancelled' &&
+            firmware.uiEvent?.type === DEVICE.BUTTON &&
+            firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
+    const showConfirmationPill =
+        !showReconnectPrompt &&
+        !!firmware.uiEvent &&
+        !(
+            firmware.uiEvent.type === UI.FIRMWARE_PROGRESS &&
+            firmware.uiEvent.payload.operation === 'downloading'
+        );
 
     const getUpdateStatus = () => {
         if (firmware.status === 'done') {
@@ -91,5 +114,8 @@ export const useFirmware = () => {
         isWebUSB: isWebUsb(transport),
         showFingerprintCheck,
         getTargetFirmwareType,
+        confirmOnDevice,
+        showReconnectPrompt,
+        showConfirmationPill,
     };
 };

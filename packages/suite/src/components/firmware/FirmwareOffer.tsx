@@ -7,8 +7,7 @@ import {
 } from '@suite-common/suite-utils';
 import { Icon, Tooltip, variables } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
-import { AcquiredDevice } from '@suite-common/suite-types';
-import { FirmwareType } from '@trezor/connect';
+import { Device, FirmwareType } from '@trezor/connect';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { FirmwareChangelog } from 'src/components/firmware';
@@ -54,7 +53,7 @@ const StyledLink = styled(TrezorLink)`
 `;
 
 interface FirmwareOfferProps {
-    device: AcquiredDevice;
+    device: Device;
     customFirmware?: boolean;
     targetFirmwareType?: FirmwareType;
 }

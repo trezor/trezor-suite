@@ -314,20 +314,21 @@ export const onCallFirmwareUpdate = async ({
         } else {
             const targetLanguage = params.language || device.features.language || 'en-EN';
 
-            log.debug('onCallFirmwareUpdate', 'loading language blob', targetLanguage);
-
-            const languageBlob = await getLanguage({
-                language: targetLanguage,
-                version: device.firmwareRelease.release.version,
-                internal_model: device.features.internal_model,
-            });
+            let languageBlob;
+            if (targetLanguage !== 'en-US') {
+                languageBlob = await getLanguage({
+                    language: targetLanguage,
+                    version: device.firmwareRelease.release.version,
+                    internal_model: device.features.internal_model,
+                });
+            }
 
             let rebootResponse = await device.getCommands().typedCall(
                 'RebootToBootloader',
                 // TranslationDataRequest is returned when language_data_length is sent and supported
                 // Once Success is returned, device is ready to receive FirmwareErase and FirmwareUpload commands
                 ['TranslationDataRequest', 'Success'],
-                { ...rebootParams, language_data_length: languageBlob.byteLength },
+                { ...rebootParams, language_data_length: languageBlob?.byteLength },
             );
 
             log.debug(
@@ -336,7 +337,7 @@ export const onCallFirmwareUpdate = async ({
                 rebootResponse.message,
             );
 
-            while (rebootResponse.type !== 'Success') {
+            while (languageBlob && rebootResponse.type !== 'Success') {
                 const start = rebootResponse.message.data_offset;
                 const end = rebootResponse.message.data_offset + rebootResponse.message.data_length;
                 const chunk = languageBlob.slice(start, end);
@@ -356,7 +357,7 @@ export const onCallFirmwareUpdate = async ({
         if (device.features.major_version === 1) {
             await createTimeoutPromise(2000);
         }
-
+        console.log(2);
         reconnectedDevice = await waitForReconnectedDevice({
             params: {
                 bootloader: true,
@@ -376,7 +377,7 @@ export const onCallFirmwareUpdate = async ({
 
     if (!params.binary && device.firmwareRelease.intermediaryVersion) {
         log.debug('onCallFirmwareUpdate', 'installing intermediary');
-
+        console.log(3);
         reconnectedDevice = await waitForReconnectedDevice({
             params: {
                 bootloader: true,
@@ -403,7 +404,7 @@ export const onCallFirmwareUpdate = async ({
             params: { manual },
             context: { deviceList, log, device: reconnectedDevice, postMessage },
         });
-
+        console.log(4);
         reconnectedDevice = await waitForReconnectedDevice({
             params: { bootloader: true, manual, confirmOnDevice: false },
             context: { deviceList, device: reconnectedDevice, log, postMessage },
@@ -423,6 +424,7 @@ export const onCallFirmwareUpdate = async ({
 
         await reconnectedDevice.release();
     } else {
+        console.log(5);
         reconnectedDevice = await waitForReconnectedDevice({
             params: { bootloader: true, manual, confirmOnDevice: true },
             context: { deviceList, device, log, postMessage },
@@ -445,7 +447,7 @@ export const onCallFirmwareUpdate = async ({
         params: { manual },
         context: { deviceList, log, device: reconnectedDevice, postMessage },
     });
-
+    console.log(6);
     reconnectedDevice = await waitForReconnectedDevice({
         params: {
             bootloader: false,

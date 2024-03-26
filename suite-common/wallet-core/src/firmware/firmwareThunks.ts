@@ -8,6 +8,7 @@ import { notificationsActions } from '@suite-common/toast-notifications';
 
 import { selectUseDevkit } from './firmwareReducer';
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
+import { selectDeviceLanguage } from '../device/deviceReducer';
 
 const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
@@ -77,15 +78,14 @@ export const checkFirmwareAuthenticity = createThunk(
     },
 );
 
-export const firmwareUpdate_v2 = createThunk(
-    `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate_v2`,
+export const firmwareUpdate = createThunk(
+    `${FIRMWARE_MODULE_PREFIX}/firmwareUpdate`,
     async (
         { firmwareType, binary }: { firmwareType?: FirmwareType; binary?: ArrayBuffer },
         { dispatch, getState, extra },
     ) => {
         dispatch(firmwareActions.setStatus('started'));
 
-        console.log('firmwareUpdate_v2', firmwareType);
         const {
             selectors: { selectDevice, selectDesktopBinDir },
         } = extra;
@@ -93,6 +93,7 @@ export const firmwareUpdate_v2 = createThunk(
         const device = selectDevice(getState());
         const useDevkit = selectUseDevkit(getState());
         const desktopBinDir = selectDesktopBinDir(getState());
+        const suiteLanguage = selectDeviceLanguage(getState());
         if (!device) {
             throw new Error('device is not connected');
         }
@@ -119,19 +120,13 @@ export const firmwareUpdate_v2 = createThunk(
 
         const firmwareUpdateReponse = await TrezorConnect.firmwareUpdate_v2({
             device,
-
-            // from outside connect we need to know:
             baseUrl,
-
-            // language probably optional (only if it should be changed)
-            language: 'de-DE',
-            // btc only probably optional (only if it should be changed)
             btcOnly: toBitcoinOnlyFirmware,
-            // todo: how about custom fw?
             binary,
+            // Firmware language should only be set during the initial firmware installation.
+            language: device.firmware === 'none' && suiteLanguage ? suiteLanguage : undefined,
         });
 
-        console.log('firmwareUpdateReponse: ', firmwareUpdateReponse);
         if (!firmwareUpdateReponse.success) {
             dispatch(firmwareActions.setStatus('error'));
             dispatch(firmwareActions.setError(firmwareUpdateReponse.payload.error));

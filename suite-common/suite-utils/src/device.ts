@@ -141,7 +141,7 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
-export const getFwUpdateVersion = (device: AcquiredDevice) =>
+export const getFwUpdateVersion = (device: Device) =>
     device.firmwareRelease?.release?.version?.join('.') || null;
 
 export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
@@ -235,7 +235,7 @@ export const getSelectedDevice = (
     });
 };
 
-export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) => {
+export const getChangelogUrl = (device: Device, revision?: string | null) => {
     const deviceModelInternal = device.features?.internal_model;
     const commit = revision || 'main';
     const isDeviceWithLegacyFirmware = deviceModelInternal === DeviceModelInternal.T1B1;

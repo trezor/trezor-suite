@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button, Checkbox, variables } from '@trezor/components';
 import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
-import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/onboarding';
+import { OnboardingStepBox } from 'src/components/onboarding';
 import { FirmwareButtonsRow } from './Buttons/FirmwareButtonsRow';
 import { FirmwareSwitchWarning } from './FirmwareSwitchWarning';
 import { goto } from 'src/actions/suite/routerActions';
@@ -45,10 +45,6 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
     const dispatch = useDispatch();
     const { device } = useDevice();
     const { hasSeed, toggleHasSeed } = useFirmware();
-
-    if (!device?.connected || !device?.features) {
-        return <ConnectDevicePromptManager device={device} />;
-    }
 
     const getContent = () => {
         const isBackedUp = !device.features.needs_backup && !device.features.unfinished_backup;

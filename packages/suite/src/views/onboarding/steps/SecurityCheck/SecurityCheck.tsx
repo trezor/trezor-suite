@@ -196,7 +196,7 @@ export const SecurityCheckContent = ({
         if (isRecoveryInProgress) {
             rerun();
         } else if (isOnboardingActive) {
-            goToNextStep();
+            goToNextStep('firmware');
         } else {
             dispatch(goto('onboarding-index'));
         }
