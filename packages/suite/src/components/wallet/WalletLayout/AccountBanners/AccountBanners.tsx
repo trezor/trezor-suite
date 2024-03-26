@@ -17,10 +17,8 @@ import { TaprootBanner } from './TaprootBanner';
 const BannersWrapper = styled.div`
     display: flex;
     flex-direction: column;
-
-    > div:last-child {
-        margin-bottom: ${spacingsPx.xl};
-    }
+    gap: ${spacingsPx.xl};
+    margin-bottom: ${spacingsPx.xl};
 `;
 
 type AccountBannersProps = {
@@ -37,8 +35,8 @@ export const AccountBanners = ({ account }: AccountBannersProps) => (
         <XRPReserve account={account} />
         <AccountImported account={account} />
         <AccountOutOfSync account={account} />
-        <StakeEthBanner />
         <EvmExplanationBanner account={account} />
         <TaprootBanner account={account} />
+        <StakeEthBanner />
     </BannersWrapper>
 );
