@@ -8778,9 +8778,9 @@ export default defineMessages({
         id: 'TR_STAKE_PROVIDED_BY',
         defaultMessage: 'Provided by',
     },
-    TR_STAKE_YOUR_FUNDS_MANAGED: {
-        id: 'TR_STAKE_YOUR_FUNDS_MANAGED',
-        defaultMessage: 'Your staked funds are <h>managed by Everstake</h>',
+    TR_STAKE_YOUR_FUNDS_MAINTAINED: {
+        id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
+        defaultMessage: 'Your staked funds are <h>maintained by Everstake</h>',
     },
     TR_STAKE_POWERED_BY: {
         id: 'TR_STAKE_POWERED_BY',
@@ -8789,7 +8789,7 @@ export default defineMessages({
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake manages and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
+            'Everstake maintains and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
     },
     TR_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',
