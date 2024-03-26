@@ -41,6 +41,7 @@ export default class BlockchainEstimateFee extends AbstractMethod<'blockchainEst
                     { name: 'from', type: 'string' },
                     { name: 'to', type: 'string' },
                     { name: 'txsize', type: 'number' },
+                    { name: 'isCreatingAccount', type: 'boolean' },
                 ]);
             }
         }
