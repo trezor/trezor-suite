@@ -7,6 +7,7 @@ import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { Options } from './Options';
+import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import UnstakeFees from './Fees';
 import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 
@@ -56,10 +57,11 @@ export const UnstakeEthForm = () => {
     } = useUnstakeEthFormContext();
 
     const { symbol } = account;
-    const {
-        validatorsQueue: { validatorWithdrawTime },
-    } = useValidatorsQueue(symbol);
-    const unstakingPeriod = Math.round(validatorWithdrawTime / 60 / 60 / 24);
+
+    const { validatorWithdrawTime } = useSelector(state =>
+        selectValidatorsQueueData(state, account?.symbol),
+    );
+    const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;

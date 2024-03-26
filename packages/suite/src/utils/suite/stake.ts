@@ -16,6 +16,9 @@ const GAS_RESERVE = 220000;
 // Each app which integrates the SDK has its own source, e.g. source for Trezor Suite is '1'.
 export const WALLET_SDK_SOURCE = '1';
 
+// Used when Everstake unstaking period is not available from the API.
+export const UNSTAKING_ETH_PERIOD = 3;
+
 export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
     const ethNetworks = {
         thol: 'holesky',
@@ -459,4 +462,12 @@ export const getStakeTxGasLimit = async ({
             error: genericError,
         };
     }
+};
+
+export const getUnstakingPeriodInDays = (validatorWithdrawTimeInSeconds?: number) => {
+    if (validatorWithdrawTimeInSeconds === undefined) {
+        return UNSTAKING_ETH_PERIOD;
+    }
+
+    return Math.round(validatorWithdrawTimeInSeconds / 60 / 60 / 24);
 };

@@ -2,10 +2,12 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Icon, IconType, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector, useValidatorsQueue } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { spacingsPx } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 
 const StyledModal = styled(Modal)`
     width: 380px;
@@ -64,6 +66,11 @@ interface StakeEthInANutshellModalProps {
 export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalProps) => {
     const theme = useTheme();
     const account = useSelector(selectSelectedAccount);
+    const { validatorWithdrawTime } = useSelector(state =>
+        selectValidatorsQueueData(state, account?.symbol),
+    );
+
+    const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
 
     const dispatch = useDispatch();
     const proceedToEverstakeModal = () => {
@@ -89,7 +96,12 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                         <GreyP>
                             <Translation
                                 id={translationId}
-                                values={{ symbol: account?.symbol.toUpperCase() }}
+                                values={{
+                                    symbol: account?.symbol.toUpperCase(),
+                                    days: !Number.isNaN(unstakingPeriod)
+                                        ? unstakingPeriod
+                                        : UNSTAKING_ETH_PERIOD,
+                                }}
                             />
                         </GreyP>
                     </Flex>
