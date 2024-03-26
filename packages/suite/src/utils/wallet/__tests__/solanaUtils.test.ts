@@ -76,6 +76,7 @@ describe('solana utils', () => {
                     input.toTokenAccount,
                     input.blockhash,
                     input.lastValidBlockHeight,
+                    input.priorityFees,
                 );
                 const message = tx.transaction.compileMessage().serialize().toString('hex');
 

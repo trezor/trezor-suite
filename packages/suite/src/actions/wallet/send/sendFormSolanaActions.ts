@@ -24,6 +24,7 @@ import {
     buildTransferTransaction,
     buildTokenTransferTransaction,
     getAssociatedTokenAccountAddress,
+    dummyPriorityFeesForFeeEstimation,
 } from 'src/utils/wallet/solanaUtils';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/lib/solana';
 
@@ -33,7 +34,9 @@ const calculate = (
     feeLevel: FeeLevel,
     token?: TokenInfo,
 ): PrecomposedTransaction => {
-    const feeInLamports = feeLevel.feePerUnit;
+    const feeInLamports = feeLevel.feePerTx;
+    if (feeInLamports == null) throw new Error('Invalid fee.');
+
     let amount: string;
     let max: string | undefined;
     const availableTokenBalance = token
@@ -61,7 +64,8 @@ const calculate = (
         totalSpent: token ? amount : totalSpent.toString(),
         max,
         fee: feeInLamports,
-        feePerByte: feeInLamports,
+        feePerByte: feeLevel.feePerUnit,
+        feeLimit: feeLevel.feeLimit,
         token,
         bytes: 0,
         inputs: [],
@@ -124,8 +128,6 @@ export const composeTransaction =
 
         const { output, decimals, tokenInfo } = composeOutputs;
 
-        let fetchedFee: string | undefined;
-
         const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
             getState(),
             account.symbol,
@@ -155,6 +157,7 @@ export const composeTransaction =
                       recipientTokenAccount,
                       blockhash,
                       lastValidBlockHeight,
+                      dummyPriorityFeesForFeeEstimation,
                   )
                 : undefined;
 
@@ -171,6 +174,7 @@ export const composeTransaction =
                       formValues.outputs[0].amount || '0',
                       blockhash,
                       lastValidBlockHeight,
+                      dummyPriorityFeesForFeeEstimation,
                   )
         ).compileMessage();
 
@@ -190,9 +194,15 @@ export const composeTransaction =
             },
         });
 
+        let fetchedFee: string | undefined;
+        let fetchedFeePerUnit: string | undefined;
+        let fetchedFeeLimit: string | undefined;
         if (estimatedFee.success) {
             // We access the array directly like this because the fee response from the solana worker always returns an array of size 1
-            fetchedFee = estimatedFee.payload.levels[0].feePerUnit;
+            const feeLevel = estimatedFee.payload.levels[0];
+            fetchedFee = feeLevel.feePerTx;
+            fetchedFeePerUnit = feeLevel.feePerUnit;
+            fetchedFeeLimit = feeLevel.feeLimit;
         } else {
             // Error fetching fee, fall back on default values defined in `/packages/connect/src/data/defaultFeeLevels.ts`
         }
@@ -202,7 +212,12 @@ export const composeTransaction =
         // update predefined levels with fee fetched from network
         const predefinedLevels = levels
             .filter(l => l.label !== 'custom')
-            .map(l => ({ ...l, feePerUnit: fetchedFee || l.feePerUnit }));
+            .map(l => ({
+                ...l,
+                feePerTx: fetchedFee || l.feePerTx,
+                feePerUnit: fetchedFeePerUnit || l.feePerUnit,
+                feeLimit: fetchedFeeLimit || l.feeLimit,
+            }));
 
         const wrappedResponse: PrecomposedLevels = {};
         const response = predefinedLevels.map(level =>
@@ -241,7 +256,8 @@ export const signTransaction =
             selectedAccount.status !== 'loaded' ||
             !device ||
             !transactionInfo ||
-            transactionInfo.type !== 'final'
+            transactionInfo.type !== 'final' ||
+            transactionInfo.feeLimit == null
         )
             return;
 
@@ -278,6 +294,10 @@ export const signTransaction =
                       recipientTokenAccounts,
                       blockhash,
                       lastValidBlockHeight,
+                      {
+                          computeUnitPrice: transactionInfo.feePerByte,
+                          computeUnitLimit: transactionInfo.feeLimit,
+                      },
                   )
                 : undefined;
 
@@ -291,6 +311,10 @@ export const signTransaction =
                   formValues.outputs[0].amount,
                   blockhash,
                   lastValidBlockHeight,
+                  {
+                      computeUnitPrice: transactionInfo.feePerByte,
+                      computeUnitLimit: transactionInfo.feeLimit,
+                  },
               );
 
         const serializedTx = tx.serializeMessage().toString('hex');
