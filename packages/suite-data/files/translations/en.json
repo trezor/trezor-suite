@@ -1737,7 +1737,7 @@
   "TR_STAKE_UNSTAKE_TO_CLAIM": "Unstake to claim",
   "TR_STAKE_UNSTAKING": "Unstaking",
   "TR_STAKE_UNSTAKING_PERIOD": "Unstaking period",
-  "TR_STAKE_UNSTAKING_TAKES": "Unstaking usually takes about 3 days. Once completed, you can trade or send it.",
+  "TR_STAKE_UNSTAKING_TAKES": "Unstaking currently takes {days} days. Once completed, you can trade or send it.",
   "TR_STAKE_WAITING_TO_BE_ADDED": "Your {symbol} is waiting to be added {br} to the staking pool.",
   "TR_STAKE_WHAT_IS_STAKING": "What is staking?",
   "TR_STAKING_DELEGATE": "Delegate",
