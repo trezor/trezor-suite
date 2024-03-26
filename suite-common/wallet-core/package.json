@@ -13,6 +13,7 @@
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.5",
+        "@sentry/react-native": "5.19.1",
         "@suite-common/device-authenticity": "workspace:*",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",

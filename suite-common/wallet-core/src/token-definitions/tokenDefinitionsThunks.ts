@@ -1,5 +1,6 @@
 import { decode, verify } from 'jws';
 import { D, G } from '@mobily/ts-belt';
+import * as Sentry from '@sentry/react-native';
 
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -72,6 +73,11 @@ export const getTokenDefinitionThunk = createThunk(
             }
 
             const data = JSON.parse(decodedJws.payload);
+
+            Sentry.captureMessage(
+                `url: ${TOKEN_DEFINITIONS_PREFIX_URL}/${env}/${coingeckoId}.simple.${type}.${TOKEN_DEFINITIONS_SUFFIX_URL}`,
+            );
+            Sentry.captureMessage(`authenticityPublicKey: ${authenticityPublicKey}`);
 
             return fulfillWithValue(data);
         } catch (error) {
