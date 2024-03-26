@@ -26,6 +26,7 @@ on:
       - "yarn.lock"
       - ".github/workflows/connect-dev-release-test.yml"
       - ".github/workflows/template-connect-popup-test-params.yml"
+      - "docker/docker-connect-popup-ci.sh"
   workflow_dispatch:
 
 concurrency:
