@@ -166,11 +166,19 @@ const DEFAULT_FEES = {
         levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
     },
     sol: {
-        minFee: 5000,
-        maxFee: 5000,
-        blockHeight: 1,
-        blockTime: 1,
-        levels: [{ label: 'normal', feePerUnit: '5000', blocks: -1 }],
+        minFee: -1,
+        maxFee: -1,
+        blockHeight: -1,
+        blockTime: -1,
+        levels: [
+            {
+                label: 'normal',
+                feePerUnit: '100000',
+                feeLimit: '50000',
+                feePerTx: '10000',
+                blocks: -1,
+            },
+        ],
     },
 };
 
@@ -1213,13 +1221,13 @@ export const setMax = [
             composedLevels: {
                 normal: {
                     type: 'final',
-                    fee: '5000',
+                    fee: '10000',
                     totalSpent: '10000000000',
                 },
                 custom: undefined,
             },
             formValues: {
-                outputs: [{ amount: '9.999995' }],
+                outputs: [{ amount: '9.99999' }],
             },
         },
     },
