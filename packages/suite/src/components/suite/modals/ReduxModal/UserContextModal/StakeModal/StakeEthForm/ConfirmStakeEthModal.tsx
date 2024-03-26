@@ -108,8 +108,11 @@ export const ConfirmStakeEthModal = ({
                         id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                         values={{
                             a: chunks => (
-                                // TODO: Add the right href
-                                <TrezorLink target="_blank" variant="underline" href="#">
+                                <TrezorLink
+                                    target="_blank"
+                                    variant="underline"
+                                    href={HELP_CENTER_ETH_STAKING}
+                                >
                                     {chunks}
                                 </TrezorLink>
                             ),
