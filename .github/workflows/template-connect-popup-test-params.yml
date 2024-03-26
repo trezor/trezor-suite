@@ -33,18 +33,10 @@ jobs:
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
 
-      - run: yarn install
-
-      - run: yarn build:libs
-
-      - name: Make Docker Script Executable
-        run: chmod +x ./docker/docker-connect-popup-ci.sh
-
-      - name: Check Script Permissions
-        run: ls -l ./docker/docker-connect-popup-ci.sh
-
-      - name: Docker Version
-        run: docker --version
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-popup
 
       - name: Run connect popup test
         env:
