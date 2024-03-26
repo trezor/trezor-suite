@@ -119,16 +119,22 @@ jobs:
           cp -R ./packages/connect-explorer/build/* tmp_build_directory/
           aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
 
-      - name: Upload artifacts
+      - name: Upload  connect-example webextension artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: test-artifacts
+          name: connect-example-webextension
           path: |
             packages/connect-examples/webextension-mv2/build
             packages/connect-examples/webextension-mv2/build-legacy
             packages/connect-examples/webextension-mv3/build
             packages/connect-examples/webextension-mv3/build-legacy
             packages/connect-examples/webextension-mv3-sw/build
+
+      - name: Upload connect-explorer webextension artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: connect-explorer-webextension
+          path: |
             packages/connect-explorer/build-webextension
 
   methods:
