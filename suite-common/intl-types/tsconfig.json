@@ -5,9 +5,12 @@
         "rootDir": "../../../"
     },
     "references": [
-        { "path": "../../packages/type-utils" }
+        {
+            "path": "../../packages/type-utils"
+        }
     ],
     "include": [
+        "src",
         "suite-common/intl-types/**/*",
         "packages/suite/src/components/suite/Translation"
     ]

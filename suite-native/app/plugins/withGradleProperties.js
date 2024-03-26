@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-shadow */
 const { withGradleProperties } = require('expo/config-plugins');
 
 const newGraddleProperties = [

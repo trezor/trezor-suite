@@ -1,8 +1,15 @@
 {
     "extends": "../../tsconfig.base.json",
-    "compilerOptions": { "outDir": "libDev" },
+    "compilerOptions": {
+        "outDir": "libDev"
+    },
+    "include": ["src"],
     "references": [
-        { "path": "../type-utils" },
-        { "path": "../utxo-lib" }
+        {
+            "path": "../type-utils"
+        },
+        {
+            "path": "../utxo-lib"
+        }
     ]
 }

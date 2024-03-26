@@ -8,6 +8,8 @@ module.exports = {
         ecmaFeatures: {
             jsx: true,
         },
+        project: ['./tsconfig.json'],
+        tsconfigRootDir: __dirname,
     },
     plugins: ['import', '@typescript-eslint', 'react-hooks', 'jest', 'chai-friendly', 'react'],
     extends: [
@@ -39,8 +41,19 @@ module.exports = {
         'packages/protobuf/scripts/protobuf-patches/*',
         'packages/connect-examples',
         'ci/',
+        '*.config.js',
+        '.eslintrc.js',
+        '.eslintrc.cjs',
     ],
     rules: {
+        '@typescript-eslint/strict-boolean-expressions': [
+            'warn',
+            {
+                allowString: false,
+                allowNumber: false,
+                allowNullableObject: false,
+            },
+        ],
         '@typescript-eslint/prefer-ts-expect-error': 'error',
         // I believe type is enforced by callers.
         '@typescript-eslint/explicit-function-return-type': 'off',
@@ -204,10 +217,10 @@ module.exports = {
         // These rules have to do with variable declarations.
         'no-label-var': 'error', // disallow labels that share a name with a variable
         'no-shadow': 'off', // @typescript-eslint/no-shadow will be used instead
-        '@typescript-eslint/no-shadow': [
-            'error',
-            { builtinGlobals: true, allow: ['_', 'error', 'resolve', 'reject', 'fetch'] },
-        ], // disallow declaration of variables already declared in the outer scope
+        // '@typescript-eslint/no-shadow': [
+        //     'error',
+        //     { builtinGlobals: true, allow: ['_', 'error', 'resolve', 'reject', 'fetch'] },
+        // ], // disallow declaration of variables already declared in the outer scope
         'no-shadow-restricted-names': 'error', // disallow shadowing of names such as arguments
         'no-undefined': 'off', // disallow use of undefined variable (off by default)
         'no-undef-init': 'error', // disallow use of undefined when initializing variables

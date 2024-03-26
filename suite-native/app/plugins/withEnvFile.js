@@ -1,7 +1,6 @@
 /*
  * This plugin is used to generate correct .env file during expo prebuild.
  */
-/* eslint-disable @typescript-eslint/no-shadow */
 const { withDangerousMod, withPlugins } = require('expo/config-plugins');
 const fs = require('fs');
 const path = require('path');
