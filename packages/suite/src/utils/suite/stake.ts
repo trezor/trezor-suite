@@ -460,3 +460,6 @@ export const getStakeTxGasLimit = async ({
         };
     }
 };
+
+export const getUnstakingPeriod = (validatorWithdrawTime: number) =>
+    Math.round(validatorWithdrawTime / 60 / 60 / 24);

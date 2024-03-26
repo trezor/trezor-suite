@@ -13,6 +13,9 @@ export const MIN_ETH_BALANCE_FOR_STAKING = MIN_ETH_AMOUNT_FOR_STAKING.plus(MIN_E
 // Used when Everstake pool stats are not available from the API.
 export const BACKUP_ETH_APY = '4.13';
 
+// Used when Everstake unstaking period is not available from the API.
+export const UNSTAKING_ETH_PERIOD = 3;
+
 export const STAKE_SYMBOLS: NetworkSymbol[] = (Object.keys(networks) as NetworkSymbol[]).filter(
     symbol => {
         const networkType = getNetworkType(symbol);
