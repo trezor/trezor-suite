@@ -31,6 +31,8 @@ import type {
     Account,
     CurrencyOption,
     ExcludedUtxos,
+    PrecomposedTransactionFinal,
+    TxFinalCardano,
 } from '@suite-common/wallet-types';
 
 import { amountToSatoshi, getUtxoOutpoint, networkAmountToSatoshi } from './accountUtils';
@@ -199,6 +201,15 @@ export const getFeeUnits = (networkType: NetworkType) => {
     if (networkType === 'solana') return 'Lamports';
 
     return 'sat/B';
+};
+
+export const getFee = (
+    networkType: NetworkType,
+    tx: PrecomposedTransactionFinal | TxFinalCardano,
+) => {
+    if (networkType === 'solana') return tx.fee;
+
+    return tx.feePerByte;
 };
 
 // Find all validation errors set while composing a transaction
