@@ -93,7 +93,15 @@ const SOLANA_FEE_INFO: FeeInfoWithLevels = {
     blockTime: -1, // unknown
     // feePerUnit is used as feePerSignature on Solana as the fee depends on the number
     // of signature rather than the size of the transaction.
-    defaultFees: [{ label: 'normal', feePerUnit: '5000', blocks: -1 }],
+    defaultFees: [
+        {
+            label: 'normal',
+            feePerUnit: '100000',
+            feeLimit: '200000',
+            feePerTx: '25000',
+            blocks: -1,
+        },
+    ],
     minFee: -1, // unused
     maxFee: -1, // unused
     dustLimit: -1, // unknown/unused
