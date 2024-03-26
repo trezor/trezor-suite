@@ -1,4 +1,3 @@
-import bs58 from 'bs58';
 import type {
     Response,
     AccountInfo,
@@ -15,14 +14,7 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import {
-    BlockheightBasedTransactionConfirmationStrategy,
-    Connection,
-    Message,
-    PublicKey,
-    Transaction as SolanaTransaction,
-    sendAndConfirmRawTransaction,
-} from '@solana/web3.js';
+import { Connection, Message, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 import {
@@ -31,6 +23,7 @@ import {
 } from '@trezor/blockchain-link-utils/src/solana';
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 import { getBaseFee, getPriorityFee } from './fee';
+import { confirmTransaction } from './transactionConfirmation';
 
 export type SolanaAPI = Connection;
 
@@ -104,27 +97,16 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
 
+    const { lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
+
     const txBuffer = Buffer.from(rawTx, 'hex');
+    const signature = await api.sendRawTransaction(txBuffer);
 
-    const transaction = SolanaTransaction.from(txBuffer);
-    if (transaction.signature == null) {
-        throw new Error('Transaction signature is null.');
-    }
-
-    const signature = bs58.encode(transaction.signature);
-    const { blockhash, lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
-
-    const confirmStrategy: BlockheightBasedTransactionConfirmationStrategy = {
-        blockhash,
-        lastValidBlockHeight,
-        signature,
-    };
-
-    const payload = await sendAndConfirmRawTransaction(api, txBuffer, confirmStrategy);
+    await confirmTransaction(api, signature, lastValidBlockHeight);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,
-        payload,
+        payload: signature,
     } as const;
 };
 
