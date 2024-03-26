@@ -88,7 +88,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
             heading={
                 <>
                     <Translation
-                        id="TR_STAKE_YOUR_FUNDS_MANAGED"
+                        id="TR_STAKE_YOUR_FUNDS_MAINTAINED"
                         values={{ h: text => <HeadingAccent>{text}</HeadingAccent> }}
                     />
                 </>
