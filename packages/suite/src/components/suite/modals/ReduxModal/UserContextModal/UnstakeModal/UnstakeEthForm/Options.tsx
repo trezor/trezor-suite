@@ -8,8 +8,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
+import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
+import BigNumber from 'bignumber.js';
 
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
@@ -85,34 +85,36 @@ export const Options = ({ symbol }: OptionsProps) => {
 
     return (
         <div>
-            <RadioWrapper>
-                <Radio
-                    isChecked={isRewardsSelected}
-                    onClick={async () => {
-                        if (isRewardsSelected) return;
+            {new BigNumber(restakedReward).gt(0) && (
+                <RadioWrapper>
+                    <Radio
+                        isChecked={isRewardsSelected}
+                        onClick={async () => {
+                            if (isRewardsSelected) return;
 
-                        setUnstakeOption('rewards');
-                        await onOptionChange(restakedReward);
-                    }}
-                >
-                    <RadioButtonLabelContent>
-                        <RadioButtonLabelTxt>
-                            <Translation id="TR_STAKE_ONLY_REWARDS" />
-                        </RadioButtonLabelTxt>
+                            setUnstakeOption('rewards');
+                            await onOptionChange(restakedReward);
+                        }}
+                    >
+                        <RadioButtonLabelContent>
+                            <RadioButtonLabelTxt>
+                                <Translation id="TR_STAKE_ONLY_REWARDS" />
+                            </RadioButtonLabelTxt>
 
-                        <TxtRight>
-                            <GreyP>
-                                <FormattedCryptoAmount value={restakedReward} symbol={symbol} />
-                            </GreyP>
-                            <Paragraph>
-                                <GreenTxt>
-                                    <FiatValue amount={restakedReward} symbol={mappedSymbol} />
-                                </GreenTxt>
-                            </Paragraph>
-                        </TxtRight>
-                    </RadioButtonLabelContent>
-                </Radio>
-            </RadioWrapper>
+                            <TxtRight>
+                                <GreyP>
+                                    <FormattedCryptoAmount value={restakedReward} symbol={symbol} />
+                                </GreyP>
+                                <Paragraph>
+                                    <GreenTxt>
+                                        <FiatValue amount={restakedReward} symbol={mappedSymbol} />
+                                    </GreenTxt>
+                                </Paragraph>
+                            </TxtRight>
+                        </RadioButtonLabelContent>
+                    </Radio>
+                </RadioWrapper>
+            )}
 
             <RadioWrapper>
                 <Radio
