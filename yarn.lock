@@ -8744,6 +8744,7 @@ __metadata:
     react-native-svg: "npm:14.1.0"
     react-redux: "npm:8.0.7"
     redux-persist: "npm:6.0.0"
+    zod: "npm:^3.22.3"
   languageName: unknown
   linkType: soft
 

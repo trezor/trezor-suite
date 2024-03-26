@@ -97,7 +97,8 @@
         "react-native-screens": "3.29.0",
         "react-native-svg": "14.1.0",
         "react-redux": "8.0.7",
-        "redux-persist": "6.0.0"
+        "redux-persist": "6.0.0",
+        "zod": "^3.22.3"
     },
     "devDependencies": {
         "@babel/core": "^7.20.0",

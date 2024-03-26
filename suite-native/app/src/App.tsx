@@ -22,10 +22,15 @@ import { applicationInit } from './initActions';
 import { useReportAppInitToAnalytics } from './hooks/useReportAppInitToAnalytics';
 import { SentryProvider } from './SentryProvider';
 import { ModalsRenderer } from './ModalsRenderer';
+import { envSchema } from '../envValidation';
 
 if (__DEV__) {
     require('./LogBox');
 }
+
+// process.env validation. This will fail if environment variables defined in schema
+// are not passed to the application from the runner.
+envSchema.parse(process.env);
 
 // Base time to measure app loading time.
 // The constant has to be placed at the beginning of this file to be initialized as soon as possible.
