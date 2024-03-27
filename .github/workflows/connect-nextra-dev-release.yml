@@ -23,6 +23,7 @@ env:
 
 jobs:
   build-deploy:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

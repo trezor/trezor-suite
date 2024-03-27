@@ -21,6 +21,7 @@ on:
 
 jobs:
   transport-e2e:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     env:
       COMPOSE_FILE: ./docker/docker-compose.transport-test.yml

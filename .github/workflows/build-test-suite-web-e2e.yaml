@@ -29,6 +29,7 @@ env:
 
 jobs:
     build-web:
+        if: github.repository == 'trezor/trezor-suite'
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -75,6 +76,7 @@ jobs:
                   aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
 
     e2e-test-suite-web:
+        if: github.repository == 'trezor/trezor-suite'
         runs-on: ubuntu-latest
         needs:
             - build-web

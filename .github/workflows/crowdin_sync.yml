@@ -8,6 +8,7 @@ concurrency:
 
 jobs:
   crowdin-sync:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

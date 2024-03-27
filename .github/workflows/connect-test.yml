@@ -35,6 +35,7 @@ concurrency:
 jobs:
   # todo: meaning of 'build' job is questionable. only 'web' tests use part of this jobs output
   build:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -65,13 +66,14 @@ jobs:
 
   api:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
 
   legacy-canary-firmware-api:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
@@ -84,6 +86,7 @@ jobs:
 
   management:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -91,7 +94,7 @@ jobs:
 
   legacy-canary-firmware-management:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -105,6 +108,7 @@ jobs:
 
   btc-sign:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -112,7 +116,7 @@ jobs:
 
   legacy-canary-firmware-btc-sign:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -126,6 +130,7 @@ jobs:
 
   btc-others:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -133,7 +138,7 @@ jobs:
 
   legacy-canary-firmware-btc-others:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -147,6 +152,7 @@ jobs:
 
   stellar:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -154,7 +160,7 @@ jobs:
 
   legacy-canary-firmware-stellar:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -168,6 +174,7 @@ jobs:
 
   cardano:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -175,7 +182,7 @@ jobs:
 
   legacy-canary-firmware-cardano:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -189,6 +196,7 @@ jobs:
 
   eos:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -196,7 +204,7 @@ jobs:
 
   legacy-canary-firmware-eos:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -210,6 +218,7 @@ jobs:
 
   ethereum:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -217,7 +226,7 @@ jobs:
 
   legacy-canary-firmware-ethereum:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -231,6 +240,7 @@ jobs:
 
   nem:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -238,7 +248,7 @@ jobs:
 
   legacy-canary-firmware-nem:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -252,6 +262,7 @@ jobs:
 
   ripple:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -259,7 +270,7 @@ jobs:
 
   legacy-canary-firmware-ripple:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -273,6 +284,7 @@ jobs:
 
   tezos:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -280,7 +292,7 @@ jobs:
 
   legacy-canary-firmware-tezos:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -294,6 +306,7 @@ jobs:
 
   binance:
     needs: [build]
+    if: github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -301,7 +314,7 @@ jobs:
 
   legacy-canary-firmware-binance:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
@@ -315,7 +328,7 @@ jobs:
 
   connect-T2B1:
     needs: [build]
-    if: github.event_name == 'schedule'
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: ${{ matrix.pattern }}

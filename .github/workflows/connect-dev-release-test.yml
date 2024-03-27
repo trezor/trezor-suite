@@ -39,6 +39,7 @@ env:
 
 jobs:
   extract-branch:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     outputs:
       branch: ${{ steps.extract_branch.outputs.branch }}

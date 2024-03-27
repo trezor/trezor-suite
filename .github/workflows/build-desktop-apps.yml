@@ -5,6 +5,7 @@ on:
     types: [opened, labeled]
   workflow_dispatch:
 
+
 env:
   DESKTOP_APP_NAME: "Trezor-Suite"
 
@@ -14,7 +15,7 @@ concurrency:
 
 jobs:
   suite-desktop:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop')
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop')) && github.repository == 'trezor/trezor-suite'
     name: Build suite-desktop-${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
@@ -65,7 +66,7 @@ jobs:
           retention-days: 3
 
   suite-desktop-win:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop')
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop')) && github.repository == 'trezor/trezor-suite'
     name: Build suite-desktop-win
     runs-on: ubuntu-latest
     timeout-minutes: 20
