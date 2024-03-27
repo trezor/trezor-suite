@@ -14,6 +14,7 @@ on:
 
 jobs:
   connect-web-e2e:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout

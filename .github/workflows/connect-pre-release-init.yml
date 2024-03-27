@@ -16,6 +16,7 @@ concurrency:
 
 jobs:
   pre-release:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
