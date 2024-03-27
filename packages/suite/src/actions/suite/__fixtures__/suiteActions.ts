@@ -236,6 +236,7 @@ const initialRun = [
                 showDashboardT2B1PromoBanner: false,
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
+                showDashboardStakingPromoBanner: true,
             },
         },
     },
