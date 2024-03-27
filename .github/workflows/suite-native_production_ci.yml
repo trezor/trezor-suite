@@ -71,6 +71,5 @@ jobs:
           --platform android
           --profile production
           --non-interactive
-          --auto-submit
           --message ${{ github.sha }}
         working-directory: suite-native/app
