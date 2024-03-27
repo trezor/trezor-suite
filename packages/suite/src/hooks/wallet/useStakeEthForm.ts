@@ -1,18 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { useForm, useWatch } from 'react-hook-form';
 
 import BigNumber from 'bignumber.js';
-import useDebounce from 'react-use/lib/useDebounce';
 
-import {
-    fromFiatCurrency,
-    getFeeLevels,
-    getFiatRateKey,
-    toFiatCurrency,
-} from '@suite-common/wallet-utils';
-import { isChanged } from '@suite-common/suite-utils';
+import { fromFiatCurrency, toFiatCurrency } from '@suite-common/wallet-utils';
 
-import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     UseStakeFormsProps,
@@ -20,29 +12,19 @@ import {
     CRYPTO_INPUT,
     OUTPUT_AMOUNT,
 } from 'src/types/wallet/stakeForms';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useFormDraft } from './useFormDraft';
 
 import { fromWei } from 'web3-utils';
-import { useStakeCompose } from './form/useStakeCompose';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_FOR_WITHDRAWALS,
 } from 'src/constants/suite/ethStaking';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import {
-    PrecomposedTransactionFinal,
-    StakeFormState,
-    StakeContextValues,
-    AmountLimitsString,
-} from '@suite-common/wallet-types';
+import { StakeFormState, StakeContextValues, AmountLimitsString } from '@suite-common/wallet-types';
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
-import { useFees } from './form/useFees';
+import { useCommonEthForm } from './useCommonEthForm';
 
 export const StakeEthFormContext = createContext<StakeContextValues | null>(null);
 StakeEthFormContext.displayName = 'StakeEthFormContext';
@@ -52,18 +34,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
 
     const { account, network } = selectedAccount;
     const { symbol } = account;
-
-    const localCurrency = useSelector(selectLocalCurrency);
-    const symbolFees = useSelector(state => state.wallet.fees[symbol]);
-
-    const symbolForFiat = mapTestnetSymbol(symbol);
-    const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(
-            state,
-            getFiatRateKey(symbolForFiat, localCurrency),
-            'current',
-        ),
-    );
 
     const amountLimits: AmountLimitsString = {
         currency: symbol,
@@ -85,97 +55,33 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         } as StakeFormState;
     }, [account.symbol]);
 
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<StakeFormState>('stake-eth');
-    const draft = getDraft(account.key);
-    const isDraft = !!draft;
-
-    const state = useMemo(() => {
-        const levels = getFeeLevels(account.networkType, symbolFees);
-        const feeInfo = { ...symbolFees, levels };
-
-        return {
-            account,
-            network,
-            feeInfo,
-            formValues: defaultValues,
-        };
-    }, [account, defaultValues, symbolFees, network]);
-
-    const methods = useForm<StakeFormState>({
-        mode: 'onChange',
-        defaultValues: isDraft ? draft : defaultValues,
+    const {
+        methods,
+        clearForm: clearFormCommon,
+        localCurrency,
+        currentRate,
+        selectedFee,
+        changeFeeLevel,
+        isComposing,
+        composedLevels,
+        composeRequest,
+        removeDraft,
+        isDraft,
+        signTx,
+        feeInfo,
+    } = useCommonEthForm<StakeFormState>({
+        draftKey: 'stake-eth',
+        defaultValues,
+        selectedAccount,
+        signTransaction,
     });
-
-    const { register, control, formState, setValue, reset, clearErrors, getValues, setError } =
-        methods;
-
-    const values = useWatch<StakeFormState>({ control });
-
-    useEffect(() => {
-        if (!isChanged(defaultValues, values)) {
-            removeDraft(account.key);
-        }
-    }, [values, removeDraft, account.key, defaultValues]);
+    const { register, formState, getValues, setValue, clearErrors } = methods;
 
     // react-hook-form auto register custom form fields (without HTMLElement)
     useEffect(() => {
         register('outputs');
         register('setMaxOutputId');
     }, [register]);
-
-    // react-hook-form reset, set default values
-    useEffect(() => {
-        if (!isDraft && defaultValues) {
-            reset(defaultValues);
-        }
-    }, [reset, isDraft, defaultValues]);
-
-    const {
-        isLoading: isComposing,
-        composeRequest,
-        composedLevels,
-        onFeeLevelChange,
-    } = useStakeCompose({
-        ...methods,
-        state,
-    });
-
-    // sub-hook, FeeLevels handler
-    const fees = useSelector(state => state.wallet.fees);
-    const coinFees = fees[account.symbol];
-    const levels = getFeeLevels(account.networkType, coinFees);
-    const feeInfo = { ...coinFees, levels };
-    const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
-        defaultValue: 'normal',
-        feeInfo,
-        onChange: onFeeLevelChange,
-        composeRequest,
-        ...methods,
-    });
-    const selectedFee = _selectedFee ?? 'normal';
-
-    useDebounce(
-        () => {
-            if (
-                formState.isDirty &&
-                !formState.isValidating &&
-                Object.keys(formState.errors).length === 0 &&
-                !isComposing
-            ) {
-                saveDraft(selectedAccount.account.key, values as StakeFormState);
-            }
-        },
-        200,
-        [
-            saveDraft,
-            selectedAccount.account.key,
-            values,
-            formState.errors,
-            formState.isDirty,
-            formState.isValidating,
-            isComposing,
-        ],
-    );
 
     const [isAmountForWithdrawalWarningShown, setIsAmountForWithdrawalWarningShown] =
         useState(false);
@@ -300,12 +206,10 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     }, [account.formattedBalance, clearErrors, composeRequest, setValue]);
 
     const clearForm = useCallback(async () => {
-        removeDraft(account.key);
-        reset(defaultValues);
-        await composeRequest(CRYPTO_INPUT);
+        await clearFormCommon();
         setIsAdviceForWithdrawalWarningShown(false);
         setIsAmountForWithdrawalWarningShown(false);
-    }, [account.key, composeRequest, defaultValues, removeDraft, reset]);
+    }, [clearFormCommon]);
 
     const { translationString } = useTranslation();
     useEffect(() => {
@@ -340,7 +244,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         composedLevels,
         dispatch,
         getValues,
-        setError,
         setValue,
         selectedFee,
         translationString,
@@ -349,21 +252,6 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         account.formattedBalance,
         currentRate,
     ]);
-
-    // get response from TransactionReviewModal
-    const signTx = useCallback(async () => {
-        const values = getValues();
-        const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
-        if (composedTx && composedTx.type === 'final') {
-            const result = await dispatch(
-                signTransaction(values, composedTx as PrecomposedTransactionFinal),
-            );
-
-            if (result?.success) {
-                clearForm();
-            }
-        }
-    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
     const closeConfirmModal = () => {

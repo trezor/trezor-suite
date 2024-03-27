@@ -253,3 +253,14 @@ export const useCompose = <TFieldValues extends FormState>({
         signTransaction: sign,
     };
 };
+
+// Hook that doesn't return Cardano-specific values for use in Ethereum forms
+export const useEthCompose = <TFieldValues extends FormState>(props: Props<TFieldValues>) => {
+    const returning = useCompose<TFieldValues>(props);
+    const composedLevels = returning.composedLevels as PrecomposedLevels | undefined;
+
+    return {
+        ...returning,
+        composedLevels,
+    };
+};
