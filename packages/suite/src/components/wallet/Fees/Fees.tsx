@@ -8,7 +8,7 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { Icon, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
+import { Icon, Paragraph, SelectBar, Tooltip, motionEasing, variables } from '@trezor/components';
 import { FormState } from '@suite-common/wallet-types';
 import { spacingsPx, typography } from '@trezor/theme';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -23,7 +23,7 @@ import {
 } from 'src/types/wallet/sendForm';
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 
 const Container = styled.div`
     width: 100%;
@@ -156,15 +156,6 @@ export const Fees = <TFieldValues extends FormState>({
                         )}
                     </HeadingWrapper>
                     {helperText && <HelperTextWrapper>{helperText}</HelperTextWrapper>}
-
-                    {transactionInfo !== undefined && (
-                        <FeeDetails
-                            networkType={networkType}
-                            feeInfo={feeInfo}
-                            selectedLevel={selectedLevel}
-                            transactionInfo={transactionInfo}
-                        />
-                    )}
                 </Label>
 
                 {transactionInfo !== undefined && transactionInfo.type !== 'error' && (
@@ -193,6 +184,27 @@ export const Fees = <TFieldValues extends FormState>({
                 />
             )}
 
+            <AnimatePresence>
+                {!isCustomLevel && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                        animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
+                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        transition={{
+                            opacity: { duration: 0.15, ease: motionEasing.transition },
+                            height: { duration: 0.2, ease: motionEasing.transition },
+                            marginTop: { duration: 0.25, ease: motionEasing.transition },
+                        }}
+                    >
+                        <FeeDetails
+                            networkType={networkType}
+                            feeInfo={feeInfo}
+                            selectedLevel={selectedLevel}
+                            transactionInfo={transactionInfo}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <AnimatePresence>
                 {isCustomLevel && (
                     <CustomFee
