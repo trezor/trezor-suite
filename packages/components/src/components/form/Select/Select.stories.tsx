@@ -2,6 +2,15 @@ import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Select as SelectComponent, SelectProps } from './Select';
+import { OptionFloatingUi, SelectFloatingUi } from './SelectFloatingUi';
+import { spacingsPx } from '@trezor/theme';
+import styled from 'styled-components';
+
+const Flex = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: ${spacingsPx.lg};
+`
 
 const values: any = {
     'None (default)': null,
@@ -27,7 +36,17 @@ export const Select: StoryObj<SelectProps> = {
         const [{ option }, updateArgs] = useArgs();
         const setOption = (option: { label: string; value: 'string' }) => updateArgs({ option });
 
-        return <SelectComponent {...args} value={option} onChange={setOption} options={options} />;
+        return (
+            <Flex>
+                <SelectComponent {...args} value={option} onChange={setOption} options={options} />
+                <SelectFloatingUi>
+                    <OptionFloatingUi label="Apple" />
+                    <OptionFloatingUi label="Blueberry" />
+                    <OptionFloatingUi label="Watermelon" />
+                    <OptionFloatingUi label="Banana" />
+                </Select>
+            </Flex>
+        );
     },
     argTypes: {
         isSearchable: {
