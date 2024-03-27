@@ -226,18 +226,21 @@ const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
 interface GetStakeFormsDefaultValuesParams {
     address: string;
     ethereumStakeType: StakeFormState['ethereumStakeType'];
+    amount?: string;
 }
 
 export const getStakeFormsDefaultValues = ({
     address,
     ethereumStakeType,
+    amount,
 }: GetStakeFormsDefaultValuesParams) => ({
     fiatInput: '',
-    cryptoInput: '',
+    cryptoInput: amount || '',
     outputs: [
         {
             ...DEFAULT_PAYMENT,
             address,
+            amount: amount || '',
         },
     ],
     options: ['broadcast'],
