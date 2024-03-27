@@ -1,11 +1,13 @@
+import { ReactNode } from 'react';
+
 import { Icon, IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, Text } from '@suite-native/atoms';
 
 type AnalyticsInfoRowProps = {
     iconName: IconName;
-    title: string;
-    description: string | JSX.Element;
+    title: ReactNode;
+    description: ReactNode;
 };
 
 const iconWrapper = prepareNativeStyle(utils => ({

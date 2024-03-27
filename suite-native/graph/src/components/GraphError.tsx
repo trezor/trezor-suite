@@ -4,7 +4,7 @@ import { Pressable } from 'react-native';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 import { Text, VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 type GraphErrorProps = {
     error: string;
@@ -38,14 +38,13 @@ const ErrorIcon = () => {
 
 export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
 
     return (
         <VStack spacing="small" alignItems="center" paddingHorizontal="medium">
             <ErrorIcon />
             <Animated.View entering={FadeInDown} exiting={FadeOutUp}>
                 <Text variant="hint" color="textSubdued" textAlign="center">
-                    {translate('graph.errorMessage')}
+                    <Translation id="graph.errorMessage" />
                     {error}
                 </Text>
                 <Pressable onPress={onTryAgain}>
@@ -55,7 +54,7 @@ export const GraphError = ({ error, onTryAgain }: GraphErrorProps) => {
                         style={applyStyle(tryAgainButtonStyle)}
                         textAlign="center"
                     >
-                        {translate('graph.tryAgain')}
+                        <Translation id="graph.tryAgain" />
                     </Text>
                 </Pressable>
             </Animated.View>

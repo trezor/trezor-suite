@@ -15,7 +15,7 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Box, Button, Stack, Switch, Text, VStack } from '@suite-native/atoms';
-import { useTranslate, Translation } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { EventType, analytics } from '@suite-native/analytics';
@@ -96,8 +96,6 @@ const reportAnalyticsOnboardingCompleted = (isTrackingAllowed: boolean) => {
 export const AnalyticsConsentScreen = () => {
     const [isEnabled, setIsEnabled] = useState(true);
 
-    const { translate } = useTranslate();
-
     const navigation = useNavigation<NavigationProps>();
 
     const { applyStyle } = useNativeStyles();
@@ -147,21 +145,21 @@ export const AnalyticsConsentScreen = () => {
                     <Stack spacing="large" paddingBottom="medium">
                         <AnalyticsInfoRow
                             iconName="eyeSlash"
-                            title={translate(
-                                'moduleOnboarding.analyticsConsentScreen.bulletPoints.privacy.title',
-                            )}
-                            description={translate(
-                                'moduleOnboarding.analyticsConsentScreen.bulletPoints.privacy.description',
-                            )}
+                            title={
+                                <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.privacy.title" />
+                            }
+                            description={
+                                <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.privacy.description" />
+                            }
                         />
                         <AnalyticsInfoRow
                             iconName="bugBeetle"
-                            title={translate(
-                                'moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.title',
-                            )}
-                            description={translate(
-                                'moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.description',
-                            )}
+                            title={
+                                <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.title" />
+                            }
+                            description={
+                                <Translation id="moduleOnboarding.analyticsConsentScreen.bulletPoints.dataCollection.description" />
+                            }
                         />
                     </Stack>
                     <Box
@@ -206,7 +204,7 @@ export const AnalyticsConsentScreen = () => {
                     testID="@onboarding/UserDataConsent/allow"
                     onPress={isEnabled ? handleAnalyticsConsent : handleRedirect}
                 >
-                    {translate('generic.buttons.confirm')}
+                    <Translation id="generic.buttons.confirm" />
                 </Button>
             </Box>
         </Screen>

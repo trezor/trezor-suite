@@ -32,7 +32,7 @@ import {
     selectDeviceLabel,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { useOpenLink } from '@suite-native/link';
 
@@ -80,13 +80,13 @@ export const DeviceInfoModalScreen = () => {
         if (G.isNotNullable(deviceReleaseInfo)) {
             if (isUpgradable) {
                 return {
-                    alertTitle: translate('deviceInfo.outdatedFw'),
+                    alertTitle: <Translation id="deviceInfo.outdatedFw" />,
                     alertVariant: 'warning',
                 } as const;
             }
 
             return {
-                alertTitle: translate('deviceInfo.upToDateFw'),
+                alertTitle: <Translation id="deviceInfo.upToDateFw" />,
                 alertVariant: 'success',
             } as const;
         }
@@ -159,18 +159,18 @@ export const DeviceInfoModalScreen = () => {
                     onPress={handleAccessoriesClick}
                     iconRight="arrowUpRight"
                 >
-                    {translate('deviceInfo.goToAccessories')}
+                    <Translation id="deviceInfo.goToAccessories" />
                 </Button>
                 {isUpgradable && (
                     <Button colorScheme="primary" onPress={handleUpdateClick}>
-                        {translate('deviceInfo.updateHowTo.title')}
+                        <Translation id="deviceInfo.updateHowTo.title" />
                     </Button>
                 )}
             </VStack>
             <HowToUpdateBottomSheet
                 isVisible={isUpdateSheetOpen}
                 onClose={setIsUpdateSheetOpen}
-                title={translate('deviceInfo.updateHowTo.title')}
+                title={<Translation id="deviceInfo.updateHowTo.title" />}
             />
         </Screen>
     );

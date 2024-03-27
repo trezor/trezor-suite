@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { Box, VStack, Button, Text } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { AddressMismatchBottomSheet } from './AddressMismatchBottomSheet';
 
 export const UnverifiedAddressDeviceHint = () => {
     const [isBottomSheetOpened, setIsBottomSheetOpened] = useState(false);
-    const { translate } = useTranslate();
 
     const handlePress = () => {
         setIsBottomSheetOpened(true);
@@ -26,7 +25,7 @@ export const UnverifiedAddressDeviceHint = () => {
                 </Text>
                 <Box flexDirection="row" flexShrink={1} justifyContent="center">
                     <Button size="small" colorScheme="tertiaryElevation1" onPress={handlePress}>
-                        {translate('moduleReceive.bottomSheets.addressMismatch.title')}
+                        <Translation id="moduleReceive.bottomSheets.addressMismatch.title" />
                     </Button>
                 </Box>
             </VStack>

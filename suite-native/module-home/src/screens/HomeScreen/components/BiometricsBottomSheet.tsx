@@ -13,7 +13,7 @@ import {
     useBiometricsSettings,
     BiometricsIcons,
 } from '@suite-native/biometrics';
-import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
+import { Translation, TxKeyPath } from '@suite-native/intl';
 
 const SHOW_TIMEOUT = 1500;
 
@@ -81,7 +81,6 @@ const getBottomSheetTranslations = ({
 
 export const BiometricsBottomSheet = () => {
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
     const { isBiometricsInitialSetupFinished, setIsBiometricsInitialSetupFinished } =
         useIsBiometricsInitialSetupFinished();
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
@@ -163,10 +162,10 @@ export const BiometricsBottomSheet = () => {
                     data-testID="reject-biometrics"
                     onPress={handleClose}
                 >
-                    {translate('moduleHome.biometricsModal.button.later')}
+                    <Translation id="moduleHome.biometricsModal.button.later" />
                 </Button>
                 <Button data-testID="enable-biometrics" onPress={handleEnable}>
-                    {translate('moduleHome.biometricsModal.button.enable')}
+                    <Translation id="moduleHome.biometricsModal.button.enable" />
                 </Button>
             </Box>
         </BottomSheet>

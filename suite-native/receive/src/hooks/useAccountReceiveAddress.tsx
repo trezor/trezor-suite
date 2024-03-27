@@ -20,7 +20,7 @@ import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useToast } from '@suite-native/toasts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
@@ -28,7 +28,6 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const navigation = useNavigation();
-    const { translate } = useTranslate();
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();
@@ -80,7 +79,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 showToast({
                     icon: 'warningCircle',
                     variant: 'default',
-                    message: translate('moduleReceive.deviceCancelError'),
+                    message: <Translation id="moduleReceive.deviceCancelError" />,
                 });
                 if (navigation.canGoBack()) {
                     navigation.goBack();
@@ -119,7 +118,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
 
         return false;
-    }, [accountKey, freshAddress, dispatch, showToast, translate, navigation, showAlert]);
+    }, [accountKey, freshAddress, dispatch, showToast, navigation, showAlert]);
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTrackerDevice) {

@@ -5,7 +5,7 @@ import { Box, Card } from '@suite-native/atoms';
 import { AddressQRCode } from '@suite-native/qr-code';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { UnverifiedAddress } from './UnverifiedAddress';
 
@@ -26,7 +26,6 @@ export const ReceiveAddressCard = ({
     networkSymbol,
     isEthereumTokenAddress = false,
 }: ReceiveAddressCardProps) => {
-    const { translate } = useTranslate();
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const { networkType } = networks[networkSymbol];
@@ -34,19 +33,23 @@ export const ReceiveAddressCard = ({
     const getCardAlertProps = () => {
         if (isReceiveApproved && !isPortfolioTrackerDevice) {
             return {
-                alertTitle: translate('moduleReceive.receiveAddressCard.alert.success'),
+                alertTitle: <Translation id="moduleReceive.receiveAddressCard.alert.success" />,
                 alertVariant: 'success',
             } as const;
         }
         if (networkSymbol === 'ada' && isUnverifiedAddressRevealed) {
             return {
-                alertTitle: translate('moduleReceive.receiveAddressCard.alert.longCardanoAddress'),
+                alertTitle: (
+                    <Translation id="moduleReceive.receiveAddressCard.alert.longCardanoAddress" />
+                ),
                 alertVariant: 'info',
             } as const;
         }
         if (isEthereumTokenAddress) {
             return {
-                alertTitle: translate('moduleReceive.receiveAddressCard.alert.ethereumToken'),
+                alertTitle: (
+                    <Translation id="moduleReceive.receiveAddressCard.alert.ethereumToken" />
+                ),
                 alertVariant: 'info',
             } as const;
         }

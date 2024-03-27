@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon, IconSize, IconName, CryptoIconName, icons, CryptoIcon } from '@suite-common/icons';
 import { Color } from '@trezor/theme';
@@ -9,7 +11,7 @@ import { SurfaceElevation } from './types';
 export type BadgeVariant = 'neutral' | 'green' | 'red' | 'bold';
 export type BadgeSize = 'small' | 'medium';
 type BadgeProps = {
-    label: string;
+    label: ReactNode;
     variant?: BadgeVariant;
     size?: BadgeSize;
     icon?: IconName | CryptoIconName;

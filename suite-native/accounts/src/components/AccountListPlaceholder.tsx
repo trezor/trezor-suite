@@ -2,7 +2,7 @@ import { useRoute } from '@react-navigation/native';
 
 import { Box, Pictogram } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { TxKeyPath, Translation } from '@suite-native/intl';
 import { ReceiveStackRoutes, RootStackRoutes } from '@suite-native/navigation';
 import { IconName } from '@suite-common/icons';
 
@@ -19,7 +19,6 @@ const titleVariant = prepareNativeStyle(_ => ({
 }));
 
 export const AccountListPlaceholder = ({ isFilterEmpty }: AccountListPlaceholderProps) => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const route = useRoute();
 
@@ -56,8 +55,8 @@ export const AccountListPlaceholder = ({ isFilterEmpty }: AccountListPlaceholder
             <Pictogram
                 variant="yellow"
                 icon={getIcon()}
-                title={translate('moduleAccounts.emptyState.title')}
-                subtitle={translate(getSubtitle())}
+                title={<Translation id="moduleAccounts.emptyState.title" />}
+                subtitle={<Translation id={getSubtitle()} />}
                 titleVariant="titleMedium"
             />
         </Box>

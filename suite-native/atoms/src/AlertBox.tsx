@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 import { Icon, IconName } from '@suite-common/icons';
@@ -70,7 +72,7 @@ const variantToIconName = {
 
 export type AlertBoxProps = {
     variant: AlertBoxVariant;
-    title?: React.ReactNode;
+    title: ReactNode;
     isStandalone?: boolean;
 };
 

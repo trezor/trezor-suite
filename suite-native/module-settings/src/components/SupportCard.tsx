@@ -1,14 +1,13 @@
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useOpenLink } from '@suite-native/link';
 import { Button, Card, HStack, Pictogram, Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 const supportCardStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.extraLarge,
 }));
 
 export const SupportCard = () => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
 
@@ -22,7 +21,7 @@ export const SupportCard = () => {
                         <Translation id="moduleSettings.faq.supportCard.title" />
                     </Text>
                     <Button size="small" onPress={handleOpenSupportLink}>
-                        {translate('moduleSettings.faq.supportCard.contact')}
+                        <Translation id="moduleSettings.faq.supportCard.contact" />
                     </Button>
                 </VStack>
                 <Pictogram variant="green" size="small" icon="lifebuoy" />

@@ -14,7 +14,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Box, Button, HStack, IconButton } from '@suite-native/atoms';
 import { useFormContext } from '@suite-native/forms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import TrezorConnect, { UI, DEVICE } from '@trezor/connect';
 import {
     ConnectDeviceStackParamList,
@@ -56,7 +56,6 @@ export const PinFormControlButtons = () => {
     const { applyStyle } = useNativeStyles();
 
     const openLink = useOpenLink();
-    const { translate } = useTranslate();
     const navigation = useNavigation<NavigationProp>();
     const { showAlert } = useAlert();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
@@ -93,12 +92,14 @@ export const PinFormControlButtons = () => {
     const handleInvalidPin = useCallback(() => {
         reset();
         showAlert({
-            title: translate('moduleConnectDevice.pinScreen.wrongPinAlert.title'),
-            description: translate('moduleConnectDevice.pinScreen.wrongPinAlert.description'),
+            title: <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.title" />,
+            description: (
+                <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.description" />
+            ),
             icon: 'warningCircle',
             pictogramVariant: 'red',
-            primaryButtonTitle: translate(
-                'moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain',
+            primaryButtonTitle: (
+                <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.button.tryAgain" />
             ),
             onPressPrimaryButton: () => {
                 if (hasDeviceAuthFailed) {
@@ -106,14 +107,14 @@ export const PinFormControlButtons = () => {
                     requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
                 }
             },
-            secondaryButtonTitle: translate(
-                'moduleConnectDevice.pinScreen.wrongPinAlert.button.help',
+            secondaryButtonTitle: (
+                <Translation id="moduleConnectDevice.pinScreen.wrongPinAlert.button.help" />
             ),
             onPressSecondaryButton: () => {
                 openLink(PIN_HELP_URL);
             },
         });
-    }, [dispatch, hasDeviceAuthFailed, openLink, reset, showAlert, translate]);
+    }, [dispatch, hasDeviceAuthFailed, openLink, reset, showAlert]);
 
     useEffect(() => {
         // After third wrong PIN, UI.INVALID_PIN is no more reported
@@ -171,7 +172,7 @@ export const PinFormControlButtons = () => {
                         />
                         <Box flex={1}>
                             <Button onPress={onSubmit}>
-                                {translate('moduleConnectDevice.pinScreen.form.enterPin')}
+                                <Translation id="moduleConnectDevice.pinScreen.form.enterPin" />
                             </Button>
                         </Box>
                     </HStack>

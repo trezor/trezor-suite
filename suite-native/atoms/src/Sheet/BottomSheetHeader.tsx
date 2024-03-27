@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { ReactNode } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -7,8 +8,8 @@ import { IconButton } from '../Button/IconButton';
 import { Box } from '../Box';
 
 type BottomSheetHeaderProps = {
-    title?: string;
-    subtitle?: string;
+    title: ReactNode;
+    subtitle?: ReactNode;
     isCloseDisplayed: boolean;
     onCloseSheet: () => void;
 };

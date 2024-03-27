@@ -16,7 +16,7 @@ type CardHeaderProps = RequireAllOrNone<
     {
         title: ReactNode;
         onButtonPress: () => void;
-        buttonTitle: string;
+        buttonTitle: ReactNode;
         buttonIcon?: IconName;
     },
     'buttonTitle' | 'onButtonPress'

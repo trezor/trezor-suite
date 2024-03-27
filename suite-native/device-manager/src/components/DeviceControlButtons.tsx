@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { analytics, EventType } from '@suite-native/analytics';
 import { Box, Button, HStack } from '@suite-native/atoms';
 import { deviceActions, selectDevice } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     RootStackParamList,
     RootStackRoutes,
@@ -28,8 +28,6 @@ export const DeviceControlButtons = () => {
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
-    const { translate } = useTranslate();
-
     if (!selectedDevice) return null;
 
     const handleEject = () => {
@@ -51,12 +49,12 @@ export const DeviceControlButtons = () => {
         <HStack>
             <Box flex={1}>
                 <Button colorScheme="dangerElevation1" iconLeft="eject" onPress={handleEject}>
-                    {translate('deviceManager.deviceButtons.eject')}
+                    <Translation id="deviceManager.deviceButtons.eject" />
                 </Button>
             </Box>
             <Box flex={2}>
                 <Button colorScheme="tertiaryElevation1" onPress={handleDeviceRedirect}>
-                    {translate('deviceManager.deviceButtons.deviceInfo')}
+                    <Translation id="deviceManager.deviceButtons.deviceInfo" />
                 </Button>
             </Box>
         </HStack>

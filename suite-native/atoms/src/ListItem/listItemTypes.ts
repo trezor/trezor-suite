@@ -6,7 +6,7 @@ import { NativeStyleObject } from '@trezor/styles';
 export type BaseListItem = {
     iconName?: IconName;
     title: ReactNode;
-    subtitle?: string;
+    subtitle?: ReactNode;
     onPress?: () => void;
     style?: NativeStyleObject;
     isTextTruncated?: boolean;

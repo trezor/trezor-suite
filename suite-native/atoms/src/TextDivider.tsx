@@ -1,4 +1,5 @@
 import { View } from 'react-native';
+import { ReactNode } from 'react';
 
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -7,7 +8,7 @@ import { Divider } from './Divider';
 import { Text } from './Text';
 
 interface TextDividerProps extends BoxProps {
-    title: string;
+    title: ReactNode;
     style?: NativeStyleObject;
 }
 

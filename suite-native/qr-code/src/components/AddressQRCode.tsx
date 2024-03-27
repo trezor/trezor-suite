@@ -2,7 +2,7 @@ import { Alert, Share } from 'react-native';
 
 import { Box, Text, Button, VStack, HStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
-import { useTranslate } from '@suite-native/intl';
+import { useTranslate, Translation } from '@suite-native/intl';
 
 import { QRCode } from './QRCode';
 
@@ -43,7 +43,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     onPress={handleCopyAddress}
                     colorScheme="tertiaryElevation1"
                 >
-                    {translate('qrCode.copyButton')}
+                    <Translation id="qrCode.copyButton" />
                 </Button>
                 <Button
                     size="small"
@@ -51,7 +51,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     colorScheme="tertiaryElevation1"
                     onPress={handleShareData}
                 >
-                    {translate('qrCode.shareButton')}
+                    <Translation id="qrCode.shareButton" />
                 </Button>
             </HStack>
         </VStack>

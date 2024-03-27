@@ -132,8 +132,8 @@ export const SelectAccountTypeScreen = ({
                         return (
                             <SelectableItem
                                 key={`select-type-${item}`}
-                                title={translate(titleKey)}
-                                subtitle={translate(subtitleKey)}
+                                title={<Translation id={titleKey} />}
+                                subtitle={<Translation id={subtitleKey} />}
                                 content={bulletsForKeyPath(descKey)}
                                 isSelected={selectedAccountType === item}
                                 isDefault={defaultType === item}
@@ -148,7 +148,7 @@ export const SelectAccountTypeScreen = ({
                         <Translation id="moduleAddAccounts.selectAccountTypeScreen.aboutTypesLabel" />
                     </Text>
                     <Button size="medium" colorScheme="tertiaryElevation0" onPress={handleMoreTap}>
-                        {translate('moduleAddAccounts.selectAccountTypeScreen.buttons.more')}
+                        <Translation id="moduleAddAccounts.selectAccountTypeScreen.buttons.more" />
                     </Button>
                 </View>
             </Screen>
@@ -162,9 +162,12 @@ export const SelectAccountTypeScreen = ({
                 />
                 <View style={applyStyle(buttonWrapperStyle)}>
                     <Button size="medium" onPress={handleConfirmTap}>
-                        {translate('moduleAddAccounts.selectAccountTypeScreen.buttons.confirm', {
-                            type: _ => translate(accountTypeKey),
-                        })}
+                        <Translation
+                            id="moduleAddAccounts.selectAccountTypeScreen.buttons.confirm"
+                            values={{
+                                type: _ => translate(accountTypeKey),
+                            }}
+                        />
                     </Button>
                 </View>
             </View>

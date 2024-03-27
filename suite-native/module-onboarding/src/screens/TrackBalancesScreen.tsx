@@ -9,7 +9,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { Box } from '@suite-native/atoms';
-import { TxKeyPath, useTranslate } from '@suite-native/intl';
+import { TxKeyPath, Translation } from '@suite-native/intl';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
@@ -51,8 +51,6 @@ const IconWrapper = ({ children }: { children: ReactNode }) => {
 };
 
 export const TrackBalancesScreen = () => {
-    const { translate } = useTranslate();
-
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const navigation = useNavigation<NavigationProp>();
@@ -64,15 +62,15 @@ export const TrackBalancesScreen = () => {
 
     return (
         <OnboardingScreen
-            title={translate(content.title)}
-            subtitle={translate(content.subtitle)}
+            title={<Translation id={content.title} />}
+            subtitle={<Translation id={content.subtitle} />}
             activeStep={3}
             footer={
                 <OnboardingFooter
                     redirectTarget={() => navigation.navigate(content.redirectTarget)}
                     onBack={navigation.goBack}
-                    backButtonTitle={translate('generic.buttons.back')}
-                    nextButtonTitle={translate('generic.buttons.continue')}
+                    backButtonTitle={<Translation id="generic.buttons.back" />}
+                    nextButtonTitle={<Translation id="generic.buttons.continue" />}
                 />
             }
         >

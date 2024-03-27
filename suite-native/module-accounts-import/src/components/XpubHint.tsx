@@ -4,7 +4,7 @@ import { NetworkType } from '@suite-common/wallet-config';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Box, TextButton } from '@suite-native/atoms';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 type XpubScanHintSheet = {
     networkType: NetworkType;
@@ -22,13 +22,18 @@ const sheetTriggerStyle = prepareNativeStyle(utils => ({
 }));
 
 export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
 
     const isAddressBased = isAddressBasedNetwork(networkType);
-    const buttonTitle = isAddressBased
-        ? translate('moduleAccountImport.xpubScanScreen.hintBottomSheet.title.address')
-        : translate('moduleAccountImport.xpubScanScreen.hintBottomSheet.title.xpub');
+    const buttonTitle = (
+        <Translation
+            id={
+                isAddressBased
+                    ? 'moduleAccountImport.xpubScanScreen.hintBottomSheet.title.address'
+                    : 'moduleAccountImport.xpubScanScreen.hintBottomSheet.title.xpub'
+            }
+        />
+    );
 
     return (
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>

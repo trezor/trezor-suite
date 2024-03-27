@@ -11,8 +11,8 @@ import { OnboardingScreenHeader } from './OnboardingScreenHeader';
 type OnboardingScreenProps = {
     children: ReactNode;
     footer?: ReactNode;
-    title: string;
-    subtitle?: string;
+    title: ReactNode;
+    subtitle?: ReactNode;
     activeStep: number;
     isScrollable?: boolean;
 };

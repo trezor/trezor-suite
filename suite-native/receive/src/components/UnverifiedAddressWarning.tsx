@@ -1,9 +1,7 @@
 import { Box, Text, Pictogram, TrezorSuiteLiteHeader } from '@suite-native/atoms';
-import { useTranslate, Translation } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 export const UnverifiedAddressWarning = () => {
-    const { translate } = useTranslate();
-
     return (
         <Box marginVertical="medium" paddingHorizontal="medium" paddingVertical="extraLarge">
             <Pictogram
@@ -18,7 +16,9 @@ export const UnverifiedAddressWarning = () => {
                         </Text>
                     </Text>
                 }
-                subtitle={translate('moduleReceive.receiveAddressCard.unverifiedWarning.content')}
+                subtitle={
+                    <Translation id="moduleReceive.receiveAddressCard.unverifiedWarning.content" />
+                }
             />
         </Box>
     );

@@ -10,7 +10,7 @@ import {
     selectDevice,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { useAccountReceiveAddress } from '../hooks/useAccountReceiveAddress';
 import { ConfirmOnTrezorImage } from './ConfirmOnTrezorImage';
@@ -25,7 +25,6 @@ type AccountReceiveProps = {
 
 export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
     const dispatch = useDispatch();
-    const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -38,7 +37,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
     const isAccountDetailVisible = !isUnverifiedAddressRevealed && !isReceiveApproved;
 
     if (G.isNullable(account) || G.isNullable(address))
-        return <ErrorMessage errorMessage={translate('generic.unknownError')} />;
+        return <ErrorMessage errorMessage={<Translation id="generic.unknownError" />} />;
 
     const handleShowAddressAndRemoveButtonRequests = async () => {
         await handleShowAddress();

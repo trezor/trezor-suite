@@ -11,7 +11,7 @@ import {
 } from '@suite-native/navigation';
 import { VStack, Card, Button, Text, Box } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
 import { useActiveColorScheme } from '@suite-native/theme';
 
@@ -34,8 +34,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const EmptyPortfolioCrossroads = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
-
-    const { translate } = useTranslate();
 
     const colorScheme = useActiveColorScheme();
 
@@ -74,9 +72,7 @@ export const EmptyPortfolioCrossroads = () => {
                         </VStack>
                     </VStack>
                     <Button onPress={handleConnectDevice} size="large">
-                        {translate(
-                            'moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.connectButton',
-                        )}
+                        <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.connectButton" />
                     </Button>
                 </VStack>
             </Card>
@@ -95,9 +91,7 @@ export const EmptyPortfolioCrossroads = () => {
                         colorScheme="tertiaryElevation1"
                         size="large"
                     >
-                        {translate(
-                            'moduleHome.emptyState.connectOrImportCrossroads.syncCoins.syncButton',
-                        )}
+                        <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.syncButton" />
                     </Button>
                 </VStack>
             </Card>
