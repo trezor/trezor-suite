@@ -79,9 +79,10 @@ export const useUnstakeEthForm = ({
             ...getStakeFormsDefaultValues({
                 address: poolAddress,
                 ethereumStakeType: 'unstake',
+                amount: autocompoundBalance,
             }),
         } as UnstakeFormState;
-    }, [account.symbol]);
+    }, [account.symbol, autocompoundBalance]);
 
     const { saveDraft, getDraft, removeDraft } = useFormDraft<UnstakeFormState>('unstake-eth');
     const draft = getDraft(account.key);
