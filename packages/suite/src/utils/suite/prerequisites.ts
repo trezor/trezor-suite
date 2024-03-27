@@ -3,15 +3,13 @@ import { DefinedUnionMember } from '@trezor/type-utils';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import type { TrezorDevice, AppState } from 'src/types/suite';
 
-export const getPrerequisiteName = ({
-    router,
-    device,
-    transport,
-}: {
+type GetPrerequisiteNameParams = {
     router: AppState['router'];
     device?: TrezorDevice;
     transport?: Partial<TransportInfo>;
-}) => {
+};
+
+export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisiteNameParams) => {
     if (!router || router.app === 'unknown') return;
 
     // no transport available
