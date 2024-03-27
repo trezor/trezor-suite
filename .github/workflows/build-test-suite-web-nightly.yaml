@@ -8,6 +8,7 @@ on:
 
 jobs:
     e2e-test-suite-web:
+        if: github.repository == 'trezor/trezor-suite'
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
@@ -111,6 +112,7 @@ jobs:
                       trezor-user-env-version.txt
 
     e2e-test-migration-tests:
+        if: github.repository == 'trezor/trezor-suite'
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
@@ -196,6 +198,7 @@ jobs:
                       trezor-user-env-version.txt
 
     e2e-test-canary-fws:
+        if: github.repository == 'trezor/trezor-suite'
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
