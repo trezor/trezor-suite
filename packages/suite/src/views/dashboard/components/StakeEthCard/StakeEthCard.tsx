@@ -4,11 +4,13 @@ import { variables, H3, Icon, Card } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature, Divider } from 'src/components/suite';
 import { Footer } from './components/Footer';
-import { useDiscovery, useEverstakePoolStats, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useEverstakePoolStats, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { spacingsPx, borders } from '@trezor/theme';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { setFlag } from 'src/actions/suite/suiteActions';
 
 const Flex = styled.div`
     display: flex;
@@ -62,9 +64,16 @@ const bannerSymbol = 'eth';
 
 export const StakeEthCard = () => {
     const theme = useTheme();
+    const dispatch = useDispatch();
     const enabledNetworks = useSelector(selectEnabledNetworks);
+    const { showDashboardStakingPromoBanner } = useSelector(selectSuiteFlags);
 
-    const isBannerSymbolEnabled = enabledNetworks.includes(bannerSymbol);
+    const closeBanner = () => {
+        dispatch(setFlag('showDashboardStakingPromoBanner', false));
+    };
+
+    const isBannerSymbolEnabled =
+        enabledNetworks.includes(bannerSymbol) && showDashboardStakingPromoBanner;
 
     const { ethApy } = useEverstakePoolStats(isBannerSymbolEnabled ? bannerSymbol : undefined);
 
@@ -77,7 +86,6 @@ export const StakeEthCard = () => {
     );
 
     const [isShown, setIsShown] = useState(isBannerSymbolEnabled);
-    const hideSection = () => setIsShown(false);
 
     useEffect(() => {
         setIsShown(isBannerSymbolEnabled);
@@ -160,7 +168,7 @@ export const StakeEthCard = () => {
 
                     <Footer
                         accountIndex={ethAccountWithSufficientBalanceForStaking?.index}
-                        hideSection={hideSection}
+                        hideSection={closeBanner}
                     />
                 </StyledCard>
             </DashboardSection>
