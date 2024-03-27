@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { Button, variables } from '@trezor/components';
+import { Button, variables, Warning } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { TranslationKey } from '@suite-common/intl-types';
@@ -58,6 +58,7 @@ const RightBottom = styled.div`
     padding: 20px 0 0;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     display: flex;
+    flex-direction: column;
 
     ${variables.SCREEN_QUERY.MOBILE} {
         display: block;
@@ -76,6 +77,14 @@ const StyledButton = styled(Button)`
             margin: 10px 0 0;
         }
     }
+`;
+
+const TxReviewFootnote = styled.div`
+    margin-top: ${spacingsPx.md};
+`;
+
+const Nowrap = styled.span`
+    white-space: nowrap;
 `;
 
 export interface TransactionReviewOutputListProps {
@@ -220,7 +229,6 @@ export const TransactionReviewOutputList = ({
                                 />
                             );
                         })}
-
                         {!(isRbfAction && networkType === 'bitcoin') && (
                             <TransactionReviewTotalOutput
                                 ref={totalRef}
@@ -261,6 +269,16 @@ export const TransactionReviewOutputList = ({
                             </StyledButton>
                         </Flex>
                     )}
+                    {isSending && networkType === 'solana' ? (
+                        <TxReviewFootnote>
+                            <Warning variant="tertiary" icon="INFO" withIcon>
+                                <Translation
+                                    id="TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN"
+                                    values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}
+                                />
+                            </Warning>
+                        </TxReviewFootnote>
+                    ) : null}
                 </RightBottom>
             </Right>
         </Content>
