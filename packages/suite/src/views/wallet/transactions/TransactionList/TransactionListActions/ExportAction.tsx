@@ -6,10 +6,10 @@ import { useDispatch } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { exportTransactionsThunk } from '@suite-common/wallet-core';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet';
-import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from '@suite-common/metadata-types';
@@ -18,9 +18,15 @@ export interface ExportActionProps {
     account: Account;
     searchQuery: string;
     accountMetadata: AccountLabels;
+    fetchAll: () => Promise<void>;
 }
 
-export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportActionProps) => {
+export const ExportAction = ({
+    account,
+    searchQuery,
+    accountMetadata,
+    fetchAll,
+}: ExportActionProps) => {
     const [isExportRunning, setIsExportRunning] = useState(false);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
@@ -54,15 +60,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
 
             setIsExportRunning(true);
             try {
-                await dispatch(
-                    fetchTransactionsThunk({
-                        accountKey: account.key,
-                        page: 2,
-                        perPage: getTxsPerPage(account.networkType),
-                        noLoading: true,
-                        recursive: true,
-                    }),
-                );
+                await fetchAll();
                 const accountName = accountLabel || getAccountTitle();
                 await dispatch(
                     exportTransactionsThunk({
@@ -88,6 +86,7 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
         [
             isExportRunning,
             account,
+            fetchAll,
             dispatch,
             translationString,
             getAccountTitle,

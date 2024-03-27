@@ -1,8 +1,7 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import {
     groupTransactionsByDate,
     advancedSearchTransactions,
@@ -12,120 +11,118 @@ import {
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { WalletAccountTransaction, Account } from 'src/types/wallet';
-import { TransactionListActions } from './TransactionListActions/TransactionListActions';
+import { SearchAction } from './TransactionListActions/SearchAction';
+import { ExportAction } from './TransactionListActions/ExportAction';
 import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
-import { Pagination } from 'src/components/wallet';
 import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { NoSearchResults } from './NoSearchResults';
-import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
 import { TransactionCandidates } from './TransactionCandidates';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
-import { getTxsPerPage } from '@suite-common/suite-utils';
 import { SkeletonStack } from '@trezor/components';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { useFetchTransactions } from './useFetchTransactions';
 
 const StyledSection = styled(DashboardSection)`
     margin-bottom: 20px;
 `;
 
-const PaginationWrapper = styled.div`
-    margin-top: 20px;
+const ActionsWrapper = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
+const TEMPINFOPANEL = ({
+    info,
+    searched,
+    filtered,
+}: {
+    info: ReturnType<typeof useFetchTransactions>['TEMPINFO'];
+    searched: WalletAccountTransaction[];
+    filtered: WalletAccountTransaction[];
+}) => (
+    <div style={{ alignSelf: 'center', marginTop: '16px' }}>
+        FETCHED {info.pagesFetched}/{info.pagesTotal} PAGES ({info.txFetched}/{info.txTotal} TXS)
+        <br />
+        {info.txFetched} -&gt; FILTER -&gt; {filtered.length} -&gt; SEARCH -&gt; {searched.length}
+    </div>
+);
+
+const TEMPBUTTON = ({
+    fetchedAll,
+    fetchNext,
+}: {
+    fetchedAll: boolean;
+    fetchNext: () => unknown;
+}) => (
+    <button
+        disabled={fetchedAll}
+        onClick={fetchNext}
+        style={{ alignSelf: 'center', marginTop: '16px', padding: '12px' }}
+    >
+        LOAD MORE
+    </button>
+);
+
 interface TransactionListProps {
-    transactions: WalletAccountTransaction[];
-    symbol: WalletAccountTransaction['symbol'];
-    isLoading?: boolean;
     account: Account;
-    customTotalItems?: number;
+    transactions: WalletAccountTransaction[];
+    transactionFilter?: (tx: WalletAccountTransaction) => boolean;
+    isLoading?: boolean;
     isExportable?: boolean;
 }
 
 export const TransactionList = ({
-    transactions,
-    isLoading,
     account,
-    symbol,
-    customTotalItems,
+    transactions,
+    transactionFilter,
+    isLoading,
     isExportable = true,
 }: TransactionListProps) => {
     const localCurrency = useSelector(selectLocalCurrency);
     const anchor = useSelector(state => state.router.anchor);
-    const dispatch = useDispatch();
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
     const network = getAccountNetwork(account);
 
+    // Filter
+    const filteredTransactions = useMemo(
+        () => (transactionFilter ? transactions.filter(transactionFilter) : transactions),
+        [transactions, transactionFilter],
+    );
+
     // Search
     const [searchQuery, setSearchQuery] = useState('');
-    const [searchedTransactions, setSearchedTransactions] = useState(transactions);
-    const [hasFetchedAll, setHasFetchedAll] = useState(false);
-
-    const sectionRef = useRef<HTMLDivElement>(null);
+    const [searchedTransactions, setSearchedTransactions] = useState(filteredTransactions);
 
     useDebounce(
         () => {
-            const results = advancedSearchTransactions(transactions, accountMetadata, searchQuery);
+            const results = advancedSearchTransactions(
+                filteredTransactions,
+                accountMetadata,
+                searchQuery,
+            );
             setSearchedTransactions(results);
         },
         200,
-        [transactions, account.metadata, searchQuery, accountMetadata],
+        [filteredTransactions, account.metadata, searchQuery, accountMetadata],
+    );
+
+    const { fetchNext, fetchAll, fetchedAll, TEMPINFO } = useFetchTransactions(
+        account,
+        transactions,
     );
 
     useEffect(() => {
-        if (anchor && !hasFetchedAll) {
-            dispatch(
-                fetchTransactionsThunk({
-                    accountKey: account.key,
-                    page: 2,
-                    perPage: getTxsPerPage(account.networkType),
-                    noLoading: true,
-                    recursive: true,
-                }),
-            );
-            setHasFetchedAll(true);
-        }
-    }, [anchor, account, dispatch, hasFetchedAll]);
-
-    // Pagination
-    const perPage = getTxsPerPage(account.networkType);
-    const startPage = findAnchorTransactionPage(transactions, perPage, anchor);
-    const [currentPage, setSelectedPage] = useState(startPage);
-
-    useEffect(() => {
-        // reset page on account change
-        setSelectedPage(startPage);
-    }, [account.descriptor, account.symbol, startPage]);
+        if (anchor) fetchAll();
+    }, [anchor, fetchAll]);
 
     const isSearching = searchQuery.trim() !== '';
-    const defaultTotalItems = customTotalItems ?? account.history.total;
-    const totalItems = isSearching ? searchedTransactions.length : defaultTotalItems;
-
-    const onPageSelected = (page: number) => {
-        setSelectedPage(page);
-
-        if (!isSearching) {
-            dispatch(fetchTransactionsThunk({ accountKey: account.key, page, perPage }));
-        }
-
-        if (sectionRef.current) {
-            sectionRef.current.scrollIntoView();
-        }
-    };
-
-    const startIndex = (currentPage - 1) * perPage;
-    const stopIndex = startIndex + perPage;
-
-    const slicedTransactions = useMemo(
-        () => searchedTransactions.slice(startIndex, stopIndex),
-        [searchedTransactions, startIndex, stopIndex],
-    );
 
     const transactionsByDate = useMemo(
-        () => groupTransactionsByDate(slicedTransactions),
-        [slicedTransactions],
+        () => groupTransactionsByDate(searchedTransactions),
+        [searchedTransactions],
     );
 
     const listItems = useMemo(
@@ -137,7 +134,7 @@ export const TransactionList = ({
                     <TransactionsGroup
                         key={dateKey}
                         dateKey={dateKey}
-                        symbol={symbol}
+                        symbol={account.symbol}
                         transactions={value}
                         localCurrency={localCurrency}
                         index={groupIndex}
@@ -165,30 +162,32 @@ export const TransactionList = ({
                     </TransactionsGroup>
                 );
             }),
-        [transactionsByDate, account.key, localCurrency, symbol, network, accountMetadata],
+        [transactionsByDate, account.key, localCurrency, account.symbol, network, accountMetadata],
     );
 
-    // if total pages cannot be determined check current page and number of txs (XRP)
-    // Edge case: if there is exactly 25 Ripple txs, pagination will be displayed
-    const isRipple = account.networkType === 'ripple';
-    const isLastRipplePage = isRipple && slicedTransactions.length < perPage;
-    const showRipplePagination = !(isLastRipplePage && currentPage === 1);
-    const showPagination = isRipple ? showRipplePagination : totalItems > perPage;
-    const areTransactionsAvailable = transactions.length > 0 && searchedTransactions.length === 0;
+    const areTransactionsAvailable =
+        filteredTransactions.length > 0 && searchedTransactions.length === 0;
 
     return (
         <StyledSection
-            ref={sectionRef}
             heading={<Translation id="TR_ALL_TRANSACTIONS" />}
             actions={
-                <TransactionListActions
-                    account={account}
-                    searchQuery={searchQuery}
-                    setSearch={setSearchQuery}
-                    setSelectedPage={setSelectedPage}
-                    accountMetadata={accountMetadata}
-                    isExportable={isExportable}
-                />
+                <ActionsWrapper>
+                    <SearchAction
+                        account={account}
+                        searchQuery={searchQuery}
+                        setSearch={setSearchQuery}
+                        fetchAll={fetchAll}
+                    />
+                    {isExportable && (
+                        <ExportAction
+                            account={account}
+                            searchQuery={searchQuery}
+                            accountMetadata={accountMetadata}
+                            fetchAll={fetchAll}
+                        />
+                    )}
+                </ActionsWrapper>
             }
             data-test="@wallet/accounts/transaction-list"
         >
@@ -207,18 +206,12 @@ export const TransactionList = ({
                 <>{areTransactionsAvailable ? <NoSearchResults /> : listItems}</>
             )}
 
-            {showPagination && (
-                <PaginationWrapper>
-                    <Pagination
-                        hasPages={!isRipple}
-                        currentPage={currentPage}
-                        isLastPage={isLastRipplePage}
-                        perPage={perPage}
-                        totalItems={totalItems}
-                        onPageSelected={onPageSelected}
-                    />
-                </PaginationWrapper>
-            )}
+            <TEMPINFOPANEL
+                info={TEMPINFO}
+                searched={searchedTransactions}
+                filtered={filteredTransactions}
+            />
+            <TEMPBUTTON fetchNext={fetchNext} fetchedAll={fetchedAll} />
         </StyledSection>
     );
 };
