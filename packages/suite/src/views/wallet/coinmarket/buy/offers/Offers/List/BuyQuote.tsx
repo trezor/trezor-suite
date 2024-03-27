@@ -1,6 +1,6 @@
 import styled, { useTheme } from 'styled-components';
 
-import { Button, variables, Icon, Card, H3 } from '@trezor/components';
+import { Button, variables, Icon, Card, H3, H2 } from '@trezor/components';
 import {
     CoinmarketCryptoAmount,
     CoinmarketFiatAmount,
@@ -13,38 +13,57 @@ import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { spacingsPx, typography } from '@trezor/theme';
 
+const Container = styled.div`
+    container-type: inline-size;
+    display: flex;
+    gap: ${spacingsPx.md};
+    justify-content: space-between;
+    flex-wrap: wrap;
+`;
 const Details = styled.div`
     display: flex;
-    min-height: 20px;
+    gap: ${spacingsPx.xl};
     flex-wrap: wrap;
-    padding: 10px 30px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
-        flex-direction: column;
-        padding: 10px 20px;
+    flex: 1;
+`;
+const Flex = styled.div`
+    flex: 1;
+    display: flex;
+    gap: ${spacingsPx.xl};
+    flex-wrap: nowrap;
+    @container (width < 500px) {
+        flex-wrap: wrap;
     }
 `;
 
-const Column = styled.div`
-    display: flex;
-    padding: 10px 0;
+const Column = styled.div``;
+
+const CryptoColumn = styled.div`
+    flex-basis: 100%;
+`;
+
+const ButtonColumn = styled.div`
     flex: 1;
-    flex-direction: column;
-    justify-content: flex-start;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+
+    @container (width < 650px) {
+        justify-content: flex-start;
+        flex-basis: 100%;
+    }
 `;
 
 const Heading = styled.div`
     display: flex;
-    text-transform: uppercase;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
-    padding-bottom: 9px;
+    white-space: nowrap;
+    padding-bottom: ${spacingsPx.xxs};
+    ${typography.callout}
 `;
 
 const StyledButton = styled(Button)`
-    width: 180px;
-
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         width: 100%;
     }
@@ -53,8 +72,9 @@ const StyledButton = styled(Button)`
 const Value = styled.div`
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    white-space: nowrap;
+    color: ${({ theme }) => theme.textSubdued};
+    ${typography.hint}
 `;
 
 const Footer = styled.div`
@@ -211,12 +231,12 @@ export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
 
     return (
         <Card className={className}>
-            <Details>
-                <Column>
-                    <Value>
-                        {error && <H3>N/A</H3>}
+            <Container>
+                <Details>
+                    <CryptoColumn className="buy-quote-details">
+                        {error && <H2>N/A</H2>}
                         {!error && (
-                            <H3>
+                            <H2>
                                 {wantCrypto ? (
                                     <CoinmarketFiatAmount
                                         amount={quote.fiatStringAmount}
@@ -229,42 +249,47 @@ export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
                                     />
                                 )}
                                 <CoinmarketTag tag={tag} />
-                            </H3>
+                            </H2>
                         )}
-                    </Value>
-                </Column>
-                <Column>
-                    <Heading>
-                        <Translation id="TR_BUY_PROVIDER" />
-                    </Heading>
-                    <Value>
-                        <CoinmarketProviderInfo exchange={exchange} providers={providersInfo} />
-                    </Value>
-                </Column>
-                <Column>
-                    <Heading>
-                        <Translation id="TR_BUY_PAID_BY" />
-                    </Heading>
-                    <Value>
-                        <CoinmarketPaymentType
-                            method={paymentMethod}
-                            methodName={paymentMethodName}
-                        />
-                    </Value>
-                </Column>
-                <Column>
-                    <Heading>
-                        <Translation id="TR_BUY_FEES" />{' '}
-                        <StyledQuestionTooltip tooltip="TR_OFFER_FEE_INFO" />
-                    </Heading>
-                    <Value>
-                        <Translation id="TR_BUY_ALL_FEES_INCLUDED" />
-                    </Value>
-                </Column>
-                <Column>
+                    </CryptoColumn>
+                    <Flex>
+                        <Column>
+                            <Heading>
+                                <Translation id="TR_BUY_FEES" />{' '}
+                                <StyledQuestionTooltip tooltip="TR_OFFER_FEE_INFO" />
+                            </Heading>
+                            <Value>
+                                <Translation id="TR_BUY_ALL_FEES_INCLUDED" />
+                            </Value>
+                        </Column>
+                        <Column>
+                            <Heading>
+                                <Translation id="TR_BUY_PAID_BY" />
+                            </Heading>
+                            <Value>
+                                <CoinmarketPaymentType
+                                    method={paymentMethod}
+                                    methodName={paymentMethodName}
+                                />
+                            </Value>
+                        </Column>
+                        <Column>
+                            <Heading>
+                                <Translation id="TR_BUY_PROVIDER" />
+                            </Heading>
+                            <Value>
+                                <CoinmarketProviderInfo
+                                    exchange={exchange}
+                                    providers={providersInfo}
+                                />
+                            </Value>
+                        </Column>
+                    </Flex>
+                </Details>
+                <ButtonColumn>
                     <Value>
                         {quote.status === 'LOGIN_REQUEST' ? (
-                            <StyledButton onClick={() => selectQuote(quote)}>
+                            <StyledButton size="small" onClick={() => selectQuote(quote)}>
                                 <Translation id="TR_LOGIN_PROCEED" />
                             </StyledButton>
                         ) : (
@@ -272,13 +297,14 @@ export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
                                 isDisabled={!!quote.error}
                                 onClick={() => selectQuote(quote)}
                                 data-test="@coinmarket/buy/offers/get-this-deal-button"
+                                size="small"
                             >
                                 <Translation id="TR_BUY_GET_THIS_OFFER" />
                             </StyledButton>
                         )}
                     </Value>
-                </Column>
-            </Details>
+                </ButtonColumn>
+            </Container>
             {error && (
                 <ErrorFooter>
                     <IconWrapper>
