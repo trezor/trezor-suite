@@ -9,11 +9,13 @@ type StyledComponentElevationProps = {
     elevation: Elevation;
 };
 
+export const mapElevationToBackgroundToken = ({ elevation }: { elevation: Elevation }): Color =>
+    `backgroundSurfaceElevation${elevation === -1 ? 'Negative' : elevation}`;
+
 export const mapElevationToBackground = ({
     theme,
     elevation,
-}: StyledComponentElevationProps): CSSColor =>
-    theme[`backgroundSurfaceElevation${elevation !== -1 ? elevation : 'Negative'}`];
+}: StyledComponentElevationProps): CSSColor => theme[mapElevationToBackgroundToken({ elevation })];
 
 export const mapElevationToBorder = ({
     theme,
