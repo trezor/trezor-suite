@@ -12,7 +12,7 @@ import {
     ScreenSubHeader,
 } from '@suite-native/navigation';
 import { clearStorage } from '@suite-native/storage';
-import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
+import { getCommitHash, getSuiteVersion, isCodesignBuild } from '@trezor/env-utils';
 
 import { RenderingUtils } from '../components/RenderingUtils';
 import { FeatureFlags } from '../components/FeatureFlags';
@@ -27,10 +27,20 @@ export const DevUtilsScreen = ({
             <Card>
                 <VStack spacing="medium">
                     {!isDebugEnv() && (
-                        <ListItem
-                            subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash()}`}
-                            title="Build version"
-                        />
+                        <>
+                            <ListItem
+                                subtitle={`${getEnv()}-${getSuiteVersion()}, commit ${getCommitHash()}`}
+                                title="Build version"
+                            />
+                            <ListItem
+                                subtitle={process.env.EXPO_PUBLIC_JWS_PUBLIC_KEY}
+                                title="JWS"
+                            />
+                            <ListItem
+                                subtitle={process.env.EXPO_PUBLIC_CODESIGN_BUILD}
+                                title="isCodesignBuild"
+                            />
+                        </>
                     )}
                     {isDebugEnv() && (
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
