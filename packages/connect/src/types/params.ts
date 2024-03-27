@@ -30,6 +30,7 @@ export type BundledParams<T> = CommonParams & Bundle<T>;
 
 export interface CommonParamsWithCoin extends CommonParams {
     coin: string;
+    identity?: string; // ensures that different backend connections are opened for different identities
 }
 
 export interface Unsuccessful {

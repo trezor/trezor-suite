@@ -1,58 +1,37 @@
-import { useState, useEffect } from 'react';
 import { NotificationCard, Translation } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { reconnectBlockchainThunk } from '@suite-common/wallet-core';
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { useSelector } from 'src/hooks/suite';
+import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
+import { useBackendReconnection } from 'src/hooks/settings/backends';
 
 const DisconnectedNotification = ({
     symbol,
-    resolveTime = 0,
+    identity,
+    resolveTime,
 }: {
     symbol: NetworkSymbol;
+    identity?: string;
     resolveTime: number | undefined;
 }) => {
-    const [progress, setProgress] = useState(false);
-    const [time, setTime] = useState<number>();
-
-    const dispatch = useDispatch();
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            const secToResolve = Math.round((resolveTime - new Date().getTime()) / 1000);
-            setTime(secToResolve);
-        }, 500);
-
-        return () => {
-            clearInterval(interval);
-        };
-    }, [resolveTime]);
-
-    const click = async () => {
-        setProgress(true);
-        const r: any = await dispatch(reconnectBlockchainThunk(symbol));
-        if (!r.success) {
-            setProgress(false);
-        }
-    };
-
-    const isResolving = typeof time === 'number' && time <= 0;
-    const displayTime =
-        time && !isResolving ? (
-            <Translation id="TR_BACKEND_RECONNECTING" values={{ time }} />
-        ) : null;
+    const { reconnect, isReconnecting, countdownSeconds } = useBackendReconnection(
+        symbol,
+        identity,
+        resolveTime,
+    );
 
     return (
         <NotificationCard
             variant="warning"
             button={{
-                onClick: click,
-                isLoading: progress || isResolving,
+                onClick: reconnect,
+                isLoading: isReconnecting,
                 children: <Translation id="TR_CONNECT" />,
             }}
         >
             <Translation id="TR_BACKEND_DISCONNECTED" />
-            {displayTime}
+            {countdownSeconds ? (
+                <Translation id="TR_BACKEND_RECONNECTING" values={{ time: countdownSeconds }} />
+            ) : null}
         </NotificationCard>
     );
 };
@@ -69,9 +48,23 @@ export const BackendDisconnected = () => {
     // TODO handle non-standard backends differently
     if (!isTrezorConnectBackendType(selectedAccount.account.backendType)) return null;
 
-    const { symbol } = selectedAccount.network;
-    const chain = blockchain[symbol];
+    const {
+        network: { symbol },
+        account,
+    } = selectedAccount;
+
+    const identity = tryGetAccountIdentity(account);
+
+    const chain =
+        (identity && blockchain[symbol]?.identityConnections?.[identity]) ?? blockchain[symbol];
+
     if (!chain || chain.connected) return null;
 
-    return <DisconnectedNotification symbol={symbol} resolveTime={chain.reconnection?.time} />;
+    return (
+        <DisconnectedNotification
+            symbol={symbol}
+            identity={identity}
+            resolveTime={chain.reconnectionTime}
+        />
+    );
 };

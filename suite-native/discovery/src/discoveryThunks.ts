@@ -19,7 +19,7 @@ import {
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { Account, DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType } from '@suite-common/wallet-utils';
+import { getDerivationType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { AccountType, Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
@@ -135,14 +135,17 @@ const addAccountsByDescriptorThunk = createThunk(
         {
             deviceState,
             bundleItem,
+            identity,
         }: {
             deviceState: string;
             bundleItem: DiscoveryDescriptorItem;
+            identity?: string;
         },
         { dispatch },
     ) => {
         const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
             coin: bundleItem.coin,
+            identity,
             descriptor: bundleItem.descriptor,
             useEmptyPassphrase: true,
             skipFinalReload: true,
@@ -176,9 +179,11 @@ const discoverAccountsByDescriptorThunk = createThunk(
         {
             descriptorsBundle,
             deviceState,
+            identity,
         }: {
             descriptorsBundle: DiscoveryDescriptorItem[];
             deviceState: string;
+            identity?: string;
         },
         { dispatch },
     ) => {
@@ -191,6 +196,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
         for (const bundleItem of descriptorsBundle) {
             const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
                 coin: bundleItem.coin,
+                identity,
                 descriptor: bundleItem.descriptor,
                 useEmptyPassphrase: true,
                 skipFinalReload: true,
@@ -268,11 +274,13 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
         }
 
         const descriptor = deviceAccessResponse.payload[0];
+        const identity = tryGetAccountIdentity({ deviceState, networkType: network.networkType });
 
         await dispatch(
             addAccountsByDescriptorThunk({
                 bundleItem: descriptor,
                 deviceState,
+                identity,
             }),
         ).unwrap();
 
@@ -369,10 +377,13 @@ const discoverNetworkBatchThunk = createThunk(
             return;
         }
 
+        const identity = tryGetAccountIdentity({ deviceState, networkType: network.networkType });
+
         const isFinished = await dispatch(
             discoverAccountsByDescriptorThunk({
                 descriptorsBundle: deviceAccessResponse.payload,
                 deviceState,
+                identity,
             }),
         ).unwrap();
 

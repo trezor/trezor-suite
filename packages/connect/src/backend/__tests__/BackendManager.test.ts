@@ -4,7 +4,7 @@ import { CoinInfo } from '../../types';
 import { BackendManager } from '../BackendManager';
 import type { CoreEventMessage } from '../../events';
 
-const COIN_INFO = {
+const coinInfo = {
     shortcut: 'BTC',
     blockchainLink: { type: 'blockbook', url: ['url_1', 'url_2', 'url_3'] },
 } as CoinInfo;
@@ -37,19 +37,19 @@ describe('backend/BackendManager', () => {
     });
 
     it('reuse backend', async () => {
-        const backend1 = await manager.getOrConnect(COIN_INFO, postMessage);
+        const backend1 = await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
         const networkInfo = await backend1.getNetworkInfo();
         expect(networkInfo).toMatchObject({ shortcut: 'BTC' });
 
         await delay(1000);
 
-        await manager.getOrConnect(COIN_INFO, postMessage);
+        await manager.getOrConnect({ coinInfo, postMessage });
         expectNoMessage();
     });
 
     it('reconnect backend after disconnection', async () => {
-        const backend1 = await manager.getOrConnect(COIN_INFO, postMessage);
+        const backend1 = await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
 
         await delay(1000);
@@ -59,14 +59,14 @@ describe('backend/BackendManager', () => {
         await delay(1000);
         expectNoMessage();
 
-        await manager.getOrConnect(COIN_INFO, postMessage);
+        await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
     });
 
     it('reconnect backend automatically when subscribed', async () => {
-        const backend = await manager.getOrConnect(COIN_INFO, postMessage);
+        const backend = await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
-        const { subscribed } = await backend.subscribe();
+        const { subscribed } = await backend.subscribeBlocks();
         expect(subscribed).toBe(true);
 
         await delay(1000);
@@ -76,14 +76,14 @@ describe('backend/BackendManager', () => {
         await delay(1000);
         expectExactMessages('blockchain-connect');
 
-        await manager.getOrConnect(COIN_INFO, postMessage);
+        await manager.getOrConnect({ coinInfo, postMessage });
         expectNoMessage();
     });
 
     it('reconnect backend infinitely when cannot reconnect', async () => {
-        const backend = await manager.getOrConnect(COIN_INFO, postMessage);
+        const backend = await manager.getOrConnect({ coinInfo, postMessage });
         expectExactMessages('blockchain-connect');
-        const { subscribed } = await backend.subscribe();
+        const { subscribed } = await backend.subscribeBlocks();
         expect(subscribed).toBe(true);
 
         await delay(1000);
@@ -94,9 +94,9 @@ describe('backend/BackendManager', () => {
         expectExactMessages('blockchain-error', 'blockchain-reconnecting');
 
         await delay(1000);
-        expectExactMessages('blockchain-reconnecting');
+        expectExactMessages('blockchain-error', 'blockchain-reconnecting');
 
         await delay(2000);
-        expectExactMessages('blockchain-reconnecting');
+        expectExactMessages('blockchain-error', 'blockchain-reconnecting');
     });
 });
