@@ -7,7 +7,6 @@ on:
 
 env:
   DESKTOP_APP_NAME: "Trezor-Suite"
-  ASSET_PREFIX: /web
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
