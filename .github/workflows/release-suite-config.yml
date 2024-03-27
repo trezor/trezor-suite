@@ -17,6 +17,7 @@ concurrency:
 
 jobs:
   release-config:
+    if: github.repository == 'trezor/trezor-suite'
     environment: ${{ github.event.inputs.environment }}
     runs-on: ubuntu-latest
     env:
