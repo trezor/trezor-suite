@@ -69,7 +69,7 @@ interface OptionsProps {
 }
 
 export const Options = ({ symbol }: OptionsProps) => {
-    const [unstakeOption, setUnstakeOption] = useState<UnstakeOptions>('other');
+    const [unstakeOption, setUnstakeOption] = useState<UnstakeOptions>('all');
     const isRewardsSelected = unstakeOption === 'rewards';
     const isAllSelected = unstakeOption === 'all';
     const isOtherAmountSelected = unstakeOption === 'other';
