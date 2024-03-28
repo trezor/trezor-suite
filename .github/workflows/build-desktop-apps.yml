@@ -20,11 +20,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, macos-latest]
+        os: [ubuntu-latest, macos-14]
         include:
           - os: ubuntu-latest
             platform: linux
-          - os: macos-latest
+          - os: macos-14
             platform: mac
     steps:
       - name: Checkout code
@@ -38,16 +38,13 @@ jobs:
           node-version-file: ".nvmrc"
 
       - name: Install missing Python deps (to build bcrypto lib in Node)
-        if: matrix.os == 'macos-latest'
+        if: matrix.os == 'macos-14'
         run: pip install setuptools
 
       - name: Install deps and build libs
         run: |
           yarn install --immutable
           yarn message-system-sign-config
-
-      - name: Build libs
-        run: |
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/connect-iframe build:lib
 
