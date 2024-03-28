@@ -8,12 +8,6 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const StyledCard = styled(Card)`
-    align-items: stretch;
-    flex: 1;
-    position: relative;
-`;
-
 const Header = styled.div`
     display: flex;
     margin-bottom: ${spacingsPx.xl};
@@ -101,7 +95,7 @@ export const SecurityCard = ({
 
     return (
         <Wrapper {...rest}>
-            <StyledCard>
+            <Card>
                 <Header>
                     <Icon icon={icon} size={32} color={theme.iconDefault} />
                     <CheckIconContainer $isDone={isDone}>
@@ -160,7 +154,7 @@ export const SecurityCard = ({
                         </>
                     )}
                 </Footer>
-            </StyledCard>
+            </Card>
         </Wrapper>
     );
 };
