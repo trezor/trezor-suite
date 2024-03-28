@@ -1,3 +1,12 @@
+# 2.1.28
+
+-   fix(blockchain-link): fix Solana transaction confirmation (38cd7ccdb6)
+-   feat(blockchain-link): add support for Solana priority fees (a6c2aa8c7d)
+-   fix(blockchain-link): hanging connection issue (#11516) (6cb0d99c03)
+-   fix: wait on solana confirmed tx (#11515) (3cb139fbd3)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 2.1.26
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)
