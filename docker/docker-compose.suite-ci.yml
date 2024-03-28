@@ -28,7 +28,7 @@ services:
       - FIRMWARE=$FIRMWARE
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
-    command: bash -c "yarn tsx ./packages/suite-web/e2e/run_tests.ts --group=$TEST_GROUP"
+    command: bash -c "cd packages/suite-web && yarn tsx ./e2e/run_tests.ts --group=$TEST_GROUP"
     volumes:
       - ../:/trezor-suite
   bitcoin-regtest:
