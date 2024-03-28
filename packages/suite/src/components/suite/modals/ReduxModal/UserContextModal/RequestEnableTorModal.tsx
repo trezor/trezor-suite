@@ -4,7 +4,6 @@ import styled from 'styled-components';
 
 import { Button, Paragraph } from '@trezor/components';
 import { UserContextPayload } from '@suite-common/suite-types';
-import { isDevEnv } from '@suite-common/suite-utils';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 
 import { Modal, Translation } from 'src/components/suite';
@@ -30,9 +29,6 @@ type RequestEnableTorModalProps = {
 };
 
 export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorModalProps) => {
-    const coinjoinAllowNoTor = useSelector(
-        state => state.wallet.coinjoin.debug?.coinjoinAllowNoTor,
-    );
     const { isTorLoading, isTorEnabled } = useSelector(selectTorState);
 
     useEffect(() => {
@@ -52,11 +48,6 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
         onCancel();
     };
 
-    const onSkip = () => {
-        decision.resolve(RequestEnableTorResponse.Skip);
-        onCancel();
-    };
-
     return (
         <SmallModal
             isCancelable
@@ -66,19 +57,9 @@ export const RequestEnableTorModal = ({ onCancel, decision }: RequestEnableTorMo
             heading={<Translation id="TR_TOR_ENABLE" />}
             bottomBarComponents={
                 <>
-                    {(isDevEnv || coinjoinAllowNoTor) && (
-                        <Button
-                            variant="tertiary"
-                            onClick={onSkip}
-                            data-test="@request-enable-tor-modal/skip-button"
-                        >
-                            <Translation id="TR_TOR_SKIP" />
-                        </Button>
-                    )}
                     <Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_TOR_REQUEST_ENABLE_FOR_COIN_JOIN_LEAVE" />
                     </Button>
-
                     <Button
                         variant="primary"
                         onClick={onEnableTor}

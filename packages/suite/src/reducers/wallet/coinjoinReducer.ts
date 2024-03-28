@@ -731,16 +731,6 @@ export const selectCurrentTargetAnonymity = (state: CoinjoinRootState) => {
     return targetAnonymity;
 };
 
-export const selectIsCoinjoinBlockedByTor = (state: CoinjoinRootState) => {
-    const { isTorEnabled } = selectTorState(state);
-
-    if (state.wallet.coinjoin.debug?.coinjoinAllowNoTor) {
-        return false;
-    }
-
-    return !isTorEnabled;
-};
-
 const isRoundPhaseCritical = (roundPhase?: number) => (roundPhase ?? 0) > 0;
 
 export const selectIsAnySessionInCriticalPhase = (state: CoinjoinRootState) => {
@@ -932,7 +922,7 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     if (selectIsNothingToAnonymizeByAccountKey(state, accountKey)) {
         return 'NOTHING_TO_ANONYMIZE';
     }
-    if (selectIsCoinjoinBlockedByTor(state)) {
+    if (!selectTorState(state).isTorEnabled) {
         return 'TOR_DISABLED';
     }
     if (!['connected', 'firmware-recommended'].includes(selectDeviceStatus(state) ?? '')) {
