@@ -10,6 +10,7 @@
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
+        "cross-fetch": "^4.0.0",
         "ws": "^8.16.0"
     },
     "devDependencies": {

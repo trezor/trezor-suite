@@ -303,11 +303,23 @@ connect-popup legacy npm package manual:
 
 connect-popup legacy npm package:
   extends: .connect-popup legacy npm package base
-  dependencies:
+  needs:
     - install
     - connect-web build
   only:
     <<: *run_everything_rules
+  except:
+    refs:
+      - /^release\/connect\//
+
+connect-popup legacy npm package production:
+  extends: .connect-popup legacy npm package base
+  needs:
+    - install
+    - connect-web build production
+  only:
+    refs:
+      - /^release\/connect\//
 
 .e2e connect-explorer-webextension:
   stage: integration testing

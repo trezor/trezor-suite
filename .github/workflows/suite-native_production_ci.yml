@@ -39,7 +39,7 @@ jobs:
       - name: Install libs
         run: yarn install
       - name: Build on EAS iOS
-        run: EXPO_PUBLIC_ENVIRONMENT=production eas build
+        run: eas build
           --platform ios
           --profile production
           --non-interactive

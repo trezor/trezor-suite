@@ -402,6 +402,16 @@ const initCoreInPopup = async (
     if (!initCore) return;
     if (disposed) return;
 
+    const state = getState();
+    if (!payload.settings.origin) {
+        // Assign origin for core in popup modes
+        if (state.settings?.origin) {
+            payload.settings.origin = state.settings.origin;
+        } else if (window.opener) {
+            payload.settings.origin = window.opener.origin;
+        }
+    }
+
     // init core
     log.debug('initiating core with settings: ', payload.settings);
     reactEventBus.dispatch({ type: 'loading', message: 'initiating core' });

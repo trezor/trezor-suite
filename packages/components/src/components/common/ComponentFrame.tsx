@@ -11,6 +11,7 @@ export type FrameProps = {
         left?: SpacingValues;
         right?: SpacingValues;
     };
+    maxWidth?: string;
 };
 
 type ComponentFrameProps = FrameProps & {
@@ -18,6 +19,9 @@ type ComponentFrameProps = FrameProps & {
 };
 
 const Frame = styled.div<{ $margin?: FrameProps['margin'] }>`
+    display: flex;
+    flex: 1;
+
     ${({ $margin }) =>
         $margin &&
         `

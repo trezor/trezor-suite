@@ -1,3 +1,11 @@
+# 1.1.27
+
+-   chore(ci): faster transport E2E (5154075030)
+-   fix(transport): accept logger also for usb transports (3a5dee1318)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   fix(connect): fix connect for RN (#11489) (14814fd54b)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 1.1.26
 
 -   chore(transport, trezor-user-env-link): remove cross-fetch (e489dce33)

@@ -16,8 +16,11 @@ export interface Permission {
  *  - passphrase to be used
  */
 export interface PreferredDevice {
+    label?: string;
     path: string;
     state?: string;
+    internalState?: string;
+    internalStateExpiration?: number;
     instance?: number;
 }
 

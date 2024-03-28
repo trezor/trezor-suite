@@ -73,6 +73,7 @@ export const extraDependenciesMock: ExtraDependencies = {
             checkFirmwareAuthenticity: false,
             coinjoinAllowNoTor: false,
             showDebugMenu: false,
+            isViewOnlyModeVisible: false,
             transports: [],
         }),
         selectDesktopBinDir: mockSelector('selectDesktopBinDir', '/bin'),

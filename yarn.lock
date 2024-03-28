@@ -8758,6 +8758,7 @@ __metadata:
     "@suite-native/toasts": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/react-native-usb": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -9652,6 +9653,7 @@ __metadata:
   resolution: "@suite-native/storage@workspace:suite-native/storage"
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
+    "@sentry/react-native": "npm:5.19.1"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
@@ -10639,6 +10641,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/env-utils@workspace:packages/env-utils"
   dependencies:
+    "@suite-common/wallet-constants": "workspace:*"
     expo-constants: "npm:15.4.5"
     tsx: "npm:^4.7.0"
     ua-parser-js: "npm:^1.0.37"
@@ -10797,6 +10800,7 @@ __metadata:
     "@pmmmwh/react-refresh-webpack-plugin": "npm:^0.5.11"
     "@sentry/webpack-plugin": "npm:^2.14.0"
     "@suite-common/suite-config": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     "@trezor/suite": "workspace:*"
     "@types/copy-webpack-plugin": "npm:^10.1.0"
     "@types/webpack-bundle-analyzer": "npm:^4.7.0"
@@ -11182,6 +11186,7 @@ __metadata:
     "@types/bytebuffer": "npm:^5.0.48"
     "@types/sharedworker": "npm:^0.0.111"
     "@types/w3c-web-usb": "npm:^1.0.10"
+    cross-fetch: "npm:^4.0.0"
     jest: "npm:29.7.0"
     json-stable-stringify: "npm:^1.1.1"
     long: "npm:^4.0.0"
@@ -11200,6 +11205,7 @@ __metadata:
   dependencies:
     "@trezor/utils": "workspace:*"
     "@types/ws": "npm:^8.5.5"
+    cross-fetch: "npm:^4.0.0"
     ws: "npm:^8.16.0"
   languageName: unknown
   linkType: soft

@@ -1,3 +1,8 @@
+# 1.0.16
+
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 1.0.15
 
 -   chore(repo): remove build:lib for some simple packages (#11276) (7febd10cf)

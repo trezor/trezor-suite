@@ -8820,4 +8820,8 @@ export default defineMessages({
         id: 'TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE',
         defaultMessage: 'I acknowledge and consent to staking with Everstake',
     },
+    TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN: {
+        id: 'TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN',
+        defaultMessage: 'Confirmation of the transaction may take up to <nowrap>1 minute</nowrap>',
+    },
 });

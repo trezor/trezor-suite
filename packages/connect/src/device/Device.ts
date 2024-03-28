@@ -75,6 +75,7 @@ export interface DeviceEvents {
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
     [DEVICE.ACQUIRED]: () => void;
+    [DEVICE.SAVE_STATE]: (state: string) => void;
 }
 
 /**
@@ -445,8 +446,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
     setInternalState(state?: string) {
         if (typeof state !== 'string') {
             delete this.internalState[this.instance];
-        } else {
+        } else if (state !== this.internalState[this.instance]) {
             this.internalState[this.instance] = state;
+            this.emit(DEVICE.SAVE_STATE, state);
         }
     }
 

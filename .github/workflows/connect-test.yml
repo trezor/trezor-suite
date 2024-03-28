@@ -5,6 +5,8 @@ on:
   schedule:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
+  push:
+    branches: [npm-release/*, release/*]
   pull_request:
     paths:
       - "packages/blockchain-link/**"
@@ -21,7 +23,7 @@ on:
       - "submodules/trezor-common/**"
       - "yarn.lock"
       - ".github/workflows/connect-test.yml"
-      - ".github/workflows/connect-test-params.yml"
+      - ".github/workflows/template-connect-test-params.yml"
       - "docker/docker-connect-test.sh"
       - "docker/docker-compose.connect-test.yml"
 
@@ -62,14 +64,14 @@ jobs:
 
   api:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
 
   legacy-canary-firmware-api:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
       tests-firmware: ${{ matrix.firmware }}
@@ -81,7 +83,7 @@ jobs:
 
   management:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
@@ -89,7 +91,7 @@ jobs:
   legacy-canary-firmware-management:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
@@ -102,7 +104,7 @@ jobs:
 
   btc-sign:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "signTransaction"
@@ -110,7 +112,7 @@ jobs:
   legacy-canary-firmware-btc-sign:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "signTransaction"
@@ -123,7 +125,7 @@ jobs:
 
   btc-others:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
@@ -131,7 +133,7 @@ jobs:
   legacy-canary-firmware-btc-others:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
@@ -144,7 +146,7 @@ jobs:
 
   stellar:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "stellarGetAddress,stellarSignTransaction"
@@ -152,7 +154,7 @@ jobs:
   legacy-canary-firmware-stellar:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "stellarGetAddress,stellarSignTransaction"
@@ -165,7 +167,7 @@ jobs:
 
   cardano:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
@@ -173,7 +175,7 @@ jobs:
   legacy-canary-firmware-cardano:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
@@ -186,7 +188,7 @@ jobs:
 
   eos:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "eosGetPublicKey,eosSignTransaction"
@@ -194,7 +196,7 @@ jobs:
   legacy-canary-firmware-eos:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "eosGetPublicKey,eosSignTransaction"
@@ -207,7 +209,7 @@ jobs:
 
   ethereum:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
@@ -215,7 +217,7 @@ jobs:
   legacy-canary-firmware-ethereum:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
@@ -228,7 +230,7 @@ jobs:
 
   nem:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "nemGetAddress,nemSignTransaction"
@@ -236,7 +238,7 @@ jobs:
   legacy-canary-firmware-nem:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "nemGetAddress,nemSignTransaction"
@@ -249,7 +251,7 @@ jobs:
 
   ripple:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "rippleGetAddress,rippleSignTransaction"
@@ -257,7 +259,7 @@ jobs:
   legacy-canary-firmware-ripple:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "rippleGetAddress,rippleSignTransaction"
@@ -270,7 +272,7 @@ jobs:
 
   tezos:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
@@ -278,7 +280,7 @@ jobs:
   legacy-canary-firmware-tezos:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
@@ -291,7 +293,7 @@ jobs:
 
   binance:
     needs: [build]
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
@@ -299,7 +301,7 @@ jobs:
   legacy-canary-firmware-binance:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: methods
       methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
@@ -313,7 +315,7 @@ jobs:
   connect-T2B1:
     needs: [build]
     if: github.event_name == 'schedule'
-    uses: ./.github/workflows/connect-test-params.yml
+    uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: ${{ matrix.pattern }}
       methods: ${{ matrix.pattern }}

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { FeeLevel } from '@trezor/connect';
@@ -67,17 +66,9 @@ const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }
 );
 
 const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: DetailsProps) => {
-    const [gasLimit, setGasLimit] = useState<string | undefined>(selectedLevel.feeLimit);
-    const [gasPrice, setGasPrice] = useState<string | undefined>(selectedLevel.feePerUnit);
-
     const isComposedTx = transactionInfo && transactionInfo.type !== 'error';
-
-    useEffect(() => {
-        if (isComposedTx) {
-            setGasLimit(transactionInfo.feeLimit);
-            setGasPrice(transactionInfo.feePerByte);
-        }
-    }, [isComposedTx, transactionInfo]);
+    const gasLimit = isComposedTx ? transactionInfo.feeLimit : selectedLevel.feeLimit;
+    const gasPrice = isComposedTx ? transactionInfo.feePerByte : selectedLevel.feePerUnit;
 
     return (
         <Wrapper>
@@ -85,7 +76,7 @@ const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Detail
                 <Label>
                     <Translation id="TR_GAS_LIMIT" />:
                 </Label>
-                <FeeItem>{isComposedTx ? transactionInfo.feeLimit : gasLimit}</FeeItem>
+                <FeeItem>{gasLimit}</FeeItem>
             </span>
 
             <span>
@@ -93,8 +84,7 @@ const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: Detail
                     <Translation id="TR_GAS_PRICE" />:
                 </Label>
                 <FeeItem>
-                    {isComposedTx ? transactionInfo.feePerByte : gasPrice}
-                    {getFeeUnits(networkType)}
+                    {gasPrice} {getFeeUnits(networkType)}
                 </FeeItem>
             </span>
         </Wrapper>

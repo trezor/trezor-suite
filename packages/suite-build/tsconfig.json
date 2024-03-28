@@ -6,6 +6,7 @@
         {
             "path": "../../suite-common/suite-config"
         },
+        { "path": "../env-utils" },
         { "path": "../suite" }
     ]
 }

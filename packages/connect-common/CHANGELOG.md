@@ -1,3 +1,11 @@
+# 0.0.31
+
+-   fix(connect): webextension save sessions (efed18e4ea)
+-   chore(suite): remove goerli (8eb6b271a5)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(connect-common): add firmware binaries 2.7.0 (4c14b45bd6)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 0.0.30
 
 -   fix(connect): fix build of connect-web (50f35cb2a)

@@ -14,12 +14,7 @@ import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import {
-    BlockheightBasedTransactionConfirmationStrategy,
-    Connection,
-    Message,
-    PublicKey,
-} from '@solana/web3.js';
+import { Connection, Message, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 import {
@@ -27,6 +22,8 @@ import {
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/src/solana';
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
+import { getBaseFee, getPriorityFee } from './fee';
+import { confirmTransaction } from './transactionConfirmation';
 
 export type SolanaAPI = Connection;
 
@@ -99,19 +96,17 @@ const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidPar
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
-    const payload = await api.sendRawTransaction(Buffer.from(rawTx, 'hex'));
-    const { blockhash, lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
-    const confirmStrategy: BlockheightBasedTransactionConfirmationStrategy = {
-        blockhash,
-        lastValidBlockHeight,
-        signature: payload,
-    };
 
-    await api.confirmTransaction(confirmStrategy);
+    const { lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
+
+    const txBuffer = Buffer.from(rawTx, 'hex');
+    const signature = await api.sendRawTransaction(txBuffer);
+
+    await confirmTransaction(api, signature, lastValidBlockHeight);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,
-        payload,
+        payload: signature,
     } as const;
 };
 
@@ -257,28 +252,26 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
 
-    const message = request.payload.specific?.data;
+    const messageHex = request.payload.specific?.data;
     const isCreatingAccount = request.payload.specific?.isCreatingAccount;
 
-    if (message == null) {
+    if (messageHex == null) {
         throw new Error('Could not estimate fee for transaction.');
     }
 
-    const result = await api.getFeeForMessage(Message.from(Buffer.from(message, 'hex')));
+    const message = Message.from(Buffer.from(messageHex, 'hex'));
 
-    // The result can be null, for example if the transaction blockhash is invalid.
-    // In this case, we should fall back to the default fee.
-    if (result.value == null) {
-        throw new Error('Could not estimate fee for transaction.');
-    }
-
+    const baseFee = await getBaseFee(api, message);
+    const priorityFee = await getPriorityFee(api, message);
     const accountCreationFee = isCreatingAccount
         ? await api.getMinimumBalanceForRentExemption(TOKEN_ACCOUNT_LAYOUT.span)
         : 0;
 
     const payload = [
         {
-            feePerUnit: `${result.value + accountCreationFee}`,
+            feePerTx: `${baseFee + accountCreationFee + priorityFee.fee}`,
+            feePerUnit: `${priorityFee.computeUnitPrice}`,
+            feeLimit: `${priorityFee.computeUnitLimit}`,
         },
     ];
 

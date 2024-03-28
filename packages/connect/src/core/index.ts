@@ -217,6 +217,7 @@ const initDevice = async (method: AbstractMethod<any>) => {
     let showDeviceSelection = isWebUsb;
     const isUsingPopup = DataManager.getSettings('popup');
     const origin = DataManager.getSettings('origin')!;
+    const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
     const { preferredDevice } = storage.load().origin[origin] || {};
     const preferredDeviceInList = preferredDevice && _deviceList.getDevice(preferredDevice.path);
 
@@ -239,7 +240,10 @@ const initDevice = async (method: AbstractMethod<any>) => {
         if (devices.length === 1 && (!isWebUsb || !isUsingPopup)) {
             // there is only one device available. use it
             device = _deviceList.getDevice(devices[0].path);
-            showDeviceSelection = !!device?.unreadableError || device.isUnacquired();
+            // Show device selection if device is unreadable or unacquired
+            // Also in case of core in popup, so user can press "Remember device"
+            showDeviceSelection =
+                !!device?.unreadableError || device.isUnacquired() || !!useCoreInPopup;
         } else {
             showDeviceSelection = true;
         }
@@ -287,11 +291,11 @@ const initDevice = async (method: AbstractMethod<any>) => {
             if (uiPromise) {
                 const { payload } = await uiPromise.promise;
                 if (payload.remember) {
-                    const { path, state } = payload.device;
+                    const { label, path, state } = payload.device;
                     storage.save(store => {
                         store.origin[origin] = {
                             ...store.origin[origin],
-                            preferredDevice: { path, state },
+                            preferredDevice: { label, path, state },
                         };
 
                         return store;
@@ -328,6 +332,8 @@ const onCall = async (message: IFrameCallMessage) => {
     const trustedHost = DataManager.getSettings('trustedHost');
     const isUsingPopup = DataManager.getSettings('popup');
     const origin = DataManager.getSettings('origin')!;
+    const env = DataManager.getSettings('env')!;
+    const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
 
     const { preferredDevice } = storage.loadForOrigin(origin) || {};
     if (preferredDevice && !message.payload.device) {
@@ -482,6 +488,38 @@ const onCall = async (message: IFrameCallMessage) => {
             createUiMessage(UI.REQUEST_PASSPHRASE_ON_DEVICE, { device: device.toMessageObject() }),
         );
     });
+    device.on(DEVICE.SAVE_STATE, (state: string) => {
+        storage.saveForOrigin(store => {
+            // Persist internal state only in case of core in popup
+            // Currently also only for webextension until we asses security implications
+            if (useCoreInPopup && env === 'webextension') {
+                return {
+                    ...store,
+                    preferredDevice: store.preferredDevice
+                        ? {
+                              ...store.preferredDevice,
+                              internalState: state,
+                              internalStateExpiration: Date.now() + 1000 * 60 * 15, // 15 minutes
+                          }
+                        : undefined,
+                };
+            }
+
+            return store;
+        }, origin);
+    });
+
+    if (!device.getInternalState() && useCoreInPopup && env === 'webextension') {
+        // Restore internal state if available
+        const { preferredDevice } = storage.loadForOrigin(origin) || {};
+        if (
+            preferredDevice?.internalState &&
+            preferredDevice?.internalStateExpiration &&
+            preferredDevice.internalStateExpiration > new Date().getTime()
+        ) {
+            device.setInternalState(preferredDevice.internalState);
+        }
+    }
 
     try {
         let PIN_TRIES = 1;

@@ -101,14 +101,12 @@ export const useFees = <TFieldValues extends FormState>({
     // watch estimatedFee change
     const estimatedFeeLimit = watch('estimatedFeeLimit');
     useEffect(() => {
-        if (selectedFeeRef.current !== 'custom') return;
         if (estimatedFeeLimitRef.current !== estimatedFeeLimit) {
             estimatedFeeLimitRef.current = estimatedFeeLimit;
+            if (selectedFeeRef.current !== 'custom') return;
             if (estimatedFeeLimit) {
-                // re validate feeLimit
-                // setValue('feeLimit', feeLimitRef.current, { shouldValidate: true });
-                // switch to recommended fee limit
-                feeLimitRef.current = estimatedFeeLimit;
+                // NOTE: do not update it here, so it can be properly processed by watch
+                // feeLimitRef.current = estimatedFeeLimit;
                 setValue('feeLimit', estimatedFeeLimit, { shouldValidate: true });
             }
         }

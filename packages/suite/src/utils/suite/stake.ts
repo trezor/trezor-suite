@@ -248,6 +248,10 @@ export const getStakeFormsDefaultValues = ({
     feeLimit: '',
     feePerUnit: '',
     selectedFee: undefined,
+
+    isCoinControlEnabled: false,
+    hasCoinControlBeenOpened: false,
+    selectedUtxos: [],
 });
 
 const transformTx = (

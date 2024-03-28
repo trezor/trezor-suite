@@ -1,3 +1,8 @@
+# 1.0.7
+
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 1.0.6
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)

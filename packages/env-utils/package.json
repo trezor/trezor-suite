@@ -1,6 +1,6 @@
 {
     "name": "@trezor/env-utils",
-    "version": "1.0.14",
+    "version": "1.0.15",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/env-utils",
     "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
@@ -28,6 +28,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
+        "@suite-common/wallet-constants": "workspace:*",
         "expo-constants": "15.4.5",
         "ua-parser-js": "^1.0.37"
     },

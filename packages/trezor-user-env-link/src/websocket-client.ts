@@ -2,6 +2,7 @@
 
 import WebSocket from 'ws';
 import { EventEmitter } from 'events';
+import fetch from 'cross-fetch';
 
 import { createDeferred, Deferred } from '@trezor/utils';
 
