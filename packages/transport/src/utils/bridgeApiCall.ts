@@ -1,3 +1,5 @@
+import fetch from 'cross-fetch';
+
 import { success, error, unknownError } from './result';
 
 import * as ERRORS from '../errors';
