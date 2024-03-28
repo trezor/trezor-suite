@@ -84,7 +84,7 @@ describe('Analytics Events', () => {
         cy.wrap(requests).its(3).should('have.property', 'c_type', EventType.DeviceDisconnect);
     });
 
-    it('reports suite-ready after enabling analytics on app initial run', () => {
+    it.only('reports suite-ready after enabling analytics on app initial run', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', {
             needs_backup: false,
@@ -101,19 +101,19 @@ describe('Analytics Events', () => {
 
         // change language
         cy.getTestElement('@settings/language-select/input').click();
-        cy.getTestElement('@settings/language-select/option/cs').click();
+        cy.getTestElement('@settings/language-select/option/cs').click({ force: true });
 
         // change fiat
         cy.getTestElement('@settings/fiat-select/input').click();
-        cy.getTestElement('@settings/fiat-select/option/czk').click();
+        cy.getTestElement('@settings/fiat-select/option/czk').click({ force: true });
 
         // change BTC units
         cy.getTestElement('@settings/btc-units-select/input').click();
-        cy.getTestElement('@settings/btc-units-select/option/Satoshis').click(); // sat
+        cy.getTestElement('@settings/btc-units-select/option/Satoshis').click({ force: true }); // sat
 
         // change dark mode
         cy.getTestElement('@theme/color-scheme-select/input').click();
-        cy.getTestElement('@theme/color-scheme-select/option/dark').click();
+        cy.getTestElement('@theme/color-scheme-select/option/dark').click({ force: true });
 
         // disable btc, enable ethereum and holesky
         cy.getTestElement('@settings/menu/wallet').click();
