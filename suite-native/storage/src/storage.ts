@@ -3,7 +3,7 @@ import { MMKV } from 'react-native-mmkv';
 import RNRestart from 'react-native-restart';
 
 import { captureException } from '@sentry/react-native';
-import * as Random from 'expo-random';
+import { getRandomBytes } from 'expo-crypto';
 import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from 'expo-splash-screen';
 import { Storage } from 'redux-persist';
@@ -27,7 +27,7 @@ const retrieveStorageEncryptionKey = async () => {
         captureException(error);
     }
 
-    const secureKey = Buffer.from(Random.getRandomBytes(16)).toString('hex');
+    const secureKey = Buffer.from(getRandomBytes(16)).toString('hex');
     await SecureStore.setItemAsync(ENCRYPTION_KEY, secureKey);
 
     return secureKey;
