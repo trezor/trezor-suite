@@ -8,10 +8,6 @@ on:
     schedule:
         - cron: '0 0 * * *'
 
-# env:
-#     DEV_SERVER_URL: 'https://dev.suite.sldev.cz'
-#     STAGING_SUITE_SERVER_URL: 'https://staging-suite.trezor.io'
-
 jobs:
     e2e-test-suite-web:
         if: contains(github.event.pull_request.labels.*.name, 'aaa_run_nightly')
@@ -20,29 +16,29 @@ jobs:
             fail-fast: false
             matrix:
                 include:
-                    # - TEST_GROUP: '@group_suite'
-                    #   CONTAINERS: 'trezor-user-env-unix'
-                    #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-                    # - TEST_GROUP: '@group_device-management'
-                    #   CONTAINERS: 'trezor-user-env-unix'
-                    #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_suite'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_device-management'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
                     - TEST_GROUP: '@group_settings'
                       CONTAINERS: 'trezor-user-env-unix'
                       CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-                    # - TEST_GROUP: '@group_metadata'
-                    #   CONTAINERS: 'trezor-user-env-unix'
-                    #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-                    # - TEST_GROUP: '@group_passphrase'
-                    #   CONTAINERS: 'trezor-user-env-unix'
-                    #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-                    # - TEST_GROUP: '@group_other'
-                    #   CONTAINERS: 'trezor-user-env-unix'
-                    #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-                    # - TEST_GROUP: '@group_wallet'
-                    #   CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
-                    #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-                    # - TEST_GROUP: '@group_firmware-update'
-                    #   CONTAINERS: 'trezor-user-env-unix'
+                    - TEST_GROUP: '@group_metadata'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_passphrase'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_other'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_wallet'
+                      CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_firmware-update'
+                      CONTAINERS: 'trezor-user-env-unix'
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -107,27 +103,26 @@ jobs:
                     - TEST_GROUP: '@group_migrations'
                       CONTAINERS: 'trezor-user-env-unix'
                       CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-                # - TEST_GROUP: '@group_suite'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_device-management'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-
-            # - TEST_GROUP: '@group_metadata'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_passphrase'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_other'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_wallet'
-            #   CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_firmware-update'
-            #   CONTAINERS: 'trezor-user-env-unix'
+                    - TEST_GROUP: '@group_suite'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_device-management'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_metadata'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_passphrase'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_other'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_wallet'
+                      CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_firmware-update'
+                      CONTAINERS: 'trezor-user-env-unix'
         steps:
             - name: Checkout
               uses: actions/checkout@v4
@@ -160,6 +155,27 @@ jobs:
                   docker-compose pull
                   docker-compose up -d ${{ matrix.CONTAINERS }}
                   docker-compose run test-run
+            - name: Upload logs
+              run: |
+                  docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
+                  docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
+                  docker cp docker_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
+
+            - name:
+                  Upload artifacts
+                  # this will run the upload artifacts even if the previous steps failed (e.g. tests failed). It wont run if the workflow was cancelled.
+              if: ${{ ! cancelled() }}
+              uses: actions/upload-artifact@v4
+              with:
+                  name: test-artifacts-${{ matrix.TEST_GROUP }}
+                  path: |
+                      ./packages/suite-web/e2e/snapshots
+                      ./packages/suite-web/e2e/screenshots
+                      ./packages/suite-web/e2e/videos
+                      download-snapshots.sh
+                      trezor-user-env-debugging.log
+                      tenv-emulator-bridge-debugging.log
+                      trezor-user-env-version.txt
 
     e2e-test-canary-fws:
         if: contains(github.event.pull_request.labels.*.name, 'aaa_run_canary_fws')
@@ -171,24 +187,23 @@ jobs:
                     - TEST_GROUP: '@group_suite'
                       CONTAINERS: 'trezor-user-env-unix'
                       CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_device-management'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-
-            # - TEST_GROUP: '@group_metadata'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_passphrase'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_other'
-            #   CONTAINERS: 'trezor-user-env-unix'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_wallet'
-            #   CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
-            #   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
-            # - TEST_GROUP: '@group_firmware-update'
-            #   CONTAINERS: 'trezor-user-env-unix'
+                    - TEST_GROUP: '@group_device-management'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_metadata'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_passphrase'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_other'
+                      CONTAINERS: 'trezor-user-env-unix'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_wallet'
+                      CONTAINERS: 'trezor-user-env-unix bitcoin-regtest'
+                      CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: '1'
+                    - TEST_GROUP: '@group_firmware-update'
+                      CONTAINERS: 'trezor-user-env-unix'
         steps:
             - name: Checkout
               uses: actions/checkout@v4
