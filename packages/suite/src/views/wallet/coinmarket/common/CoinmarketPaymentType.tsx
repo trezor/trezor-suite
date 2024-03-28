@@ -11,7 +11,6 @@ const Wrapper = styled.div`
 `;
 
 const Bg = styled.div`
-    background: ${({ theme }) => theme.BG_ICON};
     display: flex;
     align-items: center;
     border-radius: 4px;
@@ -23,14 +22,16 @@ const IconWrapper = styled.div`
     padding-right: 9px;
 `;
 
-const Icon = styled.img``;
+const Icon = styled.img`
+    ${({
+        theme,
+    }) => `filter: drop-shadow(1px 0 0 ${theme.BG_ICON}) drop-shadow(0 1px 0 ${theme.BG_ICON}) drop-shadow(-1px 0 0 ${theme.BG_ICON})
+        drop-shadow(0 -1px 0 ${theme.BG_ICON});`}
+`;
 
 const Text = styled.div`
     display: flex;
     align-items: center;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface CoinmarketPaymentTypeProps {

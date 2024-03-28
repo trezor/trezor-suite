@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { variables } from '@trezor/components';
 import invityApi from 'src/services/suite/invityAPI';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -8,7 +8,6 @@ const Wrapper = styled.div`
 `;
 
 const Bg = styled.div`
-    background: ${({ theme }) => theme.BG_ICON};
     display: flex;
     align-items: center;
     border-radius: 4px;
@@ -21,16 +20,16 @@ const IconWrapper = styled.div`
 `;
 
 const Icon = styled.img`
-    border-radius: 2px;
+    ${({
+        theme,
+    }) => `filter: drop-shadow(1px 0 0 ${theme.BG_ICON}) drop-shadow(0 1px 0 ${theme.BG_ICON}) drop-shadow(-1px 0 0 ${theme.BG_ICON})
+        drop-shadow(0 -1px 0 ${theme.BG_ICON});`}
 `;
 
 const Text = styled.div`
     display: flex;
-    padding-left: 9px;
+    padding-left: ${spacingsPx.xxs};
     align-items: center;
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 interface CoinmarketProviderInfoProps {
