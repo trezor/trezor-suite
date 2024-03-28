@@ -13,6 +13,12 @@ on:
             - 'suite-native/**'
             - 'packages/connect*/**'
             - 'packages/react-native-usb/**'
+            # ignore unrelated github workflows config files
+            - '.github/workflows/coonnect*'
+            - '.github/workflows/suite-native*'
+            - '.github/workflows/build-desktop*'
+            - '.github/workflows/release*'
+            - '.github/workflows/template*'
     # TODO: after a more sophisticated system of test running is implemented, move the cron job into a separate flow that will run all tests
     schedule:
         - cron: '0 0 * * *' # runn all tests every day at midnight
