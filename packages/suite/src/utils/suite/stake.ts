@@ -9,7 +9,7 @@ import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
 
 // Gas reserve ensuring txs are processed
-const GAS_RESERVE = 120000;
+const GAS_RESERVE = 220000;
 // source is a required parameter for some functions in the Everstake Wallet SDK.
 // This parameter is used for some contract calls.
 // It is a constant which allows the SDK to define which app calls its functions.
