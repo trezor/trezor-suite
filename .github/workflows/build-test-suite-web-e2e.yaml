@@ -42,13 +42,20 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version-file: '.nvmrc'
+                  cache: yarn
+
+            - name: Install dependencies
+              run: |
+                  echo -e "\nenableScripts: false" >> .yarnrc.yml
+                  echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+                  yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/suite-data @trezor/suite-build
+
             - name: Build suite-web
               env:
                   ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
                   CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
                   DESKTOP_APP_NAME: 'Trezor-Suite'
               run: |
-                  yarn install
                   yarn message-system-sign-config
                   yarn workspace @trezor/suite-data build:lib
                   yarn workspace @trezor/connect-iframe build:lib
@@ -99,9 +106,18 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version-file: '.nvmrc'
+                  cache: yarn
+
             - name: Extract branch name
               run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
               id: extract_branch
+
+            - name: Install dependencies
+              run: |
+                  echo -e "\nenableScripts: false" >> .yarnrc.yml
+                  echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+                  yarn workspaces focus @trezor/suite-web
+
             - name: Run e2e tests
               env:
                   CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
@@ -122,7 +138,9 @@ jobs:
                   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: ${{ matrix.CYPRESS_USE_TREZOR_USER_ENV_BRIDGE }}
                   CYPRESS_updateSnapshots: 0
               run: |
-                  yarn install --immutable
+                  echo -e "\nenableScripts: false" >> .yarnrc.yml
+                  echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+                  yarn workspaces focus @trezor/suite-web
                   docker-compose pull
                   docker-compose up -d ${{ matrix.CONTAINERS }}
                   docker-compose run test-run
