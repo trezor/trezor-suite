@@ -1,5 +1,9 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": []
+    "references": [
+        {
+            "path": "../../suite-common/wallet-constants"
+        }
+    ]
 }
