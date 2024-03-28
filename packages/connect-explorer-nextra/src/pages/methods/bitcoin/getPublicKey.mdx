@@ -1,24 +1,30 @@
-import { ApiPlayground } from '../../components/ApiPlayground';
-import { Param } from '../../components/Param';
-import { ParamsTable } from '../../components/ParamsTable';
 import { GetPublicKey } from '@trezor/connect/src/types/api/getPublicKey';
-import { Bundle } from '@trezor/connect/src/types/params';
-import { Type } from '@trezor/schema-utils';
-import config from '../../data/methods/bitcoin/getPublicKey.ts';
+import { Bundle } from '@trezor/connect/src/types';
+
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
 
 <ApiPlayground
     options={[
-        {
-            title: 'Simplified',
-            method: 'getPublicKey',
-            schema: Type.Pick(GetPublicKey, ['path', 'coin', 'showOnTrezor']),
-        },
-        { title: 'Full', method: 'getPublicKey', schema: GetPublicKey },
-        { title: 'Bundle', method: 'getPublicKey', schema: Bundle(GetPublicKey) },
-        { title: 'Legacy config', legacyConfig: config[0] },
-        { title: 'Legacy bundle', legacyConfig: config[1] },
+        { title: 'GetPublicKey', method: 'getPublicKey', schema: GetPublicKey },
+        { title: 'Bundle(GetPublicKey)', method: 'getPublicKey', schema: Bundle(GetPublicKey) },
     ]}
 />
+
+export const paramDescriptions = {
+    path: 'minimum length is `1`. [read more](../details/path)',
+    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.',
+    scriptType: 'used to distinguish between various address formats (non-segwit, segwit, etc.).',
+    ignoreXpubMagic: 'ignore SLIP-0132 XPUB magic, use xpub/tpub prefix for all account types.',
+    ecdsaCurveName: 'ECDSA curve name to use',
+    crossChain:
+        'Advanced feature. Use it only if you are know what you are doing. Allows to generate address between chains. For example Bitcoin path on Litecoin network will display cross chain address in Litecoin format.',
+    suppressBackupWarning:
+        'By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.',
+    bundle: 'of Objects with `path`, `coin` and `crossChain` fields',
+};
 
 ## Get public key
 
@@ -31,13 +37,13 @@ const result = await TrezorConnect.getPublicKey(params);
 
 ### Params
 
-[Optional common params](commonParams.md)
+<CommonParamsLink />
 
-#### Exporting single public key
+#### GetPublicKey
 
-<ParamsTable schema={GetPublicKey} />
+<ParamsTable schema={GetPublicKey} descriptions={paramDescriptions} />
 
-#### Exporting bundle of public keys
+#### Bundle(GetPublicKey)
 
 <Param name="bundle" type="`Array` of Objects with above schema" />
 

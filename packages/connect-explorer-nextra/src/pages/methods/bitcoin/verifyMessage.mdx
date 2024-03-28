@@ -1,0 +1,70 @@
+import { VerifyMessage } from '@trezor/connect/src/types/api/bitcoin';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[{ title: 'VerifyMessage', method: 'verifyMessage', schema: VerifyMessage }]}
+/>
+
+export const paramDescriptions = {
+    address: 'signer address,',
+    message: 'signed message,',
+    signature: 'signature in base64 format,',
+    coin: 'Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
+    hex: 'convert message from hex',
+};
+
+## Verify message
+
+Asks device to
+verify a message using the signer address and signature.
+
+```javascript
+const result = await TrezorConnect.verifyMessage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### VerifyMessage
+
+<ParamsTable schema={VerifyMessage} descriptions={paramDescriptions} />
+
+### Example
+
+```javascript
+TrezorConnect.verifyMessage({
+    address: '3BD8TL6iShVzizQzvo789SuynEKGpLTms9',
+    message: 'example message',
+    signature:
+        'JO7vL3tOB1qQyfSeIVLvdEw9G1tCvL+lNj78XDAVM4t6UptADs3kXDTO2+2ZeEOLFL4/+wm+BBdSpo3kb3Cnsas=',
+    coin: 'btc',
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "Message verified"
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
