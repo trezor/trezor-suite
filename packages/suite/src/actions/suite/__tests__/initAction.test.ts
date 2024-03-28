@@ -4,10 +4,7 @@ import {
     initMessageSystemThunk,
     fetchConfigThunk,
 } from '@suite-common/message-system';
-import {
-    validJws,
-    DEV_JWS_PUBLIC_KEY,
-} from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
+import { validJws } from '@suite-common/message-system/src/__fixtures__/messageSystemActions';
 import { connectInitThunk } from '@suite-common/connect-init';
 import {
     prepareDeviceReducer,
@@ -42,8 +39,6 @@ import { appChanged } from '../suiteActions';
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
 const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
-
-process.env.JWS_PUBLIC_KEY = DEV_JWS_PUBLIC_KEY;
 
 global.fetch = jest.fn().mockImplementation(() =>
     Promise.resolve({

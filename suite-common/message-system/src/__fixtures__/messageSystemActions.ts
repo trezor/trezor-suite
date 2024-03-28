@@ -11,23 +11,19 @@ JWS below is signed config with only mandatory fields:
     "actions": []
 }
 
-It is signed by dev private key. Its corresponding public key is provided below.
+It is signed by dev private key.
 */
 
-export const DEV_JWS_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
-MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
------END PUBLIC KEY-----`;
-
 export const validJws =
-    'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIxLTAzLTAzVDAzOjQ4OjE2KzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEsCiAgICAiYWN0aW9ucyI6IFtdCn0K.TMzhvkIBdvI5xvoT6MF1kqozXet9LaYgloZ5eMEl_3x_Kb_Af7hgyY0Z1wGrGfpGZ7bU-QO_4pqvfiiTX-sUOg';
+    'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIxLTAzLTAzVDAzOjQ4OjE2KzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEsCiAgICAiYWN0aW9ucyI6IFtdCn0K.Qtemcj062ih5j2F7SaMw1Sgms8jhuo-312f9_2unPzLWKrewQNwaHxyZsZCk3M_6r4CKRcHsSzRTYNOF8k2W9A';
 
 // jws with modified signature
 export const unauthenticJws =
-    'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIxLTAzLTAzVDAzOjQ4OjE2KzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEsCiAgICAiYWN0aW9ucyI6IFtdCn0K.ToMhvkIBdvI5xvoT6MF1kqozXet9LaYgloZ5eMEl_3x_Kb_Af7hgyY0Z1wGrGfpGZ7bU-QO_4pqvfiiTX-sUOg';
+    'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIxLTAzLTAzVDAzOjQ4OjE2KzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEsCiAgICAiYWN0aW9ucyI6IFtdCn0K.Yz_pZYLX10Er1S69wC3WmcKjBUpNE9RbqEhmI1j0SXvqscff3r1ooG2ibcSzyaorB5IAJYJ0qTN3zEH6BQlQuQ';
 
 // jws with modified header and payload
 export const corruptedJws =
-    'eyJhbGciOiJFUzI1NiJ8.ewogICAgInZlcnNpb24iOiAxLAogICAgIn.TMzhvkIBdvI5xvoT6MF1kqozXet9LaYgloZ5eMEl_3x_Kb_Af7hgyY0Z1wGrGfpGZ7bU-QO_4pqvfiiTX-sUOg';
+    'eyJhbGciOiJFUzI1NiJ8.ewogICAgInZlcnNpb24iOiAx.OAmxykvcRZAmlbBcPwmBRulmOtzWG_WR82bgVIK8IKJlfx6Y_Tn2SrgpeNaaHABDeWiI8lg8N1BM2zdeVdW4KQ';
 
 export const validJwsWithSequence10 =
-    'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIxLTAzLTAzVDAzOjQ4OjE2KzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEwLAogICAgImFjdGlvbnMiOiBbXQp9Cg.6C-QY6DD_sFDZBUL4I4EoWGlenv-w_M1sHQ9IM82uip9xqh186jbO08YcAQ-fasYgw7lm0UmwJf9uToo_WOAJA';
+    'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIxLTAzLTAzVDAzOjQ4OjE2KzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEwLAogICAgImFjdGlvbnMiOiBbXQp9Cg.TMpucBIAepJqQb4P5Ad8pYzbStz5nQQfJb5jstrIBc37dpM3yklEOpLrK0xs8q77HN908H5wNEEfuL4lnmP4NQ';

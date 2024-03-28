@@ -55,7 +55,6 @@
         { "path": "../toasts" },
         { "path": "../transactions" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/env-utils" },
         {
             "path": "../../packages/react-native-usb"
         },
