@@ -45,6 +45,6 @@
         "react-native-gesture-handler": "2.15.0",
         "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
         "react-redux": "8.0.7",
-        "web3-utils": "^1.10.0"
+        "web3-utils": "^4.2.1"
     }
 }
