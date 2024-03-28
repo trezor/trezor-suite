@@ -1,3 +1,10 @@
+# 2.0.8
+
+-   chore(utxo-lib): lint fix (b43bb65ed9)
+-   chore(ci): speedup connect tests + explorer build (#11523) (17d9c0f4fb)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 2.0.7
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)
