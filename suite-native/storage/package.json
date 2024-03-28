@@ -17,7 +17,7 @@
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "bs58": "^5.0.0",
-        "expo-random": "13.6.0",
+        "expo-crypto": "^12.8.1",
         "expo-secure-store": "12.8.1",
         "expo-splash-screen": "0.26.4",
         "jotai": "1.9.1",
