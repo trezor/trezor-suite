@@ -4,6 +4,8 @@ on:
   schedule:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
+  push:
+    branches: [npm-release/*, release/*]
   pull_request:
     paths:
       - "packages/transport/**"
