@@ -11,12 +11,8 @@ JWS below is signed config with only mandatory fields:
     "actions": []
 }
 
-It is signed by dev private key. Its corresponding public key is provided below.
+It is signed by dev private key.
 */
-
-export const DEV_JWS_PUBLIC_KEY = `-----BEGIN PUBLIC KEY-----
-MFYwEAYHKoZIzj0CAQYFK4EEAAoDQgAEbSUHJlr17+NywPS/w+xMkp3dSD8eWXSuAfFKwonZPe5fL63kISipJC+eJP7Mad0WxgyJoiMsZCV6BZPK2jIFdg==
------END PUBLIC KEY-----`;
 
 export const validJws =
     'eyJhbGciOiJFUzI1NiJ9.ewogICAgInZlcnNpb24iOiAxLAogICAgInRpbWVzdGFtcCI6ICIyMDIxLTAzLTAzVDAzOjQ4OjE2KzAwOjAwIiwKICAgICJzZXF1ZW5jZSI6IDEsCiAgICAiYWN0aW9ucyI6IFtdCn0K.TMzhvkIBdvI5xvoT6MF1kqozXet9LaYgloZ5eMEl_3x_Kb_Af7hgyY0Z1wGrGfpGZ7bU-QO_4pqvfiiTX-sUOg';
