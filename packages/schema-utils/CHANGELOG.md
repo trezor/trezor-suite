@@ -1,3 +1,11 @@
+# 1.0.3
+
+-   feat(connect-explorer-nextra): complex/nested types handling, refactor (905756a4a5)
+-   fix(connect-explorer-nextra): base path, disable dark mode, unit test update (5a8c4a9f39)
+-   feat(connect-explorer-nextra): params table for viewing schemas (2ed3a5b366)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 1.0.2
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)
