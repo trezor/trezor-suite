@@ -23,6 +23,7 @@
     },
     "dependencies": {
         "@suite-common/suite-config": "workspace:*",
+        "@trezor/env-utils": "workspace:*",
         "@trezor/suite": "workspace:*",
         "babel-loader": "^9.1.3",
         "babel-plugin-styled-components": "^2.1.4",

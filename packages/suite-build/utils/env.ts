@@ -1,6 +1,6 @@
 import type { Project } from './constants';
-import { getJWSPublicKey } from './jws';
 
+import { getJWSPublicKey } from '@trezor/env-utils';
 const {
     PROJECT,
     NODE_ENV,
