@@ -4,7 +4,15 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
-import { getContexts, log, openPopup, setConnectSettings } from '../support/helpers';
+import {
+    checkHasLogs,
+    downloadLogs,
+    getContexts,
+    log,
+    openPopup,
+    setConnectSettings,
+} from '../support/helpers';
+import { addDashesToSpaces } from '@trezor/utils';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
@@ -30,7 +38,20 @@ test.beforeAll(async () => {
     log(`url: ${url}`);
 });
 
-test.afterEach(async () => {
+test.afterEach(async ({ context: _context }, testInfo) => {
+    log('afterEach', 'starting');
+    const browserContext = context || _context;
+    const logPage = await browserContext.newPage();
+    await logPage.goto(`${connectSrc || url}log.html`);
+
+    const hasLogs = await checkHasLogs(logPage);
+    log(`hasLogs: ${hasLogs}`);
+    if (hasLogs) {
+        log('afterEach', 'downloading logs');
+        await downloadLogs(logPage, `./test-results/log-${addDashesToSpaces(testInfo.title)}.txt`);
+    } else {
+        log('afterEach', 'no logs');
+    }
     if (context) {
         // BrowserContext has to start fresh each test.
         // https://playwright.dev/docs/api/class-browsercontext#browser-context-close
