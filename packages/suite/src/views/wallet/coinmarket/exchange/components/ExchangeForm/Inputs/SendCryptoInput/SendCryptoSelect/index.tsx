@@ -64,7 +64,11 @@ const SendCryptoSelect = () => {
                         setValue(FIAT_INPUT, '');
                         const token = selected.value;
                         const invitySymbol = invityApiSymbolToSymbol(token).toLowerCase();
-                        const tokenData = tokens?.find(t => t.symbol === invitySymbol);
+                        const tokenData = tokens?.find(
+                            t =>
+                                t.symbol === invitySymbol &&
+                                t.contract === selected.token?.contract,
+                        );
                         if (ethereumTypeNetworkSymbols.includes(token)) {
                             setValue(CRYPTO_TOKEN, null);
                             setValue('outputs.0.address', account.descriptor);
