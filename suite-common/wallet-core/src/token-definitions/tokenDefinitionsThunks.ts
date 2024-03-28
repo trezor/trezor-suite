@@ -1,10 +1,10 @@
 import { decode, verify } from 'jws';
 import { D, G } from '@mobily/ts-belt';
 
+import { getJWSPublicKey } from '@trezor/env-utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getNetwork } from '@suite-common/wallet-utils';
-import { isNative } from '@trezor/env-utils';
 import {
     DefinitionType,
     JWS_SIGN_ALGORITHM,
@@ -57,9 +57,7 @@ export const getTokenDefinitionThunk = createThunk(
                 throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
             }
 
-            const authenticityPublicKey = isNative()
-                ? process.env.EXPO_PUBLIC_JWS_PUBLIC_KEY
-                : process.env.JWS_PUBLIC_KEY;
+            const authenticityPublicKey = getJWSPublicKey();
 
             if (G.isNullable(authenticityPublicKey)) {
                 throw Error('Public key check token definitions authenticity was not found.');
