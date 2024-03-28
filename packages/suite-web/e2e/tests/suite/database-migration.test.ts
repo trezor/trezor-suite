@@ -1,7 +1,8 @@
 // @group_migrations
 // @retry=2
 
-const from = '/release/22.7/web';
+// TODO: currently runs only on these. When there are some releases done via github, refactor this to run this from release "release - 1" branch to "release" branch
+const from = '/release/22.5/web';
 const to = '/develop/web';
 
 describe('Database migration', () => {
@@ -28,7 +29,7 @@ describe('Database migration', () => {
             btcAddress: 'bc1qkmdl2z9u503r6r5s6kyrczje60e2ye7ne7q53e',
         };
         // this test can be run only in sldev so we ignore baseUrl env variable
-        const baseUrl = 'https://suite.corp.sldev.cz/suite-web';
+        // const baseUrl = 'https://dev.suite.sldev.cz/suite-web';
         const btcAddressInputSelector = 'outputs[0].address';
         const workaroundBtcAddressInputSelector = 'outputs.0.address';
         const hiddenWalletSelector = '[data-test^="@switch-device/wallet-on-index"]';
@@ -47,7 +48,7 @@ describe('Database migration', () => {
 
         // FROM
 
-        cy.visit(baseUrl + from, {});
+        cy.visit(`/${from}`);
         cy.getTestElement('@onboarding/continue-button', { timeout: 40000 })
             .click()
             .getTestElement('@onboarding/exit-app-button')
@@ -106,7 +107,7 @@ describe('Database migration', () => {
         cy.task('stopEmu');
 
         // TO:
-        cy.visit(baseUrl + to, {});
+        cy.visit(`/${to}`);
         cy.getTestElement('@dashboard/graph', { timeout: 40000 }).should('be.visible');
         cy.getTestElement('@account-menu/btc/normal/0').click();
 
