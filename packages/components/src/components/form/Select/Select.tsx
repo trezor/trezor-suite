@@ -312,6 +312,7 @@ export const Select = ({
                 classNamePrefix={reactSelectClassNamePrefix}
                 openMenuOnFocus
                 closeMenuOnScroll={closeMenuOnScroll}
+                menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                 menuPortalTarget={menuPortalTarget}
                 styles={createSelectStyle(theme, elevation)}
                 onChange={handleOnChange}
