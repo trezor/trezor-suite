@@ -15,6 +15,7 @@ import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { Processes } from './Processes';
 import { PasswordManager } from './PasswordManager/PasswordManager';
+import { ViewOnly } from './ViewOnly';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -54,6 +55,9 @@ export const SettingsDebug = () => (
         </SettingsSection>
         <SettingsSection title="Password manager">
             <PasswordManager />
+        </SettingsSection>
+        <SettingsSection title="View only">
+            <ViewOnly />
         </SettingsSection>
     </SettingsLayout>
 );
