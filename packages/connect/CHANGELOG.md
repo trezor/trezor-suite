@@ -1,3 +1,29 @@
+# 9.2.2
+
+Main focus of this release is to allow saving device sessions in webextension, so user's don't have to enter the passphrase repeatedly.
+
+-   fix(connect): webextension save sessions (efed18e4ea)
+-   feat(connect): set default Solana fees (d8cfa5123d)
+-   fix(connect): add missing isCreatingAccount param validation in blockchainEstimateFee (698ebf625d)
+-   chore(components): replace Tippy for FloatingUI (a6e3c86759)
+-   fix(connect): enable changeLanguage in initialize mode (0af5c35f3f)
+-   chore(suite): remove goerli (8eb6b271a5)
+-   chore(connect): Add Rainbow Browser Extension to knownHosts (6213f06a58, e648074ec8)
+-   chore: crowdin translation update (aa9a0d5bfe)
+-   chore(connect): move logs to @trezor/utils (28c2b9fe57)
+-   chore(connect): add new CA pubkeys and update timestamp (9b8f4eeb81)
+-   fix(connect): be more defensive in descriptor parsing (7cf1f02dc4)
+-   fix(connect): More robust conversion of e.g. 44h to 44' (1ea29b5d6c)
+-   docs(connect-examples): udpate README with webextensions (8ed2db3ecc)
+-   chore: upgrade styled-components to v6 (c4bd333501)
+-   chore(connect-web): add dev URL used for tests (487742a930)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   fix(connect): no request device in suite (ad6d28e315)
+-   feat(connect): add translations for Trezor Firmware (a3ebb33571)
+-   chore(connect-common): add firmware binaries 2.7.0 (4c14b45bd6)
+-   fix(connect): fix connect for RN (#11489) (14814fd54b)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 9.2.1
 
 Main motivation for this release was [issue](https://github.com/trezor/trezor-suite/issues/11442) introduced in 9.2.0 release in @trezor/connect-web npm package.
