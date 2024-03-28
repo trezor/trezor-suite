@@ -61,6 +61,8 @@ if (isCI) {
     }
 }
 
+console.info('JSW: ', process.env.EXPO_PUBLIC_JWS_PUBLIC_KEY);
+
 export default ({ config }: ConfigContext): ExpoConfig => {
     const name = appNames[buildType];
     const bundleIdentifier = bundleIdentifiers[buildType];

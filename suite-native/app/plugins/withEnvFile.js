@@ -14,6 +14,9 @@ async function replaceEnvFile(config, { buildType }) {
 
     await fs.promises.writeFile(targetFilePath, baseFileContent, 'utf8');
 
+    const envVariablesContent = await fs.promises.readFile(targetFilePath, 'utf8');
+    console.log('envVariablesContent: ', envVariablesContent);
+
     return config;
 }
 
