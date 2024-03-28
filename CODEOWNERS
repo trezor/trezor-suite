@@ -16,7 +16,7 @@
 
 /packages/coinjoin @marekrjpolak @szymonlesisz
 
-/packages/components @dahaca @matejkriz
+/packages/components @jvaclavik @peter-sanderson
 
 /packages/connect @mroz22 @szymonlesisz @martykan
 
@@ -66,7 +66,7 @@
 
 /packages/transport-native @trezor/suite-mobile @Nodonisko
 
-/packages/theme @Nodonisko
+/packages/theme @Nodonisko @jvaclavik @peter-sanderson
 
 /packages/urls @marekrjpolak
 
@@ -76,7 +76,7 @@
 
 /packages/utxo-lib @szymonlesisz
 
-/packages/styles @Nodonisko
+/packages/styles @Nodonisko @jvaclavik @peter-sanderson
 
 /translations @alex-jerechinsky
 
