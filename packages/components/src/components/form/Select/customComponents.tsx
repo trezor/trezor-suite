@@ -1,7 +1,7 @@
 import { components, ControlProps, OptionProps, GroupHeadingProps } from 'react-select';
 import type { Option as OptionType } from './Select';
 
-interface ControlComponentProps extends ControlProps<OptionType, boolean> {
+export interface ControlComponentProps extends ControlProps<OptionType, boolean> {
     dataTest?: string;
 }
 
@@ -19,7 +19,7 @@ export const Control = ({ dataTest, ...controlProps }: ControlComponentProps) =>
     />
 );
 
-interface OptionComponentProps extends OptionProps<OptionType, boolean> {
+export interface OptionComponentProps extends OptionProps<OptionType, boolean> {
     dataTest?: string;
 }
 
