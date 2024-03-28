@@ -8,7 +8,6 @@ import { suiteNativeVersion } from './package.json';
 type BuildType = 'debug' | 'develop' | 'production';
 
 type ExpoPlugins = ExpoConfig['plugins'];
-type Plugin = Exclude<ExpoPlugins, undefined>[number];
 
 const bundleIdentifiers = {
     debug: 'io.trezor.suite.debug',
@@ -65,7 +64,7 @@ if (isCI) {
 }
 
 const getPlugins = (): ExpoPlugins => {
-    let plugins = [
+    const plugins = [
         [
             'expo-font',
             {
@@ -104,25 +103,21 @@ const getPlugins = (): ExpoPlugins => {
         ],
     ];
 
-    // Debug build does not have access to the Sentry token.
-    if (buildType !== 'debug')
-        // EXPLAINER: plugins.push("@sentry...") does not work for some reason during `expo prebuild` and
-        // this plugin is never included in the used array. For this reason the spread operator is used instead.
-        plugins = [
-            ...plugins,
-            [
-                '@sentry/react-native/expo',
-                {
-                    url: 'https://sentry.io/',
-                    authToken: process.env.SENTRY_AUTH_TOKEN,
-                    project: 'suite-native',
-                    organization: 'satoshilabs',
-                },
-            ] as Plugin,
-        ];
-
     return [
         ...plugins,
+        // EXPLAINER: plugins.push("@sentry...") does not work for some reason during `expo prebuild` and
+        // this plugin is never included in the final array. For this reason the spread operator is used instead.
+        ...(buildType === 'debug'
+            ? []
+            : [
+                  '@sentry/react-native/expo',
+                  {
+                      url: 'https://sentry.io/',
+                      authToken: process.env.SENTRY_AUTH_TOKEN,
+                      project: 'suite-native',
+                      organization: 'satoshilabs',
+                  },
+              ]),
         // These should come last
         './plugins/withRemoveXcodeLocalEnv.js',
         ['./plugins/withEnvFile.js', { buildType }],
