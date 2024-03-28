@@ -16,6 +16,7 @@ import { Transport } from './Transport';
 import { Processes } from './Processes';
 import { PasswordManager } from './PasswordManager/PasswordManager';
 import { ViewOnly } from './ViewOnly';
+import { TriggerHighlight } from './TriggerHighlight';
 
 export const SettingsDebug = () => (
     <SettingsLayout>
@@ -27,6 +28,7 @@ export const SettingsDebug = () => (
         <SettingsSection title="Debug">
             <GithubIssue />
             {!isWeb() && <WipeData />}
+            <TriggerHighlight />
         </SettingsSection>
         <SettingsSection title="Invity">
             <InvityApi />
