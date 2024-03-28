@@ -14,7 +14,7 @@ const StyledButton = styled(Button)`
     min-width: 30%;
 `;
 
-export const ReplaceTxButton = ({ finalize }: { finalize: boolean }) => {
+export const ReplaceTxButton = () => {
     const { device, isLocked } = useDevice();
     const { isLoading, signTransaction, getValues, composedLevels } = useRbfContext();
 
@@ -30,7 +30,7 @@ export const ReplaceTxButton = ({ finalize }: { finalize: boolean }) => {
                 isDisabled={isDisabled || isLoading}
                 onClick={signTransaction}
             >
-                <Translation id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'} />
+                <Translation id={'TR_REPLACE_TX'} />
             </StyledButton>
         </Wrapper>
     );

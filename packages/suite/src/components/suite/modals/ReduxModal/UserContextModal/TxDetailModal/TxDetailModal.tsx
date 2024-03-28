@@ -87,7 +87,6 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
         rbfForm ? 'CHANGE_FEE' : 'DETAILS',
     );
     const [tab, setTab] = useState<TabID | undefined>(undefined);
-    const [finalize, setFinalize] = useState<boolean>(false);
 
     // const confirmations = getConfirmations(tx, blockchain.blockHeight);
     // TODO: replace this part will be refactored after blockbook implementation:
@@ -151,7 +150,6 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                                         variant="tertiary"
                                         onClick={() => {
                                             setSection('DETAILS');
-                                            setFinalize(false);
                                             setTab(undefined);
                                         }}
                                         icon="ARROW_LEFT"
@@ -162,9 +160,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
 
                                 <Middle>
                                     <SectionTitle>
-                                        <Translation
-                                            id={finalize ? 'TR_FINALIZE_TX' : 'TR_REPLACE_TX'}
-                                        />
+                                        <Translation id={'TR_REPLACE_TX'} />
                                     </SectionTitle>
                                 </Middle>
                             </>
@@ -172,7 +168,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
 
                         <Right>
                             {section === 'DETAILS' && (
-                                // change fee and finalize tx buttons visible only in details
+                                // change fee tx buttons visible only in details
                                 <>
                                     <Button
                                         variant="tertiary"
@@ -183,20 +179,6 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
                                     >
                                         <Translation id="TR_BUMP_FEE" />
                                     </Button>
-
-                                    {network?.networkType === 'bitcoin' && (
-                                        // finalize button only possible in BTC rbf
-                                        <Button
-                                            variant="tertiary"
-                                            onClick={() => {
-                                                setFinalize(true);
-                                                setSection('CHANGE_FEE');
-                                                setTab(undefined);
-                                            }}
-                                        >
-                                            <Translation id="TR_FINALIZE_TX" />
-                                        </Button>
-                                    )}
                                 </>
                             )}
                         </Right>
@@ -207,7 +189,6 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
             {section === 'CHANGE_FEE' ? (
                 <ChangeFee
                     tx={tx}
-                    finalize={finalize}
                     chainedTxs={chainedTxs}
                     showChained={() => {
                         setSection('DETAILS');
