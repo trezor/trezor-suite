@@ -15,7 +15,7 @@ const IconWrapper = styled.div<{ $bgColor: string }>`
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: ${props => props.$bgColor};
+    background-color: ${({ $bgColor }) => $bgColor};
     border-radius: 4px;
     margin: 0 3px;
     padding: 4px;
@@ -49,7 +49,7 @@ interface WithEditableProps {
  */
 export const withEditable =
     (WrappedComponent: FunctionComponent<PropsWithChildren>) =>
-    ({ onSubmit, onBlur, ...props }: WithEditableProps) => {
+    ({ onSubmit, onBlur, originalValue, ...props }: WithEditableProps) => {
         const [touched, setTouched] = useState(false);
         const [value, setValue] = useState('');
 
@@ -60,14 +60,14 @@ export const withEditable =
             (value?: string | null) => {
                 const trimmedValue = (value ?? '').trim();
 
-                if (props.originalValue && trimmedValue === props.originalValue.trim()) {
+                if (originalValue && trimmedValue === originalValue.trim()) {
                     return onBlur();
                 }
 
                 onSubmit(trimmedValue);
                 onBlur();
             },
-            [props, onSubmit, onBlur],
+            [originalValue, onSubmit, onBlur],
         );
 
         useEffect(() => {
@@ -75,10 +75,10 @@ export const withEditable =
                 return;
             }
 
-            if (props.originalValue) {
-                setValue(props.originalValue);
+            if (originalValue) {
+                setValue(originalValue);
             }
-        }, [props.originalValue, divRef, touched, setValue]);
+        }, [originalValue, divRef, touched, setValue]);
 
         useEffect(() => {
             if (!touched) {
