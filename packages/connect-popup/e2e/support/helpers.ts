@@ -153,6 +153,9 @@ export const setConnectSettings = async (
             connectSrc,
         );
     }
+    if (process.env.CORE_IN_POPUP) {
+        await waitAndClick(explorerPage, ['@checkbox/useCoreInPopup']);
+    }
     await waitAndClick(explorerPage, ['@submit-button']);
 };
 

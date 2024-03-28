@@ -177,13 +177,6 @@ export class PopupManager extends EventEmitter {
     open() {
         const src = this.settings.popupSrc;
 
-        if (this.settings.useCoreInPopup) {
-            // Timeout not used in Core mode, we can't run showPopupRequest with no DOM
-            this.openWrapper(src);
-
-            return;
-        }
-
         this.popupPromise = createDeferred(POPUP.LOADED);
         this.openWrapper(src);
 
@@ -193,21 +186,26 @@ export class PopupManager extends EventEmitter {
                 chrome.tabs.get(this.popupWindow.tab.id, tab => {
                     if (!tab) {
                         // If no reference to popup window, it was closed by user or by this.close() method.
-                        this.emit(POPUP.CLOSED);
+                        this.emitClosed();
                         this.clear();
                     }
                 });
             } else if (this.popupWindow.mode === 'window' && this.popupWindow.window.closed) {
                 this.clear();
-                this.emit(POPUP.CLOSED);
+                this.emitClosed();
             }
         }, POPUP_CLOSE_INTERVAL);
+
+        if (this.settings.useCoreInPopup) {
+            // Open timeout not used in Core mode, we can't run showPopupRequest with no DOM
+            return;
+        }
 
         // open timeout will be cancelled by POPUP.BOOTSTRAP message
         this.openTimeout = setTimeout(() => {
             this.clear();
             showPopupRequest(this.open.bind(this), () => {
-                this.emit(POPUP.CLOSED);
+                this.emitClosed();
             });
         }, POPUP_OPEN_TIMEOUT);
     }
@@ -285,6 +283,7 @@ export class PopupManager extends EventEmitter {
     };
 
     handleCoreMessage(message: Message<CoreEventMessage>) {
+        this.logger.debug('handleCoreMessage', message);
         if (message.type === POPUP.CORE_LOADED) {
             this.channel.postMessage({
                 type: POPUP.HANDSHAKE,
@@ -293,13 +292,7 @@ export class PopupManager extends EventEmitter {
             });
             this.handshakePromise?.resolve();
         } else if (message.type === POPUP.CLOSED) {
-            // When popup is closed we should create a not-real response as if the request was interrupted.
-            // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
-            // it was interrupted so we safely fake it.
-            this.channel.resolveMessagePromises({
-                code: 'Method_Interrupted',
-                error: POPUP.CLOSED,
-            });
+            this.emitClosed();
         }
     }
 
@@ -419,6 +412,7 @@ export class PopupManager extends EventEmitter {
         }
 
         this.popupWindow = undefined;
+        this.channel.clear();
     }
 
     async postMessage(message: CoreEventMessage) {
@@ -431,7 +425,7 @@ export class PopupManager extends EventEmitter {
         if (!this.popupWindow && message.type !== UI.REQUEST_UI_WINDOW && this.openTimeout) {
             this.clear();
             showPopupRequest(this.open.bind(this), () => {
-                this.emit(POPUP.CLOSED);
+                this.emitClosed();
             });
 
             return;
@@ -447,5 +441,18 @@ export class PopupManager extends EventEmitter {
         } else if (this.popupWindow?.mode === 'tab') {
             this.channel.postMessage(message);
         }
+    }
+
+    public emitClosed() {
+        if (this.settings.useCoreInPopup) {
+            // When popup is closed we should create a not-real response as if the request was interrupted.
+            // Because when popup closes and TrezorConnect is living there it cannot respond, but we know
+            // it was interrupted so we safely fake it.
+            this.channel.resolveMessagePromises({
+                code: 'Method_Interrupted',
+                error: POPUP.CLOSED,
+            });
+        }
+        this.emit(POPUP.CLOSED);
     }
 }

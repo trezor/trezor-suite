@@ -3234,18 +3234,29 @@
         </div>
 
         <script type="text/javascript" async="false">
-            const message = {
-                type: 'popup-bootstrap',
-                channel: {
-                    here: '@trezor/connect-popup',
-                    peer: '@trezor/connect-web',
-                },
+            const channel = {
+                here: '@trezor/connect-popup',
+                peer: '@trezor/connect-web',
             };
+            const message = { type: 'popup-bootstrap', channel };
             if (window.opener) {
                 window.opener.postMessage(message, '*');
             } else {
                 window.postMessage(message, '*');
             }
+
+            // WIP move this somewhere where it actually makes sense
+            window.addEventListener('message', event => {
+                console.log('incoming message', event.data);
+                if (event.data.type === 'channel-handshake-request') {
+                    const handshakeMessage = { type: 'channel-handshake-confirm', channel };
+                    if (window.opener) {
+                        window.opener.postMessage(handshakeMessage, '*');
+                    } else {
+                        window.postMessage(handshakeMessage, '*');
+                    }
+                }
+            });
 
             const popupScript = document.createElement('script');
             popupScript.setAttribute('type', 'text/javascript');

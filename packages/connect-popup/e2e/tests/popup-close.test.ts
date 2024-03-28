@@ -1,12 +1,10 @@
 import { test, expect, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { createDeferred, Deferred, addDashesToSpaces } from '@trezor/utils';
+import { createDeferred, Deferred } from '@trezor/utils';
 import {
     findElementByDataTest,
     waitAndClick,
     log,
-    downloadLogs,
-    checkHasLogs,
     openPopup,
     waitForPopup,
     getContexts,
@@ -15,6 +13,8 @@ import {
 
 const url = process.env.URL || 'http://localhost:8088/';
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const isCoreInPopup = process.env.CORE_IN_POPUP === 'true';
+const skipCheck = isWebExtension || isCoreInPopup;
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
@@ -152,8 +152,9 @@ test.beforeAll(async () => {
         }
         log('afterEach', 'starting');
         const context = browserContext || _context;
-        const logPage = await context.newPage();
-        await logPage.goto(`${url}log.html`);
+        /* const logPage = await context.newPage();
+        const logUrl = url.split('?')[0] + 'log.html';
+        await logPage.goto(logUrl);
 
         const hasLogs = await checkHasLogs(logPage);
         log(`hasLogs: ${hasLogs}`);
@@ -165,13 +166,17 @@ test.beforeAll(async () => {
             );
         } else {
             log('afterEach', 'no logs');
-        }
+        } */
 
         // For tests including annotation `skip-after-flow` we don't want to run this.
         const skipAfterFlow = testInfo.annotations.find(
             annotation => annotation.type === 'skip-after-flow',
         );
-        if (skipAfterFlow) return;
+        if (skipAfterFlow) {
+            log('skipAfterFlow');
+
+            return;
+        }
 
         log('afterEach', 'go to verifyMessage');
         await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
@@ -183,6 +188,19 @@ test.beforeAll(async () => {
         [popup] = await openPopup(context, explorerPage, isWebExtension);
         log('afterEach', 'waiting for popup load state');
         await popup.waitForLoadState('load');
+
+        if (isCoreInPopup) {
+            // Acquire device if not acquired
+            try {
+                await popup.waitForSelector('.explain.unacquired', {
+                    state: 'visible',
+                    timeout: 10000,
+                });
+                await popup.click('.explain.unacquired');
+            } catch (error) {
+                // May appear or not
+            }
+        }
 
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
         await popup.click('button.confirm');
@@ -211,7 +229,7 @@ test.beforeAll(async () => {
 
         if (bridgeVersion === '2.0.31') {
             log('checking requests');
-            if (!isWebExtension) {
+            if (!skipCheck) {
                 // Responses in webextension with service-worker and core running in popup ara happening in
                 // popup and this test is expecting those to happen in explorer. So we skip those for webextension for now.
                 expect(responses[12].url).toEqual('http://127.0.0.1:21325/post/2');
@@ -229,7 +247,7 @@ test.beforeAll(async () => {
 
         await explorerPage.waitForTimeout(WAIT_AFTER_TEST);
 
-        if (!isWebExtension) {
+        if (!skipCheck) {
             responses.forEach(response => {
                 expect(response.status).toEqual(200);
                 // no post endpoint is used
@@ -238,7 +256,7 @@ test.beforeAll(async () => {
         }
 
         await popup.click("button[data-test='@connect-ui/error-close-button']");
-        if (!isWebExtension) {
+        if (!skipCheck) {
             await releasePromise!.promise;
         }
 
@@ -258,7 +276,7 @@ test.beforeAll(async () => {
             expect(response.url).not.toContain('post');
         });
 
-        if (!isWebExtension) {
+        if (!skipCheck) {
             // 'device disconnected during action' error
             expect(responses[12]).toMatchObject({
                 url: 'http://127.0.0.1:21325/call/2',
@@ -268,7 +286,7 @@ test.beforeAll(async () => {
 
         log('waiting to click @connect-ui/error-close-button');
         await popup.click("button[data-test='@connect-ui/error-close-button']");
-        if (!isWebExtension) {
+        if (!skipCheck) {
             log('waitign for release promise to be resolved');
             await releasePromise!.promise;
         }
@@ -492,7 +510,10 @@ test.beforeAll(async () => {
         [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
         popupClosedPromise = new Promise(resolve => {
-            popup.on('close', () => resolve(undefined));
+            popup.on('close', () => {
+                log('popup closed event');
+                resolve(undefined);
+            });
         });
 
         log('waiting for permissions button');
@@ -502,5 +523,6 @@ test.beforeAll(async () => {
         await popup.close();
         log('Wait for popup to close to consider the test successful.');
         await popupClosedPromise;
+        log('popup closed');
     });
 });

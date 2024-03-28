@@ -52,6 +52,7 @@ export async function bridgeApiCall(options: HttpRequestOptions) {
         headers: {},
         signal: options.signal,
         timeout: options.timeout,
+        keepalive: true,
     };
 
     fetchOptions.headers = applyContentTypeHeader({

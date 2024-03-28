@@ -349,11 +349,11 @@ const onCall = async (message: IFrameCallMessage) => {
             // start validation process
             method.init();
             await method.initAsync?.();
+            waitForFirstMethod.resolve();
+            _callMethods.push(method);
 
             return method;
         });
-        waitForFirstMethod.resolve();
-        _callMethods.push(method);
     } catch (error) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
         postMessage(createResponseMessage(responseID, false, { error }));
@@ -710,6 +710,8 @@ const onCall = async (message: IFrameCallMessage) => {
 
             await device.cleanup();
 
+            postMessage(response);
+
             closePopup();
             cleanup();
 
@@ -722,7 +724,6 @@ const onCall = async (message: IFrameCallMessage) => {
                     _deviceList.removeAuthPenalty(device);
                 }
             }
-            postMessage(response);
         }
     }
 };

@@ -42,8 +42,12 @@ fixtures.forEach(f => {
         const page = await browserInstance.newPage();
         if (f.setTrustedHost) {
             await setConnectSettings(page, url, { trustedHost: true });
+            await page.click("div.leaf:has-text('Bitcoin')");
+            await page.click("a[href='#/method/verifyMessage']");
+        } else {
+            await page.goto(`${url}${f.queryString}#/method/verifyMessage`);
         }
-        await page.goto(`${url}${f.queryString}#/method/verifyMessage`);
+        page.waitForTimeout(1000);
 
         [popup] = await Promise.all([
             page.waitForEvent('popup'),

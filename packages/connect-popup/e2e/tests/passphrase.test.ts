@@ -336,6 +336,18 @@ test('passphrase mismatch', async ({ page }) => {
 
     [popup] = await Promise.all([page.waitForEvent('popup')]);
 
+    // Acquire device if not acquired
+    try {
+        log('handling if unacquired');
+        await popup.waitForSelector('.explain.unacquired', {
+            state: 'visible',
+            timeout: 10000,
+        });
+        await popup.click('.explain.unacquired');
+    } catch (error) {
+        // May appear or not
+    }
+
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
 

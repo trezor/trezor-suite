@@ -260,8 +260,8 @@ connect-popup:
   dependencies:
     - install
     - connect-web build
-  only:
-    <<: *run_everything_rules
+  #only:
+  #  <<: *run_everything_rules
 
 connect-popup manual:
   extends: .e2e connect-popup
@@ -271,6 +271,25 @@ connect-popup manual:
   except:
     <<: *run_everything_rules
   when: manual
+
+connect-popup core-in-popup:
+  extends: .e2e connect-popup
+  variables:
+    CORE_IN_POPUP: "true"
+    URL: ${DEV_SERVER_URL}/connect/${CI_COMMIT_REF_NAME}/?core-in-popup=true
+  dependencies:
+    - install
+    - connect-web build
+  parallel:
+    matrix:
+      - TEST_FILE: ["methods.test"]
+      - TEST_FILE: ["popup-close.test"]
+      - TEST_FILE: ["popup-pages.test"]
+      - TEST_FILE: ["browser-support.test"]
+      - TEST_FILE: ["permissions.test"]
+      # - TEST_FILE: ["transport.test"] # behaves differently with core-in-popup, need different test
+      # - TEST_FILE: ["passphrase.test"] # currently saving passphrases is not supported in core-in-popup
+      # - TEST_FILE: ["unchained.test"] # unchained would need to implement core-in-popup
 
 .connect-popup legacy npm package base:
   extends: .e2e connect-popup
@@ -350,8 +369,8 @@ connect-explorer-webextension:
   dependencies:
     - install
     - connect-web build
-  only:
-    <<: *run_everything_rules
+  #only:
+  #  <<: *run_everything_rules
 
 connect-explorer-webextension manual:
   extends: .e2e connect-explorer-webextension

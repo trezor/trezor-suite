@@ -59,6 +59,8 @@ const escapeHtml = (payload: any) => {
 };
 
 export const handleUIAffectingMessage = (message: CoreEventMessage) => {
+    // WIP debug
+    console.log('popup UI message', message.type, message.payload);
     switch (message.type) {
         case POPUP.METHOD_INFO:
             setState({
@@ -324,6 +326,20 @@ const handleMessageInCoreMode = (
     handleUIAffectingMessage(message);
 };
 
+const handleWindowBeforeUnload = (_e: BeforeUnloadEvent) => {
+    if (getState().core) {
+        const core = ensureCore();
+        core.handleMessage({
+            type: POPUP.CLOSED,
+            payload: null,
+        });
+    }
+};
+
+const handleParentClosed = () => {
+    window.close();
+};
+
 const handleLogMessage = (event: MessageEvent<IFrameLogRequest>) => {
     const { data } = event;
     if (!data) return;
@@ -371,6 +387,15 @@ const init = async (payload: PopupInit['payload']) => {
 
         if (payload.useCore) {
             addWindowEventListener('message', handleMessageInCoreMode, false);
+            addWindowEventListener('beforeunload', handleWindowBeforeUnload, false);
+            if (window.opener) {
+                // Most reliable way to detect parent close seems to be to check it periodically
+                setInterval(() => {
+                    if (!window.opener || window.opener.closed) {
+                        handleParentClosed();
+                    }
+                }, 1000);
+            }
             await initCoreInPopup(payload, logWriterFactory);
         } else {
             addWindowEventListener('message', handleMessageInIframeMode, false);
