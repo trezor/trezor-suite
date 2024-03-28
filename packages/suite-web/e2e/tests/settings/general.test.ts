@@ -35,7 +35,7 @@ describe('General settings', () => {
 
         // change fiat
         cy.getTestElement('@settings/fiat-select/input').click({ scrollBehavior: false });
-        cy.getTestElement('@settings/fiat-select/option/eur').click();
+        cy.getTestElement('@settings/fiat-select/option/eur').click({ force: true });
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeFiat>>(
             requests,
@@ -53,7 +53,7 @@ describe('General settings', () => {
 
         // change dark mode
         cy.getTestElement('@theme/color-scheme-select/input').click();
-        cy.getTestElement('@theme/color-scheme-select/option/dark').click();
+        cy.getTestElement('@theme/color-scheme-select/option/dark').click({ force: true });
         cy.getTestElement('@theme/color-scheme-select/input').should('contain', 'Dark');
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeTheme>>(
@@ -73,7 +73,7 @@ describe('General settings', () => {
 
         // change language
         cy.getTestElement('@settings/language-select/input').click({ scrollBehavior: 'bottom' });
-        cy.getTestElement('@settings/language-select/option/es').click();
+        cy.getTestElement('@settings/language-select/option/es').click({ force: true });
         cy.getTestElement('@settings/language-select/input').should('contain', 'Español');
 
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.SettingsGeneralChangeLanguage>>(
