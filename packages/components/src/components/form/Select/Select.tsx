@@ -1,232 +1,214 @@
-import { useCallback, useRef, ReactNode } from 'react';
-import ReactSelect, { Props as ReactSelectProps, StylesConfig, SelectInstance } from 'react-select';
-import styled, { css, DefaultTheme, useTheme } from 'styled-components';
-import {
-    borders,
-    spacings,
-    spacingsPx,
-    typography,
-    typographyStylesBase,
-    zIndices,
-    Elevation,
-    mapElevationToBackground,
-    nextElevation,
-} from '@trezor/theme';
+import { useCallback, useEffect, useRef, useState, ReactNode, KeyboardEvent } from 'react';
+import ReactSelect, {
+    components as ReactSelectComponents,
+    Props as ReactSelectProps,
+    Options,
+    GroupBase,
+    OptionsOrGroups,
+    StylesConfig,
+    ControlProps,
+    OptionProps,
+    SelectInstance,
+    GroupHeadingProps,
+} from 'react-select';
+import styled, { css, useTheme } from 'styled-components';
 
-import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../InputStyles';
-import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
-import { InputState, InputSize } from '../inputTypes';
-import { Control, GroupHeading, Option } from './customComponents';
-import { useOnKeyDown } from './useOnKeyDown';
-import { useDetectPortalTarget } from './useDetectPortalTarget';
-import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
-import { useElevation } from '../../ElevationContext/ElevationContext';
-import { TransientProps } from '../../../utils/transientProps';
+import { FONT_WEIGHT, FONT_SIZE } from '../../../config/variables';
+import { animations } from '../../../config';
+import { Label, LabelLeft, INPUT_BORDER_WIDTH, getInputStateTextColor } from '../InputStyles';
+import { Colors, zIndices } from '@trezor/theme';
+import { InputSize, InputState } from '../inputTypes';
+import { UIVariant } from '../../../config/types';
+import { MODAL_CONTENT_ID } from '../../..';
 
 const reactSelectClassNamePrefix = 'react-select';
 
-const createSelectStyle = (
-    theme: DefaultTheme,
-    elevation: Elevation,
-): StylesConfig<Option, boolean> => ({
+const selectStyle = (theme: Colors): StylesConfig<Option, boolean> => ({
+    singleValue: base => ({
+        ...base,
+        display: 'flex',
+        alignItems: 'center',
+        width: '100%',
+        maxWidth: 'initial',
+        margin: 0,
+        padding: '0 8px',
+        color: theme.textDefault,
+        // fontSize: NEUE_FONT_SIZE.SMALL,
+        // fontWeight: FONT_WEIGHT.MEDIUM,
+        borderStyle: 'none',
+        // justifyContent: isClean ? 'flex-end' : 'flex-start',
+        position: 'static',
+        transform: 'none',
+        '&:hover': {
+            // cursor: hideTextCursor || !isSearchable ? 'pointer' : 'text',
+        },
+    }),
+    control: (base, {}) => {
+        // const borderColorBase = menuIsOpen ? theme.TYPE_LIGHT_GREY : theme.STROKE_GREY;
+        // const borderColor = inputState
+        //     ? getInputStateTextColor(inputState, theme)
+        //     : borderColorBase;
+
+        return {
+            ...base,
+            display: 'flex',
+            alignItems: 'center',
+            fontSize: FONT_SIZE.SMALL,
+            // height: isClean ? 22 : INPUT_HEIGHTS[variant],
+            // borderRadius: INPUT_BORDER_RADIUS,
+            borderWidth: INPUT_BORDER_WIDTH,
+            // borderColor,
+            // borderStyle: isClean ? 'none' : 'solid',
+            // backgroundColor: isDisabled && !isClean ? theme.BG_GREY : 'transparent',
+            boxShadow: 'none',
+            flexWrap: 'nowrap',
+            cursor: 'pointer',
+            // '&:hover': {
+            //     borderColor: darken(
+            //         theme.HOVER_DARKEN_FILTER,
+            //         inputState ? getInputStateTextColor(inputState, theme) : borderColorBase,
+            //     ),
+            //     [`.${reactSelectClassNamePrefix}__dropdown-indicator`]: {
+            //         color: darken(theme.HOVER_DARKEN_FILTER, theme.STROKE_GREY),
+            //     },
+            // },
+            // '&:focus-within': {
+            //     borderColor: inputState
+            //         ? darken(theme.HOVER_DARKEN_FILTER, getInputStateTextColor(inputState, theme))
+            //         : theme.TYPE_LIGHT_GREY,
+            //     [`.${reactSelectClassNamePrefix}__dropdown-indicator`]: {
+            //         color: theme.TYPE_LIGHT_GREY,
+            //         transform: menuIsOpen ? 'rotate(180deg)' : 'none',
+            //     },
+            // },
+        };
+    },
+    valueContainer: base => ({
+        ...base,
+        border: 0,
+        // padding: isClean ? '0 3px 0 0' : '2px 8px',
+        // fontWeight: isClean ? FONT_WEIGHT.MEDIUM : FONT_WEIGHT.REGULAR,
+        // minWidth,
+        display: 'flex',
+        flexWrap: 'nowrap',
+        // justifyContent: isClean ? 'flex-end' : 'flex-start',
+    }),
+    indicatorSeparator: () => ({
+        display: 'none',
+    }),
+    dropdownIndicator: (base, { isDisabled }) => ({
+        ...base,
+        // display: !withDropdownIndicator || isDisabled ? 'none' : 'flex',
+        alignItems: 'center',
+        // color: isClean ? theme.TYPE_LIGHTER_GREY : theme.STROKE_GREY,
+        cursor: 'pointer',
+        path: '',
+        // padding: isClean ? 0 : '10px 16px',
+        transition: `transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1)`,
+    }),
+    menu: base => ({
+        ...base,
+        width: 'max-content',
+        minWidth: '100%',
+        // background: theme.BG_WHITE_ALT,
+        margin: '5px 0',
+        borderRadius: '4px',
+        zIndex: zIndices.base,
+    }),
     menuPortal: base => ({
         ...base,
         zIndex: zIndices.modal /* Necessary to be visible inside a Modal */,
     }),
-    // menu styles are here because of the portal
-    menu: base => ({
+    menuList: base => ({
         ...base,
-        // should be the same as menuStyle !!!
-        display: 'flex',
-        flexDirection: 'column',
-        flex: 1,
-        padding: spacings.sm,
-        minWidth: 140,
-        borderRadius: borders.radii.md,
-        background: theme.backgroundSurfaceElevation1,
-        boxShadow: theme.boxShadowElevated,
-        zIndex: zIndices.modal,
-        animation: `${DROPDOWN_MENU.getName()} 0.15s ease-in-out`,
-        listStyleType: 'none',
-        overflow: 'hidden',
-        // when theme changes from light to dark
-        transition: 'background 0.3s',
-        border: 'none',
+        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.2)',
+        // background: theme.BG_WHITE_ALT,
+        borderRadius: 8,
+        padding: 8,
     }),
     groupHeading: base => ({
         ...base,
-        margin: 0,
-        padding: spacings.xs,
-        ...{
-            ...typographyStylesBase.label,
-            lineHeight: `${typographyStylesBase.label.lineHeight}px`,
-        },
+        // fontSize: NEUE_FONT_SIZE.TINY,
         textTransform: 'initial',
+        margin: 0,
+        padding: 8,
     }),
     group: base => ({
         ...base,
         padding: 0,
-
         '& + &': {
-            paddingTop: spacingsPx.xxs,
-            marginTop: spacingsPx.xxs,
+            paddingTop: 4,
+            marginTop: 4,
         },
     }),
     option: (base, { isFocused }) => ({
         ...base,
-        padding: `${spacingsPx.xs} ${spacingsPx.sm}`,
-        borderRadius: borders.radii.xxs,
-        background: isFocused
-            ? mapElevationToBackground({ theme, $elevation: nextElevation[elevation] })
-            : 'transparent',
-
-        color: theme.textDefault,
-        ...{
-            ...typographyStylesBase.body,
-            lineHeight: `${typographyStylesBase.body.lineHeight}px`,
+        // color: theme.TYPE_DARK_GREY,
+        // background: isFocused ? theme.BG_WHITE_ALT_HOVER : theme.BG_WHITE_ALT,
+        borderRadius: 5,
+        padding: 8,
+        // fontSize: NEUE_FONT_SIZE.SMALL,
+        fontWeight: FONT_WEIGHT.MEDIUM,
+        '&:hover': {
+            cursor: 'pointer',
         },
-        cursor: 'pointer',
-
         '&:active': {
-            background: theme.backgroundSurfaceElevation0,
+            // background: theme.BG_WHITE_ALT_HOVER,
         },
+    }),
+    input: base => ({
+        ...base,
+        // width: hideTextCursor ? 2 : 'auto',
+        // margin: hideTextCursor ? 0 : 2,
+        // fontSize: NEUE_FONT_SIZE.SMALL,
+        fontWeight: FONT_WEIGHT.MEDIUM,
+        padding: '2px 6px',
+        // color: hideTextCursor ? 'transparent' : theme.TYPE_DARK_GREY,
+        '& input': {
+            // textShadow: hideTextCursor ? `0 0 0 ${theme.TYPE_DARK_GREY} !important` : 'none',
+        },
+    }),
+    placeholder: base => ({
+        ...base,
+        fontWeight: FONT_WEIGHT.MEDIUM,
+        // fontSize: NEUE_FONT_SIZE.SMALL,
+        padding: '0 6px',
+        position: 'absolute',
     }),
 });
 
-type WrapperProps = TransientProps<
-    Pick<
-        SelectProps,
-        'isClean' | 'isDisabled' | 'minValueWidth' | 'size' | 'menuIsOpen' | 'isSearchable'
-    >
-> & {
-    $isWithLabel: boolean;
-    $isWithPlaceholder: boolean;
-    $hasBottomPadding: boolean;
-    $elevation: Elevation;
-};
-
-const Wrapper = styled.div<WrapperProps>`
-    /* stylelint-disable selector-class-pattern */
-    position: relative;
+const Wrapper = styled.div<Pick<SelectProps, 'isClean'>>`
     width: 100%;
-    padding-bottom: ${({ $hasBottomPadding: hasBottomPadding }) =>
-        hasBottomPadding ? `${BOTTOM_TEXT_MIN_HEIGHT}px` : '0'};
 
-    ${({ $isClean }) =>
-        !$isClean &&
+    .${reactSelectClassNamePrefix}__menu {
+    }
+
+    ${({ isClean }) =>
+        !isClean &&
         css`
             display: flex;
             flex-direction: column;
             justify-content: flex-start;
         `}
-
-    .${reactSelectClassNamePrefix}__dropdown-indicator {
-        align-items: center;
-        color: ${({ theme, $isDisabled }) =>
-            $isDisabled ? theme.iconDisabled : theme.iconSubdued};
-        padding: 0;
-        transition: transform 0.2s cubic-bezier(0.68, -0.02, 0.21, 1.1);
-        cursor: pointer;
-    }
-
-    .${reactSelectClassNamePrefix}__control {
-        padding: ${({ $isClean }) => ($isClean ? 0 : `0 ${spacingsPx.md}`)};
-        display: flex;
-        align-items: center;
-        flex-wrap: nowrap;
-        height: ${({ $isClean, $size }) => ($isClean ? 22 : $size && INPUT_HEIGHTS[$size])}px;
-        border-style: ${({ $isClean }) => ($isClean ? 'none' : 'solid')};
-        box-shadow: none;
-        cursor: pointer;
-        ${baseInputStyle}
-        background-color: ${({ $isClean }) => $isClean && 'transparent !important'};
-
-        &:hover:not(:focus-within) {
-            border-color: transparent;
-        }
-
-        &:focus-within {
-            .${reactSelectClassNamePrefix}__dropdown-indicator {
-                transform: rotate(180deg);
-            }
-        }
-    }
-
-    .${reactSelectClassNamePrefix}__placeholder {
-        display: ${({ $isWithPlaceholder }) => !$isWithPlaceholder && 'none'};
-        color: ${({ theme, $isDisabled }) =>
-            $isDisabled ? theme.textDisabled : theme.textSubdued};
-        ${typography.body}
-    }
-
-    .${reactSelectClassNamePrefix}__value-container {
-        display: flex;
-        flex-wrap: nowrap;
-        min-width: ${({ $minValueWidth }) => $minValueWidth};
-        justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
-        padding: 0;
-        border: none;
-    }
-
-    .${reactSelectClassNamePrefix}__single-value {
-        position: static;
-        display: flex;
-        align-items: center;
-        justify-content: ${({ $isClean }) => ($isClean ? 'flex-end' : 'flex-start')};
-        width: 100%;
-        max-width: initial;
-        color: ${({ $isDisabled, theme }) =>
-            $isDisabled ? theme.textDisabled : theme.textDefault};
-        border-style: none;
-        transform: none;
-        margin-left: 0;
-
-        &:hover {
-            cursor: ${({ $isSearchable }) => $isSearchable && 'text'};
-        }
-    }
-
-    .${reactSelectClassNamePrefix}__input {
-        color: ${({ theme }) => theme.textDefault} !important;
-
-        ${typography.body};
-    }
-
-    ${({ $isClean, $size }) =>
-        !$isClean &&
-        css`
-            .${reactSelectClassNamePrefix}__indicators {
-                position: absolute;
-                top: ${$size === 'small' ? spacingsPx.xs : spacingsPx.md};
-                right: ${spacingsPx.md};
-            }
-        `}
-
-    .${reactSelectClassNamePrefix}__indicator-separator {
-        display: none;
-    }
-
-    .${reactSelectClassNamePrefix}__menu {
-        ${menuStyle}
-        border: none;
-        z-index: ${zIndices.base};
-    }
 `;
 
-const SelectLabel = styled(Label)`
-    /* move up when input is focused OR has a placeholder OR has value  */
-    div:focus-within ~ &,
-    div:has(div.react-select__single-value:not(:empty)) ~ &,
-    div:has(div.react-select__placeholder:not(:empty)) ~ & {
-        transform: ${LABEL_TRANSFORM};
-    }
+const BottomText = styled.div<Pick<SelectProps, 'inputState'>>`
+    display: flex;
+    font-size: ${FONT_SIZE.TINY};
+    color: ${({ inputState, theme }) => getInputStateTextColor(inputState, theme)};
+    padding: 6px 10px 0 10px;
+    min-height: 27px;
 `;
 
 // Prevent closing the menu when scrolling through options.
 const closeMenuOnScroll = (e: Event) =>
     !(e.target as Element)?.className?.startsWith(reactSelectClassNamePrefix);
 
-export type Option = any;
+type Option = any;
+
+/** Custom Type Guards to check if options are grouped or not */
+const isOptionGrouped = (x: OptionsOrGroups<Option, GroupBase<Option>>): x is GroupBase<Option>[] =>
+    (x as readonly GroupBase<Option>[])[0]?.options !== undefined;
 
 interface CommonProps extends Omit<ReactSelectProps<Option>, 'onChange'> {
     isClean?: boolean;
@@ -270,12 +252,160 @@ export const Select = ({
     'data-test': dataTest,
     ...props
 }: SelectProps) => {
+    const [menuPortalTarget, setMenuPortalTarget] = useState<HTMLElement | null>(null);
     const selectRef = useRef<SelectInstance<Option, boolean>>(null);
-    const { elevation } = useElevation();
-
+    const lastKeyPressTimestamp = useRef(0);
+    const searchedTerm = useRef('');
     const theme = useTheme();
-    const onKeyDown = useOnKeyDown(selectRef, useKeyPressScroll);
-    const menuPortalTarget = useDetectPortalTarget(selectRef);
+
+    const findOption = useCallback((options: Options<Option>, query: string) => {
+        let foundOption;
+        let lowestIndexOfFirstOccurrence = Infinity;
+
+        for (let i = 0; i < options.length; i++) {
+            const indexOfFirstOccurrence = (options[i].label || '')
+                .toLowerCase()
+                .indexOf(query.toLowerCase());
+
+            if (
+                indexOfFirstOccurrence >= 0 &&
+                indexOfFirstOccurrence < lowestIndexOfFirstOccurrence
+            ) {
+                lowestIndexOfFirstOccurrence = indexOfFirstOccurrence;
+                foundOption = options[i];
+            }
+        }
+
+        return foundOption;
+    }, []);
+
+    const scrollToOption = useCallback((option: Option) => {
+        if (selectRef.current) {
+            // As per https://github.com/JedWatson/react-select/issues/3648
+            selectRef.current.scrollToFocusedOptionOnUpdate = true;
+            selectRef.current.setState({
+                focusedValue: null,
+                focusedOption: option,
+            });
+        }
+    }, []);
+
+    const onKeyDown = useCallback(
+        async (event: KeyboardEvent) => {
+            if (!useKeyPressScroll || !selectRef.current) {
+                return;
+            }
+
+            const charValue = event.key;
+
+            const currentTimestamp = new Date().getTime();
+            const timeSincePreviousKeyPress = currentTimestamp - lastKeyPressTimestamp.current;
+
+            lastKeyPressTimestamp.current = currentTimestamp;
+
+            if (timeSincePreviousKeyPress > 800) {
+                searchedTerm.current = charValue;
+            } else {
+                searchedTerm.current += charValue;
+            }
+
+            const { options } = selectRef.current.props;
+
+            if (options && options.length > 1) {
+                let optionsToSearchThrough: Options<Option> = [];
+
+                if (isOptionGrouped(options)) {
+                    options.forEach(o => {
+                        optionsToSearchThrough = optionsToSearchThrough.concat(o.options);
+                    });
+                } else {
+                    optionsToSearchThrough = options as Options<Option>;
+                }
+
+                const optionToFocusOn = findOption(optionsToSearchThrough, searchedTerm.current);
+
+                const lastOption = optionsToSearchThrough[optionsToSearchThrough.length - 1];
+
+                if (optionToFocusOn && lastOption) {
+                    /*
+                        The reason why I want to scroll to the last option first is, that I want the focused item to
+                        appear on the top of the list - I achieve that behavior by scrolling "from bottom-to-top".
+                        The default scrolling behavior is "from top-to-bottom". In that case the focused option appears at the bottom
+                        of options list, which is not a great UX.
+                    */
+
+                    await scrollToOption(lastOption);
+
+                    scrollToOption(optionToFocusOn);
+                }
+            }
+        },
+        [findOption, scrollToOption, useKeyPressScroll],
+    );
+
+    // Check if the select is within a modal. If so, render it inside a portal so that it can overflow the modal.
+    // The inputRef is deeply nested so we iterate with while loop until wee reach the parentElement or max depth.
+    // The depth has a limit so that it does not iterate over the entire DOM.
+    // The depth limit has a buffer of 2 iterations in case the select is wrapped. (Minimum depth is 4.)
+    useEffect(() => {
+        let parent = selectRef.current?.inputRef?.parentElement;
+        let count = 0;
+        while (parent) {
+            if (parent.id === MODAL_CONTENT_ID) {
+                setMenuPortalTarget(document.body);
+                break;
+            }
+            if (count > 5) {
+                break;
+            }
+            parent = parent.parentElement;
+            count++;
+        }
+    }, []);
+
+    const Control = useCallback(
+        (controlProps: ControlProps<Option>) => (
+            <ReactSelectComponents.Control
+                {...controlProps}
+                innerProps={
+                    dataTest
+                        ? ({
+                              ...controlProps.innerProps,
+                              'data-test': `${dataTest}/input`,
+                          } as ControlProps<Option>['innerProps'])
+                        : controlProps.innerProps
+                }
+            />
+        ),
+        [dataTest],
+    );
+
+    const Option = useCallback(
+        (optionProps: OptionProps<Option, boolean>) => (
+            <ReactSelectComponents.Option
+                {...optionProps}
+                innerProps={
+                    {
+                        ...optionProps.innerProps,
+                        'data-test': `${dataTest}/option/${
+                            typeof optionProps.data.value === 'string'
+                                ? optionProps.data.value
+                                : optionProps.label
+                        }`,
+                    } as OptionProps<Option, boolean>['innerProps']
+                }
+            />
+        ),
+        [dataTest],
+    );
+
+    const GroupHeading = useCallback(
+        (groupHeadingProps: GroupHeadingProps<Option>) =>
+            groupHeadingProps?.data?.label ? (
+                <ReactSelectComponents.GroupHeading {...groupHeadingProps} />
+            ) : null,
+        [],
+    );
 
     const handleOnChange = useCallback<Required<ReactSelectProps>['onChange']>(
         (value, { action }) => {
@@ -293,53 +423,30 @@ export const Select = ({
     );
 
     return (
-        <Wrapper
-            className={className}
-            $isClean={isClean}
-            $elevation={elevation}
-            $isSearchable={isSearchable}
-            $size={size}
-            $minValueWidth={minValueWidth}
-            $isDisabled={isDisabled}
-            $menuIsOpen={menuIsOpen}
-            $isWithLabel={!!label}
-            $isWithPlaceholder={!!placeholder}
-            $hasBottomPadding={hasBottomPadding === true && bottomText === null}
-        >
+        <Wrapper className={className} isClean={isClean}>
+            {label && (
+                <Label>
+                    <LabelLeft>{label}</LabelLeft>
+                </Label>
+            )}
+
             <ReactSelect
                 ref={selectRef}
                 onKeyDown={onKeyDown}
                 classNamePrefix={reactSelectClassNamePrefix}
                 openMenuOnFocus
                 closeMenuOnScroll={closeMenuOnScroll}
+                menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                 menuPortalTarget={menuPortalTarget}
-                styles={createSelectStyle(theme, elevation)}
+                styles={selectStyle(theme)}
                 onChange={handleOnChange}
                 isSearchable={isSearchable}
                 menuIsOpen={menuIsOpen}
-                isDisabled={isDisabled}
-                menuPlacement="auto"
-                placeholder={placeholder || ''}
                 {...props}
-                components={{
-                    Control: controlProps => <Control {...controlProps} dataTest={dataTest} />,
-                    Option: optionProps => <Option {...optionProps} dataTest={dataTest} />,
-                    GroupHeading,
-                    ...components,
-                }}
+                components={{ Control, Option, GroupHeading, ...components }}
             />
 
-            {label && (
-                <SelectLabel $size={size} $isDisabled={isDisabled}>
-                    {label}
-                </SelectLabel>
-            )}
-
-            {bottomText && (
-                <BottomText inputState={inputState} isDisabled={isDisabled}>
-                    {bottomText}
-                </BottomText>
-            )}
+            {!bottomText && <BottomText inputState={inputState}>{bottomText}</BottomText>}
         </Wrapper>
     );
 };
