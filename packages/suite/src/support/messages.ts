@@ -1787,17 +1787,9 @@ export default defineMessages({
         defaultMessage: 'Buy',
         id: 'TR_BUY_BUY',
     },
-    TR_BUY_FEES: {
-        defaultMessage: 'Fees',
-        id: 'TR_BUY_FEES',
-    },
     TR_BUY_PAID_BY: {
         defaultMessage: 'Payment method',
         id: 'TR_BUY_PAID_BY',
-    },
-    TR_BUY_ALL_FEES_INCLUDED: {
-        defaultMessage: 'Includes all fees',
-        id: 'TR_BUY_ALL_FEES_INCLUDED',
     },
     TR_BUY_PROVIDER: {
         defaultMessage: 'Provider',
