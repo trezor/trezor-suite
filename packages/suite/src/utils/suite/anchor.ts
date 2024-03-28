@@ -3,7 +3,7 @@ import { css } from 'styled-components';
 import { AccountTransactionBaseAnchor, AnchorType } from 'src/constants/suite/anchors';
 
 import type { WalletAccountTransaction } from 'src/types/wallet';
-import { borders, zIndices } from '@trezor/theme';
+import { borders } from '@trezor/theme';
 
 export const getTxIdFromAnchor = (anchor?: string): string => anchor?.split('/').pop() || '';
 
@@ -30,7 +30,6 @@ export const anchorOutlineStyles = css<{ $shouldHighlight?: boolean }>`
     transition: all 0.3s;
     transition-delay: 0.3s;
     outline: solid ${borders.widths.large} transparent;
-    z-index: ${zIndices.base};
 
     ${({ $shouldHighlight }) =>
         $shouldHighlight &&
