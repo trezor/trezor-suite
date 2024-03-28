@@ -2,6 +2,7 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
+import { ComponentFrame, FrameProps } from '../../components/common/ComponentFrame';
 
 type PaddingType = 'small' | 'none' | 'normal';
 
@@ -40,6 +41,7 @@ const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
 
 const CardContainer = styled.div<{ $elevation: Elevation; $paddingType: PaddingType }>`
     display: flex;
+    width: 100%;
     flex-direction: column;
     padding: ${mapPaddingTypeToPadding};
     background: ${mapElevationToBackground};
@@ -61,7 +63,7 @@ const CardContainer = styled.div<{ $elevation: Elevation; $paddingType: PaddingT
     transition: background 0.3s, box-shadow 0.2s;
 `;
 
-export interface CardProps {
+export type CardProps = FrameProps & {
     paddingType?: PaddingType;
     onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
     onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
@@ -70,7 +72,7 @@ export interface CardProps {
     className?: string;
     label?: ReactNode;
     forceElevation?: Elevation;
-}
+};
 
 const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: PaddingType }>(
     ({ children, forceElevation, paddingType, ...rest }, ref) => {
@@ -85,19 +87,23 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: Padd
 );
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', label, ...rest }, ref) => {
+    ({ paddingType = 'normal', label, margin, maxWidth, ...rest }, ref) => {
         const props = {
             paddingType,
             ...rest,
         };
 
-        return label ? (
-            <Container>
-                <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
-                <CardComponent {...props} ref={ref} />
-            </Container>
-        ) : (
-            <CardComponent {...props} ref={ref} />
+        return (
+            <ComponentFrame margin={margin} maxWidth={maxWidth}>
+                {label ? (
+                    <Container>
+                        <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
+                        <CardComponent {...props} ref={ref} />
+                    </Container>
+                ) : (
+                    <CardComponent {...props} ref={ref} />
+                )}
+            </ComponentFrame>
         );
     },
 );
