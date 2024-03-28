@@ -41,10 +41,6 @@ jest.mock('../../files/config.v1.ts', () => {
 });
 
 describe('Message system actions', () => {
-    beforeAll(() => {
-        process.env.JWS_PUBLIC_KEY = fixtures.DEV_JWS_PUBLIC_KEY;
-    });
-
     describe('init - with valid JWS', () => {
         beforeEach(() => {
             const mockFetchPromise = Promise.resolve({
@@ -64,9 +60,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 0 },
             });
 
-            await store.dispatch(
-                initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }),
-            );
+            await store.dispatch(initMessageSystemThunk());
 
             expect(store.getActions().length).toBe(5);
             expect(store.getActions()[2].type).toBe(messageSystemActions.fetchSuccessUpdate.type);
@@ -79,9 +73,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 1 },
             });
 
-            await store.dispatch(
-                initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }),
-            );
+            await store.dispatch(initMessageSystemThunk());
 
             expect(store.getActions().length).toBe(5);
             expect(store.getActions()[2].type).toBe(messageSystemActions.fetchSuccess.type);
@@ -94,9 +86,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 15 },
             });
 
-            await store.dispatch(
-                initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }),
-            );
+            await store.dispatch(initMessageSystemThunk());
 
             expect(store.getActions().length).toBe(5);
             expect(store.getActions()[2].type).toBe(messageSystemActions.fetchError.type);
@@ -111,7 +101,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, timestamp },
             });
 
-            store.dispatch(initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }));
+            store.dispatch(initMessageSystemThunk());
 
             expect(global.fetch).not.toHaveBeenCalled();
         });
@@ -125,9 +115,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 1 },
             });
 
-            await store.dispatch(
-                initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }),
-            );
+            await store.dispatch(initMessageSystemThunk());
 
             expect(store.getActions().length).toBe(5);
             expect(store.getActions()[2].type).toBe(messageSystemActions.fetchSuccessUpdate.type);
@@ -155,9 +143,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 15 },
             });
 
-            await store.dispatch(
-                initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }),
-            );
+            await store.dispatch(initMessageSystemThunk());
 
             expect(store.getActions().length).toBe(5);
             expect(store.getActions()[2].type).toBe(messageSystemActions.fetchError.type);
@@ -175,9 +161,7 @@ describe('Message system actions', () => {
                 messageSystem: { ...getInitialState().messageSystem, currentSequence: 1 },
             });
 
-            await store.dispatch(
-                initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }),
-            );
+            await store.dispatch(initMessageSystemThunk());
 
             expect(store.getActions().length).toBe(5);
             expect(store.getActions()[2].type).toBe(messageSystemActions.fetchError.type);

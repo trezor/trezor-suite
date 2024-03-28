@@ -11,7 +11,6 @@ import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { wipeDisconnectedDevicesDataThunk } from '@suite-native/device';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
-import { getJWSPublicKey } from '@trezor/env-utils';
 
 let isAlreadyInitialized = false;
 
@@ -25,7 +24,7 @@ export const applicationInit = createThunk(
         try {
             dispatch(initAnalyticsThunk());
 
-            dispatch(initMessageSystemThunk({ jwsPublicKey: getJWSPublicKey() }));
+            dispatch(initMessageSystemThunk());
 
             await dispatch(connectInitThunk());
 

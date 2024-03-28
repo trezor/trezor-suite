@@ -41,7 +41,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(languageActions.setLanguage(language));
 
     // 3. fetch message system config
-    dispatch(initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }));
+    dispatch(initMessageSystemThunk());
 
     // 4. redirecting user into welcome screen (if needed)
     dispatch(routerActions.initialRedirection());

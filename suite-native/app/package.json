@@ -64,7 +64,6 @@
         "@suite-native/toasts": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/react-native-usb": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
