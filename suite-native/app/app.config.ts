@@ -7,6 +7,9 @@ import { suiteNativeVersion } from './package.json';
 
 type BuildType = 'debug' | 'develop' | 'production';
 
+type ExpoPlugins = ExpoConfig['plugins'];
+type Plugin = Exclude<ExpoPlugins, undefined>[number];
+
 const bundleIdentifiers = {
     debug: 'io.trezor.suite.debug',
     develop: 'io.trezor.suite.develop',
@@ -60,6 +63,72 @@ if (isCI) {
         throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
     }
 }
+
+const getPlugins = (): ExpoPlugins => {
+    let plugins = [
+        [
+            'expo-font',
+            {
+                fonts: [
+                    '../../packages/theme/fonts/TTSatoshi-Medium.otf',
+                    '../../packages/theme/fonts/TTSatoshi-DemiBold.otf',
+                ],
+            },
+        ],
+        [
+            'expo-barcode-scanner',
+            {
+                cameraPermission: 'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
+            },
+        ],
+        [
+            'expo-build-properties',
+            {
+                android: {
+                    minSdkVersion: 28,
+                },
+                ios: {
+                    deploymentTarget: '14.0',
+                    flipper: true,
+                },
+            },
+        ],
+        '@trezor/react-native-usb/plugins/withUSBDevice.js',
+        // Define FLIPPER_VERSION
+        './plugins/withGradleProperties.js',
+        [
+            '@config-plugins/detox',
+            {
+                subdomains: '*',
+            },
+        ],
+    ];
+
+    // Debug build does not have access to the Sentry token.
+    if (buildType !== 'debug')
+        // EXPLAINER: plugins.push("@sentry...") does not work for some reason during `expo prebuild` and
+        // this plugin is never included in the used array. For this reason the spread operator is used instead.
+        plugins = [
+            ...plugins,
+            [
+                '@sentry/react-native/expo',
+                {
+                    url: 'https://sentry.io/',
+                    authToken: process.env.SENTRY_AUTH_TOKEN,
+                    project: 'suite-native',
+                    organization: 'satoshilabs',
+                },
+            ] as Plugin,
+        ];
+
+    return [
+        ...plugins,
+        // These should come last
+        './plugins/withRemoveXcodeLocalEnv.js',
+        ['./plugins/withEnvFile.js', { buildType }],
+        './plugins/withRemoveiOSNotificationEntitlement.js',
+    ] as ExpoPlugins;
+};
 
 export default ({ config }: ConfigContext): ExpoConfig => {
     const name = appNames[buildType];
@@ -117,56 +186,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 UIRequiredDeviceCapabilities: ['armv7'],
             },
         },
-        plugins: [
-            [
-                'expo-font',
-                {
-                    fonts: [
-                        '../../packages/theme/fonts/TTSatoshi-Medium.otf',
-                        '../../packages/theme/fonts/TTSatoshi-DemiBold.otf',
-                    ],
-                },
-            ],
-            [
-                '@sentry/react-native/expo',
-                {
-                    url: 'https://sentry.io/',
-                    project: 'suite-native',
-                    organization: 'satoshilabs',
-                },
-            ],
-            [
-                'expo-barcode-scanner',
-                {
-                    cameraPermission:
-                        'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
-                },
-            ],
-            [
-                'expo-build-properties',
-                {
-                    android: {
-                        minSdkVersion: 28,
-                    },
-                    ios: {
-                        deploymentTarget: '14.0',
-                        flipper: 'true',
-                    },
-                },
-            ],
-            '@trezor/react-native-usb/plugins/withUSBDevice.js',
-            // Define FLIPPER_VERSION
-            './plugins/withGradleProperties.js',
-            // These should come last
-            './plugins/withRemoveXcodeLocalEnv.js',
-            ['./plugins/withEnvFile.js', { buildType }],
-            './plugins/withRemoveiOSNotificationEntitlement.js',
-        ],
+        plugins: getPlugins(),
         extra: {
             commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || '',
             eas: {
                 projectId,
             },
+            isDetoxBuild: !!process.env.IS_DETOX_BUILD,
         },
     };
 };
