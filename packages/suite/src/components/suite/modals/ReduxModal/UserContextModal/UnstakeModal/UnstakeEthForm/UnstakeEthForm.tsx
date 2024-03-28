@@ -7,7 +7,7 @@ import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { Options } from './Options';
-import UnstakeFees from './Fees';
+import { getUnstakingPeriod } from 'src/utils/suite/stake';
 
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
@@ -57,7 +57,7 @@ export const UnstakeEthForm = () => {
     const {
         validatorsQueue: { validatorWithdrawTime },
     } = useValidatorsQueue(symbol);
-    const unstakingPeriod = Math.round(validatorWithdrawTime / 60 / 60 / 24);
+    const unstakingPeriod = getUnstakingPeriod(validatorWithdrawTime);
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
@@ -95,8 +95,6 @@ export const UnstakeEthForm = () => {
             <DividerWrapper>
                 <Divider />
             </DividerWrapper>
-
-            <UnstakeFees />
 
             <UpToDaysWrapper>
                 {!Number.isNaN(unstakingPeriod) && (
