@@ -1,6 +1,8 @@
 import { test, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import {
+    checkHasLogs,
+    downloadLogs,
     findElementByDataTest,
     getContexts,
     log,
@@ -8,6 +10,7 @@ import {
     setConnectSettings,
     waitAndClick,
 } from '../support/helpers';
+import { addDashesToSpaces } from '@trezor/utils';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const bridgeVersion = '2.0.31';
@@ -15,7 +18,6 @@ const bridgeVersion = '2.0.31';
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
-let context: any = null;
 let browserContext: BrowserContext | undefined;
 let explorerPage: Page;
 let explorerUrl: string;
@@ -52,7 +54,6 @@ test.beforeEach(async ({ page }) => {
     browserContext = contexts.browserContext;
     explorerPage = contexts.explorerPage;
     explorerUrl = contexts.explorerUrl;
-    context = browserContext;
 
     if (connectSrc) {
         log('beforeEach', 'applying connect settings');
@@ -63,8 +64,21 @@ test.beforeEach(async ({ page }) => {
     }
 });
 
-test.afterEach(async () => {
+test.afterEach(async ({ context: _context }, testInfo) => {
     log('afterEach', 'if context close it.');
+
+    const context = browserContext || _context;
+    const logPage = await context.newPage();
+    await logPage.goto(`${connectSrc || url}log.html`);
+
+    const hasLogs = await checkHasLogs(logPage);
+    log(`hasLogs: ${hasLogs}`);
+    if (hasLogs) {
+        log('afterEach', 'downloading logs');
+        await downloadLogs(logPage, `./test-results/log-${addDashesToSpaces(testInfo.title)}.txt`);
+    } else {
+        log('afterEach', 'no logs');
+    }
 
     if (context) {
         // BrowserContext has to start fresh each test.
@@ -88,7 +102,7 @@ test('input passphrase in popup and device accepts it', async () => {
     await findElementByDataTest(explorerPage, '@submit-button');
 
     log('opening popup');
-    [popup] = await openPopup(context, explorerPage, isWebExtension);
+    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
     await popup.waitForLoadState('load');
 
     log('waiting for analytics continue button');
@@ -137,7 +151,7 @@ test('introduce passphrase in popup and device rejects it', async () => {
     await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     await findElementByDataTest(explorerPage, '@submit-button');
 
-    [popup] = await openPopup(context, explorerPage, isWebExtension);
+    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
     await popup.waitForLoadState('load');
 
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
@@ -180,7 +194,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
     await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     await findElementByDataTest(explorerPage, '@submit-button');
 
-    [popup] = await openPopup(context, explorerPage, isWebExtension);
+    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
@@ -209,7 +223,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
     await explorerPage.waitForTimeout(1000);
 
     // Click on submit button
-    [popup] = await openPopup(context, explorerPage, isWebExtension);
+    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
@@ -226,7 +240,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     await findElementByDataTest(explorerPage, '@submit-button');
 
-    [popup] = await openPopup(context, explorerPage, isWebExtension);
+    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
@@ -258,7 +272,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await findElementByDataTest(explorerPage, '@submit-button');
 
     // Click on submit button
-    [popup] = await openPopup(context, explorerPage, isWebExtension);
+    [popup] = await openPopup(browserContext, explorerPage, isWebExtension);
 
     log('waiting and click confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);

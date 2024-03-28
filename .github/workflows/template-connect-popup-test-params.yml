@@ -63,8 +63,9 @@ jobs:
           path: |
             tmp_overview_directory/
 
-      - name: Upload artifacts
-        if: failure()
+      - name: Upload test artifacts
+        # TODO: just for dev
+        # if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
@@ -113,7 +114,8 @@ jobs:
 
       - name: Upload artifacts
         # We upload test artifacts only if it fails and we use it to `Check Test Success` in next step.
-        if: failure()
+        # TODO: just for dev
+        # if: failure()
         uses: actions/upload-artifact@v4
         with:
           name: test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
