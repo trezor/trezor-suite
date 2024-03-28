@@ -31,6 +31,7 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
     const [error, setError] = useState<string | null>(null);
     const account = useSelector(selectSelectedAccount);
     const localCurrency = useSelector(selectLocalCurrency);
+    const showDebugMode = useSelector(state => state.suite.settings.debug.showDebugMenu);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -125,26 +126,34 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
             onCancel={onCancel}
             heading={<Translation id="TR_ADD_TOKEN_TITLE" />}
             bottomBarComponents={
-                <Button
-                    onClick={handleAddTokenButtonClick}
-                    isDisabled={!tokenInfo || !!error}
-                    isLoading={isFetching}
-                >
-                    <Translation id="TR_ADD_TOKEN_SUBMIT" />
-                </Button>
+                showDebugMode ? (
+                    <Button
+                        onClick={handleAddTokenButtonClick}
+                        isDisabled={!tokenInfo || !!error}
+                        isLoading={isFetching}
+                    >
+                        <Translation id="TR_ADD_TOKEN_SUBMIT" />
+                    </Button>
+                ) : null
             }
         >
-            <StyledP typographyStyle="hint">
-                <Translation id="TR_ADD_TOKEN_DESCRIPTION" />
-            </StyledP>
-            <Input
-                label={<Translation id="TR_ADD_TOKEN_LABEL" />}
-                value={contractAddress}
-                bottomText={error || null}
-                inputState={getInputState()}
-                onChange={onChange}
-                hasBottomPadding={false}
-            />
+            {showDebugMode ? (
+                <>
+                    <StyledP typographyStyle="hint">
+                        <Translation id="TR_ADD_TOKEN_DESCRIPTION" />
+                    </StyledP>
+                    <Input
+                        label={<Translation id="TR_ADD_TOKEN_LABEL" />}
+                        value={contractAddress}
+                        bottomText={error || null}
+                        inputState={getInputState()}
+                        onChange={onChange}
+                        hasBottomPadding={false}
+                    />
+                </>
+            ) : (
+                <Translation id="TR_ADD_TOKEN_NOTE" />
+            )}
         </Modal>
     );
 };
