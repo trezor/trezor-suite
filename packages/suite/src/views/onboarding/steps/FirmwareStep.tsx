@@ -72,8 +72,8 @@ export const FirmwareStep = () => {
     }
 
     // edge case 2 - user has reconnected device that is already up to date
-    // include "validation" status to prevent displaying this during installation
-    if (!['validation', 'done'].includes(status) && device?.firmware === 'valid') {
+    // include "started" status to prevent displaying this during installation
+    if (!['started', 'done'].includes(status) && device?.firmware === 'valid') {
         const firmwareType = getSuiteFirmwareTypeString(device.firmwareType);
 
         return (

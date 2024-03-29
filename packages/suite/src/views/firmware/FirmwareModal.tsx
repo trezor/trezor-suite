@@ -35,13 +35,12 @@ const StyledModal = styled(Modal)`
     min-height: 540px;
 `;
 
-type FirmwareProps = {
+type FirmwareModalProps = {
     children: ReactNode;
     deviceWillBeWiped?: boolean;
     heading: TranslationKey;
     install: () => void;
     isCustom?: boolean;
-    shouldSwitchFirmwareType?: boolean;
 };
 
 export const FirmwareModal = ({
@@ -50,7 +49,7 @@ export const FirmwareModal = ({
     heading,
     install,
     isCustom,
-}: FirmwareProps) => {
+}: FirmwareModalProps) => {
     const {
         resetReducer,
         status,

@@ -357,7 +357,6 @@ export const onCallFirmwareUpdate = async ({
         if (device.features.major_version === 1) {
             await createTimeoutPromise(2000);
         }
-        console.log(2);
         reconnectedDevice = await waitForReconnectedDevice({
             params: {
                 bootloader: true,
@@ -377,7 +376,6 @@ export const onCallFirmwareUpdate = async ({
 
     if (!params.binary && device.firmwareRelease.intermediaryVersion) {
         log.debug('onCallFirmwareUpdate', 'installing intermediary');
-        console.log(3);
         reconnectedDevice = await waitForReconnectedDevice({
             params: {
                 bootloader: true,
@@ -404,7 +402,6 @@ export const onCallFirmwareUpdate = async ({
             params: { manual },
             context: { deviceList, log, device: reconnectedDevice, postMessage },
         });
-        console.log(4);
         reconnectedDevice = await waitForReconnectedDevice({
             params: { bootloader: true, manual, confirmOnDevice: false },
             context: { deviceList, device: reconnectedDevice, log, postMessage },
@@ -424,7 +421,6 @@ export const onCallFirmwareUpdate = async ({
 
         await reconnectedDevice.release();
     } else {
-        console.log(5);
         reconnectedDevice = await waitForReconnectedDevice({
             params: { bootloader: true, manual, confirmOnDevice: true },
             context: { deviceList, device, log, postMessage },
@@ -447,7 +443,6 @@ export const onCallFirmwareUpdate = async ({
         params: { manual },
         context: { deviceList, log, device: reconnectedDevice, postMessage },
     });
-    console.log(6);
     reconnectedDevice = await waitForReconnectedDevice({
         params: {
             bootloader: false,

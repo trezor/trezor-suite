@@ -145,7 +145,9 @@ export const FirmwareInitial = ({
 
     let content;
 
-    const targetType = getTargetFirmwareType(!!shouldSwitchFirmwareType);
+    const targetType = bitcoinOnlyOffer
+        ? FirmwareType.BitcoinOnly
+        : getTargetFirmwareType(!!shouldSwitchFirmwareType);
     // Bitcoin-only firmware is only available on T2T1 from v2.0.8 - older devices must first upgrade to 2.1.1 which does not have a Bitcoin-only variant
     const isBitcoinOnlyAvailable = !!device.firmwareRelease?.release.url_bitcoinonly;
     const currentFwVersion = getFirmwareVersion(device);
@@ -180,16 +182,12 @@ export const FirmwareInitial = ({
                     </Note>
                 </Description>
             ),
-            body: device?.firmwareRelease ? (
-                <FirmwareOffer device={device} targetFirmwareType={FirmwareType.BitcoinOnly} />
-            ) : undefined,
+            body: <FirmwareOffer targetFirmwareType={FirmwareType.BitcoinOnly} />,
             innerActions: (
                 <FirmwareButtonsRow>
                     <FirmwareInstallButton
                         variant="secondary"
                         onClick={() => {
-                            console.log('uaaa 3');
-
                             installFirmware();
                         }}
                         multipleDevicesConnected={multipleDevicesConnected}
@@ -203,10 +201,7 @@ export const FirmwareInitial = ({
                     </FirmwareInstallButton>
 
                     <FirmwareInstallButton
-                        onClick={() => {
-                            console.log('uaaa 4');
-                            installFirmware();
-                        }}
+                        onClick={installFirmware}
                         multipleDevicesConnected={multipleDevicesConnected}
                     >
                         <Translation
@@ -240,15 +235,10 @@ export const FirmwareInitial = ({
                     }}
                 />
             ),
-            body: device?.firmwareRelease ? (
-                <FirmwareOffer device={device} targetFirmwareType={targetType} />
-            ) : undefined,
+            body: <FirmwareOffer targetFirmwareType={targetType} />,
             innerActions: (
                 <FirmwareInstallButton
-                    onClick={() => {
-                        console.log('uaaa 6');
-                        installFirmware();
-                    }}
+                    onClick={installFirmware}
                     multipleDevicesConnected={multipleDevicesConnected}
                 />
             ),
@@ -335,7 +325,7 @@ export const FirmwareInitial = ({
                             </FirmwareSwitchWarning>
                         </WarningListWrapper>
                     )}
-                    <FirmwareOffer device={device} targetFirmwareType={targetType} />
+                    <FirmwareOffer targetFirmwareType={targetType} />
                 </>
             ),
             innerActions: (
@@ -355,7 +345,6 @@ export const FirmwareInitial = ({
                     // Fw update is not mandatory, show skip button
                     <OnboardingButtonSkip
                         onClick={() => {
-                            console.log('uaaa 2');
                             goToNextStep();
                             updateAnalytics({ firmware: 'skip' });
                         }}
@@ -377,7 +366,6 @@ export const FirmwareInitial = ({
                     innerActions={content.innerActions}
                     outerActions={content.outerActions}
                     disableConfirmWrapper={!!standaloneFwUpdate}
-                    device={undefined}
                     isActionAbortable={false}
                     nested={!!standaloneFwUpdate}
                 >

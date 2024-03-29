@@ -109,18 +109,6 @@ const StyledAbortButton = styled(AbortButton)`
     right: 12px;
 `;
 
-const HeadingText = ({ phase, method }: { phase: string; method: string }) => {
-    if (phase === 'done') {
-        return <Translation id="TR_RECONNECT_IN_BOOTLOADER_SUCCESS" />;
-    }
-
-    return method === 'automatic' ? (
-        <Translation id="TR_REBOOT_INTO_BOOTLOADER" />
-    ) : (
-        <Translation id="TR_RECONNECT_IN_BOOTLOADER" />
-    );
-};
-
 const ReconnectLabel = ({ device }: { device?: Device }) => {
     const deviceFwVersion = getFirmwareVersion(device);
     const deviceModelInternal = device?.features?.internal_model;
@@ -153,8 +141,14 @@ const ReconnectStep = ({ order, active, dataTest, children }: ReconnectStepProps
     </BulletPointWrapper>
 );
 
-const RebootDeviceGraphics = ({ device, method }: { device?: Device; method: string }) => {
-    if (method === 'automatic') {
+const RebootDeviceGraphics = ({
+    device,
+    isManualRebootRequired,
+}: {
+    device?: Device;
+    isManualRebootRequired: boolean;
+}) => {
+    if (!isManualRebootRequired) {
         return device ? <StyledConfirmImage device={device} /> : null;
     }
 
@@ -182,48 +176,48 @@ const RebootDeviceGraphics = ({ device, method }: { device?: Device; method: str
 };
 
 interface ReconnectDevicePromptProps {
-    onClose?: () => void;
-    onSuccess?: () => void;
+    onClose: () => void;
+    onSuccess: () => void;
 }
 
 export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePromptProps) => {
-    const { isWebUSB, error, status, uiEvent } = useFirmware();
-    const { device: liveDevice } = useDevice();
+    const { isWebUSB, status, uiEvent } = useFirmware();
+    const { device } = useDevice();
 
-    const device = uiEvent?.payload.device;
-
-    const rebootMethod =
-        (uiEvent?.type === UI.FIRMWARE_RECONNECT && uiEvent?.payload.manual) ||
+    const isManualRebootRequired =
+        //Automatic reboot not supported:
         (uiEvent?.type === UI.FIRMWARE_DISCONNECT && uiEvent?.payload.manual) ||
-        (status === 'error' &&
-            error &&
-            ['Cancelled', 'Action cancelled by user', 'A transfer error has occurred.'].includes(
-                error,
-            ))
-            ? 'manual'
-            : 'automatic';
-    const isRebootAutomatic = rebootMethod === 'automatic';
+        // Automatic reboot cancelled or device disconnected:
+        status === 'error';
 
     const getRebootPhase = () => {
         if (
-            liveDevice?.mode === 'bootloader' &&
+            device?.mode === 'bootloader' &&
             uiEvent?.type === DEVICE.BUTTON &&
-            !isRebootAutomatic
+            isManualRebootRequired
         ) {
             return 'done';
         }
 
-        return liveDevice?.connected ? 'waiting-for-reboot' : 'disconnected';
+        return device?.connected ? 'waiting-for-reboot' : 'disconnected';
     };
 
     const rebootPhase = getRebootPhase();
     const isAnimationVisible = rebootPhase !== 'done';
     const deviceModelInternal = device?.features?.internal_model;
 
+    const getHeading = () => {
+        if (rebootPhase === 'done') {
+            return 'TR_RECONNECT_IN_BOOTLOADER_SUCCESS';
+        }
+
+        return isManualRebootRequired ? 'TR_RECONNECT_IN_BOOTLOADER' : 'TR_REBOOT_INTO_BOOTLOADER';
+    };
+
     return (
         <StyledModal
             modalPrompt={
-                isRebootAutomatic && (
+                !isManualRebootRequired && (
                     <ConfirmOnDevice
                         title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                         deviceModelInternal={deviceModelInternal}
@@ -233,30 +227,26 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 )
             }
         >
-            {onClose && !isRebootAutomatic && rebootPhase == 'waiting-for-reboot' && (
+            {isManualRebootRequired && rebootPhase == 'waiting-for-reboot' && (
                 <StyledAbortButton onAbort={onClose} />
             )}
 
             <Wrapper data-test={`@firmware/reconnect-device`}>
                 {isAnimationVisible && (
-                    <RebootDeviceGraphics device={device} method={rebootMethod} />
+                    <RebootDeviceGraphics
+                        device={device}
+                        isManualRebootRequired={isManualRebootRequired}
+                    />
                 )}
 
                 <Content>
                     <Heading>
-                        <HeadingText phase={rebootPhase} method={rebootMethod} />
+                        <Translation id={getHeading()} />
                     </Heading>
 
                     {rebootPhase !== 'done' ? (
                         <>
-                            {isRebootAutomatic ? (
-                                <CenteredPointText>
-                                    <Translation
-                                        id="TR_CONFIRM_ACTION_ON_YOUR"
-                                        values={{ deviceLabel: device?.label }}
-                                    />
-                                </CenteredPointText>
-                            ) : (
+                            {isManualRebootRequired ? (
                                 <>
                                     {/* First step asks for disconnecting a device */}
                                     <ReconnectStep
@@ -276,6 +266,13 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                         <ReconnectLabel device={device} />
                                     </ReconnectStep>
                                 </>
+                            ) : (
+                                <CenteredPointText>
+                                    <Translation
+                                        id="TR_CONFIRM_ACTION_ON_YOUR"
+                                        values={{ deviceLabel: device?.label }}
+                                    />
+                                </CenteredPointText>
                             )}
                             {rebootPhase === 'disconnected' && isWebUSB && <StyledWebUsbButton />}
                         </>

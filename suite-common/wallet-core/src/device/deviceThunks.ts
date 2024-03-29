@@ -34,7 +34,6 @@ import {
     selectDevices,
 } from './deviceReducer';
 import { deviceActions, DEVICE_MODULE_PREFIX } from './deviceActions';
-import { selectFirmware } from '../firmware/firmwareReducer';
 import { checkFirmwareAuthenticity } from '../firmware/firmwareThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import { selectAccountByKey } from '../accounts/accountsReducer';

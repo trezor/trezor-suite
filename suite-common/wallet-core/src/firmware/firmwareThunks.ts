@@ -86,6 +86,11 @@ export const firmwareUpdate = createThunk(
     ) => {
         dispatch(firmwareActions.setStatus('started'));
 
+        // Temporarily save target firmware type so that it can be displayed during installation.
+        if (firmwareType) {
+            dispatch(firmwareActions.setTargetType(firmwareType));
+        }
+
         const {
             selectors: { selectDevice, selectDesktopBinDir },
         } = extra;
@@ -95,8 +100,12 @@ export const firmwareUpdate = createThunk(
         const desktopBinDir = selectDesktopBinDir(getState());
         const suiteLanguage = selectDeviceLanguage(getState());
         if (!device) {
-            throw new Error('device is not connected');
+            dispatch(firmwareActions.setStatus('error'));
+            dispatch(firmwareActions.setError('Device not connected'));
         }
+
+        // Cache device when firmware installation starts so that we can reference the original firmware version and type during the installation process.
+        dispatch(firmwareActions.cacheDevice(device));
 
         // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
         const baseUrl = `${isDesktop() ? desktopBinDir : resolveStaticPath('connect/data')}${

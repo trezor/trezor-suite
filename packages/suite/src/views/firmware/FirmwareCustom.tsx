@@ -25,6 +25,7 @@ export const FirmwareCustom = () => {
 
     return (
         <FirmwareModal
+            isCustom
             heading="TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_TITLE"
             install={installCustomFirmware}
         >

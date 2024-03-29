@@ -10,9 +10,16 @@ import {
 import { DEVICE, FirmwareType, UI } from '@trezor/connect';
 import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
 
-import { useActions, useSelector, useDevice, useTranslation } from 'src/hooks/suite';
+import { useSelector, useDevice, useTranslation } from 'src/hooks/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { MODAL } from 'src/actions/suite/constants';
+
+/*
+There are three firmware update flows, depending on current firmware version:
+- manual: devices with firmware version < 1.10.0 | 2.6.0 must be manually disconnected and reconnected in bootloader mode
+- reboot_and_wait: newer devices can reboot to bootloader without manual disconnection, then user confirms installation
+- reboot_and_upgrade: a device with firmware version >= 2.6.3 can reboot and upgrade in one step (not supported for reinstallation and downgrading)
+*/
 
 export const useFirmware = () => {
     const { translationString } = useTranslation();
@@ -22,33 +29,24 @@ export const useFirmware = () => {
     const modal = useSelector(state => state.modal);
     const { device } = useDevice();
 
+    // Device in its state before installation is cached when installation begins. Until then, use access device as normal.
+    const originalDevice = firmware.cachedDevice || device;
+    const showReconnectPrompt =
+        // T1 (ButtonRequest_ProtectCall) in reboot_and_wait flow, T2 (ButtonRequest_Other) in reboot_and_wait and reboot_and_upgrade flows:
+        (firmware.uiEvent?.type === DEVICE.BUTTON &&
+            firmware.uiEvent.payload.code &&
+            ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(
+                firmware.uiEvent.payload.code,
+            )) ||
+        // Manual flow:
+        (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && firmware.uiEvent.payload.manual);
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
-
-    const actions = useActions({
-        firmwareUpdate,
-        checkFirmwareAuthenticity,
-    });
-
-    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(device);
+    const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
     const confirmOnDevice =
         (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT && firmware.uiEvent.payload.bootloader) ||
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
-            firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
-    const showReconnectPrompt =
-        (firmware.uiEvent?.type === DEVICE.BUTTON &&
-            firmware.uiEvent.payload.code === 'ButtonRequest_Other') ||
-        (firmware.uiEvent?.type === DEVICE.BUTTON &&
-            firmware.uiEvent.payload.code === 'ButtonRequest_ProtectCall') ||
-        (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && firmware.uiEvent.payload.manual) ||
-        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-            firmware.uiEvent.payload.manual &&
-            firmware.uiEvent.payload.confirmOnDevice) ||
-        (device?.mode === 'bootloader' &&
-            firmware.status === 'error' &&
-            firmware.error === 'Firmware install cancelled' &&
-            firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
     const showConfirmationPill =
         !showReconnectPrompt &&
@@ -92,22 +90,24 @@ export const useFirmware = () => {
     };
 
     const getTargetFirmwareType = (shouldSwitchFirmwareType: boolean) => {
-        const isBitcoinOnlyAvailable = !!device?.firmwareRelease?.release.url_bitcoinonly;
+        const isBitcoinOnlyAvailable = !!originalDevice?.firmwareRelease?.release.url_bitcoinonly;
 
         return (isCurrentlyBitcoinOnly && !shouldSwitchFirmwareType) ||
-            // switching to Bitcoin-only
+            // Switching to Bitcoin-only:
             (!isCurrentlyBitcoinOnly && shouldSwitchFirmwareType && isBitcoinOnlyAvailable) ||
-            // Bitcoin-only device
-            isBitcoinOnlyDevice(device)
+            // Bitcoin-only device:
+            isBitcoinOnlyDevice(originalDevice)
             ? FirmwareType.BitcoinOnly
             : FirmwareType.Regular;
     };
 
     return {
         ...firmware,
-        ...actions,
         ...getUpdateStatus(),
-        toggleHasSeed: () => dispatch(firmwareActions.toggleHasSeed()),
+        originalDevice,
+        firmwareUpdate: (...params: Parameters<typeof firmwareUpdate>) =>
+            dispatch(firmwareUpdate(...params)),
+        checkFirmwareAuthenticity: () => dispatch(checkFirmwareAuthenticity()),
         setStatus: (status: FirmwareStatus | 'error') =>
             dispatch(firmwareActions.setStatus(status)),
         resetReducer: () => dispatch(firmwareActions.resetReducer()),

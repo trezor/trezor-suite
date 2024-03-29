@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import styled from 'styled-components';
 
 import { Button, Checkbox, variables } from '@trezor/components';
@@ -44,8 +45,9 @@ type CheckSeedStepProps = {
 export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStepProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { hasSeed, toggleHasSeed } = useFirmware();
+    const [isChecked, setIsChecked] = useState(false);
 
+    const handleCheckboxClick = () => setIsChecked(prev => !prev);
     const getContent = () => {
         const isBackedUp = !device.features.needs_backup && !device.features.unfinished_backup;
 
@@ -126,7 +128,7 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
                     <Button
                         onClick={onSuccess}
                         data-test="@firmware/confirm-seed-button"
-                        isDisabled={!device?.connected || !hasSeed}
+                        isDisabled={!device?.connected || !isChecked}
                     >
                         <Translation id={willBeWiped ? 'TR_WIPE_AND_REINSTALL' : 'TR_CONTINUE'} />
                     </Button>
@@ -141,8 +143,8 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
                 </StyledSwitchWarning>
             )}
             <StyledCheckbox
-                isChecked={hasSeed}
-                onClick={toggleHasSeed}
+                isChecked={isChecked}
+                onClick={handleCheckboxClick}
                 data-test="@firmware/confirm-seed-checkbox"
             >
                 {checkbox}

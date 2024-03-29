@@ -27,11 +27,14 @@ export const FirmwareInstallation = ({
     const { status, resetReducer, isWebUSB, uiEvent } = useFirmware();
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
-    const device = uiEvent?.payload.device;
-
     const continueAction = () => (status === 'done' ? onSuccess() : resetReducer());
     const getInnerActionComponent = () => {
-        if (uiEvent?.type === UI.FIRMWARE_RECONNECT && !uiEvent.payload.bootloader && isWebUSB) {
+        if (
+            isWebUSB &&
+            uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+            !uiEvent.payload.bootloader &&
+            status !== 'done'
+        ) {
             // Device needs to be paired twice when using web usb transport.
             // Once in bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
             // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time paired as a bootloader device).
@@ -62,9 +65,7 @@ export const FirmwareInstallation = ({
                 nested={!!standaloneFwUpdate}
                 disableConfirmWrapper={!!standaloneFwUpdate}
             >
-                {device?.firmwareRelease && (
-                    <FirmwareOffer device={device} customFirmware={customFirmware} />
-                )}
+                <FirmwareOffer customFirmware={customFirmware} />
                 <FirmwareProgressBar />
             </OnboardingStepBox>
         </>

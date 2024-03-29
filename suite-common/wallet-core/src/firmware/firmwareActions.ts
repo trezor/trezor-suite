@@ -1,6 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
-import { FirmwareStatus } from '@suite-common/suite-types';
+import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import { FirmwareType } from '@trezor/connect';
 
 export const FIRMWARE_MODULE_PREFIX = '@common/wallet-core/firmware';
@@ -20,8 +20,6 @@ const setHashInvalid = createAction(
 const setError = createAction(`${FIRMWARE_MODULE_PREFIX}/set-error`, (payload?: string) => ({
     payload,
 }));
-
-const toggleHasSeed = createAction(`${FIRMWARE_MODULE_PREFIX}/toggle-has-seed`);
 
 const setTargetType = createAction(
     `${FIRMWARE_MODULE_PREFIX}/set-target-type`,
@@ -46,13 +44,20 @@ const toggleUseDevkit = createAction(
     }),
 );
 
+const cacheDevice = createAction(
+    `${FIRMWARE_MODULE_PREFIX}/cache-device`,
+    (payload: TrezorDevice) => ({
+        payload,
+    }),
+);
+
 export const firmwareActions = {
     setStatus,
     setHashInvalid,
     setError,
-    toggleHasSeed,
     setTargetType,
     setIsCustomFirmware,
     resetReducer,
     toggleUseDevkit,
+    cacheDevice,
 };

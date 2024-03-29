@@ -1,4 +1,4 @@
-import { FirmwareStatus } from '@suite-common/suite-types';
+import { FirmwareStatus, TrezorDevice } from '@suite-common/suite-types';
 import {
     FirmwareType,
     UI,
@@ -14,8 +14,8 @@ import { firmwareActions } from './firmwareActions';
 import { deviceActions } from '../device/deviceActions';
 
 type FirmwareUpdateCommon = {
-    // Stores confirmation from the user about having a seed card available when doing a fw update (check-seed step)
-    hasSeed: boolean;
+    // Device before installation begun. Used to display the original firmware type and version during the installation.
+    cachedDevice?: TrezorDevice;
     // Stores firmware type currently being installed so that it can be displayed to the user during installation
     targetType?: FirmwareType;
     // Array of device ids where suite claims their firmware might have been "hacked". This information is available only after firmware update is finished
@@ -41,8 +41,8 @@ export type FirmwareUpdateState =
 const initialState: FirmwareUpdateState = {
     status: 'initial',
     error: undefined,
+    cachedDevice: undefined,
     targetType: undefined,
-    hasSeed: false,
     firmwareHashInvalid: [],
     isCustom: false,
     useDevkit: false,
@@ -68,9 +68,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
                 state.status = 'error';
             }
         })
-        .addCase(firmwareActions.toggleHasSeed, state => {
-            state.hasSeed = !state.hasSeed;
-        })
         .addCase(firmwareActions.setTargetType, (state, { payload }) => {
             state.targetType = payload;
         })
@@ -84,6 +81,9 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         }))
         .addCase(firmwareActions.toggleUseDevkit, (state, { payload }) => {
             state.useDevkit = payload;
+        })
+        .addCase(firmwareActions.cacheDevice, (state, { payload }) => {
+            state.cachedDevice = payload;
         })
         .addCase(deviceActions.addButtonRequest, extra.reducers.addButtonRequestFirmware)
         .addMatcher(
