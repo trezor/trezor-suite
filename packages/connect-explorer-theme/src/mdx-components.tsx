@@ -250,7 +250,7 @@ export const getComponents = ({
         ),
         a: Link,
         table: props => (
-            <Table className="nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0" {...props} />
+            <Table className={cn("nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0")} {...props} />
         ),
         p: props => <p className="nx-mt-6 nx-leading-7 first:nx-mt-0" {...props} />,
         tr: Tr,

@@ -329,7 +329,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
         labels: 'bug',
     },
     sidebar: {
-        defaultMenuCollapseLevel: 2,
+        defaultMenuCollapseLevel: 1,
         titleComponent: ({ title }) => <>{title}</>,
         toggleButton: false,
     },

@@ -12,7 +12,12 @@ const makePrimaryColor =
 /** @type {import('tailwindcss').Config} */
 module.exports = {
     prefix: 'nx-',
-    content: ['./src/**/*.tsx', '../nextra/src/icons/*.tsx', '../nextra/src/components/*.tsx'],
+    content: [
+        './src/**/*.tsx',
+        '../nextra/src/icons/*.tsx',
+        '../nextra/src/components/*.tsx',
+        './node_modules/nextra/**/*.js',
+    ],
     theme: {
         screens: {
             sm: '640px',
@@ -68,5 +73,19 @@ module.exports = {
             },
         },
     },
+    safelist: [
+        {
+            pattern: /nx-border-[^/]+$/,
+            variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
+        },
+        {
+            pattern: /nx-text-[^/]+$/,
+            variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
+        },
+        {
+            pattern: /nx-bg-[^/]+$/,
+            variants: ['dark', 'hover', 'focus', 'dark:hover', 'dark:focus'],
+        },
+    ],
     darkMode: ['class', 'html[class~="dark"]'],
 };
