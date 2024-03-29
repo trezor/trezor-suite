@@ -10,12 +10,14 @@
         "start": "next start",
         "lint:js": "yarn g:eslint '**/*{.ts,.tsx}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "type-check": "yarn g:tsc --build tsconfig.json"
+        "type-check": "yarn g:tsc --build tsconfig.json",
+        "convert-old-docs": "yarn tsx scripts/convert-old-docs.ts --all"
     },
     "dependencies": {
         "@hbsnow/rehype-sectionize": "^1.0.7",
         "@sinclair/typebox": "^0.31.28",
         "@trezor/components": "workspace:^",
+        "@trezor/connect": "workspace:^",
         "@trezor/connect-explorer-theme": "workspace:^",
         "@trezor/connect-web": "workspace:^",
         "@trezor/connect-webextension": "workspace:^",
@@ -43,6 +45,8 @@
         "webpack-cli": "^5.1.4"
     },
     "devDependencies": {
-        "@types/redux-logger": "^3.0.11"
+        "@types/redux-logger": "^3.0.11",
+        "eslint-plugin-mdx": "^3.1.5",
+        "tsx": "^4.7.1"
     }
 }

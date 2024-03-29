@@ -1,0 +1,54 @@
+import { Callout } from 'nextra/components';
+
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground options={[{ title: 'PROTO.SetBusy', method: 'setBusy', schema: PROTO.SetBusy }]} />
+
+export const paramDescriptions = {
+    expiry_ms: '',
+};
+
+## Set busy
+
+Show a "Do not disconnect" dialog instead of the standard homescreen.
+
+```javascript
+const result = await TrezorConnect.setBusy(params);
+```
+
+<Callout type="info">**Supported only by T2T1 with Firmware 2.5.3 or higher!**</Callout>
+
+### Params
+
+<CommonParamsLink />
+
+#### PROTO.SetBusy
+
+<ParamsTable schema={PROTO.SetBusy} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Success',
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

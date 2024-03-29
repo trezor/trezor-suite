@@ -46,7 +46,7 @@ export type Response<T> = Promise<Success<T> | Unsuccessful>;
 
 export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {
-    description: 'Derivation Path. minimum length is `1`',
+    description: 'Derivation Path (BIP32).',
     default: `m/49'/0'/0'`,
     $id: 'DerivationPath',
 });

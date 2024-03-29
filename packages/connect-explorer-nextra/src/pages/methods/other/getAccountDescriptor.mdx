@@ -1,0 +1,89 @@
+import { GetAccountDescriptorParams } from '@trezor/connect/src/types/api/getAccountDescriptor';
+import { Bundle } from '@trezor/connect/src/types';
+
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'GetAccountDescriptorParams',
+            method: 'getAccountDescriptor',
+            schema: GetAccountDescriptorParams,
+        },
+        {
+            title: 'Bundle(GetAccountDescriptorParams)',
+            method: 'getAccountDescriptor',
+            schema: Bundle(GetAccountDescriptorParams),
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `3`. [read more](../details/path)',
+    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
+    derivationType: 'enum. determines used derivation type. Default is set to ICARUS_TREZOR=2',
+    suppressBackupWarning:
+        'By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.',
+};
+
+## Get account descriptor
+
+Gets an descriptor of specified account.
+
+```javascript
+const result = await TrezorConnect.getAccountDescriptor(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### GetAccountDescriptorParams
+
+<ParamsTable schema={GetAccountDescriptorParams} descriptions={paramDescriptions} />
+
+#### Bundle(GetAccountDescriptorParams)
+
+<Param name="bundle" type="`Array` of Objects with above schema" />
+
+### Example
+
+Get descriptor of first bitcoin account
+
+```javascript
+TrezorConnect.getAccountDescriptor({
+    path: "m/49'/0'/0'",
+    coin: 'btc',
+});
+```
+
+### Result
+
+[AccountInfo type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/account.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        id: number,                           // account id
+        path: string,                         // serialized path
+        descriptor: string,                   // account public key
+        legacyXpub?: string,                  // (optional) account public key in legacy format (only for segwit and segwit native accounts)
+
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

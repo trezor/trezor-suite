@@ -1,0 +1,65 @@
+import { ResetDevice } from '@trezor/connect/src/types/api/resetDevice';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground options={[{ title: 'ResetDevice', method: 'resetDevice', schema: ResetDevice }]} />
+
+export const paramDescriptions = {
+    strength: 'Accepted values are [128|192|256]. Default is set to `256`',
+    label: '',
+    u2fCounter: 'Default value is set to current time stamp in seconds.',
+    pinProtection: '',
+    passphraseProtection: '',
+    skipBackup: '',
+    noBackup: 'create a seedless device',
+};
+
+## Reset device
+
+Perform device setup and generate new seed.
+
+```javascript
+const result = await TrezorConnect.resetDevice(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### ResetDevice
+
+<ParamsTable schema={ResetDevice} descriptions={paramDescriptions} />
+
+### Example
+
+```javascript
+TrezorConnect.resetDevice({
+    label: 'My fancy Trezor',
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Device successfully initialized'
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

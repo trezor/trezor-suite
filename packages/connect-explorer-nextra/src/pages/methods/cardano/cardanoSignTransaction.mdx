@@ -1,9 +1,57 @@
-import { ApiPlayground } from '../../components/ApiPlayground';
-import { Param } from '../../components/Param';
-import { ParamsTable } from '../../components/ParamsTable';
-import { CardanoSignTransaction } from '@trezor/connect/src/types/api/cardano';
+import {
+    CardanoSignTransaction,
+    CardanoSignTransactionExtended,
+} from '@trezor/connect/src/types/api/cardano';
 
-<ApiPlayground options={[{ method: 'cardanoSignTransaction', schema: CardanoSignTransaction }]} />
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'CardanoSignTransaction',
+            method: 'cardanoSignTransaction',
+            schema: CardanoSignTransaction,
+        },
+        {
+            title: 'CardanoSignTransactionExtended',
+            method: 'cardanoSignTransaction',
+            schema: CardanoSignTransactionExtended,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    inputs: 'of [CardanoInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    outputs:
+        'of [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    fee: '',
+    protocolMagic: '764824073 for Mainnet, 1 for Preprod Testnet, 2 for Preview Testnet',
+    networkId: '1 for Mainnet, 0 for Testnet',
+    ttl: '',
+    validityIntervalStart: '',
+    certificates:
+        'of [CardanoCertificate](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    withdrawals:
+        'of [CardanoWithdrawal](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    scriptDataHash: '',
+    collateralInputs:
+        'of [CardanoCollateralInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    requiredSigners:
+        'of [CardanoRequiredSigner](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    totalCollateral: '',
+    referenceInputs:
+        'of [CardanoReferenceInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)',
+    additionalWitnessRequests:
+        'of `string | Array<number>` (paths). Used for multi-sig and token minting witness requests as those can not be determined from the transaction parameters.',
+    metadata: 'instead',
+    derivationType: 'enum. Determines used derivation type. Default is set to ICARUS_TREZOR=2.',
+    includeNetworkId:
+        'Determines whether `networkId` should be explicitly serialized into the transaction body. Default is `false`.',
+    chunkify:
+        'determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`',
+};
 
 ## Cardano: Sign transaction
 
@@ -16,37 +64,15 @@ const result = await TrezorConnect.cardanoSignTransaction(params);
 
 ### Params
 
-[Optional common params](commonParams.md)
+<CommonParamsLink />
 
-<ParamsTable schema={CardanoSignTransaction} />
+#### CardanoSignTransaction
 
----
+<ParamsTable schema={CardanoSignTransaction} descriptions={paramDescriptions} />
 
-[CardanoSignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+#### CardanoSignTransactionExtended
 
--   `signingMode` - _required_ [CardanoTxSigningMode](#CardanoTxSigningMode)
--   `inputs` - _required_ `Array` of [CardanoInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `outputs` - _required_ `Array` of [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `fee` - _required_ `String`
--   `protocolMagic` - _required_ `Integer` 764824073 for Mainnet, 1 for Preprod Testnet, 2 for Preview Testnet
--   `networkId` - _required_ `Integer` 1 for Mainnet, 0 for Testnet
--   `ttl` - _optional_ `String`
--   `validityIntervalStart` - _optional_ `String`
--   `certificates` - _optional_ `Array` of [CardanoCertificate](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `withdrawals` - _optional_ `Array` of [CardanoWithdrawal](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `auxiliaryData` - _optional_ [CardanoAuxiliaryData](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `mint` - _optional_ [CardanoMint](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `scriptDataHash` - _optional_ `String`
--   `collateralInputs` - _optional_ `Array` of [CardanoCollateralInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `requiredSigners` - _optional_ `Array` of [CardanoRequiredSigner](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `collateralReturn` - _optional_ [CardanoOutput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `totalCollateral` - _optional_ `String`
--   `referenceInputs` - _optional_ `Array` of [CardanoReferenceInput](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
--   `additionalWitnessRequests` - _optional_ `Array` of `string | Array<number>` (paths). Used for multi-sig and token minting witness requests as those can not be determined from the transaction parameters.
--   `metadata` - _removed_ - use `auxiliaryData` instead
--   `derivationType` — _optional_ `CardanoDerivationType` enum. Determines used derivation type. Default is set to ICARUS_TREZOR=2.
--   `includeNetworkId` — _optional_ `Boolean`. Determines whether `networkId` should be explicitly serialized into the transaction body. Default is `false`.
--   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
+<ParamsTable schema={CardanoSignTransactionExtended} descriptions={paramDescriptions} />
 
 ### CardanoTxSigningMode
 

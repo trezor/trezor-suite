@@ -1,0 +1,74 @@
+import { EthereumVerifyMessage } from '@trezor/connect/src/types/api/ethereum';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'EthereumVerifyMessage',
+            method: 'ethereumVerifyMessage',
+            schema: EthereumVerifyMessage,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    address: 'signer address. "0x" prefix is optional',
+    message: 'signed message in plain text',
+    hex: 'convert message from hex',
+    signature: 'signature in hexadecimal format. "0x" prefix is optional',
+};
+
+## Ethereum: verify message
+
+Asks device to
+verify a message using the signer address and signature.
+
+```javascript
+const result = await TrezorConnect.ethereumVerifyMessage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### EthereumVerifyMessage
+
+<ParamsTable schema={EthereumVerifyMessage} descriptions={paramDescriptions} />
+
+### Example
+
+```javascript
+TrezorConnect.ethereumVerifyMessage({
+    address: '0xdA0b608bdb1a4A154325C854607c68950b4F1a34',
+    message: 'Example message',
+    signature:
+        '11dc86c631ef5d9388c5e245501d571b864af1a717cbbb3ca1f6dacbf330742957242aa52b36bbe7bb46dce6ff0ead0548cc5a5ce76d0aaed166fd40cb3fc6e51c',
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "Message verified"
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

@@ -1,0 +1,123 @@
+import { GetAddress } from '@trezor/connect/src/types/params';
+import { Bundle } from '@trezor/connect/src/types';
+
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        { title: 'GetAddress', method: 'binanceGetAddress', schema: GetAddress },
+        { title: 'Bundle(GetAddress)', method: 'binanceGetAddress', schema: Bundle(GetAddress) },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `5`. [read more](../details/path)',
+    address: 'address for validation (read `Handle button request` section below)',
+    showOnTrezor: 'determines if address will be displayed on device. Default is set to `true`',
+    chunkify:
+        'determines if address will be displayed in chunks of 4 characters. Default is set to `false`',
+    bundle: 'of Objects with `path` and `showOnTrezor` fields',
+};
+
+## Binance: get address
+
+Display requested address derived by given [BIP44 path](../details/path) on device and returns it to caller. User is presented with a description of the requested key and asked to confirm the export on Trezor.
+
+```javascript
+const result = await TrezorConnect.binanceGetAddress(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### GetAddress
+
+<ParamsTable schema={GetAddress} descriptions={paramDescriptions} />
+
+#### Bundle(GetAddress)
+
+<Param name="bundle" type="`Array` of Objects with above schema" />
+
+### Example
+
+Display address of first Binance account:
+
+```javascript
+TrezorConnect.binanceGetAddress({
+    path: "m/44'/714'/0'/0/0",
+});
+```
+
+Return a bundle of Binance addresses without displaying them on device:
+
+```javascript
+TrezorConnect.binanceGetAddress({
+    bundle: [
+        { path: "m/44'/714'/0'/0/0", showOnTrezor: false }, // account 1, address 1
+        { path: "m/44'/714'/1'/0/1", showOnTrezor: false }, // account 2, address 2
+        { path: "m/44'/714'/2'/0/2", showOnTrezor: false }, // account 3, address 3
+    ],
+});
+```
+
+Validate address using custom UI inside of your application:
+
+```javascript
+import TrezorConnect, { UI } from '@trezor/connect';
+
+TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
+    console.log('Handle button request', data.address, data.serializedPath);
+    // here you can display custom UI inside of your app
+});
+
+const result = await TrezorConnect.binanceGetAddress({
+    path: "m/44'/714'/0'/0/0",
+    address: 'bnb1afwh46v6nn30nkmugw5swdmsyjmlxslgjfugre',
+});
+// don't forget to hide your custom UI after you get the result!
+```
+
+### Result
+
+[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/params.ts)
+
+Result with only one address
+
+```javascript
+{
+    success: true,
+    payload: {
+        path: Array<number>, // hardended path
+        serializedPath: string,
+        address: string,
+    }
+}
+```
+
+Result with bundle of addresses
+
+```javascript
+{
+    success: true,
+    payload: [
+        { path: Array<number>, serializedPath: string, address: string }, // account 1, address 1
+        { path: Array<number>, serializedPath: string, address: string }, // account 2, address 2
+        { path: Array<number>, serializedPath: string, address: string }  // account 3, address 3
+    ]
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

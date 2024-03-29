@@ -1,0 +1,60 @@
+import { ApplySettings } from '@trezor/connect/src/types/api/applySettings';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[{ title: 'ApplySettings', method: 'applySettings', schema: ApplySettings }]}
+/>
+
+export const paramDescriptions = {
+    flags: '',
+    use_passphrase: '',
+    homescreen: '',
+    auto_lock_delay_ms: '',
+    display_rotation: '',
+    passphrase_always_on_device: '',
+    safety_checks: '',
+    experimental_features: '',
+    hide_passphrase_from_host: '',
+};
+
+## Apply settings
+
+Change device settings
+
+```javascript
+const result = await TrezorConnect.applySettings(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### ApplySettings
+
+<ParamsTable schema={ApplySettings} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "Settings applied"
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

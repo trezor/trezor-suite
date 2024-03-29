@@ -1,0 +1,116 @@
+import { CardanoGetPublicKey } from '@trezor/connect/src/types/api/cardano';
+import { Bundle } from '@trezor/connect/src/types';
+
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'CardanoGetPublicKey',
+            method: 'cardanoGetPublicKey',
+            schema: CardanoGetPublicKey,
+        },
+        {
+            title: 'Bundle(CardanoGetPublicKey)',
+            method: 'cardanoGetPublicKey',
+            schema: Bundle(CardanoGetPublicKey),
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `3`. [read more](../details/path)',
+    showOnTrezor: 'determines if publick key will be displayed on device. Default is set to `true`',
+    derivationType: 'enum. determines used derivation type. Default is set to ICARUS_TREZOR=2',
+    suppressBackupWarning:
+        'By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.',
+    bundle: 'of Objects with `path` and `showOnTrezor` fields',
+};
+
+## Cardano: get public key
+
+Retrieves [BIP32-Ed25519](https://cardanolaunch.com/assets/Ed25519_BIP.pdf) extended public derived by given [BIP32-Ed25519](https://cardanolaunch.com/assets/Ed25519_BIP.pdf) path.
+User is presented with a description of the requested key and asked to confirm the export on Trezor.
+
+```javascript
+const result = await TrezorConnect.cardanoGetPublicKey(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### CardanoGetPublicKey
+
+<ParamsTable schema={CardanoGetPublicKey} descriptions={paramDescriptions} />
+
+#### Bundle(CardanoGetPublicKey)
+
+<Param name="bundle" type="`Array` of Objects with above schema" />
+
+### Example
+
+Display public key of first cardano account:
+
+```javascript
+TrezorConnect.cardanoGetPublicKey({
+    path: "m/44'/1815'/0'",
+});
+```
+
+Return a bundle of cardano public keys without displaying them on device:
+
+```javascript
+TrezorConnect.cardanoGetPublicKey({
+    bundle: [
+        { path: "m/44'/1815'/0'", showOnTrezor: false }, // account 1
+        { path: "m/44'/1815'/1'", showOnTrezor: false }, // account 2
+        { path: "m/44'/1815'/2'", showOnTrezor: false }, // account 3
+    ],
+});
+```
+
+### Result
+
+[CardanoPublicKey type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/cardano/index.ts)
+
+Result with only one public key
+
+```javascript
+{
+    success: true,
+    payload: {
+        path: Array<number>, // hardended path
+        serializedPath: string,
+        publicKey: string,
+        node: HDPubNode,
+    }
+}
+```
+
+Result with a bundle of public keys
+
+```javascript
+{
+    success: true,
+    payload: [
+        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode }, // account 1
+        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode}, // account 2
+        { path: Array<number>, serializedPath: string, publicKey: string, node: HDPubNode }  // account 3
+    ]
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

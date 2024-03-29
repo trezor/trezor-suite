@@ -54,12 +54,14 @@ const ParamType = styled.div<{
     `}
 `;
 
-export const ParamDescriptionComponent = (props: Pick<ParamProps, 'description' | 'children'>) => {
+export const ParamDescriptionComponent = (
+    props: Pick<ParamProps, 'description' | 'children' | 'type'>,
+) => {
     const { parentElevation } = useElevation();
 
     return (
         <>
-            {props.description && (
+            {props.description && props.type !== 'Undefined' && (
                 <ParamDescription $elevation={parentElevation}>
                     <Markdown>{props.description}</Markdown>
                 </ParamDescription>

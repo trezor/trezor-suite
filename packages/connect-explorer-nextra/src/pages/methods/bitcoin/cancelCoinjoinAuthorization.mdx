@@ -1,0 +1,69 @@
+import { Callout } from 'nextra/components';
+
+import { CancelCoinjoinAuthorization } from '@trezor/connect/src/types/api/cancelCoinjoinAuthorization';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'CancelCoinjoinAuthorization',
+            method: 'cancelCoinjoinAuthorization',
+            schema: CancelCoinjoinAuthorization,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {};
+
+## Bitcoin: cancel coinjoin authorization
+
+Clear device's authorization for coinjoin-related operations.
+
+```javascript
+const result = await TrezorConnect.cancelCoinjoinAuthorization(params);
+```
+
+<Callout type="warning">**This feature is experimental! Do not use it in production!**</Callout>
+
+<Callout type="info">**Supported only by T2T1 with Firmware 2.5.3 or higher!**</Callout>
+
+### Params
+
+#### CancelCoinjoinAuthorization
+
+<ParamsTable schema={CancelCoinjoinAuthorization} descriptions={paramDescriptions} />
+
+### Example:
+
+```javascript
+TrezorConnect.cancelCoinjoinAuthorization({
+    device,
+    useEmptyPassphrase: device?.useEmptyPassphrase,
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Authorization cancelled'
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
