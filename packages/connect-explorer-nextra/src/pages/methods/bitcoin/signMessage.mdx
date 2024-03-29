@@ -1,0 +1,64 @@
+import { SignMessage } from '@trezor/connect/src/types/api/bitcoin';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground options={[{ title: 'SignMessage', method: 'signMessage', schema: SignMessage }]} />
+
+export const paramDescriptions = {
+    path: 'minimum length is `3`. [read more](../details/path)',
+    message: '',
+    coin: 'Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used. If `coin` is not set API will try to get network definition from `path`.',
+    hex: 'convert message from hex',
+};
+
+## Sign message
+
+Asks device to sign a message using the private key derived by given BIP32 path.
+
+```javascript
+const result = await TrezorConnect.signMessage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### SignMessage
+
+<ParamsTable schema={SignMessage} descriptions={paramDescriptions} />
+
+### Example
+
+```javascript
+TrezorConnect.signMessage({
+    path: "m/44'/0'/0'",
+    message: 'example message',
+});
+```
+
+### Result
+
+[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        address: string,   // signer address
+        signature: string, // signature in base64 format
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

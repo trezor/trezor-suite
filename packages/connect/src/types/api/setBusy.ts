@@ -3,6 +3,6 @@
  */
 
 import type { PROTO } from '../../constants';
-import type { CommonParams, Response } from '../params';
+import type { Params, Response } from '../params';
 
-export declare function setBusy(params: CommonParams & PROTO.SetBusy): Response<PROTO.Success>;
+export declare function setBusy(params: Params<PROTO.SetBusy>): Response<PROTO.Success>;

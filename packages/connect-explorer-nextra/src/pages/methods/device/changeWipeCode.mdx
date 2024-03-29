@@ -1,0 +1,54 @@
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        { title: 'PROTO.ChangeWipeCode', method: 'changeWipeCode', schema: PROTO.ChangeWipeCode },
+    ]}
+/>
+
+export const paramDescriptions = {
+    remove: '',
+};
+
+## Change wipe code
+
+This method initiates wipe code change sequence.
+
+```javascript
+const result = await TrezorConnect.changeWipeCode(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### PROTO.ChangeWipeCode
+
+<ParamsTable schema={PROTO.ChangeWipeCode} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: string
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

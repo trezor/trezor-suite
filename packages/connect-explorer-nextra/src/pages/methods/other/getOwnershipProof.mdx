@@ -1,0 +1,118 @@
+import { Callout } from 'nextra/components';
+
+import { GetOwnershipProof } from '@trezor/connect/src/types/api/getOwnershipProof';
+import { Bundle } from '@trezor/connect/src/types';
+
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        { title: 'GetOwnershipProof', method: 'getOwnershipProof', schema: GetOwnershipProof },
+        {
+            title: 'Bundle(GetOwnershipProof)',
+            method: 'getOwnershipProof',
+            schema: Bundle(GetOwnershipProof),
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `5`. [read more](../details/path)',
+    coin: '',
+    scriptType: '',
+    userConfirmation: '',
+    ownershipIds: '',
+    commitmentData: '',
+    multisig: '',
+    preauthorized: '[read more](./authorizeCoinjoin.md)',
+    bundle: 'of Objects with fields listed above.',
+};
+
+## Bitcoin: get Ownership proof
+
+Export SLIP-0019 ownership proof. [Read more](https://github.com/satoshilabs/slips/blob/master/slip-0019.md#proof-usage)
+
+```javascript
+const result = await TrezorConnect.getOwnershipProof(params);
+```
+
+<Callout type="info">**Supported only by T2T1 with Firmware 2.4.4 or higher!**</Callout>
+
+### Params
+
+<CommonParamsLink />
+
+#### GetOwnershipProof
+
+<ParamsTable schema={GetOwnershipProof} descriptions={paramDescriptions} />
+
+#### Bundle(GetOwnershipProof)
+
+<Param name="bundle" type="`Array` of Objects with above schema" />
+
+### Example
+
+Display ownership proof of the first bitcoin address:
+
+```javascript
+TrezorConnect.getOwnershipProof({
+    path: "m/86'/0'/0'/0/0",
+});
+```
+
+Return a bundle of ownership proofs:
+
+```javascript
+TrezorConnect.getOwnershipProof({
+    bundle: [
+        { path: "m/86'/0'/0'/0/0" }, // taproot
+        { path: "m/84'/0'/0'/0/0" }, // bech32
+        { path: "m/49'/0'/0'/0/0" }, // segwit
+    ],
+});
+```
+
+### Result
+
+[OwnershipProof type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/getOwnershipProof.ts)
+
+Result with single proof:
+
+```javascript
+{
+    success: true,
+    payload: {
+        ownership_proof: string,
+        signature: string,
+        path: number[],
+        serializedPath: string
+    }
+}
+```
+
+Result with bundle of proofs sorted by FIFO
+
+```javascript
+{
+    success: true,
+    payload: [
+        { ownership_proof: string, signature: string, path: number[], serializedPath: string }, // taproot
+        { ownership_proof: string, signature: string, path: number[], serializedPath: string }, // bech32
+        { ownership_proof: string, signature: string, path: number[], serializedPath: string }  // segwit
+    ]
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

@@ -1,0 +1,80 @@
+import { Callout } from 'nextra/components';
+
+import { AuthorizeCoinjoin } from '@trezor/connect/src/types/api/authorizeCoinjoin';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        { title: 'AuthorizeCoinjoin', method: 'authorizeCoinjoin', schema: AuthorizeCoinjoin },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: '',
+    coordinator: '',
+    maxRounds: '',
+    maxCoordinatorFeeRate: '',
+    maxFeePerKvbyte: '',
+    coin: '',
+    scriptType: '',
+    amountUnit: '',
+    coinjoinRequest: '',
+};
+
+## Bitcoin: authorize coinjoin
+
+Allow device to do preauthorized operations in `signTransaction` and `getOwnershipProof` methods without further user interaction.
+
+Permission persists until physical device disconnection or `maxRounds` limit is reached.
+
+```javascript
+const result = await TrezorConnect.authorizeCoinjoin(params);
+```
+
+<Callout type="warning">**This feature is experimental! Do not use it in production!**</Callout>
+
+<Callout type="info">**Supported only by T2T1 with Firmware 2.5.3 or higher!**</Callout>
+
+### Params
+
+#### AuthorizeCoinjoin
+
+<ParamsTable schema={AuthorizeCoinjoin} descriptions={paramDescriptions} />
+
+### Example:
+
+```javascript
+TrezorConnect.authorizeCoinjoin({
+    path: "m/10086'/0'/0'",
+    maxRounds: 3,
+    maxCoordinatorFeeRate: 500000, // 0.5% => 0.005 * 10**8;
+    maxFeePerKvbyte: 3500,
+    scriptType: 'SPENDWITNESS',
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Coinjoin authorized'
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

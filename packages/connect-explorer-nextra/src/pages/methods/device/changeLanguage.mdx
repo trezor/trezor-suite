@@ -1,0 +1,56 @@
+import { ChangeLanguage } from '@trezor/connect/src/types/api/changeLanguage';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[{ title: 'ChangeLanguage', method: 'changeLanguage', schema: ChangeLanguage }]}
+/>
+
+export const paramDescriptions = {
+    language:
+        '(cs-CZ, de-DE) whatever language variant is available for given model and firmware version',
+    baseUrl:
+        'where language blob should be downloaded from. Default value is https://data.trezor.io',
+    binary: 'directly provide language file',
+};
+
+## Change language
+
+This method initiates language change.
+
+```javascript
+const result = await TrezorConnect.changeLanguage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### ChangeLanguage
+
+<ParamsTable schema={ChangeLanguage} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "Language changed"
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

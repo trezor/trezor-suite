@@ -1,0 +1,61 @@
+import { Callout } from 'nextra/components';
+
+import { UnlockPathParams } from '@trezor/connect/src/types/api/unlockPath';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[{ title: 'UnlockPathParams', method: 'unlockPath', schema: UnlockPathParams }]}
+/>
+
+export const paramDescriptions = {
+    path: '',
+};
+
+## Unlock path
+
+Ask device to unlock a subtree of the keychain.
+
+Result is used in `getPublicKey`, `getAddress` and `signTransaction` methods to access requested keychain which is not available by default.
+
+```javascript
+const result = await TrezorConnect.unlockPath(params);
+```
+
+<Callout type="warning">**This feature is experimental! Do not use it in production!**</Callout>
+
+<Callout type="info">**Supported only by T2T1 with Firmware 2.5.3 or higher!**</Callout>
+
+### Params
+
+<CommonParamsLink />
+
+#### UnlockPathParams
+
+<ParamsTable schema={UnlockPathParams} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        address_n: Array<number>,
+        mac: string,
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

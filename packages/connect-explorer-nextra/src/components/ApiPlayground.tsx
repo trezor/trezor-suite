@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 
 import styled from 'styled-components';
-import { TSchema } from '@sinclair/typebox';
+import { Type, TSchema } from '@sinclair/typebox';
 
-import { CollapsibleBox, SelectBar, variables } from '@trezor/components';
+import { CollapsibleBox, Select, SelectBar, variables } from '@trezor/components';
 
 import { Method } from './Method';
 import { useActions } from '../hooks';
@@ -14,11 +14,11 @@ const ApiPlaygroundWrapper = styled.div`
     display: block;
     position: fixed;
     z-index: 10;
-    bottom: 2rem;
+    bottom: 1rem;
     left: 2rem;
     right: 2rem;
     max-width: 54rem;
-    max-height: 48rem;
+    max-height: calc(100% - 150px);
     overflow-x: auto;
     border-radius: 1rem;
     padding: 0;
@@ -32,6 +32,10 @@ const ApiPlaygroundWrapper = styled.div`
     @media (min-width: 90rem) {
         left: calc(50% - 27rem);
     }
+
+    @media (min-width: 160rem) {
+        left: calc(50% + 29rem);
+    }
 `;
 
 const CollapsibleBoxStyled = styled(CollapsibleBox)`
@@ -43,7 +47,7 @@ interface ApiPlaygroundProps {
     options: (
         | {
               title: string;
-              schema: TSchema;
+              schema?: TSchema;
               method: string;
           }
         | {
@@ -64,14 +68,27 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
             actions.onSetMethod(option.legacyConfig);
         } else {
             const { method, schema } = option;
-            actions.onSetSchema(method, schema);
+            actions.onSetSchema(method, schema ?? Type.Object({}));
         }
     }, [actions, options, selectedOption]);
 
     return (
         <ApiPlaygroundWrapper>
             <CollapsibleBoxStyled heading="Method testing tool" variant="large">
-                {options.length > 1 && (
+                {options.length > 5 && (
+                    <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
+                        <Select
+                            label="Select method"
+                            value={{ value: selectedOption, label: options[selectedOption].title }}
+                            onChange={option => setSelectedOption(option.value)}
+                            options={options.map((option, index) => ({
+                                value: index,
+                                label: option.title,
+                            }))}
+                        />
+                    </div>
+                )}
+                {options.length < 5 && options.length > 1 && (
                     <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
                         <SelectBar
                             selectedOption={selectedOption}

@@ -1,0 +1,52 @@
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[{ title: 'PROTO.ChangePin', method: 'changePin', schema: PROTO.ChangePin }]}
+/>
+
+export const paramDescriptions = {
+    remove: '',
+};
+
+## Change pin
+
+This method initiates pin change sequence.
+
+```javascript
+const result = await TrezorConnect.changePin(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### PROTO.ChangePin
+
+<ParamsTable schema={PROTO.ChangePin} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "PIN enabled" | "PIN removed"
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

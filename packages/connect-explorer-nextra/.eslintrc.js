@@ -7,5 +7,12 @@ module.exports = {
         '@typescript-eslint/no-shadow': 'off',
         'no-console': 'off',
         'no-restricted-syntax': 'off',
+        'react/jsx-filename-extension': [
+            'error',
+            {
+                extensions: ['.tsx', '.mdx'],
+            },
+        ],
     },
+    extends: ['plugin:mdx/recommended'],
 };
