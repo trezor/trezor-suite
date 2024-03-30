@@ -65,24 +65,101 @@ const getTestFiles = async (): Promise<string[]> => {
     return res.stdout.split('\n').filter((f: string) => f.includes('.test.'));
 };
 
-const runTests = async () => {
-    await TrezorUserEnvLink.connect();
+interface CIEnvVars {
+    BROWSER: string;
+    CYPRESS_baseUrl: string;
+    TRACK_SUITE_URL: string;
+    ALLOW_RETRY: boolean;
+    CYPRESS_updateSnapshots: boolean;
+    CYPRESS_TEST_URLS: string;
+    CI_JOB_URL: string;
+    CI_COMMIT_BRANCH: string;
+    CI_JOB_ID: string;
+    CI_COMMIT_MESSAGE: string;
+    CI_COMMIT_SHA: string;
+}
 
-    const {
-        BROWSER = 'chrome',
+function parse(expected: 'string', str: any): string;
+function parse(expected: 'number', str: any): number;
+function parse(expected: 'boolean', str: any): boolean;
+function parse(expected: any, str: any): any {
+    if (str && typeof str !== 'string') {
+        throw new Error(`Expected string, got ${str} (type ${typeof str})`);
+    }
+    if (expected === 'string') {
+        return str;
+    }
+    if (expected === 'number') {
+        const asNum = parseInt(str, 10);
+        if (Number.isNaN(asNum)) {
+            throw new Error(`Expected number, got ${str} (type ${typeof str})`);
+        }
+
+        return asNum;
+    }
+    if (expected === 'boolean') {
+        if (str === 'true') return true;
+        if (str === 'false') return false;
+        throw new Error(`Expected boolean, got ${str} (type ${typeof str})`);
+    }
+}
+
+const collectCIEnvVars = (): CIEnvVars => {
+    const BROWSER = parse('string', process.env.BROWSER) || 'chrome';
+    const CYPRESS_baseUrl = parse('string', process.env.CYPRESS_baseUrl);
+    const TRACK_SUITE_URL = parse('string', process.env.TRACK_SUITE_URL);
+    const ALLOW_RETRY = parse('boolean', process.env.ALLOW_RETRY);
+    const CYPRESS_updateSnapshots = parse('boolean', process.env.CYPRESS_updateSnapshots);
+    const CYPRESS_TEST_URLS = parse('string', process.env.CYPRESS_TEST_URLS);
+    const CI_JOB_URL = parse('string', process.env.CI_JOB_URL);
+    const CI_COMMIT_BRANCH = parse('string', process.env.CI_COMMIT_BRANCH);
+    const CI_JOB_ID = parse('string', process.env.CI_JOB_ID);
+    const CI_COMMIT_MESSAGE = parse('string', process.env.CI_COMMIT_MESSAGE);
+    const CI_COMMIT_SHA = parse('string', process.env.CI_COMMIT_SHA);
+
+    return {
+        BROWSER,
         CYPRESS_baseUrl,
         TRACK_SUITE_URL,
         ALLOW_RETRY,
+        CYPRESS_updateSnapshots,
+        CYPRESS_TEST_URLS,
         CI_JOB_URL,
         CI_COMMIT_BRANCH,
         CI_JOB_ID,
         CI_COMMIT_MESSAGE,
         CI_COMMIT_SHA,
-        // CI_RUNNER_ID,
-        CI_RUNNER_DESCRIPTION,
+    };
+};
+
+const runTests = async () => {
+    await TrezorUserEnvLink.connect();
+
+    const {
+        CI_JOB_URL,
+        CI_COMMIT_BRANCH,
+        CI_JOB_ID,
+        CI_COMMIT_MESSAGE,
+        CI_COMMIT_SHA,
+        CYPRESS_baseUrl,
+        TRACK_SUITE_URL,
+        ALLOW_RETRY,
         CYPRESS_updateSnapshots,
         CYPRESS_TEST_URLS,
-    } = process.env;
+        BROWSER,
+    } = collectCIEnvVars();
+
+    console.log('CI_JOB_URL', CI_JOB_URL);
+    console.log('CI_COMMIT_BRANCH', CI_COMMIT_BRANCH);
+    console.log('CI_JOB_ID', CI_JOB_ID);
+    console.log('CI_COMMIT_MESSAGE', CI_COMMIT_MESSAGE);
+    console.log('CI_COMMIT_SHA', CI_COMMIT_SHA);
+    console.log('CYPRESS_baseUrl', CYPRESS_baseUrl);
+    console.log('TRACK_SUITE_URL', TRACK_SUITE_URL);
+    console.log('ALLOW_RETRY', ALLOW_RETRY);
+    console.log('CYPRESS_updateSnapshots', CYPRESS_updateSnapshots);
+    console.log('CYPRESS_TEST_URLS', CYPRESS_TEST_URLS);
+    console.log('BROWSER', BROWSER);
 
     if (!CYPRESS_TEST_URLS) {
         throw new Error('CYPRESS_TEST_URLS is not set');
@@ -115,7 +192,6 @@ const runTests = async () => {
         branch?: string;
         commitMessage?: string;
         commitSha?: string;
-        runnerDescription?: string;
         duration: number;
         stage?: string;
         records: { [key: string]: 'success' | 'failed' | 'retried' | 'skipped' };
@@ -128,7 +204,6 @@ const runTests = async () => {
         branch: CI_COMMIT_BRANCH,
         commitMessage: CI_COMMIT_MESSAGE,
         commitSha: CI_COMMIT_SHA,
-        runnerDescription: CI_RUNNER_DESCRIPTION,
         duration: 0,
         stage: group,
         records: {},

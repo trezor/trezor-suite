@@ -21,10 +21,10 @@ services:
       - TRACK_SUITE_URL=$TRACK_SUITE_URL
       - ALLOW_RETRY=$ALLOW_RETRY
       - CI_JOB_URL=$CI_JOB_URL
+      - CI_JOB_ID=$CI_JOB_ID
       - CI_COMMIT_BRANCH=$CI_COMMIT_BRANCH
       - CI_COMMIT_MESSAGE=$CI_COMMIT_MESSAGE
       - CI_COMMIT_SHA=$CI_COMMIT_SHA
-      - CI_RUNNER_DESCRIPTION=$CI_RUNNER_DESCRIPTION
       - FIRMWARE=$FIRMWARE
     network_mode: service:trezor-user-env-unix
     working_dir: /trezor-suite
