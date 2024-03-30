@@ -8,7 +8,7 @@ import {
     CoinmarketProviderInfo,
     CoinmarketTag,
 } from 'src/views/wallet/coinmarket/common';
-import { QuestionTooltip, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -92,11 +92,6 @@ const IconWrapper = styled.div`
 `;
 
 const ErrorText = styled.div``;
-
-const StyledQuestionTooltip = styled(QuestionTooltip)`
-    padding-left: 4px;
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-`;
 
 interface QuoteProps {
     className?: string;
@@ -250,15 +245,6 @@ export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
                             method={paymentMethod}
                             methodName={paymentMethodName}
                         />
-                    </Value>
-                </Column>
-                <Column>
-                    <Heading>
-                        <Translation id="TR_BUY_FEES" />{' '}
-                        <StyledQuestionTooltip tooltip="TR_OFFER_FEE_INFO" />
-                    </Heading>
-                    <Value>
-                        <Translation id="TR_BUY_ALL_FEES_INCLUDED" />
                     </Value>
                 </Column>
                 <Column>
