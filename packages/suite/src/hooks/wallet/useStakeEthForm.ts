@@ -350,15 +350,18 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         currentRate,
     ]);
 
+    const [isLoading, setIsLoading] = useState(false);
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
         const values = getValues();
         const composedTx = composedLevels ? composedLevels[selectedFee] : undefined;
         if (composedTx && composedTx.type === 'final') {
+            setIsLoading(true);
             const result = await dispatch(
                 signTransaction(values, composedTx as PrecomposedTransactionFinal),
             );
 
+            setIsLoading(false);
             if (result?.success) {
                 clearForm();
             }
@@ -401,6 +404,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         closeConfirmModal,
         signTx,
         currentRate,
+        isLoading,
     };
 };
 
