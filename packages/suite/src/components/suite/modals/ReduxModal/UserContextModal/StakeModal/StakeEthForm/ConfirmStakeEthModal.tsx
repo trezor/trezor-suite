@@ -56,11 +56,16 @@ const ButtonsWrapper = styled.div`
 `;
 
 interface ConfirmStakeEthModalProps {
+    isLoading: boolean;
     onConfirm: () => void;
     onCancel: () => void;
 }
 
-export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthModalProps) => {
+export const ConfirmStakeEthModal = ({
+    isLoading,
+    onConfirm,
+    onCancel,
+}: ConfirmStakeEthModalProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
@@ -70,6 +75,7 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
         selectedAccountKey: account?.descriptor ?? '',
         validatorsQueue,
     });
+    const isDisabled = !hasAgreed || isLoading;
 
     const handleOnCancel = () => {
         onCancel();
@@ -125,7 +131,7 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
                 <Button variant="tertiary" onClick={handleOnCancel}>
                     <Translation id="TR_CANCEL" />
                 </Button>
-                <Button isDisabled={!hasAgreed} onClick={onClick}>
+                <Button isDisabled={isDisabled} onClick={onClick}>
                     <Translation id="TR_STAKE_CONFIRM_AND_STAKE" />
                 </Button>
             </ButtonsWrapper>

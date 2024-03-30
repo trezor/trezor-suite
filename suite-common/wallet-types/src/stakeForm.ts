@@ -53,4 +53,5 @@ export type StakeContextValues = UseFormReturn<StakeFormState> &
         closeConfirmModal: () => void;
         onSubmit: () => void;
         currentRate: Rate | undefined;
+        isLoading: boolean;
     };

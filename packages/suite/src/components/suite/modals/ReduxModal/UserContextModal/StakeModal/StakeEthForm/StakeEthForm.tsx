@@ -43,6 +43,7 @@ export const StakeEthForm = () => {
         isConfirmModalOpen,
         closeConfirmModal,
         signTx,
+        isLoading,
     } = useStakeEthFormContext();
     const { formattedBalance, symbol } = account;
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
@@ -54,7 +55,11 @@ export const StakeEthForm = () => {
     return (
         <>
             {isConfirmModalOpen && (
-                <ConfirmStakeEthModal onConfirm={signTx} onCancel={closeConfirmModal} />
+                <ConfirmStakeEthModal
+                    isLoading={isLoading}
+                    onConfirm={signTx}
+                    onCancel={closeConfirmModal}
+                />
             )}
 
             <form onSubmit={handleSubmit(onSubmit)}>
