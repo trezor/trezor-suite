@@ -41,8 +41,9 @@ jobs:
                   aws-region: eu-central-1
 
             - name: Extract branch name
-              run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
               id: extract_branch
+              run: |
+                  echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
 
             - name: Setup node
               uses: actions/setup-node@v4
@@ -51,7 +52,6 @@ jobs:
             - name: Build suite-web
               env:
                   ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
-                  CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
                   DESKTOP_APP_NAME: 'Trezor-Suite'
               run: |
                   yarn install
@@ -100,33 +100,52 @@ jobs:
         steps:
             - name: Checkout
               uses: actions/checkout@v4
-
+              with:
+                  ref: ${{github.event.after}}
+                  fetch-depth: 2
             - name: Setup node
               uses: actions/setup-node@v4
               with:
                   node-version-file: '.nvmrc'
+
             - name: Extract branch name
-              run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
               id: extract_branch
+              run: |
+                  echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+            - name: Extract commit message
+              id: extract_commit_message
+              run: |
+                  if [ "${{ github.event_name }}" == "pull_request" ]; then
+                    git fetch origin +refs/pull/${{ github.event.pull_request.number }}/merge:
+                    echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+                  else
+                    echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+                  fi
+
             - name: Run e2e tests
               env:
-                  CI_COMMIT_REF_NAME: ${{ steps.extract_branch.outputs.branch }}
                   COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
                   ## Tells Cypress where is the index of application
                   CYPRESS_ASSET_PREFIX: /web
                   CYPRESS_baseUrl: https://dev.suite.sldev.cz/suite-web/
                   ## should tests do snapshot testing
                   # cypress open todo. temporarily turned off (messaging system)
-                  CYPRESS_SNAPSHOT: 0
+                  CYPRESS_SNAPSHOT: false
                   ## reporter url
                   TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
                   ## when debugging or developing tests it does not make sense to have retries,
                   ## in other cases retries are useful to avoid occasional failures due to flaky tests
-                  ALLOW_RETRY: 1
+                  ALLOW_RETRY: true
                   TEST_GROUP: ${{ matrix.TEST_GROUP }}
                   CYPRESS_TEST_URLS: ${{ steps.extract_branch.outputs.branch }}
                   CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: ${{ matrix.CYPRESS_USE_TREZOR_USER_ENV_BRIDGE }}
-                  CYPRESS_updateSnapshots: 0
+                  CYPRESS_updateSnapshots: false
+                  CI_JOB_ID: ${{ github.run_id }}
+                  CI_COMMIT_SHA: ${{ github.sha }}
+                  CI_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+                  CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+                  CI_COMMIT_MESSAGE: ${{steps.extract_commit_message.outputs.message }}
               run: |
                   yarn install --immutable
                   docker-compose pull
