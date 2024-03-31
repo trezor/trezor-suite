@@ -45,18 +45,19 @@ const waitForReconnectedDevice = async ({
         'onCallFirmwareUpdate',
         `waiting for device to reconnect in ${bootloader ? 'bootloader' : 'normal'} mode`,
     );
-    postMessage(
-        createUiMessage(UI.FIRMWARE_RECONNECT, {
-            device: device.toMessageObject(),
-            manual,
-            bootloader,
-            confirmOnDevice,
-            i,
-        }),
-    );
+
     let reconnectedDevice: Device | undefined;
 
     do {
+        postMessage(
+            createUiMessage(UI.FIRMWARE_RECONNECT, {
+                device: device.toMessageObject(),
+                manual,
+                bootloader,
+                confirmOnDevice,
+                i,
+            }),
+        );
         await createTimeoutPromise(2000);
         try {
             reconnectedDevice = deviceList.getDevice(deviceList.getFirstDevicePath());
