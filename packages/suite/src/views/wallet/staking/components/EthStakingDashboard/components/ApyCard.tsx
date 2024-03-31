@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
 
 interface ApyCardProps {
-    apy: string;
+    apy: number;
 }
 
 export const ApyCard = ({ apy }: ApyCardProps) => {

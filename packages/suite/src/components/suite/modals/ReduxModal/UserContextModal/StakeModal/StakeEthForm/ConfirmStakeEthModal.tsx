@@ -3,10 +3,12 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Checkbox, H2, Icon, Divider } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Modal, Translation, TrezorLink } from 'src/components/suite';
-import { useDispatch, useSelector, useValidatorsQueue } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useDaysTo } from 'src/hooks/suite/useDaysTo';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
 
 const StyledModal = styled(Modal)`
     width: 500px;
@@ -70,7 +72,8 @@ export const ConfirmStakeEthModal = ({
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
-    const { validatorsQueue } = useValidatorsQueue(account?.symbol);
+    const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
+
     const { daysToAddToPoolInitial } = useDaysTo({
         selectedAccountKey: account?.descriptor ?? '',
         validatorsQueue,
@@ -98,7 +101,9 @@ export const ConfirmStakeEthModal = ({
                     <Translation
                         id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
                         values={{
-                            days: isNaN(daysToAddToPoolInitial) ? '30+' : daysToAddToPoolInitial,
+                            days: Number.isNaN(daysToAddToPoolInitial)
+                                ? '30+'
+                                : daysToAddToPoolInitial,
                         }}
                     />
                 </Flex>

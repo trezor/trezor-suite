@@ -2,7 +2,7 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Icon, IconType, Paragraph } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import { TranslationKey } from '@suite-common/intl-types';
-import { useDispatch, useSelector, useValidatorsQueue } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { spacingsPx } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -98,9 +98,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                                 id={translationId}
                                 values={{
                                     symbol: account?.symbol.toUpperCase(),
-                                    days: !Number.isNaN(unstakingPeriod)
-                                        ? unstakingPeriod
-                                        : UNSTAKING_ETH_PERIOD,
+                                    days: unstakingPeriod,
                                 }}
                             />
                         </GreyP>

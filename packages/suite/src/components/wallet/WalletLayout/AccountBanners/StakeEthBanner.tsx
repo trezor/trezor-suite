@@ -3,11 +3,12 @@ import { Button, Card, Icon, Paragraph, variables, IconButton } from '@trezor/co
 import { spacingsPx } from '@trezor/theme';
 import { Translation, IconBorderedWrapper } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useSelector, useEverstakePoolStats } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
-import { STAKE_SYMBOLS } from 'src/constants/suite/ethStaking';
 import { Account } from '@suite-common/wallet-types';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { isSupportedNetworkSymbol } from '@suite-common/wallet-core/src/stake/stakeTypes';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -48,7 +49,7 @@ const Text = styled.div`
 `;
 
 interface StakeEthBannerProps {
-    account?: Account;
+    account: Account;
 }
 
 export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
@@ -56,7 +57,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     const dispatch = useDispatch();
     const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
     const { pathname } = useSelector(state => state.router);
-    const { ethApy } = useEverstakePoolStats(account?.symbol);
+    const ethApy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
 
     const closeBanner = () => {
         dispatch(setFlag('stakeEthBannerClosed', true));
@@ -70,7 +71,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
         pathname !== '/accounts' ||
         stakeEthBannerClosed ||
         !account ||
-        !STAKE_SYMBOLS.includes(account.symbol)
+        !isSupportedNetworkSymbol(account.symbol)
     ) {
         return null;
     }

@@ -11,7 +11,7 @@ const DaysToAddToPool = styled.div`
 `;
 
 interface UseProgressLabelsData {
-    daysToAddToPool: number;
+    daysToAddToPool?: number;
     isDaysToAddToPoolShown: boolean;
     isStakeConfirming: boolean;
     isStakePending: boolean;

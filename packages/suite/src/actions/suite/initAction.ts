@@ -5,6 +5,7 @@ import {
     initDevices,
     periodicCheckTokenDefinitionsThunk,
     periodicFetchFiatRatesThunk,
+    periodicCheckStakeDataThunk,
 } from '@suite-common/wallet-core';
 
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -86,6 +87,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // immediately after suite start.
     dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
-    // 11. backend connected, suite is ready to use
+    // 11. start fetching staking data if needed, does need to be waited
+    dispatch(periodicCheckStakeDataThunk());
+
+    // 12. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };

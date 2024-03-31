@@ -8585,6 +8585,7 @@ __metadata:
     "@trezor/suite-analytics": "workspace:*"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
+    bignumber.js: "npm:^9.1.2"
     date-fns: "npm:^2.30.0"
     jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
