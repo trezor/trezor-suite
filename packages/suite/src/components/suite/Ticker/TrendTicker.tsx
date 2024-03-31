@@ -8,6 +8,7 @@ import { useSelector } from 'src/hooks/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
     ${typography.hint}
@@ -24,7 +25,7 @@ interface TickerProps {
     symbol: NetworkSymbol;
 }
 export const TrendTicker = ({ symbol }: TickerProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
+    const locale = useSelector(selectLanguage);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbol, localCurrency);
     const lastWeekRate = useSelector(state =>
