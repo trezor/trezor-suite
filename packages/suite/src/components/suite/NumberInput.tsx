@@ -16,6 +16,7 @@ import { localizeNumber } from '@suite-common/wallet-utils';
 import { Locale } from 'src/config/suite/languages';
 import { useSelector } from 'src/hooks/suite';
 import { getLocaleSeparators } from '@trezor/utils';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
@@ -96,7 +97,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
         defaultValue,
     });
 
-    const locale = useSelector(state => state.suite.settings.language);
+    const locale = useSelector(selectLanguage);
     const [pressedKey, setPressedKey] = useState('');
     const [displayValue, setDisplayValue] = useState(localizeNumber(value, locale));
     const [changeHistory, setChangeHistory] = useState<string[]>([value]);
