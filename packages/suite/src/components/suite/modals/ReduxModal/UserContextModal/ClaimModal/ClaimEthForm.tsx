@@ -2,7 +2,6 @@ import { useEffect } from 'react';
 import styled from 'styled-components';
 import { Button, Paragraph, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
@@ -56,7 +55,6 @@ export const ClaimEthForm = () => {
         onClaimChange,
         signTx,
     } = useClaimEthFormContext();
-    const mappedSymbol = mapTestnetSymbol(symbol);
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
@@ -80,7 +78,7 @@ export const ClaimEthForm = () => {
                     </GreyP>
                     <Paragraph>
                         <GreenTxt>
-                            <FiatValue amount={claimableAmount} symbol={mappedSymbol} />
+                            <FiatValue amount={claimableAmount} symbol={symbol} />
                         </GreenTxt>
                     </Paragraph>
                 </TxtRight>

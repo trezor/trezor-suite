@@ -5,7 +5,6 @@ import { borders, spacingsPx } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 
 const StyledCard = styled.div`
@@ -64,11 +63,14 @@ interface ClaimReadyCardProps {
 export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
     const theme = useTheme();
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
-    const mappedSymbol = mapTestnetSymbol(symbol ?? 'eth');
     const dispatch = useDispatch();
     const openClaimModal = () => {
         dispatch(openModal({ type: 'claim' }));
     };
+
+    if (!symbol) {
+        return null;
+    }
 
     return (
         <StyledCard>
@@ -101,7 +103,7 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
                             <FiatValue
                                 showApproximationIndicator
                                 amount={claimAmount}
-                                symbol={mappedSymbol}
+                                symbol={symbol}
                             />
                         </FiatValueWrapper>
                     </div>
