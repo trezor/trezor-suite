@@ -273,7 +273,7 @@ export const onCallFirmwareUpdate = async ({
     registerEvents(device, postMessage);
 
     const { manual, upgrade, language } = getInstallationParams(device, params.binary);
-
+    console.log('language: ', language);
     log.debug('onCallFirmwareUpdate', 'installation params', { manual, upgrade, language });
 
     let binary =
@@ -313,8 +313,8 @@ export const onCallFirmwareUpdate = async ({
         if (!language) {
             await device.getCommands().typedCall('RebootToBootloader', 'Success', rebootParams);
         } else {
-            const targetLanguage = params.language || device.features.language || 'en-EN';
-
+            const targetLanguage = params.language || device.features.language || 'en-US';
+            console.log('target language: ', targetLanguage, params);
             let languageBlob;
             if (targetLanguage !== 'en-US') {
                 languageBlob = await getLanguage({

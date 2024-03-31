@@ -141,82 +141,82 @@ export const actions = [
             state: { firmware: { status: 'done' } },
         },
     },
-    // {
-    //     description: 'Fails for missing device',
-    //     action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
-    //     initialState: {
-    //         device: {
-    //             selectedDevice: undefined,
-    //         },
-    //         suite: {},
-    //     },
-    //     result: {
-    //         state: { firmware: { status: 'error' } },
-    //     },
-    // },
-    // {
-    //     description: 'FirmwareUpdate call to connect fails',
-    //     action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
-    //     initialState: {
-    //         device: {
-    //             selectedDevice: bootloaderDevice,
-    //             devices: [bootloaderDevice],
-    //         },
-    //         suite: {},
-    //     },
-    //     mocks: {
-    //         connect: {
-    //             success: false,
-    //             payload: {
-    //                 error: 'foo',
-    //             },
-    //         },
-    //     },
-    //     result: {
-    //         actions: [
-    //             { type: firmwareActions.setStatus.type, payload: 'started' },
-    //             { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
-    //             { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
-    //             { type: firmwareActions.setStatus.type, payload: 'error' },
-    //             { type: firmwareActions.setError.type, payload: 'foo' },
-    //         ],
-    //     },
-    // },
-    // {
-    //     description: 'FirmwareUpdate call to connect fails due to cancelling on device',
-    //     action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
-    //     initialState: {
-    //         device: {
-    //             selectedDevice: bootloaderDevice,
-    //             devices: [bootloaderDevice],
-    //         },
-    //         suite: {},
-    //     },
-    //     mocks: {
-    //         connect: {
-    //             success: false,
-    //             payload: {
-    //                 error: 'Firmware install failed',
-    //             },
-    //         },
-    //     },
-    //     result: {
-    //         actions: [
-    //             { type: firmwareActions.setStatus.type, payload: 'started' },
-    //             { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
-    //             { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
-    //             { type: firmwareActions.setStatus.type, payload: 'error' },
-    //             { type: firmwareActions.setError.type, payload: 'Firmware install failed' },
-    //         ],
-    //     },
-    // },
-    // {
-    //     description: 'resetReducer',
-    //     action: () => firmwareActions.resetReducer(),
-    //     result: {
-    //         actions: [{ type: firmwareActions.resetReducer.type }],
-    //     },
-    // },
+    {
+        description: 'Fails for missing device',
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        initialState: {
+            device: {
+                selectedDevice: undefined,
+            },
+            suite: {},
+        },
+        result: {
+            state: { firmware: { status: 'error' } },
+        },
+    },
+    {
+        description: 'FirmwareUpdate call to connect fails',
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        initialState: {
+            device: {
+                selectedDevice: bootloaderDevice,
+                devices: [bootloaderDevice],
+            },
+            suite: {},
+        },
+        mocks: {
+            connect: {
+                success: false,
+                payload: {
+                    error: 'foo',
+                },
+            },
+        },
+        result: {
+            actions: [
+                { type: firmwareActions.setStatus.type, payload: 'started' },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
+                { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
+                { type: firmwareActions.setStatus.type, payload: 'error' },
+                { type: firmwareActions.setError.type, payload: 'foo' },
+            ],
+        },
+    },
+    {
+        description: 'FirmwareUpdate call to connect fails due to cancelling on device',
+        action: () => firmwareUpdate({ firmwareType: FirmwareType.Regular }),
+        initialState: {
+            device: {
+                selectedDevice: bootloaderDevice,
+                devices: [bootloaderDevice],
+            },
+            suite: {},
+        },
+        mocks: {
+            connect: {
+                success: false,
+                payload: {
+                    error: 'Firmware install failed',
+                },
+            },
+        },
+        result: {
+            actions: [
+                { type: firmwareActions.setStatus.type, payload: 'started' },
+                { type: firmwareActions.setTargetType.type, payload: FirmwareType.Regular },
+                { type: firmwareActions.cacheDevice.type, payload: bootloaderDevice },
+                { type: firmwareActions.setStatus.type, payload: 'error' },
+                { type: firmwareActions.setError.type, payload: 'Firmware install failed' },
+            ],
+        },
+    },
+    {
+        description: 'resetReducer',
+        action: () => firmwareActions.resetReducer(),
+        result: {
+            actions: [{ type: firmwareActions.resetReducer.type }],
+        },
+    },
 ];
 
 // various cases to test reducer through actions

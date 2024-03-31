@@ -6,9 +6,8 @@ import TrezorConnect, { Device, FirmwareType } from '@trezor/connect';
 import { createThunk } from '@suite-common/redux-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { selectUseDevkit } from './firmwareReducer';
+import { selectFirmware } from './firmwareReducer';
 import { FIRMWARE_MODULE_PREFIX, firmwareActions } from './firmwareActions';
-import { selectDeviceLanguage } from '../device/deviceReducer';
 
 const handleFwHashError = createThunk(
     `${FIRMWARE_MODULE_PREFIX}/handleFwHashError`,
@@ -85,20 +84,20 @@ export const firmwareUpdate = createThunk(
         { dispatch, getState, extra },
     ) => {
         dispatch(firmwareActions.setStatus('started'));
-
         // Temporarily save target firmware type so that it can be displayed during installation.
         if (firmwareType) {
             dispatch(firmwareActions.setTargetType(firmwareType));
         }
 
         const {
-            selectors: { selectDevice, selectDesktopBinDir },
+            selectors: { selectDevice, selectDesktopBinDir, selectLanguage },
         } = extra;
 
         const device = selectDevice(getState());
-        const useDevkit = selectUseDevkit(getState());
         const desktopBinDir = selectDesktopBinDir(getState());
-        const suiteLanguage = selectDeviceLanguage(getState());
+        const suiteLanguage = selectLanguage(getState());
+        const { useDevkit, cachedDevice } = selectFirmware(getState());
+
         if (!device) {
             dispatch(firmwareActions.setStatus('error'));
             dispatch(firmwareActions.setError('Device not connected'));
@@ -107,7 +106,10 @@ export const firmwareUpdate = createThunk(
         }
 
         // Cache device when firmware installation starts so that we can reference the original firmware version and type during the installation process.
-        dispatch(firmwareActions.cacheDevice(device));
+        // This action is dispatched twice in manual update flow and we only want to cache the device during the first dispatch when it is not yet in bootloader mode.
+        if (!cachedDevice) {
+            dispatch(firmwareActions.cacheDevice(device));
+        }
 
         // FW binaries are stored in "*/static/connect/data/firmware/*/*.bin". see "connect-common" package
         const baseUrl = `${isDesktop() ? desktopBinDir : resolveStaticPath('connect/data')}${
@@ -128,6 +130,9 @@ export const firmwareUpdate = createThunk(
 
         const targetFirmwareType = getTargetFirmwareType();
         const toBitcoinOnlyFirmware = targetFirmwareType === FirmwareType.BitcoinOnly;
+        const targetTranslationLanguage = device.firmwareRelease?.release.translations?.find(
+            language => language.startsWith(suiteLanguage),
+        );
 
         const firmwareUpdateReponse = await TrezorConnect.firmwareUpdate_v2({
             device,
@@ -135,7 +140,7 @@ export const firmwareUpdate = createThunk(
             btcOnly: toBitcoinOnlyFirmware,
             binary,
             // Firmware language should only be set during the initial firmware installation.
-            language: device.firmware === 'none' && suiteLanguage ? suiteLanguage : undefined,
+            language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
         });
 
         if (!firmwareUpdateReponse.success) {

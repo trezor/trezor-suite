@@ -24,10 +24,9 @@ export const FirmwareInstallation = ({
     customFirmware,
     onSuccess,
 }: FirmwareInstallationProps) => {
-    const { status, resetReducer, isWebUSB, uiEvent } = useFirmware();
+    const { status, isWebUSB, uiEvent } = useFirmware();
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
-    const continueAction = () => (status === 'done' ? onSuccess() : resetReducer());
     const getInnerActionComponent = () => {
         if (
             isWebUSB &&
@@ -43,11 +42,7 @@ export const FirmwareInstallation = ({
         }
         if (status === 'done') {
             return (
-                <Button
-                    variant="primary"
-                    onClick={continueAction}
-                    data-test="@firmware/continue-button"
-                >
+                <Button variant="primary" onClick={onSuccess} data-test="@firmware/continue-button">
                     <Translation id={standaloneFwUpdate ? 'TR_CLOSE' : 'TR_CONTINUE'} />
                 </Button>
             );

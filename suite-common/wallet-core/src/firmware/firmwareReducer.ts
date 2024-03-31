@@ -23,7 +23,6 @@ type FirmwareUpdateCommon = {
     // todo: in the future we might implement additional check that will validate firmware after every connection
     //  todo: !
     firmwareHashInvalid: string[];
-    isCustom: boolean;
     useDevkit: boolean;
     uiEvent?: DeviceButtonRequest | FirmwareProgress | FirmwareDisconnect | FirmwareReconnect;
 };
@@ -44,7 +43,6 @@ const initialState: FirmwareUpdateState = {
     cachedDevice: undefined,
     targetType: undefined,
     firmwareHashInvalid: [],
-    isCustom: false,
     useDevkit: false,
     uiEvent: undefined,
 };
@@ -70,9 +68,6 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
         })
         .addCase(firmwareActions.setTargetType, (state, { payload }) => {
             state.targetType = payload;
-        })
-        .addCase(firmwareActions.setIsCustomFirmware, (state, { payload }) => {
-            state.isCustom = payload;
         })
         .addCase(firmwareActions.resetReducer, state => ({
             ...initialState,
@@ -106,4 +101,4 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
 
 export const selectFirmware = (state: RootState) => state.firmware;
 export const selectUseDevkit = (state: RootState) => state.firmware.useDevkit;
-export const selectIsCustomFirmware = (state: RootState) => state.firmware.isCustom;
+export const selectCachedDevice = (state: RootState) => state.firmware.cachedDevice;

@@ -30,6 +30,11 @@ export const FirmwareStep = () => {
         targetType,
     } = useFirmware();
 
+    const goToNextStepAndResetReducer = () => {
+        goToNextStep();
+        resetReducer();
+    };
+
     // special and hopefully very rare case. this appears when somebody tried to fool user into using a hacked firmware
     if (device?.id && firmwareHashInvalid.includes(device.id)) {
         return (
@@ -120,7 +125,7 @@ export const FirmwareStep = () => {
             return <FirmwareInitial />;
         case 'started': // called from firmwareUpdate()
         case 'done':
-            return <FirmwareInstallation onSuccess={goToNextStep} />;
+            return <FirmwareInstallation onSuccess={goToNextStepAndResetReducer} />;
         default:
             // 'ensure' type completeness
             throw new Error(`state "${status}" is not handled here`);
