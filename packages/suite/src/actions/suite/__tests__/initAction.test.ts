@@ -19,6 +19,8 @@ import {
     preloadFeeInfoThunk,
     initTokenDefinitionsThunk,
     periodicCheckTokenDefinitionsThunk,
+    initStakeDataThunk,
+    periodicCheckStakeDataThunk,
 } from '@suite-common/wallet-core';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 import TrezorConnect from '@trezor/connect';
@@ -117,6 +119,8 @@ const fixtures: Fixture[] = [
             fetchFiatRatesThunk.pending.type,
             fetchFiatRatesThunk.fulfilled.type,
             periodicFetchFiatRatesThunk.fulfilled.type,
+            periodicCheckStakeDataThunk.pending.type,
+            initStakeDataThunk.pending.type,
             SUITE.READY,
         ],
     },
@@ -159,6 +163,8 @@ const fixtures: Fixture[] = [
             periodicFetchFiatRatesThunk.fulfilled.type,
             appChanged.type,
             ROUTER.LOCATION_CHANGE,
+            periodicCheckStakeDataThunk.pending.type,
+            initStakeDataThunk.pending.type,
             SUITE.READY,
         ],
     },
@@ -199,6 +205,8 @@ const fixtures: Fixture[] = [
             fetchFiatRatesThunk.fulfilled.type,
             periodicFetchFiatRatesThunk.fulfilled.type,
             ROUTER.LOCATION_CHANGE,
+            periodicCheckStakeDataThunk.pending.type,
+            initStakeDataThunk.pending.type,
             SUITE.READY,
         ],
     },

@@ -4,13 +4,14 @@ import { variables, H3, Icon, Card } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature, Divider } from 'src/components/suite';
 import { Footer } from './components/Footer';
-import { useDiscovery, useDispatch, useEverstakePoolStats, useSelector } from 'src/hooks/suite';
+import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { spacingsPx, borders } from '@trezor/theme';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 
 const Flex = styled.div`
     display: flex;
@@ -75,7 +76,7 @@ export const StakeEthCard = () => {
     const isBannerSymbolEnabled =
         enabledNetworks.includes(bannerSymbol) && showDashboardStakingPromoBanner;
 
-    const { ethApy } = useEverstakePoolStats(isBannerSymbolEnabled ? bannerSymbol : undefined);
+    const ethApy = useSelector(state => selectPoolStatsApyData(state, bannerSymbol));
 
     const { discovery } = useDiscovery();
     const { accounts } = useAccounts(discovery);

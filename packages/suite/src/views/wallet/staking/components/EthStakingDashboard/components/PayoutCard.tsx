@@ -9,9 +9,9 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { useSelector } from 'src/hooks/suite';
 
 interface PayoutCardProps {
-    nextRewardPayout: number | null;
-    daysToAddToPool: number;
-    validatorWithdrawTime: number;
+    nextRewardPayout?: number | null;
+    daysToAddToPool?: number;
+    validatorWithdrawTime?: number;
 }
 
 export const PayoutCard = ({

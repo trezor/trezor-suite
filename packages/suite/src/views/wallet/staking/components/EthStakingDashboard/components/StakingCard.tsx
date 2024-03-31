@@ -109,9 +109,9 @@ const StyledButton = styled(Button).attrs(props => ({
 `;
 
 interface StakingCardProps {
-    isValidatorsQueueLoading: boolean;
-    daysToAddToPool: number;
-    daysToUnstake: number;
+    isValidatorsQueueLoading?: boolean;
+    daysToAddToPool?: number;
+    daysToUnstake?: number;
 }
 
 export const StakingCard = ({

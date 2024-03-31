@@ -1,24 +1,42 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { StakeFormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import { StakeFormState, PrecomposedTransactionFinal, Timestamp } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { stakeActions } from './stakeActions';
+import { StakeRootState, ValidatorsQueue } from './stakeTypes';
+import { fetchEverstakeData } from './stakeThunks';
 
 export interface StakeState {
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: StakeFormState;
     signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
+    data: {
+        [key in NetworkSymbol]?: {
+            poolStats: {
+                error: boolean | string;
+                isLoading: boolean;
+                lastSuccessfulFetchTimestamp: Timestamp;
+                data: {
+                    ethApy?: number;
+                    nextRewardPayout?: number;
+                    isPoolStatsLoading?: boolean;
+                };
+            };
+            validatorsQueue: {
+                error: boolean | string;
+                isLoading: boolean;
+                lastSuccessfulFetchTimestamp: Timestamp;
+                data: ValidatorsQueue;
+            };
+        };
+    };
 }
 
 export const stakeInitialState: StakeState = {
     precomposedTx: undefined,
     signedTx: undefined,
-};
-
-export type StakeRootState = {
-    wallet: {
-        stake: StakeState;
-    };
+    data: {},
 };
 
 export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState, builder => {
@@ -47,6 +65,54 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
             delete state.precomposedTx;
             delete state.precomposedForm;
             delete state.signedTx;
+        })
+        .addCase(fetchEverstakeData.pending, (state, action) => {
+            const { networkSymbol } = action.meta.arg;
+
+            if (!state.data[networkSymbol]) {
+                state.data[networkSymbol] = {
+                    poolStats: {
+                        error: false,
+                        isLoading: true,
+                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                        data: {},
+                    },
+                    validatorsQueue: {
+                        error: false,
+                        isLoading: true,
+                        lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                        data: {},
+                    },
+                };
+            }
+        })
+        .addCase(fetchEverstakeData.fulfilled, (state, action) => {
+            const { networkSymbol, endpointType } = action.meta.arg;
+
+            const data = state.data[networkSymbol];
+
+            if (data?.[endpointType]) {
+                data[endpointType] = {
+                    error: false,
+                    isLoading: false,
+                    lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                    data: action.payload,
+                };
+            }
+        })
+        .addCase(fetchEverstakeData.rejected, (state, action) => {
+            const { networkSymbol, endpointType } = action.meta.arg;
+
+            const data = state.data[networkSymbol];
+
+            if (data?.[endpointType]) {
+                data[endpointType] = {
+                    error: true,
+                    isLoading: false,
+                    lastSuccessfulFetchTimestamp: 0 as Timestamp,
+                    data: {},
+                };
+            }
         });
 });
 

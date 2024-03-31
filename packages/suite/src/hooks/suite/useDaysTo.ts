@@ -4,12 +4,12 @@ import {
     selectAccountStakeTransactions,
     selectAccountUnstakeTransactions,
 } from '@suite-common/wallet-core';
-import { ValidatorsQueueState } from 'src/types/wallet/stake';
+import { ValidatorsQueue } from '@suite-common/wallet-core/src/stake/stakeTypes';
 
 const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
 
 interface UseDaysToParams {
-    validatorsQueue: ValidatorsQueueState;
+    validatorsQueue?: ValidatorsQueue;
     selectedAccountKey: string;
 }
 
@@ -17,7 +17,15 @@ export const useDaysTo = ({ selectedAccountKey, validatorsQueue }: UseDaysToPara
     const stakeTxs = useSelector(state =>
         selectAccountStakeTransactions(state, selectedAccountKey || ''),
     );
+
     const daysToAddToPool = useMemo(() => {
+        if (
+            validatorsQueue?.validatorAddingDelay === undefined ||
+            validatorsQueue?.validatorActivationTime === undefined
+        ) {
+            return undefined;
+        }
+
         const lastTx = stakeTxs[0];
 
         if (!lastTx?.blockTime) return 1;
@@ -33,12 +41,16 @@ export const useDaysTo = ({ selectedAccountKey, validatorsQueue }: UseDaysToPara
         const daysToWait = secondsToDays(secondsToWait);
 
         return daysToWait <= 0 ? 1 : daysToWait;
-    }, [stakeTxs, validatorsQueue.validatorActivationTime, validatorsQueue.validatorAddingDelay]);
+    }, [stakeTxs, validatorsQueue?.validatorAddingDelay, validatorsQueue?.validatorActivationTime]);
 
     const unstakeTxs = useSelector(state =>
         selectAccountUnstakeTransactions(state, selectedAccountKey),
     );
     const daysToUnstake = useMemo(() => {
+        if (validatorsQueue?.validatorWithdrawTime === undefined) {
+            return undefined;
+        }
+
         const lastTx = unstakeTxs[0];
 
         if (!lastTx?.blockTime) return 1;
@@ -48,15 +60,22 @@ export const useDaysTo = ({ selectedAccountKey, validatorsQueue }: UseDaysToPara
         const daysToWait = secondsToDays(secondsToWait);
 
         return daysToWait <= 0 ? 1 : daysToWait;
-    }, [unstakeTxs, validatorsQueue.validatorWithdrawTime]);
+    }, [unstakeTxs, validatorsQueue?.validatorWithdrawTime]);
 
     const daysToAddToPoolInitial = useMemo(() => {
+        if (
+            validatorsQueue?.validatorAddingDelay === undefined ||
+            validatorsQueue?.validatorActivationTime === undefined
+        ) {
+            return undefined;
+        }
+
         const secondsToWait =
             validatorsQueue.validatorAddingDelay + validatorsQueue.validatorActivationTime;
         const daysToWait = secondsToDays(secondsToWait);
 
         return daysToWait <= 0 ? 1 : daysToWait;
-    }, [validatorsQueue.validatorActivationTime, validatorsQueue.validatorAddingDelay]);
+    }, [validatorsQueue?.validatorAddingDelay, validatorsQueue?.validatorActivationTime]);
 
     return {
         daysToAddToPool,

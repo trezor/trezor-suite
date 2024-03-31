@@ -2,6 +2,7 @@ import {
     prepareFiatRatesMiddleware,
     prepareBlockchainMiddleware,
     prepareTokenDefinitionsMiddleware,
+    prepareStakeMiddleware,
 } from '@suite-common/wallet-core';
 
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
@@ -20,6 +21,7 @@ export default [
     prepareDiscoveryMiddleware(extraDependencies),
     prepareFiatRatesMiddleware(extraDependencies),
     prepareTokenDefinitionsMiddleware(extraDependencies),
+    prepareStakeMiddleware(extraDependencies),
     storageMiddleware,
     graphMiddleware,
     coinmarketMiddleware,

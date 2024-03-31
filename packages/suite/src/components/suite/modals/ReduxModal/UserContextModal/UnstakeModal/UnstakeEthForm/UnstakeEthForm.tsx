@@ -2,13 +2,14 @@ import styled from 'styled-components';
 import { Button, Divider, Paragraph, Warning } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
-import { useDevice, useSelector, useValidatorsQueue } from 'src/hooks/suite';
+import { useDevice, useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { Options } from './Options';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import UnstakeFees from './Fees';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 
 const GreyP = styled(Paragraph)`
@@ -103,19 +104,15 @@ export const UnstakeEthForm = () => {
             <UnstakeFees />
 
             <UpToDaysWrapper>
-                {!Number.isNaN(unstakingPeriod) && (
-                    <>
-                        <GreyP>
-                            <Translation id="TR_STAKE_UNSTAKING_PERIOD" />
-                        </GreyP>
-                        <Translation
-                            id="TR_UP_TO_DAYS"
-                            values={{
-                                days: unstakingPeriod,
-                            }}
-                        />
-                    </>
-                )}
+                <GreyP>
+                    <Translation id="TR_STAKE_UNSTAKING_PERIOD" />
+                </GreyP>
+                <Translation
+                    id="TR_UP_TO_DAYS"
+                    values={{
+                        days: unstakingPeriod,
+                    }}
+                />
             </UpToDaysWrapper>
 
             <Button
