@@ -8,7 +8,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
 import { localizePercentage } from '@suite-common/wallet-utils';
-import { useSelector } from '../../../../../hooks/suite';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { useSelector } from 'src/hooks/suite';
 
 const LogoWrapper = styled.div`
     padding-right: ${spacingsPx.sm};
@@ -22,7 +23,7 @@ interface CoinLogoProps {
 }
 
 export const AssetCoinLogo = ({ symbol, assetsFiatBalances, index }: CoinLogoProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
+    const locale = useSelector(selectLanguage);
 
     const assetPercentage = assetsFiatBalances
         ? calculateAssetsPercentage(assetsFiatBalances).find(

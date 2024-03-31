@@ -12,6 +12,7 @@ import {
     networkAmountToSatoshi,
 } from '@suite-common/wallet-utils';
 import { isSignValuePositive } from '@suite-common/formatters';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const Container = styled.span`
     max-width: 100%;
@@ -46,7 +47,7 @@ export const FormattedCryptoAmount = ({
     'data-test': dataTest,
     className,
 }: FormattedCryptoAmountProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
+    const locale = useSelector(selectLanguage);
 
     const { areSatsDisplayed } = useBitcoinAmountUnit();
 
