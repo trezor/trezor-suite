@@ -87,7 +87,7 @@ export const Inputs = () => {
                 }}
             />
 
-            {currentRate && (
+            {currentRate?.rate && (
                 <>
                     <IconWrapper>
                         {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}

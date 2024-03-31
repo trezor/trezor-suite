@@ -4,7 +4,6 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
 import { useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { variables } from '@trezor/components/src/config';
 import { borders, spacingsPx } from '@trezor/theme';
 
@@ -48,7 +47,10 @@ interface ClaimPendingCardProps {
 export const ClaimPendingCard = ({ claimAmount }: ClaimPendingCardProps) => {
     const theme = useTheme();
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
-    const mappedSymbol = mapTestnetSymbol(symbol ?? 'eth');
+
+    if (!symbol) {
+        return null;
+    }
 
     return (
         <StyledCard>
@@ -68,7 +70,7 @@ export const ClaimPendingCard = ({ claimAmount }: ClaimPendingCardProps) => {
                         <FiatValue
                             showApproximationIndicator
                             amount={claimAmount}
-                            symbol={mappedSymbol}
+                            symbol={symbol}
                         />
                     </FiatValueWrapper>
                 </div>

@@ -15,7 +15,6 @@ import {
     OUTPUT_AMOUNT,
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
@@ -55,13 +54,8 @@ export const useUnstakeEthForm = ({
     const localCurrency = useSelector(selectLocalCurrency);
     const symbolFees = useSelector(state => state.wallet.fees[symbol]);
 
-    const symbolForFiat = mapTestnetSymbol(symbol);
     const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(
-            state,
-            getFiatRateKey(symbolForFiat, localCurrency),
-            'current',
-        ),
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
     );
 
     const autocompoundBalance = getAccountAutocompoundBalance(account);

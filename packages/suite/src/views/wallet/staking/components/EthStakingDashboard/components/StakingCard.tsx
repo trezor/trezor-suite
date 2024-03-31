@@ -8,7 +8,6 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { InfoBox, ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
@@ -121,7 +120,6 @@ export const StakingCard = ({
 }: StakingCardProps) => {
     const theme = useTheme();
     const selectedAccount = useSelector(selectSelectedAccount);
-    const mappedSymbol = selectedAccount?.symbol ? mapTestnetSymbol(selectedAccount?.symbol) : '';
 
     const {
         autocompoundBalance = '0',
@@ -162,6 +160,10 @@ export const StakingCard = ({
         dispatch(openModal({ type: 'unstake' }));
     };
 
+    if (!selectedAccount?.symbol) {
+        return null;
+    }
+
     return (
         <StyledCard>
             {(isStakeConfirming || isTxStatusShown) && (
@@ -186,7 +188,7 @@ export const StakingCard = ({
                                 <EnteringFiatValueWrapper>
                                     <FiatValue
                                         amount={totalPendingStakeBalance}
-                                        symbol={mappedSymbol}
+                                        symbol={selectedAccount?.symbol}
                                         showApproximationIndicator
                                     >
                                         {({ value }) => value && <span>({value})</span>}
@@ -218,7 +220,7 @@ export const StakingCard = ({
 
                     <StyledFiatValue
                         amount={depositedBalance}
-                        symbol={mappedSymbol}
+                        symbol={selectedAccount?.symbol}
                         showApproximationIndicator
                     >
                         {({ value }) => (value ? <span>{value}</span> : null)}
@@ -239,7 +241,7 @@ export const StakingCard = ({
 
                     <StyledFiatValue
                         amount={restakedReward}
-                        symbol={mappedSymbol}
+                        symbol={selectedAccount?.symbol}
                         showApproximationIndicator
                     >
                         {({ value }) => (value ? <span>{value}</span> : null)}
@@ -274,7 +276,7 @@ export const StakingCard = ({
 
                         <StyledFiatValue
                             amount={withdrawTotalAmount}
-                            symbol={mappedSymbol}
+                            symbol={selectedAccount?.symbol}
                             showApproximationIndicator
                         >
                             {({ value }) => (value ? <span>{value}</span> : null)}

@@ -5,7 +5,6 @@ import { Paragraph, Radio } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Inputs } from './Inputs';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -75,7 +74,6 @@ export const Options = ({ symbol }: OptionsProps) => {
     const isRewardsSelected = unstakeOption === 'rewards';
     const isAllSelected = unstakeOption === 'all';
     const isOtherAmountSelected = unstakeOption === 'other';
-    const mappedSymbol = mapTestnetSymbol(symbol);
     const { onOptionChange } = useUnstakeEthFormContext();
 
     const {
@@ -108,7 +106,7 @@ export const Options = ({ symbol }: OptionsProps) => {
                                 </GreyP>
                                 <Paragraph>
                                     <GreenTxt>
-                                        <FiatValue amount={restakedReward} symbol={mappedSymbol} />
+                                        <FiatValue amount={restakedReward} symbol={symbol} />
                                     </GreenTxt>
                                 </Paragraph>
                             </TxtRight>
@@ -140,11 +138,11 @@ export const Options = ({ symbol }: OptionsProps) => {
                                 />
                             </GreyP>
                             <Paragraph>
-                                <FiatValue amount={depositedBalance} symbol={mappedSymbol}>
+                                <FiatValue amount={depositedBalance} symbol={symbol}>
                                     {({ value }) => value && <span>{value} + </span>}
                                 </FiatValue>
                                 <GreenTxt>
-                                    <FiatValue amount={restakedReward} symbol={mappedSymbol} />
+                                    <FiatValue amount={restakedReward} symbol={symbol} />
                                 </GreenTxt>
                             </Paragraph>
                         </TxtRight>
@@ -174,7 +172,7 @@ export const Options = ({ symbol }: OptionsProps) => {
                                 />
                             </GreyP>
                             <Paragraph>
-                                <FiatValue amount={autocompoundBalance} symbol={mappedSymbol}>
+                                <FiatValue amount={autocompoundBalance} symbol={symbol}>
                                     {({ value }) =>
                                         value && (
                                             <>

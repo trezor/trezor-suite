@@ -20,7 +20,6 @@ import {
     CRYPTO_INPUT,
     OUTPUT_AMOUNT,
 } from 'src/types/wallet/stakeForms';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useFormDraft } from './useFormDraft';
 
 import { fromWei } from 'web3-utils';
@@ -56,13 +55,8 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
     const localCurrency = useSelector(selectLocalCurrency);
     const symbolFees = useSelector(state => state.wallet.fees[symbol]);
 
-    const symbolForFiat = mapTestnetSymbol(symbol);
     const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(
-            state,
-            getFiatRateKey(symbolForFiat, localCurrency),
-            'current',
-        ),
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
     );
 
     const amountLimits: AmountLimitsString = {
