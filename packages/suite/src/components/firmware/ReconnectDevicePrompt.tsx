@@ -4,7 +4,7 @@ import * as semver from 'semver';
 
 import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import { H2, Button, ConfirmOnDevice, variables, DeviceAnimation } from '@trezor/components';
-import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
+import { DEVICE, Device, DeviceModelInternal } from '@trezor/connect';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';

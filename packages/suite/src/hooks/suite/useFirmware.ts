@@ -83,6 +83,7 @@ export const useFirmware = () => {
                     };
             }
         }
+        // Restarting from bootloader to normal mode:
         if (
             (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && device?.mode === 'bootloader') ||
             (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
