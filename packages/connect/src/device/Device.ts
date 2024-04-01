@@ -27,6 +27,7 @@ import {
     VersionArray,
 } from '../types';
 import { models } from '../data/models';
+import { getLanguage } from '../data/getLanguage';
 
 // custom log
 const _log = initLog('Device');
@@ -527,6 +528,81 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async getFeatures() {
         const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
+
+        if (
+            !this.features.language_version_matches &&
+            this.features.language &&
+            this.atLeast('2.7.0')
+        ) {
+            _log.info('language version mismatch. silently updating...');
+
+            try {
+                await this.changeLanguage({ language: this.features.language });
+            } catch (err) {
+                _log.error('change language failed silently', err);
+            }
+        }
+    }
+
+    async changeLanguage({
+        language,
+        binary,
+    }: { language?: undefined; binary: ArrayBuffer } | { language: string; binary?: undefined }) {
+        if (language === 'en-US') {
+            return this._uploadTranslationData(null);
+        }
+
+        if (binary) {
+            return this._uploadTranslationData(binary);
+        }
+
+        const downloadedBinary = await getLanguage({
+            language,
+            version: this.getVersion(),
+            internal_model: this.features.internal_model,
+        });
+
+        return this._uploadTranslationData(downloadedBinary);
+    }
+
+    private async _uploadTranslationData(payload: ArrayBuffer | null) {
+        if (!this.commands) {
+            throw ERRORS.TypedError('Runtime', 'uploadTranslationData: device.commands is not set');
+        }
+
+        if (payload === null) {
+            const response = await this.commands.typedCall(
+                'ChangeLanguage',
+                ['Success'],
+                { data_length: 0 }, // For en-US where we just send `ChangeLanguage(size=0)`
+            );
+
+            return response.message;
+        }
+
+        const length = payload.byteLength;
+
+        let response = await this.commands.typedCall(
+            'ChangeLanguage',
+            ['TranslationDataRequest', 'Success'],
+            { data_length: length },
+        );
+
+        while (response.type !== 'Success') {
+            const start = response.message.data_offset!;
+            const end = response.message.data_offset! + response.message.data_length!;
+            const chunk = payload.slice(start, end);
+
+            response = await this.commands.typedCall(
+                'TranslationDataAck',
+                ['TranslationDataRequest', 'Success'],
+                {
+                    data_chunk: Buffer.from(chunk).toString('hex'),
+                },
+            );
+        }
+
+        return response.message;
     }
 
     _updateFeatures(feat: Features) {

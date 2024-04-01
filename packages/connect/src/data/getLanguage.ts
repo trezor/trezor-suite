@@ -1,4 +1,4 @@
-import { httpRequest } from '../../utils/assets';
+import { httpRequest } from '../utils/assets';
 
 export const getLanguage = ({
     language,
