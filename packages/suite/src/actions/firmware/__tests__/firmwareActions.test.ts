@@ -28,6 +28,9 @@ export const getInitialState = (override?: InitialState): any => {
         suite: {
             locks: [],
             flags: {},
+            settings: {
+                language: 'en',
+            },
             ...suite,
         },
         firmware: firmwareReducer(undefined, { type: 'foo' } as any),

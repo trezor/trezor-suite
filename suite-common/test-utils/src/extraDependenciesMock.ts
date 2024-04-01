@@ -82,6 +82,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         selectDevice: mockSelector('selectDevice', {
             ...testMocks.getSuiteDevice(),
         }),
+        selectLanguage: mockSelector('selectLanguage', 'en'),
         selectDeviceDiscovery: mockSelector('selectDeviceDiscovery', undefined),
         selectCheckFirmwareAuthenticity: mockSelector('selectCheckFirmwareAuthenticity', false),
     },
