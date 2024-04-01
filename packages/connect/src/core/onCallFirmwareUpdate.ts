@@ -115,7 +115,7 @@ const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
             reboot_and_wait: device.atLeast(['1.10.0', '2.6.0']),
             // reboot_and_upgrade strictly requires updating to a higher version
             reboot_and_upgrade: device.atLeast('2.6.3') && isUpdatingToNewerVersion,
-            language_data_length: device.atLeast('2.6.5'),
+            language_data_length: device.atLeast('2.7.0'),
         };
 
         const manual = !support.reboot_and_wait && !support.reboot_and_upgrade;
