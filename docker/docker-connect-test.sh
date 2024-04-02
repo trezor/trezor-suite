@@ -120,7 +120,7 @@ export TESTS_FIRMWARE_URL=$FIRMWARE_URL
 export TESTS_FIRMWARE_MODEL=$FIRMWARE_MODEL
 
 runDocker() {
-  docker-compose -f ./docker/docker-compose.connect-test.yml up --abort-on-container-exit
+  docker compose -f ./docker/docker-compose.connect-test.yml up --abort-on-container-exit
 }
 
 run() {

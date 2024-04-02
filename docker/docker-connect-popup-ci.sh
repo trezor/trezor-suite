@@ -7,4 +7,4 @@ export TEST_FILE=$1
 export URL=$URL
 export TREZOR_CONNECT_SRC=$TREZOR_CONNECT_SRC
 
-docker-compose -f ./docker/docker-compose.connect-popup-ci.yml up --build --abort-on-container-exit
+docker compose -f ./docker/docker-compose.connect-popup-ci.yml up --build --abort-on-container-exit
