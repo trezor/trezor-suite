@@ -4,9 +4,16 @@ const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
-const { exec } = require('./helpers');
+const { exec, triggerWorkflowSync } = require('./helpers');
 
 const ROOT = path.join(__dirname, '..', '..');
+
+const workflowsOnReleaseBranch = [
+    '.github/workflows/connect-dev-release-test.yml',
+    '.github/workflows/connect-test.yml',
+    '.github/workflows/connect-transport-e2e-test.yml',
+    '.github/workflows/connect-web-e2e-test.yml',
+];
 
 const init = () => {
     const PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
@@ -21,6 +28,11 @@ const init = () => {
     exec('git', ['checkout', '-b', branchName]);
 
     exec('git', ['push', 'origin', branchName]);
+
+    // When branch is created, we trigger workflow to run tests on new created branch.
+    for (const workflowFileName of workflowsOnReleaseBranch) {
+        triggerWorkflowSync(branchName, workflowFileName);
+    }
 };
 
 init();

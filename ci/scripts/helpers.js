@@ -100,4 +100,9 @@ const comment = ({ prNumber, body }) => {
     exec('gh', ['pr', 'comment', `${prNumber}`, '--body', body]);
 };
 
-module.exports = { checkPackageDependencies, exec, commit, comment };
+const triggerWorkflowSync = async (branchName, workflows) => {
+    // https://cli.github.com/manual/gh_workflow_run
+    exec('gh', ['workflow', 'run', `${workflowFileName}`, '--ref', `${branchName}`]);
+};
+
+module.exports = { checkPackageDependencies, exec, commit, comment, triggerWorkflowSync };
