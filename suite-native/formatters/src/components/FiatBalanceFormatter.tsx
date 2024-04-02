@@ -13,7 +13,7 @@ type BalanceFormatterProps = FormatterProps<string | null>;
 
 const wholeNumberStyle = prepareNativeStyle(utils => ({
     flexShrink: 1,
-    marginBottom: -utils.spacings.medium,
+    marginBottom: -utils.spacings.small,
     textAlign: 'center',
 }));
 
