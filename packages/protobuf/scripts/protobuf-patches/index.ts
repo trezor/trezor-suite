@@ -122,6 +122,8 @@ export const RULE_PATCH = {
     'StellarAssetType.code': 'required',
     'StellarPathPaymentStrictReceiveOp.paths': 'optional', // its valid to be undefined according to implementation/tests
     'StellarPathPaymentStrictSendOp.paths': 'optional', // its valid to be undefined according to implementation/tests
+    'ThpHandshakeCompletionReqNoisePayload.host_pairing_credential': 'optional',
+    'ThpCredentialRequest.credential': 'optional',
 };
 
 // custom types IN to trezor
@@ -263,6 +265,7 @@ export const DEFINITION_PATCH = {
     TxInputType: () => readPatch('./TxInputType.ts'),
     TxOutputType: () => readPatch('./TxOutputType.ts'),
     TxAck: () => readPatch('./TxAck.ts'),
+    ThpCreateNewSession: () => readPatch('./ThpCreateNewSession.ts'),
 };
 
 // skip unnecessary types

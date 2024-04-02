@@ -977,6 +977,25 @@ export enum DebugWaitType {
     CURRENT_LAYOUT = 2,
 }
 
+export type DebugLinkGetPairingInfo = {
+    channel_id?: string;
+    handshake_hash?: string;
+    nfc_secret_host?: string;
+};
+
+export type DebugLinkPairingInfo = {
+    channel_id?: string;
+    handshake_hash?: string;
+    code_entry_code?: number;
+    code_qr_code?: string;
+    nfc_secret_trezor?: string;
+};
+
+export type DebugLinkToggleThpPairingDialog = {
+    channel_id?: string;
+    show_dialog?: boolean;
+};
+
 export type DebugLinkResetDebugEvents = {};
 
 export type DebugLinkOptigaSetSecMax = {};
@@ -2332,6 +2351,9 @@ export type MessageType = {
     SignedIdentity: SignedIdentity;
     GetECDHSessionKey: GetECDHSessionKey;
     ECDHSessionKey: ECDHSessionKey;
+    DebugLinkGetPairingInfo: DebugLinkGetPairingInfo;
+    DebugLinkPairingInfo: DebugLinkPairingInfo;
+    DebugLinkToggleThpPairingDialog: DebugLinkToggleThpPairingDialog;
     DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
     DebugLinkOptigaSetSecMax: DebugLinkOptigaSetSecMax;
     DebugLinkGetGcInfo: DebugLinkGetGcInfo;
