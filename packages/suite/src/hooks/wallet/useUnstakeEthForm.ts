@@ -35,8 +35,8 @@ import { isChanged } from '@suite-common/suite-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
-import { selectSelectedAccountAutocompoundBalance } from '../../reducers/wallet/selectedAccountReducer';
 import { useFees } from './form/useFees';
+import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitsString;
@@ -65,7 +65,7 @@ export const useUnstakeEthForm = ({
         ),
     );
 
-    const autocompoundBalance = useSelector(selectSelectedAccountAutocompoundBalance);
+    const autocompoundBalance = getAccountAutocompoundBalance(account);
     const amountLimits: AmountLimitsString = {
         currency: symbol,
         minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toString(),

@@ -5,10 +5,11 @@ import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/su
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
-import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { spacingsPx } from '@trezor/theme';
 import ClaimFees from './Fees';
+import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const AmountInfo = styled.div`
     display: flex;
@@ -45,6 +46,7 @@ const GreyP = styled(Paragraph)`
 
 export const ClaimEthForm = () => {
     const { device, isLocked } = useDevice();
+    const account = useSelector(selectSelectedAccount);
     const {
         account: { symbol },
         formState: { errors, isSubmitting },
@@ -58,7 +60,8 @@ export const ClaimEthForm = () => {
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-    const { claimableAmount = '0' } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+
+    const { claimableAmount = '0' } = getAccountEverstakeStakingPool(account) ?? {};
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 

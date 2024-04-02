@@ -1,27 +1,41 @@
 import { forwardRef, Ref } from 'react';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { isTestnet } from '@suite-common/wallet-utils';
-import { spacingsPx, typography } from '@trezor/theme';
+import { borders, spacingsPx, typography } from '@trezor/theme';
 import {
     CoinLogo,
+    Icon,
     SkeletonRectangle,
     SkeletonStack,
     TOOLTIP_DELAY_LONG,
     TruncateWithTooltip,
 } from '@trezor/components';
 
-import { AccountLabel, CoinBalance, FiatValue } from 'src/components/suite';
-import { useDispatch, useLoadingSkeleton } from 'src/hooks/suite';
-import { Account } from 'src/types/wallet';
+import { AccountLabel, CoinBalance, FiatValue, Translation } from 'src/components/suite';
+import { useDispatch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
+import { Account, AccountItemType } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
 import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
+import { useFormatters } from '@suite-common/formatters';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
-const Wrapper = styled(NavigationItemBase)<{ $isSelected: boolean }>`
+const Wrapper = styled(NavigationItemBase)<{
+    $isSelected: boolean;
+    $isGroupSelected?: boolean;
+    $isGroup?: boolean;
+}>`
     background: ${({ theme, $isSelected }) => $isSelected && theme.backgroundSurfaceElevation1};
     gap: 0;
     display: flex;
     justify-content: space-between;
+    margin: 0 9px;
+
+    ${({ $isGroup, $isGroupSelected }) =>
+        $isGroup &&
+        $isGroupSelected &&
+        `margin: 0 ${spacingsPx.xxs};
+    `}
 
     & + & {
         margin-top: ${spacingsPx.xxs};
@@ -39,6 +53,14 @@ export const Left = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
+`;
+
+const StyledCoinLogo = styled(CoinLogo)`
+    z-index: 20;
+`;
+
+const StyledIcon = styled(Icon)`
+    z-index: 20;
 `;
 
 export const Right = styled.div`
@@ -90,6 +112,18 @@ const TokensCount = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     line-height: 1.57;
 `;
+
+const TokensBadge = styled.div`
+    ${typography.label};
+    color: ${({ theme }) => theme.textSubdued};
+    padding: 3px 4px;
+    min-width: 24px;
+    text-align: center;
+    border-radius: ${borders.radii.full};
+    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    z-index: 20;
+`;
+
 const AccountLabelContainer = styled.div`
     flex: 1;
     min-width: 60px;
@@ -99,22 +133,42 @@ const AccountLabelContainer = styled.div`
 
 interface AccountItemProps {
     account: Account;
+    type: AccountItemType;
     accountLabel?: string;
     isSelected: boolean;
-    closeMenu?: () => void;
+    isGroupSelected?: boolean;
+    formattedBalance: string;
+    customFiatValue?: string;
+    isGroup?: boolean;
+    tokens?: Account['tokens'];
+    onClick?: () => void;
 }
 
 // Using `forwardRef` to be able to pass `ref` (item) TO parent (Menu/index)
 export const AccountItem = forwardRef(
     (
-        { account, accountLabel, isSelected, closeMenu }: AccountItemProps,
+        {
+            account,
+            type,
+            accountLabel,
+            isSelected,
+            isGroupSelected,
+            formattedBalance,
+            customFiatValue,
+            isGroup,
+            tokens,
+            onClick,
+        }: AccountItemProps,
         ref: Ref<HTMLDivElement>,
     ) => {
+        const theme = useTheme();
+        const { FiatAmountFormatter } = useFormatters();
+        const localCurrency = useSelector(selectLocalCurrency);
         const dispatch = useDispatch();
 
         const { shouldAnimate } = useLoadingSkeleton();
 
-        const { accountType, formattedBalance, index, networkType, symbol, tokens } = account;
+        const { accountType, index, networkType, symbol } = account;
 
         const accountRouteParams = {
             symbol,
@@ -122,14 +176,43 @@ export const AccountItem = forwardRef(
             accountType,
         };
 
-        const handleHeaderClick = () => {
-            closeMenu?.();
-            dispatch(goto('wallet-index', { params: accountRouteParams }));
+        const isTokensCountShown =
+            (['cardano', 'solana'].includes(networkType) || account.symbol === 'matic') &&
+            !!tokens?.length;
+
+        const getRoute = () => {
+            switch (type) {
+                case 'coin':
+                    return 'wallet-index';
+                case 'staking':
+                    return 'wallet-staking';
+                case 'tokens':
+                    return 'wallet-tokens';
+            }
         };
 
-        // Tokens tab is available for ethereum, cardano and solana accounts only, not yet implemented for XRP
-        const isTokensCountShown =
-            ['cardano', 'ethereum', 'solana'].includes(networkType) && !!tokens?.length;
+        const getLeftComponent = () => {
+            switch (type) {
+                case 'coin':
+                    return (
+                        <>
+                            <StyledCoinLogo size={24} symbol={symbol} />
+                            {isTokensCountShown && type === 'coin' && (
+                                <TokensCount>{tokens?.length}</TokensCount>
+                            )}
+                        </>
+                    );
+                case 'staking':
+                    return <StyledIcon icon="PIGGY_BANK_FILLED" color={theme.iconSubdued} />;
+                case 'tokens':
+                    return <TokensBadge>{tokens?.length}</TokensBadge>;
+            }
+        };
+
+        const handleHeaderClick = () => {
+            onClick?.();
+            dispatch(goto(getRoute(), { params: accountRouteParams }));
+        };
 
         // Show skeleton instead of zero balance during coinjoin initial discovery
         const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
@@ -139,49 +222,63 @@ export const AccountItem = forwardRef(
         return (
             <Wrapper
                 $isSelected={isSelected}
+                $isGroup={isGroup}
+                $isGroupSelected={isGroupSelected}
                 ref={ref}
                 onClick={handleHeaderClick}
                 data-test={dataTestKey}
                 tabIndex={0}
             >
-                <Left>
-                    <CoinLogo size={24} symbol={symbol} />
-                    {isTokensCountShown && <TokensCount>{tokens.length}</TokensCount>}
-                </Left>
+                <Left>{getLeftComponent()}</Left>
                 <Right>
                     <Row>
                         <AccountName $isSelected={isSelected} data-test={`${dataTestKey}/label`}>
                             <AccountLabelContainer>
-                                <AccountLabel
-                                    accountLabel={accountLabel}
-                                    accountType={accountType}
-                                    symbol={symbol}
-                                    index={index}
-                                />
+                                {type === 'coin' && (
+                                    <AccountLabel
+                                        accountLabel={accountLabel}
+                                        accountType={accountType}
+                                        symbol={symbol}
+                                        index={index}
+                                    />
+                                )}
+                                {type === 'staking' && <Translation id="TR_NAV_STAKING" />}
+                                {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                             </AccountLabelContainer>
                             <FiatAmount>
-                                <FiatValue
-                                    amount={formattedBalance}
-                                    symbol={symbol}
-                                    fiatAmountFormatterOptions={{
-                                        minimumFractionDigits: 0,
-                                        maximumFractionDigits: 0,
-                                    }}
-                                >
-                                    {({ value }) =>
-                                        value ? (
-                                            <FiatValueWrapper>
-                                                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                                                    {value}
-                                                </TruncateWithTooltip>
-                                            </FiatValueWrapper>
-                                        ) : null
-                                    }
-                                </FiatValue>
+                                {customFiatValue ? (
+                                    <FiatAmountFormatter
+                                        value={customFiatValue}
+                                        currency={localCurrency}
+                                        minimumFractionDigits={0}
+                                        maximumFractionDigits={0}
+                                    />
+                                ) : (
+                                    <FiatValue
+                                        amount={formattedBalance}
+                                        symbol={symbol}
+                                        fiatAmountFormatterOptions={{
+                                            minimumFractionDigits: 0,
+                                            maximumFractionDigits: 0,
+                                        }}
+                                    >
+                                        {({ value }) =>
+                                            value ? (
+                                                <FiatValueWrapper>
+                                                    <TruncateWithTooltip
+                                                        delayShow={TOOLTIP_DELAY_LONG}
+                                                    >
+                                                        {value}
+                                                    </TruncateWithTooltip>
+                                                </FiatValueWrapper>
+                                            ) : null
+                                        }
+                                    </FiatValue>
+                                )}
                             </FiatAmount>
                         </AccountName>
                     </Row>
-                    {isBalanceShown && (
+                    {isBalanceShown && type !== 'tokens' && (
                         <>
                             <Row>
                                 <Balance>

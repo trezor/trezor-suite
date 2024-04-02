@@ -6,10 +6,10 @@ import { selectAccountLabels } from 'src/reducers/suite/metadataReducer';
 import { Translation } from 'src/components/suite';
 import { AccountItemSkeleton } from './AccountItemSkeleton';
 import { AccountGroup } from './AccountGroup';
-import { AccountItem } from './AccountItem';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
+import { AccountSection } from './AcccountSection';
 
 const SkeletonContainer = styled.div`
     margin: ${spacingsPx.xs};
@@ -98,12 +98,12 @@ export const AccountsList = ({ onItemClick }: AccountListProps) => {
                     const selected = !!isSelected(account);
 
                     return (
-                        <AccountItem
-                            key={`${account.descriptor}-${account.symbol}`}
+                        <AccountSection
+                            key={account.key}
                             account={account}
-                            isSelected={selected}
-                            closeMenu={onItemClick}
+                            selected={selected}
                             accountLabel={accountLabels[account.key]}
+                            onItemClick={onItemClick}
                         />
                     );
                 })}

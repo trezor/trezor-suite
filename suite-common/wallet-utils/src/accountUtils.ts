@@ -553,25 +553,16 @@ export const enhanceHistory = ({
     addrTxCount,
 });
 
-export const getAccountFiatBalance = (
+export const getTokensFiatBalance = (
     account: Account,
     localCurrency: string,
     rates: FiatRates | undefined,
+    tokens?: Account['tokens'],
 ) => {
-    const coinFiatRateKey = getFiatRateKey(
-        account.symbol as NetworkSymbol,
-        localCurrency as FiatCurrencyCode,
-    );
-    const coinFiatRate = rates?.[coinFiatRateKey];
-    if (!coinFiatRate?.rate) return null;
-
     let totalBalance = new BigNumber(0);
 
-    // account fiat balance
-    const balance = toFiatCurrency(account.formattedBalance, localCurrency, coinFiatRate, 2, false);
-
     // sum fiat value of all tokens
-    account.tokens?.forEach(t => {
+    tokens?.forEach(t => {
         const tokenFiatRateKey = getFiatRateKey(
             account.symbol as NetworkSymbol,
             localCurrency as FiatCurrencyCode,
@@ -587,7 +578,37 @@ export const getAccountFiatBalance = (
         }
     });
 
-    totalBalance = totalBalance.plus(balance ?? 0);
+    return totalBalance.toFixed();
+};
+
+export const getAccountFiatBalance = (
+    account: Account,
+    localCurrency: string,
+    rates: FiatRates | undefined,
+) => {
+    const coinFiatRateKey = getFiatRateKey(
+        account.symbol as NetworkSymbol,
+        localCurrency as FiatCurrencyCode,
+    );
+    const coinFiatRate = rates?.[coinFiatRateKey];
+    if (!coinFiatRate?.rate) return null;
+
+    let totalBalance = new BigNumber(0);
+
+    // account fiat balance
+    const accountBalance = toFiatCurrency(
+        account.formattedBalance,
+        localCurrency,
+        coinFiatRate,
+        2,
+        false,
+    );
+
+    // sum fiat value of all tokens
+    const tokensBalance = getTokensFiatBalance(account, localCurrency, rates, account.tokens);
+
+    totalBalance = totalBalance.plus(accountBalance ?? 0);
+    totalBalance = totalBalance.plus(tokensBalance ?? 0);
 
     return totalBalance.toFixed();
 };

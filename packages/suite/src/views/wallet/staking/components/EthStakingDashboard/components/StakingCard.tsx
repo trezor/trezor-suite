@@ -7,16 +7,14 @@ import { isPending } from '@suite-common/wallet-utils';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import {
-    selectSelectedAccount,
-    selectSelectedAccountEverstakeStakingPool,
-} from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { InfoBox, ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
+import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.md};
@@ -122,8 +120,8 @@ export const StakingCard = ({
     daysToUnstake,
 }: StakingCardProps) => {
     const theme = useTheme();
-    const { symbol, key: selectedAccountKey } = useSelector(selectSelectedAccount) ?? {};
-    const mappedSymbol = symbol ? mapTestnetSymbol(symbol) : '';
+    const selectedAccount = useSelector(selectSelectedAccount);
+    const mappedSymbol = selectedAccount?.symbol ? mapTestnetSymbol(selectedAccount?.symbol) : '';
 
     const {
         autocompoundBalance = '0',
@@ -132,7 +130,7 @@ export const StakingCard = ({
         totalPendingStakeBalance = '0',
         withdrawTotalAmount = '0',
         claimableAmount = '0',
-    } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+    } = getAccountEverstakeStakingPool(selectedAccount) ?? {};
 
     const canUnstake = MIN_ETH_AMOUNT_FOR_STAKING.lt(autocompoundBalance);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
@@ -145,7 +143,7 @@ export const StakingCard = ({
     const isDaysToUnstakeShown = !Number.isNaN(daysToUnstake) && !isValidatorsQueueLoading;
 
     const stakeTxs = useSelector(state =>
-        selectAccountStakeTransactions(state, selectedAccountKey || ''),
+        selectAccountStakeTransactions(state, selectedAccount?.key || ''),
     );
     const isStakeConfirming = stakeTxs.some(tx => isPending(tx));
 
@@ -171,7 +169,7 @@ export const StakingCard = ({
                     <EnteringAmountInfo>
                         <Translation
                             id="TR_STAKE_WAITING_TO_BE_ADDED"
-                            values={{ symbol: symbol?.toUpperCase(), br: <br /> }}
+                            values={{ symbol: selectedAccount?.symbol?.toUpperCase(), br: <br /> }}
                         />
 
                         <EnteringAmountsWrapper>
@@ -183,7 +181,7 @@ export const StakingCard = ({
                             <div>
                                 <FormattedCryptoAmount
                                     value={totalPendingStakeBalance}
-                                    symbol={symbol}
+                                    symbol={selectedAccount?.symbol}
                                 />{' '}
                                 <EnteringFiatValueWrapper>
                                     <FiatValue
@@ -213,7 +211,10 @@ export const StakingCard = ({
                         <Translation id="TR_STAKE_STAKE" />
                     </AmountHeading>
 
-                    <StyledFormattedCryptoAmount value={depositedBalance} symbol={symbol} />
+                    <StyledFormattedCryptoAmount
+                        value={depositedBalance}
+                        symbol={selectedAccount?.symbol}
+                    />
 
                     <StyledFiatValue
                         amount={depositedBalance}
@@ -233,7 +234,7 @@ export const StakingCard = ({
                     <StyledFormattedCryptoAmount
                         $isRewards
                         value={restakedReward}
-                        symbol={symbol}
+                        symbol={selectedAccount?.symbol}
                     />
 
                     <StyledFiatValue
@@ -266,7 +267,10 @@ export const StakingCard = ({
                             </span>
                         </AmountHeading>
 
-                        <StyledFormattedCryptoAmount value={withdrawTotalAmount} symbol={symbol} />
+                        <StyledFormattedCryptoAmount
+                            value={withdrawTotalAmount}
+                            symbol={selectedAccount?.symbol}
+                        />
 
                         <StyledFiatValue
                             amount={withdrawTotalAmount}
@@ -296,7 +300,7 @@ export const StakingCard = ({
                 <Icon icon="INFO" size={12} />
                 <Translation
                     id="TR_STAKE_ETH_REWARDS_EARN_APY"
-                    values={{ symbol: symbol?.toUpperCase() }}
+                    values={{ symbol: selectedAccount?.symbol?.toUpperCase() }}
                 />
             </Info>
 

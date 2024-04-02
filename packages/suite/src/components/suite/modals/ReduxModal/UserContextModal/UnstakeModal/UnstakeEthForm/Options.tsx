@@ -8,7 +8,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
-import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
@@ -67,6 +68,8 @@ interface OptionsProps {
 }
 
 export const Options = ({ symbol }: OptionsProps) => {
+    const selectedAccount = useSelector(selectSelectedAccount);
+
     const [unstakeOption, setUnstakeOption] = useState<UnstakeOptions>('other');
     const isRewardsSelected = unstakeOption === 'rewards';
     const isAllSelected = unstakeOption === 'all';
@@ -78,7 +81,7 @@ export const Options = ({ symbol }: OptionsProps) => {
         autocompoundBalance = '0',
         depositedBalance = '0',
         restakedReward = '0',
-    } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+    } = getAccountEverstakeStakingPool(selectedAccount) ?? {};
 
     return (
         <div>
