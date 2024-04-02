@@ -44,3 +44,5 @@ yarn tsx ./protobuf-types.ts
 
 yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts} 
 yarn workspace @trezor/protobuf g:eslint --fix ./src/messages.ts
+
+yarn tsx ./protobuf-thp-definitions.ts "$REPO_PATH/common/protob"
