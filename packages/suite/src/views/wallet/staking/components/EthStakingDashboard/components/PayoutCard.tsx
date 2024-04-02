@@ -3,9 +3,10 @@ import BigNumber from 'bignumber.js';
 import { useTheme } from 'styled-components';
 import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { selectSelectedAccountAutocompoundBalance } from 'src/reducers/wallet/selectedAccountReducer';
 import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
+import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useSelector } from 'src/hooks/suite';
 
 interface PayoutCardProps {
     nextRewardPayout: number | null;
@@ -19,8 +20,9 @@ export const PayoutCard = ({
     validatorWithdrawTime,
 }: PayoutCardProps) => {
     const theme = useTheme();
+    const selectedAccount = useSelector(selectSelectedAccount);
 
-    const autocompoundBalance = useSelector(selectSelectedAccountAutocompoundBalance);
+    const autocompoundBalance = getAccountAutocompoundBalance(selectedAccount);
     const payout = useMemo(() => {
         if (!nextRewardPayout || !daysToAddToPool) return '--';
 

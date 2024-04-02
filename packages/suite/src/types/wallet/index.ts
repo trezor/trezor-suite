@@ -54,6 +54,7 @@ export type {
     ReceiveInfo,
 } from '@suite-common/wallet-types';
 export type { WalletParams } from 'src/utils/suite/router';
+export type AccountItemType = 'coin' | 'tokens' | 'staking';
 
 /*
 this action union types are bad, we need it only for legacy reason.

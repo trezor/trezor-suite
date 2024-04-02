@@ -7,7 +7,7 @@ import { AnimationWrapper } from './AnimationWrapper';
 import { spacingsPx, typography } from '@trezor/theme';
 
 const Container = styled.div`
-    padding: ${spacingsPx.xs};
+    padding: ${spacingsPx.xs} 0;
 `;
 
 const HeaderWrapper = styled.div`
@@ -16,7 +16,7 @@ const HeaderWrapper = styled.div`
 
     /* to not overlap with the Account's focus shadow */
     margin-bottom: ${spacingsPx.xxs};
-    z-index: 1;
+    z-index: 30;
 `;
 
 const ChevronContainer = styled.div`

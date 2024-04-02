@@ -4,10 +4,11 @@ import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector, useValidatorsQueue } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
-import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { Options } from './Options';
 import UnstakeFees from './Fees';
+import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
@@ -43,6 +44,7 @@ const UpToDaysWrapper = styled.div`
 
 export const UnstakeEthForm = () => {
     const { device, isLocked } = useDevice();
+    const selectedAccount = useSelector(selectSelectedAccount);
 
     const {
         account,
@@ -63,7 +65,7 @@ export const UnstakeEthForm = () => {
     const formIsValid = Object.keys(errors).length === 0;
 
     const { canClaim = false, claimableAmount = '0' } =
-        useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+        getAccountEverstakeStakingPool(selectedAccount) ?? {};
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 

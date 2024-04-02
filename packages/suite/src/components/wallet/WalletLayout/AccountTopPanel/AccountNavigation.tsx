@@ -61,20 +61,20 @@ export const AccountNavigation = () => {
             'data-test': `@wallet/menu/wallet-details`,
         },
         {
-            id: 'wallet-tokens',
-            callback: () => {
-                goToWithAnalytics('wallet-tokens', { preserveParams: true });
-            },
-            title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
-        },
-        {
             id: 'wallet-staking',
             callback: () => {
                 goToWithAnalytics('wallet-staking', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_STAKING" />,
             isHidden: !hasNetworkFeatures(account, 'staking'),
+        },
+        {
+            id: 'wallet-tokens',
+            callback: () => {
+                goToWithAnalytics('wallet-tokens', { preserveParams: true });
+            },
+            title: <Translation id="TR_NAV_TOKENS" />,
+            isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
         },
     ];
 
