@@ -148,9 +148,9 @@ jobs:
                   CI_COMMIT_MESSAGE: ${{steps.extract_commit_message.outputs.message }}
               run: |
                   yarn install --immutable
-                  docker-compose pull
-                  docker-compose up -d ${{ matrix.CONTAINERS }}
-                  docker-compose run test-run
+                  docker compose pull
+                  docker compose up -d ${{ matrix.CONTAINERS }}
+                  docker compose run test-run
 
             - name: Upload logs
               run: |
