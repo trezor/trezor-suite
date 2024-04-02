@@ -11,7 +11,7 @@ get_abs_path() {
 SCRIPTS_PATH=$(get_abs_path "${BASH_SOURCE[0]}")
 
 REPO_BRANCH="main"
-REPO_PATH=$(get_abs_path "$SCRIPTS_PATH/../../../../.")/trezor-firmware-probuf-update
+REPO_PATH=$(get_abs_path "$SCRIPTS_PATH/../../../../.")/trezor-firmware
 
 if [[ $# -ne 0 && $# -ne 1 ]]
     then
@@ -32,9 +32,9 @@ else
 fi
 
 cd "$REPO_PATH"
-git fetch origin
-git checkout "$REPO_BRANCH"
-git reset "origin/$REPO_BRANCH" --hard
+# git fetch origin
+# git checkout "$REPO_BRANCH"
+# git reset "origin/$REPO_BRANCH" --hard
 cd ..
 
 cd "$SCRIPTS_PATH"
