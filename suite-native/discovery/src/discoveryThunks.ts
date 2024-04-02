@@ -4,7 +4,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
     DISCOVERY_MODULE_PREFIX,
-    selectDeviceAccountsLengthPerNetwork,
     selectDeviceDiscovery,
     updateDiscovery,
     createDiscovery,
@@ -33,6 +32,7 @@ import {
     selectDiscoverySupportedNetworks,
     setDiscoveryStartTimestamp,
 } from './discoveryConfigSlice';
+import { selectDiscoveryAccountsAnalytics } from './discoverySelectors';
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
@@ -84,11 +84,14 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
             if (discoveryStartTime !== null) {
                 const endTime = performance.now();
                 const duration = endTime - discoveryStartTime;
-                const accountsMap = selectDeviceAccountsLengthPerNetwork(getState());
+                const discoveryAccountsAnalytics = selectDiscoveryAccountsAnalytics(
+                    getState(),
+                    discovery.deviceState,
+                );
 
                 analytics.report({
                     type: EventType.CoinDiscovery,
-                    payload: { ...accountsMap, loadDuration: duration },
+                    payload: { ...discoveryAccountsAnalytics, loadDuration: duration },
                 });
                 dispatch(setDiscoveryStartTimestamp(null));
             }
@@ -129,8 +132,8 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
     },
 );
 
-const addAccountsByDescriptorThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/addAccountsByDescriptorThunk`,
+const addAccountByDescriptorThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/addAccountByDescriptorThunk`,
     async (
         {
             deviceState,
@@ -270,7 +273,7 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
         const descriptor = deviceAccessResponse.payload[0];
 
         await dispatch(
-            addAccountsByDescriptorThunk({
+            addAccountByDescriptorThunk({
                 bundleItem: descriptor,
                 deviceState,
             }),
