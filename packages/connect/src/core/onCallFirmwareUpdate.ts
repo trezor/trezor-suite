@@ -290,6 +290,7 @@ export const onCallFirmwareUpdate = async ({
     const stripped = stripFwHeaders(binary);
 
     const deviceInitiallyConnectedInBootloader = device.features.bootloader_mode;
+    const deviceInitiallyConnectedWithoutFirmware = device.features.firmware_present === false;
 
     if (deviceInitiallyConnectedInBootloader) {
         log.warn(
@@ -455,6 +456,13 @@ export const onCallFirmwareUpdate = async ({
         },
         context: { deviceList, device: reconnectedDevice, log, postMessage },
     });
+
+    // features.firmware_present non-null value implies that device was initially connected with
+    // features.bootloader_mode=true, which means that no automatic language update was performed
+    if (reconnectedDevice.atLeast(['2.7.0']) && deviceInitiallyConnectedWithoutFirmware) {
+        // todo: finish after https://github.com/trezor/trezor-suite/pull/11835 is merged
+        // await device.changeLanguage()
+    }
 
     const checkSupported = reconnectedDevice.atLeast(['1.11.1', '2.5.1']) && !params.binary;
 
