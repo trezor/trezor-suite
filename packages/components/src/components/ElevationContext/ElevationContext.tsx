@@ -1,5 +1,8 @@
 import { Elevation, nextElevation, prevElevation } from '@trezor/theme';
 import { ReactNode, createContext, useContext, useMemo } from 'react';
+import styled from 'styled-components';
+
+const DEBUG = false;
 
 const ElevationReactContext = createContext<{
     elevation: Elevation;
@@ -14,6 +17,20 @@ type ElevationContextProps = {
     direction?: ElevationDirection;
 };
 
+const DebugNumber = styled.div`
+    position: absolute;
+    font-size: 11px;
+    background-color: rgba(0 0 0 / 50%);
+    color: #fff;
+    border-radius: 8px;
+    width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+`;
+
 /**
  * @deprecated Always prefer ElevationDown/ElevationUp if possible.
  */
@@ -21,11 +38,14 @@ export const ElevationContext = ({
     children,
     baseElevation,
     direction = 'up',
-}: ElevationContextProps) => (
-    <ElevationReactContext.Provider value={{ elevation: baseElevation, direction }}>
-        {children}
-    </ElevationReactContext.Provider>
-);
+}: ElevationContextProps) => {
+    return (
+        <ElevationReactContext.Provider value={{ elevation: baseElevation, direction }}>
+            {DEBUG && <DebugNumber>{baseElevation}</DebugNumber>}
+            {children}
+        </ElevationReactContext.Provider>
+    );
+};
 
 export const useElevation = (forceElevation?: Elevation) => {
     const { elevation, direction } = useContext(ElevationReactContext);

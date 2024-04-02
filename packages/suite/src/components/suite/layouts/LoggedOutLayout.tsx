@@ -15,7 +15,7 @@ import {
     PageWrapper,
     Wrapper,
 } from './SuiteLayout/SuiteLayout';
-import { ElevationContext } from '@trezor/components';
+import { ElevationContext, ElevationUp } from '@trezor/components';
 
 interface LoggedOutLayout {
     children: ReactNode;
@@ -32,7 +32,7 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
 
     return (
         <ElevationContext baseElevation={-1}>
-            <Wrapper ref={wrapperRef}>
+            <Wrapper ref={wrapperRef} data-test="@logged-out-layout">
                 <PageWrapper>
                     <ModalContextProvider>
                         <Metadata title={title} />
@@ -43,8 +43,9 @@ export const LoggedOutLayout = ({ children }: LoggedOutLayout) => {
                                 <Columns>
                                     <AppWrapper data-test="@app" ref={scrollRef} id="layout-scroll">
                                         {TopMenu && <TopMenu />}
-
-                                        <ContentWrapper>{children}</ContentWrapper>
+                                        <ElevationUp>
+                                            <ContentWrapper>{children}</ContentWrapper>
+                                        </ElevationUp>
                                     </AppWrapper>
                                 </Columns>
                             </Body>
