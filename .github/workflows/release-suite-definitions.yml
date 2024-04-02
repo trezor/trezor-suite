@@ -1,0 +1,74 @@
+name: "[Release] suite definitions"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "Release definitions environment"
+        type: environment
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  release-suite-definitions:
+    environment: ${{ github.event.inputs.environment }}
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: "eu-central-1"
+      AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
+      COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_prod_deploy
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Build and sign ${{ github.event.inputs.environment }} token-definitions
+        if: ${{ github.event.inputs.environment == 'develop' && github.ref == 'refs/heads/develop' }}
+        run: |
+          yarn install
+          cd suite-common/token-definitions
+          yarn nfts simple ethereum
+          yarn nfts simple polygon-pos
+          yarn coins simple ethereum
+          yarn coins simple polygon-pos
+          yarn coins simple solana
+          yarn coins simple cardano
+
+      - name: Build and sign ${{ github.event.inputs.environment }} token-definitions files
+        if: ${{ github.event.inputs.environment == 'production' && github.ref == 'refs/heads/develop' }}
+        env:
+          IS_CODESIGN_BUILD: "true"
+          JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
+        run: |
+          yarn install
+          cd suite-common/token-definitions
+          yarn nfts simple ethereum
+          yarn nfts simple polygon-pos
+          yarn coins simple ethereum
+          yarn coins simple polygon-pos
+          yarn coins simple solana
+          yarn coins simple cardano
+
+      - name: Upload ${{ github.event.inputs.environment }} token-definitions files
+        if: ${{ github.ref == 'refs/heads/develop' }}
+        run: |
+          if [ '${{ github.event.inputs.environment }}' == 'production' ]
+          then
+            aws s3 sync --delete suite-common/token-definitions/files/ s3://data.trezor.io/suite/definitions/stable/ --cache-control no-cache
+            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/definitions/stable/*'
+          else
+            aws s3 sync --delete suite-common/token-definitions/files/ s3://data.trezor.io/suite/definitions/develop/ --cache-control no-cache
+            aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/definitions/develop/*'
+          fi
