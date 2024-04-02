@@ -1384,6 +1384,10 @@ export enum Enum_FailureType {
     Failure_PinMismatch = 12,
     Failure_WipeCodeMismatch = 13,
     Failure_InvalidSession = 14,
+    Failure_DeviceIsBusy = 15,
+    Failure_ThpUnallocatedSession = 16,
+    Failure_InvalidProtocol = 17,
+    Failure_BufferError = 18,
     Failure_FirmwareError = 99,
 }
 
@@ -1611,6 +1615,28 @@ export enum DebugWaitType {
 
 export type EnumDebugWaitType = Static<typeof EnumDebugWaitType>;
 export const EnumDebugWaitType = Type.Enum(DebugWaitType);
+
+export type DebugLinkGetPairingInfo = Static<typeof DebugLinkGetPairingInfo>;
+export const DebugLinkGetPairingInfo = Type.Object(
+    {
+        channel_id: Type.Optional(Type.String()),
+        handshake_hash: Type.Optional(Type.String()),
+        nfc_secret_host: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkGetPairingInfo' },
+);
+
+export type DebugLinkPairingInfo = Static<typeof DebugLinkPairingInfo>;
+export const DebugLinkPairingInfo = Type.Object(
+    {
+        channel_id: Type.Optional(Type.String()),
+        handshake_hash: Type.Optional(Type.String()),
+        code_entry_code: Type.Optional(Type.Number()),
+        code_qr_code: Type.Optional(Type.String()),
+        nfc_secret_trezor: Type.Optional(Type.String()),
+    },
+    { $id: 'DebugLinkPairingInfo' },
+);
 
 export type DebugLinkResetDebugEvents = Static<typeof DebugLinkResetDebugEvents>;
 export const DebugLinkResetDebugEvents = Type.Object({}, { $id: 'DebugLinkResetDebugEvents' });
@@ -3662,6 +3688,8 @@ export const MessageType = Type.Object(
         SignedIdentity,
         GetECDHSessionKey,
         ECDHSessionKey,
+        DebugLinkGetPairingInfo,
+        DebugLinkPairingInfo,
         DebugLinkResetDebugEvents,
         DebugLinkOptigaSetSecMax,
         EosGetPublicKey,

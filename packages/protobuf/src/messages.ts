@@ -921,6 +921,10 @@ export enum Enum_FailureType {
     Failure_PinMismatch = 12,
     Failure_WipeCodeMismatch = 13,
     Failure_InvalidSession = 14,
+    Failure_DeviceIsBusy = 15,
+    Failure_ThpUnallocatedSession = 16,
+    Failure_InvalidProtocol = 17,
+    Failure_BufferError = 18,
     Failure_FirmwareError = 99,
 }
 
@@ -1062,6 +1066,20 @@ export enum DebugWaitType {
     NEXT_LAYOUT = 1,
     CURRENT_LAYOUT = 2,
 }
+
+export type DebugLinkGetPairingInfo = {
+    channel_id?: string;
+    handshake_hash?: string;
+    nfc_secret_host?: string;
+};
+
+export type DebugLinkPairingInfo = {
+    channel_id?: string;
+    handshake_hash?: string;
+    code_entry_code?: number;
+    code_qr_code?: string;
+    nfc_secret_trezor?: string;
+};
 
 export type DebugLinkResetDebugEvents = {};
 
@@ -2408,6 +2426,8 @@ export type MessageType = {
     SignedIdentity: SignedIdentity;
     GetECDHSessionKey: GetECDHSessionKey;
     ECDHSessionKey: ECDHSessionKey;
+    DebugLinkGetPairingInfo: DebugLinkGetPairingInfo;
+    DebugLinkPairingInfo: DebugLinkPairingInfo;
     DebugLinkResetDebugEvents: DebugLinkResetDebugEvents;
     DebugLinkOptigaSetSecMax: DebugLinkOptigaSetSecMax;
     EosGetPublicKey: EosGetPublicKey;
