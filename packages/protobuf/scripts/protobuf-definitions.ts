@@ -63,7 +63,10 @@ const modifyDefinitionsJSON = (root: protobuf.Root, def: Definition) => {
     if (nested) {
         Object.keys(nested).forEach(key => {
             const item = nested[key];
-            if (item.extend && item.extend.startsWith('google')) {
+            const isInternal =
+                item.options && Object.keys(item.options).includes('(internal_only)');
+            const isExtendingGoogle = item.extend && item.extend.startsWith('google');
+            if (isInternal || isExtendingGoogle) {
                 delete nested[key];
             } else {
                 modifyDefinitionsJSON(root, item);
