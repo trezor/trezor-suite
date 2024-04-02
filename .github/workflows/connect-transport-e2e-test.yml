@@ -4,8 +4,6 @@ on:
   schedule:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
-  push:
-    branches: [npm-release/*, release/*]
   pull_request:
     paths:
       - "packages/transport/**"
@@ -16,6 +14,7 @@ on:
       - "docker/docker-compose.transport-test.yml"
       - ".github/workflows/connect-transport-e2e-test.yml"
       - "yarn.lock"
+  workflow_dispatch:
 
 jobs:
   transport-e2e:
