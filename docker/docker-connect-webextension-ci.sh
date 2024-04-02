@@ -4,4 +4,4 @@ set -e
 HEADLESS=true
 export HEADLESS
 
-docker-compose -f ./docker/docker-compose.connect-webextension-test.yml up --build --abort-on-container-exit
+docker compose -f ./docker/docker-compose.connect-webextension-test.yml up --build --abort-on-container-exit
