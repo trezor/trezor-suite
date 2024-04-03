@@ -114,7 +114,7 @@ const TokensBadge = styled.div`
     min-width: 24px;
     text-align: center;
     border-radius: ${borders.radii.full};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background: ${({ theme }) => theme.borderDashed};
     z-index: 20;
 `;
 
