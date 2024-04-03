@@ -6352,7 +6352,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_RESTART_NEEDED: {
         id: 'TR_UPDATE_MODAL_RESTART_NEEDED',
-        defaultMessage: 'This requires restarting Trezor Suite.',
+        defaultMessage: 'This will restart Trezor Suite',
     },
     SETTINGS_UPDATE_CHECKING: {
         id: 'SETTINGS_UPDATE_CHECKING',
@@ -6549,7 +6549,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 and higher.',
+            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong> 1</strong> will show all transactions that have an amount of 1 and higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
@@ -8562,7 +8562,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes {days} days. Once completed, you can trade or send it.',
+            'Unstaking usually takes about 3 days. Once completed, you can trade or send it.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
@@ -8789,7 +8789,7 @@ export default defineMessages({
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake maintains and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
+            'Everstake manages and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
     },
     TR_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',
