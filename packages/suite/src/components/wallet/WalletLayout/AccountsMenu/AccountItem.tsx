@@ -135,6 +135,7 @@ interface AccountItemProps {
     customFiatValue?: string;
     isGroup?: boolean;
     tokens?: Account['tokens'];
+    dataTest?: string;
     onClick?: () => void;
 }
 
@@ -151,6 +152,7 @@ export const AccountItem = forwardRef(
             customFiatValue,
             isGroup,
             tokens,
+            dataTest,
             onClick,
         }: AccountItemProps,
         ref: Ref<HTMLDivElement>,
@@ -211,8 +213,6 @@ export const AccountItem = forwardRef(
         // Show skeleton instead of zero balance during coinjoin initial discovery
         const isBalanceShown = account.backendType !== 'coinjoin' || account.status !== 'initial';
 
-        const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
-
         return (
             <Wrapper
                 $isSelected={isSelected}
@@ -220,13 +220,13 @@ export const AccountItem = forwardRef(
                 $isGroupSelected={isGroupSelected}
                 ref={ref}
                 onClick={handleHeaderClick}
-                data-test={dataTestKey}
+                data-test={dataTest}
                 tabIndex={0}
             >
                 <Left>{getLeftComponent()}</Left>
                 <Right>
                     <Row>
-                        <AccountName $isSelected={isSelected} data-test={`${dataTestKey}/label`}>
+                        <AccountName $isSelected={isSelected} data-test={`${dataTest}/label`}>
                             <AccountLabelContainer>
                                 {type === 'coin' && (
                                     <AccountLabel
