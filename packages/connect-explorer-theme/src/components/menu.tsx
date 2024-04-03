@@ -7,14 +7,15 @@ import type { Heading } from 'nextra';
 import { useFSRoute } from 'nextra/hooks';
 import { ArrowRightIcon } from 'nextra/icons';
 import type { Item, MenuItem, PageItem } from 'nextra/normalize-pages';
+import styled from 'styled-components';
+
+import { CoinLogo, Select, variables } from '@trezor/components';
 
 import { useActiveAnchor, useConfig, useMenu } from '../contexts';
 import { renderComponent } from '../utils';
 import { Anchor } from './anchor';
 import { Collapse } from './collapse';
 import { FocusedItemContext, OnFocusItemContext } from './sidebar';
-import styled from 'styled-components';
-import { CoinLogo, Select, variables } from '@trezor/components';
 
 const TreeState: Record<string, boolean> = Object.create(null);
 const FolderLevelContext = createContext(0);

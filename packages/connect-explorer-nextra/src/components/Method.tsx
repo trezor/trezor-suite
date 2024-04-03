@@ -33,7 +33,7 @@ interface Props {
     };
 }
 
-const getFields = (fields: Field<any>[], props: Props) => {
+export const getFields = (fields: Field<any>[], props: Props) => {
     // Move all booleans to the end while not breaking the order of other fields
     const bools = fields.filter(f => f.type === 'checkbox');
     const nonBools = fields.filter(f => f.type !== 'checkbox');

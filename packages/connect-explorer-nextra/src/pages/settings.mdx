@@ -1,0 +1,70 @@
+import styled from 'styled-components';
+
+import { Button } from '@trezor/components';
+
+import * as trezorConnectActions from '../actions/trezorConnectActions';
+import { useSelector, useActions } from '../hooks';
+import { getField } from '../components/Method';
+
+export const SettingsContent = styled.section`
+    flex: 1;
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+`;
+
+export const ConfirmationMessage = styled.div`
+    margin-top: 20px;
+    color: green;
+    font-weight: bold;
+`;
+
+export const Settings = () => {
+    const connectOptions = useSelector(state => ({
+        trustedHost: state.connect?.options?.trustedHost,
+        connectSrc: state.connect?.options?.connectSrc,
+    }));
+
+    const isHandshakeConfirmed = useSelector(state => state.connect?.isHandshakeConfirmed || false);
+    const actions = useActions({
+        onSubmitInit: trezorConnectActions.onSubmitInit,
+        onFieldChange: trezorConnectActions.onConnectOptionChange,
+    });
+
+    const submitButton = 'Init Connect';
+    const fields = [
+        {
+            name: 'trustedHost',
+            type: 'checkbox',
+            key: 'trustedHost',
+            value: connectOptions?.trustedHost || false,
+        },
+        {
+            name: 'connectSrc',
+            type: 'input',
+            key: 'connectSrc',
+            value: connectOptions?.connectSrc || '',
+        },
+    ];
+
+    return (
+        <SettingsContent>
+            {fields.map(field => getField(field, { actions }))}
+            <Button onClick={actions.onSubmitInit} data-test="@submit-button">
+                {submitButton}
+            </Button>
+            {isHandshakeConfirmed && (
+                <ConfirmationMessage data-test="@settings/handshake-confirmed">
+                    Handshake confirmed!
+                </ConfirmationMessage>
+            )}
+        </SettingsContent>
+    );
+
+};
+
+## Settings
+
+Options for `TrezorConnect` initialization.
+
+<Settings />

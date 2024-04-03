@@ -1,5 +1,9 @@
 {
     "index": "Getting started",
     "methods": "Methods",
-    "details": "Details"
+    "details": "Details",
+    "settings": {
+        "title": "Settings",
+        "type": "page"
+    }
 }

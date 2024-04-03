@@ -24,6 +24,7 @@ const Container = styled.div<{ $elevation: Elevation }>`
     flex-direction: row;
     display: flex;
     flex: 1;
+    gap: ${spacingsPx.md};
 `;
 
 export type NavBarProps = {
@@ -113,6 +114,12 @@ export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
                             <TrezorLogo type="horizontal" width={150} />
                         </div>
                     )}
+
+                    {renderComponent(config.search.component, {
+                        directories: flatDirectories,
+                        className: 'nx-hidden md:nx-inline-block mx-min-w-[200px]',
+                    })}
+
                     {items.map(pageOrMenu => {
                         if (pageOrMenu.display === 'hidden') return null;
 
@@ -166,11 +173,6 @@ export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
                                 <span className="nx-invisible nx-font-medium">{page.title}</span>
                             </Anchor>
                         );
-                    })}
-
-                    {renderComponent(config.search.component, {
-                        directories: flatDirectories,
-                        className: 'nx-hidden md:nx-inline-block mx-min-w-[200px]',
                     })}
 
                     {config.project.link ? (
