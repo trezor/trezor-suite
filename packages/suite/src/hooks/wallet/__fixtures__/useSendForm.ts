@@ -1638,7 +1638,7 @@ export const feeChange = [
                     levels: [
                         { label: 'high', feePerUnit: '40', blocks: 1 },
                         { label: 'normal', feePerUnit: '4', blocks: 1 },
-                        { label: 'low', feePerUnit: '1', blocks: 1 },
+                        { label: 'economy', feePerUnit: '1', blocks: 1 },
                     ],
                 },
             },
@@ -1688,11 +1688,11 @@ export const feeChange = [
             },
             {
                 type: 'click',
-                element: 'select-bar/low',
+                element: 'select-bar/economy',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
-                        selectedFee: 'low' as const,
+                        selectedFee: 'economy' as const,
                         feePerUnit: '40', // did not changed
                     },
                 },
