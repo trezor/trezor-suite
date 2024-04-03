@@ -1,4 +1,4 @@
-name: "[Template] Connect e2e"
+name: "[Template] connect-popup test params"
 
 on:
   workflow_call:
