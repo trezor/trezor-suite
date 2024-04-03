@@ -7,9 +7,9 @@
         "type-check:watch": "yarn type-check -- --watch",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "lint:styles": "npx stylelint './src/**/*{.ts,.tsx}' --cache --config ../../.stylelintrc",
-        "dev": "yarn g:rimraf ./build && yarn workspace @trezor/suite-build run dev:web",
+        "dev": "yarn rimraf ./build && yarn workspace @trezor/suite-build run dev:web",
         "analyze": "ANALYZE=true yarn build",
-        "build": "yarn g:rimraf ./build && yarn workspace @trezor/suite-build run build:web"
+        "build": "yarn rimraf ./build && yarn workspace @trezor/suite-build run build:web"
     },
     "dependencies": {
         "@sentry/browser": "^7.100.1",
@@ -51,8 +51,10 @@
         "cypress": "^13.6.4",
         "cypress-file-upload": "^5.0.8",
         "cypress-image-snapshot": "^4.0.1",
+        "rimraf": "^5.0.5",
         "stylelint": "^16.2.1",
         "stylelint-config-standard": "^36.0.0",
+        "tsx": "^4.7.0",
         "webpack": "^5.90.1",
         "ws": "^8.16.0",
         "yargs": "17.7.2"

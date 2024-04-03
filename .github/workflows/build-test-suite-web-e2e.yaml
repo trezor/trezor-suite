@@ -49,15 +49,23 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version-file: '.nvmrc'
+                  cache: yarn
+
+            - name: Install dependencies
+              run: |
+                  echo -e "\nenableScripts: false" >> .yarnrc.yml
+                  echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+                  yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
+
             - name: Build suite-web
               env:
                   ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
                   DESKTOP_APP_NAME: 'Trezor-Suite'
               run: |
-                  yarn install
                   yarn message-system-sign-config
                   yarn workspace @trezor/suite-data build:lib
                   yarn workspace @trezor/connect-iframe build:lib
+                  yarn workspace @trezor/connect-web build
                   yarn workspace @trezor/suite-web build
             # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
             - name: Upload suite-web to dev.suite.sldev.cz
@@ -107,6 +115,7 @@ jobs:
               uses: actions/setup-node@v4
               with:
                   node-version-file: '.nvmrc'
+                  cache: yarn
 
             - name: Extract branch name
               id: extract_branch
@@ -117,11 +126,17 @@ jobs:
               id: extract_commit_message
               run: |
                   if [ "${{ github.event_name }}" == "pull_request" ]; then
-                    git fetch origin +refs/pull/${{ github.event.pull_request.number }}/merge:
+                    git fetch origin +refs/pull/${{ github.event.pull_request.number }}/merge: --depth=1
                     echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
                   else
                     echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
                   fi
+
+            - name: Install dependencies
+              run: |
+                  echo -e "\nenableScripts: false" >> .yarnrc.yml
+                  echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+                  yarn workspaces focus @trezor/suite-web
 
             - name: Run e2e tests
               env:
@@ -145,9 +160,8 @@ jobs:
                   CI_COMMIT_SHA: ${{ github.sha }}
                   CI_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
                   CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
-                  CI_COMMIT_MESSAGE: ${{steps.extract_commit_message.outputs.message }}
+                  CI_COMMIT_MESSAGE: ${{ steps.extract_commit_message.outputs.message }}
               run: |
-                  yarn install --immutable
                   docker compose pull
                   docker compose up -d ${{ matrix.CONTAINERS }}
                   docker compose run test-run

@@ -7,9 +7,9 @@
     "main": "src/index",
     "scripts": {
         "build:lib": "yarn msg-system-types && yarn sign-config",
-        "msg-system-types": "yarn g:tsx ./scripts/generate-types.ts",
-        "validate-config": "yarn g:tsx ./scripts/validate-config.ts",
-        "sign-config": "yarn g:tsx ./scripts/sign-config.ts",
+        "msg-system-types": "yarn tsx ./scripts/generate-types.ts",
+        "validate-config": "yarn tsx ./scripts/validate-config.ts",
+        "sign-config": "yarn tsx ./scripts/sign-config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
         "type-check": "yarn g:tsc --build"
@@ -33,7 +33,8 @@
     },
     "devDependencies": {
         "@suite-common/test-utils": "workspace:*",
-        "@types/fs-extra": "^11.0.4"
+        "@types/fs-extra": "^11.0.4",
+        "tsx": "^4.7.0"
     },
     "nx": {
         "targets": {

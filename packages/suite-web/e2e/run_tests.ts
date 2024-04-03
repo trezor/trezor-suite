@@ -11,7 +11,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 
 import cypressConfig from './cypress.config';
 
-const TEST_DIR = './packages/suite-web/e2e/';
+const TEST_DIR = __dirname;
 
 const { argv } = yargs(process.argv.slice(2)).options({
     group: { type: 'string' },
@@ -178,8 +178,7 @@ const runTests = async () => {
 
     if (!finalTestFiles.length) {
         console.log('[run_tests.js] nothing to test!');
-
-        return;
+        throw new Error('No test files found.');
     }
 
     console.log('[run_tests.js] test files after all filters:', finalTestFiles);
@@ -216,11 +215,11 @@ const runTests = async () => {
         const allowedRuns = !Number.isNaN(retries) && Number(ALLOW_RETRY) ? retries + 1 : 1;
 
         const spec = path.join(__dirname, testFile.substring(testFile.lastIndexOf('/tests')));
+
         const testFileName = testFile
             .substring(testFile.lastIndexOf('/tests/') + 7)
             .replace('.test.ts', '');
 
-        console.log('');
         console.log(`[run_tests.js] testing next file ${testFile}`);
         console.log(`[run_tests.js] allowed to run ${allowedRuns} times`);
 
@@ -263,7 +262,7 @@ const runTests = async () => {
                     // headless,
                     headed: true,
                     spec,
-                    project: 'packages/suite-web/e2e',
+                    project: TEST_DIR,
                     config: config.e2e,
                 });
 
