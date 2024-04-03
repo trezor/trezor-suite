@@ -8414,6 +8414,10 @@ export default defineMessages({
         defaultMessage:
             '{index, selectordinal, one {#st} two {#nd} few {#rd} other {#th} } Recipient',
     },
+    TR_DISCOVERY_NEW_COINS: {
+        id: 'TR_DISCOVERY_NEW_COINS',
+        defaultMessage: 'Activate coins',
+    },
     TR_DISCOVERY_NEW_COINS_TEXT: {
         id: 'TR_DISCOVERY_NEW_COINS_TEXT',
         defaultMessage: "Don't see an account after activating a coin?",
