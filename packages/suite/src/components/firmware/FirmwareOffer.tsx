@@ -84,7 +84,7 @@ export const FirmwareOffer = ({
         <Version $isNew data-test="@firmware/offer-version/new">
             {futureFirmwareType ? translationString(futureFirmwareType) : ''}
             {nextVersion ? ` ${nextVersion}` : ''}
-            {useDevkit ? ' DEVKIT' : ''}
+            {!customFirmware && useDevkit ? ' DEVKIT' : ''}
         </Version>
     );
 
