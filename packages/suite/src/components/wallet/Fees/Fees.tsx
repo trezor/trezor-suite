@@ -112,6 +112,7 @@ export interface FeesProps<TFieldValues extends FormState> {
     label?: ExtendedMessageDescriptor['id'];
     rbfForm?: boolean;
     helperText?: React.ReactNode;
+    showFeeWhilePending?: boolean;
 }
 
 export const Fees = <TFieldValues extends FormState>({
@@ -124,6 +125,7 @@ export const Fees = <TFieldValues extends FormState>({
     label,
     rbfForm,
     helperText,
+    showFeeWhilePending = true,
     ...props
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
@@ -203,6 +205,7 @@ export const Fees = <TFieldValues extends FormState>({
                             feeInfo={feeInfo}
                             selectedLevel={selectedLevel}
                             transactionInfo={transactionInfo}
+                            showFee={showFeeWhilePending || transactionInfo?.type === 'final'}
                         />
                     </motion.div>
                 )}

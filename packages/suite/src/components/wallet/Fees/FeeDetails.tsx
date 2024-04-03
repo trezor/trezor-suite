@@ -12,7 +12,7 @@ import {
 } from 'src/types/wallet/sendForm';
 
 const Wrapper = styled.div`
-    display: flex;
+    display: inline-flex;
     align-items: baseline;
     gap: ${spacingsPx.sm};
     ${typography.hint}
@@ -37,63 +37,84 @@ interface DetailsProps {
     feeInfo: FeeInfo;
 
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
+
+    showFee: boolean;
 }
 
-const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: DetailsProps) => (
+const BitcoinDetails = ({
+    networkType,
+    feeInfo,
+    selectedLevel,
+    transactionInfo,
+    showFee,
+}: DetailsProps) => (
     <Wrapper>
-        <span>
-            <Label>
-                <Translation id="ESTIMATED_TIME" />:
-            </Label>
-            {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
-        </span>
+        {showFee && (
+            <>
+                <span>
+                    <Label>
+                        <Translation id="ESTIMATED_TIME" />:
+                    </Label>
+                    {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
+                </span>
 
-        <span>
-            <Label>
-                <Translation id="TR_FEE_RATE" />:
-            </Label>
-            {`${
-                transactionInfo && transactionInfo.type !== 'error'
-                    ? transactionInfo.feePerByte
-                    : selectedLevel.feePerUnit
-            } ${getFeeUnits(networkType)}`}
-        </span>
+                <span>
+                    <Label>
+                        <Translation id="TR_FEE_RATE" />:
+                    </Label>
+                    {`${
+                        transactionInfo && transactionInfo.type !== 'error'
+                            ? transactionInfo.feePerByte
+                            : selectedLevel.feePerUnit
+                    } ${getFeeUnits(networkType)}`}
+                </span>
 
-        {transactionInfo && transactionInfo.type !== 'error' && (
-            <span>({transactionInfo.bytes} B)</span>
+                {transactionInfo && transactionInfo.type !== 'error' && (
+                    <span>({transactionInfo.bytes} B)</span>
+                )}
+            </>
         )}
     </Wrapper>
 );
 
-const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: DetailsProps) => {
+const EthereumDetails = ({
+    networkType,
+    selectedLevel,
+    transactionInfo,
+    showFee,
+}: DetailsProps) => {
     const isComposedTx = transactionInfo && transactionInfo.type !== 'error';
     const gasLimit = isComposedTx ? transactionInfo.feeLimit : selectedLevel.feeLimit;
     const gasPrice = isComposedTx ? transactionInfo.feePerByte : selectedLevel.feePerUnit;
 
     return (
         <Wrapper>
-            <span>
-                <Label>
-                    <Translation id="TR_GAS_LIMIT" />:
-                </Label>
-                <FeeItem>{gasLimit}</FeeItem>
-            </span>
+            {showFee && (
+                <>
+                    <span>
+                        <Label>
+                            <Translation id="TR_GAS_LIMIT" />:
+                        </Label>
+                        <FeeItem>{gasLimit}</FeeItem>
+                    </span>
 
-            <span>
-                <Label>
-                    <Translation id="TR_GAS_PRICE" />:
-                </Label>
-                <FeeItem>
-                    {gasPrice} {getFeeUnits(networkType)}
-                </FeeItem>
-            </span>
+                    <span>
+                        <Label>
+                            <Translation id="TR_GAS_PRICE" />:
+                        </Label>
+                        <FeeItem>
+                            {gasPrice} {getFeeUnits(networkType)}
+                        </FeeItem>
+                    </span>
+                </>
+            )}
         </Wrapper>
     );
 };
 
-const RippleDetails = ({ networkType, selectedLevel }: DetailsProps) => (
+const RippleDetails = ({ networkType, selectedLevel, showFee }: DetailsProps) => (
     <Wrapper>
-        <span>{`${selectedLevel.feePerUnit}: ${getFeeUnits(networkType)}`}</span>
+        {showFee && <span>{`${selectedLevel.feePerUnit}: ${getFeeUnits(networkType)}`}</span>}
     </Wrapper>
 );
 
