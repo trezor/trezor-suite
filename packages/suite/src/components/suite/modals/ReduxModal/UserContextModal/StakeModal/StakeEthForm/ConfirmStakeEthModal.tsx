@@ -6,9 +6,9 @@ import { Modal, Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { useDaysTo } from 'src/hooks/suite/useDaysTo';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+import { getDaysToAddToPoolInitial } from 'src/utils/suite/stake';
 
 const StyledModal = styled(Modal)`
     width: 500px;
@@ -74,10 +74,8 @@ export const ConfirmStakeEthModal = ({
     const account = useSelector(selectSelectedAccount);
     const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
 
-    const { daysToAddToPoolInitial } = useDaysTo({
-        selectedAccountKey: account?.descriptor ?? '',
-        validatorsQueue,
-    });
+    const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
+
     const isDisabled = !hasAgreed || isLoading;
 
     const handleOnCancel = () => {

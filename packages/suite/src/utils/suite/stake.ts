@@ -1,4 +1,9 @@
-import { PrecomposedLevels, StakeFormState, StakeType } from '@suite-common/wallet-types';
+import {
+    PrecomposedLevels,
+    StakeFormState,
+    StakeType,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 // @ts-expect-error
@@ -7,6 +12,7 @@ import { fromWei, toHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
+import { ValidatorsQueue } from '@suite-common/wallet-core/src/stake/stakeTypes';
 
 // Gas reserve ensuring txs are processed
 const GAS_RESERVE = 220000;
@@ -18,6 +24,10 @@ export const WALLET_SDK_SOURCE = '1';
 
 // Used when Everstake unstaking period is not available from the API.
 export const UNSTAKING_ETH_PERIOD = 3;
+
+const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
+
+const SEVEN_DAYS_IN_SECONDS = 7 * 24 * 60 * 60;
 
 export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
     const ethNetworks = {
@@ -472,5 +482,66 @@ export const getUnstakingPeriodInDays = (validatorWithdrawTimeInSeconds?: number
         return UNSTAKING_ETH_PERIOD;
     }
 
-    return Math.round(validatorWithdrawTimeInSeconds / 60 / 60 / 24);
+    return secondsToDays(validatorWithdrawTimeInSeconds);
+};
+
+export const getDaysToAddToPool = (
+    stakeTxs: WalletAccountTransaction[],
+    validatorsQueue?: ValidatorsQueue,
+) => {
+    if (
+        validatorsQueue?.validatorAddingDelay === undefined ||
+        validatorsQueue?.validatorActivationTime === undefined
+    ) {
+        return undefined;
+    }
+
+    const lastTx = stakeTxs[0];
+
+    if (!lastTx?.blockTime) return 1;
+
+    const now = Math.floor(Date.now() / 1000);
+    const secondsToWait =
+        lastTx.blockTime +
+        validatorsQueue.validatorAddingDelay +
+        validatorsQueue.validatorActivationTime +
+        SEVEN_DAYS_IN_SECONDS -
+        now;
+    const daysToWait = secondsToDays(secondsToWait);
+
+    return daysToWait <= 0 ? 1 : daysToWait;
+};
+
+export const getDaysToUnstake = (
+    unstakeTxs: WalletAccountTransaction[],
+    validatorsQueue?: ValidatorsQueue,
+) => {
+    if (validatorsQueue?.validatorWithdrawTime === undefined) {
+        return undefined;
+    }
+
+    const lastTx = unstakeTxs[0];
+
+    if (!lastTx?.blockTime) return 1;
+
+    const now = Math.floor(Date.now() / 1000);
+    const secondsToWait = lastTx.blockTime + validatorsQueue.validatorWithdrawTime - now;
+    const daysToWait = secondsToDays(secondsToWait);
+
+    return daysToWait <= 0 ? 1 : daysToWait;
+};
+
+export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => {
+    if (
+        validatorsQueue?.validatorAddingDelay === undefined ||
+        validatorsQueue?.validatorActivationTime === undefined
+    ) {
+        return undefined;
+    }
+
+    const secondsToWait =
+        validatorsQueue.validatorAddingDelay + validatorsQueue.validatorActivationTime;
+    const daysToWait = secondsToDays(secondsToWait);
+
+    return daysToWait <= 0 ? 1 : daysToWait;
 };

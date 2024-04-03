@@ -5,17 +5,19 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { useSelector } from 'src/hooks/suite';
 import { Divider, Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
-import { useDaysTo } from 'src/hooks/suite/useDaysTo';
 import { StakingCard } from './StakingCard';
 import { ApyCard } from './ApyCard';
 import { PayoutCard } from './PayoutCard';
 import { ClaimCard } from './claim/ClaimCard';
 import { Transactions } from './Transactions';
 import {
+    selectAccountStakeTransactions,
+    selectAccountUnstakeTransactions,
     selectPoolStatsApyData,
     selectPoolStatsNextRewardPayout,
     selectValidatorsQueue,
 } from '@suite-common/wallet-core';
+import { getDaysToAddToPool, getDaysToUnstake } from 'src/utils/suite/stake';
 
 const FlexCol = styled.div`
     display: flex;
@@ -53,10 +55,15 @@ export const StakingDashboard = () => {
         selectPoolStatsNextRewardPayout(state, account?.symbol),
     );
 
-    const { daysToAddToPool, daysToUnstake } = useDaysTo({
-        selectedAccountKey: account?.key ?? '',
-        validatorsQueue: data,
-    });
+    const stakeTxs = useSelector(state =>
+        selectAccountStakeTransactions(state, account?.descriptor ?? ''),
+    );
+    const unstakeTxs = useSelector(state =>
+        selectAccountUnstakeTransactions(state, account?.descriptor ?? ''),
+    );
+
+    const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
+    const daysToUnstake = getDaysToUnstake(unstakeTxs, data);
 
     return (
         <>
