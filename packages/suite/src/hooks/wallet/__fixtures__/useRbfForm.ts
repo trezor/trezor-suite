@@ -1050,6 +1050,5 @@ export const composeAndSign = [
 // TODO: multiple inputs (select one for decrease)
 // TODO: custom fee + set-max (decrease)
 // TODO: mad clicking (composeDebounce)
-// TODO: finalize (check constants)
 // TODO: with locktime
 // TODO: ethereum cases

@@ -21,7 +21,6 @@ import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 export type UseRbfProps = {
     selectedAccount: SelectedAccountLoaded;
     rbfParams: RbfTransactionParams;
-    finalize: boolean;
     chainedTxs?: ChainedTransactions;
 };
 
@@ -79,7 +78,7 @@ const getFeeInfo = (
     return info;
 };
 
-const useRbfState = ({ selectedAccount, rbfParams, finalize, chainedTxs }: UseRbfProps) => {
+const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) => {
     const { account, network } = selectedAccount;
 
     const symbolFees = useSelector(state => state.wallet.fees[account.symbol]);
@@ -164,7 +163,7 @@ const useRbfState = ({ selectedAccount, rbfParams, finalize, chainedTxs }: UseRb
                 outputs,
                 selectedFee: undefined,
                 setMaxOutputId,
-                options: finalize ? ['broadcast'] : ['bitcoinRBF', 'broadcast'],
+                options: ['bitcoinRBF', 'broadcast'],
                 ethereumDataHex: rbfParams.ethereumData,
                 rbfParams,
                 baseFee,
@@ -175,7 +174,6 @@ const useRbfState = ({ selectedAccount, rbfParams, finalize, chainedTxs }: UseRb
         coinjoinRegisteredUtxos,
         chainedTxs,
         symbolFees,
-        finalize,
         network,
         rbfParams,
         shouldSendInSats,
@@ -219,16 +217,6 @@ export const useRbf = (props: UseRbfProps) => {
         composedLevels,
         ...useFormMethods,
     });
-
-    // handle `finalize` change
-    const { finalize } = props;
-    useEffect(() => {
-        const rbfEnabled = (getValues('options') || []).includes('bitcoinRBF');
-        if (finalize === rbfEnabled) {
-            setValue('options', finalize ? ['broadcast'] : ['broadcast', 'bitcoinRBF']);
-            composeRequest();
-        }
-    }, [finalize, getValues, setValue, composeRequest]);
 
     // If automatically composed transaction throws NOT-ENOUGH-FUNDS error
     useEffect(() => {
