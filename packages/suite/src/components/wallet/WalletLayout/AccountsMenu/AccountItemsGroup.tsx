@@ -43,6 +43,7 @@ interface AccountItemsGroupProps {
     selected: boolean;
     showStaking: boolean;
     tokens?: Account['tokens'];
+    dataTestKey?: string;
 }
 
 export const AccountItemsGroup = ({
@@ -51,6 +52,7 @@ export const AccountItemsGroup = ({
     selected,
     showStaking,
     tokens,
+    dataTestKey,
 }: AccountItemsGroupProps) => {
     const isDebug = useSelector(selectIsDebugModeActive);
     const autocompoundBalance = getAccountAutocompoundBalance(account);
@@ -75,6 +77,7 @@ export const AccountItemsGroup = ({
                 formattedBalance={account.formattedBalance}
                 isGroup
                 isGroupSelected={selected}
+                dataTestKey={dataTestKey}
             />
             {showStaking && (isDebug || (!isDebug && account.symbol !== 'eth')) && (
                 <Wrapper>
