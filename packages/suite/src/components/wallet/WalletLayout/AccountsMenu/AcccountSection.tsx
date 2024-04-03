@@ -20,23 +20,32 @@ export const AccountSection = ({
     accountLabel,
     onItemClick,
 }: AccountSectionProps) => {
-    const stakeTxs = useSelector(state =>
-        selectAccountStakeTransactions(state, account?.key || ''),
-    );
-    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
+    const {
+        symbol,
+        accountType,
+        index,
+        key,
+        networkType,
+        descriptor,
+        formattedBalance,
+        tokens: accountTokens,
+    } = account;
+
+    const stakeTxs = useSelector(state => selectAccountStakeTransactions(state, key || ''));
+    const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
     const hasStaked = stakeTxs.length > 0;
-    const isStakeShown = isSupportedNetworkSymbol(account.symbol) && hasStaked;
+    const isStakeShown = isSupportedNetworkSymbol(symbol) && hasStaked;
 
-    const showGroup = ['ethereum', 'solana', 'cardano'].includes(account.networkType);
+    const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
-    const hasCoinDefinitions = getNetworkFeatures(account.symbol).includes('coin-definitions');
-    const tokens = account.tokens?.reduce<{
+    const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
+    const tokens = accountTokens?.reduce<{
         knownTokens: Account['tokens'];
     }>(
         (acc, token) => {
             if (
                 !hasCoinDefinitions ||
-                isTokenDefinitionKnown(coinDefinitions?.data, account.symbol, token.contract)
+                isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract)
             ) {
                 acc.knownTokens?.push(token);
             }
@@ -46,25 +55,29 @@ export const AccountSection = ({
         { knownTokens: [] },
     );
 
+    const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
+
     return showGroup && (isStakeShown || !!tokens?.knownTokens?.length) ? (
         <AccountItemsGroup
-            key={`${account.descriptor}-${account.symbol}`}
+            key={`${descriptor}-${symbol}`}
             account={account}
             accountLabel={accountLabel}
             selected={selected}
             showStaking={isStakeShown}
             tokens={tokens?.knownTokens}
+            dataTestKey={dataTestKey}
         />
     ) : (
         <AccountItem
             type="coin"
-            key={`${account.descriptor}-${account.symbol}`}
+            key={`${descriptor}-${symbol}`}
             account={account}
             isSelected={selected}
             onClick={onItemClick}
             accountLabel={accountLabel}
-            formattedBalance={account.formattedBalance}
+            formattedBalance={formattedBalance}
             tokens={tokens?.knownTokens}
+            dataTestKey={dataTestKey}
         />
     );
 };
