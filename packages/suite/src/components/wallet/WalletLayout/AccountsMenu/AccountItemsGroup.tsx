@@ -14,28 +14,24 @@ const Section = styled.div<{ $selected?: boolean }>`
     flex-direction: column;
     position: relative;
     border-radius: ${borders.radii.md};
-    margin: 5px 0;
     gap: ${spacingsPx.xxs};
 
-    ${({ $selected, theme }) =>
-        $selected &&
-        `border: 1px solid ${theme.borderElevation0};
-         padding: ${spacingsPx.xxs} 0;
-         margin: 5px ${spacingsPx.xxs};
-    `}
+    border: 1px solid
+        ${({ theme, $selected }) => ($selected ? theme.borderElevation0 : 'transparent')};
+    padding: ${spacingsPx.xxs} 0;
+    margin: 5px ${spacingsPx.xxs};
 `;
 
 const Wrapper = styled.div`
     position: relative;
 `;
 
-const Divider = styled.div<{ $selected?: boolean; $isBigger?: boolean }>`
+const Divider = styled.div<{ $isBigger?: boolean }>`
     position: absolute;
-    left: ${({ $selected }) => ($selected ? '24px' : '29px')};
-    margin-top: 25px;
-    bottom: 20px;
+    left: 24px;
+    bottom: 25px;
     border-left: 2px dashed ${({ theme }) => theme.borderDashed};
-    height: ${({ $isBigger }) => ($isBigger ? '80px' : '50px')};
+    height: ${({ $isBigger }) => ($isBigger ? '60px' : '50px')};
     width: 1px;
     z-index: 10;
 `;
@@ -80,7 +76,7 @@ export const AccountItemsGroup = ({
             />
             {showStaking && (
                 <Wrapper>
-                    <Divider $selected={selected} $isBigger />
+                    <Divider $isBigger />
                     <AccountItem
                         account={account}
                         type="staking"
@@ -93,7 +89,7 @@ export const AccountItemsGroup = ({
             )}
             {!!tokens?.length && (
                 <Wrapper>
-                    <Divider $selected={selected} />
+                    <Divider />
                     <AccountItem
                         account={account}
                         type="tokens"

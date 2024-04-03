@@ -21,6 +21,10 @@ const StyledCard = styled.div`
     overflow: hidden;
 `;
 
+const StyledIcon = styled(Icon)`
+    transform: rotate(20deg);
+`;
+
 const BgImgWrapper = styled.div<{ $top: number; $left: number }>`
     opacity: ${({ theme }) => (theme.THEME === 'dark' ? '0.5' : '0.1')};
     position: absolute;
@@ -75,7 +79,7 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
     return (
         <StyledCard>
             <BgImgWrapper $top={30} $left={-16}>
-                <Icon icon="PIGGY_BANK_FILLED" size={31} color={theme.iconPrimaryDefault} />
+                <StyledIcon icon="PIGGY_BANK_FILLED" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
             <BgImgWrapper $top={103} $left={126}>
                 <Icon icon="CURRENCY_ETH" size={29} color={theme.iconPrimaryDefault} />
