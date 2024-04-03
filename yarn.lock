@@ -10241,6 +10241,7 @@ __metadata:
     eslint-plugin-mdx: "npm:^3.1.5"
     html-webpack-plugin: "npm:^5.6.0"
     next: "npm:^14.1.1"
+    next-mdx-remote: "npm:^4.4.1"
     next-themes: "npm:^0.2.1"
     nextra: "npm:^2.13.4"
     nextra-theme-docs: "npm:^2.13.4"
@@ -29865,7 +29866,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"next-mdx-remote@npm:^4.2.1":
+"next-mdx-remote@npm:^4.2.1, next-mdx-remote@npm:^4.4.1":
   version: 4.4.1
   resolution: "next-mdx-remote@npm:4.4.1"
   dependencies:

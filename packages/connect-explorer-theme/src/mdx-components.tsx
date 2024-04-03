@@ -200,12 +200,18 @@ export const getComponents = ({
                 const showInCard = (el: ReactNode) =>
                     !(el as ReactElement).props?.['data-heading-rank'] ||
                     (el as ReactElement).props?.['data-heading-rank'] > maxRank;
+                const shownInCard = children?.slice(1)?.filter(el => showInCard(el));
+                // Check if it has any children that are not empty when trimmed
+                const shownInCardIsNotEmpty = shownInCard.some(
+                    el => typeof el !== 'string' || el.trim() !== '',
+                );
+                const otherChildren = children?.slice(1)?.filter(el => !showInCard(el));
 
                 return (
                     <>
                         {children?.[0]}
-                        <Card>{children?.slice(1)?.filter(el => showInCard(el))}</Card>
-                        {children?.slice(1)?.filter(el => !showInCard(el))}
+                        {shownInCardIsNotEmpty && <Card>{shownInCard}</Card>}
+                        {otherChildren}
                     </>
                 );
             }
@@ -250,7 +256,7 @@ export const getComponents = ({
         ),
         a: Link,
         table: props => (
-            <Table className={cn("nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0")} {...props} />
+            <Table className={cn('nextra-scrollbar nx-mt-6 nx-p-0 first:nx-mt-0')} {...props} />
         ),
         p: props => <p className="nx-mt-6 nx-leading-7 first:nx-mt-0" {...props} />,
         tr: Tr,
