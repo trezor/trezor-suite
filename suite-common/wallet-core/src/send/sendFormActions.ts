@@ -1,3 +1,5 @@
+import { createAction } from '@reduxjs/toolkit';
+
 import {
     FormState,
     PrecomposedTransactionFinal,
@@ -5,7 +7,7 @@ import {
     AccountKey,
     TxFinalCardano,
 } from '@suite-common/wallet-types';
-import { createAction } from '@reduxjs/toolkit';
+
 import { MODULE_PREFIX } from './send/constants';
 
 const storeDraft = createAction(
