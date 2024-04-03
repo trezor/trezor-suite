@@ -68,7 +68,7 @@ export const HeaderActions = () => {
                 }
                 dispatch(openModal({ type: 'add-token' }));
             },
-            title: <Translation id="TR_TOKENS_ADD" />,
+            title: <Translation id="TR_TOKENS_ADD_WITH_RECEIVE" />,
             isHidden: !['ethereum'].includes(networkType),
         },
         {

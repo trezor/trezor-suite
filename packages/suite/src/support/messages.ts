@@ -5420,6 +5420,10 @@ export default defineMessages({
         id: 'TR_TOKENS_ADD',
         defaultMessage: 'Add token',
     },
+    TR_TOKENS_ADD_WITH_RECEIVE: {
+        id: 'TR_TOKENS_ADD_WITH_RECEIVE',
+        defaultMessage: 'Add tokens with receive',
+    },
     TR_TOKENS_EMPTY: {
         id: 'TR_TOKENS_EMPTY',
         defaultMessage: 'No tokens... yet.',
@@ -5432,6 +5436,11 @@ export default defineMessages({
         id: 'TR_ADD_TOKEN_DESCRIPTION',
         defaultMessage:
             'Enter a contract address of a token to add to your wallet. This is typically a 42-character alphanumeric string starting with "0x".',
+    },
+    TR_ADD_TOKEN_NOTE: {
+        id: 'TR_ADD_TOKEN_NOTE',
+        defaultMessage:
+            'No need to activate tokens first. Simply click the receive button to create a receive address and send your tokens straight to your Trezor. Just make sure to match the network to access your tokens correctly.',
     },
     TR_ADD_TOKEN_LABEL: {
         id: 'TR_ADD_TOKEN_LABEL',
