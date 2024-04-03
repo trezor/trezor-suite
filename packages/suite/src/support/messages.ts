@@ -5062,37 +5062,71 @@ export default defineMessages({
         description:
             'Used for button triggering seed creation (reset device call), user chooses between single seed and shamir',
     },
-    TR_ONBOARDING_GENERATE_SEED_DESCRIPTION: {
-        id: 'TR_ONBOARDING_GENERATE_SEED_DESCRIPTION',
+    TR_ONBOARDING_SELECT_SEED_TYPE: {
+        id: 'TR_ONBOARDING_SELECT_SEED_TYPE',
         defaultMessage:
-            'Choose how to back up your Trezor. This process will also create a standard wallet for you.',
-        description:
-            'Used for button triggering seed creation (reset device call), user chooses between single seed and shamir',
+            'We have selected the <primary>optimal setup</primary> for backing up your Trezor.',
+    },
+    TR_ONBOARDING_BACKUP_TYPE: {
+        id: 'TR_ONBOARDING_BACKUP_TYPE',
+        defaultMessage: 'Backup Type',
+    },
+    TR_ONBOARDING_SEED_TYPE_SINGLE_SEED: {
+        id: 'TR_ONBOARDING_SEED_TYPE_SINGLE_SEED',
+        defaultMessage: 'Single seed of 20 words',
+    },
+    TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION: {
+        id: 'TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION',
+        defaultMessage:
+            'Allows you to upgrade to multi later, if you decide you want more security.',
+    },
+    TR_ONBOARDING_SEED_TYPE_ADVANCED: {
+        id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED',
+        defaultMessage: 'Multiple lists of 20 words',
+    },
+    TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION: {
+        id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION',
+        defaultMessage: 'Creates multiple pieces of backup. 20 words each.',
+    },
+    TR_ONBOARDING_SEED_TYPE_12_WORDS: {
+        id: 'TR_ONBOARDING_SEED_TYPE_12_WORDS',
+        defaultMessage: '12 words',
+    },
+    TR_ONBOARDING_SEED_TYPE_24_WORDS: {
+        id: 'TR_ONBOARDING_SEED_TYPE_24_WORDS',
+        defaultMessage: '24 words',
+    },
+    TR_ONBOARDING_BACKUP_TYPE_DEFAULT: {
+        id: 'TR_ONBOARDING_BACKUP_TYPE_DEFAULT',
+        defaultMessage: 'Default',
+    },
+    TR_ONBOARDING_BACKUP_TYPE_ADVANCED: {
+        id: 'TR_ONBOARDING_BACKUP_TYPE_ADVANCED',
+        defaultMessage: 'Advanced',
+    },
+    TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES: {
+        id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES',
+        defaultMessage:
+            'Older backup types <br></br>These don’t allow to upgrade to multi-share later, if you decide you want more security.',
+    },
+    TR_ONBOARDING_BACKUP_LEGACY_WARNING: {
+        id: 'TR_ONBOARDING_BACKUP_LEGACY_WARNING',
+        defaultMessage:
+            'This backup type won’t allow you to upgrade to multi backup later on if you decide you’d want more security. To allow for backup upgrade, use 20 words backup.',
+    },
+    TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE: {
+        id: 'TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE',
+        defaultMessage: 'Todo: user has no option, Trezor One is forced to use 24 words.',
+    },
+    TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM: {
+        id: 'TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM',
+        defaultMessage: 'Proceed',
     },
     TR_CREATE_WALLET: {
         id: 'TR_CREATE_WALLET',
         defaultMessage: 'Create new wallet',
         description:
             'Used for button triggering seed creation (reset device call) if shamir/non-shamir selection is not available.',
-    },
-    SINGLE_SEED: {
-        id: 'SINGLE_SEED',
-        defaultMessage: 'Standard seed backup',
-        description: 'Basic, non-shamir backup. Seed has only one part.',
-    },
-    SINGLE_SEED_DESCRIPTION: {
-        id: 'SINGLE_SEED_DESCRIPTION',
-        defaultMessage: 'Recover your wallet using a single list of English words.',
-    },
-    SHAMIR_SEED: {
-        id: 'SHAMIR_SEED',
-        defaultMessage: 'Advanced Shamir Backup',
-        description: 'Advanced, shamir backup. Seed has multiple parts.',
-    },
-    SHAMIR_SEED_DESCRIPTION: {
-        id: 'SHAMIR_SEED_DESCRIPTION',
-        defaultMessage:
-            'Recover the wallet by combining lists of words together. These can be secured in different places for added security.',
     },
     TR_CHECK_FINGERPRINT: {
         id: 'TR_CHECK_FINGERPRINT',

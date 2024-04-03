@@ -30,16 +30,12 @@ type ColorProps = {
     theme: Colors;
 } & TransientProps<ExclusiveColorOrVariant>;
 
-const getColorForTextVariant = ({
-    $variant,
-    theme,
-    $color,
-}: ColorProps): CSSColor | 'inherit' | string => {
+const getColorForTextVariant = ({ $variant, theme, $color }: ColorProps): CSSColor | string => {
     if ($color !== undefined) {
         return $color;
     }
 
-    return $variant === undefined ? 'inherit' : theme[variantColorMap[$variant]];
+    return theme[$variant !== undefined ? variantColorMap[$variant] : 'textDefault'];
 };
 
 type StyledTextProps = {

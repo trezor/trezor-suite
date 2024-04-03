@@ -5,11 +5,12 @@ import { Icon } from '@suite-common/icons/src/webComponents';
 import { borders, Color, CSSColor, spacings, spacingsPx, typography } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '../../utils/utils';
 import type { UISize, UIVariant } from '../../config/types';
+import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
 
 type BadgeSize = Extract<UISize, 'tiny' | 'small' | 'medium'>;
 type BadgeVariant = Extract<UIVariant, 'primary' | 'tertiary' | 'destructive'>;
 
-export interface BadgeProps {
+export type BadgeProps = FrameProps & {
     size?: BadgeSize;
     variant?: BadgeVariant;
     isDisabled?: boolean;
@@ -17,7 +18,8 @@ export interface BadgeProps {
     hasAlert?: boolean;
     className?: string;
     children?: React.ReactNode;
-}
+    inline?: boolean;
+};
 
 type MapArgs = {
     $variant: BadgeVariant;
@@ -28,7 +30,8 @@ type BadgeContainerProps = {
     $size: BadgeSize;
     $variant: BadgeVariant;
     $hasAlert: boolean;
-};
+    $inline: boolean;
+} & TransientFrameProps;
 
 const mapVariantToBackgroundColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<BadgeVariant, Color> = {
@@ -71,7 +74,9 @@ const mapVariantToPadding = ({ $size }: { $size: BadgeSize }): string => {
 };
 
 const Container = styled.button<BadgeContainerProps>`
-    display: flex;
+    ${withFrameProps}
+
+    display: ${({ $inline }) => ($inline ? 'inline-flex' : 'flex')};
     align-items: center;
     gap: ${spacingsPx.xxs};
     padding: ${mapVariantToPadding};
@@ -110,6 +115,8 @@ export const Badge = ({
     hasAlert,
     className,
     children,
+    inline,
+    margin,
 }: BadgeProps) => {
     const theme = useTheme();
 
@@ -120,6 +127,8 @@ export const Badge = ({
             disabled={!!isDisabled}
             $hasAlert={!!hasAlert}
             className={className}
+            $margin={margin}
+            $inline={inline === true}
         >
             {icon && (
                 <Icon

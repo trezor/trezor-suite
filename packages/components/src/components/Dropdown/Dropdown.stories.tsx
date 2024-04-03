@@ -127,6 +127,21 @@ export const Dropdown: StoryObj<DropdownProps> = {
     argTypes: {
         addon: { control: { disable: true } },
         items: { control: { disable: true } },
+        alignMenu: {
+            control: {
+                type: 'select',
+            },
+            options: [
+                'bottom-left',
+                'bottom-right',
+                'left-bottom',
+                'left-top',
+                'right-bottom',
+                'right-top',
+                'top-left',
+                'top-right',
+            ],
+        },
         content: { control: { disable: true } },
         className: { control: { disable: true } },
         coords: { control: { disable: true } },
