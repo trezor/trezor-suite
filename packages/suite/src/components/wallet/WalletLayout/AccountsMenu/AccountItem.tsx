@@ -29,13 +29,7 @@ const Wrapper = styled(NavigationItemBase)<{
     gap: 0;
     display: flex;
     justify-content: space-between;
-    margin: 0 9px;
-
-    ${({ $isGroup, $isGroupSelected }) =>
-        $isGroup &&
-        $isGroupSelected &&
-        `margin: 0 ${spacingsPx.xxs};
-    `}
+    margin: 0 ${({ $isGroup }) => ($isGroup ? spacingsPx.xxs : '9px')};
 
     & + & {
         margin-top: ${spacingsPx.xxs};

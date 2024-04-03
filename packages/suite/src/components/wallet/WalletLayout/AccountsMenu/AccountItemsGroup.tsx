@@ -14,7 +14,6 @@ const Section = styled.div<{ $selected?: boolean }>`
     flex-direction: column;
     position: relative;
     border-radius: ${borders.radii.md};
-    margin: 5px 0;
     gap: ${spacingsPx.xxs};
 
     border: 1px solid
