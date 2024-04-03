@@ -4,7 +4,7 @@ export type OnboardingAnalytics = {
     startTime: number;
     firmware: 'install' | 'update' | 'skip' | 'up-to-date';
     seed: 'create' | 'recovery' | 'recovery-in-progress';
-    seedType: 'standard' | 'shamir';
+    seedType: 'shamir-default' | 'shamir-advance' | '12-words' | '24-words';
     recoveryType: 'standard' | 'advanced';
     backup: 'create' | 'skip';
     pin: 'create' | 'skip';

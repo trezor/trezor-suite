@@ -11157,6 +11157,7 @@ __metadata:
   dependencies:
     "@crowdin/cli": "npm:^3.18.0"
     "@everstake/wallet-sdk": "npm:^0.3.40"
+    "@floating-ui/react": "npm:^0.26.9"
     "@formatjs/cli": "npm:^6.2.7"
     "@formatjs/intl": "npm:2.10.0"
     "@hookform/resolvers": "npm:3.3.4"
