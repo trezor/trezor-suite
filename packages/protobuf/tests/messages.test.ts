@@ -1,6 +1,6 @@
 import * as protobuf from 'protobufjs/light';
 
-import { createMessageFromName } from '../src/utils';
+import { createMessageFromName, createMessageFromType } from '../src/utils';
 
 const json = {
     nested: {
@@ -34,6 +34,17 @@ const json = {
                                         },
                                     },
                                 },
+                                Initialize: {
+                                    fields: {
+                                        session_id: {
+                                            type: 'bytes',
+                                            id: 1,
+                                        },
+                                    },
+                                },
+                                MessageWithoutId: {
+                                    fields: {},
+                                },
                                 MessageType: {
                                     values: {
                                         MessageType_Initialize: 0,
@@ -54,5 +65,21 @@ describe('messages', () => {
         const name = 'TxAckPrevExtraData';
 
         expect(() => createMessageFromName(messages, name)).not.toThrow();
+    });
+
+    test('createMessageFromName (message without id)', () => {
+        const messages = protobuf.Root.fromJSON(json);
+        const name = 'MessageWithoutId'; // this message has no id defined in MessageType.MessageType_xxx
+        const result = createMessageFromName(messages, name);
+
+        expect(result.messageType).toEqual(name);
+    });
+
+    test('createMessageFromType (messageType as number and string)', () => {
+        const messages = protobuf.Root.fromJSON(json);
+        const asNumber = createMessageFromType(messages, 0);
+        const asString = createMessageFromType(messages, 'Initialize');
+
+        expect(asNumber.messageName).toEqual(asString.messageName);
     });
 });

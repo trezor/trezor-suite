@@ -22,6 +22,11 @@ describe('protocol-v1', () => {
                 expect(chunk.subarray(0, 5).toString('hex')).toEqual('3f00000000');
             }
         });
+
+        // fail to encode unsupported messageType (string)
+        expect(() => v1.encode(Buffer.alloc(64), { messageType: 'Initialize' })).toThrow(
+            'Unsupported message type Initialize',
+        );
     });
 
     it('decode', () => {
