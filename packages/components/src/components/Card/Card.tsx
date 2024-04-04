@@ -34,6 +34,7 @@ const Container = styled.div`
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     padding: ${spacingsPx.xxxs};
 `;
+
 const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
     padding: ${mapPaddingTypeToLabelPadding};
     color: ${({ theme }) => theme.textSubdued};
@@ -93,9 +94,11 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             ...rest,
         };
 
+        const hasLabel = label !== null && label !== undefined;
+
         return (
-            <ComponentFrame margin={margin} maxWidth={maxWidth}>
-                {label ? (
+            <ComponentFrame margin={margin} maxWidth={maxWidth} fill={!hasLabel}>
+                {hasLabel ? (
                     <Container>
                         <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
                         <CardComponent {...props} ref={ref} />
