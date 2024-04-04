@@ -240,7 +240,7 @@ export const AccountItem = forwardRef(
                                 {type === 'tokens' && <Translation id="TR_NAV_TOKENS" />}
                             </AccountLabelContainer>
                             <FiatAmount>
-                                {customFiatValue ? (
+                                {customFiatValue && !isTestnet(symbol) ? (
                                     <FiatAmountFormatter
                                         value={customFiatValue}
                                         currency={localCurrency}
