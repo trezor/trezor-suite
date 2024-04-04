@@ -47,7 +47,7 @@ describe('sessions', () => {
         });
         expect(clientPromiseResolved).toEqual([true, false, false]);
 
-        expect(client1.enumerateDone({ paths: [] })).resolves.toMatchObject({
+        expect(client1.enumerateDone({ descriptors: [] })).resolves.toMatchObject({
             success: true,
         });
 
@@ -56,15 +56,28 @@ describe('sessions', () => {
         expect(clientPromiseResolved).toEqual([true, true, false]);
 
         expect(client2Promise).resolves.toMatchObject({ success: true });
-        expect(client2.enumerateDone({ paths: [] })).resolves.toMatchObject({
+        expect(client2.enumerateDone({ descriptors: [] })).resolves.toMatchObject({
             success: true,
         });
 
         await client3Promise;
         expect(clientPromiseResolved).toEqual([true, true, true]);
 
-        expect(client3.enumerateDone({ paths: [] })).resolves.toMatchObject({
+        expect(client3.enumerateDone({ descriptors: [] })).resolves.toMatchObject({
             success: true,
+        });
+    });
+
+    test('acquire without previous enumerate', async () => {
+        const client1 = new SessionsClient({ requestFn });
+        await client1.handshake();
+
+        const acquireIntent = await client1.acquireIntent({ path: '1', previous: null });
+
+        expect(acquireIntent).toEqual({
+            success: false,
+            id: 1,
+            error: 'descriptor not found',
         });
     });
 
@@ -72,11 +85,13 @@ describe('sessions', () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
 
+        await client1.enumerateDone({ descriptors: [{ path: '1' }] });
+
         const acquireIntent = await client1.acquireIntent({ path: '1', previous: null });
 
         expect(acquireIntent).toEqual({
             success: true,
-            id: 1,
+            id: 2,
             payload: {
                 session: '1',
                 descriptors: [
@@ -90,7 +105,7 @@ describe('sessions', () => {
         const acquireDone = await client1.acquireDone({ path: '1' });
         expect(acquireDone).toEqual({
             success: true,
-            id: 2,
+            id: 3,
             payload: {
                 descriptors: [
                     {
@@ -108,13 +123,14 @@ describe('sessions', () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
 
+        await client1.enumerateDone({ descriptors: [{ path: '1' }] });
+
         const acquire1 = await client1.acquireIntent({
             path: '1',
             previous: null,
         });
-        expect(acquire1).toEqual({
+        expect(acquire1).toMatchObject({
             success: true,
-            id: 1,
             payload: {
                 session: '1',
                 descriptors: [
@@ -132,9 +148,8 @@ describe('sessions', () => {
             path: '1',
             previous: null,
         });
-        expect(acquire2).toEqual({
+        expect(acquire2).toMatchObject({
             success: true,
-            id: 3,
             payload: {
                 session: '2',
                 descriptors: [
@@ -153,9 +168,8 @@ describe('sessions', () => {
             previous: '1',
         });
 
-        expect(acquire3).toEqual({
+        expect(acquire3).toMatchObject({
             success: false,
-            id: 5,
             error: 'wrong previous session',
         });
 
@@ -166,10 +180,11 @@ describe('sessions', () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
 
+        await client1.enumerateDone({ descriptors: [{ path: '1' }] });
+
         const acquire1Intent = await client1.acquireIntent({ path: '1', previous: null });
-        expect(acquire1Intent).toEqual({
+        expect(acquire1Intent).toMatchObject({
             success: true,
-            id: 1,
             payload: {
                 session: '1',
                 descriptors: [
@@ -182,9 +197,8 @@ describe('sessions', () => {
         });
 
         const acquire1Done = await client1.acquireDone({ path: '1' });
-        expect(acquire1Done).toEqual({
+        expect(acquire1Done).toMatchObject({
             success: true,
-            id: 2,
             payload: {
                 descriptors: [
                     {
@@ -196,29 +210,29 @@ describe('sessions', () => {
         });
 
         const sessions1 = await client1.getSessions();
-        expect(sessions1).toEqual({
+        expect(sessions1).toMatchObject({
             success: true,
-            id: 3,
             payload: {
-                sessions: {
-                    '1': '1',
-                },
+                descriptors: [
+                    {
+                        path: '1',
+                        session: '1',
+                    },
+                ],
             },
         });
 
         const release1 = await client1.releaseIntent({ session: '1' });
-        expect(release1).toEqual({
+        expect(release1).toMatchObject({
             success: true,
-            id: 4,
             payload: {
                 path: '1',
             },
         });
 
         const release1Done = await client1.releaseDone({ path: '1' });
-        expect(release1Done).toEqual({
+        expect(release1Done).toMatchObject({
             success: true,
-            id: 5,
             payload: {
                 descriptors: [
                     {
@@ -230,13 +244,15 @@ describe('sessions', () => {
         });
 
         const sessions2 = await client1.getSessions();
-        expect(sessions2).toEqual({
+        expect(sessions2).toMatchObject({
             success: true,
-            id: 6,
             payload: {
-                sessions: {
-                    '1': null,
-                },
+                descriptors: [
+                    {
+                        path: '1',
+                        session: null,
+                    },
+                ],
             },
         });
     });

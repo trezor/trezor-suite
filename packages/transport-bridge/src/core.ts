@@ -32,8 +32,8 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
               });
 
     // whenever low-level api reports changes to descriptors, report them to sessions module
-    api.on('transport-interface-change', paths => {
-        sessionsClient.enumerateDone({ paths });
+    api.on('transport-interface-change', descriptors => {
+        sessionsClient.enumerateDone({ descriptors });
     });
 
     const writeUtil = async ({ path, data }: { path: string; data: string }) => {
@@ -89,27 +89,11 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
             return enumerateResult;
         }
 
-        // todo: one mapping here and one mapping below, maybe this could be improved
         const enumerateDoneResponse = await sessionsClient.enumerateDone({
-            paths: enumerateResult.payload.map(d => d.path),
+            descriptors: enumerateResult.payload,
         });
 
-        if (!enumerateDoneResponse.success) {
-            return enumerateDoneResponse;
-        }
-
-        // sessions background only cares about sessions and paths. however from api layer we return more information
-        // that does not flow through sessions background, so I need to combine both results here
-        const descriptors = enumerateDoneResponse.payload.descriptors.map(d => ({
-            path: d.path,
-            session: d.session,
-            type: enumerateResult.payload.find(e => e.path === d.path)?.type,
-        }));
-
-        return {
-            ...enumerateDoneResponse,
-            payload: { ...enumerateDoneResponse.payload, descriptors },
-        };
+        return enumerateDoneResponse;
     };
 
     const acquire = async (acquireInput: AcquireInput) => {

@@ -51,10 +51,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         this.listening = true;
 
         // 1. transport api reports descriptors change
-        this.api.on('transport-interface-change', devices => {
+        this.api.on('transport-interface-change', descriptors => {
             // 2. we signal this to sessions background
             this.sessionsClient.enumerateDone({
-                paths: devices,
+                descriptors,
             });
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients
@@ -84,16 +84,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
             // inform sessions background about occupied paths and get descriptors back
             const enumerateDoneResponse = await this.sessionsClient.enumerateDone({
-                paths: descriptors.map(d => d.path),
+                descriptors,
             });
 
-            return this.success(
-                descriptors.map(d => ({
-                    path: d.path,
-                    type: d.type,
-                    session: enumerateDoneResponse.payload.sessions[d.path],
-                })),
-            );
+            return this.success(enumerateDoneResponse.payload.descriptors);
         });
     }
 
