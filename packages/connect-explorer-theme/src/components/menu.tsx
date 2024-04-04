@@ -105,7 +105,7 @@ export function Menu({
         eos: 'eos',
         ethereum: 'eth',
         litecoin: 'ltc',
-        nem: 'xem',
+        nem: 'nem',
         ripple: 'xrp',
         solana: 'sol',
         stellar: 'xlm',
