@@ -1,7 +1,7 @@
 export type TransportProtocolDecode = (bytes: ArrayBuffer) => {
     length: number;
-    typeId: number;
-    buffer: Buffer;
+    messageType: number;
+    payload: Buffer;
 };
 
 export interface TransportProtocolEncodeOptions {

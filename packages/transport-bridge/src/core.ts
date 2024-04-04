@@ -37,13 +37,11 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
     });
 
     const writeUtil = async ({ path, data }: { path: string; data: string }) => {
-        const { typeId, buffer: restBuffer } = protocolBridge.decode(
+        const { messageType, payload } = protocolBridge.decode(
             new Uint8Array(Buffer.from(data, 'hex')),
         );
 
-        const buffers = protocolV1.encode(restBuffer, {
-            messageType: typeId,
-        });
+        const buffers = protocolV1.encode(payload, { messageType });
 
         for (let i = 0; i < buffers.length; i++) {
             const bufferSegment = buffers[i];
@@ -59,7 +57,7 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
 
     const readUtil = async ({ path }: { path: string }) => {
         try {
-            const message = await receiveUtil(
+            const { messageType, payload } = await receiveUtil(
                 () =>
                     api.read(path).then(result => {
                         if (result.success) {
@@ -72,9 +70,7 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
 
             return {
                 success: true as const,
-                payload: protocolBridge
-                    .encode(message.buffer, { messageType: message.typeId })[0]
-                    .toString('hex'),
+                payload: protocolBridge.encode(payload, { messageType })[0].toString('hex'),
             };
         } catch (err) {
             return { success: false as const, error: err.message as string };
