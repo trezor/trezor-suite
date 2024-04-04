@@ -42,25 +42,23 @@
 
 /suite-common/message-system @tomasklim @matejkriz
 
-/packages/suite @tomasklim @matejkriz
+/suite-common/token-definitions @tomasklim
 
 /packages/suite-analytics @tomasklim
 
-/packages/suite-build @matejkriz @tomasklim
+/packages/suite-build @komret
 
-/packages/suite-data @tomasklim @matejkriz
+/packages/suite-data @komret
 
-/packages/suite-desktop @tomasklim @marekrjpolak
+/packages/suite-desktop @komret
 
-/packages/suite-desktop-ui @tomasklim @matejkriz
+/packages/suite-desktop-ui @komret
 
 /packages/suite-desktop-api @szymonlesisz @marekrjpolak
 
 /suite-native @trezor/suite-mobile
 
 /packages/suite-storage @matejkriz
-
-/packages/suite-web @marekrjpolak @tomasklim
 
 /packages/transport @mroz22
 
@@ -78,9 +76,7 @@
 
 /packages/styles @Nodonisko @jvaclavik @peter-sanderson
 
-/translations @alex-jerechinsky
-
-/packages/suite/src/support/messages.ts @alex-jerechinsky
+/packages/suite/src/support/messages.ts @MiroslavProchazka
 
 /suite-common/graph @trezor/suite-mobile @Nodonisko
 
