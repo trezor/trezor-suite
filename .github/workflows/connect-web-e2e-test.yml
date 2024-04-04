@@ -5,7 +5,7 @@ on:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
   push:
-    branches: [npm-release/*, release/*]
+    branches: [release/connect/**]
   pull_request:
     paths:
       - "packages/connect/**"
@@ -13,6 +13,7 @@ on:
       - "packages/utils/**"
       - ".github/workflows/connect-web-e2e-test.yml"
       - "yarn.lock"
+  workflow_dispatch:
 
 jobs:
   connect-web-e2e:

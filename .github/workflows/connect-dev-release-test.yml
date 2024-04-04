@@ -9,7 +9,7 @@ on:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
   push:
-    branches: [npm-release/*, release/*]
+    branches: [release/connect/**]
   pull_request:
     paths:
       - "packages/blockchain-link/**"
@@ -26,6 +26,7 @@ on:
       - "yarn.lock"
       - ".github/workflows/connect-dev-release-test.yml"
       - ".github/workflows/template-connect-popup-test-params.yml"
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
