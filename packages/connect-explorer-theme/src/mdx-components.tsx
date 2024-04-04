@@ -57,7 +57,7 @@ function HeadingLink({
                 className === 'sr-only'
                     ? 'nx-sr-only'
                     : cn(
-                          'nx-font-semibold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100 nx-mb-2',
+                          'nx-font-semibold nx-tracking-tight nx-text-slate-900 dark:nx-text-slate-100 nx-mb-2 first:nx-mt-2',
                           {
                               h2: 'nx-mt-10 nx-pb-1 nx-text-3xl',
                               h3: 'nx-mt-8 nx-text-2xl',

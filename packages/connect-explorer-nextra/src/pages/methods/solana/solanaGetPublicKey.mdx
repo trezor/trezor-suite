@@ -18,14 +18,14 @@ import { ApiPlayground } from '../../../components/ApiPlayground';
 />
 
 export const paramDescriptions = {
-    path: 'minimum length is `2`. [read more](../details/path)',
+    path: 'minimum length is `2`. [read more](/details/path)',
     showOnTrezor: 'determines if public key will be displayed on device. Default is set to `true`',
     bundle: 'of Objects with `path` and `showOnTrezor` fields',
 };
 
 ## Solana: get public key
 
-Display requested public key derived by given [BIP44 path](../details/path) on device and return it to the caller. User is presented with a description of the requested public key and asked to confirm the export on Trezor.
+Display requested public key derived by given [BIP44 path](/details/path) on device and return it to the caller. User is presented with a description of the requested public key and asked to confirm the export on Trezor.
 
 ```javascript
 const result = await TrezorConnect.solanaGetPublicKey(params);

@@ -148,7 +148,7 @@ function convertFile(filename: string) {
         .replace(/^\> \:warning\: (.*)$/gim, (_, p1) => `<Callout type="warning">${p1}</Callout>`)
         .replace(/^\> \:note\: (.*)$/gim, (_, p1) => `<Callout type="info">${p1}</Callout>`)
         .replace('[Optional common params](commonParams.md)', '<CommonParamsLink />')
-        .replace(/\.\.\/path\.md/g, '../details/path');
+        .replace(/\.\.\/path\.md/g, '/details/path');
     if (paramsTable) {
         newFile = newFile.replace(
             /^\#\#\# Params(?:(?!^### ).)*/gims,
