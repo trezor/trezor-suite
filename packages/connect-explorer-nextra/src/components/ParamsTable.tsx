@@ -43,6 +43,10 @@ const SingleParam = ({
         hasDescendants = false;
         typeLink = `#${value.$id}`;
     }
+    if (value[Kind] === 'Object' && Object.keys(value.properties).length === 0) {
+        // No properties, don't show descendants or the object itself
+        return null;
+    }
     // Get the type name
     const typeName = getTypeName(value, hasDescendants);
 
@@ -55,7 +59,9 @@ const SingleParam = ({
     }
 
     let description;
-    if (value.description) {
+    if (descriptions?.[name]) {
+        description = descriptions[name];
+    } else if (value.description) {
         description = value.description;
     } else if (isTopLevel && topLevelSchema?.$id && name) {
         const key = topLevelSchema?.$id + '.' + name;
@@ -63,7 +69,6 @@ const SingleParam = ({
         if (descriptionDictionary[key]) description = descriptionDictionary[key];
     }
     if (!description && name) {
-        if (descriptions?.[name]) description = descriptions[name];
         if (descriptionDictionary[name]) description = descriptionDictionary[name];
     }
 
@@ -112,7 +117,10 @@ export const ParamsTable = ({ schema, topLevelSchema, descriptions }: ParamsTabl
         ));
     } else if (schema[Kind] === 'Intersect') {
         return schema.allOf?.map((param: TSchema, i: number) => (
-            <ParamsTable key={i} schema={param} {...common} />
+            <>
+                {i > 0 && <h3>and</h3>}
+                <ParamsTable key={i} schema={param} {...common} />
+            </>
         ));
     } else if (schema[Kind] === 'Object') {
         return Object.entries(schema.properties)?.map(([name, value]: [string, any]) => (

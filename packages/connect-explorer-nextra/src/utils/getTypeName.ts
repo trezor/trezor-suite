@@ -34,7 +34,7 @@ export const getTypeName = (value: TSchema, hasDescendants?: boolean) => {
             typeName = 'Enum: ' + typeName;
         }
     } else if (value[Kind] === 'Intersect' && !hasDescendants) {
-        typeName = value.anyOf?.map((v: TSchema) => getTypeName(v)).join(' & ');
+        typeName = value.allOf?.map((v: TSchema) => getTypeName(v)).join(' & ');
     } else if (value[Kind] === 'Object' && value.$id) {
         typeName = value.$id;
     }

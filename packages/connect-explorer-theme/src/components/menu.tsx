@@ -176,6 +176,9 @@ export function Menu({
                         </Option>
                     )}
                     menuPosition="absolute"
+                    menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
+                    menuShouldScrollIntoView={false}
+                    maxMenuHeight={400}
                 />
             </SelectWrapper>
             <MenuInner
