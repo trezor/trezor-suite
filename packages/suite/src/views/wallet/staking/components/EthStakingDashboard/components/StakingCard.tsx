@@ -8,7 +8,6 @@ import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/su
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { InfoBox, ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
@@ -130,7 +129,7 @@ export const StakingCard = ({
         claimableAmount = '0',
     } = getAccountEverstakeStakingPool(selectedAccount) ?? {};
 
-    const canUnstake = MIN_ETH_AMOUNT_FOR_STAKING.lt(autocompoundBalance);
+    const canUnstake = new BigNumber(autocompoundBalance).gt(0);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
     const { isTxStatusShown } = useIsTxStatusShown(new BigNumber(totalPendingStakeBalance));
