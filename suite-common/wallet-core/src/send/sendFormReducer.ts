@@ -1,10 +1,10 @@
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
-import { accountsActions } from '@suite-common/wallet-core';
+import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 import { FormSignedTx } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { sendFormActions } from './sendFormActions';
+import { accountsActions } from '../accounts/accountsActions';
 
 export type SendState = {
     drafts: {

@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { WalletSubpageHeading } from 'src/components/wallet';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { sendFormActions } from '@suite-common/wallet-core';
 import { FADE_IN } from '@trezor/components/src/config/animations';
 
 const ClearButton = styled(Button)`

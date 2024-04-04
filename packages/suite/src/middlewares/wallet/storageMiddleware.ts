@@ -30,7 +30,7 @@ import * as metadataActions from 'src/actions/suite/metadataActions';
 import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { sendFormActions } from '@suite-common/wallet-core';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });

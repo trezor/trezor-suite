@@ -18,7 +18,7 @@ import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
 import feesReducer from './feesReducer';
 import coinmarketReducer from './coinmarketReducer';
-import { prepareSendFormReducer } from './sendFormReducer';
+import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import accountSearchReducer from './accountSearchReducer';
 import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';

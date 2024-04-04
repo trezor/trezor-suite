@@ -16,7 +16,7 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import { ROUTER } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { sendFormActions } from '@suite-common/wallet-core';
 import { convertSendFormDraftsThunk } from 'src/actions/wallet/send/sendFormThunks';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';

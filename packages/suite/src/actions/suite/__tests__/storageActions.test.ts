@@ -18,7 +18,7 @@ import * as walletSettingsActions from 'src/actions/settings/walletSettingsActio
 import { accountsReducer, fiatRatesReducer, transactionsReducer } from 'src/reducers/wallet';
 import walletSettingsReducer from 'src/reducers/wallet/settingsReducer';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { prepareSendFormReducer } from 'src/reducers/wallet/sendFormReducer';
+import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import graphReducer from 'src/reducers/wallet/graphReducer';
 import storageMiddleware from 'src/middlewares/wallet/storageMiddleware';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';

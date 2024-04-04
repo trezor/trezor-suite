@@ -4,8 +4,7 @@ import { FormState as SendFormState, Output } from 'src/types/wallet/sendForm';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
-import { accountsActions } from '@suite-common/wallet-core';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
+import { accountsActions, sendFormActions } from '@suite-common/wallet-core';
 import { convertSendFormDraftsThunk } from 'src/actions/wallet/send/sendFormThunks';
 
 export const blockchainSubscription = [
