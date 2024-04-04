@@ -129,6 +129,7 @@ export const Textarea = ({
                     data-test={dataTest}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     ref={innerRef}
+                    value={value}
                     {...rest}
                 />
 
