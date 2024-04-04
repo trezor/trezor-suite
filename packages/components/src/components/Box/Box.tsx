@@ -11,7 +11,8 @@ import {
 } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
 import { UIVariant } from '../../config/types';
-import { ComponentFrame, FrameProps } from '../common/ComponentFrame';
+import { FrameProps, withFrameProps } from '../common/frameProps';
+import { TransientProps, makePropsTransient } from '../../utils/transientProps';
 
 type BoxVariant = Extract<UIVariant, 'primary' | 'warning' | 'destructive' | 'info'>;
 
@@ -37,7 +38,9 @@ export type BoxProps = FrameProps & {
     forceElevation?: Elevation;
 };
 
-const Wrapper = styled.div<{ $variant?: BoxVariant; $elevation: Elevation }>`
+const Wrapper = styled.div<
+    { $variant?: BoxVariant; $elevation: Elevation } & TransientProps<FrameProps>
+>`
     display: flex;
     align-items: center;
     flex: 1;
@@ -50,16 +53,26 @@ const Wrapper = styled.div<{ $variant?: BoxVariant; $elevation: Elevation }>`
         $variant === undefined
             ? `padding-left: ${spacingsPx.lg};`
             : `border-left: 6px solid ${mapVariantToBackgroundColor({ variant: $variant, theme })};`}
+
+    ${withFrameProps}
 `;
 
-export const Box = ({ variant, children, margin, forceElevation, ...rest }: BoxProps) => {
+export const Box = ({ variant, children, margin, maxWidth, forceElevation, ...rest }: BoxProps) => {
     const { elevation } = useElevation(forceElevation);
 
+    const frameProps = {
+        margin,
+        maxWidth,
+    };
+
     return (
-        <ComponentFrame margin={margin}>
-            <Wrapper $variant={variant} $elevation={elevation} {...rest}>
-                <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
-            </Wrapper>
-        </ComponentFrame>
+        <Wrapper
+            $variant={variant}
+            $elevation={elevation}
+            {...rest}
+            {...makePropsTransient(frameProps)}
+        >
+            <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
+        </Wrapper>
     );
 };
