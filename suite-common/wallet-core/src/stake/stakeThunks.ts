@@ -69,7 +69,11 @@ export const initStakeDataThunk = createThunk(
     (_, { getState, dispatch, extra }) => {
         const enabledNetworks = extra.selectors.selectEnabledNetworks(getState());
 
-        const ethereumBasedNetworksWithStaking = getStakingSymbols(enabledNetworks);
+        const { showDebugMenu: isDebug } = extra.selectors.selectDebugSettings(getState());
+
+        const ethereumBasedNetworksWithStaking = getStakingSymbols(enabledNetworks).filter(
+            networkSymbol => networkSymbol !== 'eth' || (networkSymbol === 'eth' && isDebug),
+        );
 
         const promises = ethereumBasedNetworksWithStaking.flatMap(networkSymbol =>
             Object.values(EverstakeEndpointType).map(endpointType => {

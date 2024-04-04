@@ -7,6 +7,7 @@ import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReduce
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 import { Route } from '@suite-common/suite-types';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 // to make sure the routes are taken from the main route definition
 type AccountTab = Extract<
@@ -28,6 +29,7 @@ export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const dispatch = useDispatch();
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const network = getNetwork(routerParams?.symbol || '');
     const networkType = account?.networkType || network?.networkType || '';
@@ -66,7 +68,8 @@ export const AccountNavigation = () => {
                 goToWithAnalytics('wallet-staking', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_STAKING" />,
-            isHidden: !hasNetworkFeatures(account, 'staking'),
+            isHidden:
+                !hasNetworkFeatures(account, 'staking') || (!isDebug && account?.symbol === 'eth'),
         },
         {
             id: 'wallet-tokens',
