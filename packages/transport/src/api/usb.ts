@@ -42,10 +42,7 @@ export class UsbApi extends AbstractApi {
 
         this.usbInterface.onconnect = event => {
             this.devices = [...this.devices, ...this.createDevices([event.device])];
-            this.emit(
-                'transport-interface-change',
-                this.devices.map(d => d.path),
-            );
+            this.emit('transport-interface-change', this.devicesToDescriptors());
         };
 
         this.usbInterface.ondisconnect = event => {
@@ -62,10 +59,7 @@ export class UsbApi extends AbstractApi {
             const index = this.devices.findIndex(d => d.path === device.serialNumber);
             if (index > -1) {
                 this.devices.splice(index, 1);
-                this.emit(
-                    'transport-interface-change',
-                    this.devices.map(d => d.path),
-                );
+                this.emit('transport-interface-change', this.devicesToDescriptors());
             } else {
                 this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
                 this.logger.error('device that should be removed does not exist in state');
@@ -90,6 +84,10 @@ export class UsbApi extends AbstractApi {
         }
     }
 
+    private devicesToDescriptors() {
+        return this.devices.map(d => ({ path: d.path, type: this.matchDeviceType(d.device) }));
+    }
+
     public async enumerate() {
         try {
             const devices = await this.usbInterface.getDevices();
@@ -102,9 +100,7 @@ export class UsbApi extends AbstractApi {
             }
             this.devices = this.createDevices(nonHidDevices);
 
-            return this.success(
-                this.devices.map(d => ({ path: d.path, type: this.matchDeviceType(d.device) })),
-            );
+            return this.success(this.devicesToDescriptors());
         } catch (err) {
             // this shouldn't throw
             return this.unknownError(err, []);

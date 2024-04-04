@@ -1,26 +1,25 @@
 import type { AcquireInput } from '../transports/abstract';
-import type { Session, Descriptor, ResultWithTypedError, Success } from '../types';
+import type { Descriptor, ResultWithTypedError, Success } from '../types';
 import * as ERRORS from '../errors';
 
 type BackgroundResponseWithError<T, E> = ResultWithTypedError<T, E> & { id: number };
 type BackgroundResponse<T> = Success<T> & { id: number };
 
-export type Sessions = Record<string, Session | undefined>;
+export type Sessions = Record<string, Descriptor>;
 
 export type HandshakeRequest = Record<string, never>;
 export type HandshakeResponse = BackgroundResponse<undefined>;
 
 export type EnumerateIntentRequest = Record<string, never>;
 export type EnumerateIntentResponse = BackgroundResponse<{
-    sessions: Sessions;
+    descriptors: Descriptor[];
 }>;
 
 export type EnumerateDoneRequest = {
-    paths: string[];
+    descriptors: Descriptor[];
 };
 
 export type EnumerateDoneResponse = BackgroundResponse<{
-    sessions: Sessions;
     descriptors: Descriptor[];
 }>;
 
@@ -28,17 +27,20 @@ export type AcquireIntentRequest = AcquireInput;
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
     { session: string },
-    typeof ERRORS.SESSION_WRONG_PREVIOUS
+    typeof ERRORS.SESSION_WRONG_PREVIOUS | typeof ERRORS.DESCRIPTOR_NOT_FOUND
 >;
 
 export type AcquireDoneRequest = {
     path: string;
 };
 
-export type AcquireDoneResponse = BackgroundResponse<{
-    session: string;
-    descriptors: Descriptor[];
-}>;
+export type AcquireDoneResponse = BackgroundResponseWithError<
+    {
+        session: string;
+        descriptors: Descriptor[];
+    },
+    typeof ERRORS.DESCRIPTOR_NOT_FOUND
+>;
 export interface ReleaseIntentRequest {
     session: string;
 }
@@ -58,7 +60,7 @@ export type ReleaseDoneResponse = BackgroundResponse<{
 
 export type GetSessionsRequest = Record<string, never>;
 export type GetSessionsResponse = BackgroundResponse<{
-    sessions: Sessions;
+    descriptors: Descriptor[];
 }>;
 export interface GetPathBySessionRequest {
     session: string;
