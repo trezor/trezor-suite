@@ -1,8 +1,8 @@
 # the last successful build of nixos-unstable as of 2023-10-30
 with import
   (builtins.fetchTarball {
-    url = "https://github.com/NixOS/nixpkgs/archive/63678e9f3d3afecfeafa0acead6239cdb447574c.tar.gz";
-    sha256 = "0l9b5w9riwhnf80w233plb4y028y2psr6gm8avdkwg7jvlga2j41";
+    url = "https://github.com/NixOS/nixpkgs/archive/08b9151ed40350725eb40b1fe96b0b86304a654b.tar.gz";
+    sha256 = "09k701xi2zlxdzvsa276b4vs8h4vjjshlaik25bfv1hkrwm30s56";
   })
 { };
 
