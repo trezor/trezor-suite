@@ -42,10 +42,10 @@ const config: webpack.Configuration = {
                         to: path.join(baseDir, 'build', 'static', 'message-system'),
                     },
                 ])
-                // include FW binaries from @trezor/connect-iframe
+                // include FW binaries from @trezor/connect-common
                 .concat([
                     {
-                        from: path.join(__dirname, '../../', 'connect-iframe/build/data/firmware'),
+                        from: path.join(__dirname, '../../', 'connect-common/files/firmware'),
                         to: path.join(baseDir, 'build/static/bin/firmware'),
                     },
                 ])
@@ -56,7 +56,7 @@ const config: webpack.Configuration = {
                               from: path.join(
                                   __dirname,
                                   '../../',
-                                  'connect-iframe/build/data/devkit/firmware',
+                                  'connect-common/files/devkit/firmware',
                               ),
                               to: path.join(baseDir, 'build/static/bin/devkit/firmware'),
                           },
