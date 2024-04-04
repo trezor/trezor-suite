@@ -1,6 +1,7 @@
 export const COINS = {
     ada: require('../../../images/coins/ada.svg'),
     bch: require('../../../images/coins/bch.svg'),
+    bnb: require('../../../images/coins/bnb.svg'),
     btc: require('../../../images/coins/btc.svg'),
     test: require('../../../images/coins/btctestnet.svg'),
     regtest: require('../../../images/coins/btctestnet.svg'),
@@ -9,6 +10,7 @@ export const COINS = {
     dgb: require('../../../images/coins/dgb.svg'),
     doge: require('../../../images/coins/doge.svg'),
     dsol: require('../../../images/coins/dsol.svg'),
+    eos: require('../../../images/coins/eos.svg'),
     etc: require('../../../images/coins/etc.svg'),
     eth: require('../../../images/coins/eth.svg'),
     ltc: require('../../../images/coins/ltc.svg'),
@@ -22,4 +24,7 @@ export const COINS = {
     zec: require('../../../images/coins/zec.svg'),
     sol: require('../../../images/coins/sol.svg'),
     matic: require('../../../images/coins/matic.svg'),
+    nem: require('../../../images/coins/nem.svg'),
+    xlm: require('../../../images/coins/xlm.svg'),
+    xtz: require('../../../images/coins/xtz.svg'),
 };
