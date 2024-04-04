@@ -7,7 +7,7 @@ import { PROTO } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { prepareSendFormReducer } from 'src/reducers/wallet/sendFormReducer';
+import { prepareSendFormReducer } from '@suite-common/wallet-core';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 

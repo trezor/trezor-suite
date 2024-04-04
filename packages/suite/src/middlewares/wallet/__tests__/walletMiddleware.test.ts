@@ -8,7 +8,7 @@ import { configureStore } from 'src/support/tests/configureStore';
 import selectedAccountReducer, {
     State as SelectedAccountState,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import { prepareSendFormReducer, SendState } from 'src/reducers/wallet/sendFormReducer';
+import { prepareSendFormReducer, SendState } from '@suite-common/wallet-core';
 import formDraftReducer from 'src/reducers/wallet/formDraftReducer';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { Action } from 'src/types/suite';

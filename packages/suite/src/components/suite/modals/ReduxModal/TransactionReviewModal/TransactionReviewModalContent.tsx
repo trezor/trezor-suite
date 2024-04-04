@@ -4,7 +4,7 @@ import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Deferred } from '@trezor/utils';
 import { selectDevice, StakeState } from '@suite-common/wallet-core';
 import { isCardanoTx } from '@suite-common/wallet-utils';
-import { SendState } from 'src/reducers/wallet/sendFormReducer';
+import { SendState } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from 'src/utils/wallet/reviewTransactionUtils';

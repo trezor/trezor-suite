@@ -2,10 +2,10 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Card, Textarea, Button, Tooltip, H3, IconButton } from '@trezor/components';
+import { sendFormActions } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
 import { pushSendFormRawTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { getInputState, isHexValid } from '@suite-common/wallet-utils';
 import { Network } from 'src/types/wallet';

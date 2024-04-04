@@ -3,6 +3,7 @@ import {
     accountsActions,
     blockchainActions,
     stakeActions,
+    sendFormActions,
 } from '@suite-common/wallet-core';
 import { ArrayElement } from '@trezor/type-utils';
 
@@ -16,7 +17,6 @@ import { CoinmarketP2pAction } from 'src/actions/wallet/coinmarketP2pActions';
 import { CoinmarketSavingsAction } from 'src/actions/wallet/coinmarketSavingsActions';
 import { CoinmarketCommonAction } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { GraphAction } from 'src/actions/wallet/graphActions';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
 import { AccountSearchAction } from 'src/actions/wallet/accountSearchActions';
 import { FormDraftAction } from 'src/actions/wallet/formDraftActions';
 import { CardanoStakingAction } from 'src/actions/wallet/cardanoStakingActions';
