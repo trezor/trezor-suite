@@ -8,6 +8,10 @@ import { TransportProtocolEncode } from '../types';
 
 export const encode: TransportProtocolEncode = (data, options) => {
     const { messageType } = options;
+    if (typeof messageType === 'string') {
+        throw new Error(`Unsupported message type ${messageType}`);
+    }
+
     const fullSize = HEADER_SIZE + data.length;
     const chunkSize = options.chunkSize || BUFFER_SIZE;
 

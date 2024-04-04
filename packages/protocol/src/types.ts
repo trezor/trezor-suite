@@ -1,11 +1,11 @@
 export type TransportProtocolDecode = (bytes: ArrayBuffer) => {
     length: number;
-    messageType: number;
+    messageType: number | string;
     payload: Buffer;
 };
 
 export interface TransportProtocolEncodeOptions {
-    messageType: number;
+    messageType: number | string;
     chunkSize?: number;
 }
 
