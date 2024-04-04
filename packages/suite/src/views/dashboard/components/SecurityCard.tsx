@@ -6,6 +6,7 @@ import styled, { useTheme } from 'styled-components';
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
+    position: relative;
 `;
 
 const Header = styled.div`
