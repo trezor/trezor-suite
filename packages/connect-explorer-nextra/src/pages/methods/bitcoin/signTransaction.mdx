@@ -1,5 +1,10 @@
+import { Type } from '@sinclair/typebox';
+
+import { PROTO } from '@trezor/connect/src/constants';
+
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import { ParamsTable } from '../../../components/ParamsTable';
 import signTransactionCustom from '../../../data/methods/bitcoin/signTransaction.custom';
 import signTransactionMultisig from '../../../data/methods/bitcoin/signTransaction.multisig';
 import signTransactionOpreturn from '../../../data/methods/bitcoin/signTransaction.opreturn';
@@ -18,14 +23,40 @@ import signTransactionZcash from '../../../data/methods/bitcoin/signTransaction.
     ]}
 />
 
+export const SignTransactionSchema = Type.Object({
+    coin: Type.String(),
+    inputs: Type.Array(PROTO.TxInputType),
+    outputs: Type.Array(PROTO.TxOutputType),
+    paymentRequests: Type.Optional(Type.Array(PROTO.TxAckPaymentRequest)),
+    refTxs: Type.Optional(Type.Array(Type.Object({}))),
+    locktime: Type.Optional(Type.Number()),
+    version: Type.Optional(Type.Number()),
+    expiry: Type.Optional(Type.Number()),
+    versionGroupId: Type.Optional(Type.Number()),
+    overwintered: Type.Optional(Type.Boolean()),
+    timestamp: Type.Optional(Type.Number()),
+    branchId: Type.Optional(Type.Number()),
+    push: Type.Optional(Type.Boolean()),
+    amountUnit: Type.Optional(Type.Object({})),
+    unlockPath: Type.Optional(Type.Object({})),
+    serialize: Type.Optional(Type.Boolean()),
+    chunkify: Type.Optional(Type.Boolean()),
+});
+
 export const paramDescriptions = {
-    coin: '',
-    inputs: 'of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts),',
+    coin:
+        '> Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.\n' +
+        '> Coin `shortcut`, `name` or `label` can be used.\n',
+    inputs: 'of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)',
     outputs:
-        'of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts),',
+        'of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)',
     paymentRequests:
         'of [PROTO.TxAckPaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)',
-    refTxs: 'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).',
+    refTxs:
+        'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).\n' +
+        "> If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.\n" +
+        '> Since Firmware 2.3.0/1.9.0 referenced transactions are required.\n' +
+        '> Zcash and Komodo refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.',
     locktime: '',
     version: 'transaction version,',
     expiry: 'only for Decred and Zcash,',
@@ -34,7 +65,7 @@ export const paramDescriptions = {
     timestamp: 'only for Capricoin, transaction timestamp,',
     branchId: 'only for Zcash, BRANCH_ID when overwintered is set',
     push: 'Broadcast signed transaction to blockchain. Default is set to false',
-    amountUnit: '',
+    amountUnit: 'show amounts in BTC, mBTC, uBTC, sat',
     serialize:
         'default `true` serialize the full transaction, as opposed to only outputting the signatures',
     chunkify:
@@ -59,30 +90,7 @@ const result = await TrezorConnect.signTransaction(params);
 
 [SignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
 
--   `coin` - _required_ `string`
-    > Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.
-    > Coin `shortcut`, `name` or `label` can be used.
-    > See [supported coins](../supported-coins.md)
--   `inputs` - _required_ `Array` of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts),
--   `outputs` - _required_ `Array` of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts),
--   `paymentRequests` - _optional_ `Array` of [PROTO.TxAckPaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)
--   `refTxs` - _optional_ `Array` of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).
-    > If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.
-    > Since Firmware 2.3.0/1.9.0 referenced transactions are required.
-    > Zcash and Komodo refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.
--   `locktime` - _optional_ `number`,
--   `version` - _optional_ `number` transaction version,
--   `expiry` - _optional_ `number`, only for Decred and Zcash,
--   `versionGroupId` - _optional_ `number` only for Zcash, nVersionGroupId when overwintered is set,
--   `overwintered` - _optional_ `boolean` only for Zcash
--   `timestamp` - _optional_ `number` only for Capricoin, transaction timestamp,
--   `branchId` - _optional_ `number`, only for Zcash, BRANCH_ID when overwintered is set
--   `push` - _optional_ `boolean` Broadcast signed transaction to blockchain. Default is set to false
--   `amountUnit` — _optional_ `PROTO.AmountUnit`
-    > show amounts in BTC, mBTC, uBTC, sat
--   `unlockPath` - _optional_ [PROTO.UnlockPath](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts), the result of [TrezorConnect.unlockPath](./unlockPath.md) method.
--   `serialize` - _optional_ `boolean`, default `true` serialize the full transaction, as opposed to only outputting the signatures
--   `chunkify` — _optional_ `boolean` determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`
+<ParamsTable schema={SignTransactionSchema} descriptions={paramDescriptions} />
 
 ### Example
 

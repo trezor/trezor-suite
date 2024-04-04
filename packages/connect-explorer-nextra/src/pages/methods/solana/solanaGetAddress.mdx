@@ -14,7 +14,7 @@ import { ApiPlayground } from '../../../components/ApiPlayground';
 />
 
 export const paramDescriptions = {
-    path: 'minimum length is `2`. [read more](../details/path)',
+    path: 'minimum length is `2`. [read more](/details/path)',
     address: 'address for validation (read `Handle button request` section below)',
     showOnTrezor: 'determines if address will be displayed on device. Default is set to `true`',
     chunkify:
@@ -24,7 +24,7 @@ export const paramDescriptions = {
 
 ## Solana: get address
 
-Display requested address derived by given [BIP44 path](../details/path) on device and return it to the caller. User is presented with a description of the requested address and asked to confirm the export on Trezor.
+Display requested address derived by given [BIP44 path](/details/path) on device and return it to the caller. User is presented with a description of the requested address and asked to confirm the export on Trezor.
 
 ```javascript
 const result = await TrezorConnect.solanaGetAddress(params);

@@ -1,18 +1,43 @@
+import { Type } from '@sinclair/typebox';
+
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 import composeTransaction from '../../../data/methods/bitcoin/composeTransaction';
+import { ParamsTable } from '../../../components/ParamsTable';
 
 <ApiPlayground options={[{ title: 'composeTransaction', legacyConfig: composeTransaction[0] }]} />
 
+export const RequestSchema = Type.Object({
+    outputs: Type.Array(Type.Object({}, { $id: 'Output' })),
+    coin: Type.String(),
+    push: Type.Optional(Type.Boolean()),
+    sequence: Type.Optional(Type.Number()),
+});
+
+export const PrecomposeSchema = Type.Object({
+    outputs: Type.Array(Type.Object({}, { $id: 'Output' })),
+    coin: Type.String(),
+    account: Type.Object({
+        path: Type.String(),
+        utxo: Type.Array(Type.Object({})),
+        addresses: Type.String(),
+    }),
+    feeLevels: Type.Array(Type.Object({ feePerUnit: Type.String() })),
+    baseFee: Type.Optional(Type.Number()),
+    floorBaseFee: Type.Optional(Type.Boolean()),
+    sequence: Type.Optional(Type.Number()),
+    skipPermutation: Type.Optional(Type.Boolean()),
+});
+
 export const paramDescriptions = {
-    outputs: 'of output objects described [below](#accepted-output-objects)',
+    outputs: 'Array of output objects described [below](#accepted-output-objects)',
     coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
     push: 'determines if composed transaction will be broadcasted into blockchain network. Default is set to false.',
     sequence: 'transaction input field used in RBF or locktime transactions',
     account:
-        'containing essential data, partial result of [getAccountInfo method](getAccountInfo.md#result)',
+        'containing essential data, partial result of [getAccountInfo method](getAccountInfo#result)',
     feeLevels:
-        'of objects. set of requested variants, partial result of `blockchainEstimateFee method`',
+        'Array of objects. set of requested variants, partial result of `blockchainEstimateFee method`',
     baseFee:
         'base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE',
     floorBaseFee:
@@ -31,20 +56,17 @@ Can be used in two different ways and returned result depends on used parameters
 An automated payment process separated in to following steps:
 
 1. Account discovery for requested coin is performed and the user is asked for source account selection. [[1]](#additional-notes)
-1. User is asked for fee level selection.
-1. Transaction is calculated, change output is added automatically if needed. [[2]](#additional-notes)
-1. Signing transaction with Trezor, user is asked for confirmation on device.
+2. User is asked for fee level selection.
+3. Transaction is calculated, change output is added automatically if needed. [[2]](#additional-notes)
+4. Signing transaction with Trezor, user is asked for confirmation on device.
 
-Returned response is a signed transaction in hexadecimal format same as in [signTransaction method](signTransaction.md#result).
+Returned response is a signed transaction in hexadecimal format same as in [signTransaction method](signTransaction#result).
 
-## Params:
+### Params:
 
 <CommonParamsLink />
 
--   `outputs` — _required_ `Array` of output objects described [below](#accepted-output-objects)
--   `coin` — _required_ `string` determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
--   `push` — _optional_ `boolean` determines if composed transaction will be broadcasted into blockchain network. Default is set to false.
--   `sequence` — _optional_ `number` transaction input field used in RBF or locktime transactions
+<ParamsTable schema={RequestSchema} descriptions={paramDescriptions} />
 
 ## Precompose, prepare transaction to be signed by Trezor.
 
@@ -56,20 +78,11 @@ This useful for the quick preparation of multiple variants for the same transact
 
 _Device and backend connection is not required for this case since all data are provided._
 
-## Params:
+### Params:
 
--   `outputs` — _required_ `Array` of output objects described [below](#accepted-output-objects)
--   `coin` — _required_ `string` determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.
--   `account` — _required_ `Object` containing essential data, partial result of [getAccountInfo method](getAccountInfo.md#result)
-    -   `path` - _required_ `string`
-    -   `utxo` - _required_ `Array`
-    -   `addresses` - _required_ `string`
--   `feeLevels` — _required_ `Array` of objects. set of requested variants, partial result of `blockchainEstimateFee method`
-    -   `feePerUnit` - _required_ `string` satoshi per transaction byte.
--   `baseFee` — _optional_ `number` base fee of transaction in satoshi. used in replacement transactions calculation (RBF) and DOGE
--   `floorBaseFee` — _optional_ `boolean` decide whenever baseFee should be floored to the nearest baseFee unit, prevents from fee overpricing. used in DOGE
--   `sequence` — _optional_ `number` transaction input field used in RBF or locktime transactions
--   `skipPermutation` — _optional_ `boolean` do not sort calculated inputs/outputs (usage: RBF transactions)
+<CommonParamsLink />
+
+<ParamsTable schema={PrecomposeSchema} descriptions={paramDescriptions} />
 
 ## Accepted output objects:
 
@@ -231,7 +244,7 @@ TrezorConnect.composeTransaction({
 }
 ```
 
-For more examples see
+For more examples see [composeTransaction fixtures](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/e2e/__fixtures__/composeTransaction.ts)
 
 ### Additional notes
 

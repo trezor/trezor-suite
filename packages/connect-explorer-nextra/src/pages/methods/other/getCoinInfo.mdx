@@ -1,7 +1,16 @@
+import { Type } from '@sinclair/typebox';
+
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import { ParamsTable } from '../../../components/ParamsTable';
 
-<ApiPlayground options={[{ title: 'No payload', method: 'getCoinInfo' }]} />
+export const GetCoinInfoSchema = Type.Object({
+    coin: Type.String({ description: 'Coin symbol (btc, eth, bch, ...)', example: 'btc' }),
+});
+
+<ApiPlayground
+    options={[{ title: 'GetCoinInfo', schema: GetCoinInfoSchema, method: 'getCoinInfo' }]}
+/>
 
 ## Get Coin Info
 
@@ -15,9 +24,7 @@ const result = await TrezorConnect.getCoinInfo(params);
 
 <CommonParamsLink />
 
-#### Exporting single address
-
--   `coin` — _required_ `string` coin symbol (btc, eth, bch, ...).
+<ParamsTable schema={GetCoinInfoSchema} />
 
 ### Example
 
