@@ -13,16 +13,17 @@ export type FrameProps = {
     };
     maxWidth?: string;
     fill?: boolean;
+    inflex?: boolean;
 };
 
 type ComponentFrameProps = FrameProps & {
     children: React.ReactNode;
 };
 
-const Frame = styled.div<{ $margin?: FrameProps['margin']; $fill: boolean }>`
+const Frame = styled.div<{ $margin?: FrameProps['margin']; $fill: boolean; $inflex: boolean }>`
     display: flex;
-    flex: 1;
 
+    flex: ${({ $inflex }) => ($inflex ? '1' : undefined)};
     width: ${({ $fill }) => ($fill ? '100%' : undefined)};
 
     ${({ $margin }) =>
@@ -35,8 +36,13 @@ const Frame = styled.div<{ $margin?: FrameProps['margin']; $fill: boolean }>`
   `};
 `;
 
-export const ComponentFrame = ({ children, margin, fill }: ComponentFrameProps) => (
-    <Frame $margin={margin} $fill={fill}>
+export const ComponentFrame = ({
+    children,
+    margin,
+    fill = false,
+    inflex = true,
+}: ComponentFrameProps) => (
+    <Frame $margin={margin} $fill={fill} $inflex={inflex}>
         {children}
     </Frame>
 );

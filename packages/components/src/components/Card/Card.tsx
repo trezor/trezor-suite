@@ -97,7 +97,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         const hasLabel = label !== null && label !== undefined;
 
         return (
-            <ComponentFrame margin={margin} maxWidth={maxWidth} fill={!hasLabel}>
+            <ComponentFrame margin={margin} maxWidth={maxWidth} fill={!hasLabel} inflex={false}>
                 {hasLabel ? (
                     <Container>
                         <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
