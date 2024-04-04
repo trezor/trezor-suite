@@ -148,12 +148,12 @@ jobs:
 
       - name: Build example webextensions MV2 and MV3
         env:
-          URL: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          # URL: https://connect.trezor.io/9/
+          # URL: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          URL: https://connect.trezor.io/9/
         run: |
-          echo "${URL}"
-          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${URL}" --npm-src "${URL}trezor-connect.js"
-          # node ./packages/connect-examples/update-webextensions.js
+          yarn workspace @trezor/connect-web build:webextension
+          yarn workspace @trezor/connect-web build:inline
+          node ./packages/connect-examples/update-webextensions.js
 
       - name: Run e2e tests
         run: ./docker/docker-connect-webextension-ci.sh

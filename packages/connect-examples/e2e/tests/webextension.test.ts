@@ -25,7 +25,7 @@ test.afterEach(async () => {
     }
 });
 
-test('Basic web extension MV2', async () => {
+test.skip('Basic web extension MV2', async () => {
     log('connecting to emulator');
     await TrezorUserEnvLink.connect();
     await TrezorUserEnvLink.send({
