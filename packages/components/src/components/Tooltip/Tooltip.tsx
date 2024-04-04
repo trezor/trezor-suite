@@ -1,12 +1,13 @@
-import styled from 'styled-components';
+import styled, { ThemeProvider } from 'styled-components';
 import { ReactNode, MutableRefObject } from 'react';
 import { transparentize } from 'polished';
 import { spacings, zIndices } from '@trezor/theme';
 import { TooltipContent, TooltipFloatingUi, TooltipTrigger } from './TooltipFloatingUi';
-import { Placement } from '@floating-ui/react';
+import { Placement, ShiftOptions } from '@floating-ui/react';
 import { TooltipBox, TooltipBoxProps } from './TooltipBox';
 import { TooltipArrow } from './TooltipArrow';
 import { TOOLTIP_DELAY_SHORT, TooltipDelay } from './TooltipDelay';
+import { intermediaryTheme } from '../..';
 
 export type Cursor = 'inherit' | 'pointer' | 'help' | 'default' | 'not-allowed';
 
@@ -46,6 +47,7 @@ type TooltipUiProps = {
     disabled?: boolean;
     dashed?: boolean;
     offset?: number;
+    shift?: ShiftOptions;
     cursor?: Cursor;
     isFullWidth?: boolean;
     placement?: Placement;
@@ -77,6 +79,7 @@ export const Tooltip = ({
     isOpen,
     hasArrow = false,
     appendTo,
+    shift,
 }: TooltipProps) => {
     if (!content || !children) {
         return <>{children}</>;
@@ -90,6 +93,7 @@ export const Tooltip = ({
                 placement={placement}
                 isOpen={isOpen}
                 offset={offset}
+                shift={shift}
                 delay={delayConfiguration}
             >
                 <TooltipTrigger>
@@ -104,14 +108,16 @@ export const Tooltip = ({
                     arrowRender={hasArrow ? TooltipArrow : undefined}
                     appendTo={appendTo}
                 >
-                    <TooltipBox
-                        content={content}
-                        addon={addon}
-                        headerIcon={headerIcon}
-                        isLarge={isLarge}
-                        maxWidth={maxWidth}
-                        title={title}
-                    />
+                    <ThemeProvider theme={intermediaryTheme.dark}>
+                        <TooltipBox
+                            content={content}
+                            addon={addon}
+                            headerIcon={headerIcon}
+                            isLarge={isLarge}
+                            maxWidth={maxWidth}
+                            title={title}
+                        />
+                    </ThemeProvider>
                 </TooltipContent>
             </TooltipFloatingUi>
         </Wrapper>

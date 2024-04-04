@@ -68,6 +68,7 @@ export interface Flags {
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
     showDashboardStakingPromoBanner: boolean;
     viewOnlyPromoClosed: boolean;
+    viewOnlyTooltipClosed: boolean;
 }
 
 export interface EvmSettings {
@@ -123,6 +124,7 @@ const initialState: SuiteState = {
         stakeEthBannerClosed: false,
         showDashboardStakingPromoBanner: true,
         viewOnlyPromoClosed: false,
+        viewOnlyTooltipClosed: false,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},

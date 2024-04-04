@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { borders, spacingsPx } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { DeviceStatusWithLabel } from './DeviceStatusWithLabel';
+import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 const CaretContainer = styled.div`
     background: transparent;
@@ -18,13 +19,9 @@ const CaretContainer = styled.div`
 `;
 
 const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
-    position: relative;
-    display: flex;
-    gap: ${spacingsPx.md};
     width: 100%;
     padding: ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md} ${spacingsPx.md};
     align-items: center;
-    cursor: pointer;
     border-radius: ${borders.radii.sm};
     border: 1px solid transparent;
     transition: ${focusStyleTransition};
@@ -45,6 +42,13 @@ const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
             backface-visibility: hidden; /* used for hardware acceleration */
             perspective: 1000px; /* used for hardware acceleration */
         `}
+`;
+
+const InnerContainer = styled.div`
+    position: relative;
+    display: flex;
+    cursor: pointer;
+    gap: ${spacingsPx.md};
 `;
 
 export const DeviceSelector = () => {
@@ -97,19 +101,22 @@ export const DeviceSelector = () => {
         );
 
     return (
-        <Wrapper
-            data-test="@menu/switch-device"
-            onClick={handleSwitchDeviceClick}
-            $isAnimationTriggered={isAnimationTriggered}
-            tabIndex={0}
-        >
-            <DeviceStatusWithLabel />
+        <Wrapper $isAnimationTriggered={isAnimationTriggered}>
+            <ViewOnlyTooltip>
+                <InnerContainer
+                    onClick={handleSwitchDeviceClick}
+                    tabIndex={0}
+                    data-test="@menu/switch-device"
+                >
+                    <DeviceStatusWithLabel />
 
-            {selectedDevice && selectedDevice.state && (
-                <CaretContainer>
-                    <Icon size={20} icon="CARET_CIRCLE_DOWN" />
-                </CaretContainer>
-            )}
+                    {selectedDevice && selectedDevice.state && (
+                        <CaretContainer>
+                            <Icon size={20} icon="CARET_CIRCLE_DOWN" />
+                        </CaretContainer>
+                    )}
+                </InnerContainer>
+            </ViewOnlyTooltip>
         </Wrapper>
     );
 };

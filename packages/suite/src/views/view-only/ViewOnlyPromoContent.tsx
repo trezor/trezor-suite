@@ -4,14 +4,14 @@ import {
     ElevationContext,
     Icon,
     Image,
+    ImageType,
     Text,
     useElevation,
 } from '@trezor/components';
 import { FormattedCryptoAmount, Translation } from '../../components/suite';
 import styled from 'styled-components';
 import { Elevation, borders, mapElevationToBackground, spacings, spacingsPx } from '@trezor/theme';
-import { breakpointMediaQueries } from '@trezor/styles';
-import { PriceChartLine } from './PriceChartLine';
+import { PriceChartLine } from './images/PriceChartLine';
 import { ReactNode } from 'react';
 import { DeviceConnectionText } from '../suite/SwitchDevice/DeviceItem/DeviceConnectionText';
 import { DeviceDetail } from '../suite/SwitchDevice/DeviceItem/DeviceDetail';
@@ -19,6 +19,9 @@ import { MacWindow } from './MacWindow';
 import { useDispatch, useSelector } from '../../hooks/suite';
 import { selectDevice, toggleRememberDevice } from '@suite-common/wallet-core';
 import { setFlag } from '../../actions/suite/suiteActions';
+import { IllustrativeExample } from './images/IllustrativeExample';
+import { IllustrativeExampleArrow } from './images/IllustrativeExampleArrow';
+import { goto } from 'src/actions/suite/routerActions';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -26,9 +29,6 @@ const StyledCard = styled(Card)`
     gap: ${spacingsPx.md};
     padding: ${spacingsPx.xxs};
     width: 476px;
-
-    ${breakpointMediaQueries.below_sm} {
-    }
 `;
 
 const Callout = styled.div`
@@ -40,7 +40,6 @@ const Callout = styled.div`
 
 const StyledCircle = styled.div<{ $elevation: Elevation }>`
     border-radius: 100%;
-    cursor: pointer;
     background: ${mapElevationToBackground};
     width: 42px;
     height: 42px;
@@ -55,11 +54,15 @@ const Circle = ({ children }: { children: ReactNode }) => {
     return <StyledCircle $elevation={elevation}>{children}</StyledCircle>;
 };
 
-const SmallDeviceImage = styled(Image)`
+const DeviceImage = styled(Image)`
+    object-fit: contain;
+`;
+
+const SmallDeviceImage = styled(DeviceImage)`
     width: 18px;
 `;
 
-const LargeDeviceImage = styled(Image)`
+const LargeDeviceImage = styled(DeviceImage)`
     width: 93px;
 `;
 
@@ -83,7 +86,17 @@ const WindowGrayTop = ({ children }: { children: ReactNode }) => {
     return <StyledGrayTop $elevation={elevation}>{children}</StyledGrayTop>;
 };
 
-const WindowChart = styled.div``;
+const WindowChart = styled.div`
+    position: relative;
+`;
+const IllustrativeExamplePositioning = styled.div`
+    position: absolute;
+    top: -10px;
+    right: 10px;
+    display: flex;
+    gap: 8px;
+`;
+const IllustrativeExampleArrowPositioning = styled.div``;
 
 const StyledTop = styled.div<{ $elevation: Elevation }>`
     display: flex;
@@ -116,6 +129,14 @@ const ButtonsContainer = styled.div`
 
 const Top = () => {
     const { elevation } = useElevation();
+    const selectedDevice = useSelector(selectDevice);
+    const selectedDeviceModelInternal = selectedDevice?.features?.internal_model;
+
+    const DEFAULT_MODEL = 'TREZOR_T2T1';
+    const device: ImageType =
+        selectedDevice && selectedDeviceModelInternal
+            ? `TREZOR_${selectedDeviceModelInternal}`
+            : DEFAULT_MODEL;
 
     return (
         <StyledTop $elevation={elevation}>
@@ -123,7 +144,7 @@ const Top = () => {
                 <MacWindow>
                     <WindowGrayTop>
                         <DeviceItem>
-                            <SmallDeviceImage alt="Trezor" image={`TREZOR_T2T1`} />
+                            <SmallDeviceImage alt="Trezor" image={device} />
 
                             <DeviceDetail label="My Trezor">
                                 <DeviceConnectionText icon="LINK" variant="primary">
@@ -140,10 +161,16 @@ const Top = () => {
                             <FormattedCryptoAmount value={'0.04223123'} symbol={'BTC'} />
                         </ChartText>
                         <PriceChartLine />
+                        <IllustrativeExamplePositioning>
+                            <IllustrativeExampleArrowPositioning>
+                                <IllustrativeExampleArrow />
+                            </IllustrativeExampleArrowPositioning>
+                            <IllustrativeExample />
+                        </IllustrativeExamplePositioning>
                     </WindowChart>
                 </MacWindow>
             </ElevationContext>
-            <LargeDeviceImage alt="Trezor" image={`TREZOR_T2T1`} />
+            <LargeDeviceImage alt="Trezor" image={device} />
         </StyledTop>
     );
 };
@@ -156,26 +183,28 @@ const Buttons = () => {
         if (device !== undefined) {
             dispatch(toggleRememberDevice({ device, forceRemember: true }));
             dispatch(setFlag('viewOnlyPromoClosed', true));
+            dispatch(goto('suite-index'));
         }
     };
 
     const onNo = () => {
         dispatch(setFlag('viewOnlyPromoClosed', true));
+        dispatch(goto('suite-index'));
     };
 
     return (
         <ButtonsContainer>
             <Button variant="primary" isFullWidth onClick={onYes}>
-                <Translation id="TR_MODAL_REMEMBER_WALLET_YES" />
+                <Translation id="TR_VIEW_ONLY_PROMO_YES" />
             </Button>
             <Button variant="tertiary" isFullWidth onClick={onNo}>
-                <Translation id="TR_MODAL_REMEMBER_WALLET_NOT_NOW" />
+                <Translation id="TR_VIEW_ONLY_PROMO_NOT_NOW" />
             </Button>
         </ButtonsContainer>
     );
 };
 
-export const RememberWalletCard = () => {
+export const ViewOnlyPromoContent = () => {
     const { elevation } = useElevation();
 
     return (
@@ -186,7 +215,7 @@ export const RememberWalletCard = () => {
             <Bottom>
                 <Text typographyStyle="titleSmall">
                     <Translation
-                        id="TR_REMEMBER_CARD_CALL_TO_ACTION"
+                        id="TR_VIEW_ONLY_CALL_TO_ACTION"
                         values={{
                             primary: chunks => (
                                 <>
@@ -204,7 +233,7 @@ export const RememberWalletCard = () => {
                     </Circle>
                     <Text variant="tertiary">
                         <Translation
-                            id="TR_REMEMBER_CARD_EXPLANATION"
+                            id="TR_VIEW_ONLY_EXPLANATION"
                             values={{
                                 secondLine: chunks => (
                                     <>

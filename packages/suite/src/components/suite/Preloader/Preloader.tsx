@@ -18,7 +18,7 @@ import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
-import { RememberWallet } from '../../../views/remember-wallet/RememberWallet';
+import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
@@ -43,6 +43,9 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
+    const isViewOnlyModeVisible = useSelector(
+        state => state.suite.settings.debug.isViewOnlyModeVisible,
+    );
 
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
 
@@ -66,6 +69,15 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // display Loader as full page view
     if (lifecycle.status !== 'ready' || !router.loaded || !transport) {
         return <InitialLoading timeout={90} />;
+    }
+
+    if (
+        isViewOnlyModeVisible &&
+        router.route?.app !== 'settings' &&
+        !initialRun &&
+        !viewOnlyPromoClosed
+    ) {
+        return <ViewOnlyPromo />;
     }
 
     // TODO: murder the fullscreen app logic, there must be a better way
@@ -99,14 +111,6 @@ export const Preloader = ({ children }: PreloaderProps) => {
     // if a device is not connected or initialized
     if (isLoggedOut) {
         return <LoggedOutLayout>{children}</LoggedOutLayout>;
-    }
-
-    if (!initialRun && !viewOnlyPromoClosed) {
-        return (
-            <WelcomeLayout>
-                <RememberWallet />
-            </WelcomeLayout>
-        );
     }
 
     // everything is set.

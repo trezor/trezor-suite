@@ -4462,13 +4462,13 @@ export default defineMessages({
         defaultMessage: 'Remember',
         description: 'Heading above col with "remember wallet" buttons in switch wallets modal',
     },
-    TR_REMEMBER_CARD_CALL_TO_ACTION: {
-        id: 'TR_REMEMBER_CALL_TO_ACTION',
+    TR_VIEW_ONLY_CALL_TO_ACTION: {
+        id: 'TR_VIEW_ONLY_CALL_TO_ACTION',
         defaultMessage:
             'View only balances in the app even <primary>after Trezor is disconnected?</primary>',
     },
-    TR_REMEMBER_CARD_EXPLANATION: {
-        id: 'TR_REMEMBER_CARD_EXPLANATION',
+    TR_VIEW_ONLY_EXPLANATION: {
+        id: 'TR_VIEW_ONLY_EXPLANATION',
         defaultMessage:
             "You'll still need to connect your <secondLine>Trezor to send or trade coins</secondLine>",
     },
@@ -8827,12 +8827,28 @@ export default defineMessages({
         id: 'TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN',
         defaultMessage: 'Confirmation of the transaction may take up to <nowrap>1 minute</nowrap>',
     },
-    TR_MODAL_REMEMBER_WALLET_YES: {
-        id: 'TR_MODAL_REMEMBER_WALLET_YES',
+    TR_VIEW_ONLY_PROMO_YES: {
+        id: 'TR_VIEW_ONLY_PROMO_YES',
         defaultMessage: 'Yes',
     },
-    TR_MODAL_REMEMBER_WALLET_NOT_NOW: {
-        id: 'TR_MODAL_REMEMBER_WALLET_NOT_NOW',
+    TR_VIEW_ONLY_PROMO_NOT_NOW: {
+        id: 'TR_VIEW_ONLY_PROMO_NOT_NOW',
         defaultMessage: 'Not now',
+    },
+    TR_VIEW_ONLY_TOOLTIP_TITLE: {
+        id: 'TR_VIEW_ONLY_TOOLTIP_TITLE',
+        defaultMessage: 'View-only enabled',
+    },
+    TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
+        id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
+        defaultMessage: 'You will see wallet balances after disconnecting Trezor',
+    },
+    TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO: {
+        id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
+        defaultMessage: 'You can change it here',
+    },
+    TR_VIEW_ONLY_TOOLTIP_BUTTON: {
+        id: 'TR_VIEW_ONLY_TOOLTIP_BUTTON',
+        defaultMessage: 'Got it',
     },
 });
