@@ -1,0 +1,12 @@
+{
+    "name": "@trezor/connect-examples",
+    "description": "A collection of example implementations of @trezor/connect in various environments. See individual READMEs for instructions:",
+    "scripts": {
+        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts"
+    },
+    "dependencies": {
+        "@playwright/browser-chromium": "^1.41.2",
+        "@playwright/test": "^1.41.2",
+        "xvfb-maybe": "^0.2.1"
+    }
+}

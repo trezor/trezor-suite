@@ -2,6 +2,7 @@
 set -e
 
 xhost +
+
 LOCAL_USER_ID="$(id -u "$USER")"
 export LOCAL_USER_ID
 export TEST_FILE=$1

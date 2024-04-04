@@ -12,14 +12,19 @@
         "tabs",
         "notifications",
         "*://connect.trezor.io/9/*",
-        "*://suite.corp.sldev.cz/*"
+        "*://suite.corp.sldev.cz/*",
+        "*://dev.suite.sldev.cz/*"
     ],
     "background": {
         "scripts": ["./vendor/trezor-connect.js", "background.js"]
     },
     "content_scripts": [
         {
-            "matches": ["*://connect.trezor.io/9/popup.html", "*://suite.corp.sldev.cz/*"],
+            "matches": [
+                "*://connect.trezor.io/9/popup.html",
+                "*://suite.corp.sldev.cz/*",
+                "*://dev.suite.sldev.cz/*"
+            ],
             "js": ["./vendor/trezor-content-script.js"]
         }
     ],

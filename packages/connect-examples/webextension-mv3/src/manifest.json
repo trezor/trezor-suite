@@ -7,7 +7,11 @@
     },
     "content_scripts": [
         {
-            "matches": ["*://connect.trezor.io/9/popup.html", "*://suite.corp.sldev.cz/*"],
+            "matches": [
+                "*://connect.trezor.io/9/popup.html",
+                "*://suite.corp.sldev.cz/*",
+                "*://dev.suite.sldev.cz/*"
+            ],
             "js": ["./vendor/trezor-content-script.js"]
         }
     ],

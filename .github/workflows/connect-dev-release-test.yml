@@ -23,11 +23,16 @@ on:
       - "packages/utxo-lib/**"
       - "packages/utils/**"
       - "submodules/trezor-common/**"
-      - "yarn.lock"
+      - "packages/connect-examples/e2e/**"
+      - "packages/connect-examples/webextension-mv2/**"
+      - "packages/connect-examples/webextension-mv3/**"
+      - "docker/docker-compose.connect-webextension-test.yml "
+      - ".github/workflows/connect-examples-webextension-test.yml"
       - ".github/workflows/connect-dev-release-test.yml"
       - ".github/workflows/template-connect-popup-test-params.yml"
       - ".github/workflows/template-connect-build-deploy.yml"
       - "docker/docker-connect-popup-ci.sh"
+      - "yarn.lock"
   workflow_dispatch:
 
 concurrency:
@@ -56,62 +61,124 @@ jobs:
       serverHostname: "dev.suite.sldev.cz"
       serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
 
-  methods:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: methods.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
-      build-overview: true
+  # methods:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: methods.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     run-webextension: true
+  #     build-overview: true
 
-  popup-close:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: popup-close.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
+  # popup-close:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: popup-close.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     run-webextension: true
 
-  passphrase:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: passphrase.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
+  # passphrase:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: passphrase.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  #     run-webextension: true
 
-  popup-pages:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: popup-pages.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  # popup-pages:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: popup-pages.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
 
-  browser-support:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: browser-support.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  # browser-support:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: browser-support.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
 
-  permissions:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: permissions.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  # permissions:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: permissions.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
 
-  transport:
-    needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: transport.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+  # transport:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: transport.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
 
-  unchained:
+  # unchained:
+  #   needs: [build-deploy]
+  #   uses: ./.github/workflows/template-connect-popup-test-params.yml
+  #   with:
+  #     test-name: unchained.test
+  #     DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  connect-example-webextension-e2e:
     needs: [build-deploy]
-    uses: ./.github/workflows/template-connect-popup-test-params.yml
-    with:
-      test-name: unchained.test
-      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: ./docker/docker-compose.connect-webextension-test.yml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: |
+          yarn install --immutable
+          yarn build:libs
+
+      - name: Build example webextensions MV2 and MV3
+        env:
+          URL: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          # URL: https://connect.trezor.io/9/
+        run: |
+          echo "${URL}"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${URL}" --npm-src "${URL}trezor-connect.js"
+          # node ./packages/connect-examples/update-webextensions.js
+
+      - name: Run e2e tests
+        run: ./docker/docker-connect-webextension-ci.sh
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            packages/connect-examples/e2e/screenshots/
+
+      - name: Upload webextensions artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webextension-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            packages/connect-examples/webextension-mv2/build
+            packages/connect-examples/webextension-mv3/build
+
+      - name: Check Test Success
+        run: |
+          # If there is `test-results` it means it has failed.
+          if [ -f "packages/connect-examples/test-results" ]; then
+            echo "Tests failed"
+            exit 1
+          fi

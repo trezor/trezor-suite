@@ -10245,6 +10245,16 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/connect-examples@workspace:packages/connect-examples":
+  version: 0.0.0-use.local
+  resolution: "@trezor/connect-examples@workspace:packages/connect-examples"
+  dependencies:
+    "@playwright/browser-chromium": "npm:^1.41.2"
+    "@playwright/test": "npm:^1.41.2"
+    xvfb-maybe: "npm:^0.2.1"
+  languageName: unknown
+  linkType: soft
+
 "@trezor/connect-explorer-nextra@workspace:packages/connect-explorer-nextra":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer-nextra@workspace:packages/connect-explorer-nextra"
