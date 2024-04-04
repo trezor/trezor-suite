@@ -9,6 +9,7 @@ import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 import { isSupportedNetworkSymbol } from '@suite-common/wallet-core/src/stake/stakeTypes';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -56,6 +57,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
+    const isDebug = useSelector(selectIsDebugModeActive);
     const { pathname } = useSelector(state => state.router);
     const ethApy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
 
@@ -71,7 +73,8 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
         pathname !== '/accounts' ||
         stakeEthBannerClosed ||
         !account ||
-        !isSupportedNetworkSymbol(account.symbol)
+        !isSupportedNetworkSymbol(account.symbol) ||
+        (!isDebug && account.symbol === 'eth')
     ) {
         return null;
     }

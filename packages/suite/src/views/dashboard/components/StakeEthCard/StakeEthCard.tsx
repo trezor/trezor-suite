@@ -12,6 +12,7 @@ import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const Flex = styled.div`
     display: flex;
@@ -66,6 +67,7 @@ const bannerSymbol = 'eth';
 export const StakeEthCard = () => {
     const theme = useTheme();
     const dispatch = useDispatch();
+    const isDebug = useSelector(selectIsDebugModeActive);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const { showDashboardStakingPromoBanner } = useSelector(selectSuiteFlags);
 
@@ -126,7 +128,7 @@ export const StakeEthCard = () => {
         [ethApy, theme.iconPrimaryDefault],
     );
 
-    if (!isShown) return null;
+    if (!isShown || !isDebug) return null;
 
     return (
         <>
