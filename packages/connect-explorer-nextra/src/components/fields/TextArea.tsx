@@ -18,7 +18,7 @@ const Textarea = ({ field, onChange }: TextareaProps) => (
     <Row>
         <TextareaComponent
             label={field.name}
-            value={field.value}
+            value={typeof field.value === 'string' ? field.value : JSON.stringify(field.value)}
             onChange={event => onChange(field, event.target.value)}
         />
     </Row>
