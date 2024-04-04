@@ -316,6 +316,9 @@ connect-web build production:
 .build_common: &build_common
   stage: build
   interruptible: true
+  variables:
+    GIT_STRATEGY: clone
+    GIT_SUBMODULE_STRATEGY: recursive
   script:
     - yarn install --immutable
     - yarn workspace @trezor/components storybook-build
