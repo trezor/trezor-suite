@@ -1,8 +1,9 @@
+import BigNumber from 'bignumber.js';
+
 import {
     TOKEN_PROGRAM_PUBLIC_KEY,
     SYSTEM_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/src/solana';
-import BigNumber from 'bignumber.js';
 
 export const fixtures = {
     getMinimumRequiredTokenAccountsForTransfer: [

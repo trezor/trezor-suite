@@ -26,7 +26,7 @@ import {
     buildTokenTransferTransaction,
     getAssociatedTokenAccountAddress,
     dummyPriorityFeesForFeeEstimation,
-} from 'src/utils/wallet/solanaUtils';
+} from '@suite-common/wallet-utils';
 
 import {
     selectSelectedAccount,
