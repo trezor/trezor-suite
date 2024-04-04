@@ -17,7 +17,7 @@ import {
     getNetwork,
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@suite-common/redux-utils';
-import { ETH_DEFAULT_GAS_LIMIT, ERC20_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     PrecomposedLevels,
     PrecomposedTransaction,
@@ -123,10 +123,6 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
         const { address, amount } = formValues.outputs[0];
 
         let customFeeLimit: string | undefined;
-        // set gasLimit based on ERC20 transfer
-        if (tokenInfo) {
-            customFeeLimit = ERC20_GAS_LIMIT;
-        }
 
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)

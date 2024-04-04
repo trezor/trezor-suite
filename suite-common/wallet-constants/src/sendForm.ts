@@ -9,7 +9,6 @@ export const ETH_DEFAULT_GAS_PRICE = '1';
 export const ETH_DEFAULT_GAS_LIMIT = '21000';
 
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`
-export const ERC20_GAS_LIMIT = '200000';
 
 export const DEFAULT_PAYMENT = {
     type: 'payment',
