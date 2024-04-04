@@ -13,6 +13,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
+        "@solana/buffer-layout": "^4.0.1",
+        "@solana/web3.js": "^1.90.0",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
@@ -25,6 +27,8 @@
         "@suite-common/wallet-constants": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
+        "@trezor/blockchain-link-types": "workspace:*",
+        "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
