@@ -6,20 +6,20 @@ import { TransportProtocolDecode } from '../types';
  */
 const readHeader = (buffer: Buffer) => {
     // 2 bytes
-    const typeId = buffer.readUInt16BE();
+    const messageType = buffer.readUInt16BE();
     // 4 bytes
     const length = buffer.readUInt32BE(2);
 
-    return { typeId, length };
+    return { messageType, length };
 };
 
 export const decode: TransportProtocolDecode = bytes => {
     const buffer = Buffer.from(bytes);
-    const { typeId, length } = readHeader(buffer);
+    const { messageType, length } = readHeader(buffer);
 
     return {
-        typeId,
+        messageType,
         length,
-        buffer: buffer.subarray(HEADER_SIZE),
+        payload: buffer.subarray(HEADER_SIZE),
     };
 };

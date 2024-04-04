@@ -23,7 +23,7 @@ describe('protocol-bridge', () => {
         data.writeUint32BE(379, 2);
 
         const read = bridge.decode(data);
-        expect(read.typeId).toEqual(55);
+        expect(read.messageType).toEqual(55);
         expect(read.length).toEqual(379);
     });
 });

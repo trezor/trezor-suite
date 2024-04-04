@@ -31,7 +31,7 @@ describe('protocol-v1', () => {
         data.writeUint32BE(379, 5);
 
         const read = v1.decode(data);
-        expect(read.typeId).toEqual(55);
+        expect(read.messageType).toEqual(55);
         expect(read.length).toEqual(379);
     });
 });

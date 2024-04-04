@@ -13,18 +13,18 @@ const readHeaderChunked = (buffer: Buffer) => {
     // 1 byte
     const sharp2 = buffer.readUInt8(2);
     // 2 bytes
-    const typeId = buffer.readUInt16BE(3);
+    const messageType = buffer.readUInt16BE(3);
     // 4 bytes
     const length = buffer.readUInt32BE(5);
 
-    return { magic, sharp1, sharp2, typeId, length };
+    return { magic, sharp1, sharp2, messageType, length };
 };
 
 // Parses first raw input that comes from Trezor and returns some information about the whole message.
 // [compatibility]: accept Buffer just like decode does. But this would require changes in lower levels
 export const decode: TransportProtocolDecode = bytes => {
     const buffer = Buffer.from(bytes);
-    const { magic, sharp1, sharp2, typeId, length } = readHeaderChunked(buffer);
+    const { magic, sharp1, sharp2, messageType, length } = readHeaderChunked(buffer);
 
     if (
         magic !== MESSAGE_MAGIC_HEADER_BYTE ||
@@ -37,7 +37,7 @@ export const decode: TransportProtocolDecode = bytes => {
 
     return {
         length,
-        typeId,
-        buffer: buffer.subarray(HEADER_SIZE + 1), // each chunk is prefixed by magic byte
+        messageType,
+        payload: buffer.subarray(HEADER_SIZE + 1), // each chunk is prefixed by magic byte
     };
 };
