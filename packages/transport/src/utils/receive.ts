@@ -23,7 +23,7 @@ async function receiveRest(
     return receiveRest(result, receiver, length, expectedLength);
 }
 
-async function receiveBuffer(
+export async function receive(
     receiver: () => Promise<ArrayBuffer>,
     decoder: TransportProtocolDecode,
 ) {
@@ -38,18 +38,6 @@ async function receiveBuffer(
     await receiveRest(result, receiver, payload.length, length);
 
     return { messageType, payload: result };
-}
-
-export async function receive(
-    receiver: () => Promise<ArrayBuffer>,
-    decoder: TransportProtocolDecode,
-) {
-    const { payload, messageType } = await receiveBuffer(receiver, decoder);
-
-    return {
-        messageType,
-        payload,
-    };
 }
 
 export async function receiveAndParse(
