@@ -30,13 +30,13 @@
             }
         },
         "productionAPK": {
-          "env": {
-              "EXPO_PUBLIC_ENVIRONMENT": "production"
-          },
-          "android": {
-            "credentialsSource": "remote",
-            "buildType": "apk"
-          }
+            "env": {
+                "EXPO_PUBLIC_ENVIRONMENT": "production"
+            },
+            "android": {
+                "credentialsSource": "remote",
+                "buildType": "apk"
+            }
         }
     },
     "submit": {
