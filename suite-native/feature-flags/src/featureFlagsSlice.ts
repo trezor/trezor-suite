@@ -1,10 +1,12 @@
-import { Platform } from 'react-native';
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { isAndroid } from '@trezor/env-utils';
+import { isDebugEnv } from '@suite-native/config';
 
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsPassphraseEnabled: 'isPassphraseEnabled',
+    IsViewOnlyEnabled: 'IsViewOnlyEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -15,13 +17,15 @@ export type FeatureFlagsRootState = {
 };
 
 export const featureFlagsInitialState: FeatureFlagsState = {
-    [FeatureFlag.IsDeviceConnectEnabled]: Platform.OS === 'android',
+    [FeatureFlag.IsDeviceConnectEnabled]: isAndroid(),
     [FeatureFlag.IsPassphraseEnabled]: false,
+    [FeatureFlag.IsViewOnlyEnabled]: isDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsPassphraseEnabled,
+    FeatureFlag.IsViewOnlyEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
