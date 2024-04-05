@@ -58,7 +58,10 @@ suite-web build stable codesign:
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
-    - nix-shell --option system x86_64-darwin --run "yarn build:libs"
+    - nix-shell --option system x86_64-darwin --run "yarn message-system-sign-config"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data build:lib"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/connect-iframe build:lib"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/connect-web build"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-web build"
   artifacts:
     expire_in: 7 days
