@@ -1,8 +1,14 @@
+import { A, F, G, pipe } from '@mobily/ts-belt';
+
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import { TokenInfo } from '@trezor/connect';
 
 import { TokenDefinitionsRootState } from './tokenDefinitionsTypes';
+import {
+    AccountsRootState,
+    selectAccountsByDeviceStateAndNetworkSymbol,
+} from '../accounts/accountsReducer';
 
 export const selectNetworkTokenDefinitions = (
     state: TokenDefinitionsRootState,
@@ -42,4 +48,23 @@ export const selectFilterKnownTokens = (
     tokens: TokenInfo[],
 ) => {
     return tokens.filter(token => selectCoinDefinition(state, networkSymbol, token.contract));
+};
+
+export const selectValidTokensByNetworkSymbolAndDeviceState = (
+    state: AccountsRootState & TokenDefinitionsRootState,
+    deviceState: string,
+    networkSymbol: NetworkSymbol,
+): TokenInfo[] => {
+    return pipe(
+        selectAccountsByDeviceStateAndNetworkSymbol(state, deviceState, networkSymbol),
+        A.map(account => account.tokens),
+        A.flat,
+        A.uniq,
+        A.filter(
+            token =>
+                G.isNotNullable(token) &&
+                selectIsSpecificCoinDefinitionKnown(state, networkSymbol, token.contract),
+        ),
+        F.toMutable,
+    );
 };

@@ -176,7 +176,11 @@ export type SuiteNativeAnalyticsEvent =
           payload: {
               loadDuration: number;
           } & {
-              [key in NetworkSymbol]: number;
+              [key in NetworkSymbol]: {
+                  numberOfAccounts: number;
+                  tokenSymbols?: TokenSymbol[];
+                  tokenAddresses?: TokenAddress[];
+              };
           };
       }
     | {

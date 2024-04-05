@@ -1,5 +1,5 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { A, D, G, pipe } from '@mobily/ts-belt';
+import { A, D, F, G, pipe } from '@mobily/ts-belt';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -148,6 +148,17 @@ export const selectAccountsByDeviceState = memoizeWithArgs(
     { size: 3 },
 );
 
+export const selectAccountsByDeviceStateAndNetworkSymbol = (
+    state: AccountsRootState,
+    deviceState: string,
+    networkSymbol: NetworkSymbol,
+): Account[] =>
+    pipe(
+        selectAccountsByDeviceState(state, deviceState),
+        A.filter(account => account.symbol === networkSymbol),
+        F.toMutable,
+    );
+
 export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState) => {
     const device = selectDevice(state);
 
@@ -192,15 +203,6 @@ export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = (
 
     return accounts[accountIndex]?.key;
 };
-
-export const selectDeviceAccountsLengthPerNetwork = (state: AccountsRootState & DeviceRootState) =>
-    pipe(
-        selectDeviceAccounts(state),
-        A.groupBy(account => account.symbol),
-        Object.entries,
-        A.map(([symbol, accounts]) => [symbol, accounts.length]),
-        pairs => Object.fromEntries(pairs),
-    );
 
 export const selectDeviceMainnetAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
     pipe(
