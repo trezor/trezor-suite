@@ -2,7 +2,7 @@ import { useMemo, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { variables, Button, CollapsibleBox, useElevation } from '@trezor/components';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
+import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@trezor/env-utils';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
@@ -146,7 +146,7 @@ export const TroubleshootingTips = ({
                     <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
                 </FooterText>
 
-                <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
+                <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_DEVICE_URL}>
                     <Button variant="tertiary" size="small">
                         <Translation id="TR_CONTACT_SUPPORT" />
                     </Button>
