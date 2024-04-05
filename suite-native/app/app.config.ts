@@ -110,13 +110,15 @@ const getPlugins = (): ExpoPlugins => {
         ...(buildType === 'debug'
             ? []
             : [
-                  '@sentry/react-native/expo',
-                  {
-                      url: 'https://sentry.io/',
-                      authToken: process.env.SENTRY_AUTH_TOKEN,
-                      project: 'suite-native',
-                      organization: 'satoshilabs',
-                  },
+                  [
+                      '@sentry/react-native/expo',
+                      {
+                          url: 'https://sentry.io/',
+                          authToken: process.env.SENTRY_AUTH_TOKEN,
+                          project: 'suite-native',
+                          organization: 'satoshilabs',
+                      },
+                  ],
               ]),
         // These should come last
         './plugins/withRemoveXcodeLocalEnv.js',
