@@ -1,0 +1,21 @@
+name: "[Release] connect npm"
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Name of the package to deploy.
+        required: true
+        type: choice
+        options:
+          - connect
+          - connect-web
+          - connect-webextension
+
+jobs:
+  deploy-npm-beta:
+    needs: [extract-branch]
+    environment: npm-packages
+    uses: ./.github/workflows/template-release-connect-npm.yml
+    with:
+      deploymentType: beta
+      packageName: ${{ inputs.package }}
