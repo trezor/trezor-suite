@@ -1,0 +1,34 @@
+name: "[Release] connect dependencies npm"
+on:
+  workflow_dispatch:
+    inputs:
+      package:
+        description: Name of the package to deploy.
+        required: true
+        type: choice
+        options:
+          - blockchain-link-types
+          - blockchain-link-utils
+          - blockchain-link
+          - connect-common
+          - transport
+          - utils
+          - utxo-lib
+          - connect-plugin-stellar
+          - connect-plugin-ethereum
+          - analytics
+          - connect-analytics
+          - type-utils
+          - env-utils
+          - protocol
+          - protobuf
+          - schema-utils
+
+jobs:
+  deploy-npm-beta:
+    needs: [extract-branch]
+    environment: npm-packages
+    uses: ./.github/workflows/template-release-connect-npm.yml
+    with:
+      deploymentType: beta
+      packageName: ${{ inputs.package }}
