@@ -458,6 +458,10 @@ export const en = {
         privacyAndSecurity: {
             title: 'Privacy & Security',
         },
+        viewOnly: {
+            title: 'View-only',
+            subtitle: 'Check balances without connecting your Trezor.',
+        },
     },
     moduleOnboarding: {
         welcomeScreen: {

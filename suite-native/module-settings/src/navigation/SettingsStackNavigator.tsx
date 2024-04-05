@@ -10,6 +10,7 @@ import { SettingsScreen } from '../screens/SettingsScreen';
 import { SettingsLocalizationScreen } from '../screens/SettingsLocalizationScreen';
 import { SettingsCustomizationScreen } from '../screens/SettingsCustomizationScreen';
 import { SettingsPrivacyAndSecurity } from '../screens/SettingsPrivacyAndSecurity';
+import { SettingsViewOnly } from '../screens/SettingsViewOnly';
 import { SettingsAboutUsScreen } from '../screens/SettingsAboutUsScreen';
 import { SettingsFAQScreen } from '../screens/SettingsFAQScreen';
 
@@ -39,6 +40,11 @@ export const SettingsStackNavigator = () => (
             options={{ title: SettingsStackRoutes.SettingsPrivacyAndSecurity }}
             name={SettingsStackRoutes.SettingsPrivacyAndSecurity}
             component={SettingsPrivacyAndSecurity}
+        />
+        <SettingsStack.Screen
+            options={{ title: SettingsStackRoutes.SettingsViewOnly }}
+            name={SettingsStackRoutes.SettingsViewOnly}
+            component={SettingsViewOnly}
         />
         <SettingsStack.Screen
             options={{ title: SettingsStackRoutes.SettingsFAQ }}
