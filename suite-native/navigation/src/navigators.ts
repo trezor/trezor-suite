@@ -50,6 +50,7 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsLocalization]: undefined;
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsPrivacyAndSecurity]: undefined;
+    [SettingsStackRoutes.SettingsViewOnly]: undefined;
     [SettingsStackRoutes.SettingsAbout]: undefined;
     [SettingsStackRoutes.SettingsFAQ]: undefined;
 };

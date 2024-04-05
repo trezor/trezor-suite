@@ -1,6 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import { useAtomValue } from 'jotai';
 
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import {
     SettingsStackRoutes,
     SettingsStackParamList,
@@ -15,6 +16,7 @@ import { isDevButtonVisibleAtom } from './ProductionDebug';
 
 export const ApplicationSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
+    const [isViewOnlyFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
 
     const navigation =
         useNavigation<
@@ -57,6 +59,14 @@ export const ApplicationSettings = () => {
                 subtitle="Analytics, Discreet mode, Biometrics"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
             />
+            {isViewOnlyFeatureEnabled && (
+                <SettingsSectionItem
+                    title="View-only"
+                    iconName="bookmark"
+                    subtitle="Check balances without your Trezor"
+                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
+                />
+            )}
         </SettingsSection>
     );
 };
