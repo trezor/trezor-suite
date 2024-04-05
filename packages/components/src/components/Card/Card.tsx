@@ -2,7 +2,12 @@ import { forwardRef, HTMLAttributes, ReactNode } from 'react';
 import styled, { css } from 'styled-components';
 import { borders, Elevation, mapElevationToBackground, spacingsPx } from '@trezor/theme';
 import { ElevationContext, useElevation } from '../ElevationContext/ElevationContext';
-import { ComponentFrame, FrameProps } from '../../components/common/ComponentFrame';
+import {
+    FrameProps,
+    TransientFrameProps,
+    withFrameProps,
+} from '../../components/common/frameProps';
+import { makePropsTransient } from '../../utils/transientProps';
 
 type PaddingType = 'small' | 'none' | 'normal';
 
@@ -29,10 +34,12 @@ const mapPaddingTypeToPadding = ({ $paddingType }: MapArgs): number | string => 
     return paddingMap[$paddingType];
 };
 
-const Container = styled.div`
+const Container = styled.div<TransientFrameProps>`
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     padding: ${spacingsPx.xxxs};
+
+    ${withFrameProps}
 `;
 
 const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
@@ -40,7 +47,9 @@ const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const CardContainer = styled.div<{ $elevation: Elevation; $paddingType: PaddingType }>`
+const CardContainer = styled.div<
+    { $elevation: Elevation; $paddingType: PaddingType } & TransientFrameProps
+>`
     display: flex;
     width: 100%;
     flex-direction: column;
@@ -62,6 +71,8 @@ const CardContainer = styled.div<{ $elevation: Elevation; $paddingType: PaddingT
 
     /* when theme changes from light to dark */
     transition: background 0.3s, box-shadow 0.2s;
+
+    ${withFrameProps}
 `;
 
 export type CardProps = FrameProps & {
@@ -94,19 +105,18 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
             ...rest,
         };
 
-        const hasLabel = label !== null && label !== undefined;
+        const frameProps = {
+            margin,
+            maxWidth,
+        };
 
-        return (
-            <ComponentFrame margin={margin} maxWidth={maxWidth} fill={!hasLabel} inflex={false}>
-                {hasLabel ? (
-                    <Container>
-                        <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
-                        <CardComponent {...props} ref={ref} />
-                    </Container>
-                ) : (
-                    <CardComponent {...props} ref={ref} />
-                )}
-            </ComponentFrame>
+        return label ? (
+            <Container {...makePropsTransient(frameProps)}>
+                <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
+                <CardComponent {...props} ref={ref} />
+            </Container>
+        ) : (
+            <CardComponent {...props} {...frameProps} ref={ref} />
         );
     },
 );

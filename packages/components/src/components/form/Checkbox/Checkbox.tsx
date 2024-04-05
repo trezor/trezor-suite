@@ -6,7 +6,8 @@ import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../assets/Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
 import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
-import { FrameProps, ComponentFrame } from '../../common/ComponentFrame';
+import { FrameProps, TransientFrameProps, withFrameProps } from '../../common/frameProps';
+import { makePropsTransient } from '../../../utils/transientProps';
 
 interface VariantStyles {
     background: Color;
@@ -60,7 +61,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
     },
 };
 
-type ContainerProps = {
+type ContainerProps = TransientFrameProps & {
     $isDisabled?: boolean;
     $labelAlignment?: LabelAlignment;
 };
@@ -72,6 +73,7 @@ export const Container = styled.div<ContainerProps>`
     flex-direction: ${({ $labelAlignment }) => $labelAlignment === 'left' && 'row-reverse'};
     pointer-events: ${({ $isDisabled }) => $isDisabled && 'none'};
     cursor: ${({ $isDisabled }) => ($isDisabled ? 'default' : 'pointer')};
+    ${withFrameProps}
 `;
 
 export const CheckContainer = styled.div<{ $variant: CheckboxVariant }>`
@@ -144,7 +146,7 @@ export const HiddenInput = styled.input`
 export type CheckboxVariant = Extract<UIVariant, 'primary' | 'destructive' | 'warning'>;
 export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
-export interface CheckboxProps extends FrameProps {
+export type CheckboxProps = {
     variant?: CheckboxVariant;
     isChecked?: boolean;
     isDisabled?: boolean;
@@ -153,7 +155,7 @@ export interface CheckboxProps extends FrameProps {
     'data-test'?: string;
     className?: string;
     children?: ReactNode;
-}
+} & Pick<FrameProps, 'margin'>;
 
 export const Checkbox = ({
     variant = 'primary',
@@ -174,35 +176,38 @@ export const Checkbox = ({
         }
     };
 
+    const frameProps = {
+        margin,
+    };
+
     return (
-        <ComponentFrame margin={margin}>
-            <Container
-                $isDisabled={isDisabled}
-                $labelAlignment={labelAlignment}
-                onClick={onClick}
-                onKeyUp={handleKeyUp}
-                data-test={dataTest}
-                className={className}
-            >
-                <HiddenInput
-                    checked={isChecked}
-                    disabled={isDisabled}
-                    readOnly
-                    type="checkbox"
-                    tabIndex={-1}
+        <Container
+            $isDisabled={isDisabled}
+            $labelAlignment={labelAlignment}
+            onClick={onClick}
+            onKeyUp={handleKeyUp}
+            data-test={dataTest}
+            className={className}
+            {...makePropsTransient(frameProps)}
+        >
+            <HiddenInput
+                checked={isChecked}
+                disabled={isDisabled}
+                readOnly
+                type="checkbox"
+                tabIndex={-1}
+            />
+
+            <CheckContainer tabIndex={0} $variant={variant}>
+                <CheckIcon
+                    $isVisible={!!isChecked}
+                    size={24}
+                    color={theme.iconOnPrimary}
+                    icon="CHECK"
                 />
+            </CheckContainer>
 
-                <CheckContainer tabIndex={0} $variant={variant}>
-                    <CheckIcon
-                        $isVisible={!!isChecked}
-                        size={24}
-                        color={theme.iconOnPrimary}
-                        icon="CHECK"
-                    />
-                </CheckContainer>
-
-                {children && <Label $isRed={variant === 'destructive'}>{children}</Label>}
-            </Container>
-        </ComponentFrame>
+            {children && <Label $isRed={variant === 'destructive'}>{children}</Label>}
+        </Container>
     );
 };
