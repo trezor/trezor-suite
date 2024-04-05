@@ -9,6 +9,7 @@ import {
     SVG_IMAGES,
     useElevation,
     ElevationUp,
+    ElevationDown,
     ElevationContext,
 } from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
@@ -205,14 +206,14 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                 {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
 
                 <Body data-test="@welcome-layout/body">
-                    <Left />
+                    <ElevationDown>
+                        <Left />
+                    </ElevationDown>
 
-                    <ElevationUp>
-                        <Right>{children}</Right>
+                    <Right>{children}</Right>
 
-                        <GuideButton />
-                        <GuideRouter />
-                    </ElevationUp>
+                    <GuideButton />
+                    <GuideRouter />
                 </Body>
             </Wrapper>
         </ElevationContext>

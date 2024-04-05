@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { FC, useEffect } from 'react';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Onboarding } from 'src/views/onboarding';
@@ -9,13 +9,18 @@ import type { AppState } from 'src/types/suite';
 import { SuiteLayout } from '../layouts/SuiteLayout/SuiteLayout';
 import { InitialLoading } from './InitialLoading';
 import { DatabaseUpgradeModal } from './DatabaseUpgradeModal';
-import { selectPrerequisite, selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
+import {
+    selectPrerequisite,
+    selectIsLoggedOut,
+    selectSuiteFlags,
+} from 'src/reducers/suite/suiteReducer';
 import { SuiteStart } from 'src/views/start/SuiteStart';
 import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
+import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
 
-const getFullscreenApp = (route: AppState['router']['route']) => {
+const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
         case 'start':
             return SuiteStart;
@@ -38,6 +43,11 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
+    const isViewOnlyModeVisible = useSelector(
+        state => state.suite.settings.debug.isViewOnlyModeVisible,
+    );
+
+    const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
 
     const dispatch = useDispatch();
 
@@ -61,11 +71,20 @@ export const Preloader = ({ children }: PreloaderProps) => {
         return <InitialLoading timeout={90} />;
     }
 
+    if (
+        isViewOnlyModeVisible &&
+        router.route?.app !== 'settings' &&
+        !initialRun &&
+        !viewOnlyPromoClosed
+    ) {
+        return <ViewOnlyPromo />;
+    }
+
     // TODO: murder the fullscreen app logic, there must be a better way
     // i don't like how it's not clear which layout is used
     // and that the prerequisite screen is handled multiple times
     const FullscreenApp = getFullscreenApp(router.route);
-    if (FullscreenApp) {
+    if (FullscreenApp !== undefined) {
         return <FullscreenApp />;
     }
 

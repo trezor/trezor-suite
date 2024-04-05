@@ -3,7 +3,7 @@ import {
     autoUpdate,
     offset,
     flip,
-    shift,
+    shift as shiftFloatingUI,
     useHover,
     useFocus,
     useDismiss,
@@ -14,7 +14,7 @@ import {
     useTransitionStyles,
     arrow,
 } from '@floating-ui/react';
-import type { Placement, UseFloatingReturn } from '@floating-ui/react';
+import type { Placement, ShiftOptions, UseFloatingReturn } from '@floating-ui/react';
 import {
     useState,
     useMemo,
@@ -50,6 +50,7 @@ interface TooltipOptions {
     isOpen?: boolean;
     onOpenChange?: (open: boolean) => void;
     offset: number;
+    shift?: ShiftOptions;
     delay: Delay;
 }
 
@@ -66,6 +67,7 @@ export const useTooltip = ({
     onOpenChange: setControlledOpen,
     offset: offsetValue,
     delay,
+    shift,
 }: TooltipOptions): UseTooltipReturn => {
     const arrowRef = useRef<SVGSVGElement>(null);
     const [isUncontrolledTooltipOpen, setIsUncontrolledTooltipOpen] = useState(isInitiallyOpen);
@@ -78,7 +80,12 @@ export const useTooltip = ({
         open,
         onOpenChange: setOpen,
         whileElementsMounted: autoUpdate,
-        middleware: [offset(offsetValue), flip(), shift(), arrow({ element: arrowRef })],
+        middleware: [
+            offset(offsetValue),
+            flip(),
+            shiftFloatingUI(shift),
+            arrow({ element: arrowRef }),
+        ],
     });
 
     const { context } = data;
