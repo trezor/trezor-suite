@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { useSelector } from 'react-redux';
+import { Platform } from 'react-native';
 
 import { analytics, EventType } from '@suite-native/analytics';
 import { Screen, ScreenSubHeader } from '@suite-native/navigation';
@@ -97,7 +98,7 @@ const BiometricsSwitchRow = () => {
             isChecked={isBiometricsOptionEnabled}
             onChange={toggleBiometricsOption}
             text="Biometrics"
-            iconName="userFocus"
+            iconName={Platform.OS === 'ios' ? 'touchId' : 'fingerprint'}
             description={
                 <RowDescription>
                     Use facial or fingerprint verification to unlock the app
