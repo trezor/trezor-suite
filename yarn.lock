@@ -9038,6 +9038,8 @@ __metadata:
   resolution: "@suite-native/feature-flags@workspace:suite-native/feature-flags"
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-native/config": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
     react-native: "npm:0.73.2"
     react-redux: "npm:8.0.7"
   languageName: unknown
