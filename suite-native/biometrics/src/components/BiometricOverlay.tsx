@@ -1,12 +1,11 @@
-import { Platform, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 
 import { Box, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon } from '@suite-common/icons';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Icon, iconSizes } from '@suite-common/icons';
+import { Translation } from '@suite-native/intl';
 
-import { BiometricsIcons } from './BiometricsIcons';
-import { useBiometricsSettings } from '../useBiometricsSettings';
+import { BiometricsIcon } from './BiometricsIcon';
 
 const overlayWrapperStyle = prepareNativeStyle(utils => ({
     ...StyleSheet.absoluteFillObject,
@@ -24,30 +23,6 @@ const bottomWrapperStyle = prepareNativeStyle(utils => ({
     gap: utils.spacings.extraSmall,
 }));
 
-const getBiometricsTranslationKey = ({
-    isFacialEnabled,
-    isFingerprintEnabled,
-}: {
-    isFacialEnabled: boolean;
-    isFingerprintEnabled: boolean;
-}): TxKeyPath => {
-    if (Platform.OS === 'ios') {
-        return isFacialEnabled ? 'biometrics.ios.faceId' : 'biometrics.ios.touchId';
-    }
-
-    if (Platform.OS === 'android') {
-        if (isFingerprintEnabled && isFacialEnabled) return 'biometrics.android.combined';
-
-        if (isFingerprintEnabled) return 'biometrics.android.fingerprint';
-
-        if (isFacialEnabled) {
-            return 'biometrics.android.facial';
-        }
-    }
-
-    return 'biometrics.unknown';
-};
-
 type BiometricOverlayProps = {
     isBiometricsAuthButtonVisible: boolean;
     onBiometricAuthPress: () => void;
@@ -58,9 +33,6 @@ export const BiometricOverlay = ({
     onBiometricAuthPress,
 }: BiometricOverlayProps) => {
     const { applyStyle } = useNativeStyles();
-    const { isFacialEnabled, isFingerprintEnabled } = useBiometricsSettings();
-
-    const titleTransKey = getBiometricsTranslationKey({ isFacialEnabled, isFingerprintEnabled });
 
     return (
         <>
@@ -72,8 +44,8 @@ export const BiometricOverlay = ({
                     onPress={onBiometricAuthPress}
                     style={applyStyle(bottomWrapperStyle)}
                 >
-                    <BiometricsIcons iconSize={32} showShadow />
-                    <Text color="textPrimaryDefault">{<Translation id={titleTransKey} />}</Text>
+                    <BiometricsIcon iconSize={iconSizes.extraLarge} showShadow />
+                    <Text color="textPrimaryDefault">{<Translation id="biometricsButton" />}</Text>
                 </TouchableOpacity>
             )}
         </>
