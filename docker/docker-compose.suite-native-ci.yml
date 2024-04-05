@@ -1,0 +1,15 @@
+version: "3"
+services:
+  trezor-user-env-unix:
+    network_mode: "host"
+    container_name: trezor-user-env.unix
+    image: ghcr.io/trezor/trezor-user-env
+    environment:
+      - SDL_VIDEODRIVER=dummy
+      - XDG_RUNTIME_DIR=/var/tmp
+    healthcheck:
+      test: curl --fail 127.0.0.1:9002 || exit 1
+      interval: 10s
+      retries: 25
+      start_period: 20s
+      timeout: 10s
