@@ -8650,6 +8650,10 @@ export default defineMessages({
         id: 'TR_STAKE_DAYS',
         defaultMessage: '{days} days',
     },
+    TR_STAKE_MAX_REWARD_DAYS: {
+        id: 'TR_STAKE_MAX_REWARD_DAYS',
+        defaultMessage: 'Max {days} days',
+    },
     TR_STAKE_NEXT_PAYOUT: {
         id: 'TR_STAKE_NEXT_PAYOUT',
         defaultMessage: 'Next reward payout',
