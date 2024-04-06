@@ -134,10 +134,10 @@ export const StakingCard = ({
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
     const { isTxStatusShown } = useIsTxStatusShown(new BigNumber(totalPendingStakeBalance));
 
-    const isDaysToAddToPoolShown = !Number.isNaN(daysToAddToPool) && !isValidatorsQueueLoading;
+    const isDaysToAddToPoolShown = daysToAddToPool !== undefined && !isValidatorsQueueLoading;
     const isPendingUnstakeShown =
         isUnstakePending && !new BigNumber(withdrawTotalAmount).eq(claimableAmount);
-    const isDaysToUnstakeShown = !Number.isNaN(daysToUnstake) && !isValidatorsQueueLoading;
+    const isDaysToUnstakeShown = daysToUnstake !== undefined && !isValidatorsQueueLoading;
 
     const stakeTxs = useSelector(state =>
         selectAccountStakeTransactions(state, selectedAccount?.key || ''),

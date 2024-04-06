@@ -99,9 +99,10 @@ export const ConfirmStakeEthModal = ({
                     <Translation
                         id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
                         values={{
-                            days: Number.isNaN(daysToAddToPoolInitial)
-                                ? '30+'
-                                : daysToAddToPoolInitial,
+                            days:
+                                daysToAddToPoolInitial === undefined
+                                    ? '30+'
+                                    : daysToAddToPoolInitial,
                         }}
                     />
                 </Flex>
