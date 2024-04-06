@@ -7,6 +7,7 @@ import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
 import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite';
+import { BACKUP_REWARD_PAYOUT_DAYS } from 'src/constants/suite/ethStaking';
 
 interface PayoutCardProps {
     nextRewardPayout?: number | null;
@@ -24,13 +25,13 @@ export const PayoutCard = ({
 
     const autocompoundBalance = getAccountAutocompoundBalance(selectedAccount);
     const payout = useMemo(() => {
-        if (!nextRewardPayout || !daysToAddToPool) return '--';
+        if (!nextRewardPayout || !daysToAddToPool) return undefined;
 
         if (new BigNumber(autocompoundBalance).gt(0) || daysToAddToPool <= nextRewardPayout) {
             return nextRewardPayout;
         }
 
-        if (!validatorWithdrawTime) return '--';
+        if (!validatorWithdrawTime) return undefined;
 
         return Math.round(validatorWithdrawTime / 60 / 60 / 24) + nextRewardPayout;
     }, [autocompoundBalance, daysToAddToPool, nextRewardPayout, validatorWithdrawTime]);
@@ -41,7 +42,14 @@ export const PayoutCard = ({
 
             <CardBottomContent>
                 <AccentP>
-                    <Translation id="TR_STAKE_DAYS" values={{ days: payout }} />
+                    {payout === undefined ? (
+                        <Translation
+                            id="TR_STAKE_MAX_REWARD_DAYS"
+                            values={{ days: BACKUP_REWARD_PAYOUT_DAYS }}
+                        />
+                    ) : (
+                        <Translation id="TR_STAKE_DAYS" values={{ days: payout }} />
+                    )}
                 </AccentP>
                 <GreyP>
                     <Translation id="TR_STAKE_NEXT_PAYOUT" />
