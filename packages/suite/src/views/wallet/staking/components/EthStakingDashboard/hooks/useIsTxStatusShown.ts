@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
 import BigNumber from 'bignumber.js';
 
-export const useIsTxStatusShown = (totalPendingStake: BigNumber) => {
+export const useIsTxStatusShown = (totalPendingStake: BigNumber, accountDescriptor?: string) => {
     // Handling the edge case, when a user can witness sudden change of pending stake deposit to 0.
     // In this case they should see the "Adding to staking pool" progress label as complete and
     // the "Staked & earning rewards" label as active for a few seconds.
     const [isTxStatusShown, setIsTxStatusShown] = useState(false);
     const prevTotalDeposited = useRef(totalPendingStake);
+
+    // reset on account change
+    useEffect(() => {
+        prevTotalDeposited.current = new BigNumber(0);
+    }, [accountDescriptor]);
+
     useEffect(() => {
         if (totalPendingStake.gt(0)) {
             prevTotalDeposited.current = totalPendingStake;

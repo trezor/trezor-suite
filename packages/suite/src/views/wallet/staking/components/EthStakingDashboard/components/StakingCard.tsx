@@ -132,7 +132,11 @@ export const StakingCard = ({
     const canUnstake = new BigNumber(autocompoundBalance).gt(0);
     const isStakePending = new BigNumber(totalPendingStakeBalance).gt(0);
     const isUnstakePending = new BigNumber(withdrawTotalAmount).gt(0);
-    const { isTxStatusShown } = useIsTxStatusShown(new BigNumber(totalPendingStakeBalance));
+
+    const { isTxStatusShown } = useIsTxStatusShown(
+        new BigNumber(totalPendingStakeBalance),
+        selectedAccount?.descriptor,
+    );
 
     const isDaysToAddToPoolShown = daysToAddToPool !== undefined && !isValidatorsQueueLoading;
     const isPendingUnstakeShown =
