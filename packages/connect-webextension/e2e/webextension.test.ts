@@ -5,6 +5,10 @@ import path from 'path';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { ensureDirectoryExists } from '@trezor/node-utils';
 
+export const log = (...val: string[]) => {
+    console.log(`[===]`, ...val);
+};
+
 let dir: string;
 test.beforeAll(async () => {
     dir = await ensureDirectoryExists('./screenshots/web-extension');
@@ -62,7 +66,7 @@ test('Basic web extension MV2', async () => {
     // https://github.com/microsoft/playwright/issues/5593#issuecomment-949813218
     await page.goto('chrome://inspect/#extensions');
 
-    await page.screenshot({ path: `${dir}/web-extension-mv2-1.png` });
+    await page.screenshot({ path: `${dir}/web-extension-mv2-in-inspect-extensions.png` });
 
     const url = await page.evaluate(
         () =>
@@ -72,27 +76,46 @@ test('Basic web extension MV2', async () => {
 
     expect(extensionId).toBeTruthy();
 
+    log('extensionId:', extensionId);
+
     await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
+
+    await page.screenshot({ path: `${dir}/web-extension-mv2-in-connect-manager.png` });
 
     // Wait for connect to be ready.
     await page.waitForSelector("div[data-test='connect-loaded']");
+
+    log('connect loaded');
 
     await page.waitForSelector("button[data-test='get-address']");
     await page.click("button[data-test='get-address']");
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
+
+    await popup.waitForTimeout(1000);
+    await popup.screenshot({ path: `${dir}/web-extension-mv2-waiting-for-analytics-button.png` });
+    log('waiting for analytics button');
+
     await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
         state: 'visible',
         timeout: 40000,
     });
     await popup.click("button[data-test='@analytics/continue-button']");
 
+    log('after analytics button');
+
+    await popup.screenshot({ path: `${dir}/web-extension-mv2-waiting-for-confirm-button.png` });
+
+    log('waiting for button confirm');
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     await popup.click('button.confirm');
 
+    await popup.screenshot({ path: `${dir}/web-extension-mv2-waiting-address-visible.png` });
+    log('waiting for address visible');
     await popup.waitForSelector('.export-address >> visible=true');
     await popup.locator('button.confirm >> visible=true').click();
+    await popup.screenshot({ path: `${dir}/web-extension-mv2-checking-address.png` });
 
     await popup.waitForSelector('text=3AnYTd2FGxJLNKL1AzxfW3FJMntp9D2KKX');
 
@@ -162,13 +185,18 @@ test('Basic web extension MV3', async () => {
     const extensionId = background.url().split('/')[2];
     expect(extensionId).toBeTruthy();
 
-    await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
-    await page.screenshot({ path: `${dir}/web-extension-mv3-1.png` });
+    log('extensionId:', extensionId);
 
+    await page.goto(`chrome-extension://${extensionId}/connect-manager.html`);
+    await page.screenshot({ path: `${dir}/web-extension-mv3-in-connect-manager.png` });
+
+    log('clicking on get-address button');
     await (await page.waitForSelector("button[data-test='get-address']")).click();
+    log('waiting for popup page');
 
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
+    log('popup page loaded');
 
     // There is not analytics button since this test is after the MV2 that already clicked it and the container is not pruned after.
     // await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
@@ -177,9 +205,16 @@ test('Basic web extension MV3', async () => {
     // });
     // await popup.click("button[data-test='@analytics/continue-button']");
 
+    await popup.waitForTimeout(1000);
+
+    await popup.screenshot({
+        path: `${dir}/web-extension-mv3-popup-waiting-for-confirm-button.png`,
+    });
+    log('waiting for button.confirm');
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     await popup.click('button.confirm');
 
+    log('waiting for address to be visible in popup');
     await popup.waitForSelector('.export-address >> visible=true');
     await popup.locator('button.confirm >> visible=true').click();
 
