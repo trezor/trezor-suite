@@ -89,12 +89,23 @@ test('input passphrase in popup and device accepts it', async () => {
 
     log('opening popup');
     [popup] = await openPopup(context, explorerPage, isWebExtension);
+    await popup.waitForLoadState('load');
 
     log('waiting for analytics continue button');
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
+    if (isWebExtension) {
+        // There is an issue in web extension, core takes time to load and accepting analytics too quickly can cause error
+        await popup.waitForTimeout(1000);
+    }
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
+
+    if (isWebExtension) {
+        log('waiting for device list');
+        await popup.waitForSelector('.select-device-list button.list');
+        await popup.click('.select-device-list button.list');
+    }
 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
@@ -127,10 +138,21 @@ test('introduce passphrase in popup and device rejects it', async () => {
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
+    await popup.waitForLoadState('load');
 
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
+    if (isWebExtension) {
+        // There is an issue in web extension, core takes time to load and accepting analytics too quickly can cause error
+        await popup.waitForTimeout(1000);
+    }
     await waitAndClick(popup, ['@analytics/continue-button']);
+
+    if (isWebExtension) {
+        log('waiting for device list');
+        await popup.waitForSelector('.select-device-list button.list');
+        await popup.click('.select-device-list button.list');
+    }
 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
