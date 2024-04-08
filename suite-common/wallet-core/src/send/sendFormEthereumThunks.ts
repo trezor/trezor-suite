@@ -23,12 +23,12 @@ import {
     PrecomposedTransaction,
     ExternalOutput,
 } from '@suite-common/wallet-types';
-import { selectDevice, selectTransactions } from '@suite-common/wallet-core';
-
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { MODULE_PREFIX } from './constants';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
+import { selectDevice } from '../device/deviceReducer';
+import { selectTransactions } from '../transactions/transactionsReducer';
+import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 const calculate = (
     availableBalance: string,
@@ -108,7 +108,7 @@ const calculate = (
 };
 
 export const composeEthereumSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/composeEthereumSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/composeEthereumSendFormTransactionThunk`,
     async ({ formValues, formState }: ComposeTransactionThunkArguments) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
@@ -227,7 +227,7 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
 );
 
 export const signEthereumSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
         { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
         { dispatch, getState, extra },

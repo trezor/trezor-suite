@@ -329,16 +329,17 @@ export const pushSendFormTransactionThunk = createThunk(
                         // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
                         // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
                         const outputIndex = outputsPermutation.findIndex(p => p === index);
-                        const metadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
-                            type: 'outputLabel',
-                            entityKey: selectedAccount.key,
-                            txid, // txid becomes available, use it
-                            outputIndex,
-                            value: label,
-                            defaultValue: '',
-                        };
+                        const outputMetadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> =
+                            {
+                                type: 'outputLabel',
+                                entityKey: selectedAccount.key,
+                                txid, // txid becomes available, use it
+                                outputIndex,
+                                value: label,
+                                defaultValue: '',
+                            };
 
-                        return metadata;
+                        return outputMetadata;
                     })
                     // filter out empty values AFTER creating metadata objects (see outputs mapping above)
                     .filter(output => output.value)
@@ -421,6 +422,7 @@ export const signTransactionThunk = createThunk(
             serializedTx = await dispatch(
                 signCardanoSendFormTransactionThunk({
                     transactionInfo,
+                    selectedAccount,
                 }),
             ).unwrap();
         } else {

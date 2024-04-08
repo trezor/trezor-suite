@@ -38,6 +38,7 @@
         "bignumber.js": "^9.1.2",
         "date-fns": "^2.30.0",
         "jws": "^4.0.0",
-        "proxy-memoize": "2.0.2"
+        "proxy-memoize": "2.0.2",
+        "web3-utils": "^1.10.0"
     }
 }

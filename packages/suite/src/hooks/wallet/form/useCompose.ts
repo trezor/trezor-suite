@@ -4,10 +4,8 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import {
-    signAndPushSendFormTransactionThunk,
-    composeSendFormTransactionThunk,
-} from 'src/actions/wallet/send/sendFormThunks';
+import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
