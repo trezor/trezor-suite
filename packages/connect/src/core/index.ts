@@ -273,7 +273,8 @@ const initDevice = async (method: AbstractMethod<any>) => {
             devices.length === 1 &&
             devices[0].type !== 'unreadable' &&
             devices[0].features &&
-            !isWebUsb
+            !isWebUsb &&
+            !useCoreInPopup
         ) {
             // there is one device available. use it
             device = _deviceList.getDevice(devices[0].path);
