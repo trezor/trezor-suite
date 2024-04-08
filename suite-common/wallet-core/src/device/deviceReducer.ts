@@ -811,8 +811,21 @@ export const selectHasDeviceFirmwareInstalled = (state: DeviceRootState) => {
     return !!device && device.firmware !== 'none';
 };
 
-export const selectIsDeviceRemembered = (state: DeviceRootState) => {
+const selectIsDeviceRemembered = (state: DeviceRootState) => {
     const device = selectDevice(state);
 
-    return device?.remember ?? false;
+    return !!device?.remember;
+};
+
+const selectIsDeviceConnected = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return !!device?.connected;
+};
+
+export const selectIsDeviceInViewOnlyMode = (state: DeviceRootState) => {
+    const isDeviceConnected = selectIsDeviceConnected(state);
+    const isDeviceRemembered = selectIsDeviceRemembered(state);
+
+    return !isDeviceConnected && isDeviceRemembered;
 };

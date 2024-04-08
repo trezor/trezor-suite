@@ -1,6 +1,9 @@
 import { useSelector } from 'react-redux';
 
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceInViewOnlyMode,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
 
 import { ShowAddressButtons } from './ShowAddressButtons';
@@ -21,10 +24,11 @@ export const UnverifiedAddress = ({
     onShowAddress,
 }: UnverifiedAddressSectionProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
     return (
         <VStack spacing="medium">
-            {isPortfolioTrackerDevice ? (
+            {isPortfolioTrackerDevice || isDeviceInViewOnlyMode ? (
                 <UnverifiedAddressWarning />
             ) : (
                 <UnverifiedAddressDevice

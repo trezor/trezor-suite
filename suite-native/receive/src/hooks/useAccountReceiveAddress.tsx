@@ -14,6 +14,7 @@ import {
     selectAccountNetworkSymbol,
     selectIsPortfolioTrackerDevice,
     confirmAddressOnDeviceThunk,
+    selectIsDeviceInViewOnlyMode,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
@@ -21,13 +22,17 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const navigation = useNavigation();
+    const [isViewOnlyFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
+
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();
@@ -129,6 +134,11 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 });
                 setIsReceiveApproved(true);
             }
+        } else if (isDeviceInViewOnlyMode && isViewOnlyFeatureEnabled) {
+            // If device is remembered,
+            // no verification should happen and we display the receive address straight away.
+            setIsUnverifiedAddressRevealed(true);
+            setIsReceiveApproved(true);
         } else {
             setIsUnverifiedAddressRevealed(true);
             const wasVerificationSuccessful = await verifyAddressOnDevice();
@@ -140,7 +150,13 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
+    }, [
+        isDeviceInViewOnlyMode,
+        isPortfolioTrackerDevice,
+        isViewOnlyFeatureEnabled,
+        networkSymbol,
+        verifyAddressOnDevice,
+    ]);
 
     return {
         address: freshAddress?.address,
