@@ -50,7 +50,7 @@ const routerReducer = (state: RouterState = initialState, action: Action): Route
 };
 
 export const selectRouter = (state: RouterRootState) => state.router;
-export const selectRoute = (state: RouterRootState) => state.router.route;
+export const selectRoute = (state: RouterRootState): RouterState['route'] => state.router.route;
 export const selectRouterParams = (state: RouterRootState) => state.router.params;
 export const selectRouteName = (state: RouterRootState) => state.router.route?.name;
 

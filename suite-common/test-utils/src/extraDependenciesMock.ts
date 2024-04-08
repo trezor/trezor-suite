@@ -2,6 +2,8 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
 import { PROTO } from '@trezor/connect';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Route } from '@suite-common/suite-types';
 
 import { testMocks } from './mocks';
 
@@ -60,12 +62,16 @@ export const extraDependenciesMock: ExtraDependencies = {
         cardanoFetchTrezorPools: mockThunk('fetchTrezorPools'),
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
         initMetadata: mockThunk('initMetadata'),
+        addAccountMetadata: mockThunk('addAccountMetadata'),
+        findLabelsToBeMovedOrDeleted: mockThunk('findLabelsToBeMovedOrDeleted'),
+        moveLabelsForRbfAction: mockThunk('moveLabelsForRbfAction'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>
             mockSelector('selectFeeInfo', testMocks.fee, { networkSymbol }),
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
+        selectAreSatsAmountUnit: mockSelector('selectAreSatsAmountUnit', false),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', ['btc', 'test']),
         selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
@@ -78,12 +84,18 @@ export const extraDependenciesMock: ExtraDependencies = {
         }),
         selectDesktopBinDir: mockSelector('selectDesktopBinDir', '/bin'),
         selectRouterApp: mockSelector('selectRouterApp', ''),
+        selectRoute: mockSelector('selectRoute', {} as Route),
         selectMetadata: mockSelector('selectMetadata', {}),
         selectDevice: mockSelector('selectDevice', {
             ...testMocks.getSuiteDevice(),
         }),
         selectDeviceDiscovery: mockSelector('selectDeviceDiscovery', undefined),
         selectCheckFirmwareAuthenticity: mockSelector('selectCheckFirmwareAuthenticity', false),
+        selectAddressDisplayType: mockSelector(
+            'selectAddressDisplayType',
+            AddressDisplayOptions.CHUNKED,
+        ),
+        selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),

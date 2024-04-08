@@ -24,6 +24,7 @@ import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
+import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -116,7 +117,10 @@ const walletMiddleware =
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
-            api.dispatch(convertSendFormDraftsThunk());
+            const nextSelectedAccountKey = selectSelectedAccountKey(api.getState());
+            api.dispatch(
+                convertSendFormDraftsThunk({ selectedAccountKey: nextSelectedAccountKey }),
+            );
             api.dispatch(coinmarketCommonActions.convertDrafts());
         }
 

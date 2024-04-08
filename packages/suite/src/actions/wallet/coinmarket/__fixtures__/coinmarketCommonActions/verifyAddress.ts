@@ -2,7 +2,7 @@ import { testMocks } from '@suite-common/test-utils';
 
 import { MODAL } from 'src/actions/suite/constants';
 import { COINMARKET_BUY, COINMARKET_EXCHANGE } from 'src/actions/wallet/constants';
-import { AddressDisplayOptions } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { BTC_ACCOUNT, ETH_ACCOUNT, XRP_ACCOUNT } from './accounts';
 

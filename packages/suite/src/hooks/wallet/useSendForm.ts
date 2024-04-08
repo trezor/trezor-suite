@@ -6,7 +6,7 @@ import {
     getSendFormDraftThunk,
     removeSendFormDraftThunk,
     saveSendFormDraftThunk,
-    signSendFormTransactionThunk,
+    signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
 import {
     getLastUsedFeeLevel,
@@ -264,7 +264,11 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             // signSendFormTransactionThunk > sign[COIN]SendFormTransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             setLoading(true);
             const result = await dispatch(
-                signSendFormTransactionThunk({ formValues: values, transactionInfo: composedTx }),
+                signAndPushSendFormTransactionThunk({
+                    formValues: values,
+                    transactionInfo: composedTx,
+                    selectedAccount: props.selectedAccount.account,
+                }),
             ).unwrap();
 
             setLoading(false);
@@ -273,7 +277,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 dispatch(goto('wallet-index', { preserveParams: true }));
             }
         }
-    }, [getValues, composedLevels, dispatch, resetContext]);
+    }, [getValues, composedLevels, dispatch, resetContext, props.selectedAccount.account]);
 
     // reset on account change
     useEffect(() => {

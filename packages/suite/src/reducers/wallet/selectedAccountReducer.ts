@@ -50,7 +50,4 @@ export const selectSelectedAccountHasSufficientEthForStaking = (
 export const selectIsSelectedAccountLoaded = (state: SelectedAccountRootState) =>
     state.wallet.selectedAccount.status === 'loaded';
 
-export const selectSelectedAccountNetwork = (state: SelectedAccountRootState) =>
-    state.wallet.selectedAccount.network;
-
 export default selectedAccountReducer;

@@ -16,6 +16,7 @@ import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/p
 import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -34,11 +35,6 @@ export interface DebugModeOptions {
 export interface AutodetectSettings {
     language: boolean;
     theme: boolean;
-}
-
-export enum AddressDisplayOptions {
-    ORIGINAL = 'original',
-    CHUNKED = 'chunked',
 }
 
 export type SuiteLifecycle =

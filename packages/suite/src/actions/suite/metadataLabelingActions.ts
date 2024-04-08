@@ -324,7 +324,7 @@ export const addDeviceMetadata =
  *               in a single account you may want to set "save" param to true only for the last call
  */
 export const addAccountMetadata =
-    (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>, save = true) =>
+    (payload: Exclude<MetadataAddPayload, { type: 'walletLabel' }>) =>
     (dispatch: Dispatch, getState: GetState) => {
         const account = getState().wallet.accounts.find(a => a.key === payload.entityKey);
         const provider = selectSelectedProviderForLabels(getState());
@@ -404,7 +404,7 @@ export const addAccountMetadata =
         );
 
         // we might intentionally skip saving metadata content to persistent storage.
-        if (!save) {
+        if (payload.skipSave) {
             return Promise.resolve({ success: true as const });
         }
 
