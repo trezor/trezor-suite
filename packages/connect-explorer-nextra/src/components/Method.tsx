@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { Inspector } from 'react-inspector';
 
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { Button, H3 } from '@trezor/components';
+import { CopyToClipboard } from 'nextra/components';
 
 import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
 import * as methodActions from '../actions/methodActions';
@@ -19,7 +20,6 @@ import {
     File,
 } from './fields';
 import { Row } from './fields/Row';
-import { CopyToClipboard } from './CopyToClipboard';
 
 interface Props {
     actions: {
@@ -167,6 +167,18 @@ const Checkboxes = styled.div`
     gap: 0 10px;
 `;
 
+const CopyWrapper = styled.div`
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s;
+
+    div:hover > & {
+        opacity: 1;
+    }
+`;
+
 interface VerifyButtonProps {
     onClick: (url: string) => void;
     name: string;
@@ -182,6 +194,7 @@ const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
 };
 
 export const Method = () => {
+    const theme = useTheme();
     const { method } = useSelector(state => ({
         method: state.method,
     }));
@@ -201,7 +214,14 @@ export const Method = () => {
 
     if (!name) return null;
 
-    const json = response ? <Inspector data={response} expandLevel={10} table={false} /> : null;
+    const json = response ? (
+        <Inspector
+            theme={theme.THEME === 'light' ? 'chromeLight' : 'chromeDark'}
+            data={response}
+            expandLevel={10}
+            table={false}
+        />
+    ) : null;
 
     return (
         <MethodContent>
@@ -218,14 +238,18 @@ export const Method = () => {
                 </Row>
                 <Heading>Method with params</Heading>
                 <CodeContainer data-test="@code">
-                    <CopyToClipboard data={javascriptCode} />
+                    <CopyWrapper>
+                        <CopyToClipboard getValue={() => javascriptCode ?? ''} />
+                    </CopyWrapper>
                     {javascriptCode}
                 </CodeContainer>
             </div>
             <div>
                 <Heading>Response</Heading>
                 <Container data-test="@response">
-                    <CopyToClipboard data={JSON.stringify(response, null, 2)} />
+                    <CopyWrapper>
+                        <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
+                    </CopyWrapper>
                     {json}
                 </Container>
             </div>

@@ -12,7 +12,8 @@
     "include": [
         "next-env.d.ts",
         "**/*.ts",
-        "**/*.tsx"
+        "**/*.tsx",
+        "../connect-explorer-theme/src/components/CopyToClipboard.tsx"
     ],
     "references": [
         { "path": "../components" },
