@@ -9,7 +9,7 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     SendContextValues,
-} from 'src/types/wallet/sendForm';
+} from '@suite-common/wallet-types';
 
 interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValues> {
     defaultValue?: FeeLevel['label'];

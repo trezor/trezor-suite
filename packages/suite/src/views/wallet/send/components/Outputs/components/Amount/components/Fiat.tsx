@@ -15,7 +15,7 @@ import {
     formatAmount,
     buildCurrencyOptions,
 } from '@suite-common/wallet-utils';
-import { CurrencyOption, Output } from 'src/types/wallet/sendForm';
+import { CurrencyOption, Output } from '@suite-common/wallet-types';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';

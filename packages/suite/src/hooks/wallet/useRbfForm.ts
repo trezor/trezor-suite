@@ -11,7 +11,7 @@ import {
     RbfTransactionParams,
     ChainedTransactions,
 } from '@suite-common/wallet-types';
-import { FormState, FeeInfo } from 'src/types/wallet/sendForm';
+import { FormState, FeeInfo } from '@suite-common/wallet-types';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';

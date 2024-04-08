@@ -1,6 +1,6 @@
 import produce from 'immer';
 import type { WalletAction, Account } from 'src/types/wallet';
-import type { PrecomposedTransactionFinal } from 'src/types/wallet/sendForm';
+import type { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 import type {
     BuyTrade,

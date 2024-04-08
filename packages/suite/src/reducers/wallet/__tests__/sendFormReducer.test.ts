@@ -1,6 +1,6 @@
 import { STORAGE } from 'src/actions/suite/constants';
 import { Action } from 'src/types/suite';
-import { FormState, PrecomposedTransactionFinal } from 'src/types/wallet/sendForm';
+import { FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { accountsActions } from '@suite-common/wallet-core';
 import { prepareSendFormReducer, initialState, sendFormActions } from '@suite-common/wallet-core';
 

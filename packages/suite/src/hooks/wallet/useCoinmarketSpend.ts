@@ -10,7 +10,7 @@ import * as coinmarketSellActions from 'src/actions/wallet/coinmarketSellActions
 import * as coinmarketSpendActions from 'src/actions/wallet/coinmarketSpendActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import type { FormState } from 'src/types/wallet/sendForm';
+import type { FormState } from '@suite-common/wallet-types';
 import { amountToSatoshi, getFeeLevels } from '@suite-common/wallet-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { useCompose } from './form/useCompose';

@@ -16,7 +16,7 @@ import {
 } from 'src/utils/suite/storage';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account, Network } from 'src/types/wallet';
-import type { FormState } from 'src/types/wallet/sendForm';
+import type { FormState } from '@suite-common/wallet-types';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { GraphData } from 'src/types/wallet/graph';

@@ -14,7 +14,7 @@ import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
 import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
-import { FeeInfo } from 'src/types/wallet/sendForm';
+import { FeeInfo } from '@suite-common/wallet-types';
 import { FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
 import { useTranslation } from 'src/hooks/suite';

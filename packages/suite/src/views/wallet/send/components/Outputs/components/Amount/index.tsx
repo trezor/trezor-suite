@@ -14,7 +14,7 @@ import {
     getFiatRateKey,
 } from '@suite-common/wallet-utils';
 import { useSendFormContext } from 'src/hooks/wallet';
-import { Output } from 'src/types/wallet/sendForm';
+import { Output } from '@suite-common/wallet-types';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { TokenSelect } from './components/TokenSelect';
 import { Fiat } from './components/Fiat';
