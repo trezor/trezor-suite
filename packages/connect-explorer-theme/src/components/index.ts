@@ -12,7 +12,6 @@ export { NavLinks } from './nav-links';
 export { Navbar } from './navbar';
 export { NotFoundPage } from './404';
 export { Search } from './search';
-export { Select } from './select';
 export { ServerSideErrorPage } from './500';
 export { Sidebar } from './sidebar';
 export { SkipNavContent, SkipNavLink } from './skip-nav';

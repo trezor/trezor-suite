@@ -10294,7 +10294,6 @@ __metadata:
   resolution: "@trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme"
   dependencies:
     "@headlessui/react": "npm:^1.7.17"
-    "@popperjs/core": "npm:^2.11.8"
     "@tailwindcss/nesting": "npm:^0.0.0-insiders.565cd3e"
     "@testing-library/react": "npm:^14.0.0"
     "@trezor/components": "workspace:*"

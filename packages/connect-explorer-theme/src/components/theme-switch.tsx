@@ -4,9 +4,11 @@ import { useTheme } from 'next-themes';
 import { useMounted } from 'nextra/hooks';
 import { MoonIcon, SunIcon } from 'nextra/icons';
 import { z } from 'zod';
+import cn from 'clsx';
+
+import { Select } from '@trezor/components';
 
 import { useConfig } from '../contexts';
-import { Select } from './select';
 
 type ThemeSwitchProps = {
     lite?: boolean;
@@ -21,7 +23,7 @@ export const themeOptionsSchema = z.strictObject({
 
 type ThemeOptions = z.infer<typeof themeOptionsSchema>;
 
-export function ThemeSwitch({ lite, className }: ThemeSwitchProps): ReactElement {
+export function ThemeSwitch({ lite }: ThemeSwitchProps): ReactElement {
     const { setTheme, resolvedTheme, theme = '' } = useTheme();
     const mounted = useMounted();
     const config = useConfig().themeSwitch;
@@ -32,26 +34,48 @@ export function ThemeSwitch({ lite, className }: ThemeSwitchProps): ReactElement
 
     return (
         <Select
-            className={className}
-            title="Change theme"
+            size="small"
+            isClean
             options={[
-                { key: 'light', name: options.light },
-                { key: 'dark', name: options.dark },
-                { key: 'system', name: options.system },
+                { value: 'light', label: options.light },
+                { value: 'dark', label: options.dark },
+                { value: 'system', label: options.system },
             ]}
             onChange={option => {
-                setTheme(option.key);
+                setTheme(option.value);
             }}
-            selected={{
-                key: theme,
-                name: (
-                    <div className="nx-flex nx-items-center nx-gap-2 nx-capitalize">
-                        <IconToUse />
-                        <span className={lite ? 'md:nx-hidden' : ''}>
-                            {mounted ? options[theme as keyof typeof options] : options.light}
-                        </span>
-                    </div>
-                ),
+            value={
+                mounted
+                    ? {
+                          value: theme,
+                          label: options[theme],
+                      }
+                    : undefined
+            }
+            menuPosition="absolute"
+            menuPortalTarget={typeof document !== 'undefined' ? document.body : undefined}
+            menuShouldScrollIntoView={false}
+            menuPlacement="top"
+            components={{
+                DropdownIndicator: () => null,
+                IndicatorSeparator: () => null,
+            }}
+            formatOptionLabel={(option, meta) => {
+                if (meta.context === 'value') {
+                    return (
+                        <div
+                            className={cn(
+                                'nx-flex nx-w-full nx-px-2 nx-items-center nx-gap-2 nx-text-sm nx-font-medium nx-capitalize nx-transition-colors',
+                                'nx-text-gray-600 dark:nx-text-gray-400 hover:nx-text-gray-900 dark:hover:nx-text-gray-50',
+                            )}
+                        >
+                            <IconToUse />
+                            <span className={lite ? 'md:nx-hidden' : ''}>{option.label}</span>
+                        </div>
+                    );
+                }
+
+                return option.label;
             }}
         />
     );
