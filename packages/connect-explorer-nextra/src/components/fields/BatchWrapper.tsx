@@ -12,17 +12,18 @@ interface BatchWrapperProps {
 const Wrapper = styled(Card)`
     display: flex;
     flex-direction: row;
-    margin: 4px 0 8px 32px;
+    margin: 4px 0 8px;
+    padding: 8px;
+    gap: 8px;
 `;
 
 const Fields = styled.div`
     flex: 1;
-    margin-right: 8px;
 `;
 
 export const BatchWrapper = ({ children, onRemove }: BatchWrapperProps) => (
     <Wrapper paddingType="small">
+        <Icon icon="CROSS" onClick={() => onRemove()} size={20} />
         <Fields>{children}</Fields>
-        <Icon icon="CROSS" onClick={() => onRemove()} />
     </Wrapper>
 );

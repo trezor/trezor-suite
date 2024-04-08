@@ -2,9 +2,9 @@
 import { Inspector } from 'react-inspector';
 
 import styled, { useTheme } from 'styled-components';
+import { CopyToClipboard } from 'nextra/components';
 
 import { Button, H3 } from '@trezor/components';
-import { CopyToClipboard } from 'nextra/components';
 
 import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
 import * as methodActions from '../actions/methodActions';
@@ -43,7 +43,7 @@ export const getFields = (fields: Field<any>[], props: Props) => {
     return (
         <>
             {children}
-            <Checkboxes>{boolsChildren}</Checkboxes>
+            {boolsChildren.length > 0 && <Checkboxes>{boolsChildren}</Checkboxes>}
         </>
     );
 };
@@ -122,16 +122,13 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
 };
 
 const MethodContent = styled.section`
-    flex: 1;
     display: grid;
     grid-template-columns: 3fr 2fr;
     gap: 20px;
 
     & > div {
-        display: flex;
-        flex-direction: column;
-        max-width: 100%;
-        overflow: hidden;
+        /* CSS grid obscurities */
+        min-width: 0;
     }
 `;
 
@@ -177,6 +174,13 @@ const CopyWrapper = styled.div`
     div:hover > & {
         opacity: 1;
     }
+`;
+
+const Sticky = styled.div`
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    width: 100%;
 `;
 
 interface VerifyButtonProps {
@@ -236,22 +240,24 @@ export const Method = () => {
                         <VerifyButton name={name} onClick={onVerify} />
                     )}
                 </Row>
-                <Heading>Method with params</Heading>
-                <CodeContainer data-test="@code">
-                    <CopyWrapper>
-                        <CopyToClipboard getValue={() => javascriptCode ?? ''} />
-                    </CopyWrapper>
-                    {javascriptCode}
-                </CodeContainer>
             </div>
             <div>
-                <Heading>Response</Heading>
-                <Container data-test="@response">
-                    <CopyWrapper>
-                        <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
-                    </CopyWrapper>
-                    {json}
-                </Container>
+                <Sticky>
+                    <Heading>Response</Heading>
+                    <Container data-test="@response">
+                        <CopyWrapper>
+                            <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
+                        </CopyWrapper>
+                        {json}
+                    </Container>
+                    <Heading>Method with params</Heading>
+                    <CodeContainer data-test="@code">
+                        <CopyWrapper>
+                            <CopyToClipboard getValue={() => javascriptCode ?? ''} />
+                        </CopyWrapper>
+                        {javascriptCode}
+                    </CodeContainer>
+                </Sticky>
             </div>
         </MethodContent>
     );
