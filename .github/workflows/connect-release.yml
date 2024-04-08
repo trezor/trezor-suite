@@ -21,4 +21,4 @@ jobs:
       awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
       awsRegion: "eu-central-1"
       serverHostname: "dev.suite.sldev.cz"
-      serverPath: "connect-release/9/${{ needs.extract-branch.outputs.branch }}"
+      serverPath: "connect-release/9"
