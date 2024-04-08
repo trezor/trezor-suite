@@ -134,6 +134,12 @@ test.beforeAll(async () => {
         log('beforeEach', 'waiting for popup load state');
         await popup.waitForLoadState('load');
 
+        if (isWebExtension) {
+            log('beforeEach', 'waiting for select device');
+            await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+            await popup.click('.select-device-list button.list');
+        }
+
         log('beforeEach', 'waiting for permissions confirm button');
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
         log('beforeEach', 'clicking on permissions confirm button');
@@ -183,6 +189,20 @@ test.beforeAll(async () => {
         [popup] = await openPopup(context, explorerPage, isWebExtension);
         log('afterEach', 'waiting for popup load state');
         await popup.waitForLoadState('load');
+
+        if (isWebExtension) {
+            log('afterEach', 'waiting for select device');
+            try {
+                await popup.waitForSelector('.select-device-list button.list', {
+                    state: 'visible',
+                    timeout: 5000,
+                });
+                await popup.click('.select-device-list button.list');
+            } catch (_) {
+                // Device is probably remembered
+                // TODO: do this in a better way
+            }
+        }
 
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
         await popup.click('button.confirm');
@@ -347,6 +367,10 @@ test.beforeAll(async () => {
         });
 
         await popup.waitForLoadState('load');
+        if (isWebExtension) {
+            await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+            await popup.click('.select-device-list button.list');
+        }
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
         await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
         // We are testing that when cancel permissions, popup is closed automatically.
