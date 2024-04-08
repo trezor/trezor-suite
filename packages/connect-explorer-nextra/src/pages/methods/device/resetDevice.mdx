@@ -1,10 +1,12 @@
-import { ResetDevice } from '@trezor/connect/src/types/api/resetDevice';
+import { PROTO } from '@trezor/connect/src/constants';
 
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 
-<ApiPlayground options={[{ title: 'ResetDevice', method: 'resetDevice', schema: ResetDevice }]} />
+<ApiPlayground
+    options={[{ title: 'ResetDevice', method: 'resetDevice', schema: PROTO.ResetDevice }]}
+/>
 
 export const paramDescriptions = {
     strength: 'Accepted values are [128|192|256]. Default is set to `256`',
@@ -30,7 +32,7 @@ const result = await TrezorConnect.resetDevice(params);
 
 #### ResetDevice
 
-<ParamsTable schema={ResetDevice} descriptions={paramDescriptions} />
+<ParamsTable schema={PROTO.ResetDevice} descriptions={paramDescriptions} />
 
 ### Example
 
