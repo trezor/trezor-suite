@@ -118,6 +118,11 @@ export const selectDevice = (payload: UiRequestSelectDevice['payload']) => {
         'remember-device',
     )[0] as HTMLInputElement;
 
+    const { settings } = getState();
+    if (settings?.useCoreInPopup && settings.env === 'webextension') {
+        rememberCheckbox.checked = true;
+    }
+
     // Show readable devices first
     payload.devices.sort((d1, d2) => {
         if (d1.type === 'unreadable' && d2.type !== 'unreadable') {
