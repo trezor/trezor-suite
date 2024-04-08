@@ -55,7 +55,6 @@ export const TransactionDetailData = ({
                 {isPhishingTransaction && (
                     <AlertBox
                         variant="error"
-                        isStandalone
                         title={
                             <Translation
                                 id="transactions.phishing.warning"

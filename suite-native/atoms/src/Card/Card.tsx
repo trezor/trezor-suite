@@ -32,6 +32,14 @@ const cardContainerStyle = prepareNativeStyle<{ isAlertDisplayed: boolean }>(
     }),
 );
 
+const alertBoxWrapperStyle = prepareNativeStyle(utils => ({
+    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+    borderTopLeftRadius: utils.borders.radii.medium,
+    borderTopRightRadius: utils.borders.radii.medium,
+    paddingHorizontal: utils.spacings.extraSmall,
+    paddingTop: utils.spacings.extraSmall,
+}));
+
 export const Card = ({ children, style, alertVariant, alertTitle }: CardProps) => {
     const { applyStyle } = useNativeStyles();
 
@@ -40,7 +48,9 @@ export const Card = ({ children, style, alertVariant, alertTitle }: CardProps) =
     return (
         <View>
             {isAlertDisplayed && (
-                <AlertBox isStandalone={false} variant={alertVariant} title={alertTitle} />
+                <View style={applyStyle(alertBoxWrapperStyle)}>
+                    <AlertBox variant={alertVariant} title={alertTitle} borderRadius={12} />
+                </View>
             )}
             {/* CAUTION: in case that alert is displayed, it is not possible to change styles of the top borders by the `style` prop. */}
             <View style={[applyStyle(cardContainerStyle, { isAlertDisplayed }), style]}>
