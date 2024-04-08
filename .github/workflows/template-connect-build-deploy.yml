@@ -1,0 +1,119 @@
+name: "[Template] Build and Deploy Connect"
+
+on:
+  workflow_call:
+    inputs:
+      awsRoleToAssume:
+        description: "AWS role to assume"
+        required: true
+        type: string
+      awsRegion:
+        description: "AWS region"
+        required: true
+        type: string
+      serverHostname:
+        description: "Server hostname (example: dev.suite.sldev.cz)"
+        type: string
+        required: true
+      serverPath:
+        description: "Server path (example: connect)"
+        type: string
+        required: true
+
+jobs:
+  build-deploy-connect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Pull only files needed for connect to save LFS bandwidth
+      - name: "Pull LFS files for connect"
+        run: git lfs pull --include "packages/connect-common/files/**/*"
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.awsRoleToAssume }}
+          aws-region: ${{ inputs.awsRegion }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/connect-popup @trezor/connect-webextension @trezor/connect-explorer
+
+      - name: Build connect-web
+        run: |
+          yarn workspace @trezor/connect-web build
+
+      - name: Check connect-web build size
+        run: ./packages/connect-web/scripts/check-inline-build-size.sh
+
+      - name: Build connect-iframe
+        run: |
+          yarn workspace @trezor/connect-iframe build
+
+      - name: Build connect-popup
+        run: |
+          yarn workspace @trezor/connect-popup build
+
+      - name: Build connect-webextension
+        run: |
+          yarn workspace @trezor/connect-webextension build
+
+      - name: Build connect-explorer
+        env:
+          ASSET_PREFIX: /${{ inputs.serverPath }}
+          NODE_ENV: "production"
+          url: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+          __TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
+        run: |
+          yarn workspace @trezor/connect-explorer build
+
+      - name: Build connect-examples webextension
+        env:
+          FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+        run: |
+          echo "FULL_URL is set to ${FULL_URL}"
+          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
+          node ./packages/connect-examples/update-webextensions-sw.js
+
+      - name: Build connect-explorer-webextension
+        run: |
+          yarn workspace @trezor/connect-explorer build:webextension
+
+      # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
+      - name: Upload connect-explorer to dev.suite.sldev.cz
+        env:
+          DEPLOY_PATH: s3://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+        run: |
+          echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
+          mkdir -p tmp_build_directory
+          cp -R ./packages/connect-iframe/build/* tmp_build_directory/
+          cp -R ./packages/connect-popup/build/* tmp_build_directory/
+          cp -R ./packages/connect-web/build/* tmp_build_directory/
+          cp -R ./packages/connect-explorer/build/* tmp_build_directory/
+          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
+
+      - name: Upload  connect-example webextension artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: connect-example-webextension
+          path: |
+            packages/connect-examples/webextension-mv2/build
+            packages/connect-examples/webextension-mv3/build
+            packages/connect-examples/webextension-mv3-sw/build
+
+      - name: Upload connect-explorer webextension artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: connect-explorer-webextension
+          path: |
+            packages/connect-explorer/build-webextension

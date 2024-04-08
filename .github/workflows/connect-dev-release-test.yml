@@ -26,6 +26,7 @@ on:
       - "yarn.lock"
       - ".github/workflows/connect-dev-release-test.yml"
       - ".github/workflows/template-connect-popup-test-params.yml"
+      - ".github/workflows/template-connect-build-deploy.yml"
       - "docker/docker-connect-popup-ci.sh"
   workflow_dispatch:
 
@@ -37,109 +38,23 @@ env:
   DEV_SERVER_HOSTNAME: "dev.suite.sldev.cz"
 
 jobs:
-  build-deploy:
+  extract-branch:
     runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          submodules: recursive
-
-      # Pull only files needed for connect to save LFS bandwidth
-      - name: "Pull LFS files for connect"
-        run: git lfs pull --include "packages/connect-common/files/**/*"
-
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
-          aws-region: eu-central-1
-
       - name: Extract branch name
-        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
+        run: echo "::set-output name=branch::${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
 
-      - name: Setup node
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: ".nvmrc"
-
-      - name: Install dependencies
-        run: |
-          echo -e "\nenableScripts: false" >> .yarnrc.yml
-          yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/connect-popup @trezor/connect-webextension @trezor/connect-explorer
-
-      - name: Build connect-web
-        run: |
-          yarn workspace @trezor/connect-web build
-
-      - name: Check connect-web build size
-        run: ./packages/connect-web/scripts/check-inline-build-size.sh
-
-      - name: Build connect-iframe
-        run: |
-          yarn workspace @trezor/connect-iframe build
-
-      - name: Build connect-popup
-        run: |
-          yarn workspace @trezor/connect-popup build
-
-      - name: Build connect-webextension
-        run: |
-          yarn workspace @trezor/connect-webextension build
-
-      - name: Build connect-explorer
-        env:
-          ASSET_PREFIX: /connect/${{ steps.extract_branch.outputs.branch }}
-          NODE_ENV: "production"
-          url: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}
-          __TREZOR_CONNECT_SRC: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-        run: |
-          yarn workspace @trezor/connect-explorer build
-
-      - name: Build connect-examples webextension
-        env:
-          FULL_URL: https://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-        run: |
-          echo "FULL_URL is set to ${FULL_URL}"
-          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
-          node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}" --build-folder build-legacy --npm-src "https://connect.trezor.io/9/trezor-connect.js"
-          node ./packages/connect-examples/update-webextensions-sw.js
-
-      - name: Build connect-explorer-webextension
-        run: |
-          yarn workspace @trezor/connect-explorer build:webextension
-
-      # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
-      - name: Upload connect-explorer to dev.suite.sldev.cz
-        env:
-          DEPLOY_PATH: s3://${{ env.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}
-        run: |
-          echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
-          mkdir -p tmp_build_directory
-          cp -R ./packages/connect-iframe/build/* tmp_build_directory/
-          cp -R ./packages/connect-popup/build/* tmp_build_directory/
-          cp -R ./packages/connect-web/build/* tmp_build_directory/
-          cp -R ./packages/connect-explorer/build/* tmp_build_directory/
-          aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
-
-      - name: Upload  connect-example webextension artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: connect-example-webextension
-          path: |
-            packages/connect-examples/webextension-mv2/build
-            packages/connect-examples/webextension-mv2/build-legacy
-            packages/connect-examples/webextension-mv3/build
-            packages/connect-examples/webextension-mv3/build-legacy
-            packages/connect-examples/webextension-mv3-sw/build
-
-      - name: Upload connect-explorer webextension artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: connect-explorer-webextension
-          path: |
-            packages/connect-explorer/build-webextension
+  build-deploy:
+    needs: [extract-branch]
+    uses: ./.github/workflows/template-connect-build-deploy.yml
+    with:
+      awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+      awsRegion: "eu-central-1"
+      serverHostname: "dev.suite.sldev.cz"
+      serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
 
   methods:
     needs: [build-deploy]
