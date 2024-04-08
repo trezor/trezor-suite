@@ -23,6 +23,7 @@ export * from './firmware/firmwareThunks';
 export * from './firmware/firmwareReducer';
 export * from './send/sendFormActions';
 export * from './send/sendFormReducer';
+export * from './send/sendFormThunks';
 export * from './device/deviceActions';
 export * from './device/deviceThunks';
 export * from './device/deviceReducer';
