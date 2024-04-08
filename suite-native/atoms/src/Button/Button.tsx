@@ -92,13 +92,13 @@ export const buttonSchemeToColorsMap = {
     },
     warningBold: {
         backgroundColor: 'backgroundAlertYellowBold',
-        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for color from sheny
+        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for colors https://github.com/trezor/trezor-suite/issues/11931
         textColor: 'textDefault',
         disabledTextColor: 'textDisabled',
     },
     warningElevation1: {
         backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
-        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for color from sheny
+        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for colors https://github.com/trezor/trezor-suite/issues/11931
         textColor: 'textAlertYellow',
         disabledTextColor: 'textDisabled',
     },
