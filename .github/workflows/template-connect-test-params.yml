@@ -1,4 +1,4 @@
-name: "[Test] connect"
+name: "[Template] connect unit"
 on:
   workflow_call:
     inputs:
