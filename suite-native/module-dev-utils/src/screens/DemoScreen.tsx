@@ -76,6 +76,8 @@ export const DemoScreen = () => {
         'secondary',
         'tertiaryElevation0',
         'dangerElevation0',
+        'warningBold',
+        'warningElevation1',
     ] satisfies ButtonColorScheme[];
 
     const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
