@@ -428,6 +428,8 @@ export const en = {
         viewOnly: {
             title: 'View-only',
             subtitle: 'Check balances without connecting your Trezor.',
+            emptySubitle: 'Connect your device to enable view-only',
+            enableButton: 'Enable',
         },
     },
     moduleOnboarding: {
