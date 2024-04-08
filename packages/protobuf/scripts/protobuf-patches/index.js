@@ -169,7 +169,7 @@ const TYPE_PATCH = {
     'EosActionUnlinkAuth.type': 'string',
     'EosActionNewAccount.creator': 'string',
     'EosActionNewAccount.name': 'string',
-    'ResetDevice.backup_type': 'string | number', // BackupType is a enum. in Features displayed as string, in resetDevice method param accepted as number
+    'ResetDevice.backup_type': 'Enum_BackupType',
     'StellarAsset.type': '0 | 1 | 2  | "NATIVE" | "ALPHANUM4" | "ALPHANUM12"', // StellarAssetType is a enum, accepted as both number and string
     'StellarSignTx.sequence_number': UINT_TYPE,
     'StellarSignTx.memo_id': UINT_TYPE,

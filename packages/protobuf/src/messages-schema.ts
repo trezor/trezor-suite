@@ -2428,7 +2428,7 @@ export const ResetDevice = Type.Object(
         u2f_counter: Type.Optional(Type.Number()),
         skip_backup: Type.Optional(Type.Boolean()),
         no_backup: Type.Optional(Type.Boolean()),
-        backup_type: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+        backup_type: Type.Optional(EnumEnum_BackupType),
     },
     { $id: 'ResetDevice' },
 );

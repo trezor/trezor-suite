@@ -3,9 +3,8 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { UI, createUiMessage } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
-import type { PROTO } from '../constants';
+import { PROTO } from '../constants';
 import { Assert } from '@trezor/schema-utils';
-import { ResetDevice as ResetDeviceSchema } from '../types/api/resetDevice';
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
     confirmed?: boolean;
@@ -18,7 +17,7 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
 
         const { payload } = this;
         // validate bundle type
-        Assert(ResetDeviceSchema, payload);
+        Assert(PROTO.ResetDevice, payload);
 
         this.params = {
             display_random: payload.display_random,

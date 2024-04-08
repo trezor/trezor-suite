@@ -1729,7 +1729,7 @@ export type ResetDevice = {
     u2f_counter?: number;
     skip_backup?: boolean;
     no_backup?: boolean;
-    backup_type?: string | number;
+    backup_type?: Enum_BackupType;
 };
 
 // BackupDevice
