@@ -781,6 +781,12 @@ export const selectPersistedDeviceStates = (state: DeviceRootState) => {
     return [...devices.map(d => d.state), PORTFOLIO_TRACKER_DEVICE_STATE];
 };
 
+export const selectPhysicalDevices = (state: DeviceRootState) => {
+    const devices = selectDevices(state);
+
+    return devices.filter(device => device.id !== PORTFOLIO_TRACKER_DEVICE_ID);
+};
+
 export const selectIsNoPhysicalDeviceConnected = (state: DeviceRootState) => {
     const devices = selectDevices(state);
 

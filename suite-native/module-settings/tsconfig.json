@@ -12,6 +12,12 @@
         {
             "path": "../../suite-common/suite-constants"
         },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../biometrics" },
