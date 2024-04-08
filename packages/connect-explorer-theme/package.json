@@ -24,7 +24,6 @@
     },
     "dependencies": {
         "@headlessui/react": "^1.7.17",
-        "@popperjs/core": "^2.11.8",
         "@trezor/components": "workspace:*",
         "@trezor/theme": "workspace:*",
         "@vitejs/plugin-react": "^3.0.1",
