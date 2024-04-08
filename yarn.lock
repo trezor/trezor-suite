@@ -8602,6 +8602,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
+    web3-utils: "npm:^1.10.0"
   languageName: unknown
   linkType: soft
 

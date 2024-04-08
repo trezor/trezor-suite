@@ -16,14 +16,15 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
 } from '@suite-common/wallet-types';
-import { selectDevice, selectTransactions } from '@suite-common/wallet-core';
 import { createThunk } from '@suite-common/redux-utils';
 
-import { MODULE_PREFIX } from './constants';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
+import { selectTransactions } from '../transactions/transactionsReducer';
+import { selectDevice } from '../device/deviceReducer';
+import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 export const composeBitcoinSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/composeBitcoinSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/composeBitcoinSendFormTransactionThunk`,
     async (
         { formValues, formState }: ComposeTransactionThunkArguments,
         { dispatch, getState, extra },
@@ -209,7 +210,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
 );
 
 export const signBitcoinSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
         { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
         { dispatch, getState, extra },

@@ -5,7 +5,7 @@ import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 import { accountsActions, sendFormActions } from '@suite-common/wallet-core';
-import { convertSendFormDraftsThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { convertSendFormDraftsThunk } from '@suite-common/wallet-core';
 
 export const blockchainSubscription = [
     {

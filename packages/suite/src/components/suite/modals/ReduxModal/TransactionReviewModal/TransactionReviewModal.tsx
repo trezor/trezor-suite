@@ -4,7 +4,7 @@ import { cancelSignTx as cancelSignStakingTx } from 'src/actions/wallet/stakeAct
 import { TransactionReviewModalContent } from './TransactionReviewModalContent';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { cancelSignSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { cancelSignSendFormTransactionThunk } from '@suite-common/wallet-core';
 
 // This modal is opened either in Device (button request) or User (push tx) context
 // contexts are distinguished by `type` prop

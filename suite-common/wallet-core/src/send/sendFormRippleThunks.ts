@@ -16,14 +16,12 @@ import {
     PrecomposedTransaction,
     ExternalOutput,
 } from '@suite-common/wallet-types';
-import { selectDevice } from '@suite-common/wallet-core';
-
 import { createThunk } from '@suite-common/redux-utils';
-
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
-import { MODULE_PREFIX } from './constants';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
+import { selectDevice } from '../device/deviceReducer';
+import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 const calculate = (
     availableBalance: string,
@@ -90,7 +88,7 @@ const calculate = (
 };
 
 export const composeRippleSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/composeRippleSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/composeRippleSendFormTransactionThunk`,
     async ({ formValues, formState }: ComposeTransactionThunkArguments) => {
         const { account, network, feeInfo } = formState;
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
@@ -183,7 +181,7 @@ export const composeRippleSendFormTransactionThunk = createThunk(
 );
 
 export const signRippleSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/signRippleSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/signRippleSendFormTransactionThunk`,
     async (
         { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
         { dispatch, getState, extra },

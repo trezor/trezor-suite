@@ -13,22 +13,18 @@ import {
 } from '@suite-common/wallet-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
+    Account,
     PrecomposedLevelsCardano,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
-import { selectDevice } from '@suite-common/wallet-core';
 import { createThunk } from '@suite-common/redux-utils';
 
-import {
-    selectSelectedAccount,
-    selectSelectedAccountStatus,
-} from 'src/reducers/wallet/selectedAccountReducer';
-
-import { MODULE_PREFIX } from './constants';
-import { ComposeTransactionThunkArguments } from './types';
+import { selectDevice } from '../device/deviceReducer';
+import { ComposeTransactionThunkArguments } from './sendFormTypes';
+import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 export const composeCardanoSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/composeCardanoSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/composeCardanoSendFormTransactionThunk`,
     async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
         const { account, feeInfo } = formState;
         const changeAddress = getUnusedChangeAddress(account);
@@ -126,12 +122,18 @@ export const composeCardanoSendFormTransactionThunk = createThunk(
 );
 
 export const signCardanoSendFormTransactionThunk = createThunk(
-    `${MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
+    `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
     async (
-        { transactionInfo }: { transactionInfo: PrecomposedTransactionFinalCardano },
-        { dispatch, getState },
+        {
+            transactionInfo,
+            selectedAccount,
+        }: { transactionInfo: PrecomposedTransactionFinalCardano; selectedAccount?: Account },
+        { dispatch, getState, extra },
     ) => {
-        const selectedAccount = selectSelectedAccount(getState());
+        const {
+            selectors: { selectSelectedAccountStatus },
+        } = extra;
+
         const selectedAccountStatus = selectSelectedAccountStatus(getState());
         const device = selectDevice(getState());
 
