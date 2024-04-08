@@ -20,7 +20,6 @@ const Container = styled.div<{ $elevation: Elevation }>`
     padding: ${spacingsPx.md} ${spacingsPx.xl};
     background-color: ${mapElevationToBackground};
     box-shadow: ${({ theme }) => theme.boxShadowBase};
-    margin-top: ${spacingsPx.xxl};
     flex-direction: row;
     display: flex;
     flex: 1;
@@ -99,7 +98,7 @@ export function Navbar({ flatDirectories, items }: NavBarProps): ReactElement {
     const { menu, setMenu } = useMenu();
 
     return (
-        <div className="nextra-nav-container nx-sticky nx-top-0 nx-z-20 nx-w-full nx-bg-transparent print:nx-hidden">
+        <div className="nextra-nav-container nx-sticky nx-top-[8px] nx-mt-[32px] nx-z-20 nx-w-full nx-bg-transparent print:nx-hidden">
             <nav className="nx-mx-auto nx-flex nx-h-[var(--nextra-navbar-height)] nx-max-w-[90rem] nx-items-start nx-justify-end nx-gap-2 nx-pl-[max(env(safe-area-inset-left),1.5rem)] nx-pr-[max(env(safe-area-inset-right),1.5rem)]">
                 <Container $elevation={elevation}>
                     {config.logoLink ? (
