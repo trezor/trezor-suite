@@ -9,6 +9,7 @@ const withNextra = nextra({
     mdxOptions: {
         rehypePlugins: [[rehypeSectionize]],
     },
+    defaultShowCopyCode: true,
 });
 const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
