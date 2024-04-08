@@ -1,5 +1,5 @@
 import produce from 'immer';
-import { FeeInfo } from 'src/types/wallet/sendForm';
+import { FeeInfo } from '@suite-common/wallet-types';
 import { NETWORKS } from 'src/config/wallet';
 import { Network, WalletAction } from 'src/types/wallet';
 import { blockchainActions } from '@suite-common/wallet-core';

@@ -4,7 +4,7 @@ import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sen
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FormState, UseSendFormState } from 'src/types/wallet/sendForm';
+import { FormState, UseSendFormState } from '@suite-common/wallet-types';
 import { getFeeLevels } from '@suite-common/wallet-utils';
 import type { FormOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';

@@ -15,7 +15,7 @@ import type {
     FormState,
     PrecomposedTransactionFinal,
     TxFinalCardano,
-} from 'src/types/wallet/sendForm';
+} from '@suite-common/wallet-types';
 import { getOutputState } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { ReviewOutput } from 'src/types/wallet/transaction';

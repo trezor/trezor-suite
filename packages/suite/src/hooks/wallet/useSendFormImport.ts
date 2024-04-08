@@ -11,7 +11,7 @@ import {
     amountToSatoshi,
     formatAmount,
 } from '@suite-common/wallet-utils';
-import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
+import { UseSendFormState, Output } from '@suite-common/wallet-types';
 import { Rate } from '@suite-common/wallet-types';
 
 type Props = {

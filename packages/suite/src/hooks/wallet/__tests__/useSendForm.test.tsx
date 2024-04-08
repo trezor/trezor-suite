@@ -12,7 +12,7 @@ import {
     UserAction,
     actionSequence,
 } from 'src/support/tests/hooksHelper';
-import { FormState, SendContextValues } from 'src/types/wallet/sendForm';
+import { FormState, SendContextValues } from '@suite-common/wallet-types';
 import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from '../__fixtures__/useSendForm';

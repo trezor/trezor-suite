@@ -8,7 +8,7 @@ import type {
     FormState,
     PrecomposedLevels,
     PrecomposedLevelsCardano,
-} from 'src/types/wallet/sendForm';
+} from '@suite-common/wallet-types';
 import type { AmountLimits, CryptoAmountLimits, Option } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { Rate, SendContextValues } from '@suite-common/wallet-types';

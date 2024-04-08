@@ -20,7 +20,7 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
-} from 'src/types/wallet/sendForm';
+} from '@suite-common/wallet-types';
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
 import { AnimatePresence, motion } from 'framer-motion';

@@ -19,7 +19,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import type { Output } from 'src/types/wallet/sendForm';
+import type { Output } from '@suite-common/wallet-types';
 import { InputError } from 'src/components/wallet';
 
 const Container = styled.div`

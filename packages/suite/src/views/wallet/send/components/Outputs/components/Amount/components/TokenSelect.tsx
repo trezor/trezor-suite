@@ -5,7 +5,7 @@ import { components } from 'react-select';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
-import { Output } from 'src/types/wallet/sendForm';
+import { Output } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectCoinDefinitions,

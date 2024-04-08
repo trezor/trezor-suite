@@ -9,7 +9,7 @@ import {
     FeeInfo,
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
-} from 'src/types/wallet/sendForm';
+} from '@suite-common/wallet-types';
 
 const Wrapper = styled.div`
     display: inline-flex;
