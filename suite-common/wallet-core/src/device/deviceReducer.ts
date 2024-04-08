@@ -810,3 +810,9 @@ export const selectHasDeviceFirmwareInstalled = (state: DeviceRootState) => {
 
     return !!device && device.firmware !== 'none';
 };
+
+export const selectIsDeviceRemembered = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device?.remember ?? false;
+};

@@ -302,6 +302,12 @@ export const en = {
                 content:
                     'For an extra layer of security, use Trezor Suite with your Trezor hardware wallet to verify the receive address',
             },
+            viewOnlyWarning: {
+                title: 'Receive address can’t be verified',
+                description: 'To confirm address, connect your Trezor',
+                primaryButton: 'Continue without verifying',
+                secondaryButton: 'Back',
+            },
             deviceHint: {
                 description: 'This receive address should match the one\non your Trezor device.',
             },

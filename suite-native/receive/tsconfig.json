@@ -22,6 +22,7 @@
         { "path": "../device-manager" },
         { "path": "../device-mutex" },
         { "path": "../ethereum-tokens" },
+        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../helpers" },
         { "path": "../intl" },

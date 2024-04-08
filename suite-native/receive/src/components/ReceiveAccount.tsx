@@ -25,6 +25,7 @@ type AccountReceiveProps = {
 
 export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
     const dispatch = useDispatch();
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
