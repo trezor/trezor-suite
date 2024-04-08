@@ -14,19 +14,19 @@ const AddWallet = styled.div`
     margin-top: 10px;
 `;
 
-// const StyledButton = styled(Button)`
-//     padding: 16px;
-//     justify-content: center;
-//     border: 1px dashed ${({ theme }) => theme.STROKE_GREY};
-//     border-radius: ${borders.radii.md};
-//     background: transparent;
+const StyledButton = styled(Button)`
+    padding: 16px;
+    justify-content: center;
+    border: 1px dashed ${({ theme }) => theme.STROKE_GREY};
+    border-radius: ${borders.radii.md};
+    background: transparent;
 
-//     &:hover,
-//     &:active,
-//     &:focus {
-//         background: ${({ theme }) => theme.BG_GREY_ALT};
-//     }
-// `;
+    &:hover,
+    &:active,
+    &:focus {
+        background: ${({ theme }) => theme.BG_GREY_ALT};
+    }
+`;
 
 const StyledTooltip = styled(Tooltip)`
     width: 100%;
@@ -72,9 +72,8 @@ export const AddWalletButton = ({
             <StyledTooltip
                 content={isLocked && <Translation id="TR_TO_ACCESS_OTHER_WALLETS" />}
                 cursor="pointer"
-                placement="bottom"
             >
-                <Button
+                <StyledButton
                     data-test={
                         emptyPassphraseWalletExists
                             ? '@switch-device/add-hidden-wallet-button'
@@ -91,7 +90,7 @@ export const AddWalletButton = ({
                     ) : (
                         <Translation id="TR_ADD_WALLET" />
                     )}
-                </Button>
+                </StyledButton>
             </StyledTooltip>
         </AddWallet>
     );

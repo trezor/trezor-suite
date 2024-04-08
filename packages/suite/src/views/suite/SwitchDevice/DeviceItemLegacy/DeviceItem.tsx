@@ -26,7 +26,6 @@ import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types
 import type { getBackgroundRoute } from 'src/utils/suite/router';
 import { spacingsPx } from '@trezor/theme';
 import { DeviceStatusText } from './DeviceStatusText';
-import { DeviceStatusWithLabel } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatusWithLabel';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -66,6 +65,8 @@ const WalletsWrapper = styled.div<{ $enabled: boolean }>`
     opacity: ${({ $enabled }) => ($enabled ? 1 : 0.5)};
     pointer-events: ${({ $enabled }) => ($enabled ? 'unset' : 'none')};
     padding-bottom: ${({ $enabled }) => ($enabled ? '0px' : '24px')};
+    margin-left: 37px;
+    margin-top: 24px;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         margin-left: 0;
@@ -131,7 +132,12 @@ interface DeviceItemProps {
     backgroundRoute: ReturnType<typeof getBackgroundRoute>;
 }
 
-export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
+export const DeviceItemLegacy = ({
+    device,
+    instances,
+    onCancel,
+    backgroundRoute,
+}: DeviceItemProps) => {
     const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();
 
@@ -246,6 +252,37 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                     {!isUnknown && isExpanded && (
                         <motion.div {...motionAnimation.expand}>
                             <WalletsWrapper $enabled>
+                                {instancesWithState.length > 0 && (
+                                    <WalletsTooltips>
+                                        <WalletsCount>
+                                            <Translation
+                                                id="TR_COUNT_WALLETS"
+                                                values={{ count: instancesWithState.length }}
+                                            />
+                                        </WalletsCount>
+                                        <ColRememberHeader
+                                            tooltipOpenGuide={
+                                                <OpenGuideFromTooltip id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md" />
+                                            }
+                                            tooltipContent={
+                                                <Translation id="TR_REMEMBER_ALLOWS_YOU_TO" />
+                                            }
+                                        >
+                                            <Translation id="TR_REMEMBER_HEADING" />
+                                        </ColRememberHeader>
+                                        <ColEjectHeader
+                                            tooltipOpenGuide={
+                                                <OpenGuideFromTooltip id="/1_initialize-and-secure-your-trezor/8_remember-and-eject.md" />
+                                            }
+                                            tooltipContent={
+                                                <Translation id="TR_EJECT_WALLET_EXPLANATION" />
+                                            }
+                                        >
+                                            <Translation id="TR_EJECT_HEADING" />
+                                        </ColEjectHeader>
+                                    </WalletsTooltips>
+                                )}
+
                                 <InstancesWrapper>
                                     {instancesWithState.map((instance, index) => (
                                         <WalletInstance

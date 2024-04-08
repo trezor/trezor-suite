@@ -48,7 +48,12 @@ const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
 `;
 
 const CardContainer = styled.div<
-    { $elevation: Elevation; $paddingType: PaddingType } & TransientFrameProps
+    {
+        $elevation: Elevation;
+        $paddingType: PaddingType;
+        $isHighlighted: boolean;
+        $isClickable: boolean;
+    } & TransientFrameProps
 >`
     display: flex;
     width: 100%;
@@ -56,6 +61,30 @@ const CardContainer = styled.div<
     padding: ${mapPaddingTypeToPadding};
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.md};
+    position: relative;
+    overflow: auto;
+    ${({ $isClickable, theme }) =>
+        $isClickable &&
+        `
+    &:hover {
+        box-shadow: ${theme.boxShadowElevated};
+        cursor: pointer;
+    }
+    `}
+
+    ${({ $isHighlighted, theme }) =>
+        $isHighlighted === true &&
+        `
+        &::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: ${spacingsPx.xxs};
+            background: ${theme.backgroundPrimaryDefault};
+        }
+        `}
     box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
 
     ${({ onClick, theme }) =>
@@ -84,14 +113,22 @@ export type CardProps = FrameProps & {
     className?: string;
     label?: ReactNode;
     forceElevation?: Elevation;
+    isHighlighted?: boolean;
 };
 
 const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: PaddingType }>(
-    ({ children, forceElevation, paddingType, ...rest }, ref) => {
+    ({ children, forceElevation, paddingType, isHighlighted = false, onClick, ...rest }, ref) => {
         const { elevation } = useElevation(forceElevation);
 
         return (
-            <CardContainer ref={ref} $elevation={elevation} $paddingType={paddingType} {...rest}>
+            <CardContainer
+                ref={ref}
+                $elevation={elevation}
+                $paddingType={paddingType}
+                $isHighlighted={isHighlighted}
+                $isClickable={Boolean(onClick)}
+                {...rest}
+            >
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
             </CardContainer>
         );

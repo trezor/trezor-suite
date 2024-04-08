@@ -7,10 +7,10 @@ import {
     selectFiatRates,
 } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
-import { Switch, Icon, variables, Card, Text, Divider } from '@trezor/components';
+import { Switch, Box, Icon, variables } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacingsPx } from '@trezor/theme';
 
 import {
     WalletLabeling,
@@ -24,15 +24,19 @@ import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer'
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
 
-const InstanceType = styled.div<{ isSelected: boolean }>`
+const InstanceType = styled.div`
     display: flex;
-    color: ${({ theme, isSelected }) => (isSelected ? theme.textDefault : theme.textSubdued)};
-    ${({ isSelected }) => isSelected && typography.highlight}
+    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    font-size: ${variables.FONT_SIZE.NORMAL};
+    line-height: 1.5;
+    align-items: center;
+
     /* these styles ensure proper metadata behavior */
     white-space: nowrap;
     overflow: hidden;
+    max-width: 300px;
 `;
 
 const InstanceTitle = styled.div`
@@ -54,24 +58,13 @@ const Col = styled.div<{ $grow?: number; $centerItems?: boolean }>`
     }
 `;
 
-const EjectContainer = styled.div`
-    position: absolute;
-    right: ${spacingsPx.sm};
-    top: ${spacingsPx.sm};
+const ColEject = styled(Col)`
+    margin-left: ${spacingsPx.xxxl};
+    margin-right: ${spacingsPx.sm};
 `;
 
-const Circle = styled.div<{ $isHighlighted?: boolean }>`
-    width: 6px;
-    height: 6px;
-    border-radius: 3px;
-    background: ${({ $isHighlighted, theme }) =>
-        $isHighlighted ? theme.iconPrimaryDefault : theme.iconSubdued};
-`;
-
-const ViewOnlyContainer = styled.div`
+const SwitchCol = styled.div`
     display: flex;
-    gap: ${spacingsPx.xs};
-    align-items: center;
 `;
 
 const LockIcon = styled(Icon)`
@@ -126,21 +119,20 @@ export const WalletInstance = ({
 
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
 
-    const isViewOnly = !!instance.remember;
-
     return (
-        <Card
+        <Box
+            forceElevation={0} // @TODO delete when Checkbox has different background in dark mode
             data-test={dataTestBase}
             key={`${instance.label}${instance.instance}${instance.state}`}
-            isHighlighted={isSelected}
-            paddingType="small"
-            onClick={() => !editing && selectDeviceInstance(instance)}
-            tabIndex={0}
+            variant={isSelected ? 'primary' : undefined}
             {...rest}
         >
-            <Col $grow={1}>
+            <Col $grow={1} onClick={() => !editing && selectDeviceInstance(instance)} tabIndex={0}>
                 {discoveryProcess && (
-                    <InstanceType isSelected={isSelected}>
+                    <InstanceType>
+                        {!instance.useEmptyPassphrase && (
+                            <LockIcon icon="LOCK_ACTIVE" color={theme.TYPE_DARK_GREY} size={12} />
+                        )}
                         {instance.state ? (
                             <MetadataLabeling
                                 defaultVisibleValue={
@@ -165,41 +157,40 @@ export const WalletInstance = ({
                 )}
 
                 {!discoveryProcess && (
-                    <InstanceType isSelected={isSelected}>
+                    <InstanceType>
                         <Translation id="TR_UNDISCOVERED_WALLET" />
                     </InstanceType>
                 )}
 
                 <InstanceTitle>
-                    <HiddenPlaceholder>
-                        <FiatHeader
-                            size="medium"
-                            fiatAmount={instanceBalance.toString() ?? '0'}
-                            localCurrency={localCurrency}
-                        />
-                    </HiddenPlaceholder>
+                    <Translation
+                        id="TR_NUM_ACCOUNTS_FIAT_VALUE"
+                        values={{
+                            accountsCount,
+                            fiatValue: (
+                                <HiddenPlaceholder>
+                                    <FiatAmountFormatter
+                                        value={instanceBalance.toString()}
+                                        currency={localCurrency}
+                                    />
+                                </HiddenPlaceholder>
+                            ),
+                        }}
+                    />
                 </InstanceTitle>
             </Col>
 
             {enabled && discoveryProcess && (
                 <>
-                    <Divider />
-                    <ViewOnlyContainer>
-                        <Circle $isHighlighted={isViewOnly} />
-                        <Text
-                            variant={isViewOnly ? 'primary' : 'tertiary'}
-                            typographyStyle="callout"
-                        >
-                            View-only {isViewOnly ? 'enabled' : 'disabled'}
-                        </Text>
-                        {/* <Switch
-                            isChecked={isViewOnly}
+                    <SwitchCol>
+                        <Switch
+                            isChecked={!!instance.remember}
                             onChange={handleRememberChange}
                             dataTest={`${dataTestBase}/toggle-remember-switch`}
-                        /> */}
-                    </ViewOnlyContainer>
+                        />
+                    </SwitchCol>
 
-                    <EjectContainer>
+                    <ColEject $centerItems>
                         <Icon
                             data-test={`${dataTestBase}/eject-button`}
                             icon="EJECT"
@@ -208,9 +199,9 @@ export const WalletInstance = ({
                             hoverColor={theme.TYPE_DARK_GREY}
                             onClick={handleEject}
                         />
-                    </EjectContainer>
+                    </ColEject>
                 </>
             )}
-        </Card>
+        </Box>
     );
 };

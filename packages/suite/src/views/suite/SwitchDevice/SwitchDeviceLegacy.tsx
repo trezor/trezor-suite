@@ -10,20 +10,16 @@ import { getBackgroundRoute } from 'src/utils/suite/router';
 import { ForegroundAppProps } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 
-import { DeviceItem } from './DeviceItem/DeviceItem';
-import { SwitchDeviceRenderer } from './SwitchDeviceRenderer';
-import { Card } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { DeviceItemLegacy } from './DeviceItemLegacy/DeviceItem';
 
 const DeviceItemsWrapper = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: ${spacingsPx.md};
     flex: 1;
 `;
 
-export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
+export const SwitchDeviceLegacy = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const selectedDevice = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
     const transport = useSelector(state => state.suite.transport);
@@ -44,26 +40,25 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const backgroundRoute = getBackgroundRoute();
 
     return (
-        <SwitchDeviceRenderer
+        <Modal
             isCancelable={cancelable}
             onCancel={onCancel}
-            // heading={<Translation id="TR_CHOOSE_WALLET" />}
-            // headerComponent={
-            //     isWebUsbTransport ? <WebUsbButton variant="tertiary" size="small" /> : undefined
-            // }
+            heading={<Translation id="TR_CHOOSE_WALLET" />}
+            headerComponent={
+                isWebUsbTransport ? <WebUsbButton variant="tertiary" size="small" /> : undefined
+            }
         >
             <DeviceItemsWrapper>
                 {sortedDevices.map(device => (
-                    <Card key={`${device.id}-${device.instance}`} paddingType="small">
-                        <DeviceItem
-                            device={device}
-                            instances={deviceUtils.getDeviceInstances(device, devices)}
-                            backgroundRoute={backgroundRoute}
-                            onCancel={onCancel}
-                        />
-                    </Card>
+                    <DeviceItemLegacy
+                        key={`${device.id}-${device.instance}`}
+                        device={device}
+                        instances={deviceUtils.getDeviceInstances(device, devices)}
+                        backgroundRoute={backgroundRoute}
+                        onCancel={onCancel}
+                    />
                 ))}
             </DeviceItemsWrapper>
-        </SwitchDeviceRenderer>
+        </Modal>
     );
 };
