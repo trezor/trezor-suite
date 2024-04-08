@@ -328,7 +328,7 @@ export const fetchTransactionsThunk = createThunk(
             (page > 1 && txsForPage.length === perPage) ||
             txsForPage.length === account.history.total
         ) {
-            if (recursive && !signal.aborted) {
+            if (recursive && !signal.aborted && account.history.total) {
                 const promise = dispatch(
                     fetchTransactionsThunk({
                         accountKey,
