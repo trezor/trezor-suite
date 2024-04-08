@@ -20,7 +20,7 @@ export const onCancel = createAction(MODAL.CLOSE);
 /**
  * Don't close modals on UI.CLOSE_UI.WINDOW event but wait for explicit closing instead
  */
-export const preserve = () => ({ type: MODAL.PRESERVE });
+export const preserve = createAction(MODAL.PRESERVE);
 
 /**
  * Called from <PinModal /> component

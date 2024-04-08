@@ -4,11 +4,20 @@ import {
     ActionCreatorWithPreparedPayload,
 } from '@reduxjs/toolkit';
 
-import { Account, Discovery, FeeInfo } from '@suite-common/wallet-types';
+import {
+    Account,
+    AccountKey,
+    AddressDisplayOptions,
+    Discovery,
+    FeeInfo,
+    SelectedAccountStatus,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
+import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
 import { BlockchainBlock, ConnectSettings, Manifest, PROTO } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { MetadataAddPayload } from '@suite-common/metadata-types';
 
 import { ActionType, SuiteCompatibleSelector, SuiteCompatibleThunk } from './types';
 
@@ -30,11 +39,28 @@ export type ExtraDependencies = {
         cardanoFetchTrezorPools: SuiteCompatibleThunk<'tADA' | 'ADA'>;
         initMetadata: SuiteCompatibleThunk<boolean>;
         fetchAndSaveMetadata: SuiteCompatibleThunk<string>;
+        addAccountMetadata: SuiteCompatibleThunk<
+            Exclude<MetadataAddPayload, { type: 'walletLabel' }>
+        >;
+        findLabelsToBeMovedOrDeleted: SuiteCompatibleThunk<{
+            prevTxid: string;
+        }>;
+        moveLabelsForRbfAction: SuiteCompatibleThunk<{
+            newTxid: string;
+            toBeMovedOrDeletedList: Record<
+                AccountKey,
+                {
+                    toBeMoved: WalletAccountTransaction;
+                    toBeDeleted: WalletAccountTransaction[];
+                }
+            >;
+        }>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
         selectDevices: SuiteCompatibleSelector<TrezorDevice[]>;
         selectBitcoinAmountUnit: SuiteCompatibleSelector<PROTO.AmountUnit>;
+        selectAreSatsAmountUnit: SuiteCompatibleSelector<boolean>;
         selectEnabledNetworks: SuiteCompatibleSelector<NetworkSymbol[]>;
         selectLocalCurrency: SuiteCompatibleSelector<FiatCurrencyCode>;
         selectIsPendingTransportEvent: SuiteCompatibleSelector<boolean>;
@@ -44,9 +70,12 @@ export type ExtraDependencies = {
         selectDesktopBinDir: SuiteCompatibleSelector<string | undefined>;
         selectDevice: SuiteCompatibleSelector<TrezorDevice | undefined>;
         selectRouterApp: SuiteCompatibleSelector<string>;
+        selectRoute: SuiteCompatibleSelector<Route | undefined>;
         selectMetadata: SuiteCompatibleSelector<any>;
         selectDeviceDiscovery: SuiteCompatibleSelector<Discovery | undefined>;
         selectCheckFirmwareAuthenticity: SuiteCompatibleSelector<boolean>;
+        selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
+        selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

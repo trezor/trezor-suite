@@ -3,7 +3,7 @@ import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 import { SelectBar } from '@trezor/components';
-import { AddressDisplayOptions } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { setAddressDisplayType } from 'src/actions/suite/suiteActions';

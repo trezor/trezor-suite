@@ -14,6 +14,10 @@ import {
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
+import {
+    findLabelsToBeMovedOrDeleted,
+    moveLabelsForRbfAction,
+} from 'src/actions/wallet/moveLabelsForRbfActions';
 
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -26,6 +30,7 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
+import { PROTO } from '@trezor/connect';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -49,12 +54,17 @@ export const extraDependencies: ExtraDependencies = {
         cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
+        addAccountMetadata: metadataLabelingActions.addAccountMetadata,
+        findLabelsToBeMovedOrDeleted,
+        moveLabelsForRbfAction,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
         selectDevices: (state: AppState) => state.device.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
+        selectAreSatsAmountUnit: (state: AppState) =>
+            state.wallet.settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
@@ -65,8 +75,11 @@ export const extraDependencies: ExtraDependencies = {
         selectDeviceDiscovery: (state: DiscoveryRootState & DeviceRootState) =>
             selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
+        selectRoute: (state: AppState) => state.router.route,
         selectCheckFirmwareAuthenticity: (state: AppState) =>
             state.suite.settings.debug.checkFirmwareAuthenticity,
+        selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
+        selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

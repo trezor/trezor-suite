@@ -20,11 +20,7 @@ import { selectDevice } from '@suite-common/wallet-core';
 
 import { createThunk } from '@suite-common/redux-utils';
 
-import {
-    selectSelectedAccount,
-    selectSelectedAccountStatus,
-} from 'src/reducers/wallet/selectedAccountReducer';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { MODULE_PREFIX } from './constants';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
@@ -189,10 +185,13 @@ export const composeRippleSendFormTransactionThunk = createThunk(
 export const signRippleSendFormTransactionThunk = createThunk(
     `${MODULE_PREFIX}/signRippleSendFormTransactionThunk`,
     async (
-        { formValues, transactionInfo }: SignTransactionThunkArguments,
-        { dispatch, getState },
+        { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
+        { dispatch, getState, extra },
     ) => {
-        const selectedAccount = selectSelectedAccount(getState());
+        const {
+            selectors: { selectAddressDisplayType, selectSelectedAccountStatus },
+        } = extra;
+
         const selectedAccountStatus = selectSelectedAccountStatus(getState());
         const device = selectDevice(getState());
         const addressDisplayType = selectAddressDisplayType(getState());

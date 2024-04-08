@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import {
-    signSendFormTransactionThunk,
+    signAndPushSendFormTransactionThunk,
     composeSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
 
@@ -149,7 +149,11 @@ export const useCoinmarketRecomposeAndSign = () => {
             }
 
             return dispatch(
-                signSendFormTransactionThunk({ formValues, transactionInfo: composedToSign }),
+                signAndPushSendFormTransactionThunk({
+                    formValues,
+                    transactionInfo: composedToSign,
+                    selectedAccount: account,
+                }),
             ).unwrap();
         },
         [composed, dispatch, fees, selectedFee, translationString],

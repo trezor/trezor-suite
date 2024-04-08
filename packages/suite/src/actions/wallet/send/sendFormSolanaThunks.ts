@@ -28,11 +28,6 @@ import {
     dummyPriorityFeesForFeeEstimation,
 } from '@suite-common/wallet-utils';
 
-import {
-    selectSelectedAccount,
-    selectSelectedAccountStatus,
-} from 'src/reducers/wallet/selectedAccountReducer';
-
 import { MODULE_PREFIX } from './constants';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './types';
 
@@ -258,10 +253,13 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
 export const signSolanaSendFormTransactionThunk = createThunk(
     `${MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async (
-        { formValues, transactionInfo }: SignTransactionThunkArguments,
-        { dispatch, getState },
+        { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
+        { dispatch, getState, extra },
     ) => {
-        const selectedAccount = selectSelectedAccount(getState());
+        const {
+            selectors: { selectSelectedAccountStatus },
+        } = extra;
+
         const selectedAccountStatus = selectSelectedAccountStatus(getState());
         const device = selectDevice(getState());
 

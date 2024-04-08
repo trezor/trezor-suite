@@ -6,7 +6,9 @@ import type { Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 
 import { SIGN_VERIFY } from './constants';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 export type SignVerifyAction =
     | { type: typeof SIGN_VERIFY.SIGN_SUCCESS; signSignature: string }

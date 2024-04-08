@@ -5,7 +5,9 @@ import { confirmAddressOnDeviceThunk, selectDevice } from '@suite-common/wallet-
 import { RECEIVE } from 'src/actions/wallet/constants';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { GetState, Dispatch } from 'src/types/suite';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 export type ReceiveAction =
     | { type: typeof RECEIVE.DISPOSE }
