@@ -140,7 +140,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 const errorCode: string = e.code;
 
                 const errorMessage =
-                    errorCode === 'EADDRINUSE'
+                    errorCode === 'EADDRINUSE' || errorCode === 'EACCES'
                         ? `Port ${port} already in use!` // TODO: Try different port?
                         : `Start error code: ${errorCode}`;
 
