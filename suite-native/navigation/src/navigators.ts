@@ -18,6 +18,7 @@ import {
     ConnectDeviceStackRoutes,
     AddCoinAccountStackRoutes,
     PassphraseStackRoutes,
+    SendStackRoutes,
 } from './routes';
 
 type AddCoinFlowParams = RequireAllOrNone<
@@ -58,6 +59,13 @@ export type SettingsStackParamList = {
 
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
+};
+
+export type SendStackParamList = {
+    [SendStackRoutes.SendAccounts]: undefined;
+    [SendStackRoutes.SendForm]: {
+        accountKey: AccountKey;
+    };
 };
 
 export type AppTabsParamList = {
@@ -134,4 +142,5 @@ export type RootStackParamList = {
     [RootStackRoutes.DeviceInfo]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
     [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
+    [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
 };

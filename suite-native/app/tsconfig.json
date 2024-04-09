@@ -45,6 +45,7 @@
         { "path": "../module-onboarding" },
         { "path": "../module-passphrase" },
         { "path": "../module-receive" },
+        { "path": "../module-send" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../notifications" },

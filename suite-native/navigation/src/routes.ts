@@ -8,6 +8,7 @@ export enum RootStackRoutes {
     AccountSettings = 'AccountSettings',
     TransactionDetail = 'TransactionDetail',
     ReceiveModal = 'ReceiveModal',
+    SendStack = 'SendStack',
     DeviceInfo = 'DeviceInfo',
     AddCoinAccountStack = 'AddCoinAccountStack',
     PassphraseStack = 'PassphraseStack',
@@ -61,6 +62,11 @@ export enum AccountsStackRoutes {
 
 export enum ReceiveStackRoutes {
     ReceiveAccounts = 'ReceiveAccounts',
+}
+
+export enum SendStackRoutes {
+    SendAccounts = 'SendAccounts',
+    SendForm = 'SendForm',
 }
 
 export enum AddCoinAccountStackRoutes {
