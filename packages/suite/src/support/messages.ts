@@ -2008,12 +2008,12 @@ export default defineMessages({
         id: 'TR_ONBOARDING_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS: {
-        defaultMessage: 'Usage data',
+        defaultMessage: 'Data usage',
         id: 'TR_ALLOW_ANALYTICS',
     },
     TR_ALLOW_ANALYTICS_DESCRIPTION: {
         defaultMessage:
-            'All data is kept strictly anonymous; we only use it to improve the Trezor ecosystem.',
+            "All data is kept strictly anonymous. It's only used to improve the Trezor ecosystem.",
         id: 'TR_ALLOW_ANALYTICS_DESCRIPTION',
     },
     TR_ADDRESS_DISPLAY: {
@@ -2092,7 +2092,7 @@ export default defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            'A recovery seed backup is a series of randomly generated words created by your Trezor. It’s important that you write down your recovery seed and keep it safe, as it is the only way to recover and access your funds.',
+            "A wallet backup is a series of randomly generated words created by your Trezor. It’s important to write down your wallet backup and keep it safe, as it's the only way to recover and access your funds.",
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -2456,7 +2456,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_CHANGE_PIN_DESC: {
         defaultMessage:
-            'If your PIN has been exposed or you simply want to change it, you can reset it here. You can change your PIN as often as you like.',
+            'If your PIN has been compromised or if you wish to change it for any reason, you can do so here.',
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_DESC',
     },
     TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE: {
@@ -2473,11 +2473,11 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_WIPE_CODE_DESC',
     },
     TR_DEVICE_SETTINGS_AUTO_LOCK: {
-        defaultMessage: 'Auto-lock time',
+        defaultMessage: 'Auto-lock',
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK',
     },
     TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING: {
-        defaultMessage: 'The amount of time that elapses before the device automatically locks.',
+        defaultMessage: 'The time before the device locks automatically.',
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING',
     },
     TR_DEVICE_SETTINGS_AFTER_DELAY: {
@@ -2860,7 +2860,7 @@ export default defineMessages({
     TR_LOG_DESCRIPTION: {
         id: 'TR_LOG_DESCRIPTION',
         defaultMessage:
-            'In case of communication with our support team, the log contains all necessary technical information.',
+            'The log contains all necessary technical information about Trezor Suite. It may be needed when connecting with Trezor Support.',
     },
     TR_LTC_ADDRESS_INFO: {
         defaultMessage:
@@ -3075,7 +3075,7 @@ export default defineMessages({
         id: 'TR_COUNT_WALLETS',
     },
     TR_ACCOUNT_IS_EMPTY_DESCRIPTION: {
-        defaultMessage: 'Get started by receiving transactions or buying {network}.',
+        defaultMessage: 'Get started by receiving or buying {network}.',
         id: 'TR_ACCOUNT_IS_EMPTY_DESCRIPTION',
     },
     TR_GENERIC_ERROR_TITLE: {
@@ -3370,7 +3370,7 @@ export default defineMessages({
     },
     TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION: {
         defaultMessage:
-            'If you only need Bitcoin wallet operations, you can install the <button>{bitcoinOnly}</button> firmware.',
+            'For Bitcoin-only wallet operations, install <button>{bitcoinOnly}</button> firmware.',
         id: 'TR_SETTINGS_COINS_BITCOIN_ONLY_FIRMWARE_SUGGESTION',
     },
     TR_CONTINUE_ANYWAY: {
@@ -3453,7 +3453,7 @@ export default defineMessages({
         id: 'TR_START',
     },
     TR_SUITE_VERSION: {
-        defaultMessage: 'Suite version',
+        defaultMessage: 'Trezor Suite version',
         id: 'TR_SUITE_VERSION',
     },
     TR_SWITCH_DEVICE: {
@@ -3673,11 +3673,11 @@ export default defineMessages({
         id: 'TR_YOU_WERE_DISCONNECTED_DOT',
     },
     TR_YOUR_FIRMWARE_VERSION: {
-        defaultMessage: 'Your firmware version is {version}',
+        defaultMessage: 'Current firmware version  {version}',
         id: 'TR_YOUR_FIRMWARE_VERSION',
     },
     TR_YOUR_FIRMWARE_TYPE: {
-        defaultMessage: 'Your firmware type is {version}',
+        defaultMessage: 'Current firmware type  {version}',
         id: 'TR_YOUR_FIRMWARE_TYPE',
     },
     TR_SWITCH_TO_BITCOIN_ONLY: {
@@ -3694,7 +3694,7 @@ export default defineMessages({
         id: 'TR_YOUR_CURRENT_FIRMWARE_UNKNOWN',
     },
     TR_YOUR_CURRENT_VERSION: {
-        defaultMessage: 'You are currently running version {version}',
+        defaultMessage: 'Current version {version}',
         id: 'TR_YOUR_CURRENT_VERSION',
     },
     TR_YOUR_NEW_VERSION: {
@@ -4014,7 +4014,7 @@ export default defineMessages({
     },
     NOTIFICATIONS_EMPTY_DESC: {
         id: 'NOTIFICATIONS_EMPTY_DESC',
-        defaultMessage: 'You will see all important notifications here.',
+        defaultMessage: "You'll see all important notifications here.",
     },
     NOTIFICATIONS_SEEN_TITLE: {
         id: 'NOTIFICATIONS_SEEN_TITLE',
@@ -4096,7 +4096,7 @@ export default defineMessages({
     TR_TOR_DESCRIPTION: {
         id: 'TR_TOR_DESCRIPTION',
         defaultMessage:
-            "Enabling this will route all of Suite's traffic through the Tor network, increasing your privacy and security. Tor may take a while to load and initiate a connection.",
+            "Route all of Trezor Suite's traffic through the Tor network, increasing your privacy and security. It may take some time for Tor to load and establish a connection.",
     },
     TR_TOR_REMOVE_ONION_AND_DISABLE: {
         id: 'TR_TOR_REMOVE_ONION_AND_DISABLE',
@@ -4244,7 +4244,7 @@ export default defineMessages({
     },
     TR_CANCELLED: {
         id: 'TR_CANCELLED',
-        defaultMessage: 'Cancelled',
+        defaultMessage: 'Canceled',
     },
     TR_FOLLOW_INSTRUCTIONS_ON_DEVICE: {
         id: 'TR_FOLLOW_INSTRUCTIONS_ON_DEVICE',
@@ -4438,7 +4438,7 @@ export default defineMessages({
     TR_CLEAR_STORAGE_DESCRIPTION: {
         id: 'TR_CLEAR_STORAGE_DESCRIPTION',
         defaultMessage:
-            'Resetting the app restores it to its default settings; this is a good first step to any troubleshooting. The app will restart itself at the end of the process.',
+            'Resetting the app to its default settings is a recommended initial step for troubleshooting. The app will automatically restart once the process is complete.',
     },
     TR_CHOOSE_WALLET: {
         id: 'TR_CHOOSE_WALLET',
@@ -4465,7 +4465,7 @@ export default defineMessages({
     TR_VIEW_ONLY_CALL_TO_ACTION: {
         id: 'TR_VIEW_ONLY_CALL_TO_ACTION',
         defaultMessage:
-            'View only balances in the app even <primary>after Trezor is disconnected?</primary>',
+            'View balances in the app even <primary>after Trezor is disconnected?</primary>',
     },
     TR_VIEW_ONLY_EXPLANATION: {
         id: 'TR_VIEW_ONLY_EXPLANATION',
@@ -4568,7 +4568,7 @@ export default defineMessages({
     },
     TR_CHECK_SEED_IN_SETTINGS: {
         id: 'TR_CHECK_SEED_IN_SETTINGS',
-        defaultMessage: 'Check seed in Settings',
+        defaultMessage: 'Check backup in Settings',
     },
     TR_PIN: {
         id: 'TR_PIN',
@@ -4724,7 +4724,7 @@ export default defineMessages({
     },
     TR_TRY_TO_TEMPORARILY_HIDE: {
         id: 'TR_TRY_TO_TEMPORARILY_HIDE',
-        defaultMessage: 'Temporarily hide your balances',
+        defaultMessage: 'Hide your balances',
     },
     TR_TRY_DISCREET_MODE: {
         id: 'TR_TRY_DISCREET_MODE',
@@ -4732,7 +4732,7 @@ export default defineMessages({
     },
     TR_DISCREET_MODE_TRIED_OUT: {
         id: 'TR_DISCREET_MODE_TRIED_OUT',
-        defaultMessage: 'Discreet mode explored',
+        defaultMessage: 'Discreet mode',
     },
     TR_ENABLE_DISCREET_MODE: {
         id: 'TR_ENABLE_DISCREET_MODE',
@@ -4823,12 +4823,12 @@ export default defineMessages({
     },
     TR_SECURITY_CHECKPOINT_GOT_SEED: {
         id: 'TR_SECURITY_CHECKPOINT_GOT_SEED',
-        defaultMessage: 'Do you have your recovery seed (wallet backup)?',
+        defaultMessage: 'Do you have your wallet backup?',
     },
     TR_BEFORE_ANY_FURTHER_ACTIONS: {
         id: 'TR_BEFORE_ANY_FURTHER_ACTIONS',
         defaultMessage:
-            'Although unlikely, there might be a situation where you have to access your recovery seed in case of a firmware update issue.',
+            'Although unlikely, you may need to access your wallet backup in case of a firmware update issue.',
     },
     TR_CONTINUE_ONLY_WITH_SEED: {
         id: 'TR_CONTINUE_ONLY_WITH_SEED',
@@ -4842,7 +4842,7 @@ export default defineMessages({
     TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2: {
         id: 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2',
         defaultMessage:
-            'Before you continue, <button>check your backup in Settings</button>. This is an easy way to check and verify your recovery seed.',
+            'Before you continue, <button>check your backup in Settings</button>. This is an easy way to check and verify your wallet backup.',
     },
     TR_SWITCH_FIRMWARE_NO_BACKUP: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP',
@@ -5094,12 +5094,12 @@ export default defineMessages({
     TR_ONBOARDING_NEW_FW_DESCRIPTION: {
         id: 'TR_ONBOARDING_NEW_FW_DESCRIPTION',
         defaultMessage:
-            'A new firmware version is available. You can also update your Trezor directly from Suite once you have finished setting up your device.',
+            'New firmware is now available. Update your device now or do it in Trezor Suite once you have finished setting up your device.',
     },
     TR_FIRMWARE_NEW_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_NEW_FW_DESCRIPTION',
         defaultMessage:
-            'A new firmware version is available. You can either update your device now or continue and update it later.',
+            'New firmware is now available. Update your device now or choose to do it later.',
     },
     TR_FIRMWARE_REINSTALL_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION',
@@ -5143,7 +5143,7 @@ export default defineMessages({
     TR_EARLY_ACCESS_DESCRIPTION: {
         id: 'TR_EARLY_ACCESS_DESCRIPTION',
         defaultMessage:
-            'Join to test the latest product features before we release them to all Trezor users.',
+            "Test the latest product features before they're released to all Trezor users.",
     },
     TR_EARLY_ACCESS_DESCRIPTION_ENABLED: {
         id: 'TR_EARLY_ACCESS_DESCRIPTION_ENABLED',
@@ -5993,7 +5993,7 @@ export default defineMessages({
     TR_LABELING_FEATURE_ALLOWS: {
         id: 'TR_LABELING_FEATURE_ALLOWS',
         defaultMessage:
-            'Labeling allows you to rename your wallets, accounts, and addresses. Labels are applied by syncing with Dropbox or Google Drive.',
+            'Rename your wallets, accounts, and addresses. Labels are applied by syncing with Dropbox or Google Drive.',
     },
     TR_LABELING_ENABLED: {
         id: 'TR_LABELING_ENABLED',
@@ -6220,7 +6220,7 @@ export default defineMessages({
     },
     TR_FEEDBACK_ANALYTICS_ITEM_APP: {
         id: 'TR_FEEDBACK_ANALYTICS_ITEM_APP',
-        defaultMessage: 'Suite version',
+        defaultMessage: 'Trezor Suite version',
     },
     TR_FEEDBACK_CATEGORY_SELECT_PLACEHOLDER: {
         id: 'TR_FEEDBACK_CATEGORY_SELECT_PLACEHOLDER',
@@ -6371,7 +6371,7 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_RESTART_NEEDED: {
         id: 'TR_UPDATE_MODAL_RESTART_NEEDED',
-        defaultMessage: 'This requires restarting Trezor Suite.',
+        defaultMessage: 'This will restart Trezor Suite',
     },
     SETTINGS_UPDATE_CHECKING: {
         id: 'SETTINGS_UPDATE_CHECKING',
@@ -6465,7 +6465,7 @@ export default defineMessages({
     TR_COLOR_SCHEME_DESCRIPTION: {
         id: 'TR_COLOR_SCHEME_DESCRIPTION',
         defaultMessage:
-            'You can choose whether the application uses dark-colored elements on a light background or light-colored elements on a dark background.',
+            'Choose whether Trezor Suite uses dark-colored elements on a light background or light-colored elements on a dark background.',
     },
     TR_COLOR_SCHEME_DARK: {
         id: 'TR_COLOR_SCHEME_DARK',
@@ -6568,7 +6568,7 @@ export default defineMessages({
     TR_TRANSACTIONS_SEARCH_TIP_2: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_2',
         defaultMessage:
-            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong>> 1</strong> will show all transactions that have an amount of 1 and higher.',
+            'Tip: Use the greater than (>) and less than (<) symbols for amount searches. For example <strong> 1</strong> will show all transactions that have an amount of 1 and higher.',
     },
     TR_TRANSACTIONS_SEARCH_TIP_3: {
         id: 'TR_TRANSACTIONS_SEARCH_TIP_3',
@@ -7118,7 +7118,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_DOWNLOAD_DESKTOP_APP: {
         id: 'TR_ONBOARDING_DOWNLOAD_DESKTOP_APP',
-        defaultMessage: 'Download Desktop App',
+        defaultMessage: 'Download desktop app',
     },
     TR_DATA_ANALYTICS_CATEGORY_1: {
         id: 'TR_DATA_ANALYTICS_CATEGORY_1',
@@ -8585,7 +8585,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes {days} days. Once completed, you can trade or send it.',
+            'Unstaking usually takes about 3 days. Once completed, you can trade or send it.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
@@ -8799,7 +8799,7 @@ export default defineMessages({
     },
     TR_STAKE_PROVIDED_BY: {
         id: 'TR_STAKE_PROVIDED_BY',
-        defaultMessage: 'Provided by',
+        defaultMessage: 'Powered by',
     },
     TR_STAKE_YOUR_FUNDS_MAINTAINED: {
         id: 'TR_STAKE_YOUR_FUNDS_MAINTAINED',
@@ -8812,7 +8812,7 @@ export default defineMessages({
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake maintains and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
+            'Everstake manages and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
     },
     TR_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',
@@ -8825,7 +8825,7 @@ export default defineMessages({
     },
     TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN: {
         id: 'TR_SOLANA_TX_CONFIRMATION_MAY_TAKE_UP_TO_1_MIN',
-        defaultMessage: 'Confirmation of the transaction may take up to <nowrap>1 minute</nowrap>',
+        defaultMessage: 'Confirmation of transaction may take up to <nowrap>1 minute</nowrap>',
     },
     TR_VIEW_ONLY_PROMO_YES: {
         id: 'TR_VIEW_ONLY_PROMO_YES',
@@ -8841,7 +8841,7 @@ export default defineMessages({
     },
     TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: 'You will see wallet balances after disconnecting Trezor',
+        defaultMessage: "You'll see wallet balances after disconnecting Trezor",
     },
     TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO: {
         id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
