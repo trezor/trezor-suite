@@ -38,7 +38,7 @@ export const TransactionHeader = ({ transaction, isPending }: TransactionHeaderP
     }
 
     const isMultiTokenTransaction = transaction.tokens.length > 1;
-    const symbol = getTxHeaderSymbol(transaction).toUpperCase();
+    const symbol = getTxHeaderSymbol(transaction)?.toUpperCase();
 
     switch (transaction.type) {
         case 'sent':
