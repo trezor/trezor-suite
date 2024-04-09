@@ -29,6 +29,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const [isSendEnabled] = useFeatureFlag(FeatureFlag.IsSendEnabled);
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {

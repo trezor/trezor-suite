@@ -1,12 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { isAndroid } from '@trezor/env-utils';
-import { isDebugEnv } from '@suite-native/config';
+import { isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsPassphraseEnabled: 'isPassphraseEnabled',
-    IsViewOnlyEnabled: 'IsViewOnlyEnabled',
+    IsViewOnlyEnabled: 'isViewOnlyEnabled',
+    IsSendEnabled: 'isSendEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -20,12 +21,14 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: isAndroid(),
     [FeatureFlag.IsPassphraseEnabled]: isDebugEnv(),
     [FeatureFlag.IsViewOnlyEnabled]: isDebugEnv(),
+    [FeatureFlag.IsSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsPassphraseEnabled,
     FeatureFlag.IsViewOnlyEnabled,
+    FeatureFlag.IsSendEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({
