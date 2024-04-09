@@ -29,6 +29,9 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectDevice);
     const intl = useIntl();
+    const receiveSymbol = useSelector(
+        state => state.wallet.coinmarket.exchange.quotesRequest?.receive,
+    );
 
     if (!device) return null;
 
@@ -88,6 +91,7 @@ export const DeviceContextModal = ({
                 <ConfirmAddressModal
                     value={data.address}
                     addressPath={data.serializedPath}
+                    receiveSymbol={receiveSymbol}
                     onCancel={abort}
                 />
             ) : null;
