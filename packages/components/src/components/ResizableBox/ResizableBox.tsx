@@ -13,7 +13,7 @@ export type ResizableBoxProps = {
     maxHeight?: number;
 };
 
-const reactiveAreaWidth = '15px';
+const reactiveAreaWidth = 15;
 
 type ResizersProps = {
     $width?: number;
@@ -22,7 +22,7 @@ type ResizersProps = {
     $height?: number;
     $minHeight?: number;
     $maxHeight?: number;
-    x?: number; // TODO not really used
+    x?: number;
     y?: number;
 };
 
@@ -44,31 +44,31 @@ const Resizers = styled.div<ResizersProps>(({ $width, $minWidth, $maxWidth, $hei
 
         #top-div, #bottom-div {
           width: 100%;
-          height: ${reactiveAreaWidth};
+          height: ${reactiveAreaWidth}px;
           cursor: ns-resize;
         }
 
         #left-div, #right-div {
-          width: ${reactiveAreaWidth};
+          width: ${reactiveAreaWidth}px;
           height: 100%;
           bottom: 0;
           cursor: ew-resize;
         }
 
         #top-div {
-          top: ${`-${reactiveAreaWidth}`};
+          top: ${`-${reactiveAreaWidth/2}px`};
         }
 
         #left-div {
-          left: ${`-${reactiveAreaWidth}`};
+          left: ${`-${reactiveAreaWidth/2}px`};
         }
 
         #right-div {
-          right: ${`-${reactiveAreaWidth}`};
+          right: ${`-${reactiveAreaWidth/2}px`};
         }
 
         #bottom-div {
-          bottom: ${`-${reactiveAreaWidth}`};
+          bottom: ${`-${reactiveAreaWidth/2}px`};
         }
     `
 );
@@ -77,8 +77,22 @@ const Child = styled(Resizers)`
     position: relative;
     width: 100%;
     height: 100%;
-    overflow: scroll;
+    overflow: auto;
 `
+
+// TODO maybe move the following helper functions to a separate file
+
+// make sure the final width or height will be at least 1px while resizing, to make sure the box doesn't disappear
+const ensureMinimalSize = (size: number): number =>
+    size < 1 ? 1 : size;
+
+// get the final width/height when resizing according to the minWidth/minHeight
+const getMinResult = (min: number, result: number) =>
+    result > min ? result : min;
+
+// get the final width/height when resizing according to the maxWidth/maxHeight
+const getMaxResult = (max: number | undefined, result: number) =>
+    (max === undefined || result < max) ? result : max;
 
 export const ResizableBox = ({
     children,
@@ -93,89 +107,54 @@ export const ResizableBox = ({
 }: ResizableBoxProps) => {
     const resizableBoxRef = useRef<HTMLDivElement>(null);
 
-    const [newX, setNewX] = useState<number | undefined>(undefined);
-    const [newY, setNewY] = useState<number | undefined>(undefined);
-    const [newWidth, setNewWidth] = useState<number>(width || minWidth || 0);
-    const [newHeight, setNewHeight] = useState<number>(height || minHeight || 0);
-
-    useEffect(() => {
-        // const resizers = Array.from(document.querySelectorAll(
-        //   directions.map(direction => `#${direction}-div`)
-        //   .join(', ')
-        // )) as Array<HTMLDivElement>;
-
-        // Note: adding event listers inside loop doesn't work
-        // resizers.forEach((resizer) => {
-        //   const myCallback = () => handleMouseDown(resizer.id);
-        //   resizer.addEventListener('mousedown', myCallback);
-        // });
-
-        directions.includes('bottom') && document.querySelector('#bottom-div')?.addEventListener('mousedown', () => handleMouseDown('bottom-div'));
-        directions.includes('top') && document.querySelector('#top-div')?.addEventListener('mousedown', () => handleMouseDown('top-div'));
-        directions.includes('left') && document.querySelector('#left-div')?.addEventListener('mousedown', () => handleMouseDown('left-div'));
-        directions.includes('right') && document.querySelector('#right-div')?.addEventListener('mousedown', () => handleMouseDown('right-div'));
-
-        if (resizableBoxRef.current) {
-            const rect = resizableBoxRef.current.getBoundingClientRect(); // TODO sometimes returns incorrect values
-            setNewX(rect.x);
-            setNewY(rect.y);
-            !(width || minWidth) && setNewWidth(rect.width);
-            !(height || minHeight) && setNewHeight(rect.height);
-        }
-    }, [directions, resizableBoxRef.current]);
+    const [newX, setNewX] = useState<number>(0);
+    const [newY, setNewY] = useState<number>(0);
+    const [newWidth, setNewWidth] = useState<number>(width || minWidth);
+    const [newHeight, setNewHeight] = useState<number>(height || minHeight);
 
     const resize = (resizer: string, e: MouseEvent) => {
         const mouseX = e.clientX;
         const mouseY = e.clientY;
 
-        const difX = mouseX - (newX ?? 0) - newWidth;
-        const difY = mouseY - (newY ?? 0) - newHeight;
+        const difX = mouseX - (newX) - newWidth;
+        const difY = mouseY - (newY) - newHeight;
 
         let result = 0;
 
-        switch (resizer) {
-            // case 'top': // TODO how exactly should it behave?
-            //   break;
-            case 'left': // TODO how exactly should it behave?
-                result = -1*difX;
-                result = result < 0 ? 1 : result;
+        // TODO fix the computations, it's all kinda moved more than expected/before!
+        if (resizer === 'top') { // TODO find a way to display box to resize from top in storybook nicely
+            result = ensureMinimalSize(-difY);
 
-                if (difX < 0) {
-                    maxWidth
-                        ? setNewWidth(result < maxWidth ? result : maxWidth)
-                        : setNewWidth(result);
-                }
-                difX > 0 && setNewWidth(result > minWidth ? result : minWidth);
-                // setNewX(mouseX);
+            if (difY < 0) {
+                setNewHeight(getMaxResult(maxHeight, result));
+            } else if (difX > 0) {
+                setNewHeight(getMinResult(minHeight, result));
+            }
+        } else if (resizer === 'bottom') {
+            result = ensureMinimalSize(newHeight + difY);
 
-                break;
-            case 'right':
-                result = newWidth + difX;
-                result = result < 0 ? 1 : result;
+            if (difY > 0) {
+                setNewHeight(getMaxResult(maxHeight, result));
+            } else if (difX < 0) {
+                setNewHeight(getMinResult(minHeight, result));
+            }
+        } else if (resizer === 'left') {
+            result = ensureMinimalSize(-difX);
 
-                if (difX > 0) {
-                    maxWidth
-                        ? setNewWidth(result < maxWidth ? result : maxWidth)
-                        : setNewWidth(result);
-                }
-                difX < 0 && setNewWidth(result > minWidth ? result : minWidth);
+            if (difX < 0) {
+                setNewWidth(getMaxResult(maxWidth, result));
+            } else if (difX > 0) {
+                setNewWidth(getMinResult(minWidth, result));
+            }
+        } else if (resizer === 'right') {
+            result = ensureMinimalSize(newWidth + difX);
 
-                break;
-            case 'bottom':
-                result = newHeight + difY;
-                result = result < 0 ? 1 : result;
-
-                if (difY > 0) {
-                    maxHeight
-                        ? setNewHeight(result < maxHeight ? result : maxHeight)
-                        : setNewHeight(result);
-                }
-                difX < 0 && setNewHeight(result > minHeight ? result : minHeight);
-
-                break;
-            default:
-              break;
-        };
+            if (difX > 0) {
+                setNewWidth(getMaxResult(maxWidth, result));
+            } else if (difX < 0) {
+                setNewWidth(getMinResult(minWidth, result));
+            }
+        }
     };
 
     const handleMouseDown = (resizerID: string) => {
@@ -185,8 +164,51 @@ export const ResizableBox = ({
         };
 
         window.addEventListener('mousemove', resizeCallback);
-        window.addEventListener('mouseup', stopResize as EventListener);
+        window.addEventListener('mouseup', stopResize); // TODO make sure you remove also this listener!
     };
+
+    useEffect(() => {
+        if (directions.includes('top')) {
+            document.querySelector('#top-div')?.addEventListener('mousedown', () => handleMouseDown('top-div'));
+        }
+        if (directions.includes('bottom')) {
+            document.querySelector('#bottom-div')?.addEventListener('mousedown', () => handleMouseDown('bottom-div'));
+        }
+        if (directions.includes('left')) {
+            document.querySelector('#left-div')?.addEventListener('mousedown', () => handleMouseDown('left-div'));
+        }
+        if (directions.includes('right')) {
+            document.querySelector('#right-div')?.addEventListener('mousedown', () => handleMouseDown('right-div'));
+        }
+
+        if (resizableBoxRef.current) {
+            const rect = resizableBoxRef.current.getBoundingClientRect();
+            setNewX(rect.x);
+            setNewY(rect.y);
+
+            if(newWidth === 0) {
+                setNewWidth(rect.width);
+            }
+            if(newHeight === 0) {
+                setNewHeight(rect.height);
+            }
+        }
+
+        return () => {
+            if (directions.includes('top')) {
+                document.querySelector('#top-div')?.removeEventListener('mousedown', () => handleMouseDown('top-div'));
+            }
+            if (directions.includes('bottom')) {
+                document.querySelector('#bottom-div')?.removeEventListener('mousedown', () => handleMouseDown('bottom-div'));
+            }
+            if (directions.includes('left')) {
+                document.querySelector('#left-div')?.removeEventListener('mousedown', () => handleMouseDown('left-div'));
+            }
+            if (directions.includes('right')) {
+                document.querySelector('#right-div')?.removeEventListener('mousedown', () => handleMouseDown('right-div'));
+            }
+        };
+    }, [directions, resizableBoxRef]); // TODO maybe update dependencies array
 
     return (
         <Resizers
@@ -196,8 +218,8 @@ export const ResizableBox = ({
             $height={newHeight}
             $minHeight={minHeight}
             $maxHeight={maxHeight}
-            x={newX}
-            y={newY}
+            x={newX} // TODO are we gonna need this?
+            y={newY} // TODO are we gonna need this?
             ref={resizableBoxRef}
         >
             <Child>{children}</Child>
