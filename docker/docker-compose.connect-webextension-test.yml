@@ -12,7 +12,7 @@ services:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw
 
   test-run:
-    image: mcr.microsoft.com/playwright:focal
+    image: mcr.microsoft.com/playwright:v1.41.2-jammy
     container_name: webextension-test-runner
     ipc: host
     depends_on:
@@ -30,7 +30,7 @@ services:
       - PWDEBUG=console
 
     working_dir: /trezor-suite
-    command: bash -c "npx playwright install && yarn workspace @trezor/connect-webextension test:e2e"
+    command: bash -c "yarn workspace @trezor/connect-webextension test:e2e"
     volumes:
       - ../:/trezor-suite
       - /tmp/.X11-unix:/tmp/.X11-unix:rw

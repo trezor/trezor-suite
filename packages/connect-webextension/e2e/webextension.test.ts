@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-shadow
 import { test, expect, chromium } from '@playwright/test';
 import path from 'path';
 
@@ -47,7 +46,14 @@ test('Basic web extension MV2', async () => {
         'build',
     );
 
-    const userDataDir = '/tmp/test-user-data-dir';
+    const initialBrowserContext = await chromium.launchPersistentContext(
+        `/tmp/test-user-data-dir/${new Date().getTime()}`,
+    );
+    await initialBrowserContext.clearPermissions();
+    await initialBrowserContext.clearCookies();
+    await initialBrowserContext.close();
+
+    const userDataDir = `/tmp/test-user-data-dir/${new Date().getTime()}`;
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
         // https://playwright.dev/docs/chrome-extensions#headless-mode
         // By default, Chrome's headless mode in Playwright does not support Chrome extensions.
