@@ -13,7 +13,7 @@
         "pods": "npx pod-install",
         "prebuild": "expo prebuild",
         "eas-build-post-install": "yarn workspace @suite-common/message-system sign-config",
-        "eas-build-on-success": "./upload-to-firebase.sh",
+        "eas-build-on-success": "./eas-post-success.sh",
         "prebuild:clean": "expo prebuild --clean",
         "build:e2e": "../../node_modules/.bin/detox build --configuration",
         "test:e2e": "../../node_modules/.bin/detox test --configuration"

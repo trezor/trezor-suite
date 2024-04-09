@@ -6,9 +6,10 @@ on:
       PLATFORM:
         type: choice
         options:
+          - All
           - iOS
           - Android
-          - Both
+          - Android APK
         description: Select platform to run build
         required: true
 
@@ -24,7 +25,7 @@ jobs:
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'Both' }}
+    if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'All' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -53,7 +54,7 @@ jobs:
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'Both' }}
+    if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'All' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -75,3 +76,31 @@ jobs:
           --auto-submit
           --message ${{ github.sha }}
         working-directory: suite-native/app
+  androidAPK:
+      name: Build Android APK to GH releases
+      environment: production
+      runs-on: ubuntu-latest
+      env:
+        EXPO_PUBLIC_ENVIRONMENT: production
+        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+      if: ${{ github.event.inputs.PLATFORM == 'Android APK' || github.event.inputs.PLATFORM == 'All' }}
+      steps:
+        - uses: actions/checkout@v4
+        - uses: actions/setup-node@v4
+          with:
+            node-version-file: ".nvmrc"
+            cache: yarn
+        - name: Setup EAS
+          uses: expo/expo-github-action@v8
+          with:
+            eas-version: latest
+            token: ${{ secrets.EXPO_TOKEN }}
+        - name: Install libs
+          run: yarn install
+        - name: Build on EAS Android
+          run: eas build
+            --platform android
+            --profile productionAPK
+            --non-interactive
+            --message ${{ github.sha }}
+          working-directory: suite-native/app
