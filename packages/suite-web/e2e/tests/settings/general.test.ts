@@ -69,7 +69,7 @@ describe('General settings', () => {
 
         // there is suite version also listed
         cy.contains('Suite version');
-        cy.contains('You are currently running version');
+        cy.contains('Current version');
 
         // change language
         cy.getTestElement('@settings/language-select/input').click({ scrollBehavior: 'bottom' });
