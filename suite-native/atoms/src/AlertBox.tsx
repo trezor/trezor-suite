@@ -37,6 +37,7 @@ const alertWrapperStyle = prepareNativeStyle<AlertWrapperStyleType>(
 
 const textStyle = prepareNativeStyle(_ => ({
     flex: 1,
+    paddingTop: 2,
 }));
 
 const variantToColorMap = {
