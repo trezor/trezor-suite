@@ -18,7 +18,7 @@ export type FeatureFlagsRootState = {
 
 export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: isAndroid(),
-    [FeatureFlag.IsPassphraseEnabled]: false,
+    [FeatureFlag.IsPassphraseEnabled]: isDebugEnv(),
     [FeatureFlag.IsViewOnlyEnabled]: isDebugEnv(),
 };
 
