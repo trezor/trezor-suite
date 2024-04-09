@@ -9,7 +9,6 @@ import { useFSRoute, useMounted } from 'nextra/hooks';
 import { MDXProvider } from 'nextra/mdx';
 import './polyfill';
 import type { PageTheme } from 'nextra/normalize-pages';
-import { normalizePages } from 'nextra/normalize-pages';
 import { createGlobalStyle } from 'styled-components';
 
 import { ElevationContext } from '@trezor/components';
@@ -19,7 +18,7 @@ import { Banner, Breadcrumb, Head, NavLinks, Navbar, Sidebar, SkipNavContent } f
 import { DEFAULT_LOCALE, PartialDocsThemeConfig } from './constants';
 import { ActiveAnchorProvider, ConfigProvider, useConfig } from './contexts';
 import { getComponents } from './mdx-components';
-import { renderComponent } from './utils';
+import { patchedNormalizePages, renderComponent } from './utils';
 
 const GlobalStyle = createGlobalStyle<{ $elevation: Elevation }>`
     body {
@@ -129,7 +128,7 @@ const InnerLayout = ({
         directories,
     } = useMemo(
         () =>
-            normalizePages({
+            patchedNormalizePages({
                 list: pageMap,
                 locale,
                 defaultLocale,

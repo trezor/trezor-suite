@@ -97,7 +97,6 @@ export function Menu({
     className,
     onlyCurrentDocs,
 }: MenuProps): ReactElement {
-    // console.log('Menu', directories);
     const coinSymbols = {
         binance: 'bnb',
         bitcoin: 'btc',
@@ -119,34 +118,13 @@ export function Menu({
     const methodsOptions = methodsItems
         ?.filter(item => item.kind === 'Folder' && Object.keys(coinSymbols).includes(item.name))
         .map(item => ({
-            label: item.title[0].toUpperCase() + item.title.slice(1).toLowerCase(),
+            label: item.title,
             value: item.name,
         }));
-    const activeCoinItems = methodsItems
-        ?.find(item => item.name === activeCoin)
-        ?.children?.map(item => ({
-            ...item,
-            title: item.name,
-        }));
-    const otherMethods = methodsItems
-        ?.filter(item => item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name))
-        .map(item => {
-            if (item.kind === 'Folder') {
-                return {
-                    ...item,
-                    title:
-                        item.title[0].toUpperCase() +
-                        item.title.slice(1).toLowerCase() +
-                        ' methods',
-                    children: item.children?.map(child => ({
-                        ...child,
-                        title: child.name,
-                    })),
-                };
-            }
-
-            return item;
-        });
+    const activeCoinItems = methodsItems?.find(item => item.name === activeCoin)?.children;
+    const otherMethods = methodsItems?.filter(
+        item => item.kind !== 'Folder' || !Object.keys(coinSymbols).includes(item.name),
+    );
     const otherFolders = directories.filter(
         item => item.kind === 'Folder' && item.name !== 'methods',
     );
