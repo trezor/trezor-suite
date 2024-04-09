@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Color, nativeBorders } from '@trezor/theme';
 import { Icon, IconName } from '@suite-common/icons';
 
 import { Box } from './Box';
@@ -75,16 +75,18 @@ export type AlertBoxProps = {
     borderRadius?: number;
 };
 
-export const AlertBox = ({ title, variant = 'info', borderRadius }: AlertBoxProps) => {
-    const { utils } = useNativeStyles();
-    const radius = borderRadius ?? utils.borders.radii.medium;
+export const AlertBox = ({
+    title,
+    variant = 'info',
+    borderRadius = nativeBorders.radii.medium,
+}: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
     const { contentColor, backgroundColor, borderColor } = variantToColorMap[variant];
 
     return (
         <Box
             style={applyStyle(alertWrapperStyle, {
-                borderRadius: radius,
+                borderRadius,
                 borderColor,
                 backgroundColor,
             })}
