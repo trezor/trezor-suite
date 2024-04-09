@@ -1,10 +1,16 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { VStack, TextButton, Button } from '@suite-native/atoms';
 import { useOpenLink } from '@suite-native/link';
 import { Translation } from '@suite-native/intl';
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceInViewOnlyMode,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+
+import { ShowAddressViewOnlyBottomSheet } from './ShowAddressViewOnlyBottomSheet';
 
 type ShowAddressButtonsProps = {
     onShowAddress: () => void;
@@ -12,16 +18,29 @@ type ShowAddressButtonsProps = {
 
 export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
     const openLink = useOpenLink();
+
+    const [isViewOnlyFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
+
+    const [isViewOnlyBottomSheetVisible, setIsViewOnlyBottomSheetVisible] = useState(false);
 
     const handleOpenEduLink = () => {
         openLink('https://trezor.io/learn/a/verifying-trezor-suite-lite-addresses');
     };
 
+    const handleShowAddress = () => {
+        if (isViewOnlyFeatureEnabled && isDeviceInViewOnlyMode) {
+            setIsViewOnlyBottomSheetVisible(true);
+        } else {
+            onShowAddress();
+        }
+    };
+
     return (
         <VStack spacing="large">
-            <Button iconLeft="eye" size="large" onPress={onShowAddress}>
+            <Button iconLeft="eye" size="large" onPress={handleShowAddress}>
                 <Translation
                     id={
                         isPortfolioTrackerDevice
@@ -33,6 +52,11 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
             <TextButton size="small" onPress={handleOpenEduLink} iconRight="arrowUpRight">
                 <Translation id="moduleReceive.receiveAddressCard.showAddress.learnMore" />
             </TextButton>
+            <ShowAddressViewOnlyBottomSheet
+                isViewOnlyBottomSheetVisible={isViewOnlyBottomSheetVisible}
+                setIsViewOnlyBottomSheetVisible={setIsViewOnlyBottomSheetVisible}
+                onShowAddress={onShowAddress}
+            />
         </VStack>
     );
 };

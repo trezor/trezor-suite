@@ -20,7 +20,9 @@ export type ButtonColorScheme =
     | 'tertiaryElevation0'
     | 'tertiaryElevation1'
     | 'dangerElevation0'
-    | 'dangerElevation1';
+    | 'dangerElevation1'
+    | 'warningBold'
+    | 'warningElevation1';
 
 export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     children: ReactNode;
@@ -67,14 +69,12 @@ export const buttonSchemeToColorsMap = {
     tertiaryElevation0: {
         backgroundColor: 'backgroundTertiaryDefaultOnElevation0',
         onPressColor: 'backgroundTertiaryPressedOnElevation0',
-
         textColor: 'textOnTertiary',
         disabledTextColor: 'textDisabled',
     },
     tertiaryElevation1: {
         backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
         onPressColor: 'backgroundTertiaryPressedOnElevation1',
-
         textColor: 'textOnTertiary',
         disabledTextColor: 'textDisabled',
     },
@@ -88,6 +88,18 @@ export const buttonSchemeToColorsMap = {
         backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
         onPressColor: 'backgroundAlertRedSubtleOnElevation1',
         textColor: 'textAlertRed',
+        disabledTextColor: 'textDisabled',
+    },
+    warningBold: {
+        backgroundColor: 'backgroundAlertYellowBold',
+        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for colors https://github.com/trezor/trezor-suite/issues/11931
+        textColor: 'textDefault',
+        disabledTextColor: 'textDisabled',
+    },
+    warningElevation1: {
+        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for colors https://github.com/trezor/trezor-suite/issues/11931
+        textColor: 'textAlertYellow',
         disabledTextColor: 'textDisabled',
     },
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
