@@ -490,10 +490,10 @@ const onCall = async (message: IFrameCallMessage) => {
         );
     });
     device.on(DEVICE.SAVE_STATE, (state: string) => {
-        storage.saveForOrigin(store => {
-            // Persist internal state only in case of core in popup
-            // Currently also only for webextension until we asses security implications
-            if (useCoreInPopup && env === 'webextension') {
+        // Persist internal state only in case of core in popup
+        // Currently also only for webextension until we asses security implications
+        if (useCoreInPopup && env === 'webextension') {
+            storage.saveForOrigin(store => {
                 return {
                     ...store,
                     preferredDevice: store.preferredDevice
@@ -504,10 +504,8 @@ const onCall = async (message: IFrameCallMessage) => {
                           }
                         : undefined,
                 };
-            }
-
-            return store;
-        }, origin);
+            }, origin);
+        }
     });
 
     if (!device.getInternalState() && useCoreInPopup && env === 'webextension') {
