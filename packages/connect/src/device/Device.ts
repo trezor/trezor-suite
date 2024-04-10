@@ -529,6 +529,21 @@ export class Device extends TypedEmitter<DeviceEvents> {
         const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
 
+        if (
+            !this.features.language_version_matches &&
+            this.features.language &&
+            this.atLeast('2.7.0')
+        ) {
+            _log.info('language version mismatch. silently updating...');
+
+            try {
+                await this.changeLanguage({ language: this.features.language });
+            } catch (err) {
+                _log.error('change language failed silently', err);
+            }
+        }
+    }
+
     async changeLanguage({
         language,
         binary,
