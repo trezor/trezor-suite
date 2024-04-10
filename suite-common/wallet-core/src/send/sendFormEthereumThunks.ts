@@ -18,7 +18,7 @@ import {
     getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { createThunk } from '@suite-common/redux-utils';
-import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
+import { ERC20_BACKUP_GAS_LIMIT, ETH_BACKUP_GAS_LIMIT } from '@suite-common/wallet-constants';
 import {
     PrecomposedLevels,
     PrecomposedTransaction,
@@ -119,8 +119,6 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
         const { availableBalance } = account;
         const { address, amount } = formValues.outputs[0];
 
-        let customFeeLimit: string | undefined;
-
         // gasLimit calculation based on address, amount and data size
         // amount in essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
@@ -141,6 +139,8 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
             },
         });
 
+        let customFeeLimit: string | undefined;
+
         if (estimatedFee.success) {
             customFeeLimit = estimatedFee.payload.levels[0].feeLimit;
             if (formValues.ethereumAdjustGasLimit && customFeeLimit) {
@@ -149,6 +149,8 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
                     .toFixed(0);
             }
         } else {
+            customFeeLimit = tokenInfo ? ERC20_BACKUP_GAS_LIMIT : ETH_BACKUP_GAS_LIMIT;
+
             // TODO: catch error from blockbook/geth (invalid contract, not enough balance...)
         }
 
@@ -291,7 +293,7 @@ export const signEthereumSendFormTransactionThunk = createThunk(
             to: formValues.outputs[0].address,
             amount: formValues.outputs[0].amount,
             data: formValues.ethereumDataHex,
-            gasLimit: transactionInfo.feeLimit || ETH_DEFAULT_GAS_LIMIT,
+            gasLimit: transactionInfo.feeLimit || '',
             gasPrice: transactionInfo.feePerByte,
             nonce,
         });

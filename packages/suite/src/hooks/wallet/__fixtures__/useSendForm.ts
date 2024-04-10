@@ -1818,7 +1818,7 @@ export const feeChange = [
                         selectedFee: 'custom' as const,
                         feePerUnit: '3',
                         feeLimit: '21000', // default
-                        estimatedFeeLimit: undefined,
+                        estimatedFeeLimit: '21000',
                     },
                 },
             },
