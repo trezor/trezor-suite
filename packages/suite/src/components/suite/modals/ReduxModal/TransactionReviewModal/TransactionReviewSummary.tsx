@@ -325,21 +325,23 @@ export const TransactionReviewSummary = ({
                         <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
-                {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (
-                    <LeftDetailsRow>
-                        <ReviewRbfLeftDetailsLineLeft>
-                            <Icon size={12} color={theme.textSubdued} icon="RBF" />
-                            <Translation id="RBF" />
-                        </ReviewRbfLeftDetailsLineLeft>
+                {isFeatureFlagEnabled('RBF') &&
+                    network.features?.includes('rbf') &&
+                    network.networkType !== 'ethereum' && (
+                        <LeftDetailsRow>
+                            <ReviewRbfLeftDetailsLineLeft>
+                                <Icon size={12} color={theme.textSubdued} icon="RBF" />
+                                <Translation id="RBF" />
+                            </ReviewRbfLeftDetailsLineLeft>
 
-                        <ReviewRbfLeftDetailsLineRight
-                            $color={tx.rbf ? theme.textPrimaryDefault : theme.textAlertYellow}
-                            $uppercase
-                        >
-                            <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
-                        </ReviewRbfLeftDetailsLineRight>
-                    </LeftDetailsRow>
-                )}
+                            <ReviewRbfLeftDetailsLineRight
+                                $color={tx.rbf ? theme.textPrimaryDefault : theme.textAlertYellow}
+                                $uppercase
+                            >
+                                <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
+                            </ReviewRbfLeftDetailsLineRight>
+                        </LeftDetailsRow>
+                    )}
                 {tx.inputs.length !== 0 && (
                     <LeftDetailsBottom>
                         <Separator />
