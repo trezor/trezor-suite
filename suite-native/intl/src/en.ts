@@ -600,8 +600,15 @@ export const en = {
     },
     modulePassphrase: {
         title: 'Passphrase',
+        subtitle: 'Entering a <bold>passphrase opens a wallet</bold> secured by that very phrase.',
+        alertCard: {
+            paragraphWarning1: 'It’s crucial to understand passphrase before using it.',
+            paragraphWarning2: 'No one can recover it, not even Trezor support.',
+            button: 'How passphrase works',
+        },
         form: {
             enterWallet: 'Enter passphrase',
+            inputLabel: 'Enter your passphrase',
         },
     },
 };
