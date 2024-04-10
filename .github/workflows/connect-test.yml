@@ -321,7 +321,7 @@ jobs:
       test-pattern: ${{ matrix.pattern }}
       methods: ${{ matrix.methods }}
       tests-firmware: "2-main"
-      test-firmware-model: ["T3T1", "R"]
+      test-firmware-model: ${{ matrix.firmware}}
       node-environment: ${{ matrix.node-environment }}
       web-environment: ${{ matrix.web-environment }}
     strategy:
@@ -332,39 +332,48 @@ jobs:
             methods: ""
             node-environment: true
             web-environment: true
+            firmware: ["T3T1", "R"]
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "applySettings,applyFlags,getFirmwareHash"
+            firmware: ["T3T1", "R"]
           # "signTransaction", (unsupported chain in fixtures)
           # todo: does it apply for model t3t1 too?
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "getAccountInfo,getAccountDescriptor,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
+            firmware: ["T3T1", "R"]
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "stellarGetAddress,stellarSignTransaction"
+            firmware: ["T3T1", "R"]
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
+            firmware: ["T3T1", "R"]
           # eos not supported
           # todo: is eos unsupported only on model R? or model t3t1 too?
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
+            firmware: ["T3T1", "R"]
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "rippleGetAddress,rippleSignTransaction"
+            firmware: ["T3T1", "R"]
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
+            firmware: ["T3T1", "R"]
           - pattern: "methods"
             web-environment: false
             node-environment: true
             methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
+            firmware: ["T3T1", "R"]
