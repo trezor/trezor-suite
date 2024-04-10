@@ -31,6 +31,7 @@ import { breakpointMediaQueries } from '@trezor/styles';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
 
 const Row = styled.div`
     position: relative;
@@ -136,11 +137,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const values = getValues();
     const fiatCurrency = values?.outputs?.[0]?.currency;
 
+    const tokenSymbol = formatTokenSymbol(token?.symbol);
+
     const tokenBalance = token ? (
         <HiddenPlaceholder>
-            <TokenBalanceValue>{`${
-                token.balance
-            } ${token.symbol!.toUpperCase()}`}</TokenBalanceValue>
+            <TokenBalanceValue>{`${token.balance} ${tokenSymbol}`}</TokenBalanceValue>
         </HiddenPlaceholder>
     ) : undefined;
 
