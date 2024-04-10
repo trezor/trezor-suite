@@ -5,10 +5,12 @@ import { Translation } from 'src/components/suite';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-common/suite-utils';
 import { Network } from 'src/types/wallet';
+
+import { useState, useEffect } from 'react';
 import {
-    FeeInfo,
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
+    FeeInfo,
 } from '@suite-common/wallet-types';
 
 const Wrapper = styled.div`
@@ -83,9 +85,25 @@ const EthereumDetails = ({
     transactionInfo,
     showFee,
 }: DetailsProps) => {
+    // States to remember the last known values of feeLimit and feePerByte when isComposedTx was true.
+    const [lastKnownFeeLimit, setLastKnownFeeLimit] = useState('');
+    const [lastKnownFeePerByte, setLastKnownFeePerByte] = useState('');
+
     const isComposedTx = transactionInfo && transactionInfo.type !== 'error';
-    const gasLimit = isComposedTx ? transactionInfo.feeLimit : selectedLevel.feeLimit;
-    const gasPrice = isComposedTx ? transactionInfo.feePerByte : selectedLevel.feePerUnit;
+
+    useEffect(() => {
+        if (isComposedTx && transactionInfo.feeLimit) {
+            setLastKnownFeeLimit(transactionInfo.feeLimit);
+            setLastKnownFeePerByte(transactionInfo.feePerByte);
+        }
+    }, [isComposedTx, transactionInfo]);
+
+    const gasLimit = isComposedTx
+        ? transactionInfo.feeLimit
+        : lastKnownFeeLimit || selectedLevel.feeLimit;
+    const gasPrice = isComposedTx
+        ? transactionInfo.feePerByte
+        : lastKnownFeePerByte || selectedLevel.feePerUnit;
 
     return (
         <Wrapper>
