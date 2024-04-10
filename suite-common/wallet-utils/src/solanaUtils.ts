@@ -4,18 +4,12 @@ import BigNumber from 'bignumber.js';
 import type { Transaction } from '@solana/web3.js';
 
 import type { TokenAccount } from '@trezor/blockchain-link-types';
-import {
-    solanaUtils as SolanaBlockchainLinkUtils,
-} from '@trezor/blockchain-link-utils';
+import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
 
 import { getLamportsFromSol } from './sendFormUtils';
 
-
-const {
-    TOKEN_PROGRAM_PUBLIC_KEY,
-    ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY,
-    SYSTEM_PROGRAM_PUBLIC_KEY,
- }= SolanaBlockchainLinkUtils;
+const { TOKEN_PROGRAM_PUBLIC_KEY, ASSOCIATED_TOKEN_PROGRAM_PUBLIC_KEY, SYSTEM_PROGRAM_PUBLIC_KEY } =
+    SolanaBlockchainLinkUtils;
 
 const loadSolanaLib = async () => {
     const lib = await import('@solana/web3.js');
