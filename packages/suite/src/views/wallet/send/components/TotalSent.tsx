@@ -20,7 +20,11 @@ const StyledCard = styled(Card)`
 `;
 
 const Left = styled.div`
+    display: flex;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    gap: 6px;
+    justify-content: center;
+    flex-direction: column;
 `;
 
 const Label = styled.div`
@@ -31,7 +35,6 @@ const Label = styled.div`
 `;
 
 const SecondaryLabel = styled.div`
-    padding-top: 2px;
     font-size: ${variables.FONT_SIZE.SMALL};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
@@ -41,6 +44,7 @@ const Right = styled.div`
     justify-content: center;
     flex-direction: column;
     align-items: flex-end;
+    gap: 6px;
 `;
 
 const TotalSentCoin = styled.div`
@@ -48,7 +52,6 @@ const TotalSentCoin = styled.div`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     font-size: ${variables.FONT_SIZE.NORMAL};
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    padding-bottom: 6px;
 `;
 
 const TotalSentFiat = styled.div`
@@ -78,11 +81,9 @@ export const TotalSent = () => {
                     <Translation id="TOTAL_SENT" />
                 </Label>
 
-                {!isTokenTransfer && (
-                    <SecondaryLabel>
-                        <Translation id="INCLUDING_FEE" />
-                    </SecondaryLabel>
-                )}
+                <SecondaryLabel>
+                    {!isTokenTransfer ? <Translation id="INCLUDING_FEE" /> : ' '}
+                </SecondaryLabel>
             </Left>
 
             {transactionInfo && transactionInfo.type !== 'error' && (
