@@ -65,6 +65,7 @@ export class Log {
     log(...args: any[]) {
         this.addMessage({ level: 'log', prefix: this.prefix }, ...args);
         if (this.enabled) {
+            // eslint-disable-next-line no-console
             console.log(`%c${this.prefix}`, this.css, ...args);
         }
     }
@@ -79,6 +80,7 @@ export class Log {
     info(...args: any[]) {
         this.addMessage({ level: 'info', prefix: this.prefix }, ...args);
         if (this.enabled) {
+            // eslint-disable-next-line no-console
             console.info(`%c${this.prefix}`, this.css, ...args);
         }
     }
@@ -94,8 +96,10 @@ export class Log {
         this.addMessage({ level: 'debug', prefix: this.prefix }, ...args);
         if (this.enabled) {
             if (this.css) {
+                // eslint-disable-next-line no-console
                 console.log(`%c${this.prefix}`, this.css, ...args);
             } else {
+                // eslint-disable-next-line no-console
                 console.log(this.prefix, ...args);
             }
         }
