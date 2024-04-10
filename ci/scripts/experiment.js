@@ -10,7 +10,7 @@
  */
 
 process.stdout.write(
-    JSON.stringify({
+    `matrix=${JSON.stringify({
         include: [
             {
                 pattern: 'methods',
@@ -25,5 +25,5 @@ process.stdout.write(
                 methods: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
             },
         ],
-    }).replaceAll('"', '\\"'),
+    }).replaceAll('"', '\\"')}`,
 );
