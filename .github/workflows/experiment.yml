@@ -11,7 +11,7 @@ jobs:
         run: ls -la && echo $(node ./experiment.js) >> $GITHUB_OUTPUT
 
   test:
-    needs: job1
+    needs: create-nightly-matrix
     runs-on: ubuntu-latest
     strategy:
       matrix: ${{fromJson(needs.create-nightly-matrix.outputs.matrix)}}
