@@ -313,15 +313,15 @@ jobs:
         firmware: ["2.2.0", "2-main"]
       fail-fast: false
 
-  connect-T2B1:
+  other models:
     needs: [build]
-    if: github.event_name == 'schedule'
+    # if: github.event_name == 'schedule'
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.pattern }}
-      tests-firmware: "2-latest"
-      test-firmware-model: "R"
+      methods: ${{ matrix.methods }}
+      tests-firmware: "2-main"
+      test-firmware-model: ["T3T1", "R"]
       node-environment: ${{ matrix.node-environment }}
       web-environment: ${{ matrix.web-environment }}
     strategy:
@@ -337,6 +337,7 @@ jobs:
             node-environment: true
             methods: "applySettings,applyFlags,getFirmwareHash"
           # "signTransaction", (unsupported chain in fixtures)
+          # todo: does it apply for model t3t1 too?
           - pattern: "methods"
             web-environment: false
             node-environment: true
@@ -350,6 +351,7 @@ jobs:
             node-environment: true
             methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
           # eos not supported
+          # todo: is eos unsupported only on model R? or model t3t1 too?
           - pattern: "methods"
             web-environment: false
             node-environment: true
