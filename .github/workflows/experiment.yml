@@ -1,0 +1,18 @@
+name: mv/experiment
+on: push
+jobs:
+  job1:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - id: set-matrix
+        run: echo "::set-output name=matrix::{\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}"
+  job2:
+    needs: job1
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.job1.outputs.matrix)}}
+    steps:
+      - run: echo ${{ matrix.project }}
+      - run: echo ${{ matrix.config }}
