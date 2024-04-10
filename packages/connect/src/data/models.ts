@@ -17,4 +17,8 @@ export const models = {
             '5': 'Bitcoin Orange',
         },
     },
+    T3T1: {
+        name: 'Trezor TURBO',
+        colors: {},
+    },
 };
