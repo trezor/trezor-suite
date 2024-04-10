@@ -14,12 +14,14 @@ import { ConnectDeviceAnimation } from '@suite-native/device';
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 
-const ANIMATION_HEIGHT = Dimensions.get('screen').height * 0.35;
+const ANIMATION_SCALE = 0.35;
+const ANIMATION_HEIGHT = Dimensions.get('screen').height * ANIMATION_SCALE;
+const ANIMATION_WIDTH = Dimensions.get('screen').width * ANIMATION_SCALE;
 
 const animationStyle = prepareNativeStyle(() => ({
     // Both height and width has to be set https://github.com/lottie-react-native/lottie-react-native/blob/master/MIGRATION-5-TO-6.md#updating-the-style-props
     height: ANIMATION_HEIGHT,
-    width: '100%',
+    width: ANIMATION_WIDTH,
     borderColor: 'transparent',
 }));
 
