@@ -16,7 +16,11 @@ import BigNumber from 'bignumber.js';
 import { Timestamp, TokenAddress, TokenDefinitions } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
+import {
+    enhanceTokensWithRates,
+    formatTokenSymbol,
+    sortTokensWithRates,
+} from 'src/utils/wallet/tokenUtils';
 import { getShortFingerprint } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -57,7 +61,7 @@ export const buildTokenOptions = (
                 return;
             }
 
-            const tokenName = token.symbol || 'N/A';
+            const tokenSymbol = formatTokenSymbol(token.symbol);
 
             if (
                 !hasCoinDefinitions ||
@@ -65,13 +69,13 @@ export const buildTokenOptions = (
             ) {
                 result[0].options.push({
                     value: token.contract,
-                    label: tokenName.toUpperCase(),
+                    label: tokenSymbol,
                     fingerprint: token.name,
                 });
             } else {
                 unknownTokens.push({
                     value: token.contract,
-                    label: `${tokenName.toUpperCase().slice(0, 7)}…`,
+                    label: tokenSymbol,
                     fingerprint: token.name,
                 });
             }
