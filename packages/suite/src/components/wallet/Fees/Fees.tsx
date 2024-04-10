@@ -38,7 +38,7 @@ const FeeInfoRow = styled.div`
     justify-content: space-between;
     align-items: start;
     width: 100%;
-    min-height: 50px; /* reserve space for fiat/crypto amounts */
+    min-height: 52px; /* reserve space for fiat/crypto amounts */
 `;
 
 const FeeAmount = styled.div`
