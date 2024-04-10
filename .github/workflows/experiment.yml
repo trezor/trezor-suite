@@ -6,6 +6,8 @@ jobs:
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - id: set-matrix
         # run: echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
         run: ls -la ./ci/scripts && echo $(node ./ci/scripts/experiment.js) >> $GITHUB_OUTPUT
