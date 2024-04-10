@@ -1,5 +1,5 @@
 {
-    "name": "@suite-native/passphrase",
+    "name": "@suite-native/module-passphrase",
     "version": "1.0.0",
     "private": true,
     "license": "See LICENSE.md in repo root",
@@ -10,6 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@react-navigation/native": "6.1.10",
         "@react-navigation/native-stack": "6.9.18",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",

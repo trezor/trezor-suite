@@ -598,7 +598,7 @@ export const en = {
         retrievengTakesLongerThanExpected:
             'Retrieving balances takes longer than usual. \n It may be caused by unstable internet connection.',
     },
-    passphrase: {
+    modulePassphrase: {
         title: 'Passphrase',
         form: {
             enterWallet: 'Enter passphrase',

@@ -2,12 +2,24 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { PassphraseStackRoutes, RootStackRoutes } from '@suite-native/navigation';
+import {
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
+    RootStackRoutes,
+    StackToStackCompositeNavigationProps,
+    RootStackParamList,
+} from '@suite-native/navigation';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
+type NavigationProp = StackToStackCompositeNavigationProps<
+    PassphraseStackParamList,
+    PassphraseStackRoutes.PassphraseForm,
+    RootStackParamList
+>;
+
 export const AddHiddenWalletButton = () => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp>();
 
     const { setIsDeviceManagerVisible } = useDeviceManager();
 

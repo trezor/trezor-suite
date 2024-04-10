@@ -48,7 +48,7 @@ export const PassphraseForm = () => {
                         accessibilityLabel="confirm passphrase"
                         onPress={handleCreateHiddenWallet}
                     >
-                        <Translation id="passphrase.form.enterWallet" />
+                        <Translation id="modulePassphrase.form.enterWallet" />
                     </Button>
                     <Button
                         accessibilityRole="button"

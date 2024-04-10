@@ -8,8 +8,8 @@ import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 export const PassphraseFormScreen = () => {
     return (
         <Screen screenHeader={<PassphraseScreenHeader />}>
-            <Text variant={'titleSmall'}>
-                <Translation id={'passphrase.title'} />
+            <Text variant="titleSmall">
+                <Translation id="modulePassphrase.title" />
             </Text>
             <PassphraseForm />
         </Screen>
