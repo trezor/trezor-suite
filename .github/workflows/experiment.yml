@@ -10,7 +10,7 @@ jobs:
         uses: actions/checkout@v4
       - id: set-matrix
         # run: echo "matrix={\"include\":[{\"project\":\"foo\",\"config\":\"Debug\"},{\"project\":\"bar\",\"config\":\"Release\"}]}" >> $GITHUB_OUTPUT
-        run: echo "(node ./ci/scripts/experiment.js) >> $GITHUB_OUTPUT
+        run: echo (node ./ci/scripts/experiment.js) >> $GITHUB_OUTPUT
 
   test:
     needs: create-nightly-matrix
@@ -18,5 +18,5 @@ jobs:
     strategy:
       matrix: ${{fromJson(needs.create-nightly-matrix.outputs.matrix)}}
     steps:
-      - run: echo ${{ matrix.project }}
-      - run: echo ${{ matrix.config }}
+      - run: echo ${{ matrix.pattern }}
+      - run: echo ${{ matrix.methods }}
