@@ -10,6 +10,11 @@ interface StartEmu {
     version?: string;
     wipe?: boolean;
     save_screenshots?: boolean;
+    model?: Model;
+}
+
+interface StartEmuFromUrl extends Omit<StartEmu, 'version'> {
+    url: string;
 }
 
 interface ClickEmu {
@@ -39,6 +44,9 @@ interface ReadAndConfirmShamirMnemonicEmu {
     shares: number;
     threshold: number;
 }
+
+/** device model as expected by trezor-user-env */
+export type Model = 'T3T1' | '1' | '2' | 'R';
 
 export const api = (controller: any) => ({
     setupEmu: async (options: SetupEmu) => {
@@ -107,7 +115,7 @@ export const api = (controller: any) => ({
 
         return controller.send(params);
     },
-    startEmuFromUrl: ({ url, model, wipe }: { url: string; model: string; wipe?: boolean }) =>
+    startEmuFromUrl: ({ url, model, wipe }: StartEmuFromUrl) =>
         controller.send({
             type: 'emulator-start-from-url',
             url,
