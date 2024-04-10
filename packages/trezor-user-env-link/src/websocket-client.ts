@@ -6,7 +6,7 @@ import fetch from 'cross-fetch';
 
 import { createDeferred, Deferred } from '@trezor/utils';
 
-import { api } from './api';
+import { api, Model } from './api';
 
 const NOT_INITIALIZED = new Error('websocket_not_initialized');
 
@@ -29,11 +29,7 @@ interface Options {
     timeout?: number;
 }
 
-export interface Firmwares {
-    '1': string[];
-    '2': string[];
-    R: string[];
-}
+export type Firmwares = Record<Model, string[]>;
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 

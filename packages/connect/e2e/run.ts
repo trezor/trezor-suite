@@ -50,6 +50,7 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
         });
     }
 
+    console.log('avaialble firmwares', availableFirmwares);
     if (firmwareModel) {
         Object.assign(emulatorStartOpts, { model: firmwareModel });
 
@@ -57,6 +58,8 @@ const getEmulatorOptions = (availableFirmwares: Firmwares) => {
         // and only master build is available
         if (firmwareModel === 'R') {
             [emulatorStartOpts.version] = availableFirmwares.R;
+        } else if (firmwareModel === 'T3T1') {
+            [emulatorStartOpts.version] = availableFirmwares.T3T1;
         }
     }
 
