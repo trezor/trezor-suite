@@ -99,7 +99,7 @@ export type PrecomposedTransactionNonFinal = PrecomposeResultNonFinal & {
 
 // base of PrecomposedTransactionFinal
 type TxFinal = PrecomposeResultFinal & {
-    max: string | undefined;
+    max?: string;
     feeLimit?: string;
     estimatedFeeLimit?: string;
     token?: TokenInfo;

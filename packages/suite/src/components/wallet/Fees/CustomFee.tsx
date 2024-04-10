@@ -13,7 +13,6 @@ import { Note, motionEasing, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { NumberInput } from 'src/components/suite/NumberInput';
 import { getInputState, getFeeUnits, isInteger } from '@suite-common/wallet-utils';
-import { ETH_DEFAULT_GAS_LIMIT } from '@suite-common/wallet-constants';
 import { FeeInfo } from '@suite-common/wallet-types';
 import { FormState } from '@suite-common/wallet-types';
 import { NetworkType } from '@suite-common/wallet-config';
@@ -76,7 +75,7 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const feePerUnitValue = getValues(FEE_PER_UNIT);
     const feeUnits = getFeeUnits(networkType);
-    const estimatedFeeLimit = getValues('estimatedFeeLimit') || ETH_DEFAULT_GAS_LIMIT;
+    const estimatedFeeLimit = getValues('estimatedFeeLimit');
 
     const feePerUnitError = errors.feePerUnit;
     const feeLimitError = errors.feeLimit;
@@ -116,7 +115,7 @@ export const CustomFee = <TFieldValues extends FormState>({
             ...sharedRules.validate,
             feeLimit: (value: string) => {
                 const feeBig = new BigNumber(value);
-                if (feeBig.lt(estimatedFeeLimit)) {
+                if (estimatedFeeLimit && feeBig.lt(estimatedFeeLimit)) {
                     return translationString('CUSTOM_FEE_LIMIT_BELOW_RECOMMENDED');
                 }
             },
@@ -146,6 +145,7 @@ export const CustomFee = <TFieldValues extends FormState>({
 
     const feeLimitValidationProps = {
         onClick: () =>
+            estimatedFeeLimit &&
             setValue(FEE_LIMIT, estimatedFeeLimit, {
                 shouldValidate: true,
             }),

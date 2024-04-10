@@ -5,9 +5,8 @@ export const BTC_LOCKTIME_VALUE = 500000000; // if locktime is equal/greater tha
 export const BTC_RBF_SEQUENCE = 0xffffffff - 2;
 export const XRP_FLAG = 0x80000000;
 export const U_INT_32 = 0xffffffff;
-export const ETH_DEFAULT_GAS_PRICE = '1';
-export const ETH_DEFAULT_GAS_LIMIT = '21000';
-
+export const ETH_BACKUP_GAS_LIMIT = '21000';
+export const ERC20_BACKUP_GAS_LIMIT = '200000';
 export const ERC20_TRANSFER = 'a9059cbb'; // 4 bytes function signature of solidity erc20 `transfer(address,uint256)`
 
 export const DEFAULT_PAYMENT = {
