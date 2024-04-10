@@ -9550,13 +9550,14 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/passphrase@workspace:suite-native/passphrase"
   dependencies:
+    "@react-navigation/native-stack": "npm:6.9.18"
     "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
-    jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.73.2"
   languageName: unknown

@@ -50,7 +50,7 @@ export const useHandleDeviceConnection = () => {
             !isBiometricsOverlayVisible
         ) {
             requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
-            navigation.navigate(RootStackRoutes.ConnectDevice, {
+            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
                 screen: ConnectDeviceStackRoutes.ConnectingDevice,
             });
         }
@@ -88,7 +88,7 @@ export const useHandleDeviceConnection = () => {
     // and then continue with the interaction. For T2, PIN is entered on device, but the screen is still displayed.
     useEffect(() => {
         if (isOnboardingFinished && hasDeviceRequestedPin) {
-            navigation.navigate(RootStackRoutes.ConnectDevice, {
+            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
                 screen: ConnectDeviceStackRoutes.PinMatrix,
             });
         }

@@ -1,2 +1,1 @@
-export * from './PassphraseModalRenderer';
-export * from './isPassphraseModalVisibleAtom';
+export * from './navigation/PassphraseStackNavigator';

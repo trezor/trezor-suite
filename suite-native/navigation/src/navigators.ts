@@ -17,6 +17,7 @@ import {
     OnboardingStackRoutes,
     ConnectDeviceStackRoutes,
     AddCoinAccountStackRoutes,
+    PassphraseStackRoutes,
 } from './routes';
 
 type AddCoinFlowParams = RequireAllOrNone<
@@ -112,10 +113,14 @@ export type ConnectDeviceStackParamList = {
     [ConnectDeviceStackRoutes.ConnectingDevice]: undefined;
 };
 
+export type PassphraseStackParamList = {
+    [PassphraseStackRoutes.PassphraseForm]: undefined;
+};
+
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
-    [RootStackRoutes.ConnectDevice]: NavigatorScreenParams<ConnectDeviceStackParamList>;
+    [RootStackRoutes.ConnectDeviceStack]: NavigatorScreenParams<ConnectDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.ReceiveModal]: AccountDetailParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
@@ -128,4 +133,5 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.DeviceInfo]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
+    [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
 };

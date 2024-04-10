@@ -599,7 +599,8 @@ export const en = {
             'Retrieving balances takes longer than usual. \n It may be caused by unstable internet connection.',
     },
     passphrase: {
-        modal: {
+        title: 'Passphrase',
+        form: {
             enterWallet: 'Enter passphrase',
         },
     },
