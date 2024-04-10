@@ -23,5 +23,5 @@ process.stdout.write(
             'node-environment': true,
             methods: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
         },
-    ]),
+    ]).replaceAll('"', '\\"'),
 );
