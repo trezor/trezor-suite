@@ -4,7 +4,7 @@ import * as semver from 'semver';
 
 import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
 import { H2, Button, ConfirmOnDevice, variables, DeviceAnimation } from '@trezor/components';
-import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
+import { DEVICE, Device, DeviceModelInternal } from '@trezor/connect';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';
@@ -109,22 +109,6 @@ const StyledAbortButton = styled(AbortButton)`
     right: 12px;
 `;
 
-const ReconnectLabel = ({ device }: { device?: Device }) => {
-    const deviceFwVersion = getFirmwareVersion(device);
-    const deviceModelInternal = device?.features?.internal_model;
-    const switchToBootloaderModeMessage = pickByDeviceModel(deviceModelInternal, {
-        default: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
-        [DeviceModelInternal.T1B1]:
-            semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0')
-                ? 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS'
-                : 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
-        [DeviceModelInternal.T2T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
-        [DeviceModelInternal.T3T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
-    } as const);
-
-    return <Translation id={switchToBootloaderModeMessage} />;
-};
-
 interface ReconnectStepProps {
     order?: number;
     active: boolean;
@@ -200,19 +184,39 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
             return 'done';
         }
 
-        return device?.connected ? 'waiting-for-reboot' : 'disconnected';
+        return device?.connected && device?.mode !== 'bootloader'
+            ? 'waiting-for-reboot'
+            : 'disconnected';
     };
 
     const rebootPhase = getRebootPhase();
-    const isAnimationVisible = rebootPhase !== 'done';
+    const isRebootDone = rebootPhase === 'done';
     const deviceModelInternal = device?.features?.internal_model;
+    const isAbortable = isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
+    const showWebUsbButton = rebootPhase === 'disconnected' && isWebUSB;
 
     const getHeading = () => {
-        if (rebootPhase === 'done') {
+        if (isRebootDone) {
             return 'TR_RECONNECT_IN_BOOTLOADER_SUCCESS';
         }
 
         return isManualRebootRequired ? 'TR_RECONNECT_IN_BOOTLOADER' : 'TR_REBOOT_INTO_BOOTLOADER';
+    };
+
+    const getSecondStep = () => {
+        const deviceFwVersion = getFirmwareVersion(uiEvent?.payload.device);
+        const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
+
+        return pickByDeviceModel(deviceModelInternal, {
+            default: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
+            [DeviceModelInternal.T1B1]:
+                semver.valid(deviceFwVersion) && semver.satisfies(deviceFwVersion, '<1.8.0')
+                    ? 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS'
+                    : 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
+            [DeviceModelInternal.T2T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
+            [DeviceModelInternal.T2B1]: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
+            [DeviceModelInternal.T3T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
+        } as const);
     };
 
     return (
@@ -228,14 +232,12 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                 )
             }
         >
-            {isManualRebootRequired && rebootPhase == 'waiting-for-reboot' && (
-                <StyledAbortButton onAbort={onClose} />
-            )}
+            {isAbortable && <StyledAbortButton onAbort={onClose} />}
 
             <Wrapper data-test={`@firmware/reconnect-device`}>
-                {isAnimationVisible && (
+                {!isRebootDone && (
                     <RebootDeviceGraphics
-                        device={device}
+                        device={uiEvent?.payload.device}
                         isManualRebootRequired={isManualRebootRequired}
                     />
                 )}
@@ -245,7 +247,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                         <Translation id={getHeading()} />
                     </Heading>
 
-                    {rebootPhase !== 'done' ? (
+                    {!isRebootDone ? (
                         <>
                             {isManualRebootRequired ? (
                                 <>
@@ -258,13 +260,13 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                         <Translation id="TR_DISCONNECT_YOUR_DEVICE" />
                                     </ReconnectStep>
 
-                                    {/* Second step reconnect in normal mode or bootloader */}
+                                    {/* Second step reconnect in bootloader */}
                                     <ReconnectStep
                                         order={2}
                                         active={rebootPhase === 'disconnected'}
                                         dataTest={`@firmware/connect-in-bootloader-message`}
                                     >
-                                        <ReconnectLabel device={device} />
+                                        <Translation id={getSecondStep()} />
                                     </ReconnectStep>
                                 </>
                             ) : (
@@ -275,7 +277,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                     />
                                 </CenteredPointText>
                             )}
-                            {rebootPhase === 'disconnected' && isWebUSB && <StyledWebUsbButton />}
+                            {showWebUsbButton && <StyledWebUsbButton />}
                         </>
                     ) : (
                         <>

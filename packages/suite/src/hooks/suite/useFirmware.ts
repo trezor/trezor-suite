@@ -32,11 +32,9 @@ export const useFirmware = () => {
     // Device in its state before installation is cached when installation begins. Until then, access device as normal.
     const originalDevice = firmware.cachedDevice || device;
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first, and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
-    // These events are emitted later during the installation process as well, but we don't want to show the prompt again - that is why we must check the device mode or bootloader property.
     const showManualReconnectPrompt =
-        ((firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && device?.mode !== 'bootloader') ||
-            (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-                firmware.uiEvent.payload.bootloader)) &&
+        (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT ||
+            firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT) &&
         firmware.uiEvent.payload.manual;
     const showReconnectPrompt =
         // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow, T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
@@ -83,11 +81,12 @@ export const useFirmware = () => {
                     };
             }
         }
-        // Restarting from bootloader to normal mode:
+        // Automatically restarting from bootloader to normal mode at the end of non-intermediary installation:
         if (
-            (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT && device?.mode === 'bootloader') ||
-            (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-                !firmware.uiEvent.payload.bootloader)
+            (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT ||
+                (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+                    !firmware.uiEvent.payload.bootloader)) &&
+            !firmware.uiEvent.payload.manual
         ) {
             return { operation: translationString('TR_WAIT_FOR_REBOOT'), progress: 100 };
         }
