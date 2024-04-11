@@ -527,6 +527,12 @@ export const en = {
             receiveSubtitle: 'Connect your Trezor or sync coins to view and receive assets.',
             searchAgain: 'Search again',
         },
+        viewOnlyAddAccountAlert: {
+            title: 'To add new coin or account, reconnect your Trezor device.',
+            description:
+                'We’re unable to add any new coins or accounts to your device when it’s disconnected.',
+            actionPrimary: 'Got it',
+        },
     },
     transactions: {
         title: 'Transactions',

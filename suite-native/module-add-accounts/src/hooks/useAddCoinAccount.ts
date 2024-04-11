@@ -11,6 +11,7 @@ import {
     LIMIT,
     selectDevice,
     selectDeviceAccounts,
+    selectIsDeviceInViewOnlyMode,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import {
@@ -30,6 +31,7 @@ import {
     AddCoinFlowType,
     AppTabsRoutes,
 } from '@suite-native/navigation';
+import { useAccountAlerts } from '@suite-native/accounts';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AddCoinAccountStackParamList,
@@ -75,7 +77,9 @@ export const useAddCoinAccount = () => {
         selectDeviceAccounts(state),
     );
     const device = useSelector(selectDevice);
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showAlert, hideAlert } = useAlert();
+    const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const navigation = useNavigation<NavigationProps>();
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
         [NetworkSymbol, AccountType] | null
@@ -198,6 +202,12 @@ export const useAddCoinAccount = () => {
         networkSymbol: NetworkSymbol;
         accountType?: AccountType;
     }) => {
+        if (isDeviceInViewOnlyMode) {
+            showViewOnlyAddAccountAlert();
+
+            return false;
+        }
+
         const selectedType = accountType ?? NORMAL_ACCOUNT_TYPE;
 
         const currentAccountTypeAccounts = getAccountsForNetworSymbolkWithAccountType({
@@ -351,6 +361,12 @@ export const useAddCoinAccount = () => {
         networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
     }) => {
+        if (isDeviceInViewOnlyMode) {
+            showViewOnlyAddAccountAlert();
+
+            return;
+        }
+
         const types = getAvailableAccountTypesForNetworkSymbol({ networkSymbol });
 
         if (types.length > 1) {
