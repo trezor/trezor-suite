@@ -21,6 +21,7 @@ const releases: Record<keyof typeof DeviceModelInternal, FirmwareRelease[]> = {
     [DeviceModelInternal.T1B1]: [],
     [DeviceModelInternal.T2T1]: [],
     [DeviceModelInternal.T2B1]: [],
+    [DeviceModelInternal.T3T1]: [],
 };
 
 export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {

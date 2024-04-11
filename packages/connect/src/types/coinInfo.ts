@@ -32,6 +32,7 @@ export const CoinSupport = Type.Object({
     T1B1: Type.Union([Type.String(), Type.Literal(false)]),
     T2T1: Type.Union([Type.String(), Type.Literal(false)]),
     T2B1: Type.Union([Type.String(), Type.Literal(false)]),
+    T3T1: Type.Union([Type.String(), Type.Literal(false)]),
 });
 
 export type BlockchainLink = Static<typeof BlockchainLink>;

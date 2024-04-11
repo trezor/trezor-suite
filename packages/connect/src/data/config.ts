@@ -240,7 +240,7 @@ export const config = {
         },
         {
             methods: ['changeLanguage'],
-            min: { T1B1: '0', T2T1: '2.7.0', T2B1: '2.7.0' },
+            min: { T1B1: '0', T2T1: '2.7.0', T2B1: '2.7.0', T3T1: '2.7.1' },
         },
     ],
 };
