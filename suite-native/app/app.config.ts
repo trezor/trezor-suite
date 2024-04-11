@@ -145,6 +145,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             backgroundColor: '#25292E',
             resizeMode: 'contain',
         },
+        userInterfaceStyle: 'automatic',
         android: {
             package: bundleIdentifier,
             adaptiveIcon: {
