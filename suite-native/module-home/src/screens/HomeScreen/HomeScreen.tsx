@@ -15,6 +15,7 @@ import { BiometricsBottomSheet } from './components/BiometricsBottomSheet';
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
 import { PortfolioContent, PortfolioContentRef } from './components/PortfolioContent';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
+import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
 
 export const HomeScreen = () => {
     const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
@@ -47,6 +48,7 @@ export const HomeScreen = () => {
                 <PortfolioContent ref={portfolioContentRef} />
             )}
             <BiometricsBottomSheet />
+            <EnableViewOnlyBottomSheet />
         </Screen>
     );
 };

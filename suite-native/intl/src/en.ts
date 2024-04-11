@@ -73,6 +73,14 @@ export const en = {
                 success: 'Biometrics enabled',
             },
         },
+        rememberModeModal: {
+            title: 'Enable view-only to check balances after you disconnect your Trezor',
+            description: 'To verify receive addresses, simply reconnect your device.',
+            button: {
+                skip: 'Skip',
+                enable: 'Enable',
+            },
+        },
     },
     assets: {
         dashboard: {
