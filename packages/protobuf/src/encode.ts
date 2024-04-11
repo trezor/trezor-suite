@@ -1,4 +1,4 @@
-import { Type } from 'protobufjs/light';
+import { Type, Enum } from 'protobufjs/light';
 
 import { isPrimitiveField } from './utils';
 
@@ -47,8 +47,13 @@ export function patch(Message: Type, payload: any) {
         }
         // repeated
         if (field.repeated) {
-            const RefMessage = Message.lookupTypeOrEnum(field.type);
-            patched[key] = value.map((v: any) => patch(RefMessage, v));
+            const fieldType = Message.lookupTypeOrEnum(field.type);
+            if (fieldType instanceof Enum) {
+                // NOTE: Enum doesn't require patching both string (keys) and number values are accepted
+                patched[key] = value;
+            } else {
+                patched[key] = value.map((v: any) => patch(fieldType, v));
+            }
         }
         // message type
         else if (typeof value === 'object' && value !== null) {
