@@ -56,7 +56,6 @@ export class BackendManager {
     }
 
     reconnectAll() {
-        Object.keys(this.reconnect).forEach(this.clearReconnect, this);
         // collect all running backends as parameters tuple
         const params = Object.values(this.instances).map(i => [i.coinInfo, i.postMessage] as const);
         // remove all backends
