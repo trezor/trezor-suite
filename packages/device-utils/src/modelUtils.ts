@@ -7,6 +7,7 @@ export const pickByDeviceModel = <Type>(
         [DeviceModelInternal.T1B1]?: Type;
         [DeviceModelInternal.T2T1]?: Type;
         [DeviceModelInternal.T2B1]?: Type;
+        [DeviceModelInternal.T3T1]?: Type;
     },
 ): Type => {
     if (!deviceModelInternal || typeof options[deviceModelInternal] === 'undefined') {

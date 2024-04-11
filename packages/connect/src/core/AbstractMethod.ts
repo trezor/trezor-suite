@@ -25,6 +25,7 @@ export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     T1B1: { min: '1.0.0', max: '0' },
     T2T1: { min: '2.0.0', max: '0' },
     T2B1: { min: '2.6.1', max: '0' },
+    T3T1: { min: '2.7.1', max: '0' },
 };
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
