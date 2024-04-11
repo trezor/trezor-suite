@@ -269,5 +269,37 @@ describe('basic concepts', () => {
                 decode(ReceiverMessages.lookupType('messages.ButtonRequest'), senderEncoded);
             }).toThrow();
         });
+
+        test('message with repeated enum field', () => {
+            const protobufRoot = ProtoBuf.Root.fromJSON({
+                nested: {
+                    RepeatedEnum: {
+                        values: {
+                            RepeatedEnum_1: 1,
+                            RepeatedEnum_2: 2,
+                            RepeatedEnum_3: 3,
+                        },
+                    },
+                    MessageWithRepeatedEnum: {
+                        fields: {
+                            repeated_enum: {
+                                rule: 'repeated',
+                                type: 'RepeatedEnum',
+                                id: 1,
+                                options: {
+                                    packed: false,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            const m = protobufRoot.lookupType('MessageWithRepeatedEnum');
+            const encoded = encode(m, { repeated_enum: [3, 'RepeatedEnum_2'] });
+            const decoded = decode(m, encoded);
+
+            expect(decoded.repeated_enum).toEqual(['RepeatedEnum_3', 'RepeatedEnum_2']);
+        });
     });
 });
