@@ -11089,6 +11089,7 @@ __metadata:
     pako: "npm:^2.1.0"
     pdfmake: "npm:^0.2.9"
     polished: "npm:^4.3.1"
+    proxy-memoize: "npm:2.0.2"
     qrcode.react: "npm:^3.1.0"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"

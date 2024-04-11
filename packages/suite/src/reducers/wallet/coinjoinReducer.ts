@@ -1,5 +1,6 @@
 import produce from 'immer';
 import BigNumber from 'bignumber.js';
+import { memoizeWithArgs } from 'proxy-memoize';
 
 import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
@@ -665,27 +666,26 @@ export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) 
     return balanceBreakdown;
 };
 
-export const selectRegisteredUtxosByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    if (!coinjoinAccount?.prison) return;
-    const { prison, session, transactionCandidates } = coinjoinAccount;
+export const selectRegisteredUtxosByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        if (!coinjoinAccount?.prison) return;
+        const { prison, session, transactionCandidates } = coinjoinAccount;
 
-    return Object.keys(prison).reduce<typeof prison>((result, key) => {
-        const inmate = prison[key];
-        // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
-        if (
-            inmate.roundId &&
-            (session || transactionCandidates?.some(tx => tx.roundId === inmate.roundId))
-        ) {
-            result[key] = inmate;
-        }
+        return Object.keys(prison).reduce<typeof prison>((result, key) => {
+            const inmate = prison[key];
+            // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
+            if (
+                inmate.roundId &&
+                (session || transactionCandidates?.some(tx => tx.roundId === inmate.roundId))
+            ) {
+                result[key] = inmate;
+            }
 
-        return result;
-    }, {});
-};
+            return result;
+        }, {});
+    },
+);
 
 export const selectSessionProgressByAccountKey = (
     state: CoinjoinRootState,
