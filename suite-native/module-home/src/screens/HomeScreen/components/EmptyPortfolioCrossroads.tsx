@@ -45,7 +45,7 @@ export const EmptyPortfolioCrossroads = () => {
     };
 
     const handleConnectDevice = () => {
-        navigation.navigate(RootStackRoutes.ConnectDevice, {
+        navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
             screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
         });
         analytics.report({

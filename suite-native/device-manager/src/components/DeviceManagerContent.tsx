@@ -47,7 +47,7 @@ export const DeviceManagerContent = () => {
 
     const handleConnectDevice = () => {
         setIsDeviceManagerVisible(false);
-        navigation.navigate(RootStackRoutes.ConnectDevice, {
+        navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
             screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
         });
         analytics.report({

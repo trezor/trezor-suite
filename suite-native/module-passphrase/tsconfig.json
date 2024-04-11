@@ -11,6 +11,7 @@
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
+        { "path": "../navigation" },
         { "path": "../../packages/styles" }
     ]
 }

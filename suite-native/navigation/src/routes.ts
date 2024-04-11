@@ -2,7 +2,7 @@ export enum RootStackRoutes {
     AppTabs = 'AppTabs',
     Onboarding = 'Onboarding',
     AccountsImport = 'AccountsImport',
-    ConnectDevice = 'ConnectDevice',
+    ConnectDeviceStack = 'ConnectDeviceStack',
     AccountDetail = 'AccountDetail',
     DevUtilsStack = 'DevUtilsStack',
     AccountSettings = 'AccountSettings',
@@ -10,6 +10,7 @@ export enum RootStackRoutes {
     ReceiveModal = 'ReceiveModal',
     DeviceInfo = 'DeviceInfo',
     AddCoinAccountStack = 'AddCoinAccountStack',
+    PassphraseStack = 'PassphraseStack',
 }
 
 export enum AppTabsRoutes {
@@ -39,6 +40,10 @@ export enum ConnectDeviceStackRoutes {
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
     PinMatrix = 'PinMatrix',
     ConnectingDevice = 'ConnectingDevice',
+}
+
+export enum PassphraseStackRoutes {
+    PassphraseForm = 'PassphraseForm',
 }
 
 export enum DevUtilsStackRoutes {
