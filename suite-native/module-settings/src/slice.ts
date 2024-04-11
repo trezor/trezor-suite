@@ -7,6 +7,7 @@ export interface AppSettingsState {
     isOnboardingFinished: boolean;
     fiatCurrency: FiatCurrency;
     bitcoinUnits: PROTO.AmountUnit;
+    viewOnlyCancelationTimestamp?: number;
 }
 
 export type SettingsSliceRootState = {
@@ -17,12 +18,14 @@ export const appSettingsInitialState: AppSettingsState = {
     fiatCurrency: fiatCurrencies.usd,
     bitcoinUnits: PROTO.AmountUnit.BITCOIN,
     isOnboardingFinished: false,
+    viewOnlyCancelationTimestamp: undefined,
 };
 
 export const appSettingsPersistWhitelist: Array<keyof AppSettingsState> = [
     'isOnboardingFinished',
     'fiatCurrency',
     'bitcoinUnits',
+    'viewOnlyCancelationTimestamp',
 ];
 
 export const appSettingsSlice = createSlice({
@@ -41,6 +44,9 @@ export const appSettingsSlice = createSlice({
         setBitcoinUnits: (state, { payload }: PayloadAction<PROTO.AmountUnit>) => {
             state.bitcoinUnits = payload;
         },
+        setViewOnlyCancelationTimestamp: (state, { payload }: PayloadAction<number>) => {
+            state.viewOnlyCancelationTimestamp = payload;
+        },
     },
 });
 
@@ -50,7 +56,13 @@ export const selectFiatCurrencyCode = (state: SettingsSliceRootState) =>
 export const selectBitcoinUnits = (state: SettingsSliceRootState) => state.appSettings.bitcoinUnits;
 export const selectIsOnboardingFinished = (state: SettingsSliceRootState) =>
     state.appSettings.isOnboardingFinished;
+export const selectViewOnlyCancelationTimestamp = (state: SettingsSliceRootState) =>
+    state.appSettings.viewOnlyCancelationTimestamp;
 
-export const { setIsOnboardingFinished, setFiatCurrency, setBitcoinUnits } =
-    appSettingsSlice.actions;
+export const {
+    setIsOnboardingFinished,
+    setFiatCurrency,
+    setBitcoinUnits,
+    setViewOnlyCancelationTimestamp,
+} = appSettingsSlice.actions;
 export const appSettingsReducer = appSettingsSlice.reducer;
