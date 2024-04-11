@@ -10,8 +10,8 @@ export type Alert = RequireAllOrNone<
     {
         title: ReactNode;
         description: ReactNode;
-        icon: IconName;
-        pictogramVariant: PictogramVariant;
+        icon?: IconName;
+        pictogramVariant?: PictogramVariant;
         primaryButtonTitle: ReactNode;
         primaryButtonVariant?: ButtonColorScheme;
         onPressPrimaryButton?: () => void;
