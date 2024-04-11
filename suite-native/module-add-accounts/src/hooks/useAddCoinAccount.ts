@@ -11,6 +11,7 @@ import {
     LIMIT,
     selectDevice,
     selectDeviceAccounts,
+    selectIsDeviceInViewOnlyMode,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import {
@@ -75,6 +76,7 @@ export const useAddCoinAccount = () => {
         selectDeviceAccounts(state),
     );
     const device = useSelector(selectDevice);
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showAlert, hideAlert } = useAlert();
     const navigation = useNavigation<NavigationProps>();
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
@@ -161,6 +163,14 @@ export const useAddCoinAccount = () => {
             },
         });
 
+    const showDeviceIsViewOnlyErrorAlert = () =>
+        showAlert({
+            title: translate('moduleAddAccounts.alerts.viewOnly.title'),
+            description: translate('moduleAddAccounts.alerts.viewOnly.description'),
+            primaryButtonTitle: translate('moduleAddAccounts.alerts.viewOnly.actionPrimary'),
+            onPressPrimaryButton: hideAlert,
+        });
+
     const showGeneralErrorAlert = () =>
         showAlert({
             title: translate('moduleAddAccounts.alerts.generalError.title'),
@@ -198,6 +208,12 @@ export const useAddCoinAccount = () => {
         networkSymbol: NetworkSymbol;
         accountType?: AccountType;
     }) => {
+        if (isDeviceInViewOnlyMode) {
+            showDeviceIsViewOnlyErrorAlert();
+
+            return;
+        }
+
         const selectedType = accountType ?? NORMAL_ACCOUNT_TYPE;
 
         const currentAccountTypeAccounts = getAccountsForNetworSymbolkWithAccountType({
@@ -351,6 +367,12 @@ export const useAddCoinAccount = () => {
         networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
     }) => {
+        if (isDeviceInViewOnlyMode) {
+            showDeviceIsViewOnlyErrorAlert();
+
+            return;
+        }
+
         const types = getAvailableAccountTypesForNetworkSymbol({ networkSymbol });
 
         if (types.length > 1) {
