@@ -21,6 +21,8 @@ const LabelValue = styled.div`
 `;
 
 const LabelDefaultValue = styled(LabelValue)`
+    display: flex;
+
     /* do not shrink when the expanded label does not fit the container - shrink only the label value */
     flex-shrink: 0;
     max-width: 0;
