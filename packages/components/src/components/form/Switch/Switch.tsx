@@ -155,7 +155,7 @@ export const Switch = ({
                 <Handle
                     tabIndex={-1}
                     $isChecked={isChecked}
-                    disabled={isDisabled}
+                    $disabled={isDisabled}
                     type="button"
                     $isSmall={isSmall}
                 />
