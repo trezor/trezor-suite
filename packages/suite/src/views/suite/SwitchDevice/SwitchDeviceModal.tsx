@@ -1,5 +1,6 @@
-import { Card } from '@trezor/components';
+import { Card, ElevationContext } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
+import { useEvent } from 'react-use';
 import styled from 'styled-components';
 
 type SwitchDeviceModalProps = {
@@ -12,9 +13,28 @@ type SwitchDeviceModalProps = {
 
 const Container = styled.div`
     width: 378px;
-    margin: ${spacingsPx.xxs};
+    margin: 5px;
 `;
 
-export const SwitchDeviceModal = ({ children }: SwitchDeviceModalProps) => {
-    return <Container>{children}</Container>;
+export const SwitchDeviceModal = ({
+    children,
+    onCancel,
+    'data-test': dataTest = '@modal',
+}: SwitchDeviceModalProps) => {
+    useEvent('keydown', (e: KeyboardEvent) => {
+        if (onCancel && e.key === 'Escape') {
+            onCancel?.();
+        }
+    });
+
+    return (
+        <ElevationContext baseElevation={1}>
+            <Container
+                onClick={e => e.stopPropagation()} // needed because of the Backdrop implementation
+                data-test={dataTest}
+            >
+                {children}
+            </Container>
+        </ElevationContext>
+    );
 };

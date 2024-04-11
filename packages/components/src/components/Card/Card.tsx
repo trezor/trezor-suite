@@ -8,6 +8,7 @@ import {
     withFrameProps,
 } from '../../components/common/frameProps';
 import { makePropsTransient } from '../../utils/transientProps';
+import { AccessabilityProps, withAccessabilityProps } from '../common/accessabilityProps';
 
 type PaddingType = 'small' | 'none' | 'normal';
 
@@ -51,7 +52,6 @@ const CardContainer = styled.div<
     {
         $elevation: Elevation;
         $paddingType: PaddingType;
-        $isHighlighted: boolean;
         $isClickable: boolean;
     } & TransientFrameProps
 >`
@@ -72,19 +72,6 @@ const CardContainer = styled.div<
     }
     `}
 
-    ${({ $isHighlighted, theme }) =>
-        $isHighlighted === true &&
-        `
-        &::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 0;
-            bottom: 0;
-            width: ${spacingsPx.xxs};
-            background: ${theme.backgroundPrimaryDefault};
-        }
-        `}
     box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
 
     ${({ onClick, theme }) =>
@@ -104,20 +91,20 @@ const CardContainer = styled.div<
     ${withFrameProps}
 `;
 
-export type CardProps = FrameProps & {
-    paddingType?: PaddingType;
-    onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
-    onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
-    onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
-    children?: ReactNode;
-    className?: string;
-    label?: ReactNode;
-    forceElevation?: Elevation;
-    isHighlighted?: boolean;
-};
+export type CardProps = FrameProps &
+    AccessabilityProps & {
+        paddingType?: PaddingType;
+        onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
+        onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
+        onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
+        children?: ReactNode;
+        className?: string;
+        label?: ReactNode;
+        forceElevation?: Elevation;
+    };
 
 const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: PaddingType }>(
-    ({ children, forceElevation, paddingType, isHighlighted = false, onClick, ...rest }, ref) => {
+    ({ children, forceElevation, paddingType, tabIndex, onClick, ...rest }, ref) => {
         const { elevation } = useElevation(forceElevation);
 
         return (
@@ -125,8 +112,9 @@ const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: Padd
                 ref={ref}
                 $elevation={elevation}
                 $paddingType={paddingType}
-                $isHighlighted={isHighlighted}
                 $isClickable={Boolean(onClick)}
+                onClick={onClick}
+                {...withAccessabilityProps({ tabIndex })}
                 {...rest}
             >
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>

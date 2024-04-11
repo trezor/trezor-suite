@@ -25,13 +25,13 @@ import { DeviceHeaderButton } from './DeviceHeaderButton';
 import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import type { getBackgroundRoute } from 'src/utils/suite/router';
 import { spacingsPx } from '@trezor/theme';
-import { DeviceStatusText } from './DeviceStatusText';
-import { DeviceStatusWithLabel } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatusWithLabel';
+import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 
 const DeviceWrapper = styled.div`
     display: flex;
     flex-direction: column;
     width: 100%;
+    gap: ${spacingsPx.xs};
 
     & + & {
         margin-top: ${spacingsPx.xxxl};
@@ -200,25 +200,27 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
             <Device>
                 <DeviceHeader>
                     {deviceModelInternal && (
-                        <DeviceImageWrapper>
-                            {deviceModelInternal === DeviceModelInternal.T2B1 && (
-                                <DeviceAnimation
-                                    type="ROTATE"
-                                    height="36px"
-                                    width="36px"
-                                    deviceModelInternal={deviceModelInternal}
-                                    deviceUnitColor={device?.features?.unit_color}
-                                />
-                            )}
-                            {deviceModelInternal !== DeviceModelInternal.T2B1 && (
-                                <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
-                            )}
-                        </DeviceImageWrapper>
+                        <DeviceStatus deviceModel={deviceModelInternal} device={selectedDevice} />
+
+                        // <DeviceImageWrapper>
+                        //     {deviceModelInternal === DeviceModelInternal.T2B1 && (
+                        //         <DeviceAnimation
+                        //             type="ROTATE"
+                        //             height="36px"
+                        //             width="36px"
+                        //             deviceModelInternal={deviceModelInternal}
+                        //             deviceUnitColor={device?.features?.unit_color}
+                        //         />
+                        //     )}
+                        //     {deviceModelInternal !== DeviceModelInternal.T2B1 && (
+                        //         <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
+                        //     )}
+                        // </DeviceImageWrapper>
                     )}
-                    <Col $grow={1}>
+                    {/* <Col $grow={1}>
                         <DeviceTitle>{device.label}</DeviceTitle>
                         <DeviceStatusText device={device} />
-                    </Col>
+                    </Col> */}
 
                     <DeviceActions>
                         <DeviceHeaderButton

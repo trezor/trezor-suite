@@ -3,8 +3,6 @@ import styled from 'styled-components';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevice, selectDevices } from '@suite-common/wallet-core';
 
-import { Translation } from 'src/components/suite/Translation';
-import { Modal, WebUsbButton } from 'src/components/suite';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { getBackgroundRoute } from 'src/utils/suite/router';
 import { ForegroundAppProps } from 'src/types/suite';
@@ -14,11 +12,12 @@ import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceRenderer } from './SwitchDeviceRenderer';
 import { Card } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
+import { motion } from 'framer-motion';
 
 const DeviceItemsWrapper = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     gap: ${spacingsPx.md};
     flex: 1;
 `;
@@ -43,6 +42,12 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
     const backgroundRoute = getBackgroundRoute();
 
+    const initial = {
+        width: 279,
+        height: 70,
+        // opacity: 0,
+    };
+
     return (
         <SwitchDeviceRenderer
             isCancelable={cancelable}
@@ -53,16 +58,30 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
             // }
         >
             <DeviceItemsWrapper>
-                {sortedDevices.map(device => (
-                    <Card key={`${device.id}-${device.instance}`} paddingType="small">
-                        <DeviceItem
-                            device={device}
-                            instances={deviceUtils.getDeviceInstances(device, devices)}
-                            backgroundRoute={backgroundRoute}
-                            onCancel={onCancel}
-                        />
-                    </Card>
-                ))}
+                <motion.div
+                    // transition={{ duration: 3, repeat: 100 }}
+                    initial={initial}
+                    exit={initial}
+                    animate={{
+                        width: 369,
+                        height: 'auto',
+                        // opacity: 1,
+                    }}
+                    style={{ originX: 0, originY: 0, overflow: 'hidden' }}
+                >
+                    <>
+                        {sortedDevices.map(device => (
+                            <Card key={`${device.id}-${device.instance}`} paddingType="small">
+                                <DeviceItem
+                                    device={device}
+                                    instances={deviceUtils.getDeviceInstances(device, devices)}
+                                    backgroundRoute={backgroundRoute}
+                                    onCancel={onCancel}
+                                />
+                            </Card>
+                        ))}
+                    </>
+                </motion.div>
             </DeviceItemsWrapper>
         </SwitchDeviceRenderer>
     );

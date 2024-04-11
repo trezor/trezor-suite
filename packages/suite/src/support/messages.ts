@@ -8842,8 +8842,34 @@ export default defineMessages({
         id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
         defaultMessage: 'You can change it here',
     },
-    TR_VIEW_ONLY_TOOLTIP_BUTTON: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_BUTTON',
-        defaultMessage: 'Got it',
+    TR_VIEW_ONLY_ENABLED: {
+        id: 'TR_VIEW_ONLY_ENABLED',
+        defaultMessage: 'View-only enabled',
+    },
+    TR_VIEW_ONLY_DISABLED: {
+        id: 'TR_VIEW_ONLY_DISABLED',
+        defaultMessage: 'View-only disabled',
+    },
+    TR_VIEW_ONLY_RADIOS_ENABLED_TITLE: {
+        id: 'TR_VIEW_ONLY_RADIOS_ENABLED_TITLE',
+        defaultMessage: 'Enabled',
+    },
+    TR_VIEW_ONLY_RADIOS_DISABLED_TITLE: {
+        id: 'TR_VIEW_ONLY_RADIOS_DISABLED_TITLE',
+        defaultMessage: 'Disabled',
+    },
+    TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION: {
+        id: 'TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION',
+        defaultMessage:
+            'Balances & transactions <strong>remain visible</strong> in app even after Trezor is disconnected.',
+    },
+    TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION: {
+        id: 'TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION',
+        defaultMessage:
+            'Balances & transactions <strong>aren’t visible</strong> in the app after Trezor is disconnected.',
+    },
+    TR_VIEW_ONLY_RADIOS_CONFIRM: {
+        id: 'TR_VIEW_ONLY_RADIOS_CONFIRM',
+        defaultMessage: 'Confirm',
     },
 });

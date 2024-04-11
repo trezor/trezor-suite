@@ -11,7 +11,7 @@ export type BackdropProps = {
     alignment?: ModalAlignment;
 };
 
-const Wrapper = styled.div<{ alignment: ModalAlignment }>`
+const Wrapper = styled.div<{ $alignment: ModalAlignment }>`
     position: absolute;
     z-index: ${zIndices.modal};
     inset: 0;
@@ -28,8 +28,8 @@ const Wrapper = styled.div<{ alignment: ModalAlignment }>`
         background: rgb(0 0 0 / 60%);
     }
 
-    ${({ alignment }) =>
-        alignment.y === 'center'
+    ${({ $alignment }) =>
+        $alignment.y === 'center'
             ? css`
                   align-items: center;
 
@@ -50,7 +50,7 @@ export const Backdrop = ({
     className,
     alignment = { x: 'center', y: 'center' },
 }: BackdropProps) => (
-    <Wrapper onClick={onClick} className={className} alignment={alignment}>
+    <Wrapper onClick={onClick} className={className} $alignment={alignment}>
         {children}
     </Wrapper>
 );

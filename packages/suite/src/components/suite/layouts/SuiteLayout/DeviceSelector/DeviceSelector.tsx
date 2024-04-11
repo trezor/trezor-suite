@@ -8,7 +8,7 @@ import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { borders, spacingsPx } from '@trezor/theme';
 import { focusStyleTransition, getFocusShadowStyle } from '@trezor/components/src/utils/utils';
-import { DeviceStatusWithLabel } from './DeviceStatusWithLabel';
+import { SidebarDeviceStatus } from './SidebarDeviceStatus';
 import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 const CaretContainer = styled.div`
@@ -108,7 +108,7 @@ export const DeviceSelector = () => {
                     tabIndex={0}
                     data-test="@menu/switch-device"
                 >
-                    <DeviceStatusWithLabel />
+                    <SidebarDeviceStatus />
 
                     {selectedDevice && selectedDevice.state && (
                         <CaretContainer>

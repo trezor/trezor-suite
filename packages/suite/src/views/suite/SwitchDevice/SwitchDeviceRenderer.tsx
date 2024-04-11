@@ -24,7 +24,7 @@ export const SwitchDeviceRenderer = ({
             onClickBackdrop={isCancelable ? onCancel : undefined}
             alignment={{ x: 'left', y: 'top' }}
         >
-            <SwitchDeviceModal {...rest} />
+            <SwitchDeviceModal onCancel={onCancel} {...rest} />
         </ModalEnvironment>
     );
 

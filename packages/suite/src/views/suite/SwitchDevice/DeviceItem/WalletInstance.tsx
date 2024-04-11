@@ -1,4 +1,4 @@
-import styled, { useTheme } from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 
 import {
     toggleRememberDevice,
@@ -7,7 +7,16 @@ import {
     selectFiatRates,
 } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
-import { Switch, Icon, variables, Card, Text, Divider } from '@trezor/components';
+import {
+    Switch,
+    Icon,
+    variables,
+    Card,
+    Text,
+    Divider,
+    CollapsibleBox,
+    Radio,
+} from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -25,6 +34,8 @@ import { useWalletLabeling } from '../../../../components/suite/labeling/WalletL
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
+import { useState } from 'react';
+import { ViewOnlyRadios } from './ViewOnlyRadios';
 
 const InstanceType = styled.div<{ isSelected: boolean }>`
     display: flex;
@@ -69,13 +80,26 @@ const Circle = styled.div<{ $isHighlighted?: boolean }>`
 `;
 
 const ViewOnlyContainer = styled.div`
+    margin: -16px -12px -12px -8px;
+`;
+const ViewOnlyContent = styled.div`
     display: flex;
     gap: ${spacingsPx.xs};
     align-items: center;
 `;
 
-const LockIcon = styled(Icon)`
-    margin-right: 4px;
+const SelectedHighlight = styled.div`
+    ${({ theme }) => css`
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: ${spacingsPx.xxs};
+            background: ${theme.backgroundPrimaryDefault};
+        }
+    `}
 `;
 interface WalletInstanceProps {
     instance: AcquiredDevice;
@@ -93,6 +117,7 @@ export const WalletInstance = ({
     index,
     ...rest
 }: WalletInstanceProps) => {
+    const [isViewOnlyExpanded, setIsViewOnlyExpanded] = useState(false);
     const accounts = useSelector(state => state.wallet.accounts);
     const rates = useSelector(selectFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
@@ -116,7 +141,16 @@ export const WalletInstance = ({
     );
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
-    const handleRememberChange = () => dispatch(toggleRememberDevice({ device: instance }));
+    const handleRememberChange = (value: boolean) => {
+        setIsViewOnlyExpanded(false);
+
+        return dispatch(
+            toggleRememberDevice({
+                device: instance,
+                forceRemember: value === true ? true : undefined,
+            }),
+        );
+    };
     const handleEject = () => {
         dispatch(deviceActions.forgetDevice(instance));
         analytics.report({
@@ -132,12 +166,12 @@ export const WalletInstance = ({
         <Card
             data-test={dataTestBase}
             key={`${instance.label}${instance.instance}${instance.state}`}
-            isHighlighted={isSelected}
             paddingType="small"
             onClick={() => !editing && selectDeviceInstance(instance)}
             tabIndex={0}
             {...rest}
         >
+            {isSelected && <SelectedHighlight />}
             <Col $grow={1}>
                 {discoveryProcess && (
                     <InstanceType isSelected={isSelected}>
@@ -184,19 +218,43 @@ export const WalletInstance = ({
             {enabled && discoveryProcess && (
                 <>
                     <Divider />
-                    <ViewOnlyContainer>
-                        <Circle $isHighlighted={isViewOnly} />
-                        <Text
-                            variant={isViewOnly ? 'primary' : 'tertiary'}
-                            typographyStyle="callout"
+                    <ViewOnlyContainer
+                        onClick={e => {
+                            // setIsViewOnlyExpanded(!isViewOnlyExpanded);
+                            e.stopPropagation();
+                        }}
+                    >
+                        <CollapsibleBox
+                            variant="small"
+                            filled="none"
+                            isOpen={isViewOnlyExpanded}
+                            onCollapse={() => setIsViewOnlyExpanded(true)}
+                            heading={
+                                <ViewOnlyContent>
+                                    <Circle $isHighlighted={isViewOnly} />
+                                    <Text
+                                        variant={isViewOnly ? 'primary' : 'tertiary'}
+                                        typographyStyle="callout"
+                                    >
+                                        {isViewOnly ? (
+                                            <Translation id="TR_VIEW_ONLY_ENABLED" />
+                                        ) : (
+                                            <Translation id="TR_VIEW_ONLY_DISABLED" />
+                                        )}
+                                    </Text>
+                                </ViewOnlyContent>
+                            }
                         >
-                            View-only {isViewOnly ? 'enabled' : 'disabled'}
-                        </Text>
-                        {/* <Switch
-                            isChecked={isViewOnly}
-                            onChange={handleRememberChange}
-                            dataTest={`${dataTestBase}/toggle-remember-switch`}
-                        /> */}
+                            {/* <Switch
+                                isChecked={isViewOnly}
+                                onChange={handleRememberChange}
+                                dataTest={`${dataTestBase}/toggle-remember-switch`}
+                            /> */}
+                            <ViewOnlyRadios
+                                isViewOnlyActive={isViewOnly}
+                                setIsViewOnlyActive={handleRememberChange}
+                            />
+                        </CollapsibleBox>
                     </ViewOnlyContainer>
 
                     <EjectContainer>
