@@ -59,13 +59,13 @@ const waitForReconnectedDevice = async ({
                 device: device.toMessageObject(),
                 manual,
                 bootloader,
-                confirmOnDevice,
                 i,
             }),
         );
         await createTimeoutPromise(2000);
         try {
-            reconnectedDevice = deviceList.getDevice(deviceList.getFirstDevicePath());
+            const path = deviceList.getFirstDevicePath();
+            reconnectedDevice = deviceList.getDevice(path);
         } catch {}
         i++;
         log.debug('onCallFirmwareUpdate', 'waiting for device to reconnect', i);
@@ -112,25 +112,18 @@ const waitForDisconnectedDevice = async ({
 const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
     // we can detect support properly only if device was not connected in bootloader mode
     if (!device.features.bootloader_mode) {
-        const fwHeaders = binary ? parseFirmwareHeaders(Buffer.from(binary)) : undefined;
-        const isUpdatingToNewerVersion = !binary
+        const version = binary ? parseFirmwareHeaders(Buffer.from(binary)).version : undefined;
+        const isUpdatingToNewerVersion = !version
             ? device.firmwareRelease?.isNewer
-            : fwHeaders?.version &&
-              isNewer(fwHeaders?.version, [
+            : isNewer(version, [
                   device.features.major_version,
                   device.features.minor_version,
                   device.features.patch_version,
               ]);
-        const support = {
-            reboot_and_wait: device.atLeast(['1.10.0', '2.6.0']),
-            // reboot_and_upgrade strictly requires updating to a higher version
-            reboot_and_upgrade: device.atLeast('2.6.3') && isUpdatingToNewerVersion,
-            language_data_length: device.atLeast('2.7.0'),
-        };
 
-        const manual = !support.reboot_and_wait && !support.reboot_and_upgrade;
-        const upgrade = support.reboot_and_upgrade;
-        const language = support.language_data_length;
+        const upgrade = device.atLeast('2.6.3') && isUpdatingToNewerVersion;
+        const manual = !device.atLeast(['1.10.0', '2.6.0']) && !upgrade;
+        const language = device.atLeast('2.7.0');
 
         return {
             /** RebootToBootloader is not supported */
@@ -266,12 +259,7 @@ export const onCallFirmwareUpdate = async ({
     context: { deviceList, postMessage, initDevice, log, abortSignal },
 }: {
     params: Params;
-    context: {
-        deviceList: DeviceList;
-        postMessage: PostMessage;
-        initDevice: (path?: string) => Promise<Device>;
-        log: Log;
-    };
+    context: Context;
 }) => {
     log.debug('onCallFirmwareUpdate with params: ', params);
 
@@ -304,18 +292,18 @@ export const onCallFirmwareUpdate = async ({
             device.firmwareRelease.intermediaryVersion,
         ));
 
-    // Might not be installed, but needed for calculateFirmwareHash anyway
-    let stripped = stripFwHeaders(binary);
-
     const deviceInitiallyConnectedInBootloader = device.features.bootloader_mode;
     const deviceInitiallyConnectedWithoutFirmware = device.features.firmware_present === false;
 
+    let reconnectedDevice: Device = device;
+
     if (deviceInitiallyConnectedInBootloader) {
+        // Device started in bootloader, just acquire it
+
         log.warn(
             'onCallFirmwareUpdate',
             'device is already in bootloader mode. language will not be updated',
         );
-    }
 
         await device.acquire();
     } else if (manual) {
@@ -332,7 +320,6 @@ export const onCallFirmwareUpdate = async ({
     } else {
         // Device supports automatic reboot to bootloader, load translation data and do it
 
-    if (!manual && !deviceInitiallyConnectedInBootloader) {
         const rebootParams = upgrade
             ? {
                   boot_command: PROTO.BootCommand.INSTALL_UPGRADE,
@@ -395,22 +382,13 @@ export const onCallFirmwareUpdate = async ({
         });
     }
 
-    if (!deviceInitiallyConnectedInBootloader && manual) {
-        await waitForDisconnectedDevice({
-            params: { manual },
-            context: { deviceList, device, postMessage, log },
-        });
-    }
-
     const intermediary = !params.binary && device.firmwareRelease.intermediaryVersion;
-
-    reconnectedDevice = await waitForReconnectedDevice({
-        params: { bootloader: true, manual, confirmOnDevice: true },
-        context: { deviceList, device, log, postMessage },
-    });
 
     // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
     await reconnectedDevice.initialize(false, false);
+
+    // Might not be installed, but needed for calculateFirmwareHash anyway
+    let stripped = stripFwHeaders(binary);
 
     await uploadFirmware(
         reconnectedDevice.getCommands().typedCall.bind(reconnectedDevice.getCommands()),
@@ -423,7 +401,7 @@ export const onCallFirmwareUpdate = async ({
 
     if (intermediary) {
         await waitForDisconnectedDevice({
-            params: { manual },
+            params: { manual: true },
             context: { deviceList, log, device: reconnectedDevice, postMessage },
         });
         reconnectedDevice = await waitForReconnectedDevice({
@@ -448,7 +426,7 @@ export const onCallFirmwareUpdate = async ({
     }
 
     await waitForDisconnectedDevice({
-        params: { manual },
+        params: { manual: false },
         context: { deviceList, log, device: reconnectedDevice, postMessage },
     });
     reconnectedDevice = await waitForReconnectedDevice({

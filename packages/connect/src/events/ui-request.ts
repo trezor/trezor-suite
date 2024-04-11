@@ -269,6 +269,7 @@ export interface FirmwareDisconnect {
     type: typeof UI_REQUEST.FIRMWARE_DISCONNECT;
     payload: {
         device: Device;
+        /** older devices need manual action (connect or disconnect cable). default is false */
         manual: boolean;
     };
 }
@@ -284,8 +285,6 @@ export interface FirmwareReconnect {
         manual: boolean;
         /** should device be connected in bootloader mode? */
         bootloader: boolean;
-        /** some flows might require confirmation on device screen */
-        confirmOnDevice: boolean;
         /** how many times this event was fired. resets when request is satisfied */
         i: number;
     };

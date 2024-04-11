@@ -47,7 +47,7 @@ describe('Install custom firmware', () => {
         //
         // Assert
         //
-        cy.getTestElement('@firmware/reconnect-device/bootloader').should('be.visible');
+        cy.getTestElement('@firmware/reconnect-device').should('be.visible');
     });
 });
 
