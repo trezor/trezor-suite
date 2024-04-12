@@ -26,10 +26,6 @@ const Container = styled.div`
     position: relative;
 `;
 
-const Heading = styled.p`
-    position: absolute;
-`;
-
 const Text = styled.span`
     display: flex;
     align-items: center;
@@ -228,13 +224,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     return (
         <Container>
-            <Heading>
-                <Translation
-                    id={outputsCount > 1 ? 'TR_SEND_RECIPIENT_ADDRESS' : 'TR_SEND_ADDRESS_SECTION'}
-                    values={{ index: recipientId }}
-                />
-            </Heading>
-
             <Input
                 inputState={inputState}
                 innerAddon={
@@ -266,10 +255,22 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         <Translation id="RECIPIENT_ADDRESS" />
                     </Text>
                 }
-                labelHoverAddon={
+                labelHoverRight={
                     <Button variant="tertiary" size="tiny" icon="QR" onClick={handleQrClick}>
                         <Translation id="RECIPIENT_SCAN" />
                     </Button>
+                }
+                labelLeft={
+                    <p>
+                        <Translation
+                            id={
+                                outputsCount > 1
+                                    ? 'TR_SEND_RECIPIENT_ADDRESS'
+                                    : 'TR_SEND_ADDRESS_SECTION'
+                            }
+                            values={{ index: recipientId }}
+                        />
+                    </p>
                 }
                 labelRight={
                     outputsCount > 1 ? (

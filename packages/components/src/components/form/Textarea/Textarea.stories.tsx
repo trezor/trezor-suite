@@ -41,7 +41,7 @@ export const Textarea: StoryObj<TextareaProps> = {
                 type: 'range',
             },
         },
-        labelHoverAddon: {
+        labelHoverRight: {
             control: 'text',
         },
         labelRight: {

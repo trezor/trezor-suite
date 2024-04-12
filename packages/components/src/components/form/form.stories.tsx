@@ -92,7 +92,7 @@ export const All: StoryObj = {
                     value="Input label with warning"
                     dataTest="input-warning-label"
                     bottomText="bottom text"
-                    labelHoverAddon={
+                    labelHoverRight={
                         <Button variant="tertiary" icon="QR" onClick={() => {}}>
                             Scan QR code
                         </Button>
