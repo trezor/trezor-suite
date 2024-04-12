@@ -8724,6 +8724,7 @@ __metadata:
     "@suite-native/module-onboarding": "workspace:*"
     "@suite-native/module-passphrase": "workspace:*"
     "@suite-native/module-receive": "workspace:*"
+    "@suite-native/module-send": "workspace:*"
     "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/notifications": "workspace:*"
@@ -9431,6 +9432,23 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-send@workspace:*, @suite-native/module-send@workspace:suite-native/module-send":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-send@workspace:suite-native/module-send"
+  dependencies:
+    "@react-navigation/native": "npm:6.1.10"
+    "@react-navigation/native-stack": "npm:6.9.18"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-common/wallet-types": "workspace:*"
+    "@suite-native/accounts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device-manager": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft

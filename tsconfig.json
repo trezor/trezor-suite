@@ -90,6 +90,7 @@
             "path": "suite-native/module-passphrase"
         },
         { "path": "suite-native/module-receive" },
+        { "path": "suite-native/module-send" },
         {
             "path": "suite-native/module-settings"
         },

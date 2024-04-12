@@ -10,9 +10,15 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     RootStackRoutes,
+    SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectDeviceAccountsByNetworkSymbol,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
@@ -28,7 +34,12 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
+    const testnetAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountsByNetworkSymbol(state, 'test'),
+    );
+
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const [isSendEnabled] = useFeatureFlag(FeatureFlag.IsSendEnabled);
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -38,6 +49,10 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
+    };
+
+    const handleSend = () => {
+        navigation.navigate(RootStackRoutes.SendStack, { screen: SendStackRoutes.SendAccounts });
     };
 
     useImperativeHandle(
@@ -81,6 +96,18 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
                             </Button>
                         </Box>
                     </>
+                )}
+                {/* TODO: remove this button when there is a proper design of the send flow ready */}
+                {isSendEnabled && (
+                    <Box>
+                        <Button
+                            size="large"
+                            onPress={handleSend}
+                            disabled={testnetAccounts.length === 0}
+                        >
+                            Send crypto
+                        </Button>
+                    </Box>
                 )}
             </VStack>
         </VStack>
