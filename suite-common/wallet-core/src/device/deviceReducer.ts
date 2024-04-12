@@ -585,6 +585,12 @@ export const selectIsDeviceProtectedByPin = (state: DeviceRootState) => {
     return !!features?.pin_protection;
 };
 
+export const selectIsDeviceProtectedByPassphrase = (state: DeviceRootState) => {
+    const features = selectDeviceFeatures(state);
+
+    return !!features?.passphrase_protection;
+};
+
 export const selectIsDeviceProtectedByWipeCode = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
 
