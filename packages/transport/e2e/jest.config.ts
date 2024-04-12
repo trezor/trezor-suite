@@ -3,7 +3,7 @@ export default {
     moduleFileExtensions: ['ts', 'js'],
     modulePathIgnorePatterns: ['node_modules'],
     watchPathIgnorePatterns: ['<rootDir>/libDev', '<rootDir>/lib'],
-    testPathIgnorePatterns: ['<rootDir>/libDev/', '<rootDir>/lib/'],
+    testPathIgnorePatterns: ['<rootDir>/libDev/', '<rootDir>/lib/', '<rootDir>/tests/'],
     transform: {
         '\\.(js|ts)$': [
             'babel-jest',
