@@ -1,4 +1,4 @@
-import { Box, Pictogram } from '@suite-native/atoms';
+import { Box, PictogramTitleHeader } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const overlayStyle = prepareNativeStyle(utils => ({
@@ -12,7 +12,7 @@ export const XpubOverlayWarning = () => {
 
     return (
         <Box style={applyStyle(overlayStyle)}>
-            <Pictogram
+            <PictogramTitleHeader
                 variant="yellow"
                 icon="warningCircleLight"
                 title="Handle your public key (XPUB) with caution"

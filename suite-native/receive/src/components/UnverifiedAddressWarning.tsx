@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Box, Text, Pictogram, TrezorSuiteLiteHeader } from '@suite-native/atoms';
+import { Box, Text, PictogramTitleHeader, TrezorSuiteLiteHeader } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 
@@ -38,7 +38,7 @@ export const UnverifiedAddressWarning = () => {
 
     return (
         <Box marginVertical="medium" paddingHorizontal="medium" paddingVertical="extraLarge">
-            <Pictogram
+            <PictogramTitleHeader
                 variant="yellow"
                 icon="warningTriangleLight"
                 title={pictogramContent[pictogramContentKey].title}
