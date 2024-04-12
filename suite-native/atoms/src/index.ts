@@ -37,6 +37,8 @@ export * from './Table';
 export * from './Loader';
 export * from './Toggle';
 export * from './Pictogram';
+export * from './PictogramTitleHeader';
+export * from './CenteredTitleHeader';
 export * from './RoundedIcon';
 export * from './TrezorSuiteLiteHeader';
 export * from './Skeleton/BoxSkeleton';

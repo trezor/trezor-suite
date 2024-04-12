@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, Card, Pictogram, VStack } from '@suite-native/atoms';
+import { Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import {
@@ -39,7 +39,7 @@ export const EmptyConnectedDeviceState = () => {
     return (
         <Card style={applyStyle(cardStyle)}>
             <VStack spacing={'large'} style={applyStyle(contentStyle)}>
-                <Pictogram
+                <PictogramTitleHeader
                     variant="green"
                     size="large"
                     icon="infoLight"

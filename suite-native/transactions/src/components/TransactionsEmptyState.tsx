@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Card, Pictogram } from '@suite-native/atoms';
+import { Box, Button, Card, PictogramTitleHeader } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     RootStackParamList,
@@ -39,7 +39,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
         <Box style={applyStyle(wrapperStyle)}>
             <Card style={applyStyle(cardStyle)}>
                 <Box marginBottom="large" alignItems="center">
-                    <Pictogram
+                    <PictogramTitleHeader
                         variant="green"
                         icon="stack"
                         title={<Translation id="transactions.emptyState.title" />}

@@ -1,6 +1,6 @@
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useOpenLink } from '@suite-native/link';
-import { Button, Card, HStack, Pictogram, Text, VStack } from '@suite-native/atoms';
+import { Button, Card, HStack, PictogramTitleHeader, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 
 const supportCardStyle = prepareNativeStyle(utils => ({
@@ -24,7 +24,7 @@ export const SupportCard = () => {
                         <Translation id="moduleSettings.faq.supportCard.contact" />
                     </Button>
                 </VStack>
-                <Pictogram variant="green" size="small" icon="lifebuoy" />
+                <PictogramTitleHeader variant="green" size="small" icon="lifebuoy" />
             </HStack>
         </Card>
     );

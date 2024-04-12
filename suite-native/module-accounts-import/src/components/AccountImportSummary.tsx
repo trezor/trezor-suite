@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Box, ErrorMessage, Pictogram, VStack, Text } from '@suite-native/atoms';
+import { Box, ErrorMessage, PictogramTitleHeader, VStack, Text } from '@suite-native/atoms';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -56,7 +56,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
     return (
         <VStack spacing="extraLarge" flex={1}>
             <Box flex={1} alignItems="center" justifyContent="center">
-                <Pictogram
+                <PictogramTitleHeader
                     title={
                         <Text
                             variant="titleSmall"
