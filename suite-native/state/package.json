@@ -34,7 +34,7 @@
         "@trezor/utils": "workspace:*",
         "expo-device": "5.9.3",
         "react": "18.2.0",
-        "react-native": "0.73.2",
+        "react-native": "0.73.6",
         "react-redux": "8.0.7",
         "redux-flipper": "^2.0.2",
         "redux-persist": "6.0.0"
