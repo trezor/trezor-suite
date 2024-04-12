@@ -77,8 +77,9 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     value?: string;
     innerRef?: Ref<HTMLInputElement>;
     label?: ReactElement | string;
-    labelHoverAddon?: ReactElement;
-    labelRight?: ReactElement;
+    hoverAddonRight?: React.ReactNode;
+    labelLeft?: React.ReactNode;
+    labelRight?: React.ReactNode;
     innerAddon?: ReactElement;
     /**
      * @description pass `null` if bottom text can be `undefined`
@@ -103,8 +104,9 @@ const Input = ({
     innerRef,
     inputState,
     label,
-    labelHoverAddon,
+    labelLeft,
     labelRight,
+    hoverAddonRight,
     innerAddon,
     innerAddonAlign = 'right',
     bottomText,
@@ -138,7 +140,12 @@ const Input = ({
             $hasBottomPadding={hasBottomPadding === true && bottomText === null}
             className={className}
         >
-            <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
+            <TopAddons
+                isHovered={isHovered}
+                addonLeft={labelLeft}
+                hoverAddonRight={hoverAddonRight}
+                addonRight={labelRight}
+            />
 
             <InputWrapper>
                 {innerAddon && innerAddonAlign === 'left' && (

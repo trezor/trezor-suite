@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
-import { Select } from '@trezor/components';
+import { Select, Switch } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import {
     fromFiatCurrency,
@@ -18,7 +18,7 @@ import {
 import { CurrencyOption, Output } from '@suite-common/wallet-types';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { NumberInput } from 'src/components/suite';
+import { NumberInput, Translation } from 'src/components/suite';
 import { useTranslation } from 'src/hooks/suite';
 import { validateDecimals } from 'src/utils/suite/validation';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -36,9 +36,11 @@ const Wrapper = styled.div`
 interface FiatProps {
     output: Partial<Output>;
     outputId: number;
+    hoverAddonRight?: React.ReactNode;
+    labelRight?: React.ReactNode;
 }
 
-export const Fiat = ({ output, outputId }: FiatProps) => {
+export const Fiat = ({ output, outputId, hoverAddonRight, labelRight }: FiatProps) => {
     const {
         account,
         network,
@@ -213,6 +215,8 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
     return (
         <Wrapper>
             <NumberInput
+                hoverAddonRight={hoverAddonRight}
+                labelRight={labelRight}
                 control={control}
                 inputState={inputState}
                 onChange={handleChange}
