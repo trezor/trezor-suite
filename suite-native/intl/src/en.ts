@@ -616,6 +616,11 @@ export const en = {
             enterWallet: 'Enter passphrase',
             inputLabel: 'Enter your passphrase',
         },
+        confirmOnDevice: {
+            title: 'Confirm passphrase\non your Trezor.',
+            description: 'Carefully check the passphrase you’ve just entered.',
+            button: 'Cancel',
+        },
     },
 };
 

@@ -9406,10 +9406,12 @@ __metadata:
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/theme": "workspace:*"
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
     react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-svg: "npm:14.1.0"
   languageName: unknown
   linkType: soft
 

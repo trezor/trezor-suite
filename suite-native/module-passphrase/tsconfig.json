@@ -13,6 +13,7 @@
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../navigation" },
+        { "path": "../theme" },
         { "path": "../../packages/styles" }
     ]
 }
