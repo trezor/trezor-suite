@@ -75,6 +75,15 @@ jobs:
             latest*.yml
           retention-days: 3
 
+      - name: Upload suite-desktop mac-arm artifact
+        if: matrix.os == 'macos-14'
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-desktop-mac-arm-dmg
+          path: |
+            Trezor-Suite-*-mac-arm64.dmg
+          retention-days: 3
+
   suite-desktop-win:
     if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && github.repository == 'trezor/trezor-suite'
     name: Build suite-desktop-win
