@@ -29,7 +29,7 @@
         "@suite-native/receive": "workspace:*",
         "@trezor/styles": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.73.2",
+        "react-native": "0.73.6",
         "react-redux": "8.0.7"
     }
 }

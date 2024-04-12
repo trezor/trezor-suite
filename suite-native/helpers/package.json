@@ -16,6 +16,6 @@
         "@trezor/connect": "workspace:*",
         "expo-clipboard": "5.0.1",
         "react": "18.2.0",
-        "react-native": "0.73.2"
+        "react-native": "0.73.6"
     }
 }
