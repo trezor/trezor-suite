@@ -355,12 +355,9 @@ export function AnimatedLineGraph<TEventPayload extends object>({
         (fingerX: number) => {
             const fingerXInRange = Math.max(fingerX - horizontalPadding, 0);
 
-            const lastDate = pointsInRange[pointsInRange.length - 1].date;
+            const lastDate = pointsInRange[pointsInRange.length - 1]?.date;
 
-            // If there was graph error, points in range can be empty
-            if (!lastDate) {
-                return;
-            }
+            if (!lastDate) return;
 
             const index = Math.round(
                 (fingerXInRange / getXInRange(drawingWidth, lastDate, pathRange.x)) *
