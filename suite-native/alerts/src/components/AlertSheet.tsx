@@ -8,8 +8,8 @@ import {
     Card,
     VStack,
     useBottomSheetAnimation,
-    PictogramTitleHeader,
     CenteredTitleHeader,
+    Pictogram,
 } from '@suite-native/atoms';
 
 import { useShakeAnimation } from '../useShakeAnimation';
@@ -94,16 +94,10 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                     >
                         <Card style={applyStyle(alertSheetContainerStyle)}>
                             <VStack style={applyStyle(alertSheetContentStyle)} spacing="large">
-                                {icon && pictogramVariant ? (
-                                    <PictogramTitleHeader
-                                        title={title}
-                                        variant={pictogramVariant}
-                                        subtitle={description}
-                                        icon={icon}
-                                    />
-                                ) : (
-                                    <CenteredTitleHeader title={title} subtitle={description} />
+                                {icon && pictogramVariant && (
+                                    <Pictogram variant={pictogramVariant} icon={icon} />
                                 )}
+                                <CenteredTitleHeader title={title} subtitle={description} />
                                 {appendix}
                                 <VStack spacing="medium">
                                     <Button
