@@ -31,6 +31,7 @@ import {
     AddCoinFlowType,
     AppTabsRoutes,
 } from '@suite-native/navigation';
+import { useAccountAlerts } from '@suite-native/accounts';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     AddCoinAccountStackParamList,
@@ -78,6 +79,7 @@ export const useAddCoinAccount = () => {
     const device = useSelector(selectDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showAlert, hideAlert } = useAlert();
+    const { showCantAddccountDeviceIsViewOnlyErrorAlert } = useAccountAlerts();
     const navigation = useNavigation<NavigationProps>();
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
         [NetworkSymbol, AccountType] | null
@@ -163,14 +165,6 @@ export const useAddCoinAccount = () => {
             },
         });
 
-    const showDeviceIsViewOnlyErrorAlert = () =>
-        showAlert({
-            title: translate('moduleAddAccounts.alerts.viewOnly.title'),
-            description: translate('moduleAddAccounts.alerts.viewOnly.description'),
-            primaryButtonTitle: translate('moduleAddAccounts.alerts.viewOnly.actionPrimary'),
-            onPressPrimaryButton: hideAlert,
-        });
-
     const showGeneralErrorAlert = () =>
         showAlert({
             title: translate('moduleAddAccounts.alerts.generalError.title'),
@@ -209,7 +203,7 @@ export const useAddCoinAccount = () => {
         accountType?: AccountType;
     }) => {
         if (isDeviceInViewOnlyMode) {
-            showDeviceIsViewOnlyErrorAlert();
+            showCantAddccountDeviceIsViewOnlyErrorAlert();
 
             return;
         }
@@ -368,7 +362,7 @@ export const useAddCoinAccount = () => {
         flowType: AddCoinFlowType;
     }) => {
         if (isDeviceInViewOnlyMode) {
-            showDeviceIsViewOnlyErrorAlert();
+            showCantAddccountDeviceIsViewOnlyErrorAlert();
 
             return;
         }
