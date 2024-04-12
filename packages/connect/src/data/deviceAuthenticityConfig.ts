@@ -11,19 +11,16 @@ const CertPubKeys = Type.Object({
 type ModelPubKeys = Static<typeof ModelPubKeys>;
 const ModelPubKeys = Type.Intersect([
     Type.Record(
-        Type.Literal(PROTO.DeviceModelInternal.T2B1),
+        Type.Union([
+            Type.Literal(PROTO.DeviceModelInternal.T2B1),
+            Type.Literal(PROTO.DeviceModelInternal.T3T1),
+        ]),
         Type.Intersect([
             CertPubKeys,
             Type.Object({
                 debug: Type.Optional(CertPubKeys),
             }),
         ]),
-    ),
-    Type.Partial(
-        Type.Record(
-            Type.Exclude(Type.KeyOfEnum(PROTO.DeviceModelInternal), Type.Literal('T2B1')),
-            Type.Undefined(),
-        ),
     ),
 ]);
 
@@ -65,13 +62,29 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '04ac1815177cc1f07700e5f18c05522427413f404bacc987eb1cf9d86f96b9e0cc53ef5941eafd483102eea321205d7dd9271ac2d0fca75a9a43deb824b51f1596',
         ],
         debug: {
-            // debug keys are used **only** to validate emulator or dev. firmware
-            // use `allowDebugKeys: true` parameter in `authenticateDevice` method
             rootPubKeys: [
                 '047f77368dea2d4d61e989f474a56723c3212dacf8a808d8795595ef38441427c4389bc454f02089d7f08b873005e4c28d432468997871c0bf286fd3861e21e96a',
             ],
             caPubKeys: [
                 '04ba6084cb9fba7c86d5d5a86108a91d55a27056da4eabbedde88a95e1cae8bce3620889167aaf7f2db166998f950984aa195e868f96e22803c3cd991be31d39e7',
+            ],
+        },
+    },
+    T3T1: {
+        rootPubKeys: [
+            '041854b27fb1d9f65abb66828e78c9dc0ca301e66081ab0c6a4d104f9df1cd0ad5a7c75f77a8c092f55cf825d2abaf734f934c9394d5e75f75a5a06a5ee9be93ae',
+        ],
+        caPubKeys: [
+            '045b785b703810363deeadc0faa5a7388d8385f5e4f9170a3c27d3d2506bf9090d5b09044fbad6b906446d8cdb754b65869e8992b26a344e01ecff75844fe5a3d6',
+            '046442ece98b1cd13389b6eda3235e2848becc655db564897b2dc0862580f69b29be59dc30f92820f41a7a493b90623e66e1ee8529dbfd60d50aed97b46c4b8f64',
+            '0416960078e1d2b44df717ff5445ec76f4247333375982c5ae59b3bc223371f3cf81e7c182fd1ca36c95977070e2ff46f998bff3f00ab0de266edfdd430aea56b8',
+        ],
+        debug: {
+            rootPubKeys: [
+                '04e48b69cd7962068d3cca3bcc6b1747ef496c1e28b5529e34ad7295215ea161dbe8fb08ae0479568f9d2cb07630cb3e52f4af0692102da5873559e45e9fa72959',
+            ],
+            caPubKeys: [
+                '04829e8965018feb542e9236c9b2ce08f864a55ed9183d0259564f0e05345b04676a0bef36c59d21d3c24868b5601f0b1193a6bfcf6d814e1cfb79c2256a05e953',
             ],
         },
     },
