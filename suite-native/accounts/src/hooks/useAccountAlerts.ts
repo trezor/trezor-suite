@@ -7,9 +7,9 @@ export const useAccountAlerts = () => {
 
     const showCantAddccountDeviceIsViewOnlyErrorAlert = () =>
         showAlert({
-            title: translate('moduleAddAccounts.alerts.viewOnly.title'),
-            description: translate('moduleAddAccounts.alerts.viewOnly.description'),
-            primaryButtonTitle: translate('moduleAddAccounts.alerts.viewOnly.actionPrimary'),
+            title: translate('moduleAccounts.viewOnlyAddAccountAlert.title'),
+            description: translate('moduleAccounts.viewOnlyAddAccountAlert.description'),
+            primaryButtonTitle: translate('moduleAccounts.viewOnlyAddAccountAlert.actionPrimary'),
             onPressPrimaryButton: hideAlert,
         });
 
