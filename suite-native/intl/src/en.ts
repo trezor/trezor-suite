@@ -142,12 +142,6 @@ export const en = {
                 actionSecondary: 'Learn more',
                 actionSecondaryUrl: 'https://trezor.io/learn/a/multiple-accounts-in-trezor-suite',
             },
-            viewOnly: {
-                title: 'To add new coin or account, reconnect your Trezor device.',
-                description:
-                    'We’re unable to add any new coins or accounts to your device when it’s disconnected.',
-                actionPrimary: 'Got it',
-            },
             generalError: {
                 title: 'We couldn’t add your account.',
                 description: 'There’s been an unknown technical issue on our end.',
@@ -532,6 +526,12 @@ export const en = {
             subtitle: 'Connect your Trezor or sync coins to view and track assets.',
             receiveSubtitle: 'Connect your Trezor or sync coins to view and receive assets.',
             searchAgain: 'Search again',
+        },
+        viewOnlyAddAccountAlert: {
+            title: 'To add new coin or account, reconnect your Trezor device.',
+            description:
+                'We’re unable to add any new coins or accounts to your device when it’s disconnected.',
+            actionPrimary: 'Got it',
         },
     },
     transactions: {
