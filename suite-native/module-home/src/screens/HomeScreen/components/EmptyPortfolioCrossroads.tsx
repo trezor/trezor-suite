@@ -13,10 +13,8 @@ import { VStack, Card, Button, Text, Box } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
-import { useActiveColorScheme } from '@suite-native/theme';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
-import { DarkConnectedTrezorSvg } from '../../../assets/DarkConnectedTrezorSvg';
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -34,8 +32,6 @@ type NavigationProps = StackToStackCompositeNavigationProps<
 export const EmptyPortfolioCrossroads = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
-
-    const colorScheme = useActiveColorScheme();
 
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -59,7 +55,7 @@ export const EmptyPortfolioCrossroads = () => {
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="large" justifyContent="center" alignItems="center">
                     <VStack alignItems="center" spacing="large">
-                        {colorScheme === 'dark' ? <DarkConnectedTrezorSvg /> : <ConnectTrezorSvg />}
+                        <ConnectTrezorSvg />
                         <VStack alignItems="center">
                             <Box>
                                 <Text variant="titleSmall" textAlign="center">
