@@ -18,6 +18,7 @@ import { RenderingUtils } from '../components/RenderingUtils';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { TestnetsToggle } from '../components/TestnetsToggle';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
+import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 
 export const DevUtilsScreen = ({
     navigation,
@@ -40,6 +41,7 @@ export const DevUtilsScreen = ({
                     {!isProduction() && <RenderingUtils />}
                     {isDevelopOrDebugEnv() && (
                         <>
+                            <DevicePassphraseSwitch />
                             <FeatureFlags />
                             <DiscoveryCoinsFilter />
                         </>
