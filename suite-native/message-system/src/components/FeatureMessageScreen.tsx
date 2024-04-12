@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { A, G } from '@mobily/ts-belt';
 
 import { IconName } from '@suite-common/icons/src';
-import { Box, Button, Pictogram, PictogramVariant, VStack } from '@suite-native/atoms';
+import { Box, Button, PictogramTitleHeader, PictogramVariant, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Variant } from '@suite-common/suite-types';
 import { messageSystemActions, selectActiveFeatureMessages } from '@suite-common/message-system';
@@ -113,7 +113,7 @@ export const FeatureMessageScreen = () => {
     return (
         <Box style={applyStyle(screenStyle)}>
             <Box style={applyStyle(contentStyle)}>
-                <Pictogram
+                <PictogramTitleHeader
                     title={messageTitle ?? defaultTitle}
                     variant={variantMap[variant]}
                     subtitle={messageContent ?? defaultContent}

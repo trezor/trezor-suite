@@ -1,6 +1,6 @@
 import { useRoute } from '@react-navigation/native';
 
-import { Box, Pictogram } from '@suite-native/atoms';
+import { Box, PictogramTitleHeader } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TxKeyPath, Translation } from '@suite-native/intl';
 import { ReceiveStackRoutes, RootStackRoutes } from '@suite-native/navigation';
@@ -52,7 +52,7 @@ export const AccountListPlaceholder = ({ isFilterEmpty }: AccountListPlaceholder
 
     return (
         <Box style={applyStyle(titleVariant)}>
-            <Pictogram
+            <PictogramTitleHeader
                 variant="yellow"
                 icon={getIcon()}
                 title={<Translation id="moduleAccounts.emptyState.title" />}
