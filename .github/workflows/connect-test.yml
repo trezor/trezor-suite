@@ -64,318 +64,65 @@ jobs:
           name: build-artifact-connect-iframe
           path: packages/connect-iframe/build
 
-  api:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
+  set-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      dailyMatrix: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
+      otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
+      legacyCanaryFirmwareMatrix: ${{ steps.set-matrix-legacy-canary-firmware.outputs.legacyCanaryFirmwareMatrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  legacy-canary-firmware-api:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: "init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity"
-      tests-firmware: ${{ matrix.firmware }}
+      - name: Set daily matrix
+        id: set-matrix-daily
+        run: echo "dailyMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js daily)" >> $GITHUB_OUTPUT
 
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
+      - name: Set other devices matrix
+        id: set-matrix-other-devices
+        run: echo "otherDevicesMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
 
-  management:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
+      - name: Set other devices matrix
+        id: set-matrix-legacy-canary-firmware
+        run: echo "legacyCanaryFirmwareMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js legacyCanaryFirmware)" >> $GITHUB_OUTPUT
 
-  legacy-canary-firmware-management:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "applySettings,applyFlags,getFeatures,getFirmwareHash"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  btc-sign:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "signTransaction"
-
-  legacy-canary-firmware-btc-sign:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "signTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  btc-others:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
-
-  legacy-canary-firmware-btc-others:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  stellar:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "stellarGetAddress,stellarSignTransaction"
-
-  legacy-canary-firmware-stellar:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "stellarGetAddress,stellarSignTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  cardano:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
-
-  legacy-canary-firmware-cardano:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  eos:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "eosGetPublicKey,eosSignTransaction"
-
-  legacy-canary-firmware-eos:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "eosGetPublicKey,eosSignTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  ethereum:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
-
-  legacy-canary-firmware-ethereum:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  nem:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "nemGetAddress,nemSignTransaction"
-
-  legacy-canary-firmware-nem:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "nemGetAddress,nemSignTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  ripple:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "rippleGetAddress,rippleSignTransaction"
-
-  legacy-canary-firmware-ripple:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "rippleGetAddress,rippleSignTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  tezos:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
-
-  legacy-canary-firmware-tezos:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  binance:
-    needs: [build]
-    if: github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
-
-  legacy-canary-firmware-binance:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    uses: ./.github/workflows/template-connect-test-params.yml
-    with:
-      test-pattern: methods
-      methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
-      tests-firmware: ${{ matrix.firmware }}
-
-    strategy:
-      matrix:
-        firmware: ["2.2.0", "2-main"]
-      fail-fast: false
-
-  connect-T2B1:
-    needs: [build]
-    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+  connect-daily:
+    needs: [build, set-matrix]
+    name: daily-${{ matrix.name }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: ${{ matrix.pattern }}
-      methods: ${{ matrix.pattern }}
-      tests-firmware: "2-latest"
+      methods: ${{ matrix.methods }}
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
+
+  connect-legacy-canary-firmware:
+    needs: [build, set-matrix]
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+    name: legacy-canary-${{ matrix.name }}
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      test-pattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.methods }}
+      tests-firmware: ${{ matrix.firmware }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.legacyCanaryFirmwareMatrix) }}
+
+  connect-other-devices:
+    needs: [build, set-matrix]
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+    name: other-devices-${{ matrix.name }}
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      test-pattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.methods }}
+      tests-firmware: ${{ matrix.firmware }}
       test-firmware-model: "R"
       node-environment: ${{ matrix.node-environment }}
       web-environment: ${{ matrix.web-environment }}
     strategy:
       fail-fast: false
-      matrix:
-        include:
-          - pattern: "authenticateDevice"
-            methods: ""
-            node-environment: true
-            web-environment: true
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "applySettings,applyFlags,getFirmwareHash"
-          # "signTransaction", (unsupported chain in fixtures)
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "getAccountInfo,getAccountDescriptor,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof"
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "stellarGetAddress,stellarSignTransaction"
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction"
-          # eos not supported
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData"
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "rippleGetAddress,rippleSignTransaction"
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "tezosGetAddress,tezosGetPublicKey,tezosSignTransaction"
-          - pattern: "methods"
-            web-environment: false
-            node-environment: true
-            methods: "binanceGetAddress,binanceGetPublicKey,binanceSignTransaction"
+      matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}
