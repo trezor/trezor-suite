@@ -3,14 +3,15 @@ import { Connection } from '@solana/web3.js';
 const COMMITMENT = 'finalized';
 
 const tryConfirmBySignatureStatus = async (
-    connection: Connection,
+    api: Connection,
+    txBuffer: Buffer,
     signature: string,
     lastValidBlockHeight: number,
     abortSignal: AbortSignal,
 ) => {
     const getCurrentBlockHeight = async () => {
         try {
-            return await connection.getBlockHeight('finalized');
+            return await api.getBlockHeight('finalized');
         } catch (_) {
             return -1;
         }
@@ -18,7 +19,7 @@ const tryConfirmBySignatureStatus = async (
 
     let currentBlockHeight = await getCurrentBlockHeight();
     while (currentBlockHeight <= lastValidBlockHeight) {
-        const signatureStatus = await connection.getSignatureStatus(signature);
+        const signatureStatus = await api.getSignatureStatus(signature);
         if (
             signatureStatus.value != null &&
             signatureStatus.value.confirmationStatus === COMMITMENT
@@ -30,6 +31,7 @@ const tryConfirmBySignatureStatus = async (
         if (abortSignal.aborted) {
             return signature;
         }
+        await api.sendRawTransaction(txBuffer, { skipPreflight: true, maxRetries: 0 });
         currentBlockHeight = await getCurrentBlockHeight();
     }
 
@@ -38,10 +40,10 @@ const tryConfirmBySignatureStatus = async (
     );
 };
 
-const tryConfirmBySignatureSubscription = (connection: Connection, signature: string) => {
+const tryConfirmBySignatureSubscription = (api: Connection, signature: string) => {
     let subscriptionId: number | undefined;
     const confirmationPromise = new Promise<string>((resolve, reject) => {
-        subscriptionId = connection.onSignature(
+        subscriptionId = api.onSignature(
             signature,
             result => {
                 if (result.err != null) {
@@ -56,8 +58,9 @@ const tryConfirmBySignatureSubscription = (connection: Connection, signature: st
     return { subscriptionId, confirmationPromise };
 };
 
-export const confirmTransaction = async (
+export const confirmTransactionWithResubmit = async (
     api: Connection,
+    txBuffer: Buffer,
     signature: string,
     lastValidBlockHeight: number,
 ) => {
@@ -67,6 +70,7 @@ export const confirmTransaction = async (
     const abortController = new AbortController();
     const signatureStatusConfirmationPromise = tryConfirmBySignatureStatus(
         api,
+        txBuffer,
         signature,
         lastValidBlockHeight,
         abortController.signal,
