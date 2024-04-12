@@ -93,6 +93,12 @@ const getPlugins = (): ExpoPlugins => {
             },
         ],
         '@trezor/react-native-usb/plugins/withUSBDevice.js',
+        [
+            './plugins/withAndroidMainActivityAttributes.js',
+            {
+                'android:allowBackup': false,
+            },
+        ],
         // Define FLIPPER_VERSION
         './plugins/withGradleProperties.js',
         [
