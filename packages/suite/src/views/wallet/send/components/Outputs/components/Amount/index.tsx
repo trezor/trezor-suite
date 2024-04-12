@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import BigNumber from 'bignumber.js';
 import styled, { useTheme } from 'styled-components';
 
-import { Icon, Switch, Warning, variables } from '@trezor/components';
+import { Icon, Warning, variables } from '@trezor/components';
 import { FiatValue, Translation, NumberInput, HiddenPlaceholder } from 'src/components/suite';
 import {
     amountToSatoshi,
@@ -32,6 +32,7 @@ import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
+import { SendMaxSwitch } from './components/SendMaxSwitch';
 
 const Row = styled.div`
     position: relative;
@@ -45,9 +46,9 @@ const Row = styled.div`
 `;
 
 const Heading = styled.p`
-    position: absolute;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
+    white-space: nowrap;
 `;
 
 const AmountInput = styled(NumberInput)`
@@ -62,9 +63,9 @@ const Left = styled.div`
 `;
 
 const TokenBalance = styled.div`
-    padding: 0 6px;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    height: 18px;
 `;
 
 const TokenBalanceValue = styled.span`
@@ -72,9 +73,10 @@ const TokenBalanceValue = styled.span`
 `;
 
 const StyledTransferIcon = styled(Icon)`
-    margin: 50px 20px 0;
+    margin: 0 20px 46px;
+    align-self: end;
 
-    @media all and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${breakpointMediaQueries.below_lg} {
         align-self: center;
         margin: 0;
         transform: rotate(90deg);
@@ -127,6 +129,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const isSetMaxActive = getDefaultValue('setMaxOutputId') === outputId;
     const outputError = errors.outputs ? errors.outputs[outputId] : undefined;
     const error = outputError ? outputError.amount : undefined;
+
     // corner-case: do not display "setMax" button if FormState got ANY error (setMax probably cannot be calculated)
     const isSetMaxVisible = isSetMaxActive && !error && !Object.keys(errors).length;
     const maxSwitchId = `outputs.${outputId}.setMax`;
@@ -138,12 +141,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const fiatCurrency = values?.outputs?.[0]?.currency;
 
     const tokenSymbol = formatTokenSymbol(token?.symbol);
-
-    const tokenBalance = token ? (
-        <HiddenPlaceholder>
-            <TokenBalanceValue>{`${token.balance} ${tokenSymbol}`}</TokenBalanceValue>
-        </HiddenPlaceholder>
-    ) : undefined;
 
     const currentRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(
@@ -222,37 +219,58 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         },
     };
 
-    const SendMaxSwitch = () => (
-        <Switch
-            labelPosition="left"
-            isChecked={isSetMaxActive}
-            dataTest={maxSwitchId}
-            isSmall
-            onChange={() => {
-                setMax(outputId, isSetMaxActive);
-                composeTransaction(inputName);
-            }}
-            label={<Translation id="AMOUNT_SEND_MAX" />}
+    const onSwitchChange = () => {
+        setMax(outputId, isSetMaxActive);
+        composeTransaction(inputName);
+    };
+
+    const isTokenSelected = !!token;
+    const tokenBalance = isTokenSelected ? (
+        <HiddenPlaceholder>
+            <TokenBalanceValue>{`${token.balance} ${tokenSymbol}`}</TokenBalanceValue>
+        </HiddenPlaceholder>
+    ) : undefined;
+
+    const getSendMaxSwitchComponent = (
+        hideOnLargeScreens: boolean | undefined,
+        hideOnSmallScreens: boolean | undefined,
+    ) => (
+        <SendMaxSwitch
+            hideOnLargeScreens={hideOnLargeScreens}
+            hideOnSmallScreens={hideOnSmallScreens}
+            isSetMaxActive={isSetMaxActive}
+            dataTest={!hideOnSmallScreens ? maxSwitchId : ''}
+            onChange={onSwitchChange}
         />
     );
 
     return (
         <>
             <Row>
-                <Heading>
-                    <Translation id="AMOUNT" />
-                    {tokenBalance && (
-                        <TokenBalance>
-                            (<Translation id="TOKEN_BALANCE" values={{ balance: tokenBalance }} />)
-                        </TokenBalance>
-                    )}
-                </Heading>
-
                 <Left>
                     <AmountInput
                         inputState={inputState}
-                        labelHoverAddon={!isSetMaxVisible ? <SendMaxSwitch /> : undefined}
-                        labelRight={isSetMaxVisible ? <SendMaxSwitch /> : undefined}
+                        labelHoverRight={
+                            !isSetMaxVisible && getSendMaxSwitchComponent(isWithRate, undefined)
+                        }
+                        labelRight={
+                            isSetMaxVisible && getSendMaxSwitchComponent(isWithRate, undefined)
+                        }
+                        labelLeft={
+                            <Heading>
+                                <Translation id="AMOUNT" />
+                                {isTokenSelected && (
+                                    <TokenBalance>
+                                        (
+                                        <Translation
+                                            id="TOKEN_BALANCE"
+                                            values={{ balance: tokenBalance }}
+                                        />
+                                        )
+                                    </TokenBalance>
+                                )}
+                            </Heading>
+                        }
                         bottomText={bottomText || null}
                         onChange={handleInputChange}
                         name={inputName}
@@ -283,7 +301,11 @@ export const Amount = ({ output, outputId }: AmountProps) => {
                                     />
 
                                     <Right>
-                                        <Fiat output={output} outputId={outputId} />
+                                        <Fiat
+                                            output={output}
+                                            outputId={outputId}
+                                            labelRight={getSendMaxSwitchComponent(undefined, true)}
+                                        />
                                     </Right>
                                 </>
                             )
