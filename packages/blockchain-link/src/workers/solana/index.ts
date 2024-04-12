@@ -23,7 +23,7 @@ import {
 } from '@trezor/blockchain-link-utils/src/solana';
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
 import { getBaseFee, getPriorityFee } from './fee';
-import { confirmTransaction } from './transactionConfirmation';
+import { confirmTransactionWithResubmit } from './transactionConfirmation';
 
 export type SolanaAPI = Connection;
 
@@ -100,9 +100,12 @@ const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) =
     const { lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
 
     const txBuffer = Buffer.from(rawTx, 'hex');
-    const signature = await api.sendRawTransaction(txBuffer);
+    const signature = await api.sendRawTransaction(txBuffer, {
+        skipPreflight: true,
+        maxRetries: 0,
+    });
 
-    await confirmTransaction(api, signature, lastValidBlockHeight);
+    await confirmTransactionWithResubmit(api, txBuffer, signature, lastValidBlockHeight);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,
