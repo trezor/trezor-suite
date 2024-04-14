@@ -22,9 +22,10 @@ import { useAccountAlerts } from '../hooks/useAccountAlerts';
 
 type AddAccountButtonProps = {
     flowType: AddCoinFlowType;
+    testID?: string;
 };
 
-export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
+export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
 
@@ -65,6 +66,7 @@ export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
             }
             colorScheme="tertiaryElevation0"
             size="medium"
+            testID={testID}
         />
     ) : null;
 };

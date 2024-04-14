@@ -90,6 +90,7 @@ export const EmptyPortfolioCrossroads = () => {
                         onPress={handleSyncMyCoins}
                         colorScheme="tertiaryElevation1"
                         size="large"
+                        testID="@home/portfolio/sync-coins-button"
                     >
                         <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.syncButton" />
                     </Button>

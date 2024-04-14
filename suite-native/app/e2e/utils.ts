@@ -1,4 +1,5 @@
 import { resolveConfig } from 'detox/internals';
+import { expect as detoxExpect } from 'detox';
 
 const APP_LAUNCH_ARGS = {
     // Do not synchronize communication with the trezor bridge and metro server running on localhost. Since the trezor
@@ -18,12 +19,12 @@ const getExpoDeepLinkUrl = () => {
     return `exp+trezor-suite-debug://expo-development-client/?url=${expoLauncherUrl}`;
 };
 
-const openExpoDevClientApp = async () => {
+const openExpoDevClientApp = async ({ newInstance }: { newInstance: boolean }) => {
     const deepLinkUrl = getExpoDeepLinkUrl();
 
     if (platform === 'ios') {
         await device.launchApp({
-            newInstance: true,
+            newInstance,
             launchArgs: APP_LAUNCH_ARGS,
         });
 
@@ -32,26 +33,58 @@ const openExpoDevClientApp = async () => {
         });
     } else {
         await device.launchApp({
-            newInstance: true,
+            newInstance,
             url: deepLinkUrl,
             launchArgs: APP_LAUNCH_ARGS,
         });
     }
 };
 
-// Inspired by Expo E2E detox-tests guide:
-// See more: https://docs.expo.dev/build-reference/e2e-tests/#e2eutilsopenappjs-new-file
-export const openApp = async () => {
+const isDebugTestBuild = async () => {
     const { configurationName } = await resolveConfig();
 
-    const isDebugTestBuild = configurationName.split('.')[2] === 'debug';
+    const isDebugBuild = configurationName.split('.')[2] === 'debug';
 
-    if (isDebugTestBuild) {
-        await openExpoDevClientApp();
+    return isDebugBuild;
+};
+
+// Inspired by Expo E2E detox-tests guide:
+// See more: https://docs.expo.dev/build-reference/e2e-tests/#e2eutilsopenappjs-new-file
+export const openApp = async ({ newInstance }: { newInstance: boolean }) => {
+    if (await isDebugTestBuild()) {
+        await openExpoDevClientApp({ newInstance });
     } else {
         await device.launchApp({
-            newInstance: true,
+            newInstance,
             launchArgs: APP_LAUNCH_ARGS,
         });
     }
+};
+
+export const restartApp = async () => {
+    if (await isDebugTestBuild()) {
+        await device.reloadReactNative();
+    } else {
+        await device.terminateApp();
+        await openApp({ newInstance: false });
+    }
+};
+
+export const scrollUntilVisible = async (matcher: Detox.NativeMatcher) => {
+    try {
+        // Try to confirm that the element is visible without scrolling.
+        await detoxExpect(element(matcher)).toBeVisible();
+    } catch (error) {
+        // If the element is not visible, then use the scroll to find it.
+        await waitFor(element(matcher))
+            .toBeVisible()
+            .whileElement(by.id('@screen/mainScrollView'))
+            .scroll(250, 'down');
+    }
+};
+
+export const appIsFullyLoaded = async () => {
+    await waitFor(element(by.id('@screen/mainScrollView')))
+        .toBeVisible()
+        .withTimeout(20000);
 };

@@ -9,6 +9,7 @@ type TabBarItemProps = {
     onPress: () => void;
     iconName: IconName;
     title?: string;
+    testID: string;
 };
 
 const tabBarItemStyle = prepareNativeStyle(_ => ({
@@ -25,7 +26,7 @@ const tabBarItemContainerStyle = prepareNativeStyle(utils => ({
 
 const TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP = 15;
 
-export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemProps) => {
+export const TabBarItem = ({ isFocused, onPress, iconName, title, testID }: TabBarItemProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
@@ -44,6 +45,7 @@ export const TabBarItem = ({ isFocused, onPress, iconName, title }: TabBarItemPr
                 bottom: TAB_BAR_ITEM_HORIZONTAL_HIT_SLOP,
             }}
             style={applyStyle(tabBarItemStyle)}
+            testID={`@tabBar/${testID}`}
         >
             <View style={applyStyle(tabBarItemContainerStyle)}>
                 <Icon

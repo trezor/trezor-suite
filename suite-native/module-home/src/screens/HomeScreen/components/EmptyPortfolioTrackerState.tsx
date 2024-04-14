@@ -79,7 +79,7 @@ export const EmptyPortfolioTrackerState = () => {
                         </Text>
                     </VStack>
                     <Image source={image} contentFit="contain" style={applyStyle(imageStyle)} />
-                    <Button onPress={handleSyncMyCoins}>
+                    <Button onPress={handleSyncMyCoins} testID="@home/portfolio/sync-coins-button">
                         <Translation id="moduleHome.emptyState.portfolioTracker.primaryButton" />
                     </Button>
                 </VStack>
