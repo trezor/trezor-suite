@@ -28,6 +28,7 @@ export const ScreenContentWrapper = ({
             extraHeight={extraKeyboardAvoidingViewHeight}
             contentContainerStyle={applyStyle(screenContentWrapperStyle)}
             refreshControl={refreshControl}
+            testID="@screen/mainScrollView"
         >
             {children}
         </KeyboardAwareScrollView>
