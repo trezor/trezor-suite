@@ -191,11 +191,11 @@ const MAX_PIN_TRIES = 3;
 const getInvalidDeviceState = async (
     { sendCoreMessage }: CoreContext,
     device: Device,
-    preauthorized?: boolean,
+    method: AbstractMethod<any>,
 ): Promise<StaticSessionId | undefined> => {
     for (let i = 0; i < MAX_PIN_TRIES - 1; ++i) {
         try {
-            return await device.validateState(preauthorized);
+            return await device.validateState(method.preauthorized, method.useCardanoDerivation);
         } catch (error) {
             if (error.message.includes('PIN invalid')) {
                 sendCoreMessage(
@@ -207,7 +207,7 @@ const getInvalidDeviceState = async (
         }
     }
 
-    return device.validateState(preauthorized);
+    return device.validateState(method.preauthorized, method.useCardanoDerivation);
 };
 
 /**
@@ -376,11 +376,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
     const isDeviceUnlocked = device.features.unlocked;
     if (method.useDeviceState) {
         try {
-            let invalidDeviceState = await getInvalidDeviceState(
-                context,
-                device,
-                method.preauthorized,
-            );
+            let invalidDeviceState = await getInvalidDeviceState(context, device, method);
             if (isUsingPopup) {
                 while (invalidDeviceState) {
                     const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
@@ -397,11 +393,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
                         device.setState({ sessionId: undefined });
                         await device.initialize(method.useCardanoDerivation);
 
-                        invalidDeviceState = await getInvalidDeviceState(
-                            context,
-                            device,
-                            method.preauthorized,
-                        );
+                        invalidDeviceState = await getInvalidDeviceState(context, device, method);
                     } else {
                         // set new state as requested
                         device.setState({ staticSessionId: invalidDeviceState });
@@ -893,6 +885,73 @@ const onEmptyPassphraseHandler =
         callback({ success: true, payload: { value: '' } });
     };
 
+const onThpPairingHandler =
+    (context: CoreContext) =>
+    async ({ device, callback }: DeviceEvents['thp_pairing']) => {
+        const { uiPromises, sendCoreMessage } = context;
+        // wait for popup handshake
+        await waitForPopup(context);
+        // create ui promise
+        const uiPromise = uiPromises.create(UI.RECEIVE_THP_PAIRING_TAG, device);
+        const thpState = device.getThpState();
+        if (!thpState?.handshakeCredentials) {
+            callback({ success: false, error: new Error('missing thp state') });
+
+            return;
+        }
+        sendCoreMessage(
+            createUiMessage(UI.REQUEST_THP_PAIRING, {
+                device: device.toMessageObject(),
+                availableMethods: thpState.handshakeCredentials.pairingMethods,
+                selectedMethod: thpState.pairingMethod,
+                nfcData: thpState.nfcData?.toString('hex'),
+            }),
+        );
+        // wait for response
+        try {
+            const uiResp = await uiPromise.promise;
+            if (uiResp.payload == null) {
+                callback({
+                    success: false,
+                    error: new Error(`${UI.RECEIVE_THP_PAIRING_TAG} missing payload`),
+                });
+            } else {
+                callback({ success: true, payload: uiResp.payload });
+            }
+        } catch (error) {
+            callback({ success: false, error });
+        }
+    };
+
+const onThpCredentialsHandler =
+    (context: CoreContext) =>
+    async ({ device, callback }: DeviceEvents['thp_autoconnect']) => {
+        const { uiPromises, sendCoreMessage } = context;
+        // wait for popup handshake
+        await waitForPopup(context);
+        // create ui promise
+        const uiPromise = uiPromises.create(UI.RECEIVE_THP_AUTOCONNECT, device);
+        sendCoreMessage(
+            createUiMessage(UI.REQUEST_THP_AUTOCONNECT, {
+                device: device.toMessageObject(),
+            }),
+        );
+        // wait for response
+        try {
+            const uiResp = await uiPromise.promise;
+            if (uiResp.payload == null) {
+                callback({
+                    success: false,
+                    error: new Error(`${UI.RECEIVE_THP_AUTOCONNECT} missing payload`),
+                });
+            } else {
+                callback({ success: true, payload: uiResp.payload });
+            }
+        } catch (error) {
+            callback({ success: false, error });
+        }
+    };
+
 const registerDeviceEvents =
     (context: CoreContext, method?: AbstractMethod<any>) => (device: Device) => {
         device.removeAllListeners();
@@ -915,6 +974,17 @@ const registerDeviceEvents =
         });
         device.on(DEVICE.FIRMWARE_VERSION_CHANGED, payload => {
             context.sendCoreMessage(createDeviceMessage(DEVICE.FIRMWARE_VERSION_CHANGED, payload));
+        });
+        device.on(DEVICE.THP_AUTOCONNECT, onThpCredentialsHandler(context));
+        device.on(DEVICE.THP_PAIRING, onThpPairingHandler(context));
+        device.on(DEVICE.THP_CREDENTIALS_CHANGED, payload => {
+            DataManager.getSettings().thp?.knownCredentials?.push(payload.credentials);
+            context.sendCoreMessage(
+                createDeviceMessage(DEVICE.THP_CREDENTIALS_CHANGED, {
+                    device: device.toMessageObject(),
+                    credentials: payload.credentials,
+                }),
+            );
         });
     };
 
@@ -1158,6 +1228,8 @@ export class Core extends EventEmitter {
             case UI.RECEIVE_PIN:
             case UI.RECEIVE_PASSPHRASE:
             case UI.INVALID_PASSPHRASE_ACTION:
+            case UI.RECEIVE_THP_AUTOCONNECT:
+            case UI.RECEIVE_THP_PAIRING_TAG:
             case UI.RECEIVE_ACCOUNT:
             case UI.RECEIVE_FEE:
             case UI.RECEIVE_WORD:
@@ -1184,6 +1256,7 @@ export class Core extends EventEmitter {
                             log: _log,
                             abortSignal: this.abortController.signal,
                             registerEvents: registerDeviceEvents(coreContext),
+                            uiPromises: coreContext.uiPromises,
                         },
                     })
                         .then(payload => {

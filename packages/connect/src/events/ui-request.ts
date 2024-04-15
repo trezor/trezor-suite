@@ -2,6 +2,7 @@
  * messages to UI emitted as UI_EVENT
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
+import type { ThpPairingMethod } from '@trezor/protocol';
 
 import type { PROTO } from '../constants';
 import type { BitcoinNetworkInfo, CoinInfo, Device, SelectFeeLevel } from '../types';
@@ -40,6 +41,8 @@ export const UI_REQUEST = {
     REQUEST_PASSPHRASE: 'ui-request_passphrase',
     REQUEST_PASSPHRASE_ON_DEVICE: 'ui-request_passphrase_on_device',
     INVALID_PASSPHRASE: 'ui-invalid_passphrase',
+    REQUEST_THP_AUTOCONNECT: 'ui-request_thp_autoconnect',
+    REQUEST_THP_PAIRING: 'ui-request_thp_pairing',
     CONNECT: 'ui-connect',
     LOADING: 'ui-loading',
     SET_OPERATION: 'ui-set_operation',
@@ -144,6 +147,23 @@ export type UiRequestButtonData =
           message: string;
       };
 
+export interface UiRequestThpAutoconnect {
+    type: typeof UI_REQUEST.REQUEST_THP_AUTOCONNECT;
+    payload: {
+        device: Device;
+    };
+}
+
+export interface UiRequestThpPairing {
+    type: typeof UI_REQUEST.REQUEST_THP_PAIRING;
+    payload: {
+        device: Device;
+        availableMethods: ThpPairingMethod[];
+        selectedMethod?: ThpPairingMethod; // expected pairing response data
+        nfcData?: string; // data for NFC module, if selected_method === ThpPairingMethod.NFC
+    };
+}
+
 // ButtonRequest_FirmwareUpdate is a artificial button request thrown by "uploadFirmware" method
 // at the beginning of the uploading process
 export interface UiRequestButton {
@@ -176,6 +196,8 @@ export interface UiRequestConfirmation {
     type: typeof UI_REQUEST.REQUEST_CONFIRMATION;
     payload: {
         view:
+            | 'thp-pairing-start'
+            | 'thp-pairing-failed'
             | 'no-backup'
             | 'export-xpub'
             | 'export-address'
@@ -294,6 +316,8 @@ export type UiEvent =
     | UiRequestUnexpectedDeviceMode
     | UiRequestSelectAccount
     | UiRequestSelectFee
+    | UiRequestThpAutoconnect
+    | UiRequestThpPairing
     | UpdateCustomFee
     | BundleProgress<any>
     | FirmwareProgress

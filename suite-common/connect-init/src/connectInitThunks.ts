@@ -160,6 +160,16 @@ export const connectInitThunk = createThunk(
                 transports,
                 _sessionsBackgroundUrl,
                 debug: showConnectLogs,
+                thp: {
+                    hostName: 'Trezor Suite',
+                    // TODO: do no provide, will be generated at first pairing
+                    staticKey: '0007070707070707070707070707070707070707070707070707070707070747',
+                    // TODO: move to toplevel known devices
+                    knownCredentials: [],
+                    // TODO: NoMethod in debug settings
+                    pairingMethods: ['CodeEntry', 'QrCode'],
+                    // pairingMethods: ['SkipPairing'],
+                },
             });
         } catch (error) {
             let formattedError: string;

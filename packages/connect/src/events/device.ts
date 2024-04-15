@@ -1,4 +1,5 @@
 import type { VersionArray } from '@trezor/device-utils';
+import type { ThpCredentials } from '@trezor/protocol';
 
 import type { PROTO } from '../constants';
 import type { Device } from '../types/device';
@@ -12,6 +13,7 @@ export const DEVICE = {
     DISCONNECT: 'device-disconnect',
     CHANGED: 'device-changed',
     FIRMWARE_VERSION_CHANGED: 'device-firmware_version_changed',
+    THP_CREDENTIALS_CHANGED: 'device-thp_credentials_changed',
 
     // trezor-link events in protobuf format
     BUTTON: 'button',
@@ -19,6 +21,8 @@ export const DEVICE = {
     PASSPHRASE: 'passphrase',
     PASSPHRASE_ON_DEVICE: 'passphrase_on_device',
     WORD: 'word',
+    THP_AUTOCONNECT: 'thp_autoconnect', // ask UI if autoconnect credentials should be created
+    THP_PAIRING: 'thp_pairing', // ask UI for pairing tag
 } as const;
 
 export interface DeviceButtonRequestPayload extends Omit<PROTO.ButtonRequest, 'code'> {
@@ -39,6 +43,14 @@ export interface DeviceVersionChanged {
     };
 }
 
+export interface DeviceThpCredentialsChanged {
+    type: typeof DEVICE.THP_CREDENTIALS_CHANGED;
+    payload: {
+        device: Device;
+        credentials: ThpCredentials;
+    };
+}
+
 export type DeviceEvent =
     | {
           type:
@@ -49,6 +61,7 @@ export type DeviceEvent =
           payload: Device;
       }
     | DeviceButtonRequest
+    | DeviceThpCredentialsChanged
     | DeviceVersionChanged;
 
 export type DeviceEventMessage = DeviceEvent & { event: typeof DEVICE_EVENT };

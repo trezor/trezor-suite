@@ -259,6 +259,7 @@ const shouldUiEventBeSentToHost = (message: CoreEventMessage) => {
         DEVICE.CONNECT,
         DEVICE.CONNECT_UNACQUIRED,
         DEVICE.CHANGED,
+        DEVICE.THP_CREDENTIALS_CHANGED,
         DEVICE.DISCONNECT,
         DEVICE.BUTTON,
     ];

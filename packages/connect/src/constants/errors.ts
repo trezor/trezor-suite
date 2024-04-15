@@ -43,6 +43,9 @@ export const ERROR_CODES = {
     Device_MultipleNotSupported: 'Multiple devices are not supported', // thrown by methods which require single device
     Device_MissingCapability: 'Device is missing capability', // thrown by methods which require specific capability
     Device_MissingCapabilityBtcOnly: 'Device is missing capability (BTC only)', // thrown by methods which require specific capability when using BTC only firmware
+    Device_ThpStateMissing: 'Pairing failed', // thrown by thp related actions
+    Device_ThpPairingFailed: 'Pairing failed', // thrown by ...
+    Device_ThpPairingTagInvalid: 'Pairing tag mismatch', // thrown by ...
 
     Failure_ActionCancelled: 'Action cancelled by user',
     Failure_FirmwareError: 'Firmware installation failed',

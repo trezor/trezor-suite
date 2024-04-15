@@ -1,9 +1,8 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { MessagesSchema as Messages } from '@trezor/protobuf';
-import { TransportProtocol } from '@trezor/protocol';
 import { Assert } from '@trezor/schema-utils';
-import { Session, Transport } from '@trezor/transport';
+import { MessageResponse, Session, Transport } from '@trezor/transport';
 import { resolveAfter, scheduleAction, versionUtils } from '@trezor/utils';
 
 import { ERRORS } from '../constants';
@@ -42,22 +41,15 @@ export interface TypedCallProvider {
 export class DeviceCurrentSession implements TypedCallProvider {
     private readonly device: Device;
     private readonly transport: Transport;
-    private readonly protocol: TransportProtocol;
     private readonly session: Session;
 
     private disposed: boolean;
     private callPromise?: Promise<unknown>;
     private abortController?: AbortController;
 
-    constructor(
-        device: Device,
-        transport: Transport,
-        protocol: TransportProtocol,
-        session: Session,
-    ) {
+    constructor(device: Device, transport: Transport, session: Session) {
         this.device = device;
         this.transport = transport;
-        this.protocol = protocol;
         this.session = session;
         this.disposed = false;
     }
@@ -97,7 +89,7 @@ export class DeviceCurrentSession implements TypedCallProvider {
                 abort =>
                     this.transport.receive({
                         session: this.session,
-                        protocol: this.protocol,
+                        protocol: this.device.protocol,
                         signal: abort,
                     }),
                 { timeout: 500 },
@@ -127,9 +119,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
         type: T,
         msg: Messages.MessagePayload<T>,
         abortPromise: Promise<ReturnType<typeof fail>>,
-    ): Promise<ReturnType<typeof success<Messages.MessageResponse>> | ReturnType<typeof fail>> {
+    ): Promise<ReturnType<typeof success<MessageResponse>> | ReturnType<typeof fail>> {
         let [name, data] = [type, msg];
-        const { protocol, session } = this;
+        const { session } = this;
+        const { protocol } = this.device;
         let pinUnlocked = false;
 
         while (true) {
@@ -263,7 +256,10 @@ export class DeviceCurrentSession implements TypedCallProvider {
     private async call(params: Parameters<Transport['call']>[0]) {
         logger.debug('Sending', params.name, filterForLog(params.name, params.data));
 
-        const result = await this.transport.call(params);
+        const result = await this.transport.call({
+            ...params,
+            thpState: this.device.getThpState(),
+        });
 
         if (result.success) {
             const { type, message } = result.payload;
@@ -279,8 +275,14 @@ export class DeviceCurrentSession implements TypedCallProvider {
     async cancelCall(expectResponse = true) {
         if (this.disposed) return Promise.resolve(disposed());
 
-        const { protocol, session } = this;
-        const cancelArgs = { session, name: 'Cancel', data: {}, protocol };
+        const { session } = this;
+        const cancelArgs = {
+            session,
+            name: 'Cancel',
+            data: {},
+            protocol: this.device.protocol,
+            thpState: this.device.getThpState(),
+        };
 
         const response = expectResponse
             ? await this.transport.call(cancelArgs)

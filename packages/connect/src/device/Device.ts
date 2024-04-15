@@ -2,13 +2,19 @@
 import { randomBytes } from 'crypto';
 
 import { DeviceModelInternal } from '@trezor/device-utils';
-import { TransportProtocol, thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
+import {
+    TransportProtocol,
+    thp as protocolThp,
+    v1 as protocolV1,
+    v2 as protocolV2,
+} from '@trezor/protocol';
 import { Session } from '@trezor/transport';
 import { type Descriptor, TRANSPORT_ERROR, type Transport } from '@trezor/transport';
 import {
     Deferred,
     TypedEmitter,
     createDeferred,
+    getWeakRandomInt,
     isArrayMember,
     resolveAfter,
     serializeError,
@@ -20,6 +26,7 @@ import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { abortThpWorkflow, createThpSession, getThpChannel } from './thpCommands';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
 import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
@@ -33,6 +40,8 @@ import {
     UI,
     UiResponsePassphrase,
     UiResponsePin,
+    UiResponseThpAutoconnect,
+    UiResponseThpPairingTag,
     UiResponseWord,
 } from '../events';
 import {
@@ -102,6 +111,17 @@ export interface DeviceEvents {
     [DEVICE.PASSPHRASE_ON_DEVICE]: void;
     [DEVICE.BUTTON]: { device: Device; payload: DeviceButtonRequestPayload };
     [DEVICE.FIRMWARE_VERSION_CHANGED]: DeviceVersionChanged['payload'];
+    [DEVICE.THP_AUTOCONNECT]: {
+        device: Device;
+        callback: (response: Result<UiResponseThpAutoconnect['payload']>) => void;
+    };
+    [DEVICE.THP_PAIRING]: {
+        device: Device;
+        callback: (response: Result<UiResponseThpPairingTag['payload']>) => void;
+    };
+    [DEVICE.THP_CREDENTIALS_CHANGED]: {
+        credentials: protocolThp.ThpCredentials;
+    };
 }
 
 type DeviceLifecycle =
@@ -126,7 +146,7 @@ type DeviceParams = {
  */
 export class Device extends TypedEmitter<DeviceEvents> {
     public readonly transport: Transport;
-    public readonly protocol: TransportProtocol;
+    public protocol: TransportProtocol;
     public readonly transportPath;
     private thp: protocolThp.ThpState | undefined;
     private readonly transportDescriptorType;
@@ -231,6 +251,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.firstRunPromise = createDeferred();
     }
 
+    public getThpState() {
+        return this.thp;
+    }
+
+    public getThpProperties() {
+        return this.thp?.properties;
+    }
+
+    public getLocalSession() {
+        const localSession = this.lastAcquiredHere ? this.session : null;
+
+        return localSession;
+    }
+
     private getSessionChangePromise() {
         if (!this.sessionDfd) {
             this.sessionDfd = createDeferred();
@@ -281,7 +315,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     this.currentSession = new DeviceCurrentSession(
                         this,
                         this.transport,
-                        this.protocol,
                         this.session,
                     );
 
@@ -443,6 +476,22 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.emitLifecycle(DEVICE.CONNECT);
+                    // acquired device with properties == THP device
+                    // if (!device.features && device.properties) {
+                    //     const unpairedDevice = this._createUnacquiredDevice(
+                    //         this.creatingDevicesDescriptors[path],
+                    //         transport,
+                    //     );
+                    //     unpairedDevice.thp.state = device.thp.state;
+                    //     unpairedDevice.protocol = device.protocol;
+                    //     this.devices[path] = unpairedDevice;
+                    //     device.dispose();
+                    //     this.emit(DEVICE.CONNECT_UNACQUIRED, unpairedDevice.toMessageObject());
+                    // } else {
+                    //     this.emitLifecycle(DEVICE.CONNECT);
+                    // }
+                } else if (wasUnacquired && !this.features && this.thp?.properties) {
+                    this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                 }
             })
             .catch(err => {
@@ -468,6 +517,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async interruptionFromUser(error: Error) {
         _log.debug('interruptionFromUser');
 
+        await abortThpWorkflow(this);
         await this.currentSession?.abort(error);
         await this.currentSession?.dispose();
 
@@ -522,9 +572,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
         const { staticSessionId, deriveCardano } = this.getState() || {};
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
-            // update features
             try {
-                if (fn) {
+                if (this.protocol.name === 'v2') {
+                    const enforcePairing = !!fn;
+                    await getThpChannel(this, DataManager.getSettings('thp'), enforcePairing);
+                    if (this.getThpState()?.isAutoconnectPaired || enforcePairing) {
+                        await this.getFeatures();
+                    }
+                } else if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
                     const isNative = DataManager.getSettings('env') === 'react-native';
@@ -591,12 +646,50 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     return this._runInner(() => Promise.resolve({}), options);
                 }
 
+                if (error.code === 'Device_ThpPairingTagInvalid') {
+                    return Promise.reject(error);
+                }
+
+                if (error.code === 'Failure_InvalidProtocol') {
+                    _log.info('Set device protocol to v2');
+                    // switch to THP and try again
+                    this.protocol = protocolV2;
+                    this.thp = new protocolThp.ThpState();
+
+                    try {
+                        if (
+                            this.transport.name === 'BridgeTransport' &&
+                            !versionUtils.isNewerOrEqual(this.transport.version, '3.0.0')
+                        ) {
+                            throw new Error('Incompatible setup');
+                        }
+                        await this.transport.loadMessages(
+                            'thp',
+                            protocolThp.getProtobufDefinitions,
+                        );
+                    } catch (e) {
+                        // create unreadable device
+                        return Promise.reject(
+                            ERRORS.TypedError(
+                                'Device_InitializeFailed',
+                                `Initialize failed: ${e.message}`,
+                            ),
+                        );
+                    }
+
+                    return this._runInner(fn, options);
+                }
+
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
                 }
 
                 this.inconsistent = true;
                 delete this.runPromise;
+                // TODO: unreadable device never released
+                // if (!fn) {
+                //     await this.release();
+                // }
 
                 return Promise.reject(
                     ERRORS.TypedError(
@@ -713,8 +806,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    async validateState(preauthorized = false) {
+    validateThpState() {
+        // const currentState = this.getState();
+        // const expectedSessionId = currentState?.sessionId;
+        // if (expectedSessionId) {
+        //     this.thp.state.setSessionId(expectedSessionId as any);
+        // }
+    }
+
+    async validateState(preauthorized = false, useCardanoDerivation = false) {
         if (!this.features) return;
+
+        if (this.protocol.name === 'v2') {
+            this.validateThpState();
+        }
 
         if (!this.features.unlocked && preauthorized) {
             // NOTE: auto locked device accepts preauthorized methods (authorizeConjoin, getOwnershipProof, signTransaction) without pin request.
@@ -725,15 +830,81 @@ export class Device extends TypedEmitter<DeviceEvents> {
             // ...and if it's not then unlock device and proceed to regular GetAddress flow
         }
 
-        const expectedState = this.getState()?.staticSessionId;
+        // const expectedState = this.getState()?.staticSessionId;
 
-        const { message } = await this.getCurrentSession().typedCall('GetAddress', 'Address', {
-            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
-            coin_name: 'Testnet',
-            script_type: 'SPENDADDRESS',
-        });
+        // const { message } = await this.getCurrentSession().typedCall('GetAddress', 'Address', {
+        //     address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+        //     coin_name: 'Testnet',
+        //     script_type: 'SPENDADDRESS',
+        // });
 
-        const uniqueState: StaticSessionId = `${message.address}@${this.features.device_id}:${this.instance}`;
+        const getDeviceState = () =>
+            this.getCurrentSession()
+                .typedCall('GetAddress', 'Address', {
+                    address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+                    coin_name: 'Testnet',
+                    script_type: 'SPENDADDRESS',
+                })
+                .then(({ message }) => message.address);
+
+        // const uniqueState: StaticSessionId = `${message.address}@${this.features.device_id}:${this.instance}`;
+
+        const currentState = this.getState();
+        const expectedState = currentState?.staticSessionId;
+        const expectedSessionId = currentState?.sessionId;
+        let deviceState: string | undefined;
+        if (this.protocol.name === 'v2') {
+            if (expectedSessionId) {
+                this.thp?.setSessionId(Uint8Array.from([Number(expectedSessionId)]));
+                deviceState = await getDeviceState().catch(e => {
+                    if (e) {
+                        console.log('Verify ThpSession error', e);
+                        // TODO: catch specific thp errors
+                        // requested sessionId is not valid, reset
+                        // currently throws: Failure_UnknownMessage : Failure_UnknownCode
+                        this.setState({
+                            sessionId: undefined,
+                            deriveCardano: undefined,
+                        });
+                        // this.thp.state.resetState();
+                        this.thp?.setSessionId(new Uint8Array(1));
+
+                        return undefined;
+                    }
+                });
+            }
+
+            if (!deviceState || (!currentState?.deriveCardano && useCardanoDerivation)) {
+                const knownSessions = this.state.flatMap(s => s.sessionId);
+                let newSessionId = 0;
+                // TODO: what if known.length >= 255?
+                while (!newSessionId || knownSessions.includes(newSessionId.toString())) {
+                    newSessionId = getWeakRandomInt(1, 256);
+                }
+                const sessionId = Uint8Array.from([newSessionId]);
+                this.thp?.setSessionId(sessionId);
+                console.log(
+                    'I need new ThpSession',
+                    newSessionId,
+                    sessionId,
+                    sessionId.toString(),
+                    Uint8Array.from([newSessionId]),
+                    deviceState,
+                    !currentState?.deriveCardano && useCardanoDerivation,
+                );
+                await createThpSession(this, useCardanoDerivation);
+                this.setState({
+                    sessionId: newSessionId.toString(),
+                    deriveCardano: useCardanoDerivation,
+                });
+            }
+        }
+
+        if (!deviceState) {
+            deviceState = await getDeviceState();
+        }
+
+        const uniqueState: StaticSessionId = `${deviceState}@${this.features.device_id || 'device_id'}:${this.instance}`;
         if (this.features.session_id) {
             this.setState({ sessionId: this.features.session_id });
         }
@@ -743,6 +914,15 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (!expectedState) {
             this.setState({ staticSessionId: uniqueState });
         }
+    }
+
+    // bridge older than 3.0.0 adds MESSAGE_MAGIC_HEADER_BYTE to each chunk
+    // therefore it's not possible to implement Trezor Host Protocol
+    useLegacyProtocol() {
+        return (
+            this.transport.name === 'BridgeTransport' &&
+            !versionUtils.isNewerOrEqual(this.transport.version, '3.0.0')
+        );
     }
 
     async initialize(useCardanoDerivation: boolean) {
@@ -765,7 +945,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             payload,
         );
         this._updateFeatures(message);
-        this.setState({ deriveCardano: payload?.derive_cardano });
     }
 
     initStorage(storage: IStateStorage) {
@@ -775,6 +954,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     async getFeatures() {
         // Please keep the method simple - don't add any async logic
+        console.log('.......getFeatures()');
+
         const { message } = await this.getCurrentSession().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
     }
@@ -1061,10 +1242,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    prompt<T extends typeof DEVICE.PIN | typeof DEVICE.PASSPHRASE | typeof DEVICE.WORD>(
-        type: T,
-        args: Omit<DeviceEvents[T], 'callback'>,
-    ) {
+    prompt<
+        T extends
+            | typeof DEVICE.PIN
+            | typeof DEVICE.PASSPHRASE
+            | typeof DEVICE.WORD
+            | typeof DEVICE.THP_AUTOCONNECT
+            | typeof DEVICE.THP_PAIRING,
+    >(type: T, args: Omit<DeviceEvents[T], 'callback'>) {
         // TODO I believe this emit/on can be changed into simple async functions
         return new Promise<Parameters<DeviceEvents[T]['callback']>[0]>(callback => {
             if (!this.listenerCount(type)) {
@@ -1195,6 +1380,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.removeAllListeners();
         if (this.session && this.lastAcquiredHere) {
             this.transport.releaseSync(this.session);
+            // try {
+            //     await this.cancelableAction?.();
+            //     await this.commands?.cancel();
+
+            //     console.log('Device.this.transport.release');
+
+            //     return this.transport.release({
+            //         session: this.session,
+            //         path: this.transportPath,
+            //         onClose: true,
+            //     });
+            // } catch {
+            //     // empty
+            // }
         }
     }
 

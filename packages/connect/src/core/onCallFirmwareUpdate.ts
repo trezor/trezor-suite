@@ -33,11 +33,20 @@ type ReconnectContext = {
     postMessage: PostMessage;
     log: Log;
     abortSignal: AbortSignal;
+    uiPromises: any;
 };
 
 const waitForReconnectedDevice = async (
     { bootloader, method, intermediary }: ReconnectParams,
-    { deviceList, device, registerEvents, postMessage, log, abortSignal }: ReconnectContext,
+    {
+        deviceList,
+        device,
+        registerEvents,
+        postMessage,
+        log,
+        abortSignal,
+        uiPromises,
+    }: ReconnectContext,
 ): Promise<Device> => {
     const target = intermediary || !bootloader ? 'normal' : 'bootloader';
 
@@ -66,6 +75,7 @@ const waitForReconnectedDevice = async (
     );
 
     let reconnectedDevice: Device | undefined;
+    let thpPairingError = false;
     do {
         postMessage(
             createUiMessage(UI.FIRMWARE_RECONNECT, {
@@ -92,24 +102,43 @@ const waitForReconnectedDevice = async (
         // 3. listen now reported a new device in bootloader mode but it still has the session from the previous device in normal mode
         // 4. now we automatically take the device, as if user clicked on the "use device here button"
 
-        if (
-            reconnectedDevice &&
-            !reconnectedDevice.features &&
-            reconnectedDevice.handshakeFinished
-        ) {
+        if (reconnectedDevice?.handshakeFinished && !reconnectedDevice.features) {
             log.debug(
                 'onCallFirmwareUpdate',
                 'we were unable to read device.features on the first interaction after seeing it, retrying...',
             );
+
+            let runFn;
+            if (reconnectedDevice.getThpProperties()) {
+                runFn = () => Promise.resolve();
+                const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, reconnectedDevice);
+                postMessage(
+                    createUiMessage(UI.REQUEST_CONFIRMATION, {
+                        view: thpPairingError ? 'thp-pairing-failed' : 'thp-pairing-start',
+                        label: thpPairingError ? 'Second time' : 'First time',
+                    }),
+                );
+
+                // THP pairing required
+                const uiResp = await uiPromise.promise;
+                if (!uiResp.payload) {
+                    // TODO: throw ERRORS.TypedError('Method_PermissionsNotGranted');
+                }
+            }
+
             try {
                 registerEvents(reconnectedDevice);
                 // todo: it keeps printing warning "Previous call is still running" on reconnect from bl to normal
-                await reconnectedDevice.run(undefined, {
+                await reconnectedDevice.run(runFn, {
                     skipFirmwareChecks: true,
                     skipLanguageChecks: true,
                 });
-            } catch {
-                // empty
+            } catch (error) {
+                // error in THP pairing
+                if (error.code === 'Device_ThpPairingTagInvalid') {
+                    thpPairingError = true;
+                }
+                console.warn(error);
             }
         }
 
@@ -290,6 +319,7 @@ type Context = {
     initDevice: (path?: DeviceUniquePath) => Promise<Device>;
     log: Log;
     abortSignal: AbortSignal;
+    uiPromises: any;
 };
 
 type OnCallFirmwareUpdateParams = {
