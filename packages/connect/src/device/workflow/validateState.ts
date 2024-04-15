@@ -1,9 +1,25 @@
+import { getWeakRandomInt } from '@trezor/utils';
+
 import { ERRORS } from '../../constants';
 import { DataManager } from '../../data/DataManager';
 import { DEVICE, UI, createDeviceMessage, createUiMessage } from '../../events';
 import { StaticSessionId } from '../../types';
 import { WorkflowContext } from '../../types/workflow';
 import { toHardened } from '../../utils/pathUtils';
+import { createThpSession } from '../thp';
+
+const getStaticSessionId = (device: WorkflowContext['device']) =>
+    device
+        .getCurrentSession()
+        .typedCall('GetAddress', 'Address', {
+            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+            coin_name: 'Testnet',
+            script_type: 'SPENDADDRESS',
+        })
+        .then(
+            ({ message }) =>
+                `${message.address}@${device.features.device_id}:${device.getInstance()}` as StaticSessionId,
+        );
 
 const getState = async ({ device, method }: WorkflowContext) => {
     if (!device.features) return;
@@ -21,13 +37,8 @@ const getState = async ({ device, method }: WorkflowContext) => {
     const expectedState = device.getState()?.staticSessionId;
 
     // add-abort-signal
-    const { message } = await device.getCurrentSession().typedCall('GetAddress', 'Address', {
-        address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
-        coin_name: 'Testnet',
-        script_type: 'SPENDADDRESS',
-    });
 
-    const uniqueState: StaticSessionId = `${message.address}@${device.features.device_id}:${device.getInstance()}`;
+    const uniqueState = await getStaticSessionId(device);
     if (device.features.session_id) {
         device.setState({ sessionId: device.features.session_id });
     }
@@ -62,17 +73,74 @@ const getInvalidDeviceState = async (
     return getState(context);
 };
 
+const getInvalidThpDeviceState = async (context: WorkflowContext) => {
+    const { device, method } = context;
+    const currentState = device.getState();
+    const expectedState = currentState?.staticSessionId;
+    const expectedSessionId = currentState?.sessionId;
+    let uniqueState;
+    const thpState = device.getThpState();
+
+    if (expectedSessionId) {
+        // validate that expected ThpSession still exists
+        thpState?.setSessionId(Uint8Array.from([Number(expectedSessionId)]));
+        uniqueState = await getStaticSessionId(device).catch(e => {
+            if (e.code === 'Failure_InvalidSession') {
+                // TODO: catch specific thp errors
+                // requested sessionId is not valid, reset state
+                device.setState({
+                    sessionId: undefined,
+                    deriveCardano: undefined,
+                });
+                // device.thp.state.resetState();
+                thpState?.setSessionId(new Uint8Array(1));
+
+                return undefined;
+            }
+        });
+    }
+
+    if (!uniqueState || (!currentState?.deriveCardano && method.useCardanoDerivation)) {
+        const knownSessions = device.getAllInstances().map(s => s.sessionId);
+        let newSessionId = 0;
+        // TODO: what if known.length >= 255?
+        while (!newSessionId || knownSessions.includes(newSessionId.toString())) {
+            newSessionId = getWeakRandomInt(1, 256);
+        }
+        const sessionId = Uint8Array.from([newSessionId]);
+        thpState?.setSessionId(sessionId);
+
+        await createThpSession(device, method.useCardanoDerivation);
+        uniqueState = await getStaticSessionId(device);
+        device.setState({
+            sessionId: newSessionId.toString(),
+            deriveCardano: method.useCardanoDerivation,
+        });
+    }
+
+    if (expectedState && expectedState !== uniqueState) {
+        return uniqueState;
+    }
+
+    if (!expectedState) {
+        device.setState({ staticSessionId: uniqueState });
+    }
+};
+
 export const validateState = async (context: WorkflowContext) => {
     const { device, method } = context;
     if (!method.useDeviceState) {
         return;
     }
 
+    const validate =
+        device.protocol.name === 'v2' ? getInvalidThpDeviceState : getInvalidDeviceState;
+
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
     const isUsingPopup = DataManager.getSettings('popup');
     try {
-        let invalidDeviceState = await getInvalidDeviceState(context);
+        let invalidDeviceState = await validate(context);
         if (isUsingPopup) {
             while (invalidDeviceState) {
                 const uiPromise = method.createUiPromise(UI.INVALID_PASSPHRASE_ACTION, device);
@@ -90,7 +158,7 @@ export const validateState = async (context: WorkflowContext) => {
                     device.setState({ sessionId: undefined });
                     await device.initialize(method.useCardanoDerivation);
 
-                    invalidDeviceState = await getInvalidDeviceState(context);
+                    invalidDeviceState = await validate(context);
                 } else {
                     // set new state as requested
                     device.setState({ staticSessionId: invalidDeviceState });

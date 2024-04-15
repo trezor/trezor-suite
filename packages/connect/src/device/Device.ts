@@ -2,7 +2,12 @@
 import { randomBytes } from 'crypto';
 
 import { DeviceModelInternal, models } from '@trezor/device-utils';
-import { TransportProtocol, thp as protocolThp, v1 as protocolV1 } from '@trezor/protocol';
+import {
+    TransportProtocol,
+    thp as protocolThp,
+    v1 as protocolV1,
+    v2 as protocolV2,
+} from '@trezor/protocol';
 import { Session, TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
 import { type Descriptor, type Transport } from '@trezor/transport';
 import { TransportDeviceEvent } from '@trezor/transport/src/transports/abstract';
@@ -21,6 +26,7 @@ import { ERRORS, FIRMWARE, PROTO } from '../constants';
 import { DeviceCurrentSession, TypedCallProvider } from './DeviceCurrentSession';
 import { IStateStorage } from './StateStorage';
 import { checkFirmwareRevision } from './checkFirmwareRevision';
+import { abortThpWorkflow, getThpChannel } from './thp';
 import { calculateFirmwareHash, getBinaryOptional, stripFwHeaders } from '../api/firmware';
 import { DataManager } from '../data/DataManager';
 import { getAllNetworks } from '../data/coinInfo';
@@ -330,6 +336,46 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.releasePromise;
     }
 
+    private async setupThp() {
+        _log.info('setup THP device');
+        this._protocol = protocolV2;
+
+        if (
+            this.transport.name === 'BridgeTransport' &&
+            !versionUtils.isNewerOrEqual(this.transport.version, '3.1.0')
+        ) {
+            // old bridge is not compatible with THP
+            this.unreadableError = 'THP incompatible with bridge ' + this.transport.version;
+        } else {
+            try {
+                await this.transport.loadMessages('thp', protocolThp.getProtobufDefinitions);
+                this.thp = new protocolThp.ThpState();
+            } catch (error) {
+                // THP messages not loaded
+                this.unreadableError = error.message;
+            }
+        }
+    }
+
+    async doChecks() {
+        await this.checkFirmwareHashWithRetries();
+        await this.checkFirmwareRevisionWithRetries();
+
+        if (
+            this.features?.language &&
+            !this.features.language_version_matches &&
+            this.atLeast('2.7.0')
+        ) {
+            _log.info('language version mismatch. silently updating...');
+
+            try {
+                await this.changeLanguage({ language: this.features.language });
+            } catch (err) {
+                _log.error('change language failed silently', err);
+            }
+        }
+    }
+
     // call only once, right after device creation
     async handshake(delay?: number) {
         if (delay) {
@@ -341,11 +387,23 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
             } else {
                 try {
-                    await this.run();
+                    await this.run(); // only here read with expected state
                 } catch (error) {
-                    _log.warn(`device.run error.message: ${error.message}, code: ${error.code}`);
+                    _log.warn(
+                        `Device.handshake error.message: ${error.message}, code: ${error.code}`,
+                    );
 
-                    if (
+                    if (error.code === 'Failure_InvalidProtocol') {
+                        // setup THP device
+                        await this.setupThp();
+                        if (this.unreadableError) {
+                            this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
+                        } else {
+                            // try again with thpHandshake
+                            await resolveAfter(501);
+                            continue;
+                        }
+                    } else if (
                         error.code === 'Device_NotFound' ||
                         error.code === 'Device_Disconnected' ||
                         error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
@@ -378,6 +436,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
                         continue;
                     }
                 }
+            }
+
+            // second handshake iteration should return thp properties
+            if (this.isUnacquired() && this.thp?.properties) {
+                this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
             }
 
             this.handshakeFinished = true;
@@ -440,8 +503,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
             .then(() => {
                 if (wasUnacquired && !this.isUnacquired()) {
                     this.emitLifecycle(DEVICE.CONNECT);
-                } else if (wasUnacquired && this.isUnacquired() && this.thp?.properties) {
-                    this.emitLifecycle(DEVICE.CONNECT_UNACQUIRED);
                 }
             });
 
@@ -449,6 +510,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
     }
 
     async interrupt(reason: Error) {
+        await abortThpWorkflow(this);
         await this.currentSession?.abort(reason);
 
         // reject inner defer
@@ -504,7 +566,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
         if (acquireNeeded || !staticSessionId || (!deriveCardano && options.useCardanoDerivation)) {
             // update features
             try {
-                if (fn) {
+                if (this.protocol.name === 'v2') {
+                    const enforcePairing = !!fn;
+                    await getThpChannel(this, DataManager.getSettings('thp'), enforcePairing);
+                    if (this.getThpState()?.isAutoconnectPaired || enforcePairing) {
+                        await this.getFeatures();
+                    }
+                } else if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {
                     const isNative = DataManager.getSettings('env') === 'react-native';
@@ -538,6 +606,16 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 }
             } catch (error) {
                 _log.warn('Device._runInner error: ', error.message);
+
+                if (error.code === 'Device_ThpPairingTagInvalid') {
+                    return Promise.reject(error);
+                }
+
+                if (error.code === 'Failure_InvalidProtocol') {
+                    _log.info('Set device protocol to v2');
+
+                    return Promise.reject(error); // pass to handshake process
+                }
 
                 return Promise.reject(
                     ERRORS.TypedError(
@@ -620,8 +698,20 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.instance = instance;
     }
 
+    public getThpProperties() {
+        return this.thp?.properties;
+    }
+
+    public getLocalSession() {
+        return this.sessionAcquired;
+    }
+
     getInstance() {
         return this.instance;
+    }
+
+    getAllInstances() {
+        return this.state;
     }
 
     getState(): DeviceState | undefined {
@@ -987,7 +1077,8 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return !!this.unreadableError;
     }
 
-    private disconnect() {
+    disconnect() {
+        // TODO: cleanup everything
         _log.debug('Disconnect cleanup');
 
         this.transport.off(TRANSPORT.STOPPED, this.onTransportStopped);
@@ -1005,6 +1096,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.emitLifecycle = () => {};
 
         return this.interrupt(ERRORS.TypedError('Device_Disconnected'));
+    }
+
+    releaseTransportSession() {
+        this.keepTransportSession = false;
     }
 
     isBootloader() {

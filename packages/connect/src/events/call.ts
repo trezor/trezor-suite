@@ -84,6 +84,7 @@ export const createResponseMessage = (
               path: device?.getUniquePath(),
               state: device?.getState(),
               instance: device?.getInstance(),
+              // thp: device.thp.state.pairingCredentials,
           }
         : undefined,
 });

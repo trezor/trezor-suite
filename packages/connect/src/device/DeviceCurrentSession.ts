@@ -105,7 +105,9 @@ export class DeviceCurrentSession implements TypedCallProvider {
         expectedType: Messages.MessageKey | Messages.MessageKey[],
         msg: Messages.MessagePayload = {},
     ) {
-        if (!allowedCallsBeforeInitialize.includes(type) && !this.device?.features?.session_id) {
+        const deviceSession =
+            this.device.getThpState()?.sessionId || this.device?.features?.session_id;
+        if (!allowedCallsBeforeInitialize.includes(type) && !deviceSession) {
             console.error(
                 'Runtime',
                 `typedCall: Device not initialized when calling ${type}. call Initialize first`,
