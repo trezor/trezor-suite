@@ -79,7 +79,7 @@ export const useAddCoinAccount = () => {
     const device = useSelector(selectDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const { showAlert, hideAlert } = useAlert();
-    const { showCantAddccountDeviceIsViewOnlyErrorAlert } = useAccountAlerts();
+    const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const navigation = useNavigation<NavigationProps>();
     const [networkSymbolWithTypeToBeAdded, setNetworkSymbolWithTypeToBeAdded] = useState<
         [NetworkSymbol, AccountType] | null
@@ -203,7 +203,7 @@ export const useAddCoinAccount = () => {
         accountType?: AccountType;
     }) => {
         if (isDeviceInViewOnlyMode) {
-            showCantAddccountDeviceIsViewOnlyErrorAlert();
+            showViewOnlyAddAccountAlert();
 
             return;
         }
@@ -362,7 +362,7 @@ export const useAddCoinAccount = () => {
         flowType: AddCoinFlowType;
     }) => {
         if (isDeviceInViewOnlyMode) {
-            showCantAddccountDeviceIsViewOnlyErrorAlert();
+            showViewOnlyAddAccountAlert();
 
             return;
         }
