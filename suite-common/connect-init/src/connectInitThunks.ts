@@ -137,6 +137,13 @@ export const connectInitThunk = createThunk(
                 transports: selectDebugSettings(getState()).transports,
                 _sessionsBackgroundUrl: sessionsBackground,
                 // debug: true, // Enable debug logs in TrezorConnect
+                debug: true, // Enable debug logs in TrezorConnect
+                thp: {
+                    hostName: 'TrezorConnect',
+                    staticKeys: '0007070707070707070707070707070707070707070707070707070707070747',
+                    knownCredentials: [],
+                    pairingMethods: ['CodeEntry', 'QrCode', 'NFC_Unidirectional'] as any,
+                },
             });
         } catch (error) {
             let formattedError: string;

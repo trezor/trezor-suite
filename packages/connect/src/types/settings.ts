@@ -1,5 +1,7 @@
 import type { BlockchainSettings } from '@trezor/blockchain-link';
+import type { ThpPairingMethod, ThpMessageType } from '@trezor/protocol';
 import type { Transport } from '@trezor/transport';
+import type { KnownDevice } from './device';
 
 export type { SystemInfo } from '@trezor/connect-common';
 export interface Manifest {
@@ -8,6 +10,13 @@ export interface Manifest {
 }
 
 export type Proxy = BlockchainSettings['proxy'];
+
+export type ThpSettings = {
+    hostName?: string;
+    staticKeys: string; // static key per application
+    knownCredentials?: ThpMessageType['ThpCredentialResponse'][]; // TODO type
+    pairingMethods: ThpPairingMethod[] | (keyof typeof ThpPairingMethod)[];
+};
 
 export interface ConnectSettingsPublic {
     manifest?: Manifest;
@@ -29,6 +38,8 @@ export interface ConnectSettingsPublic {
     binFilesBaseUrl?: string;
     // enable firmware hash check automatically when device connects. Requires binFilesBaseUrl to be set.
     enableFirmwareHashCheck?: boolean;
+    thp?: ThpSettings;
+    knownDevices?: Pick<KnownDevice, 'id' | '_state'>[];
 }
 
 // internal part, not to be accepted from .init()
