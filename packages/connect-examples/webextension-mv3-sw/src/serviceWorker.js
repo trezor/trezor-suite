@@ -12,6 +12,8 @@ chrome.runtime.onInstalled.addListener(details => {
         },
         transports: ['BridgeTransport', 'WebUsbTransport'],
         connectSrc,
+        // This instructs connect to keep the serviceworker in the webextension alive.
+        _extendWebextensionLifetime: true,
     });
 
     TrezorConnect.on('DEVICE_EVENT', event => {
