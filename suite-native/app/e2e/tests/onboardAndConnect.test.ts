@@ -1,8 +1,10 @@
 // `expect` keyword is already used by jest.
 import { expect as detoxExpect } from 'detox';
+
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 import { openApp } from '../utils';
-import { finishOnboarding } from '../pageObjects/onboarding';
+import { onOnboarding } from '../pageObjects/onboardingActions';
 
 const TREZOR_DEVICE_LABEL = 'Trezor T - Tester';
 const platform = device.getPlatform();
@@ -30,7 +32,7 @@ describe('Go through onboarding and connect Trezor.', () => {
     });
 
     it('Redirect from first to second screen', async () => {
-        await finishOnboarding();
+        await onOnboarding.finishOnboarding();
 
         if (platform === 'android') {
             device.disableSynchronization();
