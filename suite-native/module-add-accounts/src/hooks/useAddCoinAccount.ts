@@ -205,7 +205,7 @@ export const useAddCoinAccount = () => {
         if (isDeviceInViewOnlyMode) {
             showViewOnlyAddAccountAlert();
 
-            return;
+            return false;
         }
 
         const selectedType = accountType ?? NORMAL_ACCOUNT_TYPE;
