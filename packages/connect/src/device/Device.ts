@@ -492,6 +492,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 if (this.protocol.name === 'v2') {
                     const withInteraction = !!fn;
                     await getThpChannel(this, withInteraction);
+                    if (this.getThpState()?.isAutoconnectPaired || withInteraction) {
+                        await this.getFeatures();
+                    }
                 } else if (fn) {
                     await this.initialize(!!options.useCardanoDerivation);
                 } else {

@@ -1,0 +1,323 @@
+import { createHash, randomBytes } from 'crypto';
+
+import { thp as protocolThp } from '@trezor/protocol';
+import { createDeferred } from '@trezor/utils';
+
+import { ERRORS } from '../../constants';
+import { DataManager } from '../../data/DataManager';
+import { DEVICE, UiResponseThpPairingTag } from '../../events';
+import type { Device } from '../Device';
+import { abortThpWorkflow, thpCall } from './thpCall';
+
+const processQrCodeTag = async (device: Device, value: string) => {
+    const thpState = device.getThpState();
+    if (!thpState?.handshakeCredentials) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+
+    const tagSha = createHash('sha256')
+        .update(thpState.handshakeCredentials.handshakeHash)
+        .update(Buffer.from(value, 'hex'))
+        .digest('hex');
+    const qrCodeSecret = await thpCall(device, 'ThpQrCodeTag', {
+        tag: tagSha,
+    });
+
+    protocolThp.validateQrCodeTag(
+        thpState.handshakeCredentials,
+        value,
+        qrCodeSecret.message.secret,
+    );
+
+    return qrCodeSecret;
+};
+
+const processNfcTag = async (device: Device, value: string) => {
+    const thpState = device.getThpState();
+    if (!thpState?.handshakeCredentials) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+    if (!thpState?.nfcSecret) {
+        throw new Error('missing nfcSecret');
+    }
+
+    const tagSha = createHash('sha256')
+        .update(Buffer.from([protocolThp.ThpPairingMethod.NFC]))
+        .update(thpState.handshakeCredentials.handshakeHash)
+        .update(Buffer.from(value, 'hex'))
+        .digest('hex');
+
+    const nfcTagTrezor = await thpCall(device, 'ThpNfcTagHost', {
+        tag: tagSha,
+    });
+
+    protocolThp.validateNfcTag(
+        thpState.handshakeCredentials,
+        nfcTagTrezor.message.tag,
+        thpState.nfcSecret,
+    );
+
+    return nfcTagTrezor;
+};
+
+const processCodeEntry = async (device: Device, value: string) => {
+    // TODO: code value on 6 bytes written with offset 2?
+    const codeValue = Buffer.alloc(6);
+    codeValue.writeUint32BE(Number(value), 2);
+
+    const thpState = device.getThpState();
+    if (!thpState?.handshakeCredentials) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+
+    const hostKeys = protocolThp.getCpaceHostKeys(
+        codeValue,
+        thpState.handshakeCredentials.handshakeHash,
+    );
+    const tag = protocolThp
+        .getSharedSecret(thpState.handshakeCredentials.trezorCpacePublicKey, hostKeys.privateKey)
+        .toString('hex');
+
+    const codeEntrySecret = await thpCall(device, 'ThpCodeEntryCpaceHostTag', {
+        tag,
+        cpace_host_public_key: hostKeys.publicKey.toString('hex'),
+    });
+
+    protocolThp.validateCodeEntryTag(
+        thpState.handshakeCredentials,
+        value,
+        codeEntrySecret.message.secret,
+    );
+
+    return codeEntrySecret;
+};
+
+const processThpPairingResponse = (device: Device, payload: UiResponseThpPairingTag['payload']) => {
+    if ('selectedMethod' in payload) {
+        // change pairing method
+        device.getThpState()?.setPairingMethod(payload.selectedMethod);
+
+        return thpCall(device, 'ThpSelectMethod', {
+            selected_pairing_method: payload.selectedMethod,
+        });
+    }
+
+    if (payload.source === 'qr-code') {
+        return processQrCodeTag(device, payload.tag);
+    }
+
+    if (payload.source === 'nfc') {
+        return processNfcTag(device, payload.tag);
+    }
+
+    if (payload.source === 'code-entry') {
+        return processCodeEntry(device, payload.tag);
+    }
+
+    throw new Error(`Unknown THP pairing source ${payload.source}`);
+};
+
+const waitForPairingCancel = (device: Device) => {
+    const readAbort = new AbortController();
+    device.getThpState()?.setExpectedResponses([0x04]); // expect Cancel
+    const readCancel = device.getCurrentSession().receive({
+        signal: readAbort.signal,
+    });
+
+    return {
+        readAbort,
+        readCancel,
+    };
+};
+
+const waitForPairingTag = async (device: Device) => {
+    const thpState = device.getThpState();
+    if (!thpState?.handshakeCredentials) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+
+    const dfd = createDeferred<UiResponseThpPairingTag['payload'] | { error: string }>();
+
+    // start listening for the Cancel message from Trezor
+    const { readAbort, readCancel } = waitForPairingCancel(device);
+    readCancel
+        .then(readResult => {
+            if (readResult.success) {
+                let error: string;
+                if (readResult.payload.type === 'Failure' && readResult.payload.message.message) {
+                    error = readResult.payload.message.message;
+                } else {
+                    error = `Pairing tag cancelled (${readResult.payload.type})`;
+                }
+
+                dfd.resolve({ error });
+            }
+        })
+        .catch(() => {
+            // silent
+        });
+
+    // start listening for the UI response
+    const payload = {
+        availableMethods: thpState.handshakeCredentials.pairingMethods,
+        selectedMethod: thpState.pairingMethod,
+        nfcData: thpState.nfcData?.toString('hex'),
+    };
+    device.prompt('thp_pairing', { payload }).then(response => {
+        if (response.success) {
+            // TODO: this type is wrong
+            dfd.resolve(response.payload);
+        } else {
+            abortThpWorkflow(device).then(() => {
+                dfd.resolve({ error: response.error.message });
+            });
+        }
+    });
+
+    const pairingResponse = await dfd.promise;
+
+    // wait for readCancel to finish reading
+    readAbort.abort();
+    await readCancel;
+
+    if ('error' in pairingResponse) {
+        throw new Error(pairingResponse.error);
+    }
+
+    // node-bridge + usb: abort received on client side of http request resolves faster than server. result with "device call in progress"
+    await new Promise(resolve => setTimeout(resolve, 500));
+
+    return processThpPairingResponse(device, pairingResponse).catch(e => {
+        // catch pairing tag mismatch
+        if (e.code === 'Failure_FirmwareError') {
+            // 'Unexpected Code Entry Tag'
+            throw ERRORS.TypedError('Device_ThpPairingTagInvalid', e.message);
+        }
+
+        throw ERRORS.TypedError(e.code, e.message);
+    });
+};
+
+export const getThpCredentials = async (device: Device, autoconnect = false) => {
+    const thpState = device.getThpState();
+    if (!thpState?.handshakeCredentials) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+
+    const credentials = await thpCall(device, 'ThpCredentialRequest', {
+        autoconnect,
+        host_static_public_key: thpState.handshakeCredentials.hostStaticPublicKey.toString('hex'),
+        credential: thpState.pairingCredentials[0]?.credential,
+    });
+
+    return { ...credentials.message, autoconnect };
+};
+
+export const thpPairingEnd = (device: Device) => {
+    device.getThpState()?.setPhase('paired');
+
+    return thpCall(device, 'ThpEndRequest', {});
+};
+
+// State HH2/HH3 -> HP0 -> HP1 -> HP2 -> HP3 -> HP4
+// Workflow will require user interaction
+// TODO: link-to-public-docs
+// https://www.notion.so/satoshilabs/THP-Specification-2-1-203dc5260606804192aecaa58fb961ca
+export const thpPairing = async (device: Device) => {
+    const thpState = device.getThpState();
+    if (!thpState?.handshakeCredentials) {
+        throw ERRORS.TypedError('Device_ThpStateMissing');
+    }
+
+    // State HH2 and HH3 combined
+    // if thpState.isPaired then transition to HC0 (credentials) otherwise transition to HP0 (pairing)
+    if (thpState.isPaired && thpState.pairingMethod !== protocolThp.ThpPairingMethod.SkipPairing) {
+        // State HC0
+        if (!thpState.isAutoconnectPaired) {
+            // device is paired but credentials may not be persistent
+            // get new credentials to enforce ButtonRequest.thp_connection_request flow if necessary
+            await getThpCredentials(device, false);
+        }
+
+        // State HC1 -> HC2 pairing complete
+        return thpPairingEnd(device);
+    }
+
+    // use first pairing method from the list
+    const [selected_pairing_method] = thpState.handshakeCredentials.pairingMethods;
+    thpState.setPairingMethod(selected_pairing_method);
+
+    // State HP0
+    // ThpPairingRequest will trigger ButtonRequest.thp_pairing_request flow
+    const settings = DataManager.getSettings('thp');
+    await thpCall(device, 'ThpPairingRequest', {
+        host_name: settings?.hostName || 'Unknown hostName',
+    });
+
+    // State HP1
+    const selectMethod = await thpCall(device, 'ThpSelectMethod', { selected_pairing_method });
+
+    // selected_pairing_method === ThpPairingMethod.SkipPairing
+    // TODO: not mentioned in the docs
+    if (selectMethod.type === 'ThpEndResponse') {
+        thpState.setIsPaired(true);
+        device.getThpState()?.setPhase('paired');
+
+        return;
+    }
+
+    // State HP2
+    // TODO: assert thpState.pairingMethod === protocolThp.ThpPairingMethod.CodeEntry ?
+    if (selectMethod.type === 'ThpCodeEntryCommitment') {
+        // store handshakeCommitment and validate later in `processCodeEntry`
+        const codeEntryChallenge = randomBytes(32);
+        const handshakeCommitment = Buffer.from(selectMethod.message.commitment, 'hex');
+        thpState.updateHandshakeCredentials({
+            handshakeCommitment,
+            codeEntryChallenge,
+        });
+
+        // State HP3a
+        const codeEntryCpace = await thpCall(device, 'ThpCodeEntryChallenge', {
+            challenge: codeEntryChallenge.toString('hex'),
+        });
+
+        thpState.updateHandshakeCredentials({
+            trezorCpacePublicKey: Buffer.from(
+                codeEntryCpace.message.cpace_trezor_public_key,
+                'hex',
+            ),
+        });
+
+        // State HP4 -> HP5
+        await waitForPairingTag(device);
+    }
+
+    if (selectMethod.type === 'ThpPairingPreparationsFinished') {
+        if (thpState.pairingMethod === protocolThp.ThpPairingMethod.NFC) {
+            // generate random secret and store it
+            thpState.setNfcSecret(randomBytes(16));
+        }
+
+        // State HP6 and HP7
+        await waitForPairingTag(device);
+    }
+
+    // State HC0
+    // generate new credentials and send
+    const credentials = await getThpCredentials(device, false);
+    device.emit(DEVICE.THP_CREDENTIALS_CHANGED, {
+        credentials,
+        staticKey: thpState.handshakeCredentials.staticKey.toString('hex'),
+    });
+    const settings1 = DataManager.getSettings('thp');
+    if (settings1) {
+        settings1.knownCredentials?.push(credentials);
+        settings1.staticKey = thpState.handshakeCredentials.staticKey.toString('hex');
+    }
+
+    thpState.setPairingCredentials([credentials]);
+    thpState.setIsPaired(true);
+
+    await thpPairingEnd(device);
+};

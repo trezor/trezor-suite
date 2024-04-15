@@ -1,9 +1,25 @@
-import { ERRORS } from '../../constants';
 import type { Device } from '../Device';
+import { createThpChannel, thpHandshake } from './handshake';
+import { thpPairing } from './pairing';
 
-export const getThpChannel = async (_device: Device, _withInteraction?: boolean) => {
-    // implementation...
-    await new Promise((_, reject) => {
-        reject(ERRORS.TypedError('Device_ThpStateMissing'));
-    });
+export { abortThpWorkflow } from './thpCall';
+export { getThpCredentials } from './pairing';
+
+export const getThpChannel = async (device: Device, withInteraction?: boolean) => {
+    const thpState = device.getThpState();
+
+    try {
+        if (thpState?.phase === 'handshake') {
+            await createThpChannel(device);
+            await thpHandshake(device);
+        }
+        if (thpState?.phase === 'pairing' && withInteraction) {
+            // start pairing with UI interaction
+            await thpPairing(device);
+        }
+    } catch (error) {
+        thpState?.resetState();
+
+        throw error;
+    }
 };
