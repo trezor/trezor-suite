@@ -135,6 +135,7 @@ export const cryptoIcons = {
     vtc: require('../assets/cryptoIcons/vtc.svg'),
     xrp: require('../assets/cryptoIcons/xrp.svg'),
     zec: require('../assets/cryptoIcons/zec.svg'),
+    zoin: require('../assets/cryptoIcons/zoin.svg'),
 } as const;
 export type CryptoIconName = keyof typeof cryptoIcons;
 
