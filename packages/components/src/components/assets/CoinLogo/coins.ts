@@ -27,4 +27,5 @@ export const COINS = {
     nem: require('../../../images/coins/nem.svg'),
     xlm: require('../../../images/coins/xlm.svg'),
     xtz: require('../../../images/coins/xtz.svg'),
+    xtz: require('../../../images/coins/zoin.svg'),
 };
