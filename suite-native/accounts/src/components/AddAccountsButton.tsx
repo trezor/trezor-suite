@@ -31,7 +31,7 @@ export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const discovery = useSelector(selectDeviceDiscovery);
     const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
-    const { showCantAddccountDeviceIsViewOnlyErrorAlert } = useAccountAlerts();
+    const { showViewOnlyAddAccountAlert } = useAccountAlerts();
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
     const shouldShowAddAccountButton =
@@ -45,7 +45,7 @@ export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
 
     const navigateToAddCoinAccount = () => {
         if (isDeviceInViewOnlyMode) {
-            showCantAddccountDeviceIsViewOnlyErrorAlert();
+            showViewOnlyAddAccountAlert();
 
             return;
         }
