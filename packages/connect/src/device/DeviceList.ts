@@ -60,6 +60,7 @@ interface DeviceListEvents {
     [DEVICE.CONNECT_UNACQUIRED]: DeviceTyped;
     [DEVICE.DISCONNECT]: DeviceTyped;
     [DEVICE.CHANGED]: DeviceTyped;
+    [DEVICE.TRANSPORT_STATE_CHANGED]: DeviceTyped;
     [DEVICE.RELEASED]: DeviceTyped;
     [DEVICE.ACQUIRED]: DeviceTyped;
 }
@@ -596,7 +597,21 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         const promise = device.run();
         await promise;
 
-        this.emit(DEVICE.CONNECT, device.toMessageObject());
+        // acquired device with properties == THP device
+        if (!device.features && device.properties) {
+            const unpairedDevice = this._createUnacquiredDevice(
+                this.creatingDevicesDescriptors[path],
+                transport,
+            );
+            unpairedDevice.protocolState = device.protocolState;
+            unpairedDevice.properties = device.properties;
+            unpairedDevice.protocol = device.protocol;
+            this.devices[path] = unpairedDevice;
+            device.dispose();
+            this.emit(DEVICE.CONNECT_UNACQUIRED, unpairedDevice.toMessageObject());
+        } else {
+            this.emit(DEVICE.CONNECT, device.toMessageObject());
+        }
     }
 
     private _handleUsedElsewhere(descriptor: Descriptor, transport: Transport) {

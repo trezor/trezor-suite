@@ -28,6 +28,12 @@ const initialSettings: ConnectSettings = {
     timestamp: new Date().getTime(),
     interactionTimeout: 600, // 5 minutes
     sharedLogger: true,
+    thp: {
+        hostName: 'TrezorConnect',
+        staticKeys: '0007070707070707070707070707070707070707070707070707070707070747',
+        knownCredentials: [],
+        pairingMethods: ['CodeEntry', 'QrCode', 'NFC_Unidirectional'] as any[],
+    },
 };
 
 const parseManifest = (manifest?: Manifest) => {
@@ -146,6 +152,11 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
 
     if (typeof input._sessionsBackgroundUrl === 'string') {
         settings._sessionsBackgroundUrl = input._sessionsBackgroundUrl;
+    }
+
+    if (input.thp) {
+        // TODO: validate
+        settings.thp = input.thp;
     }
 
     return settings;

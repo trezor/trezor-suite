@@ -1,3 +1,4 @@
+import type { ThpDeviceProperties } from '@trezor/protocol';
 import type { PROTO } from '../constants';
 import type { ReleaseInfo } from './firmware';
 
@@ -75,6 +76,8 @@ export type KnownDevice = BaseDevice & {
     _state?: DeviceState; // TODO: breaking change in next major release
     state?: DeviceState['staticSessionId'];
     features: PROTO.Features;
+    properties?: ThpDeviceProperties;
+    protocolState?: any;
     unavailableCapabilities: UnavailableCapabilities;
     availableTranslations: string[];
     authenticityChecks?: {
@@ -91,6 +94,8 @@ export type UnknownDevice = BaseDevice & {
     id?: typeof undefined;
     error?: typeof undefined;
     features?: typeof undefined;
+    properties?: ThpDeviceProperties;
+    protocolState?: any;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
@@ -110,6 +115,8 @@ export type UnreadableDevice = BaseDevice & {
     error: string;
     id?: typeof undefined;
     features?: typeof undefined;
+    properties?: typeof undefined;
+    protocolState?: typeof undefined;
     firmware?: typeof undefined;
     firmwareRelease?: typeof undefined;
     firmwareType?: typeof undefined;
