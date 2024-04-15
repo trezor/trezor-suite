@@ -29,10 +29,13 @@ import { getLanguage } from '../data/getLanguage';
 import {
     DEVICE,
     DeviceButtonRequestPayload,
+    DeviceThpCredentialsChangedPayload,
+    DeviceThpPairingPayload,
     DeviceVersionChanged,
     UI,
     UiResponsePassphrase,
     UiResponsePin,
+    UiResponseThpPairingTag,
     UiResponseWord,
 } from '../events';
 import {
@@ -96,6 +99,11 @@ export interface DeviceEvents {
     [DEVICE.PASSPHRASE_ON_DEVICE]: void;
     [DEVICE.BUTTON]: { device: Device; payload: DeviceButtonRequestPayload };
     [DEVICE.FIRMWARE_VERSION_CHANGED]: DeviceVersionChanged['payload'];
+    [DEVICE.THP_PAIRING]: {
+        payload: DeviceThpPairingPayload;
+        callback: (response: Result<UiResponseThpPairingTag['payload']>) => void;
+    };
+    [DEVICE.THP_CREDENTIALS_CHANGED]: DeviceThpCredentialsChangedPayload;
 }
 
 type DeviceLifecycle =
@@ -973,10 +981,13 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
     }
 
-    prompt<T extends typeof DEVICE.PIN | typeof DEVICE.PASSPHRASE | typeof DEVICE.WORD>(
-        type: T,
-        args: Omit<DeviceEvents[T], 'callback'>,
-    ) {
+    prompt<
+        T extends
+            | typeof DEVICE.PIN
+            | typeof DEVICE.PASSPHRASE
+            | typeof DEVICE.WORD
+            | typeof DEVICE.THP_PAIRING,
+    >(type: T, args: Omit<DeviceEvents[T], 'callback'>) {
         // TODO I believe this emit/on can be changed into simple async functions
         return new Promise<Parameters<DeviceEvents[T]['callback']>[0]>(callback => {
             if (!this.listenerCount(type)) {

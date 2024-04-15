@@ -1,5 +1,5 @@
 import type { VersionArray } from '@trezor/device-utils';
-import type { ThpCredentials } from '@trezor/protocol';
+import type { ThpCredentials, ThpPairingMethod } from '@trezor/protocol';
 
 import type { PROTO } from '../constants';
 import type { Device } from '../types/device';
@@ -48,12 +48,21 @@ export interface DeviceVersionChanged {
     };
 }
 
+export type DeviceThpCredentialsChangedPayload = {
+    credentials: ThpCredentials;
+    staticKey: string;
+};
+
+export type DeviceThpPairingPayload = {
+    availableMethods: ThpPairingMethod[];
+    selectedMethod?: ThpPairingMethod; // expected pairing response data
+    nfcData?: string; // data for NFC module, if selected_method === ThpPairingMethod.NFC
+};
+
 export interface DeviceThpCredentialsChanged {
     type: typeof DEVICE.THP_CREDENTIALS_CHANGED;
-    payload: {
+    payload: DeviceThpCredentialsChangedPayload & {
         device: Device;
-        credentials: ThpCredentials;
-        staticKey: string;
     };
 }
 

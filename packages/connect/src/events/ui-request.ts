@@ -3,7 +3,6 @@
  */
 import type { EventTypeDeviceSelected } from '@trezor/connect-analytics';
 import { DeviceModelInternal } from '@trezor/device-utils';
-import type { ThpPairingMethod } from '@trezor/protocol';
 
 import type { PROTO } from '../constants';
 import type {
@@ -14,7 +13,7 @@ import type {
     FirmwareType,
     SelectFeeLevel,
 } from '../types';
-import type { DeviceButtonRequest } from './device';
+import type { DeviceButtonRequest, DeviceThpPairingPayload } from './device';
 import { MethodPermission } from '../core/AbstractMethod';
 import type { DiscoveryAccount, DiscoveryAccountType } from '../types/account';
 import type { MessageFactoryFn } from '../types/utils';
@@ -159,11 +158,8 @@ export type UiRequestButtonData =
 
 export interface UiRequestThpPairing {
     type: typeof UI_REQUEST.REQUEST_THP_PAIRING;
-    payload: {
+    payload: DeviceThpPairingPayload & {
         device: Device;
-        availableMethods: ThpPairingMethod[];
-        selectedMethod?: ThpPairingMethod; // expected pairing response data
-        nfcData?: string; // data for NFC module, if selected_method === ThpPairingMethod.NFC
     };
 }
 

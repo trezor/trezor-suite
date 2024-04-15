@@ -880,6 +880,50 @@ const onEmptyPassphraseHandler =
         callback({ success: true, payload: { value: '' } });
     };
 
+const onThpPairingHandler =
+    (device: Device, context: CoreContext) =>
+    async ({ callback, payload }: DeviceEvents['thp_pairing']) => {
+        const { uiPromises, sendCoreMessage } = context;
+        // wait for popup handshake
+        await waitForPopup(context);
+        // create ui promise
+        const uiPromise = uiPromises.create(UI.RECEIVE_THP_PAIRING_TAG, device);
+
+        sendCoreMessage(
+            createUiMessage(UI.REQUEST_THP_PAIRING, {
+                device: device.toMessageObject(),
+                ...payload,
+            }),
+        );
+        // wait for response
+        try {
+            const uiResp = await uiPromise.promise;
+            if (uiResp.payload == null) {
+                callback({
+                    success: false,
+                    error: new Error(`${UI.RECEIVE_THP_PAIRING_TAG} missing payload`),
+                });
+            } else {
+                callback({ success: true, payload: uiResp.payload });
+            }
+        } catch (error) {
+            callback({ success: false, error });
+        }
+    };
+
+const onThpCredentialsChangedHandler =
+    (device: Device, context: CoreContext) =>
+    (payload: DeviceEvents['device-thp_credentials_changed']) => {
+        const { sendCoreMessage } = context;
+
+        sendCoreMessage(
+            createDeviceMessage(DEVICE.THP_CREDENTIALS_CHANGED, {
+                device: device.toMessageObject(),
+                ...payload,
+            }),
+        );
+    };
+
 const registerDeviceEvents =
     (context: CoreContext, method?: AbstractMethod<any>) => (device: Device) => {
         device.removeAllListeners();
@@ -903,6 +947,8 @@ const registerDeviceEvents =
         device.on(DEVICE.FIRMWARE_VERSION_CHANGED, payload => {
             context.sendCoreMessage(createDeviceMessage(DEVICE.FIRMWARE_VERSION_CHANGED, payload));
         });
+        device.on(DEVICE.THP_PAIRING, onThpPairingHandler(device, context));
+        device.on(DEVICE.THP_CREDENTIALS_CHANGED, onThpCredentialsChangedHandler(device, context));
     };
 
 /**
@@ -1138,6 +1184,7 @@ export class Core extends EventEmitter {
             case UI.RECEIVE_PIN:
             case UI.RECEIVE_PASSPHRASE:
             case UI.INVALID_PASSPHRASE_ACTION:
+            case UI.RECEIVE_THP_PAIRING_TAG:
             case UI.RECEIVE_ACCOUNT:
             case UI.RECEIVE_FEE:
             case UI.RECEIVE_WORD:
