@@ -2,8 +2,7 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
-import { variables, Icon, Image, motionAnimation, DeviceAnimation } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { variables, Icon, motionAnimation } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
 
 import {
@@ -12,13 +11,10 @@ import {
     createDeviceInstance,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
-import { Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { OpenGuideFromTooltip } from 'src/components/guide';
 
 import { WalletInstance } from './WalletInstance';
-import { ColHeader } from './ColHeader';
 import { AddWalletButton } from './AddWalletButton';
 import { DeviceHeaderButton } from './DeviceHeaderButton';
 
@@ -26,6 +22,8 @@ import type { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types
 import type { getBackgroundRoute } from 'src/utils/suite/router';
 import { spacingsPx } from '@trezor/theme';
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
+import { isWebUsb } from 'src/utils/suite/transport';
+import { WebUsbButton } from 'src/components/suite';
 
 const DeviceWrapper = styled.div`
     display: flex;
@@ -43,23 +41,11 @@ const Device = styled.div`
     align-items: center;
 `;
 
-const DeviceTitle = styled.span`
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-`;
-
 const DeviceActions = styled.div`
     display: flex;
     align-items: center;
-    margin-left: 20px;
-`;
-
-const Col = styled.div<{ $grow?: number }>`
-    display: flex;
-    flex-grow: ${({ $grow }) => $grow || 0};
-    align-items: flex-start;
-    flex-direction: column;
+    margin-left: ${spacingsPx.lg};
+    gap: ${spacingsPx.xxs};
 `;
 
 const WalletsWrapper = styled.div<{ $enabled: boolean }>`
@@ -72,18 +58,6 @@ const WalletsWrapper = styled.div<{ $enabled: boolean }>`
     }
 `;
 
-const WalletsTooltips = styled.div`
-    display: flex;
-    justify-content: flex-end;
-    padding-bottom: 10px;
-`;
-
-const WalletsCount = styled(ColHeader)`
-    flex: 1;
-    justify-content: flex-start;
-    white-space: nowrap;
-`;
-
 const InstancesWrapper = styled.div`
     display: flex;
     flex-direction: column;
@@ -94,34 +68,7 @@ const DeviceHeader = styled.div`
     display: flex;
     align-items: center;
     flex: 1;
-`;
-
-const DeviceImageWrapper = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 21px;
-    height: 36px;
-    margin-right: 16px;
-`;
-
-const ExpandIcon = styled(Icon)<{ $isActive: boolean }>`
-    margin-left: 24px;
-
-    transform: ${({ $isActive }) => ($isActive ? 'rotate(0deg)' : 'rotate(180deg)')};
-`;
-
-// TODO: this is going to be a problem with different col headers length since they won't be aligned with the columns inside WalletInstance
-const ColRememberHeader = styled(ColHeader)``;
-const ColEjectHeader = styled(ColHeader)`
-    margin: 0 20px 0 32px;
-`;
-
-const StyledImage = styled(Image)`
-    height: 36px;
-
-    /* do not apply the darkening filter in dark mode on device images */
-    filter: none;
+    cursor: pointer;
 `;
 
 interface DeviceItemProps {
@@ -134,7 +81,9 @@ interface DeviceItemProps {
 export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
     const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();
+    const transport = useSelector(state => state.suite.transport);
 
+    const isWebUsbTransport = isWebUsb(transport);
     const theme = useTheme();
     const [isExpanded, setIsExpanded] = useState(true);
 
@@ -143,7 +92,6 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
 
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
-    const isSelected = deviceUtils.isSelectedDevice(selectedDevice, device);
     const instancesWithState = instances.filter(i => i.state);
 
     const handleRedirection = async () => {
@@ -187,62 +135,39 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
         }
     };
 
-    const onDeviceSettingsClick = async () => {
-        // await needed otherwise it just selects first account (???)
-        await dispatch(goto('settings-device'));
-        if (!isSelected) {
-            dispatch(selectDeviceThunk(device));
-        }
-    };
-
     return (
         <DeviceWrapper>
             <Device>
-                <DeviceHeader>
+                <DeviceHeader onClick={() => onCancel()}>
                     {deviceModelInternal && (
                         <DeviceStatus deviceModel={deviceModelInternal} device={selectedDevice} />
-
-                        // <DeviceImageWrapper>
-                        //     {deviceModelInternal === DeviceModelInternal.T2B1 && (
-                        //         <DeviceAnimation
-                        //             type="ROTATE"
-                        //             height="36px"
-                        //             width="36px"
-                        //             deviceModelInternal={deviceModelInternal}
-                        //             deviceUnitColor={device?.features?.unit_color}
-                        //         />
-                        //     )}
-                        //     {deviceModelInternal !== DeviceModelInternal.T2B1 && (
-                        //         <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
-                        //     )}
-                        // </DeviceImageWrapper>
                     )}
-                    {/* <Col $grow={1}>
-                        <DeviceTitle>{device.label}</DeviceTitle>
-                        <DeviceStatusText device={device} />
-                    </Col> */}
 
                     <DeviceActions>
-                        <DeviceHeaderButton
-                            needsAttention={needsAttention}
-                            device={device}
-                            onSolveIssueClick={onSolveIssueClick}
-                            onDeviceSettingsClick={onDeviceSettingsClick}
-                        />
-                        {!needsAttention && (
-                            <ExpandIcon
+                        {isWebUsbTransport && <WebUsbButton variant="tertiary" size="small" />}
+                        <motion.div
+                            animate={{
+                                rotate: 180,
+                            }}
+                            style={{ originX: '50%', originY: '50%' }}
+                        >
+                            <Icon
                                 useCursorPointer
-                                size={24}
-                                icon="ARROW_DOWN"
+                                size={20}
+                                icon="CARET_CIRCLE_DOWN"
                                 color={theme.TYPE_LIGHT_GREY}
                                 hoverColor={theme.TYPE_LIGHTER_GREY}
-                                $isActive={!isExpanded}
                                 onClick={() => setIsExpanded(!isExpanded)}
                             />
-                        )}
+                        </motion.div>
                     </DeviceActions>
                 </DeviceHeader>
             </Device>
+            <DeviceHeaderButton
+                needsAttention={needsAttention}
+                device={device}
+                onSolveIssueClick={onSolveIssueClick}
+            />
             {!needsAttention && (
                 <AnimatePresence initial={false}>
                     {!isUnknown && isExpanded && (

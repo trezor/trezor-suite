@@ -1,5 +1,4 @@
-import { Card, ElevationContext } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { ElevationContext } from '@trezor/components';
 import { useEvent } from 'react-use';
 import styled from 'styled-components';
 

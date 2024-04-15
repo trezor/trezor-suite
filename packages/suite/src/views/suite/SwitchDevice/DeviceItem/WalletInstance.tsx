@@ -1,24 +1,8 @@
-import styled, { css, useTheme } from 'styled-components';
+import styled, { css } from 'styled-components';
 
-import {
-    toggleRememberDevice,
-    deviceActions,
-    selectDiscoveryByDeviceState,
-    selectFiatRates,
-} from '@suite-common/wallet-core';
-import { useFormatters } from '@suite-common/formatters';
-import {
-    Switch,
-    Icon,
-    variables,
-    Card,
-    Text,
-    Divider,
-    CollapsibleBox,
-    Radio,
-} from '@trezor/components';
+import { selectDiscoveryByDeviceState, selectFiatRates } from '@suite-common/wallet-core';
+import { variables, Card, Divider } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
-import { analytics, EventType } from '@trezor/suite-analytics';
 import { spacingsPx, typography } from '@trezor/theme';
 
 import {
@@ -27,7 +11,7 @@ import {
     MetadataLabeling,
     HiddenPlaceholder,
 } from 'src/components/suite';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useSelector } from 'src/hooks/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
@@ -35,7 +19,9 @@ import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
 import { useState } from 'react';
-import { ViewOnlyRadios } from './ViewOnlyRadios';
+import { EjectConfirmation } from './EjectConfirmation';
+import { ContentType } from '../types';
+import { ViewOnly } from './ViewOnly';
 
 const InstanceType = styled.div<{ isSelected: boolean }>`
     display: flex;
@@ -65,29 +51,6 @@ const Col = styled.div<{ $grow?: number; $centerItems?: boolean }>`
     }
 `;
 
-const EjectContainer = styled.div`
-    position: absolute;
-    right: ${spacingsPx.sm};
-    top: ${spacingsPx.sm};
-`;
-
-const Circle = styled.div<{ $isHighlighted?: boolean }>`
-    width: 6px;
-    height: 6px;
-    border-radius: 3px;
-    background: ${({ $isHighlighted, theme }) =>
-        $isHighlighted ? theme.iconPrimaryDefault : theme.iconSubdued};
-`;
-
-const ViewOnlyContainer = styled.div`
-    margin: -16px -12px -12px -8px;
-`;
-const ViewOnlyContent = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xs};
-    align-items: center;
-`;
-
 const SelectedHighlight = styled.div`
     ${({ theme }) => css`
         &::before {
@@ -97,7 +60,7 @@ const SelectedHighlight = styled.div`
             top: 0;
             bottom: 0;
             width: ${spacingsPx.xxs};
-            background: ${theme.backgroundPrimaryDefault};
+            background: ${theme.backgroundSecondaryDefault};
         }
     `}
 `;
@@ -117,15 +80,11 @@ export const WalletInstance = ({
     index,
     ...rest
 }: WalletInstanceProps) => {
-    const [isViewOnlyExpanded, setIsViewOnlyExpanded] = useState(false);
+    const [contentType, setContentType] = useState<null | ContentType>('default');
     const accounts = useSelector(state => state.wallet.accounts);
     const rates = useSelector(selectFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
-    const dispatch = useDispatch();
-
-    const { FiatAmountFormatter } = useFormatters();
-    const theme = useTheme();
 
     const discoveryProcess = useSelector(state =>
         selectDiscoveryByDeviceState(state, instance.state),
@@ -133,7 +92,6 @@ export const WalletInstance = ({
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
-    const accountsCount = deviceAccounts.length;
     const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, rates);
     const isSelected = enabled && selected && !!discoveryProcess;
     const { walletLabel } = useSelector(state =>
@@ -141,26 +99,7 @@ export const WalletInstance = ({
     );
     const dataTestBase = `@switch-device/wallet-on-index/${index}`;
 
-    const handleRememberChange = (value: boolean) => {
-        setIsViewOnlyExpanded(false);
-
-        return dispatch(
-            toggleRememberDevice({
-                device: instance,
-                forceRemember: value === true ? true : undefined,
-            }),
-        );
-    };
-    const handleEject = () => {
-        dispatch(deviceActions.forgetDevice(instance));
-        analytics.report({
-            type: EventType.SwitchDeviceEject,
-        });
-    };
-
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
-
-    const isViewOnly = !!instance.remember;
 
     return (
         <Card
@@ -215,59 +154,25 @@ export const WalletInstance = ({
                 </InstanceTitle>
             </Col>
 
-            {enabled && discoveryProcess && (
-                <>
-                    <Divider />
-                    <ViewOnlyContainer
-                        onClick={e => {
-                            // setIsViewOnlyExpanded(!isViewOnlyExpanded);
-                            e.stopPropagation();
-                        }}
-                    >
-                        <CollapsibleBox
-                            variant="small"
-                            filled="none"
-                            isOpen={isViewOnlyExpanded}
-                            onCollapse={() => setIsViewOnlyExpanded(true)}
-                            heading={
-                                <ViewOnlyContent>
-                                    <Circle $isHighlighted={isViewOnly} />
-                                    <Text
-                                        variant={isViewOnly ? 'primary' : 'tertiary'}
-                                        typographyStyle="callout"
-                                    >
-                                        {isViewOnly ? (
-                                            <Translation id="TR_VIEW_ONLY_ENABLED" />
-                                        ) : (
-                                            <Translation id="TR_VIEW_ONLY_DISABLED" />
-                                        )}
-                                    </Text>
-                                </ViewOnlyContent>
-                            }
-                        >
-                            {/* <Switch
-                                isChecked={isViewOnly}
-                                onChange={handleRememberChange}
-                                dataTest={`${dataTestBase}/toggle-remember-switch`}
-                            /> */}
-                            <ViewOnlyRadios
-                                isViewOnlyActive={isViewOnly}
-                                setIsViewOnlyActive={handleRememberChange}
-                            />
-                        </CollapsibleBox>
-                    </ViewOnlyContainer>
+            <Divider />
 
-                    <EjectContainer>
-                        <Icon
-                            data-test={`${dataTestBase}/eject-button`}
-                            icon="EJECT"
-                            size={22}
-                            color={theme.TYPE_LIGHT_GREY}
-                            hoverColor={theme.TYPE_DARK_GREY}
-                            onClick={handleEject}
-                        />
-                    </EjectContainer>
-                </>
+            {contentType === 'default' && enabled && discoveryProcess && (
+                <ViewOnly
+                    dataTest={dataTestBase}
+                    setContentType={setContentType}
+                    instance={instance}
+                />
+            )}
+
+            {contentType === 'ejectConfirmation' && (
+                <EjectConfirmation
+                    instance={instance}
+                    onClick={e => e.stopPropagation()}
+                    onCancel={e => {
+                        setContentType('default');
+                        e.stopPropagation();
+                    }}
+                />
             )}
         </Card>
     );

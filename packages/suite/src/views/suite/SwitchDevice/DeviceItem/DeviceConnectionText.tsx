@@ -1,4 +1,4 @@
-import { Icon, IconType, Text, TextVariant } from '@trezor/components';
+import { Icon, IconType, IconVariant, Text } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import styled, { css } from 'styled-components';
 import { ReactNode } from 'react';
@@ -22,7 +22,7 @@ const TextRow = styled.div`
 
 type DeviceConnectionTextProps = {
     onClick?: () => void;
-    variant: TextVariant;
+    variant: IconVariant;
     'data-test'?: string;
     icon: IconType;
     children: ReactNode;

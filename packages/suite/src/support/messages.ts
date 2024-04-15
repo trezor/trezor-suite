@@ -8842,6 +8842,10 @@ export default defineMessages({
         id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
         defaultMessage: 'You can change it here',
     },
+    TR_VIEW_ONLY_TOOLTIP_BUTTON: {
+        id: 'TR_VIEW_ONLY_TOOLTIP_BUTTON',
+        defaultMessage: 'Got it',
+    },
     TR_VIEW_ONLY_ENABLED: {
         id: 'TR_VIEW_ONLY_ENABLED',
         defaultMessage: 'View-only enabled',
@@ -8871,5 +8875,26 @@ export default defineMessages({
     TR_VIEW_ONLY_RADIOS_CONFIRM: {
         id: 'TR_VIEW_ONLY_RADIOS_CONFIRM',
         defaultMessage: 'Confirm',
+    },
+    TR_VIEW_ONLY_SEND_COINS_INFO: {
+        id: 'TR_VIEW_ONLY_SEND_COINS_INFO',
+        defaultMessage: 'You always need to connect Trezor to move coins.',
+    },
+    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE: {
+        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE',
+        defaultMessage: 'Eject this wallet?',
+    },
+    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION: {
+        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION',
+        defaultMessage:
+            'Your funds and transactions won’t be visible until you reconnect your device.',
+    },
+    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON: {
+        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON',
+        defaultMessage: 'Eject',
+    },
+    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON: {
+        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
+        defaultMessage: 'Cancel',
     },
 });

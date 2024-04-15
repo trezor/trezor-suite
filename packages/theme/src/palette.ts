@@ -126,6 +126,7 @@ export const palette: Record<string, CSSColor> = {
     lightAccentRed400: '#EDBEBE',
     lightAccentRed600: '#CD4949',
     lightAccentRed700: '#AC3939',
+    lightAccentYellow50: '#FDF5E1', // @TODO this color should be defined from figma export
     lightAccentYellow100: '#FDF5E1',
     lightAccentYellow200: '#FBF0D4',
     lightAccentYellow300: '#F9E8BC',

@@ -130,13 +130,15 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                         id={SCROLL_WRAPPER_ID}
                                     >
                                         <ElevationUp>
-                                            <SuiteBanners />
                                             {isMobileLayout && isAccountPage && (
                                                 <MobileAccountsMenu />
                                             )}
                                             {TopMenu && <TopMenu />}
 
-                                            <ContentWrapper>{children}</ContentWrapper>
+                                            <ContentWrapper>
+                                                <SuiteBanners />
+                                                {children}
+                                            </ContentWrapper>
                                         </ElevationUp>
                                     </AppWrapper>
                                 </Columns>
