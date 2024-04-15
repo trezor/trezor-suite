@@ -137,5 +137,9 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.useCoreInPopup = input.useCoreInPopup;
     }
 
+    if (typeof input._extendWebextensionLifetime === 'boolean') {
+        settings._extendWebextensionLifetime = input._extendWebextensionLifetime;
+    }
+
     return settings;
 };
