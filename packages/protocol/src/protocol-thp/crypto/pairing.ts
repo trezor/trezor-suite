@@ -26,7 +26,7 @@ export const findKnownPairingCredentials = (
 ) =>
     knownCredentials.filter(c => {
         try {
-            const trezorStaticPubkey = Buffer.from(c.trezor_static_pubkey, 'hex');
+            const trezorStaticPubkey = Buffer.from(c.trezor_static_public_key, 'hex');
             // X25519(SHA-256(trezor_static_pubkey || trezor_ephemeral_pubkey), trezor_static_pubkey).
             const h = hashOfTwo(trezorStaticPubkey, trezorEphemeralPubkey);
 
