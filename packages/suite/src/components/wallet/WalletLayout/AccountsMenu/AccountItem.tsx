@@ -12,7 +12,13 @@ import {
     TruncateWithTooltip,
 } from '@trezor/components';
 
-import { AccountLabel, CoinBalance, FiatValue, Translation } from 'src/components/suite';
+import {
+    AccountLabel,
+    CoinBalance,
+    FiatValue,
+    HiddenPlaceholder,
+    Translation,
+} from 'src/components/suite';
 import { useDispatch, useLoadingSkeleton, useSelector } from 'src/hooks/suite';
 import { Account, AccountItemType } from 'src/types/wallet';
 import { goto } from 'src/actions/suite/routerActions';
@@ -241,12 +247,14 @@ export const AccountItem = forwardRef(
                             </AccountLabelContainer>
                             <FiatAmount>
                                 {customFiatValue && !isTestnet(symbol) ? (
-                                    <FiatAmountFormatter
-                                        value={customFiatValue}
-                                        currency={localCurrency}
-                                        minimumFractionDigits={0}
-                                        maximumFractionDigits={0}
-                                    />
+                                    <HiddenPlaceholder>
+                                        <FiatAmountFormatter
+                                            value={customFiatValue}
+                                            currency={localCurrency}
+                                            minimumFractionDigits={0}
+                                            maximumFractionDigits={0}
+                                        />
+                                    </HiddenPlaceholder>
                                 ) : (
                                     <FiatValue
                                         amount={formattedBalance}
