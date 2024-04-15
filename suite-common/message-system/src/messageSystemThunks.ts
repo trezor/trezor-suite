@@ -1,6 +1,6 @@
 import { decode, verify } from 'jws';
 
-import { getEnvironment, getJWSPublicKey, isCodesignBuild } from '@trezor/env-utils';
+import { getJWSPublicKey, isCodesignBuild, isNative } from '@trezor/env-utils';
 import { scheduleAction } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { MessageSystem } from '@suite-common/suite-types';
@@ -21,8 +21,6 @@ import {
     selectMessageSystemCurrentSequence,
 } from './messageSystemSelectors';
 import { jws as configJwsLocal } from '../files/config.v1';
-
-const isMobile = () => getEnvironment() === 'mobile';
 
 const getConfigJws = async () => {
     const remoteConfigUrl = isCodesignBuild()
@@ -62,7 +60,7 @@ export const fetchConfigThunk = createThunk(
 
         if (
             Date.now() >=
-            timestamp + (isMobile() ? FETCH_INTERVAL_IN_MS_MOBILE : FETCH_INTERVAL_IN_MS)
+            timestamp + (isNative() ? FETCH_INTERVAL_IN_MS_MOBILE : FETCH_INTERVAL_IN_MS)
         ) {
             try {
                 const { configJws, isRemote } = await getConfigJws();
@@ -134,7 +132,7 @@ export const initMessageSystemThunk = createThunk(
                 () => {
                     checkConfig();
                 },
-                isMobile() ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE : FETCH_CHECK_INTERVAL_IN_MS,
+                isNative() ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE : FETCH_CHECK_INTERVAL_IN_MS,
             );
         };
 
