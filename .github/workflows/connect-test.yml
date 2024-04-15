@@ -94,6 +94,7 @@ jobs:
       test-pattern: ${{ matrix.pattern }}
       methods: ${{ matrix.methods }}
       tests-firmware: ${{ matrix.firmware }}
+      test-description: ${{ matrix.name }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
@@ -107,6 +108,7 @@ jobs:
       test-pattern: ${{ matrix.pattern }}
       methods: ${{ matrix.methods }}
       tests-firmware: ${{ matrix.firmware }}
+      test-description: ${{ matrix.name }}-${{ matrix.firmware }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.legacyCanaryFirmwareMatrix) }}
@@ -114,15 +116,16 @@ jobs:
   connect-other-devices:
     needs: [build, set-matrix]
     if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
-    name: other-devices-${{ matrix.name }}
+    name: other-devices-${{ matrix.name }}-${{ matrix.model }}
     uses: ./.github/workflows/template-connect-test-params.yml
     with:
       test-pattern: ${{ matrix.pattern }}
       methods: ${{ matrix.methods }}
       tests-firmware: ${{ matrix.firmware }}
-      test-firmware-model: "R"
+      test-firmware-model: ${{ matrix.model }}
       node-environment: ${{ matrix.node-environment }}
       web-environment: ${{ matrix.web-environment }}
+      test-description: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
     strategy:
       fail-fast: false
       matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}

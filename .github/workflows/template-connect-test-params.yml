@@ -30,10 +30,15 @@ on:
         type: "boolean"
         required: false
         default: true
+      test-description:
+        description: "A description to make test title more descriptive (example: 2-latest-R)"
+        type: "string"
+        required: false
+        default: ""
 
 jobs:
   node:
-    name: node
+    name: "node-${{ inputs.test-description }}"
     runs-on: ubuntu-latest
     if: ${{ inputs.node-environment }}
     steps:
@@ -51,7 +56,7 @@ jobs:
       - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" -i ${{ inputs.methods }} -m ${{ inputs.test-firmware-model}}'
 
   web:
-    name: web
+    name: "web-${{ inputs.test-description }}"
     runs-on: ubuntu-latest
     if: ${{ inputs.web-environment }}
     steps:
