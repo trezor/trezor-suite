@@ -603,6 +603,14 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.instance = instance;
     }
 
+    public getThpProperties() {
+        return this.thp?.properties;
+    }
+
+    public getLocalSession() {
+        return this.sessionAcquired;
+    }
+
     getInstance() {
         return this.instance;
     }
@@ -903,6 +911,10 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.lifecycle.emit(DEVICE.DISCONNECT);
 
         return this.interrupt(ERRORS.TypedError('Device_Disconnected'));
+    }
+
+    releaseTransportSession() {
+        this.keepTransportSession = false;
     }
 
     isBootloader() {
