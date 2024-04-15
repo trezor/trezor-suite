@@ -33,6 +33,17 @@ const logger = initLog('@trezor/connect-webextension');
 const popupManagerLogger = initLog('@trezor/connect-webextension/popupManager');
 let _popupManager: popup.PopupManager;
 
+const extendLifetime = () => {
+    // Subscribing to runtime makes the Service Worker stay alive for 5 minutes instead of the default 30 seconds.
+    // We could make it to be continuously alive but it is probably overkilling.
+    // https://developer.chrome.com/blog/longer-esw-lifetimes
+    // https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers#keep-sw-alive
+    // https://stackoverflow.com/questions/66618136/persistent-service-worker-in-chrome-extension
+    chrome.runtime.onMessage.addListener(() => {
+        return false;
+    });
+};
+
 const logWriterFactory = (popupManager: popup.PopupManager): LogWriter => ({
     add: (message: LogMessage) => {
         popupManager.channel.postMessage(
@@ -77,6 +88,10 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
         ..._settings,
         ...settings,
     });
+
+    if (newSettings._extendWebextensionLifetime) {
+        extendLifetime();
+    }
     // defaults for connect-webextension
     if (!newSettings.transports?.length) {
         newSettings.transports = ['BridgeTransport', 'WebUsbTransport'];
