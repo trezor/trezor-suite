@@ -77,6 +77,7 @@ const legacyCanaryFirmware = {
 
 const otherDevices = {
     firmwares: ['2-latest'],
+    models: ['R', 'T3T1'],
     tests: [
         {
             name: 'api',
@@ -147,8 +148,14 @@ const otherDevices = {
     ],
 };
 
-const prepareTest = ({ firmwares, tests }) => {
-    return tests.flatMap(test => firmwares.map(firmware => ({ firmware, ...test })));
+const prepareTest = ({ firmwares, tests, models }) => {
+    const withFirmwares = tests.flatMap(test => firmwares.map(firmware => ({ firmware, ...test })));
+
+    if (models && models.length > 0) {
+        return withFirmwares.flatMap(test => models.map(model => ({ model, ...test })));
+    } else {
+        return withFirmwares;
+    }
 };
 
 const testData = {
