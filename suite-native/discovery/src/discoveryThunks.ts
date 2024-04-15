@@ -1,5 +1,6 @@
 import { A } from '@mobily/ts-belt';
 
+import { getWeakRandomId } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
@@ -79,19 +80,37 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
         if (finishedNetworksCount >= discovery.total) {
             dispatch(removeDiscovery(discovery.deviceState));
 
+            // Id used to group multiple analytic events of a single discovery run together.
+            const discoveryId = getWeakRandomId(10);
+
+            const discoveryAccountsAnalytics = selectDiscoveryAccountsAnalytics(
+                getState(),
+                discovery.deviceState,
+            );
+
+            // Keboola analytics data backend is unable to parse nested objects, so each network has to be reported separately.
+            Object.entries(discoveryAccountsAnalytics).forEach(
+                ([networkSymbol, networkAnalyticsPayload]) => {
+                    analytics.report({
+                        type: EventType.CoinDiscovery,
+                        payload: {
+                            discoveryId,
+                            symbol: networkSymbol as NetworkSymbol,
+                            ...networkAnalyticsPayload,
+                        },
+                    });
+                },
+            );
+
             const discoveryStartTime = selectDiscoveryStartTimeStamp(getState());
             // Discovery analytics duration tracking
             if (discoveryStartTime !== null) {
                 const endTime = performance.now();
                 const duration = endTime - discoveryStartTime;
-                const discoveryAccountsAnalytics = selectDiscoveryAccountsAnalytics(
-                    getState(),
-                    discovery.deviceState,
-                );
 
                 analytics.report({
-                    type: EventType.CoinDiscovery,
-                    payload: { ...discoveryAccountsAnalytics, loadDuration: duration },
+                    type: EventType.DiscoveryDuration,
+                    payload: { discoveryId, loadDuration: duration },
                 });
                 dispatch(setDiscoveryStartTimestamp(null));
             }

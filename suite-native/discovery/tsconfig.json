@@ -29,6 +29,7 @@
         { "path": "../device" },
         { "path": "../device-mutex" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/device-utils" }
+        { "path": "../../packages/device-utils" },
+        { "path": "../../packages/utils" }
     ]
 }

@@ -8973,6 +8973,7 @@ __metadata:
     "@suite-native/device-mutex": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/device-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"

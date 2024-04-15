@@ -172,15 +172,20 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
+          type: EventType.DiscoveryDuration;
+          payload: {
+              discoveryId: string; // Used for grouping multiple events of a single discovery run together.
+              loadDuration: number;
+          };
+      }
+    | {
           type: EventType.CoinDiscovery;
           payload: {
-              loadDuration: number;
-          } & {
-              [key in NetworkSymbol]: {
-                  numberOfAccounts: number;
-                  tokenSymbols?: TokenSymbol[];
-                  tokenAddresses?: TokenAddress[];
-              };
+              discoveryId: string;
+              symbol: NetworkSymbol;
+              numberOfAccounts: number;
+              tokenSymbols?: TokenSymbol[];
+              tokenAddresses?: TokenAddress[];
           };
       }
     | {

@@ -20,16 +20,23 @@ export const selectDiscoveryAccountsAnalytics = (
         selectDeviceAccounts(state),
         A.groupBy(account => account.symbol),
         D.mapWithKey((networkSymbol, accounts) => {
+            const numberOfAccounts = accounts?.length ?? 0;
+
             const validTokens = selectValidTokensByNetworkSymbolAndDeviceState(
                 state,
                 deviceState,
                 networkSymbol as NetworkSymbol,
             );
+            if (A.isNotEmpty(validTokens)) {
+                return {
+                    numberOfAccounts,
+                    tokenSymbols: validTokens.map(token => token.symbol as TokenSymbol),
+                    tokenAddresses: validTokens.map(token => token.contract as TokenAddress),
+                };
+            }
 
             return {
-                numberOfAccounts: accounts?.length ?? 0,
-                tokenSymbols: validTokens.map(token => token.symbol as TokenSymbol),
-                tokenAddresses: validTokens.map(token => token.contract as TokenAddress),
+                numberOfAccounts,
             };
         }),
     );
