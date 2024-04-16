@@ -222,11 +222,20 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                 identity,
                 endOfTimeFrameDate,
                 forceRefetch,
-            }).then(balanceHistory => ({
-                coin,
-                descriptor,
-                balanceHistory,
-            })),
+            })
+                .then(balanceHistory => ({
+                    coin,
+                    descriptor,
+                    balanceHistory,
+                }))
+                .catch(error => {
+                    console.error(
+                        `Unable to fetch GRAPH balance history for ${coin} account:`,
+                        error,
+                    );
+                    error.message = `${coin.toUpperCase()}: ${error.message}`;
+                    throw error;
+                }),
         ),
     );
 
@@ -262,12 +271,21 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                     fiatCurrency,
                     forceRefetch,
                     isElectrumBackend,
-                }).then(res => {
-                    if (res === null)
-                        throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
+                })
+                    .then(res => {
+                        if (res === null)
+                            throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
 
-                    return [coin, res] as const;
-                }),
+                        return [coin, res] as const;
+                    })
+                    .catch(error => {
+                        console.error(
+                            `Unable to fetch GRAPH fiat rates ${fiatCurrency} for ${coin}:`,
+                            error,
+                        );
+                        error.message = `${coin.toUpperCase()} (${fiatCurrency}): ${error.message}`;
+                        throw error;
+                    }),
             ),
         ),
     );
