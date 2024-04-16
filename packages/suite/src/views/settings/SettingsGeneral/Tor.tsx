@@ -3,8 +3,8 @@ import { LoadingContent, Switch } from '@trezor/components';
 import { TOR_PROJECT_URL } from '@trezor/urls';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { toggleTor } from 'src/actions/suite/suiteActions';
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
 import { TorStatus } from 'src/types/suite';
@@ -17,7 +17,6 @@ export const Tor = () => {
     const isCoinjoinAccount = coinjoinAccounts.length > 0;
     const torStatus = useSelector(state => state.suite.torStatus);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Tor);
 
     useEffect(() => {
         if (!hasTorError) {
@@ -52,7 +51,7 @@ export const Tor = () => {
     };
 
     return (
-        <SectionItem data-test="@settings/tor" ref={anchorRef} shouldHighlight={shouldHighlight}>
+        <SettingsSectionItem anchorId={SettingsAnchor.Tor}>
             <TextColumn
                 title={
                     <LoadingContent isLoading={isTorLoading} isSuccessful={!hasTorError}>
@@ -77,6 +76,6 @@ export const Tor = () => {
                     onChange={handleTorSwitch}
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

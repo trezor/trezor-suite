@@ -1,6 +1,6 @@
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { MAX_LABEL_LENGTH } from 'src/constants/suite/device';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { ChangeDeviceLabel } from 'src/components/suite/ChangeDeviceLabel';
 
@@ -9,14 +9,8 @@ interface DeviceLabelProps {
 }
 
 export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.DeviceLabel);
-
     return (
-        <SectionItem
-            data-test="@settings/device/device-label"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.DeviceLabel}>
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_DEVICE_LABEL" />}
                 description={
@@ -26,6 +20,6 @@ export const DeviceLabel = ({ isDeviceLocked }: DeviceLabelProps) => {
             <ActionColumn>
                 <ChangeDeviceLabel isVertical isDeviceLocked={isDeviceLocked} />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

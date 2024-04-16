@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
-import { ActionButton, ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionButton, ActionColumn, TextColumn } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
@@ -18,14 +18,9 @@ const UserDataLink = styled.span`
 export const WipeData = () => {
     const userDataDir = useSelector(state => state.desktop?.paths.userDir);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeData);
 
     return (
-        <SectionItem
-            data-test="@settings/debug/wipe-data"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.WipeData}>
             <TextColumn
                 title="Wipe app data"
                 description={
@@ -62,6 +57,6 @@ export const WipeData = () => {
                     Wipe data
                 </ActionButton>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

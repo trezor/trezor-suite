@@ -1,15 +1,9 @@
 import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
 
-import {
-    ActionButton,
-    ActionColumn,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface BackupRecoverySeedProps {
@@ -19,18 +13,13 @@ interface BackupRecoverySeedProps {
 export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.BackupRecoverySeed);
 
     const needsBackup = !!device?.features?.needs_backup;
 
     const handleClick = () => dispatch(goto('backup-index', { params: { cancelable: true } }));
 
     return (
-        <SectionItem
-            data-test="@settings/device/backup-recovery-seed"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.BackupRecoverySeed}>
             <TextColumn
                 title={<Translation id="TR_BACKUP_RECOVERY_SEED" />}
                 description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
@@ -49,6 +38,6 @@ export const BackupRecoverySeed = ({ isDeviceLocked }: BackupRecoverySeedProps) 
                     )}
                 </ActionButton>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

@@ -4,10 +4,14 @@ import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-util
 import { selectDeviceSupportedNetworks, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { Button, motionEasing } from '@trezor/components';
 
-import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
-import { CoinGroup, SectionItem, TooltipSymbol, Translation } from 'src/components/suite';
+import {
+    DeviceBanner,
+    SettingsLayout,
+    SettingsSection,
+    SettingsSectionItem,
+} from 'src/components/settings';
+import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     useDevice,
@@ -29,7 +33,7 @@ const StyledSettingsSection = styled(SettingsSection)`
     overflow: hidden;
 `;
 
-const StyledSectionItem = styled(SectionItem)`
+const StyledSectionItem = styled(SettingsSectionItem)`
     > div {
         flex-direction: column;
     }
@@ -85,12 +89,6 @@ export const SettingsCoins = () => {
         deviceSupportedNetworks.includes(enabledNetwork),
     );
 
-    const { anchorRef: anchorRefCrypto, shouldHighlight: shouldHighlightCrypto } = useAnchor(
-        SettingsAnchor.Crypto,
-    );
-    const { anchorRef: anchorRefTestnetCrypto, shouldHighlight: shouldHighlightTestnetCrypto } =
-        useAnchor(SettingsAnchor.TestnetCrypto);
-
     const { device } = useDevice();
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
@@ -130,7 +128,7 @@ export const SettingsCoins = () => {
             {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
 
             <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
-                <StyledSectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
+                <StyledSectionItem anchorId={SettingsAnchor.Crypto}>
                     <CoinGroup
                         networks={mainnets}
                         onToggle={setEnabled}
@@ -160,16 +158,13 @@ export const SettingsCoins = () => {
                 }
                 icon="COIN"
             >
-                <SectionItem
-                    ref={anchorRefTestnetCrypto}
-                    shouldHighlight={shouldHighlightTestnetCrypto}
-                >
+                <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
                     <CoinGroup
                         networks={testnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
                     />
-                </SectionItem>
+                </SettingsSectionItem>
             </SettingsSection>
         </SettingsLayout>
     );

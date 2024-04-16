@@ -1,13 +1,13 @@
-import { Translation } from 'src/components/suite/Translation';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
-import { SettingsAnchor } from 'src/constants/suite/anchors';
-
-import { SelectBar } from '@trezor/components';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { SelectBar } from '@trezor/components';
 import { EventType, analytics } from '@trezor/suite-analytics';
+
+import { Translation } from 'src/components/suite/Translation';
+import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setAddressDisplayType } from 'src/actions/suite/suiteActions';
-import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn } from 'src/components/suite';
 
 const options = [
     {
@@ -23,7 +23,6 @@ const options = [
 export const AddressDisplay = () => {
     const selectedAddressDisplay = useSelector(state => state.suite.settings.addressDisplayType);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.AddressDisplay);
 
     const onChange = (value: AddressDisplayOptions) => {
         analytics.report({
@@ -36,11 +35,7 @@ export const AddressDisplay = () => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/address-display"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.AddressDisplay}>
             <TextColumn
                 title={<Translation id="TR_ADDRESS_DISPLAY" />}
                 description={<Translation id="TR_ADDRESS_DISPLAY_DESCRIPTION" />}
@@ -52,6 +47,6 @@ export const AddressDisplay = () => {
                     onChange={onChange}
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

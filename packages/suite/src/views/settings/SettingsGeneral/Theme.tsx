@@ -2,15 +2,9 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { desktopApi, SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { setAutodetect, setTheme } from 'src/actions/suite/suiteActions';
-import {
-    ActionColumn,
-    ActionSelect,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getOsTheme } from 'src/utils/suite/env';
 import { ThemeColorVariant } from '@trezor/theme';
@@ -59,7 +53,6 @@ export const Theme = () => {
     const theme = useSelector(state => state.suite.settings.theme);
     const autodetectTheme = useSelector(state => state.suite.settings.autodetect.theme);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Theme);
     const { optionGroups, getOption } = useThemeOptions();
 
     const themeVariant = autodetectTheme ? 'system' : theme.variant;
@@ -92,7 +85,7 @@ export const Theme = () => {
     };
 
     return (
-        <SectionItem data-test="@settings/theme" ref={anchorRef} shouldHighlight={shouldHighlight}>
+        <SettingsSectionItem anchorId={SettingsAnchor.Theme}>
             <TextColumn
                 title={<Translation id="TR_COLOR_SCHEME" />}
                 description={<Translation id="TR_COLOR_SCHEME_DESCRIPTION" />}
@@ -106,6 +99,6 @@ export const Theme = () => {
                     data-test="@theme/color-scheme-select"
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

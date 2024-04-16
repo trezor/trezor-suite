@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import type { InvityServerEnvironment } from '@suite-common/invity';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { reloadApp } from 'src/utils/suite/reload';
 
@@ -16,7 +16,6 @@ const StyledActionSelect = styled(ActionSelect)`
 export const InvityApi = () => {
     const debug = useSelector(state => state.suite.settings.debug);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.InvityApi);
 
     const invityApiServerOptions = Object.entries(invityAPI.servers).map(
         ([environment, server]) => ({
@@ -36,11 +35,7 @@ export const InvityApi = () => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/debug/invity-api"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.InvityApi}>
             <TextColumn
                 title="API server"
                 description="Set the server url for buy and exchange features"
@@ -52,6 +47,6 @@ export const InvityApi = () => {
                     options={invityApiServerOptions}
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

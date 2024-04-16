@@ -1,10 +1,10 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { Button, ButtonGroup } from '@trezor/components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const DISPLAY_ROTATIONS = [
@@ -20,16 +20,11 @@ interface DisplayRotationProps {
 
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.DisplayRotation);
     const { device } = useDevice();
     const currentRotation = device?.features?.display_rotation;
 
     return (
-        <SectionItem
-            data-test="@settings/device/display-rotation"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.DisplayRotation}>
             <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
             <ActionColumn>
                 <ButtonGroup size="small" isDisabled={isDeviceLocked}>
@@ -53,6 +48,6 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
                     ))}
                 </ButtonGroup>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

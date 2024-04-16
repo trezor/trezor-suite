@@ -1,13 +1,7 @@
-import {
-    ActionButton,
-    ActionColumn,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface SafetyChecksProps {
@@ -17,16 +11,10 @@ interface SafetyChecksProps {
 export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
     const dispatch = useDispatch();
 
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.SafetyChecks);
-
     const handleClick = () => dispatch(openModal({ type: 'safety-checks' }));
 
     return (
-        <SectionItem
-            data-test="@settings/device/safety-checks"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.SafetyChecks}>
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_DESC" />}
@@ -41,6 +29,6 @@ export const SafetyChecks = ({ isDeviceLocked }: SafetyChecksProps) => {
                     <Translation id="TR_DEVICE_SETTINGS_SAFETY_CHECKS_BUTTON" />
                 </ActionButton>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };
