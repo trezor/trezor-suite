@@ -10,6 +10,7 @@ import {
     useBottomSheetAnimation,
     CenteredTitleHeader,
     Pictogram,
+    Box,
 } from '@suite-native/atoms';
 
 import { useShakeAnimation } from '../useShakeAnimation';
@@ -32,8 +33,9 @@ const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.small,
 }));
 
-const alertSheetContentStyle = prepareNativeStyle(_ => ({
+const alertSheetContentStyle = prepareNativeStyle(utils => ({
     width: '100%',
+    gap: utils.spacings.large,
 }));
 
 const shakeTriggerStyle = prepareNativeStyle(_ => ({
@@ -93,9 +95,11 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                         onStartShouldSetResponder={_ => true} // Stop the shake event trigger propagation.
                     >
                         <Card style={applyStyle(alertSheetContainerStyle)}>
-                            <VStack style={applyStyle(alertSheetContentStyle)} spacing="large">
+                            <VStack style={applyStyle(alertSheetContentStyle)}>
                                 {icon && pictogramVariant && (
-                                    <Pictogram variant={pictogramVariant} icon={icon} />
+                                    <Box alignItems="center">
+                                        <Pictogram variant={pictogramVariant} icon={icon} />
+                                    </Box>
                                 )}
                                 <CenteredTitleHeader title={title} subtitle={description} />
                                 {appendix}
