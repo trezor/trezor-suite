@@ -100,7 +100,7 @@
         "electron": "27.3.8",
         "webpack": "^5.90.1",
         "html-webpack-plugin": "^5.6.0",
-        "@types/node": "18.17.15",
+        "@types/node": "20.12.7",
         "@types/react": "18.2.55",
         "@sentry/types": "7.92.0",
         "bn.js": "5.2.1"
@@ -118,7 +118,7 @@
         "@babel/runtime": "^7.23.9",
         "@suite-common/wallet-types": "workspace:*",
         "@types/jest": "29.5.12",
-        "@types/node": "18.17.15",
+        "@types/node": "20.12.7",
         "@types/prettier": "^3.0.0",
         "@types/semver": "^7.5.6",
         "@types/tar": "^6.1.11",

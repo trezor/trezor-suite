@@ -320,7 +320,7 @@ const subscribeBlock = async ({ state, connect, post }: Context) => {
 
 const unsubscribeBlock = ({ state }: Context) => {
     if (!state.getSubscription('block')) return;
-    const interval = state.getSubscription('block') as NodeJS.Timer;
+    const interval = state.getSubscription('block') as ReturnType<typeof setInterval>;
     clearInterval(interval);
     state.removeSubscription('block');
 };
@@ -565,7 +565,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
             );
 
         if (this.state.getSubscription('block')) {
-            const interval = this.state.getSubscription('block') as NodeJS.Timer;
+            const interval = this.state.getSubscription('block') as ReturnType<typeof setInterval>;
             clearInterval(interval);
             this.state.removeSubscription('block');
         }

@@ -9,7 +9,7 @@ with import
 let
   # unstable packages
   electron = electron_27; # use the same version as defined in packages/suite-desktop/package.json
-  nodejs = nodejs_18;
+  nodejs = nodejs_20;
   # use older gcc. 10.2.0 with glibc 2.32 for node_modules bindings.
   # electron-builder is packing the app with glibc 2.32, bindings should not be compiled with newer version.
   gccPkgs = import (builtins.fetchTarball {
