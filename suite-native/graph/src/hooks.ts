@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import { captureException } from '@sentry/react-native';
+
 import {
     AccountItem,
     CommonUseGraphParams,
@@ -65,6 +67,10 @@ const useWatchTimeframeChangeForAnalytics = (
     }, [timeframeHours, networkSymbol, isFirstRender]);
 };
 
+const checkAndReportGraphError = (error: string | null) => {
+    if (error) captureException(error);
+};
+
 export const useGraphForSingleAccount = ({
     accountKey,
     fiatCurrency,
@@ -104,15 +110,19 @@ export const useGraphForSingleAccount = ({
         selectIsElectrumBackendSelected(state, account?.symbol ?? 'btc'),
     );
 
+    const graphForAccounts = useGraphForAccounts({
+        accounts,
+        fiatCurrency,
+        startOfTimeFrameDate,
+        endOfTimeFrameDate,
+        isPortfolioGraph: false,
+        isElectrumBackend,
+    });
+
+    useEffect(() => checkAndReportGraphError(graphForAccounts.error), [graphForAccounts.error]);
+
     return {
-        ...useGraphForAccounts({
-            accounts,
-            fiatCurrency,
-            startOfTimeFrameDate,
-            endOfTimeFrameDate,
-            isPortfolioGraph: false,
-            isElectrumBackend,
-        }),
+        ...graphForAccounts,
         timeframe: accountGraphTimeframe,
         onSelectTimeFrame: handleSelectAccountTimeframe,
     };
@@ -147,15 +157,19 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
 
     useWatchTimeframeChangeForAnalytics(portfolioGraphTimeframe);
 
+    const graphForAccounts = useGraphForAccounts({
+        accounts: accountItems,
+        fiatCurrency,
+        startOfTimeFrameDate,
+        endOfTimeFrameDate,
+        isPortfolioGraph: true,
+        isElectrumBackend,
+    });
+
+    useEffect(() => checkAndReportGraphError(graphForAccounts.error), [graphForAccounts.error]);
+
     return {
-        ...useGraphForAccounts({
-            accounts: accountItems,
-            fiatCurrency,
-            startOfTimeFrameDate,
-            endOfTimeFrameDate,
-            isPortfolioGraph: true,
-            isElectrumBackend,
-        }),
+        ...graphForAccounts,
         timeframe: portfolioGraphTimeframe,
         onSelectTimeFrame: handleSelectPortfolioTimeframe,
     };
