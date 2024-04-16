@@ -180,4 +180,7 @@ export type UserContextPayload =
       }
     | {
           type: 'everstake';
+      }
+    | {
+          type: 'multi-share-backup';
       };

@@ -20,6 +20,7 @@ import { DisplayRotation } from './DisplayRotation';
 import { FirmwareTypeChange } from './FirmwareTypeChange';
 import { FirmwareVersion } from './FirmwareVersion';
 import { Homescreen } from './Homescreen';
+import { MultiShareBackup } from './MultiShareBackup';
 import { Passphrase } from './Passphrase';
 import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
@@ -51,6 +52,8 @@ export const SettingsDevice = () => {
     const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
+    const supportsShamirGroups =
+        device?.features?.capabilities?.includes('Capability_ShamirGroups');
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -121,6 +124,7 @@ export const SettingsDevice = () => {
                     ) : (
                         <>
                             <BackupRecoverySeed isDeviceLocked={isDeviceLocked} />
+                            {supportsShamirGroups && <MultiShareBackup />}
                             <CheckRecoverySeed isDeviceLocked={isDeviceLocked} />
                         </>
                     )}

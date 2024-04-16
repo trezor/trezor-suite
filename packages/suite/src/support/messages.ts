@@ -2109,6 +2109,19 @@ export default defineMessages({
         description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
     },
+    TR_MULTI_SHARE_BACKUP: {
+        defaultMessage: 'Multi-share backup',
+        id: 'TR_MULTI_SHARE_BACKUP',
+    },
+    TR_MULTI_SHARE_BACKUP_DESCRIPTION: {
+        defaultMessage:
+            "A recovery seed backup is a series of randomly generated words created by your Trezor. It's important that you write down your recovery seed and keep it safe, as it is the only way to recover and access your funds.",
+        id: 'TR_MULTI_SHARE_BACKUP_DESCRIPTION',
+    },
+    TR_CREATE_MULTI_SHARE_BACKUP: {
+        defaultMessage: 'Create multi-share backup',
+        id: 'TR_CREATE_MULTI_SHARE_BACKUP',
+    },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
             'Bitcoin Cash changed the address format to cashaddr. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',

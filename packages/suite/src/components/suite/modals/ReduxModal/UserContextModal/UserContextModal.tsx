@@ -218,6 +218,8 @@ export const UserContextModal = ({
             return <ClaimModal onCancel={onCancel} />;
         case 'everstake':
             return <EverstakeModal onCancel={onCancel} />;
+        case 'multi-share-backup':
+            return null;
         default:
             return null;
     }
