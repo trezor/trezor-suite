@@ -4,8 +4,9 @@ import { addBasePath } from 'next/dist/client/add-base-path';
 import { useRouter } from 'next/router';
 import { GlobeIcon } from 'nextra/icons';
 
-import { useConfig } from '../contexts';
 import { Select } from '@trezor/components';
+
+import { useConfig } from '../contexts';
 
 interface LocaleSwitchProps {
     lite?: boolean;

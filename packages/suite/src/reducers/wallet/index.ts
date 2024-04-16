@@ -16,7 +16,7 @@ import settingsReducer from './settingsReducer';
 import graphReducer from './graphReducer';
 import selectedAccountReducer from './selectedAccountReducer';
 import receiveReducer from './receiveReducer';
-import feesReducer from './feesReducer';
+import { feesReducer } from './feesReducer';
 import coinmarketReducer from './coinmarketReducer';
 import { prepareSendFormReducer } from '@suite-common/wallet-core';
 import accountSearchReducer from './accountSearchReducer';
