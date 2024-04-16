@@ -41,7 +41,7 @@ export const SelectableNetworkItem = ({ symbol, onPress, rightIcon }: Selectable
         <TouchableOpacity
             disabled={!onPress}
             onPress={handlePress}
-            testID={`@onboarding/select-coin/${networkName}`}
+            testID={`@onboarding/select-coin/${symbol}`}
         >
             <Box flexDirection="row" alignItems="center">
                 <RoundedIcon name={symbol} />

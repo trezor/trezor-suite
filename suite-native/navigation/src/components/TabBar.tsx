@@ -64,6 +64,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         iconName={iconName}
                         title={label}
                         onPress={handleTabBarItemPress}
+                        testID={route.name}
                     />
                 );
             })}

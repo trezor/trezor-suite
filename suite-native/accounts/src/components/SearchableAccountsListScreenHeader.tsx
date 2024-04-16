@@ -79,7 +79,12 @@ export const SearchableAccountsListScreenHeader = ({
                 >
                     <ScreenSubHeader
                         content={title}
-                        rightIcon={<AddAccountButton flowType={flowType} />}
+                        rightIcon={
+                            <AddAccountButton
+                                flowType={flowType}
+                                testID="@myAssets/addAccountButton"
+                            />
+                        }
                         leftIcon={
                             <IconButton
                                 iconName="search"

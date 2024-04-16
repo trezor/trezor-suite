@@ -73,7 +73,7 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
                 {isPortfolioTrackerDevice && (
                     <Box>
                         <Button
-                            data-testID="@home/portfolio/sync-coins-button"
+                            testID="@home/portfolio/sync-coins-button"
                             colorScheme="tertiaryElevation0"
                             size="large"
                             onPress={handleImportAssets}

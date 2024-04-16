@@ -55,16 +55,14 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
 
     return (
         <VStack spacing="extraLarge" flex={1}>
-            <Box flex={1} alignItems="center" justifyContent="center">
+            <Box
+                flex={1}
+                alignItems="center"
+                justifyContent="center"
+                testID="@account-import/coin-synced/success-pictogram"
+            >
                 <PictogramTitleHeader
-                    title={
-                        <Text
-                            variant="titleSmall"
-                            data-testID="@account-import/coin-synced/success-text"
-                        >
-                            {title}
-                        </Text>
-                    }
+                    title={<Text variant="titleSmall">{title}</Text>}
                     subtitle={subtitle}
                     variant="green"
                     icon="syncedCoin"
