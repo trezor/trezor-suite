@@ -1,4 +1,4 @@
-name: '[Build/Test] suite-web migrations and canary'
+name: '[Test] nightly suite-web, migrations and canary'
 
 # run all suite-web related tests every day at midnight
 on:
