@@ -8,6 +8,8 @@ import {
     useFiatFromCryptoValueParams,
 } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { HiddenPlaceholderProps } from './HiddenPlaceholder';
+import { useLoadingSkeleton } from 'src/hooks/suite';
+import { SkeletonRectangle } from '@trezor/components';
 
 const StyledHiddenPlaceholder = styled((props: HiddenPlaceholderProps) => (
     <HiddenPlaceholder {...props} />
@@ -32,7 +34,9 @@ type FiatValueProps = useFiatFromCryptoValueParams & {
     disableHiddenPlaceholder?: boolean;
     fiatAmountFormatterOptions?: FormatNumberOptions;
     shouldConvert?: boolean;
+    showLoadingSkeleton?: boolean;
     className?: string;
+    isLoading?: boolean;
 };
 
 /**
@@ -60,7 +64,10 @@ export const FiatValue = ({
     disableHiddenPlaceholder,
     fiatAmountFormatterOptions,
     shouldConvert = true,
+    showLoadingSkeleton,
+    isLoading,
 }: FiatValueProps) => {
+    const { shouldAnimate } = useLoadingSkeleton();
     const { targetCurrency, fiatAmount, ratesSource, currentRate } = useFiatFromCryptoValue({
         amount,
         symbol,
@@ -74,6 +81,16 @@ export const FiatValue = ({
     const value = shouldConvert ? fiatAmount : amount;
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
+
+    const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
+
+    if (
+        (!fiatRateValue || !value || !currentRate?.lastTickerTimestamp || isLoading) &&
+        showLoadingSkeleton
+    ) {
+        return <SkeletonRectangle animate={shouldAnimate} />;
+    }
+
     if (value) {
         const fiatValueComponent = (
             <WrapperComponent className={className}>
@@ -86,7 +103,6 @@ export const FiatValue = ({
             </WrapperComponent>
         );
 
-        const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
         const fiatRateComponent = fiatRateValue ? (
             <SameWidthNums>
                 <FiatAmountFormatter currency={targetCurrency} value={fiatRateValue} />

@@ -1,61 +1,30 @@
 import styled from 'styled-components';
-import { differenceInMinutes } from 'date-fns';
-import { FormattedRelativeTime } from 'react-intl';
 
-import { Tooltip } from '@trezor/components';
-import { FiatValue, Translation } from 'src/components/suite';
+import { FiatValue } from 'src/components/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { typography } from '@trezor/theme';
+import { LastUpdateTooltip } from './LastUpdateTooltip';
 
 const FiatRateWrapper = styled.span`
+    ${typography.hint}
     display: flex;
     align-items: center;
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    ${typography.hint}
-`;
-
-const LastUpdate = styled.div`
-    text-transform: none;
 `;
 
 interface PriceTickerProps {
     symbol: string;
-    tooltipPos?: 'top' | 'bottom';
-    compact?: boolean;
 }
-export const PriceTicker = ({ symbol, tooltipPos = 'top', compact = false }: PriceTickerProps) => {
-    const rateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
-
-    return (
-        <FiatValue amount="1" symbol={symbol}>
-            {({ rate, timestamp }) =>
-                rate && timestamp ? (
-                    <Tooltip
-                        maxWidth={285}
-                        placement={tooltipPos}
-                        content={
-                            <LastUpdate>
-                                <Translation
-                                    id="TR_LAST_UPDATE"
-                                    values={{
-                                        value: (
-                                            <FormattedRelativeTime
-                                                value={rateAge(timestamp) * 60}
-                                                numeric="auto"
-                                                updateIntervalInSeconds={10}
-                                            />
-                                        ),
-                                    }}
-                                />
-                            </LastUpdate>
-                        }
-                    >
-                        <FiatRateWrapper>{rate}</FiatRateWrapper>
-                    </Tooltip>
-                ) : (
-                    <NoRatesTooltip iconOnly={compact} />
-                )
-            }
-        </FiatValue>
-    );
-};
+export const PriceTicker = ({ symbol }: PriceTickerProps) => (
+    <FiatValue amount="1" symbol={symbol} showLoadingSkeleton>
+        {({ rate, timestamp }) =>
+            rate && timestamp ? (
+                <LastUpdateTooltip timestamp={timestamp}>
+                    <FiatRateWrapper>{rate}</FiatRateWrapper>
+                </LastUpdateTooltip>
+            ) : (
+                <NoRatesTooltip />
+            )
+        }
+    </FiatValue>
+);

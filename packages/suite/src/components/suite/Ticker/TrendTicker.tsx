@@ -22,9 +22,8 @@ const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
 
 interface TickerProps {
     symbol: NetworkSymbol;
-    compact?: boolean;
 }
-export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
+export const TrendTicker = ({ symbol }: TickerProps) => {
     const locale = useSelector(state => state.suite.settings.language);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbol, localCurrency);
@@ -45,7 +44,7 @@ export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
         : 0;
 
     return (
-        <FiatValue amount="1" symbol={symbol}>
+        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton isLoading={!percentageChange}>
             {({ rate, timestamp }) =>
                 rate && timestamp && percentageChange ? (
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
@@ -57,7 +56,7 @@ export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
                         {localizePercentage({ valueInFraction: percentageChange, locale })}
                     </PercentageWrapper>
                 ) : (
-                    <NoRatesTooltip iconOnly={compact} />
+                    <NoRatesTooltip />
                 )
             }
         </FiatValue>
