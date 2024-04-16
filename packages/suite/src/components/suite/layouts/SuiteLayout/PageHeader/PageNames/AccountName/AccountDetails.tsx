@@ -22,7 +22,7 @@ const DetailsContainer = styled.div`
 const AccountBalance = styled.div`
     display: flex;
     align-items: center;
-    gap: ${spacingsPx.sm};
+    gap: ${spacingsPx.xxs};
     color: ${({ theme }) => theme.textSubdued};
 `;
 
@@ -70,9 +70,8 @@ export const AccountDetails = ({ selectedAccount }: AccountDetailsProps) => {
                         <FormattedCryptoAmount value={formattedBalance} symbol={symbol} />
                     </AmountUnitSwitchWrapper>
                 </CryptoBalance>
-
                 <span>
-                    ~<FiatValue amount={formattedBalance} symbol={symbol} />
+                    ≈ <FiatValue amount={formattedBalance} symbol={symbol} />
                 </span>
             </AccountBalance>
         </DetailsContainer>
