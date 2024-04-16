@@ -4718,6 +4718,10 @@ export default defineMessages({
         id: 'TR_PAYMENT_METHOD_UNKNOWN',
         defaultMessage: 'Unknown',
     },
+    TR_PAYMENT_METHOD_ALL: {
+        id: 'TR_PAYMENT_METHOD_ALL',
+        defaultMessage: 'All payment methods',
+    },
     TR_OFFER_FEE_INFO: {
         id: 'TR_OFFER_FEE_INFO',
         defaultMessage:
