@@ -60,7 +60,7 @@ export const fetchCurrentFiatRates = async (ticker: TickerId) => {
     const coinUrl = buildCoinUrl(ticker);
     if (!coinUrl) return null;
     const urlParams =
-        'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false';
+        'tickers=false&market_data=true&community_data=false&developer_data=false&sparkline=false&localization=false';
     const url = `${coinUrl}?${urlParams}`;
 
     const rates = await fetchCoinGecko(url);
