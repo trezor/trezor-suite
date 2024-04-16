@@ -1,7 +1,9 @@
-import { FeeInfo } from '@suite-common/wallet-types';
-import { blockchainActions } from '@suite-common/wallet-core';
-import { Network, networksCompatibility } from '@suite-common/wallet-config';
 import { createReducer } from '@reduxjs/toolkit';
+
+import { FeeInfo } from '@suite-common/wallet-types';
+import { Network, networksCompatibility } from '@suite-common/wallet-config';
+
+import { blockchainActions } from '../blockchain/blockchainActions';
 
 export type FeesState = {
     [key in Network['symbol']]: FeeInfo;
@@ -14,7 +16,7 @@ export type FeesRootState = {
 };
 
 // fill initial state, those values will be changed by BLOCKCHAIN.UPDATE_FEE action
-export const initialState = networksCompatibility.reduce((state, network) => {
+const initialState = networksCompatibility.reduce((state, network) => {
     if (network.accountType) return state;
     state[network.symbol] = {
         blockHeight: 0,

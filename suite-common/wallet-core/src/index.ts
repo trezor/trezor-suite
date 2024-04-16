@@ -18,6 +18,7 @@ export * from './fiat-rates/fiatRatesTypes';
 export * from './discovery/discoveryActions';
 export * from './discovery/discoveryReducer';
 export * from './discovery/discoveryThunks';
+export * from './fees/feesReducer';
 export * from './firmware/firmwareActions';
 export * from './firmware/firmwareThunks';
 export * from './firmware/firmwareReducer';
