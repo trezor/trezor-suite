@@ -12,12 +12,13 @@ import { useSelector } from 'src/hooks/suite';
 import { selectCoinDefinitions, selectFiatRates } from '@suite-common/wallet-core';
 import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 import { TokenInfo } from '@trezor/blockchain-link-types';
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, typography } from '@trezor/theme';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { Rate } from '@suite-common/wallet-types';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { LastUpdateTooltip } from 'src/components/suite/Ticker/LastUpdateTooltip';
 
 const Wrapper = styled(Card)<{ $isTestnet?: boolean }>`
     display: grid;
@@ -28,8 +29,7 @@ const Wrapper = styled(Card)<{ $isTestnet?: boolean }>`
 `;
 
 const TokenSymbol = styled.span`
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    font-size: ${variables.FONT_SIZE.NORMAL};
+    ${typography.body}
     text-transform: uppercase;
     padding-right: 2px;
 `;
@@ -40,10 +40,9 @@ interface ColProps {
 }
 
 const Col = styled.div<ColProps>`
-    padding: 10px 12px 10px 0;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    ${typography.hint}
+    padding: 10px ${spacingsPx.sm} 10px 0;
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 
     &:nth-child(${({ $isTestnet }) => ($isTestnet ? '-n + 3' : '-n + 4')}) {
         /* first row */
@@ -65,15 +64,16 @@ const TokenName = styled.span`
 `;
 
 const FiatWrapper = styled.div`
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
 `;
 
 const CryptoAmount = styled(FormattedCryptoAmount)`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    font-size: ${variables.FONT_SIZE.NORMAL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
+    ${typography.body}
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 const StyledNoRatesTooltip = styled(NoRatesTooltip)`
@@ -189,17 +189,26 @@ export const TokenList = ({
                                         </Col>
                                         {!isTestnet && (
                                             <Col $isTestnet={isTestnet} $justify="right">
-                                                {t.balance && t.symbol && t.fiatRate?.rate ? (
-                                                    <FiatWrapper>
-                                                        <FiatValue
-                                                            amount={t.balance}
-                                                            symbol={account.symbol}
-                                                            tokenAddress={t.contract}
-                                                        />
-                                                    </FiatWrapper>
-                                                ) : (
-                                                    <StyledNoRatesTooltip iconOnly={true} />
-                                                )}
+                                                <FiatWrapper>
+                                                    <FiatValue
+                                                        amount={t.balance || '1'}
+                                                        symbol={account.symbol}
+                                                        tokenAddress={t.contract}
+                                                        showLoadingSkeleton={groupIndex === 0}
+                                                    >
+                                                        {({ value, timestamp }) =>
+                                                            value && timestamp ? (
+                                                                <LastUpdateTooltip
+                                                                    timestamp={timestamp}
+                                                                >
+                                                                    <>{value}</>
+                                                                </LastUpdateTooltip>
+                                                            ) : (
+                                                                <StyledNoRatesTooltip />
+                                                            )
+                                                        }
+                                                    </FiatValue>
+                                                </FiatWrapper>
                                             </Col>
                                         )}
                                         <Col $isTestnet={isTestnet} $justify="right">
@@ -209,7 +218,7 @@ export const TokenList = ({
                                                 <Icon
                                                     icon="EXTERNAL_LINK"
                                                     size={16}
-                                                    color={theme.TYPE_LIGHT_GREY}
+                                                    color={theme.iconSubdued}
                                                 />
                                             </TrezorLink>
                                         </Col>
