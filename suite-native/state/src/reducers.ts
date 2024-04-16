@@ -15,6 +15,9 @@ import {
     migrateAccountLabel,
     deriveAccountTypeFromPaymentType,
     preparePersistReducer,
+    walletPersistTransform,
+    devicePersistTransform,
+    walletStopPersistTransform,
 } from '@suite-native/storage';
 import { prepareAnalyticsReducer } from '@suite-common/analytics';
 import {
@@ -22,7 +25,7 @@ import {
     prepareMessageSystemReducer,
 } from '@suite-common/message-system';
 import { notificationsReducer } from '@suite-common/toast-notifications';
-import { graphReducer, graphPersistWhitelist } from '@suite-native/graph';
+import { graphReducer, graphPersistTransform } from '@suite-native/graph';
 import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
@@ -64,6 +67,8 @@ export const prepareRootReducers = async () => {
         version: 3,
         migrations: {
             2: (oldState: any) => {
+                if (!oldState.accounts) return oldState;
+
                 const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
                 const migratedAccounts = migrateAccountLabel(oldAccountsState.accounts);
                 const migratedState = { ...oldState, accounts: migratedAccounts };
@@ -71,6 +76,8 @@ export const prepareRootReducers = async () => {
                 return migratedState;
             },
             3: oldState => {
+                if (!oldState.accounts) return oldState;
+
                 const oldAccountsState: { accounts: any } = { accounts: oldState.accounts };
                 const migratedAccounts = deriveAccountTypeFromPaymentType(
                     oldAccountsState.accounts,
@@ -80,6 +87,10 @@ export const prepareRootReducers = async () => {
                 return migratedState;
             },
         },
+        transforms: [walletStopPersistTransform],
+        // This remains for backward compatibility. If any data was persisted under the 'wallet' key,
+        // it is retrieved from storage and migrated. Subsequently, the 'wallet' key is cleared because
+        // the data is now stored under the 'root' key.
     });
 
     const analyticsPersistedReducer = await preparePersistReducer({
@@ -89,11 +100,12 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
-    const graphPersistedReducer = await preparePersistReducer({
-        reducer: graphReducer,
-        persistedKeys: graphPersistWhitelist,
-        key: 'graph',
+    const devicePersistedReducer = await preparePersistReducer({
+        reducer: deviceReducer,
+        persistedKeys: ['devices'],
+        key: 'devices',
         version: 1,
+        transforms: [devicePersistTransform],
     });
 
     const discoveryConfigPersistedReducer = await preparePersistReducer({
@@ -117,18 +129,29 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
-    return combineReducers({
-        app: appReducer,
-        analytics: analyticsPersistedReducer,
-        appSettings: appSettingsPersistedReducer,
-        wallet: walletPersistedReducer,
-        featureFlags: featureFlagsPersistedReducer,
-        graph: graphPersistedReducer,
-        device: deviceReducer,
-        logs: logsSlice.reducer,
-        notifications: notificationsReducer,
-        discoveryConfig: discoveryConfigPersistedReducer,
-        messageSystem: messageSystemPersistedReducer,
-        tokenDefinitions: tokenDefinitionsReducer,
+    const rootReducer = await preparePersistReducer({
+        reducer: combineReducers({
+            app: appReducer,
+            analytics: analyticsPersistedReducer,
+            appSettings: appSettingsPersistedReducer,
+            wallet: walletPersistedReducer,
+            featureFlags: featureFlagsPersistedReducer,
+            graph: graphReducer,
+            device: devicePersistedReducer,
+            logs: logsSlice.reducer,
+            notifications: notificationsReducer,
+            discoveryConfig: discoveryConfigPersistedReducer,
+            messageSystem: messageSystemPersistedReducer,
+            tokenDefinitions: tokenDefinitionsReducer,
+        }),
+        // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
+        // is accessible for transformation.
+        persistedKeys: ['wallet', 'graph'],
+        transforms: [walletPersistTransform, graphPersistTransform],
+        mergeLevel: 2,
+        key: 'root',
+        version: 1,
     });
+
+    return rootReducer;
 };

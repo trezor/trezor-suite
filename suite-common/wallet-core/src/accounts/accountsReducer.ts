@@ -18,11 +18,13 @@ import {
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
-export const accountsInitialState: Account[] = [];
+export type AccountsState = Account[];
+
+export const accountsInitialState: AccountsState = [];
 
 export type AccountsRootState = {
     wallet: {
-        accounts: Account[];
+        accounts: AccountsState;
     };
 };
 

@@ -9246,6 +9246,7 @@ __metadata:
     react-native: "npm:0.73.6"
     react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
+    redux-persist: "npm:6.0.0"
   languageName: unknown
   linkType: soft
 
@@ -9857,9 +9858,12 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/storage@workspace:suite-native/storage"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/react-native": "npm:5.19.1"
+    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     bs58: "npm:^5.0.0"
