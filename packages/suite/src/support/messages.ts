@@ -1932,6 +1932,10 @@ export default defineMessages({
         defaultMessage: '{networkName} receive address',
         id: 'TR_ADDRESS_MODAL_TITLE',
     },
+    TR_ADDRESS_MODAL_TITLE_EXCHANGE: {
+        defaultMessage: '{networkCurrencyName} receive address on {networkName} network',
+        id: 'TR_ADDRESS_MODAL_TITLE_EXCHANGE',
+    },
     TR_XPUB_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy public key',
         id: 'TR_XPUB_MODAL_CLIPBOARD',

@@ -13,16 +13,13 @@ import {
 interface ConfirmAddressModalProps
     extends Pick<ConfirmValueModalProps, 'isConfirmed' | 'onCancel' | 'value'> {
     addressPath: string;
-    receiveSymbol?: CryptoSymbol;
 }
 
-export const ConfirmAddressModal = ({
-    addressPath,
-    value,
-    receiveSymbol,
-    ...props
-}: ConfirmAddressModalProps) => {
+export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const account = useSelector(selectSelectedAccount);
+    const receiveSymbol = useSelector(
+        state => state.wallet.coinmarket.exchange.quotesRequest?.receive,
+    );
     const displayMode = useDisplayMode();
 
     const validateAddress = useCallback(
@@ -56,7 +53,23 @@ export const ConfirmAddressModal = ({
                         networkName: coinSymbol,
                     }}
                 />
-            }
+            );
+        }
+
+        return (
+            <Translation
+                id="TR_ADDRESS_MODAL_TITLE"
+                values={{
+                    networkName: account.symbol.toUpperCase(),
+                }}
+            />
+        );
+    };
+
+    return (
+        <ConfirmValueModal
+            account={account}
+            heading={getHeading()}
             stepLabel={<Translation id="TR_RECEIVE_ADDRESS" />}
             confirmStepLabel={<Translation id="TR_RECEIVE_ADDRESS_MATCH" />}
             copyButtonText={<Translation id="TR_ADDRESS_MODAL_CLIPBOARD" />}
