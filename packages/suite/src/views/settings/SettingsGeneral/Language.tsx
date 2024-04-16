@@ -1,19 +1,13 @@
 import { useMemo } from 'react';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import {
-    ActionColumn,
-    ActionSelect,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { isTranslationMode, getOsLocale } from 'src/utils/suite/l10n';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import LANGUAGES, { Locale, LocaleInfo } from 'src/config/suite/languages';
 import { setAutodetect } from 'src/actions/suite/suiteActions';
 import { setLanguage } from 'src/actions/settings/languageActions';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { getPlatformLanguages } from '@trezor/env-utils';
 import { CROWDIN_URL } from '@trezor/urls';
@@ -65,7 +59,6 @@ export const Language = () => {
     const language = useSelector(selectLanguage);
     const autodetectLanguage = useSelector(state => state.suite.settings.autodetect.language);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Language);
 
     const { options, systemOption } = useLanguageOptions();
 
@@ -98,11 +91,7 @@ export const Language = () => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/language"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.Language}>
             <TextColumn
                 title={<Translation id="TR_LANGUAGE" />}
                 description={isCommunityLanguage && <Translation id="TR_LANGUAGE_DESCRIPTION" />}
@@ -119,6 +108,6 @@ export const Language = () => {
                     data-test="@settings/language-select"
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

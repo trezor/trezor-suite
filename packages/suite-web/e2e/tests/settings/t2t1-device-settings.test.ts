@@ -83,7 +83,7 @@ describe('T2T1 - Device settings', () => {
         cy.passThroughInitialRun();
 
         cy.log('Try to change device homescreen');
-        cy.getTestElement('@settings/device/homescreen').scrollIntoView();
+        cy.getTestElement('@device-settings/homescreen').scrollIntoView();
 
         cy.getTestElement('@settings/device/homescreen-gallery').should('be.disabled');
         cy.getTestElement('@settings/device/homescreen-upload').should('be.disabled');
@@ -97,7 +97,7 @@ describe('T2T1 - Device settings', () => {
         cy.passThroughInitialRun();
 
         cy.log('Try to change device homescreen');
-        cy.getTestElement('@settings/device/homescreen').scrollIntoView();
+        cy.getTestElement('@device-settings/homescreen').scrollIntoView();
 
         cy.getTestElement('@settings/device/homescreen-gallery').click();
         cy.get('#original_t2t1').should('exist');
@@ -112,7 +112,7 @@ describe('T2T1 - Device settings', () => {
         cy.passThroughInitialRun();
 
         cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
-        cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
+        cy.getTestElement('@device-settings/backup-failed').should('not.exist');
         cy.getTestElement('@settings/device/create-backup-button').click({ scrollBehavior: false });
         cy.getTestElement('@backup');
     });

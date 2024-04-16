@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { HOMESCREEN_EDITOR_URL } from '@trezor/urls';
 
+import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
     ActionColumn,
@@ -23,7 +24,6 @@ import {
     validateImage,
     isHomescreenSupportedOnDevice,
 } from 'src/utils/suite/homescreen';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const HiddenInput = styled.input`
@@ -51,7 +51,6 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
     const fileInputElement = useRef<HTMLInputElement>(null);
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Homescreen);
 
     if (!device?.features) {
         return null;
@@ -94,11 +93,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     return (
         <>
-            <SectionItem
-                data-test="@settings/device/homescreen"
-                ref={anchorRef}
-                shouldHighlight={shouldHighlight}
-            >
+            <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
                 {[DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(
                     deviceModelInternal,
                 ) && (
@@ -159,7 +154,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                         </ButtonGroup>
                     </Tooltip>
                 </ActionColumn>
-            </SectionItem>
+            </SettingsSectionItem>
             {customHomescreen && !validationError && (
                 <SectionItem>
                     <Col>

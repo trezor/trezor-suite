@@ -1,11 +1,11 @@
 import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { Switch } from '@trezor/components';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 interface PassphraseProps {
@@ -15,7 +15,6 @@ interface PassphraseProps {
 export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Passphrase);
 
     const passphraseProtection = !!device?.features?.passphrase_protection;
 
@@ -30,11 +29,7 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/device/passphrase"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.Passphrase}>
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_PASSPHRASE_DESC" />}
@@ -48,6 +43,6 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
                     isDisabled={isDeviceLocked}
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

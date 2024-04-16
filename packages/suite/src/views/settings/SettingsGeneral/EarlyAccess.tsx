@@ -1,16 +1,11 @@
 import styled from 'styled-components';
 
 import { desktopApi } from '@trezor/suite-desktop-api';
-import {
-    ActionButton,
-    ActionColumn,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openEarlyAccessSetup } from 'src/actions/suite/desktopUpdateActions';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Version = styled.div`
@@ -23,7 +18,6 @@ const Version = styled.div`
 export const EarlyAccess = () => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.EarlyAccess);
 
     const setupEarlyAccess = () => {
         dispatch(openEarlyAccessSetup(desktopUpdate.allowPrerelease));
@@ -31,11 +25,7 @@ export const EarlyAccess = () => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/early-access"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.EarlyAccess}>
             <TextColumn
                 title={
                     <Translation
@@ -73,6 +63,6 @@ export const EarlyAccess = () => {
                     />
                 </ActionButton>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 
+import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
     ActionColumn,
-    SectionItem,
     TextColumn,
     Translation,
     TrezorLink,
@@ -11,7 +11,6 @@ import {
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { Button } from '@trezor/components';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     getFirmwareVersion,
@@ -39,7 +38,6 @@ interface FirmwareTypeProps {
 export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareType);
 
     if (!device?.features) {
         return null;
@@ -55,11 +53,7 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
     const handleAction = () => dispatch(goto('firmware-type', { params: { cancelable: true } }));
 
     return (
-        <SectionItem
-            data-test="@settings/device/firmware-type"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.FirmwareType}>
             <TextColumn
                 title={<Translation id="TR_FIRMWARE_TYPE" />}
                 description={
@@ -106,6 +100,6 @@ export const FirmwareTypeChange = ({ isDeviceLocked }: FirmwareTypeProps) => {
                     </ActionButton>
                 </ActionColumn>
             )}
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

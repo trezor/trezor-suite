@@ -1,12 +1,5 @@
-import React from 'react';
-import {
-    ActionColumn,
-    ActionSelect,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
-import { useAnchor } from '../../../hooks/suite/useAnchor';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from '../../../constants/suite/anchors';
 import { useDevice, useDispatch } from '../../../hooks/suite';
 import { changeLanguage } from '../../../actions/settings/deviceSettingsActions';
@@ -15,12 +8,11 @@ import { Locale } from '../../../config/suite/languages';
 
 const BASE_TRANSLATIONS = [{ value: 'en-US', label: LANGUAGES['en'].name }];
 
-interface Props {
+interface ChangeLanguageProps {
     isDeviceLocked: boolean;
 }
 
-export const ChangeLanguage = ({ isDeviceLocked }: Props) => {
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareLanguage);
+export const ChangeLanguage = ({ isDeviceLocked }: ChangeLanguageProps) => {
     const { device } = useDevice();
     const dispatch = useDispatch();
 
@@ -46,11 +38,7 @@ export const ChangeLanguage = ({ isDeviceLocked }: Props) => {
     );
 
     return (
-        <SectionItem
-            data-test="@settings/device/language"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.FirmwareLanguage}>
             <TextColumn title={<Translation id="TR_LANGUAGE" />} />
             <ActionColumn>
                 <ActionSelect
@@ -62,6 +50,6 @@ export const ChangeLanguage = ({ isDeviceLocked }: Props) => {
                     data-test="@settings/device/firmware-language-select"
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };
