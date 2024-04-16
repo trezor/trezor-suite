@@ -141,7 +141,7 @@
         "prettier-eslint": "^16.3.0",
         "rimraf": "^5.0.5",
         "semver": "^7.6.0",
-        "tar": "^6.2.0",
+        "tar": "^7.0.1",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
         "tslib": "^2.6.2",
