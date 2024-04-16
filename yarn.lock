@@ -343,6 +343,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/helper-plugin-utils@npm:^7.24.0":
+  version: 7.24.0
+  resolution: "@babel/helper-plugin-utils@npm:7.24.0"
+  checksum: dc8c7af321baf7653d93315beffee1790eb2c464b4f529273a24c8743a3f3095bf3f2d11828cb2c52d56282ef43a4bdc67a79c9ab8dd845e35d01871f3f28a0e
+  languageName: node
+  linkType: hard
+
 "@babel/helper-remap-async-to-generator@npm:^7.18.9, @babel/helper-remap-async-to-generator@npm:^7.22.20":
   version: 7.22.20
   resolution: "@babel/helper-remap-async-to-generator@npm:7.22.20"
@@ -922,6 +929,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-arrow-functions@npm:^7.0.0-0":
+  version: 7.24.1
+  resolution: "@babel/plugin-transform-arrow-functions@npm:7.24.1"
+  dependencies:
+    "@babel/helper-plugin-utils": "npm:^7.24.0"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 58f9aa9b0de8382f8cfa3f1f1d40b69d98cd2f52340e2391733d0af745fdddda650ba392e509bc056157c880a2f52834a38ab2c5aa5569af8c61bb6ecbf45f34
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-async-generator-functions@npm:^7.23.9":
   version: 7.23.9
   resolution: "@babel/plugin-transform-async-generator-functions@npm:7.23.9"
@@ -1253,6 +1271,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-nullish-coalescing-operator@npm:^7.0.0-0":
+  version: 7.24.1
+  resolution: "@babel/plugin-transform-nullish-coalescing-operator@npm:7.24.1"
+  dependencies:
+    "@babel/helper-plugin-utils": "npm:^7.24.0"
+    "@babel/plugin-syntax-nullish-coalescing-operator": "npm:^7.8.3"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 74025e191ceb7cefc619c15d33753aab81300a03d81b96ae249d9b599bc65878f962d608f452462d3aad5d6e334b7ab2b09a6bdcfe8d101fe77ac7aacca4261e
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-nullish-coalescing-operator@npm:^7.22.11, @babel/plugin-transform-nullish-coalescing-operator@npm:^7.23.4":
   version: 7.23.4
   resolution: "@babel/plugin-transform-nullish-coalescing-operator@npm:7.23.4"
@@ -1274,17 +1304,6 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: 6ba0e5db3c620a3ec81f9e94507c821f483c15f196868df13fa454cbac719a5449baf73840f5b6eb7d77311b24a2cf8e45db53700d41727f693d46f7caf3eec3
-  languageName: node
-  linkType: hard
-
-"@babel/plugin-transform-object-assign@npm:^7.16.7":
-  version: 7.18.6
-  resolution: "@babel/plugin-transform-object-assign@npm:7.18.6"
-  dependencies:
-    "@babel/helper-plugin-utils": "npm:^7.18.6"
-  peerDependencies:
-    "@babel/core": ^7.0.0-0
-  checksum: 6cae0ddf7dd1b0a677c1b68dfc9d26574495885de25c025bed6fc6ebf27dfaca4e1880a7ce22d1eab3180cac4054cd052b2ba58727cdc099b91fb296334f77ff
   languageName: node
   linkType: hard
 
@@ -1324,6 +1343,19 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: d50b5ee142cdb088d8b5de1ccf7cea85b18b85d85b52f86618f6e45226372f01ad4cdb29abd4fd35ea99a71fefb37009e0107db7a787dcc21d4d402f97470faf
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-transform-optional-chaining@npm:^7.0.0-0":
+  version: 7.24.1
+  resolution: "@babel/plugin-transform-optional-chaining@npm:7.24.1"
+  dependencies:
+    "@babel/helper-plugin-utils": "npm:^7.24.0"
+    "@babel/helper-skip-transparent-expression-wrappers": "npm:^7.22.5"
+    "@babel/plugin-syntax-optional-chaining": "npm:^7.8.3"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: d41031b8e472b9b30aacd905a1561904bcec597dd888ad639b234971714dc9cd0dcb60df91a89219fc72e4feeb148e20f97bcddc39d7676e743ff0c23f62a7eb
   languageName: node
   linkType: hard
 
@@ -1509,6 +1541,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/plugin-transform-shorthand-properties@npm:^7.0.0-0":
+  version: 7.24.1
+  resolution: "@babel/plugin-transform-shorthand-properties@npm:7.24.1"
+  dependencies:
+    "@babel/helper-plugin-utils": "npm:^7.24.0"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 006a2032d1c57dca76579ce6598c679c2f20525afef0a36e9d42affe3c8cf33c1427581ad696b519cc75dfee46c5e8ecdf0c6a29ffb14250caa3e16dd68cb424
+  languageName: node
+  linkType: hard
+
 "@babel/plugin-transform-spread@npm:^7.0.0, @babel/plugin-transform-spread@npm:^7.23.3":
   version: 7.23.3
   resolution: "@babel/plugin-transform-spread@npm:7.23.3"
@@ -1540,6 +1583,17 @@ __metadata:
   peerDependencies:
     "@babel/core": ^7.0.0-0
   checksum: b16c5cb0b8796be0118e9c144d15bdc0d20a7f3f59009c6303a6e9a8b74c146eceb3f05186f5b97afcba7cfa87e34c1585a22186e3d5b22f2fd3d27d959d92b2
+  languageName: node
+  linkType: hard
+
+"@babel/plugin-transform-template-literals@npm:^7.0.0-0":
+  version: 7.24.1
+  resolution: "@babel/plugin-transform-template-literals@npm:7.24.1"
+  dependencies:
+    "@babel/helper-plugin-utils": "npm:^7.24.0"
+  peerDependencies:
+    "@babel/core": ^7.0.0-0
+  checksum: 4c9009c72321caf20e3b6328bbe9d7057006c5ae57b794cf247a37ca34d87dfec5e27284169a16df5a6235a083bf0f3ab9e1bfcb005d1c8b75b04aed75652621
   languageName: node
   linkType: hard
 
@@ -8295,7 +8349,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-svg: "npm:^16.1.33"
     styled-components: "npm:^6.1.8"
     svgo: "npm:3.2.0"
@@ -8646,7 +8700,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -8661,7 +8715,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
   languageName: unknown
   linkType: soft
 
@@ -8771,7 +8825,7 @@ __metadata:
     react-native-gesture-handler: "npm:2.15.0"
     react-native-keyboard-aware-scroll-view: "npm:0.9.5"
     react-native-mmkv: "npm:2.11.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-restart: "npm:0.0.27"
     react-native-safe-area-context: "npm:4.9.0"
     react-native-screens: "npm:3.29.0"
@@ -8809,7 +8863,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:^18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -8834,7 +8888,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
     react-native-gesture-handler: "npm:2.15.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-root-toast: "npm:^3.5.1"
     react-native-safe-area-context: "npm:4.9.0"
     react-redux: "npm:8.0.7"
@@ -8908,7 +8962,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:^18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-safe-area-context: "npm:4.9.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -9078,7 +9132,7 @@ __metadata:
     react: "npm:18.2.0"
     react-intl: "npm:^6.6.2"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9140,7 +9194,7 @@ __metadata:
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-safe-area-context: "npm:4.9.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -9186,7 +9240,7 @@ __metadata:
     lottie-react-native: "npm:6.6.0"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9229,7 +9283,7 @@ __metadata:
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.50.1"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9287,7 +9341,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9410,7 +9464,7 @@ __metadata:
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-svg: "npm:14.1.0"
   languageName: unknown
   linkType: soft
@@ -9547,7 +9601,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
     react-native-gesture-handler: "npm:2.15.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-safe-area-context: "npm:4.9.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -9583,7 +9637,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
     react-native-gesture-handler: "npm:2.15.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
   languageName: unknown
   linkType: soft
 
@@ -9623,7 +9677,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
     react-native-gesture-handler: "npm:2.15.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
@@ -9694,7 +9748,7 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native-gesture-handler: "npm:2.15.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-safe-area-context: "npm:4.9.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
@@ -9727,7 +9781,7 @@ __metadata:
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native-gesture-handler: "npm:2.15.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-native-safe-area-context: "npm:4.9.0"
   languageName: unknown
   linkType: soft
@@ -9768,7 +9822,7 @@ __metadata:
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
     react-native-gesture-handler: "npm:2.15.0"
-    react-native-reanimated: "npm:3.7.0-nightly-20240101-9d365ae7b"
+    react-native-reanimated: "npm:3.8.1"
     react-redux: "npm:8.0.7"
     web3-utils: "npm:^1.10.0"
   languageName: unknown
@@ -33671,24 +33725,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-native-reanimated@npm:3.7.0-nightly-20240101-9d365ae7b":
-  version: 3.7.0-nightly-20240101-9d365ae7b
-  resolution: "react-native-reanimated@npm:3.7.0-nightly-20240101-9d365ae7b"
+"react-native-reanimated@npm:3.8.1":
+  version: 3.8.1
+  resolution: "react-native-reanimated@npm:3.8.1"
   dependencies:
-    "@babel/plugin-transform-object-assign": "npm:^7.16.7"
+    "@babel/plugin-transform-arrow-functions": "npm:^7.0.0-0"
+    "@babel/plugin-transform-nullish-coalescing-operator": "npm:^7.0.0-0"
+    "@babel/plugin-transform-optional-chaining": "npm:^7.0.0-0"
+    "@babel/plugin-transform-shorthand-properties": "npm:^7.0.0-0"
+    "@babel/plugin-transform-template-literals": "npm:^7.0.0-0"
     "@babel/preset-typescript": "npm:^7.16.7"
     convert-source-map: "npm:^2.0.0"
     invariant: "npm:^2.2.4"
   peerDependencies:
     "@babel/core": ^7.0.0-0
-    "@babel/plugin-proposal-nullish-coalescing-operator": ^7.0.0-0
-    "@babel/plugin-proposal-optional-chaining": ^7.0.0-0
-    "@babel/plugin-transform-arrow-functions": ^7.0.0-0
-    "@babel/plugin-transform-shorthand-properties": ^7.0.0-0
-    "@babel/plugin-transform-template-literals": ^7.0.0-0
     react: "*"
     react-native: "*"
-  checksum: 634988cef4c6208137b22c389fbfd420b0ae023a4c6af6c78a16619ff83986811c058c293e862641872525887cfb8abd703cb1e79d83b43314c77b2beed1210b
+  checksum: 522635aed0ec2aa1c0887f34d770289ad8453f868ef6656c19eb4f5a35d0c264cb8e670ce6278433cb5597a8190165b3753ac52fc27ddb882d4467aae6f43117
   languageName: node
   linkType: hard
 
