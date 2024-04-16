@@ -1,7 +1,9 @@
 import { G } from '@mobily/ts-belt';
+import { createTransform } from 'redux-persist';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AccountKey } from '@suite-common/wallet-types';
+import { selectDeviceStatesNotRemembered, filterObjectKeys } from '@suite-native/storage';
 
 import { TimeframeHoursValue } from './types';
 
@@ -22,10 +24,17 @@ export const graphInitialState: GraphState = {
     accountToGraphTimeframeMap: {},
 };
 
-export const graphPersistWhitelist: Array<keyof GraphState> = [
-    'portfolioGraphTimeframe',
-    'accountToGraphTimeframeMap',
-];
+export const graphPersistTransform = createTransform<GraphState, GraphState>(
+    (inboundState, _, state) => ({
+        ...inboundState,
+        accountToGraphTimeframeMap: filterObjectKeys(
+            inboundState.accountToGraphTimeframeMap,
+            selectDeviceStatesNotRemembered(state),
+        ),
+    }),
+    undefined,
+    { whitelist: ['graph'] },
+);
 
 export const graphSlice = createSlice({
     name: 'graph',
