@@ -3,6 +3,7 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import {
     createImportedDeviceThunk,
     initBlockchainThunk,
+    initDevices,
     periodicFetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
@@ -26,6 +27,9 @@ export const applicationInit = createThunk(
 
             dispatch(initMessageSystemThunk());
 
+            // Select latest remembered device or Portfolio Tracker device.
+            dispatch(initDevices());
+
             await dispatch(connectInitThunk());
 
             dispatch(setIsConnectInitialized(true));
@@ -41,9 +45,7 @@ export const applicationInit = createThunk(
                 }),
             );
 
-            // We need to make sure to have imported device in state
-            // Since devices are not persisted,
-            // we need to create device instance on app start
+            // Create Portfolio Tracker device if it doesn't exist
             dispatch(createImportedDeviceThunk());
 
             // In case that user closed the app while device was connected,

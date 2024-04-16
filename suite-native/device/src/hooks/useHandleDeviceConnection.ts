@@ -16,6 +16,7 @@ import {
     authorizeDevice,
     selectIsPortfolioTrackerDevice,
     selectDeviceRequestedPin,
+    selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceUsingPassphrase,
@@ -36,6 +37,7 @@ export const useHandleDeviceConnection = () => {
     const isOnboardingFinished = useSelector(selectIsOnboardingFinished);
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const isDeviceConnected = useSelector(selectIsDeviceConnected);
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
     const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const navigation = useNavigation<NavigationProp>();
@@ -45,6 +47,7 @@ export const useHandleDeviceConnection = () => {
     // redirect to the Connecting screen where is handled the connection logic.
     useEffect(() => {
         if (
+            isDeviceConnected &&
             isOnboardingFinished &&
             !isPortfolioTrackerDevice &&
             !isDeviceConnectedAndAuthorized &&
@@ -62,6 +65,7 @@ export const useHandleDeviceConnection = () => {
         }
     }, [
         dispatch,
+        isDeviceConnected,
         isOnboardingFinished,
         isPortfolioTrackerDevice,
         isNoPhysicalDeviceConnected,

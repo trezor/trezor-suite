@@ -387,7 +387,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
-        remember: false,
+        remember: isPortfolioTrackerDevice,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
         state: isPortfolioTrackerDevice ? device.state : undefined,
@@ -835,7 +835,7 @@ export const selectIsDeviceRemembered = (state: DeviceRootState) => {
     return !!device?.remember;
 };
 
-const selectIsDeviceConnected = (state: DeviceRootState) => {
+export const selectIsDeviceConnected = (state: DeviceRootState) => {
     const device = selectDevice(state);
 
     return !!device?.connected;
