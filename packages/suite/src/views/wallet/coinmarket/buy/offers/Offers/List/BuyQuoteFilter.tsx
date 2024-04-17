@@ -1,13 +1,15 @@
 import { Select } from '@trezor/components';
-import { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
 import styled from 'styled-components';
-import { CoinmarketPaymentType } from 'src/views/wallet/coinmarket/common';
-//import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
-import { useMemo, useState } from 'react';
 import { useTranslation } from 'src/hooks/suite';
+import {
+    PaymentMethodListProps,
+    UseCoinmarketFilterReducerOutputProps,
+} from 'src/reducers/wallet/useCoinmarketFilterReducer';
+import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    margin-top: 20px;
+    margin-top: ${spacingsPx.lg};
 `;
 
 const Option = styled.div`
@@ -16,51 +18,32 @@ const Option = styled.div`
 `;
 
 interface BuyQuoteFilter {
-    quotes: BuyTrade[];
+    quotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
 }
 
-interface PaymentMethodListProps {
-    value: BuyCryptoPaymentMethod | '';
-    label: string;
-}
-
-export const BuyQuoteFilter = ({ quotes }: BuyQuoteFilter) => {
+export const BuyQuoteFilter = ({ quotesFilterReducer }: BuyQuoteFilter) => {
+    const { state, dispatch } = quotesFilterReducer;
     const { translationString } = useTranslation();
     const defaultMethod: PaymentMethodListProps = {
         value: '',
         label: translationString('TR_PAYMENT_METHOD_ALL'),
     };
-    const [paymentMethod, setPaymentMethod] = useState<PaymentMethodListProps>(defaultMethod);
-
-    const paymentMethods = useMemo(() => {
-        const array: PaymentMethodListProps[] = [];
-
-        quotes.forEach(quote => {
-            const { paymentMethod } = quote;
-            const isNotInArray = !array.some(item => item.value === paymentMethod);
-
-            if (typeof paymentMethod !== 'undefined' && isNotInArray) {
-                const label = quote.paymentMethodName ?? paymentMethod;
-
-                array.push({ value: paymentMethod, label });
-            }
-        });
-
-        return array;
-    }, [quotes]);
 
     return (
         <Wrapper data-test="@coinmarket/buy/filter">
             <Select
                 onChange={(selected: PaymentMethodListProps) => {
-                    setPaymentMethod(selected);
+                    dispatch({ type: 'FILTER_PAYMENT_METHOD', payload: selected.value });
                 }}
-                value={paymentMethod}
-                options={[defaultMethod, ...paymentMethods]}
+                value={
+                    state.paymentMethods.find(item => item.value === state.paymentMethod) ??
+                    defaultMethod
+                }
+                options={[defaultMethod, ...state.paymentMethods]}
                 formatOptionLabel={(option: PaymentMethodListProps) => (
                     <Option>
                         {option.value !== '' ? (
-                            <CoinmarketPaymentType
+                            <CoinmarketPaymentPlainType
                                 method={option.value}
                                 methodName={option.label}
                             />
@@ -71,9 +54,6 @@ export const BuyQuoteFilter = ({ quotes }: BuyQuoteFilter) => {
                 )}
                 data-test="@coinmarket/buy/filter-payment-method"
                 minValueWidth="100px"
-                isSearchable
-                isClearable={false}
-                isDisabled={false}
             />
         </Wrapper>
     );

@@ -6,6 +6,7 @@ import type { AppState } from 'src/types/suite';
 import type { Account } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { UseCoinmarketFilterReducerOutputProps } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 
 export type UseOffersProps = WithSelectedAccountLoadedProps;
 
@@ -24,6 +25,8 @@ export type ContextValues = {
     goToPayment: (address: string) => void;
     timer: Timer;
     getQuotes: () => Promise<void>;
+    innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
+    innerAlternativeQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
 };
 
 export type AddressOptionsFormState = {

@@ -90,7 +90,8 @@ interface ListProps {
 }
 
 export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
-    const { quotesRequest, timer } = useCoinmarketBuyOffersContext();
+    const { quotesRequest, timer, innerQuotesFilterReducer, innerAlternativeQuotesFilterReducer } =
+        useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
@@ -128,7 +129,13 @@ export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
                             />
                         </OrigAmount>
                     )}
-                    <BuyQuoteFilter quotes={quotes} />
+                    <BuyQuoteFilter
+                        quotesFilterReducer={
+                            !isAlternative
+                                ? innerQuotesFilterReducer
+                                : innerAlternativeQuotesFilterReducer
+                        }
+                    />
                 </Left>
                 {!isAlternative && !timer.isStopped && (
                     <Right>
