@@ -16,15 +16,24 @@ export const Checkbox: StoryObj<CheckboxProps> = {
         const handleIsChecked = () => updateArgs({ isChecked: !isChecked });
 
         return (
-            <CheckboxComponent
-                variant="primary"
-                isChecked={isChecked}
-                {...args}
-                onClick={handleIsChecked}
-            >
+            <CheckboxComponent isChecked={isChecked} {...args} onClick={handleIsChecked}>
                 {args.children}
             </CheckboxComponent>
         );
     },
-    args: { children: 'Checkbox' },
+    args: { children: 'Checkbox', isDisabled: false, isAlert: false, labelAlignment: 'right' },
+    argTypes: {
+        labelAlignment: {
+            options: ['left', 'right'],
+            control: {
+                type: 'radio',
+            },
+        },
+        variant: {
+            options: ['default', 'indeterminate'],
+            control: {
+                type: 'radio',
+            },
+        },
+    },
 };

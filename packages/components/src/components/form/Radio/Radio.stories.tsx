@@ -15,12 +15,12 @@ const Wrapper = styled.div`
 `;
 
 const meta: Meta = {
-    title: 'Form/RadioButton',
+    title: 'Form/Radio',
     component: RadioComponent,
 } as Meta;
 export default meta;
 
-export const RadioButton: StoryObj<RadioProps> = {
+export const Radio: StoryObj<RadioProps> = {
     render: ({ ...args }) => {
         // eslint-disable-next-line
         const [{ isChecked }, updateArgs] = useArgs();
@@ -32,10 +32,24 @@ export const RadioButton: StoryObj<RadioProps> = {
             </RadioComponent>
         );
     },
-    args: { children: 'RadioButton' },
+    args: { children: 'Radio', isDisabled: false, isAlert: false, labelAlignment: 'right' },
+    argTypes: {
+        labelAlignment: {
+            options: ['left', 'right'],
+            control: {
+                type: 'radio',
+            },
+        },
+        variant: {
+            options: ['default', 'indeterminate'],
+            control: {
+                type: 'radio',
+            },
+        },
+    },
 };
 
-export const RadioButtonGroup: StoryObj = {
+export const RadioGroup: StoryObj = {
     render: () => {
         // eslint-disable-next-line
         const [{ option }, updateArgs] = useArgs();
@@ -68,5 +82,4 @@ export const RadioButtonGroup: StoryObj = {
             </Wrapper>
         );
     },
-    args: { option: 'option1' },
 };

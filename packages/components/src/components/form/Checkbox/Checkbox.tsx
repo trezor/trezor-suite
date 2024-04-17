@@ -5,7 +5,7 @@ import { borders, Color, spacingsPx, typography } from '@trezor/theme';
 import { KEYBOARD_CODE } from '../../../constants/keyboardEvents';
 import { Icon } from '../../assets/Icon/Icon';
 import { getFocusShadowStyle } from '../../../utils/utils';
-import { UIHorizontalAlignment, UIVariant } from '../../../config/types';
+import { UIHorizontalAlignment } from '../../../config/types';
 import { FrameProps, TransientFrameProps, withFrameProps } from '../../common/frameProps';
 import { makePropsTransient } from '../../../utils/transientProps';
 
@@ -23,7 +23,7 @@ interface VariantStyles {
 }
 
 export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
-    primary: {
+    default: {
         background: 'backgroundSurfaceElevation1',
         border: 'iconSubdued',
         backgroundHover: 'backgroundSurfaceElevation0',
@@ -35,7 +35,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
         backgroundDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
         borderDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
     },
-    destructive: {
+    alert: {
         background: 'backgroundAlertRedSubtleOnElevation0',
         border: 'borderAlertRed',
         backgroundHover: 'backgroundSurfaceElevation0',
@@ -47,7 +47,7 @@ export const variantStyles: Record<CheckboxVariant, VariantStyles> = {
         backgroundDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
         borderDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
     },
-    warning: {
+    indeterminate: {
         background: 'backgroundAlertYellowSubtleOnElevation0',
         border: 'backgroundAlertYellowBold',
         backgroundHover: 'backgroundSurfaceElevation0',
@@ -122,7 +122,7 @@ const CheckIcon = styled(Icon)<{ $isVisible: boolean }>`
     transition: opacity 0.1s;
 `;
 
-export const Label = styled.div<{ $isRed: boolean }>`
+export const Label = styled.div<{ $isRed?: boolean }>`
     display: flex;
     justify-content: center;
     text-align: left;
@@ -143,11 +143,12 @@ export const HiddenInput = styled.input`
     height: 0;
 `;
 
-export type CheckboxVariant = Extract<UIVariant, 'primary' | 'destructive' | 'warning'>;
+export type CheckboxVariant = 'default' | 'alert' | 'indeterminate';
 export type LabelAlignment = Extract<UIHorizontalAlignment, 'left' | 'right'>;
 
 export type CheckboxProps = {
-    variant?: CheckboxVariant;
+    variant?: Exclude<CheckboxVariant, 'alert'>;
+    isAlert?: boolean;
     isChecked?: boolean;
     isDisabled?: boolean;
     labelAlignment?: LabelAlignment;
@@ -158,7 +159,8 @@ export type CheckboxProps = {
 } & Pick<FrameProps, 'margin'>;
 
 export const Checkbox = ({
-    variant = 'primary',
+    variant = 'default',
+    isAlert,
     isChecked,
     isDisabled,
     labelAlignment = 'right',
@@ -198,7 +200,7 @@ export const Checkbox = ({
                 tabIndex={-1}
             />
 
-            <CheckContainer tabIndex={0} $variant={variant}>
+            <CheckContainer tabIndex={0} $variant={isAlert ? 'alert' : variant}>
                 <CheckIcon
                     $isVisible={!!isChecked}
                     size={24}
@@ -207,7 +209,7 @@ export const Checkbox = ({
                 />
             </CheckContainer>
 
-            {children && <Label $isRed={variant === 'destructive'}>{children}</Label>}
+            {children && <Label $isRed={isAlert}>{children}</Label>}
         </Container>
     );
 };

@@ -112,7 +112,7 @@ export const BackupSeedCard = ({
                 <Label>{label}</Label>
             </Content>
 
-            <StyledCheckbox variant="primary" isChecked={isChecked} onClick={handleCheckboxClick} />
+            <StyledCheckbox isChecked={isChecked} onClick={handleCheckboxClick} />
         </Container>
     );
 };

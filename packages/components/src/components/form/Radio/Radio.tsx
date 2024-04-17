@@ -1,4 +1,4 @@
-import { EventHandler, KeyboardEvent, ReactNode, SyntheticEvent } from 'react';
+import { KeyboardEvent } from 'react';
 import styled from 'styled-components';
 import { Color, borders } from '@trezor/theme';
 
@@ -7,11 +7,11 @@ import { getFocusShadowStyle } from '../../../utils/utils';
 import {
     CheckboxVariant,
     Label,
-    LabelAlignment,
     variantStyles,
     Container,
     HiddenInput,
     CheckContainer,
+    CheckboxProps,
 } from '../Checkbox/Checkbox';
 
 interface VariantStyles {
@@ -21,17 +21,17 @@ interface VariantStyles {
 }
 
 const radioVariantStyles: Record<CheckboxVariant, VariantStyles> = {
-    primary: {
+    default: {
         borderChecked: 'backgroundSecondaryDefault',
         dotDisabledChecked: 'backgroundPrimarySubtleOnElevation0',
         borderDisabledChecked: 'backgroundPrimarySubtleOnElevation1',
     },
-    destructive: {
+    alert: {
         borderChecked: 'backgroundAlertRedSubtleOnElevation0',
         dotDisabledChecked: 'backgroundAlertRedSubtleOnElevation0',
         borderDisabledChecked: 'backgroundAlertRedSubtleOnElevation1',
     },
-    warning: {
+    indeterminate: {
         borderChecked: 'backgroundAlertYellowSubtleOnElevation0',
         dotDisabledChecked: 'backgroundAlertYellowSubtleOnElevation0',
         borderDisabledChecked: 'backgroundAlertYellowSubtleOnElevation1',
@@ -95,18 +95,10 @@ const RadioIcon = styled(CheckContainer)`
     }
 `;
 
-export interface RadioProps {
-    variant?: CheckboxVariant;
-    isChecked?: boolean;
-    isDisabled?: boolean;
-    labelAlignment?: LabelAlignment;
-    onClick: EventHandler<SyntheticEvent>;
-    'data-test'?: string;
-    children?: ReactNode;
-}
-
+export interface RadioProps extends Omit<CheckboxProps, 'className'> {}
 export const Radio = ({
-    variant = 'primary',
+    variant = 'default',
+    isAlert,
     isChecked,
     labelAlignment,
     isDisabled,
@@ -137,9 +129,9 @@ export const Radio = ({
                 tabIndex={-1}
             />
 
-            <RadioIcon $variant={variant} tabIndex={0} />
+            <RadioIcon $variant={isAlert ? 'alert' : variant} tabIndex={0} />
 
-            {children && <Label $isRed={variant === 'destructive'}>{children}</Label>}
+            {children && <Label $isRed={isAlert}>{children}</Label>}
         </Container>
     );
 };
