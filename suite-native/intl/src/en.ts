@@ -448,9 +448,17 @@ export const en = {
         },
         viewOnly: {
             title: 'View-only',
-            subtitle: 'Check balances without connecting your Trezor.',
-            emptySubitle: 'Connect your device to enable view-only',
+            emptyTitle: 'Connect your device to enable view-only',
+            subtitle: 'Check balances without connecting your Trezor. <about>See how it works</about>',
             enableButton: 'Enable',
+            about: {
+                title: 'View-only',
+                subtitle: 'Stay on top of your balances without connecting your Trezor.',
+                contentTitle: 'How it works',
+                content:
+                    '<li>Enable view-only to keep balances visible when your Trezor device is disconnected.</li><li>Your funds remain secure.</li><li>Your data remains private.</li><li>Stay updated on all transactions.</li><li>Create a new receive address.</li><li>To verify your receive address, simply reconnect your device.</li><li>Save time when assets are loading.</li>',
+                button: 'Got it',
+            },
         },
     },
     moduleOnboarding: {
