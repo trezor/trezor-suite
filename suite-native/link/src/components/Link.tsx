@@ -6,18 +6,24 @@ import Animated, {
     useSharedValue,
 } from 'react-native-reanimated';
 
+import { RequireExactlyOne } from 'type-fest';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
 import { useOpenLink } from '../useOpenLink';
 
-type LinkProps = {
-    label: React.ReactNode;
-    href: string;
-    isUnderlined?: boolean;
-    textColor?: Color;
-    textPressedColor?: Color;
-};
+type LinkProps = RequireExactlyOne<
+    {
+        label: React.ReactNode;
+        href?: string;
+        onPress?: () => void;
+        isUnderlined?: boolean;
+        textColor?: Color;
+        textPressedColor?: Color;
+    },
+    'href' | 'onPress'
+>;
 
 const textStyle = prepareNativeStyle<{ isUnderlined: boolean }>((_, { isUnderlined }) => ({
     extend: {
@@ -38,6 +44,7 @@ export const Link = ({
     isUnderlined = false,
     textColor = 'textPrimaryDefault',
     textPressedColor = 'textPrimaryPressed',
+    onPress,
 }: LinkProps) => {
     const { utils, applyStyle } = useNativeStyles();
     const openLink = useOpenLink();
@@ -56,7 +63,11 @@ export const Link = ({
     };
 
     const handlePress = (e: GestureResponderEvent) => {
-        openLink(href);
+        if (href) {
+            openLink(href);
+        } else if (onPress) {
+            onPress();
+        }
         e.stopPropagation();
     };
 
