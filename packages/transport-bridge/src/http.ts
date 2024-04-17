@@ -1,3 +1,7 @@
+import fs from 'fs';
+import path from 'path';
+import url from 'url';
+
 import { HttpServer, parseBodyJSON, parseBodyText, Handler } from '@trezor/node-utils';
 import { Descriptor } from '@trezor/transport/src/types';
 import { Log, arrayPartition } from '@trezor/utils';
@@ -26,8 +30,17 @@ export class TrezordNode {
     server?: HttpServer<never>;
     api: ReturnType<typeof createApi>;
     logger = new Log('@trezor/transport-bridge', true);
+    assetPrefix: string;
 
-    constructor({ port, api }: { port: number; api: 'usb' | 'udp' }) {
+    constructor({
+        port,
+        api,
+        assetPrefix = '',
+    }: {
+        port: number;
+        api: 'usb' | 'udp';
+        assetPrefix?: string;
+    }) {
         this.port = port || defaults.port;
 
         this.descriptors = [];
@@ -39,6 +52,7 @@ export class TrezordNode {
             this.resolveListenSubscriptions(descriptors);
         });
         this.api = createApi(api, this.logger);
+        this.assetPrefix = assetPrefix;
     }
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
@@ -192,12 +206,34 @@ export class TrezordNode {
                     res.writeHead(301, {
                         Location: `http://127.0.0.1:${this.port}/status`,
                     });
+                    res.end();
                 },
             ]);
 
             app.get('/status', [
+                (_req, res) => {
+                    try {
+                        const ui = fs.readFileSync(
+                            path.join(__dirname, this.assetPrefix, 'ui/index.html'),
+                            'utf-8',
+                        );
+
+                        res.writeHead(200, { 'Content-Type': 'text/html' });
+
+                        res.end(ui);
+                    } catch (error) {
+                        this.logger.error('Failed to fetch status page', error);
+                        res.writeHead(200, { 'Content-Type': 'text/plain' });
+                        // you need to run yarn workspace @trezor/transport-bridge build:ui to make it available (or build:lib will do)
+                        res.end('Failed to fetch status page');
+                    }
+                },
+            ]);
+
+            app.get('/status-data', [
                 async (_req, res) => {
                     const enumerateResult = await this.api.enumerate();
+
                     const props = {
                         intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
                         version: this.version,
@@ -205,7 +241,53 @@ export class TrezordNode {
                         logs: app.logger.getLog().slice(-20),
                     };
 
-                    res.end(JSON.stringify(props, null, 2));
+                    res.end(str(props));
+                },
+            ]);
+
+            app.get('/ui', [
+                (req, res) => {
+                    const parsedUrl = url.parse(req.url);
+
+                    let pathname = path.join(__dirname, this.assetPrefix, parsedUrl.pathname!);
+
+                    const map: Record<string, string> = {
+                        '.ico': 'image/x-icon',
+                        '.html': 'text/html',
+                        '.js': 'text/javascript',
+                        '.json': 'application/json',
+                        '.css': 'text/css',
+                        '.png': 'image/png',
+                        '.jpg': 'image/jpeg',
+                        '.svg': 'image/svg+xml',
+                    };
+
+                    const { ext } = path.parse(pathname);
+
+                    fs.exists(pathname, exist => {
+                        if (!exist) {
+                            // if the file is not found, return 404
+                            res.statusCode = 404;
+                            res.end(`File ${pathname} not found!`);
+
+                            return;
+                        }
+
+                        // if is a directory search for index file matching the extension
+                        if (fs.statSync(pathname).isDirectory()) pathname += '/index' + ext;
+
+                        // read file from file system
+                        fs.readFile(pathname, (err, data) => {
+                            if (err) {
+                                res.statusCode = 500;
+                                res.end(`Error getting the file: ${err}.`);
+                            } else {
+                                // if the file is found, set Content-type and send data
+                                res.setHeader('Content-type', map[ext] || 'text/plain');
+                                res.end(data);
+                            }
+                        });
+                    });
                 },
             ]);
 
