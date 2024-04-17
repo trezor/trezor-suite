@@ -447,6 +447,14 @@ export const startDiscoveryThunk = createThunk(
             }),
         ).unwrap();
 
+        const { success, payload } = await TrezorConnect.getAccountDescriptor({
+            bundle,
+            skipFinalReload: true,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+        });
+
+        console.log(success, payload, 'bundle');
+
         // discovery process complete
         if (bundle.length === 0) {
             if (discovery.status <= DiscoveryStatus.RUNNING && device.connected) {
