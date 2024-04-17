@@ -76,6 +76,10 @@ export const config = {
             name: 'firmware-t2b1',
             url: './data/firmware/t2b1/releases.json',
         },
+        {
+            name: 'firmware-t3t1',
+            url: './data/firmware/t3t1/releases.json',
+        },
     ],
     messages: './data/messages/messages.json',
     supportedBrowsers: {
