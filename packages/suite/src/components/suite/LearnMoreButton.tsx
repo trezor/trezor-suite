@@ -18,14 +18,15 @@ interface LearnMoreButtonProps extends Omit<ButtonProps, 'children'> {
 
 export const LearnMoreButton = ({
     children,
-    url,
     className,
+    size = 'tiny',
+    url,
     ...buttonProps
 }: LearnMoreButtonProps) => (
     <StyledTrezorLink variant="nostyle" href={url} className={className}>
         <Button
             variant="tertiary"
-            size="tiny"
+            size={size}
             icon="EXTERNAL_LINK"
             iconAlignment="right"
             {...buttonProps}

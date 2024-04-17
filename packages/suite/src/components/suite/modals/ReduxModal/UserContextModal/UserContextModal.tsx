@@ -38,6 +38,7 @@ import {
     StakeModal,
     UnstakeModal,
     ClaimModal,
+    MultiShareBackupModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -219,7 +220,7 @@ export const UserContextModal = ({
         case 'everstake':
             return <EverstakeModal onCancel={onCancel} />;
         case 'multi-share-backup':
-            return null;
+            return <MultiShareBackupModal />;
         default:
             return null;
     }

@@ -2122,6 +2122,95 @@ export default defineMessages({
         defaultMessage: 'Create multi-share backup',
         id: 'TR_CREATE_MULTI_SHARE_BACKUP',
     },
+    TR_MULTI_SHARE_BACKUP_CALLOUT_1: {
+        defaultMessage: 'What does it do?',
+        id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_1',
+    },
+    TR_MULTI_SHARE_BACKUP_CALLOUT_2: {
+        defaultMessage: 'What about my current backup?',
+        id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_2',
+    },
+    TR_MULTI_SHARE_BACKUP_CALLOUT_3: {
+        defaultMessage: 'Please note',
+        id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_3',
+    },
+    TR_MULTI_SHARE_BACKUP_EXPLANATION_1: {
+        defaultMessage:
+            'Multi backup creates multiple 20 word shares that will be needed for recovering your Trezor. You can distribute these among your family, friends, or hide them in different places. If the time comes to recover your Trezor, multiple shares must be used collectively to regain access to your funds.',
+        id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_1',
+    },
+    TR_MULTI_SHARE_BACKUP_EXPLANATION_2: {
+        defaultMessage:
+            'You existing backup will still allow you to recover your funds. You should hide it well, ideally away from the new backup shares.',
+        id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_2',
+    },
+    TR_MULTI_SHARE_BACKUP_CHECKBOX_1: {
+        defaultMessage: 'This is an advanced feature, and I understand the extra responsibility',
+        id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_1',
+    },
+    TR_MULTI_SHARE_BACKUP_CHECKBOX_2: {
+        defaultMessage: 'My current backup will still be able to recover my wallet',
+        id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_2',
+    },
+    TR_NEXT_UP: {
+        defaultMessage: 'Next up',
+        id: 'TR_NEXT_UP',
+    },
+    TR_N_MIN: {
+        defaultMessage: '{n} min',
+        id: 'TR_N_MIN',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP: {
+        defaultMessage: 'Verify Trezor ownership',
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION: {
+        defaultMessage:
+            'We need you to prove you own this wallet by entering your existing wallet backup.',
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP_CARD_1: {
+        defaultMessage: 'Grab your existing wallet backup',
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP_CARD_1',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP_CARD_2: {
+        defaultMessage: "Don't take photos, or digital copies of backup",
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP_CARD_2',
+    },
+    TR_CREATE_SHARES: {
+        defaultMessage: 'Create shares on Trezor',
+        id: 'TR_CREATE_SHARES',
+    },
+    TR_CREATE_SHARES_EXPLANATION: {
+        defaultMessage:
+            "Now, you'll be selecting amount of shares, and minimum of shares required to recover your Trezor if you'll ever need it.",
+        id: 'TR_CREATE_SHARES_EXPLANATION',
+    },
+    TR_CREATE_SHARES_EXAMPLE: {
+        defaultMessage: 'e.g. 5 shares total, at least any 3 for recovery',
+        id: 'TR_CREATE_SHARES_EXAMPLE',
+    },
+    TR_CREATE_SHARES_CARD_1: {
+        defaultMessage:
+            'Grab pen and paper. Or print <a1>Trezor cards</a1>, or use <a2>Trezor Keep</a2>',
+        id: 'TR_CREATE_SHARES_CARD_1',
+    },
+    TR_CREATE_SHARES_CARD_2: {
+        defaultMessage: "Don't take photos, or digital copies of backup",
+        id: 'TR_CREATE_SHARES_CARD_2',
+    },
+    TR_CREATE_SHARES_CARD_3: {
+        defaultMessage: "Make sure it's just you, no curious onlookers",
+        id: 'TR_CREATE_SHARES_CARD_3',
+    },
+    TR_ENTER_EXISTING_BACKUP: {
+        defaultMessage: 'Enter existing backup on Trezor',
+        id: 'TR_ENTER_EXISTING_BACKUP',
+    },
+    TR_DONT_HAVE_BACKUP: {
+        defaultMessage: "I don't have a backup",
+        id: 'TR_DONT_HAVE_BACKUP',
+    },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
             'Bitcoin Cash changed the address format to cashaddr. Find more info about how to convert your address on our blog. {TR_LEARN_MORE}',
