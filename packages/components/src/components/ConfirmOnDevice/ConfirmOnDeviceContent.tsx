@@ -1,6 +1,5 @@
 import { ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
-import { Image } from '../Image/Image';
 import { Icon } from '../assets/Icon/Icon';
 import { DeviceModelInternal } from '@trezor/connect';
 import {
@@ -10,8 +9,8 @@ import {
     spacingsPx,
     typography,
 } from '@trezor/theme';
-import { DeviceAnimation } from '../animations/DeviceAnimation';
 import { useElevation } from '../ElevationContext/ElevationContext';
+import { RotateDeviceImage } from './RotateDeviceImage';
 
 const Column = styled.div`
     display: flex;
@@ -85,7 +84,7 @@ const Step = styled.div<{ $isActive: boolean }>`
         `}
 `;
 
-const StyledImage = styled(Image)`
+const StyledRotateDeviceImage = styled(RotateDeviceImage)`
     height: 34px;
 `;
 
@@ -127,18 +126,12 @@ export const ConfirmOnDeviceContent = ({
     return (
         <>
             <Left>
-                {deviceModelInternal === DeviceModelInternal.T2B1 && (
-                    <DeviceAnimation
-                        type="ROTATE"
-                        height="34px"
-                        width="34px"
-                        deviceModelInternal={deviceModelInternal}
-                        deviceUnitColor={deviceUnitColor}
-                    />
-                )}
-                {deviceModelInternal && deviceModelInternal !== DeviceModelInternal.T2B1 && (
-                    <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
-                )}
+                <StyledRotateDeviceImage
+                    deviceModel={deviceModelInternal}
+                    deviceColor={deviceUnitColor}
+                    animationHeight="34px"
+                    animationWidth="34px"
+                />
             </Left>
 
             <Middle>

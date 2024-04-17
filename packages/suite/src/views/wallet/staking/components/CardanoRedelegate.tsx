@@ -1,16 +1,19 @@
 import { useEffect } from 'react';
 
 import { Icon } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
 import { Actions, Title, Heading, Text, StyledCard } from './CardanoPrimitives';
-import { useDevice } from 'src/hooks/suite';
 
 import { DeviceButton } from './DeviceButton';
+import { DeviceModelInternal } from '@trezor/connect';
 
-export const CardanoRedelegate = () => {
+interface CardanoRedelegateProps {
+    deviceModel: DeviceModelInternal;
+}
+
+export const CardanoRedelegate = ({ deviceModel }: CardanoRedelegateProps) => {
     const {
         delegate,
         calculateFeeAndDeposit,
@@ -21,10 +24,6 @@ export const CardanoRedelegate = () => {
         isCurrentPoolOversaturated,
         isFetchError,
     } = useCardanoStaking();
-    const { device } = useDevice();
-    const deviceModelInternal = device?.features?.internal_model as
-        | DeviceModelInternal.T2T1
-        | DeviceModelInternal.T2B1; // only T2T1 and T2B1 have Capability_Cardano
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
@@ -64,7 +63,7 @@ export const CardanoRedelegate = () => {
                 <DeviceButton
                     isLoading={loading}
                     isDisabled={isRedelegatingDisabled}
-                    deviceModelInternal={deviceModelInternal}
+                    deviceModelInternal={deviceModel}
                     onClick={delegate}
                     tooltipContent={
                         !reasonMessageId ||

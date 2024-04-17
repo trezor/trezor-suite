@@ -25,6 +25,7 @@ export * from './components/buttons/TooltipButton/TooltipButton';
 export * from './components/Card/Card';
 export * from './components/CollapsibleBox/CollapsibleBox';
 export * from './components/ConfirmOnDevice/ConfirmOnDevice';
+export * from './components/ConfirmOnDevice/RotateDeviceImage';
 export * from './components/DataAnalytics';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';

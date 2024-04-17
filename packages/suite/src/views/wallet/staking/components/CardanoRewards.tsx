@@ -2,13 +2,11 @@ import { useEffect } from 'react';
 
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { Icon } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
 
 import { getReasonForDisabledAction, useCardanoStaking } from 'src/hooks/wallet/useCardanoStaking';
 import { Translation } from 'src/components/suite/Translation';
 import { Account } from 'src/types/wallet';
 import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
-import { useDevice } from 'src/hooks/suite';
 
 import { DeviceButton } from './DeviceButton';
 import {
@@ -24,12 +22,14 @@ import {
     StyledCard,
 } from './CardanoPrimitives';
 import { CardanoActionPending } from './CardanoActionPending';
+import { DeviceModelInternal } from '@trezor/connect';
 
 interface CardanoRewardsProps {
     account: Account;
+    deviceModel: DeviceModelInternal;
 }
 
-export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
+export const CardanoRewards = ({ account, deviceModel }: CardanoRewardsProps) => {
     const {
         address,
         rewards,
@@ -40,10 +40,6 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
-    const { device } = useDevice();
-    const deviceModelInternal = device?.features?.internal_model as
-        | DeviceModelInternal.T2T1
-        | DeviceModelInternal.T2B1; // only T2T1 and T2B1 have Capability_Cardano
 
     useEffect(() => {
         calculateFeeAndDeposit('withdrawal');
@@ -104,7 +100,7 @@ export const CardanoRewards = ({ account }: CardanoRewardsProps) => {
                 <DeviceButton
                     isLoading={loading}
                     isDisabled={isRewardsWithdrawDisabled}
-                    deviceModelInternal={deviceModelInternal}
+                    deviceModelInternal={deviceModel}
                     onClick={withdraw}
                     tooltipContent={
                         !reasonMessageId ||

@@ -4266,6 +4266,12 @@ export default defineMessages({
             'Your recovery seed (wallet backup) is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
+    TR_CHECK_RECOVERY_SEED_DESC_T3T1: {
+        id: 'TR_CHECK_RECOVERY_SEED_DESC_T3T1',
+        defaultMessage:
+            'Your recovery seed (wallet backup) is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+        dynamic: true,
+    },
     TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T2B1',
         defaultMessage:

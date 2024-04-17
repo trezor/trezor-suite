@@ -48,10 +48,7 @@ export const SettingsDevice = () => {
     const initializeMode = device?.mode === 'initialize';
     const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
-    const deviceModelInternal = device?.features?.internal_model;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
-    const supportsDeviceAuthentication = deviceModelInternal === DeviceModelInternal.T2B1;
-    const supportsDisplayRotation = deviceModelInternal === DeviceModelInternal.T2T1;
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -82,6 +79,16 @@ export const SettingsDevice = () => {
         safety_checks: safetyChecks,
     } = device.features;
 
+    const deviceModelInternal = device.features.internal_model;
+
+    const supportsDeviceAuthentication = [
+        DeviceModelInternal.T2B1,
+        DeviceModelInternal.T3T1,
+    ].includes(deviceModelInternal);
+    const supportsDisplayRotation = [DeviceModelInternal.T2T1, DeviceModelInternal.T3T1].includes(
+        deviceModelInternal,
+    );
+
     return (
         <SettingsLayout>
             {bootloaderMode && (
@@ -91,9 +98,11 @@ export const SettingsDevice = () => {
                         <Translation
                             id={pickByDeviceModel(deviceModelInternal, {
                                 default:
-                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
-                                [DeviceModelInternal.T2T1]:
                                     'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
+                                [DeviceModelInternal.T1B1]:
+                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
+                                [DeviceModelInternal.T2B1]:
+                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
                             })}
                         />
                     }

@@ -91,6 +91,7 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
 
     const isSupportedHomescreen = isHomescreenSupportedOnDevice(device);
 
+    // TODO: condition based on device screen width/height
     return (
         <>
             <SettingsSectionItem anchorId={SettingsAnchor.Homescreen}>
@@ -107,7 +108,9 @@ export const Homescreen = ({ isDeviceLocked }: HomescreenProps) => {
                     />
                 )}
 
-                {DeviceModelInternal.T2T1 === deviceModelInternal && (
+                {[DeviceModelInternal.T2T1, DeviceModelInternal.T3T1].includes(
+                    deviceModelInternal,
+                ) && (
                     <TextColumn
                         title={<Translation id="TR_DEVICE_SETTINGS_HOMESCREEN_TITLE" />}
                         description={
