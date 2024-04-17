@@ -9,7 +9,6 @@ import { HiddenPlaceholder } from 'src/components/suite/HiddenPlaceholder';
 import { useCardanoStaking, getReasonForDisabledAction } from 'src/hooks/wallet/useCardanoStaking';
 import { CardanoActionPending } from './CardanoActionPending';
 import { Account } from 'src/types/wallet';
-import { useDevice } from 'src/hooks/suite';
 
 import { DeviceButton } from './DeviceButton';
 import {
@@ -27,9 +26,10 @@ import {
 
 interface CardanoStakeProps {
     account: Account;
+    deviceModel: DeviceModelInternal;
 }
 
-export const CardanoStake = ({ account }: CardanoStakeProps) => {
+export const CardanoStake = ({ account, deviceModel }: CardanoStakeProps) => {
     const {
         address,
         delegate,
@@ -41,10 +41,6 @@ export const CardanoStake = ({ account }: CardanoStakeProps) => {
         deviceAvailable,
         pendingStakeTx,
     } = useCardanoStaking();
-    const { device } = useDevice();
-    const deviceModelInternal = device?.features?.internal_model as
-        | DeviceModelInternal.T2T1
-        | DeviceModelInternal.T2B1; // only T2T1 and T2B1 have Capability_Cardano
 
     useEffect(() => {
         calculateFeeAndDeposit('delegate');
@@ -138,7 +134,7 @@ export const CardanoStake = ({ account }: CardanoStakeProps) => {
                     isDisabled={isStakingDisabled}
                     isLoading={loading}
                     onClick={delegate}
-                    deviceModelInternal={deviceModelInternal}
+                    deviceModelInternal={deviceModel}
                     tooltipContent={
                         !reasonMessageId ||
                         (deviceAvailable.status && delegatingAvailable.status) ? undefined : (

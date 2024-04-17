@@ -31,6 +31,10 @@ const modelToStyles = {
         backgroundColor: T2B1_BUTTON_COLOR,
         borderRadius: nativeBorders.radii.small,
     },
+    [DeviceModelInternal.T3T1]: {
+        backgroundColor: T2B1_BUTTON_COLOR,
+        borderRadius: nativeBorders.radii.small,
+    },
     [DeviceModelInternal.T2B1]: {
         backgroundColor: DEVICE_SCREEN_BACKGROUND_COLOR,
         borderColor: DEVICE_TEXT_COLOR,

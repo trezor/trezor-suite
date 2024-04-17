@@ -265,8 +265,10 @@ export const SecurityCheck = () => {
 
     const [isDeviceAuthenticityCheck, setIsDeviceAuthenticityCheck] = useState(false);
 
-    const isAuthenticityCheckSupported =
-        device?.features?.internal_model === DeviceModelInternal.T2B1;
+    const isAuthenticityCheckSupported = ![
+        DeviceModelInternal.T1B1,
+        DeviceModelInternal.T2T1,
+    ].includes(device?.features?.internal_model || DeviceModelInternal.T1B1);
 
     // Edge case:
     // Devices A and B are connected, only device A supports authenticity check.

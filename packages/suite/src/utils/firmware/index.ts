@@ -45,7 +45,11 @@ const FORMAT_MAP: { [format in FirmwareFormat]: DeviceModelInternal[] } = {
     [FirmwareFormat.T1]: [DeviceModelInternal.T1B1],
     [FirmwareFormat.T1_EMBEDDED_V2]: [DeviceModelInternal.T1B1],
     [FirmwareFormat.T1_V2]: [DeviceModelInternal.T1B1],
-    [FirmwareFormat.T2]: [DeviceModelInternal.T2T1, DeviceModelInternal.T2B1],
+    [FirmwareFormat.T2]: [
+        DeviceModelInternal.T2T1,
+        DeviceModelInternal.T2B1,
+        DeviceModelInternal.T3T1,
+    ],
 };
 
 export const parseFirmwareFormat = (fw: ArrayBuffer): FirmwareFormat | undefined => {

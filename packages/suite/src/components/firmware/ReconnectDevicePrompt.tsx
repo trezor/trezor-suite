@@ -169,6 +169,7 @@ const ReconnectLabel = ({
                     ? 'TR_SWITCH_TO_BOOTLOADER_HOLD_BOTH_BUTTONS'
                     : 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
             [DeviceModelInternal.T2T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
+            [DeviceModelInternal.T3T1]: 'TR_SWITCH_TO_BOOTLOADER_SWIPE_YOUR_FINGERS',
         } as const);
 
         return <Translation id={switchToBootloaderModeMessage} />;
@@ -176,7 +177,8 @@ const ReconnectLabel = ({
 
     const switchToNormalModeMessage = pickByDeviceModel(deviceModelInternal, {
         default: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
-        [DeviceModelInternal.T2B1]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
+        [DeviceModelInternal.T2T1]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
+        [DeviceModelInternal.T3T1]: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
     } as const);
 
     return <Translation id={switchToNormalModeMessage} />;

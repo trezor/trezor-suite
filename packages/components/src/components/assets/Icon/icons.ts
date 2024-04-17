@@ -127,6 +127,7 @@ export const ICONS = {
     TREZOR_T1B1: require('../../../images/icons/trezor_t1b1.svg'),
     TREZOR_T2T1: require('../../../images/icons/trezor_t2t1.svg'),
     TREZOR_T2B1: require('../../../images/icons/trezor_t2b1.svg'),
+    TREZOR_T3T1: require('../../../images/icons/trezor_t3t1.svg'),
     TABLE: require('../../../images/icons/table.svg'),
     TAG_MINIMAL: require('../../../images/icons/tag_minimal.svg'),
     TAG: require('../../../images/icons/tag.svg'),

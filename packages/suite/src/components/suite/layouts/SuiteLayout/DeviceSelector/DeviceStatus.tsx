@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { Image, DeviceAnimation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItemLegacy/DeviceStatusText';
 import { MouseEventHandler } from 'react';
 import { TrezorDevice } from 'src/types/suite';
 import { spacingsPx } from '@trezor/theme';
+import { RotateDeviceImage } from '@trezor/components';
 
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;
@@ -28,7 +28,7 @@ const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
     opacity: ${({ $isLowerOpacity }) => $isLowerOpacity && 0.4};
 `;
 
-const StyledImage = styled(Image)`
+const StyledRotateDeviceImage = styled(RotateDeviceImage)`
     width: 24px;
 
     /* do not apply the darkening filter in dark mode on device images */
@@ -45,19 +45,12 @@ export const DeviceStatus = ({
     return (
         <Container>
             <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
-                {deviceModel === DeviceModelInternal.T2B1 && (
-                    <DeviceAnimation
-                        type="ROTATE"
-                        height="34px"
-                        width="24px"
-                        deviceModelInternal={deviceModel}
-                        deviceUnitColor={device?.features?.unit_color}
-                    />
-                )}
-
-                {deviceModel !== DeviceModelInternal.T2B1 && (
-                    <StyledImage alt="Trezor" image={`TREZOR_${deviceModel}`} />
-                )}
+                <StyledRotateDeviceImage
+                    deviceModel={deviceModel}
+                    deviceColor={device?.features?.unit_color}
+                    animationHeight="34px"
+                    animationWidth="24px"
+                />
             </DeviceWrapper>
 
             {device && (

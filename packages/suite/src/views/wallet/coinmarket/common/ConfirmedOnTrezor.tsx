@@ -1,8 +1,7 @@
 import React from 'react';
 
 import { TrezorDevice } from '@suite-common/suite-types';
-import { variables, DeviceAnimation, Image } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { RotateDeviceImage, variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
 
@@ -18,7 +17,7 @@ const Confirmed = styled.div`
     gap: 10px;
 `;
 
-const StyledImage = styled(Image)`
+const StyledRotateDeviceImage = styled(RotateDeviceImage)`
     height: 34px;
 `;
 
@@ -27,22 +26,14 @@ interface ConfirmedOnTrezorProps {
 }
 
 export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => {
-    const deviceModelInternal = device?.features?.internal_model;
-
     return (
         <Confirmed>
-            {deviceModelInternal === DeviceModelInternal.T2B1 && (
-                <DeviceAnimation
-                    type="ROTATE"
-                    height="34px"
-                    width="34px"
-                    deviceModelInternal={deviceModelInternal}
-                    deviceUnitColor={device?.features?.unit_color}
-                />
-            )}
-            {deviceModelInternal && deviceModelInternal !== DeviceModelInternal.T2B1 && (
-                <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
-            )}
+            <StyledRotateDeviceImage
+                deviceModel={device?.features?.internal_model}
+                deviceColor={device?.features?.unit_color}
+                animationHeight="34px"
+                animationWidth="34px"
+            />
 
             <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
         </Confirmed>

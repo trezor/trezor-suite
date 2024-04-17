@@ -2,9 +2,9 @@ import { Button, Icon } from '@trezor/components';
 import { Modal, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import type { Deferred } from '@trezor/utils';
-import { DeviceModelInternal } from '@trezor/connect';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CryptoSymbol } from 'invity-api';
+import { useDevice } from 'src/hooks/suite';
 
 const ContentWrapper = styled.div`
     text-align: left;
@@ -84,6 +84,11 @@ export const CoinmarketTermsModal = ({
 }: CoinmarketTermsModalProps) => {
     const providerName = provider || 'unknown provider';
     const lowercaseType = type.toLowerCase();
+    const { device } = useDevice();
+
+    if (!device?.features) {
+        return null;
+    }
 
     return (
         <Modal
@@ -121,7 +126,7 @@ export const CoinmarketTermsModal = ({
             }
         >
             <Flex>
-                <SecurityStyledIcon size={24} icon={`TREZOR_${DeviceModelInternal.T2T1}`} />
+                <SecurityStyledIcon size={24} icon={`TREZOR_${device.features.internal_model}`} />
 
                 <ContentWrapper>
                     <TermsHeader>
