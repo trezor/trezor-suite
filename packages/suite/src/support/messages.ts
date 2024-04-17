@@ -8897,4 +8897,20 @@ export default defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
         defaultMessage: 'Cancel',
     },
+    TR_VIEW_ONLY: {
+        id: 'TR_VIEW_ONLY',
+        defaultMessage: 'View-only',
+    },
+    TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE: {
+        id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE',
+        defaultMessage: 'Enable view-only to see balances in app even after Trezor is disconnected',
+    },
+    TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC: {
+        id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_DESC',
+        defaultMessage: 'Connect Trezor to move or trade coins.',
+    },
+    TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON: {
+        id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON',
+        defaultMessage: 'Change',
+    },
 });
