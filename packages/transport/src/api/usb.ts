@@ -28,6 +28,7 @@ interface TransportInterfaceDevice {
 const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
 
 export class UsbApi extends AbstractApi {
+    chunkSize = 64;
     devices: TransportInterfaceDevice[] = [];
     usbInterface: ConstructorParams['usbInterface'];
 

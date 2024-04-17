@@ -38,6 +38,6 @@ export const decode: TransportProtocolDecode = bytes => {
     return {
         length,
         messageType,
-        payload: buffer.subarray(HEADER_SIZE + 1), // each chunk is prefixed by magic byte
+        payload: buffer.subarray(HEADER_SIZE),
     };
 };

@@ -7,6 +7,7 @@ import { AsyncResultWithTypedError, ResultWithTypedError } from '../types';
 import * as ERRORS from '../errors';
 
 export class UdpApi extends AbstractApi {
+    chunkSize = 64;
     interface = UDP.createSocket('udp4');
     protected communicating = false;
 

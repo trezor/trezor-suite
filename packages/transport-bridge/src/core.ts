@@ -2,6 +2,7 @@ import { WebUSB } from 'usb';
 
 import { v1 as protocolV1, bridge as protocolBridge } from '@trezor/protocol';
 import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
+import { createChunks } from '@trezor/transport/src/utils/send';
 import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
@@ -41,7 +42,12 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
             new Uint8Array(Buffer.from(data, 'hex')),
         );
 
-        const buffers = protocolV1.encode(payload, { messageType });
+        const encodedMessage = protocolV1.encode(payload, { messageType });
+        const buffers = createChunks(
+            encodedMessage,
+            protocolV1.getChunkHeader(encodedMessage),
+            api.chunkSize,
+        );
 
         for (let i = 0; i < buffers.length; i++) {
             const bufferSegment = buffers[i];
@@ -65,12 +71,12 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
                         }
                         throw new Error(result.error);
                     }),
-                protocolV1.decode,
+                protocolV1,
             );
 
             return {
                 success: true as const,
-                payload: protocolBridge.encode(payload, { messageType })[0].toString('hex'),
+                payload: protocolBridge.encode(payload, { messageType }).toString('hex'),
             };
         } catch (err) {
             return { success: false as const, error: err.message as string };

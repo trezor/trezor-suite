@@ -108,6 +108,11 @@ export abstract class AbstractApi extends TypedEmitter<{
         | typeof ERRORS.UNEXPECTED_ERROR
     >;
 
+    /**
+     * packet size for api
+     */
+    abstract chunkSize: number;
+
     protected success<T>(payload: T): Success<T> {
         return success(payload);
     }

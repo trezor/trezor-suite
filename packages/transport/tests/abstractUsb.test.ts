@@ -383,34 +383,28 @@ describe('Usb', () => {
                 .spyOn(testUsbApi, 'write')
                 .mockImplementation(() => Promise.resolve({ success: true, payload: undefined }));
 
-            // override protocol options
-            const overrideProtocol = (protocol: typeof v1Protocol, chunkSize: number) =>
-                ({
-                    ...protocol,
-                    encode: (...[data, options]: Parameters<typeof protocol.encode>) =>
-                        protocol.encode(data, { ...options, chunkSize }),
-                }) as typeof protocol;
-
-            const send = (chunkSize: number) =>
+            const send = () =>
                 transport.send({
                     name: 'SignMessage',
                     data: {
                         message: '00'.repeat(200),
                     },
                     session: acquireRes.payload,
-                    protocol: overrideProtocol(v1Protocol, chunkSize),
+                    protocol: v1Protocol,
                 }).promise;
 
             // count encoded/sent chunks
-            await send(64); // default usb
+            await send(); // 64 default chunkSize for usb
             expect(writeSpy).toHaveBeenCalledTimes(4);
             writeSpy.mockClear();
 
-            await send(16); // smaller chunks
+            testUsbApi.chunkSize = 16;
+            await send(); // smaller chunks
             expect(writeSpy).toHaveBeenCalledTimes(15);
             writeSpy.mockClear();
 
-            await send(128); // bigger chunks
+            testUsbApi.chunkSize = 128;
+            await send(); // bigger chunks
             expect(writeSpy).toHaveBeenCalledTimes(2);
             writeSpy.mockClear();
         });

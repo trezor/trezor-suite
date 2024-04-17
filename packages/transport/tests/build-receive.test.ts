@@ -1,6 +1,6 @@
 import * as protobuf from 'protobufjs/light';
 import { v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
-import { buildBuffers } from '../src/utils/send';
+import { buildMessage, createChunks } from '../src/utils/send';
 import { receiveAndParse } from '../src/utils/receive';
 
 const messages = {
@@ -97,34 +97,38 @@ const parsedMessages = protobuf.Root.fromJSON({
 describe('encoding json -> protobuf -> json', () => {
     fixtures.forEach(f => {
         describe(`${f.name} - payload length ${f.in.source_account.length}`, () => {
-            test('bridgeProtocol: buildBuffers - receiveAndParse', async () => {
-                const result = buildBuffers(parsedMessages, f.name, f.in, bridgeProtocol.encode);
-                // bridgeProtocol returns only one big chunk
-                expect(result.length).toBe(1);
-                const [chunk] = result;
+            test('bridgeProtocol: buildMessage - receiveAndParse', async () => {
+                const result = buildMessage({
+                    messages: parsedMessages,
+                    name: f.name,
+                    data: f.in,
+                    encode: bridgeProtocol.encode,
+                });
                 const { length } = Buffer.from(f.in.source_account);
-                // chunk length cannot be less than message header/constant (28) + variable source_account length
+                // result length cannot be less than message header/constant (28) + variable source_account length
                 // additional bytes are expected (encoded Uint32) if message length is greater
-                expect(chunk.length).toBeGreaterThanOrEqual(28 + length);
-                let i = -1;
+                expect(result.length).toBeGreaterThanOrEqual(28 + length);
                 const decoded = await receiveAndParse(
                     parsedMessages,
-                    () => {
-                        i++;
-
-                        return Promise.resolve(result[i]);
-                    },
-                    bridgeProtocol.decode,
+                    () => Promise.resolve(result),
+                    bridgeProtocol,
                 );
                 // then decode message and check, whether decoded message matches original json
                 expect(decoded.type).toEqual(f.name);
                 expect(decoded.message).toEqual(f.in);
             });
 
-            test('v1Protocol: buildBuffers - receiveAndParse', async () => {
-                const result = buildBuffers(parsedMessages, f.name, f.in, v1Protocol.encode);
+            test('v1Protocol: buildMessage - createChunks - receiveAndParse', async () => {
+                const result = buildMessage({
+                    messages: parsedMessages,
+                    name: f.name,
+                    data: f.in,
+                    encode: v1Protocol.encode,
+                });
+
+                const chunks = createChunks(result, v1Protocol.getChunkHeader(result), 64);
                 // each protocol chunks are equal 64 bytes
-                result.forEach(chunk => {
+                chunks.forEach(chunk => {
                     expect(chunk.length).toEqual(64);
                 });
                 let i = -1;
@@ -133,14 +137,64 @@ describe('encoding json -> protobuf -> json', () => {
                     () => {
                         i++;
 
-                        return Promise.resolve(result[i]);
+                        return Promise.resolve(chunks[i]);
                     },
-                    v1Protocol.decode,
+                    v1Protocol,
                 );
                 // then decode message and check, whether decoded message matches original json
                 expect(decoded.type).toEqual(f.name);
                 expect(decoded.message).toEqual(f.in);
             });
         });
+    });
+});
+
+describe('createChunks', () => {
+    const chunkHeader = Buffer.from([63]);
+
+    test('small packet = one chunk', () => {
+        const result = createChunks(Buffer.alloc(63).fill(0x12), chunkHeader, 64);
+        expect(result.length).toBe(1);
+        expect(result[0].toString('hex')).toBe('12'.repeat(63) + '00');
+    });
+
+    test('exact packet = one chunk', () => {
+        const result = createChunks(Buffer.alloc(64), chunkHeader, 64);
+        expect(result.length).toBe(1);
+    });
+
+    test('byte overflow = two chunks', () => {
+        const result = createChunks(Buffer.alloc(65).fill('a0a1'), chunkHeader, 64);
+        expect(result.length).toBe(2);
+        // header + last byte from data
+        expect(result[1].subarray(0, 2).toString('hex')).toBe('3f61');
+        // the rest is filled with 00
+        expect(result[1].subarray(2).toString('hex')).toBe('00'.repeat(62));
+    });
+
+    test('exact packet, big chunkHeader = two chunks', () => {
+        const result = createChunks(
+            Buffer.alloc(64 + 64 - 7).fill(0x12),
+            Buffer.alloc(7).fill(0x73),
+            64,
+        );
+        expect(result.length).toBe(2);
+    });
+
+    test('byte overflow, big chunkHeader = three chunks', () => {
+        const result = createChunks(
+            Buffer.alloc(64 * 2 - 6).fill(0x12),
+            Buffer.alloc(7).fill(0x73),
+            64,
+        );
+        expect(result.length).toBe(3);
+        expect(result[2].subarray(0, 8).toString('hex')).toBe('7373737373737312');
+        expect(result[2].subarray(8).toString('hex')).toBe('00'.repeat(64 - 8));
+    });
+
+    test('chunkSize not set = one chunk', () => {
+        const result = createChunks(Buffer.alloc(128).fill(0x12), Buffer.alloc(7).fill(0x73), 0);
+        expect(result.length).toBe(1);
+        expect(result[0].byteLength).toBe(128);
     });
 });

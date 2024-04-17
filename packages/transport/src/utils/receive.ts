@@ -1,13 +1,14 @@
 import { Root } from 'protobufjs/light';
 
 import { decode as decodeProtobuf, createMessageFromType } from '@trezor/protobuf';
-import { TransportProtocolDecode } from '@trezor/protocol';
+import { TransportProtocol } from '@trezor/protocol';
 
 async function receiveRest(
     result: Buffer,
     receiver: () => Promise<ArrayBuffer>,
     offset: number,
     expectedLength: number,
+    chunkHeader: Buffer,
 ): Promise<void> {
     if (offset >= expectedLength) {
         return;
@@ -17,25 +18,23 @@ async function receiveRest(
     if (data == null) {
         throw new Error('Received no data.');
     }
-    const length = offset + data.byteLength - 1;
-    Buffer.from(data).copy(result, offset, 1, length);
+    const length = offset + data.byteLength - chunkHeader.byteLength;
+    Buffer.from(data).copy(result, offset, chunkHeader.byteLength, length);
 
-    return receiveRest(result, receiver, length, expectedLength);
+    return receiveRest(result, receiver, length, expectedLength, chunkHeader);
 }
 
-export async function receive(
-    receiver: () => Promise<ArrayBuffer>,
-    decoder: TransportProtocolDecode,
-) {
+export async function receive(receiver: () => Promise<ArrayBuffer>, protocol: TransportProtocol) {
     const data = await receiver();
-    const { length, messageType, payload } = decoder(data);
+    const { length, messageType, payload } = protocol.decode(data);
     const result = Buffer.alloc(length);
+    const chunkHeader = protocol.getChunkHeader(Buffer.from(data));
 
     if (length) {
         payload.copy(result);
     }
 
-    await receiveRest(result, receiver, payload.length, length);
+    await receiveRest(result, receiver, payload.length, length, chunkHeader);
 
     return { messageType, payload: result };
 }
@@ -43,9 +42,9 @@ export async function receive(
 export async function receiveAndParse(
     messages: Root,
     receiver: () => Promise<ArrayBuffer>,
-    decoder: TransportProtocolDecode,
+    protocol: TransportProtocol,
 ) {
-    const { messageType, payload } = await receive(receiver, decoder);
+    const { messageType, payload } = await receive(receiver, protocol);
     const { Message, messageName } = createMessageFromType(messages, messageType);
     const message = decodeProtobuf(Message, payload);
 

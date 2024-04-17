@@ -1,27 +1,18 @@
 import { v1 } from '../src/index';
+import { HEADER_SIZE } from '../src/protocol-v1/constants';
 
 describe('protocol-v1', () => {
     it('encode', () => {
-        let chunks;
-        // encode only one chunk, message without data
-        chunks = v1.encode(Buffer.alloc(0), { messageType: 55 });
-        expect(chunks.length).toEqual(1);
-        expect(chunks[0].length).toEqual(64);
+        let result;
+        // encode message without data
+        result = v1.encode(Buffer.alloc(0), { messageType: 55 });
+        expect(result.length).toEqual(HEADER_SIZE);
 
-        // encode multiple chunks, message with data
-        chunks = v1.encode(Buffer.alloc(371), { messageType: 55 });
-        expect(chunks.length).toEqual(7);
-        chunks.forEach((chunk, index) => {
-            expect(chunk.length).toEqual(64);
-            if (index === 0) {
-                // first chunk with additional data
-                expect(chunk.subarray(0, 9).toString('hex')).toEqual('3f2323003700000173');
-                expect(chunk.readUint32BE(5)).toEqual(371);
-            } else {
-                // following chunk starts with MESSAGE_MAGIC_HEADER_BYTE
-                expect(chunk.subarray(0, 5).toString('hex')).toEqual('3f00000000');
-            }
-        });
+        // encode message with data
+        result = v1.encode(Buffer.alloc(371).fill(0xa3), { messageType: 55 });
+        expect(result.length).toEqual(371 + HEADER_SIZE);
+        expect(result.subarray(0, HEADER_SIZE).toString('hex')).toEqual('3f2323003700000173');
+        expect(result.subarray(HEADER_SIZE).toString('hex')).toEqual('a3'.repeat(371));
 
         // fail to encode unsupported messageType (string)
         expect(() => v1.encode(Buffer.alloc(64), { messageType: 'Initialize' })).toThrow(
