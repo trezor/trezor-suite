@@ -47,7 +47,7 @@ export const CryptoAmountFormatter = ({
     // split value and currency, format value with thousands commas
     const splitValue = formattedValue.split(' ');
     if (splitValue.length > 1) {
-        formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue[1]}`;
+        formattedValue = `${formatNumberWithThousandCommas(splitValue[0])} ${splitValue.slice(1).join(' ')}`;
     } else if (splitValue.length > 0) {
         formattedValue = formatNumberWithThousandCommas(splitValue[0]);
     }
