@@ -44,7 +44,11 @@ const start = async (bridge: BridgeProcess | TrezordNode) => {
 
 const getBridgeInstance = () => {
     if (bridgeNode || bridgeNodeTest) {
-        return new TrezordNode({ port: 21325, api: bridgeNodeTest ? 'udp' : 'usb' });
+        return new TrezordNode({
+            port: 21325,
+            api: bridgeNodeTest ? 'udp' : 'usb',
+            assetPrefix: '../build/node-bridge',
+        });
     }
 
     return new BridgeProcess();

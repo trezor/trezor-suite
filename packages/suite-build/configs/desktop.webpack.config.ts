@@ -60,7 +60,13 @@ const config: webpack.Configuration = {
                               ),
                               to: path.join(baseDir, 'build/static/bin/devkit/firmware'),
                           },
-                ),
+                )
+                .concat([
+                    {
+                        from: path.join(__dirname, '../../', 'transport-bridge/dist'),
+                        to: path.join(baseDir, 'build/node-bridge'),
+                    },
+                ]),
             options: {
                 concurrency: 100,
             },
