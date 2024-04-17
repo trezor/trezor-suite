@@ -11176,13 +11176,22 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/transport-bridge@workspace:packages/transport-bridge"
   dependencies:
+    "@trezor/components": "workspace:*"
     "@trezor/node-utils": "workspace:*"
     "@trezor/protocol": "workspace:*"
+    "@trezor/theme": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
     esbuild: "npm:^0.20.0"
+    html-webpack-plugin: "npm:^5.6.0"
     pkg: "npm:^5.8.1"
+    react: "npm:18.2.0"
+    react-dom: "npm:18.2.0"
+    react-intl: "npm:^6.6.2"
+    react-use: "npm:^17.5.0"
+    styled-components: "npm:^6.1.8"
     usb: "npm:^2.11.0"
+    webpack: "npm:^5.91.0"
   languageName: unknown
   linkType: soft
 

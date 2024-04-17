@@ -8,19 +8,33 @@
     "scripts": {
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "build:js": "yarn g:rimraf ./dist && yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
+        "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
+        "build:node:module": "yarn esbuild ./src/index.ts --bundle --outfile=dist/index.js --platform=node --target=node18 --external:usb",
+        "build:node": "yarn build:node:bin && yarn build:node:module",
+        "build:ui": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack/ui.webpack.config.ts",
+        "build:js": "yarn g:rimraf -rf dist && yarn build:node && yarn build:ui",
         "build:bin": "yarn g:rimraf -rf build && yarn pkg ./dist/bin.js --config package.json",
-        "build": "yarn build:js && yarn build:bin"
+        "build": "yarn build:js && yarn build:bin",
+        "build:lib": "yarn build:js"
     },
     "devDependencies": {
         "esbuild": "^0.20.0",
-        "pkg": "^5.8.1"
+        "html-webpack-plugin": "^5.6.0",
+        "pkg": "^5.8.1",
+        "webpack": "^5.91.0"
     },
     "dependencies": {
+        "@trezor/components": "workspace:*",
         "@trezor/node-utils": "workspace:*",
         "@trezor/protocol": "workspace:*",
+        "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "react": "18.2.0",
+        "react-dom": "18.2.0",
+        "react-intl": "^6.6.2",
+        "react-use": "^17.5.0",
+        "styled-components": "^6.1.8",
         "usb": "^2.11.0"
     },
     "pkg": {

@@ -2,8 +2,10 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../components" },
         { "path": "../node-utils" },
         { "path": "../protocol" },
+        { "path": "../theme" },
         { "path": "../transport" },
         { "path": "../utils" }
     ]
