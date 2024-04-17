@@ -17,11 +17,12 @@ export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrap
     label: string;
     onBlur?: () => void;
     defaultValue?: string;
+    valueTransformer?: (value: string) => string;
 }
 
 export const TextInputField = forwardRef<TextInput, FieldProps>(
-    ({ name, label, hint, onBlur, defaultValue = '', ...otherProps }, ref) => {
-        const field = useField({ name, label, defaultValue });
+    ({ name, label, hint, onBlur, defaultValue = '', valueTransformer, ...otherProps }, ref) => {
+        const field = useField({ name, label, defaultValue, valueTransformer });
         const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field;
 
         const handleOnBlur = () => {
