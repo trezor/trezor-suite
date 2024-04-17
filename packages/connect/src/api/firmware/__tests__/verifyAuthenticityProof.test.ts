@@ -19,6 +19,14 @@ const CONFIG = {
             '041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4',
         ],
     },
+    T3T1: {
+        rootPubKeys: [
+            '04626d58aca84f0fcb52ea63f0eb08de1067b8d406574a715d5e7928f4b67f113a00fb5c5918e74d2327311946c446b242c20fe7347482999bdc1e229b94e27d96',
+        ],
+        caPubKeys: [
+            '041b36cc98d5e3d1a20677aaf26254ef3756f27c9d63080c93ad3e7d39d3ad23bf00497b924789bc8e3f87834994e16780ad4eae7e75db1f03835ca64363e980b4',
+        ],
+    },
 };
 
 describe('firmware/verifyAuthenticityProof', () => {

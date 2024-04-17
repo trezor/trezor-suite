@@ -29,6 +29,14 @@ describe('TrezorConnect.authenticateDevice', () => {
                 '04ba6084cb9fba7c86d5d5a86108a91d55a27056da4eabbedde88a95e1cae8bce3620889167aaf7f2db166998f950984aa195e868f96e22803c3cd991be31d39e7',
             ],
         },
+        T3T1: {
+            rootPubKeys: [
+                '047f77368dea2d4d61e989f474a56723c3212dacf8a808d8795595ef38441427c4389bc454f02089d7f08b873005e4c28d432468997871c0bf286fd3861e21e96a',
+            ],
+            caPubKeys: [
+                '04ba6084cb9fba7c86d5d5a86108a91d55a27056da4eabbedde88a95e1cae8bce3620889167aaf7f2db166998f950984aa195e868f96e22803c3cd991be31d39e7',
+            ],
+        },
     };
 
     it('validation successful', async () => {
