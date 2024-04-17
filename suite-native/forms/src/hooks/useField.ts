@@ -11,7 +11,12 @@ interface UseFieldArgs {
     valueTransformer?: (value: string) => string;
 }
 
-export const useField = ({ name, label, defaultValue, valueTransformer }: UseFieldArgs) => {
+export const useField = ({
+    name,
+    label,
+    defaultValue,
+    valueTransformer = value => value,
+}: UseFieldArgs) => {
     // TODO: once react-hook-form is updated to 7+ we can use the `errors` from `fieldState` on useController
     const { control } = useContext(FormContext);
 
@@ -30,7 +35,7 @@ export const useField = ({ name, label, defaultValue, valueTransformer }: UseFie
 
     // Inspired by https://react-hook-form.com/advanced-usage#TransformandParse.
     // Allows to parse/transform the value before it's set to the input.
-    const transformedValue = valueTransformer ? valueTransformer(value) : value;
+    const transformedValue = valueTransformer(value);
 
     // TODO: proper error message resolution using intl
     const errorMessage = error?.message?.replace(name, label);

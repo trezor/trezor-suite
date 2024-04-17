@@ -9456,14 +9456,23 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-send@workspace:suite-native/module-send"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.10"
     "@react-navigation/native-stack": "npm:6.9.18"
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
+    "@suite-native/formatters": "workspace:*"
+    "@suite-native/forms": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    bignumber.js: "npm:^9.1.2"
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
   languageName: unknown

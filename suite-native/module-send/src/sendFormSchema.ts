@@ -4,8 +4,7 @@ import BigNumber from 'bignumber.js';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { formatNetworkAmount, isAddressValid } from '@suite-common/wallet-utils';
 import { FeeInfo } from '@suite-common/wallet-types';
-
-import { yup } from '../config';
+import { yup } from '@suite-common/validators';
 
 export type SendFormFormContext = {
     networkSymbol?: NetworkSymbol;
@@ -78,7 +77,7 @@ export const sendFormValidationSchema = yup.object({
     amount: yup
         .string()
         .required()
-        .matches(/^\d\.\d$/, 'Invalid decimal value.')
+        .matches(/^\d+.*\d+$/, 'Invalid decimal value.')
         .test(
             'is-dust-amount',
             'The value is lower than dust threshold.',

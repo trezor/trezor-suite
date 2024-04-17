@@ -10,14 +10,23 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.10",
         "@react-navigation/native-stack": "6.9.18",
+        "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/validators": "workspace:*",
+        "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
+        "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/accounts": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/device-manager": "workspace:*",
+        "@suite-native/formatters": "workspace:*",
+        "@suite-native/forms": "workspace:*",
         "@suite-native/navigation": "workspace:*",
+        "@trezor/styles": "workspace:*",
+        "bignumber.js": "^9.1.2",
         "react": "18.2.0",
         "react-redux": "8.0.7"
     }
