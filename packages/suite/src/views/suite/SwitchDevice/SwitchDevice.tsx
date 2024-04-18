@@ -1,5 +1,3 @@
-import styled from 'styled-components';
-
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevice, selectDevices } from '@suite-common/wallet-core';
 
@@ -9,16 +7,13 @@ import { useSelector } from 'src/hooks/suite';
 
 import { DeviceItem } from './DeviceItem/DeviceItem';
 import { SwitchDeviceRenderer } from './SwitchDeviceRenderer';
-import { Card } from '@trezor/components';
+import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
-import { motion } from 'framer-motion';
 
-const DeviceItemsWrapper = styled.div`
+const Flex = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: ${spacingsPx.md};
-    flex: 1;
+    gap: ${spacingsPx.xs};
 `;
 
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
@@ -38,35 +33,19 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
     const backgroundRoute = getBackgroundRoute();
 
-    const initial = {
-        width: 279,
-        height: 70,
-    };
-
     return (
         <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel}>
-            <motion.div
-                initial={initial}
-                exit={initial}
-                animate={{
-                    width: 369,
-                    height: 'auto',
-                }}
-                style={{ originX: 0, originY: 0, overflow: 'hidden' }}
-            >
-                <DeviceItemsWrapper>
-                    {sortedDevices.map(device => (
-                        <Card key={`${device.id}-${device.instance}`} paddingType="small">
-                            <DeviceItem
-                                device={device}
-                                instances={deviceUtils.getDeviceInstances(device, devices)}
-                                backgroundRoute={backgroundRoute}
-                                onCancel={onCancel}
-                            />
-                        </Card>
-                    ))}
-                </DeviceItemsWrapper>
-            </motion.div>
+            <Flex>
+                {sortedDevices.map(device => (
+                    <DeviceItem
+                        key={`${device.id}-${device.instance}`}
+                        device={device}
+                        instances={deviceUtils.getDeviceInstances(device, devices)}
+                        backgroundRoute={backgroundRoute}
+                        onCancel={onCancel}
+                    />
+                ))}
+            </Flex>
         </SwitchDeviceRenderer>
     );
 };

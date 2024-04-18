@@ -22,6 +22,7 @@ import { useState } from 'react';
 import { EjectConfirmation } from './EjectConfirmation';
 import { ContentType } from '../types';
 import { ViewOnly } from './ViewOnly';
+import { EjectButton } from './EjectButton';
 
 const InstanceType = styled.div<{ isSelected: boolean }>`
     display: flex;
@@ -111,6 +112,7 @@ export const WalletInstance = ({
             {...rest}
         >
             {isSelected && <SelectedHighlight />}
+            <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
             <Col $grow={1}>
                 {discoveryProcess && (
                     <InstanceType isSelected={isSelected}>
@@ -163,7 +165,6 @@ export const WalletInstance = ({
                     instance={instance}
                 />
             )}
-
             {contentType === 'ejectConfirmation' && (
                 <EjectConfirmation
                     instance={instance}

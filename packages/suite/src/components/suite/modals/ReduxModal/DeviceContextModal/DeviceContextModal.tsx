@@ -9,6 +9,7 @@ import {
     PinModal,
     PinInvalidModal,
     PassphraseModal,
+    PassphraseModalLegacy,
     PassphraseSourceModal,
     PassphraseOnDeviceModal,
     ConfirmActionModal,
@@ -29,6 +30,9 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectDevice);
     const intl = useIntl();
+    const isViewOnlyModeVisible = useSelector(
+        state => state.suite.settings.debug.isViewOnlyModeVisible,
+    );
 
     if (!device) return null;
 
@@ -44,7 +48,11 @@ export const DeviceContextModal = ({
 
         // Passphrase on host
         case UI.REQUEST_PASSPHRASE:
-            return <PassphraseModal device={device} />;
+            return isViewOnlyModeVisible ? (
+                <PassphraseModal device={device} />
+            ) : (
+                <PassphraseModalLegacy device={device} />
+            );
 
         case 'WordRequestType_Plain':
             return <WordModal renderer={renderer} />;

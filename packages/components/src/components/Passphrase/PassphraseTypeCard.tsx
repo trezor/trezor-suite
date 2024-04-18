@@ -19,6 +19,9 @@ import { Checkbox } from '../form/Checkbox/Checkbox';
 import { Input } from '../form/Input/Input';
 import { Icon } from '../assets/Icon/Icon';
 import { TooltipProps, Tooltip } from '../Tooltip/Tooltip';
+import { EnterOnTrezorButton } from './EnterOnTrezorButton';
+import { Card } from '../Card/Card';
+import { DeviceModelInternal } from '@trezor/connect';
 
 type WalletType = 'standard' | 'hidden';
 
@@ -27,11 +30,12 @@ type WrapperProps = {
     $singleColModal?: boolean;
 };
 
+const Item = styled.div``;
+
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
     flex: 1;
-
-    /* align-items: center; */
+    gap: ${spacingsPx.xs};
     border-radius: ${borders.radii.xs};
     flex-direction: column;
     text-align: left;
@@ -137,23 +141,6 @@ const ActionButton = styled(Button)`
     }
 `;
 
-const OnDeviceActionButton = styled(ActionButton)`
-    background: transparent;
-    text-decoration: underline;
-    color: ${({ theme }) => theme.textSubdued};
-
-    &:first-child {
-        margin-top: 0;
-    }
-
-    &:hover,
-    &:focus,
-    &:active {
-        color: ${({ theme }) => theme.textSubdued};
-        background: transparent;
-    }
-`;
-
 const Content = styled.div`
     display: flex;
     flex: 1;
@@ -170,6 +157,7 @@ export type PassphraseTypeCardProps = {
     offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
     authConfirmation?: boolean;
+    deviceModel?: DeviceModelInternal | null;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     learnMoreTooltipOnClick?: TooltipProps['addon'];
     learnMoreTooltipAppendTo?: TooltipProps['appendTo'];
@@ -277,157 +265,172 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
             }}
             data-test={`@passphrase-type/${props.type}`}
         >
-            {!props.singleColModal && (
-                // only used to show options in modal where user selects wallet type
-                // single col modal such as one for creating hidden wallet shows only input and submit button
-                <>
-                    <Row>
-                        <IconWrapper $type={props.type}>
-                            {props.type === 'standard' ? (
-                                <Icon size={24} icon="WALLET" color={theme.iconPrimaryDefault} />
-                            ) : (
-                                <Icon size={24} icon="LOCK" color={theme.iconSubdued} />
-                            )}
-                        </IconWrapper>
-                        <Col>
-                            <WalletTitle
-                                $withMargin={props.type === 'hidden'}
-                                data-test={props.type === 'hidden' && '@tooltip/passphrase-tooltip'}
-                            >
-                                {props.type === 'hidden' ? (
-                                    <Tooltip
-                                        appendTo={props.learnMoreTooltipAppendTo}
-                                        title={
-                                            <FormattedMessage
-                                                id="TR_WHAT_IS_PASSPHRASE"
-                                                defaultMessage="Learn more about the difference"
-                                            />
-                                        }
-                                        addon={props.learnMoreTooltipOnClick}
-                                        content={
-                                            <FormattedMessage
-                                                id="TR_HIDDEN_WALLET_TOOLTIP"
-                                                defaultMessage="Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet can use its own passphrase. Your standard wallet will still be accessible without a passphrase."
-                                            />
-                                        }
-                                        dashed
-                                    >
-                                        <>{props.title}</>
-                                    </Tooltip>
-                                ) : (
-                                    props.title
-                                )}
-                            </WalletTitle>
-                            <Description>{props.description}</Description>
-                        </Col>
-                        {props.type === 'standard' && (
-                            <ArrowCol>
-                                <Icon icon="ARROW_RIGHT" color={theme.iconSubdued} />
-                            </ArrowCol>
-                        )}
-                    </Row>
-                    {props.type === 'hidden' && <Spacer />}
-                </>
-            )}
-            {props.type === 'hidden' && (
-                <>
-                    <Row>
-                        {/* Show passphrase input */}
-                        <InputWrapper $hasTopMargin={props.authConfirmation}>
-                            <PassphraseInput
-                                data-test="@passphrase/input"
-                                placeholder={intl.formatMessage({
-                                    defaultMessage: 'Enter passphrase',
-                                    id: 'TR_ENTER_PASSPHRASE',
-                                })}
-                                onChange={onPassphraseChange}
-                                value={displayValue}
-                                hasBottomPadding={false}
-                                innerRef={ref}
-                                bottomText={
-                                    isTooLong ? (
-                                        // todo: resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325
-                                        <FormattedMessage
-                                            id="TR_PASSPHRASE_TOO_LONG"
-                                            defaultMessage="Passphrase length has exceed the allowed limit."
-                                        />
-                                    ) : null
-                                }
-                                inputState={isTooLong ? 'error' : undefined}
-                                autoFocus={!isAndroid()}
-                                innerAddon={
+            <Item>
+                {!props.singleColModal && (
+                    // only used to show options in modal where user selects wallet type
+                    // single col modal such as one for creating hidden wallet shows only input and submit button
+                    <>
+                        <Row>
+                            <IconWrapper $type={props.type}>
+                                {props.type === 'standard' ? (
                                     <Icon
-                                        size={18}
-                                        color={theme.iconSubdued}
-                                        icon={showPassword ? 'HIDE' : 'SHOW'}
-                                        onClick={() => {
-                                            if (typeof ref.current?.selectionStart === 'number') {
-                                                caretRef.current = ref.current.selectionStart;
-                                            }
-                                            setShowPassword(!showPassword);
-                                        }}
-                                        data-test="@passphrase/show-toggle"
+                                        size={24}
+                                        icon="WALLET"
+                                        color={theme.iconPrimaryDefault}
                                     />
-                                }
-                            />
-                        </InputWrapper>
-                    </Row>
-                    {!isTooLong && <PasswordStrengthIndicator password={value} />}
-                </>
-            )}
-            {props.authConfirmation && (
-                // Checkbox if user fully understands what's happening when confirming empty passphrase
-                <Content>
-                    <Checkbox
-                        data-test="@passphrase/confirm-checkbox"
-                        onClick={() => setEnabled(!enabled)}
-                        isChecked={enabled}
-                    >
-                        <FormattedMessage
-                            id="TR_I_UNDERSTAND_PASSPHRASE"
-                            defaultMessage="I understand, passphrases cannot be retrieved unlike everyday passwords"
-                        />
-                    </Checkbox>
-                </Content>
-            )}
-            <AnimatePresence initial={false}>
-                {props.type === 'hidden' && (
-                    <Actions>
-                        {/* Submit button */}
-                        {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
-                        {(props.singleColModal || hiddenWalletTouched) && (
-                            <motion.div {...motionConfig.motionAnimation.expand}>
-                                <ActionButton
-                                    data-test={`@passphrase/${
-                                        props.type === 'hidden' ? 'hidden' : 'standard'
-                                    }/submit-button`}
-                                    isDisabled={!enabled || isTooLong}
-                                    variant="primary"
-                                    onClick={() => submit(value)}
-                                    isFullWidth
+                                ) : (
+                                    <Icon size={24} icon="LOCK" color={theme.iconSubdued} />
+                                )}
+                            </IconWrapper>
+                            <Col>
+                                <WalletTitle
+                                    $withMargin={props.type === 'hidden'}
+                                    data-test={
+                                        props.type === 'hidden' && '@tooltip/passphrase-tooltip'
+                                    }
                                 >
-                                    {props.submitLabel}
-                                </ActionButton>
-                            </motion.div>
-                        )}
-                        {/* Offer entering passphrase on a device */}
-                        {props.offerPassphraseOnDevice && (
-                            <OnDeviceActionButton
-                                isDisabled={!enabled}
-                                variant="tertiary"
-                                onClick={() => submit(value, true)}
-                                isFullWidth
-                                data-test="@passphrase/enter-on-device-button"
+                                    {props.type === 'hidden' ? (
+                                        <Tooltip
+                                            appendTo={props.learnMoreTooltipAppendTo}
+                                            title={
+                                                <FormattedMessage
+                                                    id="TR_WHAT_IS_PASSPHRASE"
+                                                    defaultMessage="Learn more about the difference"
+                                                />
+                                            }
+                                            addon={props.learnMoreTooltipOnClick}
+                                            content={
+                                                <FormattedMessage
+                                                    id="TR_HIDDEN_WALLET_TOOLTIP"
+                                                    defaultMessage="Passphrases add a custom phrase (e.g. a word, sentence, or string of characters) to your recovery seed. This creates a hidden wallet; each hidden wallet can use its own passphrase. Your standard wallet will still be accessible without a passphrase."
+                                                />
+                                            }
+                                            dashed
+                                        >
+                                            <>{props.title}</>
+                                        </Tooltip>
+                                    ) : (
+                                        props.title
+                                    )}
+                                </WalletTitle>
+                                <Description>{props.description}</Description>
+                            </Col>
+                            {props.type === 'standard' && (
+                                <ArrowCol>
+                                    <Icon icon="ARROW_RIGHT" color={theme.iconSubdued} />
+                                </ArrowCol>
+                            )}
+                        </Row>
+                        {props.type === 'hidden' && <Spacer />}
+                    </>
+                )}
+            </Item>
+            <Item>
+                <Card paddingType="small">
+                    {props.type === 'hidden' && (
+                        <>
+                            <Row>
+                                {/* Show passphrase input */}
+                                <InputWrapper $hasTopMargin={props.authConfirmation}>
+                                    <PassphraseInput
+                                        data-test="@passphrase/input"
+                                        placeholder={intl.formatMessage({
+                                            defaultMessage: 'Enter passphrase',
+                                            id: 'TR_ENTER_PASSPHRASE',
+                                        })}
+                                        onChange={onPassphraseChange}
+                                        value={displayValue}
+                                        hasBottomPadding={false}
+                                        innerRef={ref}
+                                        bottomText={
+                                            isTooLong ? (
+                                                // todo: resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325
+                                                <FormattedMessage
+                                                    id="TR_PASSPHRASE_TOO_LONG"
+                                                    defaultMessage="Passphrase length has exceed the allowed limit."
+                                                />
+                                            ) : null
+                                        }
+                                        inputState={isTooLong ? 'error' : undefined}
+                                        autoFocus={!isAndroid()}
+                                        innerAddon={
+                                            <Icon
+                                                size={18}
+                                                color={theme.iconSubdued}
+                                                icon={showPassword ? 'HIDE' : 'SHOW'}
+                                                onClick={() => {
+                                                    if (
+                                                        typeof ref.current?.selectionStart ===
+                                                        'number'
+                                                    ) {
+                                                        caretRef.current =
+                                                            ref.current.selectionStart;
+                                                    }
+                                                    setShowPassword(!showPassword);
+                                                }}
+                                                data-test="@passphrase/show-toggle"
+                                            />
+                                        }
+                                    />
+                                </InputWrapper>
+                            </Row>
+                            {!isTooLong && <PasswordStrengthIndicator password={value} />}
+                        </>
+                    )}
+                    {props.authConfirmation && (
+                        // Checkbox if user fully understands what's happening when confirming empty passphrase
+                        <Content>
+                            <Checkbox
+                                data-test="@passphrase/confirm-checkbox"
+                                onClick={() => setEnabled(!enabled)}
+                                isChecked={enabled}
                             >
                                 <FormattedMessage
-                                    id="TR_ENTER_PASSPHRASE_ON_DEVICE"
-                                    defaultMessage="Enter passphrase on Trezor"
+                                    id="TR_I_UNDERSTAND_PASSPHRASE"
+                                    defaultMessage="I understand, passphrases cannot be retrieved unlike everyday passwords"
                                 />
-                            </OnDeviceActionButton>
+                            </Checkbox>
+                        </Content>
+                    )}
+
+                    <AnimatePresence initial={false}>
+                        {props.type === 'hidden' && (
+                            <Actions>
+                                {/* Submit button */}
+                                {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
+                                {(props.singleColModal || hiddenWalletTouched) && (
+                                    <motion.div {...motionConfig.motionAnimation.expand}>
+                                        <ActionButton
+                                            data-test={`@passphrase/${
+                                                props.type === 'hidden' ? 'hidden' : 'standard'
+                                            }/submit-button`}
+                                            isDisabled={!enabled || isTooLong}
+                                            variant="primary"
+                                            onClick={() => submit(value)}
+                                            isFullWidth
+                                        >
+                                            {props.submitLabel}
+                                        </ActionButton>
+                                    </motion.div>
+                                )}
+                            </Actions>
                         )}
-                    </Actions>
-                )}
-            </AnimatePresence>
+                    </AnimatePresence>
+                </Card>
+            </Item>
+            <Item>
+                {/* Offer entering passphrase on a device */}
+                <AnimatePresence initial={false}>
+                    {props.offerPassphraseOnDevice && (
+                        <EnterOnTrezorButton
+                            submit={submit}
+                            isVisible={enabled}
+                            value={value}
+                            deviceModel={props.deviceModel}
+                        />
+                    )}
+                </AnimatePresence>
+            </Item>
         </Wrapper>
     );
 };
