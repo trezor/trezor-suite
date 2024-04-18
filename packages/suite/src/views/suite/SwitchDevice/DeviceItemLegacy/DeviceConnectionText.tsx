@@ -1,4 +1,4 @@
-import { Icon, IconType, IconVariant, Text } from '@trezor/components';
+import { Icon, IconType, Text, IconVariant } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import styled, { css } from 'styled-components';
 import { ReactNode } from 'react';

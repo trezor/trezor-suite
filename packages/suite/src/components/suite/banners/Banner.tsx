@@ -67,7 +67,7 @@ const Wrapper = styled.div<{ $variant: BannerVariant }>`
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
     ${typography.highlight}
     border-radius: ${borders.radii.sm};
-    margin: ${spacingsPx.xs};
+    margin: ${spacingsPx.xxs} 0 ${spacingsPx.lg} 0;
     align-items: center;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
@@ -80,12 +80,6 @@ const IconWrapper = styled.div`
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
         display: none;
-    }
-`;
-
-const BlankLeft = styled.div`
-    @media (min-width: ${variables.SCREEN_SIZE.XL}) {
-        flex: 1;
     }
 `;
 
@@ -138,7 +132,6 @@ export const Banner = ({ body, variant, action, dismissal, className }: BannerPr
 
     return (
         <Wrapper $variant={variant} className={className}>
-            <BlankLeft />
             <Body>
                 {iconElement && <IconWrapper>{iconElement}</IconWrapper>}
                 {body}

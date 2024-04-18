@@ -24,12 +24,18 @@ const animationVariants = {
     },
 };
 
+type Fill = 'default' | 'none';
+
 type WrapperProps = {
     $variant: 'small' | 'large'; // TODO: reevaluate variants
     $elevation: Elevation;
 };
 
-const Wrapper = styled.div<WrapperProps>`
+const Container = styled.div`
+    flex: 1;
+`;
+
+const Filled = styled.div<WrapperProps>`
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.sm};
     border: 1px solid ${mapElevationToBorder};
@@ -113,6 +119,7 @@ const StyledIcon = styled(Icon)<{ $isCollapsed?: boolean }>`
 type ContentProps = {
     $variant: CollapsibleBoxProps['variant'];
     $elevation: Elevation;
+    $filled: Fill;
 };
 
 const Content = styled.div<ContentProps>`
@@ -122,8 +129,13 @@ const Content = styled.div<ContentProps>`
         $variant === 'small'
             ? `${spacingsPx.lg} ${spacingsPx.md}`
             : `${spacingsPx.xl} ${spacingsPx.md}`};
-    border-top: 1px solid ${mapElevationToBorder};
+
     overflow: hidden;
+    ${({ $filled, theme, $elevation }) =>
+        $filled &&
+        css`
+            border-top: 1px solid ${mapElevationToBorder({ $elevation, theme })};
+        `}
 `;
 
 const Collapser = styled(motion.div)`
@@ -133,7 +145,8 @@ const Collapser = styled(motion.div)`
 export interface CollapsibleBoxProps {
     heading?: ReactNode;
     subHeading?: ReactNode;
-    variant: 'small' | 'large'; // TODO: reevaluate variants
+    variant: 'small' | 'large'; // @TODO: use `size` instead of `variant`
+    filled?: Fill; //@TODO unify naming with other components
     iconLabel?: ReactNode;
     isOpen?: boolean;
     onCollapse?: () => void;
@@ -155,6 +168,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
     variant = 'small',
     isOpen = false,
     onCollapse,
+    filled = 'default',
     ...rest
 }: CollapsibleBoxProps) => {
     const [isCollapsed, setIsCollapsed] = useState(!isOpen);
@@ -169,8 +183,8 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
         setIsCollapsed(!isCollapsed);
     }, [isCollapsed, onCollapse]);
 
-    return (
-        <Wrapper $variant={variant} {...rest} $elevation={elevation}>
+    const content = (
+        <>
             <Header $variant={variant} onClick={handleHeaderClick}>
                 {(heading || subHeading) && (
                     <Flex>
@@ -203,11 +217,21 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 }}
                 data-test="@collapsible-box/body"
             >
-                <Content $elevation={elevation} $variant={variant}>
+                <Content $elevation={elevation} $variant={variant} $filled={filled}>
                     <ElevationUp>{children}</ElevationUp>
                 </Content>
             </Collapser>
-        </Wrapper>
+        </>
+    );
+
+    return filled === 'default' ? (
+        <Container>
+            <Filled $variant={variant} {...rest} $elevation={elevation}>
+                {content}
+            </Filled>
+        </Container>
+    ) : (
+        <Container>{content}</Container>
     );
 };
 

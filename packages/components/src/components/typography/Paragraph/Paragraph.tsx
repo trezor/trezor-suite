@@ -13,6 +13,7 @@ const P = styled.div<{ $typographyStyle: TypographyStyle }>`
     ${({ $typographyStyle }) => typography[$typographyStyle]}
 `;
 
+// @TODO should be implemented with Text component: <Text as="p">...</Text>
 export const Paragraph = ({
     className,
     typographyStyle = 'body',

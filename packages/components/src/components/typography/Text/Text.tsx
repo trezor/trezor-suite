@@ -6,7 +6,7 @@ import { TransientProps } from '../../../utils/transientProps';
 
 export type TextVariant = Extract<
     UIVariant,
-    'primary' | 'tertiary' | 'info' | 'warning' | 'destructive'
+    'primary' | 'secondary' | 'tertiary' | 'info' | 'warning' | 'destructive'
 >;
 
 type ExclusiveColorOrVariant =
@@ -19,6 +19,7 @@ type ExclusiveColorOrVariant =
 
 const variantColorMap: Record<TextVariant, Color> = {
     primary: 'textPrimaryDefault',
+    secondary: 'textSecondaryHighlight',
     tertiary: 'textSubdued',
     info: 'textAlertBlue',
     warning: 'textAlertYellow',

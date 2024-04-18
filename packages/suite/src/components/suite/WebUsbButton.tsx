@@ -12,7 +12,7 @@ export const WebUsbButton = (props: Omit<ButtonProps, 'children'>) => (
                 e.stopPropagation();
                 TrezorConnect.requestWebUSBDevice();
             }}
-            size="small"
+            size="tiny"
         >
             <Translation id="TR_CHECK_FOR_DEVICES" />
         </Button>

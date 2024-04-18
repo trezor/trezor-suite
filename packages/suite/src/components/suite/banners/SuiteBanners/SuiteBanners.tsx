@@ -16,13 +16,6 @@ import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
-import styled from 'styled-components';
-
-const Container = styled.div<{ $isVisible?: boolean }>`
-    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-bottom: ${({ $isVisible, theme }) =>
-        $isVisible ? `solid 1px ${theme.borderElevation1}` : 'none'};
-`;
 
 export const SuiteBanners = () => {
     const transport = useSelector(state => state.suite.transport);
@@ -90,12 +83,12 @@ export const SuiteBanners = () => {
     const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
 
     return (
-        <Container $isVisible={banner !== null}>
+        <>
             {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />
             {!useMessageSystemBanner && banner}
             {/* TODO: add Pin not set */}
-        </Container>
+        </>
     );
 };

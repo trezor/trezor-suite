@@ -8,6 +8,7 @@ import {
     withFrameProps,
 } from '../../components/common/frameProps';
 import { makePropsTransient } from '../../utils/transientProps';
+import { AccessabilityProps, withAccessabilityProps } from '../common/accessabilityProps';
 
 type PaddingType = 'small' | 'none' | 'normal';
 
@@ -48,7 +49,11 @@ const LabelContainer = styled.div<{ $paddingType: PaddingType }>`
 `;
 
 const CardContainer = styled.div<
-    { $elevation: Elevation; $paddingType: PaddingType } & TransientFrameProps
+    {
+        $elevation: Elevation;
+        $paddingType: PaddingType;
+        $isClickable: boolean;
+    } & TransientFrameProps
 >`
     display: flex;
     width: 100%;
@@ -56,6 +61,17 @@ const CardContainer = styled.div<
     padding: ${mapPaddingTypeToPadding};
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.md};
+    position: relative;
+    overflow: auto;
+    ${({ $isClickable, theme }) =>
+        $isClickable &&
+        `
+    &:hover {
+        box-shadow: ${theme.boxShadowElevated};
+        cursor: pointer;
+    }
+    `}
+
     box-shadow: ${({ theme, $elevation }) => $elevation === 1 && theme.boxShadowBase};
 
     ${({ onClick, theme }) =>
@@ -75,23 +91,32 @@ const CardContainer = styled.div<
     ${withFrameProps}
 `;
 
-export type CardProps = FrameProps & {
-    paddingType?: PaddingType;
-    onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
-    onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
-    onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
-    children?: ReactNode;
-    className?: string;
-    label?: ReactNode;
-    forceElevation?: Elevation;
-};
+export type CardProps = FrameProps &
+    AccessabilityProps & {
+        paddingType?: PaddingType;
+        onMouseEnter?: HTMLAttributes<HTMLDivElement>['onMouseEnter'];
+        onMouseLeave?: HTMLAttributes<HTMLDivElement>['onMouseLeave'];
+        onClick?: HTMLAttributes<HTMLDivElement>['onClick'];
+        children?: ReactNode;
+        className?: string;
+        label?: ReactNode;
+        forceElevation?: Elevation;
+    };
 
 const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: PaddingType }>(
-    ({ children, forceElevation, paddingType, ...rest }, ref) => {
+    ({ children, forceElevation, paddingType, tabIndex, onClick, ...rest }, ref) => {
         const { elevation } = useElevation(forceElevation);
 
         return (
-            <CardContainer ref={ref} $elevation={elevation} $paddingType={paddingType} {...rest}>
+            <CardContainer
+                ref={ref}
+                $elevation={elevation}
+                $paddingType={paddingType}
+                $isClickable={Boolean(onClick)}
+                onClick={onClick}
+                {...withAccessabilityProps({ tabIndex })}
+                {...rest}
+            >
                 <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
             </CardContainer>
         );
