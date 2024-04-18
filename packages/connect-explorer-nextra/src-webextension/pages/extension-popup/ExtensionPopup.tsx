@@ -1,6 +1,6 @@
 export const ExtensionPopup = () => {
     const openExplorerTab = () => {
-        chrome.tabs.create({ url: 'bitcoin/getPublicKey/index.html' });
+        chrome.tabs.create({ url: 'settings/index.html' });
     };
 
     return (
