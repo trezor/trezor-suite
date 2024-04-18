@@ -1,5 +1,5 @@
 import { lazy, memo, Suspense, LazyExoticComponent, ComponentType } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import routes from 'src/constants/suite/routes';
 import { BundleLoader } from 'src/components/suite';
@@ -149,7 +149,7 @@ const AppRouter = () => (
     // strict mode is commented out because of its interplay with compose errors in send form
     // <StrictMode>
     <Suspense fallback={<BundleLoader />}>
-        <Switch>
+        <Routes>
             {routes.map(route => (
                 <Route
                     key={route.name}
@@ -158,7 +158,7 @@ const AppRouter = () => (
                     component={components[route.name as PageName]}
                 />
             ))}
-        </Switch>
+        </Routes>
     </Suspense>
     // </StrictMode>
 );

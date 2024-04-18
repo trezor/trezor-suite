@@ -1,7 +1,7 @@
 import { Provider } from 'react-redux';
 import store from '../store';
 import GlobalStyle from '../GlobalStyle';
-import { HashRouter as Router, Switch, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 
 import AppContainer from '../containers/AppContainer';
 import Method from '../components/Method';
@@ -15,15 +15,15 @@ const App = () => (
         <GlobalStyle />
         <Provider store={store}>
             <Router>
-                <Switch>
+                <Routes>
                     <AppContainer>
-                        <Route path="/method/:method" component={Method} />
-                        <Route exact path="/" component={About} />
-                        <Route exact path="/changelog" component={Changelog} />
-                        <Route exact path="/events" component={Events} />
-                        <Route exact path="/settings" component={Settings} />
+                        <Route path="/method/:method" element={<Method />} />
+                        <Route path="/" element={<About />} />
+                        <Route path="/changelog" element={<Changelog />} />
+                        <Route path="/events" element={<Events />} />
+                        <Route path="/settings" element={<Settings />} />
                     </AppContainer>
-                </Switch>
+                </Routes>
             </Router>
         </Provider>
     </>

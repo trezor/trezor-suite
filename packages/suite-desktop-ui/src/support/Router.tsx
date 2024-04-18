@@ -1,5 +1,5 @@
 import { memo, ComponentType } from 'react';
-import { Switch, Route } from 'react-router-dom';
+import { Routes, Route } from 'react-router-dom';
 
 import { PageName } from '@suite-common/suite-types';
 
@@ -76,14 +76,13 @@ const components: { [key: string]: ComponentType<any> } = {
 };
 
 export const AppRouter = memo(() => (
-    <Switch>
+    <Routes>
         {routes.map(route => (
             <Route
                 key={route.name}
                 path={process.env.ASSET_PREFIX + route.pattern}
-                exact={route.exact}
-                component={components[route.name as PageName]}
+                element={<>{components[route.name as PageName]}</>}
             />
         ))}
-    </Switch>
+    </Routes>
 ));
