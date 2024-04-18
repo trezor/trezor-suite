@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import type { ReactElement } from 'react';
-import { createContext, memo, useContext, useEffect, useState } from 'react';
+import { createContext, memo, useContext, useEffect, useRef, useState } from 'react';
 
 import cn from 'clsx';
 import type { Heading } from 'nextra';
@@ -97,6 +97,9 @@ export function Menu({
     className,
     onlyCurrentDocs,
 }: MenuProps): ReactElement {
+    const route = useFSRoute();
+    const prevRoute = useRef(route);
+
     const coinSymbols = {
         binance: 'bnb',
         bitcoin: 'btc',
@@ -110,7 +113,17 @@ export function Menu({
         stellar: 'xlm',
         tezos: 'xtz',
     };
-    const [activeCoin, setActiveCoin] = useState('bitcoin');
+    const defaultActiveCoin = Object.keys(coinSymbols).includes(route.split('/')[2])
+        ? route.split('/')[2]
+        : 'bitcoin';
+    const [activeCoin, setActiveCoin] = useState(defaultActiveCoin);
+    useEffect(() => {
+        // Only on route change
+        if (route === prevRoute.current) return;
+        prevRoute.current = route;
+
+        if (defaultActiveCoin !== activeCoin) setActiveCoin(defaultActiveCoin);
+    }, [route, activeCoin, setActiveCoin, defaultActiveCoin]);
 
     const topLevelItems = directories.filter(item => item.kind !== 'Folder');
     const methodsItems =

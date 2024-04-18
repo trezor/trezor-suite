@@ -151,6 +151,7 @@ export interface CollapsibleBoxProps {
     isOpen?: boolean;
     onCollapse?: () => void;
     children?: ReactNode;
+    isUpwards?: boolean; // Open upwards, affects the icon rotation
 }
 
 type CollapsibleBoxSubcomponents = {
@@ -169,6 +170,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
     isOpen = false,
     onCollapse,
     filled = 'default',
+    isUpwards = false,
     ...rest
 }: CollapsibleBoxProps) => {
     const [isCollapsed, setIsCollapsed] = useState(!isOpen);
@@ -196,7 +198,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 <IconWrapper>
                     {iconLabel && <IconLabel>{iconLabel}</IconLabel>}
                     <StyledIcon
-                        $isCollapsed={isCollapsed}
+                        $isCollapsed={isUpwards ? !isCollapsed : isCollapsed}
                         onClick={() => setIsCollapsed(current => !current)}
                         name="caretCircleDown"
                         size="medium"

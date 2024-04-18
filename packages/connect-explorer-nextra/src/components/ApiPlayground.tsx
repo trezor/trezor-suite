@@ -20,6 +20,7 @@ const ApiPlaygroundWrapper = styled.div`
     max-width: 54rem;
     max-height: calc(100% - 150px);
     overflow: hidden auto;
+    overscroll-behavior: contain;
     border-radius: 1rem;
     padding: 0;
     border: 1px solid ${({ theme }) => theme.STROKE_GREY};
@@ -83,7 +84,7 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
 
     return (
         <ApiPlaygroundWrapper>
-            <CollapsibleBoxStyled heading="Method testing tool" variant="large">
+            <CollapsibleBoxStyled heading="Method testing tool" variant="large" isUpwards>
                 {options.length > 5 && (
                     <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
                         <Select
