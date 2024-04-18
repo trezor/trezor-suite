@@ -42,7 +42,7 @@
         "@trezor/utils": "workspace:*",
         "@types/chrome-remote-interface": "^0.31.14",
         "@types/cypress-image-snapshot": "^3.1.8",
-        "@types/react": "18.2.55",
+        "@types/react": "18.2.79",
         "@types/react-dom": "18.2.19",
         "@types/react-helmet": "^6.1.11",
         "@types/react-router": "^5.1.20",

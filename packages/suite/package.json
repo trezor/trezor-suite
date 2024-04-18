@@ -128,7 +128,7 @@
         "@types/pako": "^2.0.3",
         "@types/pdfmake": "^0.2.9",
         "@types/qrcode.react": "^1.0.5",
-        "@types/react": "18.2.55",
+        "@types/react": "18.2.79",
         "@types/react-dom": "18.2.19",
         "@types/react-qr-reader": "^2.1.7",
         "@types/react-test-renderer": "^18.0.7",

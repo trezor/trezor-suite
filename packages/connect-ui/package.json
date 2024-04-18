@@ -20,7 +20,7 @@
         "react-intl": "^6.6.2"
     },
     "devDependencies": {
-        "@types/react": "18.2.55"
+        "@types/react": "18.2.79"
     },
     "peerDependencies": {
         "react": "18.2.0",
