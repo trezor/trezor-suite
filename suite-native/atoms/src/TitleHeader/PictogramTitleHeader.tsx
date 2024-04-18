@@ -3,8 +3,8 @@ import { ReactNode } from 'react';
 import { IconName } from '@suite-common/icons';
 import { TypographyStyle } from '@trezor/theme';
 
-import { VStack } from './Stack';
-import { PictogramVariant, PictogramSize, Pictogram } from './Pictogram';
+import { VStack } from '../Stack';
+import { PictogramVariant, PictogramSize, Pictogram } from '../Pictogram';
 import { CenteredTitleHeader } from './CenteredTitleHeader';
 
 type PictogramTitleHeaderProps = {
