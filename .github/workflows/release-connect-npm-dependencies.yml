@@ -25,10 +25,9 @@ on:
           - schema-utils
 
 jobs:
-  deploy-npm-beta:
-    needs: [extract-branch]
+  deploy-npm-dependency-beta:
     environment: npm-packages
     uses: ./.github/workflows/template-release-connect-npm.yml
     with:
       deploymentType: beta
-      packageName: ${{ inputs.package }}
+      packageName: ${{ github.event.inputs.package }}
