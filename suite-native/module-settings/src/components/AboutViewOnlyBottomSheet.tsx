@@ -2,7 +2,7 @@ import {
     BottomSheet,
     Box,
     Button,
-    CenteredTitleHeader,
+    TitleHeader,
     VStack,
     Text,
     OrderedListItem,
@@ -31,7 +31,7 @@ export const AboutViewOnlyBottomSheet = ({ isVisible, onClose }: AboutViewOnlyBo
     return (
         <BottomSheet isVisible={isVisible} onClose={onClose} isCloseDisplayed={false}>
             <VStack spacing="large" paddingHorizontal="small">
-                <CenteredTitleHeader
+                <TitleHeader
                     title={<Translation id="moduleSettings.viewOnly.about.title" />}
                     subtitle={<Translation id="moduleSettings.viewOnly.about.subtitle" />}
                 />
