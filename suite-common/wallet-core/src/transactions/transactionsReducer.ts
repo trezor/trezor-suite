@@ -310,7 +310,7 @@ export const selectAccountStakeTypeTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isStakeTypeTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountStakeTransactions = (
@@ -319,7 +319,7 @@ export const selectAccountStakeTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isStakeTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isStakeTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountUnstakeTransactions = (
@@ -328,7 +328,7 @@ export const selectAccountUnstakeTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isUnstakeTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isUnstakeTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountClaimTransactions = (
@@ -337,5 +337,5 @@ export const selectAccountClaimTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isClaimTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
