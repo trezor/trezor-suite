@@ -46,7 +46,7 @@
         "@testing-library/react": "^14.0.0",
         "@types/flexsearch": "^0.7.3",
         "@types/git-url-parse": "^9.0.1",
-        "@types/react": "^18.2.21",
+        "@types/react": "^18.2.79",
         "@types/react-dom": "^18.2.7",
         "concurrently": "^8.0.0",
         "jsdom": "^23.0.0",
