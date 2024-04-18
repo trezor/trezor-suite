@@ -22,6 +22,8 @@ on:
       - "packages/transport/**"
       - "packages/utxo-lib/**"
       - "packages/utils/**"
+      - "packages/connect-examples/webextension-mv2/**"
+      - "packages/connect-examples/webextension-mv3/**"
       - "submodules/trezor-common/**"
       - "yarn.lock"
       - ".github/workflows/connect-dev-release-test.yml"
@@ -117,3 +119,12 @@ jobs:
     with:
       test-name: unchained.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  webextension-examples:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: webextension-example.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+      run-web: false
