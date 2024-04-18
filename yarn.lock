@@ -10573,10 +10573,6 @@ __metadata:
   resolution: "@trezor/connect-webextension@workspace:packages/connect-webextension"
   dependencies:
     "@babel/preset-typescript": "npm:^7.23.3"
-    "@playwright/browser-chromium": "npm:^1.41.2"
-    "@playwright/browser-firefox": "npm:^1.41.2"
-    "@playwright/browser-webkit": "npm:^1.41.2"
-    "@playwright/test": "npm:^1.41.2"
     "@trezor/connect": "workspace:*"
     "@trezor/connect-common": "workspace:*"
     "@trezor/connect-web": "workspace:*"

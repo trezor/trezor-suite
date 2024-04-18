@@ -32,7 +32,6 @@
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:e2e": "yarn xvfb-maybe -- playwright test --config=./e2e/playwright.config.ts",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "build:content-script": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/content-script.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
@@ -49,10 +48,6 @@
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.23.3",
-        "@playwright/browser-chromium": "^1.41.2",
-        "@playwright/browser-firefox": "^1.41.2",
-        "@playwright/browser-webkit": "^1.41.2",
-        "@playwright/test": "^1.41.2",
         "@trezor/node-utils": "workspace:*",
         "@trezor/trezor-user-env-link": "workspace:*",
         "@types/chrome": "^0.0.260",
