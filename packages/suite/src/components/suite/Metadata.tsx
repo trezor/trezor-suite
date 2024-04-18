@@ -1,5 +1,5 @@
 import { SUITE_URL } from '@trezor/urls';
-import Helmet from 'react-helmet';
+import { Helmet } from 'react-helmet-async';
 import { useIntl } from 'react-intl';
 import messages from 'src/support/messages';
 
