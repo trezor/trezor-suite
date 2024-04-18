@@ -1,4 +1,5 @@
 import { configureStore, Middleware } from '@reduxjs/toolkit';
+import logger from 'redux-logger';
 
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { messageSystemMiddleware } from '@suite-native/message-system';
@@ -9,6 +10,8 @@ import { blockchainMiddleware } from '@suite-native/blockchain';
 
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
+
+const IS_REDUX_LOGGER_ENABLED = false;
 
 const middlewares: Middleware[] = [
     messageSystemMiddleware,
@@ -23,6 +26,7 @@ const middlewares: Middleware[] = [
 if (__DEV__) {
     const createDebugger = require('redux-flipper').default;
     middlewares.push(createDebugger());
+    if (IS_REDUX_LOGGER_ENABLED) middlewares.push(logger);
 }
 
 export const initStore = async () =>

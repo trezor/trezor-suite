@@ -9709,11 +9709,13 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/redux-logger": "npm:^3.0.11"
     expo-device: "npm:5.9.3"
     react: "npm:18.2.0"
     react-native: "npm:0.73.6"
     react-redux: "npm:8.0.7"
     redux-flipper: "npm:^2.0.2"
+    redux-logger: "npm:^3.0.6"
     redux-persist: "npm:6.0.0"
   languageName: unknown
   linkType: soft
