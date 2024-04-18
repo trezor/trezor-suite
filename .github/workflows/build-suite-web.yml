@@ -1,0 +1,73 @@
+name: "[Build] suite-web"
+# this action is for building and deploying the web app to dev.suite.sldev.cz/suite-web/develop/web after code is pushed to develop.
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+# run only if there are changes in suite or related libs paths
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - "suite-native/**"
+      - "packages/connect*/**"
+      - "packages/react-native-usb/**"
+      # ignore unrelated github workflows config files
+      - ".github/workflows/connect*"
+      - ".github/workflows/suite-native*"
+      - ".github/workflows/build-desktop*"
+      - ".github/workflows/release*"
+      - ".github/workflows/template*"
+
+env:
+  DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+
+jobs:
+  build-web:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
+
+      - name: Build suite-web
+        env:
+          ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
+          DESKTOP_APP_NAME: "Trezor-Suite"
+        run: |
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/connect-iframe build:lib
+          yarn workspace @trezor/connect-web build
+          yarn workspace @trezor/suite-web build
+      # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
+      - name: Upload suite-web to dev.suite.sldev.cz
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}
+        run: |
+          aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
