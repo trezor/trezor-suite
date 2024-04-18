@@ -26,6 +26,7 @@ import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
+import { EnableViewOnly } from './EnableViewOnly';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -117,6 +118,10 @@ export const SettingsDevice = () => {
                     )}
                 </SettingsSection>
             )}
+
+            <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
+                <EnableViewOnly />
+            </SettingsSection>
 
             <SettingsSection title={<Translation id="TR_FIRMWARE" />} icon="FIRMWARE">
                 <FirmwareVersion isDeviceLocked={isDeviceLocked} />
