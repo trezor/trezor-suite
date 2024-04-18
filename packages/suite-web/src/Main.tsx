@@ -25,6 +25,8 @@ import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import AppRouter from './support/Router';
 import { useCypress } from './support/useCypress';
 import { FormatterProvider } from '@suite-common/formatters';
+import { HelmetProvider } from 'react-helmet-async';
+import { StrictMode } from 'react';
 
 const Main = () => {
     useCypress();
@@ -33,28 +35,32 @@ const Main = () => {
     const formattersConfig = useFormattersConfig();
 
     return (
-        <ConnectedThemeProvider>
-            <RouterProvider history={history}>
-                <ModalContextProvider>
-                    <ErrorBoundary>
-                        <Autodetect />
-                        <Resize />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler />
-                        <ConnectedIntlProvider>
-                            <FormatterProvider config={formattersConfig}>
-                                <Metadata />
-                                <ToastContainer />
-                                <Preloader>
-                                    <AppRouter />
-                                </Preloader>
-                            </FormatterProvider>
-                        </ConnectedIntlProvider>
-                    </ErrorBoundary>
-                </ModalContextProvider>
-            </RouterProvider>
-        </ConnectedThemeProvider>
+        <StrictMode>
+            <HelmetProvider>
+                <ConnectedThemeProvider>
+                    <RouterProvider history={history}>
+                        <ModalContextProvider>
+                            <ErrorBoundary>
+                                <Autodetect />
+                                <Resize />
+                                <Protocol />
+                                <OnlineStatus />
+                                <RouterHandler />
+                                <ConnectedIntlProvider>
+                                    <FormatterProvider config={formattersConfig}>
+                                        <Metadata />
+                                        <ToastContainer />
+                                        <Preloader>
+                                            <AppRouter />
+                                        </Preloader>
+                                    </FormatterProvider>
+                                </ConnectedIntlProvider>
+                            </ErrorBoundary>
+                        </ModalContextProvider>
+                    </RouterProvider>
+                </ConnectedThemeProvider>
+            </HelmetProvider>
+        </StrictMode>
     );
 };
 

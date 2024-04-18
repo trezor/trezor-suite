@@ -144,10 +144,6 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
 };
 
 const AppRouter = () => (
-    // inititating strict mode higher would throw an error from react-helmet
-    // TODO: replace react-helmet with a maintained alternative
-    // strict mode is commented out because of its interplay with compose errors in send form
-    // <StrictMode>
     <Suspense fallback={<BundleLoader />}>
         <Switch>
             {routes.map(route => (
@@ -160,7 +156,6 @@ const AppRouter = () => (
             ))}
         </Switch>
     </Suspense>
-    // </StrictMode>
 );
 
 export default memo(AppRouter);
