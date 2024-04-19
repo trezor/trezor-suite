@@ -1,0 +1,83 @@
+name: "[Build/Test] suite-desktop e2e"
+# this action builds a desktop version of Suite and runs basic test suite for it
+
+# run only if there are changes in suite or related libs paths
+on:
+  pull_request:
+    branches:
+      - develop
+    paths-ignore:
+      - "suite-native/**"
+      - "packages/connect*/**"
+      - "packages/react-native-usb/**"
+      # ignore unrelated github workflows config files
+      - ".github/workflows/connect*"
+      - ".github/workflows/suite-native*"
+      - ".github/workflows/build-desktop*"
+      - ".github/workflows/release*"
+      - ".github/workflows/template*"
+
+jobs:
+  run-desktop-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - TEST_FILE: "spawn-bridge"
+            CONTAINERS: "trezor-user-env-unix"
+          - TEST_FILE: "suite-guide"
+            CONTAINERS: "trezor-user-env-unix"
+          - TEST_FILE: "wallet-discovery"
+            CONTAINERS: "trezor-user-env-unix"
+          # - TEST_FILE: "cardano-discovery"
+          #   CONTAINERS: "trezor-user-env-unix"
+          # - TEST_FILE: "eap-modal"
+          #   CONTAINERS: "trezor-user-env-unix"
+          - TEST_FILE: "electrum"
+            CONTAINERS: "trezor-user-env-unix electrum-regtest"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/transport-bridge build:lib
+
+      - name: Build app.js for tests
+        run: |
+          yarn workspace @trezor/suite-desktop build:app
+          yarn workspace @trezor/suite-desktop build:ui
+
+      - name: Run e2e desktop tests
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
+          TEST_FILE: ${{ matrix.TEST_FILE }}
+        run: |
+          docker compose pull
+          docker compose up -d ${{ matrix.CONTAINERS }}
+          docker compose run test-run
+
+      - name: cleanup
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
+        run: docker compose down
+
+      # TODO: currently only uploads trace.zip, figure out why screens are not uploaded
+      - name: Upload artifacts
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ matrix.TEST_FILE }}
+          path: |
+            ./packages/suite-desktop-core/e2e/test-results

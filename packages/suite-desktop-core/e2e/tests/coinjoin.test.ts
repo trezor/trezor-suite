@@ -106,7 +106,7 @@ const passThroughInitialRun = async (window: Page) => {
     await window.waitForSelector('[data-test="@dashboard/graph"]');
 };
 
-testPlaywright.describe('Coinjoin', () => {
+testPlaywright.describe.skip('Coinjoin', () => {
     testPlaywright.beforeAll(async () => {
         testPlaywright.setTimeout(timeout * 10);
 

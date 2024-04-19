@@ -25,8 +25,8 @@ services:
       - ../:/trezor-suite
     network_mode: service:trezor-user-env-unix
 
-  coinjoin-backend:
-    image: ghcr.io/trezor/coinjoin-backend:latest
-    network_mode: service:trezor-user-env-unix
-    volumes:
-      - ../:/coinjoin-backend
+  # coinjoin-backend:
+  #   image: ghcr.io/trezor/coinjoin-backend:latest
+  #   network_mode: service:trezor-user-env-unix
+  #   volumes:
+  #     - ../:/coinjoin-backend

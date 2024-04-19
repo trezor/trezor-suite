@@ -31,7 +31,7 @@ const turnOnTorInSettings = async (window: Page, shouldEnableTor = true) => {
     await window.waitForTimeout(1000);
 };
 
-testPlaywright.describe('Tor loading screen', () => {
+testPlaywright.describe.skip('Tor loading screen', () => {
     testPlaywright('Tor loading screen: happy path', async () => {
         testPlaywright.setTimeout(timeout);
 

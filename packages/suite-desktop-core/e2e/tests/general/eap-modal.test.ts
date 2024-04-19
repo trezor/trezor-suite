@@ -1,4 +1,9 @@
-import { test as testPlaywright, ElectronApplication, Page } from '@playwright/test';
+import {
+    test as testPlaywright,
+    ElectronApplication,
+    Page,
+    expect as expectPlaywright,
+} from '@playwright/test';
 
 import { launchSuite, rmDirRecursive } from '../../support/common';
 import { onTopBar } from '../../support/pageActions/topBarActions';
@@ -25,6 +30,7 @@ testPlaywright.afterAll(() => {
  * 4. Confrim the EAP modal
  * 5. Check if there is a button with `Leave` on it
  */
+// TODO: FIX settings cleanup:  eap setting is remembered even after cache cleanup at the beginning of the test. This shouldn't affect gha run but breaks the local one.
 testPlaywright('Join early access button', async () => {
     const buttonText = 'Leave';
 
@@ -32,5 +38,5 @@ testPlaywright('Join early access button', async () => {
     await onSettingsPage.goToDesiredSettingsPlace(window, 'general');
     await onSettingsPage.joinEarlyAccessProgram(window);
 
-    await expect(onSettingsPage.getEarlyAccessButtonText(window)).toContain(buttonText);
+    expectPlaywright(await onSettingsPage.getEarlyAccessButtonText(window)).toContain(buttonText);
 });
