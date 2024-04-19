@@ -5,16 +5,15 @@ on:
     branches:
       - develop
     paths-ignore:
-      - 'suite-native/**'
-      - 'docs/**'
-      - 'docker/**'
-      - 'ci/**'
-      - '.vscode/**'
-      - '.maestro/**'
+      - "suite-native/**"
+      - "docs/**"
+      - "docker/**"
+      - "ci/**"
+      - ".vscode/**"
+      - ".maestro/**"
   pull_request:
     types: [labeled]
   workflow_dispatch:
-
 
 env:
   DESKTOP_APP_NAME: "Trezor-Suite"
@@ -59,6 +58,7 @@ jobs:
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/connect-iframe build:lib
+          yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{ matrix.platform }} suite-desktop
         run: |
@@ -105,6 +105,7 @@ jobs:
         run: |
           yarn workspace @trezor/suite-data build:lib
           yarn workspace @trezor/connect-iframe build:lib
+          yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{env.platform}} suite-desktop
         run: |
