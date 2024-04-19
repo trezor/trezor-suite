@@ -35,7 +35,7 @@ export const parseAddressToDeviceLines = ({
     },
     'isPaginationEnabled' | 'activePage'
 >) => {
-    // T1B1 does not have support fro address chunking
+    // T1B1 does not have support for address chunking
     if (deviceModel === DeviceModelInternal.T1B1) {
         // Legacy Segwit address is only 34 characters long. T1B1 displays it in two lines, 17 characters each for a symmetric look.
         // Any other address takes the full line length.

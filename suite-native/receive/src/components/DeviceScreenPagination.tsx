@@ -25,7 +25,7 @@ type PaginationModelMetrics = {
     paginationSvgHeight: number;
 };
 
-const deviceModelToSvg = {
+const deviceModelToSvg: Record<PaginationCompatibleDeviceModel, PaginationModelMetrics> = {
     [DeviceModelInternal.T2T1]: {
         paginationPrefixSvg: require('../../assets/addressPaginationPrefixT2T1.svg'),
         paginationSuffixSvg: require('../../assets/addressPaginationSuffixT2T1.svg'),
@@ -70,7 +70,7 @@ const deviceModelToSvg = {
         paginationSvgWidth: 12.5,
         paginationSvgHeight: 12.5,
     },
-} as const satisfies Record<PaginationCompatibleDeviceModel, PaginationModelMetrics>;
+};
 
 export const DeviceScreenPagination = ({
     deviceModel,

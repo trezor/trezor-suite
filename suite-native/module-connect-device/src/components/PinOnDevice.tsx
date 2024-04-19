@@ -17,12 +17,12 @@ import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
-export const deviceImageMap = {
+export const deviceImageMap: Record<DeviceModelInternal, string> = {
     [DeviceModelInternal.T1B1]: require('../assets/pin-t1b1.png'),
     [DeviceModelInternal.T2T1]: require('../assets/pin-t2t1.png'),
     [DeviceModelInternal.T2B1]: require('../assets/pin-t2b1.png'),
     [DeviceModelInternal.T3T1]: require('../assets/pin-t3t1.png'),
-} as const satisfies Record<DeviceModelInternal, string>;
+};
 
 const wrapperStyle = prepareNativeStyle(utils => ({
     flex: 1,
