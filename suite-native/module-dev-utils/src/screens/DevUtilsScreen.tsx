@@ -55,7 +55,7 @@ export const DevUtilsScreen = ({
                     >
                         Throw Sentry error
                     </Button>
-                    <Button colorScheme="dangerElevation0" onPress={clearStorage}>
+                    <Button colorScheme="redElevation0" onPress={clearStorage}>
                         Wipe all data
                     </Button>
                 </VStack>

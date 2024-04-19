@@ -75,9 +75,12 @@ export const DemoScreen = () => {
         'primary',
         'secondary',
         'tertiaryElevation0',
-        'dangerElevation0',
-        'warningBold',
-        'warningElevation1',
+        'redBold',
+        'redElevation0',
+        'yellowBold',
+        'yellowElevation0',
+        'blueBold',
+        'blueElevation0',
     ] satisfies ButtonColorScheme[];
 
     const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
@@ -140,6 +143,27 @@ export const DemoScreen = () => {
                             </Box>
                         </VStack>
                     ))}
+                    <VStack>
+                        <Text>Disabled</Text>
+                        <Box
+                            flexDirection="row"
+                            justifyContent="space-around"
+                            alignItems="center"
+                            style={applyStyle(flexWrapStyle)}
+                        >
+                            {buttonSizes.map(buttonSize => (
+                                <Button
+                                    key={buttonSize}
+                                    colorScheme="primary"
+                                    iconLeft="calendar"
+                                    size={buttonSize}
+                                    isDisabled
+                                >
+                                    {buttonSize}
+                                </Button>
+                            ))}
+                        </Box>
+                    </VStack>
                 </VStack>
                 <Divider />
                 <VStack>

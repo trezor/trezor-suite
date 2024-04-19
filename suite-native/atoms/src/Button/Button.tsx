@@ -19,10 +19,15 @@ export type ButtonColorScheme =
     | 'secondary'
     | 'tertiaryElevation0'
     | 'tertiaryElevation1'
-    | 'dangerElevation0'
-    | 'dangerElevation1'
-    | 'warningBold'
-    | 'warningElevation1';
+    | 'redBold'
+    | 'redElevation0'
+    | 'redElevation1'
+    | 'yellowBold'
+    | 'yellowElevation0'
+    | 'yellowElevation1'
+    | 'blueBold'
+    | 'blueElevation0'
+    | 'blueElevation1';
 
 export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'> & {
     children: ReactNode;
@@ -39,11 +44,15 @@ type ButtonIconProps = {
     buttonSize: ButtonSize;
 };
 
-type ButtonColorSchemeColors = {
+type BaseButtonColorScheme = {
     backgroundColor: Color;
     onPressColor: Color;
     textColor: Color;
-    disabledTextColor: Color;
+    iconColor: Color;
+};
+
+type ButtonColorSchemeColors = BaseButtonColorScheme & {
+    disabledColors: BaseButtonColorScheme;
 };
 
 export type ButtonStyleProps = {
@@ -53,54 +62,104 @@ export type ButtonStyleProps = {
     hasTitle?: boolean;
 };
 
+const baseDisabledScheme: BaseButtonColorScheme = {
+    backgroundColor: 'backgroundNeutralDisabled',
+    onPressColor: 'backgroundNeutralDisabled',
+    textColor: 'textDisabled',
+    iconColor: 'iconDisabled',
+};
+
 export const buttonSchemeToColorsMap = {
     primary: {
         backgroundColor: 'backgroundPrimaryDefault',
         onPressColor: 'backgroundPrimaryPressed',
         textColor: 'textOnPrimary',
-        disabledTextColor: 'textDisabled',
+        iconColor: 'iconOnPrimary',
+        disabledColors: baseDisabledScheme,
     },
     secondary: {
         backgroundColor: 'backgroundSecondaryDefault',
         onPressColor: 'backgroundSecondaryPressed',
         textColor: 'textOnSecondary',
-        disabledTextColor: 'textDisabled',
+        iconColor: 'iconOnSecondary',
+        disabledColors: baseDisabledScheme,
     },
     tertiaryElevation0: {
         backgroundColor: 'backgroundTertiaryDefaultOnElevation0',
         onPressColor: 'backgroundTertiaryPressedOnElevation0',
         textColor: 'textOnTertiary',
-        disabledTextColor: 'textDisabled',
+        iconColor: 'iconOnTertiary',
+        disabledColors: baseDisabledScheme,
     },
     tertiaryElevation1: {
         backgroundColor: 'backgroundTertiaryDefaultOnElevation1',
         onPressColor: 'backgroundTertiaryPressedOnElevation1',
         textColor: 'textOnTertiary',
-        disabledTextColor: 'textDisabled',
+        iconColor: 'iconOnTertiary',
+        disabledColors: baseDisabledScheme,
     },
-    dangerElevation0: {
+    redBold: {
+        backgroundColor: 'backgroundAlertRedBold',
+        onPressColor: 'backgroundAlertRedBoldAlt',
+        textColor: 'textOnRed',
+        iconColor: 'iconOnRed',
+        disabledColors: baseDisabledScheme,
+    },
+    redElevation0: {
         backgroundColor: 'backgroundAlertRedSubtleOnElevation0',
-        onPressColor: 'backgroundAlertRedSubtleOnElevation0',
+        onPressColor: 'backgroundAlertRedSubtleOnElevation1',
         textColor: 'textAlertRed',
-        disabledTextColor: 'textDisabled',
+        iconColor: 'iconAlertRed',
+        disabledColors: baseDisabledScheme,
     },
-    dangerElevation1: {
+    redElevation1: {
         backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
         onPressColor: 'backgroundAlertRedSubtleOnElevation1',
         textColor: 'textAlertRed',
-        disabledTextColor: 'textDisabled',
+        iconColor: 'iconAlertRed',
+        disabledColors: baseDisabledScheme,
     },
-    warningBold: {
+    yellowBold: {
         backgroundColor: 'backgroundAlertYellowBold',
-        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for colors https://github.com/trezor/trezor-suite/issues/11931
-        textColor: 'textDefault',
-        disabledTextColor: 'textDisabled',
+        onPressColor: 'backgroundAlertYellowBoldAlt',
+        textColor: 'textOnYellow',
+        iconColor: 'iconOnYellow',
+        disabledColors: baseDisabledScheme,
     },
-    warningElevation1: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
-        onPressColor: 'backgroundAlertRedSubtleOnElevation1', // TODO waiting for colors https://github.com/trezor/trezor-suite/issues/11931
+    yellowElevation0: {
+        backgroundColor: 'backgroundAlertYellowSubtleOnElevation0',
+        onPressColor: 'backgroundAlertYellowSubtleOnElevation1',
         textColor: 'textAlertYellow',
-        disabledTextColor: 'textDisabled',
+        iconColor: 'iconAlertYellow',
+        disabledColors: baseDisabledScheme,
+    },
+    yellowElevation1: {
+        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        onPressColor: 'backgroundAlertYellowSubtleOnElevation1',
+        textColor: 'textAlertYellow',
+        iconColor: 'iconAlertYellow',
+        disabledColors: baseDisabledScheme,
+    },
+    blueBold: {
+        backgroundColor: 'backgroundAlertBlueBold',
+        onPressColor: 'backgroundAlertBlueBoldAlt',
+        textColor: 'textOnBlue',
+        iconColor: 'iconOnBlue',
+        disabledColors: baseDisabledScheme,
+    },
+    blueElevation0: {
+        backgroundColor: 'backgroundAlertBlueSubtleOnElevation0',
+        onPressColor: 'backgroundAlertBlueSubtleOnElevation1',
+        textColor: 'textAlertBlue',
+        iconColor: 'iconAlertBlue',
+        disabledColors: baseDisabledScheme,
+    },
+    blueElevation1: {
+        backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
+        onPressColor: 'backgroundAlertBlueSubtleOnElevation1',
+        textColor: 'textAlertBlue',
+        iconColor: 'iconAlertBlue',
+        disabledColors: baseDisabledScheme,
     },
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
@@ -173,8 +232,10 @@ export const Button = ({
 }: ButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
-    const { backgroundColor, onPressColor, textColor, disabledTextColor } =
-        buttonSchemeToColorsMap[colorScheme];
+    const { disabledColors, ...baseColors } = buttonSchemeToColorsMap[colorScheme];
+    const { backgroundColor, onPressColor, textColor, iconColor } = isDisabled
+        ? disabledColors
+        : baseColors;
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
@@ -188,11 +249,7 @@ export const Button = ({
 
     const iconName = iconLeft || iconRight;
     const icon = iconName ? (
-        <ButtonIcon
-            iconName={iconName}
-            color={isDisabled ? disabledTextColor : textColor}
-            buttonSize={size}
-        />
+        <ButtonIcon iconName={iconName} color={iconColor} buttonSize={size} />
     ) : null;
 
     return (
@@ -215,11 +272,7 @@ export const Button = ({
             >
                 <HStack alignItems="center">
                     {iconLeft && icon}
-                    <Text
-                        textAlign="center"
-                        variant={buttonToTextSizeMap[size]}
-                        color={isDisabled ? disabledTextColor : textColor}
-                    >
+                    <Text textAlign="center" variant={buttonToTextSizeMap[size]} color={textColor}>
                         {children}
                     </Text>
                     {iconRight && icon}

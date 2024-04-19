@@ -45,15 +45,12 @@ export const ShowAddressViewOnlyBottomSheet = ({
                     </Text>
                 </VStack>
                 <VStack spacing="medium" style={applyStyle(buttonWrapperStyle)}>
-                    <Button colorScheme="warningBold" onPress={onShowAddress}>
+                    <Button colorScheme="yellowBold" onPress={onShowAddress}>
                         <Translation
                             id={'moduleReceive.receiveAddressCard.viewOnlyWarning.primaryButton'}
                         />
                     </Button>
-                    <Button
-                        colorScheme="warningElevation1"
-                        onPress={handleCloseViewOnlyBottomSheet}
-                    >
+                    <Button colorScheme="yellowElevation1" onPress={handleCloseViewOnlyBottomSheet}>
                         <Translation
                             id={'moduleReceive.receiveAddressCard.viewOnlyWarning.secondaryButton'}
                         />

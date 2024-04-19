@@ -55,7 +55,7 @@ export const AccountSettingsRemoveCoinButton = ({
             description:
                 'Your coins remain intact and safe. Import this coin again using your public key (XPUB) or receive address at any time.',
             primaryButtonTitle: 'Remove coin',
-            primaryButtonVariant: 'dangerElevation0',
+            primaryButtonVariant: 'redElevation0',
             onPressPrimaryButton: handleRemoveAccount,
             secondaryButtonTitle: 'Cancel',
             onPressSecondaryButton: () => hideAlert(),
@@ -66,7 +66,7 @@ export const AccountSettingsRemoveCoinButton = ({
         <Button
             size="large"
             onPress={handleShowAlert}
-            colorScheme="dangerElevation0"
+            colorScheme="redElevation0"
             testID="@account-detail/settings/remove-coin-button"
         >
             Remove coin

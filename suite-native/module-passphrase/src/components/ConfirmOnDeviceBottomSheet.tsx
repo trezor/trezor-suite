@@ -29,7 +29,7 @@ export const ConfirmOnDeviceBottomSheet = ({ isVisible }: ConfirmOnDeviceBottomS
                 />
                 <Box style={applyStyle(buttonStyle)}>
                     <Button
-                        colorScheme="dangerElevation0"
+                        colorScheme="redElevation0"
                         testID="passphrase-confrim-on-device-close-button"
                         onPress={handleClose}
                     >
