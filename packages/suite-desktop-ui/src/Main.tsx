@@ -1,5 +1,4 @@
 import { Provider as ReduxProvider } from 'react-redux';
-import { Router as RouterProvider } from 'react-router-dom';
 
 import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/electron/renderer';
@@ -26,7 +25,6 @@ import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { ErrorScreen } from 'src/support/suite/screens/ErrorScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
-import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
 import { desktopHandshake } from 'src/actions/suite/suiteActions';
 import * as STORAGE from 'src/actions/suite/constants/storageConstants';
@@ -34,6 +32,7 @@ import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
+import { RouterProvider, createMemoryRouter } from 'react-router-dom';
 
 const Main = () => {
     useTor();
@@ -42,28 +41,26 @@ const Main = () => {
 
     return (
         <ConnectedThemeProvider>
-            <RouterProvider history={history}>
-                <ModalContextProvider>
-                    <ErrorBoundary>
-                        <Autodetect />
-                        <Resize />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler />
-                        <ConnectedIntlProvider>
-                            <FormatterProvider config={formattersConfig}>
-                                <DesktopUpdater>
-                                    <Metadata />
-                                    <ToastContainer />
-                                    <Preloader>
-                                        <AppRouter />
-                                    </Preloader>
-                                </DesktopUpdater>
-                            </FormatterProvider>
-                        </ConnectedIntlProvider>
-                    </ErrorBoundary>
-                </ModalContextProvider>
-            </RouterProvider>
+            <ModalContextProvider>
+                <ErrorBoundary>
+                    <Autodetect />
+                    <Resize />
+                    <Protocol />
+                    <OnlineStatus />
+                    <RouterHandler />
+                    <ConnectedIntlProvider>
+                        <FormatterProvider config={formattersConfig}>
+                            <DesktopUpdater>
+                                <Metadata />
+                                <ToastContainer />
+                                <Preloader>
+                                    <AppRouter />
+                                </Preloader>
+                            </DesktopUpdater>
+                        </FormatterProvider>
+                    </ConnectedIntlProvider>
+                </ErrorBoundary>
+            </ModalContextProvider>
         </ConnectedThemeProvider>
     );
 };

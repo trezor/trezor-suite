@@ -1,6 +1,5 @@
 import { createRoot } from 'react-dom/client';
 import { Provider as ReduxProvider } from 'react-redux';
-import { Router as RouterProvider } from 'react-router-dom';
 import { init as initSentry } from '@sentry/browser';
 
 import { initStore } from 'src/reducers/store';
@@ -19,10 +18,9 @@ import RouterHandler from 'src/support/suite/Router';
 import { ConnectedThemeProvider } from 'src/support/suite/ConnectedThemeProvider';
 import { LoadingScreen } from 'src/support/suite/screens/LoadingScreen';
 import { useDebugLanguageShortcut, useFormattersConfig } from 'src/hooks/suite';
-import history from 'src/support/history';
 import { ModalContextProvider } from 'src/support/suite/ModalContext';
-
-import AppRouter from './support/Router';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRouter } from './support/Router';
 import { useCypress } from './support/useCypress';
 import { FormatterProvider } from '@suite-common/formatters';
 
@@ -34,7 +32,7 @@ const Main = () => {
 
     return (
         <ConnectedThemeProvider>
-            <RouterProvider history={history}>
+            <BrowserRouter>
                 <ModalContextProvider>
                     <ErrorBoundary>
                         <Autodetect />
@@ -53,7 +51,7 @@ const Main = () => {
                         </ConnectedIntlProvider>
                     </ErrorBoundary>
                 </ModalContextProvider>
-            </RouterProvider>
+            </BrowserRouter>
         </ConnectedThemeProvider>
     );
 };

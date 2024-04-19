@@ -1,5 +1,10 @@
 import { memo, ComponentType } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import {
+    createBrowserRouter,
+    RouterProvider,
+    RouteObject,
+    createMemoryRouter,
+} from 'react-router-dom';
 
 import { PageName } from '@suite-common/suite-types';
 
@@ -75,14 +80,12 @@ const components: { [key: string]: ComponentType<any> } = {
     'settings-device': SettingsDevice,
 };
 
-export const AppRouter = memo(() => (
-    <Routes>
-        {routes.map(route => (
-            <Route
-                key={route.name}
-                path={process.env.ASSET_PREFIX + route.pattern}
-                element={<>{components[route.name as PageName]}</>}
-            />
-        ))}
-    </Routes>
-));
+const isDesktop = process.env.SUITE_TYPE === 'desktop';
+
+const routerFactory = isDesktop ? createMemoryRouter : createBrowserRouter;
+
+const router = routerFactory(
+    routes.map((it): RouteObject => ({ ...it, element: <>{components[it.name as PageName]}</> })),
+);
+
+export const AppRouter = memo(() => <RouterProvider router={router} />);

@@ -1,4 +1,4 @@
-import { lazy, memo, Suspense, LazyExoticComponent, ComponentType } from 'react';
+import { lazy, memo, Suspense, LazyExoticComponent, ComponentType, createElement } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import routes from 'src/constants/suite/routes';
@@ -143,7 +143,7 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
     ),
 };
 
-const AppRouter = () => (
+const _AppRouter = () => (
     // inititating strict mode higher would throw an error from react-helmet
     // TODO: replace react-helmet with a maintained alternative
     // strict mode is commented out because of its interplay with compose errors in send form
@@ -154,8 +154,13 @@ const AppRouter = () => (
                 <Route
                     key={route.name}
                     path={process.env.ASSET_PREFIX + route.pattern}
-                    exact={route.exact}
-                    component={components[route.name as PageName]}
+                    element={
+                        components[route.name as PageName] ? (
+                            createElement(components[route.name as PageName], {})
+                        ) : (
+                            <></>
+                        )
+                    }
                 />
             ))}
         </Routes>
@@ -163,4 +168,4 @@ const AppRouter = () => (
     // </StrictMode>
 );
 
-export default memo(AppRouter);
+export const AppRouter = memo(_AppRouter);

@@ -1,4 +1,4 @@
-import { useRouteMatch } from 'react-router-dom';
+import { useMatch } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { CoinLogo } from '@trezor/components';
@@ -20,7 +20,7 @@ const getIcon = (symbol?: Network['symbol']) => symbol && <CoinLogo symbol={symb
 
 const useActionAllowed = (path: string, network?: Network['symbol']) => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const pathMatch = useRouteMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
+    const pathMatch = useMatch(`${process.env.ASSET_PREFIX || ''}${path}`);
 
     return !!pathMatch && selectedAccount?.network?.symbol === network;
 };
