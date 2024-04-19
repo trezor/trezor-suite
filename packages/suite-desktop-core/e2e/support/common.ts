@@ -4,17 +4,21 @@ import { Page, _electron as electron } from '@playwright/test';
 import path from 'path';
 import fs from 'fs';
 
+import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+
 export const launchSuite = async () => {
     const appDir = path.join(__dirname, '../../../suite-desktop');
     const desiredLogLevel = process.env.LOGLEVEL ?? 'error';
+    // TODO: Find out why currently pw fails to see node-bridge so we default to legacy bridge.
+    await TrezorUserEnvLink.api.startBridge();
     const electronApp = await electron.launch({
         cwd: appDir,
         args: [
             path.join(appDir, './dist/app.js'),
             `--log-level=${desiredLogLevel}`,
-            '--bridge-node-test',
+            // '--bridge-node-test',
             // uncomment to use legacy bridge
-            // '--bridge-legacy-test'
+            '--bridge-legacy-test',
         ],
         // when testing electron, video needs to be setup like this. it works locally but not in docker
         // recordVideo: { dir: 'test-results' },
