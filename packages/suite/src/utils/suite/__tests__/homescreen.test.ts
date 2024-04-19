@@ -124,7 +124,7 @@ describe('homescreen', () => {
             expect(isValidImageSize(file, DeviceModelInternal.T1B1)).toBe(true);
         });
 
-        it('should return true for T2T1 device models when file size is less than or equal to 16384 bytes', () => {
+        it('should return true for touch devices when file size is less than or equal to 16384 bytes', () => {
             const file = new File([], 'test.png', {
                 type: 'image/png',
                 lastModified: 0,
@@ -132,9 +132,10 @@ describe('homescreen', () => {
             Object.defineProperty(file, 'size', { value: 16384, configurable: true });
 
             expect(isValidImageSize(file, DeviceModelInternal.T2T1)).toBe(true);
+            expect(isValidImageSize(file, DeviceModelInternal.T3T1)).toBe(true);
         });
 
-        it('should return false for T2T1 device models when file size is greater than 16384 bytes', () => {
+        it('should return false for touch devices models when file size is greater than 16384 bytes', () => {
             const file = new File([], 'test.png', {
                 type: 'image/png',
                 lastModified: 0,
@@ -142,6 +143,7 @@ describe('homescreen', () => {
             Object.defineProperty(file, 'size', { value: 16385, configurable: true });
 
             expect(isValidImageSize(file, DeviceModelInternal.T2T1)).toBe(false);
+            expect(isValidImageSize(file, DeviceModelInternal.T3T1)).toBe(false);
         });
     });
 });

@@ -89,6 +89,16 @@ export const ConfirmOnDevice: StoryFn = () => (
         <StoryColumn minWidth={300}>
             <ConfirmOnDeviceComponent
                 successText="Confirmed"
+                title="Confirm on T2T1"
+                steps={5}
+                activeStep={5}
+                onCancel={() => {}}
+                deviceModelInternal={DeviceModelInternal.T2T1}
+            />
+        </StoryColumn>
+        <StoryColumn minWidth={300}>
+            <ConfirmOnDeviceComponent
+                successText="Confirmed"
                 title="Confirm on T3T1"
                 steps={5}
                 activeStep={5}
