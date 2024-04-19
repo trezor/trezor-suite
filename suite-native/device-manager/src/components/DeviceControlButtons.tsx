@@ -48,7 +48,7 @@ export const DeviceControlButtons = () => {
     return (
         <HStack>
             <Box flex={1}>
-                <Button colorScheme="dangerElevation1" iconLeft="eject" onPress={handleEject}>
+                <Button colorScheme="redElevation1" iconLeft="eject" onPress={handleEject}>
                     <Translation id="deviceManager.deviceButtons.eject" />
                 </Button>
             </Box>

@@ -59,8 +59,8 @@ export const IconButton = ({
 }: IconButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
-    const { textColor, disabledTextColor, backgroundColor, onPressColor } =
-        buttonSchemeToColorsMap[colorScheme];
+    const { disabledColors, ...baseColors } = buttonSchemeToColorsMap[colorScheme];
+    const { backgroundColor, onPressColor, iconColor } = isDisabled ? disabledColors : baseColors;
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
@@ -68,8 +68,6 @@ export const IconButton = ({
         backgroundColor,
         onPressColor,
     );
-
-    const iconColor = isDisabled ? disabledTextColor : textColor;
 
     const handlePressIn = () => setIsPressed(true);
     const handlePressOut = () => setIsPressed(false);

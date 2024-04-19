@@ -35,7 +35,7 @@ export const SettingsViewOnly = () => {
                         <Text>{device?.label}</Text>
                         {device.remember ? (
                             <IconButton
-                                colorScheme="dangerElevation0"
+                                colorScheme="redElevation0"
                                 iconName="close"
                                 onPress={() => handleViewOnlyChange(device)}
                             />
