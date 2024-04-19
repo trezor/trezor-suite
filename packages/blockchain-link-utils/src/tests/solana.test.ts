@@ -115,8 +115,8 @@ describe('solana/utils', () => {
 
     describe('transformTransaction', () => {
         fixtures.transformTransaction.forEach(({ description, input, expectedOutput }) => {
-            it(description, async () => {
-                const result = await transformTransaction(
+            it(description, () => {
+                const result = transformTransaction(
                     input.transaction as SolanaValidParsedTxWithMeta,
                     input.accountAddress,
                     input.tokenAccountsInfos,
