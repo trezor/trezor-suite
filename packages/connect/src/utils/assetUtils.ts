@@ -3,16 +3,15 @@ import { DeviceModelInternal } from '../types';
 export const getAssetByUrl = (url: string) => {
     const fileUrl = url.split('?')[0];
 
-    // Static mappings for non-dynamic assets
-    const staticAssets: { [key: string]: string } = {
-        './data/coins.json': '@trezor/connect-common/files/coins.json',
-        './data/coins-eth.json': '@trezor/connect-common/files/coins-eth.json',
-        './data/bridge/releases.json': '@trezor/connect-common/files/bridge/releases.json',
-        './data/messages/messages.json': '@trezor/protobuf/messages.json',
-    };
-
-    if (staticAssets[fileUrl]) {
-        return require(staticAssets[fileUrl]);
+    switch (fileUrl) {
+        case './data/coins.json':
+            return require('@trezor/connect-common/files/coins.json');
+        case './data/coins-eth.json':
+            return require('@trezor/connect-common/files/coins-eth.json');
+        case './data/bridge/releases.json':
+            return require('@trezor/connect-common/files/bridge/releases.json');
+        case './data/messages/messages.json':
+            return require('@trezor/protobuf/messages.json');
     }
 
     // Handle dynamic firmware URLs using the DeviceModelInternal enum
