@@ -3,6 +3,8 @@ import { xpubs } from '../fixtures/xpubs';
 import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onOnboarding } from '../pageObjects/onboardingActions';
+import { onHome } from '../pageObjects/homeActions';
+import { onTabBar } from '../pageObjects/tabBarActions';
 
 describe('Import all possible accounts in watch only mode.', () => {
     beforeAll(async () => {
@@ -16,9 +18,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import BTC SegWit account', async () => {
-        // first account is imported with Sync button
-        await element(by.id('@screen/mainScrollView')).scrollTo('bottom');
-        await element(by.id('@home/portfolio/sync-coins-button')).tap();
+        await onHome.tapSyncCoinsButton();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
             xpub: xpubs.btc.segwit,
@@ -27,7 +27,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import BTC Legacy SegWit account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
@@ -37,7 +37,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import BTC Taproot account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
@@ -47,7 +47,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import BTC Legacy account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
@@ -57,7 +57,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import LTC account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'ltc',
@@ -67,7 +67,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import Cardano account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'ada',
@@ -77,7 +77,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import DOGE account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'doge',
@@ -87,7 +87,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import ZCash account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'zec',
@@ -97,7 +97,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import XRP account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'xrp',
@@ -107,7 +107,7 @@ describe('Import all possible accounts in watch only mode.', () => {
     });
 
     it('Import ETH account', async () => {
-        await onMyAssets.navigateToMyAssets();
+        await onTabBar.navigateToMyAssets();
         await onMyAssets.tapAddAccountButton();
         await onAccountImport.importAccount({
             networkSymbol: 'eth',
