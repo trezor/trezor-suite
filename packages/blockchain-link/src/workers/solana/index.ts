@@ -9,6 +9,7 @@ import type {
     SolanaValidParsedTxWithMeta,
     ParsedTransactionWithMeta,
     SolanaTokenAccountInfo,
+    TokenDetailByMint,
 } from '@trezor/blockchain-link-types/src/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
@@ -27,7 +28,9 @@ import { confirmTransactionWithResubmit } from './transactionConfirmation';
 
 export type SolanaAPI = Connection;
 
-type Context = ContextType<SolanaAPI>;
+type Context = ContextType<SolanaAPI> & {
+    getTokenMetadata: () => Promise<TokenDetailByMint>;
+};
 type Request<T> = T & Context;
 
 type SignatureWithSlot = {
@@ -128,19 +131,19 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     ) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
-        return (
-            await Promise.all(
-                transactionsPage
-                    .filter(isValidTransaction)
-                    .map(tx =>
-                        solanaUtils.transformTransaction(
-                            tx,
-                            payload.descriptor,
-                            tokenAccountsInfos,
-                        ),
-                    ),
+        const tokenMetadata = await request.getTokenMetadata();
+
+        return transactionsPage
+            .filter(isValidTransaction)
+            .map(tx =>
+                solanaUtils.transformTransaction(
+                    tx,
+                    payload.descriptor,
+                    tokenAccountsInfos,
+                    tokenMetadata,
+                ),
             )
-        ).filter((tx): tx is Transaction => !!tx);
+            .filter((tx): tx is Transaction => !!tx);
     };
 
     const tokenAccounts = await api.getParsedTokenAccountsByOwner(publicKey, {
@@ -179,7 +182,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.value.length > 0) {
-        const tokenMetadata = await solanaUtils.getTokenMetadata();
+        const tokenMetadata = await request.getTokenMetadata();
 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
@@ -349,7 +352,7 @@ const findTokenAccountOwner = (
     );
 
 const subscribeAccounts = async (
-    { connect, state, post }: Context,
+    { connect, state, post, getTokenMetadata }: Context,
     accounts: SubscriptionAccountInfo[],
 ) => {
     const api = await connect();
@@ -385,7 +388,8 @@ const subscribeAccounts = async (
                 return;
             }
 
-            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, []);
+            const tokenMetadata = await getTokenMetadata();
+            const tx = solanaUtils.transformTransaction(lastTx, a.descriptor, [], tokenMetadata);
 
             // For token accounts we need to emit an event with the owner account's descriptor
             // since we don't store token accounts in the user's accounts.
@@ -502,6 +506,26 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         return !!api;
     }
 
+    private tokenPromise?: Promise<TokenDetailByMint>;
+
+    getTokenMetadata(): Promise<TokenDetailByMint> {
+        if (!this.tokenPromise)
+            this.tokenPromise = solanaUtils
+                .getTokenMetadata()
+                .then(tokens => {
+                    this.tokenPromise = Promise.resolve(tokens);
+
+                    return tokens;
+                })
+                .catch(err => {
+                    this.tokenPromise = undefined;
+
+                    return Promise.reject(err);
+                });
+
+        return this.tokenPromise;
+    }
+
     tryConnect(url: string): Promise<SolanaAPI> {
         const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
         this.post({ id: -1, type: RESPONSES.CONNECTED });
@@ -519,6 +543,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
                 connect: () => this.connect(),
                 post: (data: Response) => this.post(data),
                 state: this.state,
+                getTokenMetadata: this.getTokenMetadata.bind(this),
             };
 
             const response = await onRequest(request);

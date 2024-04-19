@@ -544,12 +544,12 @@ export const getTokens = (
     return effects;
 };
 
-export const transformTransaction = async (
+export const transformTransaction = (
     tx: SolanaValidParsedTxWithMeta,
     accountAddress: string,
     tokenAccountsInfos: SolanaTokenAccountInfo[],
-): Promise<Transaction> => {
-    const tokenDetailByMint = await getTokenMetadata();
+    tokenDetailByMint: TokenDetailByMint = {},
+): Transaction => {
     const nativeEffects = getNativeEffects(tx);
 
     const tokens = getTokens(tx, accountAddress, tokenDetailByMint, tokenAccountsInfos);
