@@ -3,6 +3,7 @@ import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
 import { DeviceModelInternal } from '@trezor/connect';
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 const StyledVideo = styled.video`
     width: 100%;
@@ -37,8 +38,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             type,
             loop = false,
             shape,
-            // if no Trezor available, show flagship model
-            deviceModelInternal = DeviceModelInternal.T2T1,
+            deviceModelInternal = DEFAULT_FLAGSHIP_MODEL,
             deviceUnitColor,
             onVideoMouseOver,
             ...props
