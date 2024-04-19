@@ -23,6 +23,10 @@ export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const { device } = useDevice();
     const currentRotation = device?.features?.display_rotation;
 
+    if (typeof currentRotation !== 'number') {
+        return null;
+    }
+
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.DisplayRotation}>
             <TextColumn title={<Translation id="TR_DEVICE_SETTINGS_DISPLAY_ROTATION" />} />
