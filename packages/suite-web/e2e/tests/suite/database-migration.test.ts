@@ -150,7 +150,7 @@ describe('Database migration', () => {
             .should('eq', testData.btcAddress);
         cy.getTestElement('@account-subpage/back').last().click();
 
-        cy.get('body').should('have.css', 'background-color', 'rgb(22, 22, 22)');
+        cy.get('body').should('have.css', 'background-color', 'rgb(23, 23, 23)');
     });
 });
 

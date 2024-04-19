@@ -29,7 +29,7 @@ describe('Language and theme detection', () => {
             },
         });
         cy.contains('Recogida de datos anónimos').should('have.css', 'color', 'rgb(234, 235, 237)');
-        cy.get('body').should('have.css', 'background-color', 'rgb(22, 22, 22)');
+        cy.get('body').should('have.css', 'background-color', 'rgb(23, 23, 23)');
     });
 });
 
