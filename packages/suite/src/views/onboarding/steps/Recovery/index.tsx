@@ -46,7 +46,6 @@ export const RecoveryStep = () => {
         // 1. step where users chooses number of words in case of T1B1
         // In case of T2T1, T3T1, T2B1 show CTA button to start the process
         if (deviceModelInternal === DeviceModelInternal.T1B1) {
-            // T1B1
             return (
                 <RecoveryStepBox
                     key={status} // to properly rerender in translation mode
@@ -63,7 +62,6 @@ export const RecoveryStep = () => {
             );
         }
 
-        // T2T1 and T2B1
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
