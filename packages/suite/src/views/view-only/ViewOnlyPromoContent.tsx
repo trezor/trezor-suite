@@ -4,7 +4,6 @@ import {
     ElevationContext,
     Icon,
     Image,
-    ImageType,
     Text,
     useElevation,
 } from '@trezor/components';
@@ -22,6 +21,7 @@ import { setFlag } from '../../actions/suite/suiteActions';
 import { IllustrativeExample } from './images/IllustrativeExample';
 import { IllustrativeExampleArrow } from './images/IllustrativeExampleArrow';
 import { goto } from 'src/actions/suite/routerActions';
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 const StyledCard = styled(Card)`
     display: flex;
@@ -130,13 +130,8 @@ const ButtonsContainer = styled.div`
 const Top = () => {
     const { elevation } = useElevation();
     const selectedDevice = useSelector(selectDevice);
-    const selectedDeviceModelInternal = selectedDevice?.features?.internal_model;
-
-    const DEFAULT_MODEL = 'TREZOR_T2T1';
-    const device: ImageType =
-        selectedDevice && selectedDeviceModelInternal
-            ? `TREZOR_${selectedDeviceModelInternal}`
-            : DEFAULT_MODEL;
+    const selectedDeviceModelInternal =
+        selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
 
     return (
         <StyledTop $elevation={elevation}>
@@ -144,7 +139,10 @@ const Top = () => {
                 <MacWindow>
                     <WindowGrayTop>
                         <DeviceItem>
-                            <SmallDeviceImage alt="Trezor" image={device} />
+                            <SmallDeviceImage
+                                alt="Trezor"
+                                image={`TREZOR_${selectedDeviceModelInternal}`}
+                            />
 
                             <DeviceDetail label="My Trezor">
                                 <DeviceConnectionText icon="LINK" variant="primary">
@@ -170,7 +168,7 @@ const Top = () => {
                     </WindowChart>
                 </MacWindow>
             </ElevationContext>
-            <LargeDeviceImage alt="Trezor" image={device} />
+            <LargeDeviceImage alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />
         </StyledTop>
     );
 };

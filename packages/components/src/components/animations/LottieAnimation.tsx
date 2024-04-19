@@ -5,6 +5,7 @@ import Lottie, { LottieOptions } from 'lottie-react';
 import { DeviceModelInternal } from '@trezor/connect';
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 const StyledLottie = styled(Lottie)`
     width: 100%;
@@ -26,8 +27,7 @@ export const LottieAnimation = ({
     type,
     loop = false,
     shape,
-    // if no Trezor available, show flagship model
-    deviceModelInternal = DeviceModelInternal.T2T1,
+    deviceModelInternal = DEFAULT_FLAGSHIP_MODEL,
     ...props
 }: LottieAnimationProps) => {
     const [lottieAnimationData, setLottieAnimationData] =
