@@ -6,6 +6,7 @@ import { useSelector } from 'react-redux';
 import * as SystemUI from 'expo-system-ui';
 import * as NavigationBar from 'expo-navigation-bar';
 import { BottomTabBarHeightContext } from '@react-navigation/bottom-tabs';
+import { useRoute } from '@react-navigation/native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color, nativeSpacings } from '@trezor/theme';
@@ -119,6 +120,8 @@ export const Screen = ({
 
     const isMessageBannerDisplayed = useSelector(selectIsAnyBannerMessageActive);
 
+    const { name } = useRoute();
+
     useEffect(() => {
         // this prevents some weird flashing of splash screen on Android during screen transitions
         SystemUI.setBackgroundColorAsync(backgroundCSSColor);
@@ -138,6 +141,7 @@ export const Screen = ({
                 hasPaddingBottom,
                 isMessageBannerDisplayed,
             })}
+            testID={`@screen/${name}`}
         >
             <StatusBar
                 barStyle={barStyle}

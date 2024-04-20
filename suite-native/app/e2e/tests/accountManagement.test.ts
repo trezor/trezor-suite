@@ -15,15 +15,18 @@ describe('Account management', () => {
         await openApp({ newInstance: true });
         await onOnboarding.finishOnboarding();
     });
+
     beforeEach(async () => {
         await restartApp();
         await appIsFullyLoaded();
     });
 
     it('Import account and rename it', async () => {
+        const accountName = 'BTC SegWit';
+        const newAccountName = 'Renamed BTC account';
+
         await onHome.tapSyncCoinsButton();
 
-        const accountName = 'BTC SegWit';
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
             xpub: xpubs.btc.segwit,
@@ -31,19 +34,19 @@ describe('Account management', () => {
         });
 
         await onMyAssets.openAccountDetail({ accountName });
-        await onAccountDetail.tapSettingsButton();
+        await onAccountDetail.openSettings();
 
-        const newAccountName = 'Renamed BTC account';
         await onAccountDetailSettings.renameAccount({ newAccountName });
 
         await detoxExpect(element(by.id('@screen/sub-header/title'))).toHaveText(newAccountName);
     });
 
     it('Import account and remove it', async () => {
-        await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
-
         const accountName = 'BTC Taproot';
+
+        await onTabBar.navigateToMyAssets();
+        await onMyAssets.addAccount();
+
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
             xpub: xpubs.btc.taproot,
@@ -51,7 +54,7 @@ describe('Account management', () => {
         });
 
         await onMyAssets.openAccountDetail({ accountName });
-        await onAccountDetail.tapSettingsButton();
+        await onAccountDetail.openSettings();
         await onAccountDetailSettings.removeAccount();
         await onTabBar.navigateToMyAssets();
 

@@ -28,7 +28,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import BTC Legacy SegWit account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
             xpub: xpubs.btc.legacySegwit,
@@ -38,7 +38,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import BTC Taproot account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
             xpub: xpubs.btc.taproot,
@@ -48,7 +48,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import BTC Legacy account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
             xpub: xpubs.btc.legacy,
@@ -58,7 +58,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import LTC account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'ltc',
             xpub: xpubs.ltc,
@@ -68,7 +68,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import Cardano account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'ada',
             xpub: xpubs.ada,
@@ -78,7 +78,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import DOGE account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'doge',
             xpub: xpubs.doge,
@@ -88,7 +88,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import ZCash account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'zec',
             xpub: xpubs.zec,
@@ -98,7 +98,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import XRP account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'xrp',
             xpub: xpubs.xrp,
@@ -108,7 +108,7 @@ describe('Import all possible accounts in watch only mode.', () => {
 
     it('Import ETH account', async () => {
         await onTabBar.navigateToMyAssets();
-        await onMyAssets.tapAddAccountButton();
+        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'eth',
             xpub: xpubs.eth,

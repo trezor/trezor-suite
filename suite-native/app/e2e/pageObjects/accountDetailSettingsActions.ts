@@ -1,7 +1,6 @@
 class AccountDetailSettingsActions {
     async renameAccount({ newAccountName }: { newAccountName: string }) {
         await element(by.id('@account-detail/settings/edit-button')).tap();
-
         await element(by.id('@account-detail/settings/account-rename/input')).replaceText(
             newAccountName,
         );

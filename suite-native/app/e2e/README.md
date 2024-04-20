@@ -67,3 +67,7 @@ Add filepath to the command e.g. `yarn test:e2e android.emu.debug ./e2e/tests/ac
 #### How to make prebuild for one platform only?
 
 `yarn prebuild:clean --platform android`
+
+#### How to find testIDs for screens?
+
+TestIDs follow patter `@screen/${routeName}`. For `routeName` check a file `suite-native/navigation/src/routes.ts`.
