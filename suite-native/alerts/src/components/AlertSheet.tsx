@@ -108,6 +108,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                         size="large"
                                         colorScheme={primaryButtonVariant}
                                         onPress={handlePressPrimaryButton}
+                                        testID="@alert-sheet/primary-button"
                                     >
                                         {primaryButtonTitle}
                                     </Button>
@@ -116,6 +117,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                             size="large"
                                             colorScheme="tertiaryElevation1"
                                             onPress={handlePressSecondaryButton}
+                                            testID="@alert-sheet/secondary-button"
                                         >
                                             {secondaryButtonTitle}
                                         </Button>

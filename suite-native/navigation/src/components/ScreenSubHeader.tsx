@@ -39,7 +39,12 @@ export const ScreenSubHeader = ({ content, rightIcon, leftIcon }: ScreenSubHeade
             <Box style={applyStyle(iconWrapperStyle)}>{leftIcon || <GoBackIcon />}</Box>
             <Box alignItems="center">
                 {typeof content === 'string' ? (
-                    <Text variant="highlight" adjustsFontSizeToFit numberOfLines={1}>
+                    <Text
+                        variant="highlight"
+                        adjustsFontSizeToFit
+                        numberOfLines={1}
+                        testID="@screen/sub-header/title"
+                    >
                         {content}
                     </Text>
                 ) : (

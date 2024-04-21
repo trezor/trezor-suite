@@ -63,7 +63,12 @@ export const AccountSettingsRemoveCoinButton = ({
     };
 
     return (
-        <Button size="large" onPress={handleShowAlert} colorScheme="dangerElevation0">
+        <Button
+            size="large"
+            onPress={handleShowAlert}
+            colorScheme="dangerElevation0"
+            testID="@account-detail/settings/remove-coin-button"
+        >
             Remove coin
         </Button>
     );

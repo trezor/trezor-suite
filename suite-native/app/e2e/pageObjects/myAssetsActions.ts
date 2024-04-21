@@ -1,10 +1,17 @@
+import { expect as detoxExpect } from 'detox';
+
 class MyAssetsActions {
-    async tapAddAccountButton() {
+    async addAccount() {
         await element(by.id('@screen/mainScrollView')).scrollTo('top');
         await element(by.id('@myAssets/addAccountButton')).tap();
+
+        await detoxExpect(element(by.id('@screen/SelectNetwork'))).toBeVisible();
     }
-    async navigateToMyAssets() {
-        await element(by.id('@tabBar/AccountsStack')).tap();
+
+    async openAccountDetail({ accountName }: { accountName: string }) {
+        await element(by.text(accountName)).tap();
+
+        await detoxExpect(element(by.id('@screen/AccountDetail'))).toBeVisible();
     }
 }
 

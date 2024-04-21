@@ -51,3 +51,23 @@ Some tests use Trezor-user-env to simulate the Trezor device. To make these test
 Android E2E test run on GitHub CI on every PR that is labeled with a `mobile-app` tag. The workflow is described in the [.github/workflows/native-test-e2e-android.yml](../../../.github/workflows/native-test-e2e-android.yml) file.
 
 For easier debugging of failing tests on the CI, the screenshot and screen recording of failed tests are stored as GitHub action artifacts, so you can see how the app behaved and what went wrong.
+
+## FAQ
+
+#### How to open an inspector tools?
+
+1. Shift+M (in terminal where `yarn start` is running)
+2. Select Open React Devtool
+3. `adb reverse tcp:8097 tcp:8097`
+
+#### How to run only one test?
+
+Add filepath to the command e.g. `yarn test:e2e android.emu.debug ./e2e/tests/accountManagement.test.ts`
+
+#### How to make prebuild for one platform only?
+
+`yarn prebuild:clean --platform android`
+
+#### How to find testIDs for screens?
+
+TestIDs follow patter `@screen/${routeName}`. For `routeName` check a file `suite-native/navigation/src/routes.ts`.
