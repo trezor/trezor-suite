@@ -8,8 +8,11 @@ import {
     SendStackRoutes,
     StackProps,
 } from '@suite-native/navigation';
-import { Box, Text, VStack } from '@suite-native/atoms';
+import { HStack, Text, VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import { CryptoAmountFormatter } from '@suite-native/formatters';
+
+import { SendForm } from '../components/SendForm';
 
 export const SendFormScreen = ({
     route: { params },
@@ -27,15 +30,22 @@ export const SendFormScreen = ({
         <Screen
             subheader={<ScreenSubHeader content={'Send form screen'} leftIcon={<GoBackIcon />} />}
         >
-            <VStack flex={1} justifyContent="center" alignItems="center">
-                <Box>
-                    <Text textAlign="center">Send Form Screen mockup of account:</Text>
+            <VStack>
+                <VStack justifyContent="center" alignItems="center">
+                    <Text textAlign="center">Send form prototype of account:</Text>
                     <Text textAlign="center">{account.accountLabel}</Text>
-                </Box>
-                <Text textAlign="center">
-                    This screen will soon contain a form that allows users to send crypto from
-                    Trezor Suite Lite. Fingers crossed.
-                </Text>
+                    <HStack>
+                        <Text textAlign="center">account balance:</Text>
+                        <CryptoAmountFormatter
+                            variant="body"
+                            color="textDefault"
+                            value={account.availableBalance}
+                            network={account.symbol}
+                            isBalance={false}
+                        />
+                    </HStack>
+                </VStack>
+                <SendForm accountKey={accountKey} />
             </VStack>
         </Screen>
     );

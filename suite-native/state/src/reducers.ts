@@ -1,6 +1,7 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
 import {
+    feesReducer,
     prepareAccountsReducer,
     prepareBlockchainReducer,
     prepareDeviceReducer,
@@ -54,6 +55,7 @@ export const prepareRootReducers = async () => {
         transactions: transactionsReducer,
         discovery: discoveryReducer,
         tokenDefinitions: tokenDefinitionsReducer,
+        fees: feesReducer,
     });
 
     const walletPersistedReducer = await preparePersistReducer({

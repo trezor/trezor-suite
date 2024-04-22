@@ -3,14 +3,26 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/validators"
+        },
+        {
+            "path": "../../suite-common/wallet-config"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         {
             "path": "../../suite-common/wallet-types"
         },
+        {
+            "path": "../../suite-common/wallet-utils"
+        },
         { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../device-manager" },
-        { "path": "../navigation" }
+        { "path": "../formatters" },
+        { "path": "../forms" },
+        { "path": "../navigation" },
+        { "path": "../../packages/styles" }
     ]
 }

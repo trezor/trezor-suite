@@ -1,12 +1,12 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import { FeeInfo } from '@suite-common/wallet-types';
-import { Network, networksCompatibility } from '@suite-common/wallet-config';
+import { NetworkSymbol, networksCompatibility } from '@suite-common/wallet-config';
 
 import { blockchainActions } from '../blockchain/blockchainActions';
 
 export type FeesState = {
-    [key in Network['symbol']]: FeeInfo;
+    [key in NetworkSymbol]: FeeInfo;
 };
 
 export type FeesRootState = {
@@ -37,3 +37,6 @@ export const feesReducer = createReducer(initialState, builder => {
         };
     });
 });
+
+export const selectNetworkFeeInfo = (state: FeesRootState, networkSymbol?: NetworkSymbol) =>
+    networkSymbol ? state.wallet.fees[networkSymbol] : null;
