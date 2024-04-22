@@ -1,3 +1,5 @@
+import { Callout } from 'nextra/components';
+
 import { PROTO } from '@trezor/connect/src/constants';
 
 import { ParamsTable } from '../../../components/ParamsTable';
@@ -19,6 +21,11 @@ export const paramDescriptions = {
 };
 
 ## Reset device
+
+<Callout type="error" emoji="️🚫">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
 
 Perform device setup and generate new seed.
 

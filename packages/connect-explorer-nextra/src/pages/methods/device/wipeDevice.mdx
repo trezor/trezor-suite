@@ -1,9 +1,16 @@
+import { Callout } from 'nextra/components';
+
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 
 <ApiPlayground options={[{ title: 'No payload', method: 'wipeDevice' }]} />
 
 ## Wipe device
+
+<Callout type="error" emoji="️🚫">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
 
 Reset device to factory defaults and remove all private data.
 

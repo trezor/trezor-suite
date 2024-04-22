@@ -1,3 +1,5 @@
+import { Callout } from 'nextra/components';
+
 import { PROTO } from '@trezor/connect/src/constants';
 
 import { ParamsTable } from '../../../components/ParamsTable';
@@ -13,6 +15,11 @@ export const paramDescriptions = {
 };
 
 ## Apply flags
+
+<Callout type="error" emoji="️🚫">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
 
 Change device flags. This methods allows you to set a mark on device (number) which must not be lower than
 previously set flag.
