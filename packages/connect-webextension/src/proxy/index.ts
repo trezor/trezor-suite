@@ -59,6 +59,16 @@ const init = (settings: Partial<ConnectSettings> = {}): Promise<void> => {
         }
     });
 
+    const reconnect = () => {
+        // By connecting again we keep the service worker active.
+        cancel();
+        _channel = null;
+        init(settings);
+    };
+
+    _channel.port.onDisconnect.removeListener(reconnect);
+    _channel.port.onDisconnect.addListener(reconnect);
+
     return _channel.init().then(() =>
         _channel.postMessage(
             {
