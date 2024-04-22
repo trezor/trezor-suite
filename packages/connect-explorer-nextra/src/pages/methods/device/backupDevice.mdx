@@ -1,0 +1,50 @@
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground options={[{ title: 'No payload', method: 'backupDevice' }]} />
+
+## Backup device
+
+Start seed backup process on the device. Can only be called if the seed is not backed up yet.
+
+```javascript
+const result = await TrezorConnect.backupDevice(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+No other parameters.
+
+### Example
+
+```javascript
+TrezorConnect.backupDevice({
+    device,
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Seed successfully backed up'
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```
