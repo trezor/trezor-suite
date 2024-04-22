@@ -1,3 +1,5 @@
+import { Callout } from 'nextra/components';
+
 import { ChangeLanguage } from '@trezor/connect/src/types/api/changeLanguage';
 
 import { ParamsTable } from '../../../components/ParamsTable';
@@ -17,6 +19,11 @@ export const paramDescriptions = {
 };
 
 ## Change language
+
+<Callout type="error" emoji="️🚫">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
 
 This method initiates language change.
 

@@ -1,3 +1,5 @@
+import { Callout } from 'nextra/components';
+
 import { ApplySettings } from '@trezor/connect/src/types/api/applySettings';
 
 import { ParamsTable } from '../../../components/ParamsTable';
@@ -21,6 +23,11 @@ export const paramDescriptions = {
 };
 
 ## Apply settings
+
+<Callout type="error" emoji="️🚫">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
 
 Change device settings
 
