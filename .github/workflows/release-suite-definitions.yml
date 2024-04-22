@@ -43,8 +43,9 @@ jobs:
           yarn nfts simple polygon-pos
           yarn coins simple ethereum
           yarn coins simple polygon-pos
-          yarn coins simple solana
           yarn coins simple cardano
+          yarn coins simple solana
+          yarn coins advanced solana
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.event.inputs.environment == 'production' && github.ref == 'refs/heads/develop' }}
@@ -58,8 +59,9 @@ jobs:
           yarn nfts simple polygon-pos
           yarn coins simple ethereum
           yarn coins simple polygon-pos
-          yarn coins simple solana
           yarn coins simple cardano
+          yarn coins simple solana
+          yarn coins advanced solana
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.ref == 'refs/heads/develop' }}
