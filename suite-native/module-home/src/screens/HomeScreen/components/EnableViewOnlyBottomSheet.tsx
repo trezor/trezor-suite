@@ -17,6 +17,7 @@ import {
     setViewOnlyCancelationTimestamp,
 } from '@suite-native/module-settings';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import { useToast } from '@suite-native/toasts';
 
 import { DisconnectedTrezorSvg } from '../../../assets/DisconnectedTrezorSvg';
 
@@ -42,7 +43,7 @@ export const EnableViewOnlyBottomSheet = () => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
-
+    const { showToast } = useToast();
     const [isVisible, setIsVisible] = useState(false);
 
     // show the bottom sheet if:
@@ -91,6 +92,11 @@ export const EnableViewOnlyBottomSheet = () => {
     const handleEnable = () => {
         setIsVisible(false);
         if (device) {
+            showToast({
+                variant: 'default',
+                message: <Translation id={'moduleSettings.viewOnly.toast.enabled'} />,
+                icon: 'check',
+            });
             dispatch(toggleRememberDevice({ device }));
         }
     };

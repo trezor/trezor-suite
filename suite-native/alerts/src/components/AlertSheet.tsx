@@ -73,6 +73,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         onPressSecondaryButton,
         secondaryButtonTitle,
         primaryButtonVariant = 'primary',
+        secondaryButtonVariant = 'tertiaryElevation1',
         appendix,
     } = alert;
 
@@ -105,7 +106,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                 {appendix}
                                 <VStack spacing="medium">
                                     <Button
-                                        size="large"
+                                        size="medium"
                                         colorScheme={primaryButtonVariant}
                                         onPress={handlePressPrimaryButton}
                                         testID="@alert-sheet/primary-button"
@@ -114,8 +115,8 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                     </Button>
                                     {secondaryButtonTitle && (
                                         <Button
-                                            size="large"
-                                            colorScheme="tertiaryElevation1"
+                                            size="medium"
+                                            colorScheme={secondaryButtonVariant}
                                             onPress={handlePressSecondaryButton}
                                             testID="@alert-sheet/secondary-button"
                                         >
