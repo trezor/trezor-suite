@@ -1,3 +1,5 @@
+import { useRouter } from 'next/router';
+
 import type { DocsThemeConfig } from '@trezor/connect-explorer-theme';
 
 const config: DocsThemeConfig = {
@@ -9,8 +11,15 @@ const config: DocsThemeConfig = {
     primaryHue: 140,
     primarySaturation: 40,
     useNextSeoProps() {
+        const { asPath } = useRouter();
+        if (asPath !== '/') {
+            return {
+                titleTemplate: '%s – Trezor Connect',
+            };
+        }
+
         return {
-            titleTemplate: '%s – Trezor Connect',
+            titleTemplate: 'Trezor Connect',
         };
     },
     footer: {
