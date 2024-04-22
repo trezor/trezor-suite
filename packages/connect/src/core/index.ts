@@ -26,6 +26,7 @@ import {
     IFrameCallMessage,
     CoreRequestMessage,
     CoreEventMessage,
+    MethodResponseMessage,
 } from '../events';
 import { getMethod } from './method';
 import { AbstractMethod } from './AbstractMethod';
@@ -219,6 +220,189 @@ const initDevice = async (devicePath?: string) => {
     return device;
 };
 
+const innerRecursive = async (params: {
+    method: AbstractMethod<any>;
+    device: Device;
+    isUsingPopup: boolean;
+    trustedHost: boolean;
+    maxPinTries: number;
+    pinTries: number;
+}): Promise<MethodResponseMessage> => {
+    const { method, device, isUsingPopup, trustedHost, maxPinTries, pinTries } = params;
+    const firmwareException = await method.checkFirmwareRange(isUsingPopup!);
+    if (firmwareException) {
+        if (isUsingPopup) {
+            await getPopupPromise().promise;
+            // show unexpected state information
+            postMessage(createUiMessage(firmwareException, device.toMessageObject()));
+
+            // wait for device disconnect
+            await uiPromises.create(DEVICE.DISCONNECT, device).promise;
+
+            // interrupt process and go to "final" block
+            return Promise.reject(ERRORS.TypedError('Method_Cancel'));
+        }
+
+        // return error if not using popup
+        return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
+    }
+
+    // check if device is in unexpected mode [bootloader, not-initialized, required firmware]
+    const unexpectedMode = device.hasUnexpectedMode(
+        method.allowDeviceMode,
+        method.requireDeviceMode,
+    );
+    if (unexpectedMode) {
+        device.keepSession = false;
+        if (isUsingPopup) {
+            // wait for popup handshake
+            await getPopupPromise().promise;
+            // show unexpected state information
+            postMessage(createUiMessage(unexpectedMode, device.toMessageObject()));
+
+            // wait for device disconnect
+            await uiPromises.create(DEVICE.DISCONNECT, device).promise;
+
+            // interrupt process and go to "final" block
+            return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
+        }
+
+        // throw error if not using popup
+        return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
+    }
+
+    // check and request permissions [read, write...]
+    method.checkPermissions();
+    if (!trustedHost && method.requiredPermissions.length > 0) {
+        // show permissions in UI
+        const permitted = await method.requestPermissions();
+        if (!permitted) {
+            // interrupt process and go to "final" block
+            return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
+        }
+    }
+
+    const deviceNeedsBackup = device.features.needs_backup;
+    if (deviceNeedsBackup && typeof method.noBackupConfirmation === 'function') {
+        const permitted = await method.noBackupConfirmation(!isUsingPopup);
+        if (!permitted) {
+            // interrupt process and go to "final" block
+            return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
+        }
+    }
+
+    if (deviceNeedsBackup) {
+        // wait for popup handshake
+        await getPopupPromise().promise;
+        // show notification
+        postMessage(createUiMessage(UI.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
+    }
+
+    // notify if firmware is outdated but not required
+    if (device.firmwareStatus === 'outdated') {
+        // wait for popup handshake
+        await getPopupPromise().promise;
+        // show notification
+        postMessage(createUiMessage(UI.FIRMWARE_OUTDATED, device.toMessageObject()));
+    }
+
+    // ask for confirmation [export xpub, export info, sign message]
+    if (!trustedHost && typeof method.confirmation === 'function') {
+        // show confirmation in UI
+        const confirmed = await method.confirmation();
+        if (!confirmed) {
+            // interrupt process and go to "final" block
+            return Promise.reject(ERRORS.TypedError('Method_Cancel'));
+        }
+    }
+
+    // Make sure that device will display pin/passphrase
+    const isDeviceUnlocked = device.features.unlocked;
+    try {
+        const invalidDeviceState = method.useDeviceState
+            ? await device.validateState(method.network, method.preauthorized)
+            : undefined;
+        if (invalidDeviceState) {
+            if (isUsingPopup) {
+                // initialize user response promise
+                const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
+                // request action view
+                postMessage(
+                    createUiMessage(UI.INVALID_PASSPHRASE, {
+                        device: device.toMessageObject(),
+                    }),
+                );
+                // wait for user response
+                const uiResp = await uiPromise.promise;
+                if (uiResp.payload) {
+                    // reset internal device state and try again
+                    device.setInternalState(undefined);
+                    await device.initialize(method.useEmptyPassphrase, method.useCardanoDerivation);
+
+                    return innerRecursive(params);
+                }
+                // set new state as requested
+                device.setExternalState(invalidDeviceState);
+            } else {
+                throw ERRORS.TypedError('Device_InvalidState');
+            }
+        }
+    } catch (error) {
+        // catch wrong pin error
+        // PinMatrixAck returns { code: "Failure_PinInvalid", message: "PIN invalid"}
+        if (error.message.includes('PIN invalid') && pinTries < maxPinTries) {
+            postMessage(createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }));
+
+            return innerRecursive({ ...params, pinTries: pinTries + 1 });
+        }
+        // other error
+        // postMessage(ResponseMessage(method.responseID, false, { error }));
+        // closePopup();
+        // clear cached passphrase. it's not valid
+        device.setInternalState(undefined);
+
+        // interrupt process and go to "final" block
+        return Promise.reject(error);
+    }
+
+    // emit additional CHANGE event if device becomes unlocked after authorization
+    // features were automatically updated after PinMatrixAck in DeviceCommands
+    if (!isDeviceUnlocked && device.features.unlocked) {
+        postMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
+    }
+
+    if (method.useUi) {
+        // make sure that popup is opened
+        await getPopupPromise().promise;
+    } else {
+        // popup is not required
+        postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
+    }
+
+    // run method
+    try {
+        const response = await method.run();
+
+        return createResponseMessage(method.responseID, true, response);
+    } catch (error) {
+        return Promise.reject(error);
+    }
+};
+
+/**
+ * This function will run inside Device.run() after device will be acquired and initialized
+ */
+const inner = (method: AbstractMethod<any>, device: Device) => {
+    const options = {
+        trustedHost: DataManager.getSettings('trustedHost'),
+        isUsingPopup: DataManager.getSettings('popup') ?? false,
+        maxPinTries: 3,
+        pinTries: 1,
+    };
+
+    return innerRecursive({ method, device, ...options });
+};
+
 /**
  * Processing incoming message.
  * This method is async that's why it returns Promise but the real response is passed by postMessage(ResponseMessage)
@@ -235,8 +419,6 @@ const onCall = async (message: IFrameCallMessage) => {
     }
 
     const responseID = message.id;
-    const trustedHost = DataManager.getSettings('trustedHost');
-    const isUsingPopup = DataManager.getSettings('popup');
     const origin = DataManager.getSettings('origin')!;
     const env = DataManager.getSettings('env')!;
     const useCoreInPopup = DataManager.getSettings('useCoreInPopup');
@@ -426,182 +608,16 @@ const onCall = async (message: IFrameCallMessage) => {
     }
 
     try {
-        let PIN_TRIES = 1;
-        const MAX_PIN_TRIES = 3;
-        // This function will run inside Device.run() after device will be acquired and initialized
-        const inner = async (): Promise<any> => {
-            const firmwareException = await method.checkFirmwareRange(isUsingPopup!);
-            if (firmwareException) {
-                if (isUsingPopup) {
-                    await getPopupPromise().promise;
-                    // show unexpected state information
-                    postMessage(createUiMessage(firmwareException, device.toMessageObject()));
-
-                    // wait for device disconnect
-                    await uiPromises.create(DEVICE.DISCONNECT, device).promise;
-
-                    // interrupt process and go to "final" block
-                    return Promise.reject(ERRORS.TypedError('Method_Cancel'));
-                }
-
-                // return error if not using popup
-                return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
-            }
-
-            // check if device is in unexpected mode [bootloader, not-initialized, required firmware]
-            const unexpectedMode = device.hasUnexpectedMode(
-                method.allowDeviceMode,
-                method.requireDeviceMode,
-            );
-            if (unexpectedMode) {
-                device.keepSession = false;
-                if (isUsingPopup) {
-                    // wait for popup handshake
-                    await getPopupPromise().promise;
-                    // show unexpected state information
-                    postMessage(createUiMessage(unexpectedMode, device.toMessageObject()));
-
-                    // wait for device disconnect
-                    await uiPromises.create(DEVICE.DISCONNECT, device).promise;
-
-                    // interrupt process and go to "final" block
-                    return Promise.reject(
-                        ERRORS.TypedError('Device_ModeException', unexpectedMode),
-                    );
-                }
-
-                // throw error if not using popup
-                return Promise.reject(ERRORS.TypedError('Device_ModeException', unexpectedMode));
-            }
-
-            // check and request permissions [read, write...]
-            method.checkPermissions();
-            if (!trustedHost && method.requiredPermissions.length > 0) {
-                // show permissions in UI
-                const permitted = await method.requestPermissions();
-                if (!permitted) {
-                    // interrupt process and go to "final" block
-                    return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
-                }
-            }
-
-            const deviceNeedsBackup = device.features.needs_backup;
-            if (deviceNeedsBackup && typeof method.noBackupConfirmation === 'function') {
-                const permitted = await method.noBackupConfirmation(!isUsingPopup);
-                if (!permitted) {
-                    // interrupt process and go to "final" block
-                    return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
-                }
-            }
-
-            if (deviceNeedsBackup) {
-                // wait for popup handshake
-                await getPopupPromise().promise;
-                // show notification
-                postMessage(createUiMessage(UI.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
-            }
-
-            // notify if firmware is outdated but not required
-            if (device.firmwareStatus === 'outdated') {
-                // wait for popup handshake
-                await getPopupPromise().promise;
-                // show notification
-                postMessage(createUiMessage(UI.FIRMWARE_OUTDATED, device.toMessageObject()));
-            }
-
-            // ask for confirmation [export xpub, export info, sign message]
-            if (!trustedHost && typeof method.confirmation === 'function') {
-                // show confirmation in UI
-                const confirmed = await method.confirmation();
-                if (!confirmed) {
-                    // interrupt process and go to "final" block
-                    return Promise.reject(ERRORS.TypedError('Method_Cancel'));
-                }
-            }
-
-            // Make sure that device will display pin/passphrase
-            const isDeviceUnlocked = device.features.unlocked;
-            try {
-                const invalidDeviceState = method.useDeviceState
-                    ? await device.validateState(method.network, method.preauthorized)
-                    : undefined;
-                if (invalidDeviceState) {
-                    if (isUsingPopup) {
-                        // initialize user response promise
-                        const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
-                        // request action view
-                        postMessage(
-                            createUiMessage(UI.INVALID_PASSPHRASE, {
-                                device: device.toMessageObject(),
-                            }),
-                        );
-                        // wait for user response
-                        const uiResp = await uiPromise.promise;
-                        if (uiResp.payload) {
-                            // reset internal device state and try again
-                            device.setInternalState(undefined);
-                            await device.initialize(
-                                method.useEmptyPassphrase,
-                                method.useCardanoDerivation,
-                            );
-
-                            return inner();
-                        }
-                        // set new state as requested
-                        device.setExternalState(invalidDeviceState);
-                    } else {
-                        throw ERRORS.TypedError('Device_InvalidState');
-                    }
-                }
-            } catch (error) {
-                // catch wrong pin error
-                // PinMatrixAck returns { code: "Failure_PinInvalid", message: "PIN invalid"}
-                if (error.message.includes('PIN invalid') && PIN_TRIES < MAX_PIN_TRIES) {
-                    PIN_TRIES++;
-                    postMessage(
-                        createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }),
-                    );
-
-                    return inner();
-                }
-                // other error
-                // postMessage(ResponseMessage(method.responseID, false, { error }));
-                // closePopup();
-                // clear cached passphrase. it's not valid
-                device.setInternalState(undefined);
-
-                // interrupt process and go to "final" block
-                return Promise.reject(error);
-            }
-
-            // emit additional CHANGE event if device becomes unlocked after authorization
-            // features were automatically updated after PinMatrixAck in DeviceCommands
-            if (!isDeviceUnlocked && device.features.unlocked) {
-                postMessage(createDeviceMessage(DEVICE.CHANGED, device.toMessageObject()));
-            }
-
-            if (method.useUi) {
-                // make sure that popup is opened
-                await getPopupPromise().promise;
-            } else {
-                // popup is not required
-                postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
-            }
-
-            // run method
-            try {
-                const response = await method.run();
-                messageResponse = createResponseMessage(method.responseID, true, response);
-            } catch (error) {
-                return Promise.reject(error);
-            }
-        };
-
         // run inner function
         if (_overridePromise) {
             await _overridePromise;
         }
-        await device.run(inner, {
+        const innerAction = () =>
+            inner(method, device).then(response => {
+                messageResponse = response;
+            });
+
+        await device.run(innerAction, {
             keepSession: method.keepSession,
             useEmptyPassphrase: method.useEmptyPassphrase,
             skipFinalReload: method.skipFinalReload,
