@@ -1,72 +1,86 @@
 const process = require('process');
 
+const groups = {
+    api: {
+        name: 'api',
+        pattern:
+            'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity',
+        methods: '',
+    },
+    management: {
+        name: 'management',
+        pattern: 'methods',
+        methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash',
+    },
+    btcSign: {
+        name: 'btc-sign',
+        pattern: 'methods',
+        methods: 'signTransaction',
+    },
+    btcOthers: {
+        name: 'btc-others',
+        pattern: 'methods',
+        methods:
+            'getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
+    },
+    stellar: {
+        name: 'stellar',
+        pattern: 'methods',
+        methods: 'stellarGetAddress,stellarSignTransaction',
+    },
+    cardano: {
+        name: 'cardano',
+        pattern: 'methods',
+        methods:
+            'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
+    },
+    eos: {
+        name: 'eos',
+        pattern: 'methods',
+        methods: 'eosGetPublicKey,eosSignTransaction',
+    },
+    ethereum: {
+        name: 'ethereum',
+        pattern: 'methods',
+        methods:
+            'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
+    },
+    nem: {
+        name: 'nem',
+        pattern: 'methods',
+        methods: 'nemGetAddress,nemSignTransaction',
+    },
+    ripple: {
+        name: 'ripple',
+        pattern: 'methods',
+        methods: 'rippleGetAddress,rippleSignTransaction',
+    },
+    tezos: {
+        name: 'tezos',
+        pattern: 'methods',
+        methods: 'tezosGetAddress,tezosGetPublicKey,tezosSignTransaction',
+    },
+    binance: {
+        name: 'binance',
+        pattern: 'methods',
+        methods: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
+    },
+};
 const daily = {
     firmwares: ['2-latest'],
     tests: [
-        {
-            name: 'api',
-            pattern:
-                'init authorizeCoinjoin cancelCoinjoinAuthorization passphrase unlockPath setBusy override checkFirmwareAuthenticity',
-            methods: '',
-        },
-        {
-            name: 'management',
-            pattern: 'methods',
-            methods: 'applySettings,applyFlags,getFeatures,getFirmwareHash',
-        },
-        {
-            name: 'btc-sign',
-            pattern: 'methods',
-            methods: 'signTransaction',
-        },
-        {
-            name: 'btc-others',
-            pattern: 'methods',
-            methods:
-                'getAccountInfo,getAccountDescriptor,getAddress,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
-        },
-        {
-            name: 'stellar',
-            pattern: 'methods',
-            methods: 'stellarGetAddress,stellarSignTransaction',
-        },
-        {
-            name: 'cardano',
-            pattern: 'methods',
-            methods:
-                'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
-        },
-        {
-            name: 'eos',
-            pattern: 'methods',
-            methods: 'eosGetPublicKey,eosSignTransaction',
-        },
-        {
-            name: 'ethereum',
-            pattern: 'methods',
-            methods:
-                'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
-        },
-        {
-            name: 'nem',
-            pattern: 'methods',
-            methods: 'nemGetAddress,nemSignTransaction',
-        },
-        {
-            name: 'ripple',
-            pattern: 'methods',
-            methods: 'rippleGetAddress,rippleSignTransaction',
-        },
-        {
-            name: 'tezos',
-            pattern: 'methods',
-            methods: 'tezosGetAddress,tezosGetPublicKey,tezosSignTransaction',
-        },
-        {
-            name: 'binance',
-            pattern: 'methods',
-            methods: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
-        },
+        groups.api,
+        groups.management,
+        groups.btcSign,
+        groups.btcOthers,
+        groups.stellar,
+        groups.cardano,
+        groups.eos,
+        groups.ethereum,
+        groups.nem,
+        groups.ripple,
+        groups.tezos,
+        groups.binance,
     ],
 };
 
@@ -80,70 +94,59 @@ const otherDevices = {
     models: ['R', 'T3T1'],
     tests: [
         {
-            name: 'api',
-            pattern: 'authenticateDevice',
-            methods: '',
+            ...groups.api,
             'web-environment': true,
             'node-environment': true,
         },
         {
-            name: 'management',
-            pattern: 'methods',
+            ...groups.management,
+            methods: groups.management.methods
+                .split(',')
+                // getFeatures test is not abstract enough to serve all models
+                .filter(m => m !== 'getFeatures')
+                .join(','),
             'web-environment': false,
             'node-environment': true,
-            methods: 'applySettings,applyFlags,getFirmwareHash',
         },
         {
-            name: 'btc-others',
-            pattern: 'methods',
+            ...groups.btcOthers,
+            methods: groups.btcOthers.methods
+                .split(',')
+                // getAddress (decred) does not work for model R
+                .filter(m => m !== 'getAddress')
+                .join(','),
             'web-environment': false,
             'node-environment': true,
-            methods:
-                'getAccountInfo,getAccountDescriptor,getPublicKey,signMessage,verifyMessage,composeTransaction,getOwnershipId,getOwnershipProof',
         },
         {
-            name: 'stellar',
-            pattern: 'methods',
+            ...groups.stellar,
             'web-environment': false,
             'node-environment': true,
-            methods: 'stellarGetAddress,stellarSignTransaction',
         },
         {
-            name: 'cardano',
-            pattern: 'methods',
+            ...groups.cardano,
             'web-environment': false,
             'node-environment': true,
-            methods:
-                'cardanoGetAddress,cardanoGetNativeScriptHash,cardanoGetPublicKey,cardanoSignTransaction',
         },
         {
-            name: 'ethereum',
-            pattern: 'methods',
+            ...groups.ethereum,
             'web-environment': false,
             'node-environment': true,
-            methods:
-                'ethereumGetAddress,ethereumGetPublicKey,ethereumSignMessage,ethereumSignTransaction,ethereumVerifyMessage,ethereumSignTypedData',
         },
         {
-            name: 'ripple',
-            pattern: 'methods',
+            ...groups.ripple,
             'web-environment': false,
             'node-environment': true,
-            methods: 'rippleGetAddress,rippleSignTransaction',
         },
         {
-            name: 'tezos',
-            pattern: 'methods',
+            ...groups.tezos,
             'web-environment': false,
             'node-environment': true,
-            methods: 'tezosGetAddress,tezosGetPublicKey,tezosSignTransaction',
         },
         {
-            name: 'binance',
-            pattern: 'methods',
+            ...groups.binance,
             'web-environment': false,
             'node-environment': true,
-            methods: 'binanceGetAddress,binanceGetPublicKey,binanceSignTransaction',
         },
     ],
 };
