@@ -4,7 +4,6 @@ import { useLocation } from 'react-router-dom';
 import { useDidUpdate } from '@trezor/react-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { onBeforePopState, onLocationChange } from 'src/actions/suite/routerActions';
-import history from 'src/support/history';
 
 const RouterComponent = () => {
     const routerLoaded = useSelector(state => state.router.loaded);

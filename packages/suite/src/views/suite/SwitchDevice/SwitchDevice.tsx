@@ -12,6 +12,7 @@ import { SwitchDeviceRenderer } from './SwitchDeviceRenderer';
 import { Card } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { motion } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 
 const DeviceItemsWrapper = styled.div`
     display: flex;
@@ -24,6 +25,7 @@ const DeviceItemsWrapper = styled.div`
 export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     const selectedDevice = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
+    const location = useLocation()
 
     // exclude selectedDevice from list, because other devices could have a higher priority
     // and we want to have selectedDevice on top
@@ -36,7 +38,7 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
         sortedDevices.unshift(selectedDevice);
     }
 
-    const backgroundRoute = getBackgroundRoute();
+    const backgroundRoute = getBackgroundRoute(location);
 
     const initial = {
         width: 279,

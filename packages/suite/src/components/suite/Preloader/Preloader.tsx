@@ -19,6 +19,7 @@ import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
+import { useLocation } from 'react-router-dom';
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
@@ -50,10 +51,11 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
 
     const dispatch = useDispatch();
+    const location = useLocation();
 
     useEffect(() => {
-        dispatch(init());
-    }, [dispatch]);
+        dispatch(init(location));
+    }, [dispatch, location]);
 
     // Register keyboard handlers for opening/closing Guide using keyboard
     useGuideKeyboard();

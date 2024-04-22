@@ -11,6 +11,7 @@ import { ForegroundAppProps } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 
 import { DeviceItemLegacy } from './DeviceItemLegacy/DeviceItem';
+import { useLocation } from 'react-router-dom';
 
 const DeviceItemsWrapper = styled.div`
     display: flex;
@@ -23,7 +24,7 @@ export const SwitchDeviceLegacy = ({ cancelable, onCancel }: ForegroundAppProps)
     const selectedDevice = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
     const transport = useSelector(state => state.suite.transport);
-
+    const location = useLocation();
     const isWebUsbTransport = isWebUsb(transport);
 
     // exclude selectedDevice from list, because other devices could have a higher priority
@@ -37,7 +38,7 @@ export const SwitchDeviceLegacy = ({ cancelable, onCancel }: ForegroundAppProps)
         sortedDevices.unshift(selectedDevice);
     }
 
-    const backgroundRoute = getBackgroundRoute();
+    const backgroundRoute = getBackgroundRoute(location);
 
     return (
         <Modal

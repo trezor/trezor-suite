@@ -2,7 +2,6 @@ import { Route } from '@suite-common/suite-types';
 import { WalletParams as CommonWalletParams } from '@suite-common/wallet-types';
 
 import routes, { RouterAppWithParams } from 'src/constants/suite/routes';
-import history from 'src/support/history';
 import { NETWORKS } from 'src/config/wallet';
 
 // Prefix a url with ASSET_PREFIX (eg. name of the branch in CI)
@@ -159,5 +158,5 @@ export const getTopLevelRoute = (url: string) => {
  * Used only in application modal.
  * Returns Route of application beneath the application modal. (real Router value)
  */
-export const getBackgroundRoute = () =>
-    findRoute(history.location.pathname + history.location.hash);
+export const getBackgroundRoute = (location: Location) =>
+    findRoute(location.pathname + location.hash);

@@ -16,8 +16,8 @@ import {
     RouteParams,
 } from 'src/utils/suite/router';
 import { Dispatch, GetState } from 'src/types/suite';
-import history from 'src/support/history';
 import type { AnchorType } from 'src/constants/suite/anchors';
+import { Location, redirect } from 'react-router-dom';
 
 export type RouterAction =
     | {
@@ -87,10 +87,10 @@ export const onAnchorChange = (anchor?: AnchorType) => (dispatch: Dispatch, _get
  * Dispatch initial url
  * Called from `@suite-middlewares/suiteMiddleware`
  */
-export const init = () => (dispatch: Dispatch, getState: GetState) => {
+export const init = (location: Location) => (dispatch: Dispatch, getState: GetState) => {
     // check if location was not already changed by initialRedirection
     if (getState().router.app === 'unknown') {
-        const url = history.location.pathname + history.location.hash;
+        const url = location.pathname + location.hash;
         dispatch(onLocationChange(url));
     }
 };
@@ -109,6 +109,7 @@ export const goto =
         const { params, preserveParams, anchor } = options;
 
         const { suite, router } = getState();
+        const location = { pathname: router.pathname, hash: router.hash };
         const hasRouterLock = suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
         if (hasRouterLock) {
             dispatch(suiteActions.lockRouter(false));
@@ -127,7 +128,7 @@ export const goto =
 
             return;
         }
-        const newUrl = `${urlBase}${preserveParams ? history.location.hash : ''}`;
+        const newUrl = `${urlBase}${preserveParams ? location.hash : ''}`;
         dispatch(onLocationChange(newUrl, anchor));
 
         const route = findRouteByName(routeName);
@@ -138,7 +139,7 @@ export const goto =
             return;
         }
 
-        history.push(newUrl);
+        redirect(newUrl);
     };
 
 /**
@@ -148,10 +149,13 @@ export const goto =
  */
 export const closeModalApp =
     (preserveParams = true) =>
-    (dispatch: Dispatch) => {
+    (dispatch: Dispatch, getState: GetState) => {
         dispatch(suiteActions.lockRouter(false));
 
         const route = getBackgroundRoute();
+
+        const { router } = getState();
+        const location = { pathname: router.pathname, hash: router.hash };
 
         // if user enters route of modal app manually, back would redirect him again to the same route and he would remain stuck
         // so we need a fallback to suite-index
@@ -159,11 +163,11 @@ export const closeModalApp =
             return dispatch(goto('suite-index'));
         }
 
-        if (!preserveParams && history.location.hash.length > 0) {
-            history.push(getPrefixedURL(history.location.pathname));
+        if (!preserveParams && (location.hash?.length ?? 0) > 0) {
+            redirect(getPrefixedURL(location.pathname));
         } else {
-            // + history.location.hash is here to preserve params (eg nth account)
-            dispatch(onLocationChange(history.location.pathname + history.location.hash));
+            // + location.hash is here to preserve params (eg nth account)
+            dispatch(onLocationChange(location.pathname + location.hash));
         }
     };
 
@@ -172,7 +176,10 @@ export const closeModalApp =
  * Redirects to requested modal app or welcome screen if `suite.flags.initialRun` is set to true
  */
 export const initialRedirection = () => (dispatch: Dispatch, getState: GetState) => {
-    const route = findRoute(history.location.pathname + history.location.hash);
+    const { router } = getState();
+    const location = { pathname: router.pathname, hash: router.hash };
+
+    const route = findRoute(location.pathname + location.hash);
 
     const { initialRun } = getState().suite.flags;
     // only do initial redirection of route is valid

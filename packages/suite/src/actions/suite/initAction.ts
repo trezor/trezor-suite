@@ -17,8 +17,9 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { SUITE } from './constants';
 import { onSuiteReady } from './suiteActions';
+import { Location } from 'react-router-dom';
 
-export const init = () => async (dispatch: Dispatch, getState: GetState) => {
+export const init = (location: Location) => async (dispatch: Dispatch, getState: GetState) => {
     const {
         suite: {
             settings: { language },
@@ -80,7 +81,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     );
 
     // 9. dispatch initial location change
-    dispatch(routerActions.init());
+    dispatch(routerActions.init(location));
 
     // 10. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
