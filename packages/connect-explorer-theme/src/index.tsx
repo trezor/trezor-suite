@@ -213,6 +213,7 @@ const InnerLayout = ({
                     >
                         <MDXProvider
                             components={getComponents({
+                                frontMatter,
                                 isRawLayout: themeContext.layout === 'raw',
                                 components: config.components,
                             })}

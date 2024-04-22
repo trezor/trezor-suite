@@ -180,9 +180,11 @@ export const Link = ({ href = '', className, ...props }: AnchorProps) => (
 );
 
 export const getComponents = ({
+    frontMatter,
     isRawLayout,
     components,
 }: {
+    frontMatter: any;
     isRawLayout?: boolean;
     components?: DocsThemeConfig['components'];
 }): Components => {
@@ -194,7 +196,8 @@ export const getComponents = ({
             if (
                 !isRawLayout &&
                 props.className === 'heading' &&
-                props['data-heading-rank'] <= maxRank
+                props['data-heading-rank'] <= maxRank &&
+                frontMatter.auto_sections !== false
             ) {
                 const children = props?.children as ReactNode[];
                 const showInCard = (el: ReactNode) =>
