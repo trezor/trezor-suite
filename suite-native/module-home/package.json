@@ -35,6 +35,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/receive": "workspace:*",
         "@suite-native/theme": "workspace:*",
+        "@suite-native/toasts": "workspace:*",
         "@trezor/styles": "workspace:*",
         "expo-local-authentication": "13.8.0",
         "jotai": "1.9.1",

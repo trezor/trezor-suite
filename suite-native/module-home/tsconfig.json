@@ -29,6 +29,7 @@
         { "path": "../navigation" },
         { "path": "../receive" },
         { "path": "../theme" },
+        { "path": "../toasts" },
         { "path": "../../packages/styles" }
     ]
 }

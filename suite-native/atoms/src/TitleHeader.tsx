@@ -6,7 +6,6 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Text } from './Text';
 import { VStack } from './Stack';
 
-
 type TitleHeaderProps = {
     title?: ReactNode;
     titleVariant?: TypographyStyle;
