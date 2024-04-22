@@ -38,7 +38,7 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install libs
-        run: yarn install
+        run: yarn workspaces focus @suite-native/app
       - name: Build on EAS iOS
         run: eas build
           --platform ios
@@ -67,7 +67,7 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install libs
-        run: yarn install
+        run: yarn workspaces focus @suite-native/app
       - name: Build on EAS Android
         run: eas build
           --platform android
@@ -77,30 +77,30 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native/app
   androidAPK:
-      name: Build Android APK to GH releases
-      environment: production
-      runs-on: ubuntu-latest
-      env:
-        EXPO_PUBLIC_ENVIRONMENT: production
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-      if: ${{ github.event.inputs.PLATFORM == 'Android APK' || github.event.inputs.PLATFORM == 'All' }}
-      steps:
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v4
-          with:
-            node-version-file: ".nvmrc"
-            cache: yarn
-        - name: Setup EAS
-          uses: expo/expo-github-action@v8
-          with:
-            eas-version: latest
-            token: ${{ secrets.EXPO_TOKEN }}
-        - name: Install libs
-          run: yarn install
-        - name: Build on EAS Android
-          run: eas build
-            --platform android
-            --profile productionAPK
-            --non-interactive
-            --message ${{ github.sha }}
-          working-directory: suite-native/app
+    name: Build Android APK to GH releases
+    environment: production
+    runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_ENVIRONMENT: production
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    if: ${{ github.event.inputs.PLATFORM == 'Android APK' || github.event.inputs.PLATFORM == 'All' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install libs
+        run: yarn workspaces focus @suite-native/app
+      - name: Build on EAS Android
+        run: eas build
+          --platform android
+          --profile productionAPK
+          --non-interactive
+          --message ${{ github.sha }}
+        working-directory: suite-native/app

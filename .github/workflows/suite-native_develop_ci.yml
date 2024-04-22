@@ -34,7 +34,7 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
       - name: Install libs
-        run: yarn install
+        run: yarn workspaces focus @suite-native/app
       - name: Build on EAS Android
         run: eas build
           --platform android
