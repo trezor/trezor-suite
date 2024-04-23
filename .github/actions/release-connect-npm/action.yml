@@ -61,9 +61,7 @@ runs:
 
     - name: Set NPM token
       shell: bash
-      env:
-        NPM_TOKEN: ${{ env.NPM_TOKEN }}
-      run: yarn config set npmAuthToken ${{ secrets.NPM_TOKEN }}
+      run: yarn config set npmAuthToken ${{ env.NPM_TOKEN }}
 
     - name: Publish to NPM
       shell: bash
