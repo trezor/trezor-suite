@@ -6,8 +6,8 @@ import { fetchNftData } from './utils/fetchNft';
 import { signData } from './utils/sign';
 import { validateStructure } from './utils/validate';
 import { FILES_PATH, DEFINITIONS_FILENAME_SUFFIX } from './constants';
-import { TokenStructure } from '../src/types';
 import { fetchCoinData } from './utils/fetchCoins';
+import { TokenStructure } from '../src/types';
 
 const main = async () => {
     const argv = process.argv.slice(2);
@@ -15,6 +15,7 @@ const main = async () => {
     const type: string = argv[0];
     const structure: string = argv[1];
     const assetPlatformId: string = argv[2];
+    const fileType: string = argv[3];
 
     if (!type || !['nft', 'coin'].includes(type)) {
         throw new Error('Missing type, please specify "nft" or "coin"');
@@ -28,6 +29,10 @@ const main = async () => {
         throw new Error(
             'Missing platform id. Please enter "ethereum", "polygon-pos" or any other from https://pro-api.coingecko.com/api/v3/asset_platforms',
         );
+    }
+
+    if (!fileType || !['json', 'jws'].includes(fileType)) {
+        throw new Error('Missing file type, please specify "json" or "jws"');
     }
 
     let data: TokenStructure;
@@ -55,17 +60,23 @@ const main = async () => {
 
     validateStructure(data, structure);
 
-    const signedData = signData(data);
-
     const destinationFile = join(
         FILES_PATH,
-        `${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}.jws`,
+        `${assetPlatformId}.${structure}.${type}.${DEFINITIONS_FILENAME_SUFFIX}.${fileType}`,
     );
 
     fs.mkdirSync(FILES_PATH, { recursive: true });
-    fs.writeFileSync(destinationFile, signedData);
 
-    console.log('Signed definitions saved to', destinationFile);
+    if (fileType === 'jws') {
+        const signedData = signData(data);
+        fs.writeFileSync(destinationFile, signedData);
+
+        console.log('JWS definitions saved to', destinationFile);
+    } else {
+        fs.writeFileSync(destinationFile, JSON.stringify(data));
+
+        console.log('JSON definitions saved to', destinationFile);
+    }
 };
 
 main();

@@ -39,13 +39,13 @@ jobs:
         run: |
           yarn install
           cd suite-common/token-definitions
-          yarn nfts simple ethereum
-          yarn nfts simple polygon-pos
-          yarn coins simple ethereum
-          yarn coins simple polygon-pos
-          yarn coins simple cardano
-          yarn coins simple solana
-          yarn coins advanced solana
+          yarn nfts simple ethereum jws
+          yarn nfts simple polygon-pos jws
+          yarn coins simple ethereum jws
+          yarn coins simple polygon-pos jws
+          yarn coins simple cardano jws
+          yarn coins simple solana jws
+          yarn coins advanced solana json
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.event.inputs.environment == 'production' && github.ref == 'refs/heads/develop' }}
@@ -55,13 +55,13 @@ jobs:
         run: |
           yarn install
           cd suite-common/token-definitions
-          yarn nfts simple ethereum
-          yarn nfts simple polygon-pos
-          yarn coins simple ethereum
-          yarn coins simple polygon-pos
-          yarn coins simple cardano
-          yarn coins simple solana
-          yarn coins advanced solana
+          yarn nfts simple ethereum jws
+          yarn nfts simple polygon-pos jws
+          yarn coins simple ethereum jws
+          yarn coins simple polygon-pos jws
+          yarn coins simple cardano jws
+          yarn coins simple solana jws
+          yarn coins advanced solana json
 
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.ref == 'refs/heads/develop' }}
