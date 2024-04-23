@@ -6,10 +6,12 @@ import {
 } from 'react-native-gesture-handler';
 import Animated from 'react-native-reanimated';
 import { useSelector } from 'react-redux';
+import { Pressable } from 'react-native';
 
 import { Box, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDeviceModel } from '@suite-common/wallet-core';
+import { useCopyToClipboard } from '@suite-native/helpers';
 
 import { UnverifiedAddressDeviceHint } from './UnverifiedAddressDeviceHint';
 import { DEVICE_SCREEN_BACKGROUND_COLOR } from '../constants';
@@ -57,6 +59,7 @@ export const UnverifiedAddressDevice = ({
     const [activePage, setActivePage] = useState<1 | 2>(1);
 
     const deviceModel = useSelector(selectDeviceModel);
+    const copyToClipboard = useCopyToClipboard();
 
     const isPaginationEnabled = isCardanoAddress && isPaginationCompatibleDeviceModel(deviceModel);
 
@@ -83,6 +86,10 @@ export const UnverifiedAddressDevice = ({
         setActivePage(activePage === 1 ? 2 : 1);
     };
 
+    const handleCopyAddress = () => {
+        copyToClipboard(address);
+    };
+
     return (
         <VStack spacing="medium" alignItems="center">
             <Box style={applyStyle(deviceFrameStyle)}>
@@ -92,12 +99,14 @@ export const UnverifiedAddressDevice = ({
                             spacing="large"
                             style={applyStyle(deviceScreenStyle, { isPaginationEnabled })}
                         >
-                            <DeviceScreenContent
-                                address={address}
-                                isAddressRevealed={isAddressRevealed}
-                                activePage={activePage}
-                                isPaginationEnabled={isPaginationEnabled}
-                            />
+                            <Pressable onLongPress={isAddressRevealed ? handleCopyAddress : null}>
+                                <DeviceScreenContent
+                                    address={address}
+                                    isAddressRevealed={isAddressRevealed}
+                                    activePage={activePage}
+                                    isPaginationEnabled={isPaginationEnabled}
+                                />
+                            </Pressable>
                             {isPaginationEnabled && (
                                 <DevicePaginationButton
                                     isAddressRevealed={isAddressRevealed}
