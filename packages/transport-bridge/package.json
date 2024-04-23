@@ -13,7 +13,7 @@
         "build:node": "yarn build:node:bin && yarn build:node:module",
         "build:ui": "TS_NODE_PROJECT=\"tsconfig.json\" webpack --config ./webpack/ui.webpack.config.ts",
         "build:js": "yarn g:rimraf -rf dist && yarn build:node && yarn build:ui",
-        "build:bin": "yarn g:rimraf -rf build && yarn pkg ./dist/bin.js --config package.json",
+        "build:bin": "yarn g:rimraf -rf build && yarn pkg ./dist/bin.js --config pkg.config.json --compress GZip",
         "build": "yarn build:js && yarn build:bin",
         "build:lib": "yarn build:js"
     },
@@ -36,18 +36,5 @@
         "react-use": "^17.5.0",
         "styled-components": "^6.1.8",
         "usb": "^2.11.0"
-    },
-    "pkg": {
-        "outputPath": "build",
-        "targets": [
-            "node18-macos-x64",
-            "node18-macos-arm64",
-            "node18-linux-x64",
-            "node18-linux-arm64",
-            "node18-win-x64"
-        ],
-        "assets": [
-            "../../node_modules/usb/**/*"
-        ]
     }
 }
