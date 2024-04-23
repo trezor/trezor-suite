@@ -230,32 +230,34 @@ export class BridgeTransport extends AbstractTransport {
         name,
         data,
         protocol: customProtocol,
-        scheduleActionParams,
     }: AbstractTransportMethodParams<'call'>) {
-        return this.scheduleAction(async signal => {
-            const protocol = customProtocol || bridgeProtocol;
-            const bytes = buildMessage({
-                messages: this.messages,
-                name,
-                data,
-                encode: protocol.encode,
-            });
-            const response = await this.post(`/call`, {
-                params: session,
-                body: bytes.toString('hex'),
-                signal,
-            });
-            if (!response.success) {
-                return response;
-            }
-            const message = await receiveAndParse(
-                this.messages,
-                () => Promise.resolve(Buffer.from(response.payload, 'hex')),
-                protocol,
-            );
+        return this.scheduleAction(
+            async signal => {
+                const protocol = customProtocol || bridgeProtocol;
+                const bytes = buildMessage({
+                    messages: this.messages,
+                    name,
+                    data,
+                    encode: protocol.encode,
+                });
+                const response = await this.post(`/call`, {
+                    params: session,
+                    body: bytes.toString('hex'),
+                    signal,
+                });
+                if (!response.success) {
+                    return response;
+                }
+                const message = await receiveAndParse(
+                    this.messages,
+                    () => Promise.resolve(Buffer.from(response.payload, 'hex')),
+                    protocol,
+                );
 
-            return this.success(message);
-        }, scheduleActionParams);
+                return this.success(message);
+            },
+            { timeout: undefined },
+        );
     }
 
     public send({ session, name, data, protocol }: AbstractTransportMethodParams<'send'>) {
