@@ -178,9 +178,8 @@ describe('Coinmarket buy', () => {
                     .invoke('text')
                     .should('be.equal', 'banxa');
                 cy.wrap(wrapper)
-                    .find('[class*="CoinmarketPaymentType__Text"]')
-                    .invoke('text')
-                    .should('be.equal', 'Bank Transfer');
+                    .find('[class*="CoinmarketPaymentPlainType__Text"]')
+                    .should('contain.text', 'Bank Transfer');
                 cy.wrap(wrapper)
                     .find('[class*="Status__Text"]')
                     .invoke('text')

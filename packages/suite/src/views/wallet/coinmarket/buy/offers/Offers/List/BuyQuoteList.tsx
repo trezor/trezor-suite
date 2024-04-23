@@ -12,6 +12,7 @@ import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmark
 import { BuyQuote } from './BuyQuote';
 import invityAPI from 'src/services/suite/invityAPI';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { BuyQuoteFilter } from './BuyQuoteFilter';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -89,7 +90,8 @@ interface ListProps {
 }
 
 export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
-    const { quotesRequest, timer } = useCoinmarketBuyOffersContext();
+    const { quotesRequest, timer, innerQuotesFilterReducer, innerAlternativeQuotesFilterReducer } =
+        useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
@@ -127,6 +129,13 @@ export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
                             />
                         </OrigAmount>
                     )}
+                    <BuyQuoteFilter
+                        quotesFilterReducer={
+                            !isAlternative
+                                ? innerQuotesFilterReducer
+                                : innerAlternativeQuotesFilterReducer
+                        }
+                    />
                 </Left>
                 {!isAlternative && !timer.isStopped && (
                     <Right>

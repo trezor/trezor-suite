@@ -16,6 +16,7 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { UseOffersProps, ContextValues } from 'src/types/wallet/coinmarketBuyOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
+import { useCoinmarketFilterReducer } from '../../reducers/wallet/useCoinmarketFilterReducer';
 
 export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const timer = useTimer();
@@ -52,10 +53,13 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const { addressVerified, alternativeQuotes, buyInfo, isFromRedirect, quotes, quotesRequest } =
         useSelector(state => state.wallet.coinmarket.buy);
 
+    const innerQuotesFilterReducer = useCoinmarketFilterReducer(quotes);
+    const innerAlternativeQuotesFilterReducer = useCoinmarketFilterReducer(alternativeQuotes);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
         alternativeQuotes,
     );
+
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
     }
@@ -73,14 +77,29 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                 }
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
                 setInnerQuotes(quotes);
+                innerQuotesFilterReducer.dispatch({
+                    type: 'FILTER_SET_PAYMENT_METHODS',
+                    payload: quotes,
+                });
                 setInnerAlternativeQuotes(alternativeQuotes);
+                innerAlternativeQuotesFilterReducer.dispatch({
+                    type: 'FILTER_SET_PAYMENT_METHODS',
+                    payload: alternativeQuotes,
+                });
             } else {
                 setInnerQuotes(undefined);
                 setInnerAlternativeQuotes(undefined);
             }
             timer.reset();
         }
-    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
+    }, [
+        selectedQuote,
+        quotesRequest,
+        timer,
+        account.descriptor,
+        innerQuotesFilterReducer,
+        innerAlternativeQuotesFilterReducer,
+    ]);
 
     useEffect(() => {
         if (!quotesRequest) {
@@ -183,8 +202,11 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         providersInfo: buyInfo?.providerInfos,
         quotesRequest,
         addressVerified,
-        quotes: innerQuotes,
-        alternativeQuotes: innerAlternativeQuotes,
+        quotes: innerQuotesFilterReducer.actions.handleFilterQuotes(innerQuotes),
+        alternativeQuotes:
+            innerAlternativeQuotesFilterReducer.actions.handleFilterQuotes(innerAlternativeQuotes),
+        innerQuotesFilterReducer,
+        innerAlternativeQuotesFilterReducer,
         selectQuote,
         account,
         timer,
