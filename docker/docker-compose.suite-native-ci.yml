@@ -7,3 +7,11 @@ services:
     environment:
       - SDL_VIDEODRIVER=dummy
       - XDG_RUNTIME_DIR=/var/tmp
+
+  trezor-user-env-regtest:
+    container_name: trezor-user-env-regtest
+    image: ghcr.io/trezor/trezor-user-env-regtest
+    ports:
+      - "19021:19021" # internal blockbook port
+      - "19121:19121" # public blockbook port for website dashboard
+      - "18021:18021" # bitcoin-d rpc port

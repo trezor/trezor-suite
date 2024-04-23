@@ -103,8 +103,8 @@ jobs:
         env:
           COMPOSE_FILE: ./docker/docker-compose.suite-native-ci.yml
         run: |
-          docker compose pull trezor-user-env-unix
-          docker compose up -d trezor-user-env-unix
+          docker compose pull trezor-user-env-unix trezor-user-env-regtest
+          docker compose up --detach trezor-user-env-unix trezor-user-env-regtest
 
       - name: Read test .apk from cache
         uses: actions/cache/restore@v4
