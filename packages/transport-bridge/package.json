@@ -33,7 +33,6 @@
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-intl": "^6.6.2",
-        "react-use": "^17.5.0",
         "styled-components": "^6.1.8",
         "usb": "^2.11.0"
     }
