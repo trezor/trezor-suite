@@ -196,7 +196,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
             eas: {
                 projectId,
             },
-            isDetoxBuild: !!process.env.IS_DETOX_BUILD,
+            isDetoxTestBuild: !!process.env.IS_DETOX_BUILD,
         },
     };
 };
