@@ -91,7 +91,9 @@ export class SessionsBackground extends TypedEmitter<{
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
             }
 
-            return { ...result, id: message.id } as HandleMessageResponse<M>;
+            result = JSON.parse(JSON.stringify({ ...result, id: message.id }));
+
+            return result;
         } catch (err) {
             // catch unexpected errors and notify client.
             // background should never stay in "hanged" state
