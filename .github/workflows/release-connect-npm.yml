@@ -21,7 +21,7 @@ jobs:
           submodules: recursive
 
       - name: Deploy to NPM ${{ github.event.inputs.package }}
-        uses: ./.github/actions/release-connect-npm@develop
+        uses: ./.github/actions/release-connect-npm/action.yml@develop
         with:
           deploymentType: beta
           packageName: ${{ github.event.inputs.package }}
