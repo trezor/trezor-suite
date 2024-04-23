@@ -29,38 +29,23 @@ export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 // when parsing tx effects.
 export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
 
-// https://github.com/viaprotocol/tokenlists
-// Aggregated token list with tokens listed on multiple exchanges
-const SOLANA_TOKEN_LIST_URL =
-    'https://cdn.jsdelivr.net/gh/viaprotocol/tokenlists/all_tokens/solana.json';
-
-const LOCAL_TOKEN_METADATA: TokenDetailByMint = {
-    DezXAZ8z7PnrnRJjz3wXBoRgixCa6xjnB7YaB1pPB263: {
-        name: 'Bonk',
-        symbol: 'BONK',
-    },
-};
-
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
-    const tokenListResult: { address: string; name: string; symbol: string }[] = await (
-        await fetch(SOLANA_TOKEN_LIST_URL)
-    ).json();
+    const env = process.env.NODE_ENV === 'development' ? 'develop' : 'stable';
 
-    const tokenMap = tokenListResult.reduce(
-        (acc, token) => ({
-            [token.address]: {
-                name: token.name,
-                symbol: token.symbol,
-            },
-            ...acc,
-        }),
-        {} as TokenDetailByMint,
+    const response = await fetch(
+        `https://data.trezor.io/suite/definitions/${env}/solana.advanced.coin.definitions.v1.json`,
     );
 
-    // Explicitly set Wrapped SOL symbol to WSOL instead of the official 'SOL' which leads to confusion in UI
-    tokenMap[WSOL_MINT].symbol = 'WSOL';
+    if (!response.ok) {
+        throw Error(response.statusText);
+    }
 
-    return { ...LOCAL_TOKEN_METADATA, ...tokenMap };
+    const data: TokenDetailByMint = await response.json();
+
+    // Explicitly set Wrapped SOL symbol to wSol instead of the official 'SOL' which leads to confusion in UI
+    data[WSOL_MINT] = { symbol: 'wSOL', name: 'Wrapped SOL' };
+
+    return data;
 };
 
 export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDetailByMint) => {
