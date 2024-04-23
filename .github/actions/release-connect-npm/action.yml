@@ -41,6 +41,7 @@ runs:
         submodules: recursive
 
     - name: Extract branch name
+      shell: bash
       run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
       id: extract_branch
 
@@ -51,21 +52,26 @@ runs:
         cache: yarn
 
     - name: Install dependencies
+      shell: bash
       run: yarn install --immutable
 
     - name: Check version
-      run: node ./ci/scripts/check-version ${{ inputs.packageName }} ${{ steps.extract_branch.outputs.branch }} ${{ inputs.deploymentType }}
+      shell: bash
+      run: node ./ci/scripts/check-version.js ${{ inputs.packageName }} ${{ steps.extract_branch.outputs.branch }} ${{ inputs.deploymentType }}
 
     - name: Set NPM token
+      shell: bash
       env:
-        NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NPM_TOKEN: ${{ env.NPM_TOKEN }}
       run: yarn config set npmAuthToken ${{ secrets.NPM_TOKEN }}
 
     - name: Publish to NPM
+      shell: bash
       run: |
         cd ./packages/${{ inputs.packageName }}
         yarn npm publish --tag ${{ inputs.deploymentType }} --access public
 
     - name: Cleanup
+      shell: bash
       if: always()
       run: yarn config unset npmAuthToken
