@@ -1,26 +1,23 @@
 import { ReactNode } from 'react';
 
 import { atom } from 'jotai';
-import { RequireAllOrNone } from 'type-fest';
 
 import { IconName } from '@suite-common/icons';
 import { ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
-export type Alert = RequireAllOrNone<
-    {
-        title: ReactNode;
-        description: ReactNode;
-        icon?: IconName;
-        pictogramVariant?: PictogramVariant;
-        primaryButtonTitle: ReactNode;
-        primaryButtonVariant?: ButtonColorScheme;
-        onPressPrimaryButton?: () => void;
-        secondaryButtonTitle?: ReactNode;
-        onPressSecondaryButton?: () => void;
-        appendix?: ReactNode;
-    },
-    'secondaryButtonTitle' | 'onPressSecondaryButton'
->;
+export type Alert = {
+    title: ReactNode;
+    description: ReactNode;
+    icon?: IconName;
+    pictogramVariant?: PictogramVariant;
+    primaryButtonTitle: ReactNode;
+    primaryButtonVariant?: ButtonColorScheme;
+    onPressPrimaryButton?: () => void;
+    secondaryButtonTitle?: ReactNode;
+    secondaryButtonVariant?: ButtonColorScheme;
+    onPressSecondaryButton?: () => void;
+    appendix?: ReactNode;
+};
 
 export const alertAtom = atom<Alert | null>(null);
 
