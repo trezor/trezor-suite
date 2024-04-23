@@ -1,36 +1,23 @@
-import { useNavigation } from '@react-navigation/native';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { Button } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import {
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
-    RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-    RootStackParamList,
-} from '@suite-native/navigation';
+import { createDeviceInstance, selectDevice } from '@suite-common/wallet-core';
 
 import { useDeviceManager } from '../hooks/useDeviceManager';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes.PassphraseForm,
-    RootStackParamList
->;
-
 export const AddHiddenWalletButton = () => {
-    const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
+
+    const device = useSelector(selectDevice);
 
     const { setIsDeviceManagerVisible } = useDeviceManager();
 
     const handleAddHiddenWallet = () => {
+        if (!device) return;
+
         setIsDeviceManagerVisible(false);
-
-        navigation.navigate(RootStackRoutes.PassphraseStack, {
-            screen: PassphraseStackRoutes.PassphraseForm,
-        });
-
-        // await dispatch(createDeviceInstance({ device: instance }));
+        dispatch(createDeviceInstance({ device }));
     };
 
     return (

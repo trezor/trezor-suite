@@ -18,6 +18,7 @@ import {
     selectDeviceRequestedPin,
     selectIsDeviceConnectedAndAuthorized,
     selectIsNoPhysicalDeviceConnected,
+    selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
 import { selectIsOnboardingFinished } from '@suite-native/module-settings';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -36,7 +37,7 @@ export const useHandleDeviceConnection = () => {
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const { isBiometricsOverlayVisible } = useIsBiometricsOverlayVisible();
-
+    const isDeviceUsingPassphrase = useSelector(selectIsDeviceUsingPassphrase);
     const navigation = useNavigation<NavigationProp>();
     const dispatch = useDispatch();
 
@@ -50,9 +51,14 @@ export const useHandleDeviceConnection = () => {
             !isBiometricsOverlayVisible
         ) {
             requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
-            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                screen: ConnectDeviceStackRoutes.ConnectingDevice,
-            });
+
+            // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
+            // post auth navigation is handled in @suite-native/module-passphrase for custom UX flow.
+            if (!isDeviceUsingPassphrase) {
+                navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
+                    screen: ConnectDeviceStackRoutes.ConnectingDevice,
+                });
+            }
         }
     }, [
         dispatch,
@@ -62,6 +68,7 @@ export const useHandleDeviceConnection = () => {
         isDeviceConnectedAndAuthorized,
         isBiometricsOverlayVisible,
         navigation,
+        isDeviceUsingPassphrase,
     ]);
 
     // In case that the physical device is disconnected, redirect to the home screen and

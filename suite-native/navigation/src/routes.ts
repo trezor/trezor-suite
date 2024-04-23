@@ -45,6 +45,8 @@ export enum ConnectDeviceStackRoutes {
 
 export enum PassphraseStackRoutes {
     PassphraseForm = 'PassphraseForm',
+    PassphraseConfirmOnDevice = 'PassphraseConfirmOnDevice',
+    PassphraseLoading = 'PassphraseLoading',
 }
 
 export enum DevUtilsStackRoutes {
