@@ -1,8 +1,6 @@
 import { LogBox } from 'react-native';
 
-import Constants from 'expo-constants';
-
-const IS_DETOX_BUILD: boolean = Constants.expoConfig?.extra?.isDetoxBuild;
+import { isDetoxTestBuild } from '@suite-native/config';
 
 // Ignore log notification by message
 LogBox.ignoreLogs([
@@ -10,6 +8,6 @@ LogBox.ignoreLogs([
 ]);
 
 // LogBox has to be disabled in the Detox test build, because UI is being hidden behind it and Detox cannot interact with it.
-if (IS_DETOX_BUILD) {
+if (isDetoxTestBuild()) {
     LogBox.ignoreAllLogs();
 }

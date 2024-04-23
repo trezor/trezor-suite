@@ -67,11 +67,17 @@ export const portfolioTrackerMainnets = sortNetworks(
     getMainnets()
         .filter(network => networkSymbolsWhitelistMap.mainnet.includes(network.symbol))
         .filter(network => !portfolioTrackerBlacklist.includes(network.symbol)),
-);
+).map(network => network.symbol);
 
-export const portfolioTrackerTestnets = sortNetworks(
-    getTestnets().filter(network => networkSymbolsWhitelistMap.testnet.includes(network.symbol)),
-);
+const getPortfolioTrackerTestnets = () => {
+    return sortNetworks(
+        getTestnets().filter(network =>
+            networkSymbolsWhitelistMap.testnet.includes(network.symbol),
+        ),
+    ).map(network => network.symbol);
+};
+
+export const portfolioTrackerTestnets = getPortfolioTrackerTestnets();
 
 export const portfolioTrackerSupportedNetworks = [
     ...portfolioTrackerMainnets,
