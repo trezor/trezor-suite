@@ -2,9 +2,9 @@ import React from 'react';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 
-const Container = styled.div<{ hasLeftAddon?: boolean }>`
+const Container = styled.div<{ $hasLeftAddon?: boolean }>`
     display: flex;
-    justify-content: ${({ hasLeftAddon }) => (hasLeftAddon ? 'space-between' : 'flex-end')};
+    justify-content: ${({ $hasLeftAddon }) => ($hasLeftAddon ? 'space-between' : 'flex-end')};
     align-items: flex-end;
     gap: ${spacingsPx.xs};
     min-height: 30px;
@@ -53,7 +53,7 @@ export const TopAddons = ({
     }
 
     return (
-        <Container hasLeftAddon={!!addonLeft}>
+        <Container $hasLeftAddon={!!addonLeft}>
             {addonLeft && <LeftAddon>{addonLeft}</LeftAddon>}
             {isWithRightLabel && (
                 <RightAddonWrapper>
