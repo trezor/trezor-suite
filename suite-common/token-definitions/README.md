@@ -13,10 +13,11 @@ Scripts:
     -   `simple` (used for Suite)
     -   `advanced` (planned to be used for Solana token symbols and names)
 -   and chain
-
     -   `ethereum`, `polygon-pos`, `solana`,...
-
--   e.g. `yarn coins advanced solana` and you get `jws` in format:
+-   and file type
+    -   `jws` for signed data
+    -   `json` for unsigned data
+-   e.g. `yarn coins advanced solana json` and you get `json` in format:
 
 ```
 {
@@ -40,7 +41,7 @@ Scripts:
 }
 ```
 
--   e.g. `yarn nfts simple polygon-pos` and you get `jws` in format:
+-   e.g. `yarn nfts simple polygon-pos jws` and you get `jws` in format:
 
 ```
 [
