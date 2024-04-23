@@ -1,9 +1,11 @@
 package io.trezor.rnusb
 
+import android.app.PendingIntent
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
 import android.content.Context
+import android.content.Intent
 import android.content.IntentFilter
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
@@ -23,6 +25,7 @@ import java.nio.ByteBuffer
 
 const val ON_DEVICE_CONNECT_EVENT_NAME = "onDeviceConnect"
 const val ON_DEVICE_DISCONNECT_EVENT_NAME = "onDeviceDisconnect"
+const val ACTION_USB_PERMISSION = "io.trezor.rnusb.USB_PERMISSION"
 
 // TODO: get interface index by claimed interface
 const val INTERFACE_INDEX = 0
@@ -95,14 +98,14 @@ class ReactNativeUsbModule : Module() {
                 Log.d("ReactNativeUsbModule", "New connection detected checking permission for device: $device")
 
                 if (usbManager.hasPermission(device)) {
-                    // TODO: request permissions only for devices which we are interested, one approach could be to pass list of them from JS during new WebUSB class creation
-                    // Or maybe it's not necessary to check due to definition in AndroidManifest.xml ???
                     Log.d("ReactNativeUsbModule", "onDeviceConnected: $device")
                     val webUsbDevice = getWebUSBDevice(device)
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else {
                     Log.d("ReactNativeUsbModule", "No permission for connected device: $device")
+                    val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE)
+                    usbManager.requestPermission(device, permissionIntent)
                 }
             }
             val onDeviceDisconnect: OnDeviceDisconnect = { deviceName ->

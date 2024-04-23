@@ -39,25 +39,6 @@ async function setCustomConfigAsync(config, androidManifest) {
         });
     }
 
-    // check if the meta-data with the android.hardware.usb.action.USB_DEVICE_ATTACHED resource already exists
-    const existingMetaData = mainActivity['meta-data']?.find(
-        ({ $: { 'android:name': name } }) =>
-            name === 'android.hardware.usb.action.USB_DEVICE_ATTACHED',
-    );
-
-    if (!existingMetaData) {
-        if (!mainActivity['meta-data']) {
-            mainActivity['meta-data'] = [];
-        }
-
-        mainActivity['meta-data']?.push({
-            $: {
-                'android:name': 'android.hardware.usb.action.USB_DEVICE_ATTACHED',
-                'android:resource': '@xml/device_filter',
-            },
-        });
-    }
-
     return androidManifest;
 }
 
