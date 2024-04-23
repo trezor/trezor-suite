@@ -3,9 +3,14 @@ import { RequestLoginSchema } from '@trezor/connect/src/types/api/requestLogin';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import login from '../../../data/methods/other/login.ts';
 
 <ApiPlayground
-    options={[{ title: 'RequestLoginSchema', method: 'requestLogin', schema: RequestLoginSchema }]}
+    options={[
+        { title: 'Synchronous', legacyConfig: login[0] },
+        { title: 'Asynchronous', legacyConfig: login[1] },
+        { title: 'Advanced schema', method: 'requestLogin', schema: RequestLoginSchema },
+    ]}
 />
 
 export const paramDescriptions = {

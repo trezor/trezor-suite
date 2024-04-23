@@ -5,9 +5,13 @@ import { PROTO } from '@trezor/connect/src/constants';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import applyFlags from '../../../data/methods/management/applyFlags.ts';
 
 <ApiPlayground
-    options={[{ title: 'PROTO.ApplyFlags', method: 'applyFlags', schema: PROTO.ApplyFlags }]}
+    options={[
+        { title: 'Apply flags', legacyConfig: applyFlags[0] },
+        { title: 'Advanced schema', method: 'applyFlags', schema: PROTO.ApplyFlags },
+    ]}
 />
 
 export const paramDescriptions = {

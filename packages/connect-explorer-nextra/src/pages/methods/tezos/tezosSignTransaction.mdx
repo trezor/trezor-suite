@@ -3,11 +3,13 @@ import { TezosSignTransaction } from '@trezor/connect/src/types/api/tezos';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/tezos/signTransaction.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Sign transaction', legacyConfig: signTransaction[0] },
         {
-            title: 'TezosSignTransaction',
+            title: 'Advanced schema',
             method: 'tezosSignTransaction',
             schema: TezosSignTransaction,
         },

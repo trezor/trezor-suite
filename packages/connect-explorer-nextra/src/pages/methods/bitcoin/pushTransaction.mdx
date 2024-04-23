@@ -4,8 +4,13 @@ import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
 
+import pushTransaction from '../../../data/methods/bitcoin/pushTransaction.ts';
+
 <ApiPlayground
-    options={[{ title: 'PushTransaction', method: 'pushTransaction', schema: PushTransaction }]}
+    options={[
+        { title: 'Push transaction', legacyConfig: pushTransaction[0] },
+        { title: 'Advanced schema', method: 'pushTransaction', schema: PushTransaction },
+    ]}
 />
 
 export const paramDescriptions = {

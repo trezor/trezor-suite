@@ -3,10 +3,12 @@ import { NEMSignTransaction } from '@trezor/connect/src/types/api/nem';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/nem/signTransaction.ts';
 
 <ApiPlayground
     options={[
-        { title: 'NEMSignTransaction', method: 'nemSignTransaction', schema: NEMSignTransaction },
+        { title: 'Sign transaction', legacyConfig: signTransaction[0] },
+        { title: 'Advanced schema', method: 'nemSignTransaction', schema: NEMSignTransaction },
     ]}
 />
 

@@ -3,9 +3,13 @@ import { VerifyMessage } from '@trezor/connect/src/types/api/bitcoin';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import verifyMessage from '../../../data/methods/bitcoin/verifyMessage.ts';
 
 <ApiPlayground
-    options={[{ title: 'VerifyMessage', method: 'verifyMessage', schema: VerifyMessage }]}
+    options={[
+        { title: 'Verify message', legacyConfig: verifyMessage[0] },
+        { title: 'Advanced schema', method: 'verifyMessage', schema: VerifyMessage },
+    ]}
 />
 
 export const paramDescriptions = {

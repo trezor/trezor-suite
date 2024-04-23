@@ -5,9 +5,13 @@ import { ApplySettings } from '@trezor/connect/src/types/api/applySettings';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import applySettings from '../../../data/methods/management/applySettings.ts';
 
 <ApiPlayground
-    options={[{ title: 'ApplySettings', method: 'applySettings', schema: ApplySettings }]}
+    options={[
+        { title: 'Apply settings', legacyConfig: applySettings[0] },
+        { title: 'Advanced schema', method: 'applySettings', schema: ApplySettings },
+    ]}
 />
 
 export const paramDescriptions = {

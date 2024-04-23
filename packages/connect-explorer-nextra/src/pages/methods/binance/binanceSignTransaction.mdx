@@ -3,11 +3,15 @@ import { BinanceSignTransaction } from '@trezor/connect/src/types/api/binance';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/binance/signTransaction.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Transfer', legacyConfig: signTransaction[0] },
+        { title: 'Place order', legacyConfig: signTransaction[1] },
+        { title: 'Cancel order', legacyConfig: signTransaction[2] },
         {
-            title: 'BinanceSignTransaction',
+            title: 'Advanced schema',
             method: 'binanceSignTransaction',
             schema: BinanceSignTransaction,
         },

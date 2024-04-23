@@ -5,11 +5,13 @@ import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import getAddress from '../../../data/methods/solana/getAddress.ts';
 
 <ApiPlayground
     options={[
-        { title: 'GetAddress', method: 'solanaGetAddress', schema: GetAddress },
-        { title: 'Bundle(GetAddress)', method: 'solanaGetAddress', schema: Bundle(GetAddress) },
+        { title: 'Export address', legacyConfig: getAddress[0] },
+        { title: 'Advanced schema', method: 'solanaGetAddress', schema: GetAddress },
+        { title: 'Advanced bundle', method: 'solanaGetAddress', schema: Bundle(GetAddress) },
     ]}
 />
 

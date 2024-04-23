@@ -5,9 +5,14 @@ import { ChangeLanguage } from '@trezor/connect/src/types/api/changeLanguage';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import changeLanguage from '../../../data/methods/management/changeLanguage.ts';
 
 <ApiPlayground
-    options={[{ title: 'ChangeLanguage', method: 'changeLanguage', schema: ChangeLanguage }]}
+    options={[
+        { title: 'Using select', legacyConfig: changeLanguage[0] },
+        { title: 'Using binary', legacyConfig: changeLanguage[1] },
+        { title: 'Advanced schema', method: 'changeLanguage', schema: ChangeLanguage },
+    ]}
 />
 
 export const paramDescriptions = {

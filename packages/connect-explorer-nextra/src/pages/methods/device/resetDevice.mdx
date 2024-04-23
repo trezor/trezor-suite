@@ -5,9 +5,13 @@ import { PROTO } from '@trezor/connect/src/constants';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import resetDevice from '../../../data/methods/management/resetDevice.ts';
 
 <ApiPlayground
-    options={[{ title: 'ResetDevice', method: 'resetDevice', schema: PROTO.ResetDevice }]}
+    options={[
+        { title: 'Reset device', legacyConfig: resetDevice[0] },
+        { title: 'Advanced schema', method: 'resetDevice', schema: PROTO.ResetDevice },
+    ]}
 />
 
 export const paramDescriptions = {

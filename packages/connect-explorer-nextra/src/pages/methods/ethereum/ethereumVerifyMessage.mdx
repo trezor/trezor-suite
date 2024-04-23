@@ -3,11 +3,13 @@ import { EthereumVerifyMessage } from '@trezor/connect/src/types/api/ethereum';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import verifyMessage from '../../../data/methods/ethereum/verifyMessage.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Verify message', legacyConfig: verifyMessage[0] },
         {
-            title: 'EthereumVerifyMessage',
+            title: 'Advanced schema',
             method: 'ethereumVerifyMessage',
             schema: EthereumVerifyMessage,
         },

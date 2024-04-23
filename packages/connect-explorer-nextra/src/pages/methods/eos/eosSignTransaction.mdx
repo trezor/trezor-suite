@@ -3,10 +3,12 @@ import { EosSignTransaction } from '@trezor/connect/src/types/api/eos';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/eos/signTransaction.ts';
 
 <ApiPlayground
     options={[
-        { title: 'EosSignTransaction', method: 'eosSignTransaction', schema: EosSignTransaction },
+        { title: 'Sign transaction', legacyConfig: signTransaction[0] },
+        { title: 'Advanced schema', method: 'eosSignTransaction', schema: EosSignTransaction },
     ]}
 />
 

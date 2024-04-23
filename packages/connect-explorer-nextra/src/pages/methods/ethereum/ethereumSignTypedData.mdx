@@ -8,16 +8,18 @@ import {
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTypedData from '../../../data/methods/ethereum/signTypedData.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Sign typed data', legacyConfig: signTypedData[0] },
         {
-            title: 'EthereumSignTypedData',
+            title: 'Advanced schema',
             method: 'ethereumSignTypedData',
             schema: EthereumSignTypedData,
         },
         {
-            title: 'EthereumSignTypedHash',
+            title: 'Advanced schema (hash)',
             method: 'ethereumSignTypedData',
             schema: EthereumSignTypedHash,
         },

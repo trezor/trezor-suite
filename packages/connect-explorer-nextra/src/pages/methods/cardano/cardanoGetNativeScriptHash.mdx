@@ -3,11 +3,13 @@ import { CardanoGetNativeScriptHash } from '@trezor/connect/src/types/api/cardan
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import getNativeScriptHash from '../../../data/methods/cardano/getNativeScriptHash.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Get native script hash', legacyConfig: getNativeScriptHash[0] },
         {
-            title: 'CardanoGetNativeScriptHash',
+            title: 'Advanced schema',
             method: 'cardanoGetNativeScriptHash',
             schema: CardanoGetNativeScriptHash,
         },

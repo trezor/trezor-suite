@@ -5,11 +5,14 @@ import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import getPublicKey from '../../../data/methods/bitcoin/getPublicKey.ts';
 
 <ApiPlayground
     options={[
-        { title: 'GetPublicKey', method: 'getPublicKey', schema: GetPublicKey },
-        { title: 'Bundle(GetPublicKey)', method: 'getPublicKey', schema: Bundle(GetPublicKey) },
+        { title: 'Export public key', legacyConfig: getPublicKey[0] },
+        { title: 'Export multiple public keys', legacyConfig: getPublicKey[1] },
+        { title: 'Advanced schema', method: 'getPublicKey', schema: GetPublicKey },
+        { title: 'Advanced bundle', method: 'getPublicKey', schema: Bundle(GetPublicKey) },
     ]}
 />
 

@@ -5,12 +5,14 @@ import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import cipherkey from '../../../data/methods/other/cipherkey.ts';
 
 <ApiPlayground
     options={[
-        { title: 'CipherKeyValue', method: 'cipherKeyValue', schema: CipherKeyValue },
+        { title: 'Symmetrically encrypt / decrypt value', legacyConfig: cipherkey[0] },
+        { title: 'Advanced schema', method: 'cipherKeyValue', schema: CipherKeyValue },
         {
-            title: 'Bundle(CipherKeyValue)',
+            title: 'Advanced bundle',
             method: 'cipherKeyValue',
             schema: Bundle(CipherKeyValue),
         },
