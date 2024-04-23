@@ -6,16 +6,18 @@ import {
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/cardano/signTransaction.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Sign transaction', legacyConfig: signTransaction[0] },
         {
-            title: 'CardanoSignTransaction',
+            title: 'Advanced schema',
             method: 'cardanoSignTransaction',
             schema: CardanoSignTransaction,
         },
         {
-            title: 'CardanoSignTransactionExtended',
+            title: 'Advanced schema (extended)',
             method: 'cardanoSignTransaction',
             schema: CardanoSignTransactionExtended,
         },

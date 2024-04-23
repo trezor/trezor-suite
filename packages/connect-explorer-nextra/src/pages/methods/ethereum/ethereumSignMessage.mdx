@@ -3,11 +3,13 @@ import { EthereumSignMessage } from '@trezor/connect/src/types/api/ethereum';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signMessage from '../../../data/methods/ethereum/signMessage.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Sign message', legacyConfig: signMessage[0] },
         {
-            title: 'EthereumSignMessage',
+            title: 'Advanced schema',
             method: 'ethereumSignMessage',
             schema: EthereumSignMessage,
         },

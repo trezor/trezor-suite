@@ -5,11 +5,14 @@ import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import getAddress from '../../../data/methods/bitcoin/getAddress.ts';
 
 <ApiPlayground
     options={[
-        { title: 'GetAddress', method: 'getAddress', schema: GetAddress },
-        { title: 'Bundle(GetAddress)', method: 'getAddress', schema: Bundle(GetAddress) },
+        { title: 'Export address', legacyConfig: getAddress[0] },
+        { title: 'Export multiple addresses', legacyConfig: getAddress[1] },
+        { title: 'Advanced schema', method: 'getAddress', schema: GetAddress },
+        { title: 'Advanced bundle', method: 'getAddress', schema: Bundle(GetAddress) },
     ]}
 />
 

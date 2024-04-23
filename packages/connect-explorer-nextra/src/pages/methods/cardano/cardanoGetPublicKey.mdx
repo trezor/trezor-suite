@@ -5,16 +5,19 @@ import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import getPublicKey from '../../../data/methods/cardano/getPublicKey.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Export public key', legacyConfig: getPublicKey[0] },
+        { title: 'Export multiple public keys', legacyConfig: getPublicKey[1] },
         {
-            title: 'CardanoGetPublicKey',
+            title: 'Advanced schema',
             method: 'cardanoGetPublicKey',
             schema: CardanoGetPublicKey,
         },
         {
-            title: 'Bundle(CardanoGetPublicKey)',
+            title: 'Advanced bundle',
             method: 'cardanoGetPublicKey',
             schema: Bundle(CardanoGetPublicKey),
         },

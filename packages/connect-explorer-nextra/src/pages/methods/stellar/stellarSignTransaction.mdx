@@ -3,11 +3,13 @@ import { StellarSignTransaction } from '@trezor/connect/src/types/api/stellar';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/stellar/signTransaction.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Sign transaction', legacyConfig: signTransaction[0] },
         {
-            title: 'StellarSignTransaction',
+            title: 'Advanced schema',
             method: 'stellarSignTransaction',
             schema: StellarSignTransaction,
         },

@@ -5,11 +5,14 @@ import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import getAddress from '../../../data/methods/nem/getAddress.ts';
 
 <ApiPlayground
     options={[
-        { title: 'NEMGetAddress', method: 'nemGetAddress', schema: NEMGetAddress },
-        { title: 'Bundle(NEMGetAddress)', method: 'nemGetAddress', schema: Bundle(NEMGetAddress) },
+        { title: 'Export address', legacyConfig: getAddress[0] },
+        { title: 'Export multiple addresses', legacyConfig: getAddress[1] },
+        { title: 'Advanced schema', method: 'nemGetAddress', schema: NEMGetAddress },
+        { title: 'Advanced bundle', method: 'nemGetAddress', schema: Bundle(NEMGetAddress) },
     ]}
 />
 

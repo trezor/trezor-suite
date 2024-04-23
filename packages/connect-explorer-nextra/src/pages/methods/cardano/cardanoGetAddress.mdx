@@ -5,12 +5,14 @@ import { Param } from '../../../components/Param';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import getAddress from '../../../data/methods/cardano/getAddress.ts';
 
 <ApiPlayground
     options={[
-        { title: 'CardanoGetAddress', method: 'cardanoGetAddress', schema: CardanoGetAddress },
+        { title: 'Export address', legacyConfig: getAddress[0] },
+        { title: 'Advanced schema', method: 'cardanoGetAddress', schema: CardanoGetAddress },
         {
-            title: 'Bundle(CardanoGetAddress)',
+            title: 'Advanced bundle',
             method: 'cardanoGetAddress',
             schema: Bundle(CardanoGetAddress),
         },

@@ -3,8 +3,14 @@ import { SignMessage } from '@trezor/connect/src/types/api/bitcoin';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signMessage from '../../../data/methods/bitcoin/signMessage.ts';
 
-<ApiPlayground options={[{ title: 'SignMessage', method: 'signMessage', schema: SignMessage }]} />
+<ApiPlayground
+    options={[
+        { title: 'Sign message', legacyConfig: signMessage[0] },
+        { title: 'Advanced schema', method: 'signMessage', schema: SignMessage },
+    ]}
+/>
 
 export const paramDescriptions = {
     path: 'minimum length is `3`. [read more](/details/path)',

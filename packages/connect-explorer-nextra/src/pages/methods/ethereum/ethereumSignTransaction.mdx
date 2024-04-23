@@ -5,11 +5,17 @@ import { EthereumSignTransaction } from '@trezor/connect/src/types/api/ethereum'
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction_erc20_known from '../../../data/methods/ethereum/signTransaction-erc20-known.ts';
+import signTransaction_erc20_unknown from '../../../data/methods/ethereum/signTransaction-erc20-unknown.ts';
+import signTransaction from '../../../data/methods/ethereum/signTransaction.ts';
 
 <ApiPlayground
     options={[
+        { title: 'ERC20 known token', legacyConfig: signTransaction_erc20_known[0] },
+        { title: 'ERC20 unknown token', legacyConfig: signTransaction_erc20_unknown[0] },
+        { title: 'Regular', legacyConfig: signTransaction[0] },
         {
-            title: 'EthereumSignTransaction',
+            title: 'Advanced schema',
             method: 'ethereumSignTransaction',
             schema: EthereumSignTransaction,
         },

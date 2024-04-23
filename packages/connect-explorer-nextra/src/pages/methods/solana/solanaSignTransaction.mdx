@@ -3,11 +3,13 @@ import { SolanaSignTransaction } from '@trezor/connect/src/types/api/solana';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/solana/signTransaction.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Sign transaction', legacyConfig: signTransaction[0] },
         {
-            title: 'SolanaSignTransaction',
+            title: 'Advanced schema',
             method: 'solanaSignTransaction',
             schema: SolanaSignTransaction,
         },

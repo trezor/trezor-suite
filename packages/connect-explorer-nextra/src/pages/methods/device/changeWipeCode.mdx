@@ -5,10 +5,12 @@ import { PROTO } from '@trezor/connect/src/constants';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import changeWipeCode from '../../../data/methods/management/changeWipeCode.ts';
 
 <ApiPlayground
     options={[
-        { title: 'PROTO.ChangeWipeCode', method: 'changeWipeCode', schema: PROTO.ChangeWipeCode },
+        { title: 'Change wipe code', legacyConfig: changeWipeCode[0] },
+        { title: 'Advanced schema', method: 'changeWipeCode', schema: PROTO.ChangeWipeCode },
     ]}
 />
 

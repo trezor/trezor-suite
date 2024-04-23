@@ -3,11 +3,13 @@ import { RippleSignTransaction } from '@trezor/connect/src/types/api/ripple';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import signTransaction from '../../../data/methods/ripple/signTransaction.ts';
 
 <ApiPlayground
     options={[
+        { title: 'Sign transaction', legacyConfig: signTransaction[0] },
         {
-            title: 'RippleSignTransaction',
+            title: 'Advanced schema',
             method: 'rippleSignTransaction',
             schema: RippleSignTransaction,
         },

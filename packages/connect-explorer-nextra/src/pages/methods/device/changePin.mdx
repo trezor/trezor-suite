@@ -5,9 +5,13 @@ import { PROTO } from '@trezor/connect/src/constants';
 import { ParamsTable } from '../../../components/ParamsTable';
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
 import { ApiPlayground } from '../../../components/ApiPlayground';
+import changePin from '../../../data/methods/management/changePin.ts';
 
 <ApiPlayground
-    options={[{ title: 'PROTO.ChangePin', method: 'changePin', schema: PROTO.ChangePin }]}
+    options={[
+        { title: 'Change PIN', legacyConfig: changePin[0] },
+        { title: 'Advanced schema', method: 'changePin', schema: PROTO.ChangePin },
+    ]}
 />
 
 export const paramDescriptions = {
