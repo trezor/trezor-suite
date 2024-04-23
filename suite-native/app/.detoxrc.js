@@ -24,13 +24,13 @@ module.exports = {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/debug/app-debug.apk',
             build: 'cd android && IS_DETOX_BUILD=true ./gradlew :app:assembleDebug :app:assembleAndroidTest -DtestBuildType=debug',
-            reversePorts: [8081, 21325],
+            reversePorts: [8081, 21325, 19121],
         },
         'android.release': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
             build: 'cd android && IS_DETOX_BUILD=true ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
-            reversePorts: [21325],
+            reversePorts: [21325, 19121],
         },
     },
     devices: {

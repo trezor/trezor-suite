@@ -13,4 +13,6 @@ export const xpubs = {
     doge: 'dgub8sbe5Mi8LA4dXB9zPfLZW8armvaRkaqT37y6xfT1QA12ErATDf8iGEG8y7kamAnjLuEk9AMpTMMp6EK9Vjp2HHx91xdDEmWYpmD49fpoUYF',
     zec: 'xpub6CQdEahwhKRSn9BFc7oWpzNoeqG2ygv3xdofyk7He93NMjvDpGvcQ2o4dZfBNXpqzKydaHp5rhXRT3zYhRYJAErXxarH37f9hgRZ6UPiqfg',
     xrp: 'r9TCDt3HmszcsnPrUrnvpynvLgaGQom9x3',
+    regtest:
+        'vpub5ZjRPuuMiEQnbwEDi9jtH1FaJMajZW78uZ1t3RJXKhxyMoTnPraKwGxiDo9SguDYvSieqjoLJxW5n2t9156RR1oeqRnURuftNZTzejBc4pa',
 };
