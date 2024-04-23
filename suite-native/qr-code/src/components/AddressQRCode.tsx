@@ -1,8 +1,9 @@
-import { Alert, Share } from 'react-native';
+import { Alert, Pressable, Share } from 'react-native';
 
-import { Box, Text, Button, VStack, HStack } from '@suite-native/atoms';
+import { Text, Button, VStack, HStack } from '@suite-native/atoms';
 import { useCopyToClipboard } from '@suite-native/helpers';
 import { useTranslate, Translation } from '@suite-native/intl';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { QRCode } from './QRCode';
 
@@ -10,9 +11,15 @@ type AddressQRCodeProps = {
     address: string;
 };
 
+const addressContainer = prepareNativeStyle(() => ({
+    justifyContent: 'center',
+    alignItems: 'center',
+}));
+
 export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
     const copyToClipboard = useCopyToClipboard();
     const { translate } = useTranslate();
+    const { applyStyle } = useNativeStyles();
 
     const handleCopyAddress = async () => {
         await copyToClipboard(address, translate('qrCode.addressCopied'));
@@ -31,11 +38,11 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
     return (
         <VStack spacing="large">
             <QRCode data={address} />
-            <Box alignItems="center" justifyContent="center">
+            <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
                 <Text variant="titleSmall" textAlign="center">
                     {address}
                 </Text>
-            </Box>
+            </Pressable>
             <HStack spacing="small" justifyContent="center">
                 <Button
                     size="small"

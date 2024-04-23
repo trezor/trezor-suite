@@ -79,15 +79,14 @@ const textStyle = prepareNativeStyle<TextStyleProps>((utils, { variant, color, t
     textAlign,
 }));
 
-export const BaseText = ({
+export const Text = ({
     variant = 'body',
     color = 'textDefault',
     textAlign = 'left',
-    TextComponent = DefaultTextComponent,
     style,
     children,
     ...otherProps
-}: TextProps & { TextComponent: typeof RNText }) => {
+}: TextProps) => {
     const { applyStyle } = useNativeStyles();
     const maxFontSizeMultiplier = variantToMaxFontSizeMultiplier[variant];
 
@@ -101,7 +100,3 @@ export const BaseText = ({
         </DefaultTextComponent>
     );
 };
-
-export const Text = (props: TextProps) => (
-    <BaseText {...props} TextComponent={DefaultTextComponent} />
-);

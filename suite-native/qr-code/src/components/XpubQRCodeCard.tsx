@@ -1,5 +1,9 @@
+import { Pressable } from 'react-native';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Box, Card, Text } from '@suite-native/atoms';
+import { Card, Text } from '@suite-native/atoms';
+import { useCopyToClipboard } from '@suite-native/helpers';
+import { useTranslate } from '@suite-native/intl';
 
 import { QRCode } from './QRCode';
 import { XpubOverlayWarning } from './XpubQRCodeWarningOverlay';
@@ -14,6 +18,12 @@ const xpubCardStyle = prepareNativeStyle(utils => ({
     marginTop: utils.spacings.small,
 }));
 
+const xpubCardTextContainerStyle = prepareNativeStyle(utils => ({
+    marginTop: utils.spacings.small,
+    alignItems: 'center',
+    justifyContent: 'center',
+}));
+
 export const XpubQRCodeCard = ({
     isXpubShown,
     qrCodeData,
@@ -22,15 +32,24 @@ export const XpubQRCodeCard = ({
     qrCodeData: string;
 }) => {
     const { applyStyle } = useNativeStyles();
+    const copyToClipboard = useCopyToClipboard();
+    const { translate } = useTranslate();
+
+    const handleCopy = () => {
+        copyToClipboard(qrCodeData, translate('qrCode.addressCopied'));
+    };
 
     return (
         <Card style={applyStyle(xpubCardStyle)}>
             {isXpubShown ? (
                 <>
                     <QRCode data={qrCodeData} />
-                    <Box margin="small" alignItems="center" justifyContent="center">
+                    <Pressable
+                        onLongPress={handleCopy}
+                        style={applyStyle(xpubCardTextContainerStyle)}
+                    >
                         <Text textAlign="center">{qrCodeData}</Text>
-                    </Box>
+                    </Pressable>
                 </>
             ) : (
                 <XpubOverlayWarning />
