@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { getEnv, isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
+import { getEnv, isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import { Button, Card, ListItem, VStack } from '@suite-native/atoms';
 import {
     Screen,
@@ -38,11 +38,11 @@ export const DevUtilsScreen = ({
                             See Component Demo
                         </Button>
                     )}
-                    {!isProduction() && <RenderingUtils />}
+                    <FeatureFlags />
                     {isDevelopOrDebugEnv() && (
                         <>
+                            <RenderingUtils />
                             <DevicePassphraseSwitch />
-                            <FeatureFlags />
                             <DiscoveryCoinsFilter />
                         </>
                     )}

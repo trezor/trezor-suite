@@ -6,6 +6,7 @@ const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsPassphraseEnabled]: 'Passphrase',
     [FeatureFlagEnum.IsViewOnlyEnabled]: 'View-only',
     [FeatureFlagEnum.IsSendEnabled]: 'Send',
+    [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {

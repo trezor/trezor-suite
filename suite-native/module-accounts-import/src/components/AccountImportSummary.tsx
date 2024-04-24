@@ -10,6 +10,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo } from '@trezor/connect';
 import { portfolioTrackerSupportedNetworks } from '@suite-native/config';
 import { Translation } from '@suite-native/intl';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { AccountImportSummaryForm } from './AccountImportSummaryForm';
 import { AccountAlreadyImported } from './AccountAlreadyImported';
@@ -20,6 +21,7 @@ type AccountImportDetailProps = {
 };
 
 export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImportDetailProps) => {
+    const [isRegtestEnabled] = useFeatureFlag(FeatureFlag.IsRegtestEnabled);
     const account = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccountByDescriptorAndNetworkSymbol(
             state,
@@ -28,9 +30,9 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
         ),
     );
 
-    const isAccountImportSupported = portfolioTrackerSupportedNetworks.some(
-        network => network.symbol === networkSymbol,
-    );
+    const isAccountImportSupported =
+        portfolioTrackerSupportedNetworks.some(symbol => symbol === networkSymbol) ||
+        (networkSymbol === 'regtest' && isRegtestEnabled);
 
     if (!isAccountImportSupported) {
         return (
