@@ -13,7 +13,7 @@ import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { TestProps } from '../types';
 import { HStack } from '../Stack';
 
-export type ButtonSize = 'small' | 'medium' | 'large';
+export type ButtonSize = 'extraSmall' | 'small' | 'medium' | 'large';
 export type ButtonColorScheme =
     | 'primary'
     | 'secondary'
@@ -164,6 +164,11 @@ export const buttonSchemeToColorsMap = {
 } as const satisfies Record<ButtonColorScheme, ButtonColorSchemeColors>;
 
 const sizeToDimensionsMap = {
+    extraSmall: {
+        minHeight: 36,
+        paddingVertical: nativeSpacings.small,
+        paddingHorizontal: 12,
+    },
     small: {
         minHeight: 40,
         paddingVertical: 10,
@@ -182,12 +187,14 @@ const sizeToDimensionsMap = {
 } as const satisfies Record<ButtonSize, NativeStyleObject>;
 
 export const buttonToTextSizeMap = {
+    extraSmall: 'hint',
     small: 'hint',
     medium: 'body',
     large: 'body',
 } as const satisfies Record<ButtonSize, TypographyStyle>;
 
 const buttonToIconSizeMap = {
+    extraSmall: 'medium',
     small: 'medium',
     medium: 'mediumLarge',
     large: 'large',
