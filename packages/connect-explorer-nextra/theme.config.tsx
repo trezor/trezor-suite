@@ -14,12 +14,12 @@ const config: DocsThemeConfig = {
         const { asPath } = useRouter();
         if (asPath !== '/') {
             return {
-                titleTemplate: '%s – Trezor Connect',
+                titleTemplate: '%s – Trezor Connect Explorer',
             };
         }
 
         return {
-            titleTemplate: 'Trezor Connect',
+            titleTemplate: 'Trezor Connect Explorer',
         };
     },
     footer: {

@@ -5,6 +5,7 @@ import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import { ThemeProvider } from 'styled-components';
 import type { AppProps } from 'next/app';
 import { useTheme } from 'next-themes';
+import Head from 'next/head';
 
 import { intermediaryTheme } from '@trezor/components';
 
@@ -33,6 +34,9 @@ const ThemeComponent = ({ Component, pageProps }: AppProps) => {
 export default function MyApp(props: AppProps) {
     return (
         <NextThemeProvider attribute="class" disableTransitionOnChange>
+            <Head>
+                <link rel="icon" type="image/png" href="favicon.png" />
+            </Head>
             <ThemeComponent {...props} />
         </NextThemeProvider>
     );
