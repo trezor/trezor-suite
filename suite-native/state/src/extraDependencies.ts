@@ -27,6 +27,8 @@ const transportsPerDeviceType = {
 
 const transports = transportsPerDeviceType[deviceType];
 
+// const transports = [new NativeTransportBLE()];
+
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {
         // using all enabled networks even those current device does not support,
