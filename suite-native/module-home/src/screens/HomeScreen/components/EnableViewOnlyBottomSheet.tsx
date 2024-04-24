@@ -35,7 +35,7 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
 export const EnableViewOnlyBottomSheet = () => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
-    const isViewOnlyModeFeatureEnabled = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
+    const [isViewOnlyModeFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
     const { isBiometricsInitialSetupFinished } = useIsBiometricsInitialSetupFinished();
     const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
     const device = useSelector(selectDevice);
