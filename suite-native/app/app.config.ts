@@ -149,6 +149,8 @@ const getPlugins = (): ExpoPlugins => {
                       },
                   ],
               ]),
+
+        ['react-native-ble-plx', {}],
         // These should come last
         './plugins/withRemoveXcodeLocalEnv.js',
         './plugins/withRemoveiOSNotificationEntitlement.js',

@@ -33,6 +33,7 @@
         "@suite-native/storage": "workspace:*",
         "@suite-native/tokens": "workspace:*",
         "@trezor/transport-native": "workspace:*",
+        "@trezor/transport-native-ble": "workspace:*",
         "@trezor/utils": "workspace:*",
         "expo-device": "6.0.2",
         "react": "18.2.0",
