@@ -361,6 +361,28 @@ export const getDeviceInstances = (
 };
 
 /**
+ * Returns all device instances sorted by `instance` field for all connected and remembered devices
+ * * @param {TrezorDevice[]} devices
+ * @returns {AcquiredDevice[][]}
+ */
+export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): AcquiredDevice[][] =>
+    devices.reduce((deviceGroups, device) => {
+        if (!device.features || !device.id) {
+            return deviceGroups;
+        }
+        const existingGroupIndex = deviceGroups.findIndex(group => group[0].id === device.id);
+        if (existingGroupIndex === -1) {
+            // If the device ID is not yet in the accumulator, add a new group
+            const newGroup = getDeviceInstances(device, devices);
+            if (newGroup.length > 0) {
+                deviceGroups.push(newGroup);
+            }
+        }
+
+        return deviceGroups;
+    }, [] as AcquiredDevice[][]);
+
+/**
  * Returns first available instance for each device sorted by priority
  * @param {TrezorDevice[]} devices
  * @returns {TrezorDevice[]}
