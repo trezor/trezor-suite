@@ -496,7 +496,7 @@ const fixtures: {
                 response: {
                     data: {
                         address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
-                        erc20Contract: {
+                        contractInfo: {
                             contract: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
                             name: 'Grzegorz Brzęczyszczykiewicz',
                             symbol: 'GRZBRZ',
@@ -511,7 +511,7 @@ const fixtures: {
             empty: false,
             history: {},
             misc: {
-                erc20Contract: {
+                contractInfo: {
                     type: 'ERC20',
                     contract: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
                     name: 'Grzegorz Brzęczyszczykiewicz',

@@ -21,6 +21,8 @@ import type {
     MempoolTxidFilterEntries,
     Token as BlockbookToken,
     TokenTransfer as BlockbookTokenTransfer,
+    AddressAlias,
+    ContractInfo,
     StakingPool,
 } from './blockbook-api';
 
@@ -103,7 +105,8 @@ export interface AccountInfo {
     transactions?: Transaction[];
     nonce?: string;
     tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155)[];
-    erc20Contract?: ERC20;
+    contractInfo?: ContractInfo;
+    addressAliases?: { [key: string]: AddressAlias };
     stakingPools?: StakingPool[];
 }
 

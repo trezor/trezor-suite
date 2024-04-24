@@ -1,7 +1,12 @@
 import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
-import type { TokenTransfer as BlockbookTokenTransfer } from './blockbook-api';
+import type {
+    AddressAlias,
+    TokenTransfer as BlockbookTokenTransfer,
+    ContractInfo,
+    StakingPool,
+} from './blockbook-api';
 
 /* Common types used in both params and responses */
 
@@ -182,8 +187,9 @@ export interface AccountInfo {
     misc?: {
         // EVM
         nonce?: string;
-        erc20Contract?: TokenInfo;
+        contractInfo?: ContractInfo;
         stakingPools?: StakingPool[];
+        addressAliases?: { [key: string]: AddressAlias };
         // XRP
         sequence?: number;
         reserve?: string;
