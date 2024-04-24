@@ -60,4 +60,19 @@ export default withNextra({
         // Problems with transpiling
         ignoreBuildErrors: true,
     },
+    rewrites() {
+        if (process.env.NODE_ENV !== 'development') {
+            return {};
+        }
+
+        return {
+            // Proxy to local server with popup
+            fallback: [
+                {
+                    source: '/:path*',
+                    destination: `http://localhost:8089/:path*`,
+                },
+            ],
+        };
+    },
 });
