@@ -104,6 +104,9 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
         // override Account data
         const rbfAccount = {
             ...account,
+            // on EVM, when send tx is pending, balance has not been changed yet
+            availableBalance:
+                account.networkType === 'ethereum' ? account.balance : account.availableBalance,
             utxo: rbfParams.utxo.concat(availableUtxo),
             // make sure that the exact same change output will be picked by @trezor/connect > hd-wallet during the tx compose process
             // fallback to default if change address is not present
