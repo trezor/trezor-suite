@@ -61,7 +61,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             this?.logger?.debug('new descriptors from api', descriptors);
             // 2. we signal this to sessions background
             this.sessionsClient.enumerateDone({
-                descriptors,
+                // TODO: descriptors are somewhere mutated which causes problems on mobile BLE
+                descriptors: descriptors.map(d => ({ ...d })),
             });
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients
