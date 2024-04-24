@@ -109,6 +109,17 @@ export interface FeeStats {
     averageFeePerKb: number;
     decilesFeePerKb: number[];
 }
+export interface StakingPool {
+    contract: string;
+    pendingBalance: string;
+    pendingDepositedBalance: string;
+    depositedBalance: string;
+    withdrawTotalAmount: string;
+    claimableAmount: string;
+    restakedReward: string;
+    autocompoundBalance: string;
+    name: string;
+}
 export interface ContractInfo {
     type: string;
     contract: string;

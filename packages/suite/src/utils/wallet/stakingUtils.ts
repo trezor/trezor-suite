@@ -5,7 +5,11 @@ import { fromWei } from 'web3-utils';
 export const getAccountEverstakeStakingPool = (
     account?: Account,
 ): StakingPoolExtended | undefined => {
-    const pool = account?.stakingPools?.find(pool => pool.name === 'Everstake');
+    if (account?.networkType !== 'ethereum') {
+        return;
+    }
+
+    const pool = account?.misc?.stakingPools?.find(pool => pool.name === 'Everstake');
 
     if (!pool) return;
 

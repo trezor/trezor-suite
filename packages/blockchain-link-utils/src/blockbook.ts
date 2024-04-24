@@ -344,6 +344,7 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     let misc: AccountInfo['misc'] = {};
     if (typeof payload.nonce === 'string') {
         misc.nonce = payload.nonce;
+        misc.stakingPools = payload.stakingPools;
     }
     if (payload.erc20Contract) {
         const token = transformTokenInfo([
@@ -392,7 +393,6 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         },
         misc,
         page,
-        stakingPools: payload?.stakingPools,
     };
 };
 

@@ -119,7 +119,7 @@ const unstake = async ({
             throw new Error(accountInfo.payload.error);
         }
 
-        const { autocompoundBalance } = accountInfo.payload.stakingPools?.[0] ?? {};
+        const { autocompoundBalance } = accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
         if (!autocompoundBalance) {
             throw new Error('Failed to get the autocompound balance');
         }
@@ -188,7 +188,7 @@ const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs)
         }
 
         const { withdrawTotalAmount, claimableAmount } =
-            accountInfo.payload.stakingPools?.[0] ?? {};
+            accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
         if (!withdrawTotalAmount || !claimableAmount) {
             throw new Error('Failed to get the claimable or withdraw total amount');
         }
