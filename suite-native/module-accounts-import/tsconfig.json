@@ -31,6 +31,7 @@
         { "path": "../config" },
         { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
+        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../intl" },
