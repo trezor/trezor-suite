@@ -8541,6 +8541,14 @@ export default defineMessages({
         id: 'TR_STAKE_ETH_LOCK_FUNDS_DESC',
         defaultMessage: 'Staking locks in your funds, but you can unstake them anytime.',
     },
+    TR_STAKE_ETH_EVERSTAKE: {
+        id: 'TR_STAKE_ETH_EVERSTAKE',
+        defaultMessage: 'Trezor & Everstake',
+    },
+    TR_STAKE_ETH_EVERSTAKE_DESC: {
+        id: 'TR_STAKE_ETH_EVERSTAKE_DESC',
+        defaultMessage: 'Everstake is a global leader and supplier of staking technology',
+    },
     TR_STAKE_ETH_MAXIMIZE_REWARDS: {
         id: 'TR_STAKE_ETH_MAXIMIZE_REWARDS',
         defaultMessage: 'Maximize your rewards',

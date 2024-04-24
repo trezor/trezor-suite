@@ -52,6 +52,7 @@ export const ICONS = {
     ADDRESS_PIXEL_NEXT: require('../../../images/icons/address_pixel_next.svg'),
     DOWN: require('../../../images/icons/down.svg'),
     DROPBOX: require('../../../images/icons/dropbox.svg'),
+    EVERSTAKE_LOGO: require('../../../images/icons/everstake_logo.svg'),
     EJECT: require('../../../images/icons/eject.svg'),
     EXPERIMENTAL: require('../../../images/icons/experimental.svg'),
     EXTERNAL_LINK: require('../../../images/icons/external_link.svg'),
