@@ -799,11 +799,11 @@ export const selectPersistedDeviceStates = (state: DeviceRootState) => {
     return [...devices.map(d => d.state), PORTFOLIO_TRACKER_DEVICE_STATE];
 };
 
-export const selectPhysicalDevices = (state: DeviceRootState) => {
+export const selectPhysicalDevices = memoize((state: DeviceRootState) => {
     const devices = selectDevices(state);
 
     return devices.filter(device => device.id !== PORTFOLIO_TRACKER_DEVICE_ID);
-};
+});
 
 export const selectIsNoPhysicalDeviceConnected = (state: DeviceRootState) => {
     const devices = selectDevices(state);
@@ -854,3 +854,9 @@ export const selectIsDeviceUsingPassphrase = (state: DeviceRootState) => {
 
     return isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false;
 };
+
+export const selectPhysicalDevicesGrouppedById = memoize((state: DeviceRootState) => {
+    const devices = selectPhysicalDevices(state);
+
+    return deviceUtils.getDeviceInstancesGroupedByDeviceId(devices);
+});
