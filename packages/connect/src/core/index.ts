@@ -304,15 +304,32 @@ const innerRecursive = async (params: {
     }
 
     const deviceNeedsBackup = device.features.needs_backup;
-    if (deviceNeedsBackup && typeof method.noBackupConfirmation === 'function') {
-        const permitted = await method.noBackupConfirmation(!isUsingPopup);
-        if (!permitted) {
-            // interrupt process and go to "final" block
-            return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
-        }
-    }
-
     if (deviceNeedsBackup) {
+        if (
+            method.noBackupConfirmationMode === 'always' ||
+            (method.noBackupConfirmationMode === 'popup-only' && isUsingPopup)
+        ) {
+            // wait for popup window
+            await getPopupPromise().promise;
+            // initialize user response promise
+            const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
+
+            // request confirmation view
+            postMessage(
+                createUiMessage(UI.REQUEST_CONFIRMATION, {
+                    view: 'no-backup',
+                }),
+            );
+
+            // wait for user action
+            const permitted = await uiPromise.promise.then(({ payload }) => payload);
+
+            if (!permitted) {
+                // interrupt process and go to "final" block
+                return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
+            }
+        }
+
         // wait for popup handshake
         await getPopupPromise().promise;
         // show notification

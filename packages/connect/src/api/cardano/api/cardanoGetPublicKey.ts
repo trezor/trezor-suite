@@ -48,6 +48,12 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
                 suppress_backup_warning: batch.suppressBackupWarning,
             };
         });
+
+        this.noBackupConfirmationMode = this.params.every(
+            batch => batch.suppressBackupWarning || !batch.show_display,
+        )
+            ? 'popup-only'
+            : 'always';
     }
 
     get info() {
@@ -84,31 +90,6 @@ export default class CardanoGetPublicKey extends AbstractMethod<'cardanoGetPubli
         this.confirmed = uiResp.payload;
 
         return this.confirmed;
-    }
-
-    async noBackupConfirmation(allowSuppression?: boolean) {
-        if (
-            allowSuppression &&
-            this.params.every(batch => batch.suppressBackupWarning || !batch.show_display)
-        ) {
-            return true;
-        }
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'no-backup',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
     }
 
     async run() {
