@@ -357,13 +357,20 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
     const descriptor = payload.address;
     const addresses = transformAddresses(payload.tokens);
     const tokens = transformTokenInfo(payload.tokens);
-
     const unconfirmedBalance = new BigNumber(payload.unconfirmedBalance);
-    // reduce or increase availableBalance
-    const availableBalance =
-        !unconfirmedBalance.isNaN() && !unconfirmedBalance.isZero()
-            ? unconfirmedBalance.plus(payload.balance).toString()
-            : payload.balance;
+
+    let availableBalance = payload.balance;
+    if (!unconfirmedBalance.isNaN()) {
+        if (!isEVM) {
+            availableBalance = unconfirmedBalance.plus(payload.balance).toString();
+        } else if (isEVM && unconfirmedBalance.lt(0)) {
+            // if unconfirmed balance is positive it means that address has pending receive transaction
+            // this address cannot use this balance yet so it should not be visible
+            // however, for negative it has to be applied, otherwise it would not be possible to e.g. bump fee
+            // (when tx is pending the balance is still on the account)
+            availableBalance = unconfirmedBalance.plus(payload.balance).toString();
+        }
+    }
     const empty =
         payload.txs === 0 &&
         payload.unconfirmedTxs === 0 &&
