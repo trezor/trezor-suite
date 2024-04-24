@@ -40,4 +40,9 @@ export type Rate = {
     ticker: TickerId;
 };
 
+export type fiatRatesResult = {
+    rate?: number;
+    lastTickerTimestamp: Timestamp;
+};
+
 export type FiatRates = Record<FiatRateKey, Rate>;

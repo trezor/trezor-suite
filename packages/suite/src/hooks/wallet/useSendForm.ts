@@ -37,7 +37,7 @@ import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { selectFiatRates, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const SendContext = createContext<SendContextValues | null>(null);
@@ -116,6 +116,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         token as TokenAddress,
     );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    const currentRates = useSelector(selectFiatRates);
 
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray({
@@ -233,8 +234,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { importTransaction, validateImportedTransaction } = useSendFormImport({
         network: state.network,
         tokens: state.account.tokens,
-        fiatRate,
         localCurrencyOption,
+        fiatRate,
+        currentRates,
     });
 
     const loadTransaction = async () => {

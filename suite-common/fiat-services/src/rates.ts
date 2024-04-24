@@ -1,6 +1,11 @@
 import { getUnixTime, subWeeks } from 'date-fns';
 
-import type { TickerId, LastWeekRates, Timestamp } from '@suite-common/wallet-types';
+import type {
+    TickerId,
+    LastWeekRates,
+    Timestamp,
+    fiatRatesResult,
+} from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import TrezorConnect from '@trezor/connect';
 import { scheduleAction } from '@trezor/utils';
@@ -15,11 +20,6 @@ type fiatRatesParams = {
     ticker: TickerId;
     localCurrency: FiatCurrencyCode;
     isElectrumBackend: boolean;
-};
-
-type fiatRatesResult = {
-    rate: number | undefined;
-    lastTickerTimestamp: Timestamp;
 };
 
 const getConnectFiatRatesForTimestamp = (
