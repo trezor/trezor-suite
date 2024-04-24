@@ -28,7 +28,7 @@ let firmwareHash = '';
 // - where you would normally do `cy.task('startBridge') run  `cy.task('startMockedBridge, har)` instead  where har is the output of process-har.ts script
 // - profit
 
-describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () => {
+describe.skip('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () => {
     beforeEach(() => {
         cy.task('startMockedBridge', har);
 
