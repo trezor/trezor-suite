@@ -452,7 +452,7 @@ export const en = {
             emptyTitle: 'Connect your device to enable view-only',
             subtitle:
                 'Check balances without connecting your Trezor. <about>See how it works</about>',
-            enableButton: 'Enable',
+            button: { enable: 'Enable', disable: 'Disable' },
             about: {
                 title: 'View-only',
                 subtitle: 'Stay on top of your balances without connecting your Trezor.',
@@ -466,13 +466,18 @@ export const en = {
                 enabled: 'View-only enabled',
             },
             disableDialog: {
-                title: 'Disable view-only for {name}',
-                subtitle:
-                    'Your funds and transactions won’t be visible until you reconnect your device.',
+                title: 'Disable view-only access to {name}?',
+                subtitle: 'You can always enable view-only again when you reconnect {device}. ',
                 buttons: {
                     primary: 'Disable',
                     secondary: 'Back',
                 },
+            },
+            connected: 'Connected',
+            disconnected: 'Disconnected',
+            wallet: {
+                standard: 'Standard wallet',
+                defaultPassphrase: 'Passphrase wallet #{index}',
             },
         },
     },

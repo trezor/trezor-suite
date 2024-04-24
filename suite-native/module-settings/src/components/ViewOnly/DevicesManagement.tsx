@@ -1,73 +1,83 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { Box, Button, Card, HStack, IconButton, Text } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
-import { selectPhysicalDevices, toggleRememberDevice } from '@suite-common/wallet-core';
-import { TrezorDevice } from '@suite-common/suite-types';
-import { useAlert } from '@suite-native/alerts';
-import { useToast } from '@suite-native/toasts';
+import { Box, Card, Divider, HStack, Text } from '@suite-native/atoms';
+import { Translation, TxKeyPath } from '@suite-native/intl';
+import { selectPhysicalDevicesGrouppedById } from '@suite-common/wallet-core';
+import { Icon, IconName } from '@suite-common/icons';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { Color } from '@trezor/theme';
 
 import { About, AboutProps } from './About';
+import { TrezorModelIcon } from './TrezorModelIcon';
+import { WalletRow } from './WalletRow';
+
+type ConnectionStyle = { color: Color; iconName: IconName; translationKey: TxKeyPath };
+
+const connectionStyleMap = {
+    connected: {
+        color: 'textSecondaryHighlight',
+        iconName: 'linkChain',
+        translationKey: 'moduleSettings.viewOnly.connected',
+    },
+    disconnected: {
+        color: 'textSubdued',
+        iconName: 'linkChainBroken',
+        translationKey: 'moduleSettings.viewOnly.disconnected',
+    },
+} as const satisfies Record<string, ConnectionStyle>;
+
+const cardStyle = prepareNativeStyle(utils => ({
+    padding: 0,
+    marginTop: utils.spacings.large,
+}));
+
+const deviceStyle = prepareNativeStyle(utils => ({
+    padding: utils.spacings.medium,
+    alignItems: 'center',
+    gap: 12,
+}));
 
 export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
-    const dispatch = useDispatch();
-    const { translate } = useTranslate();
-    const devices = useSelector(selectPhysicalDevices);
-    const { showAlert } = useAlert();
-    const { showToast } = useToast();
-
-    const toggleViewOnly = (device: TrezorDevice) => {
-        const toastTranslationId =
-            device.remember ?? false
-                ? 'moduleSettings.viewOnly.toast.disabled'
-                : 'moduleSettings.viewOnly.toast.enabled';
-        showToast({
-            variant: 'default',
-            message: <Translation id={toastTranslationId} />,
-            icon: 'check',
-        });
-        dispatch(toggleRememberDevice({ device }));
-    };
-
-    const handleDisableViewOnly = (device: TrezorDevice) => {
-        showAlert({
-            title: translate('moduleSettings.viewOnly.disableDialog.title', { name: device.label }),
-            description: <Translation id="moduleSettings.viewOnly.disableDialog.subtitle" />,
-            primaryButtonTitle: (
-                <Translation id="moduleSettings.viewOnly.disableDialog.buttons.primary" />
-            ),
-            onPressPrimaryButton: () => toggleViewOnly(device),
-            primaryButtonVariant: 'redBold',
-            secondaryButtonTitle: (
-                <Translation id="moduleSettings.viewOnly.disableDialog.buttons.secondary" />
-            ),
-            secondaryButtonVariant: 'redElevation0',
-        });
-    };
+    const deviceGroups = useSelector(selectPhysicalDevicesGrouppedById);
+    const { applyStyle } = useNativeStyles();
 
     return (
         <>
             <Box paddingHorizontal="large">
                 <About onPressAbout={onPressAbout} />
             </Box>
-            {devices.map(device => (
-                <Card key={device.id}>
-                    <HStack justifyContent="space-between" alignItems="center">
-                        <Text>{device?.label}</Text>
-                        {device.remember ? (
-                            <IconButton
-                                colorScheme="redElevation0"
-                                iconName="close"
-                                onPress={() => handleDisableViewOnly(device)}
-                            />
-                        ) : (
-                            <Button onPress={() => toggleViewOnly(device)}>
-                                <Translation id="moduleSettings.viewOnly.enableButton" />
-                            </Button>
-                        )}
-                    </HStack>
-                </Card>
-            ))}
+            {deviceGroups.map(devices => {
+                const [firstDevice] = devices;
+                const connectionStyle =
+                    connectionStyleMap[firstDevice.connected ? 'connected' : 'disconnected'];
+
+                return (
+                    <Card key={firstDevice.id} style={applyStyle(cardStyle)}>
+                        <HStack style={applyStyle(deviceStyle)}>
+                            <TrezorModelIcon device={firstDevice} />
+                            <Box>
+                                <Text variant="highlight" color="textDefault">
+                                    {firstDevice.label}
+                                </Text>
+                                <HStack alignItems="center" spacing="extraSmall">
+                                    <Icon
+                                        name={connectionStyle.iconName}
+                                        size="medium"
+                                        color={connectionStyle.color}
+                                    />
+                                    <Text variant="hint" color={connectionStyle.color}>
+                                        <Translation id={connectionStyle.translationKey} />
+                                    </Text>
+                                </HStack>
+                            </Box>
+                        </HStack>
+                        <Divider />
+                        {devices.map(device => (
+                            <WalletRow key={`${device.state}`} device={device} />
+                        ))}
+                    </Card>
+                );
+            })}
         </>
     );
 };
