@@ -28,11 +28,11 @@ export const AccountSection = ({
         descriptor,
         formattedBalance,
         tokens: accountTokens = [],
-        stakingPools,
+        misc,
     } = account;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const hasStaked = !!stakingPools?.length;
+    const hasStaked = networkType === 'ethereum' && !!misc?.stakingPools?.length;
     const isStakeShown = isSupportedNetworkSymbol(symbol) && hasStaked;
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);

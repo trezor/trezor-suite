@@ -8,7 +8,7 @@ import type {
     EstimateFeeParams,
     AccountInfoParams,
 } from './params';
-import type { AccountBalanceHistory, FiatRatesLegacy, TokenStandard, StakingPool } from './common';
+import type { AccountBalanceHistory, FiatRatesLegacy, TokenStandard } from './common';
 import type {
     Tx as BlockbookTx,
     Vin,
@@ -21,6 +21,7 @@ import type {
     MempoolTxidFilterEntries,
     Token as BlockbookToken,
     TokenTransfer as BlockbookTokenTransfer,
+    StakingPool,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;

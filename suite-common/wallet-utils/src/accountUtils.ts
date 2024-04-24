@@ -668,7 +668,8 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
             return (
                 freshInfo.misc!.nonce !== account.misc.nonce ||
                 freshInfo.balance !== account.balance || // balance can change because of beacon chain txs (staking) |
-                JSON.stringify(freshInfo?.stakingPools) !== JSON.stringify(account?.stakingPools)
+                JSON.stringify(freshInfo?.misc?.stakingPools) !==
+                    JSON.stringify(account?.misc?.stakingPools)
             );
         case 'cardano':
             return (
@@ -706,11 +707,11 @@ export const getAccountSpecific = (
         return {
             networkType,
             misc: {
+                ...misc,
                 nonce: misc && misc.nonce ? misc.nonce : '0',
             },
             marker: undefined,
             page: accountInfo.page,
-            stakingPools: accountInfo?.stakingPools,
         };
     }
 

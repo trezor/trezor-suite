@@ -164,18 +164,6 @@ export interface TokenInfo {
     // transfers: number, // total transactions?
 }
 
-export interface StakingPool {
-    autocompoundBalance: string;
-    claimableAmount: string;
-    contract: string;
-    depositedBalance: string;
-    name: string;
-    pendingBalance: string;
-    pendingDepositedBalance: string;
-    restakedReward: string;
-    withdrawTotalAmount: string;
-}
-
 export interface AccountInfo {
     descriptor: string;
     balance: string;
@@ -192,9 +180,10 @@ export interface AccountInfo {
         addrTxCount?: number; // number of confirmed address/transaction pairs, only for bitcoin-like
     };
     misc?: {
-        // ETH
+        // EVM
         nonce?: string;
         erc20Contract?: TokenInfo;
+        stakingPools?: StakingPool[];
         // XRP
         sequence?: number;
         reserve?: string;
@@ -221,7 +210,6 @@ export interface AccountInfo {
         ledger: number;
         seq: number;
     };
-    stakingPools?: StakingPool[];
 }
 
 export interface SubscriptionAccountInfo {
