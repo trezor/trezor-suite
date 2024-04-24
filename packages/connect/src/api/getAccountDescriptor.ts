@@ -115,7 +115,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
     // override AbstractMethod function
     // this is a special case where we want to check firmwareRange in bundle
     // and return error with bundle indexes
-    async checkFirmwareRange(_isUsingPopup: boolean) {
+    checkFirmwareRange() {
         // check each batch and return error with invalid bundle indexes
         // find invalid ranges
         const invalid = [];
@@ -126,7 +126,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 this.params[i].coinInfo,
                 DEFAULT_FIRMWARE_RANGE,
             );
-            const exception = await super.checkFirmwareRange(false);
+            const exception = super.checkFirmwareRange();
             if (exception) {
                 invalid.push({
                     index: i,

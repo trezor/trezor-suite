@@ -250,22 +250,37 @@ const innerRecursive = async (params: {
     trustedHost: boolean;
 }): Promise<MethodResponseMessage> => {
     const { method, device, isUsingPopup, trustedHost } = params;
-    const firmwareException = await method.checkFirmwareRange(isUsingPopup!);
+
+    const firmwareException = method.checkFirmwareRange();
     if (firmwareException) {
         if (isUsingPopup) {
-            await getPopupPromise().promise;
-            // show unexpected state information
-            postMessage(createUiMessage(firmwareException, device.toMessageObject()));
+            if (firmwareException === UI.FIRMWARE_NOT_COMPATIBLE) {
+                // wait for popup handshake
+                await getPopupPromise().promise;
+                // initialize user response promise
+                const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
+                // show unexpected state information and wait for confirmation
+                postMessage(createUiMessage(UI.FIRMWARE_NOT_COMPATIBLE, device.toMessageObject()));
 
-            // wait for device disconnect
-            await uiPromises.create(DEVICE.DISCONNECT, device).promise;
+                const uiResp = await uiPromise.promise;
+                if (!uiResp.payload) {
+                    throw ERRORS.TypedError('Method_PermissionsNotGranted');
+                }
+            } else {
+                await getPopupPromise().promise;
+                // show unexpected state information
+                postMessage(createUiMessage(firmwareException, device.toMessageObject()));
 
-            // interrupt process and go to "final" block
-            return Promise.reject(ERRORS.TypedError('Method_Cancel'));
+                // wait for device disconnect
+                await uiPromises.create(DEVICE.DISCONNECT, device).promise;
+
+                // interrupt process and go to "final" block
+                return Promise.reject(ERRORS.TypedError('Method_Cancel'));
+            }
+        } else {
+            // return error if not using popup
+            return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
         }
-
-        // return error if not using popup
-        return Promise.reject(ERRORS.TypedError('Device_FwException', firmwareException));
     }
 
     // check if device is in unexpected mode [bootloader, not-initialized, required firmware]
