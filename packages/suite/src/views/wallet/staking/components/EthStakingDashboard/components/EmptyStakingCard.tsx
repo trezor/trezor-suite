@@ -82,8 +82,14 @@ export const EmptyStakingCard = () => {
                 title: <Translation id="TR_STAKE_ETH_LOCK_FUNDS" />,
                 description: <Translation id="TR_STAKE_ETH_LOCK_FUNDS_DESC" />,
             },
+            {
+                id: 2,
+                icon: <Icon icon="EVERSTAKE_LOGO" size={32} color={theme.iconEverstake} />,
+                title: <Translation id="TR_STAKE_ETH_EVERSTAKE" />,
+                description: <Translation id="TR_STAKE_ETH_EVERSTAKE_DESC" />,
+            },
         ],
-        [ethApy, theme.iconPrimaryDefault],
+        [ethApy, theme.iconEverstake, theme.iconPrimaryDefault],
     );
 
     return (
