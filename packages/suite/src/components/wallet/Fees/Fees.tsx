@@ -26,6 +26,7 @@ import { FeeDetails } from './FeeDetails';
 import { AnimatePresence, motion } from 'framer-motion';
 
 const Container = styled.div`
+    overflow: hidden; /* prevent scrollbar when custom fee is opened */
     width: 100%;
 `;
 
