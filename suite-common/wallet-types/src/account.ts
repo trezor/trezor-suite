@@ -2,6 +2,8 @@ import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config
 import { AccountEntityKeys } from '@suite-common/metadata-types';
 import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
 import {
+    AddressAlias,
+    ContractInfo,
     StakingPool,
 } from '@trezor/blockchain-link-types/src/blockbook-api';
 
@@ -46,7 +48,9 @@ type AccountNetworkSpecific =
           networkType: 'ethereum';
           misc: {
               nonce: string;
+              contractInfo?: ContractInfo;
               stakingPools?: StakingPool[];
+              addressAliases?: { [key: string]: AddressAlias };
           };
           marker: undefined;
           page: AccountInfo['page'];
