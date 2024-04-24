@@ -470,7 +470,9 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 error.code === 'Device_NotFound' ||
                 error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                 error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
-                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR
+                error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
+                // bridge died during device initialization
+                error.message === TRANSPORT_ERROR.HTTP_ERROR
             ) {
                 // do nothing
                 // For example:
