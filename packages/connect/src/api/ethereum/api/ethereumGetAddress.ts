@@ -30,6 +30,7 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
     confirmed?: boolean;
 
     init() {
+        this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
 
         // create a bundle with only one batch if bundle doesn't exists
@@ -129,25 +130,6 @@ export default class EthereumGetAddress extends AbstractMethod<'ethereumGetAddre
         this.confirmed = uiResp.payload;
 
         return this.confirmed;
-    }
-
-    async noBackupConfirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'no-backup',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
     }
 
     _call({ address_n, show_display, encoded_network, chunkify }: Params) {

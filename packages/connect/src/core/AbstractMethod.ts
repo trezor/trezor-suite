@@ -86,7 +86,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     confirmation?(): Promise<boolean | undefined>;
 
-    noBackupConfirmation?(allowSuppression?: boolean): Promise<boolean>;
+    noBackupConfirmationMode: 'never' | 'always' | 'popup-only';
 
     getButtonRequestData?(code: string): UiRequestButtonData | undefined;
 
@@ -148,6 +148,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             typeof payload.useCardanoDerivation === 'boolean'
                 ? payload.useCardanoDerivation
                 : payload.method.startsWith('cardano');
+        this.noBackupConfirmationMode = 'never';
     }
 
     setDevice(device: Device) {

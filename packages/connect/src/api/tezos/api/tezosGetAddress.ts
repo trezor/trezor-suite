@@ -20,6 +20,7 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
     confirmed?: boolean;
 
     init() {
+        this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,
@@ -97,25 +98,6 @@ export default class TezosGetAddress extends AbstractMethod<'tezosGetAddress', P
         this.confirmed = uiResp.payload;
 
         return this.confirmed;
-    }
-
-    async noBackupConfirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'no-backup',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
     }
 
     async _call({ address_n, show_display, chunkify }: Params) {
