@@ -171,10 +171,9 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     // override AbstractMethod function
     // this is a special case where we want to check firmwareRange in bundle
     // and return error with bundle indexes
-    async checkFirmwareRange(isUsingPopup: boolean) {
-        // for popup mode use it like it was before
-        if (isUsingPopup || this.params.length === 1) {
-            return super.checkFirmwareRange(isUsingPopup);
+    checkFirmwareRange() {
+        if (this.params.length === 1) {
+            return super.checkFirmwareRange();
         }
         // for trusted mode check each batch and return error with invalid bundle indexes
         // find invalid ranges
@@ -186,7 +185,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 this.params[i].coinInfo,
                 DEFAULT_FIRMWARE_RANGE,
             );
-            const exception = await super.checkFirmwareRange(false);
+            const exception = super.checkFirmwareRange();
             if (exception) {
                 invalid.push({
                     index: i,

@@ -2,7 +2,7 @@ import { storage } from '@trezor/connect-common';
 import { versionUtils } from '@trezor/utils';
 import { Deferred } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
-import { ERRORS, NETWORK } from '../constants';
+import { NETWORK } from '../constants';
 import {
     UI,
     DEVICE,
@@ -252,7 +252,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    async checkFirmwareRange(isUsingPopup?: boolean) {
+    checkFirmwareRange() {
         if (this.skipFirmwareCheck) {
             return;
         }
@@ -282,23 +282,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
 
         if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
-            if (isUsingPopup) {
-                // wait for popup handshake
-                await this.getPopupPromise().promise;
-                // initialize user response promise
-                const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-                // show unexpected state information and wait for confirmation
-                this.postMessage(
-                    createUiMessage(UI.FIRMWARE_NOT_COMPATIBLE, device.toMessageObject()),
-                );
-
-                const uiResp = await uiPromise.promise;
-                if (!uiResp.payload) {
-                    throw ERRORS.TypedError('Method_PermissionsNotGranted');
-                }
-            } else {
-                return UI.FIRMWARE_NOT_COMPATIBLE;
-            }
+            return UI.FIRMWARE_NOT_COMPATIBLE;
         }
     }
 
