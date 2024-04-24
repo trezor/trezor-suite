@@ -8791,7 +8791,7 @@ export default defineMessages({
     },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
-        defaultMessage: 'Total stake pending:',
+        defaultMessage: 'Total stake pending',
     },
     TR_STAKE_LAST_STAKE_REQUEST_STATE: {
         id: 'TR_STAKE_LAST_STAKE_REQUEST_STATE',
