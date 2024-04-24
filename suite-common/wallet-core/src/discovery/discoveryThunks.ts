@@ -595,7 +595,14 @@ export const startDiscoveryThunk = createThunk(
                 }
             }
 
-            if (result.payload.error && device.connected) {
+            if (
+                result.payload.error &&
+                device.connected &&
+                // but not when another application stole this device. no need to release session in this case
+                result.payload.code !== 'Device_UsedElsewhere' &&
+                // also not when user disconnected device during discovery
+                result.payload.code !== 'Device_Disconnected'
+            ) {
                 // call getFeatures to release device session
                 await TrezorConnect.getFeatures({
                     device,
