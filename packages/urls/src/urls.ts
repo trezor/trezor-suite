@@ -56,7 +56,7 @@ export const HELP_CENTER_FW_DOWNGRADE_T2B1_URL =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-3';
 export const HELP_CENTER_FW_DOWNGRADE_T3T1_URL =
     'https://trezor.io/learn/a/downgrade-firmware-trezor-safe-5';
-export const HELP_CENTER_FAILED_BACKUP_URL = 'https://trezor.io/support/a/trezor-recovery-issues';
+export const HELP_CENTER_RECOVERY_ISSUES_URL = 'https://trezor.io/support/a/trezor-recovery-issues';
 export const HELP_CENTER_ADVANCED_RECOVERY_URL =
     'https://trezor.io/learn/a/advanced-recovery-on-trezor-model-one';
 export const HELP_CENTER_XPUB_URL = 'https://trezor.io/learn/a/trezor-suite-app-public-keys-xpub';
@@ -94,3 +94,4 @@ export const TOR_PROJECT_URL = 'https://www.torproject.org/';
 export const ZKSNACKS_TERMS_URL =
     'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';
 export const CROWDIN_URL = 'https://crowdin.com/project/trezor-suite';
+export const ESHOP_KEEP_METAL_20_URL = 'https://trezor.io/trezor-keep-metal-shamir';

@@ -1,4 +1,4 @@
-import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
+import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 
 import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
@@ -10,7 +10,7 @@ export const BackupFailed = () => {
             <TextColumn
                 title={<Translation id="TR_BACKUP_RECOVERY_SEED_FAILED_TITLE" />}
                 description={<Translation id="TR_BACKUP_RECOVERY_SEED_FAILED_DESC" />}
-                buttonLink={HELP_CENTER_FAILED_BACKUP_URL}
+                buttonLink={HELP_CENTER_RECOVERY_ISSUES_URL}
             />
             <ActionColumn>
                 <ActionButton isDisabled>
