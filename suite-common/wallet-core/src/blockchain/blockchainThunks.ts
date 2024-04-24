@@ -39,7 +39,7 @@ const ACCOUNTS_SYNC_INTERVAL = 60 * 1000;
 
 // sort FeeLevels in reversed order (Low > High)
 // TODO: consider to use same order in @trezor/connect to avoid double sorting
-const order: FeeLevel['label'][] = ['low', 'economy', 'normal', 'high'];
+const order: FeeLevel['label'][] = ['economy', 'normal', 'high'];
 const sortLevels = (levels: FeeLevel[]) =>
     levels.sort((levelA, levelB) => order.indexOf(levelA.label) - order.indexOf(levelB.label));
 

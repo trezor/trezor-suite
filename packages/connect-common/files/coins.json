@@ -25,7 +25,6 @@
             "default_fee_b": {
                 "Economy": 70,
                 "High": 200,
-                "Low": 10,
                 "Normal": 140
             },
             "dust_limit": 546,
@@ -433,7 +432,6 @@
             "default_fee_b": {
                 "Economy": 70,
                 "High": 200,
-                "Low": 10,
                 "Normal": 140
             },
             "dust_limit": 546,
@@ -530,7 +528,7 @@
             "decimals": 8,
             "decred": false,
             "default_fee_b": {
-                "Low": 10
+                "Economy": 10
             },
             "dust_limit": 546,
             "extra_data": false,
@@ -937,7 +935,6 @@
             "default_fee_b": {
                 "Economy": 10,
                 "High": 200,
-                "Low": 1,
                 "Normal": 100
             },
             "dust_limit": 546,
@@ -988,7 +985,6 @@
             "default_fee_b": {
                 "Economy": 10,
                 "High": 200,
-                "Low": 1,
                 "Normal": 100
             },
             "dust_limit": 546,
@@ -1090,7 +1086,6 @@
             "default_fee_b": {
                 "Economy": 20000,
                 "High": 100000,
-                "Low": 10000,
                 "Normal": 50000
             },
             "dust_limit": 546,
@@ -1595,7 +1590,7 @@
             "decimals": 8,
             "decred": false,
             "default_fee_b": {
-                "Low": 10
+                "Economy": 10
             },
             "dust_limit": 546,
             "extra_data": false,
@@ -1646,7 +1641,7 @@
             "decimals": 8,
             "decred": false,
             "default_fee_b": {
-                "Low": 10
+                "Economy": 10
             },
             "dust_limit": 546,
             "extra_data": false,
@@ -1696,7 +1691,6 @@
             "default_fee_b": {
                 "Economy": 70,
                 "High": 200,
-                "Low": 10,
                 "Normal": 140
             },
             "dust_limit": 1000,
@@ -1750,7 +1744,6 @@
             "default_fee_b": {
                 "Economy": 700,
                 "High": 2000,
-                "Low": 100,
                 "Normal": 1400
             },
             "dust_limit": 1820,
@@ -1801,7 +1794,6 @@
             "default_fee_b": {
                 "Economy": 50,
                 "High": 160,
-                "Low": 10,
                 "Normal": 100
             },
             "dust_limit": 546,
@@ -1957,7 +1949,6 @@
             "default_fee_b": {
                 "Economy": 7000,
                 "High": 20000,
-                "Low": 1000,
                 "Normal": 14000
             },
             "dust_limit": 54600,
@@ -2161,7 +2152,6 @@
             "default_fee_b": {
                 "Economy": 70,
                 "High": 200,
-                "Low": 10,
                 "Normal": 140
             },
             "dust_limit": 546,

@@ -23,7 +23,7 @@ interface CoinsJsonData {
     shortcut: string; // uppercase shortcut
     // data below are defined and relevant only for bitcoin-like coins
     blocktime_seconds: number;
-    default_fee_b: Record<'High' | 'Normal' | 'Economy' | 'Low', number>;
+    default_fee_b: Record<'High' | 'Normal' | 'Economy', number>;
     maxfee_kb: number;
     minfee_kb: number;
     dust_limit: number;

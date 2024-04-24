@@ -14,7 +14,6 @@ export const FeeLevel = Type.Object({
         Type.Literal('high'),
         Type.Literal('normal'),
         Type.Literal('economy'),
-        Type.Literal('low'),
         Type.Literal('custom'),
     ]),
     feePerUnit: Type.String(),

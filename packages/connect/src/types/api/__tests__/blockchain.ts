@@ -39,7 +39,7 @@ export const blockchainEstimateFee = async (api: TrezorConnect) => {
             if (level.label === 'normal') {
                 level.feePerUnit.toLowerCase();
             }
-            if (level.label === 'high' || level.label === 'low' || level.label === 'economy') {
+            if (level.label === 'high' || level.label === 'economy') {
                 level.feeLimit?.toLocaleLowerCase();
                 level.feePerTx?.toLocaleLowerCase();
             }

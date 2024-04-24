@@ -5786,10 +5786,6 @@ export default defineMessages({
         defaultMessage: 'Normal',
         id: 'FEE_LEVEL_NORMAL',
     },
-    FEE_LEVEL_ECONOMY: {
-        defaultMessage: 'Economy',
-        id: 'FEE_LEVEL_ECONOMY',
-    },
     FEE_LEVEL_LOW: {
         defaultMessage: 'Low',
         id: 'FEE_LEVEL_LOW',

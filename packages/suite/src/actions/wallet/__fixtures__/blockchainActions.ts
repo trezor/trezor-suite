@@ -442,7 +442,7 @@ export const onConnect = [
         },
         // order: estimateFee
         connect: [
-            { payload: { levels: [{ label: 'normal' }, { label: 'high' }, { label: 'low' }] } },
+            { payload: { levels: [{ label: 'normal' }, { label: 'high' }, { label: 'economy' }] } },
         ],
         symbol: 'btc',
         actions: [

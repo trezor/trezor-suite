@@ -24,6 +24,7 @@ import {
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
 import { AnimatePresence, motion } from 'framer-motion';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const Container = styled.div`
     width: 100%;
@@ -82,21 +83,18 @@ const HelperTextWrapper = styled(Paragraph)`
     font-size: ${variables.FONT_SIZE.SMALL};
 `;
 
-const FEE_LEVELS_TRANSLATIONS = {
+const FEE_LEVELS_TRANSLATIONS: Record<FeeLevel['label'], TranslationKey> = {
     custom: 'FEE_LEVEL_CUSTOM',
     high: 'FEE_LEVEL_HIGH',
     normal: 'FEE_LEVEL_NORMAL',
     economy: 'FEE_LEVEL_LOW',
-    low: 'FEE_LEVEL_LOW',
 } as const;
 
 const buildFeeOptions = (levels: FeeLevel[]) =>
-    levels
-        .filter(level => level.label !== 'low') // hack to hide "low" fee option
-        .map(({ label }) => ({
-            label: <Translation id={FEE_LEVELS_TRANSLATIONS[label]} />,
-            value: label,
-        }));
+    levels.map(({ label }) => ({
+        label: <Translation id={FEE_LEVELS_TRANSLATIONS[label]} />,
+        value: label,
+    }));
 
 export interface FeesProps<TFieldValues extends FormState> {
     account: Account;
