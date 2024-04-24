@@ -1,4 +1,4 @@
-import { A } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 
 import { getWeakRandomId } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
@@ -26,7 +26,6 @@ import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
 import { isDebugEnv } from '@suite-native/config';
 
-import { fetchBundleDescriptors } from './utils';
 import {
     selectDisabledDiscoveryNetworkSymbolsForDevelopment,
     selectDiscoveryStartTimeStamp,
@@ -59,6 +58,30 @@ const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
 };
 
 type DiscoveryDescriptorItem = DiscoveryItem & { descriptor: string };
+
+const fetchBundleDescriptorsThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/fetchBundleDescriptorsThunk`,
+    async (bundle: DiscoveryItem[], { getState }) => {
+        const device = selectDevice(getState());
+
+        const { success, payload } = await TrezorConnect.getAccountDescriptor({
+            bundle,
+            skipFinalReload: true,
+            device,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+        });
+
+        if (success && payload)
+            return pipe(
+                payload,
+                A.filter(G.isNotNullable),
+                A.map(bundleItem => bundleItem.descriptor),
+                A.zipWith(bundle, (descriptor, bundleItem) => ({ ...bundleItem, descriptor })),
+            ) as DiscoveryDescriptorItem[];
+
+        return [];
+    },
+);
 
 const finishNetworkTypeDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/finishNetworkTypeDiscoveryThunk`,
@@ -163,13 +186,15 @@ const addAccountByDescriptorThunk = createThunk(
             bundleItem: DiscoveryDescriptorItem;
             identity?: string;
         },
-        { dispatch },
+        { dispatch, getState },
     ) => {
+        const device = selectDevice(getState());
         const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
             coin: bundleItem.coin,
             identity,
+            device,
             descriptor: bundleItem.descriptor,
-            useEmptyPassphrase: true,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
             skipFinalReload: true,
             ...getAccountInfoDetailsLevel(bundleItem.coin),
         });
@@ -207,7 +232,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
             deviceState: string;
             identity?: string;
         },
-        { dispatch },
+        { dispatch, getState },
     ) => {
         let isFinalRound = false;
 
@@ -215,12 +240,14 @@ const discoverAccountsByDescriptorThunk = createThunk(
             isFinalRound = true;
         }
 
+        const device = selectDevice(getState());
         for (const bundleItem of descriptorsBundle) {
             const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
                 coin: bundleItem.coin,
                 identity,
                 descriptor: bundleItem.descriptor,
-                useEmptyPassphrase: true,
+                device,
+                useEmptyPassphrase: device?.useEmptyPassphrase,
                 skipFinalReload: true,
                 ...getAccountInfoDetailsLevel(bundleItem.coin),
             });
@@ -273,19 +300,23 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
 
         const accountPath = network.bip43Path.replace('i', index.toString());
 
-        // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
-        const deviceAccessResponse = await requestDeviceAccess(fetchBundleDescriptors, [
-            {
-                path: accountPath,
-                coin: network.symbol,
-                index,
-                accountType,
-                networkType: network.networkType,
-                derivationType: getDerivationType(accountType),
-                suppressBackupWarning: true,
-                skipFinalReload: true,
-            },
-        ]);
+        // Take exclusive access to the device and hold it until fetching of the descriptors is done.
+        const deviceAccessResponse = await requestDeviceAccess(() =>
+            dispatch(
+                fetchBundleDescriptorsThunk([
+                    {
+                        path: accountPath,
+                        coin: network.symbol,
+                        index,
+                        accountType,
+                        networkType: network.networkType,
+                        derivationType: getDerivationType(accountType),
+                        suppressBackupWarning: true,
+                        skipFinalReload: true,
+                    },
+                ]),
+            ).unwrap(),
+        );
 
         if (!deviceAccessResponse.success) {
             return undefined;
@@ -393,7 +424,9 @@ const discoverNetworkBatchThunk = createThunk(
         }
 
         // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
-        const deviceAccessResponse = await requestDeviceAccess(fetchBundleDescriptors, chunkBundle);
+        const deviceAccessResponse = await requestDeviceAccess(() =>
+            dispatch(fetchBundleDescriptorsThunk(chunkBundle)).unwrap(),
+        );
 
         if (!deviceAccessResponse.success) {
             return;

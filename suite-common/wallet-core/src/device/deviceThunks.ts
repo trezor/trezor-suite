@@ -325,6 +325,7 @@ export const authorizeDevice = createThunk(
             );
             // get fresh data from reducer, `useEmptyPassphrase` might be changed after TrezorConnect call
             const freshDeviceData = getSelectedDevice(device, devices);
+
             if (duplicate) {
                 if (freshDeviceData!.useEmptyPassphrase) {
                     // if currently selected device uses empty passphrase

@@ -12,6 +12,7 @@ import {
     deviceAuthenticityActions,
     StoredAuthenticateDeviceResult,
 } from '@suite-common/device-authenticity';
+import { isNative } from '@trezor/env-utils';
 
 import { deviceActions } from './deviceActions';
 import { authorizeDevice } from './deviceThunks';
@@ -67,6 +68,16 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
     },
 });
 
+const getShouldUseEmptyPassphrase = (device: Device, deviceInstance?: number): boolean => {
+    if (!device.features) return false;
+    if (isNative() && typeof deviceInstance === 'number' && deviceInstance === 1) {
+        // On mobile, if device has instance === 1, we always want to use empty passphrase since we
+        // connect & authorize standard wallet by default. Other instances will have `usePassphraseProtection` set same way as web/desktop app.
+        return true;
+    } else {
+        return isUnlocked(device.features) && !device.features.passphrase_protection;
+    }
+};
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
  * @param {State} draft
@@ -115,17 +126,18 @@ const connectDevice = (draft: State, device: Device) => {
     // fill draft with not affected devices
     otherDevices.forEach(d => draft.devices.push(d));
 
-    // prepare new device
+    const deviceInstance = features.passphrase_protection
+        ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
+        : undefined;
+
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: isUnlocked(device.features) && !features.passphrase_protection,
+        useEmptyPassphrase: getShouldUseEmptyPassphrase(device, deviceInstance),
         remember: false,
         connected: true,
         available: true,
         authConfirm: false,
-        instance: features.passphrase_protection
-            ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
-            : undefined,
+        instance: deviceInstance,
         buttonRequests: [],
         metadata: {},
         ts: new Date().getTime(),
