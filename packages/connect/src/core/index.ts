@@ -220,15 +220,36 @@ const initDevice = async (devicePath?: string) => {
     return device;
 };
 
+const MAX_PIN_TRIES = 3;
+
+/** Including up to 3 pin tries **/
+const getInvalidDeviceState = async (
+    device: Device,
+    network: AbstractMethod<any>['network'],
+    preauthorized?: boolean,
+): Promise<string | undefined> => {
+    for (let i = 0; i < MAX_PIN_TRIES - 1; ++i) {
+        try {
+            return await device.validateState(network, preauthorized);
+        } catch (error) {
+            if (error.message.includes('PIN invalid')) {
+                postMessage(createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }));
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    return device.validateState(network, preauthorized);
+};
+
 const innerRecursive = async (params: {
     method: AbstractMethod<any>;
     device: Device;
     isUsingPopup: boolean;
     trustedHost: boolean;
-    maxPinTries: number;
-    pinTries: number;
 }): Promise<MethodResponseMessage> => {
-    const { method, device, isUsingPopup, trustedHost, maxPinTries, pinTries } = params;
+    const { method, device, isUsingPopup, trustedHost } = params;
     const firmwareException = await method.checkFirmwareRange(isUsingPopup!);
     if (firmwareException) {
         if (isUsingPopup) {
@@ -318,51 +339,51 @@ const innerRecursive = async (params: {
 
     // Make sure that device will display pin/passphrase
     const isDeviceUnlocked = device.features.unlocked;
-    try {
-        const invalidDeviceState = method.useDeviceState
-            ? await device.validateState(method.network, method.preauthorized)
-            : undefined;
-        if (invalidDeviceState) {
-            if (isUsingPopup) {
-                // initialize user response promise
-                const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
-                // request action view
-                postMessage(
-                    createUiMessage(UI.INVALID_PASSPHRASE, {
-                        device: device.toMessageObject(),
-                    }),
-                );
-                // wait for user response
-                const uiResp = await uiPromise.promise;
-                if (uiResp.payload) {
-                    // reset internal device state and try again
-                    device.setInternalState(undefined);
-                    await device.initialize(method.useEmptyPassphrase, method.useCardanoDerivation);
+    if (method.useDeviceState) {
+        try {
+            const invalidDeviceState = await getInvalidDeviceState(
+                device,
+                method.network,
+                method.preauthorized,
+            );
+            if (invalidDeviceState) {
+                if (isUsingPopup) {
+                    // initialize user response promise
+                    const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
+                    // request action view
+                    postMessage(
+                        createUiMessage(UI.INVALID_PASSPHRASE, {
+                            device: device.toMessageObject(),
+                        }),
+                    );
+                    // wait for user response
+                    const uiResp = await uiPromise.promise;
+                    if (uiResp.payload) {
+                        // reset internal device state and try again
+                        device.setInternalState(undefined);
+                        await device.initialize(
+                            method.useEmptyPassphrase,
+                            method.useCardanoDerivation,
+                        );
 
-                    return innerRecursive(params);
+                        return innerRecursive(params);
+                    }
+                    // set new state as requested
+                    device.setExternalState(invalidDeviceState);
+                } else {
+                    throw ERRORS.TypedError('Device_InvalidState');
                 }
-                // set new state as requested
-                device.setExternalState(invalidDeviceState);
-            } else {
-                throw ERRORS.TypedError('Device_InvalidState');
             }
-        }
-    } catch (error) {
-        // catch wrong pin error
-        // PinMatrixAck returns { code: "Failure_PinInvalid", message: "PIN invalid"}
-        if (error.message.includes('PIN invalid') && pinTries < maxPinTries) {
-            postMessage(createUiMessage(UI.INVALID_PIN, { device: device.toMessageObject() }));
+        } catch (error) {
+            // other error
+            // postMessage(ResponseMessage(method.responseID, false, { error }));
+            // closePopup();
+            // clear cached passphrase. it's not valid
+            device.setInternalState(undefined);
 
-            return innerRecursive({ ...params, pinTries: pinTries + 1 });
+            // interrupt process and go to "final" block
+            return Promise.reject(error);
         }
-        // other error
-        // postMessage(ResponseMessage(method.responseID, false, { error }));
-        // closePopup();
-        // clear cached passphrase. it's not valid
-        device.setInternalState(undefined);
-
-        // interrupt process and go to "final" block
-        return Promise.reject(error);
     }
 
     // emit additional CHANGE event if device becomes unlocked after authorization
@@ -396,8 +417,6 @@ const inner = (method: AbstractMethod<any>, device: Device) => {
     const options = {
         trustedHost: DataManager.getSettings('trustedHost'),
         isUsingPopup: DataManager.getSettings('popup') ?? false,
-        maxPinTries: 3,
-        pinTries: 1,
     };
 
     return innerRecursive({ method, device, ...options });
