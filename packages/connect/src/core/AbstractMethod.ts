@@ -1,12 +1,10 @@
 import { storage } from '@trezor/connect-common';
 import { versionUtils } from '@trezor/utils';
-import { Deferred } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
 import { NETWORK } from '../constants';
 import {
     UI,
     DEVICE,
-    createUiMessage,
     createDeviceMessage,
     CallMethodPayload,
     CallMethodResponse,
@@ -97,11 +95,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // @ts-expect-error: strictPropertyInitialization
     postMessage: (message: CoreEventMessage) => void;
     // @ts-expect-error: strictPropertyInitialization
-    getPopupPromise: () => Deferred<void>;
-    // @ts-expect-error: strictPropertyInitialization
     createUiPromise: UiPromiseCreator;
-    // @ts-expect-error: strictPropertyInitialization
-    removeUiPromise: (promise: Deferred<any>) => void;
 
     initAsync?(): Promise<void>;
 
@@ -160,29 +154,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // NOTE: every method should always send "device" parameter
         const originalFn = this.createUiPromise;
         this.createUiPromise = (t, d) => originalFn(t, d || device);
-    }
-
-    async requestPermissions() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_PERMISSION);
-        this.postMessage(
-            createUiMessage(UI.REQUEST_PERMISSION, {
-                permissions: this.requiredPermissions,
-                device: this.device.toMessageObject(),
-            }),
-        );
-        // wait for response
-        const uiResp = await uiPromise.promise;
-        const { granted, remember } = uiResp.payload;
-        if (granted) {
-            this.savePermissions(!remember);
-
-            return true;
-        }
-
-        return false;
     }
 
     private getOriginPermissions() {
