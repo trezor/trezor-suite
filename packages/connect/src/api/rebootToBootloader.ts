@@ -2,7 +2,7 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
-import { UI, createUiMessage } from '../events';
+import { UI } from '../events';
 import { Assert } from '@trezor/schema-utils';
 import { PROTO } from '../constants';
 
@@ -10,8 +10,6 @@ export default class RebootToBootloader extends AbstractMethod<
     'rebootToBootloader',
     PROTO.RebootToBootloader
 > {
-    confirmed?: boolean;
-
     init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.skipFinalReload = true;
@@ -34,31 +32,15 @@ export default class RebootToBootloader extends AbstractMethod<
         return 'Reboot to bootloader';
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'device-management',
-                customConfirmButton: {
-                    className: 'confirm',
-                    label: `Reboot`,
-                },
-                label: 'Are you sure you want to reboot to bootloader?',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            customConfirmButton: {
+                className: 'confirm',
+                label: `Reboot`,
+            },
+            label: 'Are you sure you want to reboot to bootloader?',
+        };
     }
 
     async run() {
