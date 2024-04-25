@@ -42,7 +42,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
@@ -82,7 +82,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"
@@ -98,7 +98,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
       - name: "Checkout branches for Nx"
         uses: ./.github/actions/nx-checkout
       - name: "Minimal yarn install"

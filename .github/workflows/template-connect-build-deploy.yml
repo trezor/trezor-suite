@@ -27,7 +27,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: true
 
       # Pull only files needed for connect to save LFS bandwidth
       - name: "Pull LFS files for connect"
