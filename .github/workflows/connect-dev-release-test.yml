@@ -80,7 +80,8 @@ jobs:
     with:
       test-name: passphrase.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
+      # currently flaky, run only in nightly
+      run-webextension: ${{ github.event_name == 'schedule' }}
 
   popup-pages:
     needs: [build-deploy]
