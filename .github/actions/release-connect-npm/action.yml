@@ -69,6 +69,7 @@ runs:
       shell: bash
       run: |
         cd ./packages/${{ inputs.packageName }}
+        yarn build:lib
         yarn npm publish --tag ${{ inputs.deploymentType }} --access public
 
     - name: Cleanup
