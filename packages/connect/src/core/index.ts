@@ -243,13 +243,12 @@ const getInvalidDeviceState = async (
     return device.validateState(network, preauthorized);
 };
 
-const innerRecursive = async (params: {
-    method: AbstractMethod<any>;
-    device: Device;
-    isUsingPopup: boolean;
-    trustedHost: boolean;
-}): Promise<MethodResponseMessage> => {
-    const { method, device, isUsingPopup, trustedHost } = params;
+/**
+ * This function will run inside Device.run() after device will be acquired and initialized
+ */
+const inner = async (method: AbstractMethod<any>, device: Device) => {
+    const trustedHost = DataManager.getSettings('trustedHost');
+    const isUsingPopup = DataManager.getSettings('popup') ?? false;
 
     const firmwareException = method.checkFirmwareRange();
     if (firmwareException) {
@@ -373,14 +372,13 @@ const innerRecursive = async (params: {
     const isDeviceUnlocked = device.features.unlocked;
     if (method.useDeviceState) {
         try {
-            const invalidDeviceState = await getInvalidDeviceState(
+            let invalidDeviceState = await getInvalidDeviceState(
                 device,
                 method.network,
                 method.preauthorized,
             );
-            if (invalidDeviceState) {
-                if (isUsingPopup) {
-                    // initialize user response promise
+            if (isUsingPopup) {
+                while (invalidDeviceState) {
                     const uiPromise = uiPromises.create(UI.INVALID_PASSPHRASE_ACTION, device);
                     // request action view
                     postMessage(
@@ -398,13 +396,19 @@ const innerRecursive = async (params: {
                             method.useCardanoDerivation,
                         );
 
-                        return innerRecursive(params);
+                        invalidDeviceState = await getInvalidDeviceState(
+                            device,
+                            method.network,
+                            method.preauthorized,
+                        );
+                    } else {
+                        // set new state as requested
+                        device.setExternalState(invalidDeviceState);
+                        break;
                     }
-                    // set new state as requested
-                    device.setExternalState(invalidDeviceState);
-                } else {
-                    throw ERRORS.TypedError('Device_InvalidState');
                 }
+            } else if (invalidDeviceState) {
+                throw ERRORS.TypedError('Device_InvalidState');
             }
         } catch (error) {
             // other error
@@ -440,18 +444,6 @@ const innerRecursive = async (params: {
     } catch (error) {
         return Promise.reject(error);
     }
-};
-
-/**
- * This function will run inside Device.run() after device will be acquired and initialized
- */
-const inner = (method: AbstractMethod<any>, device: Device) => {
-    const options = {
-        trustedHost: DataManager.getSettings('trustedHost'),
-        isUsingPopup: DataManager.getSettings('popup') ?? false,
-    };
-
-    return innerRecursive({ method, device, ...options });
 };
 
 /**
