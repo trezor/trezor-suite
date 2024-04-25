@@ -30,6 +30,8 @@ export * from './components/DataAnalytics';
 export * from './components/Divider/Divider';
 export * from './components/Dropdown/Dropdown';
 export * from './components/ElevationContext/ElevationContext';
+export * from './components/Flex/Flex';
+export * from './components/HotkeyBadge/HotkeyBadge';
 export * from './components/form/Input/Input';
 export * from './components/form/InputStyles';
 export * from './components/form/Radio/Radio';
