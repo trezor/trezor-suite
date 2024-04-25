@@ -104,7 +104,7 @@ export const useCoinmarketSellForm = ({
     const { shouldSendInSats } = useBitcoinAmountUnit(symbol);
 
     const coinFees = fees[symbol];
-    const levels = getFeeLevels(networkType, coinFees).filter(level => level.label !== 'low');
+    const levels = getFeeLevels(networkType, coinFees);
     const feeInfo = { ...coinFees, levels };
     const symbolForFiat = mapTestnetSymbol(symbol);
     const localCurrencyOption = { value: localCurrency, label: localCurrency.toUpperCase() };
