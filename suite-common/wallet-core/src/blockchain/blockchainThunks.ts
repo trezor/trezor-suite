@@ -62,14 +62,20 @@ export const preloadFeeInfoThunk = createThunk(
         const partial: Partial<NetworksFees> = {};
         networks.forEach((network, index) => {
             const result = levels[index];
+
             if (result.success) {
                 const { payload } = result;
                 partial[network.symbol] = {
                     blockHeight: 0,
                     ...payload,
-                    levels: sortLevels(payload.levels).map(l => ({
-                        ...l,
-                        label: l.label || 'normal',
+                    levels: sortLevels(
+                        payload.levels
+                            // hack to hide "low" fee option
+                            // (we do not want to change the connect API as it is a potentially breaking change)
+                            .filter(level => level.label !== 'low'),
+                    ).map(level => ({
+                        ...level,
+                        label: level.label || 'normal',
                     })),
                 };
             }
@@ -130,7 +136,12 @@ export const updateFeeInfoThunk = createThunk(
             if (result.success) {
                 newFeeInfo = {
                     ...result.payload,
-                    levels: sortLevels(result.payload.levels),
+                    levels: sortLevels(
+                        result.payload.levels
+                            // hack to hide "low" fee option
+                            // (we do not want to change the connect API as it is a potentially breaking change)
+                            .filter(level => level.label !== 'low'),
+                    ),
                 };
             }
         }
