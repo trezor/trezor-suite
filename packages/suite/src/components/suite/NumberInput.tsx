@@ -20,8 +20,6 @@ import { getLocaleSeparators } from '@trezor/utils';
 const isValidDecimalString = (value: string) => /^([^.]*)\.[^.]+$/.test(value);
 const hasLeadingZeroes = (value: string) => /^0+(\d+\.\d*|\d+)$/.test(value);
 
-const removeLeadingZeroes = (value: string) => value.replace(/^0+(?!\.|$)/, '');
-
 const cleanValueString = (value: string, locale: Locale) => {
     if (value === undefined) {
         return '';
@@ -34,7 +32,7 @@ const cleanValueString = (value: string, locale: Locale) => {
 
     const { decimalSeparator, thousandsSeparator } = getLocaleSeparators(locale);
 
-    // clean the entered number string if it's not convertable to Number or if it has a non-conventional format
+    // clean the entered number string if it's not convertible to Number or if it has a non-conventional format
     if (
         !Number.isNaN(Number(value)) &&
         thousandsSeparator !== '.' &&
@@ -137,7 +135,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
             const lastSymbol = rawValue.at(-1);
 
             if (
-                lastSymbol &&
+                lastSymbol !== undefined &&
                 (DECIMAL_SEPARATORS.includes(lastSymbol) ||
                     (lastSymbol === '0' && rawValue.includes(decimalSeparator)))
             ) {
@@ -155,12 +153,11 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                         rawValue = rawValue.slice(0, -1);
                     } else if (lastSymbol !== decimalSeparator) {
                         rawValue = rawValue.slice(0, -1) + decimalSeparator;
-                        // }
                     }
                 }
 
                 // the number is incomplete and not ready do be localized (e.g. 1,234. or 1,0000)
-                return handleSetDisplayValue(removeLeadingZeroes(rawValue));
+                return handleSetDisplayValue(rawValue);
             }
 
             // clean so that it's compatible with Number() and localize
@@ -252,7 +249,7 @@ export const NumberInput = <TFieldValues extends FieldValues>({
                 // the value of `invalid` here is the one before this change has been handled
                 const hasErrorStateChanged = hasError !== invalid;
                 if (hasErrorStateChanged) {
-                    // delaying it becase the form needs some time to update the error state
+                    // delaying it because the form needs some time to update the error state
                     // TODO: get rid of `onChangeCallback()` entirely and use the `watch` method from react-hook form
                     setTimeout(() => {
                         onChangeCallback?.(cleanInput);
