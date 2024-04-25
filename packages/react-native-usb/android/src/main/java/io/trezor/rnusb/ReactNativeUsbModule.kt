@@ -32,6 +32,9 @@ const val INTERFACE_INDEX = 0
 
 class ReactNativeUsbModule : Module() {
     private val moduleCoroutineScope = CoroutineScope(Dispatchers.IO)
+    private var isAppInForeground = false;
+    // List of devices for which permission has already been requested to prevent redundant requests if the user denies permission.
+    private var devicesRequestedPermissions = mutableListOf<String>()
 
     // Each module class must implement the definition function. The definition consists of components
     // that describes the module's functionality and behavior.
@@ -95,17 +98,23 @@ class ReactNativeUsbModule : Module() {
 
         OnCreate {
             val onDeviceConnect: OnDeviceConnect = { device ->
-                Log.d("ReactNativeUsbModule", "New connection detected checking permission for device: $device")
+                // Request permissions only when app is in foreground to not interfere with other apps that might use the same device.
+                if(isAppInForeground) {
+                    if (usbManager.hasPermission(device)) {
+                        Log.d("ReactNativeUsbModule", "onDeviceConnected: $device")
+                        devicesRequestedPermissions.remove(device.deviceName)
+                        val webUsbDevice = getWebUSBDevice(device)
+                        sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
+                        devicesHistory[device.deviceName] = webUsbDevice
+                    } else {
+                        Log.d("ReactNativeUsbModule", "No permission for connected device: $device")
+                        val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE)
+                        usbManager.requestPermission(device, permissionIntent)
+                        // Result of permission request is handled in OnActivityEntersForeground because it's not possible to read result (users choice)
+                        // from intents using FLAG_IMMUTABLE.
 
-                if (usbManager.hasPermission(device)) {
-                    Log.d("ReactNativeUsbModule", "onDeviceConnected: $device")
-                    val webUsbDevice = getWebUSBDevice(device)
-                    sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
-                    devicesHistory[device.deviceName] = webUsbDevice
-                } else {
-                    Log.d("ReactNativeUsbModule", "No permission for connected device: $device")
-                    val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE)
-                    usbManager.requestPermission(device, permissionIntent)
+                        devicesRequestedPermissions.add(device.deviceName)
+                    }
                 }
             }
             val onDeviceDisconnect: OnDeviceDisconnect = { deviceName ->
@@ -129,6 +138,8 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnActivityEntersForeground {
+            isAppInForeground = true
+
             // We need to check all devices for permission when app enters foreground because it seems as only possible way
             // how to detect if user granted permission for device from dialog.
             // Dialog causes app to go to background, accept or deny permission and then app goes to foreground again.
@@ -136,13 +147,27 @@ class ReactNativeUsbModule : Module() {
             for (device in devicesList) {
                 if (usbManager.hasPermission(device)) {
                     Log.d("ReactNativeUsbModule", "Has permission, send event onDeviceConnected: $device")
+                    devicesRequestedPermissions.remove(device.deviceName)
                     val webUsbDevice = getWebUSBDevice(device)
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else {
-                    Log.d("ReactNativeUsbModule", "No permission for device: $device")
+                    Log.d("ReactNativeUsbModule", "On foreground No permission for device: $device")
+                    // Prevent requesting permission for the same device multiple times
+                    if(!devicesRequestedPermissions.contains(device.deviceName)) {
+                        val permissionIntent = PendingIntent.getBroadcast(context, 0, Intent(ACTION_USB_PERMISSION), PendingIntent.FLAG_IMMUTABLE)
+                        usbManager.requestPermission(device, permissionIntent)
+                        // The result of the permission request is handled in the next call to OnActivityEntersForeground
+                        // because the modal prompt puts the app in the background.
+                    }
+                    devicesRequestedPermissions.add(device.deviceName)
                 }
             }
+        }
+
+        OnActivityEntersBackground {
+            isAppInForeground = false
+            Log.d("ReactNativeUsbModule", "OnActivityEntersBackground: $isAppInForeground")
         }
 
         OnDestroy {
