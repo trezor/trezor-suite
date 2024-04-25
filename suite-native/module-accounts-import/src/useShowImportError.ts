@@ -55,7 +55,7 @@ export const useShowImportError = (networkSymbol: NetworkSymbol, navigation: Nav
     const { showAlert } = useAlert();
 
     const showImportError = useCallback(
-        (message?: string, onRetry?: () => Promise<void>) => {
+        (message?: string, onRetry?: () => void) => {
             let alertError: AlertError = 'unknownError';
 
             if (message) {

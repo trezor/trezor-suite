@@ -4,8 +4,9 @@ import Lottie from 'lottie-react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
+export type SpinnerLoadingState = 'success' | 'error' | 'idle';
 type SpinnerProps = {
-    loadingResult: 'success' | 'error' | 'idle';
+    loadingState: SpinnerLoadingState;
     onComplete?: () => void;
 };
 
@@ -14,7 +15,7 @@ const successSpinnerStyle = prepareNativeStyle(_ => ({
     height: 50,
 }));
 
-const animationResourceMap = {
+const animationsMap = {
     start: {
         source: require('./refresh-spinner-start.json'),
         duration: 2_000,
@@ -32,10 +33,10 @@ const animationResourceMap = {
         duration: 3_000,
     },
 };
-type AnimationName = keyof typeof animationResourceMap;
+type AnimationName = keyof typeof animationsMap;
 
-export const Spinner = ({ loadingResult, onComplete }: SpinnerProps) => {
-    const [animationSource, setAnimationSource] = useState<AnimationName>('start');
+export const Spinner = ({ loadingState, onComplete }: SpinnerProps) => {
+    const [currentAnimation, setCurrentAnimation] = useState<AnimationName>('start');
     const { applyStyle } = useNativeStyles();
 
     useEffect(() => {
@@ -53,13 +54,13 @@ export const Spinner = ({ loadingResult, onComplete }: SpinnerProps) => {
                 clearTimeout(timeoutId);
             }, animationsMap[loadingState].duration);
         }
-    }, [animationSource, loadingResult, onComplete]);
+    }, [currentAnimation, loadingState, onComplete]);
 
     return (
         <Lottie
-            source={animationResourceMap[animationSource].source}
+            source={animationsMap[currentAnimation].source}
             autoPlay
-            loop={animationSource === 'idle'}
+            loop={currentAnimation === 'idle'}
             style={applyStyle(successSpinnerStyle)}
             resizeMode="cover"
         />

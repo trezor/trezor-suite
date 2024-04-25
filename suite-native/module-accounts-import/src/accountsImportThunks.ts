@@ -3,10 +3,14 @@ import {
     accountsActions,
     PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDeviceState,
+    updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { AccountInfo } from '@trezor/connect';
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
+import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { paymentTypeToAccountType } from './constants';
 

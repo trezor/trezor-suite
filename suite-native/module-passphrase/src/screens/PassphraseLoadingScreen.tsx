@@ -59,7 +59,7 @@ export const PassphraseLoadingScreen = () => {
     return (
         <Screen screenHeader={<PassphraseScreenHeader />}>
             <VStack flex={1} justifyContent="center" alignItems="center">
-                <Spinner loadingResult={loadingResult()} onComplete={handleSuccess} />
+                <Spinner loadingState={loadingResult()} onComplete={handleSuccess} />
             </VStack>
         </Screen>
     );
