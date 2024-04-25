@@ -6,20 +6,38 @@ echo $#
 
 PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
-SRC="../../submodules/trezor-common/protob"
+BRANCH="main"
 DIST="."
 
-if [[ $# -ne 0 && $# -ne 2 ]]
+if [[ $# -ne 0 && $# -ne 1 ]]
     then
-        echo "must provide either 2 or 0 arguments. $# provided"
+        echo "must provide either 1 or 0 arguments. $# provided"
         exit 1
 fi
 
-if [[ $# -eq 2 ]]
+if [[ $# -eq 1 ]]
     then
-        SRC=$1
-        DIST=$2
+        BRANCH=$1
 fi
+
+cd ../../
+ls -la
+if test -d ./trezor-firmware; then
+    echo "trezor-firmware directory exists"
+else
+    echo "trezor-firmware directory does not exist"
+    git clone https://github.com/trezor/trezor-firmware.git
+fi
+
+cd trezor-firmware
+ls -la
+git checkout "$BRANCH"
+git pull origin "$BRANCH"
+cd ..
+
+cd "$PARENT_PATH/.."
+
+SRC="../../trezor-firmware/common/protob"
 
 # BUILD combined messages.proto file from protobuf files
 # this code was copied from ./submodules/trezor-common/protob Makekile
@@ -37,9 +55,13 @@ grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messa
 
 # BUILD messages.json from message.proto
 # pbjs command is added by protobufjs-cli package
-yarn pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
+ls -la 
+node ../../node_modules/.bin/pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
 rm "$DIST"/messages.proto
 
 cd "$PARENT_PATH"
 
 node ./protobuf-types.js typescript
+
+yarn workspace @trezor/protobuf g:prettier --write {messages.json,src/messages.ts} 
+yarn workspace @trezor/protobuf g:eslint --fix ./src/messages.ts
