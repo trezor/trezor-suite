@@ -29,7 +29,7 @@
     },
     "dependencies": {
         "@suite-common/wallet-constants": "workspace:*",
-        "expo-constants": "15.4.5",
+        "expo-constants": "15.4.6",
         "ua-parser-js": "^1.0.37"
     },
     "peerDependencies": {
