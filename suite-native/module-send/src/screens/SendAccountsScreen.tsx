@@ -26,7 +26,7 @@ export const SendAccountsScreen = ({
     return (
         <Screen
             screenHeader={<DeviceManagerScreenHeader />}
-            subheader={<ScreenSubHeader content={'Send from'} leftIcon={<GoBackIcon />} />}
+            subheader={<ScreenSubHeader content="Send from" leftIcon={<GoBackIcon />} />}
         >
             {/* TODO: Enable filtering same as receive screen has. */}
             <AccountsList onSelectAccount={navigateToSendFormScreen} filterValue={TESTNET_FILTER} />

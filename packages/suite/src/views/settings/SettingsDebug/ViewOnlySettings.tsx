@@ -15,7 +15,7 @@ export const ViewOnlySettings = () => {
     return (
         <>
             <SectionItem>
-                <TextColumn title={`Enable redesigned view-only`} />
+                <TextColumn title="Enable redesigned view-only" />
                 <ActionColumn>
                     <Checkbox
                         isChecked={isViewOnlyModeVisible}
@@ -29,7 +29,7 @@ export const ViewOnlySettings = () => {
             </SectionItem>
 
             <SectionItem>
-                <TextColumn title={`Set viewOnlyPromoClosed`} />
+                <TextColumn title="Set viewOnlyPromoClosed" />
                 <ActionColumn>
                     <Checkbox
                         isChecked={viewOnlyPromoClosed}
@@ -41,7 +41,7 @@ export const ViewOnlySettings = () => {
             </SectionItem>
 
             <SectionItem>
-                <TextColumn title={`Set viewOnlyTooltipClosed`} />
+                <TextColumn title="Set viewOnlyTooltipClosed" />
                 <ActionColumn>
                     <Checkbox
                         isChecked={viewOnlyTooltipClosed}

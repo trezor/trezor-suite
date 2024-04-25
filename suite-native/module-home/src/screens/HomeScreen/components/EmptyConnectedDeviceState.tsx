@@ -38,7 +38,7 @@ export const EmptyConnectedDeviceState = () => {
 
     return (
         <Card style={applyStyle(cardStyle)}>
-            <VStack spacing={'large'} style={applyStyle(contentStyle)}>
+            <VStack spacing="large" style={applyStyle(contentStyle)}>
                 <PictogramTitleHeader
                     variant="green"
                     size="large"

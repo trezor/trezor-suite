@@ -30,7 +30,7 @@ export const ReplaceTxButton = () => {
                 isDisabled={isDisabled || isLoading}
                 onClick={signTransaction}
             >
-                <Translation id={'TR_REPLACE_TX'} />
+                <Translation id="TR_REPLACE_TX" />
             </StyledButton>
         </Wrapper>
     );

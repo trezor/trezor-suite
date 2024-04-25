@@ -45,7 +45,9 @@ export const BiometricOverlay = ({
                     style={applyStyle(bottomWrapperStyle)}
                 >
                     <BiometricsIcon iconSize={iconSizes.extraLarge} showShadow />
-                    <Text color="textPrimaryDefault">{<Translation id="biometricsButton" />}</Text>
+                    <Text color="textPrimaryDefault">
+                        <Translation id="biometricsButton" />
+                    </Text>
                 </TouchableOpacity>
             )}
         </>

@@ -160,7 +160,7 @@ export const TxDetailModal = ({ tx, rbfForm, onCancel }: TxDetailModalProps) => 
 
                                 <Middle>
                                     <SectionTitle>
-                                        <Translation id={'TR_REPLACE_TX'} />
+                                        <Translation id="TR_REPLACE_TX" />
                                     </SectionTitle>
                                 </Middle>
                             </>

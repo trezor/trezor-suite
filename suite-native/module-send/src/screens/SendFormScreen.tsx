@@ -28,7 +28,7 @@ export const SendFormScreen = ({
     // TODO: move text content to @suite-native/intl package when is copy ready
     return (
         <Screen
-            subheader={<ScreenSubHeader content={'Send form screen'} leftIcon={<GoBackIcon />} />}
+            subheader={<ScreenSubHeader content="Send form screen" leftIcon={<GoBackIcon />} />}
         >
             <VStack>
                 <VStack justifyContent="center" alignItems="center">

@@ -263,7 +263,7 @@ export const UsedAddresses = ({
                             icon="ARROW_DOWN"
                             iconAlignment="right"
                             onClick={() => setLimit(limit + 20)}
-                            data-test={`@wallet/receive/used-address/show-more`}
+                            data-test="@wallet/receive/used-address/show-more"
                         >
                             <Translation id="TR_SHOW_MORE" />
                         </Button>

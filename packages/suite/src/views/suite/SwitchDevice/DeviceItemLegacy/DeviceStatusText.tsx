@@ -47,7 +47,7 @@ export const DeviceStatusText = ({
         return (
             <DeviceConnectionText
                 variant="warning"
-                icon={'REFRESH'}
+                icon="REFRESH"
                 data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
                 isAction
             >
