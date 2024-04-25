@@ -1,9 +1,8 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Loader } from '@suite-native/atoms';
+import { VStack, Spinner } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
     HomeStackRoutes,
@@ -18,6 +17,7 @@ import {
     selectIsDeviceAccountless,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
+import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 
 import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 
@@ -32,7 +32,9 @@ export const PassphraseLoadingScreen = () => {
     const isDeviceAccountless = useSelector(selectIsDeviceAccountless);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
-    useEffect(() => {
+    const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
+
+    const handleSuccess = () => {
         if (!isDeviceAccountless) {
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
@@ -45,12 +47,19 @@ export const PassphraseLoadingScreen = () => {
                 screen: PassphraseStackRoutes.PassphraseEmptyWallet,
             });
         }
-    }, [isDeviceAccountless, isDiscoveryActive, navigation]);
+    };
+
+    const loadingResult = () => {
+        if (!isDeviceAccountless) return 'success';
+        if (isDeviceReadyToUseAndAuthorized) return 'success';
+
+        return 'idle';
+    };
 
     return (
         <Screen screenHeader={<PassphraseScreenHeader />}>
             <VStack flex={1} justifyContent="center" alignItems="center">
-                <Loader />
+                <Spinner loadingResult={loadingResult()} onComplete={handleSuccess} />
             </VStack>
         </Screen>
     );

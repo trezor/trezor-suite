@@ -9,10 +9,7 @@ import {
     Screen,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { PORTFOLIO_TRACKER_DEVICE_STATE, updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
+import { AccountInfo } from '@trezor/connect';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';

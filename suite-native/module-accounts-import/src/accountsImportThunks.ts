@@ -67,3 +67,62 @@ export const importAccountThunk = createThunk(
         }
     },
 );
+
+export const getAccountInfoThunk = createThunk(
+    `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
+    async (
+        {
+            networkSymbol,
+            fiatCurrency,
+            xpubAddress,
+        }: { networkSymbol: NetworkSymbol; fiatCurrency: FiatCurrencyCode; xpubAddress: string },
+        { dispatch, rejectWithValue },
+    ) => {
+        try {
+            const [fetchedAccountInfo] = await Promise.all([
+                TrezorConnect.getAccountInfo({
+                    coin: networkSymbol,
+                    identity: shouldUseIdentities(networkSymbol)
+                        ? getAccountIdentity({ deviceState: PORTFOLIO_TRACKER_DEVICE_STATE })
+                        : undefined,
+                    descriptor: xpubAddress,
+                    details: 'txs',
+                    suppressBackupWarning: true,
+                }),
+                dispatch(
+                    updateFiatRatesThunk({
+                        ticker: {
+                            symbol: networkSymbol,
+                        },
+                        rateType: 'current',
+                        localCurrency: fiatCurrency,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
+                    }),
+                ),
+            ]);
+
+            if (fetchedAccountInfo?.success) {
+                //fetch fiat rates for all tokens of newly discovered account
+                fetchedAccountInfo.payload.tokens?.forEach(token =>
+                    dispatch(
+                        updateFiatRatesThunk({
+                            ticker: {
+                                symbol: networkSymbol,
+                                tokenAddress: token.contract as TokenAddress,
+                            },
+                            rateType: 'current',
+                            localCurrency: fiatCurrency,
+                            fetchAttemptTimestamp: Date.now() as Timestamp,
+                        }),
+                    ),
+                );
+
+                return fetchedAccountInfo.payload;
+            } else {
+                return rejectWithValue(fetchedAccountInfo.payload.error);
+            }
+        } catch (error) {
+            return rejectWithValue(error?.message);
+        }
+    },
+);

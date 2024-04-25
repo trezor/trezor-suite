@@ -23,6 +23,7 @@
         "@trezor/utils": "workspace:*",
         "expo-image": "1.10.6",
         "jotai": "1.9.1",
+        "lottie-react-native": "6.6.0",
         "react": "18.2.0",
         "react-native": "0.73.6",
         "react-native-gesture-handler": "2.15.0",
