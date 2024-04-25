@@ -1,14 +1,12 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ResetDevice.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI, createUiMessage } from '../events';
+import { UI } from '../events';
 import { getFirmwareRange } from './common/paramsValidator';
 import { PROTO } from '../constants';
 import { Assert } from '@trezor/schema-utils';
 
 export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.ResetDevice> {
-    confirmed?: boolean;
-
     init() {
         this.allowDeviceMode = [UI.INITIALIZE, UI.SEEDLESS];
         this.useDeviceState = false;
@@ -37,27 +35,11 @@ export default class ResetDevice extends AbstractMethod<'resetDevice', PROTO.Res
         return 'Setup device';
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'device-management',
-                label: 'Do you really you want to create a new wallet?',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            label: 'Do you really you want to create a new wallet?',
+        };
     }
 
     async run() {

@@ -3,7 +3,7 @@
 import { randomBytes } from 'crypto';
 import { AbstractMethod } from '../core/AbstractMethod';
 import { ERRORS } from '../constants';
-import { UI, createUiMessage } from '../events';
+import { UI } from '../events';
 import {
     getBinary,
     shouldStripFwHeaders,
@@ -53,28 +53,15 @@ export default class FirmwareUpdate extends AbstractMethod<'firmwareUpdate', Par
         }
     }
 
-    async confirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'device-management',
-                customConfirmButton: {
-                    className: 'wipe',
-                    label: 'Proceed',
-                },
-                label: 'Do you want to update firmware? Never do this without your recovery card.',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            customConfirmButton: {
+                className: 'wipe',
+                label: 'Proceed',
+            },
+            label: 'Do you want to update firmware? Never do this without your recovery card.',
+        };
     }
 
     async run() {

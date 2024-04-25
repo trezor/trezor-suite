@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/RecoveryDevice.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI, createUiMessage } from '../events';
+import { UI } from '../events';
 import { Assert } from '@trezor/schema-utils';
 import type { PROTO } from '../constants';
 import { RecoveryDevice as RecoveryDeviceSchema } from '../types/api/recoveryDevice';
@@ -29,28 +29,15 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
         this.useDeviceState = false;
     }
 
-    async confirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'device-management',
-                customConfirmButton: {
-                    className: 'confirm',
-                    label: 'Proceed',
-                },
-                label: 'Do you want to recover device from seed?',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            customConfirmButton: {
+                className: 'confirm',
+                label: 'Proceed',
+            },
+            label: 'Do you want to recover device from seed?',
+        };
     }
 
     async run() {

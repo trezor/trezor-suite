@@ -26,7 +26,6 @@ import {
     IFrameCallMessage,
     CoreRequestMessage,
     CoreEventMessage,
-    MethodResponseMessage,
 } from '../events';
 import { getMethod } from './method';
 import { AbstractMethod } from './AbstractMethod';
@@ -359,12 +358,23 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     }
 
     // ask for confirmation [export xpub, export info, sign message]
-    if (!trustedHost && typeof method.confirmation === 'function') {
-        // show confirmation in UI
-        const confirmed = await method.confirmation();
-        if (!confirmed) {
-            // interrupt process and go to "final" block
-            return Promise.reject(ERRORS.TypedError('Method_Cancel'));
+    if (!trustedHost) {
+        const requestConfirmation = method.confirmation;
+        if (requestConfirmation) {
+            // wait for popup window
+            await getPopupPromise().promise;
+            // initialize user response promise
+            const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
+
+            // request confirmation view
+            postMessage(createUiMessage(UI.REQUEST_CONFIRMATION, requestConfirmation));
+
+            // wait for user action
+            const confirmed = await uiPromise.promise.then(({ payload }) => payload);
+            if (!confirmed) {
+                // interrupt process and go to "final" block
+                return Promise.reject(ERRORS.TypedError('Method_Cancel'));
+            }
         }
     }
 

@@ -63,12 +63,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
         return 'Export account descriptor';
     }
 
-    async confirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
+    get confirmation() {
         const keys: {
             [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
         } = {};
@@ -99,17 +94,10 @@ export default class GetAccountDescriptor extends AbstractMethod<
             });
         });
 
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-account-info',
-                label: `Export descriptor for: ${str.join('')}`,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
+        return {
+            view: 'export-account-info' as const,
+            label: `Export descriptor for: ${str.join('')}`,
+        };
     }
 
     // override AbstractMethod function

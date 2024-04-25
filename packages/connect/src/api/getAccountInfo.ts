@@ -103,24 +103,16 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         return 'Export account info';
     }
 
-    async confirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
+    get confirmation() {
         if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            // request confirmation view
-            this.postMessage(
-                createUiMessage(UI.REQUEST_CONFIRMATION, {
-                    view: 'export-account-info',
-                    label: `Export info for ${this.params[0].coinInfo.label} account of your selection`,
-                    customConfirmButton: {
-                        label: 'Proceed to account selection',
-                        className: 'not-empty-css',
-                    },
-                }),
-            );
+            return {
+                view: 'export-account-info' as const,
+                label: `Export info for ${this.params[0].coinInfo.label} account of your selection`,
+                customConfirmButton: {
+                    label: 'Proceed to account selection',
+                    className: 'not-empty-css',
+                },
+            };
         } else {
             const keys: {
                 [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
@@ -154,18 +146,11 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 });
             });
 
-            this.postMessage(
-                createUiMessage(UI.REQUEST_CONFIRMATION, {
-                    view: 'export-account-info',
-                    label: `Export info for: ${str.join('')}`,
-                }),
-            );
+            return {
+                view: 'export-account-info' as const,
+                label: `Export info for: ${str.join('')}`,
+            };
         }
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
     }
 
     // override AbstractMethod function
