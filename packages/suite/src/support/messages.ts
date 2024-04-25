@@ -4207,7 +4207,7 @@ export default defineMessages({
     },
     EVENT_WALLET_CREATED: {
         id: 'EVENT_WALLET_CREATED',
-        defaultMessage: 'New wallet created',
+        defaultMessage: 'Wallet successfully added',
     },
     TR_WIPE_DEVICE_HEADING: {
         id: 'TR_WIPE_DEVICE_HEADING',
