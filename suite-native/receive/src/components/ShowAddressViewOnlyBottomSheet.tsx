@@ -34,26 +34,18 @@ export const ShowAddressViewOnlyBottomSheet = ({
             <VStack spacing="large">
                 <VStack alignItems="center">
                     <Text variant="titleSmall">
-                        <Translation
-                            id={'moduleReceive.receiveAddressCard.viewOnlyWarning.title'}
-                        />
+                        <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.title" />
                     </Text>
                     <Text color="textSubdued">
-                        <Translation
-                            id={'moduleReceive.receiveAddressCard.viewOnlyWarning.description'}
-                        />
+                        <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.description" />
                     </Text>
                 </VStack>
                 <VStack spacing="medium" style={applyStyle(buttonWrapperStyle)}>
                     <Button colorScheme="yellowBold" onPress={onShowAddress}>
-                        <Translation
-                            id={'moduleReceive.receiveAddressCard.viewOnlyWarning.primaryButton'}
-                        />
+                        <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.primaryButton" />
                     </Button>
                     <Button colorScheme="yellowElevation1" onPress={handleCloseViewOnlyBottomSheet}>
-                        <Translation
-                            id={'moduleReceive.receiveAddressCard.viewOnlyWarning.secondaryButton'}
-                        />
+                        <Translation id="moduleReceive.receiveAddressCard.viewOnlyWarning.secondaryButton" />
                     </Button>
                 </VStack>
             </VStack>

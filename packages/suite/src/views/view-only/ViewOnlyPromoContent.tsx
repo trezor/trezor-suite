@@ -156,7 +156,7 @@ const Top = () => {
                             <Text variant="primary" typographyStyle="label">
                                 <Translation id="TR_BALANCE" />
                             </Text>
-                            <FormattedCryptoAmount value={'0.04223123'} symbol={'BTC'} />
+                            <FormattedCryptoAmount value="0.04223123" symbol="BTC" />
                         </ChartText>
                         <PriceChartLine />
                         <IllustrativeExamplePositioning>
