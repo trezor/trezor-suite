@@ -1,6 +1,3 @@
-/* eslint-disable camelcase */
-
-const child_process = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
@@ -11,7 +8,7 @@ const args = process.argv.slice(2);
 if (args.length < 1) throw new Error('Check npm dependencies requires 1 parameter: semver');
 const [semver] = args;
 
-const allowedSemvers = ['patch', 'minor'];
+const allowedSemvers = ['patch', 'minor', 'beta'];
 if (!allowedSemvers.includes(semver)) {
     throw new Error(`provided semver: ${semver} must be one of ${allowedSemvers.join(', ')}`);
 }
@@ -34,6 +31,36 @@ const splitByNewlines = input => input.split('\n');
 const findIndexByCommit = (commitArr, searchString) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
+const versionBump = (packageJsonPath, versionType) => {
+    const rawPackageJSON = fs.readFileSync(packageJsonPath);
+    const packageJSON = JSON.parse(rawPackageJSON);
+    let { version } = packageJSON;
+
+    if (versionType === 'beta') {
+        const initialVersion = version.split('-');
+        let baseVersion = initialVersion[0];
+        let betaVersion = 1;
+
+        if (initialVersion[1] && initialVersion[1].startsWith('beta')) {
+            betaVersion = parseInt(initialVersion[1].split('.')[1] || '0') + 1;
+        }
+
+        version = `${baseVersion}-beta.${betaVersion}`;
+    } else {
+        // Handle patch or minor with yarn bump
+        exec('yarn', ['bump', versionType, packageJsonPath]);
+        const updatedPackageJSON = JSON.parse(fs.readFileSync(packageJsonPath));
+        version = updatedPackageJSON.version;
+    }
+
+    fs.writeFileSync(
+        packageJsonPath,
+        JSON.stringify({ ...packageJSON, version }, null, 2),
+        'utf-8',
+    );
+    return version;
+};
+
 const initConnectRelease = async () => {
     const checkResult = await checkPackageDependencies('connect');
 
@@ -45,11 +72,7 @@ const initConnectRelease = async () => {
             const PACKAGE_PATH = path.join(ROOT, 'packages', packageName);
             const PACKAGE_JSON_PATH = path.join(PACKAGE_PATH, 'package.json');
 
-            exec('yarn', ['bump', 'patch', `./packages/${packageName}/package.json`]);
-
-            const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
-            const packageJSON = JSON.parse(rawPackageJSON);
-            const { version } = packageJSON;
+            const version = versionBump(PACKAGE_JSON_PATH, semver);
 
             const packageGitLog = getGitCommitByPackageName(packageName, 1000);
 
