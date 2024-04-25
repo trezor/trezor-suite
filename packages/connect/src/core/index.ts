@@ -308,9 +308,22 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     // check and request permissions [read, write...]
     method.checkPermissions();
     if (!trustedHost && method.requiredPermissions.length > 0) {
-        // show permissions in UI
-        const permitted = await method.requestPermissions();
-        if (!permitted) {
+        // wait for popup window
+        await getPopupPromise().promise;
+        // initialize user response promise
+        const uiPromise = uiPromises.create(UI.RECEIVE_PERMISSION, device);
+        postMessage(
+            createUiMessage(UI.REQUEST_PERMISSION, {
+                permissions: method.requiredPermissions,
+                device: device.toMessageObject(),
+            }),
+        );
+        // wait for response
+        const { granted, remember } = await uiPromise.promise.then(({ payload }) => payload);
+
+        if (granted) {
+            method.savePermissions(!remember);
+        } else {
             // interrupt process and go to "final" block
             return Promise.reject(ERRORS.TypedError('Method_PermissionsNotGranted'));
         }
@@ -491,7 +504,6 @@ const onCall = async (message: IFrameCallMessage) => {
             _log.debug('method selected', method.name);
             // bind callbacks
             method.postMessage = postMessage;
-            method.getPopupPromise = getPopupPromise;
             method.createUiPromise = uiPromises.create;
             // start validation process
             method.init();
