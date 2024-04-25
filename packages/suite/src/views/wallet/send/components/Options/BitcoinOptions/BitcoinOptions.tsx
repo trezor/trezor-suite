@@ -62,6 +62,7 @@ export const BitcoinOptions = () => {
         getDefaultValue,
         toggleOption,
         composeTransaction,
+        setDraftSaveRequest,
         resetDefaultValue,
         setValue,
     } = useSendFormContext();
@@ -80,6 +81,11 @@ export const BitcoinOptions = () => {
     const toggleUtxoSelection = () => {
         setValue('hasCoinControlBeenOpened', true); // required for analytics
         toggleOption('utxoSelection');
+
+        // This will trigger the effect in `useSendForm` and do `saveSendFormDraftThunk`.
+        // This is not nice, but it will endure the new state is persisted in the Redux Store.
+        // Without this, this change may be lost which will result in UI glitch (closing the Coin Control UI)
+        setDraftSaveRequest(true);
     };
 
     return (
