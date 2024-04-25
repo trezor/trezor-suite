@@ -847,3 +847,10 @@ export const selectIsDeviceInViewOnlyMode = (state: DeviceRootState) => {
 
     return !isDeviceConnected && isDeviceRemembered;
 };
+
+export const selectIsDeviceUsingPassphrase = (state: DeviceRootState) => {
+    const isDeviceProtectedByPassphrase = selectIsDeviceProtectedByPassphrase(state);
+    const device = selectDevice(state);
+
+    return isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false;
+};

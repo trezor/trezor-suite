@@ -5,13 +5,16 @@ import { HomeStackNavigator } from '@suite-native/module-home';
 import { AccountsStackNavigator } from '@suite-native/module-accounts-management';
 import { SettingsStackNavigator } from '@suite-native/module-settings';
 import { AppTabsParamList, AppTabsRoutes, TabBar } from '@suite-native/navigation';
+import { useHandleDeviceRequestsPassphrase } from '@suite-native/device';
 
 import { rootTabsOptions } from './routes';
 
 const Tab = createBottomTabNavigator<AppTabsParamList>();
 
-export const AppTabNavigator = () => (
-    <>
+export const AppTabNavigator = () => {
+    useHandleDeviceRequestsPassphrase();
+
+    return (
         <Tab.Navigator
             initialRouteName={AppTabsRoutes.HomeStack}
             screenOptions={{
@@ -27,5 +30,5 @@ export const AppTabNavigator = () => (
             <Tab.Screen name={AppTabsRoutes.ReceiveStack} component={ReceiveStackNavigator} />
             <Tab.Screen name={AppTabsRoutes.SettingsStack} component={SettingsStackNavigator} />
         </Tab.Navigator>
-    </>
-);
+    );
+};
