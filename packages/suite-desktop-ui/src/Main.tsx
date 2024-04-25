@@ -1,6 +1,7 @@
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
+import { StrictMode } from 'react';
 
 import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/electron/renderer';
@@ -35,7 +36,6 @@ import * as STORAGE from 'src/actions/suite/constants/storageConstants';
 import { DesktopUpdater } from './support/DesktopUpdater';
 import { AppRouter } from './support/Router';
 import { TorLoadingScreen } from './support/screens/TorLoadingScreen';
-import { StrictMode } from 'react';
 
 const Main = () => {
     useTor();
