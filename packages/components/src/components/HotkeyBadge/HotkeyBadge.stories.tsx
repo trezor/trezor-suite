@@ -7,14 +7,14 @@ const meta: Meta = {
 } as Meta;
 export default meta;
 
-const Component = ({ children, ...args }: HotkeyBadgeProps) => {
-    return <HotkeyBadgeComponent {...args}>{children}</HotkeyBadgeComponent>;
+const Component = ({ ...args }: HotkeyBadgeProps) => {
+    return <HotkeyBadgeComponent {...args} />;
 };
 
 export const HotkeyBadge: StoryObj<HotkeyBadgeProps> = {
     render: Component,
     args: {
-        children: 'CMD + P',
+        hotkey: ['CTRL', 'KEY_P'],
         isActive: true,
     },
 };

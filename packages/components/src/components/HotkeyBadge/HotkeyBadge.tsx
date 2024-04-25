@@ -7,6 +7,7 @@ import {
 } from '@trezor/theme';
 import styled from 'styled-components';
 import { ElevationDown, useElevation } from '../ElevationContext/ElevationContext';
+import { Keys, keyboardKeys } from './keyboardKeys';
 
 export const Container = styled.div<{ $elevation: Elevation; $isActive: boolean }>`
     display: flex;
@@ -25,24 +26,31 @@ export const Container = styled.div<{ $elevation: Elevation; $isActive: boolean 
 
 export interface HotkeyBadgeProps {
     isActive?: boolean;
-    children: string;
+    hotkey: Array<Keys>;
 }
-const Component = ({ isActive = true, children }: HotkeyBadgeProps) => {
+
+const Plus = () => <span>+</span>;
+
+const Component = ({ isActive = true, hotkey }: HotkeyBadgeProps) => {
     const { elevation } = useElevation();
 
     const isMac = navigator.userAgent.includes('Macintosh');
 
-    const split = children.split(/(\+)/g).map(x => x.trim());
-    const hotkeyReplaces: Record<string, string> = {
-        MOD: isMac ? '⌘' : 'CTRL',
-        ALT: isMac ? 'Option' : 'ALT',
-    };
-
     return (
         <Container $elevation={elevation} $isActive={isActive}>
-            {split.map(hotkey => (
-                <span key={`hotkey-${hotkey}`}>{hotkeyReplaces[hotkey] || hotkey}</span>
-            ))}
+            {hotkey.map((key, index) => {
+                const keyObject = keyboardKeys[key];
+                const macValue = 'valueMac' in keyObject ? keyObject.valueMac : keyObject.value;
+                const isNotLast = index < hotkey.length - 1;
+                const value = isMac ? macValue : keyObject.value;
+
+                return (
+                    <>
+                        <span key={`hotkey-${key}-${index}`}>{value.toUpperCase()}</span>
+                        {isNotLast && <Plus />}
+                    </>
+                );
+            })}
         </Container>
     );
 };
