@@ -13,7 +13,6 @@ export default class GetOwnershipId extends AbstractMethod<
     PROTO.GetOwnershipId[]
 > {
     hasBundle?: boolean;
-    confirmed?: boolean;
 
     init() {
         this.requiredPermissions = ['read'];
@@ -46,31 +45,11 @@ export default class GetOwnershipId extends AbstractMethod<
         return 'Export ownership id';
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION, this.device);
-        let label = this.info;
-        if (this.params.length > 1) {
-            label = 'Export multiple ownership proof ids';
-        }
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-address',
-                label,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
+    get confirmation() {
+        return {
+            view: 'export-address' as const,
+            label: this.params.length > 1 ? 'Export multiple ownership proof ids' : this.info,
+        };
     }
 
     async run() {

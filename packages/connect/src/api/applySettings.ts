@@ -1,7 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/ApplySettings.js
 
 import { AbstractMethod } from '../core/AbstractMethod';
-import { UI, createUiMessage } from '../events';
 import { PROTO } from '../constants';
 import { Assert } from '@trezor/schema-utils';
 import { ApplySettings as ApplySettingsSchema } from '../types/api/applySettings';
@@ -28,28 +27,15 @@ export default class ApplySettings extends AbstractMethod<'applySettings', PROTO
         };
     }
 
-    async confirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'device-management',
-                customConfirmButton: {
-                    className: 'confirm',
-                    label: 'Proceed',
-                },
-                label: 'Do you really want to change device settings?',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
+    get confirmation() {
+        return {
+            view: 'device-management' as const,
+            customConfirmButton: {
+                className: 'confirm',
+                label: 'Proceed',
+            },
+            label: 'Do you really want to change device settings?',
+        };
     }
 
     async run() {

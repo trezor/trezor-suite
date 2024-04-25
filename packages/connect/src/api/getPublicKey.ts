@@ -20,7 +20,6 @@ type Params = PROTO.GetPublicKey & {
 
 export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[]> {
     hasBundle?: boolean;
-    confirmed?: boolean;
 
     init() {
         this.requiredPermissions = ['read'];
@@ -76,33 +75,14 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         return 'Export public key';
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-        let label: string;
-        if (this.params.length > 1) {
-            label = 'Export multiple public keys';
-        } else {
-            label = getPublicKeyLabel(this.params[0].address_n, this.params[0].coinInfo);
-        }
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-xpub',
-                label,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
+    get confirmation() {
+        return {
+            view: 'export-xpub' as const,
+            label:
+                this.params.length > 1
+                    ? 'Export multiple public keys'
+                    : getPublicKeyLabel(this.params[0].address_n, this.params[0].coinInfo),
+        };
     }
 
     async run() {

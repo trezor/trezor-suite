@@ -19,7 +19,6 @@ type Params = PROTO.GetAddress & {
 export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
-    confirmed?: boolean;
 
     init() {
         this.noBackupConfirmationMode = 'always';
@@ -82,7 +81,6 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
             this.params.length === 1 &&
             typeof this.params[0].address === 'string' &&
             this.params[0].show_display;
-        this.confirmed = useEventListener;
         this.useUi = !useEventListener;
     }
 
@@ -110,27 +108,13 @@ export default class GetAddress extends AbstractMethod<'getAddress', Params[]> {
         }
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-address',
-                label: this.info,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
+    get confirmation() {
+        return !this.useUi
+            ? undefined
+            : {
+                  view: 'export-address' as const,
+                  label: this.info,
+              };
     }
 
     async _call({

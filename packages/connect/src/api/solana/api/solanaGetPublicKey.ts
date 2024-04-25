@@ -12,7 +12,6 @@ export default class SolanaGetPublicKey extends AbstractMethod<
     PROTO.SolanaGetPublicKey[]
 > {
     hasBundle?: boolean;
-    confirmed?: boolean;
 
     init() {
         this.noBackupConfirmationMode = 'always';
@@ -46,36 +45,16 @@ export default class SolanaGetPublicKey extends AbstractMethod<
         return 'Export Solana public key';
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        let label: string;
-        if (this.params.length > 1) {
-            label = 'Export multiple Solana public keys';
-        } else {
-            label = `Export Solana public key for account #${
-                fromHardened(this.params[0].address_n[2]) + 1
-            }`;
-        }
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-xpub',
-                label,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
+    get confirmation() {
+        return {
+            view: 'export-xpub' as const,
+            label:
+                this.params.length > 1
+                    ? 'Export multiple Solana public keys'
+                    : `Export Solana public key for account #${
+                          fromHardened(this.params[0].address_n[2]) + 1
+                      }`,
+        };
     }
 
     async run() {

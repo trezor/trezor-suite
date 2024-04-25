@@ -13,6 +13,7 @@ import {
     UiRequestButtonData,
     UiPromiseCreator,
     CoreEventMessage,
+    UiRequestConfirmation,
 } from '../events';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
@@ -60,6 +61,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
+    get confirmation(): UiRequestConfirmation['payload'] | undefined {
+        return undefined;
+    }
+
     useUi: boolean; // should use popup?
 
     useDevice: boolean; // use device
@@ -83,8 +88,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     network: NETWORK.NetworkType;
 
     useCardanoDerivation: boolean;
-
-    confirmation?(): Promise<boolean | undefined>;
 
     noBackupConfirmationMode: 'never' | 'always' | 'popup-only';
 
