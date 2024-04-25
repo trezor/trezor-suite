@@ -70,6 +70,11 @@ describe('NumberInput component', () => {
         await testCase(input, '12345.67', '12,345.67', '12345.67');
         await testCase(input, '1234,67', '1,234.67', '1234.67');
 
+        await testCase(input, '.', '.', '0');
+        await testCase(input, '0', '0', '0');
+        await testCase(input, '00', '0', '0');
+        await testCase(input, '0.', '0.', '0');
+
         await testCase(input, ',67', '0.67', '0.67');
         await testCase(input, '.67', '0.67', '0.67');
         await testCase(input, '.,67', '0.67', '0.67');
@@ -88,6 +93,11 @@ describe('NumberInput component', () => {
 
         await testCase(input, '22345.67', '22\u00A0345,67', '22345.67');
         await testCase(input, '2234,67', '2\u00A0234,67', '2234.67');
+
+        await testCase(input, ',', ',', '0');
+        await testCase(input, '0', '0', '0');
+        await testCase(input, '00', '0', '0');
+        await testCase(input, '0,', '0,', '0');
 
         await testCase(input, ',67', '0,67', '0.67');
         await testCase(input, '.67', '0,67', '0.67');
