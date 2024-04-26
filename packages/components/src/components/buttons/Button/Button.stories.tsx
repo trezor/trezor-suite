@@ -10,5 +10,13 @@ export default meta;
 export const Button: StoryObj<ButtonProps> = {
     args: {
         children: 'Button label',
+        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+    },
+    argTypes: {
+        margin: {
+            table: {
+                category: 'Frame props',
+            },
+        },
     },
 };

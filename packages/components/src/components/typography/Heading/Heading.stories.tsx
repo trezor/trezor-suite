@@ -20,4 +20,14 @@ export const Heading: StoryObj = {
             <H3>This is heading 3</H3>
         </Wrapper>
     ),
+    args: {
+        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+    },
+    argTypes: {
+        margin: {
+            table: {
+                category: 'Frame props',
+            },
+        },
+    },
 };
