@@ -1,10 +1,11 @@
 package io.trezor.rnusb
 
+import android.app.PendingIntent
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
 import android.content.Context
-import android.content.IntentFilter
+import android.content.Intent
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbDeviceConnection
 import android.hardware.usb.UsbManager
@@ -23,12 +24,22 @@ import java.nio.ByteBuffer
 
 const val ON_DEVICE_CONNECT_EVENT_NAME = "onDeviceConnect"
 const val ON_DEVICE_DISCONNECT_EVENT_NAME = "onDeviceDisconnect"
+const val ACTION_USB_PERMISSION = "io.trezor.rnusb.USB_PERMISSION"
 
 // TODO: get interface index by claimed interface
 const val INTERFACE_INDEX = 0
 
 class ReactNativeUsbModule : Module() {
     private val moduleCoroutineScope = CoroutineScope(Dispatchers.IO)
+    private var isAppInForeground = false;
+    // List of devices for which permission has already been requested to prevent redundant requests if the user denies permission.
+    private var devicesRequestedPermissions = mutableListOf<String>()
+
+    private val permissionIntent by lazy {
+        val intent = Intent(context, ReactNativeUsbPermissionReceiver::class.java)
+        intent.setAction(ACTION_USB_PERMISSION)
+        PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_MUTABLE)
+    }
 
     // Each module class must implement the definition function. The definition consists of components
     // that describes the module's functionality and behavior.
@@ -92,21 +103,28 @@ class ReactNativeUsbModule : Module() {
 
         OnCreate {
             val onDeviceConnect: OnDeviceConnect = { device ->
-                Log.d("ReactNativeUsbModule", "New connection detected checking permission for device: $device")
-
-                if (usbManager.hasPermission(device)) {
-                    // TODO: request permissions only for devices which we are interested, one approach could be to pass list of them from JS during new WebUSB class creation
-                    // Or maybe it's not necessary to check due to definition in AndroidManifest.xml ???
-                    Log.d("ReactNativeUsbModule", "onDeviceConnected: $device")
+                // Request permissions only when app is in foreground to not interfere with other apps that might use the same device.
+                if(isAppInForeground) {
+                    Log.d("ReactNativeUsbModule", "New connected device: $device")
+                    devicesRequestedPermissions.add(device.deviceName)
+                    usbManager.requestPermission(device, permissionIntent)
+                }
+            }
+            val onDevicePermission: OnPermissionResolved = { isPermissionGranted, device ->
+                if (isPermissionGranted) {
+                    Log.d("ReactNativeUsbModule", "Permission  granted for device: $device")
                     val webUsbDevice = getWebUSBDevice(device)
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
+                    devicesRequestedPermissions.remove(device.deviceName)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else {
-                    Log.d("ReactNativeUsbModule", "No permission for connected device: $device")
+                    Log.d("ReactNativeUsbModule", "Permission denied for device $device")
                 }
             }
             val onDeviceDisconnect: OnDeviceDisconnect = { deviceName ->
                 Log.d("ReactNativeUsbModule", "onDeviceDisconnected: ${devicesHistory[deviceName]}")
+
+                devicesRequestedPermissions.remove(deviceName)
 
                 if (devicesHistory[deviceName] == null) {
                     Log.e("ReactNativeUsbModule", "Device $deviceName not found in history.")
@@ -120,34 +138,36 @@ class ReactNativeUsbModule : Module() {
 
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(onDeviceConnect)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(onDeviceDisconnect)
-
-            context.registerReceiver(usbAttachedReceiver, IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED))
-            context.registerReceiver(usbDetachedReceiver, IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED))
+            ReactNativeUsbPermissionReceiver.setOnDevicePermissionCallback(onDevicePermission)
         }
 
         OnActivityEntersForeground {
-            // We need to check all devices for permission when app enters foreground because it seems as only possible way
-            // how to detect if user granted permission for device from dialog.
+            isAppInForeground = true
+
             // Dialog causes app to go to background, accept or deny permission and then app goes to foreground again.
             val devicesList = usbManager.deviceList.values.toList()
             for (device in devicesList) {
-                if (usbManager.hasPermission(device)) {
-                    Log.d("ReactNativeUsbModule", "Has permission, send event onDeviceConnected: $device")
-                    val webUsbDevice = getWebUSBDevice(device)
-                    sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
-                    devicesHistory[device.deviceName] = webUsbDevice
-                } else {
-                    Log.d("ReactNativeUsbModule", "No permission for device: $device")
+                if (!usbManager.hasPermission(device) && !devicesRequestedPermissions.contains(device.deviceName)) {
+                    Log.e("ReactNativeUsbModule", "New device connected while app was in background: $device")
+                    devicesRequestedPermissions.add(device.deviceName)
+                    usbManager.requestPermission(device, permissionIntent)
                 }
             }
+        }
+
+        OnActivityEntersBackground {
+            isAppInForeground = false
+            Log.d("ReactNativeUsbModule", "OnActivityEntersBackground: $isAppInForeground")
         }
 
         OnDestroy {
             context.unregisterReceiver(usbAttachedReceiver)
             context.unregisterReceiver(usbDetachedReceiver)
+            context.unregisterReceiver(usbPermissionReceiver)
 
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(null)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(null)
+            ReactNativeUsbPermissionReceiver.setOnDevicePermissionCallback(null)
 
             openedConnections.forEach { (deviceName, _) ->
                 closeDevice(deviceName)
@@ -164,6 +184,7 @@ class ReactNativeUsbModule : Module() {
 
     private val usbAttachedReceiver = ReactNativeUsbAttachedReceiver()
     private val usbDetachedReceiver = ReactNativeUsbDetachedReceiver()
+    private val usbPermissionReceiver = ReactNativeUsbPermissionReceiver()
 
 
     private inline fun withModuleScope(promise: Promise, crossinline block: () -> Unit) = moduleCoroutineScope.launch {
