@@ -6,16 +6,15 @@ import type { Device } from '../types';
 // There I can freely import from anyplace within monorepo without needing
 // to release new packages. Having it here means that I would need to
 // release 2 new packages to npm which is unjustifiable burden
-export const enhancePostMessageWithAnalytics = (
-    callback: (message: CoreEventMessage) => void,
+export const enhanceMessageWithAnalytics = (
     message: CoreEventMessage,
     data: { device?: Device },
-) => {
+): CoreEventMessage => {
     switch (message.type) {
         case UI_REQUEST.REQUEST_CONFIRMATION:
             const { device } = data;
 
-            callback({
+            return {
                 ...message,
                 // @ts-expect-error (EventType.DeviceSelected is inlined here)
                 payload: {
@@ -44,10 +43,9 @@ export const enhancePostMessageWithAnalytics = (
                         },
                     },
                 },
-            });
-            break;
+            };
 
         default:
-            callback(message);
+            return message;
     }
 };

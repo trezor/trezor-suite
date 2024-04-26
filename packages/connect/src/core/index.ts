@@ -8,7 +8,7 @@ import { storage } from '@trezor/connect-common';
 
 import { DataManager } from '../data/DataManager';
 import { DeviceList } from '../device/DeviceList';
-import { enhancePostMessageWithAnalytics } from '../data/analyticsInfo';
+import { enhanceMessageWithAnalytics } from '../data/analyticsInfo';
 import { ERRORS } from '../constants';
 import {
     CORE_EVENT,
@@ -342,9 +342,12 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
 
             // request confirmation view
             postMessage(
-                createUiMessage(UI.REQUEST_CONFIRMATION, {
-                    view: 'no-backup',
-                }),
+                enhanceMessageWithAnalytics(
+                    createUiMessage(UI.REQUEST_CONFIRMATION, {
+                        view: 'no-backup',
+                    }),
+                    { device: device.toMessageObject() },
+                ),
             );
 
             // wait for user action
@@ -380,7 +383,12 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
             const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
 
             // request confirmation view
-            postMessage(createUiMessage(UI.REQUEST_CONFIRMATION, requestConfirmation));
+            postMessage(
+                enhanceMessageWithAnalytics(
+                    createUiMessage(UI.REQUEST_CONFIRMATION, requestConfirmation),
+                    { device: device.toMessageObject() },
+                ),
+            );
 
             // wait for user action
             const confirmed = await uiPromise.promise.then(({ payload }) => payload);
@@ -574,9 +582,6 @@ const onCall = async (message: IFrameCallMessage) => {
         postMessage(createResponseMessage(responseID, false, { error }));
         throw error;
     }
-
-    method.postMessage = (message: CoreEventMessage) =>
-        enhancePostMessageWithAnalytics(postMessage, message, { device: device.toMessageObject() });
 
     method.setDevice(device);
 
