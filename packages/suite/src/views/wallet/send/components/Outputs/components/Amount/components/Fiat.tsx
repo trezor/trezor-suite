@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { Timestamp, TokenAddress, fiatRatesResult } from '@suite-common/wallet-types';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
@@ -204,9 +204,11 @@ export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProp
                 );
 
                 if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                    const rate = updateFiatRatesResult.payload as number;
+                    const fiatRate = updateFiatRatesResult.payload as fiatRatesResult;
 
-                    recalculateFiat(rate);
+                    if (fiatRate?.rate) {
+                        recalculateFiat(fiatRate.rate);
+                    }
                 }
             }}
         />
