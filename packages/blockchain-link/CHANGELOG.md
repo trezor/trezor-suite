@@ -1,3 +1,12 @@
+# 2.1.29
+
+-   chore(blockchain-link): skip failing tests (34833c4751)
+-   chore(blockhain-link): beta release 2.1.29-beta.0 (bf3589acc1)
+-   fix(blockchain-link): cache SOL token metadata (385010151a)
+-   chore(deps): bump @solana/web3.js from 1.90.0 to 1.90.2 (962e51f4ca)
+-   feat(blockchain-link): resubmit Solana transactions during confirmation (babb748eca)
+-   fix(blockchain-link): close blockchain link connection on error (3bf8732140)
+
 # 2.1.28
 
 -   fix(blockchain-link): fix Solana transaction confirmation (38cd7ccdb6)
