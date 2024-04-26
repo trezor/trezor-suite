@@ -8,7 +8,6 @@ import { getTokensFiatBalance } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const Section = styled.div<{ $selected?: boolean }>`
     display: flex;
@@ -54,7 +53,6 @@ export const AccountItemsGroup = ({
     tokens,
     dataTestKey,
 }: AccountItemsGroupProps) => {
-    const isDebug = useSelector(selectIsDebugModeActive);
     const autocompoundBalance = getAccountAutocompoundBalance(account);
 
     const routeName = useSelector(selectRouteName);
@@ -79,7 +77,7 @@ export const AccountItemsGroup = ({
                 isGroupSelected={selected}
                 dataTestKey={dataTestKey}
             />
-            {showStaking && (isDebug || (!isDebug && account.symbol !== 'eth')) && (
+            {showStaking && (
                 <Wrapper>
                     <Divider $isBigger />
                     <AccountItem
