@@ -1077,14 +1077,14 @@ export class Core extends EventEmitter {
         handleMessage(message);
     }
 
-    async dispose() {
+    dispose() {
         disposeBackend();
         if (_deviceListInitTimeout) {
             clearTimeout(_deviceListInitTimeout);
         }
         this.removeAllListeners();
         if (_deviceList) {
-            await _deviceList.dispose();
+            _deviceList.dispose();
         }
     }
 
@@ -1179,7 +1179,7 @@ const disableWebUSBTransport = async () => {
 
     try {
         // disconnect previous device list
-        await _deviceList.dispose();
+        _deviceList.dispose();
         // and init with new settings, without webusb
         await initDeviceList(settings.transportReconnect);
     } catch (error) {
