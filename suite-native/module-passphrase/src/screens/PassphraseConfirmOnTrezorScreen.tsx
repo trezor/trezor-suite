@@ -19,11 +19,11 @@ import { DeviceTS3Svg } from '../assets/DeviceTS3Svg';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
-    PassphraseStackRoutes.PassphraseConfirmOnDevice,
+    PassphraseStackRoutes.PassphraseConfirmOnTrezor,
     RootStackParamList
 >;
 
-export const PassphraseConfirmOnDeviceScreen = () => {
+export const PassphraseConfirmOnTrezorScreen = () => {
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
 
     const navigation = useNavigation<NavigationProp>();

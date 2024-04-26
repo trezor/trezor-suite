@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useAlert } from '@suite-native/alerts/src';
+import { useAlert } from '@suite-native/alerts';
 import { analytics, EventType } from '@suite-native/analytics';
 
 import {

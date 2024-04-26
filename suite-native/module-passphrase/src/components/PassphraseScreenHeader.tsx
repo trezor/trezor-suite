@@ -58,7 +58,7 @@ export const PassphraseScreenHeader = () => {
     };
 
     const handlePress = () => {
-        if (route.name === PassphraseStackRoutes.PassphraseConfirmOnDevice) {
+        if (route.name === PassphraseStackRoutes.PassphraseConfirmOnTrezor) {
             setShouldShowWarningBottomSheet(true);
         } else {
             handleClose();

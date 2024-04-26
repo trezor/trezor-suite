@@ -8,7 +8,9 @@ import {
 
 import { PassphraseFormScreen } from '../screens/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from '../screens/PassphraseLoadingScreen';
-import { PassphraseConfirmOnDeviceScreen } from '../screens/PassphraseConfirmOnDeviceScreen';
+import { PassphraseConfirmOnTrezorScreen } from '../screens/PassphraseConfirmOnTrezorScreen';
+import { PassphraseEmptyWalletScreen } from '../screens/PassphraseEmptyWalletScreen';
+import { PassphraseVerifyEmptyWalletScreen } from '../screens/PassphraseVerifyEmptyWalletScreen';
 
 export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
@@ -20,12 +22,20 @@ export const PassphraseStackNavigator = () => {
                 component={PassphraseFormScreen}
             />
             <PassphraseStack.Screen
-                name={PassphraseStackRoutes.PassphraseConfirmOnDevice}
-                component={PassphraseConfirmOnDeviceScreen}
+                name={PassphraseStackRoutes.PassphraseConfirmOnTrezor}
+                component={PassphraseConfirmOnTrezorScreen}
             />
             <PassphraseStack.Screen
                 name={PassphraseStackRoutes.PassphraseLoading}
                 component={PassphraseLoadingScreen}
+            />
+            <PassphraseStack.Screen
+                name={PassphraseStackRoutes.PassphraseEmptyWallet}
+                component={PassphraseEmptyWalletScreen}
+            />
+            <PassphraseStack.Screen
+                name={PassphraseStackRoutes.PassphraseVerifyEmptyWallet}
+                component={PassphraseVerifyEmptyWalletScreen}
             />
         </PassphraseStack.Navigator>
     );
