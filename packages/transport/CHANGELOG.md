@@ -1,3 +1,19 @@
+# 1.1.28
+
+-   chore(protobuf): ability to build protobuf messages from the specified branch (7a6babb818)
+-   fix(transport): remove accidental descriptors object mutation (3cd6b820f9)
+-   Revert feat(transport): add scheduleActionParams to call api (4de6cbed0c)
+-   feat(transport): add scheduleActionParams to call api (40a053013a)
+-   feat(protocol): separate chunking from encoding (2f445ba734)
+-   chore(transport): drop dead code (faba718c9f)
+-   chore(protocol): rename decode response fields (1db2916fed)
+-   test(transport): fix e2e triggering unit tests (9c117de07e)
+-   feat(transport): handle cases when bridge returns descriptor with same path but different product (e2abb91fc8)
+-   chore(transport): improve tests setup (5aa27a0fba)
+-   chore(transport): keep track of full descriptors in background (be400968bb)
+-   feat(transport): add field type to descriptor (74a7214adb)
+-   test(suite-native): detox e2e (#11821) (3e3f185ece)
+
 # 1.1.27
 
 -   chore(ci): faster transport E2E (5154075030)
