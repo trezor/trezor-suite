@@ -18,6 +18,7 @@
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },
+        { "path": "../link" },
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../../packages/connect" },
