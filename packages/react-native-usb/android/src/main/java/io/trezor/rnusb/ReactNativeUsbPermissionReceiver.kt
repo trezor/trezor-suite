@@ -28,7 +28,7 @@ class ReactNativeUsbPermissionReceiver() : BroadcastReceiver() {
                     intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
                 }
                 val isPermissionGranted = intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)
-                Log.d("ReactNativeUSB", "USB permission granted: $isPermissionGranted")
+                Log.d(LOG_TAG, "USB permission granted: $isPermissionGranted")
 
                 device?.apply {
                     onDevicePermissionCallback?.invoke(isPermissionGranted, device)

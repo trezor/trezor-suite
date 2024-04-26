@@ -25,13 +25,14 @@ import java.nio.ByteBuffer
 const val ON_DEVICE_CONNECT_EVENT_NAME = "onDeviceConnect"
 const val ON_DEVICE_DISCONNECT_EVENT_NAME = "onDeviceDisconnect"
 const val ACTION_USB_PERMISSION = "io.trezor.rnusb.USB_PERMISSION"
+const val LOG_TAG = "ReactNativeUsb"
 
 // TODO: get interface index by claimed interface
 const val INTERFACE_INDEX = 0
 
 class ReactNativeUsbModule : Module() {
     private val moduleCoroutineScope = CoroutineScope(Dispatchers.IO)
-    private var isAppInForeground = false;
+    private var isAppInForeground = false
     // List of devices for which permission has already been requested to prevent redundant requests if the user denies permission.
     private var devicesRequestedPermissions = mutableListOf<String>()
 
@@ -84,7 +85,7 @@ class ReactNativeUsbModule : Module() {
                     promise.resolve(result)
                 } catch (e: Exception) {
                     promise.reject("USB Write Error", e.message, e)
-                    Log.e("ReactNativeUsbModule", "Failed to transfer data to device $deviceName")
+                    Log.e(LOG_TAG, "Failed to transfer data to device $deviceName")
                 }
             }
         }
@@ -96,7 +97,7 @@ class ReactNativeUsbModule : Module() {
                     promise.resolve(result)
                 } catch (e: Exception) {
                     promise.reject("USB Read Error", e.message, e)
-                    Log.e("ReactNativeUsbModule", "Failed to transfer data from device $deviceName")
+                    Log.e(LOG_TAG, "Failed to transfer data from device $deviceName")
                 }
             }
         }
@@ -105,33 +106,33 @@ class ReactNativeUsbModule : Module() {
             val onDeviceConnect: OnDeviceConnect = { device ->
                 // Request permissions only when app is in foreground to not interfere with other apps that might use the same device.
                 if(isAppInForeground) {
-                    Log.d("ReactNativeUsbModule", "New connected device: $device")
+                    Log.d(LOG_TAG, "New connected device: $device")
                     devicesRequestedPermissions.add(device.deviceName)
                     usbManager.requestPermission(device, permissionIntent)
                 }
             }
             val onDevicePermission: OnPermissionResolved = { isPermissionGranted, device ->
                 if (isPermissionGranted) {
-                    Log.d("ReactNativeUsbModule", "Permission  granted for device: $device")
+                    Log.d(LOG_TAG, "Permission  granted for device: $device")
                     val webUsbDevice = getWebUSBDevice(device)
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesRequestedPermissions.remove(device.deviceName)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else {
-                    Log.d("ReactNativeUsbModule", "Permission denied for device $device")
+                    Log.d(LOG_TAG, "Permission denied for device $device")
                 }
             }
             val onDeviceDisconnect: OnDeviceDisconnect = { deviceName ->
-                Log.d("ReactNativeUsbModule", "onDeviceDisconnected: ${devicesHistory[deviceName]}")
+                Log.d(LOG_TAG, "onDeviceDisconnected: ${devicesHistory[deviceName]}")
 
                 devicesRequestedPermissions.remove(deviceName)
 
                 if (devicesHistory[deviceName] == null) {
-                    Log.e("ReactNativeUsbModule", "Device $deviceName not found in history.")
+                    Log.e(LOG_TAG, "Device $deviceName not found in history.")
                 }
 
                 devicesHistory[deviceName]?.let { sendEvent(ON_DEVICE_DISCONNECT_EVENT_NAME, it) }
-                Log.d("ReactNativeUsbModule", "Disconnect event sent for device ${devicesHistory[deviceName]}")
+                Log.d(LOG_TAG, "Disconnect event sent for device ${devicesHistory[deviceName]}")
 
                 openedConnections.remove(deviceName)
             }
@@ -142,13 +143,14 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnActivityEntersForeground {
+            Log.d(LOG_TAG, "OnActivityEntersForeground")
             isAppInForeground = true
 
             // Dialog causes app to go to background, accept or deny permission and then app goes to foreground again.
             val devicesList = usbManager.deviceList.values.toList()
             for (device in devicesList) {
                 if (!usbManager.hasPermission(device) && !devicesRequestedPermissions.contains(device.deviceName)) {
-                    Log.e("ReactNativeUsbModule", "New device connected while app was in background: $device")
+                    Log.e(LOG_TAG, "New device connected while app was in background: $device")
                     devicesRequestedPermissions.add(device.deviceName)
                     usbManager.requestPermission(device, permissionIntent)
                 }
@@ -156,8 +158,8 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnActivityEntersBackground {
+            Log.d(LOG_TAG, "OnActivityEntersBackground")
             isAppInForeground = false
-            Log.d("ReactNativeUsbModule", "OnActivityEntersBackground: $isAppInForeground")
         }
 
         OnDestroy {
@@ -176,7 +178,7 @@ class ReactNativeUsbModule : Module() {
             try {
                 moduleCoroutineScope.cancel(ModuleDestroyedException())
             } catch (e: IllegalStateException) {
-                Log.e("ReactNativeUsbModule", "The scope does not have a job in it")
+                Log.e(LOG_TAG, "The scope does not have a job in it")
             }
         }
 
@@ -193,7 +195,7 @@ class ReactNativeUsbModule : Module() {
         } catch (e: CodedException) {
             promise.reject(e)
         } catch (e: ModuleDestroyedException) {
-            promise.reject("ReactNativeUsbModule", "React Native USB module destroyed", e)
+            promise.reject(LOG_TAG, "React Native USB module destroyed", e)
         }
     }
     private val context: Context
@@ -208,22 +210,22 @@ class ReactNativeUsbModule : Module() {
     private val devicesHistory = mutableMapOf<String, WebUSBDevice>()
 
     private fun openDevice(deviceName: String): WebUSBDevice {
-        Log.d("ReactNativeUsbModule", "Opening device $deviceName")
+        Log.d(LOG_TAG, "Opening device $deviceName")
         val device = getDeviceByName(deviceName)
 
         val usbConnection = usbManager.openDevice(device)
         if (usbConnection == null) {
-            Log.e("ReactNativeUsbModule", "Failed to open device ${device.deviceName}")
+            Log.e(LOG_TAG, "Failed to open device ${device.deviceName}")
             throw Exception("Failed to open device ${device.deviceName}")
         }
-        Log.d("ReactNativeUsbModule", "Opening device ${device.deviceName}")
+        Log.d(LOG_TAG, "Opening device ${device.deviceName}")
         openedConnections[device.deviceName] = usbConnection
 
         // log all endpoints for debug purposes
         val usbInterface = device.getInterface(0)
         for (i in 0 until usbInterface.endpointCount) {
             val endpoint = usbInterface.getEndpoint(i)
-            Log.d("ReactNativeUsbModule", "endpoint: $endpoint")
+            Log.d(LOG_TAG, "endpoint: $endpoint")
         }
 
 
@@ -231,18 +233,18 @@ class ReactNativeUsbModule : Module() {
     }
 
     private fun closeDevice(deviceName: String) {
-        Log.d("ReactNativeUsbModule", "Closing device $deviceName")
+        Log.d(LOG_TAG, "Closing device $deviceName")
         val usbConnection = getOpenedConnection(deviceName)
         usbConnection.close()
         openedConnections.remove(deviceName)
     }
 
     private fun selectConfiguration(deviceName: String, configurationIndex: Int) {
-        Log.d("ReactNativeUsbModule", "Selecting configuration $configurationIndex for device $deviceName")
+        Log.d(LOG_TAG, "Selecting configuration $configurationIndex for device $deviceName")
         val device = getDeviceByName(deviceName)
         val configurationValue = device.getConfiguration(configurationIndex)
         if (configurationValue == null) {
-            Log.e("ReactNativeUsbModule", "Failed to get configuration $configurationIndex for device ${device.deviceName}")
+            Log.e(LOG_TAG, "Failed to get configuration $configurationIndex for device ${device.deviceName}")
             throw Exception("Failed to get configuration $configurationIndex for device ${device.deviceName}")
         }
         val usbConnection = getOpenedConnection(deviceName)
@@ -250,57 +252,57 @@ class ReactNativeUsbModule : Module() {
     }
 
     private fun claimInterface(deviceName: String, interfaceNumber: Int) {
-        Log.d("ReactNativeUsbModule", "Claiming interface $interfaceNumber for device $deviceName")
+        Log.d(LOG_TAG, "Claiming interface $interfaceNumber for device $deviceName")
         val device = getDeviceByName(deviceName)
         val usbConnection = getOpenedConnection(deviceName)
         val usbInterface = device.getInterface(interfaceNumber)
         if (usbInterface == null) {
-            Log.e("ReactNativeUsbModule", "Failed to get interface $interfaceNumber for device ${device.deviceName}")
+            Log.e(LOG_TAG, "Failed to get interface $interfaceNumber for device ${device.deviceName}")
             throw Exception("Failed to get interface $interfaceNumber for device ${device.deviceName}")
         }
         usbConnection.claimInterface(usbInterface, true)
     }
 
     private fun releaseInterface(deviceName: String, interfaceNumber: Int) {
-        Log.d("ReactNativeUsbModule", "Releasing interface $interfaceNumber for device $deviceName")
+        Log.d(LOG_TAG, "Releasing interface $interfaceNumber for device $deviceName")
         val device = getDeviceByName(deviceName)
         val usbConnection = getOpenedConnection(deviceName)
         val usbInterface = device.getInterface(interfaceNumber)
         if (usbInterface == null) {
-            Log.e("ReactNativeUsbModule", "Failed to get interface $interfaceNumber for device ${device.deviceName}")
+            Log.e(LOG_TAG, "Failed to get interface $interfaceNumber for device ${device.deviceName}")
             throw Exception("Failed to get interface $interfaceNumber for device ${device.deviceName}")
         }
         usbConnection.releaseInterface(usbInterface)
     }
 
     private fun transferOut(deviceName: String, endpointNumber: Int, data: String): Int {
-        Log.d("ReactNativeUsbModule", "Transfering data to device $deviceName")
-        Log.d("ReactNativeUsbModule", "data: ${data}")
+        Log.d(LOG_TAG, "Transfering data to device $deviceName")
+        Log.d(LOG_TAG, "data: ${data}")
         // split string into array of numbers and then convert numbers to byte array
         val dataByteArray = data.split(",").map { it.toInt().toByte() }.toByteArray()
-        Log.d("ReactNativeUsbModule", "dataByteArray: $dataByteArray")
+        Log.d(LOG_TAG, "dataByteArray: $dataByteArray")
         val device = getDeviceByName(deviceName)
         val usbConnection = getOpenedConnection(deviceName)
 
         val usbEndpoint = device.getInterface(INTERFACE_INDEX).getEndpoint(1)
         if (usbEndpoint == null) {
-            Log.e("ReactNativeUsbModule", "Failed to get endpoint $endpointNumber for device ${device.deviceName}")
+            Log.e(LOG_TAG, "Failed to get endpoint $endpointNumber for device ${device.deviceName}")
             throw Exception("Failed to get endpoint $endpointNumber for device ${device.deviceName}")
         }
         val result = usbConnection.bulkTransfer(usbEndpoint, dataByteArray, dataByteArray.size, 0)
-        Log.d("ReactNativeUsbModule", "Transfered data to device ${device.deviceName}: $result")
+        Log.d(LOG_TAG, "Transfered data to device ${device.deviceName}: $result")
         return result
     }
 
     private fun transferIn(deviceName: String, endpointNumber: Int, length: Int): IntArray {
-        Log.d("ReactNativeUsbModule", "Reading data from device $deviceName")
+        Log.d(LOG_TAG, "Reading data from device $deviceName")
         val device = getDeviceByName(deviceName)
         val usbConnection = getOpenedConnection(deviceName)
 
         val usbEndpoint = device.getInterface(INTERFACE_INDEX).getEndpoint(0)
 
         if (usbEndpoint == null) {
-            Log.e("ReactNativeUsbModule", "Failed to get endpoint $endpointNumber for device ${device.deviceName}")
+            Log.e(LOG_TAG, "Failed to get endpoint $endpointNumber for device ${device.deviceName}")
             throw Exception("Failed to get endpoint $endpointNumber for device ${device.deviceName}")
         }
 
@@ -312,26 +314,26 @@ class ReactNativeUsbModule : Module() {
         val result = usbConnection.requestWait()
 
         if (result == null) {
-            Log.e("ReactNativeUsbModule", "Failed to transfer data from device ${device.deviceName}")
+            Log.e(LOG_TAG, "Failed to transfer data from device ${device.deviceName}")
             throw Exception("Failed to transfer data from device ${device.deviceName}")
         }
-        Log.d("ReactNativeUsbModule", "Read data from device ${device.deviceName}: ${buffer.array()}")
+        Log.d(LOG_TAG, "Read data from device ${device.deviceName}: ${buffer.array()}")
         // convert buffer to Array
         val bufferArray = buffer.array()
-        Log.d("ReactNativeUsbModule", "bufferArray: ${bufferArray.toList()}")
+        Log.d(LOG_TAG, "bufferArray: ${bufferArray.toList()}")
         // convert Array to IntArray
         val bufferIntArray = bufferArray.map { it.toInt() }.toIntArray()
         return bufferIntArray
     }
 
     private fun getOpenedConnection(deviceName: String): UsbDeviceConnection {
-        Log.d("ReactNativeUsbModule", "getOpenedConnection: $deviceName")
+        Log.d(LOG_TAG, "getOpenedConnection: $deviceName")
         return openedConnections[deviceName] ?: throw Exception("Device $deviceName not opened")
     }
 
 
     private fun getDeviceByName(deviceName: String): UsbDevice {
-        Log.d("ReactNativeUsbModule", "getDeviceByName: $deviceName")
+        Log.d(LOG_TAG, "getDeviceByName: $deviceName")
         val devices = usbManager.deviceList.values.toList()
         for (device in devices) {
             if (device.deviceName == deviceName) {
@@ -342,21 +344,21 @@ class ReactNativeUsbModule : Module() {
     }
 
     private fun getDevices(): List<Map<String, Any?>> {
-        Log.d("ReactNativeUsbModule", "getDevices")
+        Log.d(LOG_TAG, "getDevices")
         val devices = mutableListOf<WebUSBDevice>()
-        var devicesList = usbManager.deviceList.values.toList()
-        Log.d("ReactNativeUsbModule", "deviceList: $devicesList")
+        val devicesList = usbManager.deviceList.values.toList()
+        Log.d(LOG_TAG, "deviceList: $devicesList")
         for (i in 0 until devicesList.size) {
             val device = devicesList[i]
             if (!usbManager.hasPermission(device)) {
-                Log.d("ReactNativeUsbModule", "device: ${device.deviceName} has no permission, skipping")
+                Log.d(LOG_TAG, "device: ${device.deviceName} has no permission, skipping")
                 continue
             }
             val webUsbDevice = getWebUSBDevice(device)
             devices.add(webUsbDevice)
             devicesHistory[device.deviceName] = webUsbDevice
         }
-        Log.d("ReactNativeUsbModule", "getDevices: $devices")
+        Log.d(LOG_TAG, "getDevices: $devices")
         return devices
     }
 }
