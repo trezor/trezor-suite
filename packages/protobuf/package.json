@@ -1,48 +1,48 @@
 {
-    "name": "@trezor/protobuf",
-    "version": "1.0.11",
-    "license": "See LICENSE.md in repo root",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/trezor/trezor-suite.git"
-    },
-    "bugs": {
-        "url": "https://github.com/trezor/trezor-suite/issues"
-    },
-    "sideEffects": false,
-    "main": "src/index.ts",
-    "publishConfig": {
-        "main": "lib/index.js"
-    },
-    "npmPublishAccess": "public",
-    "files": [
-        "lib/",
-        "!**/*.map",
-        "scripts/protobuf-build.sh",
-        "scripts/protobuf-patches",
-        "scripts/protobuf-types.js",
-        "messages.json"
-    ],
-    "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest -c ../../jest.config.base.js",
-        "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
-        "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
-        "update:protobuf": "./scripts/protobuf-build.sh",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
-    },
-    "dependencies": {
-        "@trezor/schema-utils": "workspace:*",
-        "long": "^4.0.0",
-        "protobufjs": "7.2.6"
-    },
-    "devDependencies": {
-        "protobufjs-cli": "^1.1.2",
-        "tsx": "^4.7.0"
-    },
-    "peerDependencies": {
-        "tslib": "^2.6.2"
-    }
+  "name": "@trezor/protobuf",
+  "version": "1.0.11-beta.1",
+  "license": "See LICENSE.md in repo root",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/trezor/trezor-suite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trezor/trezor-suite/issues"
+  },
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js"
+  },
+  "npmPublishAccess": "public",
+  "files": [
+    "lib/",
+    "!**/*.map",
+    "scripts/protobuf-build.sh",
+    "scripts/protobuf-patches",
+    "scripts/protobuf-types.js",
+    "messages.json"
+  ],
+  "scripts": {
+    "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+    "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+    "type-check": "yarn g:tsc --build",
+    "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+    "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
+    "update:protobuf": "./scripts/protobuf-build.sh",
+    "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+    "prepublish": "yarn tsx ../../scripts/prepublish.js"
+  },
+  "dependencies": {
+    "@trezor/schema-utils": "workspace:*",
+    "long": "^4.0.0",
+    "protobufjs": "7.2.6"
+  },
+  "devDependencies": {
+    "protobufjs-cli": "^1.1.2",
+    "tsx": "^4.7.0"
+  },
+  "peerDependencies": {
+    "tslib": "^2.6.2"
+  }
 }
