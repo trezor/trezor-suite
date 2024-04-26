@@ -390,17 +390,18 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         };
     }
 
-    async dispose() {
+    dispose() {
         this.removeAllListeners();
 
         if (autoResolveTransportEventTimeout) {
             clearTimeout(autoResolveTransportEventTimeout);
         }
         // release all devices
-        await Promise.all(this.allDevices().map(device => device.dispose()));
-        // now we can be relatively sure that release calls have been dispatched
-        // and we can safely kill all async subscriptions in transport layer
-        this.transport.stop();
+        Promise.all(this.allDevices().map(device => device.dispose())).then(() => {
+            // now we can be relatively sure that release calls have been dispatched
+            // and we can safely kill all async subscriptions in transport layer
+            this.transport.stop();
+        });
     }
 
     disconnectDevices() {
