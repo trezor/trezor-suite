@@ -1,51 +1,51 @@
 {
-    "name": "@trezor/env-utils",
-    "version": "1.0.15",
-    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/env-utils",
-    "npmPublishAccess": "public",
-    "license": "See LICENSE.md in repo root",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/trezor/trezor-suite.git"
+  "name": "@trezor/env-utils",
+  "version": "1.0.15-beta.1",
+  "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/env-utils",
+  "npmPublishAccess": "public",
+  "license": "See LICENSE.md in repo root",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/trezor/trezor-suite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trezor/trezor-suite/issues"
+  },
+  "sideEffects": false,
+  "main": "src/index.ts",
+  "publishConfig": {
+    "main": "lib/index.js"
+  },
+  "files": [
+    "lib/",
+    "!**/*.map"
+  ],
+  "scripts": {
+    "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+    "type-check": "yarn g:tsc --build",
+    "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+    "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+    "prepublish": "yarn tsx ../../scripts/prepublish.js"
+  },
+  "dependencies": {
+    "@suite-common/wallet-constants": "workspace:*",
+    "expo-constants": "15.4.5",
+    "ua-parser-js": "^1.0.37"
+  },
+  "peerDependencies": {
+    "expo-localization": "*",
+    "react-native": "*",
+    "tslib": "^2.6.2"
+  },
+  "peerDependenciesMeta": {
+    "expo-localization": {
+      "optional": true
     },
-    "bugs": {
-        "url": "https://github.com/trezor/trezor-suite/issues"
-    },
-    "sideEffects": false,
-    "main": "src/index.ts",
-    "publishConfig": {
-        "main": "lib/index.js"
-    },
-    "files": [
-        "lib/",
-        "!**/*.map"
-    ],
-    "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "type-check": "yarn g:tsc --build",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
-    },
-    "dependencies": {
-        "@suite-common/wallet-constants": "workspace:*",
-        "expo-constants": "15.4.5",
-        "ua-parser-js": "^1.0.37"
-    },
-    "peerDependencies": {
-        "expo-localization": "*",
-        "react-native": "*",
-        "tslib": "^2.6.2"
-    },
-    "peerDependenciesMeta": {
-        "expo-localization": {
-            "optional": true
-        },
-        "react-native": {
-            "optional": true
-        }
-    },
-    "devDependencies": {
-        "tsx": "^4.7.0"
+    "react-native": {
+      "optional": true
     }
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0"
+  }
 }
