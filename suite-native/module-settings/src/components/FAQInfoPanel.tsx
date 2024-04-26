@@ -72,6 +72,7 @@ const EnabledUsbFAQ = () => {
                     translate('moduleSettings.faq.usbEnabled.4.answer.0'),
                     translate('moduleSettings.faq.usbEnabled.4.answer.1'),
                     translate('moduleSettings.faq.usbEnabled.4.answer.2'),
+                    translate('moduleSettings.faq.usbEnabled.4.answer.3'),
                 ]}
             />
             <QuestionItem
