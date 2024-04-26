@@ -2,7 +2,7 @@
 import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createDeferred, Deferred } from '@trezor/utils';
+import { createDeferred } from '@trezor/utils';
 import { getSynchronize } from '@trezor/utils';
 import { storage } from '@trezor/connect-common';
 
@@ -31,6 +31,7 @@ import { getMethod } from './method';
 import { AbstractMethod } from './AbstractMethod';
 import { resolveAfter } from '../utils/promiseUtils';
 import { createUiPromiseManager } from '../utils/uiPromiseManager';
+import { createPopupPromiseManager } from '../utils/popupPromiseManager';
 import { initLog, enableLog, setLogWriter, LogWriter } from '../utils/debug';
 import { dispose as disposeBackend } from '../backend/BlockchainLink';
 import { InteractionTimeout } from '../utils/interactionTimeout';
@@ -41,7 +42,6 @@ import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
 // Public variables
 let _core: Core; // Class with event emitter
 let _deviceList: DeviceList | undefined; // Instance of DeviceList
-let _popupPromise: Deferred<void> | undefined; // Waiting for popup handshake
 const _callMethods: AbstractMethod<any>[] = []; // generic type is irrelevant. only common functions are called at this level
 let _interactionTimeout: InteractionTimeout;
 let _deviceListInitTimeout: ReturnType<typeof setTimeout> | undefined;
@@ -73,23 +73,12 @@ const postMessage = (message: CoreEventMessage) => {
     _core.emit(CORE_EVENT, message);
 };
 
-/**
- * Creates an instance of _popupPromise.
- * If Core is used without popup this promise should be always resolved automatically
- * @param {boolean} requestWindow
- * @returns {Deferred<void>}
- * @memberof Core
- */
-const getPopupPromise = (requestWindow = true) => {
-    // request ui window (used with modal)
-    if (requestWindow) {
-        postMessage(createUiMessage(UI.REQUEST_UI_WINDOW));
-    }
-    if (!_popupPromise) {
-        _popupPromise = createDeferred();
-    }
+const popupPromise = createPopupPromiseManager();
 
-    return _popupPromise;
+const waitForPopup = () => {
+    postMessage(createUiMessage(UI.REQUEST_UI_WINDOW));
+
+    return popupPromise.wait();
 };
 
 /**
@@ -165,7 +154,7 @@ const initDevice = async (devicePath?: string) => {
         uiPromises.create(UI.RECEIVE_DEVICE);
 
         // wait for popup handshake
-        await getPopupPromise().promise;
+        await waitForPopup();
 
         // there is await above, _deviceList might have been set to undefined.
         if (!_deviceList) {
@@ -254,7 +243,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
         if (isUsingPopup) {
             if (firmwareException === UI.FIRMWARE_NOT_COMPATIBLE) {
                 // wait for popup handshake
-                await getPopupPromise().promise;
+                await waitForPopup();
                 // initialize user response promise
                 const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
                 // show unexpected state information and wait for confirmation
@@ -265,7 +254,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
                     throw ERRORS.TypedError('Method_PermissionsNotGranted');
                 }
             } else {
-                await getPopupPromise().promise;
+                await waitForPopup();
                 // show unexpected state information
                 postMessage(createUiMessage(firmwareException, device.toMessageObject()));
 
@@ -290,7 +279,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
         device.keepSession = false;
         if (isUsingPopup) {
             // wait for popup handshake
-            await getPopupPromise().promise;
+            await waitForPopup();
             // show unexpected state information
             postMessage(createUiMessage(unexpectedMode, device.toMessageObject()));
 
@@ -309,7 +298,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     method.checkPermissions();
     if (!trustedHost && method.requiredPermissions.length > 0) {
         // wait for popup window
-        await getPopupPromise().promise;
+        await waitForPopup();
         // initialize user response promise
         const uiPromise = uiPromises.create(UI.RECEIVE_PERMISSION, device);
         postMessage(
@@ -336,7 +325,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
             (method.noBackupConfirmationMode === 'popup-only' && isUsingPopup)
         ) {
             // wait for popup window
-            await getPopupPromise().promise;
+            await waitForPopup();
             // initialize user response promise
             const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
 
@@ -360,7 +349,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
         }
 
         // wait for popup handshake
-        await getPopupPromise().promise;
+        await waitForPopup();
         // show notification
         postMessage(createUiMessage(UI.DEVICE_NEEDS_BACKUP, device.toMessageObject()));
     }
@@ -368,7 +357,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
     // notify if firmware is outdated but not required
     if (device.firmwareStatus === 'outdated') {
         // wait for popup handshake
-        await getPopupPromise().promise;
+        await waitForPopup();
         // show notification
         postMessage(createUiMessage(UI.FIRMWARE_OUTDATED, device.toMessageObject()));
     }
@@ -378,7 +367,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
         const requestConfirmation = method.confirmation;
         if (requestConfirmation) {
             // wait for popup window
-            await getPopupPromise().promise;
+            await waitForPopup();
             // initialize user response promise
             const uiPromise = uiPromises.create(UI.RECEIVE_CONFIRMATION, device);
 
@@ -461,7 +450,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
 
     if (method.useUi) {
         // make sure that popup is opened
-        await getPopupPromise().promise;
+        await waitForPopup();
     } else {
         // popup is not required
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
@@ -533,7 +522,7 @@ const onCall = async (message: IFrameCallMessage) => {
         try {
             if (method.useUi) {
                 // wait for popup handshake
-                await getPopupPromise().promise;
+                await waitForPopup();
             } else {
                 // cancel popup request
                 postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
@@ -571,7 +560,7 @@ const onCall = async (message: IFrameCallMessage) => {
     } catch (error) {
         if (error.code === 'Transport_Missing') {
             // wait for popup handshake
-            await getPopupPromise().promise;
+            await waitForPopup();
             // show message about transport
             postMessage(createUiMessage(UI.TRANSPORT));
         } else {
@@ -761,8 +750,7 @@ const onCall = async (message: IFrameCallMessage) => {
  * @memberof Core
  */
 const cleanup = () => {
-    // closePopup(); // this causes problem when action is interrupted (example: bootloader mode)
-    _popupPromise = undefined;
+    popupPromise.clear();
     uiPromises.clear();
     _interactionTimeout.stop();
     _log.debug('Cleanup...');
@@ -774,7 +762,7 @@ const cleanup = () => {
  * @memberof Core
  */
 const closePopup = () => {
-    if (_popupPromise) {
+    if (popupPromise.isWaiting()) {
         postMessage(createPopupMessage(POPUP.CANCEL_POPUP_REQUEST));
     }
     postMessage(createUiMessage(UI.CLOSE_UI_WINDOW));
@@ -793,7 +781,7 @@ const onDeviceButtonHandler = async (
     // wait for popup handshake
     const addressRequest = request.code === 'ButtonRequest_Address';
     if (!addressRequest || (addressRequest && method.useUi)) {
-        await getPopupPromise().promise;
+        await waitForPopup();
     }
     const data =
         typeof method.getButtonRequestData === 'function' && request.code
@@ -827,7 +815,7 @@ const onDeviceButtonHandler = async (
  */
 const onDevicePinHandler: DeviceEvents['pin'] = async (...[device, type, callback]) => {
     // wait for popup handshake
-    await getPopupPromise().promise;
+    await waitForPopup();
     // create ui promise
     const uiPromise = uiPromises.create(UI.RECEIVE_PIN, device);
     // request pin view
@@ -840,7 +828,7 @@ const onDevicePinHandler: DeviceEvents['pin'] = async (...[device, type, callbac
 
 const onDeviceWordHandler: DeviceEvents['word'] = async (...[device, type, callback]) => {
     // wait for popup handshake
-    await getPopupPromise().promise;
+    await waitForPopup();
     // create ui promise
     const uiPromise = uiPromises.create(UI.RECEIVE_WORD, device);
     postMessage(createUiMessage(UI.REQUEST_WORD, { device: device.toMessageObject(), type }));
@@ -858,7 +846,7 @@ const onDeviceWordHandler: DeviceEvents['word'] = async (...[device, type, callb
  */
 const onDevicePassphraseHandler: DeviceEvents['passphrase'] = async (...[device, callback]) => {
     // wait for popup handshake
-    await getPopupPromise().promise;
+    await waitForPopup();
     // create ui promise
     const uiPromise = uiPromises.create(UI.RECEIVE_PASSPHRASE, device);
     // request passphrase view
@@ -912,16 +900,12 @@ const onPopupClosed = (customErrorMessage?: string) => {
                 }
             }
         });
-        cleanup();
         // Waiting for device. Throw error before onCall try/catch block
     } else {
         uiPromises.rejectAll(error);
-        if (_popupPromise) {
-            _popupPromise.reject(error);
-            _popupPromise = undefined;
-        }
-        cleanup();
+        popupPromise.reject(error);
     }
+    cleanup();
 };
 
 /**
@@ -1055,7 +1039,7 @@ export class Core extends EventEmitter {
 
         switch (message.type) {
             case POPUP.HANDSHAKE:
-                getPopupPromise(false).resolve();
+                popupPromise.resolve();
                 break;
             case POPUP.CLOSED:
                 onPopupClosed(message.payload ? message.payload.error : null);
