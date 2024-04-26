@@ -804,7 +804,7 @@ export class DeviceCommands {
                 await this.callPromise.promise;
             }
             // if my observations are correct, it is not necessary to transport.receive after send
-            // transport.call -> transport.send -> tranpsport call returns Failure meaning it won't be
+            // transport.call -> transport.send -> transport call returns Failure meaning it won't be
             // returned in subsequent calls
             // await this.transport.receive({ session: this.sessionId }).promise;
         }

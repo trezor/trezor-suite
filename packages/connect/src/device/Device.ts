@@ -789,12 +789,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return null;
     }
 
-    dispose() {
+    async dispose() {
         this.removeAllListeners();
         if (this.isUsedHere() && this.activitySessionID) {
             try {
                 if (this.commands) {
-                    this.commands.cancel();
+                    await this.commands.cancel();
                 }
 
                 return this.transport.release({
