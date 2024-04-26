@@ -1,3 +1,7 @@
+# 2.0.9
+
+-   fix(utxo-lib): support checksums in descriptor parsing (4db4c2e903)
+
 # 2.0.8
 
 -   chore(utxo-lib): lint fix (b43bb65ed9)
