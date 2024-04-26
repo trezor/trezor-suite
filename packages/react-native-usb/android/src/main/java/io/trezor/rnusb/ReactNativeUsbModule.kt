@@ -163,10 +163,6 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnDestroy {
-            context.unregisterReceiver(usbAttachedReceiver)
-            context.unregisterReceiver(usbDetachedReceiver)
-            context.unregisterReceiver(usbPermissionReceiver)
-
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(null)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(null)
             ReactNativeUsbPermissionReceiver.setOnDevicePermissionCallback(null)
