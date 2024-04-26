@@ -387,6 +387,7 @@ export const en = {
                         0: 'Trezor One: from version 1.12.1',
                         1: 'Trezor T: from version 2.6.3',
                         2: 'Trezor Safe 3: from version 2.6.3',
+                        3: 'Trezor Safe 5: from version 2.7.1',
                     },
                 },
                 5: {
