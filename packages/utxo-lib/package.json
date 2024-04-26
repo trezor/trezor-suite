@@ -1,74 +1,74 @@
 {
-    "name": "@trezor/utxo-lib",
-    "version": "2.0.8",
-    "author": "Trezor <info@trezor.io>",
-    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib",
-    "description": "Client-side Bitcoin-like JavaScript library",
-    "npmPublishAccess": "public",
-    "license": "SEE LICENSE IN LICENSE.md",
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/trezor/trezor-suite.git"
-    },
-    "bugs": {
-        "url": "https://github.com/trezor/trezor-suite/issues"
-    },
-    "keywords": [
-        "Trezor",
-        "bitcoin",
-        "altcoins",
-        "utxo",
-        "javascript"
-    ],
-    "main": "./src/index.ts",
-    "files": [
-        "lib/",
-        "!**/*.map"
-    ],
-    "publishConfig": {
-        "main": "./lib/index.js",
-        "types": "lib/index.d.ts",
-        "typings": "lib/index.d.ts"
-    },
-    "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest --verbose -c jest.config.js",
-        "type-check": "yarn g:tsc --build tsconfig.json",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
-    },
-    "dependencies": {
-        "@trezor/utils": "workspace:*",
-        "bchaddrjs": "^0.5.2",
-        "bech32": "^2.0.0",
-        "bip66": "^1.1.5",
-        "bitcoin-ops": "^1.4.1",
-        "blake-hash": "^2.0.0",
-        "blakejs": "^1.2.1",
-        "bn.js": "^5.2.1",
-        "bs58": "^5.0.0",
-        "bs58check": "^3.0.1",
-        "create-hash": "^1.2.0",
-        "create-hmac": "^1.1.7",
-        "int64-buffer": "^1.0.1",
-        "pushdata-bitcoin": "^1.0.1",
-        "tiny-secp256k1": "^1.1.6",
-        "typeforce": "^1.18.0",
-        "varuint-bitcoin": "^1.1.2",
-        "wif": "^4.0.0"
-    },
-    "devDependencies": {
-        "@types/bchaddrjs": "^0.4.2",
-        "@types/bs58": "^4.0.4",
-        "@types/bs58check": "^2.1.1",
-        "@types/create-hash": "^1.2.6",
-        "@types/create-hmac": "^1.1.2",
-        "@types/wif": "^2.0.5",
-        "minimaldata": "^1.0.2",
-        "tsx": "^4.7.0"
-    },
-    "peerDependencies": {
-        "tslib": "^2.6.2"
-    }
+  "name": "@trezor/utxo-lib",
+  "version": "2.0.8-beta.1",
+  "author": "Trezor <info@trezor.io>",
+  "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/utxo-lib",
+  "description": "Client-side Bitcoin-like JavaScript library",
+  "npmPublishAccess": "public",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/trezor/trezor-suite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trezor/trezor-suite/issues"
+  },
+  "keywords": [
+    "Trezor",
+    "bitcoin",
+    "altcoins",
+    "utxo",
+    "javascript"
+  ],
+  "main": "./src/index.ts",
+  "files": [
+    "lib/",
+    "!**/*.map"
+  ],
+  "publishConfig": {
+    "main": "./lib/index.js",
+    "types": "lib/index.d.ts",
+    "typings": "lib/index.d.ts"
+  },
+  "scripts": {
+    "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+    "test:unit": "yarn g:jest --verbose -c jest.config.js",
+    "type-check": "yarn g:tsc --build tsconfig.json",
+    "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+    "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+    "prepublish": "yarn tsx ../../scripts/prepublish.js"
+  },
+  "dependencies": {
+    "@trezor/utils": "workspace:*",
+    "bchaddrjs": "^0.5.2",
+    "bech32": "^2.0.0",
+    "bip66": "^1.1.5",
+    "bitcoin-ops": "^1.4.1",
+    "blake-hash": "^2.0.0",
+    "blakejs": "^1.2.1",
+    "bn.js": "^5.2.1",
+    "bs58": "^5.0.0",
+    "bs58check": "^3.0.1",
+    "create-hash": "^1.2.0",
+    "create-hmac": "^1.1.7",
+    "int64-buffer": "^1.0.1",
+    "pushdata-bitcoin": "^1.0.1",
+    "tiny-secp256k1": "^1.1.6",
+    "typeforce": "^1.18.0",
+    "varuint-bitcoin": "^1.1.2",
+    "wif": "^4.0.0"
+  },
+  "devDependencies": {
+    "@types/bchaddrjs": "^0.4.2",
+    "@types/bs58": "^4.0.4",
+    "@types/bs58check": "^2.1.1",
+    "@types/create-hash": "^1.2.6",
+    "@types/create-hmac": "^1.1.2",
+    "@types/wif": "^2.0.5",
+    "minimaldata": "^1.0.2",
+    "tsx": "^4.7.0"
+  },
+  "peerDependencies": {
+    "tslib": "^2.6.2"
+  }
 }
