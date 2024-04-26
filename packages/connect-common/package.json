@@ -1,51 +1,51 @@
 {
-    "name": "@trezor/connect-common",
-    "version": "0.0.31",
-    "author": "Trezor <info@trezor.io>",
-    "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-common",
-    "keywords": [
-        "Trezor",
-        "trezor-connect"
-    ],
-    "repository": {
-        "type": "git",
-        "url": "git://github.com/trezor/trezor-suite.git"
-    },
-    "bugs": {
-        "url": "https://github.com/trezor/trezor-suite/issues"
-    },
-    "npmPublishAccess": "public",
-    "license": "SEE LICENSE IN LICENSE.md",
-    "description": "Collection of assets and utils used by trezor-connect library.",
-    "main": "./src/index.ts",
-    "files": [
-        "lib/",
-        "files/**/*.json",
-        "files/**/*.txt",
-        "CHANGELOG.md",
-        "!**/*.map"
-    ],
-    "publishConfig": {
-        "main": "lib/index.js",
-        "types": "lib/index.d.ts",
-        "typings": "lib/index.d.ts"
-    },
-    "scripts": {
-        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
-        "test:unit": "yarn g:jest",
-        "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
-        "type-check": "yarn g:tsc --build tsconfig.json",
-        "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
-        "prepublish": "yarn tsx ../../scripts/prepublish.js"
-    },
-    "dependencies": {
-        "@trezor/env-utils": "workspace:*",
-        "@trezor/utils": "workspace:*"
-    },
-    "peerDependencies": {
-        "tslib": "^2.6.2"
-    },
-    "devDependencies": {
-        "tsx": "^4.7.0"
-    }
+  "name": "@trezor/connect-common",
+  "version": "0.0.31-beta.1",
+  "author": "Trezor <info@trezor.io>",
+  "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-common",
+  "keywords": [
+    "Trezor",
+    "trezor-connect"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/trezor/trezor-suite.git"
+  },
+  "bugs": {
+    "url": "https://github.com/trezor/trezor-suite/issues"
+  },
+  "npmPublishAccess": "public",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "description": "Collection of assets and utils used by trezor-connect library.",
+  "main": "./src/index.ts",
+  "files": [
+    "lib/",
+    "files/**/*.json",
+    "files/**/*.txt",
+    "CHANGELOG.md",
+    "!**/*.map"
+  ],
+  "publishConfig": {
+    "main": "lib/index.js",
+    "types": "lib/index.d.ts",
+    "typings": "lib/index.d.ts"
+  },
+  "scripts": {
+    "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+    "test:unit": "yarn g:jest",
+    "build:lib": "yarn g:rimraf lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+    "type-check": "yarn g:tsc --build tsconfig.json",
+    "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
+    "prepublish": "yarn tsx ../../scripts/prepublish.js"
+  },
+  "dependencies": {
+    "@trezor/env-utils": "workspace:*",
+    "@trezor/utils": "workspace:*"
+  },
+  "peerDependencies": {
+    "tslib": "^2.6.2"
+  },
+  "devDependencies": {
+    "tsx": "^4.7.0"
+  }
 }
