@@ -1,3 +1,11 @@
+# 1.0.12
+
+-   chore(protobuf): ability to build protobuf messages from the specified branch (7a6babb818)
+-   feat(protobuf): add T3T1 internal_model patch (6a6aea725e)
+-   fix(protocol): encoding repeated enum (eaac0b12e8)
+-   feat(protocol): encode/decode messageType as string (ae3211ab6a)
+-   fix(protobuf): clean up type of `backup_type` in schema (19b7bb27c1)
+
 # 1.0.11
 
 -   chore(connect-explorer-nextra): code cleanup, yarn resolutions (a0e511f1fd)
