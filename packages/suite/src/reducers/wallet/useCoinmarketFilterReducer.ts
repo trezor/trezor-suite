@@ -96,7 +96,10 @@ export const useCoinmarketFilterReducer = (
             return quotes.filter(quote => {
                 if (state.paymentMethod === '') return true; // all
 
-                return quote.paymentMethod === state.paymentMethod;
+                return (
+                    quote.paymentMethod === state.paymentMethod &&
+                    typeof quote.error === 'undefined'
+                );
             });
         },
         [state.paymentMethod],
