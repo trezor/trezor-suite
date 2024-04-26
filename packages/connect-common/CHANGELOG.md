@@ -1,3 +1,9 @@
+# 0.0.32
+
+-   feat(connect): add T3T1 releases.json (a9840087c8)
+-   chore: remove min_bridge_version from releases.json (c384914903)
+-   chore(connect-common): add Czech to available FW translations (4a1aa824c6)
+
 # 0.0.31
 
 -   fix(connect): webextension save sessions (efed18e4ea)
