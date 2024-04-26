@@ -56,7 +56,7 @@
         "test:unit": "jest --version && jest",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
-        "version:beta": "yarn g:tsx scripts/bump-version.ts prerelease",
+        "version:prerelease": "yarn g:tsx scripts/bump-version.ts prerelease",
         "version:patch": "yarn g:tsx scripts/bump-version.ts patch",
         "version:minor": "yarn g:tsx scripts/bump-version.ts minor",
         "version:major": "yarn g:tsx scripts/bump-version.ts major",
