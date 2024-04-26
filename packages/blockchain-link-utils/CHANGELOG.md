@@ -1,3 +1,9 @@
+# 1.0.17
+
+-   feat(blockchain-link-utils): solana using data.trezor.io token metadata (9bd73e9d36)
+-   fix(blockchain-link): cache SOL token metadata (385010151a)
+-   chore(deps): bump @solana/web3.js from 1.90.0 to 1.90.2 (962e51f4ca)
+
 # 1.0.16
 
 -   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
