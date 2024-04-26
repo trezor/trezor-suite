@@ -100,9 +100,6 @@ jobs:
           yarn workspace @trezor/connect-iframe build:core-module
           yarn workspace @trezor/connect-explorer build:webextension
 
-      - name: Make Docker Script Executable
-        run: chmod +x ./docker/docker-connect-popup-ci.sh
-
       - name: Run connect popup test
         env:
           URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
