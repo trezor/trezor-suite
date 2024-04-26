@@ -73,13 +73,6 @@ export const config: webpack.Configuration = {
                 },
             },
             {
-                test: /\workers\/solana\/index/i,
-                loader: 'worker-loader',
-                options: {
-                    filename: './workers/solana-worker.[contenthash].js',
-                },
-            },
-            {
                 test: /\.(js|ts)$/,
                 exclude: /node_modules/,
                 use: {
