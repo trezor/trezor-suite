@@ -1,3 +1,9 @@
+# 1.0.8
+
+-   feat(protocol): separate chunking from encoding (2f445ba734)
+-   feat(protocol): encode/decode messageType as string (ae3211ab6a)
+-   chore(protocol): rename decode response fields (1db2916fed)
+
 # 1.0.7
 
 -   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
