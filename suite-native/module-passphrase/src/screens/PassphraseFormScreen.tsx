@@ -1,6 +1,7 @@
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import { View } from 'react-native';
 
+import { useOpenLink } from '@suite-native/link';
 import { Screen } from '@suite-native/navigation';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
@@ -16,9 +17,15 @@ const ALERT_CARD_HEIGHT = 148;
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundAlertBlueSubtleOnElevation1,
     borderRadius: utils.borders.radii.medium,
+    borderColor: utils.colors.backgroundAlertBlueSubtleOnElevationNegative,
+    borderWidth: utils.borders.widths.small,
     padding: 12,
     flex: 1,
     justifyContent: 'center',
+}));
+
+const cardTextStyle = prepareNativeStyle(_ => ({
+    width: '90%',
 }));
 
 const animationWrapperStyle = prepareNativeStyle(() => ({
@@ -27,6 +34,8 @@ const animationWrapperStyle = prepareNativeStyle(() => ({
 
 export const PassphraseFormScreen = () => {
     const { applyStyle, utils } = useNativeStyles();
+
+    const openLink = useOpenLink();
 
     const cardHeight = useSharedValue(ALERT_CARD_HEIGHT);
 
@@ -38,6 +47,10 @@ export const PassphraseFormScreen = () => {
 
     const handleAnimation = () => (cardHeight.value = 0);
 
+    const handleOpenLink = () => {
+        openLink('https://trezor.io/learn/a/passphrases-and-hidden-wallets');
+    };
+
     return (
         <Screen
             screenHeader={<PassphraseScreenHeader />}
@@ -45,7 +58,7 @@ export const PassphraseFormScreen = () => {
         >
             <VStack spacing="large">
                 <VStack>
-                    <Text variant="titleSmall">
+                    <Text variant="titleMedium">
                         <Translation id="modulePassphrase.title" />
                     </Text>
                     <Text>
@@ -62,13 +75,17 @@ export const PassphraseFormScreen = () => {
                         <Animated.View style={animationStyle}>
                             <Box style={applyStyle(cardStyle)}>
                                 <VStack>
-                                    <HStack>
+                                    <HStack alignItems="flex-start">
                                         <Icon
                                             name="warningCircle"
                                             color="textAlertBlue"
                                             size="medium"
                                         />
-                                        <Text color="textAlertBlue" variant="callout">
+                                        <Text
+                                            color="textAlertBlue"
+                                            variant="callout"
+                                            style={applyStyle(cardTextStyle)}
+                                        >
                                             <Translation id="modulePassphrase.alertCard.paragraphWarning1" />
                                         </Text>
                                     </HStack>
@@ -78,11 +95,20 @@ export const PassphraseFormScreen = () => {
                                             color="textDefault"
                                             size="medium"
                                         />
-                                        <Text color="textDefault" variant="hint">
+                                        <Text
+                                            color="textDefault"
+                                            variant="hint"
+                                            style={applyStyle(cardTextStyle)}
+                                        >
                                             <Translation id="modulePassphrase.alertCard.paragraphWarning2" />
                                         </Text>
                                     </HStack>
-                                    <Button size="small">
+                                    <Button
+                                        size="small"
+                                        colorScheme="blueBold"
+                                        iconLeft="arrowLineUpRight"
+                                        onPress={handleOpenLink}
+                                    >
                                         <Translation id="modulePassphrase.alertCard.button" />
                                     </Button>
                                 </VStack>

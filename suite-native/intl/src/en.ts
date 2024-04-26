@@ -638,7 +638,8 @@ export const en = {
         title: 'Passphrase',
         subtitle: 'Entering a <bold>passphrase opens a wallet</bold> secured by that very phrase.',
         alertCard: {
-            paragraphWarning1: 'It’s crucial to understand passphrase before using it.',
+            paragraphWarning1:
+                'It’s essential to understand how a passphrase works before using it.',
             paragraphWarning2: 'No one can recover it, not even Trezor support.',
             button: 'How passphrase works',
         },
@@ -650,6 +651,11 @@ export const en = {
             title: 'Confirm passphrase\non your Trezor.',
             description: 'Carefully check the passphrase you’ve just entered.',
             button: 'Cancel',
+            warningSheet: {
+                title: 'Are you sure you would like to cancel opening a passphrase wallet?',
+                primaryButton: 'Cancel',
+                secondaryButton: 'Continue opening',
+            },
         },
     },
 };
