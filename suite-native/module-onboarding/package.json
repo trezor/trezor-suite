@@ -27,7 +27,7 @@
         "@suite-native/theme": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "expo-linear-gradient": "12.7.1",
+        "expo-linear-gradient": "12.7.2",
         "react": "18.2.0",
         "react-native": "0.73.6",
         "react-native-svg": "14.1.0",

@@ -32,7 +32,7 @@
         "@trezor/connect": "workspace:*",
         "@trezor/transport-native": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-device": "5.9.3",
+        "expo-device": "5.9.4",
         "react": "18.2.0",
         "react-native": "0.73.6",
         "react-redux": "8.0.7",
