@@ -4,7 +4,7 @@ import { Button, Card, Icon, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { isPending } from '@suite-common/wallet-utils';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { FiatValue, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
@@ -13,6 +13,7 @@ import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
+import { TrimmedCryptoAmount } from './TrimmedCryptoAmount';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.md};
@@ -36,13 +37,6 @@ const AmountHeading = styled.div`
     align-items: center;
     font-size: ${variables.FONT_SIZE.TINY};
     color: ${({ theme }) => theme.textSubdued};
-`;
-
-const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)<{ $isRewards?: boolean }>`
-    display: block;
-    margin-top: ${spacingsPx.xs};
-    font-size: ${variables.FONT_SIZE.H2};
-    color: ${({ $isRewards = false, theme }) => ($isRewards ? theme.textPrimaryDefault : '')};
 `;
 
 const StyledFiatValue = styled(FiatValue)`
@@ -157,8 +151,7 @@ export const StakingCard = ({
                             <Translation id="TR_STAKE_TOTAL_PENDING" />
                         </AmountHeading>
 
-                        <StyledFormattedCryptoAmount
-                            isBalance
+                        <TrimmedCryptoAmount
                             value={totalPendingStakeBalance}
                             symbol={selectedAccount?.symbol}
                         />
@@ -179,8 +172,7 @@ export const StakingCard = ({
                         <Translation id="TR_STAKE_STAKE" />
                     </AmountHeading>
 
-                    <StyledFormattedCryptoAmount
-                        isBalance
+                    <TrimmedCryptoAmount
                         value={depositedBalance}
                         symbol={selectedAccount?.symbol}
                     />
@@ -200,10 +192,10 @@ export const StakingCard = ({
                         <Translation id="TR_STAKE_REWARDS" />
                     </AmountHeading>
 
-                    <StyledFormattedCryptoAmount
-                        $isRewards
+                    <TrimmedCryptoAmount
                         value={restakedReward}
                         symbol={selectedAccount?.symbol}
+                        isRewards
                     />
 
                     <StyledFiatValue
@@ -236,7 +228,7 @@ export const StakingCard = ({
                             </span>
                         </AmountHeading>
 
-                        <StyledFormattedCryptoAmount
+                        <TrimmedCryptoAmount
                             value={withdrawTotalAmount}
                             symbol={selectedAccount?.symbol}
                         />
