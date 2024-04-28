@@ -75,6 +75,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         primaryButtonVariant = 'primary',
         secondaryButtonVariant = 'tertiaryElevation1',
         appendix,
+        testID,
     } = alert;
 
     const handlePressPrimaryButton = async () => {
@@ -88,7 +89,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     };
 
     return (
-        <Modal transparent visible={!!alert}>
+        <Modal transparent visible={!!alert} testID={testID}>
             <Animated.View style={[animatedSheetWithOverlayStyle, applyStyle(sheetOverlayStyle)]}>
                 <Pressable onPress={runShakeAnimation} style={applyStyle(shakeTriggerStyle)}>
                     <Animated.View

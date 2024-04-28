@@ -57,12 +57,7 @@ export const AccountImportSummary = ({ networkSymbol, accountInfo }: AccountImpo
 
     return (
         <VStack spacing="extraLarge" flex={1}>
-            <Box
-                flex={1}
-                alignItems="center"
-                justifyContent="center"
-                testID="@account-import/coin-synced/success-pictogram"
-            >
+            <Box flex={1} alignItems="center" justifyContent="center">
                 <PictogramTitleHeader
                     title={<Text variant="titleSmall">{title}</Text>}
                     subtitle={subtitle}

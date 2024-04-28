@@ -102,6 +102,7 @@ export const useShowImportError = (networkSymbol: NetworkSymbol, navigation: Nav
                     pictogramVariant,
                     primaryButtonTitle: 'Go back',
                     onPressPrimaryButton: handleGoBack,
+                    testID: `@alert-sheet/error/${alertError}`,
                 });
             }
         },

@@ -51,7 +51,11 @@ export const AccountAlreadyImported = ({ account }: AccountImportImportedAccount
         });
 
     return (
-        <Box flex={1} justifyContent="flex-end">
+        <Box
+            flex={1}
+            justifyContent="flex-end"
+            testID="@account-import/summary/account-already-imported"
+        >
             <Card style={applyStyle(contentWrapperStyle)}>
                 {account && <AccountListItem account={account} />}
             </Card>
