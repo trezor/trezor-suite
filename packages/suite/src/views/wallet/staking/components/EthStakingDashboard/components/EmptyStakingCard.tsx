@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph } from '@trezor/components';
+import { Button, Card, Icon, Paragraph, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -43,6 +43,10 @@ const FlexRow = styled.div`
     margin: ${spacingsPx.xl} 0 ${spacingsPx.xxl};
     gap: 68px;
     flex-wrap: wrap;
+
+    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+        flex-direction: column;
+    }
 `;
 
 const FlexRowChild = styled.div`
