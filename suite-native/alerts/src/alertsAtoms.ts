@@ -17,6 +17,7 @@ export type Alert = {
     secondaryButtonVariant?: ButtonColorScheme;
     onPressSecondaryButton?: () => void;
     appendix?: ReactNode;
+    testID?: string;
 };
 
 export const alertAtom = atom<Alert | null>(null);
