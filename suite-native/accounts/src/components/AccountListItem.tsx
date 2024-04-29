@@ -10,7 +10,7 @@ import { Account } from '@suite-common/wallet-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
 import { selectIsEthereumAccountWithTokensWithFiatRates } from '@suite-native/ethereum-tokens';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 export type AccountListItemProps = {
     account: Account;

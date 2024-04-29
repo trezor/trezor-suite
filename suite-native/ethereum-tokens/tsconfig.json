@@ -15,7 +15,7 @@
         {
             "path": "../../suite-common/wallet-utils"
         },
-        { "path": "../module-settings" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link"
         }

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,

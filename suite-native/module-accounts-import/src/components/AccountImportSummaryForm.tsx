@@ -25,11 +25,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
 import {
     selectFilterKnownTokens,
     TokenDefinitionsRootState,
 } from '@suite-common/token-definitions';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';

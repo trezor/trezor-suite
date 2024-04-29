@@ -7,7 +7,7 @@ import {
     periodicFetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { wipeDisconnectedDevicesDataThunk } from '@suite-native/device';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';

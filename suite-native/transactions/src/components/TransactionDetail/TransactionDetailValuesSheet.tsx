@@ -8,7 +8,7 @@ import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import {
     CryptoToFiatAmountFormatter,
     PercentageDifferenceFormatter,

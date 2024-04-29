@@ -11,7 +11,7 @@ import {
 } from '@suite-common/wallet-core';
 import { TokenInfoBranded } from '@suite-common/wallet-types';
 import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { SettingsSliceRootState } from '@suite-native/settings';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 
 import { GroupedAccounts } from './types';

@@ -6,7 +6,7 @@ import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { discoverySupportedNetworks } from '@suite-native/config';
 import { selectDevices } from '@suite-common/wallet-core';
-import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode, setFiatCurrency } from '@suite-native/settings';
 import { PROTO } from '@trezor/connect';
 import { mergeDeepObject } from '@trezor/utils';
 import { NativeUsbTransport } from '@trezor/transport-native';

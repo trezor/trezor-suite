@@ -25,9 +25,9 @@
         {
             "path": "../module-accounts-management"
         },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../receive" },
+        { "path": "../settings" },
         { "path": "../theme" },
         { "path": "../toasts" },
         { "path": "../../packages/styles" }

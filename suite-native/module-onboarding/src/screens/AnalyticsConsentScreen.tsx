@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 import { CommonActions } from '@react-navigation/core';
 
-import { setIsOnboardingFinished } from '@suite-native/module-settings';
+import { setIsOnboardingFinished } from '@suite-native/settings';
 import {
     HomeStackRoutes,
     OnboardingStackParamList,

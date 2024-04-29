@@ -7,7 +7,7 @@ import {
     selectBitcoinUnits,
     selectFiatCurrencyCode,
     selectIsOnboardingFinished,
-} from '@suite-native/module-settings';
+} from '@suite-native/settings';
 import { useUserColorScheme } from '@suite-native/theme';
 import { analytics, EventType } from '@suite-native/analytics';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';

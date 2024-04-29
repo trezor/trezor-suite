@@ -4,8 +4,7 @@ import { Select } from '@suite-native/atoms';
 import { PROTO } from '@trezor/connect';
 import { analytics, EventType } from '@suite-native/analytics';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
-
-import { selectBitcoinUnits, setBitcoinUnits } from '../slice';
+import { selectBitcoinUnits, setBitcoinUnits } from '@suite-native/settings';
 
 const bitcoinUnitsItems = [
     { label: 'Bitcoin', value: PROTO.AmountUnit.BITCOIN },

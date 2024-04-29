@@ -9,7 +9,7 @@ import {
     prepareFiatRatesReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
-import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
+import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/settings';
 import { logsSlice } from '@suite-common/logger';
 import {
     migrateAccountLabel,

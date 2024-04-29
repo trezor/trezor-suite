@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useSetAtom } from 'jotai';
 
 import { useGraphForAllDeviceAccounts, Graph, TimeSwitch } from '@suite-native/graph';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import { selectFiatCurrency } from '@suite-native/settings';
 import { VStack } from '@suite-native/atoms';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 

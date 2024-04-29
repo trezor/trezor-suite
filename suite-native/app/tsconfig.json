@@ -53,6 +53,7 @@
         { "path": "../navigation" },
         { "path": "../notifications" },
         { "path": "../receive" },
+        { "path": "../settings" },
         { "path": "../state" },
         { "path": "../storage" },
         { "path": "../theme" },

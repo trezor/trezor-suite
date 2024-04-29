@@ -16,7 +16,7 @@ import {
     selectEthereumAccountTokenInfo,
 } from '@suite-native/ethereum-tokens';
 import { analytics, EventType } from '@suite-native/analytics';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { SettingsSliceRootState } from '@suite-native/settings';
 import { TokenAddress } from '@suite-common/wallet-types';
 
 import { TransactionListHeader } from '../components/TransactionListHeader';

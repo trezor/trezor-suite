@@ -10,7 +10,7 @@ import {
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 
 type Assets = Partial<Record<NetworkSymbol, string[]>>;
 type FormattedAssets = Partial<Record<NetworkSymbol, BigNumber>>;

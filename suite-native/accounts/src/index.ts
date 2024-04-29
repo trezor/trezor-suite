@@ -4,6 +4,7 @@ export * from './components/AccountsListGroup';
 export * from './components/AccountListItem';
 export * from './components/SearchableAccountsListScreenHeader';
 export * from './components/SelectableNetworkItem';
+export * from './components/GroupedAccountsList';
 export * from './hooks/useAccountLabelForm';
 export * from './selectors';
 export * from './transactionCacheMiddleware';
