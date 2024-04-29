@@ -564,3 +564,10 @@ window.closeWindow = () => {
         window.close();
     }, 100);
 };
+
+window.addEventListener('beforeunload', () => {
+    if (getState().core) {
+        const core = ensureCore();
+        core.dispose();
+    }
+});
