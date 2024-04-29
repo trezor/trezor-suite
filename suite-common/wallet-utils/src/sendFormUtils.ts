@@ -8,7 +8,7 @@ import {
 } from 'react-hook-form';
 
 import BigNumber from 'bignumber.js';
-import { fromWei, padLeft, toHex, toWei } from 'web3-utils';
+import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
@@ -92,7 +92,8 @@ export const calculateEthFee = (gasPrice?: string, gasLimit?: string): string =>
     }
 };
 
-const getSerializedAmount = (amount?: string) => (amount ? toHex(toWei(amount, 'ether')) : '0x00');
+const getSerializedAmount = (amount?: string) =>
+    amount ? numberToHex(toWei(amount, 'ether')) : '0x00';
 
 const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string) => {
     // 32 bytes address parameter, remove '0x' prefix
@@ -100,7 +101,7 @@ const getSerializedErc20Transfer = (token: TokenInfo, to: string, amount: string
     // convert amount to satoshi
     const tokenAmount = amountToSatoshi(amount, token.decimals);
     // 32 bytes amount paramter, remove '0x' prefix
-    const erc20amount = padLeft(toHex(tokenAmount), 64).substring(2);
+    const erc20amount = padLeft(numberToHex(tokenAmount), 64).substring(2);
 
     // join data
     return `0x${ERC20_TRANSFER}${erc20recipient}${erc20amount}`;
@@ -133,9 +134,9 @@ export const prepareEthereumTransaction = (txInfo: EthTransactionData) => {
         to: txInfo.to,
         value: getSerializedAmount(txInfo.amount),
         chainId: txInfo.chainId,
-        nonce: toHex(txInfo.nonce),
-        gasLimit: toHex(txInfo.gasLimit),
-        gasPrice: toHex(toWei(txInfo.gasPrice, 'gwei')),
+        nonce: numberToHex(txInfo.nonce),
+        gasLimit: numberToHex(txInfo.gasLimit),
+        gasPrice: numberToHex(toWei(txInfo.gasPrice, 'gwei')),
     };
 
     if (!txInfo.token && txInfo.data) {

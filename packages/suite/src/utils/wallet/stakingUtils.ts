@@ -15,15 +15,16 @@ export const getAccountEverstakeStakingPool = (
 
     return {
         ...pool,
-        autocompoundBalance: fromWei(pool.autocompoundBalance),
-        claimableAmount: fromWei(pool.claimableAmount),
-        depositedBalance: fromWei(pool.depositedBalance),
-        pendingBalance: fromWei(pool.pendingBalance),
-        pendingDepositedBalance: fromWei(pool.pendingDepositedBalance),
-        restakedReward: fromWei(pool.restakedReward),
-        withdrawTotalAmount: fromWei(pool.withdrawTotalAmount),
+        autocompoundBalance: fromWei(pool.autocompoundBalance, 'ether'),
+        claimableAmount: fromWei(pool.claimableAmount, 'ether'),
+        depositedBalance: fromWei(pool.depositedBalance, 'ether'),
+        pendingBalance: fromWei(pool.pendingBalance, 'ether'),
+        pendingDepositedBalance: fromWei(pool.pendingDepositedBalance, 'ether'),
+        restakedReward: fromWei(pool.restakedReward, 'ether'),
+        withdrawTotalAmount: fromWei(pool.withdrawTotalAmount, 'ether'),
         totalPendingStakeBalance: fromWei(
             new BigNumber(pool.pendingBalance).plus(pool.pendingDepositedBalance).toString(),
+            'ether',
         ),
         canClaim:
             new BigNumber(pool.claimableAmount).gt(0) &&

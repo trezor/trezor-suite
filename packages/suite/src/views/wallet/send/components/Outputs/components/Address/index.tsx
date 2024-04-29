@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
+import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled from 'styled-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { Input, Button, IconButton } from '@trezor/components';
@@ -199,7 +199,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             },
             // eth addresses are valid without checksum but Trezor displays them as checksummed
             checksum: (value: string) => {
-                if (networkType === 'ethereum' && !checkAddressChecksum(value)) {
+                if (networkType === 'ethereum' && !checkAddressCheckSum(value)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },

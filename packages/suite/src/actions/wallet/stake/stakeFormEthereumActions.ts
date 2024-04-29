@@ -54,7 +54,7 @@ const calculate = (
 
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = new BigNumber(calculateMax(availableBalance, feeInSatoshi))
-            .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString()))
+            .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'))
             .toString();
         amount = max;
     } else {
