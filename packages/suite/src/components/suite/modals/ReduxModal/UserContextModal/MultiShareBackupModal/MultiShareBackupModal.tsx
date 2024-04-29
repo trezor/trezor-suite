@@ -55,7 +55,7 @@ const CardWrapper2 = styled.div`
 
 export const MultiShareBackupModal = () => {
     const dispatch = useDispatch();
-    const [step, setStep] = useState(0);
+    const [step, setStep] = useState<0 | 1>(0);
     const [isChecked1, setIsChecked1] = useState(false);
     const [isChecked2, setIsChecked2] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -76,7 +76,7 @@ export const MultiShareBackupModal = () => {
                 const goToStepNextStep = () => {
                     setIsSubmitted(true);
                     if (isChecked1 && isChecked2) {
-                        setStep(prev => prev + 1);
+                        setStep(1);
                     }
                 };
 
@@ -222,7 +222,7 @@ export const MultiShareBackupModal = () => {
                             </LearnMoreButton>
                         </>
                     ),
-                    onBackClick: () => setStep(prev => prev - 1),
+                    onBackClick: () => setStep(0),
                 };
         }
     };
