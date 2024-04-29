@@ -94,7 +94,7 @@ export const EnableViewOnlyBottomSheet = () => {
         if (device) {
             showToast({
                 variant: 'default',
-                message: <Translation id={'moduleSettings.viewOnly.toast.enabled'} />,
+                message: <Translation id="moduleSettings.viewOnly.toast.enabled" />,
                 icon: 'check',
             });
             dispatch(toggleRememberDevice({ device }));
