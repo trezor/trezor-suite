@@ -23,7 +23,13 @@ on:
           - protocol
           - protobuf
           - schema-utils
-
+      deploymentType:
+        description: "Specifies the deployment type for the npm package. (example: canary, stable)"
+        required: true
+        type: choice
+        options:
+          - canary
+          - stable
 jobs:
   deploy-npm-dependency-beta:
     environment: npm-packages
@@ -33,10 +39,19 @@ jobs:
         with:
           ref: develop
 
+      - name: Set deployment type
+        id: set_deployment_type
+        run: |
+          if [ "${{ github.event.inputs.deploymentType }}" == "canary" ]; then
+            echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
+          else
+            echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
+          fi
+
       - name: Deploy to NPM ${{ github.event.inputs.package }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         uses: ./.github/actions/release-connect-npm
         with:
-          deploymentType: beta
+          deploymentType: ${{ env.DEPLOYMENT_TYPE }}
           packageName: ${{ github.event.inputs.package }}
