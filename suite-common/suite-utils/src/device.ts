@@ -409,6 +409,20 @@ export const getPhysicalDeviceUniqueIds = (devices: Device[]) =>
 export const getPhysicalDeviceCount = (devices: Device[]) =>
     getPhysicalDeviceUniqueIds(devices).length;
 
+export const getSortedDevicesWithoutInstances = (
+    devices: TrezorDevice[],
+    excludedDeviceId?: string | null,
+) =>
+    getDeviceInstancesGroupedByDeviceId(devices)
+        .flatMap(group => group[0])
+        .filter(d => d?.id !== excludedDeviceId && d?.id)
+        .sort((a, b) => {
+            if (!a.connected) return -1;
+            if (!b.connected) return 1;
+
+            return 0;
+        });
+
 export const parseFirmwareChangelog = (release?: FirmwareRelease) => {
     if (!release?.changelog?.length || !release) {
         return null;

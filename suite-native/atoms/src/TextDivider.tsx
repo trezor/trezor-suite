@@ -12,16 +12,17 @@ type TextDividerProps = {
 
 const separatorStyle = prepareNativeStyle<{ horizontalMargin?: number }>(
     (utils, { horizontalMargin }) => ({
-        borderColor: utils.colors.borderElevation0,
-        borderWidth: utils.borders.widths.small,
+        backgroundColor: utils.colors.borderElevation0,
+        height: utils.borders.widths.small,
         flex: 1,
         // We want the separator to be full width, but we need to offset it by the parent padding
         marginHorizontal: typeof horizontalMargin === 'number' ? -horizontalMargin : 0,
     }),
 );
 
-const separatorTitleStyle = prepareNativeStyle(_ => ({
+const separatorTitleStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: 12,
+    paddingVertical: utils.spacings.extraSmall,
 }));
 
 export const TextDivider = ({ title, horizontalMargin = 0 }: TextDividerProps) => {
@@ -31,7 +32,7 @@ export const TextDivider = ({ title, horizontalMargin = 0 }: TextDividerProps) =
         <HStack alignItems="center">
             <Box style={applyStyle(separatorStyle, { horizontalMargin })} />
             <Box style={applyStyle(separatorTitleStyle)}>
-                <Text>
+                <Text variant="label">
                     <Translation id={title} />
                 </Text>
             </Box>

@@ -588,16 +588,13 @@ export const en = {
     },
     deviceManager: {
         deviceButtons: {
-            eject: 'Eject',
             deviceInfo: 'Device info',
-            addHiddenWallet: 'Add hidden wallet',
+            addHiddenWallet: 'Open passphrase',
+            devices: 'Change',
         },
-        deviceList: {
-            sectionTitle: 'Open',
-        },
-        connectDevice: {
-            sectionTitle: 'Connect Trezor device',
-            connectButton: 'Connect',
+        connectButton: {
+            another: 'Connect another device',
+            first: 'Connect your device',
         },
         portfolioTracker: {
             explore: 'Explore Trezor',
@@ -605,14 +602,20 @@ export const en = {
             exploreShop: 'Explore Trezor Shop',
         },
         status: {
-            portfolioTracker: 'Sync & track coins',
+            portfolioTracker: 'Track your coins without Trezor',
             connected: 'Connected',
+            disconnected: 'Disconnected',
         },
         syncCoinsButton: {
             syncMyCoins: 'Sync my coins',
             syncAnother: 'Sync another coin',
         },
         defaultHeader: 'Hi there!',
+        wallet: {
+            standard: 'Standard wallet',
+            portfolio: 'Portfolio tracker',
+            defaultPassphrase: 'Passphrase wallet #{index}',
+        },
     },
     deviceInfo: {
         installedFw: 'Installed firmware: {version}',

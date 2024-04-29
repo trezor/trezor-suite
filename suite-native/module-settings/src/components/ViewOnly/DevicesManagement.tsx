@@ -1,30 +1,13 @@
 import { useSelector } from 'react-redux';
 
 import { Box, Card, Divider, HStack, Text } from '@suite-native/atoms';
-import { Translation, TxKeyPath } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import { DeviceModelIcon } from '@suite-native/device-manager';
 import { selectPhysicalDevicesGrouppedById } from '@suite-common/wallet-core';
-import { Icon, IconName } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
 
 import { About, AboutProps } from './About';
-import { TrezorModelIcon } from './TrezorModelIcon';
 import { WalletRow } from './WalletRow';
-
-type ConnectionStyle = { color: Color; iconName: IconName; translationKey: TxKeyPath };
-
-const connectionStyleMap = {
-    connected: {
-        color: 'textSecondaryHighlight',
-        iconName: 'linkChain',
-        translationKey: 'moduleSettings.viewOnly.connected',
-    },
-    disconnected: {
-        color: 'textSubdued',
-        iconName: 'linkChainBroken',
-        translationKey: 'moduleSettings.viewOnly.disconnected',
-    },
-} as const satisfies Record<string, ConnectionStyle>;
 
 const cardStyle = prepareNativeStyle(utils => ({
     padding: 0,
@@ -35,6 +18,13 @@ const deviceStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
     alignItems: 'center',
     gap: 12,
+}));
+
+const dotStyle = prepareNativeStyle<{ isConnected: boolean }>((utils, { isConnected }) => ({
+    width: utils.spacings.small,
+    height: utils.spacings.small,
+    borderRadius: utils.borders.radii.round,
+    backgroundColor: isConnected ? utils.colors.textSecondaryHighlight : utils.colors.textSubdued,
 }));
 
 export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
@@ -48,25 +38,39 @@ export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
             </Box>
             {deviceGroups.map(devices => {
                 const [firstDevice] = devices;
-                const connectionStyle =
-                    connectionStyleMap[firstDevice.connected ? 'connected' : 'disconnected'];
+                const deviceModel = firstDevice.features?.internal_model;
 
                 return (
                     <Card key={firstDevice.id} style={applyStyle(cardStyle)}>
                         <HStack style={applyStyle(deviceStyle)}>
-                            <TrezorModelIcon device={firstDevice} />
+                            {deviceModel && (
+                                <DeviceModelIcon deviceModel={deviceModel} size="extraLarge" />
+                            )}
                             <Box>
                                 <Text variant="highlight" color="textDefault">
                                     {firstDevice.label}
                                 </Text>
-                                <HStack alignItems="center" spacing="extraSmall">
-                                    <Icon
-                                        name={connectionStyle.iconName}
-                                        size="medium"
-                                        color={connectionStyle.color}
+                                <HStack alignItems="center" spacing="small">
+                                    <Box
+                                        style={applyStyle(dotStyle, {
+                                            isConnected: firstDevice.connected,
+                                        })}
                                     />
-                                    <Text variant="hint" color={connectionStyle.color}>
-                                        <Translation id={connectionStyle.translationKey} />
+                                    <Text
+                                        variant="hint"
+                                        color={
+                                            firstDevice.connected
+                                                ? 'textSecondaryHighlight'
+                                                : 'textSubdued'
+                                        }
+                                    >
+                                        <Translation
+                                            id={
+                                                firstDevice.connected
+                                                    ? 'moduleSettings.viewOnly.connected'
+                                                    : 'moduleSettings.viewOnly.disconnected'
+                                            }
+                                        />
                                     </Text>
                                 </HStack>
                             </Box>

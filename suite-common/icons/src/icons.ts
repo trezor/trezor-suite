@@ -57,8 +57,6 @@ export const icons = {
     label: require('../assets/icons/label.svg'),
     lifebuoy: require('../assets/icons/lifebuoy.svg'),
     link: require('../assets/icons/link.svg'),
-    linkChain: require('../assets/icons/linkChain.svg'),
-    linkChainBroken: require('../assets/icons/linkChainBroken.svg'),
     lock: require('../assets/icons/lock.svg'),
     minus: require('../assets/icons/minus.svg'),
     minusCircle: require('../assets/icons/minusCircle.svg'),
