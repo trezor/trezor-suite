@@ -4,10 +4,7 @@
 
 BASE_BRANCH_NAME="${BASE_BRANCH_NAME:-develop}"
 
-lint_commit() {
-  commit=$1
-  commit_msg=$(git log --format=%B -n 1 "$commit")
-
+lint_commit_msg() {
   # Skip validation in case of revert commits
   if echo "$commit_msg" | grep -qE "^Revert"; then
     return
@@ -31,6 +28,18 @@ lint_commit() {
     exit 1
   fi
 }
+
+lint_commit() {
+  commit=$1
+  commit_msg=$(git log --format=%B -n 1 "$commit")
+  lint_commit_msg $commit_msg
+}
+
+if [ ! -z "$LINT_COMMIT_MSG" ]; then
+  # passing an explicit messages skips git interactions; for use in commit hook
+  lint_commit_msg "$LINT_COMMIT_MSG"
+  exit 0
+fi
 
 if [ -z "$LINT_COMMITS" ]; then
   # if commit hashes are not passed explicitly, lint history compared to base branch
