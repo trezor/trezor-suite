@@ -1,5 +1,7 @@
 # @trezor/connect
 
+Trigger test
+
 API version 9.2.2
 
 [![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml)
