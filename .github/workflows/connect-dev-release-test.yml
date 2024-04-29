@@ -19,6 +19,7 @@ on:
       - "packages/connect-explorer/**"
       - "packages/connect-webextension/**"
       - "packages/connect-web/**"
+      - "packages/connect-popup/**",
       - "packages/transport/**"
       - "packages/utxo-lib/**"
       - "packages/utils/**"
