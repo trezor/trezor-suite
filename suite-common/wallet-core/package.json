@@ -39,6 +39,6 @@
         "date-fns": "^2.30.0",
         "jws": "^4.0.0",
         "proxy-memoize": "2.0.2",
-        "web3-utils": "^1.10.0"
+        "web3-utils": "^4.2.3"
     }
 }

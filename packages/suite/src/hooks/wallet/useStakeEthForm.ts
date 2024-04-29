@@ -180,7 +180,7 @@ export const useStakeEthForm = ({ selectedAccount }: UseStakeFormsProps): StakeC
         const transactionInfo = composedLevels?.[selectedFee];
 
         return transactionInfo !== undefined && transactionInfo.type !== 'error'
-            ? new BigNumber(fromWei(transactionInfo.fee))
+            ? new BigNumber(fromWei(transactionInfo.fee, 'ether'))
             : new BigNumber('0');
     }, [composedLevels, selectedFee]);
 
