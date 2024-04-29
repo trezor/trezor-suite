@@ -10,6 +10,9 @@ feat: allow provided config object to extend other configs
 feat(lang): added polish language
 ```
 
+### Commit linting
+Use `yarn lint:commits` to validate your commit messages compared to `$BASE_BRANCH_NAME` (default: `develop`)
+
 ### Git hook
 
 Use this git hook to auto-check your commit messages. Save the following snippet into `.git/hooks/commit-msg`. This way, the check will run locally and can avoid some unnecessary CI runs.
