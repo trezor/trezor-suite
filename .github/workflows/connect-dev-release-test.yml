@@ -12,16 +12,13 @@ on:
     branches: [release/connect/**]
   pull_request:
     paths:
-      - "packages/blockchain-link/**"
       - "packages/connect/**"
       - "packages/connect-common/**"
       - "packages/connect-iframe/**"
       - "packages/connect-explorer/**"
       - "packages/connect-webextension/**"
       - "packages/connect-web/**"
-      - "packages/transport/**"
-      - "packages/utxo-lib/**"
-      - "packages/utils/**"
+      - "packages/connect-popup/**"
       - "packages/connect-examples/webextension-mv2/**"
       - "packages/connect-examples/webextension-mv3/**"
       - "submodules/trezor-common/**"
