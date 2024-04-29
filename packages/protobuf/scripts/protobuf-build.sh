@@ -20,7 +20,7 @@ if [[ $# -eq 1 ]]
         BRANCH=$1
 fi
 
-cd ../../
+cd ../../../
 ls -la
 if test -d ./trezor-firmware; then
     echo "trezor-firmware directory exists"
@@ -37,7 +37,7 @@ cd ..
 
 cd "$PARENT_PATH/.."
 
-SRC="../../trezor-firmware/common/protob"
+SRC="../../../trezor-firmware/common/protob"
 
 # BUILD combined messages.proto file from protobuf files
 # this code was copied from ./submodules/trezor-common/protob Makekile
