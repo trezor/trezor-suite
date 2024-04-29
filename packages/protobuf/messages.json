@@ -4534,6 +4534,10 @@
                     "options": {
                         "default": true
                     }
+                },
+                "unit_packaging": {
+                    "type": "uint32",
+                    "id": 51
                 }
             },
             "nested": {
