@@ -1,90 +1,98 @@
-import { useSelector } from 'react-redux';
-import { useMemo } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useState } from 'react';
 
-import { A } from '@mobily/ts-belt';
-import { useNavigation } from '@react-navigation/native';
-
-import { analytics, EventType } from '@suite-native/analytics';
-import { Button, Text, VStack } from '@suite-native/atoms';
+import { HStack, VStack } from '@suite-native/atoms';
 import {
-    selectDevices,
+    PORTFOLIO_TRACKER_DEVICE_ID,
+    selectDevice,
+    selectDeviceThunk,
+    selectIsDeviceDiscoveryActive,
     selectIsPortfolioTrackerDevice,
-    selectDeviceId,
-    selectIsNoPhysicalDeviceConnected,
 } from '@suite-common/wallet-core';
-import {
-    ConnectDeviceStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
-import { Translation } from '@suite-native/intl';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
+import { EventType, analytics } from '@suite-native/analytics';
+import { TrezorDevice } from '@suite-common/suite-types';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import { DeviceManagerModal } from './DeviceManagerModal';
-import { DeviceItem } from './DeviceItem';
-import { DeviceControlButtons } from './DeviceControlButtons';
-import { useDeviceManager } from '../hooks/useDeviceManager';
 import { AddHiddenWalletButton } from './AddHiddenWalletButton';
+import { DeviceList } from './DeviceList';
+import { DeviceInfoButton } from './DeviceInfoButton';
+import { DeviceManagerModal } from './DeviceManagerModal';
+import { DevicesToggleButton } from './DevicesToggleButton';
+import { WalletList } from './WalletList';
+import { useDeviceManager } from '../hooks/useDeviceManager';
 
-type NavigationProp = StackToStackCompositeNavigationProps<
-    RootStackParamList,
-    RootStackRoutes.AppTabs,
-    RootStackParamList
->;
+const deviceButtonsStyle = prepareNativeStyle(utils => ({
+    width: '100%',
+    paddingHorizontal: utils.spacings.medium,
+    paddingBottom: utils.spacings.medium,
+}));
 
 export const DeviceManagerContent = () => {
-    const navigation = useNavigation<NavigationProp>();
+    const { applyStyle } = useNativeStyles();
+    const [isChangeDeviceRequested, setIsChangeDeviceRequested] = useState(false);
 
-    const devices = useSelector(selectDevices);
-    const selectedDeviceId = useSelector(selectDeviceId);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-    const isNoPhysicalDeviceConnected = useSelector(selectIsNoPhysicalDeviceConnected);
-
-    const { setIsDeviceManagerVisible } = useDeviceManager();
 
     const [isPassphraseFeatureEnabled] = useFeatureFlag(FeatureFlag.IsPassphraseEnabled);
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const device = useSelector(selectDevice);
+    const { setIsDeviceManagerVisible } = useDeviceManager();
 
-    const handleConnectDevice = () => {
+    const toggleIsChangeDeviceRequested = () =>
+        setIsChangeDeviceRequested(!isChangeDeviceRequested);
+    const dispatch = useDispatch();
+
+    const handleSelectDevice = (selectedDevice: TrezorDevice) => {
+        dispatch(selectDeviceThunk(selectedDevice));
+        setIsChangeDeviceRequested(false);
         setIsDeviceManagerVisible(false);
-        navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-            screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
-        });
+
         analytics.report({
             type: EventType.DeviceManagerClick,
-            payload: { action: 'connectDeviceButton' },
+            payload: {
+                action:
+                    selectedDevice.id === PORTFOLIO_TRACKER_DEVICE_ID
+                        ? 'portfolioTracker'
+                        : 'connectDeviceButton',
+            },
         });
     };
 
-    const listedDevice = useMemo(
-        () => devices.filter(device => device.id !== selectedDeviceId),
-        [devices, selectedDeviceId],
-    );
+    if (!device) {
+        return null;
+    }
+
+    const isAddHiddenWalletButtonVisible =
+        isPassphraseFeatureEnabled && !isDiscoveryActive && device?.connected;
 
     return (
-        <DeviceManagerModal>
-            {!isPortfolioTrackerDevice && <DeviceControlButtons />}
-            {!isPortfolioTrackerDevice && isPassphraseFeatureEnabled && <AddHiddenWalletButton />}
-            {A.isNotEmpty(listedDevice) && (
-                <VStack>
-                    <Text variant="callout">
-                        <Translation id="deviceManager.deviceList.sectionTitle" />
-                    </Text>
-                    {listedDevice.map(device => (
-                        <DeviceItem key={device.path} id={device.id} />
-                    ))}
-                </VStack>
-            )}
-            {isNoPhysicalDeviceConnected && (
-                <VStack>
-                    <Text variant="callout">
-                        <Translation id="deviceManager.connectDevice.sectionTitle" />
-                    </Text>
-                    <Button colorScheme="tertiaryElevation1" onPress={handleConnectDevice}>
-                        <Translation id="deviceManager.connectDevice.connectButton" />
-                    </Button>
-                </VStack>
-            )}
+        <DeviceManagerModal
+            customSwitchRightView={
+                !isPortfolioTrackerDevice && (
+                    <DevicesToggleButton
+                        deviceButtonState={isChangeDeviceRequested ? 'open' : 'closed'}
+                        onDeviceButtonTap={toggleIsChangeDeviceRequested}
+                    />
+                )
+            }
+            onClose={() => setIsChangeDeviceRequested(false)}
+        >
+            <VStack spacing="medium">
+                <DeviceList
+                    isVisible={isChangeDeviceRequested || isPortfolioTrackerDevice}
+                    onSelectDevice={handleSelectDevice}
+                />
+                {!isPortfolioTrackerDevice && (
+                    <>
+                        <WalletList onSelectDevice={handleSelectDevice} />
+                        <HStack style={applyStyle(deviceButtonsStyle)}>
+                            <DeviceInfoButton showAsFullWidth={!isAddHiddenWalletButtonVisible} />
+                            {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
+                        </HStack>
+                    </>
+                )}
+            </VStack>
         </DeviceManagerModal>
     );
 };

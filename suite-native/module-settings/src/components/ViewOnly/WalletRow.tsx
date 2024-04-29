@@ -6,7 +6,7 @@ import { deviceActions, toggleRememberDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useToast } from '@suite-native/toasts';
 import { Icon } from '@suite-common/icons';
-import { AcquiredDevice } from '@suite-common/suite-types';
+import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const walletRowStyle = prepareNativeStyle(utils => ({
@@ -16,7 +16,7 @@ const walletRowStyle = prepareNativeStyle(utils => ({
     height: 60,
 }));
 
-export const WalletRow = ({ device }: { device: AcquiredDevice }) => {
+export const WalletRow = ({ device }: { device: TrezorDevice }) => {
     const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();

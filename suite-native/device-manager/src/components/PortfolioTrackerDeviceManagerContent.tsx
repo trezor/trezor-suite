@@ -13,6 +13,7 @@ import {
 } from '@suite-native/navigation';
 import { selectIsDeviceDiscoveryEmpty } from '@suite-common/wallet-core';
 import { useOpenLink } from '@suite-native/link';
+import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { DeviceManagerModal } from './DeviceManagerModal';
 import { useDeviceManager } from '../hooks/useDeviceManager';
@@ -23,8 +24,18 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
+const contentStyle = prepareNativeStyle(utils => ({
+    paddingHorizontal: utils.spacings.medium,
+
+    spacing: utils.spacings.medium,
+
+    paddingBottom: utils.spacings.medium,
+    marginTop: utils.spacings.medium,
+}));
+
 export const PortfolioTrackerDeviceManagerContent = () => {
     const openLink = useOpenLink();
+    const { applyStyle } = useNativeStyles();
 
     const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
 
@@ -71,27 +82,29 @@ export const PortfolioTrackerDeviceManagerContent = () => {
 
     return (
         <DeviceManagerModal>
-            <Button colorScheme="tertiaryElevation1" onPress={handleSyncCoins}>
-                {syncButtonTitle}
-            </Button>
-            <VStack>
-                <Text variant="callout">
-                    <Translation id="deviceManager.portfolioTracker.explore" />
-                </Text>
-                <Button
-                    colorScheme="tertiaryElevation1"
-                    viewRight="link"
-                    onPress={handleOpenEduLink}
-                >
-                    <Translation id="deviceManager.portfolioTracker.learnBasics" />
+            <VStack style={applyStyle(contentStyle)}>
+                <Button colorScheme="tertiaryElevation0" onPress={handleSyncCoins}>
+                    {syncButtonTitle}
                 </Button>
-                <Button
-                    colorScheme="tertiaryElevation1"
-                    viewRight="link"
-                    onPress={handleOpenEshopLink}
-                >
-                    <Translation id="deviceManager.portfolioTracker.exploreShop" />
-                </Button>
+                <VStack>
+                    <Text variant="callout">
+                        <Translation id="deviceManager.portfolioTracker.explore" />
+                    </Text>
+                    <Button
+                        colorScheme="tertiaryElevation0"
+                        viewRight="link"
+                        onPress={handleOpenEduLink}
+                    >
+                        <Translation id="deviceManager.portfolioTracker.learnBasics" />
+                    </Button>
+                    <Button
+                        colorScheme="tertiaryElevation0"
+                        viewRight="link"
+                        onPress={handleOpenEshopLink}
+                    >
+                        <Translation id="deviceManager.portfolioTracker.exploreShop" />
+                    </Button>
+                </VStack>
             </VStack>
         </DeviceManagerModal>
     );

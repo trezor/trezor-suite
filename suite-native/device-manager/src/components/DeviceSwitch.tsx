@@ -1,17 +1,14 @@
-import { Pressable, TouchableOpacity } from 'react-native';
+import { Pressable } from 'react-native';
 import { useSelector } from 'react-redux';
 
 import { Box, HStack } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import {
-    selectDeviceId,
-    selectAreAllDevicesDisconnectedOrAccountless,
-} from '@suite-common/wallet-core';
+import { selectDeviceInstances, selectDeviceState } from '@suite-common/wallet-core';
 
 import { SCREEN_HEADER_HEIGHT } from '../constants';
 import { useDeviceManager } from '../hooks/useDeviceManager';
-import { DeviceItemContent } from './DeviceItemContent';
+import { DeviceItemContent } from './DeviceItem/DeviceItemContent';
 
 type SwitchStyleProps = { isDeviceManagerVisible: boolean };
 
@@ -43,10 +40,8 @@ const switchWrapperStyle = prepareNativeStyle(_ => ({
 export const DeviceSwitch = () => {
     const { applyStyle } = useNativeStyles();
 
-    const areAllDevicesDisconnectedOrAccountless = useSelector(
-        selectAreAllDevicesDisconnectedOrAccountless,
-    );
-    const deviceId = useSelector(selectDeviceId);
+    const deviceState = useSelector(selectDeviceState);
+    const wallets = useSelector(selectDeviceInstances);
 
     const { setIsDeviceManagerVisible, isDeviceManagerVisible } = useDeviceManager();
 
@@ -58,26 +53,16 @@ export const DeviceSwitch = () => {
         <Pressable onPress={toggleDeviceManager} style={applyStyle(switchWrapperStyle)}>
             <HStack justifyContent="space-between" alignItems="center" spacing="medium">
                 <Box style={applyStyle(switchStyle, { isDeviceManagerVisible })}>
-                    <DeviceItemContent
-                        deviceId={areAllDevicesDisconnectedOrAccountless ? undefined : deviceId}
-                        headerTextVariant="highlight"
-                        isPortfolioLabelDisplayed={false}
-                    />
-                    {!isDeviceManagerVisible && (
-                        <Icon name="chevronUpAndDown" color="iconDefault" />
+                    {deviceState && (
+                        <DeviceItemContent
+                            deviceState={deviceState}
+                            headerTextVariant="highlight"
+                            isPortfolioLabelDisplayed={false}
+                            variant={wallets.length > 1 ? 'walletDetail' : 'simple'}
+                        />
                     )}
+                    <Icon name="chevronUpAndDown" color="iconDefault" />
                 </Box>
-                {isDeviceManagerVisible && (
-                    <TouchableOpacity
-                        onPress={toggleDeviceManager}
-                        accessibilityRole="button"
-                        accessibilityLabel="Close"
-                    >
-                        <Box paddingHorizontal="medium">
-                            <Icon name="close" size="mediumLarge" />
-                        </Box>
-                    </TouchableOpacity>
-                )}
             </HStack>
         </Pressable>
     );

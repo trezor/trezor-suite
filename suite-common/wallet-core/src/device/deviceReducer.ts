@@ -1,7 +1,7 @@
 import { memoize } from 'proxy-memoize';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { getStatus } from '@suite-common/suite-utils';
+import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
 import { Device, Features, UI } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
@@ -858,3 +858,22 @@ export const selectDeviceState = (state: DeviceRootState) => {
 
     return device?.state ?? null;
 };
+
+export const selectDeviceInstances = memoize((state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    if (!device) {
+        return [];
+    }
+
+    const allDevices = selectDevices(state);
+
+    return getDeviceInstances(device, allDevices);
+});
+
+export const selectInstacelessUnselectedDevices = memoize((state: DeviceRootState) => {
+    const device = selectDevice(state);
+    const allDevices = selectDevices(state);
+
+    return deviceUtils.getSortedDevicesWithoutInstances(allDevices, device?.id);
+});
