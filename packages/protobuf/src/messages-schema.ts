@@ -2250,6 +2250,7 @@ export const Features = Type.Object(
         homescreen_height: Type.Optional(Type.Number()),
         bootloader_locked: Type.Optional(Type.Boolean()),
         language_version_matches: Type.Optional(Type.Boolean()),
+        unit_packaging: Type.Optional(Type.Number()),
     },
     { $id: 'Features' },
 );

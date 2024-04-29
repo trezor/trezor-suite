@@ -1605,6 +1605,7 @@ export type Features = {
     homescreen_height?: number;
     bootloader_locked?: boolean;
     language_version_matches?: boolean;
+    unit_packaging?: number;
 };
 
 // LockDevice
