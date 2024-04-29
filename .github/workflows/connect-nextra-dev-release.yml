@@ -7,8 +7,21 @@ permissions:
 on:
   pull_request:
     paths:
+      - "packages/connect/**"
+      - "packages/connect-common/**"
+      - "packages/connect-iframe/**"
+      - "packages/connect-explorer/**"
+      - "packages/connect-webextension/**"
+      - "packages/connect-web/**"
+      - "packages/connect-popup/**"
+      - "packages/connect-examples/webextension-mv2/**"
+      - "packages/connect-examples/webextension-mv3/**"
       - "packages/connect-explorer-theme/**"
       - "packages/connect-explorer-nextra/**"
+      - "submodules/trezor-common/**"
+      - "yarn.lock"
+      - ".github/workflows/template-connect-popup-test-params.yml"
+      - "docker/docker-connect-popup-ci.sh"
       - ".github/workflows/connect-nextra-dev-release.yml"
       - ".github/workflows/template-connect-popup-nextra-test-params.yml"
   schedule:
