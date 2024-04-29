@@ -16,6 +16,7 @@ import {
 import { clearStorage } from '@suite-native/storage';
 import { getCommitHash, getSuiteVersion } from '@trezor/env-utils';
 import { logs, nativeBleManager } from '@trezor/transport-native-ble';
+import { isBluetoothBuild } from '@suite-native/bluetooth';
 
 import { BluetoothToggle } from '../components/BluetoothToggle';
 import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';

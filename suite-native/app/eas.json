@@ -24,7 +24,8 @@
         "preview": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "preview",
-                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+                "EXPO_PUBLIC_CODESIGN_BUILD": "false",
+                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
             },
             "autoIncrement": true,
             "developmentClient": true,
@@ -34,7 +35,8 @@
         "adhoc": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "preview",
-                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+                "EXPO_PUBLIC_CODESIGN_BUILD": "false",
+                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
             },
             "autoIncrement": true,
             "credentialsSource": "remote",

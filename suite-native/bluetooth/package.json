@@ -13,12 +13,14 @@
     "dependencies": {
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
+        "@suite-native/storage": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/transport-native-ble": "workspace:*",
         "expo-constants": "15.4.5",
         "react": "18.2.0",
         "react-native": "0.73.6",
         "react-native-ble-plx": "^3.1.2",
-        "react-native-permissions": "^4.1.5"
+        "react-native-permissions": "^4.1.5",
+        "react-native-restart": "0.0.27"
     }
 }
