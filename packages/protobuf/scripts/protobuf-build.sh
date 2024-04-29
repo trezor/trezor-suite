@@ -30,7 +30,6 @@ else
 fi
 
 cd trezor-firmware
-ls -la
 git checkout "$BRANCH"
 git pull origin "$BRANCH"
 cd ..
@@ -55,7 +54,6 @@ grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messa
 
 # BUILD messages.json from message.proto
 # pbjs command is added by protobufjs-cli package
-ls -la 
 node ../../node_modules/.bin/pbjs -t json -p "$DIST" -o "$DIST"/messages.json --keep-case messages.proto
 rm "$DIST"/messages.proto
 
