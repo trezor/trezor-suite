@@ -390,7 +390,7 @@ class NativeBleManager {
                 }
 
                 if (device.readOutputQueue.length === 0) {
-                    debugLog('No data to read received yet... waiting');
+                    // debugLog('No data to read received yet... waiting');
                     // If the array is empty and we have not exceeded 10 seconds, we try again
                     if (Date.now() - startTime < READ_TIMEOUT_MS) {
                         setTimeout(tryRead, READ_FREQUENCY_MS); // Wait for 10ms before trying again
