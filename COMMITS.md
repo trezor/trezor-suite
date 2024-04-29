@@ -17,17 +17,7 @@ Use this git hook to auto-check your commit messages. Save the following snippet
 ```bash
 #!/bin/sh
 
-commit_msg=$(cat "$1")
-if echo "$commit_msg" | grep -qE "^(Revert|fixup! )"; then
-  # Skip validation in case of fixup and revert commits
-  exit 0
-fi
-
-if ! grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\([a-z, -]+\))?: " "$1" ; then
-  echo "Conventional Commits validation failed"
-  exit 1
-fi
-
+LINT_COMMIT_MSG="$1" ./scripts/check-commit-messages.sh
 ```
 
 If you want to bypass commit-msg hook check, you may always use
