@@ -1,3 +1,67 @@
+| Package                      | latest stable | latest canary |
+| ---------------------------- | :-----------: | :-----------: |
+| @trezor/connect              |     9.2.2     |     9.2.3     |
+| @trezor/connect-web          |     9.2.2     |     9.2.3     |
+| @trezor/connect-webextension |     9.2.2     |     9.2.3     |
+
+# 9.2.3
+
+-   fix(connect): worker-loader for solana and hanged calls over webusb (46c0e96, 172fa22)
+-   chore(connect): improve type for releases and pick model and coin support type (996e96d, 273591e)
+-   feat(connect): add T3T1 pubkeys and T3T1 releases.json (edca868, a984008, 1bc4569)
+-   feat(connect): add `_extendWebextensionLifetime` option (720b61b)
+-   feat(connect): allow separate accounts/blocks subscription (98e3b28)
+-   feat(connect): support identity in blockchain methods (2fbb57f)
+-   test(connect): fix BackendManager tests (0318aea)
+-   feat(connect): support identities in BackendManager (76767be)
+-   feat(connect): automatically update language blob when outdated and move changeLanguage logic to Device (425b52b, 04d4fb8)
+-   fix(connect): always show device selection when bridge and using core in popup (5f1191e)
+
+## connect-example
+
+-   Use `_extendWebextensionLifetime` for extending life time of service worker in example mv3-sw (fe537c0)
+
+## connect-webextension
+
+-   Reconnection when service worker goes inactive and option to extend life of service worker (39dcde0, 0377b28)
+
+## connect-explorer-nextra and connect-explorer-theme
+
+-   Improve schemas documentation and styling (367f458, a23fa02, ee7c4f6, 667c802, 05b68fa, 6c2e298, 9150147, 81591dc, bb84950, 8ca02e6, c8f144a, 003854c, 8951663, b284b25, d14c026, d69dee1, 1c82b8f)
+
+## mobile
+
+-   fix Connect firmware assets import #12090) (4abe34e)
+
+## trezor-user-env-link
+
+-   Type updates (68be4d2)
+
+## connect-popup
+
+-   test new webextension select device behavior and check remember device by default for mv3 webextension (1aab629, eb6cf5d)
+
+## protobuf
+
+-   clean up type of backup_type in schema (19b7bb2)
+
+## connect-common
+
+-   Add Czech to available FW translations (4a1aa82)
+
+## Dependencies update
+
+-   npm-release: @trezor/blockchain-link 2.1.29
+-   npm-release: @trezor/blockchain-link-utils 1.0.17
+-   npm-release: @trezor/blockchain-link-types 1.0.16
+-   npm-release: @trezor/connect-common 0.0.32
+-   npm-release: @trezor/env-utils 1.0.16
+-   npm-release: @trezor/transport 1.1.28
+-   npm-release: @trezor/protobuf 1.0.12
+-   npm-release: @trezor/protocol 1.0.8
+-   npm-release: @trezor/utxo-lib 2.0.9
+-   npm-release: @trezor/connect 9.2.3
+
 # 9.2.2
 
 Main focus of this release is to allow saving device sessions in webextension, so user's don't have to enter the passphrase repeatedly.
