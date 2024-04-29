@@ -12,12 +12,18 @@ export const Card: StoryObj = {
         children: 'Some content',
         label: '',
         paddingType: 'normal',
+        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
     },
     argTypes: {
         paddingType: {
             options: ['small', 'none', 'normal'],
             control: {
                 type: 'radio',
+            },
+        },
+        margin: {
+            table: {
+                category: 'Frame props',
             },
         },
     },
