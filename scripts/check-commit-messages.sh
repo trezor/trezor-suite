@@ -2,6 +2,8 @@
 
 # This script is run by commit-messages-check github action
 
+BASE_BRANCH_NAME="${BASE_BRANCH_NAME:-develop}"
+
 if ! git rev-list origin/"$BASE_BRANCH_NAME"..HEAD > /dev/null 2>&1; then
   tput -T linux setaf 1
   echo "git rev-list command failed"
