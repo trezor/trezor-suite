@@ -5,15 +5,17 @@ import * as Device from 'expo-device';
 import { ExtraDependencies } from '@suite-common/redux-utils';
 import { extraDependenciesMock } from '@suite-common/test-utils';
 import { selectDevices } from '@suite-common/wallet-core';
+import { isBluetoothEnabled } from '@suite-native/bluetooth';
+import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
 import {
     selectAreSatsAmountUnit,
     selectBitcoinUnits,
     selectFiatCurrencyCode,
     setFiatCurrency,
 } from '@suite-native/settings';
-import { mergeDeepObject } from '@trezor/utils';
 import { NativeUsbTransport } from '@trezor/transport-native';
-import { selectEnabledDiscoveryNetworkSymbols } from '@suite-native/discovery';
+import { NativeTransportBLE } from '@trezor/transport-native-ble';
+import { mergeDeepObject } from '@trezor/utils';
 
 const deviceType = Device.isDevice ? 'device' : 'emulator';
 
@@ -25,9 +27,11 @@ const transportsPerDeviceType = {
     emulator: ['BridgeTransport', 'UdpTransport'],
 } as const;
 
-const transports = transportsPerDeviceType[deviceType];
+let transports = transportsPerDeviceType[deviceType];
 
-// const transports = [new NativeTransportBLE()];
+if (isBluetoothEnabled) {
+    transports = [NativeTransportBLE];
+}
 
 export const extraDependencies: ExtraDependencies = mergeDeepObject(extraDependenciesMock, {
     selectors: {

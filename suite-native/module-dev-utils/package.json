@@ -17,6 +17,7 @@
         "@suite-common/wallet-core": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@suite-native/atoms": "workspace:*",
+        "@suite-native/bluetooth": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
