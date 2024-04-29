@@ -1,7 +1,6 @@
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
-import { StrictMode } from 'react';
 
 import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/electron/renderer';
@@ -43,34 +42,35 @@ const Main = () => {
     const formattersConfig = useFormattersConfig();
 
     return (
-        <StrictMode>
-            <HelmetProvider>
-                <ConnectedThemeProvider>
-                    <RouterProvider history={history}>
-                        <ModalContextProvider>
-                            <ErrorBoundary>
-                                <Autodetect />
-                                <Resize />
-                                <Protocol />
-                                <OnlineStatus />
-                                <RouterHandler />
-                                <ConnectedIntlProvider>
-                                    <FormatterProvider config={formattersConfig}>
-                                        <DesktopUpdater>
-                                            <Metadata />
-                                            <ToastContainer />
-                                            <Preloader>
-                                                <AppRouter />
-                                            </Preloader>
-                                        </DesktopUpdater>
-                                    </FormatterProvider>
-                                </ConnectedIntlProvider>
-                            </ErrorBoundary>
-                        </ModalContextProvider>
-                    </RouterProvider>
-                </ConnectedThemeProvider>
-            </HelmetProvider>
-        </StrictMode>
+        // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
+        // <StrictMode>
+        <HelmetProvider>
+            <ConnectedThemeProvider>
+                <RouterProvider history={history}>
+                    <ModalContextProvider>
+                        <ErrorBoundary>
+                            <Autodetect />
+                            <Resize />
+                            <Protocol />
+                            <OnlineStatus />
+                            <RouterHandler />
+                            <ConnectedIntlProvider>
+                                <FormatterProvider config={formattersConfig}>
+                                    <DesktopUpdater>
+                                        <Metadata />
+                                        <ToastContainer />
+                                        <Preloader>
+                                            <AppRouter />
+                                        </Preloader>
+                                    </DesktopUpdater>
+                                </FormatterProvider>
+                            </ConnectedIntlProvider>
+                        </ErrorBoundary>
+                    </ModalContextProvider>
+                </RouterProvider>
+            </ConnectedThemeProvider>
+        </HelmetProvider>
+        // </StrictMode>
     );
 };
 
