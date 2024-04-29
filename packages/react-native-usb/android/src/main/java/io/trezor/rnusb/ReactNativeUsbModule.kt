@@ -180,10 +180,6 @@ class ReactNativeUsbModule : Module() {
 
     }
 
-    private val usbAttachedReceiver = ReactNativeUsbAttachedReceiver()
-    private val usbDetachedReceiver = ReactNativeUsbDetachedReceiver()
-    private val usbPermissionReceiver = ReactNativeUsbPermissionReceiver()
-
 
     private inline fun withModuleScope(promise: Promise, crossinline block: () -> Unit) = moduleCoroutineScope.launch {
         try {
