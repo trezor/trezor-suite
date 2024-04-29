@@ -183,4 +183,7 @@ export type UserContextPayload =
       }
     | {
           type: 'multi-share-backup';
+      }
+    | {
+          type: 'multi-share-backup-complete';
       };

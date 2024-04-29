@@ -53,8 +53,8 @@ const StyledText = styled.span<StyledTextProps>`
 
 type TextProps = {
     children: ReactNode;
-    className?: string;
     typographyStyle?: TypographyStyle;
+    className?: string;
 } & ExclusiveColorOrVariant;
 
 export const Text = ({ variant, color, children, className, typographyStyle }: TextProps) => {

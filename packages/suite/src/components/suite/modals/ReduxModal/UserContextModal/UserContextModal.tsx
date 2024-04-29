@@ -45,6 +45,7 @@ import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
 import type { ReduxModalProps } from '../ReduxModal';
 import { CryptoSymbol } from 'invity-api';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
+import { MultiShareBackupCompleteModal } from './MultiShareBackupModal/MultiShareBackupCompleteModal';
 
 /** Modals opened as a result of user action */
 export const UserContextModal = ({
@@ -221,6 +222,8 @@ export const UserContextModal = ({
             return <EverstakeModal onCancel={onCancel} />;
         case 'multi-share-backup':
             return <MultiShareBackupModal />;
+        case 'multi-share-backup-complete':
+            return <MultiShareBackupCompleteModal />;
         default:
             return null;
     }

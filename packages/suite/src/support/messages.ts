@@ -2152,6 +2152,76 @@ export default defineMessages({
         defaultMessage: 'My current backup will still be able to recover my wallet',
         id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_2',
     },
+    TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP: {
+        defaultMessage: 'Tips on storing backup',
+        id: 'TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP',
+    },
+    TR_CREATE_MULTI_SHARE_BACKUP_CREATED: {
+        defaultMessage: 'Multi-share backup created',
+        id: 'TR_CREATE_MULTI_SHARE_BACKUP_CREATED',
+    },
+    TR_MULTI_SHARE_BACKUP_GOT_IT_CLOSE: {
+        defaultMessage: 'Got it, close',
+        id: 'TR_MULTI_SHARE_BACKUP_GOT_IT_CLOSE',
+    },
+    TR_MULTI_SHARE_BACKUP_GREAT: {
+        defaultMessage: 'Great!',
+        id: 'TR_MULTI_SHARE_BACKUP_GREAT',
+    },
+    TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT: {
+        defaultMessage:
+            'You’ve done a huge step for improving your security. Don’t forget to hide and distribute your backup well.',
+        id: 'TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT',
+    },
+    TR_MULTI_SHARE_BACKUP_BACKUPS: {
+        defaultMessage: 'Backups',
+        id: 'TR_MULTI_SHARE_BACKUP_BACKUPS',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_HEADER: {
+        defaultMessage: 'My previous backup',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE1: {
+        defaultMessage: 'Still recovers you funds',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE1',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2: {
+        defaultMessage: 'Hide it well',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_HEADER: {
+        defaultMessage: 'My new 5 share backup',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE1: {
+        defaultMessage: 'At least 3 to recover your funds',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE1',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE2: {
+        defaultMessage: 'Hide them well. Can be different places, different people',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE2',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_WHY_IS_BACKUP_IMPORTANT: {
+        defaultMessage: 'Why is backup important',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_WHY_IS_BACKUP_IMPORTANT',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR: {
+        defaultMessage: 'Lost your Trezor?',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR_INFO_TEXT: {
+        defaultMessage: 'Not a problem, recover your coins with Backup!',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR_INFO_TEXT',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP: {
+        defaultMessage: 'Lost your Backup?',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT: {
+        defaultMessage:
+            'That could be very bad if you also lost your Trezor. Contact support if that happens.',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT',
+    },
     TR_NEXT_UP: {
         defaultMessage: 'Next up',
         id: 'TR_NEXT_UP',

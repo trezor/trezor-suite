@@ -10,27 +10,15 @@ import {
 } from '@trezor/urls';
 
 import { useDispatch } from 'src/hooks/suite';
-import { onCancel } from 'src/actions/suite/modalActions';
+import { onCancel, openModal } from 'src/actions/suite/modalActions';
 import { Modal, Translation, TrezorLink } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
 import { BackupInstructionsCard } from './BackupInstructionsCard';
 import { BackupInstructionsStep, BackupInstructionsStepProps } from './BackupInstructionsStep';
+import { Body, Section } from './MultiShareModalLayout';
 
 const StyledImage = styled(Image)`
     margin-bottom: ${spacingsPx.md};
-`;
-
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-`;
-
-const Body = styled(Wrapper)`
-    gap: ${spacingsPx.lg};
-`;
-
-const Section = styled(Wrapper)`
-    gap: ${spacingsPx.xs};
 `;
 
 const CardWrapper = styled.div`
@@ -131,7 +119,14 @@ export const MultiShareBackupModal = () => {
                     ),
                 };
             case 1:
-                const enterBackup = () => console.log('continue');
+                const enterBackup = () => {
+                    // Todo: HERE WILL BE THE TREZOR FLOW TO CREATE BACKUP
+
+                    console.log('continue');
+
+                    handleClose();
+                    dispatch(openModal({ type: 'multi-share-backup-complete' }));
+                };
 
                 const instructionsSteps: Pick<
                     BackupInstructionsStepProps,

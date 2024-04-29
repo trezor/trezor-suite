@@ -60,6 +60,7 @@ export type FlexProps = FrameProps & {
     alignItems?: FlexAlignItems;
     children: React.ReactNode;
     direction?: FlexDirection;
+    className?: string;
 };
 
 export const Flex = ({
@@ -69,6 +70,7 @@ export const Flex = ({
     children,
     direction = 'row',
     margin,
+    className,
 }: FlexProps) => {
     const frameProps = {
         margin,
@@ -76,6 +78,7 @@ export const Flex = ({
 
     return (
         <Container
+            className={className}
             $gap={gap}
             $justifyContent={justifyContent}
             $alignItems={alignItems}
