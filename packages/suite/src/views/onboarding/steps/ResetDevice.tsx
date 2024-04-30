@@ -8,7 +8,12 @@ import { useDispatch, useSelector, useOnboarding, useDevice } from 'src/hooks/su
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Button, Divider, Text } from '@trezor/components';
-import { BackupType, SelectBackupType, getDefaultBackupType } from './SelectBackupType';
+import {
+    BackupType,
+    SelectBackupType,
+    getDefaultBackupType,
+    isShamirBackupType,
+} from './SelectBackupType';
 import { DeviceModelInternal } from '@trezor/connect';
 
 const SelectWrapper = styled.div`
@@ -33,12 +38,16 @@ export const ResetDeviceStep = () => {
     const deviceModel = device?.features?.internal_model;
     const unitPackaging = device?.features?.unit_packaging ?? 0;
 
-    const [submitted, setSubmitted] = useState(false);
-    const [backupType, setBackupType] = useState<BackupType>(
+    const deviceDefaultBackupType =
         deviceModel !== undefined
-            ? getDefaultBackupType({ model: deviceModel, packaging: unitPackaging })
-            : 'shamir-default',
-    );
+            ? getDefaultBackupType({
+                  model: deviceModel,
+                  packaging: unitPackaging,
+              })
+            : 'shamir-default';
+
+    const [submitted, setSubmitted] = useState(false);
+    const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
     const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
 
     const dispatch = useDispatch();
@@ -98,19 +107,27 @@ export const ResetDeviceStep = () => {
         return null;
     }
 
-    const showSelect = !isWaitingForConfirmation && !isDeviceLocked;
+    const isWaitingOnDevice = isWaitingForConfirmation || isDeviceLocked;
     const canChoseBackupType = deviceModel !== undefined && canChooseBackupType(deviceModel);
 
     return (
         <OnboardingStepBox
             image="KEY"
-            heading={<Translation id="TR_ONBOARDING_GENERATE_SEED" />}
+            heading={<Translation id="TR_ONBOARDING_CREATE_NEW_WALLET" />}
             description={
                 canChoseBackupType ? (
                     <Translation
-                        id="TR_ONBOARDING_SELECT_SEED_TYPE"
+                        id={
+                            // eslint-disable-next-line no-nested-ternary
+                            isWaitingOnDevice
+                                ? 'TR_ONBOARDING_WILL_CREATE_BACKUP_TYPE'
+                                : isShamirBackupType(deviceDefaultBackupType)
+                                  ? 'TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE'
+                                  : 'TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE'
+                        }
                         values={{
                             primary: chunks => <Text variant="primary">{chunks}</Text>,
+                            br: () => <br />,
                         }}
                     />
                 ) : (
@@ -120,14 +137,14 @@ export const ResetDeviceStep = () => {
             device={isWaitingForConfirmation ? device : undefined}
             isActionAbortable={isActionAbortable}
             outerActions={
-                showSelect && (
+                isWaitingOnDevice && (
                     // There is no point to show back button if user can't click it because confirmOnDevice bubble is active
                     <OnboardingButtonBack onClick={() => goToPreviousStep()} />
                 )
             }
             variant="small"
         >
-            {showSelect ? (
+            {!isWaitingOnDevice ? (
                 <OptionsWrapper $fullWidth={true}>
                     <SelectWrapper>
                         {canChoseBackupType && (

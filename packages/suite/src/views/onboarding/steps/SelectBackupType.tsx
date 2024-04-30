@@ -46,16 +46,6 @@ export const selectBackupTypes = [
 
 export type BackupType = (typeof selectBackupTypes)[number];
 
-const isDeviceLegacyMap: Record<DeviceModelInternal, boolean> = {
-    [DeviceModelInternal.T1B1]: true,
-    [DeviceModelInternal.T2T1]: true,
-    [DeviceModelInternal.T2B1]: false,
-    [DeviceModelInternal.T3T1]: false,
-};
-
-const isLegacyDevice = (model?: DeviceModelInternal) =>
-    model !== undefined && isDeviceLegacyMap[model];
-
 export const isShamirBackupType = (type: BackupType) =>
     ['shamir-default', 'shamir-advance'].includes(type);
 
@@ -126,6 +116,14 @@ const DownIconCircle = styled.div<{ $elevation: Elevation }>`
 
 const BackupIconWrapper = styled.div``;
 
+const OptionGroupHeading = styled.div`
+    display: flex;
+    flex-direction: row;
+    padding: ${spacingsPx.md} ${spacingsPx.xl} 0 ${spacingsPx.xl};
+    gap: ${spacingsPx.md};
+    align-items: center;
+`;
+
 const OptionStyled = styled.div`
     display: flex;
     flex-direction: row;
@@ -188,26 +186,45 @@ type FloatingSelectionsProps = {
     selected: BackupType;
     onSelect: (value: BackupType) => void;
     style: CSSProperties;
+    defaultType: BackupType;
 };
 
+const DefaultTag = () => (
+    <Badge variant="primary" inline margin={{ left: spacings.xxs }}>
+        <Text typographyStyle="hint">
+            <Translation id="TR_ONBOARDING_BACKUP_TYPE_DEFAULT" />
+        </Text>
+    </Badge>
+);
+
 const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
-    ({ selected, onSelect, style }, ref) => {
+    ({ selected, onSelect, style, defaultType }, ref) => {
         const { elevation } = useElevation();
 
         return (
             <FloatingSelectionsWrapper $elevation={elevation} ref={ref} style={style}>
+                <OptionGroupHeading>
+                    <Text typographyStyle="hint" variant="tertiary">
+                        <Translation id="TR_ONBOARDING_BACKUP_CATEGORY_20_WORD_BACKUPS" />
+                    </Text>
+                </OptionGroupHeading>
                 <Option
                     onSelect={() => onSelect('shamir-default')}
                     isChecked={selected === 'shamir-default'}
                 >
                     <OptionText>
-                        <Text variant="tertiary" typographyStyle="titleSmall">
+                        <Text
+                            variant={selected === 'shamir-default' ? undefined : 'tertiary'}
+                            typographyStyle="titleSmall"
+                        >
                             <Translation id={typesToLabelMap['shamir-default']} />
-                            <Badge variant="primary" inline margin={{ left: spacings.xxs }}>
-                                <Text typographyStyle="hint">
-                                    <Translation id="TR_ONBOARDING_BACKUP_TYPE_DEFAULT" />
-                                </Text>
-                            </Badge>
+                            {defaultType === 'shamir-default' ? (
+                                <DefaultTag />
+                            ) : (
+                                <Badge variant="tertiary" inline margin={{ left: spacings.xxs }}>
+                                    <Translation id="TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI" />
+                                </Badge>
+                            )}
                         </Text>
                         <Text typographyStyle="hint">
                             <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
@@ -219,37 +236,54 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                     isChecked={selected === 'shamir-advance'}
                 >
                     <OptionText>
-                        <Text variant={'tertiary'} typographyStyle="titleSmall">
+                        <Text
+                            variant={selected === 'shamir-advance' ? undefined : 'tertiary'}
+                            typographyStyle="titleSmall"
+                        >
                             <Translation id={typesToLabelMap['shamir-advance']} />
+                            {defaultType === 'shamir-advance' && <DefaultTag />}
                             <Badge variant="tertiary" inline margin={{ left: spacings.xxs }}>
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE_ADVANCED" />
                             </Badge>
                         </Text>
                         <Text typographyStyle="hint">
-                            <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
+                            <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
                         </Text>
                     </OptionText>
                 </Option>
                 <Divider />
-                <OptionStyled>
-                    <Text typographyStyle="hint">
+                <OptionGroupHeading>
+                    <Text typographyStyle="hint" variant="tertiary">
                         <Translation
                             id="TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES"
                             values={{ br: () => <br /> }}
                         />
                     </Text>
-                </OptionStyled>
+                </OptionGroupHeading>
                 <Option onSelect={() => onSelect('12-words')} isChecked={selected === '12-words'}>
                     <OptionText>
-                        <Text variant={'tertiary'} typographyStyle="titleSmall">
+                        <Text
+                            variant={selected === '12-words' ? undefined : 'tertiary'}
+                            typographyStyle="titleSmall"
+                        >
                             <Translation id={typesToLabelMap['12-words']} />
+                            {defaultType === '12-words' && <DefaultTag />}
                         </Text>
+                        {defaultType === '12-words' && (
+                            <Text typographyStyle="hint">
+                                <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE" />
+                            </Text>
+                        )}
                     </OptionText>
                 </Option>
                 <Option onSelect={() => onSelect('24-words')} isChecked={selected === '24-words'}>
                     <OptionText>
-                        <Text variant={'tertiary'} typographyStyle="titleSmall">
+                        <Text
+                            variant={selected === '24-words' ? undefined : 'tertiary'}
+                            typographyStyle="titleSmall"
+                        >
                             <Translation id={typesToLabelMap['24-words']} />
+                            {defaultType === '24-words' && <DefaultTag />}
                         </Text>
                     </OptionText>
                 </Option>
@@ -258,13 +292,11 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
     },
 );
 
-const LegacyWarning = () => {
-    return (
-        <Warning variant="info" withIcon>
-            <Translation id="TR_ONBOARDING_BACKUP_LEGACY_WARNING" />
-        </Warning>
-    );
-};
+const BackupWarning = ({ id }: { id: TranslationKey }) => (
+    <Warning variant="info" withIcon>
+        <Translation id={id} values={{ strong: chunks => <strong>{chunks}</strong> }} />
+    </Warning>
+);
 
 type SelectBackupTypeProps = {
     isDisabled: boolean;
@@ -303,18 +335,13 @@ export const SelectBackupType = ({ selected, onSelect, isDisabled }: SelectBacku
     const defaultBackupType: BackupType = device?.features?.internal_model
         ? getDefaultBackupType({
               model: device.features.internal_model,
-              x: device.features.unit_packaging,
+              packaging: device.features.unit_packaging ?? 0,
           })
         : 'shamir-default';
 
-    // We want to show user the 12-words because its default for this device,
-    // and we want to show user this explicit information, not just default as it is
-    // for newer devices.
-    const isModelT = device?.features?.internal_model === DeviceModelInternal.T2T1;
-
-    const isDefault = defaultBackupType === selected && !isModelT;
+    const isDefault = defaultBackupType === selected;
+    const isShamirDefault = isShamirBackupType(defaultBackupType);
     const isShamirSelected = isShamirBackupType(selected);
-    const isLegacyModel = isLegacyDevice(device?.features?.internal_model);
 
     return (
         <Wrapper>
@@ -345,6 +372,7 @@ export const SelectBackupType = ({ selected, onSelect, isDisabled }: SelectBacku
                         <FloatingPortal>
                             <FloatingFocusManager context={context} modal={false}>
                                 <FloatingSelections
+                                    defaultType={defaultBackupType}
                                     ref={refs.setFloating}
                                     style={floatingStyles}
                                     {...getFloatingProps()}
@@ -359,7 +387,12 @@ export const SelectBackupType = ({ selected, onSelect, isDisabled }: SelectBacku
                     )}
                 </ElevationUp>
             </SelectWrapper>
-            {!isShamirSelected && !isLegacyModel && <LegacyWarning />}
+            {!isShamirSelected && isShamirDefault && (
+                <BackupWarning id="TR_ONBOARDING_BACKUP_LEGACY_WARNING" />
+            )}
+            {isShamirSelected && !isShamirDefault && (
+                <BackupWarning id="TR_ONBOARDING_BACKUP_SHAMIR_WARNING" />
+            )}
         </Wrapper>
     );
 };
