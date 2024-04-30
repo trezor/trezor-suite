@@ -50,7 +50,7 @@ const isDeviceLegacyMap: Record<DeviceModelInternal, boolean> = {
     [DeviceModelInternal.T1B1]: true,
     [DeviceModelInternal.T2T1]: true,
     [DeviceModelInternal.T2B1]: false,
-    [DeviceModelInternal.T3T1]: false
+    [DeviceModelInternal.T3T1]: false,
 };
 
 const isLegacyDevice = (model?: DeviceModelInternal) =>
@@ -66,11 +66,25 @@ const typesToLabelMap: Record<BackupType, TranslationKey> = {
     '24-words': 'TR_ONBOARDING_SEED_TYPE_24_WORDS',
 };
 
-export const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
+const defaultBackupTypeMap: Record<DeviceModelInternal, BackupType> = {
     [DeviceModelInternal.T1B1]: '24-words',
     [DeviceModelInternal.T2T1]: '12-words',
     [DeviceModelInternal.T2B1]: 'shamir-default',
-    [DeviceModelInternal.T3T1]: 'shamir-default'
+    [DeviceModelInternal.T3T1]: 'shamir-default',
+};
+
+type GetDefaultBackupTypeParams = { model: DeviceModelInternal; packaging: number };
+
+export const getDefaultBackupType = ({
+    model,
+    packaging,
+}: GetDefaultBackupTypeParams): BackupType => {
+    // Original package of Trezor Safe 3 have a card with just 12 words.
+    if (model === DeviceModelInternal.T2B1 && packaging === 0) {
+        return '12-words';
+    }
+
+    return defaultBackupTypeMap[model];
 };
 
 const SELECT_ELEMENT_HEIGHT = 84;
@@ -287,7 +301,10 @@ export const SelectBackupType = ({ selected, onSelect, isDisabled }: SelectBacku
     const { getReferenceProps, getFloatingProps } = useInteractions([click, dismiss, role]);
 
     const defaultBackupType: BackupType = device?.features?.internal_model
-        ? defaultBackupTypeMap[device.features.internal_model]
+        ? getDefaultBackupType({
+              model: device.features.internal_model,
+              x: device.features.unit_packaging,
+          })
         : 'shamir-default';
 
     // We want to show user the 12-words because its default for this device,
