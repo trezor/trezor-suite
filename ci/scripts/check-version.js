@@ -60,6 +60,7 @@ if (PRODUCTION.find(b => branch.startsWith(b))) {
     }
 }
 
-if (!semver.gt(version, npmVersion)) {
+// When npmVersion is undefined it means that there was no previous release on that distTag so every version is valid.
+if (npmVersion && !semver.gt(version, npmVersion)) {
     throw new Error(`${version} is the same or lower than the npm registry version ${npmVersion}`);
 }
