@@ -10360,24 +10360,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-explorer-webextension@workspace:packages/connect-explorer-webextension":
-  version: 0.0.0-use.local
-  resolution: "@trezor/connect-explorer-webextension@workspace:packages/connect-explorer-webextension"
-  dependencies:
-    "@trezor/connect-explorer": "workspace:^"
-    "@trezor/connect-web": "workspace:^"
-    "@types/react": "npm:18.2.79"
-    copy-webpack-plugin: "npm:^12.0.2"
-    html-webpack-plugin: "npm:^5.6.0"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
-    webpack: "npm:^5.90.1"
-    webpack-cli: "npm:^5.1.4"
-    xvfb-maybe: "npm:^0.2.1"
-  languageName: unknown
-  linkType: soft
-
-"@trezor/connect-explorer@workspace:^, @trezor/connect-explorer@workspace:packages/connect-explorer":
+"@trezor/connect-explorer@workspace:packages/connect-explorer":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:

@@ -41,6 +41,7 @@ export const init =
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
 
+        // todo: is this comment correct?
         // The event `WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM` is coming from @trezor/connect-webextension/proxy
         // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
         // so Typescript cannot recognize it.

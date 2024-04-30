@@ -43,7 +43,7 @@ const config: webpack.Configuration = {
             },
         ],
     },
-    // todo: this block is identical in connect-web, connect-explorer, and connect-explorer-webextension
+    // todo: this block is identical in connect-web, connect-explorer
     resolve: {
         modules: ['node_modules'],
         mainFields: ['browser', 'module', 'main'],
