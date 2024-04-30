@@ -114,56 +114,57 @@ const StyledTooltip = styled(Tooltip)`
 
 const firmwareInstalledChecklist = [
     {
-        icon: 'INFO' as const,
+        icon: 'INFO',
         content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_4" />,
     },
-];
+] as const;
 
-const getNoFirmwareChecklist = (isMobileLayout: boolean) => [
-    {
-        icon: 'VERIFIED' as const,
-        content: (
-            <Translation
-                id="TR_ONBOARDING_DEVICE_CHECK_2"
-                values={{
-                    reseller: link => (
-                        <StyledTrezorLink href={TREZOR_RESELLERS_URL} variant="underline">
-                            {link}
-                        </StyledTrezorLink>
-                    ),
-                    shop: link => (
-                        <StyledTrezorLink href={TREZOR_URL} variant="underline">
-                            {link}
-                        </StyledTrezorLink>
-                    ),
-                }}
-            />
-        ),
-    },
-    {
-        icon: 'HOLOGRAM' as const,
-        content: (
-            <Translation
-                id="TR_ONBOARDING_DEVICE_CHECK_1"
-                values={{
-                    strong: chunks => (
-                        <StyledTooltip
-                            placement={isMobileLayout ? 'top' : 'left'}
-                            title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
-                            content={<Hologram />}
-                        >
-                            <Underline>{chunks}</Underline>
-                        </StyledTooltip>
-                    ),
-                }}
-            />
-        ),
-    },
-    {
-        icon: 'PACKAGE' as const,
-        content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
-    },
-];
+const getNoFirmwareChecklist = (isMobileLayout: boolean) =>
+    [
+        {
+            icon: 'VERIFIED',
+            content: (
+                <Translation
+                    id="TR_ONBOARDING_DEVICE_CHECK_2"
+                    values={{
+                        reseller: link => (
+                            <StyledTrezorLink href={TREZOR_RESELLERS_URL} variant="underline">
+                                {link}
+                            </StyledTrezorLink>
+                        ),
+                        shop: link => (
+                            <StyledTrezorLink href={TREZOR_URL} variant="underline">
+                                {link}
+                            </StyledTrezorLink>
+                        ),
+                    }}
+                />
+            ),
+        },
+        {
+            icon: 'HOLOGRAM',
+            content: (
+                <Translation
+                    id="TR_ONBOARDING_DEVICE_CHECK_1"
+                    values={{
+                        strong: chunks => (
+                            <StyledTooltip
+                                placement={isMobileLayout ? 'top' : 'left'}
+                                title={<Translation id="TR_HOLOGRAM_STEP_HEADING" />}
+                                content={<Hologram />}
+                            >
+                                <Underline>{chunks}</Underline>
+                            </StyledTooltip>
+                        ),
+                    }}
+                />
+            ),
+        },
+        {
+            icon: 'PACKAGE',
+            content: <Translation id="TR_ONBOARDING_DEVICE_CHECK_3" />,
+        },
+    ] as const;
 
 export const SecurityCheckContent = ({
     goToDeviceAuthentication,
