@@ -41,7 +41,7 @@ const safe3Styles = {
     pagerOffset: 40,
 };
 
-const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps> = {
+const deviceToContentStyles: Record<DeviceModelInternal | 'T3W1', DeviceModelLayoutProps> = {
     [DeviceModelInternal.T1B1]: {
         fontSource: require('../../../../packages/theme/fonts/PixelOperatorMono8-Regular.ttf'),
         fontSize: 14,
@@ -65,6 +65,7 @@ const deviceToContentStyles: Record<DeviceModelInternal, DeviceModelLayoutProps>
     },
     [DeviceModelInternal.T2B1]: safe3Styles,
     [DeviceModelInternal.T3B1]: safe3Styles,
+    ['T3W1']: safe3Styles,
 };
 
 type ContentCanvasStyleProps = {
