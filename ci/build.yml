@@ -97,6 +97,7 @@ suite-web build stable codesign:
     - nix-shell --option system x86_64-darwin --run "yarn message-system-sign-config"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data build:lib"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/connect-iframe build:lib"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/transport-bridge build:lib"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
     - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop-core/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
