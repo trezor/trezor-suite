@@ -34,6 +34,7 @@ const GraphWrapper = styled(Card)`
     flex-direction: row;
     display: flex;
     height: 320px;
+    overflow: visible;
 `;
 
 const Actions = styled.div`
