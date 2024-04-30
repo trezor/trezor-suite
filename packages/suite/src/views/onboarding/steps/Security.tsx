@@ -19,8 +19,8 @@ const SecurityStep = () => {
             )}
             <OnboardingStepBox
                 image="FOLDER"
-                heading={<Translation id="TR_SECURITY_HEADING" />}
-                description={<Translation id="TR_SECURITY_SUBHEADING" />}
+                heading={<Translation id="TR_YOUR_WALLET_SUCCESSFULLY_CREATED" />}
+                description={<Translation id="TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION" />}
                 innerActions={
                     <OnboardingButtonCta
                         data-test="@onboarding/create-backup-button"
@@ -28,7 +28,7 @@ const SecurityStep = () => {
                             goToNextStep();
                         }}
                     >
-                        <Translation id="TR_GO_TO_SECURITY" />
+                        <Translation id="TR_CONTINUE_TO_BACKUP" />
                     </OnboardingButtonCta>
                 }
                 outerActions={

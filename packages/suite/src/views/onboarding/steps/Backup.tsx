@@ -45,7 +45,7 @@ export const BackupStep = () => {
                     key={backup.status} // to properly rerender in translation mode
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
-                    description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
+                    description={<Translation id="TR_ONBOARDING_BACKUP_SUBHEADING" />}
                     innerActions={
                         <OnboardingButtonCta
                             data-test="@backup/start-button"
@@ -80,7 +80,7 @@ export const BackupStep = () => {
                     key={backup.status} // to properly rerender in translation mode
                     image="BACKUP"
                     heading={<Translation id="TR_CREATE_BACKUP" />}
-                    description={<Translation id="TR_BACKUP_SUBHEADING_1" />}
+                    description={<Translation id="TR_ONBOARDING_TREZOR_WILL_DISPLAY_BACKUP" />}
                     device={device}
                     isActionAbortable={isActionAbortable}
                 />
