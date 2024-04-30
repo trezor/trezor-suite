@@ -129,9 +129,6 @@
         {
             "path": "packages/connect-explorer-theme"
         },
-        {
-            "path": "packages/connect-explorer-webextension"
-        },
         { "path": "packages/connect-iframe" },
         {
             "path": "packages/connect-plugin-ethereum"
