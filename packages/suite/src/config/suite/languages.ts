@@ -6,7 +6,7 @@ const LANGUAGES = {
     af: { name: 'Afrikaans', en: 'Afrikaans' },
     ar: { name: 'العربية‬', en: 'Arabic' },
     ca: { name: 'Català', en: 'Catalan' },
-    cs: { name: 'Čeština', en: 'Czech', type: 'community' },
+    cs: { name: 'Čeština', en: 'Czech', type: 'official' },
     da: { name: 'Dansk', en: 'Danish' },
     de: { name: 'Deutsch', en: 'German', type: 'official' },
     el: { name: 'Ελληνικά', en: 'Greek' },
