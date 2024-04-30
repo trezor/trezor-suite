@@ -10307,6 +10307,7 @@ __metadata:
     redux: "npm:^4.2.1"
     redux-logger: "npm:^3.0.6"
     redux-thunk: "npm:^2.4.2"
+    rimraf: "npm:^5.0.5"
     styled-components: "npm:^6.1.8"
     tsx: "npm:^4.7.1"
     webpack: "npm:^5.90.1"
