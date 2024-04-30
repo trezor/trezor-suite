@@ -1,0 +1,53 @@
+name: "[Build] components storybook"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+# run only once a day
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+env:
+  DEV_SERVER_URL: "https://dev.suite.sldev.cz"
+
+jobs:
+  build-storybook:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/components
+
+      - name: Build storybook
+        env:
+          ASSET_PREFIX: /components/develop
+          DESKTOP_APP_NAME: "Trezor-Suite"
+        run: |
+          yarn workspace @trezor/components storybook-build
+      # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
+      - name: Upload suite storybook to dev.suite.sldev.cz
+        env:
+          DEPLOY_PATH: s3://dev.suite.sldev.cz/components/develop
+        run: |
+          aws s3 sync --delete ./packages/components/.build-storybook ${DEPLOY_PATH}
