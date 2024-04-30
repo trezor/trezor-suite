@@ -8,7 +8,7 @@ import { useDispatch, useSelector, useOnboarding, useDevice } from 'src/hooks/su
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Button, Divider, Text } from '@trezor/components';
-import { BackupType, SelectBackupType, defaultBackupTypeMap } from './SelectBackupType';
+import { BackupType, SelectBackupType, getDefaultBackupType } from './SelectBackupType';
 import { DeviceModelInternal } from '@trezor/connect';
 
 const SelectWrapper = styled.div`
@@ -31,10 +31,13 @@ export const ResetDeviceStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const deviceModel = device?.features?.internal_model;
+    const unitPackaging = device?.features?.unit_packaging ?? 0;
 
     const [submitted, setSubmitted] = useState(false);
     const [backupType, setBackupType] = useState<BackupType>(
-        deviceModel !== undefined ? defaultBackupTypeMap[deviceModel] : 'shamir-default',
+        deviceModel !== undefined
+            ? getDefaultBackupType({ model: deviceModel, packaging: unitPackaging })
+            : 'shamir-default',
     );
     const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
 
@@ -86,9 +89,9 @@ export const ResetDeviceStep = () => {
 
     useEffect(() => {
         if (deviceModel !== undefined && !canChooseBackupType(deviceModel)) {
-            handleSubmit(defaultBackupTypeMap[deviceModel]);
+            handleSubmit(getDefaultBackupType({ model: deviceModel, packaging: unitPackaging }));
         }
-    }, [deviceModel, handleSubmit]);
+    }, [deviceModel, handleSubmit, unitPackaging]);
 
     // this step expects device
     if (!device || !device.features) {
