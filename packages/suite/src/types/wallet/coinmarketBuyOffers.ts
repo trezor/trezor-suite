@@ -26,7 +26,6 @@ export type ContextValues = {
     timer: Timer;
     getQuotes: () => Promise<void>;
     innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
-    innerAlternativeQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
 };
 
 export type AddressOptionsFormState = {
