@@ -29,6 +29,7 @@ const debugLog = (...args: any[]) => {
 };
 
 export class BleApi extends AbstractApi {
+    chunkSize = 244;
     devices: TransportInterfaceDevice[] = [];
 
     constructor({ logger }: ConstructorParams) {
@@ -134,37 +135,14 @@ export class BleApi extends AbstractApi {
     }
 
     public async write(path: string, buffer: Buffer) {
-        debugLog('write');
+        debugLog('write', buffer);
         const device = nativeBleManager.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
-
-        // Set the target chunk size
-        const chunkSize = 244;
-        const chunks = [];
-        debugLog('buffer', buffer);
-
-        for (let i = 0; i < buffer.length; i += chunkSize) {
-            let chunk = buffer.subarray(i, i + chunkSize);
-
-            // Check if the chunk is smaller than the target size and pad it with zeros
-            if (chunk.length < chunkSize) {
-                const paddingLength = chunkSize - chunk.length;
-                const padding = Buffer.alloc(paddingLength, 0); // Create a buffer filled with zeros for padding
-                chunk = Buffer.concat([chunk, padding]); // Concatenate the original chunk with the padding
-            }
-
-            // Convert the chunk to a base64 string (TODO: we can use react-native-quick-base64 package for better performance)
-            debugLog('chunk', chunk);
-            const base64Chunk = chunk.toString('base64');
-            chunks.push(base64Chunk);
-        }
-
         try {
-            for (const chunk of chunks) {
-                await nativeBleManager.write(path, chunk);
-            }
+            const base64Chunk = buffer.toString('base64');
+            await nativeBleManager.write(path, base64Chunk);
 
             return this.success(undefined);
         } catch (err) {
@@ -185,11 +163,5 @@ export class BleApi extends AbstractApi {
         // BT does not need to be closed, it closed when disconnected
 
         return this.success(undefined);
-    }
-
-    public async acquire(_path: string) {
-        debugLog('custom acquire');
-
-        return this.success('1');
     }
 }

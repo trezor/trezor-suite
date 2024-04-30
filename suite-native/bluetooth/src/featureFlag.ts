@@ -5,6 +5,8 @@ import { unecryptedJotaiStorage } from '@suite-native/storage';
 
 export const isBluetoothBuild = process.env.EXPO_PUBLIC_BLUETOOTH_ENABLED === 'true';
 
+console.log('isBluetoothBuild', isBluetoothBuild);
+
 export const isBluetoothEnabled =
     isBluetoothBuild && (unecryptedJotaiStorage.getBoolean('bluetoothEnabled') ?? false);
 
