@@ -1,5 +1,5 @@
 /* eslint-disable require-await */
-import { Device } from 'react-native-ble-plx';
+import { Device as BleDevice } from 'react-native-ble-plx';
 
 import {
     AbstractApi,
@@ -13,12 +13,6 @@ import { nativeBleManager } from './nativeBleManager';
 
 interface ConstructorParams extends AbstractApiConstructorParams {}
 
-interface TransportInterfaceDevice {
-    session?: null | string;
-    path: string;
-    device: USBDevice;
-}
-
 const DEBUG_LOGS = true;
 
 const debugLog = (...args: any[]) => {
@@ -30,76 +24,40 @@ const debugLog = (...args: any[]) => {
 
 export class BleApi extends AbstractApi {
     chunkSize = 244;
-    devices: TransportInterfaceDevice[] = [];
+    devices: BleDevice[] = [];
 
     constructor({ logger }: ConstructorParams) {
         super({ logger });
 
-        nativeBleManager.onconnect = device => {
+        nativeBleManager.onconnect = async device => {
             debugLog('onconnect', device.id);
-            this.devices = [...this.devices, ...this.createDevices([device])];
+            const devicesDescriptors = await this.devicesToDescriptors();
 
-            this.emit('transport-interface-change', this.devicesToDescriptors());
+            this.emit('transport-interface-change', devicesDescriptors);
         };
 
-        nativeBleManager.ondisconnect = device => {
-            const index = this.devices.findIndex(d => d.path === device.id);
-            if (index > -1) {
-                this.devices.splice(index, 1);
-                this.emit('transport-interface-change', this.devicesToDescriptors());
-            } else {
-                this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
-                this.logger.error('device that should be removed does not exist in state');
-            }
+        nativeBleManager.ondisconnect = async device => {
+            debugLog('ondisconnect', device.id);
+            this.emit('transport-interface-change', await this.devicesToDescriptors());
         };
-    }
-
-    private createDevices(devices: Device[]): TransportInterfaceDevice[] {
-        return devices.map(device => ({
-            path: device.id,
-            device: {
-                usbVersionMajor: 1,
-                usbVersionMinor: 1,
-                usbVersionSubminor: 1,
-                deviceClass: 0,
-                deviceSubclass: 0,
-                deviceProtocol: 0,
-                vendorId: 1234,
-                productId: 1234,
-                deviceVersionMajor: 1,
-                deviceVersionMinor: 0,
-                deviceVersionSubminor: 0,
-                manufacturerName: 'Trezor',
-                productName: 'Trezor Device',
-                serialNumber: 'serialNumber',
-                configuration: undefined,
-                configurations: [],
-                opened: true,
-                open: async () => {},
-                close: () => {},
-                forget: async () => {},
-            } as any,
-        }));
     }
 
     public async enumerate() {
         debugLog('Transport enumeration');
         try {
-            // const devices = await nativeBleManager.getAllConnectedDevices();
-
-            this.devices = this.createDevices([]);
-
-            return this.success(this.devicesToDescriptors());
+            return this.success(await this.devicesToDescriptors());
         } catch (err) {
             debugLog('Enumerate error', err);
 
-            // this shouldn't throw
             return this.unknownError(err, []);
         }
     }
 
-    private devicesToDescriptors() {
-        return this.devices.map(d => ({ path: d.path, type: DEVICE_TYPE.TypeT2 }));
+    private async devicesToDescriptors() {
+        const devices = await nativeBleManager.getAllConnectedDevices();
+
+        // TODO: implement proper device type
+        return devices.map(d => ({ path: d.id, type: DEVICE_TYPE.TypeT2 }));
     }
 
     public async read(

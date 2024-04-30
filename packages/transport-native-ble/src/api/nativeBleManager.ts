@@ -82,12 +82,13 @@ class NativeBleManager {
     }
 
     private async enumerate() {
-        // const connectedDevices = await bleManagerInstance().connectedDevices(devicesUUIDs);
-        // debugLog('Connected devices on enumerate: ', connectedDevices);
-        // connectedDevices.forEach(async device => {
-        //     await this.connectDevice({ deviceOrId: device.id });
-        // });
-        // await this.connectDevice({ deviceOrId: '6D:CB:AD:D4:70:CA' });
+        const connectedDevices = await bleManagerInstance().connectedDevices(devicesUUIDs);
+        debugLog('Connected devices on enumerate: ', connectedDevices);
+
+        // Connect app to all devices that are already connected to the system
+        connectedDevices.forEach(async device => {
+            await this.connectDevice({ deviceOrId: device.id });
+        });
     }
 
     public scanDevices = (
@@ -351,6 +352,7 @@ class NativeBleManager {
         this.appConnectedDevices = this.appConnectedDevices.filter(
             d => d.bleDevice.id !== device.bleDevice.id,
         );
+
         if (this.ondisconnect) {
             this.ondisconnect(device.bleDevice);
         }
@@ -369,8 +371,6 @@ class NativeBleManager {
 
         // sort that oldest are last so we can use pop to read
         device.readOutputQueue.sort((a, b) => b.timestamp - a.timestamp);
-
-        console.log('device.readOutputQueue', device.readOutputQueue);
     };
 
     public read = (deviceId: string): Promise<Base64String> => {
