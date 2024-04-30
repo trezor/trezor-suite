@@ -238,7 +238,7 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
         isNewer: isNewerResult,
         intermediaryVersion,
         // translations available to be installed
-        translations: isNewerResult ? prevRelease.translations : release.translations,
+        translations: isNewerResult ? prevRelease?.translations : release?.translations,
     };
 };
 
