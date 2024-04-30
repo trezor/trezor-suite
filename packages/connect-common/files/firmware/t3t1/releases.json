@@ -4,7 +4,6 @@
         "version": [2, 7, 1],
         "min_firmware_version": [2, 7, 1],
         "min_bootloader_version": [2, 1, 1],
-        "bootloader_version": [2, 1, 4],
         "url": "",
         "url_bitcoinonly": "",
         "fingerprint": "",
