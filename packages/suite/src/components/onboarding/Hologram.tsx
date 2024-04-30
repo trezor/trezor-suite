@@ -9,6 +9,7 @@ import { Translation, TrezorLink } from 'src/components/suite';
 import { useRef } from 'react';
 import { useSelector } from 'src/hooks/suite';
 import { typography } from '@trezor/theme';
+import { DeviceModelInternal } from '@trezor/connect';
 
 const HologramSubHeading = styled.span`
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -21,12 +22,11 @@ const AnimationWrapper = styled.div`
 `;
 
 const StyledWarning = styled(Warning)`
-    width: calc(100% + 16px);
-    margin: 0 -8px;
-    ${typography.label}
+    ${typography.hint}
 
     a {
         color: ${({ theme }) => theme.backgroundAlertYellowBold};
+        ${typography.hint}
     }
 `;
 
@@ -40,6 +40,12 @@ export const Hologram = () => {
         <>
             <HologramSubHeading>
                 <Translation id="TR_HOLOGRAM_STEP_SUBHEADING" />
+                {device?.features?.internal_model === DeviceModelInternal.T2B1 && (
+                    <>
+                        <br />
+                        <Translation id="TR_HOLOGRAM_T2B1_NEW_SEAL" />
+                    </>
+                )}
             </HologramSubHeading>
 
             <AnimationWrapper>
@@ -60,21 +66,21 @@ export const Hologram = () => {
 
             <StyledWarning>
                 <Translation
-                    id="TR_DID_YOU_PURCHASE"
+                    id="TR_SECURITY_CHECK_HOLOGRAM"
                     values={{
-                        TR_PACKAGING_LINK: (
+                        packaging: link => (
                             <TrezorLink href={packagingUrl} variant="underline">
-                                <Translation id="TR_PACKAGING_LINK" />
+                                {link}
                             </TrezorLink>
                         ),
-                        TR_RESELLERS_LINK: (
+                        reseller: link => (
                             <TrezorLink href={TREZOR_RESELLERS_URL} variant="underline">
-                                <Translation id="TR_RESELLERS_LINK" />
+                                {link}
                             </TrezorLink>
                         ),
-                        TR_CONTACT_OUR_SUPPORT_LINK: (
+                        support: link => (
                             <TrezorLink href={TREZOR_SUPPORT_URL} variant="underline">
-                                <Translation id="TR_CONTACT_OUR_SUPPORT_LINK" />
+                                {link}
                             </TrezorLink>
                         ),
                     }}

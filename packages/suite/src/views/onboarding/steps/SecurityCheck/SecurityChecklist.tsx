@@ -23,11 +23,11 @@ const Text = styled.div`
 
 interface Item {
     icon: IconType;
-    content: React.ReactNode;
+    content: React.JSX.Element;
 }
 
 interface SecurityChecklistProps {
-    items: readonly Item[];
+    items: Item[];
 }
 
 export const SecurityChecklist = ({ items }: SecurityChecklistProps) => {
