@@ -96,7 +96,7 @@ export const SecurityCard = ({
 
     return (
         <Wrapper {...rest}>
-            <Card>
+            <Card verticalFill>
                 <Header>
                     <Icon icon={icon} size={32} color={theme.iconDefault} />
                     <CheckIconContainer $isDone={isDone}>

@@ -35,7 +35,9 @@ const mapPaddingTypeToPadding = ({ $paddingType }: MapArgs): number | string => 
     return paddingMap[$paddingType];
 };
 
-const Container = styled.div<TransientFrameProps>`
+const Container = styled.div<TransientFrameProps & { $verticalFill?: boolean }>`
+    height: ${({ $verticalFill }) => ($verticalFill === true ? '100%' : undefined)};
+
     border-radius: ${borders.radii.md};
     background: ${({ theme }) => theme.backgroundTertiaryDefaultOnElevation0};
     padding: ${spacingsPx.xxxs};
@@ -53,10 +55,12 @@ const CardContainer = styled.div<
         $elevation: Elevation;
         $paddingType: PaddingType;
         $isClickable: boolean;
+        $verticalFill?: boolean;
     } & TransientFrameProps
 >`
     display: flex;
     width: 100%;
+    height: ${({ $verticalFill }) => ($verticalFill === true ? '100%' : undefined)};
     flex-direction: column;
     padding: ${mapPaddingTypeToPadding};
     background: ${mapElevationToBackground};
@@ -101,30 +105,33 @@ export type CardProps = FrameProps &
         className?: string;
         label?: ReactNode;
         forceElevation?: Elevation;
+        verticalFill?: boolean;
     };
 
-const CardComponent = forwardRef<HTMLDivElement, CardProps & { paddingType: PaddingType }>(
-    ({ children, forceElevation, paddingType, tabIndex, onClick, ...rest }, ref) => {
-        const { elevation } = useElevation(forceElevation);
+const CardComponent = forwardRef<
+    HTMLDivElement,
+    CardProps & { paddingType: PaddingType; verticalFill?: boolean }
+>(({ children, forceElevation, paddingType, tabIndex, onClick, verticalFill, ...rest }, ref) => {
+    const { elevation } = useElevation(forceElevation);
 
-        return (
-            <CardContainer
-                ref={ref}
-                $elevation={elevation}
-                $paddingType={paddingType}
-                $isClickable={Boolean(onClick)}
-                onClick={onClick}
-                {...withAccessabilityProps({ tabIndex })}
-                {...rest}
-            >
-                <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
-            </CardContainer>
-        );
-    },
-);
+    return (
+        <CardContainer
+            ref={ref}
+            $elevation={elevation}
+            $paddingType={paddingType}
+            $isClickable={Boolean(onClick)}
+            $verticalFill={verticalFill}
+            onClick={onClick}
+            {...withAccessabilityProps({ tabIndex })}
+            {...rest}
+        >
+            <ElevationContext baseElevation={elevation}>{children}</ElevationContext>
+        </CardContainer>
+    );
+});
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-    ({ paddingType = 'normal', label, margin, maxWidth, ...rest }, ref) => {
+    ({ paddingType = 'normal', label, margin, maxWidth, verticalFill, ...rest }, ref) => {
         const props = {
             paddingType,
             ...rest,
@@ -136,12 +143,12 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
         };
 
         return label ? (
-            <Container {...makePropsTransient(frameProps)}>
+            <Container $verticalFill={verticalFill} {...makePropsTransient(frameProps)}>
                 <LabelContainer $paddingType={paddingType}>{label}</LabelContainer>
                 <CardComponent {...props} ref={ref} />
             </Container>
         ) : (
-            <CardComponent {...props} {...frameProps} ref={ref} />
+            <CardComponent verticalFill={verticalFill} {...props} {...frameProps} ref={ref} />
         );
     },
 );
