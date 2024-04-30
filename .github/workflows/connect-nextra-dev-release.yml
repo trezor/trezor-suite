@@ -52,8 +52,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          yarn install --immutable
-          yarn build:libs
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/connect-popup @trezor/connect-webextension @trezor/connect-explorer-theme @trezor/connect-explorer-nextra
 
       - name: Build connect-web
         run: |

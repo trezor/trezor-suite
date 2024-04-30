@@ -46,7 +46,7 @@ export default withNextra({
             config.plugins.push(
                 new webpack.NormalModuleReplacementPlugin(
                     /@trezor\/connect-web$/,
-                    '@trezor/connect-webextension/lib/proxy',
+                    '@trezor/connect-webextension/src/proxy',
                 ),
             );
         }
