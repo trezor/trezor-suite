@@ -11,6 +11,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen } from '@suite-native/navigation';
 import { selectDevice, selectIsDeviceAuthorized, authorizeDevice } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
+import { requestPermission } from '@trezor/react-native-usb';
 
 import { ConnectDeviceScreenHeader } from '../components/ConnectDeviceScreenHeader';
 
@@ -43,6 +44,10 @@ export const ConnectAndUnlockDeviceScreen = () => {
             requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
         }
     }, [isDeviceAuthorized, device, dispatch, isFocused]);
+
+    useEffect(() => {
+        requestPermission();
+    }, []);
 
     return (
         <Screen

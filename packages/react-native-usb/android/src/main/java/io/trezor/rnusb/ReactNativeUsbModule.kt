@@ -58,6 +58,10 @@ class ReactNativeUsbModule : Module() {
             return@AsyncFunction getDevices()
         }
 
+        Function("requestPermission") {
+            return@Function requestPermission()
+        }
+
         AsyncFunction("open") { deviceName: String ->
             return@AsyncFunction openDevice(deviceName)
         }
@@ -200,6 +204,17 @@ class ReactNativeUsbModule : Module() {
     private val openedConnections = mutableMapOf<String, UsbDeviceConnection>()
     // We need to store device metadata because we can't access them in detached event
     private val devicesHistory = mutableMapOf<String, WebUSBDevice>()
+
+    private fun requestPermission() {
+        Log.d(LOG_TAG, "Requesting permission for all devices")
+        val devicesList = usbManager.deviceList.values.toList()
+        for (device in devicesList) {
+            devicesRequestedPermissions.add(device.deviceName)
+            usbManager.requestPermission(device, permissionIntent)
+        }
+
+
+    }
 
     private fun openDevice(deviceName: String): WebUSBDevice {
         Log.d(LOG_TAG, "Opening device $deviceName")

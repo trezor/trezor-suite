@@ -4,7 +4,7 @@ import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-cor
 import { ReactNativeUsbModule } from './ReactNativeUsbModule';
 import { NativeDevice, OnConnectEvent, WebUSBDevice } from './ReactNativeUsb.types';
 
-const DEBUG_LOGS = false;
+const DEBUG_LOGS = true;
 
 const debugLog = (...args: any[]) => {
     if (DEBUG_LOGS) {
@@ -159,6 +159,10 @@ export async function getDevices(): Promise<any> {
     const devices = await ReactNativeUsbModule.getDevices();
 
     return devices.map((device: NativeDevice) => createWebUSBDevice(device));
+}
+
+export function requestPermission() {
+    return ReactNativeUsbModule.requestPermission();
 }
 
 export class WebUSB {
