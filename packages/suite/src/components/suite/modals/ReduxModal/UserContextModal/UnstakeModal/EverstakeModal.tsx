@@ -24,7 +24,7 @@ const StyledModal = styled(Modal)`
 `;
 
 const HeadingAccent = styled.div`
-    color: ${({ theme }) => theme.textAlertYellow};
+    color: ${({ theme }) => theme.textAlertBlue};
 `;
 
 const TextSubdued = styled.span`
@@ -102,7 +102,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
 
             <VStack>
                 <VStackItem>
-                    <Icon icon="FILE" color={theme.textAlertYellow} />
+                    <Icon icon="FILE" color={theme.textAlertBlue} />
 
                     <div>
                         <Translation
@@ -115,7 +115,7 @@ export const EverstakeModal = ({ onCancel }: EverstakeModalProps) => {
                     </div>
                 </VStackItem>
                 <VStackItem>
-                    <Icon icon="SHIELD" color={theme.textAlertYellow} />
+                    <Icon icon="SHIELD" color={theme.textAlertBlue} />
 
                     <div>
                         <Translation
