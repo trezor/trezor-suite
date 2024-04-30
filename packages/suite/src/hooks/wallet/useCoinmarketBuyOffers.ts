@@ -50,15 +50,11 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         state => state.suite.settings.debug.invityServerEnvironment,
     );
     const device = useSelector(selectDevice);
-    const { addressVerified, alternativeQuotes, buyInfo, isFromRedirect, quotes, quotesRequest } =
+    const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, alternativeQuotes } =
         useSelector(state => state.wallet.coinmarket.buy);
 
     const innerQuotesFilterReducer = useCoinmarketFilterReducer(quotes);
-    const innerAlternativeQuotesFilterReducer = useCoinmarketFilterReducer(alternativeQuotes);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
-    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
-        alternativeQuotes,
-    );
 
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
@@ -75,31 +71,18 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
                     return;
                 }
-                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+                const [quotes] = processQuotes(allQuotes);
                 setInnerQuotes(quotes);
                 innerQuotesFilterReducer.dispatch({
                     type: 'FILTER_SET_PAYMENT_METHODS',
                     payload: quotes,
                 });
-                setInnerAlternativeQuotes(alternativeQuotes);
-                innerAlternativeQuotesFilterReducer.dispatch({
-                    type: 'FILTER_SET_PAYMENT_METHODS',
-                    payload: alternativeQuotes,
-                });
             } else {
                 setInnerQuotes(undefined);
-                setInnerAlternativeQuotes(undefined);
             }
             timer.reset();
         }
-    }, [
-        selectedQuote,
-        quotesRequest,
-        timer,
-        account.descriptor,
-        innerQuotesFilterReducer,
-        innerAlternativeQuotesFilterReducer,
-    ]);
+    }, [selectedQuote, quotesRequest, timer, account.descriptor, innerQuotesFilterReducer]);
 
     useEffect(() => {
         if (!quotesRequest) {
@@ -203,10 +186,8 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         quotesRequest,
         addressVerified,
         quotes: innerQuotesFilterReducer.actions.handleFilterQuotes(innerQuotes),
-        alternativeQuotes:
-            innerAlternativeQuotesFilterReducer.actions.handleFilterQuotes(innerAlternativeQuotes),
+        alternativeQuotes,
         innerQuotesFilterReducer,
-        innerAlternativeQuotesFilterReducer,
         selectQuote,
         account,
         timer,

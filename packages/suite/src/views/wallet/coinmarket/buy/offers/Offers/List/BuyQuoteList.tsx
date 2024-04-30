@@ -85,13 +85,11 @@ const NoQuotes = styled.div`
 `;
 
 interface ListProps {
-    isAlternative?: boolean;
     quotes: BuyTrade[];
 }
 
-export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
-    const { quotesRequest, timer, innerQuotesFilterReducer, innerAlternativeQuotesFilterReducer } =
-        useCoinmarketBuyOffersContext();
+export const BuyQuoteList = ({ quotes }: ListProps) => {
+    const { quotesRequest, timer, innerQuotesFilterReducer } = useCoinmarketBuyOffersContext();
 
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
@@ -120,7 +118,7 @@ export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
                             />
                         </Receive>
                     </SummaryRow>
-                    {isAlternative && !wantCrypto && (
+                    {!wantCrypto && (
                         <OrigAmount>
                             ≈{' '}
                             <CoinmarketFiatAmount
@@ -129,15 +127,9 @@ export const BuyQuoteList = ({ isAlternative, quotes }: ListProps) => {
                             />
                         </OrigAmount>
                     )}
-                    <BuyQuoteFilter
-                        quotesFilterReducer={
-                            !isAlternative
-                                ? innerQuotesFilterReducer
-                                : innerAlternativeQuotesFilterReducer
-                        }
-                    />
+                    <BuyQuoteFilter quotesFilterReducer={innerQuotesFilterReducer} />
                 </Left>
-                {!isAlternative && !timer.isStopped && (
+                {!timer.isStopped && (
                     <Right>
                         <CoinmarketRefreshTime
                             isLoading={timer.isLoading}
