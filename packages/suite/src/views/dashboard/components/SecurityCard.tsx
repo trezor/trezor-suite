@@ -1,11 +1,9 @@
-import { Button, Card, CardProps, Icon, IconProps, variables } from '@trezor/components';
+import { Button, Card, Icon, IconProps, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
-const Wrapper = styled.div`
-    display: flex;
-    flex-direction: column;
+const StyledCard = styled(Card)`
     position: relative;
 `;
 
@@ -69,7 +67,7 @@ const Line = styled.div`
     background: ${({ theme }) => theme.borderElevation2};
 `;
 
-export interface SecurityCardProps extends CardProps {
+export interface SecurityCardProps {
     variant: 'primary' | 'secondary';
     icon: IconProps['icon'];
     heading: ReactNode;
@@ -82,80 +80,71 @@ export interface SecurityCardProps extends CardProps {
     };
 }
 
-export const SecurityCard = ({
-    variant,
-    icon,
-    heading,
-    description,
-    cta,
-    ...rest
-}: SecurityCardProps) => {
+export const SecurityCard = ({ variant, icon, heading, description, cta }: SecurityCardProps) => {
     const theme = useTheme();
 
     const isDone = variant === 'secondary';
 
     return (
-        <Wrapper {...rest}>
-            <Card>
-                <Header>
-                    <Icon icon={icon} size={32} color={theme.iconDefault} />
-                    <CheckIconContainer $isDone={isDone}>
-                        {isDone && (
-                            <CheckIconBackground>
-                                <Icon icon="CHECK" color={theme.iconPrimaryDefault} size={16} />
-                            </CheckIconBackground>
-                        )}
-                    </CheckIconContainer>
-                </Header>
-                <Title>{heading}</Title>
-                <Description>{description}</Description>
-                <Footer>
-                    {cta && variant === 'primary' && (
-                        <>
-                            <Line />
-                            <Action>
-                                <Button
-                                    isFullWidth
-                                    variant="primary"
-                                    isDisabled={cta.isDisabled}
-                                    onClick={cta.action}
-                                    size="small"
-                                    {...(cta.dataTest
-                                        ? {
-                                              'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
-                                          }
-                                        : {})}
-                                >
-                                    {cta.label}
-                                </Button>
-                            </Action>
-                        </>
+        <StyledCard>
+            <Header>
+                <Icon icon={icon} size={32} color={theme.iconDefault} />
+                <CheckIconContainer $isDone={isDone}>
+                    {isDone && (
+                        <CheckIconBackground>
+                            <Icon icon="CHECK" color={theme.iconPrimaryDefault} size={16} />
+                        </CheckIconBackground>
                     )}
-                    {cta && isDone && (
-                        <>
-                            <Line />
-                            <Action>
-                                <Button
-                                    isFullWidth
-                                    variant="primary"
-                                    isDisabled={cta.isDisabled}
-                                    onClick={cta.action}
-                                    icon="ARROW_RIGHT"
-                                    iconAlignment="right"
-                                    size="small"
-                                    {...(cta.dataTest
-                                        ? {
-                                              'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
-                                          }
-                                        : {})}
-                                >
-                                    {cta.label}
-                                </Button>
-                            </Action>
-                        </>
-                    )}
-                </Footer>
-            </Card>
-        </Wrapper>
+                </CheckIconContainer>
+            </Header>
+            <Title>{heading}</Title>
+            <Description>{description}</Description>
+            <Footer>
+                {cta && variant === 'primary' && (
+                    <>
+                        <Line />
+                        <Action>
+                            <Button
+                                isFullWidth
+                                variant="primary"
+                                isDisabled={cta.isDisabled}
+                                onClick={cta.action}
+                                size="small"
+                                {...(cta.dataTest
+                                    ? {
+                                          'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                      }
+                                    : {})}
+                            >
+                                {cta.label}
+                            </Button>
+                        </Action>
+                    </>
+                )}
+                {cta && isDone && (
+                    <>
+                        <Line />
+                        <Action>
+                            <Button
+                                isFullWidth
+                                variant="primary"
+                                isDisabled={cta.isDisabled}
+                                onClick={cta.action}
+                                icon="ARROW_RIGHT"
+                                iconAlignment="right"
+                                size="small"
+                                {...(cta.dataTest
+                                    ? {
+                                          'data-test': `@dashboard/security-card/${cta.dataTest}/button`,
+                                      }
+                                    : {})}
+                            >
+                                {cta.label}
+                            </Button>
+                        </Action>
+                    </>
+                )}
+            </Footer>
+        </StyledCard>
     );
 };
