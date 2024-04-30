@@ -15,7 +15,7 @@ const StyledContainer = styled(BaseToastContainer)`
         padding: 4px;
         box-sizing: border-box;
         border-radius: ${borders.radii.xs};
-        top: 11px;
+        top: 51px;
         right: 11px;
 
         @media only screen and (width <= 480px) {
