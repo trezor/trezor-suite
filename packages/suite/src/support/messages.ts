@@ -4211,7 +4211,7 @@ export default defineMessages({
     },
     EVENT_WALLET_CREATED: {
         id: 'EVENT_WALLET_CREATED',
-        defaultMessage: 'New wallet created',
+        defaultMessage: 'Wallet successfully added',
     },
     TR_WIPE_DEVICE_HEADING: {
         id: 'TR_WIPE_DEVICE_HEADING',
@@ -6914,8 +6914,7 @@ export default defineMessages({
     },
     TR_ONBOARDING_DEVICE_CHECK_2: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_2',
-        defaultMessage:
-            'My device was bought from the official <shop>Trezor Shop</shop> or a trusted <reseller>reseller</reseller>.',
+        defaultMessage: 'My device was bought from the official Trezor Shop or a trusted reseller.',
     },
     TR_ONBOARDING_DEVICE_CHECK_3: {
         id: 'TR_ONBOARDING_DEVICE_CHECK_3',
@@ -8788,7 +8787,7 @@ export default defineMessages({
     },
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
-        defaultMessage: 'Total stake pending',
+        defaultMessage: 'Total stake pending:',
     },
     TR_STAKE_LAST_STAKE_REQUEST_STATE: {
         id: 'TR_STAKE_LAST_STAKE_REQUEST_STATE',

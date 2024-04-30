@@ -38,7 +38,7 @@
   "ESTIMATED_TIME": "Estimated time",
   "EVENT_DEVICE_CONNECT": "Device {label} connected",
   "EVENT_DEVICE_CONNECT_UNACQUIRED": "{label} connected",
-  "EVENT_WALLET_CREATED": "New wallet created",
+  "EVENT_WALLET_CREATED": "Wallet successfully added",
   "EXPECTED_FEE": "Expected fee",
   "FAILED_TO_DISABLE_TOR": "Failed to disable Tor",
   "FAILED_TO_ENABLE_TOR": "Failed to enable Tor",
