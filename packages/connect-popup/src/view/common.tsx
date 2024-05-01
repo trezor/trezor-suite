@@ -118,7 +118,7 @@ export const initMessageChannelWithIframe = async (
 
     const iframe = getIframeElement();
     // Webextension doesn't have iframe element defined here since there is not `window.opener` reference
-    // so they only relay on receiving `POPUP.HANDSHAKE` message from iframe to make sure it is available.
+    // so they only rely on receiving `POPUP.HANDSHAKE` message from iframe to make sure it is available.
     if (!iframe && settings.env !== 'webextension') {
         throw ERRORS.TypedError('Popup_ConnectionMissing');
     }
