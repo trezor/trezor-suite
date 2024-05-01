@@ -11,10 +11,12 @@ import {
     waitForPopup,
     getContexts,
     setConnectSettings,
+    formatUrl,
 } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const isNextra = process.env.IS_NEXTRA === 'true';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
@@ -41,6 +43,7 @@ let explorerUrl: string;
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     log(`isWebExtension: ${isWebExtension}`);
+    log(`isNextra: ${isNextra}`);
     log(`connectSrc: ${connectSrc}`);
     log(`url: ${url}`);
 });
@@ -79,12 +82,24 @@ test.beforeAll(async () => {
         explorerPage = contexts.explorerPage;
         explorerUrl = contexts.explorerUrl;
 
-        await setConnectSettings(explorerPage, explorerUrl, {
-            trustedHost: false,
-            ...(connectSrc && { connectSrc }),
-        });
+        await setConnectSettings(
+            explorerPage,
+            explorerUrl,
+            {
+                trustedHost: false,
+                ...(connectSrc && { connectSrc }),
+            },
+            isWebExtension,
+            isNextra,
+        );
 
-        await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
+        if (isNextra) {
+            await page.click("a[data-test='@navbar-logo']");
+            await page.click("a[href$='/methods/bitcoin/verifyMessage/']");
+        } else {
+            await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
+        }
+
         await explorerPage.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });
@@ -104,16 +119,23 @@ test.beforeAll(async () => {
             if (!response.url().startsWith('http://127.0.0.1:21325')) {
                 return;
             }
-            if (response.url().endsWith('release/2')) {
-                releasePromise!.resolve(undefined);
-            }
             console.log(requestIndex, response.status(), response.url());
+            let body = '';
+            try {
+                body = await response.text();
+            } catch (error) {
+                // this may throw if the page was closed before the response was received
+            }
             requestIndex++;
             responses.push({
                 url: response.url(),
                 status: response.status(),
-                body: await response.text(),
+                body,
             });
+            // release after processing the body
+            if (response.url().endsWith('release/2')) {
+                releasePromise!.resolve(undefined);
+            }
         });
 
         log('beforeEach', 'waiting for popup promise');
@@ -180,7 +202,15 @@ test.beforeAll(async () => {
         if (skipAfterFlow) return;
 
         log('afterEach', 'go to verifyMessage');
-        await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
+        if (isNextra) {
+            await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
+            await explorerPage.waitForSelector("[data-test='@api-playground/collapsible-box']", {
+                state: 'visible',
+            });
+            await explorerPage.click("[data-test='@api-playground/collapsible-box']");
+        } else {
+            await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
+        }
         log('afterEach', 'waiting for submit button');
         await explorerPage.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
@@ -190,18 +220,16 @@ test.beforeAll(async () => {
         log('afterEach', 'waiting for popup load state');
         await popup.waitForLoadState('load');
 
-        if (isWebExtension) {
-            log('afterEach', 'waiting for select device');
-            try {
-                await popup.waitForSelector('.select-device-list button.list', {
-                    state: 'visible',
-                    timeout: 5000,
-                });
-                await popup.click('.select-device-list button.list');
-            } catch (_) {
-                // Device is probably remembered
-                // TODO: do this in a better way
-            }
+        log('afterEach', 'waiting for select device');
+        try {
+            await popup.waitForSelector('.select-device-list button.list', {
+                state: 'visible',
+                timeout: 5000,
+            });
+            await popup.click('.select-device-list button.list');
+        } catch (_) {
+            // Device is probably remembered
+            // TODO: do this in a better way
         }
 
         await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
@@ -354,7 +382,12 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        if (isNextra) {
+            await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+            await explorerPage.click("[data-test='@api-playground/collapsible-box']");
+        } else {
+            await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        }
         await explorerPage.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });
@@ -394,7 +427,12 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        if (isNextra) {
+            await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+            await explorerPage.click("[data-test='@api-playground/collapsible-box']");
+        } else {
+            await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        }
         await explorerPage.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });
@@ -460,7 +498,11 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        if (isNextra) {
+            await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        } else {
+            await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        }
         await explorerPage.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });
@@ -508,7 +550,11 @@ test.beforeAll(async () => {
 
         await popupClosedPromise;
 
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        if (isNextra) {
+            await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        } else {
+            await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+        }
         await explorerPage.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });

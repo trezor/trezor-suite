@@ -50,6 +50,7 @@ const getConfirmAddressOnDeviceScreen = (address: string) => ({
 const getPublicKey = [
     {
         device: initializedDevice,
+        dir: 'bitcoin',
         url: 'getPublicKey',
         view: 'export-xpub',
         views: [
@@ -68,6 +69,7 @@ const getPublicKey = [
 const getAddress = [
     {
         device: initializedDevice,
+        dir: 'bitcoin',
         url: 'getAddress',
         views: [
             confirmExportAddressScreen,
@@ -77,6 +79,7 @@ const getAddress = [
     {
         title: 'getAddress with passphrase',
         device: { ...initializedDevice, passphrase_protection: true },
+        dir: 'bitcoin',
         url: 'getAddress',
         views: [
             confirmExportAddressScreen,
@@ -105,6 +108,7 @@ const getAddress = [
 const getAccountInfo = [
     {
         device: initializedDevice,
+        dir: 'bitcoin',
         url: 'getAccountInfo',
         views: [
             {
@@ -118,6 +122,7 @@ const getAccountInfo = [
     },
     {
         device: initializedDevice,
+        dir: 'bitcoin',
         url: 'getAccountInfo-xpub',
         views: [
             {
@@ -145,6 +150,7 @@ const composeTransaction = [
             mnemonic:
                 'upgrade lesson quit mule level either mobile any evidence melody obvious ancient',
         },
+        dir: 'bitcoin',
         url: 'composeTransaction',
         views: [
             {
@@ -203,6 +209,7 @@ const composeTransaction = [
 const signTransaction = [
     {
         device: initializedDevice,
+        dir: 'bitcoin',
         url: 'signTransaction-paytoaddress',
         views: [
             confirmOutput,
@@ -216,6 +223,7 @@ const signTransaction = [
 const ethereumSignTransaction = [
     {
         device: initializedDevice,
+        dir: 'ethereum',
         url: 'ethereumSignTransaction',
         views: [followDevice, followDevice, followDevice],
     },
@@ -224,6 +232,7 @@ const ethereumSignTransaction = [
 const signMessage = [
     {
         url: 'signMessage',
+        dir: 'bitcoin',
         device: initializedDevice,
         views: [
             {
@@ -248,6 +257,7 @@ const signMessage = [
 const verifyMessage = [
     {
         url: 'verifyMessage',
+        dir: 'bitcoin',
         device: initializedDevice,
         views: [
             {
@@ -283,6 +293,7 @@ const verifyMessage = [
 
 const wipeDevice = [
     {
+        dir: 'device',
         url: 'wipeDevice',
         device: initializedDevice,
         views: [
@@ -298,27 +309,28 @@ const wipeDevice = [
     },
 ];
 
-// const resetDevice = [
-//     {
-//         url: 'resetDevice',
-//         device: {
-//             wiped: true,
-//         },
-//         views: [
-//             {
-//                 selector: '.device-management >> visible=true',
-//                 screenshot: {
-//                     name: 'reset-device',
-//                 },
-//                 next: 'button.confirm >> visible=true',
-//             },
-//             followDevice,
-//         ],
-//     },
-// ];
+/*const resetDevice = [
+    {
+        url: 'resetDevice',
+        device: {
+            wiped: true,
+        },
+        views: [
+            {
+                selector: '.device-management >> visible=true',
+                screenshot: {
+                    name: 'reset-device',
+                },
+                next: 'button.confirm >> visible=true',
+            },
+            followDevice,
+        ],
+    },
+];*/
 
 const recoverDevice = [
     {
+        dir: 'device',
         url: 'recoverDevice',
         device: {
             wiped: true,
@@ -385,6 +397,7 @@ const recoverDevice = [
 const ethereumGetPublicKey = [
     {
         ...getPublicKey[0],
+        dir: 'ethereum',
         url: 'ethereumGetPublicKey',
     },
 ];
@@ -392,6 +405,7 @@ const ethereumGetPublicKey = [
 const ethereumGetAddress = [
     {
         ...getAddress[0],
+        dir: 'ethereum',
         url: 'ethereumGetAddress',
         views: [
             confirmExportAddressScreen,
@@ -403,6 +417,7 @@ const ethereumGetAddress = [
 const ethereumGetAddressGoChain = [
     {
         ...getAddress[0],
+        dir: 'ethereum',
         url: 'ethereumGetAddress-gochain',
         views: [
             {
@@ -421,6 +436,7 @@ const ethereumGetAddressGoChain = [
 const ethereumSignMessage = [
     {
         ...signMessage[0],
+        dir: 'ethereum',
         url: 'ethereumSignMessage',
     },
 ];
@@ -428,12 +444,14 @@ const ethereumSignMessage = [
 const ethereumVerifyMessage = [
     {
         ...verifyMessage[0],
+        dir: 'ethereum',
         url: 'ethereumVerifyMessage',
     },
 ];
 
 const ethereumSignTypedData = [
     {
+        dir: 'ethereum',
         url: 'ethereumSignTypedData',
         device: initializedDevice,
         views: [followDevice, followDevice, followDevice, followDevice],
@@ -443,6 +461,7 @@ const ethereumSignTypedData = [
 const cardanoGetPublicKey = [
     {
         ...getPublicKey[0],
+        dir: 'cardano',
         url: 'cardanoGetPublicKey',
     },
 ];
@@ -450,6 +469,7 @@ const cardanoGetPublicKey = [
 const cardanoGetAddress = [
     {
         ...getAddress[0],
+        dir: 'cardano',
         url: 'cardanoGetAddress',
         views: [
             confirmExportAddressScreen,
@@ -463,6 +483,7 @@ const cardanoGetAddress = [
 const cardanoSignTransaction = [
     {
         device: initializedDevice,
+        dir: 'cardano',
         url: 'cardanoSignTransaction',
         views: [followDevice, followDevice, followDevice, followDevice],
     },
@@ -470,6 +491,7 @@ const cardanoSignTransaction = [
 
 const cardanoGetNativeScriptHash = [
     {
+        dir: 'cardano',
         url: 'cardanoGetNativeScriptHash',
         device: initializedDevice,
         views: [followDevice, followDevice],
@@ -479,6 +501,7 @@ const cardanoGetNativeScriptHash = [
 const tezosGetPublicKey = [
     {
         ...getAddress[0],
+        dir: 'tezos',
         url: 'tezosGetPublicKey',
         views: [confirmExportAddressScreen, followDevice],
     },
@@ -487,6 +510,7 @@ const tezosGetPublicKey = [
 const tezosGetAddress = [
     {
         ...getAddress[0],
+        dir: 'tezos',
         url: 'tezosGetAddress',
         views: [
             confirmExportAddressScreen,
@@ -498,6 +522,7 @@ const tezosGetAddress = [
 const tezosSignTransaction = [
     {
         device: initializedDevice,
+        dir: 'tezos',
         url: 'tezosSignTransaction',
         views: [followDevice, followDevice, followDevice],
     },
@@ -506,6 +531,7 @@ const tezosSignTransaction = [
 const eosGetPublicKey = [
     {
         ...getPublicKey[0],
+        dir: 'eos',
         url: 'eosGetPublicKey',
         views: [confirmExportAddressScreen, followDevice],
     },
@@ -514,6 +540,7 @@ const eosGetPublicKey = [
 const eosSignTransaction = [
     {
         device: initializedDevice,
+        dir: 'eos',
         url: 'eosSignTransaction',
         views: [followDevice, followDevice],
     },
@@ -522,6 +549,7 @@ const eosSignTransaction = [
 const binanceGetPublicKey = [
     {
         ...getPublicKey[0],
+        dir: 'binance',
         url: 'binanceGetPublicKey',
         views: [confirmExportAddressScreen, followDevice],
     },
@@ -530,6 +558,7 @@ const binanceGetPublicKey = [
 const binanceGetAddress = [
     {
         ...getAddress[0],
+        dir: 'binance',
         url: 'binanceGetAddress',
         views: [
             confirmExportAddressScreen,
@@ -541,6 +570,7 @@ const binanceGetAddress = [
 const binanceSignTransaction = [
     {
         device: initializedDevice,
+        dir: 'binance',
         url: 'binanceSignTransaction-transfer',
         views: [confirmOutput, confirmOutput, confirmOutput, confirmOutput],
     },
@@ -549,6 +579,7 @@ const binanceSignTransaction = [
 const stellarGetAddress = [
     {
         ...getAddress[0],
+        dir: 'stellar',
         url: 'stellarGetAddress',
         views: [
             confirmExportAddressScreen,
@@ -560,17 +591,19 @@ const stellarGetAddress = [
 ];
 
 // todo: start using this fixture
-// const stellarSignTransaction = [
-//     {
-//         device: initializedDevice,
-//         url: 'stellarSignTransaction',
-//         views: [followDevice, followDevice],
-//     },
-// ];
+/*const stellarSignTransaction = [
+    {
+        device: initializedDevice,
+        dir: 'stellar',
+        url: 'stellarSignTransaction',
+        views: [followDevice, followDevice],
+    },
+];*/
 
 const rippleGetAddress = [
     {
         ...getAddress[0],
+        dir: 'ripple',
         url: 'rippleGetAddress',
         views: [
             confirmExportAddressScreen,
@@ -582,6 +615,7 @@ const rippleGetAddress = [
 const rippleSignTransaction = [
     {
         device: initializedDevice,
+        dir: 'ripple',
         url: 'rippleSignTransaction',
         views: [confirmOutput, confirmOutput, followDevice],
     },
@@ -590,6 +624,7 @@ const rippleSignTransaction = [
 const nemGetAddress = [
     {
         ...getAddress[0],
+        dir: 'nem',
         url: 'nemGetAddress',
         views: [
             confirmExportAddressScreen,
@@ -601,6 +636,7 @@ const nemGetAddress = [
 const nemSignTransaction = [
     {
         device: initializedDevice,
+        dir: 'nem',
         url: 'nemSignTransaction',
         views: [confirmOutput, confirmOutput, confirmOutput, followDevice],
     },
@@ -608,6 +644,7 @@ const nemSignTransaction = [
 
 const cipherKeyValue = [
     {
+        dir: 'other',
         url: 'cipherKeyValue',
         device: initializedDevice,
         views: [followDevice],

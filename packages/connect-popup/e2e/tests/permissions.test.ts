@@ -3,6 +3,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { setConnectSettings } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
+const isNextra = process.env.IS_NEXTRA === 'true';
 
 let popup: Page;
 
@@ -40,10 +41,15 @@ fixtures.forEach(f => {
     test(f.description, async () => {
         const browserInstance = await chromium.launch();
         const page = await browserInstance.newPage();
-        if (f.setTrustedHost) {
-            await setConnectSettings(page, url, { trustedHost: true });
+        if (isNextra || f.setTrustedHost) {
+            await setConnectSettings(page, url, { trustedHost: f.setTrustedHost }, false, isNextra);
         }
-        await page.goto(`${url}${f.queryString}#/method/verifyMessage`);
+        if (isNextra) {
+            await page.click("a[data-test='@navbar-logo']");
+            await page.click("a[href$='/methods/bitcoin/verifyMessage/']");
+        } else {
+            await page.goto(`${url}${f.queryString}#/method/verifyMessage`);
+        }
 
         [popup] = await Promise.all([
             page.waitForEvent('popup'),

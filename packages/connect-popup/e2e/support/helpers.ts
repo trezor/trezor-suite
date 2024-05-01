@@ -20,6 +20,20 @@ export const log = (...val: string[]) => {
     console.log(`[===]`, ...val);
 };
 
+// Next.js uses client side routing, so we use this to navigate without reloading the page
+export const nextJsGoto = async (page: Page, url: string) => {
+    await page.evaluate(url => {
+        (window as any).router.push(url);
+    }, url);
+};
+
+export const formatUrl = (baseUrl: string, path: string) => {
+    const [baseUrlWithoutParams, params] = baseUrl.split('?');
+    const [pathWithoutParams, pathParams] = path.split('?');
+
+    return `${baseUrlWithoutParams}${pathWithoutParams}?${params ? `${params}&` : ''}${pathParams ?? ''}`;
+};
+
 const getExtensionPage = async () => {
     const pathToExtension = path.join(
         __dirname,
@@ -139,8 +153,13 @@ export const setConnectSettings = async (
     explorerUrl: string,
     { trustedHost = false, connectSrc }: { trustedHost?: boolean; connectSrc?: string },
     isWebExtension?: boolean,
+    isNextra?: boolean,
 ) => {
-    await explorerPage.goto(`${explorerUrl}#/settings`);
+    if (isNextra) {
+        await explorerPage.goto(formatUrl(explorerUrl, `settings/`));
+    } else {
+        await explorerPage.goto(`${explorerUrl}#/settings`);
+    }
     if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
         await explorerPage.waitForSelector("div[data-test='@settings/handshake-confirmed']");

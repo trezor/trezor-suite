@@ -5,7 +5,16 @@ import { ApiPlayground } from '../../../components/ApiPlayground';
 import getAccountInfo from '../../../data/methods/bitcoin/getAccountInfo';
 import { ParamsTable } from '../../../components/ParamsTable';
 
-<ApiPlayground options={[{ title: 'GetAccountInfo', legacyConfig: getAccountInfo[0] }]} />
+<ApiPlayground
+    options={[
+        {
+            title: 'GetAccountInfo',
+            legacyConfig: getAccountInfo[0],
+            title: 'GetAccountInfo (xpub)',
+            legacyConfig: getAccountInfo[1],
+        },
+    ]}
+/>
 
 export const UsingPathSchema = Type.Object({
     path: Type.Union([Type.String(), Type.Array(Type.Number())], {

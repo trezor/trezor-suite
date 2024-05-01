@@ -81,11 +81,30 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
             actions.onSetSchema(method, schema ?? Type.Object({}));
         }
     }, [actions, options, selectedOption]);
+    useEffect(() => {
+        // Get default index from URL search params
+        const urlParams = new URLSearchParams(window.location.search);
+        const subMethodTitle = urlParams.get('submethod');
+        if (subMethodTitle) {
+            // Find option that contains submethod title
+            const index = options.findIndex(option =>
+                option.title.toLowerCase().includes(subMethodTitle.toLowerCase()),
+            );
+            if (index >= 0) {
+                setSelectedOption(index);
+            }
+        }
+    }, [options]);
 
     return (
         <ApiPlaygroundWrapper>
-            <CollapsibleBoxStyled heading="Method testing tool" variant="large" isUpwards>
-                {options.length > 5 && (
+            <CollapsibleBoxStyled
+                heading="Method testing tool"
+                variant="large"
+                isUpwards
+                data-test="@api-playground/collapsible-box"
+            >
+                {options.length >= 5 && (
                     <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
                         <Select
                             label="Select method"

@@ -1,0 +1,85 @@
+name: "[Template] connect-popup nextra test params"
+
+on:
+  workflow_call:
+    inputs:
+      test-name:
+        description: "Test name to be run (e.g. `analytics` or `popup-close`)"
+        type: "string"
+        required: true
+      DEV_SERVER_HOSTNAME:
+        description: "URL used by popup connect tests (e.g. dev.suite.sldev.cz)"
+        type: "string"
+        required: true
+      run-webextension:
+        description: "Flag to indicate whether to run the webextension job"
+        type: "boolean"
+        required: false
+      build-overview:
+        description: "Flag to indicate whether to build connect-popup-overview.html"
+        type: "boolean"
+        required: false
+
+jobs:
+  web:
+    name: web
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-popup
+
+      - name: Run connect popup test
+        env:
+          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect-nextra/${{ steps.extract_branch.outputs.branch }}/
+          # avoid settings page for now, the correct url is set anyway in build
+          # https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect-nextra/${{ steps.extract_branch.outputs.branch }}/
+          TREZOR_CONNECT_SRC: ""
+          CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          CI_JOB_NAME: ${{ inputs.test-name }}-${{ github.run_attempt }}
+          IS_NEXTRA: true
+        run: |
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+
+      - name: Prepare static overview
+        if: ${{ inputs.build-overview }}
+        run: |
+          echo "Preparing static overview"
+          mkdir -p tmp_overview_directory
+          cp -R ./packages/connect-popup/e2e/screenshots/* tmp_overview_directory/
+          cp packages/connect-popup/connect-popup-overview.html  tmp_overview_directory/connect-popup-overview.html
+
+      - name: Upload static overview artifact
+        uses: actions/upload-artifact@v4
+        if: ${{ inputs.build-overview }}
+        with:
+          name: static-overview-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            tmp_overview_directory/
+
+      - name: Upload artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}
+          path: |
+            packages/connect-popup/test-results
+
+      - name: Check Test Success
+        run: |
+          # If there is `test-results` it means it has failed.
+          if [ -f "packages/connect-popup/test-results" ]; then
+            echo "Tests failed"
+            exit 1
+          fi
+
+  # webextension TBD
