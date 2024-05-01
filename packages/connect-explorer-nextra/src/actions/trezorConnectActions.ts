@@ -75,6 +75,11 @@ export const init =
             window.__TREZOR_CONNECT_SRC = `${window.location.origin}/`;
         }
 
+        if (window.location.search.includes('trezor-connect-src')) {
+            const search = new URLSearchParams(window.location.search);
+            window.__TREZOR_CONNECT_SRC = search.get('trezor-connect-src')?.toString();
+        }
+
         if (options.connectSrc) {
             window.__TREZOR_CONNECT_SRC = options.connectSrc;
         }
@@ -95,6 +100,7 @@ export const init =
                 appUrl: '@trezor/suite',
             },
             trustedHost: false,
+            connectSrc: window.__TREZOR_CONNECT_SRC,
             ...options,
         };
 

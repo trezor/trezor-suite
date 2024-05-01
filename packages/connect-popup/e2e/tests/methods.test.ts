@@ -4,7 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
-import { getContexts, log, openPopup, setConnectSettings } from '../support/helpers';
+import { getContexts, log, formatUrl, openPopup, setConnectSettings } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
@@ -15,6 +15,7 @@ let device = {};
 let context: any = null;
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const isNextra = process.env.IS_NEXTRA === 'true';
 
 const screenshotEmu = async (path: string) => {
     const { response } = await TrezorUserEnvLink.send({
@@ -26,6 +27,7 @@ const screenshotEmu = async (path: string) => {
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     log(`isWebExtension: ${isWebExtension}`);
+    log(`isNextra: ${isNextra}`);
     log(`connectSrc: ${connectSrc}`);
     log(`url: ${url}`);
 });
@@ -46,7 +48,7 @@ test.afterAll(() => {
 // Some methods are not allowed in web extension because of isManagementRestricted
 const methodsUrlToSkipInWebExtension = ['wipeDevice', 'recoverDevice'];
 const filteredFixtures = fixtures.filter(f => {
-    if (isWebExtension && methodsUrlToSkipInWebExtension.includes(f.url)) {
+    if ((isNextra || isWebExtension) && methodsUrlToSkipInWebExtension.includes(f.url)) {
         return false;
     }
 
@@ -90,13 +92,29 @@ filteredFixtures.forEach(f => {
         context = browserContext;
 
         if (connectSrc) {
-            await setConnectSettings(explorerPage, explorerUrl, {
-                trustedHost: false,
-                connectSrc,
-            });
+            await setConnectSettings(
+                explorerPage,
+                explorerUrl,
+                {
+                    trustedHost: false,
+                    connectSrc,
+                },
+                isWebExtension,
+                isNextra,
+            );
         }
 
-        await explorerPage.goto(`${explorerUrl}#/method/${f.url}`);
+        const [method, submethod] = f.url.split('-');
+        if (isNextra) {
+            await explorerPage.goto(
+                formatUrl(explorerUrl, `methods/${f.dir}/${method}/?submethod=${submethod}`),
+            );
+
+            // expand method tester
+            await explorerPage.click("[data-test='@api-playground/collapsible-box']");
+        } else {
+            await explorerPage.goto(`${explorerUrl}#/method/${f.url}`);
+        }
 
         // screenshot request
         log(f.url, 'screenshot @trezor/connect call params');

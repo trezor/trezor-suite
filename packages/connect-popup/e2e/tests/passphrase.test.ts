@@ -2,6 +2,7 @@ import { test, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import {
     findElementByDataTest,
+    formatUrl,
     getContexts,
     log,
     openPopup,
@@ -13,6 +14,7 @@ const url = process.env.URL || 'http://localhost:8088/';
 const bridgeVersion = '2.0.31';
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
+const isNextra = process.env.IS_NEXTRA === 'true';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 let context: any = null;
@@ -23,6 +25,7 @@ let explorerUrl: string;
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     log(`isWebExtension: ${isWebExtension}`);
+    log(`isNextra: ${isNextra}`);
     log(`connectSrc: ${connectSrc}`);
     log(`url: ${url}`);
 });
@@ -82,7 +85,11 @@ test('input passphrase in popup and device accepts it', async () => {
     log(`test: ${test.info().title}`);
 
     log(`opening ${explorerUrl}#/method/getAddress`);
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    if (isNextra) {
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+    } else {
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    }
 
     log('waiting for submit button');
     await findElementByDataTest(explorerPage, '@submit-button');
@@ -134,7 +141,11 @@ test('input passphrase in popup and device accepts it', async () => {
 test('introduce passphrase in popup and device rejects it', async () => {
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    if (isNextra) {
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+    } else {
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    }
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -177,7 +188,11 @@ test('introduce passphrase successfully next time should not ask for it', async 
 
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    if (isNextra) {
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+    } else {
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    }
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -223,7 +238,11 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    if (isNextra) {
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+    } else {
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    }
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -274,7 +293,11 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('start', test.info().title);
     log('got to: ', `${url}#/method/getAddress`);
-    await page.goto(`${url}#/method/getAddress`);
+    if (isNextra) {
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+    } else {
+        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    }
 
     log('Trigger getAddress call');
     // this is a little hack.

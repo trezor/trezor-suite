@@ -10,6 +10,7 @@ on:
       - "packages/connect-explorer-theme/**"
       - "packages/connect-explorer-nextra/**"
       - ".github/workflows/connect-nextra-dev-release.yml"
+      - ".github/workflows/template-connect-popup-nextra-test-params.yml"
   schedule:
     # Runs at midnight UTC every day at 01:00 AM CET
     - cron: "0 0 * * *"
@@ -108,3 +109,64 @@ jobs:
           name: connect-explorer-nextra-webextension
           path: |
             packages/connect-explorer-nextra/build-webextension
+
+  methods:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: methods.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+      build-overview: true
+
+  popup-close:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: popup-close.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  passphrase:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: passphrase.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      # currently flaky, run only in nightly
+      run-webextension: ${{ github.event_name == 'schedule' }}
+
+  popup-pages:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: popup-pages.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  browser-support:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: browser-support.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  permissions:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: permissions.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  transport:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: transport.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  unchained:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: unchained.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
