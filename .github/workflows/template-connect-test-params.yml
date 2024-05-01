@@ -53,7 +53,10 @@ jobs:
       # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
       - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" -i ${{ inputs.methods }} -m ${{ inputs.test-firmware-model}}'
+      # nightly test - run without cached txs
+      - run: 'export ADDITIONAL_ARGS="-c"'
+        if: ${{ github.event_name == 'schedule' }}
+      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" -i ${{ inputs.methods }} -m ${{ inputs.test-firmware-model}} $ADDITIONAL_ARGS'
 
   web:
     name: "web-${{ inputs.test-description }}"
@@ -85,4 +88,7 @@ jobs:
       - run: cd packages/connect-iframe && tree .
       - name: "Echo download path"
         run: echo ${{steps.download.outputs.download-path}}
-      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" -i ${{ inputs.methods }} -m ${{ inputs.test-firmware-model}}'
+      # nightly test - run without cached txs
+      - run: 'export ADDITIONAL_ARGS="-c"'
+        if: ${{ github.event_name == 'schedule' }}
+      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" -i ${{ inputs.methods }} -m ${{ inputs.test-firmware-model}} $ADDITIONAL_ARGS'
