@@ -1,15 +1,11 @@
-name: "[Release] connect npm"
+name: "[Release] Connect NPM"
 on:
   workflow_dispatch:
     inputs:
-      package:
-        description: Name of the package to deploy.
+      packages:
+        description: "Comma-separated names of the packages to deploy. (example: 'connect,blockchain-link-types,blockchain-link-utils')"
         required: true
-        type: choice
-        options:
-          - connect
-          - connect-web
-          - connect-webextension
+        type: string
       deploymentType:
         description: "Specifies the deployment type for the npm package. (example: canary, stable)"
         required: true
@@ -19,9 +15,12 @@ on:
           - stable
 
 jobs:
-  deploy-npm-beta:
+  deploy-npm:
     environment: npm-packages
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ${{ fromJson('[' + github.event.inputs.packages + ']') }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -36,10 +35,10 @@ jobs:
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
           fi
 
-      - name: Deploy to NPM ${{ github.event.inputs.package }}
+      - name: Deploy to NPM ${{ matrix.package }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         uses: ./.github/actions/release-connect-npm
         with:
           deploymentType: ${{ env.DEPLOYMENT_TYPE }}
-          packageName: ${{ github.event.inputs.package }}
+          packageName: ${{ matrix.package }}
