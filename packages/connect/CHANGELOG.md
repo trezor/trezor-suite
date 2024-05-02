@@ -1,8 +1,9 @@
-| Package                      | latest stable | latest canary |
-| ---------------------------- | :-----------: | :-----------: |
-| @trezor/connect              |     9.2.2     |     9.2.3     |
-| @trezor/connect-web          |     9.2.2     |     9.2.3     |
-| @trezor/connect-webextension |     9.2.2     |     9.2.3     |
+| Package                          | stable | canary |
+| -------------------------------- | :----: | :----: |
+| npm @trezor/connect              | 9.2.2  | 9.2.3  |
+| npm @trezor/connect-web          | 9.2.2  | 9.2.3  |
+| npm @trezor/connect-webextension | 9.2.2  | 9.2.3  |
+| connect.trezor.io/9              | 9.2.2  |   x    |
 
 # 9.2.3
 
