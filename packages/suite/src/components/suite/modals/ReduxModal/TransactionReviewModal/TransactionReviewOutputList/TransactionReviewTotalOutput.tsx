@@ -10,7 +10,7 @@ import {
     getOutputState,
     getIsUpdatedSendFlow,
     getIsUpdatedEthereumSendFlow,
-} from 'src/utils/wallet/reviewTransactionUtils';
+} from '@suite-common/wallet-utils';
 import { TransactionReviewStepIndicator } from './TransactionReviewStepIndicator';
 import {
     TransactionReviewOutputElement,

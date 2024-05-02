@@ -235,3 +235,41 @@ export type TransactionFiatRateUpdatePayload = {
 export type TransactionType = Pick<WalletAccountTransaction, 'type'>['type'];
 
 export type ExportFileType = 'csv' | 'pdf' | 'json';
+
+export type ReviewOutput =
+    | {
+          type:
+              | 'opreturn'
+              | 'data'
+              | 'locktime'
+              | 'fee'
+              | 'destination-tag'
+              | 'txid'
+              | 'address'
+              | 'amount'
+              | 'gas'
+              | 'contract'
+              | 'regular_legacy';
+          label?: string;
+          value: string;
+          value2?: string;
+          token?: TokenInfo;
+      }
+    | {
+          type: 'fee-replace';
+          label?: undefined;
+          value: string;
+          value2: string;
+          token?: undefined;
+      }
+    | {
+          type: 'reduce-output';
+          label: string;
+          value: string;
+          value2: string;
+          token?: undefined;
+      };
+
+export type ReviewOutputType = ReviewOutput['type'];
+
+export type ReviewOutputState = 'active' | 'success' | undefined;

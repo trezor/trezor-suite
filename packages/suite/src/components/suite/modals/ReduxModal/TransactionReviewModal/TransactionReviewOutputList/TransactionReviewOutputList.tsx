@@ -16,9 +16,9 @@ import type {
     PrecomposedTransactionFinal,
     TxFinalCardano,
 } from '@suite-common/wallet-types';
-import { getOutputState } from 'src/utils/wallet/reviewTransactionUtils';
+import { getOutputState } from '@suite-common/wallet-utils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
-import { ReviewOutput } from 'src/types/wallet/transaction';
+import { ReviewOutput } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
 import { StakeFormState, StakeType } from '@suite-common/wallet-types';
 

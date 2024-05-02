@@ -1,10 +1,11 @@
 import { memoize } from 'proxy-memoize';
+import { G } from '@mobily/ts-belt';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getStatus } from '@suite-common/suite-utils';
-import { Device, Features, UI } from '@trezor/connect';
+import { Device, DeviceModelInternal, Features, UI } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
-import { Network, networks } from '@suite-common/wallet-config';
+import { Network, NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { TrezorDevice, AcquiredDevice, ButtonRequest } from '@suite-common/suite-types';
@@ -860,3 +861,37 @@ export const selectPhysicalDevicesGrouppedById = memoize((state: DeviceRootState
 
     return deviceUtils.getDeviceInstancesGroupedByDeviceId(devices);
 });
+
+export const selectSendFormReviewButtonRequestsCount = (
+    state: DeviceRootState,
+    networkSymbol?: NetworkSymbol,
+    decreaseOutputId?: number,
+) => {
+    const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
+    const deviceModel = selectDeviceModel(state);
+    const { networkType } = networks[networkSymbol ?? 'btc'];
+
+    const isCardano = networkType === 'cardano';
+    const isEthereum = networkType === 'ethereum';
+
+    const sendFormReviewRequest = buttonRequestCodes.filter(
+        code =>
+            code === 'ButtonRequest_ConfirmOutput' ||
+            code === 'ButtonRequest_SignTx' ||
+            isCardano ||
+            (isEthereum && code === 'ButtonRequest_Other'),
+    );
+
+    // NOTE: T1B1 edge-case
+    // while confirming decrease amount 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount)
+    // remove 1 additional element to keep it consistent with T2T1 where this step is swipeable with one button request
+    if (
+        G.isNumber(decreaseOutputId) &&
+        deviceModel === DeviceModelInternal.T1B1 &&
+        sendFormReviewRequest.filter(code => code === 'ButtonRequest_ConfirmOutput').length > 1
+    ) {
+        sendFormReviewRequest.splice(-1, 1);
+    }
+
+    return isCardano ? sendFormReviewRequest.length - 1 : sendFormReviewRequest.length;
+};

@@ -3,14 +3,19 @@ import { fromWei, toWei } from 'web3-utils';
 import { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
-import { TrezorDevice } from 'src/types/suite/index';
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
-import { Account } from 'src/types/wallet/index';
-import { getShortFingerprint, isCardanoTx } from '@suite-common/wallet-utils';
-import { ReviewOutput } from 'src/types/wallet/transaction';
-import { StakeFormState } from '@suite-common/wallet-types';
+import {
+    Account,
+    FormState,
+    PrecomposedTransactionFinal,
+    ReviewOutputState,
+    TxFinalCardano,
+} from '@suite-common/wallet-types';
+import { StakeFormState, ReviewOutput } from '@suite-common/wallet-types';
+import { TrezorDevice } from '@suite-common/suite-types';
 
-export const getOutputState = (index: number, buttonRequestsCount: number) => {
+import { getShortFingerprint, isCardanoTx } from './cardanoUtils';
+
+export const getOutputState = (index: number, buttonRequestsCount: number): ReviewOutputState => {
     if (index === buttonRequestsCount - 1) return 'active';
     if (index < buttonRequestsCount - 1) return 'success';
 
@@ -46,8 +51,8 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
             .map(policyGroup =>
                 policyGroup.tokenAmounts.map(token => {
                     const accountToken = account.tokens!.find(
-                        accountToken =>
-                            accountToken.contract ===
+                        currentToken =>
+                            currentToken.contract ===
                             `${policyGroup.policyId}${token.assetNameBytes}`,
                     );
                     if (!accountToken) return;

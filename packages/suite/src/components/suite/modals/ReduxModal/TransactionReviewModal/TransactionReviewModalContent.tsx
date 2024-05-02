@@ -2,18 +2,21 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Deferred } from '@trezor/utils';
-import { selectDevice, StakeState } from '@suite-common/wallet-core';
-import { isCardanoTx } from '@suite-common/wallet-utils';
+import {
+    DeviceRootState,
+    selectDevice,
+    selectSendFormReviewButtonRequestsCount,
+    StakeState,
+} from '@suite-common/wallet-core';
+import { constructOutputs } from '@suite-common/wallet-utils';
 import { SendState } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
-import { constructOutputs } from 'src/utils/wallet/reviewTransactionUtils';
 import { getTransactionReviewModalActionText } from 'src/utils/suite/transactionReview';
 import { Modal, Translation } from 'src/components/suite';
 import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
-import { DeviceModelInternal } from '@trezor/connect';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -49,18 +52,25 @@ export const TransactionReviewModalContent = ({
 
     const { precomposedTx, precomposedForm, signedTx } = txInfoState;
 
+    const decreaseOutputId = precomposedTx?.useNativeRbf
+        ? precomposedForm?.setMaxOutputId
+        : undefined;
+
+    const buttonRequestsCount = useSelector((state: DeviceRootState) =>
+        selectSendFormReviewButtonRequestsCount(
+            state,
+            selectedAccount?.account?.symbol,
+            decreaseOutputId,
+        ),
+    );
+
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm) {
         return null;
     }
 
     const { account } = selectedAccount;
     const { networkType } = account;
-    const isCardano = isCardanoTx(account, precomposedTx);
-    const isEthereum = networkType === 'ethereum';
     const isRbfAction = !!precomposedTx.prevTxid;
-    const decreaseOutputId = precomposedTx.useNativeRbf
-        ? precomposedForm.setMaxOutputId
-        : undefined;
 
     const outputs = constructOutputs({
         account,
@@ -73,25 +83,6 @@ export const TransactionReviewModalContent = ({
     const ethereumStakeType =
         'ethereumStakeType' in precomposedForm ? precomposedForm.ethereumStakeType : null;
 
-    // omit other button requests (like passphrase)
-    const buttonRequests = device.buttonRequests.filter(
-        ({ code }) =>
-            code === 'ButtonRequest_ConfirmOutput' ||
-            code === 'ButtonRequest_SignTx' ||
-            (code === 'ButtonRequest_Other' && (isCardano || isEthereum)), // Cardano and Ethereum are using ButtonRequest_Other
-    );
-
-    // NOTE: T1B1 edge-case
-    // while confirming decrease amount 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount)
-    // remove 1 additional element to keep it consistent with T2T1 where this step is swipeable with one button request
-    if (
-        typeof decreaseOutputId === 'number' &&
-        deviceModelInternal === DeviceModelInternal.T1B1 &&
-        buttonRequests.filter(r => r.code === 'ButtonRequest_ConfirmOutput').length > 1
-    ) {
-        buttonRequests.splice(-1, 1);
-    }
-
     // get estimate mining time
     let estimateTime;
     const symbolFees = fees[selectedAccount.account.symbol];
@@ -102,8 +93,6 @@ export const TransactionReviewModalContent = ({
     if (networkType === 'bitcoin' && matchedFeeLevel) {
         estimateTime = symbolFees.blockTime * matchedFeeLevel.blocks * 60;
     }
-
-    const buttonRequestsCount = isCardano ? buttonRequests.length - 1 : buttonRequests.length;
 
     const onCancel =
         isActionAbortable || signedTx
