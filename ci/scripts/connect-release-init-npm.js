@@ -13,6 +13,8 @@ if (!allowedSemvers.includes(semver)) {
     throw new Error(`provided semver: ${semver} must be one of ${allowedSemvers.join(', ')}`);
 }
 
+const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
+
 const ROOT = path.join(__dirname, '..', '..');
 
 const getGitCommitByPackageName = (packageName, maxCount = 10) =>
@@ -24,6 +26,19 @@ const getGitCommitByPackageName = (packageName, maxCount = 10) =>
         '--pretty=tformat:"-   %s (%h)"',
         '--',
         `./packages/${packageName}`,
+    ]);
+
+const ghWorkflowRunReleaseAction = (branch, packages, deployment) =>
+    exec('gh', [
+        'workflow',
+        'run',
+        '.github/workflows/release-connect-npm.yml',
+        '--ref',
+        branch,
+        '--field',
+        `packages="${packages}"`,
+        '--field',
+        `deploymentType="${deployment}"`,
     ]);
 
 const splitByNewlines = input => input.split('\n');
@@ -182,6 +197,34 @@ const initConnectRelease = async () => {
             body: connectGitLogText,
         });
     }
+
+    // At this point we have created the commit with the bumped versions,
+    // and a pull request including all the changes.
+    // Now we want to trigger the action that will trigger the actual release,
+    // after approval form authorized member.
+    const dependenciesToRelease = update.join(',');
+    console.log('dependenciesToRelease:', dependenciesToRelease);
+    console.log('deploymentType:', deploymentType);
+    console.log('branchName:', branchName);
+
+    const releaseDependencyActionOutput = ghWorkflowRunReleaseAction(
+        branchName,
+        dependenciesToRelease,
+        deploymentType,
+    );
+
+    console.log('releaseDependencyActionOutput output:', releaseDependencyActionOutput.stdout);
+
+    // We trigger this second action to release connect, so we can just not approve it in case
+    // the release of the dependencies to NPM was not successful.
+    console.log('Triggering action to release connect.');
+    const releaseConnectActionOutput = ghWorkflowRunReleaseAction(
+        branchName,
+        ['connect', 'connect-web', 'connect-webextension'].join(','),
+        deploymentType,
+    );
+
+    console.log('releaseConnectActionOutput output:', releaseConnectActionOutput.stdout);
 };
 
 initConnectRelease();
