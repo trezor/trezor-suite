@@ -279,7 +279,7 @@
         "changelog": "* Hotfix for touchscreen freeze\n* Don't rotate the screen via swipe gesture\n* Set screen rotation via user setting\n* More strict path validations\n* Display non-zero locktime values\n* EOS support\n* Monero UI fixes\n* Speed and memory optimizations"
     },
     {
-        "required": false,
+        "required": true,
         "version": [2, 1, 0],
         "min_firmware_version": [2, 0, 5],
         "min_bootloader_version": [2, 0, 0],
