@@ -7,14 +7,7 @@ import { versionUtils } from '@trezor/utils';
 import { ERRORS, NETWORK } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
-import {
-    isSegwitPath,
-    isBech32Path,
-    isTaprootPath,
-    getSerializedPath,
-    getScriptType,
-    toHardened,
-} from '../utils/pathUtils';
+import { isTaprootPath, getSerializedPath, getScriptType, toHardened } from '../utils/pathUtils';
 import { getAccountAddressN } from '../utils/accountUtils';
 import { getSegwitNetwork, getBech32Network } from '../data/coinInfo';
 import { initLog } from '../utils/debug';
@@ -149,17 +142,14 @@ export class DeviceCommands {
     async getHDNode(
         params: Messages.GetPublicKey,
         options: {
-            coinInfo?: BitcoinNetworkInfo;
+            coinInfo: BitcoinNetworkInfo;
             validation?: boolean;
             unlockPath?: Messages.UnlockPath;
-        } = {},
+        },
     ) {
         const path = params.address_n;
         const { coinInfo, unlockPath } = options;
         const validation = typeof options.validation === 'boolean' ? options.validation : true;
-        if (!this.device.atLeast(['1.7.2', '2.0.10']) || !coinInfo) {
-            return this.getBitcoinHDNode(path, coinInfo);
-        }
 
         let network: Network | null = null;
 
@@ -224,51 +214,6 @@ export class DeviceCommands {
         return response;
     }
 
-    // deprecated
-    // legacy method (below FW 1.7.2 & 2.0.10), remove it after next "required" FW update.
-    // keys are exported in BTC format and converted to proper format in hdnodeUtils
-    // old firmware didn't return keys with proper prefix (ypub, Ltub.. and so on)
-    async getBitcoinHDNode(path: number[], coinInfo?: BitcoinNetworkInfo, validation = true) {
-        let publicKey: Messages.PublicKey;
-        if (!validation) {
-            publicKey = await this.getPublicKey({ address_n: path });
-        } else {
-            const suffix = 0;
-            const childPath = path.concat([suffix]);
-
-            const resKey = await this.getPublicKey({ address_n: path });
-            const childKey = await this.getPublicKey({ address_n: childPath });
-            publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix);
-        }
-
-        const response: HDNodeResponse = {
-            path,
-            serializedPath: getSerializedPath(path),
-            childNum: publicKey.node.child_num,
-            xpub: coinInfo
-                ? hdnodeUtils.convertBitcoinXpub(publicKey.xpub, coinInfo.network)
-                : publicKey.xpub,
-            chainCode: publicKey.node.chain_code,
-            publicKey: publicKey.node.public_key,
-            fingerprint: publicKey.node.fingerprint,
-            depth: publicKey.node.depth,
-        };
-
-        // if requested path is a segwit or bech32
-        // convert xpub to new format
-        if (coinInfo) {
-            const bech32Network = getBech32Network(coinInfo);
-            const segwitNetwork = getSegwitNetwork(coinInfo);
-            if (bech32Network && isBech32Path(path)) {
-                response.xpubSegwit = hdnodeUtils.convertBitcoinXpub(publicKey.xpub, bech32Network);
-            } else if (segwitNetwork && isSegwitPath(path)) {
-                response.xpubSegwit = hdnodeUtils.convertBitcoinXpub(publicKey.xpub, segwitNetwork);
-            }
-        }
-
-        return response;
-    }
-
     async getAddress(
         { address_n, show_display, multisig, script_type, chunkify }: Messages.GetAddress,
         coinInfo: BitcoinNetworkInfo,
@@ -327,10 +272,6 @@ export class DeviceCommands {
         address_n,
         show_display,
     }: Messages.EthereumGetPublicKey): Promise<HDNodeResponse> {
-        if (!this.device.atLeast(['1.8.1', '2.1.0'])) {
-            return this.getHDNode({ address_n });
-        }
-
         const suffix = 0;
         const childPath = address_n.concat([suffix]);
         const resKey = await this.typedCall('EthereumGetPublicKey', 'EthereumPublicKey', {
