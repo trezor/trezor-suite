@@ -57,7 +57,6 @@ jobs:
           yarn install --immutable
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
-          yarn workspace @trezor/connect-iframe build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{ matrix.platform }} suite-desktop
@@ -113,7 +112,6 @@ jobs:
       - name: Build libs
         run: |
           yarn workspace @trezor/suite-data build:lib
-          yarn workspace @trezor/connect-iframe build:lib
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{env.platform}} suite-desktop
