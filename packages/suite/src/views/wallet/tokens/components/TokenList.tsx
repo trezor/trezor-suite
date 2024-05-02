@@ -20,11 +20,11 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import { LastUpdateTooltip } from 'src/components/suite/Ticker/LastUpdateTooltip';
 
-const Wrapper = styled(Card)<{ $isTestnet?: boolean }>`
+const Wrapper = styled(Card)<{ $fiatRateHidden?: boolean }>`
     display: grid;
     padding: 12px 16px;
     grid-template-columns: ${props =>
-        props.$isTestnet ? 'auto auto 44px' : 'auto auto auto 44px'};
+        props.$fiatRateHidden ? 'auto auto 44px' : 'auto auto auto 44px'};
     word-break: break-all;
 `;
 
@@ -36,7 +36,7 @@ const TokenSymbol = styled.span`
 
 interface ColProps {
     $justify?: 'left' | 'right';
-    $isTestnet?: boolean;
+    $fiatRateHidden?: boolean;
 }
 
 const Col = styled.div<ColProps>`
@@ -44,7 +44,7 @@ const Col = styled.div<ColProps>`
     padding: 10px ${spacingsPx.sm} 10px 0;
     border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 
-    &:nth-child(${({ $isTestnet }) => ($isTestnet ? '-n + 3' : '-n + 4')}) {
+    &:nth-child(${({ $fiatRateHidden }) => ($fiatRateHidden ? '-n + 3' : '-n + 4')}) {
         /* first row */
         border-top: none;
     }
@@ -149,8 +149,10 @@ export const TokenList = ({
 
     return (
         <>
-            {[knownTokens, unknownTokens].map((tokens, groupIndex) =>
-                tokens.length ? (
+            {[knownTokens, unknownTokens].map((tokens, groupIndex) => {
+                const fiatRateHidden = groupIndex === 1 || isTestnet;
+
+                return tokens.length ? (
                     <Fragment key={groupIndex === 0 ? 'knownTokens' : 'unknownTokens'}>
                         {groupIndex === 1 && (
                             <StyledQuestionTooltip
@@ -159,7 +161,7 @@ export const TokenList = ({
                                 $addMarginTop={!!knownTokens.length}
                             />
                         )}
-                        <Wrapper $isTestnet={isTestnet} paddingType="none">
+                        <Wrapper $fiatRateHidden={fiatRateHidden} paddingType="none">
                             {tokens.map(t => {
                                 const symbolMatchesName =
                                     networkType === 'cardano' &&
@@ -168,14 +170,14 @@ export const TokenList = ({
 
                                 return (
                                     <Fragment key={t.contract}>
-                                        <Col $isTestnet={isTestnet}>
+                                        <Col $fiatRateHidden={fiatRateHidden}>
                                             {!noSymbol && <TokenSymbol>{t.symbol}</TokenSymbol>}
                                             <TokenName>
                                                 {!noSymbol && ` - `}
                                                 {t.name}
                                             </TokenName>
                                         </Col>
-                                        <Col $isTestnet={isTestnet} $justify="right">
+                                        <Col $fiatRateHidden={fiatRateHidden} $justify="right">
                                             {t.balance && (
                                                 <CryptoAmount
                                                     value={t.balance}
@@ -187,14 +189,14 @@ export const TokenList = ({
                                                 />
                                             )}
                                         </Col>
-                                        {!isTestnet && (
-                                            <Col $isTestnet={isTestnet} $justify="right">
+                                        {!fiatRateHidden && (
+                                            <Col $fiatRateHidden={fiatRateHidden} $justify="right">
                                                 <FiatWrapper>
                                                     <FiatValue
                                                         amount={t.balance || '1'}
                                                         symbol={account.symbol}
                                                         tokenAddress={t.contract}
-                                                        showLoadingSkeleton={groupIndex === 0}
+                                                        showLoadingSkeleton
                                                     >
                                                         {({ value, timestamp }) =>
                                                             value && timestamp ? (
@@ -211,7 +213,7 @@ export const TokenList = ({
                                                 </FiatWrapper>
                                             </Col>
                                         )}
-                                        <Col $isTestnet={isTestnet} $justify="right">
+                                        <Col $fiatRateHidden={fiatRateHidden} $justify="right">
                                             <TrezorLink
                                                 href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
                                             >
@@ -227,8 +229,8 @@ export const TokenList = ({
                             })}
                         </Wrapper>
                     </Fragment>
-                ) : null,
-            )}
+                ) : null;
+            })}
         </>
     );
 };

@@ -2570,11 +2570,11 @@ export default defineMessages({
         id: 'TR_BACKUP_SUCCESSFUL',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
-        defaultMessage: 'No data available',
+        defaultMessage: 'Rate unavailable',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',
     },
     TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
-        defaultMessage: 'Fiat rates are not currently available.',
+        defaultMessage: 'Exchange rate is currently not available.',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP',
     },
     TR_FINAL_HEADING: {
