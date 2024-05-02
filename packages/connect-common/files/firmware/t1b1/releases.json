@@ -204,7 +204,7 @@
         "changelog": "* Security improvements\n* Fix display of non-divisible OMNI amounts"
     },
     {
-        "required": false,
+        "required": true,
         "version": [1, 8, 1],
         "bootloader_version": [1, 8, 0],
         "min_firmware_version": [1, 6, 2],
