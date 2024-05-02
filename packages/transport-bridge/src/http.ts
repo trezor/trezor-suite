@@ -29,19 +29,22 @@ export class TrezordNode {
     port: number;
     server?: HttpServer<never>;
     api: ReturnType<typeof createApi>;
-    logger = new Log('@trezor/transport-bridge', true);
+    logger: Log;
     assetPrefix: string;
 
     constructor({
         port,
         api,
         assetPrefix = '',
+        logger,
     }: {
         port: number;
         api: 'usb' | 'udp';
         assetPrefix?: string;
+        logger?: Log;
     }) {
         this.port = port || defaults.port;
+        this.logger = logger || new Log('@trezor/transport-bridge', true);
 
         this.descriptors = [];
 
