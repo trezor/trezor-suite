@@ -236,7 +236,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         >
             {isAbortable && <StyledAbortButton onAbort={onClose} />}
 
-            <Wrapper data-test={`@firmware/reconnect-device`}>
+            <Wrapper data-test="@firmware/reconnect-device">
                 {!isRebootDone && (
                     <RebootDeviceGraphics
                         device={uiEvent?.payload.device}
@@ -266,7 +266,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
                                     <ReconnectStep
                                         order={2}
                                         active={rebootPhase === 'disconnected'}
-                                        dataTest={`@firmware/connect-in-bootloader-message`}
+                                        dataTest="@firmware/connect-in-bootloader-message"
                                     >
                                         <Translation id={getSecondStep()} />
                                     </ReconnectStep>
