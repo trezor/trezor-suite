@@ -7,6 +7,7 @@ import {
     SET_METHOD,
     SET_SCHEMA,
     SET_UNION,
+    SET_MANUAL_MODE,
 } from '../actions/methodActions';
 import { isFieldBasic, type Action, type Field } from '../types';
 import {
@@ -135,6 +136,13 @@ export default function method(state: MethodState = initialState, action: Action
                 tab: 'response',
                 response: action.response,
             };
+
+        case SET_MANUAL_MODE:
+            return {
+                ...state,
+                manualMode: action.manualMode,
+            };
+
         default:
             return state;
     }

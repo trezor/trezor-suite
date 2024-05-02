@@ -1,4 +1,5 @@
 import TrezorConnect from '@trezor/connect-web';
+import { TSchema } from '@trezor/schema-utils';
 import { setDeepValue } from '@trezor/schema-utils/src/utils';
 
 import { Field, FieldBasic, isFieldBasic } from '../types';
@@ -11,6 +12,8 @@ export interface MethodState {
     response?: unknown;
     javascriptCode?: string;
     addressValidation?: boolean;
+    schema?: TSchema;
+    manualMode?: boolean;
 }
 
 export const initialState: MethodState = {
@@ -21,6 +24,7 @@ export const initialState: MethodState = {
     javascriptCode: undefined,
     response: undefined,
     addressValidation: false,
+    manualMode: false,
 };
 
 // Converts the fields into a params object
@@ -64,6 +68,20 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
     } else if (field.type === 'number') {
         if (!Number.isNaN(Number.parseInt(field.value, 10))) {
             value = Number.parseInt(field.value, 10);
+        } else if (!field.optional) {
+            value = 0;
+        }
+    } else if (field.type === 'input' || field.type === 'input-long') {
+        if ((field.value === null || field.value === undefined) && !field.optional) {
+            value = '';
+        } else {
+            value = field.value;
+        }
+    } else if (field.type === 'select') {
+        if ((field.value === null || field.value === undefined) && !field.optional) {
+            value = field.data ? field.data[0].value : '';
+        } else {
+            value = field.value;
         }
     } else {
         value = field.value;

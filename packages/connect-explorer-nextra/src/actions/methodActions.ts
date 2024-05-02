@@ -1,6 +1,8 @@
 import { TSchema } from '@sinclair/typebox';
+import JSON5 from 'json5';
 
 import TrezorConnect from '@trezor/connect-web';
+import { getDeepValue } from '@trezor/schema-utils/src/utils';
 
 import { GetState, Dispatch, Field } from '../types';
 
@@ -12,6 +14,7 @@ export const ADD_BATCH = 'method_add_batch';
 export const REMOVE_BATCH = 'method_remove_batch';
 export const SET_UNION = 'method_set_union';
 export const RESPONSE = 'method_response';
+export const SET_MANUAL_MODE = 'method_set_manual_mode';
 
 export type MethodAction =
     | { type: typeof SET_METHOD; methodConfig: any }
@@ -21,7 +24,8 @@ export type MethodAction =
     | { type: typeof ADD_BATCH; field: Field<any>; item: any }
     | { type: typeof REMOVE_BATCH; field: Field<any>; batch: any[] }
     | { type: typeof SET_UNION; field: Field<any>; current: any }
-    | { type: typeof RESPONSE; response: any };
+    | { type: typeof RESPONSE; response: any }
+    | { type: typeof SET_MANUAL_MODE; manualMode: boolean };
 
 export const onSetMethod = (methodConfig: any) => ({
     type: SET_METHOD,
@@ -67,6 +71,11 @@ export const onSetUnion = (field: Field<any>, current: any) => ({
 export const onResponse = (response: any) => ({
     type: RESPONSE,
     response,
+});
+
+export const onSetManualMode = (manualMode: boolean) => ({
+    type: SET_MANUAL_MODE,
+    manualMode,
 });
 
 export const onSubmit = () => async (dispatch: Dispatch, getState: GetState) => {
@@ -116,4 +125,36 @@ export const onVerify = () => (dispatch: Dispatch, getState: GetState) => {
             dispatch(onFieldChange(f, verifyMethodValues[f.name]));
         }
     });
+};
+
+export const onCodeChange = (value: string) => (dispatch: Dispatch, getState: GetState) => {
+    try {
+        const { fields } = getState().method;
+        const parsed = JSON5.parse(value);
+        const processField = (field: Field<unknown>) => {
+            if (field.type === 'array') {
+                field.items.forEach(batch => {
+                    batch.forEach(processField);
+                });
+            } else if (field.type === 'union') {
+                field.options.forEach(batch => {
+                    batch.forEach(processField);
+                });
+            }
+
+            if (field.path && field.path.length > 0) {
+                dispatch(
+                    onFieldChange(
+                        field,
+                        getDeepValue(parsed, [...field.path, ...field.name.split('.')]),
+                    ),
+                );
+            } else {
+                dispatch(onFieldChange(field, getDeepValue(parsed, field.name.split('.'))));
+            }
+        };
+        fields.forEach(processField);
+    } catch (error) {
+        console.error('Invalid JSON', error);
+    }
 };

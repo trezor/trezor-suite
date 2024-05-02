@@ -16,3 +16,7 @@ body {
     font-family: 'TT Satoshi', sans-serif;
     font-size: 16px;
 }
+
+.cm-editor.cm-focused {
+    outline: none;
+}
