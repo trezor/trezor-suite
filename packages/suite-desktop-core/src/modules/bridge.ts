@@ -48,6 +48,16 @@ const getBridgeInstance = () => {
             port: 21325,
             api: bridgeNodeTest ? 'udp' : 'usb',
             assetPrefix: '../build/node-bridge',
+            // passing down ILogger where Log is expected.
+            // @ts-expect-error
+            logger: {
+                ...global.logger,
+                log: (...args) => logger.info('trezord-node', args.join(' ')),
+                info: (...args) => logger.info('trezord-node', args.join(' ')),
+                warn: (...args) => logger.warn('trezord-node', args.join(' ')),
+                debug: (...args) => logger.debug('trezord-node', args.join(' ')),
+                error: (...args) => logger.error('trezord-node', args.join(' ')),
+            },
         });
     }
 
