@@ -187,14 +187,19 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 });
 
                 diff.connected.forEach(async descriptor => {
+                    // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
+                    // other application acquires the device and changes the descriptor,
+                    // the new unacquired device has correct descriptor
                     const path = descriptor.path.toString();
+                    this.creatingDevicesDescriptors[path] = descriptor;
+
                     const priority = DataManager.getSettings('priority');
                     const penalty = this.getAuthPenalty();
 
                     if (priority || penalty) {
                         await resolveAfter(501 + penalty + 100 * priority, null).promise;
                     }
-                    if (descriptor.session == null) {
+                    if (this.creatingDevicesDescriptors[path].session == null) {
                         await this._createAndSaveDevice(descriptor);
                     } else {
                         const device = this._createUnacquiredDevice(descriptor);
@@ -268,6 +273,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 // whenever descriptors change we need to update them so that we can use them
                 // in subsequent transport.acquire calls
                 diff.descriptors.forEach(d => {
+                    this.creatingDevicesDescriptors[d.path] = d;
                     if (this.devices[d.path]) {
                         this.devices[d.path].originalDescriptor = {
                             session: d.session,
@@ -457,12 +463,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     // main logic
     private async handle(descriptor: Descriptor) {
-        // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
-        // other application acquires the device and changes the descriptor,
-        // the new unacquired device has correct descriptor
         const path = descriptor.path.toString();
-        this.creatingDevicesDescriptors[path] = descriptor;
-
         try {
             // "regular" device creation
             await this._takeAndCreateDevice(descriptor);
