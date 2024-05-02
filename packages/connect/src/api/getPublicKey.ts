@@ -13,7 +13,7 @@ import { Bundle } from '../types';
 import { GetPublicKey as GetPublicKeySchema } from '../types/api/getPublicKey';
 
 type Params = PROTO.GetPublicKey & {
-    coinInfo?: BitcoinNetworkInfo;
+    coinInfo: BitcoinNetworkInfo;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -43,13 +43,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(address_n, coinInfo);
             } else if (!coinInfo) {
-                coinInfo = getBitcoinNetwork(address_n);
+                coinInfo = getBitcoinNetwork(address_n) ?? getBitcoinNetwork('btc')!;
             }
 
             // set required firmware from coinInfo support
-            if (coinInfo) {
-                this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
-            }
+            this.firmwareRange = getFirmwareRange(this.name, coinInfo, this.firmwareRange);
 
             return {
                 address_n,
