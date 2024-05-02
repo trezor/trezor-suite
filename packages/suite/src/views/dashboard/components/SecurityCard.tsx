@@ -1,11 +1,10 @@
-import { Button, Card, CardProps, Icon, IconProps, variables } from '@trezor/components';
+import { Button, Card, Icon, IconProps, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-direction: column;
     position: relative;
 `;
 
@@ -69,7 +68,7 @@ const Line = styled.div`
     background: ${({ theme }) => theme.borderElevation2};
 `;
 
-export interface SecurityCardProps extends CardProps {
+export type SecurityCardProps = {
     variant: 'primary' | 'secondary';
     icon: IconProps['icon'];
     heading: ReactNode;
@@ -80,22 +79,15 @@ export interface SecurityCardProps extends CardProps {
         dataTest?: string;
         isDisabled?: boolean;
     };
-}
+};
 
-export const SecurityCard = ({
-    variant,
-    icon,
-    heading,
-    description,
-    cta,
-    ...rest
-}: SecurityCardProps) => {
+export const SecurityCard = ({ variant, icon, heading, description, cta }: SecurityCardProps) => {
     const theme = useTheme();
 
     const isDone = variant === 'secondary';
 
     return (
-        <Wrapper {...rest}>
+        <Wrapper>
             <Card>
                 <Header>
                     <Icon icon={icon} size={32} color={theme.iconDefault} />
