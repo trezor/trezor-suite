@@ -36,6 +36,10 @@ describe(`TrezorConnect methods`, () => {
                 }
             }, 40000);
 
+            afterEach(() => {
+                TrezorConnect.cancel();
+            });
+
             testCase.tests.forEach(t => {
                 // check if test should be skipped on current configuration
                 conditionalTest(
