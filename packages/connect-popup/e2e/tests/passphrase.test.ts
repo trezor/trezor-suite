@@ -337,9 +337,6 @@ test('passphrase mismatch', async ({ page }) => {
     log('waiting and click for invalid passphrase try again button');
     await waitAndClick(popup, ['@invalid-passphrase/try-again']);
 
-    log('waiting and click confirm permissions button');
-    await waitAndClick(popup, ['@permissions/confirm-button']);
-
     log('typing passphrase');
     // Input right passphrase.
     (await popup.waitForSelector("input[data-test='@passphrase/input']")).type('abc');
