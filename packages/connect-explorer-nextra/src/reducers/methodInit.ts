@@ -160,17 +160,18 @@ export const getMethodState = (methodConfig?: Partial<MethodState>) => {
     // set default values
     state.fields = state.fields.map(f => setAffectedValues(state, prepareBundle(f)));
 
-    console.log('state', state);
-
     // set method params
     return updateParams(state);
 };
 
 // Get method state from TypeBox schema
 export const getMethodStateFromSchema = (method: keyof typeof TrezorConnect, schema: TSchema) => {
-    return getMethodState({
-        name: method,
-        fields: schemaToFields(schema),
-        submitButton: 'Submit',
-    });
+    return {
+        ...getMethodState({
+            name: method,
+            fields: schemaToFields(schema),
+            submitButton: 'Submit',
+        }),
+        schema,
+    };
 };

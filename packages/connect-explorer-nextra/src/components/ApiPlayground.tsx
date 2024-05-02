@@ -3,10 +3,11 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Type, TSchema } from '@sinclair/typebox';
 
-import { CollapsibleBox, Select, SelectBar, variables } from '@trezor/components';
+import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import { Method } from './Method';
-import { useActions } from '../hooks';
+import { useActions, useSelector } from '../hooks';
 import * as methodActions from '../actions/methodActions';
 import { MethodState } from '../reducers/methodCommon';
 
@@ -53,6 +54,20 @@ const CollapsibleBoxStyled = styled(CollapsibleBox)`
     }
 `;
 
+const OptionsRow = styled.div`
+    margin-top: -${spacingsPx.sm};
+    margin-bottom: ${spacingsPx.md};
+    display: grid;
+    grid-template-columns: 3fr 2fr;
+    gap: 20px;
+    align-items: center;
+
+    > div:last-child {
+        display: flex;
+        justify-content: flex-end;
+    }
+`;
+
 interface ApiPlaygroundProps {
     options: (
         | {
@@ -68,10 +83,17 @@ interface ApiPlaygroundProps {
 }
 export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
     const [selectedOption, setSelectedOption] = useState(0);
+    const { method } = useSelector(state => ({
+        method: state.method,
+    }));
     const actions = useActions({
         onSetSchema: methodActions.onSetSchema,
         onSetMethod: methodActions.onSetMethod,
+        onSetManualMode: methodActions.onSetManualMode,
     });
+
+    const { manualMode } = method;
+
     useEffect(() => {
         const option = options[selectedOption];
         if ('legacyConfig' in option) {
@@ -104,31 +126,31 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                 isUpwards
                 data-test="@api-playground/collapsible-box"
             >
-                {options.length >= 5 && (
-                    <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
-                        <Select
-                            label="Select method"
-                            value={{ value: selectedOption, label: options[selectedOption].title }}
-                            onChange={option => setSelectedOption(option.value)}
-                            options={options.map((option, index) => ({
-                                value: index,
-                                label: option.title,
-                            }))}
+                <OptionsRow>
+                    <div>
+                        {options.length > 1 && (
+                            <Select
+                                label="Select method"
+                                value={{
+                                    value: selectedOption,
+                                    label: options[selectedOption].title,
+                                }}
+                                onChange={option => setSelectedOption(option.value)}
+                                options={options.map((option, index) => ({
+                                    value: index,
+                                    label: option.title,
+                                }))}
+                            />
+                        )}
+                    </div>
+                    <div>
+                        <Switch
+                            label="Manual mode"
+                            isChecked={!!manualMode}
+                            onChange={checked => actions.onSetManualMode(!!checked)}
                         />
                     </div>
-                )}
-                {options.length < 5 && options.length > 1 && (
-                    <div style={{ marginTop: '-12px', marginBottom: '4px' }}>
-                        <SelectBar
-                            selectedOption={selectedOption}
-                            onChange={(index: number) => setSelectedOption(index)}
-                            options={options.map((option, index) => ({
-                                value: index,
-                                label: option.title,
-                            }))}
-                        />
-                    </div>
-                )}
+                </OptionsRow>
                 <Method />
             </CollapsibleBoxStyled>
         </ApiPlaygroundWrapper>

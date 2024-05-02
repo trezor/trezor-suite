@@ -68,7 +68,7 @@ export interface FieldWithBundle<Value> extends FieldCommon {
 export interface FieldWithUnion<Value> extends FieldCommon {
     type: 'union';
     labels: string[];
-    options: Batch<Value>[];
+    options: Field<Value>[][];
     current: Field<Value>[];
     affect?: undefined;
 }

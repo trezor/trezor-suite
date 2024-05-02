@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import { Inspector } from 'react-inspector';
+import { useState, useCallback, useEffect } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 import { CopyToClipboard } from 'nextra/components';
 
-import { Button, H3 } from '@trezor/components';
+import { Button as TrezorButton, H3 } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
 import * as methodActions from '../actions/methodActions';
@@ -19,7 +21,7 @@ import {
     UnionWrapper,
     File,
 } from './fields';
-import { Row } from './fields/Row';
+import { CodeEditor } from './CodeEditor';
 
 interface Props {
     actions: {
@@ -138,19 +140,22 @@ const Container = styled.div`
     border-radius: 12px;
     width: 100%;
     overflow-x: scroll;
-    padding: 10px;
+    padding: ${spacingsPx.sm} ${spacingsPx.md};
     word-wrap: break-word;
     word-break: break-all;
     min-height: 150px;
+    margin-bottom: 10px;
 
     ul,
     ol {
         list-style: none;
     }
-`;
 
-const CodeContainer = styled(Container)`
-    white-space: pre;
+    pre {
+        padding: 0;
+        width: 100%;
+        overflow-x: scroll;
+    }
 `;
 
 const Heading = styled(H3)`
@@ -183,12 +188,16 @@ const Sticky = styled.div`
     width: 100%;
 `;
 
+const Button = styled(TrezorButton)`
+    margin-top: ${spacingsPx.sm};
+`;
+
 interface VerifyButtonProps {
     onClick: (url: string) => void;
     name: string;
 }
 
-const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
+export const VerifyButton = ({ name, onClick }: VerifyButtonProps) => {
     const signMethods = ['signMessage', 'ethereumSignMessage'];
     const verifyUrls = ['/method/verifyMessage', '/method/ethereumVerifyMessage'];
     const index = signMethods.indexOf(name);
@@ -210,11 +219,30 @@ export const Method = () => {
         onFieldChange: methodActions.onFieldChange,
         onFieldDataChange: methodActions.onFieldDataChange,
         onSetUnion: methodActions.onSetUnion,
+        onCodeChange: methodActions.onCodeChange,
     });
 
-    const { onSubmit, onVerify } = actions;
+    const { onSubmit } = actions;
 
-    const { name, submitButton, fields, javascriptCode, response } = method;
+    const { name, submitButton, fields, javascriptCode, response, schema, manualMode } = method;
+
+    const [code, setCode] = useState('');
+    const codeChange = useCallback(
+        (val: string) => {
+            setCode(val);
+            actions.onCodeChange(val);
+        },
+        [actions],
+    );
+    useEffect(() => {
+        // Don't override code when in manual mode
+        if (!javascriptCode || manualMode) return;
+        // Strip the function name and the brackets
+        const start = javascriptCode.indexOf('(');
+        const end = javascriptCode.lastIndexOf(')');
+        const params = javascriptCode.slice(start + 1, end);
+        setCode(params);
+    }, [javascriptCode, manualMode]);
 
     if (!name) return null;
 
@@ -230,33 +258,45 @@ export const Method = () => {
     return (
         <MethodContent>
             <div>
-                <Heading>Params</Heading>
-                {getFields(fields, { actions })}
-                <Row>
-                    <Button onClick={onSubmit} data-test="@submit-button">
-                        {submitButton}
-                    </Button>
-                    {response && response.success && (
-                        <VerifyButton name={name} onClick={onVerify} />
-                    )}
-                </Row>
+                {manualMode ? (
+                    <Container>
+                        <Heading>Method with params</Heading>
+                        <CodeEditor {...{ code, codeChange, schema }} />
+                        <CopyWrapper>
+                            <CopyToClipboard getValue={() => javascriptCode ?? ''} />
+                        </CopyWrapper>
+                        <Button onClick={onSubmit} data-test="@submit-button">
+                            {submitButton}
+                        </Button>
+                    </Container>
+                ) : (
+                    getFields(fields, { actions })
+                )}
             </div>
             <div>
                 <Sticky>
-                    <Heading>Response</Heading>
+                    {!manualMode && (
+                        <Container data-test="@code">
+                            <Heading>Method with params</Heading>
+                            <CopyWrapper>
+                                <CopyToClipboard getValue={() => javascriptCode ?? ''} />
+                            </CopyWrapper>
+                            <pre>{javascriptCode}</pre>
+                            <Button onClick={onSubmit} data-test="@submit-button" isFullWidth>
+                                {submitButton}
+                            </Button>
+                        </Container>
+                    )}
                     <Container data-test="@response">
+                        <Heading>Response</Heading>
                         <CopyWrapper>
                             <CopyToClipboard getValue={() => JSON.stringify(response, null, 2)} />
                         </CopyWrapper>
                         {json}
+                        {/*response && response.success && (
+                            <VerifyButton name={name} onClick={onVerify} />
+                        )*/}
                     </Container>
-                    <Heading>Method with params</Heading>
-                    <CodeContainer data-test="@code">
-                        <CopyWrapper>
-                            <CopyToClipboard getValue={() => javascriptCode ?? ''} />
-                        </CopyWrapper>
-                        {javascriptCode}
-                    </CodeContainer>
                 </Sticky>
             </div>
         </MethodContent>
