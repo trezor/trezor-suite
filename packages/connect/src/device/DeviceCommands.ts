@@ -87,19 +87,19 @@ const filterForLog = (type: string, msg: any) => {
 };
 
 export class DeviceCommands {
-    device: Device;
+    private device: Device;
 
-    transport: Transport;
+    private transport: Transport;
 
-    sessionId: Session;
+    private sessionId: Session;
 
-    disposed: boolean;
+    private disposed: boolean;
 
     callPromise?: ReturnType<Transport['call']>;
 
     // see DeviceCommands.cancel
-    _cancelableRequest?: (error?: any) => void;
-    _cancelableRequestBySend?: boolean;
+    private _cancelableRequest?: (error?: any) => void;
+    private _cancelableRequestBySend?: boolean;
 
     constructor(device: Device, transport: Transport, sessionId: Session) {
         this.device = device;
@@ -121,7 +121,7 @@ export class DeviceCommands {
         return this.typedCall('UnlockPath', 'UnlockedPathRequest', params);
     }
 
-    async getPublicKey(params: Messages.GetPublicKey, unlockPath?: Messages.UnlockPath) {
+    private async getPublicKey(params: Messages.GetPublicKey, unlockPath?: Messages.UnlockPath) {
         if (unlockPath) {
             await this.unlockPath(unlockPath);
         }
@@ -383,7 +383,7 @@ export class DeviceCommands {
         return response;
     }
 
-    async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
+    private async _commonCall(type: MessageKey, msg?: DefaultMessageResponse['message']) {
         const resp = await this.call(type, msg);
         if (this.disposed) {
             throw ERRORS.TypedError('Runtime', 'typedCall: DeviceCommands already disposed');
@@ -392,7 +392,7 @@ export class DeviceCommands {
         return this._filterCommonTypes(resp);
     }
 
-    _filterCommonTypes(res: DefaultMessageResponse): Promise<DefaultMessageResponse> {
+    private _filterCommonTypes(res: DefaultMessageResponse): Promise<DefaultMessageResponse> {
         this._cancelableRequestBySend = false;
 
         if (res.type === 'Failure') {
@@ -534,7 +534,7 @@ export class DeviceCommands {
         return message.address;
     }
 
-    _promptPin(type?: Messages.PinMatrixRequestType) {
+    private _promptPin(type?: Messages.PinMatrixRequestType) {
         return new Promise<string>((resolve, reject) => {
             if (this.device.listenerCount(DEVICE.PIN) > 0) {
                 this._cancelableRequest = reject;
@@ -555,7 +555,7 @@ export class DeviceCommands {
         });
     }
 
-    _promptPassphrase() {
+    private _promptPassphrase() {
         return new Promise<PassphrasePromptResponse>((resolve, reject) => {
             if (this.device.listenerCount(DEVICE.PASSPHRASE) > 0) {
                 this._cancelableRequest = reject;
@@ -585,7 +585,7 @@ export class DeviceCommands {
         });
     }
 
-    _promptWord(type: Messages.WordRequestType) {
+    private _promptWord(type: Messages.WordRequestType) {
         return new Promise<string>((resolve, reject) => {
             this._cancelableRequest = reject;
             this.device.emit(DEVICE.WORD, this.device, type, (err, word) => {

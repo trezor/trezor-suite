@@ -223,7 +223,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 diff.released.forEach(descriptor => {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
-                    const methodStillRunning = !device?.commands?.disposed;
+                    const methodStillRunning = !device?.commands?.isDisposed();
 
                     if (device && methodStillRunning) {
                         device.keepSession = false;

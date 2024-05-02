@@ -194,7 +194,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
         const responses: MethodReturnType<typeof this.name> = [];
 
         const sendProgress = (progress: number, response: AccountInfo | null, error?: string) => {
-            if (!this.hasBundle || (this.device && this.device.getCommands().disposed)) return;
+            if (!this.hasBundle || (this.device && this.device.getCommands().isDisposed())) return;
             // send progress to UI
             this.postMessage(
                 createUiMessage(UI.BUNDLE_PROGRESS, {

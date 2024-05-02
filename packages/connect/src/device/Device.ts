@@ -330,7 +330,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
             await this.releasePromise.promise;
         }
 
-        if (!this.isUsedHere() || this.commands?.disposed || !this.getExternalState()) {
+        if (!this.isUsedHere() || this.commands?.isDisposed() || !this.getExternalState()) {
             // acquire session
             await this.acquire();
 
