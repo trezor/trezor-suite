@@ -38,6 +38,7 @@ jobs:
         with:
           role-to-assume: ${{ inputs.awsRoleToAssume }}
           aws-region: ${{ inputs.awsRegion }}
+        if: github.repository_owner == 'trezor'
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -101,6 +102,7 @@ jobs:
           cp -R ./packages/connect-web/build/* tmp_build_directory/
           cp -R ./packages/connect-explorer/build/* tmp_build_directory/
           aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
+        if: github.repository_owner == 'trezor'
 
       - name: Upload  connect-example webextension artifacts
         uses: actions/upload-artifact@v4

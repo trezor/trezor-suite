@@ -38,6 +38,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
           aws-region: eu-central-1
+        if: github.repository_owner == 'trezor'
 
       - name: Extract branch name
         id: extract_branch
@@ -72,6 +73,7 @@ jobs:
           DEPLOY_PATH: s3://dev.suite.sldev.cz/suite-web/${{ steps.extract_branch.outputs.branch }}
         run: |
           aws s3 sync --delete ./packages/suite-web/build ${DEPLOY_PATH}/web
+        if: github.repository_owner == 'trezor'
 
   e2e-test-suite-web:
     if: github.repository == 'trezor/trezor-suite'
