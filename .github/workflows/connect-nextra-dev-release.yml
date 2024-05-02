@@ -36,13 +36,6 @@ jobs:
       - name: "Pull LFS files for connect"
         run: git lfs pull --include "packages/connect-common/files/**/*"
 
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
-          aws-region: eu-central-1
-        if: github.repository_owner == 'trezor'
-
       - name: Extract branch name
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
         id: extract_branch
@@ -87,6 +80,13 @@ jobs:
           CONNECT_EXPLORER_BASE_PATH: /connect-nextra/${{ steps.extract_branch.outputs.branch }}
         run: |
           yarn workspace @trezor/connect-explorer-nextra build
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+        if: github.repository_owner == 'trezor'
 
       - name: Upload connect-explorer-nextra to dev.suite.sldev.cz
         env:

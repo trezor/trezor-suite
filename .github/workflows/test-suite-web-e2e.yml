@@ -33,13 +33,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
-          aws-region: eu-central-1
-        if: github.repository_owner == 'trezor'
-
       - name: Extract branch name
         id: extract_branch
         run: |
@@ -67,6 +60,14 @@ jobs:
           yarn workspace @trezor/connect-iframe build:lib
           yarn workspace @trezor/connect-web build
           yarn workspace @trezor/suite-web build
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy
+          aws-region: eu-central-1
+        if: github.repository_owner == 'trezor'
+
       # this step should upload build result to s3 bucket dev.suite.sldev.cz using awscli
       - name: Upload suite-web to dev.suite.sldev.cz
         env:

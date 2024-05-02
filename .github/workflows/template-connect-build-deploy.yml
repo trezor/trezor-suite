@@ -33,13 +33,6 @@ jobs:
       - name: "Pull LFS files for connect"
         run: git lfs pull --include "packages/connect-common/files/**/*"
 
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ inputs.awsRoleToAssume }}
-          aws-region: ${{ inputs.awsRegion }}
-        if: github.repository_owner == 'trezor'
-
       - name: Setup node
         uses: actions/setup-node@v4
         with:
@@ -89,6 +82,13 @@ jobs:
       - name: Build connect-explorer-webextension
         run: |
           yarn workspace @trezor/connect-explorer build:webextension
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ inputs.awsRoleToAssume }}
+          aws-region: ${{ inputs.awsRegion }}
+        if: github.repository_owner == 'trezor'
 
       # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
       - name: Upload connect-explorer to dev.suite.sldev.cz
