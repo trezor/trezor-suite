@@ -1,36 +1,38 @@
 {
+    "version": 1,
     "inputs": [
         {
+            "address_n": [2147483697, 2147483649, 2147483648, 0, 4],
             "prev_hash": "5e7667690076ae4737e2f872005de6f6b57592f32108ed9b301eeece6de24ad6",
             "prev_index": 1,
-            "address_n": [2147483697, 2147483649, 2147483648, 0, 4],
-            "amount": 100000,
-            "script_type": "SPENDP2SHWITNESS",
             "script_sig": "160014039ba06270e6c6c1ad4e6940515aa5cdbad33f9e",
-            "witness": "0247304402205cfe0d0ca30b23c462f535f0c3670761592ba42517bd65fca959887e131b61c9022017d692c3a24ee7aba1205c9a1ee0df5a3d1fcc6a2906c9a77cf1145edb903f8e012103bb0e339d7495b1f355c49d385b79343e52e68d99de2fe1f7f476c465c9ccd167",
-            "sequence": 4294967295
+            "sequence": 4294967295,
+            "script_type": "SPENDP2SHWITNESS",
+            "amount": 100000,
+            "witness": "0247304402205cfe0d0ca30b23c462f535f0c3670761592ba42517bd65fca959887e131b61c9022017d692c3a24ee7aba1205c9a1ee0df5a3d1fcc6a2906c9a77cf1145edb903f8e012103bb0e339d7495b1f355c49d385b79343e52e68d99de2fe1f7f476c465c9ccd167"
         },
         {
+            "address_n": [2147483697, 2147483649, 2147483648, 0, 3],
             "prev_hash": "efaa41ff3e67edf508846c1a1ed56894cfd32725c590300108f40c9edc1aac35",
             "prev_index": 0,
-            "address_n": [2147483697, 2147483649, 2147483648, 0, 3],
-            "amount": 998060,
-            "script_type": "SPENDP2SHWITNESS",
             "script_sig": "160014209297fb46272a0b7e05139440dbd39daea3e25a",
-            "sequence": 4294967295
+            "sequence": 4294967295,
+            "script_type": "SPENDP2SHWITNESS",
+            "amount": 998060,
+            "witness": "0247304402206f5b2032601278685921b397416cecd5f70cde48b7203bf2a953283c0cd05f4002205fd21a2c318330f11e8433f8fae6b1c4c257a79da55be9712961214ba2752a1f012103c2c2e65556ca4b7371549324b99390725493c8a6792e093a0bdcbb3e2d7df4ab"
         }
     ],
-    "lock_time": 0,
     "outputs": [
         {
             "address": "2MvUUSiQZDSqyeSdofKX9KrSCio1nANPDTe",
-            "amount": 1000000
+            "amount": 1000000,
+            "script_type": "PAYTOADDRESS"
         },
         {
             "address_n": [2147483697, 2147483649, 2147483648, 1, 3],
             "amount": 94280,
-            "script_type": 5
+            "script_type": "PAYTOP2SHWITNESS"
         }
     ],
-    "version": 1
+    "lock_time": 0
 }
