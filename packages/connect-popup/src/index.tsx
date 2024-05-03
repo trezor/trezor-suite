@@ -432,12 +432,15 @@ const initCoreInPopup = async (
         onCoreEvent,
         logWriterFactory,
     );
-    coreInitPromise.resolve(undefined);
+    //   this way it fails probably because core is not set yet on another place? but no, it doesn't make sense, its synchronous here :thinking-face:
+    // coreInitPromise.resolve(undefined);
 
     if (disposed) return;
 
     setState({ core });
     log.debug('initiated core');
+
+    coreInitPromise.resolve(undefined);
 
     // init transport - deprecated, here for backward compatibility
     if (initTransport) {
