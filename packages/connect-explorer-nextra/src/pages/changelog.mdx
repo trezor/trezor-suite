@@ -1,5 +1,4 @@
 ---
-auto_sections: false
 icon: LOG
 ---
 
@@ -7,6 +6,7 @@ import { useData } from 'nextra/data';
 import { serialize } from 'next-mdx-remote/serialize';
 import { MDXRemote } from 'next-mdx-remote';
 import rehypeSectionize from '@hbsnow/rehype-sectionize';
+import remarkGfm from 'remark-gfm';
 
 export const getStaticProps = ({ params }) => {
     return fetch(
@@ -21,11 +21,13 @@ export const getStaticProps = ({ params }) => {
                 /([a-f0-9]{7,10})([\),])/g,
                 `[\$1](https://github.com/trezor/trezor-suite/commit/\$1)$2`,
             );
-            
+            content = `## Version overview\n\n` + content;
+
             return content;
         })
         .then(content => serialize(content, {
             mdxOptions: {
+                remarkPlugins: [remarkGfm],
                 rehypePlugins: [[rehypeSectionize]],
             },
         }))
