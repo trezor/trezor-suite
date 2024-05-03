@@ -9,6 +9,8 @@ import {
 } from '@suite-common/wallet-utils';
 import { isClaimTx, isStakeTx, isStakeTypeTx, isUnstakeTx } from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
@@ -16,8 +18,6 @@ import {
     selectBlockchainHeightBySymbol,
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
-import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 export interface TransactionsState {
     isLoading: boolean;

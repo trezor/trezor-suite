@@ -26,8 +26,10 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
+import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -37,6 +39,7 @@ const rootReducer = combineReducers({
     firmware: firmwareReducer,
     backup: backupReducers,
     desktop: desktopReducer,
+    tokenDefinitions: tokenDefinitionsReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
