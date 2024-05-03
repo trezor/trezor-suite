@@ -8,6 +8,8 @@ import { DiscordIcon, GitHubIcon } from 'nextra/icons';
 import type { Item } from 'nextra/normalize-pages';
 import { z } from 'zod';
 
+import { Icon, IconType } from '@trezor/components';
+
 import { Anchor, Flexsearch, Footer, Navbar, TOC } from './components';
 import { MatchSorterSearch } from './components/match-sorter-search';
 import type { NavBarProps } from './components/navbar';
@@ -138,9 +140,9 @@ export const themeSchema = z.strictObject({
     sidebar: z.strictObject({
         autoCollapse: z.boolean().optional(),
         defaultMenuCollapseLevel: z.number().min(1).int(),
-        titleComponent: z.custom<ReactNode | FC<{ title: string; type: string; route: string }>>(
-            ...reactNode,
-        ),
+        titleComponent: z.custom<
+            ReactNode | FC<{ title: string; type: string; route: string; icon?: string }>
+        >(...reactNode),
         toggleButton: z.boolean(),
     }),
     themeSwitch: z.strictObject({
@@ -330,7 +332,20 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     },
     sidebar: {
         defaultMenuCollapseLevel: 1,
-        titleComponent: ({ title }) => <>{title}</>,
+        titleComponent: ({ title, icon }) => {
+            return (
+                <div
+                    style={{
+                        alignItems: 'center',
+                        display: 'flex',
+                        gap: '0.5rem',
+                    }}
+                >
+                    {icon && <Icon icon={icon as IconType} size={16} color="currentColor" />}
+                    {title}
+                </div>
+            );
+        },
         toggleButton: false,
     },
     themeSwitch: {
