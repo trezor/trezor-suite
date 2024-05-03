@@ -38,7 +38,6 @@
         "react-intl": "^6.6.2",
         "react-select": "^5.8.0",
         "react-svg": "^16.1.33",
-        "react-truncate": "^2.4.0",
         "react-use": "^17.5.0",
         "styled-components": "^6.1.8",
         "zxcvbn": "^4.4.2"
@@ -54,7 +53,6 @@
         "@storybook/react-webpack5": "^7.6.13",
         "@types/react": "18.2.79",
         "@types/react-date-range": "^1.4.9",
-        "@types/react-truncate": "^2.3.7",
         "postcss-styled-syntax": "^0.6.4",
         "storybook": "^7.6.13",
         "stylelint": "^16.2.1",

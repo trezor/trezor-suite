@@ -10228,7 +10228,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/react": "npm:18.2.79"
     "@types/react-date-range": "npm:^1.4.9"
-    "@types/react-truncate": "npm:^2.3.7"
     date-fns: "npm:^2.30.0"
     framer-motion: "npm:^11.0.3"
     lottie-react: "npm:^2.4.0"
@@ -10240,7 +10239,6 @@ __metadata:
     react-intl: "npm:^6.6.2"
     react-select: "npm:^5.8.0"
     react-svg: "npm:^16.1.33"
-    react-truncate: "npm:^2.4.0"
     react-use: "npm:^17.5.0"
     storybook: "npm:^7.6.13"
     styled-components: "npm:^6.1.8"
@@ -12553,15 +12551,6 @@ __metadata:
   dependencies:
     "@types/react": "npm:*"
   checksum: 10/5ea4d14eb0834e493a9896c6d0b6833f20dbaea394455fd6226af97385863a111bec51900e304ea1af5be3d7f8e193b215c2bc9379b26eff2b9cefefc440f5f2
-  languageName: node
-  linkType: hard
-
-"@types/react-truncate@npm:^2.3.7":
-  version: 2.3.7
-  resolution: "@types/react-truncate@npm:2.3.7"
-  dependencies:
-    "@types/react": "npm:*"
-  checksum: 10/8407a758cb2db8d18365cb20300f015817f4784f36ed56612357cc34c4618c85c7d820011447073655406681d98f73b9ba8c6df1c9214dba31073f9bfbf841a2
   languageName: node
   linkType: hard
 
@@ -34025,16 +34014,6 @@ __metadata:
     react: ">=16.6.0"
     react-dom: ">=16.6.0"
   checksum: 10/ca32d3fd2168c976c5d90a317f25d5f5cd723608b415fb3b9006f9d793c8965c619562d0884503a3e44e4b06efbca4fdd1520f30e58ca3e00a0890e637d55419
-  languageName: node
-  linkType: hard
-
-"react-truncate@npm:^2.4.0":
-  version: 2.4.0
-  resolution: "react-truncate@npm:2.4.0"
-  peerDependencies:
-    prop-types: <= 15.x.x
-    react: <= 16.x.x
-  checksum: 10/d29e171cc5c443bd71c60fb8de64423d96f18d79af97923622c5142e38126a9e88655328455380bff99ab22a68a1c93637eaabe4195a6c2fcf0d933e8659e836
   languageName: node
   linkType: hard
 
