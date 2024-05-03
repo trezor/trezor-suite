@@ -53,6 +53,13 @@ const MenuCategory = styled.div`
 
 const SelectWrapper = styled.div`
     margin-bottom: 0.5rem;
+    .react-select__control {
+        border-style: solid;
+        border-color: ${({ theme }) => theme.borderElevation1};
+    }
+    .react-select__control:hover:not(:focus-within) {
+        border-color: ${({ theme }) => theme.borderElevation0};
+    }
 `;
 
 const Option = styled.div`
@@ -397,6 +404,7 @@ export function File({
                     title: item.title,
                     type: item.type,
                     route: item.route,
+                    icon: item.kind === 'MdxPage' && item.frontMatter?.icon,
                 })}
             </Anchor>
             {active && anchors.length > 0 && (
