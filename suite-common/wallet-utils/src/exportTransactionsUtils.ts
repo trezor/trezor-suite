@@ -6,16 +6,13 @@ import BigNumber from 'bignumber.js';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TransactionTarget } from '@trezor/connect';
 import { Network } from '@suite-common/wallet-config';
-import {
-    ExportFileType,
-    TokenDefinitions,
-    WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { ExportFileType, WalletAccountTransaction } from '@suite-common/wallet-types';
 
 import { formatNetworkAmount, formatAmount } from './accountUtils';
 import { getNftTokenId, isNftTokenTransfer } from './transactionUtils';
 import { localizeNumber } from './localizeNumberUtils';
 import { getIsPhishingTransaction } from './antiFraud';
+import { TokenDefinitions } from '@suite-common/token-definitions';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];

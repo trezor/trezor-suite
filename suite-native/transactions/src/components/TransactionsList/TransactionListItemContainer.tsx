@@ -18,13 +18,13 @@ import {
     selectIsPhishingTransaction,
     selectIsTransactionPending,
     selectTransactionBlockTimeById,
-    TokenDefinitionsRootState,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 import { Color } from '@trezor/theme';
 import { Translation } from '@suite-native/intl';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { TransactionIcon } from './TransactionIcon';
 

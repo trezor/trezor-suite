@@ -9,7 +9,6 @@ export * from './sendForm';
 export * from './settings';
 export * from './selectedAccount';
 export * from './transaction';
-export * from './tokenDefinitions';
 export * from './stake';
 export * from './stakeForm';
 export * from './unstakeForm';

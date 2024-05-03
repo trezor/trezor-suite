@@ -13,7 +13,7 @@ import {
     selectFiatRates,
 } from '@suite-common/wallet-core';
 import BigNumber from 'bignumber.js';
-import { Timestamp, TokenAddress, TokenDefinitions } from '@suite-common/wallet-types';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import {
@@ -24,7 +24,7 @@ import {
 import { getShortFingerprint } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { TokenDefinitions, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;

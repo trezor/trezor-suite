@@ -1,8 +1,8 @@
 import BigNumber from 'bignumber.js';
 import { D } from '@mobily/ts-belt';
 
-import type { TokenDefinitions, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import type { WalletAccountTransaction } from '@suite-common/wallet-types';
+import { TokenDefinitions, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import { getNetworkType } from '@suite-common/wallet-config';
 
 import { isNftTokenTransfer } from './transactionUtils';

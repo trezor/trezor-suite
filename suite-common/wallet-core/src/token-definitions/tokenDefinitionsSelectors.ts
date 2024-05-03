@@ -1,10 +1,9 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { TokenDefinitionsRootState, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import { TokenInfo } from '@trezor/connect';
 
-import { TokenDefinitionsRootState } from './tokenDefinitionsTypes';
 import {
     AccountsRootState,
     selectAccountsByDeviceStateAndNetworkSymbol,

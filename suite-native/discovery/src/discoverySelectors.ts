@@ -1,9 +1,9 @@
 import { pipe, A, D } from '@mobily/ts-belt';
 
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
-    TokenDefinitionsRootState,
     selectValidTokensByNetworkSymbolAndDeviceState,
 } from '@suite-common/wallet-core';
 import {

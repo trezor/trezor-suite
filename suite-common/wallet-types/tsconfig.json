@@ -5,7 +5,6 @@
         { "path": "../intl-types" },
         { "path": "../metadata-types" },
         { "path": "../suite-config" },
-        { "path": "../token-definitions" },
         { "path": "../wallet-config" },
         { "path": "../wallet-constants" },
         {
