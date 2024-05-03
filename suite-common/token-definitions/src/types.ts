@@ -17,7 +17,7 @@ export type TokenDefinitionsState = {
     [key in NetworkSymbol]?: TokenDefinitions;
 };
 
-export type TokenDefinitionsRootState = { wallet: { tokenDefinitions: TokenDefinitionsState } };
+export type TokenDefinitionsRootState = { tokenDefinitions: TokenDefinitionsState };
 
 type TokenDefinition = {
     error: boolean;

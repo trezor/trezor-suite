@@ -12,7 +12,7 @@ import { fromWei, toHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
-import { ValidatorsQueue } from '@suite-common/wallet-core/src/stake/stakeTypes';
+import { ValidatorsQueue } from '@suite-common/wallet-core';
 
 // Gas reserve ensuring txs are processed
 const GAS_RESERVE = 220000;

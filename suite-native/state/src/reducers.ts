@@ -54,7 +54,6 @@ export const prepareRootReducers = async () => {
         fiat: fiatRatesReducer,
         transactions: transactionsReducer,
         discovery: discoveryReducer,
-        tokenDefinitions: tokenDefinitionsReducer,
         fees: feesReducer,
     });
 
@@ -130,5 +129,6 @@ export const prepareRootReducers = async () => {
         notifications: notificationsReducer,
         discoveryConfig: discoveryConfigPersistedReducer,
         messageSystem: messageSystemPersistedReducer,
+        tokenDefinitions: tokenDefinitionsReducer,
     });
 };

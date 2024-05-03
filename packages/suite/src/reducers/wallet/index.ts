@@ -23,14 +23,12 @@ import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
 import pollingReducer from './pollingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
-import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);
 export const blockchainReducer = prepareBlockchainReducer(extraDependencies);
 export const fiatRatesReducer = prepareFiatRatesReducer(extraDependencies);
 export const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
-export const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 export const stakeReducer = prepareStakeReducer(extraDependencies);
 export const sendFormReducer = prepareSendFormReducer(extraDependencies);
 
@@ -52,7 +50,6 @@ const WalletReducers = combineReducers({
     cardanoStaking: cardanoStakingReducer,
     pollings: pollingReducer,
     coinjoin: coinjoinReducer,
-    tokenDefinitions: tokenDefinitionsReducer,
     stake: stakeReducer,
 });
 

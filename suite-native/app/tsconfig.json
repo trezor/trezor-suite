@@ -22,6 +22,9 @@
             "path": "../../suite-common/suite-constants"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../accounts" },

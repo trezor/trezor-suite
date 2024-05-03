@@ -10,17 +10,17 @@ import { isTokenDefinitionKnown } from './utils';
 export const selectNetworkTokenDefinitions = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
-) => state.wallet.tokenDefinitions?.[networkSymbol];
+) => state.tokenDefinitions?.[networkSymbol];
 
 export const selectCoinDefinitions = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
-) => state.wallet.tokenDefinitions?.[networkSymbol]?.coin;
+) => state.tokenDefinitions?.[networkSymbol]?.coin;
 
 export const selectNftDefinitions = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
-) => state.wallet.tokenDefinitions?.[networkSymbol]?.nft;
+) => state.tokenDefinitions?.[networkSymbol]?.nft;
 
 export const selectCoinDefinition = (
     state: TokenDefinitionsRootState,
@@ -28,7 +28,7 @@ export const selectCoinDefinition = (
     contractAddress: string,
 ) =>
     isTokenDefinitionKnown(
-        state.wallet.tokenDefinitions?.[networkSymbol]?.coin?.data,
+        state.tokenDefinitions?.[networkSymbol]?.coin?.data,
         networkSymbol,
         contractAddress,
     );
@@ -43,9 +43,7 @@ export const selectFilterKnownTokens = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
     tokens: TokenInfo[],
-) => {
-    return tokens.filter(token => selectCoinDefinition(state, networkSymbol, token.contract));
-};
+) => tokens.filter(token => selectCoinDefinition(state, networkSymbol, token.contract));
 
 export const selectValidTokensByDeviceStateAndNetworkSymbol = (
     state: TokenDefinitionsRootState,
