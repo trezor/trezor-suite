@@ -46,7 +46,7 @@ export default function MyApp(props: AppProps) {
     return (
         <NextThemeProvider attribute="class" disableTransitionOnChange>
             <Head>
-                <link rel="icon" type="image/png" href="favicon.png" />
+                <link rel="icon" type="image/png" href="images/favicon.png" />
             </Head>
             <ThemeComponent {...props} />
         </NextThemeProvider>
