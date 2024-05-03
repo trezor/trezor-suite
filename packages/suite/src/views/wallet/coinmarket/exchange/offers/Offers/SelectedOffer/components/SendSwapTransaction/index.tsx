@@ -1,16 +1,7 @@
 import { useState, ChangeEvent, MouseEventHandler } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
-import {
-    Button,
-    Icon,
-    Input,
-    Paragraph,
-    SelectBar,
-    Tooltip,
-    Truncate,
-    variables,
-} from '@trezor/components';
+import { Button, Icon, Input, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import useDebounce from 'react-use/lib/useDebounce';
 import BigNumber from 'bignumber.js';
@@ -366,9 +357,7 @@ const SendSwapTransactionComponent = () => {
                     <Translation id="TR_EXCHANGE_SWAP_DATA" />
                 </LabelText>
                 <BreakableValue>
-                    <Paragraph typographyStyle="hint">
-                        <Truncate>{dexTx.data}</Truncate>
-                    </Paragraph>
+                    <Paragraph typographyStyle="hint">{dexTx.data}</Paragraph>
                 </BreakableValue>
             </Row>
             <ButtonWrapper>

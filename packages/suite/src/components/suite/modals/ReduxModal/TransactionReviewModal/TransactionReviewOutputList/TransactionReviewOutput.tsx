@@ -227,8 +227,6 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
             ];
         }
 
-        const hasExpansion = (type === 'opreturn' || type === 'data') && outputValue.length >= 10;
-
         return (
             <TransactionReviewOutputElement
                 ref={ref}
@@ -239,7 +237,6 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                 state={state}
                 cryptoSymbol={outputSymbol as NetworkSymbol}
                 fiatSymbol={symbol}
-                hasExpansion={hasExpansion}
                 fiatVisible={fiatVisible}
                 displayMode={displayMode}
             />
