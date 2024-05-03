@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { CopyToClipboard } from 'nextra/components';
 
-import { Button as TrezorButton, H3 } from '@trezor/components';
+import { Button as TrezorButton, H3, Card } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 import type { Field, FieldWithBundle, FieldWithUnion } from '../types';
@@ -107,6 +107,23 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
                 />
             );
         case 'json':
+            return (
+                <Card
+                    key={field.name}
+                    paddingType="small"
+                    label={field.name}
+                    margin={{ bottom: 8 }}
+                >
+                    <CodeEditor
+                        code={
+                            typeof field.value === 'string'
+                                ? field.value
+                                : JSON.stringify(field.value, null, 2)
+                        }
+                        codeChange={code => props.actions.onFieldChange(field, code)}
+                    />
+                </Card>
+            );
         case 'textarea':
         case 'function':
             return (
