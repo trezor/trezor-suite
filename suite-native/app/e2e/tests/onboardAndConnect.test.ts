@@ -40,7 +40,7 @@ describe('Go through onboarding and connect Trezor.', () => {
 
             await waitFor(element(by.text(TREZOR_DEVICE_LABEL)))
                 .toBeVisible()
-                .withTimeout(10000); // communication between connected Trezor and app takes some time.
+                .withTimeout(20000); // communication between connected Trezor and app takes some time.
 
             await detoxExpect(element(by.text('My portfolio balance'))).toBeVisible();
         } else {
