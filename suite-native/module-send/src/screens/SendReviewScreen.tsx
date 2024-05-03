@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 import { CommonActions } from '@react-navigation/native';
+import { isFulfilled, isRejected } from '@reduxjs/toolkit';
 
 import {
     AppTabsRoutes,
@@ -45,10 +46,10 @@ export const SendReviewScreen = ({
         const signTransactionOnDevice = async () => {
             const signedTransactionResponse = await dispatch(
                 onDeviceTransactionReviewThunk({ accountKey }),
-            ).unwrap();
+            );
 
-            if (signedTransactionResponse) {
-                setSignedTransaction(signedTransactionResponse);
+            if (isFulfilled(signedTransactionResponse)) {
+                setSignedTransaction(signedTransactionResponse.payload);
             } else {
                 // TODO: error handling.
             }
@@ -61,11 +62,11 @@ export const SendReviewScreen = ({
     const handleSendTransaction = async () => {
         if (!signedTransaction) return;
 
-        const result = await dispatch(
+        const sendResponse = await dispatch(
             sendTransactionAndCleanupSendFormThunk({ account, signedTransaction }),
         ).unwrap();
 
-        if (!result) {
+        if (isRejected(sendResponse)) {
             // TODO: error handling
         }
 
@@ -96,7 +97,7 @@ export const SendReviewScreen = ({
     // TODO: move text content to @suite-native/intl package when is copy ready
     return (
         <Screen
-            subheader={<ScreenSubHeader content={'Send review screen'} leftIcon={<GoBackIcon />} />}
+            subheader={<ScreenSubHeader content="Send review screen" leftIcon={<GoBackIcon />} />}
         >
             <VStack justifyContent="center" alignItems="center">
                 <ReviewOutputItemList accountKey={accountKey} />

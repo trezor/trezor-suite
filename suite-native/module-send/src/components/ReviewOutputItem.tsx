@@ -52,11 +52,11 @@ export const ReviewOutputItem = ({
 }: {
     networkSymbol: NetworkSymbol;
     reviewOutput: StatefulReviewOutput;
-    status: 'success' | 'active' | 'todo';
+    status: ReviewOutputState;
 }) => {
     return (
         <VStack flex={1} justifyContent="center" alignItems="center">
-            <HStack key={reviewOutput.label} alignItems="center" justifyContent="center">
+            <HStack alignItems="center" justifyContent="center">
                 <Text>{reviewOutput.type}:</Text>
             </HStack>
             <AlertBox

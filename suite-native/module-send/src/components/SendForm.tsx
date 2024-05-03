@@ -98,8 +98,7 @@ export const SendForm = ({ accountKey }: SendFormProps) => {
         });
     }, [isFormValid, dispatch, debounce, accountKey, rawValues]);
 
-    const handleNavigateToReview = handleSubmit(() => {
-        // Redirect to review screen where is on-device inputs validation via TrezorConnect started.
+    const handleNavigateToReviewScreen = handleSubmit(() => {
         navigation.navigate(SendStackRoutes.SendReview, { accountKey });
     });
 
@@ -128,7 +127,7 @@ export const SendForm = ({ accountKey }: SendFormProps) => {
                         accessibilityRole="button"
                         accessibilityLabel="validate send form"
                         testID="@send/form-submit-button"
-                        onPress={handleNavigateToReview}
+                        onPress={handleNavigateToReviewScreen}
                     >
                         Review & Send
                     </Button>

@@ -27,11 +27,11 @@ export const onDeviceTransactionReviewThunk = createThunk(
         const device = selectDevice(getState());
         const networkFeeInfo = selectNetworkFeeInfo(getState(), account?.symbol);
 
-        const formState = selectSendFormDraftByAccountKey(getState(), accountKey);
+        const formValues = selectSendFormDraftByAccountKey(getState(), accountKey);
 
-        if (!account || !formState || !networkFeeInfo || !device)
+        if (!account || !formValues || !networkFeeInfo || !device)
             return rejectWithValue(
-                'Failed to get account, formState, networkFeeInfo or device from redux store.',
+                'Failed to get account, form draft, fee info or device from redux store.',
             );
 
         const network = getNetwork(account.symbol);
@@ -50,7 +50,7 @@ export const onDeviceTransactionReviewThunk = createThunk(
         //compose transaction with specific fee levels
         const composedTransactionFeeLevels = await dispatch(
             composeSendFormTransactionThunk({
-                formValues: formState,
+                formValues,
                 formState: composeContext,
             }),
         ).unwrap();
@@ -64,7 +64,7 @@ export const onDeviceTransactionReviewThunk = createThunk(
         // prepare transaction with select fee level
         const enhancedTx = await dispatch(
             prepareTransactionForSigningThunk({
-                transactionFormValues: formState,
+                transactionFormValues: formValues,
                 transactionInfo: selectedFeeLevel,
                 selectedAccount: account,
             }),
@@ -75,7 +75,7 @@ export const onDeviceTransactionReviewThunk = createThunk(
         const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
             dispatch(
                 signTransactionThunk({
-                    formValues: formState,
+                    formValues,
                     transactionInfo: enhancedTx,
                     selectedAccount: account,
                 }),
