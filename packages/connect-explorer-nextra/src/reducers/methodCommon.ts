@@ -47,7 +47,7 @@ export const getParam = (field: FieldBasic<any>, $params: Record<string, any> = 
                     value = undefined;
                 }
             } else {
-                value = field.value;
+                value = JSON.parse(JSON.stringify(field.value));
             }
         } catch (error) {
             value = `Invalid json, ${error.toString()}`;
