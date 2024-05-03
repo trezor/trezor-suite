@@ -8,7 +8,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { isSupportedNetworkSymbol } from '@suite-common/wallet-core/src/stake/stakeTypes';
+import { isSupportedNetworkSymbol } from '@suite-common/wallet-core';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};

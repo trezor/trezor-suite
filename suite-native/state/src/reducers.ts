@@ -7,7 +7,6 @@ import {
     prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareFiatRatesReducer,
-    prepareTokenDefinitionsReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
 import { appSettingsReducer, appSettingsPersistWhitelist } from '@suite-native/module-settings';
@@ -26,6 +25,7 @@ import { notificationsReducer } from '@suite-common/toast-notifications';
 import { graphReducer, graphPersistWhitelist } from '@suite-native/graph';
 import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
+import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';

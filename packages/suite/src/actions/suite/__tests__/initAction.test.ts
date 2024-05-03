@@ -14,8 +14,6 @@ import {
     initBlockchainThunk,
     periodicFetchFiatRatesThunk,
     preloadFeeInfoThunk,
-    initTokenDefinitionsThunk,
-    periodicCheckTokenDefinitionsThunk,
     initStakeDataThunk,
     periodicCheckStakeDataThunk,
 } from '@suite-common/wallet-core';
@@ -35,6 +33,10 @@ import type { AppState } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { appChanged } from '../suiteActions';
+import {
+    initTokenDefinitionsThunk,
+    periodicCheckTokenDefinitionsThunk,
+} from '@suite-common/token-definitions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);

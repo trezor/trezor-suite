@@ -27,8 +27,8 @@ import {
     validateMin,
 } from 'src/utils/suite/validation';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { selectCoinDefinitions } from '@suite-common/wallet-core';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
 
 const Option = styled.div`
     display: flex;

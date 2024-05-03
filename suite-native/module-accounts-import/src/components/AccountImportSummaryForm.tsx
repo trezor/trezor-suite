@@ -7,7 +7,6 @@ import {
     AccountsRootState,
     selectAccountsByNetworkAndDeviceState,
     PORTFOLIO_TRACKER_DEVICE_STATE,
-    selectFilterKnownTokens,
     FiatRatesRootState,
 } from '@suite-common/wallet-core';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
@@ -27,7 +26,10 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import {
+    selectFilterKnownTokens,
+    TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';

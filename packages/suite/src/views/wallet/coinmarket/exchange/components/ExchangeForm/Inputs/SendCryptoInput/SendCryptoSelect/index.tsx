@@ -12,9 +12,10 @@ import {
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectCoinDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
 
 const Option = styled.div`
     display: flex;

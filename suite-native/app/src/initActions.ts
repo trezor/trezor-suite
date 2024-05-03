@@ -3,7 +3,6 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import {
     createImportedDeviceThunk,
     initBlockchainThunk,
-    periodicCheckTokenDefinitionsThunk,
     periodicFetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
@@ -11,6 +10,7 @@ import { selectFiatCurrencyCode } from '@suite-native/module-settings';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { wipeDisconnectedDevicesDataThunk } from '@suite-native/device';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 
 let isAlreadyInitialized = false;
 
