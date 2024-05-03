@@ -25,7 +25,7 @@ on:
       - "yarn.lock"
       - ".github/workflows/connect-dev-release-test.yml"
       - ".github/workflows/template-connect-popup-test-params.yml"
-      - ".github/workflows/template-connect-build-deploy.yml"
+      - ".github/actions/release-connect/**"
       - "docker/docker-connect-popup-ci.sh"
   workflow_dispatch:
 
@@ -48,12 +48,19 @@ jobs:
 
   build-deploy:
     needs: [extract-branch]
-    uses: ./.github/workflows/template-connect-build-deploy.yml
-    with:
-      awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
-      awsRegion: "eu-central-1"
-      serverHostname: "dev.suite.sldev.cz"
-      serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.extract-branch.outputs.branch }}
+
+      - name: Release connect to dev environment
+        uses: ./.github/actions/release-connect
+        with:
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          awsRegion: "eu-central-1"
+          serverHostname: "dev.suite.sldev.cz"
+          serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
 
   methods:
     needs: [build-deploy]
