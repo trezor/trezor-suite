@@ -1,10 +1,11 @@
 // https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/ts_src/payments/p2pk.ts
 
-import ecc from 'tiny-secp256k1';
+import * as ecc from 'tiny-secp256k1';
 import { bitcoin as BITCOIN_NETWORK } from '../networks';
 import * as bscript from '../script';
 import * as lazy from './lazy';
 import { Payment, PaymentOpts, StackFunction, typeforce } from '../types';
+import { uin8ArrayToBuffer } from '../uin8ArrayToBuffer';
 
 const { OPS } = bscript;
 
@@ -64,7 +65,13 @@ export function p2pk(a: Payment, opts?: PaymentOpts): Payment {
         if (a.output) {
             if (a.output[a.output.length - 1] !== OPS.OP_CHECKSIG)
                 throw new TypeError('Output is invalid');
-            if (!ecc.isPoint(o.pubkey)) throw new TypeError('Output pubkey is invalid');
+
+            if (o.pubkey === undefined) {
+                throw new Error('pubkey is undefined');
+            }
+
+            if (!ecc.isPoint(uin8ArrayToBuffer(o.pubkey)))
+                throw new TypeError('Output pubkey is invalid');
             if (a.pubkey && !a.pubkey.equals(o.pubkey!)) throw new TypeError('Pubkey mismatch');
         }
 

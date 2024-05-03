@@ -5,13 +5,14 @@
 // - `identifier` method is using different hashing for Decred.
 // - `fromBase58` and `toBase58` methods are using additional "network" param in bs58check.encode/decode (Decred support).
 
-import ecc from 'tiny-secp256k1';
+import * as ecc from 'tiny-secp256k1';
 import wif from 'wif';
 import { typeforce } from './types/typeforce';
 import * as bs58check from './bs58check';
 import * as crypto from './crypto';
 import { bitcoin as BITCOIN, isNetworkType } from './networks';
 import type { Network } from './networks';
+import { uin8ArrayToBuffer } from './uin8ArrayToBuffer';
 
 const UINT256_TYPE = typeforce.BufferN(32);
 const NETWORK_TYPE = typeforce.compile({
@@ -131,13 +132,15 @@ class BIP32 implements BIP32Interface {
     }
 
     get publicKey(): Buffer {
-        if (this.__Q === undefined) this.__Q = ecc.pointFromScalar(this.__D, true);
+        if (this.__Q === undefined && this.__D !== undefined) {
+            this.__Q = uin8ArrayToBuffer(ecc.pointFromScalar(this.__D, true)) ?? undefined;
+        }
 
         return this.__Q!;
     }
 
     get privateKey(): Buffer | undefined {
-        return this.__D;
+        return uin8ArrayToBuffer(this.__D) ?? undefined;
     }
 
     get identifier(): Buffer {
@@ -248,14 +251,18 @@ class BIP32 implements BIP32Interface {
         // Private parent key -> private child key
         let hd: BIP32Interface;
         if (!this.isNeutered()) {
+            if (this.privateKey === undefined) {
+                throw Error('PrivateKey is undefined');
+            }
+
             // ki = parse256(IL) + kpar (mod n)
-            const ki = ecc.privateAdd(this.privateKey, IL);
+            const ki = ecc.privateAdd(uin8ArrayToBuffer(this.privateKey), IL);
 
             // In case ki == 0, proceed with the next value for i
             if (ki == null) return this.derive(index + 1);
 
             hd = fromPrivateKeyLocal(
-                ki,
+                uin8ArrayToBuffer(ki),
                 IR,
                 this.network,
                 this.depth + 1,
@@ -273,7 +280,7 @@ class BIP32 implements BIP32Interface {
             if (Ki === null) return this.derive(index + 1);
 
             hd = fromPublicKeyLocal(
-                Ki,
+                uin8ArrayToBuffer(Ki),
                 IR,
                 this.network,
                 this.depth + 1,
@@ -319,7 +326,7 @@ class BIP32 implements BIP32Interface {
         if (!this.privateKey) throw new Error('Missing private key');
         if (lowR === undefined) lowR = this.lowR;
         if (lowR === false) {
-            return ecc.sign(hash, this.privateKey);
+            return uin8ArrayToBuffer(ecc.sign(hash, this.privateKey));
         }
         let sig = ecc.sign(hash, this.privateKey);
         const extraData = Buffer.alloc(32, 0);
@@ -329,10 +336,10 @@ class BIP32 implements BIP32Interface {
         while (sig[0] > 0x7f) {
             counter++;
             extraData.writeUIntLE(counter, 0, 6);
-            sig = ecc.signWithEntropy(hash, this.privateKey, extraData);
+            sig = ecc.sign(hash, this.privateKey, extraData);
         }
 
-        return sig;
+        return uin8ArrayToBuffer(sig);
     }
 
     verify(hash: Buffer, signature: Buffer): boolean {

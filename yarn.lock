@@ -11287,7 +11287,7 @@ __metadata:
     int64-buffer: "npm:^1.0.1"
     minimaldata: "npm:^1.0.2"
     pushdata-bitcoin: "npm:^1.0.1"
-    tiny-secp256k1: "npm:^1.1.6"
+    tiny-secp256k1: "npm:^2.2.3"
     tsx: "npm:^4.7.0"
     typeforce: "npm:^1.18.0"
     varuint-bitcoin: "npm:^1.1.2"
@@ -30025,7 +30025,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"nan@npm:^2.13.2, nan@npm:^2.14.0":
+"nan@npm:^2.14.0":
   version: 2.18.0
   resolution: "nan@npm:2.18.0"
   dependencies:
@@ -37727,17 +37727,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tiny-secp256k1@npm:^1.1.6":
-  version: 1.1.6
-  resolution: "tiny-secp256k1@npm:1.1.6"
+"tiny-secp256k1@npm:^2.2.3":
+  version: 2.2.3
+  resolution: "tiny-secp256k1@npm:2.2.3"
   dependencies:
-    bindings: "npm:^1.3.0"
-    bn.js: "npm:^4.11.8"
-    create-hmac: "npm:^1.1.7"
-    elliptic: "npm:^6.4.0"
-    nan: "npm:^2.13.2"
-    node-gyp: "npm:latest"
-  checksum: 10/e25b45ba3e95a332d21556617f2049f7ef065c737dd979e197856f35ef0bd9ee5608872f0068e5cddf0b50919b43b8eaca86bdea560f623e63ec5c560934ca9b
+    uint8array-tools: "npm:0.0.7"
+  checksum: 10/9975134c5c86587bb0e9886dd2e66a7a9b79931cb2c3e32b24bcfc2096216781828bb7c5482c0fa18a632ce1b907f6cc86bf12238704ec9cd43d1e81d8af502e
   languageName: node
   linkType: hard
 
@@ -38551,6 +38546,13 @@ __metadata:
   bin:
     uglifyjs: bin/uglifyjs
   checksum: 10/4c0b800e0ff192079d2c3ce8414fd3b656a570028c7c79af5c29c53d5c532b68bbcae4ad47307f89c2ee124d11826fff7a136b59d5c5bb18422bcdf5568afe1e
+  languageName: node
+  linkType: hard
+
+"uint8array-tools@npm:0.0.7":
+  version: 0.0.7
+  resolution: "uint8array-tools@npm:0.0.7"
+  checksum: 10/6ffc45c7d2136757d63c6e556eb8345f908948618a9de37c805fec1249d989c265187b3fbef6cffc4ce5129083204829025b3c58800a0f24c8548e243d42ba13
   languageName: node
   linkType: hard
 

@@ -54,8 +54,6 @@ declare module 'bitcoin-ops';
 
 declare module 'minimaldata';
 
-declare module 'tiny-secp256k1';
-
 declare module 'pushdata-bitcoin' {
     function encodingLength(len: number): number;
     function encode(buffer: Buffer, number: number, offset: number): number;

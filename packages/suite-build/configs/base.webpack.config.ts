@@ -197,6 +197,8 @@ const config: webpack.Configuration = {
               ]
             : []),
     ],
+    // For tiny-secp256k1
+    experiments: { asyncWebAssembly: true },
 };
 
 export default config;

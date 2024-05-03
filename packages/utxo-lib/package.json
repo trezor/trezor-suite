@@ -53,7 +53,7 @@
         "create-hmac": "^1.1.7",
         "int64-buffer": "^1.0.1",
         "pushdata-bitcoin": "^1.0.1",
-        "tiny-secp256k1": "^1.1.6",
+        "tiny-secp256k1": "^2.2.3",
         "typeforce": "^1.18.0",
         "varuint-bitcoin": "^1.1.2",
         "wif": "^4.0.0"
