@@ -32,28 +32,28 @@ export const NetworkTransactionDetailSummary = ({
         selectTransactionAddresses(state, txid, accountKey, 'outputs'),
     );
 
-    if (
-        !transaction ||
-        A.isEmpty(transactionInputAddresses) ||
-        A.isEmpty(transactionOutputAddresses)
-    ) {
+    if (!transaction) {
         return <ErrorMessage errorMessage="Target or Origin of transaction is unknown." />;
     }
 
     return (
         <VStack>
-            <TransactionDetailAddressesSection
-                addressesType="inputs"
-                addresses={transactionInputAddresses}
-                onShowMore={onShowMore}
-                icon={transaction.symbol}
-            />
+            {A.isNotEmpty(transactionInputAddresses) && (
+                <TransactionDetailAddressesSection
+                    addressesType="inputs"
+                    addresses={transactionInputAddresses}
+                    onShowMore={onShowMore}
+                    icon={transaction.symbol}
+                />
+            )}
             <TransactionDetailStatusSection txid={txid} accountKey={accountKey} />
-            <TransactionDetailAddressesSection
-                addressesType="outputs"
-                addresses={transactionOutputAddresses}
-                onShowMore={onShowMore}
-            />
+            {A.isNotEmpty(transactionOutputAddresses) && (
+                <TransactionDetailAddressesSection
+                    addressesType="outputs"
+                    addresses={transactionOutputAddresses}
+                    onShowMore={onShowMore}
+                />
+            )}
         </VStack>
     );
 };
