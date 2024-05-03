@@ -16,7 +16,8 @@
         "eas-build-on-success": "./eas-post-success.sh",
         "prebuild:clean": "expo prebuild --clean",
         "build:e2e": "../../node_modules/.bin/detox build --configuration",
-        "test:e2e": "../../node_modules/.bin/detox test --configuration"
+        "test:e2e": "../../node_modules/.bin/detox test --configuration",
+        "reverse-ports": "adb reverse tcp:8081 tcp:8081 && adb reverse tcp:21325 tcp:21325 && adb reverse tcp:19121 tcp:19121"
     },
     "dependencies": {
         "@react-native/metro-config": "0.73.4",
