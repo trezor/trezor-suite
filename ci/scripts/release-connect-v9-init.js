@@ -23,6 +23,8 @@ const init = () => {
     exec('git', ['checkout', '-b', branchName]);
 
     exec('git', ['push', 'origin', branchName]);
+    // Version is console.log so it can be capture by the GH Action.
+    console.log(version);
 };
 
 init();
