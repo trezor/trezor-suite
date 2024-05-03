@@ -31,7 +31,7 @@ import { selectTransactions } from './transactionsReducer';
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
 
 /**
  * Replace existing transaction in the reducer (RBF)

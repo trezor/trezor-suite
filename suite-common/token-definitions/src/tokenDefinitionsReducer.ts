@@ -1,7 +1,7 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { TokenDefinitionsState } from '@suite-common/token-definitions';
 
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
+import { TokenDefinitionsState } from './types';
 
 const initialStatePredefined: Partial<TokenDefinitionsState> = {};
 

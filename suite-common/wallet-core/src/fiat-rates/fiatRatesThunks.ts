@@ -13,7 +13,7 @@ import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { FIAT_RATES_MODULE_PREFIX, REFETCH_INTERVAL } from './fiatRatesConstants';
 import { selectTickersToBeUpdated, selectTransactionsWithMissingRates } from './fiatRatesSelectors';
 import { transactionsActions } from '../transactions/transactionsActions';
-import { selectIsSpecificCoinDefinitionKnown } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectIsSpecificCoinDefinitionKnown } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
 import { selectIsElectrumBackendSelected } from '../blockchain/blockchainSelectors';
 
 type UpdateTxsFiatRatesThunkPayload = {

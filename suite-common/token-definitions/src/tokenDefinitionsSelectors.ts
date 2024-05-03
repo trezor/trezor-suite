@@ -1,13 +1,10 @@
 import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { TokenDefinitionsRootState, isTokenDefinitionKnown } from '@suite-common/token-definitions';
 import { TokenInfo } from '@trezor/connect';
 
-import {
-    AccountsRootState,
-    selectAccountsByDeviceStateAndNetworkSymbol,
-} from '../accounts/accountsReducer';
+import { TokenDefinitionsRootState } from './types';
+import { isTokenDefinitionKnown } from './utils';
 
 export const selectNetworkTokenDefinitions = (
     state: TokenDefinitionsRootState,
