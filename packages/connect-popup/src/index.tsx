@@ -27,6 +27,8 @@ import { ErrorViewProps } from '@trezor/connect-ui/src/views/Error';
 import { analytics, EventType } from '@trezor/connect-analytics';
 import { getSystemInfo } from '@trezor/connect-common';
 
+import { createDeferred } from '@trezor/utils';
+
 import * as view from './view';
 import {
     getState,
@@ -45,6 +47,7 @@ const proxyLogger = initLog('@trezor/connect-webextension');
 let handshakeTimeout: ReturnType<typeof setTimeout>;
 let renderConnectUIPromise: Promise<void> | undefined;
 
+const coreInitPromise = createDeferred<undefined>();
 // browser built-in functionality to quickly and safely escape the string
 const escapeHtml = (payload: any) => {
     if (!payload) return;
@@ -280,7 +283,7 @@ const handleMessageInIframeMode = (
     handleUIAffectingMessage(message);
 };
 
-const handleMessageInCoreMode = (
+const handleMessageInCoreMode = async (
     event: MessageEvent<
         PopupEvent | UiEvent | IFrameLogRequest | IFrameCallMessage | MethodResponseMessage
     >,
@@ -290,6 +293,8 @@ const handleMessageInCoreMode = (
     if (!data) return;
 
     if (disposed) return;
+
+    await coreInitPromise.promise;
 
     if (data.type === POPUP.HANDSHAKE) {
         handshake(data, getState().settings?.origin || '');
@@ -427,6 +432,8 @@ const initCoreInPopup = async (
         onCoreEvent,
         logWriterFactory,
     );
+    coreInitPromise.resolve(undefined);
+
     if (disposed) return;
 
     setState({ core });
