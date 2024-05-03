@@ -66,6 +66,9 @@ export type SendStackParamList = {
     [SendStackRoutes.SendForm]: {
         accountKey: AccountKey;
     };
+    [SendStackRoutes.SendReview]: {
+        accountKey: AccountKey;
+    };
 };
 
 export type AppTabsParamList = {

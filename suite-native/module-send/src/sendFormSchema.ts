@@ -77,7 +77,7 @@ export const sendFormValidationSchema = yup.object({
     amount: yup
         .string()
         .required()
-        .matches(/^\d+.*\d+$/, 'Invalid decimal value.')
+        .matches(/^\d*\.?\d+$/, 'Invalid decimal value.')
         .test(
             'is-dust-amount',
             'The value is lower than dust threshold.',

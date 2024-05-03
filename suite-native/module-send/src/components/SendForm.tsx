@@ -1,16 +1,25 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+
+import { useNavigation } from '@react-navigation/native';
 
 import { formInputsMaxLength } from '@suite-common/validators';
-import { VStack, Button, Text } from '@suite-native/atoms';
+import { VStack, Button } from '@suite-native/atoms';
 import { useForm, Form, TextInputField } from '@suite-native/forms';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, FormState } from '@suite-common/wallet-types';
+import { useAsyncDebounce } from '@trezor/react-utils';
 import {
     AccountsRootState,
     FeesRootState,
     selectAccountByKey,
     selectNetworkFeeInfo,
+    sendFormActions,
 } from '@suite-common/wallet-core';
+import {
+    SendStackParamList,
+    SendStackRoutes,
+    StackNavigationProps,
+} from '@suite-native/navigation';
 
 import { SendFormValues, sendFormValidationSchema } from '../sendFormSchema';
 
@@ -21,10 +30,15 @@ type SendFormProps = {
 const amountTransformer = (value: string) =>
     value
         .replace(/[^0-9\.]/g, '') // remove all non-numeric characters
+        .replace(/^\./g, '') // remove '.' symbol if it is not preceded by number
         .replace(/(?<=\..*)\./g, '') // keep only first appearance of the '.' symbol
         .replace(/(?<=^0+)0/g, ''); // remove all leading zeros except the first one
 
 export const SendForm = ({ accountKey }: SendFormProps) => {
+    const dispatch = useDispatch();
+    const debounce = useAsyncDebounce();
+    const navigation =
+        useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendReview>>();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -48,11 +62,45 @@ export const SendForm = ({ accountKey }: SendFormProps) => {
 
     const {
         handleSubmit,
-        formState: { isValid },
+        watch,
+        formState: { isValid: isFormValid },
     } = form;
+    const rawValues = watch();
 
-    const handleValidateForm = handleSubmit(() => {
-        // TODO: start on-device inputs validation via TrezorConnect
+    useEffect(() => {
+        // debounce the redux action so it is not triggered on every keystroke
+        debounce(async () => {
+            if (isFormValid) {
+                // TODO: this object will be filled with more values in the future as the send form inputs will get more complex.
+                const formValues: FormState = {
+                    outputs: [
+                        {
+                            type: 'payment',
+                            address: rawValues.address,
+                            amount: rawValues.amount,
+                            token: null,
+                            fiat: '0',
+                            currency: { label: 'usd', value: '1000' },
+                        },
+                    ],
+                    isCoinControlEnabled: false,
+                    hasCoinControlBeenOpened: false,
+                    selectedUtxos: [],
+                    feeLimit: '0',
+                    feePerUnit: '0',
+                    options: [],
+                };
+
+                return await dispatch(
+                    sendFormActions.storeDraft({ accountKey, formState: formValues }),
+                );
+            }
+        });
+    }, [isFormValid, dispatch, debounce, accountKey, rawValues]);
+
+    const handleNavigateToReview = handleSubmit(() => {
+        // Redirect to review screen where is on-device inputs validation via TrezorConnect started.
+        navigation.navigate(SendStackRoutes.SendReview, { accountKey });
     });
 
     return (
@@ -75,18 +123,16 @@ export const SendForm = ({ accountKey }: SendFormProps) => {
                     testID="@send/amount-input"
                     valueTransformer={amountTransformer}
                 />
-                <VStack>
+                {isFormValid && (
                     <Button
                         accessibilityRole="button"
                         accessibilityLabel="validate send form"
                         testID="@send/form-submit-button"
-                        onPress={handleValidateForm}
+                        onPress={handleNavigateToReview}
                     >
-                        Validate form
+                        Review & Send
                     </Button>
-                </VStack>
-                {/* TODO: remove this message in followup PR */}
-                {isValid && <Text color="textSecondaryHighlight">Form is valid 🎉</Text>}
+                )}
             </VStack>
         </Form>
     );

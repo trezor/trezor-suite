@@ -1,4 +1,9 @@
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    FormState,
+    PrecomposedTransactionFinal,
+    TxFinalCardano,
+} from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 import { FormSignedTx } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -8,7 +13,7 @@ import { accountsActions } from '../accounts/accountsActions';
 
 export type SendState = {
     drafts: {
-        [key: string]: FormState; // Key: account key
+        [key: AccountKey]: FormState;
     };
     sendRaw?: boolean;
     precomposedTx?: PrecomposedTransactionFinal | TxFinalCardano;
@@ -81,3 +86,8 @@ export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.si
 export const selectPrecomposedSendForm = (state: SendRootState) =>
     state.wallet.send.precomposedForm;
 export const selectSendFormDrafts = (state: SendRootState) => state.wallet.send.drafts;
+
+export const selectSendFormDraftByAccountKey = (
+    state: SendRootState,
+    accountKey: string,
+): FormState | null => state.wallet.send.drafts[accountKey] ?? null;
