@@ -2,6 +2,7 @@ import { A, F, G, pipe } from '@mobily/ts-belt';
 
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
+import { Account } from '@suite-common/wallet-types';
 
 import { TokenDefinitionsRootState } from './types';
 import { isTokenDefinitionKnown } from './utils';
@@ -46,13 +47,13 @@ export const selectFilterKnownTokens = (
     return tokens.filter(token => selectCoinDefinition(state, networkSymbol, token.contract));
 };
 
-export const selectValidTokensByNetworkSymbolAndDeviceState = (
-    state: AccountsRootState & TokenDefinitionsRootState,
-    deviceState: string,
+export const selectValidTokensByDeviceStateAndNetworkSymbol = (
+    state: TokenDefinitionsRootState,
+    accounts: Account[],
     networkSymbol: NetworkSymbol,
 ): TokenInfo[] => {
     return pipe(
-        selectAccountsByDeviceStateAndNetworkSymbol(state, deviceState, networkSymbol),
+        accounts,
         A.map(account => account.tokens),
         A.flat,
         A.uniq,

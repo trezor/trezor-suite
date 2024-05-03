@@ -4,10 +4,11 @@ import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     DeviceRootState,
-    selectValidTokensByNetworkSymbolAndDeviceState,
+    selectValidTokensByDeviceStateAndNetworkSymbol,
 } from '@suite-common/wallet-core';
 import {
     AccountsRootState,
+    selectAccountsByDeviceStateAndNetworkSymbol,
     selectDeviceAccounts,
 } from '@suite-common/wallet-core/src/accounts/accountsReducer';
 import { TokenSymbol, TokenAddress } from '@suite-common/wallet-types';
@@ -22,11 +23,15 @@ export const selectDiscoveryAccountsAnalytics = (
         D.mapWithKey((networkSymbol, accounts) => {
             const numberOfAccounts = accounts?.length ?? 0;
 
-            const validTokens = selectValidTokensByNetworkSymbolAndDeviceState(
+            const accountsByDeviceStateAndNetworkSymbol =
+                selectAccountsByDeviceStateAndNetworkSymbol(state, deviceState, networkSymbol);
+
+            const validTokens = selectValidTokensByDeviceStateAndNetworkSymbol(
                 state,
-                deviceState,
+                accountsByDeviceStateAndNetworkSymbol,
                 networkSymbol as NetworkSymbol,
             );
+
             if (A.isNotEmpty(validTokens)) {
                 return {
                     numberOfAccounts,
