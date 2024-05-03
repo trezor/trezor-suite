@@ -2435,8 +2435,23 @@ export const ResetDevice = Type.Object(
     { $id: 'ResetDevice' },
 );
 
+export type Slip39Group = Static<typeof Slip39Group>;
+export const Slip39Group = Type.Object(
+    {
+        member_threshold: Type.Number(),
+        member_count: Type.Number(),
+    },
+    { $id: 'Slip39Group' },
+);
+
 export type BackupDevice = Static<typeof BackupDevice>;
-export const BackupDevice = Type.Object({}, { $id: 'BackupDevice' });
+export const BackupDevice = Type.Object(
+    {
+        group_threshold: Type.Optional(Type.Number()),
+        groups: Type.Optional(Type.Array(Slip39Group)),
+    },
+    { $id: 'BackupDevice' },
+);
 
 export type EntropyRequest = Static<typeof EntropyRequest>;
 export const EntropyRequest = Type.Object({}, { $id: 'EntropyRequest' });
@@ -2802,6 +2817,12 @@ export const NEMDecryptedMessage = Type.Object(
     },
     { $id: 'NEMDecryptedMessage' },
 );
+
+export type experimental_message = Static<typeof experimental_message>;
+export const experimental_message = Type.Object({}, { $id: 'experimental_message' });
+
+export type experimental_field = Static<typeof experimental_field>;
+export const experimental_field = Type.Object({}, { $id: 'experimental_field' });
 
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
@@ -3377,12 +3398,6 @@ export const TezosSignedTx = Type.Object(
     { $id: 'TezosSignedTx' },
 );
 
-export type experimental_message = Static<typeof experimental_message>;
-export const experimental_message = Type.Object({}, { $id: 'experimental_message' });
-
-export type experimental_field = Static<typeof experimental_field>;
-export const experimental_field = Type.Object({}, { $id: 'experimental_field' });
-
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
@@ -3575,6 +3590,7 @@ export const MessageType = Type.Object(
         AuthenticityProof,
         WipeDevice,
         ResetDevice,
+        Slip39Group,
         BackupDevice,
         EntropyRequest,
         EntropyAck,
@@ -3610,6 +3626,8 @@ export const MessageType = Type.Object(
         NEMSignedTx,
         NEMDecryptMessage,
         NEMDecryptedMessage,
+        experimental_message,
+        experimental_field,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,
@@ -3658,8 +3676,6 @@ export const MessageType = Type.Object(
         TezosBallotOp,
         TezosSignTx,
         TezosSignedTx,
-        experimental_message,
-        experimental_field,
     },
     { $id: 'MessageType' },
 );

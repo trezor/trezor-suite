@@ -1734,8 +1734,16 @@ export type ResetDevice = {
     backup_type?: Enum_BackupType;
 };
 
+export type Slip39Group = {
+    member_threshold: number;
+    member_count: number;
+};
+
 // BackupDevice
-export type BackupDevice = {};
+export type BackupDevice = {
+    group_threshold?: number;
+    groups?: Slip39Group[];
+};
 
 // EntropyRequest
 export type EntropyRequest = {};
@@ -1988,6 +1996,12 @@ export type NEMDecryptMessage = {
 export type NEMDecryptedMessage = {
     payload: string;
 };
+
+// experimental_message
+export type experimental_message = {};
+
+// experimental_field
+export type experimental_field = {};
 
 // RippleGetAddress
 export type RippleGetAddress = {
@@ -2390,12 +2404,6 @@ export type TezosSignedTx = {
     operation_hash: string;
 };
 
-// experimental_message
-export type experimental_message = {};
-
-// experimental_field
-export type experimental_field = {};
-
 // custom connect definitions
 export type MessageType = {
     BinanceGetAddress: BinanceGetAddress;
@@ -2587,6 +2595,7 @@ export type MessageType = {
     AuthenticityProof: AuthenticityProof;
     WipeDevice: WipeDevice;
     ResetDevice: ResetDevice;
+    Slip39Group: Slip39Group;
     BackupDevice: BackupDevice;
     EntropyRequest: EntropyRequest;
     EntropyAck: EntropyAck;
@@ -2622,6 +2631,8 @@ export type MessageType = {
     NEMSignedTx: NEMSignedTx;
     NEMDecryptMessage: NEMDecryptMessage;
     NEMDecryptedMessage: NEMDecryptedMessage;
+    experimental_message: experimental_message;
+    experimental_field: experimental_field;
     RippleGetAddress: RippleGetAddress;
     RippleAddress: RippleAddress;
     RipplePayment: RipplePayment;
@@ -2670,8 +2681,6 @@ export type MessageType = {
     TezosBallotOp: TezosBallotOp;
     TezosSignTx: TezosSignTx;
     TezosSignedTx: TezosSignedTx;
-    experimental_message: experimental_message;
-    experimental_field: experimental_field;
 };
 
 export type MessageKey = keyof MessageType;
