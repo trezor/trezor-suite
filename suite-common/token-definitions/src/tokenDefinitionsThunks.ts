@@ -3,19 +3,18 @@ import { D, G } from '@mobily/ts-belt';
 
 import { getJWSPublicKey } from '@trezor/env-utils';
 import { createThunk } from '@suite-common/redux-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
-import { getNetwork } from '@suite-common/wallet-utils';
-import {
-    DefinitionType,
-    JWS_SIGN_ALGORITHM,
-    TOKEN_DEFINITIONS_PREFIX_URL,
-    TOKEN_DEFINITIONS_SUFFIX_URL,
-    getSupportedDefinitionTypes,
-} from '@suite-common/token-definitions';
+import { NetworkSymbol, getCoingeckoId } from '@suite-common/wallet-config';
 import { isCodesignBuild } from '@trezor/env-utils';
 import { Timeout } from '@trezor/type-utils';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
+import {
+    TOKEN_DEFINITIONS_PREFIX_URL,
+    TOKEN_DEFINITIONS_SUFFIX_URL,
+    JWS_SIGN_ALGORITHM,
+} from './constants';
+import { DefinitionType } from './types';
+import { getSupportedDefinitionTypes } from './utils';
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
 
@@ -29,7 +28,7 @@ export const getTokenDefinitionThunk = createThunk(
         { fulfillWithValue, rejectWithValue },
     ) => {
         const { networkSymbol, type } = params;
-        const { coingeckoId } = getNetwork(networkSymbol) || {};
+        const coingeckoId = getCoingeckoId(networkSymbol);
 
         try {
             if (!coingeckoId) {

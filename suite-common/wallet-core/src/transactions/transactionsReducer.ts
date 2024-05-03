@@ -16,7 +16,7 @@ import {
     selectBlockchainHeightBySymbol,
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
-import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 export interface TransactionsState {

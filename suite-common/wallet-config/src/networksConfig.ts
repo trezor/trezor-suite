@@ -615,3 +615,5 @@ export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.netwo
 // takes into account just network features, not features for specific accountTypes
 export const getNetworkFeatures = (symbol: NetworkSymbol) =>
     networks[symbol]?.features as unknown as NetworkFeature;
+
+export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coingeckoId;

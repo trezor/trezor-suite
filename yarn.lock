@@ -8706,8 +8706,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/token-definitions@workspace:suite-common/token-definitions"
   dependencies:
+    "@mobily/ts-belt": "npm:^3.13.1"
+    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/env-utils": "workspace:*"
+    "@trezor/type-utils": "workspace:*"
     "@types/fs-extra": "npm:^11.0.4"
     ajv: "npm:^8.12.0"
     fs-extra: "npm:^11.2.0"
@@ -8785,7 +8790,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     bignumber.js: "npm:^9.1.2"
     date-fns: "npm:^2.30.0"
-    jws: "npm:^4.0.0"
     proxy-memoize: "npm:2.0.2"
     web3-utils: "npm:^4.2.3"
   languageName: unknown

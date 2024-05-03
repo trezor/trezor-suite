@@ -1,8 +1,8 @@
 import {
     prepareFiatRatesMiddleware,
     prepareBlockchainMiddleware,
-    prepareTokenDefinitionsMiddleware,
     prepareStakeMiddleware,
+    prepareTokenDefinitionsMiddleware,
 } from '@suite-common/wallet-core';
 
 import { prepareDiscoveryMiddleware } from './discoveryMiddleware';
