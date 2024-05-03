@@ -1,6 +1,8 @@
 /* eslint-disable camelcase */
 
-const child_process = require('child_process');
+// TODO: this is still used by the GitLab workflow
+// TODO: let's leave it here until we are confident GitHub release works.
+
 const path = require('path');
 const fs = require('fs');
 
