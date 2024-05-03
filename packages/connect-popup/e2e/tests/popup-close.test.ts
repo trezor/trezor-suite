@@ -199,48 +199,6 @@ test(`device disconnected during device interaction with bridge version ${bridge
 
     log('waiting for selector text=device disconnected during action');
     await explorerPage.waitForSelector('text=device disconnected during action');
-
-    log('starting emulator');
-    await TrezorUserEnvLink.api.startEmu();
-});
-
-// todo: this one is somewhat flaky. tends to produce "RuntimeError - Emulator proces died" error
-test.skip(`trezor bridge ${bridgeVersion} was killed during action`, async ({ page }) => {
-    // user canceled interaction on device
-    await TrezorUserEnvLink.send({ type: 'bridge-stop' });
-    await popupClosedPromise;
-
-    await page.waitForSelector('text=Aborted');
-
-    // todo: emulator stop should not be needed. this indicate some kind of bug
-    await TrezorUserEnvLink.api.stopEmu();
-
-    await TrezorUserEnvLink.api.startBridge();
-
-    // todo: see previous comment, emulator should be already running
-    await TrezorUserEnvLink.api.startEmu();
-});
-
-// reloading page might end with "closed device" error from here:
-// https://github.com/trezor/trezord-go/blob/106e5e9af3573ac2b27ebf2082bbee91650949bf/usb/libusb.go#L511
-// this was probably targeted by this (never merged) trezor-bridge PR https://github.com/trezor/trezord-go/pull/156
-test.skip(`client (connect-explorer) is reloaded by user while popup is active. bridge version ${bridgeVersion}`, async ({
-    page,
-}) => {
-    await page.reload();
-    // todo: page reload closes popup, which is what we want, but it does not cancel interaction on device.
-    await popupClosedPromise;
-});
-
-// just like the previous skipped test.
-// request: http://127.0.0.1:21325/call/3
-// response {"error":"closed device"}
-test.skip(`popup is reloaded by user. bridge version ${bridgeVersion}`, async () => {
-    log(`test: ${test.info().title}`);
-    await popup.reload();
-    // after popup is reload, communication is lost, there is only infinite loader
-    await popup.waitForSelector('div[data-test="@connect-ui/loader"]');
-    // todo: there is no message into client about the fact that popup was unloaded
 });
 
 test('when user cancels permissions in popup it closes automatically', async ({
@@ -278,10 +236,7 @@ test('when user cancels permissions in popup it closes automatically', async ({
     });
 
     await popup.waitForLoadState('load');
-    if (isWebExtension) {
-        await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
-        await popup.click('.select-device-list button.list');
-    }
+
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     await popup.waitForSelector("button[data-test='@permissions/confirm-button']");
     // We are testing that when cancel permissions, popup is closed automatically.
