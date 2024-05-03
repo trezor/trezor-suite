@@ -1,4 +1,4 @@
-import TrezorConnect, { CommonParams } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectDevice } from '@suite-common/wallet-core';
@@ -41,7 +41,7 @@ export const resetReducer = (): BackupAction => ({
 });
 
 export const backupDevice =
-    (params: CommonParams = {}, skipSuccessToast?: boolean) =>
+    (params: Parameters<typeof TrezorConnect.backupDevice>[0] = {}, skipSuccessToast?: boolean) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
         if (!device) {

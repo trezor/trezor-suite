@@ -1,4 +1,4 @@
 import type { PROTO } from '../../constants';
-import type { CommonParams, Response } from '../params';
+import type { Params, Response } from '../params';
 
-export declare function backupDevice(params?: CommonParams): Response<PROTO.Success>;
+export declare function backupDevice(params?: Params<PROTO.BackupDevice>): Response<PROTO.Success>;

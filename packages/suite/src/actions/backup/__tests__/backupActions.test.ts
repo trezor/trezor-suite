@@ -59,8 +59,8 @@ describe('Backup Actions', () => {
 
         await store.dispatch(
             backupActions.backupDevice({
-                device: store.getState().device.selectedDevice,
-            } as CommonParams),
+                device: store.getState().device.selectedDevice as CommonParams['device'],
+            }),
         );
 
         expect(store.getActions().shift()).toMatchObject({
@@ -95,8 +95,8 @@ describe('Backup Actions', () => {
 
         await store.dispatch(
             backupActions.backupDevice({
-                device: store.getState().device.selectedDevice,
-            } as CommonParams),
+                device: store.getState().device.selectedDevice as CommonParams['device'],
+            }),
         );
 
         expect(store.getActions().shift()).toMatchObject({

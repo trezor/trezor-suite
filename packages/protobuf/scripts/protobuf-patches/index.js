@@ -7,6 +7,7 @@ const DeviceModelInternal = 'DeviceModelInternal';
 
 // type rule fixes, ideally it should not be here
 const RULE_PATCH = {
+    'BackupDevice.groups': "optional", // protobuf repeated bytes are always optional (fallback to [])
     'MultisigRedeemScriptType.nodes': 'optional', // its valid to be undefined according to implementation/tests
     'MultisigRedeemScriptType.address_n': 'optional', // its valid to be undefined according to implementation/tests
     'TxRequestDetailsType.request_index': 'required',
