@@ -1,16 +1,16 @@
 import { pipe, A, D } from '@mobily/ts-belt';
 
-import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
-    DeviceRootState,
+    TokenDefinitionsRootState,
     selectValidTokensByDeviceStateAndNetworkSymbol,
-} from '@suite-common/wallet-core';
+} from '@suite-common/token-definitions';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { DeviceRootState } from '@suite-common/wallet-core';
 import {
     AccountsRootState,
     selectAccountsByDeviceStateAndNetworkSymbol,
     selectDeviceAccounts,
-} from '@suite-common/wallet-core/src/accounts/accountsReducer';
+} from '@suite-common/wallet-core';
 import { TokenSymbol, TokenAddress } from '@suite-common/wallet-types';
 
 export const selectDiscoveryAccountsAnalytics = (

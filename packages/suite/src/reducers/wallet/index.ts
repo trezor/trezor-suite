@@ -6,7 +6,6 @@ import {
     prepareTransactionsReducer,
     prepareBlockchainReducer,
     prepareDiscoveryReducer,
-    prepareTokenDefinitionsReducer,
     prepareStakeReducer,
     prepareSendFormReducer,
     feesReducer,
@@ -24,6 +23,7 @@ import formDraftReducer from './formDraftReducer';
 import cardanoStakingReducer from './cardanoStakingReducer';
 import pollingReducer from './pollingReducer';
 import { coinjoinReducer } from './coinjoinReducer';
+import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 
 export const transactionsReducer = prepareTransactionsReducer(extraDependencies);
 export const accountsReducer = prepareAccountsReducer(extraDependencies);

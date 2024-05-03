@@ -35,6 +35,7 @@
         "@suite-common/message-system": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-constants": "workspace:*",
+        "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-core": "workspace:*",
         "@suite-native/accounts": "workspace:*",
         "@suite-native/alerts": "workspace:*",

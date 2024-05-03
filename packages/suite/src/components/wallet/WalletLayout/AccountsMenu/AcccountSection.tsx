@@ -2,10 +2,9 @@ import { Account } from '@suite-common/wallet-types';
 import { AccountItemsGroup } from './AccountItemsGroup';
 import { AccountItem } from './AccountItem';
 import { useSelector } from 'src/hooks/suite';
-import { selectCoinDefinitions } from '@suite-common/wallet-core';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
-import { isSupportedNetworkSymbol } from '@suite-common/wallet-core/src/stake/stakeTypes';
+import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
+import { isSupportedNetworkSymbol } from '@suite-common/wallet-core';
 
 interface AccountSectionProps {
     account: Account;

@@ -9,7 +9,7 @@ import {
 } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { selectCoinDefinitions, selectFiatRates } from '@suite-common/wallet-core';
+import { selectFiatRates } from '@suite-common/wallet-core';
 import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -17,7 +17,7 @@ import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
 import { Rate } from '@suite-common/wallet-types';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { LastUpdateTooltip } from 'src/components/suite/Ticker/LastUpdateTooltip';
 
 const Wrapper = styled(Card)<{ $fiatRateHidden?: boolean }>`

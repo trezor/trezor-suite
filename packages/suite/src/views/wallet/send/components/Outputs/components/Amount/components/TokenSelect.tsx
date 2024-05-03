@@ -7,11 +7,7 @@ import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
 import { Output } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import {
-    selectCoinDefinitions,
-    updateFiatRatesThunk,
-    selectFiatRates,
-} from '@suite-common/wallet-core';
+import { updateFiatRatesThunk, selectFiatRates } from '@suite-common/wallet-core';
 import BigNumber from 'bignumber.js';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
@@ -24,7 +20,11 @@ import {
 import { getShortFingerprint } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { TokenDefinitions, isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import {
+    TokenDefinitions,
+    isTokenDefinitionKnown,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;

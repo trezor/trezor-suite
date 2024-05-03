@@ -3,7 +3,6 @@ import * as trezorConnectActions from '@suite-common/connect-init';
 import {
     initBlockchainThunk,
     initDevices,
-    periodicCheckTokenDefinitionsThunk,
     periodicFetchFiatRatesThunk,
     periodicCheckStakeDataThunk,
 } from '@suite-common/wallet-core';
@@ -17,6 +16,7 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { SUITE } from './constants';
 import { onSuiteReady } from './suiteActions';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
