@@ -1,7 +1,7 @@
 import { G } from '@mobily/ts-belt';
-import * as semver from 'semver';
 
 import { DeviceModelInternal, VersionArray } from '@trezor/connect';
+import { isNewerOrEqual } from '@trezor/utils/src/versionUtils';
 
 export const minimalSupportedFirmwareVersion = {
     T1B1: [1, 12, 1] as VersionArray,
@@ -20,8 +20,5 @@ export const isFirmwareVersionSupported = (
 
     if (!minimalVersion) return true;
 
-    const versionString = version.join('.');
-    const minimalVersionString = minimalVersion.join('.');
-
-    return semver.satisfies(versionString, `>=${minimalVersionString}`);
+    return isNewerOrEqual(version, minimalVersion);
 };

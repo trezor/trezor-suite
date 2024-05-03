@@ -1,8 +1,8 @@
-import { valid, satisfies } from 'semver';
-import { getFirmwareVersion } from '@trezor/device-utils';
+import { getFirmwareVersionArray } from '@trezor/device-utils';
 
 import { type TrezorDevice, type ExtendedMessageDescriptor } from 'src/types/suite';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { isNewerOrEqual, isOlder, isVersionArray } from '@trezor/utils/src/versionUtils';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
     [
@@ -61,7 +61,7 @@ export const validateFirmware = (
         return 'TR_UNKNOWN_DEVICE';
     }
 
-    const firmwareVersion = getFirmwareVersion(device);
+    const firmwareVersion = getFirmwareVersionArray(device);
     const firmwareFormat = parseFirmwareFormat(fw);
 
     if (!firmwareFormat) {
@@ -71,7 +71,10 @@ export const validateFirmware = (
         return 'TR_FIRMWARE_VALIDATION_UNMATCHING_DEVICE';
     }
 
-    const isT1V2 = valid(firmwareVersion) && satisfies(firmwareVersion, '>=1.8.0 <2.0.0');
+    const isT1V2 =
+        isVersionArray(firmwareVersion) &&
+        isNewerOrEqual(firmwareVersion, '1.8.0') &&
+        !isOlder(firmwareVersion, '2.0.0');
 
     if (isT1V2 && firmwareFormat === FirmwareFormat.T1) {
         return 'TR_FIRMWARE_VALIDATION_TOO_OLD';

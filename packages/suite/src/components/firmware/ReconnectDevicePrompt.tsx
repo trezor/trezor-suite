@@ -1,14 +1,18 @@
 import { ReactNode } from 'react';
 import styled, { css } from 'styled-components';
-import * as semver from 'semver';
 
-import { pickByDeviceModel, getFirmwareVersion } from '@trezor/device-utils';
+import {
+    pickByDeviceModel,
+    getFirmwareVersion,
+    getFirmwareVersionArray,
+} from '@trezor/device-utils';
 import { H2, Button, ConfirmOnDevice, variables, DeviceAnimation } from '@trezor/components';
 import { DEVICE, Device, DeviceModelInternal, UI } from '@trezor/connect';
 import { Modal, Translation, WebUsbButton } from 'src/components/suite';
 import { DeviceConfirmImage } from 'src/components/suite/DeviceConfirmImage';
 import { useDevice, useFirmware } from 'src/hooks/suite';
 import { AbortButton } from 'src/components/suite/modals/AbortButton';
+import { isNewerOrEqual, isVersionArray } from '@trezor/utils/src/versionUtils';
 
 const StyledModal = styled(Modal)`
     width: 580px;
@@ -140,13 +144,13 @@ const RebootDeviceGraphics = ({
     const deviceModelInternal = device?.features?.internal_model;
 
     // T1B1 bootloader before firmware version 1.8.0 can only be invoked by holding both buttons
-    const deviceFwVersion = device?.features ? getFirmwareVersion(device) : '';
+    const deviceFwVersion = device?.features ? getFirmwareVersionArray(device) : '';
     const type =
         deviceModelInternal === DeviceModelInternal.T1B1 &&
-        semver.valid(deviceFwVersion) &&
-        semver.satisfies(deviceFwVersion, '<1.8.0')
-            ? 'BOOTLOADER_TWO_BUTTONS'
-            : 'BOOTLOADER';
+        isVersionArray(deviceFwVersion) &&
+        isNewerOrEqual(deviceFwVersion, '<1.8.0')
+            ? 'BOOTLOADER'
+            : 'BOOTLOADER_TWO_BUTTONS';
 
     return (
         <StyledDeviceAnimation

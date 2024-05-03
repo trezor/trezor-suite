@@ -30,10 +30,10 @@
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
+        "@trezor/utils": "workspace:*",
         "lottie-react-native": "6.6.0",
         "react": "18.2.0",
         "react-native": "0.73.6",
-        "react-redux": "8.0.7",
-        "semver": "^7.6.0"
+        "react-redux": "8.0.7"
     }
 }
