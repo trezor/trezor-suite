@@ -1,5 +1,3 @@
-import fetch from 'cross-fetch';
-
 import { ScheduleActionParams, getWeakRandomId } from '@trezor/utils';
 
 export interface RequestOptions extends ScheduleActionParams {

@@ -27,12 +27,6 @@ global.ResizeObserver = class MockedResizeObserver {
     disconnect = jest.fn();
 };
 
-// sendFormActions.signTransaction fetch ethereum definitions
-jest.mock('cross-fetch', () => ({
-    __esModule: true,
-    default: () => Promise.resolve({ ok: false }),
-}));
-
 jest.mock('src/actions/suite/routerActions', () => ({
     goto: () => ({ type: 'mock-redirect' }),
 }));

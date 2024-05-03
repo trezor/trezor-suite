@@ -1,7 +1,5 @@
 // origin https://github.com/trezor/connect/blob/develop/src/js/env/browser/networkUtils.js
 
-import fetch from 'cross-fetch';
-
 export const httpRequest = async (url: string, type: 'text' | 'binary' | 'json' = 'text') => {
     const response = await fetch(url, { credentials: 'same-origin' });
     if (response.ok) {
