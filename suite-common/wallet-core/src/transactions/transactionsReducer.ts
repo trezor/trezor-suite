@@ -17,7 +17,7 @@ import {
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
 import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
-import { TokenDefinitionsRootState } from '../token-definitions/tokenDefinitionsTypes';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 export interface TransactionsState {
     isLoading: boolean;

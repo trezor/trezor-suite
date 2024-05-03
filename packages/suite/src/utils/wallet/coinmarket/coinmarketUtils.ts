@@ -9,8 +9,11 @@ import {
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { TokenDefinitions } from '@suite-common/wallet-types';
-import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import {
+    DefinitionType,
+    TokenDefinitions,
+    isTokenDefinitionKnown,
+} from '@suite-common/token-definitions';
 
 /** @deprecated */
 const suiteToInvitySymbols: {

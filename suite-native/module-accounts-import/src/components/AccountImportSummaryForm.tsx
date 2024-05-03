@@ -27,7 +27,7 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/module-settings';
-import { TokenDefinitionsRootState } from '@suite-common/wallet-core/src/token-definitions/tokenDefinitionsTypes';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';

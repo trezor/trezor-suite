@@ -1,5 +1,4 @@
-import { DefinitionType } from '@suite-common/token-definitions';
-import { TokenDefinitions } from '@suite-common/wallet-types';
+import { DefinitionType, TokenDefinitions } from '@suite-common/token-definitions';
 
 export const accountBtc = {
     index: 1,
