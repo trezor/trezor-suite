@@ -83,6 +83,20 @@ export const ContentWrapper = styled.div`
     }
 `;
 
+export const MainBar = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    width: 100%;
+    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    align-items: center;
+    position: relative;
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        overflow-x: hidden;
+    }
+`;
+
 interface SuiteLayoutProps {
     children: ReactNode;
 }
@@ -123,22 +137,23 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                             <Sidebar />
                                         </ElevationDown>
                                     )}
-
-                                    <AppWrapper
-                                        data-test="@app"
-                                        ref={scrollRef}
-                                        id={SCROLL_WRAPPER_ID}
-                                    >
+                                    <MainBar>
                                         <SuiteBanners />
-                                        <ElevationUp>
-                                            {isMobileLayout && isAccountPage && (
-                                                <MobileAccountsMenu />
-                                            )}
-                                            {TopMenu && <TopMenu />}
+                                        <AppWrapper
+                                            data-test="@app"
+                                            ref={scrollRef}
+                                            id={SCROLL_WRAPPER_ID}
+                                        >
+                                            <ElevationUp>
+                                                {isMobileLayout && isAccountPage && (
+                                                    <MobileAccountsMenu />
+                                                )}
+                                                {TopMenu && <TopMenu />}
 
-                                            <ContentWrapper>{children}</ContentWrapper>
-                                        </ElevationUp>
-                                    </AppWrapper>
+                                                <ContentWrapper>{children}</ContentWrapper>
+                                            </ElevationUp>
+                                        </AppWrapper>
+                                    </MainBar>
                                 </Columns>
                             </Body>
                         </LayoutContext.Provider>
