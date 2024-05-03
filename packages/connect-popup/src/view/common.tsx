@@ -195,6 +195,7 @@ export const postMessage = (message: CoreRequestMessage) => {
 
         return;
     }
+    console.log('throw 1');
     throw ERRORS.TypedError('Popup_ConnectionMissing');
 };
 

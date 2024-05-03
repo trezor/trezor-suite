@@ -70,6 +70,7 @@ const initWebUsbButton = (showLoader: boolean) => {
             } else if (core) {
                 core.enumerate();
             } else {
+                console.log('throw 2');
                 throw ERRORS.TypedError('Popup_ConnectionMissing');
             }
         } catch (error) {
