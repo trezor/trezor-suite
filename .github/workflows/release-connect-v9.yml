@@ -1,0 +1,81 @@
+name: "WIP [Release] connect v9"
+
+# permissions:
+#   id-token: write # for fetching the OIDC token
+#   contents: read # for actions/checkout
+
+# on:
+#   workflow_dispatch:
+
+# concurrency:
+#   group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
+#   cancel-in-progress: true
+
+# TODO: just for development testing
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/release-connect-v9.yml"
+
+jobs:
+  # TODO: get the version
+  # TODO: creates branch release/connect/${version}
+  # TODO: push branch to GitHub
+  init:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Number of commits to fetch. 0 indicates all history for all branches and tags.
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: |
+          yarn install
+
+      - name: Set daily matrix
+        id: set-version
+        run: echo "version=$(node ./ci/scripts/release-connect-v9-init.js)" >> $GITHUB_ENV
+
+  test-version:
+    needs: [init]
+    runs-on: ubuntu-latest
+    name: test-${{ needs.init.outputs.version }}
+    steps:
+      - run: |
+          echo "test-${{ needs.init.outputs.version }}"
+
+  # TODO: do the staging deployment
+  # TODO: Uploading to s3://staging-connect.trezor.io/$latest_version/
+  # TODO: and s3://staging-connect.trezor.io/$current_version/
+  # TODO: from staging move it to production
+  # TODO: set the rollback
+  # connect-v9-deploy:
+  #   environment: production
+  #   runs-on: ubuntu-latest
+  #   if: startsWith(github.ref, 'refs/heads/release/connect/')
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #       with:
+  #         ref: develop
+
+  #     - name: Setup node
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version-file: ".nvmrc"
+
+  #     - name: Build and deploy to connect.trezor.io/9
+  #       uses: ./.github/actions/release-connect
+  #       with:
+  #         awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+  #         awsRegion: "eu-central-1"
+  #         serverHostname: "connect.trezor.io"
+  #         serverPath: "9"
