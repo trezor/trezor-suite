@@ -4,6 +4,6 @@
     "details": "Details",
     "settings": {
         "title": "Settings",
-        "type": "page"
+        "display": "hidden"
     }
 }
