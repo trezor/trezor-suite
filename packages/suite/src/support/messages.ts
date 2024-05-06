@@ -2160,10 +2160,6 @@ export default defineMessages({
         defaultMessage: 'Multi-share backup created',
         id: 'TR_CREATE_MULTI_SHARE_BACKUP_CREATED',
     },
-    TR_MULTI_SHARE_BACKUP_GOT_IT_CLOSE: {
-        defaultMessage: 'Got it, close',
-        id: 'TR_MULTI_SHARE_BACKUP_GOT_IT_CLOSE',
-    },
     TR_MULTI_SHARE_BACKUP_GREAT: {
         defaultMessage: 'Great!',
         id: 'TR_MULTI_SHARE_BACKUP_GREAT',
@@ -9036,8 +9032,8 @@ export default defineMessages({
         id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
         defaultMessage: 'You can change it here',
     },
-    TR_VIEW_ONLY_TOOLTIP_BUTTON: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_BUTTON',
+    TR_GOT_IT_BUTTON: {
+        id: 'TR_GOT_IT_BUTTON',
         defaultMessage: 'Got it',
     },
     TR_VIEW_ONLY_ENABLED: {

@@ -1,5 +1,5 @@
 import { Button, Card, Columns, Icon, Rows, Text } from '@trezor/components';
-import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
+import { HELP_CENTER_KEEPING_SEED_SAFE_URL } from '@trezor/urls';
 
 import { useDispatch } from 'src/hooks/suite';
 import { onCancel } from 'src/actions/suite/modalActions';
@@ -70,10 +70,9 @@ export const MultiShareBackupCompleteModal = () => {
             bottomBarComponents={
                 <>
                     <Button onClick={handleClose}>
-                        <Translation id="TR_MULTI_SHARE_BACKUP_GOT_IT_CLOSE" />
+                        <Translation id="TR_GOT_IT_BUTTON" />
                     </Button>
-                    {/*TODO: replace link*/}
-                    <LearnMoreButton url={HELP_CENTER_RECOVERY_SEED_URL} size="medium">
+                    <LearnMoreButton url={HELP_CENTER_KEEPING_SEED_SAFE_URL} size="medium">
                         <Translation id="TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP" />
                     </LearnMoreButton>
                 </>

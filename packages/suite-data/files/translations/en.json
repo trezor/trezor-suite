@@ -1978,7 +1978,7 @@
   "TR_VIEW_ONLY_EXPLANATION": "You'll still need to connect your <secondLine>Trezor to send or trade coins</secondLine>",
   "TR_VIEW_ONLY_PROMO_NOT_NOW": "Not now",
   "TR_VIEW_ONLY_PROMO_YES": "Yes",
-  "TR_VIEW_ONLY_TOOLTIP_BUTTON": "Got it",
+  "TR_GOT_IT_BUTTON": "Got it",
   "TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO": "You can change it here",
   "TR_VIEW_ONLY_TOOLTIP_DESCRIPTION": "You'll see wallet balances after disconnecting Trezor",
   "TR_VIEW_ONLY_TOOLTIP_TITLE": "View-only enabled",

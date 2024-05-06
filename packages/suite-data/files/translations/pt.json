@@ -1944,7 +1944,7 @@
   "TR_VIEW_ONLY_EXPLANATION": "Você ainda precisará conectar o seu <secondLine>Trezor para enviar ou trocar moedas</secondLine>",
   "TR_VIEW_ONLY_PROMO_NOT_NOW": "Agora não",
   "TR_VIEW_ONLY_PROMO_YES": "Sim",
-  "TR_VIEW_ONLY_TOOLTIP_BUTTON": "Finalizar",
+  "TR_GOT_IT_BUTTON": "Finalizar",
   "TR_VIEW_ONLY_TOOLTIP_DESCRIPTION": "Você verá os saldos da carteira depois de desconectar o Trezor",
   "TR_VIEW_ONLY_TOOLTIP_TITLE": "Ativado somente para visualização",
   "TR_WAIT_FOR_REBOOT": "Reiniciando Trezor",

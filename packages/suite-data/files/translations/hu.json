@@ -1974,7 +1974,7 @@
   "TR_VIEW_ALL": "Összes megtekintése",
   "TR_VIEW_ONLY_PROMO_NOT_NOW": "Később",
   "TR_VIEW_ONLY_PROMO_YES": "Igen",
-  "TR_VIEW_ONLY_TOOLTIP_BUTTON": "Értem",
+  "TR_GOT_IT_BUTTON": "Értem",
   "TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO": "Itt megváltoztatható",
   "TR_WAIT_FOR_REBOOT": "Trezor újraindítása",
   "TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION": "Kérlek, várd meg, hogy a Trezor újrainduljon, majd párosítsd újra.",
