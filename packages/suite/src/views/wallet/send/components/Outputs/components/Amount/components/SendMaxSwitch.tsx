@@ -9,7 +9,7 @@ const StyledSwitch = styled(Switch)<{
     $hideOnSmallScreens?: boolean;
 }>`
     ${({ $hideOnLargeScreens }) =>
-        $hideOnLargeScreens &&
+        $hideOnLargeScreens === true &&
         css`
             ${breakpointMediaQueries.lg} {
                 display: none;
