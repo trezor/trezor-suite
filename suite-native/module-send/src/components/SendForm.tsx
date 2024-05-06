@@ -1,18 +1,19 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import { VStack, Button } from '@suite-native/atoms';
-import { useForm, Form, TextInputField } from '@suite-native/forms';
+import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { AccountKey, FormState } from '@suite-common/wallet-types';
-import { useAsyncDebounce } from '@trezor/react-utils';
 import {
     AccountsRootState,
     FeesRootState,
+    SendRootState,
     selectAccountByKey,
     selectNetworkFeeInfo,
+    selectSendFormDraftByAccountKey,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
@@ -21,6 +22,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { onDeviceTransactionReviewThunk } from '../sendFormThunks';
 import { SendFormValues, sendFormValidationSchema } from '../sendFormSchema';
 
 type SendFormProps = {
@@ -34,17 +36,40 @@ const amountTransformer = (value: string) =>
         .replace(/(?<=\..*)\./g, '') // keep only first appearance of the '.' symbol
         .replace(/(?<=^0+)0/g, ''); // remove all leading zeros except the first one
 
+const constructFormDraft = ({ amount, address }: SendFormValues): FormState => ({
+    outputs: [
+        {
+            type: 'payment',
+            address,
+            amount,
+            token: null,
+            fiat: '0',
+            currency: { label: 'usd', value: '1000' },
+        },
+    ],
+    isCoinControlEnabled: false,
+    hasCoinControlBeenOpened: false,
+    selectedUtxos: [],
+    feeLimit: '0',
+    feePerUnit: '0',
+    options: [],
+});
+
 export const SendForm = ({ accountKey }: SendFormProps) => {
     const dispatch = useDispatch();
-    const debounce = useAsyncDebounce();
+
     const navigation =
         useNavigation<StackNavigationProps<SendStackParamList, SendStackRoutes.SendReview>>();
+
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
     const networkFeeInfo = useSelector((state: FeesRootState) =>
         selectNetworkFeeInfo(state, account?.symbol),
+    );
+
+    const sendFormDraft = useSelector((state: SendRootState) =>
+        selectSendFormDraftByAccountKey(state, accountKey),
     );
 
     const form = useForm<SendFormValues>({
@@ -55,51 +80,49 @@ export const SendForm = ({ accountKey }: SendFormProps) => {
             availableAccountBalance: account?.availableBalance,
         },
         defaultValues: {
-            address: '',
-            amount: '',
+            // TODO handle multiple output fields???
+            address: sendFormDraft?.outputs[0]?.address,
+            amount: sendFormDraft?.outputs[0]?.amount,
         },
     });
 
     const {
         handleSubmit,
-        watch,
-        formState: { isValid: isFormValid },
+        getValues,
+        formState: { isValid: isFormValid, isSubmitting },
     } = form;
-    const rawValues = watch();
+
+    const getFormState = useCallback((): SendFormValues => {
+        return { address: getValues('address'), amount: getValues('amount') };
+    }, [getValues]);
+
+    const storeFormDraftIfValid = useCallback(() => {
+        if (isFormValid) {
+            dispatch(
+                sendFormActions.storeDraft({
+                    accountKey,
+                    formState: constructFormDraft(getFormState()),
+                }),
+            );
+        } else {
+            // wipeDraft
+        }
+    }, [accountKey, dispatch, getFormState, isFormValid]);
 
     useEffect(() => {
-        // debounce the redux action so it is not triggered on every keystroke
-        debounce(async () => {
-            if (isFormValid) {
-                // TODO: this object will be filled with more values in the future as the send form inputs will get more complex.
-                const formValues: FormState = {
-                    outputs: [
-                        {
-                            type: 'payment',
-                            address: rawValues.address,
-                            amount: rawValues.amount,
-                            token: null,
-                            fiat: '0',
-                            currency: { label: 'usd', value: '1000' },
-                        },
-                    ],
-                    isCoinControlEnabled: false,
-                    hasCoinControlBeenOpened: false,
-                    selectedUtxos: [],
-                    feeLimit: '0',
-                    feePerUnit: '0',
-                    options: [],
-                };
+        // We want to persist the form draft on unMount when app is running.
+        return () => storeFormDraftIfValid();
+    }, [isSubmitting, storeFormDraftIfValid]);
 
-                return await dispatch(
-                    sendFormActions.storeDraft({ accountKey, formState: formValues }),
-                );
-            }
-        });
-    }, [isFormValid, dispatch, debounce, accountKey, rawValues]);
-
-    const handleNavigateToReviewScreen = handleSubmit(() => {
+    const handleNavigateToReviewScreen = handleSubmit(async () => {
         navigation.navigate(SendStackRoutes.SendReview, { accountKey });
+
+        await dispatch(
+            onDeviceTransactionReviewThunk({
+                accountKey,
+                formState: constructFormDraft(getFormState()),
+            }),
+        );
     });
 
     return (

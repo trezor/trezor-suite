@@ -1,8 +1,7 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 
 import { CommonActions } from '@react-navigation/native';
-import { isFulfilled, isRejected } from '@reduxjs/toolkit';
+import { isRejected } from '@reduxjs/toolkit';
 
 import {
     AppTabsRoutes,
@@ -16,14 +15,11 @@ import {
 } from '@suite-native/navigation';
 import { Button, Text, VStack } from '@suite-native/atoms';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { SignedTransaction } from '@trezor/connect';
 import { useToast } from '@suite-native/toasts';
 
-import {
-    onDeviceTransactionReviewThunk,
-    sendTransactionAndCleanupSendFormThunk,
-} from '../sendFormThunks';
+import { sendTransactionAndCleanupSendFormThunk } from '../sendFormThunks';
 import { ReviewOutputItemList } from '../components/ReviewOutputItemList';
+import { selectNativeSignedTransaction } from '../sendModuleSlice';
 
 export const SendReviewScreen = ({
     route,
@@ -34,28 +30,11 @@ export const SendReviewScreen = ({
 
     const { accountKey } = route.params;
 
-    const [signedTransaction, setSignedTransaction] =
-        useState<SignedTransaction['signedTransaction']>();
+    const signedTransaction = useSelector(selectNativeSignedTransaction);
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-
-    // Instruct device to sign transaction and start on-device review.
-    useEffect(() => {
-        const signTransactionOnDevice = async () => {
-            const signedTransactionResponse = await dispatch(
-                onDeviceTransactionReviewThunk({ accountKey }),
-            );
-
-            if (isFulfilled(signedTransactionResponse)) {
-                setSignedTransaction(signedTransactionResponse.payload);
-            } else {
-                // TODO: error handling.
-            }
-        };
-        signTransactionOnDevice();
-    }, [accountKey, dispatch]);
 
     if (!account) return;
 

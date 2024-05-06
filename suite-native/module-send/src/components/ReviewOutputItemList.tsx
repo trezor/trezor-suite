@@ -44,7 +44,7 @@ export const ReviewOutputItemList = ({ accountKey }: ReviewOutputItemListProps) 
                         networkSymbol={account.symbol}
                         key={output.value}
                         reviewOutput={output}
-                        status={'active'}
+                        status="active"
                     />
                 );
             })}

@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { sendModuleReducer } from '@suite-native/module-send';
 import {
     feesReducer,
     prepareAccountsReducer,
@@ -132,6 +133,7 @@ export const prepareRootReducers = async () => {
         logs: logsSlice.reducer,
         notifications: notificationsReducer,
         discoveryConfig: discoveryConfigPersistedReducer,
+        sendModule: sendModuleReducer,
         messageSystem: messageSystemPersistedReducer,
     });
 };

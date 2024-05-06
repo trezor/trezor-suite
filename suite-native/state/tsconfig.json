@@ -29,6 +29,7 @@
         { "path": "../feature-flags" },
         { "path": "../graph" },
         { "path": "../message-system" },
+        { "path": "../module-send" },
         { "path": "../module-settings" },
         { "path": "../storage" },
         { "path": "../toasts" },
