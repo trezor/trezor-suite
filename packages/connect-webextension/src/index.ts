@@ -131,6 +131,8 @@ const call: CallMethod = async params => {
     }
 
     await _popupManager.channel.init();
+    await _popupManager.popupPromise?.promise;
+
     _popupManager.channel.postMessage({
         type: POPUP.INIT,
         payload: {

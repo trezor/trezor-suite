@@ -176,16 +176,13 @@ export class PopupManager extends EventEmitter {
 
     open() {
         const src = this.settings.popupSrc;
+        this.popupPromise = createDeferred(POPUP.LOADED);
+        this.openWrapper(src);
 
         if (this.settings.useCoreInPopup) {
             // Timeout not used in Core mode, we can't run showPopupRequest with no DOM
-            this.openWrapper(src);
-
             return;
         }
-
-        this.popupPromise = createDeferred(POPUP.LOADED);
-        this.openWrapper(src);
 
         this.closeInterval = setInterval(() => {
             if (!this.popupWindow) return;
@@ -285,7 +282,9 @@ export class PopupManager extends EventEmitter {
     };
 
     handleCoreMessage(message: Message<CoreEventMessage>) {
-        if (message.type === POPUP.CORE_LOADED) {
+        if (message.type === POPUP.LOADED) {
+            this.handleMessage(message);
+        } else if (message.type === POPUP.CORE_LOADED) {
             this.channel.postMessage({
                 type: POPUP.HANDSHAKE,
                 // in this case, settings will be validated in popup
