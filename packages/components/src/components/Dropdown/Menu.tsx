@@ -26,7 +26,9 @@ const addonAnimation = keyframes`
     }
 `;
 
-const AddonContainer = styled.div<{ $isFocused?: boolean }>`
+type AddonContainerProps = { $isFocused?: boolean };
+
+const AddonContainer = styled.div<AddonContainerProps>`
     position: absolute;
     top: 16px;
     right: 16px;
@@ -51,11 +53,13 @@ const AddonContainer = styled.div<{ $isFocused?: boolean }>`
     ${typography.label};
 `;
 
-const Container = styled.ul<{
+type ContainerProps = {
     $coords?: Coords;
     $alignMenu?: MenuAlignment;
     $elevation: Elevation;
-}>`
+};
+
+const Container = styled.ul<ContainerProps>`
     position: fixed;
     ${menuStyle};
 
@@ -124,16 +128,16 @@ const MenuItemContainer = styled.li<MenuItemContainerProps>`
         `}
 `;
 
-interface AddonProps {
+type AddonProps = {
     label: React.ReactNode;
     icon: IconProps['icon'];
     onClick?: () => void;
-}
+};
 
-interface AddonComponentProps extends AddonProps {
+type AddonComponentProps = AddonProps & {
     isKeyboardSelected: boolean;
     onMouseOver: () => void;
-}
+};
 
 const Addon = ({ label, icon, onClick, isKeyboardSelected, onMouseOver }: AddonComponentProps) => {
     const theme = useTheme();
@@ -146,7 +150,7 @@ const Addon = ({ label, icon, onClick, isKeyboardSelected, onMouseOver }: AddonC
     );
 };
 
-export interface DropdownMenuItemProps {
+export type DropdownMenuItemProps = {
     key: string;
     label: React.ReactNode;
     onClick?: () => any | Promise<any>;
@@ -157,13 +161,13 @@ export interface DropdownMenuItemProps {
     isHidden?: boolean;
     separatorBefore?: boolean;
     'data-test'?: string;
-}
+};
 
-interface MenuItemComponentProps extends DropdownMenuItemProps {
+type MenuItemComponentProps = DropdownMenuItemProps & {
     isKeyboardSelected: boolean;
     setToggled: (toggled: boolean) => void;
     onMouseOver: () => void;
-}
+};
 
 const MenuItem = ({
     icon,
@@ -211,18 +215,18 @@ const MenuItem = ({
     );
 };
 
-export interface GroupedMenuItems {
+export type GroupedMenuItems = {
     key: string;
     options: DropdownMenuItemProps[];
     label?: React.ReactNode;
-}
+};
 
-interface GroupComponentProps extends GroupedMenuItems {
+type GroupComponentProps = GroupedMenuItems & {
     index: number;
     keyboardFocusedItemId: string | undefined;
     setToggled: (toggled: boolean) => void;
     handleItemHover: (itemId: string) => void;
-}
+};
 
 const Group = ({
     options,
