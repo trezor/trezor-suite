@@ -541,6 +541,9 @@ const fail = (error: ErrorViewProps) => {
 };
 
 addWindowEventListener('load', onLoad, false);
+if (document.readyState === 'complete') {
+    onLoad();
+}
 addWindowEventListener('message', handleInitMessage, false);
 addWindowEventListener('message', handleLogMessage, false);
 
