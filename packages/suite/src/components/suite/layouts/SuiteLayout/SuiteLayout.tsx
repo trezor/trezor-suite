@@ -109,6 +109,9 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                         <ModalSwitcher />
 
+                        <ElevationDown>
+                            <SuiteBanners />
+                        </ElevationDown>
                         <CoinjoinBars />
 
                         {isMobileLayout && <MobileMenu />}
@@ -135,10 +138,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                             )}
                                             {TopMenu && <TopMenu />}
 
-                                            <ContentWrapper>
-                                                <SuiteBanners />
-                                                {children}
-                                            </ContentWrapper>
+                                            <ContentWrapper>{children}</ContentWrapper>
                                         </ElevationUp>
                                     </AppWrapper>
                                 </Columns>

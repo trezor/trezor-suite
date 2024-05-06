@@ -67,7 +67,7 @@ const Wrapper = styled.div<{ $variant: BannerVariant }>`
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
     ${typography.highlight}
     border-radius: ${borders.radii.sm};
-    margin: ${spacingsPx.xxs} 0 ${spacingsPx.lg} 0;
+    margin: ${spacingsPx.xs};
     align-items: center;
 
     @media (max-width: ${variables.SCREEN_SIZE.SM}) {
