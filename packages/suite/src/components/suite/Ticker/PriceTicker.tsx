@@ -6,15 +6,16 @@ import { typography } from '@trezor/theme';
 import { LastUpdateTooltip } from './LastUpdateTooltip';
 
 const FiatRateWrapper = styled.span`
-    ${typography.hint}
+    ${typography.callout}
     display: flex;
     align-items: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
+    color: ${({ theme }) => theme.textDefault};
 `;
 
 interface PriceTickerProps {
     symbol: string;
 }
+
 export const PriceTicker = ({ symbol }: PriceTickerProps) => (
     <FiatValue amount="1" symbol={symbol} showLoadingSkeleton>
         {({ rate, timestamp }) =>
