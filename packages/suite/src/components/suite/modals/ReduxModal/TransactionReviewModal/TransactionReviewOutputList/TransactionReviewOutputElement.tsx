@@ -11,6 +11,8 @@ import { zIndices } from '@trezor/theme';
 import { DeviceDisplay } from '../../../../DeviceDisplay/DeviceDisplay';
 import { DisplayMode } from 'src/types/suite';
 
+const TYPES_TO_BE_DISPLAYED_IN_SCREEN_BOX = ['address', 'regular_legacy', 'data', 'opreturn'];
+
 const OutputWrapper = styled.div`
     display: flex;
     margin-top: 32px;
@@ -192,7 +194,7 @@ export const TransactionReviewOutputElement = forwardRef<
                             <OutputValue>
                                 {isActive &&
                                 displayMode &&
-                                (line.id === 'address' || line.id === 'regular_legacy') ? (
+                                TYPES_TO_BE_DISPLAYED_IN_SCREEN_BOX.includes(line.id) ? (
                                     <DeviceDisplay displayMode={displayMode} address={line.value} />
                                 ) : (
                                     <OutputValueWrapper>
