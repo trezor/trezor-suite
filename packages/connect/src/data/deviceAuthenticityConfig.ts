@@ -7,7 +7,6 @@ const CertPubKeys = Type.Object({
     caPubKeys: Type.Array(Type.String()),
 });
 
-// NOTE: only T2B1 model is required in config, other models should be optional and undefined
 type ModelPubKeys = Static<typeof ModelPubKeys>;
 const ModelPubKeys = Type.Intersect([
     Type.Record(
@@ -48,7 +47,7 @@ export const DeviceAuthenticityConfig = Type.Intersect([
  */
 export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
-    timestamp: '2023-04-17T12:00:00+00:00',
+    timestamp: '2024-05-06T12:00:00+00:00',
     T2B1: {
         rootPubKeys: [
             '04ca97480ac0d7b1e6efafe518cd433cec2bf8ab9822d76eafd34363b55d63e60380bff20acc75cde03cffcb50ab6f8ce70c878e37ebc58ff7cca0a83b16b15fa5',
@@ -93,12 +92,10 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
         ],
         debug: {
             rootPubKeys: [
-                '047f77368dea2d4d61e989f474a56723c3212dacf8a808d8795595ef38441427c4389bc454f02089d7f08b873005e4c28d432468997871c0bf286fd3861e21e96a',
+                '04e48b69cd7962068d3cca3bcc6b1747ef496c1e28b5529e34ad7295215ea161dbe8fb08ae0479568f9d2cb07630cb3e52f4af0692102da5873559e45e9fa72959',
             ],
             caPubKeys: [
                 '04829e8965018feb542e9236c9b2ce08f864a55ed9183d0259564f0e05345b04676a0bef36c59d21d3c24868b5601f0b1193a6bfcf6d814e1cfb79c2256a05e953',
-                '046f64eff0dfa3ceeae9708a3881fc09a3dae62198559d022d120e96edc168f3991a9e9b016635a0d43997ee55d8c2b37d969e8abc84e75c791ec911108b52f3c7',
-                '041260c3c1fd4ddfc97ba19732d5dcbe6efab61d58af83281b95d6cdb30606bf08f0b817eb6db2825b5ce32d0cc2c275b7eadcedaa1805f00b3f5a11668b6c5cb5',
             ],
         },
     },
