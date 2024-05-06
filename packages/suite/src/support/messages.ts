@@ -4455,11 +4455,11 @@ export default defineMessages({
     },
     TR_TO_ACCESS_OTHER_WALLETS: {
         id: 'TR_TO_ACCESS_OTHER_WALLETS',
-        defaultMessage: 'Connect your device to add other wallets',
+        defaultMessage: 'Connect and unlock your device to add other wallets',
     },
     TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT: {
         id: 'TR_TO_ADD_NEW_ACCOUNT_PLEASE_CONNECT',
-        defaultMessage: 'Connect your device to add new accounts.',
+        defaultMessage: 'Connect and unlock your device to add new accounts.',
     },
     TR_EJECT_HEADING: {
         id: 'TR_EJECT_HEADING',
