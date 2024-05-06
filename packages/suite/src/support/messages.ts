@@ -2490,7 +2490,7 @@ export default defineMessages({
     },
     TR_SECURITY_CHECK_HOLOGRAM: {
         defaultMessage:
-            'Please note that device packaging including holograms have changed over time. You can check packaging details <packaging>here</packaging>. Also be sure you made your purchase from <reseller>our trusted sellers</reseller>. Otherwise, the device you are holding in your hands might be a counterfeit. Please <support>contract Trezor support</support>.',
+            "Please note that device packaging, including holograms and security seals, have been updated over time. You can verify packaging details <packaging>here</packaging>. Ensure that your device was purchased from either the official Trezor Shop or from one of <reseller>our trusted sellers</reseller>. Otherwise, there's a risk that your device might be a counterfeit. If you suspect that your device is not genuine, please  <support>contact Trezor support</support>.",
         id: 'TR_SECURITY_CHECK_HOLOGRAM',
     },
     TR_DISCONNECT_YOUR_DEVICE: {
@@ -2740,7 +2740,7 @@ export default defineMessages({
     },
     TR_HOLOGRAM_T2B1_NEW_SEAL: {
         defaultMessage:
-            'The holographic seal of Trezor Safe 3 was updated in April 2024. Post-update devices typically feature the new seal shown in the bottom of the image, though older stock might have the previous seal.',
+            'The holographic seal of Trezor Safe 3 was updated in April 2024. Devices manufactured after this date feature the updated seal, as depicted at the bottom of the image. However, older-produced devices may still carry the original security seal.',
         id: 'TR_HOLOGRAM_T2B1_NEW_SEAL',
     },
     TR_HOW_PIN_WORKS: {
@@ -4277,7 +4277,7 @@ export default defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_T3T1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T3T1',
         defaultMessage:
-            'Your recovery seed (wallet backup) is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
+            'Your wallet backup is entered using the touchscreen. This avoids exposing any of your sensitive information to a potentially insecure computer or web browser.',
         dynamic: true,
     },
     TR_CHECK_RECOVERY_SEED_DESC_T2B1: {
@@ -8572,7 +8572,7 @@ export default defineMessages({
     TR_STAKE_STAKING_IS: {
         id: 'TR_STAKE_STAKING_IS',
         defaultMessage:
-            "Staking is like a friendly gesture where you temporarily lock your Ethereum assets to support the blockchain's operation. As a sweet reward, you'll actually earn more {symbol} in return!",
+            "Staking involves temporarily locking your Ethereum assets to support the blockchain's operation. In return, you'll earn additional Ethereum as a reward.",
     },
     TR_STAKE_ANY_AMOUNT_ETH: {
         id: 'TR_STAKE_ANY_AMOUNT_ETH',
@@ -8594,7 +8594,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking usually takes about 3 days. Once completed, you can trade or send it.',
+            'Unstaking currently takes {days} days. Once completed, you can trade or send it.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
@@ -8825,12 +8825,12 @@ export default defineMessages({
     TR_STAKE_EVERSTAKE_MANAGES: {
         id: 'TR_STAKE_EVERSTAKE_MANAGES',
         defaultMessage:
-            'Everstake manages and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
+            'Everstake maintains and protects your staked {symbol} <t>with their smart contracts, infrastructure, and technology.</t>',
     },
     TR_STAKE_TREZOR_NO_LIABILITY: {
         id: 'TR_STAKE_TREZOR_NO_LIABILITY',
         defaultMessage:
-            "Trezor assumes no liability <t>for Everstake's security guarantees. Your Trezor doesn’t manage the security of your staked funds.</t>",
+            "<t>When staking, the responsibility for</t> your funds' security transitions from your Trezor to Everstake.",
     },
     TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE: {
         id: 'TR_STAKE_CONSENT_TO_STAKING_WITH_EVERSTAKE',
