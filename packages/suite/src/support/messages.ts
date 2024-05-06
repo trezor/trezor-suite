@@ -2096,7 +2096,7 @@ export default defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            "A wallet backup is a series of randomly generated words created by your Trezor. It’s important to write down your wallet backup and keep it safe, as it's the only way to recover and access your funds.",
+            "A wallet backup is a series of randomly generated words created by your Trezor. It's important to write down your wallet backup and keep it safe, as it's the only way to recover and access your funds.",
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -2115,7 +2115,7 @@ export default defineMessages({
     },
     TR_MULTI_SHARE_BACKUP_DESCRIPTION: {
         defaultMessage:
-            "A recovery seed backup is a series of randomly generated words created by your Trezor. It's important that you write down your recovery seed and keep it safe, as it is the only way to recover and access your funds.",
+            'Generate multiple shares, each containing 20 words. These shares are used collectively to recover your funds.',
         id: 'TR_MULTI_SHARE_BACKUP_DESCRIPTION',
     },
     TR_CREATE_MULTI_SHARE_BACKUP: {
@@ -2253,7 +2253,7 @@ export default defineMessages({
     },
     TR_CREATE_SHARES_EXPLANATION: {
         defaultMessage:
-            "Now, you'll be selecting amount of shares, and minimum of shares required to recover your Trezor if you'll ever need it.",
+            "Now, you'll be selecting amount of shares, and minimum of shares required to recover your Trezor.",
         id: 'TR_CREATE_SHARES_EXPLANATION',
     },
     TR_CREATE_SHARES_EXAMPLE: {
@@ -2262,7 +2262,7 @@ export default defineMessages({
     },
     TR_CREATE_SHARES_CARD_1: {
         defaultMessage:
-            'Grab pen and paper. Or print <a1>Trezor cards</a1>, or use <a2>Trezor Keep</a2>',
+            'Grab pen and paper. Or print <cardsLink>Trezor cards</cardsLink>, or use <keepLink>Trezor Keep</keepLink>',
         id: 'TR_CREATE_SHARES_CARD_1',
     },
     TR_CREATE_SHARES_CARD_2: {

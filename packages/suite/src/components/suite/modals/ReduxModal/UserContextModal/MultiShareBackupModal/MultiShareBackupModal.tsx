@@ -4,9 +4,9 @@ import styled from 'styled-components';
 import { Button, Checkbox, Image, ModalProps, Paragraph, Text } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 import {
-    ESHOP_KEEP_METAL_20_URL,
-    HELP_CENTER_RECOVERY_ISSUES_URL,
-    HELP_CENTER_RECOVERY_SEED_URL,
+    ESHOP_KEEP_METAL_URL,
+    HELP_CENTER_MULTI_SHARE_BACKUP_URL,
+    HELP_CENTER_SEED_CARD_URL,
 } from '@trezor/urls';
 
 import { useDispatch } from 'src/hooks/suite';
@@ -113,8 +113,7 @@ export const MultiShareBackupModal = () => {
                             <Button onClick={goToStepNextStep}>
                                 <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
                             </Button>
-                            <LearnMoreButton url={HELP_CENTER_RECOVERY_SEED_URL} size="medium" />
-                            {/*TODO: replace link*/}
+                            <LearnMoreButton url={HELP_CENTER_SEED_CARD_URL} size="medium" />
                         </>
                     ),
                 };
@@ -164,21 +163,19 @@ export const MultiShareBackupModal = () => {
                                         <Translation
                                             id="TR_CREATE_SHARES_CARD_1"
                                             values={{
-                                                a1: chunks => (
+                                                cardsLink: chunks => (
                                                     <TrezorLink
-                                                        href={ESHOP_KEEP_METAL_20_URL}
+                                                        href={HELP_CENTER_SEED_CARD_URL}
                                                         variant="underline"
                                                     >
-                                                        {/*TODO: replace link*/}
                                                         {chunks}
                                                     </TrezorLink>
                                                 ),
-                                                a2: chunks => (
+                                                keepLink: chunks => (
                                                     <TrezorLink
-                                                        href={ESHOP_KEEP_METAL_20_URL}
+                                                        href={ESHOP_KEEP_METAL_URL}
                                                         variant="underline"
                                                     >
-                                                        {/*TODO: check link didn't change*/}
                                                         {chunks}
                                                     </TrezorLink>
                                                 ),
@@ -212,7 +209,7 @@ export const MultiShareBackupModal = () => {
                             <Button onClick={enterBackup}>
                                 <Translation id="TR_ENTER_EXISTING_BACKUP" />
                             </Button>
-                            <LearnMoreButton url={HELP_CENTER_RECOVERY_ISSUES_URL} size="medium">
+                            <LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} size="medium">
                                 <Translation id="TR_DONT_HAVE_BACKUP" />
                             </LearnMoreButton>
                         </>
