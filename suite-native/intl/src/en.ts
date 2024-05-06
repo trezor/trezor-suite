@@ -651,7 +651,8 @@ export const en = {
         },
         form: {
             enterWallet: 'Enter passphrase',
-            inputLabel: 'Enter your passphrase',
+            createWalletInputLabel: 'Enter your passphrase',
+            verifyPassphraseInputLabel: 'Re-enter your passphrase',
         },
         confirmOnDevice: {
             title: 'Confirm passphrase\non your Trezor.',
@@ -661,6 +662,39 @@ export const en = {
                 title: 'Are you sure you would like to cancel opening a passphrase wallet?',
                 primaryButton: 'Cancel',
                 secondaryButton: 'Continue opening',
+            },
+        },
+        emptyPassphraseWallet: {
+            title: 'This passphrase wallet is empty',
+            confirmCard: {
+                description: 'Opening unused and knowingly empty passphrase wallet?',
+                button: 'Yes, open unused wallet',
+            },
+            expectingPassphraseWallet: {
+                title: 'Expecting passphrase wallet with funds?',
+                description: "You might've made a typo. Try entering your passphrase again.",
+                button: 'Try again',
+            },
+            confirmEmptyWalletSheet: {
+                title: 'What to do with new passphrase?',
+                list: {
+                    backup: 'Backup your passphrase on a piece of paper and always keep it offline (no photos, USB, internet).',
+                    store: 'Store it elsewhere than your recovery seed and Trezor.',
+                    neverShare: 'Never share it with anyone, not even with Trezor support.',
+                },
+                button: 'Got it, continue',
+                alertTitle: 'No one can recover your passphrase, not even Trezor support',
+            },
+            verifyEmptyWallet: {
+                title: 'Confirm empty passphrase',
+                description: 'Carefully re-enter your passphrase to confirm it.',
+                alertTitle:
+                    'Create an offline backup of your passphrase. It is irrecoverable, even by Trezor support.',
+                passphraseMismatchAlert: {
+                    title: 'Passphrase mismatch',
+                    description: "Passphrase doesn't match",
+                    buttonTitle: 'Start over',
+                },
             },
         },
     },

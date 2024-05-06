@@ -860,3 +860,9 @@ export const selectPhysicalDevicesGrouppedById = memoize((state: DeviceRootState
 
     return deviceUtils.getDeviceInstancesGroupedByDeviceId(devices);
 });
+
+export const selectDeviceState = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device?.state ?? null;
+};

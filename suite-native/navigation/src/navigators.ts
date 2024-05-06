@@ -123,8 +123,10 @@ export type ConnectDeviceStackParamList = {
 
 export type PassphraseStackParamList = {
     [PassphraseStackRoutes.PassphraseForm]: undefined;
-    [PassphraseStackRoutes.PassphraseConfirmOnDevice]: undefined;
+    [PassphraseStackRoutes.PassphraseConfirmOnTrezor]: undefined;
     [PassphraseStackRoutes.PassphraseLoading]: undefined;
+    [PassphraseStackRoutes.PassphraseEmptyWallet]: undefined;
+    [PassphraseStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
 };
 
 export type RootStackParamList = {

@@ -12,12 +12,13 @@ import {
 } from '@suite-common/validators';
 import { Button, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     deviceActions,
     onPassphraseSubmit,
     selectDevice,
     selectDeviceButtonRequestsCodes,
+    selectDeviceState,
 } from '@suite-common/wallet-core';
 import {
     PassphraseStackParamList,
@@ -27,7 +28,8 @@ import {
 } from '@suite-native/navigation';
 
 type PassphraseFormProps = {
-    onFocus: () => void;
+    onFocus?: () => void;
+    inputLabel: string;
 };
 
 const formStyle = prepareNativeStyle(utils => ({
@@ -41,15 +43,14 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const PassphraseForm = ({ onFocus }: PassphraseFormProps) => {
+export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => {
     const dispatch = useDispatch();
 
     const { applyStyle } = useNativeStyles();
 
-    const { translate } = useTranslate();
-
     const device = useSelector(selectDevice);
     const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);
+    const deviceState = useSelector(selectDeviceState);
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -60,14 +61,14 @@ export const PassphraseForm = ({ onFocus }: PassphraseFormProps) => {
         },
     });
 
+    const { handleSubmit, watch } = form;
+
     useEffect(() => {
         if (buttonRequestCodes.includes('ButtonRequest_Other')) {
-            navigation.navigate(PassphraseStackRoutes.PassphraseConfirmOnDevice);
+            navigation.navigate(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
             dispatch(deviceActions.removeButtonRequests({ device }));
         }
-    }, [buttonRequestCodes, device, dispatch, navigation]);
-
-    const { handleSubmit, watch } = form;
+    }, [buttonRequestCodes, device, deviceState, dispatch, navigation]);
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         dispatch(deviceActions.removeButtonRequests({ device }));
@@ -80,7 +81,7 @@ export const PassphraseForm = ({ onFocus }: PassphraseFormProps) => {
         <Form form={form}>
             <VStack spacing="medium" padding="medium" style={applyStyle(formStyle)}>
                 <TextInputField
-                    label={translate('modulePassphrase.form.inputLabel')}
+                    label={inputLabel}
                     name="passphrase"
                     maxLength={formInputsMaxLength.passphrase}
                     accessibilityLabel="passphrase input"

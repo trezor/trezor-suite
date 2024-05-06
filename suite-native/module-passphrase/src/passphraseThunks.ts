@@ -29,3 +29,30 @@ export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
         dispatch(deviceActions.forgetDevice(device));
     },
 );
+
+export const verifyPassphraseOnEmptyWalletThunk = createThunk(
+    `${PASSPHRASE_MODULE_PREFIX}/verifyPassphraseOnEmptyWallet`,
+    async (_, { getState, rejectWithValue, fulfillWithValue }) => {
+        const device = selectDevice(getState());
+
+        if (!device) return;
+
+        const response = await TrezorConnect.getDeviceState({
+            device: {
+                path: device.path,
+                instance: device.instance,
+                // Even though we have device state available, we intentionally send undefined so that connect requests passphrase
+                // When we submit passphrase, we can then compare both device states (previous and current - they're derived from passphrase)
+                // to see if they match.
+                state: undefined,
+            },
+            keepSession: false,
+        });
+
+        if (response.success && response.payload.state !== device.state) {
+            return rejectWithValue(false);
+        }
+
+        return fulfillWithValue(true);
+    },
+);

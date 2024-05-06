@@ -15,6 +15,7 @@
         {
             "path": "../../suite-common/wallet-core"
         },
+        { "path": "../alerts" },
         { "path": "../atoms" },
         { "path": "../forms" },
         { "path": "../intl" },

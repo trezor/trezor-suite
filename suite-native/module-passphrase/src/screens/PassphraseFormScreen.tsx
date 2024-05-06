@@ -4,7 +4,7 @@ import { View } from 'react-native';
 import { useOpenLink } from '@suite-native/link';
 import { Screen } from '@suite-native/navigation';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
-import { Translation } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 
@@ -34,6 +34,8 @@ const animationWrapperStyle = prepareNativeStyle(() => ({
 
 export const PassphraseFormScreen = () => {
     const { applyStyle, utils } = useNativeStyles();
+
+    const { translate } = useTranslate();
 
     const openLink = useOpenLink();
 
@@ -115,7 +117,10 @@ export const PassphraseFormScreen = () => {
                             </Box>
                         </Animated.View>
                     </View>
-                    <PassphraseForm onFocus={handleAnimation} />
+                    <PassphraseForm
+                        onFocus={handleAnimation}
+                        inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
+                    />
                 </VStack>
             </VStack>
         </Screen>
