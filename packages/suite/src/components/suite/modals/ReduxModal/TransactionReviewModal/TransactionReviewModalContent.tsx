@@ -14,6 +14,7 @@ import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 import { DeviceModelInternal } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -159,7 +160,10 @@ export const TransactionReviewModalContent = ({
                 setIsSending={() => setIsSending(true)}
                 ethereumStakeType={ethereumStakeType || undefined}
             />
-            <TransactionReviewEvmExplanation account={selectedAccount.account} />
+            <TransactionReviewEvmExplanation
+                account={selectedAccount.account}
+                margin={{ top: spacings.sm }}
+            />
         </StyledModal>
     );
 };
