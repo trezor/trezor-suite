@@ -15,6 +15,12 @@ on:
         description: "Flag to indicate whether to run the webextension job"
         type: "boolean"
         required: false
+        default: false
+      run-web:
+        description: "Flag to indicate whether to run the web job"
+        type: "boolean"
+        required: false
+        default: true
       build-overview:
         description: "Flag to indicate whether to build connect-popup-overview.html"
         type: "boolean"
