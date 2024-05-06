@@ -47,7 +47,7 @@ const findIndexByCommit = (commitArr, searchString) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
 const initConnectRelease = async () => {
-    const checkResult = await checkPackageDependencies('connect');
+    const checkResult = await checkPackageDependencies('connect', deploymentType);
 
     const update = checkResult.update.map(package => package.replace('@trezor/', ''));
     const errors = checkResult.errors.map(package => package.replace('@trezor/', ''));

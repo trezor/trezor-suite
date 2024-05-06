@@ -1,6 +1,8 @@
 /**
- * node check-npm-dependencies.js <package_name>
- */
+ * node check-npm-dependencies.js <package_name> <semver>
+ *
+ * This script checks the dependencies for the specified package to ensure they match expected criteria.
+ * It is used to verify the output of ci/scripts/connect-release-init-npm.js. */
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
@@ -13,8 +15,16 @@ const packagesPath = path.join(rootPath, 'packages');
 
 const args = process.argv.slice(2);
 
-if (args.length < 1) throw new Error('Check npm dependencies requires 1 parameter: package name');
-const [packageName] = args;
+if (args.length < 2)
+    throw new Error('Usage: node check-npm-dependencies.js <package_name> <semver>');
+
+const [packageName, semver] = args;
+const allowedSemvers = ['patch', 'minor', 'prerelease'];
+if (!allowedSemvers.includes(semver)) {
+    throw new Error(`Provided semver '${semver}' must be one of ${allowedSemvers.join(', ')}`);
+}
+
+const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
 
 (async () => {
     const packages = await readdir(packagesPath, {
@@ -25,7 +35,7 @@ const [packageName] = args;
         throw new Error(`provided package name: ${packageName} must be one of ${packages}`);
     }
 
-    const checkResult = await checkPackageDependencies(packageName);
+    const checkResult = await checkPackageDependencies(packageName, deploymentType);
 
     if (checkResult.errors.length > 0) {
         const errorMessage = `Deps error. one of the dependencies likely needs to be published for the first time: ${checkResult.errors.join(
@@ -33,4 +43,9 @@ const [packageName] = args;
         )}`;
         throw Error(errorMessage);
     }
+
+    console.log('checkResult', checkResult);
+    console.log(
+        `All dependencies for ${packageName} are correct for a ${deploymentType} deployment.`,
+    );
 })();
