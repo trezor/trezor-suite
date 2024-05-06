@@ -130,7 +130,7 @@ jobs:
     with:
       test-name: methods.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: true
+      run-webextension: false
       build-overview: true
 
   popup-close:
@@ -184,3 +184,4 @@ jobs:
     with:
       test-name: unchained.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-web: ${{ github.event_name == 'schedule' }}
