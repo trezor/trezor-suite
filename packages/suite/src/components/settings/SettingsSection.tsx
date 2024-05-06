@@ -7,6 +7,7 @@ import { breakpointMediaQueries } from '@trezor/styles';
 const Wrapper = styled.div`
     margin-bottom: ${spacingsPx.xxxl};
     display: flex;
+    width: 100%;
 
     ${breakpointMediaQueries.below_lg} {
         display: block;
@@ -43,6 +44,12 @@ const StyledCard = styled(Card)`
     flex: 1;
 `;
 
+const Content = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`;
+
 interface SettingsSectionProps {
     customHeader?: ReactNode;
     title?: string | ReactElement;
@@ -50,6 +57,7 @@ interface SettingsSectionProps {
     description?: string | ReactElement;
     className?: string;
     children?: ReactNode;
+    bottomActions?: ReactNode; // Used for activate coins (remove when big redesign is done)
 }
 
 export const SettingsSection = ({
@@ -59,6 +67,7 @@ export const SettingsSection = ({
     customHeader,
     className,
     children,
+    bottomActions,
 }: SettingsSectionProps) => {
     const theme = useTheme();
 
@@ -77,7 +86,10 @@ export const SettingsSection = ({
                 )}
             </Header>
 
-            <StyledCard className={className}>{children}</StyledCard>
+            <Content>
+                <StyledCard className={className}>{children}</StyledCard>
+                {bottomActions}
+            </Content>
         </Wrapper>
     );
 };
