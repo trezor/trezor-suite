@@ -71,6 +71,11 @@ export const HELP_CENTER_DEVICE_AUTHENTICATION =
     'https://trezor.io/learn/a/trezor-safe-3-authentication-check';
 export const HELP_CENTER_ETH_STAKING =
     'https://trezor.io/learn/a/stake-ethereum-eth-in-trezor-suite';
+export const HELP_CENTER_SEED_CARD_URL = 'https://trezor.io/learn/a/recovery-seed-card';
+export const HELP_CENTER_MULTI_SHARE_BACKUP_URL =
+    'https://trezor.io/learn/a/introducing-multi-share-backup';
+export const HELP_CENTER_KEEPING_SEED_SAFE_URL =
+    'https://trezor.io/learn/a/keeping-your-recovery-seed-safe';
 
 export const INVITY_URL = 'https://invity.io/';
 export const INVITY_SCHEDULE_OF_FEES = 'https://blog.invity.io/schedule-of-fees';
@@ -94,4 +99,4 @@ export const TOR_PROJECT_URL = 'https://www.torproject.org/';
 export const ZKSNACKS_TERMS_URL =
     'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';
 export const CROWDIN_URL = 'https://crowdin.com/project/trezor-suite';
-export const ESHOP_KEEP_METAL_20_URL = 'https://trezor.io/trezor-keep-metal-shamir';
+export const ESHOP_KEEP_METAL_URL = 'https://trezor.io/trezor-keep-metal';
