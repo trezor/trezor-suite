@@ -24,7 +24,7 @@ import { AccountType, Network, NetworkSymbol, getNetworkType } from '@suite-comm
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
-import { isDebugEnv } from '@suite-native/config';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 
 import {
     selectDisabledDiscoveryNetworkSymbolsForDevelopment,
@@ -527,7 +527,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         let supportedNetworks = selectDiscoverySupportedNetworks(getState(), areTestnetsEnabled);
 
         // For development purposes, you can disable some networks to have quicker discovery in dev utils
-        if (isDebugEnv()) {
+        if (isDevelopOrDebugEnv()) {
             const disabledNetworkSymbols =
                 selectDisabledDiscoveryNetworkSymbolsForDevelopment(getState());
             supportedNetworks = supportedNetworks.filter(
