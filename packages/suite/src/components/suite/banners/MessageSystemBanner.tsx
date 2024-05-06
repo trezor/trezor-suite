@@ -13,6 +13,8 @@ import { selectLanguage, selectTorState } from 'src/reducers/suite/suiteReducer'
 const BannerOnTop = styled(Banner)`
     position: relative;
     z-index: ${zIndices.guide};
+    margin: 4px;
+    align-self: stretch;
 `;
 
 type MessageSystemBannerProps = {

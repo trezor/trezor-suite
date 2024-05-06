@@ -109,9 +109,6 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                         <ModalSwitcher />
 
-                        <ElevationDown>
-                            <SuiteBanners />
-                        </ElevationDown>
                         <CoinjoinBars />
 
                         {isMobileLayout && <MobileMenu />}
@@ -132,6 +129,7 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                         ref={scrollRef}
                                         id={SCROLL_WRAPPER_ID}
                                     >
+                                        <SuiteBanners />
                                         <ElevationUp>
                                             {isMobileLayout && isAccountPage && (
                                                 <MobileAccountsMenu />
