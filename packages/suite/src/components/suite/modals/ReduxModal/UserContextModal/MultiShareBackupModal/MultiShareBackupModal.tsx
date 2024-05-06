@@ -1,45 +1,14 @@
 import { useState } from 'react';
-import styled from 'styled-components';
 
-import { Button, Checkbox, Image, ModalProps, Paragraph, Text } from '@trezor/components';
-import { borders, spacingsPx } from '@trezor/theme';
-import {
-    ESHOP_KEEP_METAL_URL,
-    HELP_CENTER_MULTI_SHARE_BACKUP_URL,
-    HELP_CENTER_SEED_CARD_URL,
-} from '@trezor/urls';
+import { Button, ModalProps } from '@trezor/components';
+import { HELP_CENTER_MULTI_SHARE_BACKUP_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
 import { useDispatch } from 'src/hooks/suite';
 import { onCancel, openModal } from 'src/actions/suite/modalActions';
-import { Modal, Translation, TrezorLink } from 'src/components/suite';
+import { Modal, Translation } from 'src/components/suite';
 import { LearnMoreButton } from 'src/components/suite/LearnMoreButton';
-import { BackupInstructionsCard } from './BackupInstructionsCard';
-import { BackupInstructionsStep, BackupInstructionsStepProps } from './BackupInstructionsStep';
-import { Body, Section } from './MultiShareModalLayout';
-
-const StyledImage = styled(Image)`
-    margin-bottom: ${spacingsPx.md};
-`;
-
-const CardWrapper = styled.div`
-    display: flex;
-    gap: ${spacingsPx.sm};
-`;
-
-const Illustration = styled.div`
-    display: flex;
-    align-items: center;
-    flex-direction: column;
-    border: ${borders.widths.small} solid ${({ theme }) => theme.borderElevation0};
-    border-radius: ${borders.radii.md};
-    padding-bottom: ${spacingsPx.lg};
-`;
-
-const CardWrapper2 = styled.div`
-    display: grid;
-    gap: ${spacingsPx.sm};
-    grid-template-columns: repeat(3, 1fr);
-`;
+import { MultiShareBackupStep1 } from './MultiShareBackupStep1';
+import { MultiShareBackupStep2 } from './MultiShareBackupStep2';
 
 export const MultiShareBackupModal = () => {
     const dispatch = useDispatch();
@@ -53,14 +22,6 @@ export const MultiShareBackupModal = () => {
     const getStepConfig = (): Partial<ModalProps> | undefined => {
         switch (step) {
             case 0:
-                const getCheckboxVariant = (isChecked: boolean) =>
-                    isSubmitted && !isChecked ? 'destructive' : undefined;
-
-                const checkboxVariant1 = getCheckboxVariant(isChecked1);
-                const checkboxVariant2 = getCheckboxVariant(isChecked2);
-
-                const toggleCheckbox1 = () => setIsChecked1(prev => !prev);
-                const toggleCheckbox2 = () => setIsChecked2(prev => !prev);
                 const goToStepNextStep = () => {
                     setIsSubmitted(true);
                     if (isChecked1 && isChecked2) {
@@ -71,42 +32,13 @@ export const MultiShareBackupModal = () => {
                 return {
                     heading: <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />,
                     children: (
-                        <>
-                            <StyledImage image="CREATE_SHAMIR_GROUP" />
-                            <Body>
-                                <Section>
-                                    <Paragraph typographyStyle="callout">
-                                        <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_1" />
-                                    </Paragraph>
-                                    <Translation id="TR_MULTI_SHARE_BACKUP_EXPLANATION_1" />
-                                </Section>
-                                <Section>
-                                    <Paragraph typographyStyle="callout">
-                                        <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_2" />
-                                    </Paragraph>
-                                    <Translation id="TR_MULTI_SHARE_BACKUP_EXPLANATION_2" />
-                                </Section>
-                                <Section>
-                                    <Paragraph typographyStyle="callout">
-                                        <Translation id="TR_MULTI_SHARE_BACKUP_CALLOUT_3" />
-                                    </Paragraph>
-                                    <Checkbox
-                                        isChecked={isChecked1}
-                                        onClick={toggleCheckbox1}
-                                        variant={checkboxVariant1}
-                                    >
-                                        <Translation id="TR_MULTI_SHARE_BACKUP_CHECKBOX_1" />
-                                    </Checkbox>
-                                    <Checkbox
-                                        isChecked={isChecked2}
-                                        onClick={toggleCheckbox2}
-                                        variant={checkboxVariant2}
-                                    >
-                                        <Translation id="TR_MULTI_SHARE_BACKUP_CHECKBOX_2" />
-                                    </Checkbox>
-                                </Section>
-                            </Body>
-                        </>
+                        <MultiShareBackupStep1
+                            isChecked1={isChecked1}
+                            isChecked2={isChecked2}
+                            isSubmitted={isSubmitted}
+                            setIsChecked1={setIsChecked1}
+                            setIsChecked2={setIsChecked2}
+                        />
                     ),
                     bottomBarComponents: (
                         <>
@@ -127,83 +59,9 @@ export const MultiShareBackupModal = () => {
                     dispatch(openModal({ type: 'multi-share-backup-complete' }));
                 };
 
-                const instructionsSteps: Pick<
-                    BackupInstructionsStepProps,
-                    'children' | 'description' | 'heading' | 'time'
-                >[] = [
-                    {
-                        heading: 'TR_VERIFY_TREZOR_OWNERSHIP',
-                        time: 2,
-                        description: 'TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION',
-                        children: (
-                            <CardWrapper>
-                                <BackupInstructionsCard isHorizontal icon="BACKUP_2">
-                                    <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_CARD_1" />
-                                </BackupInstructionsCard>
-                                <BackupInstructionsCard isHorizontal icon="CAMERA_SLASH">
-                                    <Translation id="TR_VERIFY_TREZOR_OWNERSHIP_CARD_2" />
-                                </BackupInstructionsCard>
-                            </CardWrapper>
-                        ),
-                    },
-                    {
-                        heading: 'TR_CREATE_SHARES',
-                        time: 10,
-                        description: 'TR_CREATE_SHARES_EXPLANATION',
-                        children: (
-                            <>
-                                <Illustration>
-                                    <Image image="SHAMIR_SHARES" />
-                                    <Text typographyStyle="hint" variant="tertiary">
-                                        <Translation id="TR_CREATE_SHARES_EXAMPLE" />
-                                    </Text>
-                                </Illustration>
-                                <CardWrapper2>
-                                    <BackupInstructionsCard icon="PENCIL">
-                                        <Translation
-                                            id="TR_CREATE_SHARES_CARD_1"
-                                            values={{
-                                                cardsLink: chunks => (
-                                                    <TrezorLink
-                                                        href={HELP_CENTER_SEED_CARD_URL}
-                                                        variant="underline"
-                                                    >
-                                                        {chunks}
-                                                    </TrezorLink>
-                                                ),
-                                                keepLink: chunks => (
-                                                    <TrezorLink
-                                                        href={ESHOP_KEEP_METAL_URL}
-                                                        variant="underline"
-                                                    >
-                                                        {chunks}
-                                                    </TrezorLink>
-                                                ),
-                                            }}
-                                        />
-                                    </BackupInstructionsCard>
-                                    <BackupInstructionsCard icon="CAMERA_SLASH">
-                                        <Translation id="TR_CREATE_SHARES_CARD_2" />
-                                    </BackupInstructionsCard>
-                                    <BackupInstructionsCard icon="EYE_SLASH">
-                                        <Translation id="TR_CREATE_SHARES_CARD_3" />
-                                    </BackupInstructionsCard>
-                                </CardWrapper2>
-                            </>
-                        ),
-                    },
-                ];
-
                 return {
                     heading: <Translation id="TR_NEXT_UP" />,
-                    children: instructionsSteps.map((content, i) => (
-                        <BackupInstructionsStep
-                            key={i}
-                            stepNumber={i + 1}
-                            isLast={instructionsSteps.length === i + 1}
-                            {...content}
-                        />
-                    )),
+                    children: <MultiShareBackupStep2 />,
                     bottomBarComponents: (
                         <>
                             <Button onClick={enterBackup}>
