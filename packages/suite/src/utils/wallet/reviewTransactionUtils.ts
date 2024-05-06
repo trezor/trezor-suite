@@ -197,7 +197,11 @@ const constructNewFlow = ({
     const hasBitcoinLockTime = 'bitcoinLockTime' in precomposedForm;
     const hasRippleDestinationTag = 'rippleDestinationTag' in precomposedForm;
 
-    // used in the bumb fee flow
+    if (precomposedForm.ethereumDataHex && !precomposedTx.token) {
+        outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
+    }
+
+    // used in the bump fee flow
     if (typeof precomposedTx.useNativeRbf === 'boolean' && precomposedTx.useNativeRbf) {
         outputs.push(
             {
@@ -291,10 +295,6 @@ const constructNewFlow = ({
 
     if (hasBitcoinLockTime && precomposedForm.bitcoinLockTime) {
         outputs.push({ type: 'locktime', value: precomposedForm.bitcoinLockTime });
-    }
-
-    if (precomposedForm.ethereumDataHex && !precomposedTx.token) {
-        outputs.push({ type: 'data', value: precomposedForm.ethereumDataHex });
     }
 
     if (

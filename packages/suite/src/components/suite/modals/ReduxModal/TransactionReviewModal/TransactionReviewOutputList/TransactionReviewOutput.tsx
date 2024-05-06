@@ -61,7 +61,7 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
         let outputLabel: ReactNode = label;
         const { networkType } = account;
         const { translationString } = useTranslation();
-        const displayMode = useDisplayMode(ethereumStakeType);
+        const displayMode = useDisplayMode({ ethereumStakeType, type });
 
         if (type === 'locktime') {
             const isTimestamp = new BigNumber(value).gte(BTC_LOCKTIME_VALUE);

@@ -20,7 +20,7 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     const receiveSymbol = useSelector(
         state => state.wallet.coinmarket.exchange.quotesRequest?.receive,
     );
-    const displayMode = useDisplayMode();
+    const displayMode = useDisplayMode({ type: 'address' });
 
     const validateAddress = useCallback(
         () => showAddress(addressPath, value),
