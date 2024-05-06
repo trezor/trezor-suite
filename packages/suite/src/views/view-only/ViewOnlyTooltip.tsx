@@ -25,46 +25,38 @@ const TextContent = styled.div`
 `;
 
 export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
-    const flags = useSelector(selectSuiteFlags);
-    const { viewOnlyTooltipClosed } = flags;
-
+    const { viewOnlyTooltipClosed, isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
 
     const handleClose = () => {
         dispatch(setFlag('viewOnlyTooltipClosed', true));
     };
 
     return (
-        <>
-            {JSON.stringify(flags)}
-            <Tooltip
-                isOpen={isViewOnlyModeVisible === true && viewOnlyTooltipClosed === false}
-                hasArrow
-                shift={{ padding: { left: 10 } }}
-                content={
-                    <Notification>
-                        <TextContent>
-                            <Text variant="primary">
-                                <Translation id="TR_VIEW_ONLY_TOOLTIP_TITLE" />
-                            </Text>
-                            <Text>
-                                <Translation id="TR_VIEW_ONLY_TOOLTIP_DESCRIPTION" />
-                            </Text>
-                            <Text typographyStyle="label" variant="tertiary">
-                                <Translation id="TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO" />
-                            </Text>
-                        </TextContent>
-                        <Button variant="tertiary" onClick={handleClose}>
-                            <Translation id="TR_VIEW_ONLY_TOOLTIP_BUTTON" />
-                        </Button>
-                    </Notification>
-                }
-            >
-                {children}
-            </Tooltip>
-        </>
+        <Tooltip
+            isOpen={isViewOnlyModeVisible === true && viewOnlyTooltipClosed === false}
+            hasArrow
+            shift={{ padding: { left: 10 } }}
+            content={
+                <Notification>
+                    <TextContent>
+                        <Text variant="primary">
+                            <Translation id="TR_VIEW_ONLY_TOOLTIP_TITLE" />
+                        </Text>
+                        <Text>
+                            <Translation id="TR_VIEW_ONLY_TOOLTIP_DESCRIPTION" />
+                        </Text>
+                        <Text typographyStyle="label" variant="tertiary">
+                            <Translation id="TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO" />
+                        </Text>
+                    </TextContent>
+                    <Button variant="tertiary" onClick={handleClose}>
+                        <Translation id="TR_VIEW_ONLY_TOOLTIP_BUTTON" />
+                    </Button>
+                </Notification>
+            }
+        >
+            {children}
+        </Tooltip>
     );
 };

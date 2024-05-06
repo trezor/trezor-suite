@@ -27,6 +27,7 @@ import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
 import { EnableViewOnly } from './EnableViewOnly';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -41,9 +42,7 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
 export const SettingsDevice = () => {
     const { device, isLocked } = useDevice();
     const transport = useSelector(state => state.suite.transport);
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
