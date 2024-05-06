@@ -134,16 +134,6 @@ export const SettingsCoins = () => {
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
                     />
-
-                    <AnimatePresence>
-                        {isDiscoveryButtonVisible && (
-                            <motion.div {...animation} key="discover-button">
-                                <StyledButton onClick={startDiscovery}>
-                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
-                                </StyledButton>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
                 </StyledSectionItem>
             </StyledSettingsSection>
 
@@ -157,6 +147,17 @@ export const SettingsCoins = () => {
                     </>
                 }
                 icon="COIN"
+                bottomActions={
+                    <AnimatePresence>
+                        {isDiscoveryButtonVisible && (
+                            <motion.div {...animation} key="discover-button">
+                                <StyledButton onClick={startDiscovery}>
+                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
+                                </StyledButton>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                }
             >
                 <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
                     <CoinGroup
