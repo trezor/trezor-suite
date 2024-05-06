@@ -80,7 +80,9 @@ export const updateFiatRatesThunk = createThunk(
         { ticker, localCurrency, rateType, forceFetchToken }: UpdateCurrentFiatRatesThunkPayload,
         { getState },
     ) => {
-        if (isTestnet(ticker.symbol)) return;
+        if (isTestnet(ticker.symbol)) {
+            throw new Error('Testnet');
+        }
 
         const hasCoinDefinitions = getNetworkFeatures(ticker.symbol).includes('coin-definitions');
         if (ticker.tokenAddress && hasCoinDefinitions && !forceFetchToken) {
