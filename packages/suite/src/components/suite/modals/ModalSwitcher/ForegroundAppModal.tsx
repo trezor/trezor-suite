@@ -10,6 +10,7 @@ import { Version } from 'src/views/suite/version';
 import { SwitchDeviceLegacy } from 'src/views/suite/SwitchDevice/SwitchDeviceLegacy';
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import type { ForegroundAppRoute } from 'src/types/suite';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 // would not work if defined directly in the switch
 const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
@@ -46,9 +47,7 @@ type ForegroundAppModalProps = {
 
 /** Modals (foreground applications) initiated by redux state.router.route */
 export const ForegroundAppModal = ({ app, cancelable }: ForegroundAppModalProps) => {
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     const onCancel = () => dispatch(closeModalApp());

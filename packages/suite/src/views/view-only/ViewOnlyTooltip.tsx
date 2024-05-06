@@ -25,11 +25,8 @@ const TextContent = styled.div`
 `;
 
 export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
-    const { viewOnlyTooltipClosed } = useSelector(selectSuiteFlags);
+    const { viewOnlyTooltipClosed, isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
 
     const handleClose = () => {
         dispatch(setFlag('viewOnlyTooltipClosed', true));
@@ -37,7 +34,7 @@ export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
 
     return (
         <Tooltip
-            isOpen={isViewOnlyModeVisible && !viewOnlyTooltipClosed}
+            isOpen={isViewOnlyModeVisible === true && viewOnlyTooltipClosed === false}
             hasArrow
             shift={{ padding: { left: 10 } }}
             content={

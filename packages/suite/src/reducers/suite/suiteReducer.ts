@@ -29,7 +29,6 @@ export interface DebugModeOptions {
     checkFirmwareAuthenticity: boolean;
     transports: Extract<NonNullable<ConnectSettings['transports']>[number], string>[];
     isUnlockedBootloaderAllowed: boolean;
-    isViewOnlyModeVisible: boolean;
 }
 
 export interface AutodetectSettings {
@@ -63,6 +62,7 @@ export interface Flags {
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
     showDashboardStakingPromoBanner: boolean;
+    isViewOnlyModeVisible: boolean;
     viewOnlyPromoClosed: boolean;
     viewOnlyTooltipClosed: boolean;
 }
@@ -119,6 +119,7 @@ const initialState: SuiteState = {
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
         showDashboardStakingPromoBanner: true,
+        isViewOnlyModeVisible: false,
         viewOnlyPromoClosed: false,
         viewOnlyTooltipClosed: false,
     },
@@ -141,7 +142,6 @@ const initialState: SuiteState = {
             checkFirmwareAuthenticity: false,
             transports: [],
             isUnlockedBootloaderAllowed: false,
-            isViewOnlyModeVisible: false,
         },
         autodetect: {
             language: true,

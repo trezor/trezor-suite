@@ -1,15 +1,13 @@
 import { Checkbox } from '@trezor/components';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
-import { setDebugMode, setFlag } from 'src/actions/suite/suiteActions';
+import { setFlag } from 'src/actions/suite/suiteActions';
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 export const ViewOnlySettings = () => {
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
-    const { viewOnlyPromoClosed, viewOnlyTooltipClosed } = useSelector(selectSuiteFlags);
+    const { viewOnlyPromoClosed, viewOnlyTooltipClosed, isViewOnlyModeVisible } =
+        useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     return (
@@ -20,9 +18,7 @@ export const ViewOnlySettings = () => {
                     <Checkbox
                         isChecked={isViewOnlyModeVisible}
                         onClick={() => {
-                            dispatch(
-                                setDebugMode({ isViewOnlyModeVisible: !isViewOnlyModeVisible }),
-                            );
+                            dispatch(setFlag('isViewOnlyModeVisible', !isViewOnlyModeVisible));
                         }}
                     />
                 </ActionColumn>
