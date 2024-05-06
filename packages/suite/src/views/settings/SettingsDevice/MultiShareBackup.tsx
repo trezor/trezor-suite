@@ -1,4 +1,4 @@
-import { HELP_CENTER_RECOVERY_SEED_URL } from '@trezor/urls';
+import { HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
 import { openModal } from 'src/actions/suite/modalActions';
 import {
@@ -20,7 +20,7 @@ export const MultiShareBackup = () => {
             <TextColumn
                 title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
                 description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
-                buttonLink={HELP_CENTER_RECOVERY_SEED_URL} // TODO: replace link
+                buttonLink={HELP_CENTER_SEED_CARD_URL}
             />
             <ActionColumn>
                 <ActionButton
