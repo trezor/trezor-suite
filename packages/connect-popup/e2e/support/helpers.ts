@@ -44,13 +44,6 @@ const getExtensionPage = async () => {
         'build-webextension',
     );
 
-    const initialBrowserContext = await chromium.launchPersistentContext(
-        `/tmp/test-user-data-dir/${new Date().getTime()}`,
-    );
-    await initialBrowserContext.clearPermissions();
-    await initialBrowserContext.clearCookies();
-    await initialBrowserContext.close();
-
     const userDataDir = `/tmp/test-user-data-dir/${new Date().getTime()}`;
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
         // https://playwright.dev/docs/chrome-extensions#headless-mode
