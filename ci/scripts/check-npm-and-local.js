@@ -7,6 +7,7 @@ const fetch = require('cross-fetch');
 const tar = require('tar');
 const path = require('path');
 const crypto = require('crypto');
+const semver = require('semver');
 
 const mkdir = util.promisify(fs.mkdir);
 const existsDirectory = util.promisify(fs.exists);
@@ -122,9 +123,20 @@ const getLocalAndRemoteChecksums = async moduleName => {
         if (data.error) {
             return { success: false };
         }
+
+        const betaVersion = data['dist-tags'].beta;
+        console.log(`beta remote version in npm registry: ${betaVersion}`);
         const latestVersion = data['dist-tags'].latest;
         console.log(`latest remote version in npm registry: ${latestVersion}`);
-        const tarballUrl = data.versions[latestVersion].dist.tarball;
+
+        // When beta version has greatest semver in NPM then we need to check with
+        // that one since that was released latest in time, so it includes oldest changes.
+        const greatestSemver =
+            betaVersion && semver.gt(betaVersion, latestVersion) ? betaVersion : latestVersion;
+
+        console.log(`greatest remove version in npm registry: ${greatestSemver}`);
+
+        const tarballUrl = data.versions[greatestSemver].dist.tarball;
 
         const tarballDestination = path.join(__dirname, 'tmp', name);
         console.log(`downloading tarball from ${tarballUrl} to `);
@@ -151,7 +163,10 @@ const getLocalAndRemoteChecksums = async moduleName => {
         const localChecksum = calculateChecksum(`${extractLocalPath}/package`);
         console.log('localChecksum', localChecksum);
 
-        return { success: true, data: { localChecksum, remoteChecksum } };
+        return {
+            success: true,
+            data: { localChecksum, remoteChecksum, distributionTags: data['dist-tags'] },
+        };
     } catch (error) {
         console.error('error getting local and remote checksums:', error);
         return { success: false, error };

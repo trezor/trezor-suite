@@ -4,6 +4,7 @@ const fs = require('fs');
 const util = require('util');
 const path = require('path');
 const child_process = require('child_process');
+const semver = require('semver');
 
 const readFile = util.promisify(fs.readFile);
 
@@ -21,7 +22,9 @@ const ROOT = path.join(__dirname, '..', '..');
 const updateNeeded = [];
 const errors = [];
 
-const checkPackageDependencies = async packageName => {
+const checkPackageDependencies = async (packageName, deploymentType) => {
+    console.log('######################################################');
+    console.log(`Checking package ${packageName}`);
     const rawPackageJSON = await readFile(path.join(ROOT, 'packages', packageName, 'package.json'));
 
     const packageJSON = JSON.parse(rawPackageJSON);
@@ -53,21 +56,34 @@ const checkPackageDependencies = async packageName => {
 
             errors.push(dependency);
         } else {
-            const { localChecksum, remoteChecksum } = response.data;
+            const { localChecksum, remoteChecksum, distributionTags } = response.data;
+            console.log('distributionTags', distributionTags);
+
             if (localChecksum !== remoteChecksum) {
                 // if the checked dependency is already in the array, remove it and push it to the end of array
                 // this way, the final array should be sorted in order in which that dependencies listed there
                 // should be released from the last to the first.
-
-                const index = updateNeeded.findIndex(lib => lib === dependency);
-                console.log('index', index);
+                const index = updateNeeded.indexOf(dependency);
+                if (index > -1) {
+                    updateNeeded.splice(index, 1);
+                }
+                updateNeeded.push(dependency);
+            } else if (
+                deploymentType === 'stable' &&
+                distributionTags.beta &&
+                distributionTags.latest &&
+                semver.gt(distributionTags.beta, distributionTags.latest)
+            ) {
+                // If this is an stable release and last release was beta,
+                // meaning the beta version number is greatest than the latest one, then we include it to be released.
+                const index = updateNeeded.indexOf(dependency);
                 if (index > -1) {
                     updateNeeded.splice(index, 1);
                 }
                 updateNeeded.push(dependency);
             }
 
-            await checkPackageDependencies(name);
+            await checkPackageDependencies(name, deploymentType);
         }
     }
 
