@@ -2,7 +2,8 @@ import {
     AbstractMessageChannel,
     AbstractMessageChannelConstructorParams,
     Message,
-} from '@trezor/connect-common';
+    // import from src explained - this is part of contentScript.ts and importing through index makes it bundle unwanted code too
+} from '@trezor/connect-common/src/messageChannel/abstract';
 
 /**
  * Communication channel between:
