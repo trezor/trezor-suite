@@ -41,24 +41,23 @@ const Right = styled.div`
 
 const CoinWrapper = styled.div`
     display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xxxs};
+    gap: ${spacingsPx.xs};
 `;
 
 const Coin = styled.div`
     display: flex;
-    align-items: center;
+    flex-direction: column;
 `;
 
 const CoinName = styled.div`
     ${typography.highlight}
-    margin-left: 6px;
+    margin-left: ${spacingsPx.xxxs};
 `;
 
 const CoinSymbol = styled.div`
     ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
-    margin-left: 8px;
+    margin-left: ${spacingsPx.xxxs};
 `;
 
 interface TradeBoxProps {
@@ -78,8 +77,8 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
             <StyledCard>
                 <Left>
                     <CoinWrapper>
+                        <CoinLogo size={24} symbol={network.symbol} />
                         <Coin>
-                            <CoinLogo size={20} symbol={network.symbol} />
                             <CoinName>{network.name}</CoinName>
                             <CoinSymbol>{network.symbol.toUpperCase()}</CoinSymbol>
                         </Coin>

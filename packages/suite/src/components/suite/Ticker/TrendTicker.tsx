@@ -11,7 +11,7 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
-    ${typography.hint}
+    ${typography.callout}
     gap: ${spacingsPx.xxs};
     display: flex;
     align-items: center;
