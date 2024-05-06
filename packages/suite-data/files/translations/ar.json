@@ -166,7 +166,6 @@
   "TR_VERSION": "الإصدار {version}",
   "TR_VERSION_HAS_BEEN_RELEASED": "الإصدار {version} تم اصداره!",
   "TR_WAIT_FOR_REBOOT": "إعادة تشغيل التريزور",
-  "TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION": "الرجاء الانتظار حتى يقوم تريزور بإعادة التشغيل و ربط الجهاز مرة أخرى.",
   "TR_WALLET": "الحسابات",
   "TR_WALLET_DUPLICATE_DESC": "تم اكتشاف المحفظة المخفية التي تحاول إضافتها.",
   "TR_WALLET_DUPLICATE_RETRY": "جرب عبارة مرور مختلفة",

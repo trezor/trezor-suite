@@ -96,7 +96,6 @@
   "TR_FIRMWARE_IS_POTENTIALLY_RISKY": "עדכון קושחה הוא תהליך שעלול להיות כרוך בסיכון. אם משהו משתבש (כבל מקולקל וכו') המכשיר שלך עלול להיתקע במצב מחוק, כך שבפועל תאבד הגישה לכל המטבעות.",
   "TR_FIRMWARE_IS_UP_TO_DATE": "קושחה מוכנה",
   "TR_FIRMWARE_NEW_FW_DESCRIPTION": "גרסת קושחה חדשה זמינה. את יכולה לעדכן את המכשיר עכשיו, או להמשיך ולבצע את העדכון מאוחר יותר.",
-  "TR_FIRMWARE_PARTIALLY_UPDATED": "קושחה עודכנה חלקית",
   "TR_FIRMWARE_REINSTALL_FW_DESCRIPTION": "המכשיר שלך כבר מעודכן לקושחה העדכנית ביותר. ניתן להתקין אותה מחדש במידת הצורך.",
   "TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED": "הושלמה",
   "TR_FIRMWARE_UPDATE_REQUIRED_EXPLAINED": "על המכשיר שלך מותקנת קושחה שכבר אינה נתמכת. תצטרכי לעדכן אותה.",
