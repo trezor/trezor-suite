@@ -45,30 +45,28 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
 
     return (
         <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel}>
-            <DeviceItemsWrapper>
-                <motion.div
-                    initial={initial}
-                    exit={initial}
-                    animate={{
-                        width: 369,
-                        height: 'auto',
-                    }}
-                    style={{ originX: 0, originY: 0, overflow: 'hidden' }}
-                >
-                    <>
-                        {sortedDevices.map(device => (
-                            <Card key={`${device.id}-${device.instance}`} paddingType="small">
-                                <DeviceItem
-                                    device={device}
-                                    instances={deviceUtils.getDeviceInstances(device, devices)}
-                                    backgroundRoute={backgroundRoute}
-                                    onCancel={onCancel}
-                                />
-                            </Card>
-                        ))}
-                    </>
-                </motion.div>
-            </DeviceItemsWrapper>
+            <motion.div
+                initial={initial}
+                exit={initial}
+                animate={{
+                    width: 369,
+                    height: 'auto',
+                }}
+                style={{ originX: 0, originY: 0, overflow: 'hidden' }}
+            >
+                <DeviceItemsWrapper>
+                    {sortedDevices.map(device => (
+                        <Card key={`${device.id}-${device.instance}`} paddingType="small">
+                            <DeviceItem
+                                device={device}
+                                instances={deviceUtils.getDeviceInstances(device, devices)}
+                                backgroundRoute={backgroundRoute}
+                                onCancel={onCancel}
+                            />
+                        </Card>
+                    ))}
+                </DeviceItemsWrapper>
+            </motion.div>
         </SwitchDeviceRenderer>
     );
 };
