@@ -43,11 +43,9 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
 
-    const { initialRun, viewOnlyPromoClosed } = useSelector(selectSuiteFlags);
+    const { initialRun, viewOnlyPromoClosed, isViewOnlyModeVisible } =
+        useSelector(selectSuiteFlags);
 
     const dispatch = useDispatch();
 

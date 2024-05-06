@@ -237,6 +237,7 @@ const initialRun = [
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
                 showDashboardStakingPromoBanner: true,
+                isViewOnlyModeVisible: false,
                 viewOnlyPromoClosed: true,
                 viewOnlyTooltipClosed: true,
             },

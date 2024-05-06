@@ -18,52 +18,61 @@ import { PasswordManager } from './PasswordManager/PasswordManager';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { TriggerHighlight } from './TriggerHighlight';
 import { Backends } from './Backends';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { useSelector } from 'src/hooks/suite';
 
-export const SettingsDebug = () => (
-    <SettingsLayout>
-        {isWeb() && (
-            <SettingsSection title="Localization">
-                <TranslationMode />
+export const SettingsDebug = () => {
+    const flags = useSelector(selectSuiteFlags);
+
+    return (
+        <SettingsLayout>
+            {isWeb() && (
+                <SettingsSection title="Localization">
+                    <TranslationMode />
+                </SettingsSection>
+            )}
+            <SettingsSection title="Debug">
+                <GithubIssue />
+                {!isWeb() && <WipeData />}
+                <TriggerHighlight />
             </SettingsSection>
-        )}
-        <SettingsSection title="Debug">
-            <GithubIssue />
-            {!isWeb() && <WipeData />}
-            <TriggerHighlight />
-        </SettingsSection>
-        <SettingsSection title="Invity">
-            <InvityApi />
-        </SettingsSection>
-        <SettingsSection title="OAuth">
-            <OAuthApi />
-        </SettingsSection>
-        <SettingsSection title="Coinjoin">
-            <CoinjoinApi />
-        </SettingsSection>
-        <SettingsSection title="Device">
-            <DeviceAuthenticity />
-            <Devkit />
-            <CheckFirmwareAuthenticity />
-        </SettingsSection>
-        <SettingsSection title="Testing">
-            <ThrowTestingError />
-        </SettingsSection>
-        {!isWeb() && (
-            <SettingsSection title="Processes">
-                <Processes />
+            <SettingsSection title="Invity">
+                <InvityApi />
             </SettingsSection>
-        )}
-        <SettingsSection title="Transports">
-            <Transport />
-        </SettingsSection>
-        <SettingsSection title="Backends">
-            <Backends />
-        </SettingsSection>
-        <SettingsSection title="Password manager">
-            <PasswordManager />
-        </SettingsSection>
-        <SettingsSection title="View only">
-            <ViewOnlySettings />
-        </SettingsSection>
-    </SettingsLayout>
-);
+            <SettingsSection title="OAuth">
+                <OAuthApi />
+            </SettingsSection>
+            <SettingsSection title="Coinjoin">
+                <CoinjoinApi />
+            </SettingsSection>
+            <SettingsSection title="Device">
+                <DeviceAuthenticity />
+                <Devkit />
+                <CheckFirmwareAuthenticity />
+            </SettingsSection>
+            <SettingsSection title="Testing">
+                <ThrowTestingError />
+            </SettingsSection>
+            {!isWeb() && (
+                <SettingsSection title="Processes">
+                    <Processes />
+                </SettingsSection>
+            )}
+            <SettingsSection title="Transports">
+                <Transport />
+            </SettingsSection>
+            <SettingsSection title="Backends">
+                <Backends />
+            </SettingsSection>
+            <SettingsSection title="Password manager">
+                <PasswordManager />
+            </SettingsSection>
+            <SettingsSection title="View only">
+                <ViewOnlySettings />
+            </SettingsSection>
+            <SettingsSection title="Flags JSON">
+                <pre>{JSON.stringify(flags)}</pre>
+            </SettingsSection>
+        </SettingsLayout>
+    );
+};
