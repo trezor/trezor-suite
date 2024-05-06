@@ -16,6 +16,15 @@ import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
+import styled from 'styled-components';
+import { Elevation, mapElevationToBorder } from '@trezor/theme';
+import { useElevation } from '@trezor/components';
+
+const Container = styled.div<{ $isVisible?: boolean; $elevation: Elevation }>`
+    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
+    border-bottom: ${({ $isVisible, theme, $elevation }) =>
+        $isVisible ? `solid 1px ${mapElevationToBorder({ $elevation, theme })}` : 'none'};
+`;
 
 export const SuiteBanners = () => {
     const transport = useSelector(state => state.suite.transport);
@@ -81,14 +90,15 @@ export const SuiteBanners = () => {
 
     // message system banners should always be visible in the app even if app body is blurred
     const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
+    const { elevation } = useElevation();
 
     return (
-        <>
+        <Container $isVisible={banner !== null} $elevation={elevation}>
             {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />
             {!useMessageSystemBanner && banner}
             {/* TODO: add Pin not set */}
-        </>
+        </Container>
     );
 };
