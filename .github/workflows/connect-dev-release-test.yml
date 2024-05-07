@@ -42,7 +42,9 @@ jobs:
     steps:
       - name: Extract branch name
         id: extract_branch
-        run: echo "::set-output name=branch::${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
 
   build-deploy:
     needs: [extract-branch]
