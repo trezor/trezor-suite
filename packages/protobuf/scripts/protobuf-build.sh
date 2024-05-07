@@ -30,6 +30,7 @@ else
 fi
 
 cd trezor-firmware
+git fetch origin
 git checkout "$BRANCH"
 git pull origin "$BRANCH"
 cd ..
