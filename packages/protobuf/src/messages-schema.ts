@@ -2191,6 +2191,8 @@ export enum Enum_Capability {
     Capability_PassphraseEntry = 17,
     Capability_Solana = 18,
     Capability_Translations = 19,
+    Capability_Brightness = 20,
+    Capability_Haptic = 21,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -2250,7 +2252,7 @@ export const Features = Type.Object(
         homescreen_height: Type.Optional(Type.Number()),
         bootloader_locked: Type.Optional(Type.Boolean()),
         language_version_matches: Type.Optional(Type.Boolean()),
-        unit_packaging: Type.Optional(Type.Number()),
+        haptic_feedback: Type.Optional(Type.Boolean()),
     },
     { $id: 'Features' },
 );
@@ -2283,6 +2285,8 @@ export const ApplySettings = Type.Object(
         safety_checks: Type.Optional(SafetyCheckLevel),
         experimental_features: Type.Optional(Type.Boolean()),
         hide_passphrase_from_host: Type.Optional(Type.Boolean()),
+        brightness: Type.Optional(Type.Number()),
+        haptic_feedback: Type.Optional(Type.Boolean()),
     },
     { $id: 'ApplySettings' },
 );
@@ -2435,23 +2439,8 @@ export const ResetDevice = Type.Object(
     { $id: 'ResetDevice' },
 );
 
-export type Slip39Group = Static<typeof Slip39Group>;
-export const Slip39Group = Type.Object(
-    {
-        member_threshold: Type.Number(),
-        member_count: Type.Number(),
-    },
-    { $id: 'Slip39Group' },
-);
-
 export type BackupDevice = Static<typeof BackupDevice>;
-export const BackupDevice = Type.Object(
-    {
-        group_threshold: Type.Optional(Type.Number()),
-        groups: Type.Optional(Type.Array(Slip39Group)),
-    },
-    { $id: 'BackupDevice' },
-);
+export const BackupDevice = Type.Object({}, { $id: 'BackupDevice' });
 
 export type EntropyRequest = Static<typeof EntropyRequest>;
 export const EntropyRequest = Type.Object({}, { $id: 'EntropyRequest' });
@@ -2817,12 +2806,6 @@ export const NEMDecryptedMessage = Type.Object(
     },
     { $id: 'NEMDecryptedMessage' },
 );
-
-export type experimental_message = Static<typeof experimental_message>;
-export const experimental_message = Type.Object({}, { $id: 'experimental_message' });
-
-export type experimental_field = Static<typeof experimental_field>;
-export const experimental_field = Type.Object({}, { $id: 'experimental_field' });
 
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
@@ -3398,6 +3381,12 @@ export const TezosSignedTx = Type.Object(
     { $id: 'TezosSignedTx' },
 );
 
+export type experimental_message = Static<typeof experimental_message>;
+export const experimental_message = Type.Object({}, { $id: 'experimental_message' });
+
+export type experimental_field = Static<typeof experimental_field>;
+export const experimental_field = Type.Object({}, { $id: 'experimental_field' });
+
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
@@ -3590,7 +3579,6 @@ export const MessageType = Type.Object(
         AuthenticityProof,
         WipeDevice,
         ResetDevice,
-        Slip39Group,
         BackupDevice,
         EntropyRequest,
         EntropyAck,
@@ -3626,8 +3614,6 @@ export const MessageType = Type.Object(
         NEMSignedTx,
         NEMDecryptMessage,
         NEMDecryptedMessage,
-        experimental_message,
-        experimental_field,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,
@@ -3676,6 +3662,8 @@ export const MessageType = Type.Object(
         TezosBallotOp,
         TezosSignTx,
         TezosSignedTx,
+        experimental_message,
+        experimental_field,
     },
     { $id: 'MessageType' },
 );
