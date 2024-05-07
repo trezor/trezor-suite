@@ -20,10 +20,10 @@ export const models = {
     T3T1: {
         name: 'Trezor Safe 5',
         colors: {
-            '1': 'Fantastic Ethereum',
-            '2': 'Lunatic Dogecoin',
-            '3': 'Galactic Litecoin',
-            '4': 'Majestic Bitcoin',
+            '1': 'Color 1',
+            '2': 'Color 2',
+            '3': 'Color 3',
+            '4': 'Color 4',
         },
     },
 };
