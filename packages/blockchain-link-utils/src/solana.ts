@@ -15,6 +15,7 @@ import type {
     PublicKey,
 } from '@trezor/blockchain-link-types/src/solana';
 import type { TokenInfo } from '@trezor/blockchain-link-types/src';
+import { isCodesignBuild } from '@trezor/env-utils';
 
 export type ApiTokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
 
@@ -30,7 +31,7 @@ export const SYSTEM_PROGRAM_PUBLIC_KEY = '11111111111111111111111111111111';
 export const WSOL_MINT = 'So11111111111111111111111111111111111111112';
 
 export const getTokenMetadata = async (): Promise<TokenDetailByMint> => {
-    const env = process.env.NODE_ENV === 'development' ? 'develop' : 'stable';
+    const env = isCodesignBuild() ? 'stable' : 'develop';
 
     const response = await fetch(
         `https://data.trezor.io/suite/definitions/${env}/solana.advanced.coin.definitions.v1.json`,
