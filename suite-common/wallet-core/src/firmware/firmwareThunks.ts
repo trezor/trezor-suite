@@ -139,7 +139,7 @@ export const firmwareUpdate = createThunk(
             language => language.startsWith(suiteLanguage),
         );
 
-        const firmwareUpdateReponse = await TrezorConnect.firmwareUpdate_v2({
+        const firmwareUpdateReponse = await TrezorConnect.firmwareUpdate({
             device,
             baseUrl,
             btcOnly: toBitcoinOnlyFirmware,
