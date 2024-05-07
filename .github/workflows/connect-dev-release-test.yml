@@ -131,5 +131,5 @@ jobs:
     with:
       test-name: webextension-example.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: ${{ github.event_name == 'schedule' }}
+      run-webextension: true
       run-web: false

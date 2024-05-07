@@ -10,7 +10,7 @@ test.beforeAll(async () => {
     dir = await ensureDirectoryExists('./screenshots/web-extension');
 });
 
-test('Basic web extension MV2', async () => {
+test.beforeEach(async () => {
     await TrezorUserEnvLink.connect();
     await TrezorUserEnvLink.send({
         type: 'bridge-stop',
@@ -33,18 +33,10 @@ test('Basic web extension MV2', async () => {
     await TrezorUserEnvLink.send({
         type: 'bridge-start',
     });
+});
 
-    const pathToExtension = path.join(
-        __dirname,
-        '..',
-        '..',
-        '..',
-        'connect-examples',
-        'webextension-mv2',
-        'build',
-    );
-
-    const userDataDir = '/tmp/test-user-data-dir';
+const getBrowserContext = async (pathToExtension: string) => {
+    const userDataDir = `/tmp/test-user-data-dir/${new Date().getTime()}`;
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
         // https://playwright.dev/docs/chrome-extensions#headless-mode
         // By default, Chrome's headless mode in Playwright does not support Chrome extensions.
@@ -58,6 +50,20 @@ test('Basic web extension MV2', async () => {
         ],
     });
 
+    return browserContext;
+};
+
+test('Basic web extension MV2', async () => {
+    const pathToExtension = path.join(
+        __dirname,
+        '..',
+        '..',
+        '..',
+        'connect-examples',
+        'webextension-mv2',
+        'build',
+    );
+    const browserContext = await getBrowserContext(pathToExtension);
     const page = await browserContext.newPage();
 
     // https://github.com/microsoft/playwright/issues/5593#issuecomment-949813218
@@ -108,29 +114,6 @@ test('Basic web extension MV2', async () => {
 });
 
 test('Basic web extension MV3', async () => {
-    await TrezorUserEnvLink.connect();
-    await TrezorUserEnvLink.send({
-        type: 'bridge-stop',
-    });
-    await TrezorUserEnvLink.send({
-        type: 'emulator-stop',
-    });
-    await TrezorUserEnvLink.send({
-        type: 'emulator-start',
-        wipe: true,
-    });
-    await TrezorUserEnvLink.send({
-        type: 'emulator-setup',
-        mnemonic: 'alcohol woman abuse must during monitor noble actual mixed trade anger aisle',
-        pin: '',
-        passphrase_protection: false,
-        label: 'My Trevor',
-        needs_backup: false,
-    });
-    await TrezorUserEnvLink.send({
-        type: 'bridge-start',
-    });
-
     const pathToExtension = path.join(
         __dirname,
         '..',
@@ -140,20 +123,7 @@ test('Basic web extension MV3', async () => {
         'webextension-mv3',
         'build',
     );
-
-    const userDataDir = '/tmp/test-user-data-dir';
-    const browserContext = await chromium.launchPersistentContext(userDataDir, {
-        // https://playwright.dev/docs/chrome-extensions#headless-mode
-        // By default, Chrome's headless mode in Playwright does not support Chrome extensions.
-        // To overcome this limitation, you can run Chrome's persistent context with a new headless mode.
-        // using `--headless=new`
-        headless: false,
-        args: [
-            process.env.HEADLESS === 'true' ? `--headless=new` : '', // the new headless arg for chrome v109+. Use '--headless=chrome' as arg for browsers v94-108.
-            `--disable-extensions-except=${pathToExtension}`,
-            `--load-extension=${pathToExtension}`,
-        ],
-    });
+    const browserContext = await getBrowserContext(pathToExtension);
     const page = await browserContext.newPage();
 
     // https://playwright.dev/docs/chrome-extensions#testing
@@ -172,12 +142,11 @@ test('Basic web extension MV3', async () => {
     const popup = await browserContext.waitForEvent('page');
     await popup.waitForLoadState('load');
 
-    // There is not analytics button since this test is after the MV2 that already clicked it and the container is not pruned after.
-    // await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
-    //     state: 'visible',
-    //     timeout: 40000,
-    // });
-    // await popup.click("button[data-test='@analytics/continue-button']");
+    await popup.waitForSelector("button[data-test='@analytics/continue-button']", {
+        state: 'visible',
+        timeout: 40000,
+    });
+    await popup.click("button[data-test='@analytics/continue-button']");
 
     await popup.waitForSelector('button.confirm', { state: 'visible', timeout: 40000 });
     await popup.click('button.confirm');
