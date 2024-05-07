@@ -15,7 +15,7 @@ export const createReducerWithExtraDeps =
             extra: ExtraDependenciesForReducer,
         ) => void,
     ) =>
-    (extraDeps: ExtraDependencies) =>
+    (extraDeps: ExtraDependenciesForReducer) =>
         createReducer(initialState, builder =>
             builderCallback(builder, {
                 actionTypes: extraDeps.actionTypes,
