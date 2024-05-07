@@ -38,6 +38,7 @@ import * as COINJOIN from './constants/coinjoinConstants';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -732,12 +733,17 @@ export const initCoinjoinService =
         if (knownService && knownClient?.status === 'loaded') {
             return knownService;
         }
+
+        const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(state, Feature.coinjoin);
         // retry if client was not enabled properly until now
         if (knownService && knownClient?.status === 'unavailable') {
-            const status = await knownService.client.enable();
-            if (status.success) {
-                dispatch(clientEnableSuccess(symbol, status));
+            if (!isCoinjoinDisabledByFeatureFlag) {
+                const status = await knownService.client.enable();
+                if (status.success) {
+                    dispatch(clientEnableSuccess(symbol, status));
+                }
             }
+
             return knownService;
         }
 
@@ -787,6 +793,11 @@ export const initCoinjoinService =
                 prison,
                 environment,
             });
+            if (isCoinjoinDisabledByFeatureFlag) {
+                dispatch(clientEnableFailed(symbol));
+
+                return service;
+            }
             const { client } = service;
             const status = await client.enable();
             // handle status change
