@@ -19,6 +19,7 @@ import {
     selectDevice,
     selectDeviceButtonRequestsCodes,
     selectDeviceState,
+    selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
 import {
     PassphraseStackParamList,
@@ -51,6 +52,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
     const device = useSelector(selectDevice);
     const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);
     const deviceState = useSelector(selectDeviceState);
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -68,7 +70,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
             navigation.navigate(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
             dispatch(deviceActions.removeButtonRequests({ device }));
         }
-    }, [buttonRequestCodes, device, deviceState, dispatch, navigation]);
+    }, [buttonRequestCodes, device, deviceState, dispatch, isDiscoveryActive, navigation]);
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         dispatch(deviceActions.removeButtonRequests({ device }));

@@ -12,7 +12,10 @@ import {
 } from '@suite-native/navigation';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { selectIsDeviceConnectedAndAuthorized } from '@suite-common/wallet-core';
+import {
+    selectIsDeviceConnectedAndAuthorized,
+    selectIsDeviceDiscoveryActive,
+} from '@suite-common/wallet-core';
 
 import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { DeviceTS3Svg } from '../assets/DeviceTS3Svg';
@@ -25,14 +28,15 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseConfirmOnTrezorScreen = () => {
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const navigation = useNavigation<NavigationProp>();
 
     useEffect(() => {
-        if (isDeviceConnectedAndAuthorized) {
+        if (isDeviceConnectedAndAuthorized && isDiscoveryActive) {
             navigation.navigate(PassphraseStackRoutes.PassphraseLoading);
         }
-    }, [isDeviceConnectedAndAuthorized, navigation]);
+    }, [isDeviceConnectedAndAuthorized, isDiscoveryActive, navigation]);
 
     return (
         <Screen screenHeader={<PassphraseScreenHeader />}>
