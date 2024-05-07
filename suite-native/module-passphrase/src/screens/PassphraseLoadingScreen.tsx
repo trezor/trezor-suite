@@ -33,20 +33,17 @@ export const PassphraseLoadingScreen = () => {
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     useEffect(() => {
-        // NOTE: This is just for demo purposes. Proper loading screen will be implemented in a follow-up.
-        if (!isDiscoveryActive) {
-            if (isDeviceAccountless) {
-                navigation.navigate(RootStackRoutes.PassphraseStack, {
-                    screen: PassphraseStackRoutes.PassphraseEmptyWallet,
-                });
-            } else {
-                navigation.navigate(RootStackRoutes.AppTabs, {
-                    screen: AppTabsRoutes.HomeStack,
-                    params: {
-                        screen: HomeStackRoutes.Home,
-                    },
-                });
-            }
+        if (!isDeviceAccountless) {
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
+        } else if (isDeviceAccountless && !isDiscoveryActive) {
+            navigation.navigate(RootStackRoutes.PassphraseStack, {
+                screen: PassphraseStackRoutes.PassphraseEmptyWallet,
+            });
         }
     }, [isDeviceAccountless, isDiscoveryActive, navigation]);
 
