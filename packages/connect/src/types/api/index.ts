@@ -217,9 +217,6 @@ export interface TrezorConnect {
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/firmwareUpdate.md
     firmwareUpdate: typeof firmwareUpdate;
 
-    // todo:
-    firmwareUpdate: typeof firmwareUpdate;
-
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getAccountDescriptor.md
     getAccountDescriptor: typeof getAccountDescriptor;
 

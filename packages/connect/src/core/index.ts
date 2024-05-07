@@ -1094,7 +1094,7 @@ export class Core extends EventEmitter {
                         })
                         .catch(error => {
                             postMessage(createResponseMessage(message.id, false, { error }));
-                            _log.error('ononCallFirmwareUpdate', error);
+                            _log.error('onCallFirmwareUpdate', error);
                         });
                 } else {
                     onCall(message).catch(error => {
