@@ -547,8 +547,13 @@ export const coinjoinReducer = (
             case COINJOIN.CLIENT_ENABLE_SUCCESS:
                 createClient(draft, action.payload);
                 break;
-            case COINJOIN.CLIENT_DISABLE:
             case COINJOIN.CLIENT_ENABLE_FAILED:
+                draft.clients[action.payload.symbol] = {
+                    ...CLIENT_STATUS_FALLBACK,
+                    status: 'unavailable',
+                };
+                break;
+            case COINJOIN.CLIENT_DISABLE:
                 delete draft.clients[action.payload.symbol];
                 break;
             case COINJOIN.CLIENT_STATUS:
@@ -925,6 +930,9 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     }
     if (selectIsFeatureDisabled(state, Feature.coinjoin)) {
         return 'FEATURE_DISABLED';
+    }
+    if (selectCoinjoinClient(state, accountKey)?.status === 'unavailable') {
+        return 'COORDINATOR_UNAVAILABLE';
     }
     if (!state.suite.online) {
         return 'OFFLINE';
