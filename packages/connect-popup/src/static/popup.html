@@ -3241,18 +3241,18 @@
                     peer: '@trezor/connect-web',
                 },
             };
-            if (window.opener) {
-                window.opener.postMessage(message, '*');
-            } else {
-                window.postMessage(message, '*');
-            }
-
-            const popupScript = document.createElement('script');
-            popupScript.setAttribute('type', 'text/javascript');
-            popupScript.setAttribute('src', '<%= htmlWebpackPlugin.files.js[0] %>');
-            popupScript.setAttribute('async', 'true');
             setTimeout(() => {
                 // Slight delay to ensure content script (if present) is initialized first
+                if (window.opener) {
+                    window.opener.postMessage(message, '*');
+                } else {
+                    window.postMessage(message, '*');
+                }
+
+                const popupScript = document.createElement('script');
+                popupScript.setAttribute('type', 'text/javascript');
+                popupScript.setAttribute('src', '<%= htmlWebpackPlugin.files.js[0] %>');
+                popupScript.setAttribute('async', 'true');
                 document.body.appendChild(popupScript);
             }, 100);
         </script>
