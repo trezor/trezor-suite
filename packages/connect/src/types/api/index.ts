@@ -39,7 +39,6 @@ import { ethereumSignTransaction } from './ethereumSignTransaction';
 import { ethereumSignTypedData } from './ethereumSignTypedData';
 import { ethereumVerifyMessage } from './ethereumVerifyMessage';
 import { firmwareUpdate } from './firmwareUpdate';
-import { firmwareUpdate_v2 } from './firmwareUpdate_v2';
 import { getAccountDescriptor } from './getAccountDescriptor';
 import { getAccountInfo } from './getAccountInfo';
 import { getAddress } from './getAddress';
@@ -219,7 +218,7 @@ export interface TrezorConnect {
     firmwareUpdate: typeof firmwareUpdate;
 
     // todo:
-    firmwareUpdate_v2: typeof firmwareUpdate_v2;
+    firmwareUpdate: typeof firmwareUpdate;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/getAccountDescriptor.md
     getAccountDescriptor: typeof getAccountDescriptor;

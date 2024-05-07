@@ -247,7 +247,7 @@ export const factory = ({
 
         firmwareUpdate: params => call({ ...params, method: 'firmwareUpdate' }),
 
-        firmwareUpdate_v2: params => call({ ...params, method: 'firmwareUpdate_v2' }),
+        firmwareUpdate: params => call({ ...params, method: 'firmwareUpdate' }),
 
         recoveryDevice: params => call({ ...params, method: 'recoveryDevice' }),
 

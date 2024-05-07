@@ -1078,7 +1078,7 @@ export class Core extends EventEmitter {
                 // and reconnecting during the process. Due to this it can't be handled just
                 // like regular methods using onCall function. In onCall, disconnecting device
                 // means that call immediately returns error.
-                if (message.payload.method === 'firmwareUpdate_v2') {
+                if (message.payload.method === 'firmwareUpdate') {
                     onCallFirmwareUpdate({
                         params: message.payload,
                         context: {
