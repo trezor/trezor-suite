@@ -29,7 +29,7 @@ export const createCoinjoinAccount = [
         result: {
             actions: [
                 COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_ENABLE_FAILED,
+                COINJOIN.CLIENT_DISABLE,
                 notificationsActions.addToast.type,
             ],
         },
@@ -143,7 +143,7 @@ export const startCoinjoinSession = [
         result: {
             actions: [
                 COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_ENABLE_FAILED,
+                COINJOIN.CLIENT_DISABLE,
                 notificationsActions.addToast.type,
             ],
         },
@@ -254,7 +254,7 @@ export const restoreCoinjoinAccounts = [
         result: {
             actions: [
                 COINJOIN.CLIENT_ENABLE,
-                COINJOIN.CLIENT_ENABLE_FAILED,
+                COINJOIN.CLIENT_DISABLE,
                 notificationsActions.addToast.type, // failed account 1 + 2 client init
                 COINJOIN.CLIENT_ENABLE,
                 COINJOIN.CLIENT_ENABLE_SUCCESS, // success account A + B client init

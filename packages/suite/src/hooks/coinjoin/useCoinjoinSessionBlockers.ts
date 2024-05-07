@@ -25,6 +25,8 @@ export const useCoinjoinSessionBlockers = (
         switch (blocker) {
             case 'FEATURE_DISABLED':
                 return featureMessageContent;
+            case 'COORDINATOR_UNAVAILABLE':
+                return translationString('TR_UNAVAILABLE_COINJOIN_COORDINATOR');
             case 'OFFLINE':
                 return translationString('TR_UNAVAILABLE_COINJOIN_NO_INTERNET');
             case 'NOTHING_TO_ANONYMIZE':
