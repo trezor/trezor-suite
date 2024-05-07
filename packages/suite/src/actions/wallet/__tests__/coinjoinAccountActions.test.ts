@@ -1,7 +1,9 @@
 import { combineReducers, createReducer } from '@reduxjs/toolkit';
 
 import { configureMockStore, initPreloadedState, testMocks } from '@suite-common/test-utils';
+import { prepareMessageSystemReducer } from '@suite-common/message-system';
 
+import { extraDependencies } from 'src/support/extraDependencies';
 import { accountsReducer } from 'src/reducers/wallet';
 import { coinjoinReducer } from 'src/reducers/wallet/coinjoinReducer';
 import selectedAccountReducer from 'src/reducers/wallet/selectedAccountReducer';
@@ -29,6 +31,7 @@ const rootReducer = combineReducers({
         },
         () => ({}),
     ),
+    messageSystem: prepareMessageSystemReducer(extraDependencies),
     device: createReducer({ devices: [DEVICE], selectedDevice: DEVICE }, () => ({})),
     modal: () => ({}),
     wallet: combineReducers({

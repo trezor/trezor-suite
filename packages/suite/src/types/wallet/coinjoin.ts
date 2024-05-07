@@ -40,7 +40,7 @@ export interface CoinjoinClientInstance
     > {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     version?: CoinjoinClientVersion;
-    status: 'loading' | 'loaded';
+    status: 'loading' | 'loaded' | 'unavailable';
 }
 
 export interface CoinjoinSession extends CoinjoinSessionParameters {

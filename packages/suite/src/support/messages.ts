@@ -4129,6 +4129,10 @@ export default defineMessages({
         id: 'TR_UNAVAILABLE_COINJOIN_NO_INTERNET',
         defaultMessage: 'Unavailable. No internet connection.',
     },
+    TR_UNAVAILABLE_COINJOIN_COORDINATOR: {
+        id: 'TR_UNAVAILABLE_COINJOIN_COORDINATOR',
+        defaultMessage: 'Coordinator is unavailable.',
+    },
     TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL: {
         id: 'TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL',
         defaultMessage: 'Amounts are too small for coinjoin.',
