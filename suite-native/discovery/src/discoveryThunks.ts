@@ -160,7 +160,7 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
         },
         { dispatch, getState },
     ) => {
-        const device = selectDevice(getState());
+        const device = selectDeviceByState(getState(), deviceState);
         if (!device) {
             return undefined;
         }
