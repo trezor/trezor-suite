@@ -108,6 +108,9 @@ export const config: webpack.Configuration = {
         hints: false,
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env.IS_CODESIGN_BUILD': `"${process.env.IS_CODESIGN_BUILD === 'true'}"`, // to keep it as string "true"/"false" and not boolean
+        }),
         // provide fallback for global objects.
         // resolve.fallback will not work since those objects are not imported as modules.
         new webpack.ProvidePlugin({
