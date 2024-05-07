@@ -151,7 +151,6 @@ const Addon = ({ label, icon, onClick, isKeyboardSelected, onMouseOver }: AddonC
 };
 
 export type DropdownMenuItemProps = {
-    key: string;
     label: React.ReactNode;
     onClick?: () => any | Promise<any>;
     shouldCloseOnClick?: boolean;
@@ -179,7 +178,6 @@ const MenuItem = ({
     setToggled,
     isKeyboardSelected,
     onMouseOver,
-    key,
     'data-test': dataTest,
     separatorBefore,
 }: MenuItemComponentProps) => {
@@ -204,7 +202,6 @@ const MenuItem = ({
             $noHoverEffect={!onClick}
             $isFocused={isKeyboardSelected}
             onMouseOver={onMouseOver}
-            key={key}
             $separatorBefore={separatorBefore}
             data-test={dataTest}
         >

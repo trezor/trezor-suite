@@ -26,7 +26,6 @@ export const Header = () => {
     const opreturnOutput = (outputs || []).find(o => o.type === 'opreturn');
     const options: Array<DropdownMenuItemProps> = [
         {
-            key: 'opreturn',
             'data-test': '@send/header-dropdown/opreturn',
             onClick: addOpReturn,
             label: <Translation id="OP_RETURN_ADD" />,
@@ -34,7 +33,6 @@ export const Header = () => {
             isHidden: networkType !== 'bitcoin',
         },
         {
-            key: 'import',
             'data-test': '@send/header-dropdown/import',
             onClick: () => {
                 loadTransaction();
@@ -43,7 +41,6 @@ export const Header = () => {
             isHidden: networkType !== 'bitcoin',
         },
         {
-            key: 'raw',
             'data-test': '@send/header-dropdown/raw',
             onClick: () => {
                 dispatch(sendFormActions.sendRaw(true));
