@@ -61,7 +61,7 @@ const CardContainer = styled.div<
     padding: ${mapPaddingTypeToPadding};
     background: ${mapElevationToBackground};
     border-radius: ${borders.radii.md};
-    overflow: auto;
+
     ${({ $isClickable, theme }) =>
         $isClickable &&
         `

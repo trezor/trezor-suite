@@ -16,12 +16,10 @@ export const TriggerHighlight = () => {
                 <ActionButton
                     variant="secondary"
                     onClick={() =>
-                        dispatch(
-                            goto('settings-index', { anchor: SettingsAnchor.BitcoinAmountUnit }),
-                        )
+                        dispatch(goto('settings-index', { anchor: SettingsAnchor.Labeling }))
                     }
                 >
-                    Go to Bitcoin Unit Settings
+                    Go to Labeling
                 </ActionButton>
             </ActionColumn>
         </SectionItem>
