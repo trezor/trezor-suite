@@ -2,7 +2,7 @@
 name: Mobile - new issue
 about: New issue for mobile app 
 title: ''
-labels: mobile-app
+labels: mobile
 assignees: ''
-projects: ["trezor/61"]
+projects: "Suite Mobile"
 ---

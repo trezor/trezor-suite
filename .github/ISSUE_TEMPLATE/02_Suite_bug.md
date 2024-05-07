@@ -1,8 +1,8 @@
 ---
-name: Trezor Suite or Connect bug report
-about: Something does not work as expected.
+name: Trezor Suite - bug report
+about: Something does not work as expected (desktop/web)
 title: ''
-labels: bug
+labels: bug,
 assignees: ''
 ---
 
