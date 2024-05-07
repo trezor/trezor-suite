@@ -51,15 +51,10 @@ const StyledInput = styled(Input)<{ $isExpanded: boolean }>`
         height: ${INPUT_WIDTH};
         border: none;
     }
-
-    /* TODO: remove this when clicking on addons in Input is handled better */
-    div > div:first-child {
-        pointer-events: none;
-    }
 `;
 
 const SearchIcon = styled(Icon)`
-    pointer-events: none;
+    cursor: pointer;
 `;
 
 export interface SearchProps {
@@ -78,7 +73,7 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
-    const onFocus = useCallback(() => {
+    const openAndSelect = useCallback(() => {
         setExpanded(true);
         if (searchQuery !== '' && inputRef.current) {
             inputRef.current.select();
@@ -93,7 +88,7 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
 
     const onKeyDown = useCallback(
         (event: KeyboardEvent) => {
-            // Handle esc (unfocus)
+            // Handle ESC (un-focus)
             if (event.code === KEYBOARD_CODE.ESCAPE && inputRef.current) {
                 setSearch('');
                 inputRef.current.blur();
@@ -177,10 +172,16 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
                 data-test="@wallet/accounts/search-icon"
                 size="small"
                 innerRef={inputRef}
-                innerAddon={<SearchIcon icon="SEARCH" size={16} color={theme.iconSubdued} />}
+                innerAddon={
+                    <SearchIcon
+                        icon="SEARCH"
+                        size={16}
+                        color={theme.iconSubdued}
+                        onClick={!isExpanded ? openAndSelect : undefined}
+                    />
+                }
                 placeholder={isExpanded ? translationString('TR_SEARCH_TRANSACTIONS') : undefined}
                 onChange={onSearch}
-                onFocus={onFocus}
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
                 value={searchQuery}
