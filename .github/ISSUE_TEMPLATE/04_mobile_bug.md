@@ -2,8 +2,9 @@
 name: Mobile bug report
 about: Something does not work as expected.
 title: ''
-labels: bug, mobile-app
+labels: bug, mobile
 assignees: ''
+projects: "trezor/Suite Mobile"
 ---
 
 **Describe the bug**
