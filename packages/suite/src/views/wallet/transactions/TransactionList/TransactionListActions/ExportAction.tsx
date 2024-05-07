@@ -115,19 +115,16 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                     key: 'export',
                     options: [
                         {
-                            key: 'export-csv',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'CSV' }} />,
                             onClick: () => runExport('csv'),
                             'data-test': `${dataTest}/csv`,
                         },
                         {
-                            key: 'export-pdf',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'PDF' }} />,
                             onClick: () => runExport('pdf'),
                             'data-test': `${dataTest}/pdf`,
                         },
                         {
-                            key: 'export-json',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'JSON' }} />,
                             onClick: () => runExport('json'),
                             'data-test': `${dataTest}/json`,

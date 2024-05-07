@@ -302,8 +302,7 @@ export const MetadataLabeling = ({
         {
             onClick: () => activateEdit(),
             label: l10nLabelling.edit,
-            'data-test': '@metadata/edit-button',
-            key: 'edit-label',
+            'data-test': `edit-label`, // hack: This will be prefixed in the withDropdown()
         },
     ];
 

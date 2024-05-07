@@ -115,12 +115,10 @@ const PortfolioCard = memo(() => {
                                 label: 'Graph View',
                                 options: [
                                     {
-                                        key: 'graphView',
                                         label: <GraphScaleDropdownItem />,
                                         shouldCloseOnClick: false,
                                     },
                                     {
-                                        key: 'hide',
                                         icon: dashboardGraphHidden ? 'SHOW' : 'HIDE',
                                         label: dashboardGraphHidden ? (
                                             <Translation id="TR_SHOW_GRAPH" />
