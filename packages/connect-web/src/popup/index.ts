@@ -33,7 +33,7 @@ const checkIfTabExists = (tabId: number | undefined) =>
 // Event `POPUP_REQUEST_TIMEOUT` is used to close Popup window when there was no handshake from iframe.
 const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
-const POPUP_OPEN_TIMEOUT = 3000;
+const POPUP_OPEN_TIMEOUT = 5000;
 
 export class PopupManager extends EventEmitter {
     popupWindow:
