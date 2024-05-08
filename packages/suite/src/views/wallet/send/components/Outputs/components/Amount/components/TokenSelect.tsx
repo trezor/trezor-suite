@@ -1,7 +1,6 @@
 import { useMemo, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { Select, variables } from '@trezor/components';
-import { components } from 'react-select';
+import { Select } from '@trezor/components';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
@@ -17,7 +16,6 @@ import {
     formatTokenSymbol,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
-import { getShortFingerprint } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
@@ -35,7 +33,6 @@ interface Option {
     options: {
         label: string;
         value: string | null;
-        fingerprint?: string;
     }[];
     label?: React.ReactNode;
 }
@@ -48,7 +45,7 @@ export const buildTokenOptions = (
     // native token option
     const result: Option[] = [
         {
-            options: [{ value: null, fingerprint: undefined, label: symbol.toUpperCase() }],
+            options: [{ value: null, label: symbol.toUpperCase() }],
         },
     ];
 
@@ -71,13 +68,11 @@ export const buildTokenOptions = (
                 result[0].options.push({
                     value: token.contract,
                     label: tokenSymbol,
-                    fingerprint: token.name,
                 });
             } else {
                 unknownTokens.push({
                     value: token.contract,
                     label: tokenSymbol,
-                    fingerprint: token.name,
                 });
             }
         });
@@ -104,67 +99,6 @@ interface TokenSelectProps {
     output: Partial<Output>;
     outputId: number;
 }
-
-const OptionValueName = styled.div`
-    text-overflow: ellipsis;
-    overflow: hidden;
-    height: 1.2em;
-    white-space: nowrap;
-    margin: 5px 0;
-`;
-
-const OptionWrapper = styled.div`
-    max-width: 200px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.XL}) {
-        max-width: 120px;
-    }
-`;
-
-const OptionValue = styled.div`
-    word-break: break-all;
-    font-variant-numeric: slashed-zero tabular-nums;
-`;
-
-const OptionEmptyName = styled.div`
-    font-style: italic;
-`;
-
-const CardanoOption = ({ tokenInputName, ...optionProps }: any) => (
-    <components.Option
-        {...optionProps}
-        innerProps={{
-            ...optionProps.innerProps,
-            'data-test': `${tokenInputName}/option/${optionProps.value}`,
-        }}
-    >
-        <OptionWrapper>
-            <OptionValueName>
-                {optionProps.data.fingerprint &&
-                optionProps.data.label.toLowerCase() ===
-                    optionProps.data.fingerprint.toLowerCase() ? (
-                    <OptionEmptyName>No name</OptionEmptyName>
-                ) : (
-                    optionProps.data.label
-                )}
-            </OptionValueName>
-            <OptionValue>
-                {optionProps.data.fingerprint
-                    ? getShortFingerprint(optionProps.data.fingerprint)
-                    : null}
-            </OptionValue>
-        </OptionWrapper>
-    </components.Option>
-);
-
-const CardanoSingleValue = ({ tokenInputName, ...optionProps }: any) => (
-    <components.SingleValue {...optionProps} innerProps={{ ...optionProps.innerProps }}>
-        {optionProps.data.fingerprint &&
-        optionProps.data.label.toLowerCase() === optionProps.data.fingerprint.toLowerCase()
-            ? getShortFingerprint(optionProps.data.fingerprint)
-            : optionProps.data.label}
-    </components.SingleValue>
-);
 
 export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     const {
@@ -212,14 +146,6 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         }
     }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
 
-    const customComponents =
-        account.networkType === 'cardano'
-            ? {
-                  Option: CardanoOption,
-                  SingleValue: CardanoSingleValue,
-              }
-            : undefined;
-
     const values = getValues();
     const fiatCurrency = values?.outputs?.[0]?.currency;
 
@@ -239,7 +165,6 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                         .flatMap(group => group.options)
                         .find(option => option.value === tokenValue)}
                     isClearable={false}
-                    components={customComponents}
                     isClean
                     onChange={async (selected: Option['options'][0]) => {
                         // change selected value
