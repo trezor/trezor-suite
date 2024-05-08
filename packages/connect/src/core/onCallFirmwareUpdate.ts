@@ -34,10 +34,10 @@ const registerEvents = (device: Device, postMessage: PostMessage) => {
 };
 
 const waitForReconnectedDevice = async ({
-    params: { bootloader, manual },
+    params: { bootloader, manual, intermediary },
     context: { deviceList, device, postMessage, log, abortSignal },
 }: {
-    params: { bootloader: boolean; manual: boolean };
+    params: { bootloader: boolean; manual: boolean; intermediary?: boolean };
     context: {
         deviceList: DeviceList;
         device: Device;
@@ -59,6 +59,7 @@ const waitForReconnectedDevice = async ({
                 device: device.toMessageObject(),
                 manual,
                 bootloader,
+                intermediary,
                 i,
             }),
         );
@@ -71,7 +72,21 @@ const waitForReconnectedDevice = async ({
         log.debug('onCallFirmwareUpdate', 'waiting for device to reconnect', i);
     } while (
         !abortSignal.aborted &&
-        (!reconnectedDevice?.features || bootloader === !reconnectedDevice.features.bootloader_mode)
+        (!reconnectedDevice?.features ||
+            bootloader === !reconnectedDevice.features.bootloader_mode ||
+            (intermediary &&
+                !isNewer(
+                    [
+                        reconnectedDevice.features.major_version,
+                        reconnectedDevice.features.minor_version,
+                        reconnectedDevice.features.patch_version,
+                    ],
+                    [
+                        device.features.major_version,
+                        device.features.minor_version,
+                        device.features.patch_version,
+                    ],
+                )))
     );
 
     if (!reconnectedDevice) {
@@ -86,10 +101,10 @@ const waitForReconnectedDevice = async ({
 };
 
 const waitForDisconnectedDevice = async ({
-    params: { manual },
+    params: { manual, intermediary },
     context: { deviceList, device, postMessage, log },
 }: {
-    params: { manual: boolean };
+    params: { manual: boolean; intermediary?: boolean };
     context: {
         deviceList: DeviceList;
         device: Device;
@@ -102,6 +117,7 @@ const waitForDisconnectedDevice = async ({
         createUiMessage(UI.FIRMWARE_DISCONNECT, {
             device: device.toMessageObject(),
             manual,
+            intermediary,
         }),
     );
     await new Promise(resolve => {
@@ -401,11 +417,11 @@ export const onCallFirmwareUpdate = async ({
 
     if (intermediary) {
         await waitForDisconnectedDevice({
-            params: { manual: true },
+            params: { manual: true, intermediary: true },
             context: { deviceList, log, device: reconnectedDevice, postMessage },
         });
         reconnectedDevice = await waitForReconnectedDevice({
-            params: { bootloader: true, manual: true },
+            params: { bootloader: true, manual: true, intermediary: true },
             context: { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
         });
 

@@ -271,6 +271,7 @@ export interface FirmwareDisconnect {
         device: Device;
         /** older devices need manual action (connect or disconnect cable). default is false */
         manual: boolean;
+        intermediary?: boolean;
     };
 }
 
@@ -283,6 +284,7 @@ export interface FirmwareReconnect {
         device: Device;
         /** older devices need manual action (connect or disconnect cable). default is false */
         manual: boolean;
+        intermediary?: boolean;
         /** should device be connected in bootloader mode? */
         bootloader: boolean;
         /** how many times this event was fired. resets when request is satisfied */
