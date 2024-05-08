@@ -51,7 +51,7 @@ test.beforeEach(async ({ page }) => {
     await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
     log('beforeEach', 'getting contexts');
-    const contexts = await getContexts(page, url, isWebExtension);
+    const contexts = await getContexts(page, url, isWebExtension, isNextra);
     browserContext = contexts.browserContext;
     explorerPage = contexts.explorerPage;
     explorerUrl = contexts.explorerUrl;
@@ -86,7 +86,7 @@ test('input passphrase in popup and device accepts it', async () => {
 
     log(`opening ${explorerUrl}#/method/getAddress`);
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     }
@@ -142,7 +142,7 @@ test('introduce passphrase in popup and device rejects it', async () => {
     log(`test: ${test.info().title}`);
 
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     }
@@ -189,7 +189,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
     log(`test: ${test.info().title}`);
 
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     }
@@ -239,7 +239,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     log(`test: ${test.info().title}`);
 
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     }
@@ -294,7 +294,7 @@ test('passphrase mismatch', async ({ page }) => {
     log('start', test.info().title);
     log('got to: ', `${url}#/method/getAddress`);
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
     }

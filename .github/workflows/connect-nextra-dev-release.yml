@@ -130,7 +130,7 @@ jobs:
     with:
       test-name: methods.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      run-webextension: false
+      run-webextension: true
       build-overview: true
 
   popup-close:
@@ -147,8 +147,7 @@ jobs:
     with:
       test-name: passphrase.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
-      # currently flaky, run only in nightly
-      run-webextension: ${{ github.event_name == 'schedule' }}
+      run-webextension: true
 
   popup-pages:
     needs: [build-deploy]
@@ -185,3 +184,12 @@ jobs:
       test-name: unchained.test
       DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
       run-web: ${{ github.event_name == 'schedule' }}
+
+  webextension-examples:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-nextra-test-params.yml
+    with:
+      test-name: webextension-example.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+      run-web: false
