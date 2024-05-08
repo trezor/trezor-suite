@@ -3,7 +3,6 @@ import styled, { useTheme } from 'styled-components';
 import { BuyProviderInfo, BuyTradeQuoteRequest } from 'invity-api';
 
 import invityAPI from 'src/services/suite/invityAPI';
-import { useWatchBuyTrade } from 'src/hooks/wallet/useCoinmarket';
 import {
     clearQuotes,
     saveCachedAccountInfo,
@@ -26,6 +25,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 
 const Wrapper = styled.div`
     display: flex;
@@ -132,7 +132,11 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
     const theme = useTheme();
     const { navigateToBuyOffers, navigateToBuyDetail } = useCoinmarketNavigation(account);
     const country = useSelector(state => state.wallet.coinmarket.buy.buyInfo?.buyInfo?.country);
-    useWatchBuyTrade(account, trade);
+
+    useCoinmarketWatchTrade({
+        account,
+        trade,
+    });
 
     const { date, data } = trade;
     const {
