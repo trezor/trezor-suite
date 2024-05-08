@@ -1,30 +1,32 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-
+import { useState, useEffect, useCallback } from 'react';
 import { BuyTrade } from 'invity-api';
 
-import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
-import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
-import { useActions, useSelector, useDevice } from 'src/hooks/suite';
-import { processQuotes, createQuoteLink, createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
+import { useActions, useSelector } from 'src/hooks/suite';
+import { createQuoteLink, createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as routerActions from 'src/actions/suite/routerActions';
-import { UseOffersProps, ContextValues } from 'src/types/wallet/coinmarketBuyOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { useCoinmarketFilterReducer } from '../../reducers/wallet/useCoinmarketFilterReducer';
+import { useCoinmarketFilterReducer } from '../../../../reducers/wallet/useCoinmarketFilterReducer';
+import { getFilteredSuccessQuotes, useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import { CoinmarketTradeBuyType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
-export const useOffers = ({ selectedAccount }: UseOffersProps) => {
-    const timer = useTimer();
-
-    const { account } = selectedAccount;
-    const { isLocked } = useDevice();
-    const [callInProgress, setCallInProgress] = useState<boolean>(isLocked || false);
-    const [selectedQuote, setSelectedQuote] = useState<BuyTrade>();
+export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+    const {
+        callInProgress,
+        account,
+        selectedQuote,
+        timer,
+        device,
+        setCallInProgress,
+        setSelectedQuote,
+        checkQuotesTimer,
+    } = useCoinmarketCommonOffers<CoinmarketTradeBuyType>({ selectedAccount });
     const { navigateToBuyForm } = useCoinmarketNavigation(account);
     const {
         saveTrade,
@@ -46,23 +48,14 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         goto: routerActions.goto,
     });
 
-    const invityServerEnvironment = useSelector(
-        state => state.suite.settings.debug.invityServerEnvironment,
-    );
-    const device = useSelector(selectDevice);
-    const { addressVerified, alternativeQuotes, buyInfo, isFromRedirect, quotes, quotesRequest } =
-        useSelector(state => state.wallet.coinmarket.buy);
-
-    const innerQuotesFilterReducer = useCoinmarketFilterReducer(quotes);
-    const innerAlternativeQuotesFilterReducer = useCoinmarketFilterReducer(alternativeQuotes);
-    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
-    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<BuyTrade[] | undefined>(
-        alternativeQuotes,
+    const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest } = useSelector(
+        state => state.wallet.coinmarket.buy,
     );
 
-    if (invityServerEnvironment) {
-        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
-    }
+    const innerQuotesFilterReducer = useCoinmarketFilterReducer<CoinmarketTradeBuyType>(quotes);
+    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
+        getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotes),
+    );
 
     const getQuotes = useCallback(async () => {
         if (!selectedQuote && quotesRequest) {
@@ -75,31 +68,19 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
                     return;
                 }
-                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                setInnerQuotes(quotes);
+                const quotes = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
+                const successQuotes = getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotes);
+                setInnerQuotes(successQuotes);
                 innerQuotesFilterReducer.dispatch({
                     type: 'FILTER_SET_PAYMENT_METHODS',
-                    payload: quotes,
-                });
-                setInnerAlternativeQuotes(alternativeQuotes);
-                innerAlternativeQuotesFilterReducer.dispatch({
-                    type: 'FILTER_SET_PAYMENT_METHODS',
-                    payload: alternativeQuotes,
+                    payload: successQuotes ?? [],
                 });
             } else {
                 setInnerQuotes(undefined);
-                setInnerAlternativeQuotes(undefined);
             }
             timer.reset();
         }
-    }, [
-        selectedQuote,
-        quotesRequest,
-        timer,
-        account.descriptor,
-        innerQuotesFilterReducer,
-        innerAlternativeQuotesFilterReducer,
-    ]);
+    }, [selectedQuote, quotesRequest, timer, account.descriptor, innerQuotesFilterReducer]);
 
     useEffect(() => {
         if (!quotesRequest) {
@@ -113,15 +94,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
             setIsFromRedirect(false);
         }
 
-        if (!timer.isLoading && !timer.isStopped) {
-            if (timer.resetCount >= 40) {
-                timer.stop();
-            }
-
-            if (timer.timeSpend.seconds === InvityAPIReloadQuotesAfterSeconds) {
-                getQuotes();
-            }
-        }
+        checkQuotesTimer(getQuotes);
     });
 
     const selectQuote = async (quote: BuyTrade) => {
@@ -203,23 +176,11 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         quotesRequest,
         addressVerified,
         quotes: innerQuotesFilterReducer.actions.handleFilterQuotes(innerQuotes),
-        alternativeQuotes:
-            innerAlternativeQuotesFilterReducer.actions.handleFilterQuotes(innerAlternativeQuotes),
         innerQuotesFilterReducer,
-        innerAlternativeQuotesFilterReducer,
         selectQuote,
         account,
         timer,
         getQuotes,
+        type: 'buy' as const,
     };
-};
-
-export const CoinmarketBuyOffersContext = createContext<ContextValues | null>(null);
-CoinmarketBuyOffersContext.displayName = 'CoinmarketBuyOffersContext';
-
-export const useCoinmarketBuyOffersContext = () => {
-    const context = useContext(CoinmarketBuyOffersContext);
-    if (context === null) throw Error('CoinmarketBuyOffersContext used without Context');
-
-    return context;
 };

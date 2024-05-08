@@ -1,5 +1,9 @@
-import { BuyCryptoPaymentMethod, BuyTrade } from 'invity-api';
+import { BuyCryptoPaymentMethod, BuyTrade, SellFiatTrade } from 'invity-api';
 import { Dispatch, useCallback, useEffect, useReducer } from 'react';
+import {
+    CoinmarketTradeBuySellType,
+    CoinmarketTradeDetailMapProps,
+} from 'src/types/coinmarket/coinmarket';
 
 type PaymentMethodValueProps = BuyCryptoPaymentMethod | '';
 
@@ -20,18 +24,22 @@ type ActionType =
       }
     | {
           type: 'FILTER_SET_PAYMENT_METHODS';
-          payload: BuyTrade[];
+          payload: BuyTrade[] | SellFiatTrade[];
       };
 
-export interface UseCoinmarketFilterReducerOutputProps {
+export interface UseCoinmarketFilterReducerOutputProps<T extends CoinmarketTradeBuySellType> {
     state: InitialStateProps;
     dispatch: Dispatch<ActionType>;
     actions: {
-        handleFilterQuotes: (quotes: BuyTrade[] | undefined) => BuyTrade[] | undefined;
+        handleFilterQuotes: (
+            quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+        ) => CoinmarketTradeDetailMapProps[T][] | undefined;
     };
 }
 
-const getPaymentMethods = (quotes: BuyTrade[]): PaymentMethodListProps[] => {
+const getPaymentMethods = <T extends CoinmarketTradeBuySellType>(
+    quotes: CoinmarketTradeDetailMapProps[T][],
+): PaymentMethodListProps[] => {
     const newPaymentMethods: PaymentMethodListProps[] = [];
 
     quotes.forEach(quote => {
@@ -68,9 +76,9 @@ const reducer = (state: InitialStateProps, action: ActionType) => {
     }
 };
 
-export const useCoinmarketFilterReducer = (
-    quotes: BuyTrade[] | undefined,
-): UseCoinmarketFilterReducerOutputProps => {
+export const useCoinmarketFilterReducer = <T extends CoinmarketTradeBuySellType>(
+    quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+): UseCoinmarketFilterReducerOutputProps<T> => {
     const initialState: InitialStateProps = {
         paymentMethod: '',
         paymentMethods: quotes ? getPaymentMethods(quotes) : [],
@@ -90,7 +98,7 @@ export const useCoinmarketFilterReducer = (
     }, [state.paymentMethod, state.paymentMethods]);
 
     const handleFilterQuotes = useCallback(
-        (quotes: BuyTrade[] | undefined) => {
+        (quotes: CoinmarketTradeDetailMapProps[T][] | undefined) => {
             if (!quotes) return;
 
             return quotes.filter(quote => {

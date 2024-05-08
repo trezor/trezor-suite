@@ -34,41 +34,39 @@ export interface ComposedTransactionInfo {
     selectedFee?: FeeLevel['label'];
 }
 
+export interface CoinmarketTradeCommonProps {
+    transactionId?: string;
+}
+
 interface Info {
     symbolsInfo?: CryptoSymbolInfo[];
 }
 
-interface Buy {
+interface Buy extends CoinmarketTradeCommonProps {
     buyInfo?: BuyInfo;
     isFromRedirect: boolean;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[] | undefined;
-    transactionId?: string;
     cachedAccountInfo: {
         accountType?: Account['accountType'];
         index?: Account['index'];
         symbol?: Account['symbol'];
         shouldSubmit?: boolean;
     };
-    alternativeQuotes?: BuyTrade[];
     addressVerified?: string;
 }
 
-interface Exchange {
+interface Exchange extends CoinmarketTradeCommonProps {
     exchangeInfo?: ExchangeInfo;
-    quotesRequest?: ExchangeTradeQuoteRequest | undefined;
-    fixedQuotes: ExchangeTrade[] | undefined;
-    floatQuotes: ExchangeTrade[] | undefined;
-    dexQuotes: ExchangeTrade[] | undefined;
-    transactionId?: string;
+    quotesRequest?: ExchangeTradeQuoteRequest;
+    quotes: ExchangeTrade[] | undefined;
     addressVerified?: string;
 }
 
-interface Sell {
+interface Sell extends CoinmarketTradeCommonProps {
     sellInfo?: SellInfo;
     quotesRequest?: SellFiatTradeQuoteRequest;
     quotes: SellFiatTrade[] | undefined;
-    alternativeQuotes?: SellFiatTrade[];
     transactionId?: string;
     isFromRedirect: boolean;
 }
@@ -100,23 +98,19 @@ export const initialState: State = {
             shouldSubmit: false,
         },
         quotes: [],
-        alternativeQuotes: undefined,
         addressVerified: undefined,
     },
     exchange: {
         exchangeInfo: undefined,
         transactionId: undefined,
         quotesRequest: undefined,
-        fixedQuotes: [],
-        floatQuotes: [],
-        dexQuotes: [],
+        quotes: [],
         addressVerified: undefined,
     },
     sell: {
         sellInfo: undefined,
         quotesRequest: undefined,
         quotes: [],
-        alternativeQuotes: [],
         transactionId: undefined,
         isFromRedirect: false,
     },
@@ -152,11 +146,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_BUY.SAVE_QUOTES:
                 draft.buy.quotes = action.quotes;
-                draft.buy.alternativeQuotes = action.alternativeQuotes;
                 break;
             case COINMARKET_BUY.CLEAR_QUOTES:
                 draft.buy.quotes = undefined;
-                draft.buy.alternativeQuotes = undefined;
                 break;
             case COINMARKET_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
@@ -190,13 +182,10 @@ const coinmarketReducer = (
                 draft.exchange.quotesRequest = undefined;
                 break;
             case COINMARKET_EXCHANGE.SAVE_QUOTES:
-                draft.exchange.fixedQuotes = action.fixedQuotes;
-                draft.exchange.floatQuotes = action.floatQuotes;
-                draft.exchange.dexQuotes = action.dexQuotes;
+                draft.exchange.quotes = action.quotes;
                 break;
             case COINMARKET_EXCHANGE.CLEAR_QUOTES:
-                draft.exchange.fixedQuotes = undefined;
-                draft.exchange.floatQuotes = undefined;
+                draft.exchange.quotes = undefined;
                 break;
             case COINMARKET_EXCHANGE.VERIFY_ADDRESS:
                 draft.exchange.addressVerified = action.addressVerified;
@@ -215,11 +204,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SELL.SAVE_QUOTES:
                 draft.sell.quotes = action.quotes;
-                draft.sell.alternativeQuotes = action.alternativeQuotes;
                 break;
             case COINMARKET_SELL.CLEAR_QUOTES:
                 draft.sell.quotes = undefined;
-                draft.sell.alternativeQuotes = undefined;
                 break;
             case COINMARKET_SELL.SET_IS_FROM_REDIRECT:
                 draft.sell.isFromRedirect = action.isFromRedirect;

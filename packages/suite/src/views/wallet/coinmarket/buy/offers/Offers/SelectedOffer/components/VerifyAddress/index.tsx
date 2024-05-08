@@ -16,13 +16,14 @@ import {
     useElevation,
     baseInputStyle,
 } from '@trezor/components';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
-import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
 import { Elevation } from '@trezor/theme';
 import { HTMLAttributes } from 'react';
+import { CoinmarketBuyAddressOptionsType } from 'src/types/coinmarket/coinmarketOffers';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
 const Wrapper = styled.div`
     display: flex;
@@ -117,11 +118,11 @@ const VerifyAddressComponent = () => {
         selectedQuote,
         goToPayment,
         addressVerified,
-    } = useCoinmarketBuyOffersContext();
+    } = useCoinmarketOffersContext<CoinmarketTradeBuyType>();
     const { symbol, formattedBalance } = account;
     const { path, address: unusedAddress } = getUnusedAddressFromAccount(account);
 
-    const { watch, setValue, control } = useForm<AddressOptionsFormState>({
+    const { watch, setValue, control } = useForm<CoinmarketBuyAddressOptionsType>({
         mode: 'onChange',
         defaultValues: { address: unusedAddress },
     });

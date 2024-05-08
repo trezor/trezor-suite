@@ -1,23 +1,16 @@
-import styled from 'styled-components';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { CoinmarketBuyOffersContext, useOffers } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { withSelectedAccountLoaded } from 'src/components/wallet';
+import { useCoinmarketBuyOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import Offers from './Offers';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
-const Wrapper = styled.div`
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-`;
-
-const OffersIndex = (props: WithSelectedAccountLoadedProps) => {
-    const coinmarketOffersValues = useOffers(props);
+const OffersIndex = (props: UseCoinmarketProps) => {
+    const coinmarketBuyOffers = useCoinmarketBuyOffers(props);
 
     return (
-        <CoinmarketBuyOffersContext.Provider value={coinmarketOffersValues}>
-            <Wrapper>
-                <Offers />
-            </Wrapper>
-        </CoinmarketBuyOffersContext.Provider>
+        <CoinmarketOffersContext.Provider value={coinmarketBuyOffers}>
+            <Offers />
+        </CoinmarketOffersContext.Provider>
     );
 };
 

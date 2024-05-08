@@ -2,9 +2,10 @@ import { useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { variables, Button, Select, Icon } from '@trezor/components';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { BankAccount } from 'invity-api';
 import { formatIban } from 'src/utils/wallet/coinmarket/sellUtils';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -111,7 +112,8 @@ const StyledIcon = styled(Icon)`
 export const SelectBankAccount = () => {
     const theme = useTheme();
     const { callInProgress, confirmTrade, addBankAccount, selectedQuote } =
-        useCoinmarketSellOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeSellType>();
+
     const [bankAccount, setBankAccount] = useState<BankAccount | undefined>(
         selectedQuote?.bankAccounts ? selectedQuote?.bankAccounts[0] : undefined,
     );
