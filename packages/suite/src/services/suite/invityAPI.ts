@@ -30,6 +30,8 @@ import {
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
+import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import { WatchTradeResponse } from 'src/types/coinmarket/coinmarketDetail';
 
 type BodyType =
     | BuyTrade
@@ -316,7 +318,10 @@ class InvityAPI {
         }
     };
 
-    watchBuyTrade = async (trade: BuyTrade, counter: number): Promise<WatchBuyTradeResponse> => {
+    private watchBuyTrade = async (
+        trade: BuyTrade,
+        counter: number,
+    ): Promise<WatchBuyTradeResponse> => {
         try {
             const response: WatchBuyTradeResponse = await this.request(
                 this.BUY_WATCH_TRADE.replace('{{counter}}', counter.toString()),
@@ -462,6 +467,22 @@ class InvityAPI {
     getCoinLogoUrl(coin: string): string {
         return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
     }
+
+    watchTrade = async (trade: Trade, counter: number): Promise<WatchTradeResponse> => {
+        if (trade.tradeType === 'buy') {
+            return await this.watchBuyTrade(trade.data, counter);
+        }
+
+        if (trade.tradeType === 'exchange') {
+            return await this.watchExchangeTrade(trade.data, counter);
+        }
+
+        if (trade.tradeType === 'sell') {
+            return await this.watchSellTrade(trade.data, counter);
+        }
+
+        return null;
+    };
 }
 
 const invityAPI = new InvityAPI();

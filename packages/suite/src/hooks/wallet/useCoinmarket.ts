@@ -1,60 +1,14 @@
 import { useEffect, useState } from 'react';
-import { BuyTradeStatus, ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
+import { ExchangeTradeStatus, SellTradeStatus } from 'invity-api';
 import useUnmount from 'react-use/lib/useUnmount';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import { useDispatch } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
-import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
 import { Account } from 'src/types/wallet';
-import type { TradeBuy, TradeSell, TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
+import type { TradeSell, TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
-
-const BuyTradeFinalStatuses: BuyTradeStatus[] = ['SUCCESS', 'ERROR', 'BLOCKED'];
-
-const shouldRefreshBuyTrade = (trade?: TradeBuy) =>
-    trade && trade.data.status && !BuyTradeFinalStatuses.includes(trade.data.status);
-
-export const useWatchBuyTrade = (account: Account, trade: TradeBuy) => {
-    const REFRESH_SECONDS = 30;
-    const dispatch = useDispatch();
-    const [refreshCount, setRefreshCount] = useState(0);
-    const invokeRefresh = () => {
-        if (shouldRefreshBuyTrade(trade)) {
-            setRefreshCount(prevValue => prevValue + 1);
-        }
-    };
-    const [, cancelRefresh, resetRefresh] = useTimeoutFn(invokeRefresh, REFRESH_SECONDS * 1000);
-
-    useUnmount(() => {
-        cancelRefresh();
-    });
-
-    const { removeDraft } = useFormDraft('coinmarket-buy');
-
-    useEffect(() => {
-        if (trade && shouldRefreshBuyTrade(trade)) {
-            cancelRefresh();
-            invityAPI.createInvityAPIKey(account.descriptor);
-            invityAPI.watchBuyTrade(trade.data, refreshCount).then(response => {
-                if (response.status && response.status !== trade.data.status) {
-                    const newDate = new Date().toISOString();
-                    const tradeData = {
-                        ...trade.data,
-                        status: response.status,
-                        error: response.error,
-                    };
-                    dispatch(saveBuyTrade(tradeData, account, newDate));
-                }
-                if (response.status && BuyTradeFinalStatuses.includes(response.status)) {
-                    removeDraft(account.key);
-                }
-            });
-            resetRefresh();
-        }
-    }, [account, cancelRefresh, dispatch, refreshCount, removeDraft, resetRefresh, trade]);
-};
 
 export const ExchangeTradeFinalStatuses: ExchangeTradeStatus[] = ['SUCCESS', 'ERROR', 'KYC'];
 
