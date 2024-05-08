@@ -88,6 +88,7 @@ filteredFixtures.forEach(f => {
             page,
             url,
             isWebExtension,
+            isNextra,
         );
         context = browserContext;
 
@@ -106,9 +107,11 @@ filteredFixtures.forEach(f => {
 
         const [method, submethod] = f.url.split('-');
         if (isNextra) {
-            await explorerPage.goto(
-                formatUrl(explorerUrl, `methods/${f.dir}/${method}/?submethod=${submethod}`),
+            const fullUrl = formatUrl(
+                explorerUrl,
+                `methods/${f.dir}/${method}/index.html${submethod ? '?submethod=' + submethod : ''}`,
             );
+            await explorerPage.goto(fullUrl);
 
             // expand method tester
             await explorerPage.click("[data-test='@api-playground/collapsible-box']");

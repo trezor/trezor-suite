@@ -25,11 +25,13 @@ on:
         description: "Flag to indicate whether to build connect-popup-overview.html"
         type: "boolean"
         required: false
+        default: false
 
 jobs:
   web:
     name: web
     runs-on: ubuntu-latest
+    if: ${{ inputs.run-web }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -88,4 +90,61 @@ jobs:
             exit 1
           fi
 
-  # webextension TBD
+  webextension:
+    name: webextension
+    runs-on: ubuntu-latest
+    if: ${{ inputs.run-webextension }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Extract branch name
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-popup
+
+      - name: Download artifact from build
+        uses: actions/download-artifact@v4
+        with:
+          name: connect-explorer-nextra-webextension
+          path: |
+            packages/connect-explorer-nextra/build-webextension
+
+      - name: Build example webextension
+        if: ${{ inputs.test-name == 'webextension-example.test' }}
+        env:
+          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect-nextra/${{ steps.extract_branch.outputs.branch }}/
+        run: |
+          yarn workspace @trezor/connect-web build:webextension
+          yarn workspace @trezor/connect-web build:inline
+          node packages/connect-examples/update-webextensions.js --trezor-connect-src "${URL}" --npm-src "${URL}trezor-connect.js"
+
+      - name: Run connect popup test
+        env:
+          URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect-nextra/${{ steps.extract_branch.outputs.branch }}/
+          IS_WEBEXTENSION: true
+          IS_NEXTRA: true
+        run: |
+          ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}
+
+      - name: Upload artifacts
+        # We upload test artifacts only if it fails and we use it to `Check Test Success` in next step.
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: webextension-test-artifacts-${{ inputs.test-name }}-${{ github.run_attempt }}-${{ github.run_id }}
+          path: |
+            packages/connect-popup/test-results
+
+      - name: Check Test Success
+        run: |
+          # If there is `test-results` it means it has failed.
+          if [ -f "packages/connect-popup/test-results" ]; then
+            echo "Tests failed"
+            exit 1
+          fi

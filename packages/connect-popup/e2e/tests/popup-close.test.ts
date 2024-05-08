@@ -57,7 +57,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     log('beforeEach', 'startBridge');
     await TrezorUserEnvLink.api.startBridge();
 
-    const contexts = await getContexts(page, url, isWebExtension);
+    const contexts = await getContexts(page, url, isWebExtension, isNextra);
 
     browserContext = contexts.browserContext || context;
     explorerPage = contexts.explorerPage;
@@ -78,8 +78,9 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     );
 
     if (isNextra) {
-        await page.click("a[data-test='@navbar-logo']");
-        await page.click("a[href$='/methods/bitcoin/verifyMessage/']");
+        await waitAndClick(explorerPage, ['@navbar-logo']);
+        await explorerPage.click("a[href$='/methods/bitcoin/verifyMessage/']");
+        await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
     }
@@ -127,15 +128,20 @@ test.afterEach(async ({ context: _context }, testInfo) => {
     }
     log('afterEach', 'starting');
     const context = browserContext || _context;
-    const logPage = context.pages().find(p => p.url().endsWith('log.html'))!;
-    await logPage.bringToFront();
-    const hasLogs = await checkHasLogs(logPage);
-    log(`hasLogs: ${hasLogs}`);
-    if (hasLogs) {
-        log('afterEach', 'downloading logs');
-        await downloadLogs(logPage, `./test-results/log-${addDashesToSpaces(testInfo.title)}.txt`);
-    } else {
-        log('afterEach', 'no logs');
+    const logPage = context.pages().find(p => p.url().endsWith('log.html'));
+    if (logPage) {
+        await logPage.bringToFront();
+        const hasLogs = await checkHasLogs(logPage);
+        log(`hasLogs: ${hasLogs}`);
+        if (hasLogs) {
+            log('afterEach', 'downloading logs');
+            await downloadLogs(
+                logPage,
+                `./test-results/log-${addDashesToSpaces(testInfo.title)}.txt`,
+            );
+        } else {
+            log('afterEach', 'no logs');
+        }
     }
 
     if (context) {
@@ -211,7 +217,7 @@ test('when user cancels permissions in popup it closes automatically', async ({
     await popupClosedPromise;
 
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
         await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
@@ -254,7 +260,7 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
     await popupClosedPromise;
 
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
         await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
@@ -333,7 +339,7 @@ test('popup should be focused when a call is in progress and user triggers new c
     await popupClosedPromise;
 
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
         await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
@@ -387,7 +393,7 @@ test('popup should close when third party is closed', async ({ page, context }) 
     await popupClosedPromise;
 
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
         await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     } else {
         await explorerPage.goto(`${explorerUrl}#/method/getAddress`);

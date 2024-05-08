@@ -34,13 +34,13 @@ export const formatUrl = (baseUrl: string, path: string) => {
     return `${baseUrlWithoutParams}${pathWithoutParams}?${params ? `${params}&` : ''}${pathParams ?? ''}`;
 };
 
-const getExtensionPage = async () => {
+const getExtensionPage = async (isNextra?: boolean) => {
     const pathToExtension = path.join(
         __dirname,
         '..',
         '..',
         '..',
-        'connect-explorer',
+        isNextra ? 'connect-explorer-nextra' : 'connect-explorer',
         'build-webextension',
     );
 
@@ -73,7 +73,7 @@ const getExtensionPage = async () => {
 
     const extensionId = background.url().split('/')[2];
 
-    const url = `chrome-extension://${extensionId}/connect-explorer.html`;
+    const url = `chrome-extension://${extensionId}/${isNextra ? '' : 'connect-explorer.html'}`;
 
     return {
         page,
@@ -88,6 +88,7 @@ export const getContexts = async (
     originalPage: Page,
     originalUrl: string,
     isWebExtension: boolean,
+    isNextra?: boolean,
 ) => {
     if (!isWebExtension) {
         return {
@@ -95,7 +96,7 @@ export const getContexts = async (
             explorerPage: originalPage,
         };
     }
-    const { page, url, browserContext } = await getExtensionPage();
+    const { page, url, browserContext } = await getExtensionPage(isNextra);
 
     return {
         explorerPage: page,
@@ -149,11 +150,11 @@ export const setConnectSettings = async (
     isNextra?: boolean,
 ) => {
     if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `settings/`));
+        await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
     } else {
         await explorerPage.goto(`${explorerUrl}#/settings`);
     }
-    if (isWebExtension) {
+    if (isWebExtension && !isNextra) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
         await explorerPage.waitForSelector("div[data-test='@settings/handshake-confirmed']");
     }

@@ -47,6 +47,7 @@ fixtures.forEach(f => {
         if (isNextra) {
             await page.click("a[data-test='@navbar-logo']");
             await page.click("a[href$='/methods/bitcoin/verifyMessage/']");
+            await page.waitForSelector("div[data-test='@api-playground/collapsible-box']");
         } else {
             await page.goto(`${url}${f.queryString}#/method/verifyMessage`);
         }
