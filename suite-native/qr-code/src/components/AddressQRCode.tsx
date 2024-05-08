@@ -46,7 +46,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
             <HStack spacing="small" justifyContent="center">
                 <Button
                     size="small"
-                    iconLeft="copy"
+                    viewLeft="copy"
                     onPress={handleCopyAddress}
                     colorScheme="tertiaryElevation1"
                 >
@@ -54,7 +54,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                 </Button>
                 <Button
                     size="small"
-                    iconLeft="shareAlt"
+                    viewLeft="shareAlt"
                     colorScheme="tertiaryElevation1"
                     onPress={handleShareData}
                 >

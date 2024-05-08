@@ -128,7 +128,7 @@ export const TransactionListHeader = memo(
                     />
                     {accountHasTransactions && (
                         <Box marginVertical="medium" paddingHorizontal="medium">
-                            <Button iconLeft="receive" size="large" onPress={handleReceive}>
+                            <Button viewLeft="receive" size="large" onPress={handleReceive}>
                                 <Translation id="transactions.receive" />
                             </Button>
                         </Box>

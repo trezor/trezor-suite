@@ -28,7 +28,7 @@ const CardHeader = ({ title, onButtonPress, buttonTitle, buttonIcon }: CardHeade
             {title}
         </Text>
         {buttonTitle && (
-            <TextButton size="small" onPress={onButtonPress} iconRight={buttonIcon}>
+            <TextButton size="small" onPress={onButtonPress} viewRight={buttonIcon}>
                 {buttonTitle}
             </TextButton>
         )}

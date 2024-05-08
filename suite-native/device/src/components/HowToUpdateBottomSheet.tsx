@@ -44,7 +44,7 @@ export const HowToUpdateBottomSheet = ({
                 <Button
                     colorScheme="tertiaryElevation0"
                     onPress={handleHelpClick}
-                    iconRight="arrowUpRight"
+                    viewRight="arrowUpRight"
                 >
                     <Translation id="deviceInfo.updateHowTo.button" />
                 </Button>

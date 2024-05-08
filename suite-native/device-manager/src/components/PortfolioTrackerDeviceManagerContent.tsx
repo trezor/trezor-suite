@@ -80,14 +80,14 @@ export const PortfolioTrackerDeviceManagerContent = () => {
                 </Text>
                 <Button
                     colorScheme="tertiaryElevation1"
-                    iconRight="link"
+                    viewRight="link"
                     onPress={handleOpenEduLink}
                 >
                     <Translation id="deviceManager.portfolioTracker.learnBasics" />
                 </Button>
                 <Button
                     colorScheme="tertiaryElevation1"
-                    iconRight="link"
+                    viewRight="link"
                     onPress={handleOpenEshopLink}
                 >
                     <Translation id="deviceManager.portfolioTracker.exploreShop" />
