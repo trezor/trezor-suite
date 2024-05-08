@@ -82,6 +82,10 @@ export const fetchCurrentFiatRates = async ({
 
     const coingeckoResponse = await coingeckoService.fetchCurrentFiatRates(ticker);
 
+    if (!coingeckoResponse) {
+        return null;
+    }
+
     return {
         rate: coingeckoResponse?.rates?.[localCurrency],
         lastTickerTimestamp: coingeckoResponse?.ts as Timestamp,
@@ -124,6 +128,10 @@ export const fetchLastWeekFiatRates = async ({
     }
 
     const coingeckoResponse = await coingeckoService.fetchLastWeekRates(ticker, localCurrency);
+
+    if (!coingeckoResponse) {
+        return null;
+    }
 
     return {
         rate: coingeckoResponse?.tickers?.[0]?.rates?.[localCurrency],
@@ -170,6 +178,10 @@ export const getFiatRatesForTimestamps = async (
         timestamps,
         localCurrency,
     );
+
+    if (!coingeckoResponse) {
+        return null;
+    }
 
     return coingeckoResponse;
 };
