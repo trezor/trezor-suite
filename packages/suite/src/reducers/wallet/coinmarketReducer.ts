@@ -44,16 +44,19 @@ export interface ComposedTransactionInfo {
     selectedFee?: FeeLevel['label'];
 }
 
+export interface CoinmarketTradeCommonProps {
+    transactionId?: string;
+}
+
 interface Info {
     symbolsInfo?: CryptoSymbolInfo[];
 }
 
-interface Buy {
+interface Buy extends CoinmarketTradeCommonProps {
     buyInfo?: BuyInfo;
     isFromRedirect: boolean;
     quotesRequest?: BuyTradeQuoteRequest;
     quotes: BuyTrade[] | undefined;
-    transactionId?: string;
     cachedAccountInfo: {
         accountType?: Account['accountType'];
         index?: Account['index'];
@@ -64,17 +67,16 @@ interface Buy {
     addressVerified?: string;
 }
 
-interface Exchange {
+interface Exchange extends CoinmarketTradeCommonProps {
     exchangeInfo?: ExchangeInfo;
     quotesRequest?: ExchangeTradeQuoteRequest;
     fixedQuotes: ExchangeTrade[] | undefined;
     floatQuotes: ExchangeTrade[] | undefined;
     dexQuotes: ExchangeTrade[] | undefined;
-    transactionId?: string;
     addressVerified?: string;
 }
 
-interface Sell {
+interface Sell extends CoinmarketTradeCommonProps {
     sellInfo?: SellInfo;
     showLeaveModal: boolean;
     quotesRequest?: SellFiatTradeQuoteRequest;
