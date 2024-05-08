@@ -201,7 +201,7 @@ export const TokenList = ({
                                                                 <LastUpdateTooltip
                                                                     timestamp={timestamp}
                                                                 >
-                                                                    <>{value}</>
+                                                                    {value}
                                                                 </LastUpdateTooltip>
                                                             ) : (
                                                                 <StyledNoRatesTooltip />
