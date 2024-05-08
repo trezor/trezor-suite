@@ -684,7 +684,7 @@ export const fixtures = {
                     contract: 'So11111111111111111111111111111111111115555',
                     decimals: 1,
                     name: 'So11111111111111111111111111111111111115555',
-                    symbol: 'So1...',
+                    symbol: 'SO11111...',
                     amount: '1534951700',
                 },
             ],
@@ -739,7 +739,7 @@ export const fixtures = {
                     contract: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
                     decimals: 1,
                     name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
-                    symbol: 'DH1...',
+                    symbol: 'DH1NKG3...',
                     amount: '2',
                 },
             ],
@@ -812,7 +812,7 @@ export const fixtures = {
             },
             expectedOutput: {
                 name: 'AQoKYV7tYpTrFZN6P5oUufbQKAUr9mNYGe1TTJC5wajM',
-                symbol: 'AQo...',
+                symbol: 'AQOKYV7...',
             },
         },
         {

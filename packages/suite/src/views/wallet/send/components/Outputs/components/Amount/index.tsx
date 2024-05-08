@@ -140,8 +140,6 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const values = getValues();
     const fiatCurrency = values?.outputs?.[0]?.currency;
 
-    const tokenSymbol = formatTokenSymbol(token?.symbol);
-
     const currentRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(
             state,
@@ -227,7 +225,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
     const isTokenSelected = !!token;
     const tokenBalance = isTokenSelected ? (
         <HiddenPlaceholder>
-            <TokenBalanceValue>{`${token.balance} ${tokenSymbol}`}</TokenBalanceValue>
+            <TokenBalanceValue>{`${token.balance} ${formatTokenSymbol(token?.symbol || token.contract)}`}</TokenBalanceValue>
         </HiddenPlaceholder>
     ) : undefined;
 

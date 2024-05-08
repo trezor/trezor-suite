@@ -17,6 +17,8 @@ import type {
 import type { TokenInfo } from '@trezor/blockchain-link-types/src';
 import { isCodesignBuild } from '@trezor/env-utils';
 
+import { formatTokenSymbol } from './utils';
+
 export type ApiTokenAccount = { account: AccountInfo<ParsedAccountData>; pubkey: PublicKey };
 
 // Docs regarding solana programs: https://spl.solana.com/
@@ -56,7 +58,7 @@ export const getTokenNameAndSymbol = (mint: string, tokenDetailByMint: TokenDeta
         ? { name: tokenDetail.name, symbol: tokenDetail.symbol }
         : {
               name: mint,
-              symbol: `${mint.slice(0, 3)}...`,
+              symbol: formatTokenSymbol(mint),
           };
 };
 

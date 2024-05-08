@@ -54,9 +54,9 @@ export const enhanceTokensWithRates = (
     return tokensWithRates;
 };
 
-export const formatTokenSymbol = (symbol?: string) => {
-    const tokenSymbol = symbol?.toUpperCase() || 'N/A';
-    const isTokenSymbolLong = tokenSymbol.length > 7;
+export const formatTokenSymbol = (symbol: string) => {
+    const upperCasedSymbol = symbol.toUpperCase();
+    const isTokenSymbolLong = upperCasedSymbol.length > 7;
 
-    return isTokenSymbolLong ? `${tokenSymbol.slice(0, 7)}...` : tokenSymbol;
+    return isTokenSymbolLong ? `${upperCasedSymbol.slice(0, 7)}...` : upperCasedSymbol;
 };
