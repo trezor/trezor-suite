@@ -85,7 +85,7 @@ export const TransactionDetailScreen = ({
                 accountKey={accountKey}
             />
             <Button
-                iconLeft="arrowUpRight"
+                viewLeft="arrowUpRight"
                 onPress={handleOpenBlockchain}
                 colorScheme="tertiaryElevation0"
                 style={applyStyle(buttonStyle)}

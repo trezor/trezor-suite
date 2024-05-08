@@ -9,7 +9,7 @@ import Animated, {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Color } from '@trezor/theme';
 
-import { ButtonIcon, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
+import { ButtonAccessoryView, ButtonProps, ButtonSize, buttonToTextSizeMap } from './Button';
 import { BUTTON_PRESS_ANIMATION_DURATION } from './useButtonPressAnimatedStyle';
 import { HStack } from '../Stack';
 
@@ -48,8 +48,8 @@ const textStyle = prepareNativeStyle(
 );
 
 export const TextButton = ({
-    iconLeft,
-    iconRight,
+    viewLeft,
+    viewRight,
     style,
     children,
     variant = 'primary',
@@ -89,14 +89,7 @@ export const TextButton = ({
         interpolatePressColor();
     };
 
-    const iconName = iconLeft || iconRight;
-    const icon = iconName ? (
-        <ButtonIcon
-            iconName={iconName}
-            color={isDisabled ? 'iconDisabled' : animatedColor}
-            buttonSize={size}
-        />
-    ) : null;
+    const iconColor = isDisabled ? 'iconDisabled' : animatedColor;
 
     return (
         <Pressable
@@ -107,7 +100,9 @@ export const TextButton = ({
             {...pressableProps}
         >
             <HStack alignItems="center">
-                {iconLeft && icon}
+                {viewLeft && (
+                    <ButtonAccessoryView element={viewLeft} iconColor={iconColor} iconSize={size} />
+                )}
                 <Animated.Text
                     style={[
                         applyStyle(textStyle, { buttonSize: size, isUnderlined }),
@@ -116,7 +111,13 @@ export const TextButton = ({
                 >
                     {children}
                 </Animated.Text>
-                {iconRight && icon}
+                {viewRight && (
+                    <ButtonAccessoryView
+                        element={viewRight}
+                        iconColor={iconColor}
+                        iconSize={size}
+                    />
+                )}
             </HStack>
         </Pressable>
     );

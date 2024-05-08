@@ -152,7 +152,7 @@ export const DeviceInfoModalScreen = () => {
                 <Button
                     colorScheme="tertiaryElevation0"
                     onPress={handleAccessoriesClick}
-                    iconRight="arrowUpRight"
+                    viewRight="arrowUpRight"
                 >
                     <Translation id="deviceInfo.goToAccessories" />
                 </Button>

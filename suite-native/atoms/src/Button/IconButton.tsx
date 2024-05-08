@@ -93,7 +93,7 @@ export const IconButton = ({
                             style,
                         ]}
                     >
-                        <ButtonIcon iconName={iconName} color={iconColor} buttonSize={size} />
+                        <ButtonIcon iconName={iconName} color={iconColor} size={size} />
                     </Animated.View>
                     {title && (
                         <Text variant="label" color="textSubdued">

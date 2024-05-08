@@ -39,7 +39,7 @@ export const XpubHint = ({ networkType, handleOpen }: XpubScanHintSheet) => {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
             <Box style={applyStyle(sheetTriggerStyle)}>
                 <TextButton
-                    iconLeft="question"
+                    viewLeft="question"
                     onPress={handleOpen}
                     data-testID="@accounts-import/sync-coins/xpub-help-link"
                 >

@@ -134,7 +134,7 @@ export const DemoScreen = () => {
                                     <Button
                                         key={buttonSize}
                                         colorScheme={buttonScheme}
-                                        iconLeft="calendar"
+                                        viewLeft="calendar"
                                         size={buttonSize}
                                     >
                                         {buttonSize}
@@ -155,7 +155,7 @@ export const DemoScreen = () => {
                                 <Button
                                     key={buttonSize}
                                     colorScheme="primary"
-                                    iconLeft="calendar"
+                                    viewLeft="calendar"
                                     size={buttonSize}
                                     isDisabled
                                 >
@@ -215,7 +215,7 @@ export const DemoScreen = () => {
                                 <TextButton
                                     variant={variant}
                                     key={buttonSize}
-                                    iconLeft="trezorT"
+                                    viewLeft="trezorT"
                                     size={buttonSize}
                                 >
                                     {buttonSize}

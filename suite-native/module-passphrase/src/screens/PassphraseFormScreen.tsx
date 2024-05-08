@@ -108,7 +108,7 @@ export const PassphraseFormScreen = () => {
                                     <Button
                                         size="small"
                                         colorScheme="blueBold"
-                                        iconLeft="arrowLineUpRight"
+                                        viewLeft="arrowLineUpRight"
                                         onPress={handleOpenLink}
                                     >
                                         <Translation id="modulePassphrase.alertCard.button" />

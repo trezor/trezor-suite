@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactElement, ReactNode, useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -6,12 +6,16 @@ import { MergeExclusive } from 'type-fest';
 
 import { Color, TypographyStyle, nativeSpacings } from '@trezor/theme';
 import { NativeStyleObject, prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Icon, IconColor, IconName, IconSize } from '@suite-common/icons';
+import { Icon, IconColor, IconName, IconSize, icons } from '@suite-common/icons';
 
 import { Text } from '../Text';
 import { useButtonPressAnimatedStyle } from './useButtonPressAnimatedStyle';
 import { TestProps } from '../types';
 import { HStack } from '../Stack';
+
+// Using ReactElement instead of ReactNode to exclude string and have type check on IconName
+// and also because string needs to be rendered in the <Text> element anyway
+export type ButtonAccessory = IconName | ReactElement;
 
 export type ButtonSize = 'extraSmall' | 'small' | 'medium' | 'large';
 export type ButtonColorScheme =
@@ -35,13 +39,19 @@ export type ButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressO
     size?: ButtonSize;
     style?: NativeStyleObject;
     isDisabled?: boolean;
-} & MergeExclusive<{ iconLeft?: IconName }, { iconRight?: IconName }> &
+} & MergeExclusive<{ viewLeft?: ButtonAccessory }, { viewRight?: ButtonAccessory }> &
     TestProps;
 
 type ButtonIconProps = {
     iconName: IconName;
-    color: IconColor;
-    buttonSize: ButtonSize;
+    color?: IconColor;
+    size?: ButtonSize;
+};
+
+type ButtonAccessoryViewProps = {
+    element: ButtonAccessory;
+    iconColor?: IconColor;
+    iconSize?: ButtonSize;
 };
 
 type BaseButtonColorScheme = {
@@ -223,13 +233,28 @@ export const buttonStyle = prepareNativeStyle<ButtonStyleProps>(
     },
 );
 
-export const ButtonIcon = ({ iconName, color, buttonSize }: ButtonIconProps) => (
-    <Icon name={iconName} color={color} size={buttonToIconSizeMap[buttonSize]} />
-);
+export const ButtonIcon = ({
+    iconName,
+    color = 'iconDefault',
+    size = 'medium',
+}: ButtonIconProps) => <Icon name={iconName} color={color} size={buttonToIconSizeMap[size]} />;
+
+const isIconName = (value: ButtonAccessory): value is IconName =>
+    typeof value === 'string' && icons[value as IconName] !== undefined;
+
+// ButtonAccessoryView renders either a ButtonIcon or a provided custom element
+// iconColor and iconSize are only used when element is an IconName
+export const ButtonAccessoryView = ({ element, iconColor, iconSize }: ButtonAccessoryViewProps) => {
+    if (isIconName(element)) {
+        return <ButtonIcon iconName={element} color={iconColor} size={iconSize} />;
+    }
+
+    return element;
+};
 
 export const Button = ({
-    iconLeft,
-    iconRight,
+    viewLeft,
+    viewRight,
     style,
     children,
     colorScheme = 'primary',
@@ -254,11 +279,6 @@ export const Button = ({
     const handlePressIn = () => setIsPressed(true);
     const handlePressOut = () => setIsPressed(false);
 
-    const iconName = iconLeft || iconRight;
-    const icon = iconName ? (
-        <ButtonIcon iconName={iconName} color={iconColor} buttonSize={size} />
-    ) : null;
-
     return (
         <Pressable
             disabled={isDisabled}
@@ -278,11 +298,23 @@ export const Button = ({
                 ]}
             >
                 <HStack alignItems="center">
-                    {iconLeft && icon}
+                    {viewLeft && (
+                        <ButtonAccessoryView
+                            element={viewLeft}
+                            iconColor={iconColor}
+                            iconSize={size}
+                        />
+                    )}
                     <Text textAlign="center" variant={buttonToTextSizeMap[size]} color={textColor}>
                         {children}
                     </Text>
-                    {iconRight && icon}
+                    {viewRight && (
+                        <ButtonAccessoryView
+                            element={viewRight}
+                            iconColor={iconColor}
+                            iconSize={size}
+                        />
+                    )}
                 </HStack>
             </Animated.View>
         </Pressable>
