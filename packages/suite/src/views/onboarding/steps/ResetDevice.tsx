@@ -8,13 +8,9 @@ import { useDispatch, useSelector, useOnboarding, useDevice } from 'src/hooks/su
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Button, Divider, Text } from '@trezor/components';
-import {
-    BackupType,
-    SelectBackupType,
-    getDefaultBackupType,
-    isShamirBackupType,
-} from './SelectBackupType';
+import { SelectBackupType, getDefaultBackupType, isShamirBackupType } from './SelectBackupType';
 import { DeviceModelInternal } from '@trezor/connect';
+import { BackupType } from '../../../reducers/onboarding/onboardingReducer';
 
 const SelectWrapper = styled.div`
     width: 100%;
@@ -48,7 +44,7 @@ export const ResetDeviceStep = () => {
 
     const [submitted, setSubmitted] = useState(false);
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
-    const { goToPreviousStep, goToNextStep, updateAnalytics } = useOnboarding();
+    const { goToPreviousStep, goToNextStep, updateAnalytics, updateBackupType } = useOnboarding();
 
     const dispatch = useDispatch();
 
@@ -78,10 +74,10 @@ export const ResetDeviceStep = () => {
         async (type: BackupType) => {
             switch (type) {
                 case 'shamir-default':
-                    await onResetDevice({ backup_type: 1 }); // Todo: add number of shards = 1/1
+                    await onResetDevice({ backup_type: 1 });
                     break;
                 case 'shamir-advance':
-                    await onResetDevice({ backup_type: 1 }); // Todo: add number of shards = n/m (select on device?)
+                    await onResetDevice({ backup_type: 1 });
                     break;
                 case '12-words':
                     await onResetDevice({ backup_type: 0, strength: 128 });
@@ -91,9 +87,10 @@ export const ResetDeviceStep = () => {
                     break;
             }
 
+            updateBackupType(type);
             updateAnalytics({ recoveryType: undefined, seedType: type });
         },
-        [updateAnalytics, onResetDevice],
+        [updateAnalytics, onResetDevice, updateBackupType],
     );
 
     useEffect(() => {

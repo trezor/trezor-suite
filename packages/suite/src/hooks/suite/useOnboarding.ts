@@ -22,6 +22,7 @@ export const useOnboarding = () => {
         rerun: recoveryActions.rerun,
         updateAnalytics: onboardingActions.updateAnalytics,
         addPath: onboardingActions.addPath,
+        updateBackupType: onboardingActions.updateBackupType,
     });
 
     const goToSuite = (initialRedirection = false) => {

@@ -36,15 +36,7 @@ import {
 } from '@floating-ui/react';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation } from '../../../components/suite';
-
-export const selectBackupTypes = [
-    'shamir-default',
-    'shamir-advance',
-    '12-words',
-    '24-words',
-] as const;
-
-export type BackupType = (typeof selectBackupTypes)[number];
+import { BackupType } from '../../../reducers/onboarding/onboardingReducer';
 
 export const isShamirBackupType = (type: BackupType) =>
     ['shamir-default', 'shamir-advance'].includes(type);

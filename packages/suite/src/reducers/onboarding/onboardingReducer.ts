@@ -14,7 +14,17 @@ export interface OnboardingRootState {
 
 export type DeviceTutorialStatus = 'active' | 'completed' | 'cancelled' | null;
 
+export const selectBackupTypes = [
+    'shamir-default',
+    'shamir-advance',
+    '12-words',
+    '24-words',
+] as const;
+
+export type BackupType = (typeof selectBackupTypes)[number];
+
 export interface OnboardingState {
+    backupType: BackupType;
     isActive: boolean;
     prevDevice: Device | null;
     activeStepId: AnyStepId;
@@ -35,6 +45,7 @@ const initialState: OnboardingState = {
     path: [],
     onboardingAnalytics: {},
     tutorialStatus: null,
+    backupType: 'shamir-default',
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
@@ -80,6 +91,10 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
                 draft.tutorialStatus = action.payload;
                 break;
 
+            case ONBOARDING.SELECT_BACKUP_TYPE:
+                draft.backupType = action.payload;
+                break;
+
             case ONBOARDING.RESET_ONBOARDING:
                 return initialState;
             //  no default
@@ -90,6 +105,6 @@ const onboarding = (state: OnboardingState = initialState, action: Action) => {
 export const selectOnboardingTutorialStatus = (state: OnboardingRootState) =>
     state.onboarding.tutorialStatus;
 
-export const selectIsOnboadingActive = (state: OnboardingRootState) => state.onboarding.isActive;
+export const selectIsOnboardingActive = (state: OnboardingRootState) => state.onboarding.isActive;
 
 export default onboarding;
