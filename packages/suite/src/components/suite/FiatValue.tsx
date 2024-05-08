@@ -86,7 +86,8 @@ export const FiatValue = ({
 
     if (
         (!fiatRateValue || !value || !currentRate?.lastTickerTimestamp || isLoading) &&
-        showLoadingSkeleton
+        showLoadingSkeleton &&
+        !currentRate?.error
     ) {
         return <SkeletonRectangle animate={shouldAnimate} />;
     }
