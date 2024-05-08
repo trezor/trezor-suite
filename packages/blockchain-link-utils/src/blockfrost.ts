@@ -17,7 +17,13 @@ import type {
     TransferType,
 } from '@trezor/blockchain-link-types/src/common';
 
-import { enhanceVinVout, filterTargets, sumVinVout, transformTarget } from './utils';
+import {
+    enhanceVinVout,
+    filterTargets,
+    formatTokenSymbol,
+    sumVinVout,
+    transformTarget,
+} from './utils';
 
 export const transformUtxos = (utxos: BlockfrostUtxos[]): Utxo[] => {
     const result: Utxo[] = [];
@@ -97,7 +103,7 @@ export const transformTokenInfo = (
             type: 'BLOCKFROST',
             name: token.fingerprint!, // this is safe as fingerprint is defined for all tokens except lovelace and lovelace is never included in account.tokens
             contract: token.unit,
-            symbol: assetName || token.fingerprint!,
+            symbol: assetName || formatTokenSymbol(token.fingerprint!),
             balance: token.quantity,
             decimals: token.decimals,
         };
@@ -159,7 +165,7 @@ export const filterTokenTransfers = (
                 transfers.push({
                     type,
                     name: asset.fingerprint,
-                    symbol: assetName || asset.fingerprint,
+                    symbol: assetName || formatTokenSymbol(asset.fingerprint),
                     contract: asset.unit,
                     decimals: asset.decimals,
                     amount: amount.toString(),
