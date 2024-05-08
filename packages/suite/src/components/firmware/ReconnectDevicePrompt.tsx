@@ -197,9 +197,16 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const isAbortable = isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
     const showWebUsbButton = rebootPhase === 'disconnected' && isWebUSB;
 
+    const isIntermediary =
+        uiEvent?.payload && 'intermediary' in uiEvent.payload && uiEvent.payload.intermediary;
+
     const getHeading = () => {
         if (isRebootDone) {
             return 'TR_RECONNECT_IN_BOOTLOADER_SUCCESS';
+        }
+
+        if (isIntermediary) {
+            return 'TR_RECONNECT_IN_NORMAL';
         }
 
         return isManualRebootRequired ? 'TR_RECONNECT_IN_BOOTLOADER' : 'TR_REBOOT_INTO_BOOTLOADER';
@@ -208,6 +215,10 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const getSecondStep = () => {
         const deviceFwVersion = getFirmwareVersion(uiEvent?.payload.device);
         const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
+
+        if (isIntermediary) {
+            return 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON';
+        }
 
         return pickByDeviceModel(deviceModelInternal, {
             default: 'TR_SWITCH_TO_BOOTLOADER_HOLD_LEFT_BUTTON',
