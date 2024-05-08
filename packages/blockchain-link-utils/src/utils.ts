@@ -69,3 +69,11 @@ export const sortTxsFromLatest = (transactions: Transaction[]) => {
 
     return txs;
 };
+
+// should be aligned with "formatTokenSymbol" in suite
+export const formatTokenSymbol = (symbol: string) => {
+    const upperCasedSymbol = symbol.toUpperCase();
+    const isTokenSymbolLong = upperCasedSymbol.length > 7;
+
+    return isTokenSymbolLong ? `${upperCasedSymbol.slice(0, 7)}...` : upperCasedSymbol;
+};

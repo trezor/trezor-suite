@@ -45,7 +45,7 @@ export const buildTokenOptions = (
     symbol: Account['symbol'],
     coinDefinitions: TokenDefinitions['coin'],
 ) => {
-    // ETH option
+    // native token option
     const result: Option[] = [
         {
             options: [{ value: null, fingerprint: undefined, label: symbol.toUpperCase() }],
@@ -61,7 +61,8 @@ export const buildTokenOptions = (
                 return;
             }
 
-            const tokenSymbol = formatTokenSymbol(token.symbol);
+            // if symbol is missing, use start of contract address
+            const tokenSymbol = formatTokenSymbol(token.symbol || token.contract);
 
             if (
                 !hasCoinDefinitions ||
