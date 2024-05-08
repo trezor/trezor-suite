@@ -2,13 +2,14 @@ import { useState, ChangeEvent, MouseEventHandler } from 'react';
 import styled, { useTheme } from 'styled-components';
 import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/components/suite';
 import { Button, Icon, Input, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import useDebounce from 'react-use/lib/useDebounce';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FieldError } from 'react-hook-form';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { TranslationKey } from '@suite-common/intl-types';
 import { spacingsPx } from '@trezor/theme';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -153,7 +154,7 @@ export function formatCryptoAmountAsAmount(
 const SendSwapTransactionComponent = () => {
     const theme = useTheme();
     const { account, callInProgress, selectedQuote, exchangeInfo, confirmTrade, sendTransaction } =
-        useCoinmarketExchangeOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
     const [slippageSettings, setSlippageSettings] = useState(false);
     const [slippage, setSlippage] = useState(selectedQuote?.swapSlippage || '1');
     const [customSlippage, setCustomSlippage] = useState(slippage);

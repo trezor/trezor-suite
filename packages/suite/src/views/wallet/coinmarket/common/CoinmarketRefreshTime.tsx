@@ -6,11 +6,15 @@ import { spacingsPx } from '@trezor/theme';
 const Wrapper = styled.div`
     display: flex;
     justify-self: flex-end;
-    flex: 1;
     align-items: center;
     justify-content: center;
     font-size: ${variables.FONT_SIZE.SMALL};
     gap: ${spacingsPx.sm};
+    flex: none;
+`;
+
+const ProgressPieWrap = styled(ProgressPie)`
+    flex: none;
 `;
 
 const TimerText = styled.div`
@@ -54,7 +58,7 @@ export const CoinmarketRefreshTime = ({
                 <Spinner size={15} />
             ) : (
                 <Wrapper>
-                    <ProgressPie valueInPercents={progress} />
+                    <ProgressPieWrap valueInPercents={progress} />
                     <TimerText>
                         <RefreshLabel>{label}</RefreshLabel>
                         <RefreshTime>{`0:${remaining < 10 ? '0' : ''}${remaining}`}</RefreshTime>

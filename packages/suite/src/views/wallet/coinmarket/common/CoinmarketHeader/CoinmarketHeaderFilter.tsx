@@ -9,7 +9,14 @@ import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/C
 import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    margin-top: ${spacingsPx.lg};
+    display: flex;
+    flex-wrap: wrap;
+`;
+
+const SelectWrapper = styled(Select)`
+    width: 254px;
+    max-width: 100%;
+    padding: ${spacingsPx.xxs} ${spacingsPx.md} ${spacingsPx.xxs} 0;
 `;
 
 const Option = styled.div`
@@ -17,11 +24,11 @@ const Option = styled.div`
     align-items: center;
 `;
 
-interface BuyQuoteFilter {
-    quotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
+interface CoinmarketHeaderFilterProps {
+    quotesFilterReducer: UseCoinmarketFilterReducerOutputProps<any>;
 }
 
-export const BuyQuoteFilter = ({ quotesFilterReducer }: BuyQuoteFilter) => {
+const CoinmarketHeaderFilter = ({ quotesFilterReducer }: CoinmarketHeaderFilterProps) => {
     const { state, dispatch } = quotesFilterReducer;
     const { translationString } = useTranslation();
     const defaultMethod: PaymentMethodListProps = {
@@ -31,7 +38,7 @@ export const BuyQuoteFilter = ({ quotesFilterReducer }: BuyQuoteFilter) => {
 
     return (
         <Wrapper data-test="@coinmarket/buy/filter">
-            <Select
+            <SelectWrapper
                 onChange={(selected: PaymentMethodListProps) => {
                     dispatch({ type: 'FILTER_PAYMENT_METHOD', payload: selected.value });
                 }}
@@ -58,3 +65,5 @@ export const BuyQuoteFilter = ({ quotesFilterReducer }: BuyQuoteFilter) => {
         </Wrapper>
     );
 };
+
+export default CoinmarketHeaderFilter;

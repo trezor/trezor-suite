@@ -1,7 +1,6 @@
 import * as fixtures from '../__fixtures__/buyUtils';
 import {
     getAmountLimits,
-    processQuotes,
     createQuoteLink,
     getStatusMessage,
     getCryptoOptions,
@@ -14,7 +13,6 @@ const {
     MIN_MAX_QUOTES_OK,
     MIN_MAX_QUOTES_LOW,
     MIN_MAX_QUOTES_HIGH,
-    ALTERNATIVE_QUOTES,
 } = fixtures;
 
 describe('coinmarket/buy utils', () => {
@@ -39,19 +37,6 @@ describe('coinmarket/buy utils', () => {
             currency: 'BTC',
             maxCrypto: 1.67212968,
         });
-    });
-
-    it('processQuotes', () => {
-        const onlyBaseQuotes = MIN_MAX_QUOTES_OK.map(q => ({ ...q }));
-        const withAlternative = ALTERNATIVE_QUOTES.map(q => ({ ...q }));
-
-        expect(processQuotes([])).toStrictEqual([[], []]);
-
-        expect(processQuotes(onlyBaseQuotes)).toStrictEqual([onlyBaseQuotes, []]);
-        expect(processQuotes(withAlternative)).toStrictEqual([
-            withAlternative.filter(q => !q.tags || !q.tags.includes('alternativeCurrency')),
-            withAlternative.filter(q => q.tags && q.tags.includes('alternativeCurrency')),
-        ]);
     });
 
     it('createQuoteLink', async () => {

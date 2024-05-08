@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, variables } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -38,7 +39,7 @@ const Address = styled.div``;
 
 const SendTransactionComponent = () => {
     const { account, callInProgress, selectedQuote, exchangeInfo, sendTransaction } =
-        useCoinmarketExchangeOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
     if (!selectedQuote) return null;
     const { exchange, sendAddress } = selectedQuote;
     if (!exchange) return null;

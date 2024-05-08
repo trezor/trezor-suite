@@ -138,13 +138,9 @@ describe('Coinmarket Exchange Actions', () => {
     it('saveQuotes', () => {
         const store = initStore(getInitialState());
 
-        const fixedQuotes: ExchangeTrade[] = [];
-        const floatQuotes: ExchangeTrade[] = [];
-        const dexQuotes: ExchangeTrade[] = [];
+        const quotes: ExchangeTrade[] = [];
 
-        store.dispatch(coinmarketExchangeActions.saveQuotes(fixedQuotes, floatQuotes, dexQuotes));
-        expect(store.getState().wallet.coinmarket.exchange.fixedQuotes).toEqual(fixedQuotes);
-        expect(store.getState().wallet.coinmarket.exchange.floatQuotes).toEqual(floatQuotes);
-        expect(store.getState().wallet.coinmarket.exchange.dexQuotes).toEqual(dexQuotes);
+        store.dispatch(coinmarketExchangeActions.saveQuotes(quotes));
+        expect(store.getState().wallet.coinmarket.exchange.quotes).toEqual(quotes);
     });
 });

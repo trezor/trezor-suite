@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { Card, Icon, variables, colors } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import VerifyAddress from './components/VerifyAddress';
 import SendTransaction from './components/SendTransaction';
 import { Translation } from 'src/components/suite';
@@ -9,6 +8,8 @@ import SendApprovalTransaction from './components/SendApprovalTransaction';
 import SendSwapTransaction from './components/SendSwapTransaction';
 import { CoinmarketExchangeOfferInfo } from '../../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
 import { spacingsPx } from '@trezor/theme';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -76,7 +77,7 @@ const MiddleNarrow = styled.div`
 
 const SelectedOffer = () => {
     const { account, selectedQuote, exchangeInfo, exchangeStep, receiveAccount } =
-        useCoinmarketExchangeOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
     if (!selectedQuote) return null;
 
     return (
