@@ -3,10 +3,11 @@ import styled from 'styled-components';
 import { Card, Icon, variables, colors } from '@trezor/components';
 import { SelectBankAccount } from './components/SelectBankAccount';
 import { SendTransaction } from './components/SendTransaction';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { Translation } from 'src/components/suite';
 import { CoinmarketSellOfferInfo } from '../../../components/CoinmarketSellOfferInfo';
 import { spacingsPx } from '@trezor/theme';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,7 +66,8 @@ const Middle = styled.div`
 `;
 
 export const SelectedOffer = () => {
-    const { account, selectedQuote, sellInfo, sellStep } = useCoinmarketSellOffersContext();
+    const { account, selectedQuote, sellInfo, sellStep } =
+        useCoinmarketOffersContext<CoinmarketTradeSellType>();
     if (!selectedQuote) return null;
 
     return (

@@ -10,10 +10,11 @@ import {
 } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { UseFormReturn } from 'react-hook-form';
 import type { Account } from 'src/types/wallet';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
 const LogoWrapper = styled.div`
     display: flex;
@@ -75,7 +76,7 @@ export const ReceiveOptions = (props: ReceiveOptionsProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const { device, suiteReceiveAccounts, receiveSymbol, setReceiveAccount } =
-        useCoinmarketExchangeOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
     const [menuIsOpen, setMenuIsOpen] = useState<boolean | undefined>(undefined);
 
     const { selectedAccountOption, setSelectedAccountOption, setValue } = props;

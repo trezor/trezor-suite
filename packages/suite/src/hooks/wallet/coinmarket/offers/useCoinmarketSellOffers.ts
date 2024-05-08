@@ -1,15 +1,13 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 
-import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
-import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { processQuotes, createQuoteLink } from 'src/utils/wallet/coinmarket/sellUtils';
+import { createQuoteLink } from 'src/utils/wallet/coinmarket/sellUtils';
 import {
     loadInvityData,
     submitRequestForm,
@@ -21,44 +19,53 @@ import {
     setIsFromRedirect,
 } from 'src/actions/wallet/coinmarketSellActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { UseOffersProps, ContextValues, SellStep } from 'src/types/wallet/coinmarketSellOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getUnusedAddressFromAccount,
+    processSellAndBuyQuotes,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
-import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
+import { useCoinmarketRecomposeAndSign } from './../../useCoinmarketRecomposeAndSign';
+import { getFilteredSuccessQuotes, useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import {
+    CoinmarketTradeSellType,
+    CoinmarketTradeType,
+    UseCoinmarketProps,
+} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
+import { useCoinmarketFilterReducer } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 
-export const useOffers = ({ selectedAccount }: UseOffersProps) => {
-    const timer = useTimer();
-
-    const { account, network } = selectedAccount;
+export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+    const {
+        callInProgress,
+        account,
+        selectedQuote,
+        timer,
+        device,
+        setCallInProgress,
+        setSelectedQuote,
+        checkQuotesTimer,
+    } = useCoinmarketCommonOffers<CoinmarketTradeSellType>({ selectedAccount });
+    const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const [callInProgress, setCallInProgress] = useState<boolean>(false);
-    const [selectedQuote, setSelectedQuote] = useState<SellFiatTrade>();
 
-    const [sellStep, setSellStep] = useState<SellStep>('BANK_ACCOUNT');
+    const [sellStep, setSellStep] = useState<CoinmarketSellStepType>('BANK_ACCOUNT');
     const { navigateToSellForm } = useCoinmarketNavigation(account);
-    const invityServerEnvironment = useSelector(
-        state => state.suite.settings.debug.invityServerEnvironment,
+
+    const { isFromRedirect, quotes, quotesRequest, sellInfo, transactionId } = useSelector(
+        state => state.wallet.coinmarket.sell,
     );
-    const { alternativeQuotes, isFromRedirect, quotes, quotesRequest, sellInfo, transactionId } =
-        useSelector(state => state.wallet.coinmarket.sell);
-    const device = useSelector(selectDevice);
     const trades = useSelector(state => state.wallet.coinmarket.trades);
     const dispatch = useDispatch();
 
     dispatch(loadInvityData());
 
-    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(quotes);
-    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
-        SellFiatTrade[] | undefined
-    >(alternativeQuotes);
-
-    if (invityServerEnvironment) {
-        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
-    }
+    const innerQuotesFilterReducer = useCoinmarketFilterReducer<CoinmarketTradeSellType>(quotes);
+    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
+        getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes),
+    );
 
     const { selectedFee, composed, recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
@@ -73,16 +80,19 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
                     return;
                 }
-                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                setInnerQuotes(quotes);
-                setInnerAlternativeQuotes(alternativeQuotes);
+                const quotes = processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes);
+                const successQuotes = getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes);
+                setInnerQuotes(getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes));
+                innerQuotesFilterReducer.dispatch({
+                    type: 'FILTER_SET_PAYMENT_METHODS',
+                    payload: successQuotes ?? [],
+                });
             } else {
                 setInnerQuotes(undefined);
-                setInnerAlternativeQuotes(undefined);
             }
             timer.reset();
         }
-    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
+    }, [account.descriptor, innerQuotesFilterReducer, quotesRequest, selectedQuote, timer]);
 
     const trade = trades.find(
         trade => trade.tradeType === 'sell' && trade.key === transactionId,
@@ -105,25 +115,20 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
             dispatch(setIsFromRedirect(false));
         }
-        if (!timer.isLoading && !timer.isStopped) {
-            if (timer.resetCount >= 40) {
-                timer.stop();
-            }
 
-            if (timer.timeSpend.seconds === InvityAPIReloadQuotesAfterSeconds) {
-                getQuotes();
-            }
-        }
+        checkQuotesTimer(getQuotes);
     }, [
-        dispatch,
         quotesRequest,
         isFromRedirect,
         timer,
-        navigateToSellForm,
         transactionId,
-        getQuotes,
         trades,
         trade,
+        dispatch,
+        getQuotes,
+        navigateToSellForm,
+        checkQuotesTimer,
+        setSelectedQuote,
     ]);
 
     const doSellTrade = async (quote: SellFiatTrade) => {
@@ -240,7 +245,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     };
 
     const sendTransaction = async () => {
-        // destinationAddress may be set by useWatchSellTrade hook to the trade object
+        // destinationAddress may be set by useCoinmarketWatchTrade hook to the trade object
         const destinationAddress =
             selectedQuote?.destinationAddress || trade?.data?.destinationAddress;
         if (
@@ -318,8 +323,8 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         confirmTrade,
         addBankAccount,
         quotesRequest,
-        quotes: innerQuotes,
-        alternativeQuotes: innerAlternativeQuotes,
+        quotes: innerQuotesFilterReducer.actions.handleFilterQuotes(innerQuotes),
+        innerQuotesFilterReducer,
         sellStep,
         setSellStep,
         selectQuote,
@@ -328,15 +333,6 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         sellInfo,
         needToRegisterOrVerifyBankAccount,
         getQuotes,
+        type: 'sell' as CoinmarketTradeType,
     };
-};
-
-export const CoinmarketSellOffersContext = createContext<ContextValues | null>(null);
-CoinmarketSellOffersContext.displayName = 'CoinmarketSellOffersContext';
-
-export const useCoinmarketSellOffersContext = () => {
-    const context = useContext(CoinmarketSellOffersContext);
-    if (context === null) throw Error('CoinmarketSellOffersContext used without Context');
-
-    return context;
 };

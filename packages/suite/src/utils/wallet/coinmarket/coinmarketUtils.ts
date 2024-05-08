@@ -14,6 +14,11 @@ import {
     TokenDefinitions,
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
+import {
+    CoinmarketTradeBuySellDetailMapProps,
+    CoinmarketTradeBuySellType,
+} from 'src/types/coinmarket/coinmarket';
+import { v4 as uuidv4 } from 'uuid';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -248,3 +253,20 @@ export const getDefaultCountry = (country: string = regional.unknownCountry) => 
         value: country,
     };
 };
+
+// fill ids and remove alternative quotes
+export function processSellAndBuyQuotes<T extends CoinmarketTradeBuySellType>(
+    allQuotes: CoinmarketTradeBuySellDetailMapProps[T][] | undefined,
+): CoinmarketTradeBuySellDetailMapProps[T][] {
+    if (!allQuotes) allQuotes = [];
+    allQuotes.forEach(q => {
+        q.orderId = uuidv4();
+
+        if (!q.paymentId) {
+            q.paymentId = uuidv4();
+        }
+    });
+    const quotes = allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
+
+    return quotes;
+}

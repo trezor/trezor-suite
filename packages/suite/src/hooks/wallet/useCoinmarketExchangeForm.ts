@@ -34,10 +34,12 @@ import {
     CRYPTO_INPUT,
     FIAT_INPUT,
     FIAT_CURRENCY,
-    UseCoinmarketExchangeFormProps,
 } from 'src/types/wallet/coinmarketExchangeForm';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { getAmountLimits, splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import {
+    getAmountLimits,
+    getSuccessQuotesOrdered,
+} from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import type { AppState } from 'src/types/suite';
@@ -54,13 +56,14 @@ import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolU
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import BigNumber from 'bignumber.js';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
 
 const useExchangeState = (
-    selectedAccount: UseCoinmarketExchangeFormProps['selectedAccount'],
+    selectedAccount: UseCoinmarketProps['selectedAccount'],
     fees: AppState['wallet']['fees'],
     currentState: boolean,
     defaultFormValues?: ExchangeFormState,
@@ -83,7 +86,7 @@ const useExchangeState = (
 
 export const useCoinmarketExchangeForm = ({
     selectedAccount,
-}: UseCoinmarketExchangeFormProps): ExchangeFormContextValues => {
+}: UseCoinmarketProps): ExchangeFormContextValues => {
     const [state, setState] = useState<ReturnType<typeof useExchangeState>>(undefined);
 
     const accounts = useSelector(state => state.wallet.accounts);
@@ -370,11 +373,8 @@ export const useCoinmarketExchangeForm = ({
                 if (limits) {
                     setAmountLimits(limits);
                 } else {
-                    const [fixedQuotes, floatQuotes, dexQuotes] = splitToQuoteCategories(
-                        allQuotes,
-                        exchangeInfo,
-                    );
-                    dispatch(saveQuotes(fixedQuotes, floatQuotes, dexQuotes));
+                    const successQuotes = getSuccessQuotesOrdered(allQuotes, exchangeInfo);
+                    dispatch(saveQuotes(successQuotes));
                     navigateToExchangeOffers();
                 }
             } else {

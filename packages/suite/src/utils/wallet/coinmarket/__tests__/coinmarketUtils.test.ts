@@ -8,8 +8,10 @@ import {
     getSendCryptoOptions,
     getTagAndInfoNote,
     buildCryptoOption,
+    processSellAndBuyQuotes,
 } from '../coinmarketUtils';
 import { accountBtc, accountEth, coinDefinitions } from '../__fixtures__/coinmarketUtils';
+import { ALTERNATIVE_QUOTES, MIN_MAX_QUOTES_OK } from '../__fixtures__/buyUtils';
 
 describe('coinmarket utils', () => {
     it('buildFiatOption', () => {
@@ -163,5 +165,19 @@ describe('coinmarket utils', () => {
             infoNote: 'Bar',
             tag: 'Foo',
         });
+    });
+
+    it('processSellAndBuyQuotes', () => {
+        const quotes = [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES];
+
+        expect(processSellAndBuyQuotes([])).toStrictEqual([]);
+        expect(processSellAndBuyQuotes(quotes).length).toStrictEqual(
+            quotes.filter(
+                q =>
+                    (!q.tags || !q.tags.includes('alternativeCurrency')) &&
+                    q.orderId &&
+                    q.paymentId,
+            ).length,
+        );
     });
 });

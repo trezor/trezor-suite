@@ -2,10 +2,8 @@ import { useState } from 'react';
 import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import addressValidator from '@trezor/address-validator';
-
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Button } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import { isHexValid, isInteger } from '@suite-common/wallet-utils';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
@@ -13,6 +11,8 @@ import { ReceiveOptions, AccountSelectOption } from './ReceiveOptions';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -88,7 +88,7 @@ const VerifyAddressComponent = () => {
         selectedQuote,
         addressVerified,
         receiveSymbol,
-    } = useCoinmarketExchangeOffersContext();
+    } = useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
     const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
 
     const {

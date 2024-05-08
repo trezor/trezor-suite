@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
 import { Card, variables } from '@trezor/components';
-import { useCoinmarketExchangeDetailContext } from 'src/hooks/wallet/useCoinmarketExchangeDetail';
-import { ExchangeTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -12,6 +10,9 @@ import PaymentKYC from '../components/PaymentKYC';
 import PaymentConverting from '../components/PaymentConverting';
 import PaymentSending from '../components/PaymentSending';
 import { CoinmarketExchangeOfferInfo } from '../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
+import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
+import { getTradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,7 +31,7 @@ const StyledCard = styled(Card)`
 const CoinmarketDetail = () => {
     useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-exchange" />);
 
-    const { account, trade, exchangeInfo } = useCoinmarketExchangeDetailContext();
+    const { account, trade, info } = useCoinmarketDetailContext<CoinmarketTradeExchangeType>();
     const dispatch = useDispatch();
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
@@ -50,15 +51,13 @@ const CoinmarketDetail = () => {
     }
 
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
-
+    const exchangeTradeFinalStatuses = getTradeFinalStatuses('exchange');
     const showSending =
-        !ExchangeTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'CONVERTING';
+        !exchangeTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'CONVERTING';
 
     const exchange = trade?.data?.exchange;
     const provider =
-        exchangeInfo && exchangeInfo.providerInfos && exchange
-            ? exchangeInfo.providerInfos[exchange]
-            : undefined;
+        info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
@@ -81,7 +80,7 @@ const CoinmarketDetail = () => {
             </StyledCard>
             <CoinmarketExchangeOfferInfo
                 account={account}
-                exchangeInfo={exchangeInfo}
+                exchangeInfo={info}
                 selectedQuote={trade.data}
                 transactionId={trade.key}
             />
