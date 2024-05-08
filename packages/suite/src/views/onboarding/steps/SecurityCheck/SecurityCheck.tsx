@@ -16,7 +16,7 @@ import { SecurityChecklist } from './SecurityChecklist';
 import { SecurityCheckFail } from './SecurityCheckFail';
 import { SecurityCheckButton } from './SecurityCheckButton';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
-import { selectIsOnboadingActive } from 'src/reducers/onboarding/onboardingReducer';
+import { selectIsOnboardingActive } from 'src/reducers/onboarding/onboardingReducer';
 import { Elevation, mapElevationToBorder, typography } from '@trezor/theme';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
@@ -181,7 +181,7 @@ export const SecurityCheckContent = ({
         isDeviceAuthenticityCheckDisabled,
         debug: { isUnlockedBootloaderAllowed },
     } = useSelector(state => state.suite.settings);
-    const isOnboardingActive = useSelector(selectIsOnboadingActive);
+    const isOnboardingActive = useSelector(selectIsOnboardingActive);
 
     const [isFailed, setIsFailed] = useState(false);
 

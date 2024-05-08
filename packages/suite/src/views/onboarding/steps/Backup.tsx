@@ -35,6 +35,32 @@ export const BackupStep = () => {
     const isActionAbortable = useSelector(selectIsActionAbortable);
     const dispatch = useDispatch();
 
+    const { backupType } = useSelector(state => state.onboarding);
+
+    const handleBackup = () => {
+        dispatch(updateAnalytics({ backup: 'create' }));
+
+        const backupParams: Parameters<typeof backupDevice>[0] =
+            backupType === 'shamir-default'
+                ? {
+                      group_threshold: 1,
+                      groups: [{ member_count: 1, member_threshold: 1 }],
+                  }
+                : {};
+
+        dispatch(backupDevice(backupParams, true));
+    };
+
+    const handleSkip = () => {
+        dispatch(updateAnalytics({ backup: 'skip' }));
+        setShowSkipConfirmation(true);
+    };
+
+    const handleResetOnboarding = () => {
+        dispatch(onboardingActions.resetOnboarding());
+        dispatch(goto('settings-device', { anchor: SettingsAnchor.WipeDevice }));
+    };
+
     return (
         <>
             {showSkipConfirmation && (
@@ -49,10 +75,7 @@ export const BackupStep = () => {
                     innerActions={
                         <OnboardingButtonCta
                             data-test="@backup/start-button"
-                            onClick={() => {
-                                dispatch(updateAnalytics({ backup: 'create' }));
-                                dispatch(backupDevice({}, true));
-                            }}
+                            onClick={handleBackup}
                             isDisabled={!canContinue(backup.userConfirmed, locks)}
                         >
                             <Translation id="TR_START_BACKUP" />
@@ -61,10 +84,7 @@ export const BackupStep = () => {
                     outerActions={
                         <OnboardingButtonSkip
                             data-test="@onboarding/exit-app-button"
-                            onClick={() => {
-                                dispatch(updateAnalytics({ backup: 'skip' }));
-                                setShowSkipConfirmation(true);
-                            }}
+                            onClick={handleSkip}
                         >
                             <Translation id="TR_SKIP_BACKUP" />
                         </OnboardingButtonSkip>
@@ -112,14 +132,7 @@ export const BackupStep = () => {
                         <Translation id="TR_DEVICE_DISCONNECTED_DURING_ACTION_DESCRIPTION" />
                     }
                     innerActions={
-                        <OnboardingButtonCta
-                            onClick={() => {
-                                dispatch(onboardingActions.resetOnboarding());
-                                dispatch(
-                                    goto('settings-device', { anchor: SettingsAnchor.WipeDevice }),
-                                );
-                            }}
-                        >
+                        <OnboardingButtonCta onClick={handleResetOnboarding}>
                             <Translation id="TR_GO_TO_SETTINGS" />
                         </OnboardingButtonCta>
                     }
