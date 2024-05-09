@@ -6,7 +6,7 @@ import { Type, TSchema } from '@sinclair/typebox';
 import { CollapsibleBox, Select, Switch, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
-import { Method } from './Method';
+import { Method, MethodContent } from './Method';
 import { useActions, useSelector } from '../hooks';
 import * as methodActions from '../actions/methodActions';
 import { MethodState } from '../reducers/methodCommon';
@@ -18,7 +18,7 @@ const ApiPlaygroundWrapper = styled.div`
     bottom: 1rem;
     left: 2rem;
     right: 2rem;
-    max-width: 54rem;
+    max-width: 71rem;
     max-height: calc(100% - 150px);
     overflow: hidden auto;
     overscroll-behavior: contain;
@@ -35,9 +35,9 @@ const ApiPlaygroundWrapper = styled.div`
         left: calc(50% - 27rem);
     }
 
-    @media (min-width: 160rem) {
+    /* @media (min-width: 160rem) {
         left: calc(50% + 29rem);
-    }
+    } */
 `;
 
 const CollapsibleBoxStyled = styled(CollapsibleBox)`
@@ -54,17 +54,28 @@ const CollapsibleBoxStyled = styled(CollapsibleBox)`
     }
 `;
 
-const OptionsRow = styled.div`
+const OptionsRow = styled(MethodContent)`
     margin-top: -${spacingsPx.sm};
     margin-bottom: ${spacingsPx.md};
-    display: grid;
-    grid-template-columns: 3fr 2fr;
-    gap: 20px;
     align-items: center;
 
     > div:last-child {
         display: flex;
         justify-content: flex-end;
+    }
+`;
+
+const SelectWrapper = styled.div`
+    /* stylelint-disable selector-class-pattern, no-descending-specificity */
+    .react-select__control,
+    .react-select__control:read-only:not(:disabled) {
+        background: transparent;
+        border-style: solid;
+        border-color: ${({ theme }) => theme.borderElevation1};
+
+        &:hover {
+            border-color: ${({ theme }) => theme.borderElevation2};
+        }
     }
 `;
 
@@ -126,21 +137,23 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
                 isUpwards
                 data-test="@api-playground/collapsible-box"
             >
-                <OptionsRow>
+                <OptionsRow $manualMode={manualMode}>
                     <div>
                         {options.length > 1 && (
-                            <Select
-                                label="Select method"
-                                value={{
-                                    value: selectedOption,
-                                    label: options[selectedOption].title,
-                                }}
-                                onChange={option => setSelectedOption(option.value)}
-                                options={options.map((option, index) => ({
-                                    value: index,
-                                    label: option.title,
-                                }))}
-                            />
+                            <SelectWrapper>
+                                <Select
+                                    label="Select method"
+                                    value={{
+                                        value: selectedOption,
+                                        label: options[selectedOption].title,
+                                    }}
+                                    onChange={option => setSelectedOption(option.value)}
+                                    options={options.map((option, index) => ({
+                                        value: index,
+                                        label: option.title,
+                                    }))}
+                                />
+                            </SelectWrapper>
                         )}
                     </div>
                     <div>
