@@ -3,7 +3,7 @@ import { useIntl } from 'react-intl';
 
 import styled from 'styled-components';
 
-import { variables, PassphraseTypeCard } from '@trezor/components';
+import { variables, PassphraseTypeCardLegacy } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
@@ -114,7 +114,7 @@ export const PassphraseModalLegacy = ({ device }: PassphraseModalProps) => {
                     )
                 }
             >
-                <PassphraseTypeCard
+                <PassphraseTypeCardLegacy
                     type="hidden"
                     authConfirmation={authConfirmation}
                     submitLabel={<Translation id="TR_CONFIRM_PASSPHRASE" />}
@@ -141,7 +141,7 @@ export const PassphraseModalLegacy = ({ device }: PassphraseModalProps) => {
                 isCancelable
                 onCancel={onCancel}
             >
-                <PassphraseTypeCard
+                <PassphraseTypeCardLegacy
                     title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
                     description={<Translation id="TR_HIDDEN_WALLET_DESCRIPTION" />}
                     submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
@@ -170,7 +170,7 @@ export const PassphraseModalLegacy = ({ device }: PassphraseModalProps) => {
         >
             <Wrapper>
                 <WalletsWrapper>
-                    <PassphraseTypeCard
+                    <PassphraseTypeCardLegacy
                         title={<Translation id="TR_NO_PASSPHRASE_WALLET" />}
                         description={<Translation id="TR_STANDARD_WALLET_DESCRIPTION" />}
                         submitLabel={<Translation id="TR_ACCESS_STANDARD_WALLET" />}
@@ -178,7 +178,7 @@ export const PassphraseModalLegacy = ({ device }: PassphraseModalProps) => {
                         onSubmit={onSubmit}
                     />
                     <Divider />
-                    <PassphraseTypeCard
+                    <PassphraseTypeCardLegacy
                         title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
                         description={<Translation id="TR_HIDDEN_WALLET_DESCRIPTION" />}
                         submitLabel={<Translation id="TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET" />}

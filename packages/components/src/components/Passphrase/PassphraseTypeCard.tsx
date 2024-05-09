@@ -157,7 +157,7 @@ export type PassphraseTypeCardProps = {
     offerPassphraseOnDevice?: boolean;
     singleColModal?: boolean;
     authConfirmation?: boolean;
-    deviceModel?: DeviceModelInternal | null;
+    deviceModel?: DeviceModelInternal;
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     learnMoreTooltipOnClick?: TooltipProps['addon'];
     learnMoreTooltipAppendTo?: TooltipProps['appendTo'];
@@ -169,7 +169,6 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
     const theme = useTheme();
     const intl = useIntl();
     const [value, setValue] = useState('');
-    const [enabled, setEnabled] = useState(!props.authConfirmation);
     const [showPassword, setShowPassword] = useState(false);
     const [hiddenWalletTouched, setHiddenWalletTouched] = useState(false);
     const enterPressed = useKeyPress('Enter');
@@ -179,18 +178,18 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
     const ref = useRef<HTMLInputElement>(null);
     const caretRef = useRef<number>(0);
 
-    const isTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
+    const isPassphraseEmpty = value.length === 0;
+    const isPassphraseTooLong = countBytesInString(value) > formInputsMaxLength.passphrase;
 
     const { onSubmit } = props;
     const submit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
-            if (!enabled) return;
             onSubmit(value, passphraseOnDevice);
         },
-        [enabled, onSubmit],
+        [onSubmit],
     );
 
-    const canSubmit = (props.singleColModal || props.type === 'hidden') && !isTooLong;
+    const canSubmit = (props.singleColModal || props.type === 'hidden') && !isPassphraseTooLong;
 
     // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
     // In case of two-col modal (selecting between standard and hidden wallet)
@@ -343,7 +342,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                         hasBottomPadding={false}
                                         innerRef={ref}
                                         bottomText={
-                                            isTooLong ? (
+                                            isPassphraseTooLong ? (
                                                 // todo: resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325
                                                 <FormattedMessage
                                                     id="TR_PASSPHRASE_TOO_LONG"
@@ -351,7 +350,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                                 />
                                             ) : null
                                         }
-                                        inputState={isTooLong ? 'error' : undefined}
+                                        inputState={isPassphraseTooLong ? 'error' : undefined}
                                         autoFocus={!isAndroid()}
                                         innerAddon={
                                             <Icon
@@ -374,23 +373,8 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                     />
                                 </InputWrapper>
                             </Row>
-                            {!isTooLong && <PasswordStrengthIndicator password={value} />}
+                            {!isPassphraseTooLong && <PasswordStrengthIndicator password={value} />}
                         </>
-                    )}
-                    {props.authConfirmation && (
-                        // Checkbox if user fully understands what's happening when confirming empty passphrase
-                        <Content>
-                            <Checkbox
-                                data-test="@passphrase/confirm-checkbox"
-                                onClick={() => setEnabled(!enabled)}
-                                isChecked={enabled}
-                            >
-                                <FormattedMessage
-                                    id="TR_I_UNDERSTAND_PASSPHRASE"
-                                    defaultMessage="I understand, passphrases cannot be retrieved unlike everyday passwords"
-                                />
-                            </Checkbox>
-                        </Content>
                     )}
 
                     <AnimatePresence initial={false}>
@@ -404,7 +388,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                                             data-test={`@passphrase/${
                                                 props.type === 'hidden' ? 'hidden' : 'standard'
                                             }/submit-button`}
-                                            isDisabled={!enabled || isTooLong}
+                                            isDisabled={isPassphraseEmpty || isPassphraseTooLong}
                                             variant="primary"
                                             onClick={() => submit(value)}
                                             isFullWidth
@@ -424,7 +408,6 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
                     {props.offerPassphraseOnDevice && (
                         <EnterOnTrezorButton
                             submit={submit}
-                            isVisible={enabled}
                             value={value}
                             deviceModel={props.deviceModel}
                         />

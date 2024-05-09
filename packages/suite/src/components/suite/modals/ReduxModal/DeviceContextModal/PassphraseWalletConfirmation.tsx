@@ -16,7 +16,6 @@ import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
 import { PassphraseList, PassphraseItem } from './PassphraseList';
 import { PassphraseHeading } from './PassphraseHeading';
-// import styled from 'styled-components';
 
 interface PassphraseWalletConfirmationProps {
     onCancel: () => void;
@@ -25,18 +24,6 @@ interface PassphraseWalletConfirmationProps {
     onDeviceOffer: boolean;
     device: TrezorDevice;
 }
-
-// const Columns = styled.div`
-//     display: flex;
-//     flex-direction: row;
-//     justify-content: space-between;
-//     gap: ${spacingsPx.xs};
-// `;
-// const Rows = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     gap: ${spacingsPx.sm};
-// `;
 
 type ContentType = 'step1' | 'step2' | 'step3';
 
@@ -137,6 +124,7 @@ export const PassphraseWalletConfirmation = ({
                     </Button>
                 </>
             );
+
         if (contentType === 'step3')
             return (
                 <>

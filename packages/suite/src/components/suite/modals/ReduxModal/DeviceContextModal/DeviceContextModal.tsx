@@ -21,6 +21,7 @@ import {
     ConfirmXpubModal,
 } from 'src/components/suite/modals';
 import type { ReduxModalProps } from '../ReduxModal';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
@@ -30,9 +31,7 @@ export const DeviceContextModal = ({
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectDevice);
     const intl = useIntl();
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
 
     if (!device) return null;
 

@@ -4,12 +4,11 @@ import { ForegroundAppModal } from './ForegroundAppModal';
 import { DiscoveryLoader } from './DiscoveryLoader';
 import { useSelector } from 'src/hooks/suite';
 import { DiscoveryLoaderLegacy } from './DiscoveryLoaderLegacy';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 /** Displays whichever redux modal or foreground app should be displayed */
 export const ModalSwitcher = () => {
-    const isViewOnlyModeVisible = useSelector(
-        state => state.suite.settings.debug.isViewOnlyModeVisible,
-    );
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const modal = usePreferredModal();
 
     // return <DiscoveryLoader />; // @TODO remove

@@ -15,19 +15,11 @@ const Row = styled.div`
 
 interface EnterOnTrezorButtonProps {
     submit: (value: string, passphraseOnDevice?: boolean) => void;
-    isVisible: boolean;
     value: string;
     deviceModel?: DeviceModelInternal;
 }
 
-export const EnterOnTrezorButton = ({
-    submit,
-    isVisible,
-    value,
-    deviceModel,
-}: EnterOnTrezorButtonProps) => {
-    if (!isVisible) return null;
-
+export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezorButtonProps) => {
     return (
         <Card
             paddingType="small"
