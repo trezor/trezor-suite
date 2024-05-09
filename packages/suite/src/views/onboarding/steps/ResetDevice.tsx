@@ -153,6 +153,7 @@ export const ResetDeviceStep = () => {
                                     selected={backupType}
                                     onSelect={setBackupType}
                                     isDisabled={isDeviceLocked}
+                                    data-test="@onboarding/select-seed-type-open-dialog"
                                 />
                                 <Divider />
                             </>
@@ -162,6 +163,7 @@ export const ResetDeviceStep = () => {
                                 variant="primary"
                                 isDisabled={isDeviceLocked}
                                 onClick={() => handleSubmit(backupType)}
+                                data-test="@onboarding/select-seed-type-confirm"
                             >
                                 <Translation id="TR_ONBOARDING_SELECT_SEED_TYPE_CONFIRM" />
                             </Button>

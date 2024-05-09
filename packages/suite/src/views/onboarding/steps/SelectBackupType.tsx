@@ -158,12 +158,13 @@ type OptionProps = {
     children: ReactNode;
     onSelect: () => void;
     isChecked: boolean;
+    'data-test'?: string;
 };
 
-const Option = ({ children, onSelect, isChecked }: OptionProps) => (
+const Option = ({ children, onSelect, isChecked, 'data-test': dataTest }: OptionProps) => (
     <OptionStyled>
         {children}
-        <Radio isChecked={isChecked} onClick={onSelect} />
+        <Radio isChecked={isChecked} onClick={onSelect} data-test={dataTest} />
     </OptionStyled>
 );
 
@@ -203,6 +204,7 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                 <Option
                     onSelect={() => onSelect('shamir-default')}
                     isChecked={selected === 'shamir-default'}
+                    data-test="@onboarding/select-seed-type-shamir-default"
                 >
                     <OptionText>
                         <Text
@@ -226,6 +228,7 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                 <Option
                     onSelect={() => onSelect('shamir-advance')}
                     isChecked={selected === 'shamir-advance'}
+                    data-test="@onboarding/select-seed-type-shamir-advance"
                 >
                     <OptionText>
                         <Text
@@ -252,7 +255,11 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                         />
                     </Text>
                 </OptionGroupHeading>
-                <Option onSelect={() => onSelect('12-words')} isChecked={selected === '12-words'}>
+                <Option
+                    onSelect={() => onSelect('12-words')}
+                    isChecked={selected === '12-words'}
+                    data-test="@onboarding/select-seed-type-12-words"
+                >
                     <OptionText>
                         <Text
                             variant={selected === '12-words' ? undefined : 'tertiary'}
@@ -268,7 +275,11 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                         )}
                     </OptionText>
                 </Option>
-                <Option onSelect={() => onSelect('24-words')} isChecked={selected === '24-words'}>
+                <Option
+                    onSelect={() => onSelect('24-words')}
+                    isChecked={selected === '24-words'}
+                    data-test="@onboarding/select-seed-type-24-words"
+                >
                     <OptionText>
                         <Text
                             variant={selected === '24-words' ? undefined : 'tertiary'}
@@ -294,9 +305,15 @@ type SelectBackupTypeProps = {
     isDisabled: boolean;
     selected: BackupType;
     onSelect: (value: BackupType) => void;
+    'data-test'?: string;
 };
 
-export const SelectBackupType = ({ selected, onSelect, isDisabled }: SelectBackupTypeProps) => {
+export const SelectBackupType = ({
+    selected,
+    onSelect,
+    isDisabled,
+    'data-test': dataTest,
+}: SelectBackupTypeProps) => {
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(false);
     const device = useSelector(selectDevice);
@@ -345,7 +362,7 @@ export const SelectBackupType = ({ selected, onSelect, isDisabled }: SelectBacku
                         ref={refs.setReference}
                         {...getReferenceProps()}
                     >
-                        <OptionText>
+                        <OptionText data-test={dataTest}>
                             <Text variant="tertiary" typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
                             </Text>
