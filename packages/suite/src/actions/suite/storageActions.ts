@@ -4,7 +4,7 @@ import { cloneObject } from '@trezor/utils';
 
 import { Discovery, FormDraftKeyPrefix } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { getFormDraftKey } from '@suite-common/wallet-utils';
+import { selectHistoricRatesByTransactions, getFormDraftKey } from '@suite-common/wallet-utils';
 import { FormDraftPrefixKeyValues } from '@suite-common/wallet-constants';
 import { selectDevices, deviceActions } from '@suite-common/wallet-core';
 
@@ -16,7 +16,7 @@ import {
 } from 'src/utils/suite/storage';
 import type { AppState, Dispatch, GetState, TrezorDevice } from 'src/types/suite';
 import type { Account, Network } from 'src/types/wallet';
-import type { FormState } from '@suite-common/wallet-types';
+import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
 import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { GraphData } from 'src/types/wallet/graph';
@@ -29,7 +29,6 @@ import { MetadataState } from '@suite-common/metadata-types';
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
 
-// send form drafts start
 export const saveDraft = async (formState: FormState, accountKey: string) => {
     if (!(await db.isAccessible())) return;
 
@@ -100,8 +99,6 @@ export const saveCoinjoinDebugSettings = () => async (_dispatch: Dispatch, getSt
     db.addItem('coinjoinDebugSettings', debug || {}, 'debug', true);
 };
 
-// send form drafts end
-
 export const saveFormDraft = async (key: string, draft: FieldValues) => {
     if (!(await db.isAccessible())) return;
 
@@ -164,6 +161,12 @@ const removeAccountGraph = async (account: Account) => {
     ]);
 };
 
+export const removeAccountHistoricRates = async (accountKey: string) => {
+    if (!(await db.isAccessible())) return;
+
+    return db.removeItemByPK('historicRates', accountKey);
+};
+
 export const removeAccountWithDependencies = (getState: GetState) => (account: Account) =>
     Promise.all([
         ...FormDraftPrefixKeyValues.map(prefix => removeAccountFormDraft(prefix, account.key)),
@@ -172,6 +175,7 @@ export const removeAccountWithDependencies = (getState: GetState) => (account: A
         removeAccountGraph(account),
         removeCoinjoinAccount(account.key, getState()),
         removeAccount(account),
+        removeAccountHistoricRates(account.key),
     ]);
 
 export const forgetDevice = (device: TrezorDevice) => async (_: Dispatch, getState: GetState) => {
@@ -214,6 +218,18 @@ export const saveGraph = async (graphData: GraphData[]) => {
     return db.addItems('graph', graphData, true);
 };
 
+export const saveAccountHistoricRates =
+    (accountKey: string, historicRates: RatesByTimestamps) =>
+    async (_dispatch: Dispatch, getState: GetState) => {
+        if (!(await db.isAccessible())) return Promise.resolve();
+        const allTxs = getState().wallet.transactions.transactions;
+        const accTxs = allTxs[accountKey] || [];
+
+        const accHistoricRates = selectHistoricRatesByTransactions(historicRates, accTxs);
+
+        return db.addItem('historicRates', accHistoricRates, accountKey, true);
+    };
+
 export const saveAccountTransactions =
     (account: Account) => async (_dispatch: Dispatch, getState: GetState) => {
         if (!(await db.isAccessible())) return Promise.resolve();
@@ -244,6 +260,7 @@ export const rememberDevice =
         const discovery = wallet.discovery
             .filter(d => d.deviceState === device.state)
             .map(serializeDiscovery);
+        const historicRates = wallet.fiat.historic;
 
         const accountPromises = accounts.reduce(
             (promises, account) =>
@@ -252,6 +269,7 @@ export const rememberDevice =
                         dispatch(saveAccountTransactions(account)),
                         dispatch(saveAccountDraft(account)),
                         dispatch(saveCoinjoinAccount(account.key)),
+                        dispatch(saveAccountHistoricRates(account.key, historicRates)),
                     ],
                     FormDraftPrefixKeyValues.map(prefix =>
                         dispatch(saveAccountFormDraft(prefix, account.key)),

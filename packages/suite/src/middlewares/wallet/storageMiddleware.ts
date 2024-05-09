@@ -13,6 +13,7 @@ import {
     selectAccountByKey,
     deviceActions,
     selectDeviceByState,
+    selectHistoricFiatRates,
 } from '@suite-common/wallet-core';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -74,7 +75,10 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (transactionsActions.resetTransaction.match(action)) {
-                storageActions.removeAccountTransactions(action.payload.account);
+                const { account } = action.payload;
+
+                storageActions.removeAccountTransactions(account);
+                storageActions.removeAccountHistoricRates(account.key);
             }
 
             if (
@@ -85,10 +89,17 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 const { account } = action.payload;
                 const device = findAccountDevice(account, selectDevices(api.getState()));
+                const historicRates = selectHistoricFiatRates(api.getState());
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
+                    storageActions.removeAccountHistoricRates(account.key);
                     storageActions.removeAccountTransactions(account);
                     api.dispatch(storageActions.saveAccountTransactions(account));
+                    if (historicRates) {
+                        api.dispatch(
+                            storageActions.saveAccountHistoricRates(account.key, historicRates),
+                        );
+                    }
                 }
             }
 

@@ -166,7 +166,7 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
         }
 
         // count in only if Inputs/Outputs includes my account (EVM does not need to)
-        if (tx.targets.length && tx.type === 'sent') {
+        if (tx.type === 'sent') {
             totalAmount = totalAmount.minus(amount);
         }
 
@@ -200,7 +200,10 @@ export const sumTransactionsFiat = (
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        const amount = formatNetworkAmount(tx.amount, tx.symbol);
+        const isWithToken = tx.tokens[0]?.contract;
+        const amount = isWithToken
+            ? formatAmount(tx.tokens[0]?.amount, tx.tokens[0]?.decimals)
+            : formatNetworkAmount(tx.amount, tx.symbol);
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
         const fiatRateKey = getFiatRateKey(tx.symbol, fiatCurrency);

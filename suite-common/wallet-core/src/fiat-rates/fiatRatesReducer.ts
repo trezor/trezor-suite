@@ -13,7 +13,7 @@ export const fiatRatesInitialState: FiatRatesState = {
 
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
-    builder => {
+    (builder, extra) => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
                 const { ticker, localCurrency, rateType } = action.meta.arg;

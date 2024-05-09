@@ -2,7 +2,7 @@ import type { DBSchema } from 'idb';
 import { FieldValues } from 'react-hook-form';
 
 import type { SuiteState } from 'src/reducers/suite/suiteReducer';
-import type { FormState } from '@suite-common/wallet-types';
+import type { FormState, RatesByTimestamps } from '@suite-common/wallet-types';
 import type { AcquiredDevice } from 'src/types/suite';
 import type { MetadataState } from 'src/types/suite/metadata';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
@@ -44,6 +44,10 @@ export interface SuiteDBSchema extends DBSchema {
             flags: SuiteState['flags'];
             evmSettings: SuiteState['evmSettings'];
         };
+    };
+    historicRates: {
+        key: string;
+        value: RatesByTimestamps;
     };
     walletSettings: {
         key: string;
