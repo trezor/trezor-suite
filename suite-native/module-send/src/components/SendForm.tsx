@@ -1,18 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { formInputsMaxLength } from '@suite-common/validators';
 import { VStack, Button } from '@suite-native/atoms';
-import { useForm, Form, TextInputField } from '@suite-native/forms';
+import { Form, TextInputField, useForm } from '@suite-native/forms';
 import { AccountKey, FormState } from '@suite-common/wallet-types';
 import { useAsyncDebounce } from '@trezor/react-utils';
 import {
     AccountsRootState,
     FeesRootState,
+    SendRootState,
     selectAccountByKey,
     selectNetworkFeeInfo,
+    selectSendFormDraftByAccountKey,
     sendFormActions,
 } from '@suite-common/wallet-core';
 import {
@@ -21,6 +23,7 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 
+import { onDeviceTransactionReviewThunk } from '../sendFormThunks';
 import { SendFormValues, sendFormValidationSchema } from '../sendFormSchema';
 
 type SendFormProps = {
@@ -33,6 +36,26 @@ const amountTransformer = (value: string) =>
         .replace(/^\./g, '') // remove '.' symbol if it is not preceded by number
         .replace(/(?<=\..*)\./g, '') // keep only first appearance of the '.' symbol
         .replace(/(?<=^0+)0/g, ''); // remove all leading zeros except the first one
+
+// TODO: this data structure will be revisited in a follow up PR
+const constructFormDraft = ({ amount, address }: SendFormValues): FormState => ({
+    outputs: [
+        {
+            type: 'payment',
+            address,
+            amount,
+            token: null,
+            fiat: '0',
+            currency: { label: 'usd', value: '1000' },
+        },
+    ],
+    isCoinControlEnabled: false,
+    hasCoinControlBeenOpened: false,
+    selectedUtxos: [],
+    feeLimit: '0',
+    feePerUnit: '0',
+    options: [],
+});
 
 export const SendForm = ({ accountKey }: SendFormProps) => {
     const dispatch = useDispatch();
@@ -47,6 +70,10 @@ export const SendForm = ({ accountKey }: SendFormProps) => {
         selectNetworkFeeInfo(state, account?.symbol),
     );
 
+    const sendFormDraft = useSelector((state: SendRootState) =>
+        selectSendFormDraftByAccountKey(state, accountKey),
+    );
+
     const form = useForm<SendFormValues>({
         validation: sendFormValidationSchema,
         context: {
@@ -55,51 +82,46 @@ export const SendForm = ({ accountKey }: SendFormProps) => {
             availableAccountBalance: account?.availableBalance,
         },
         defaultValues: {
-            address: '',
-            amount: '',
+            // TODO handle multiple output fields???
+            address:
+                sendFormDraft?.outputs[0]?.address ?? 'tb1qkajycr9x7w3f3w997gfcvej35a52xj382wps0w',
+            amount: sendFormDraft?.outputs[0]?.amount,
         },
     });
 
     const {
         handleSubmit,
         watch,
-        formState: { isValid: isFormValid },
+        formState: { isValid: isFormValid, isSubmitting },
     } = form;
     const rawValues = watch();
 
+    const storeFormDraftIfValid = useCallback(async () => {
+        if (isFormValid) {
+            await dispatch(
+                sendFormActions.storeDraft({
+                    accountKey,
+                    formState: constructFormDraft(rawValues),
+                }),
+            );
+        } else {
+            // TODO: wipeDraft
+        }
+    }, [accountKey, dispatch, rawValues, isFormValid]);
+
     useEffect(() => {
-        // debounce the redux action so it is not triggered on every keystroke
-        debounce(async () => {
-            if (isFormValid) {
-                // TODO: this object will be filled with more values in the future as the send form inputs will get more complex.
-                const formValues: FormState = {
-                    outputs: [
-                        {
-                            type: 'payment',
-                            address: rawValues.address,
-                            amount: rawValues.amount,
-                            token: null,
-                            fiat: '0',
-                            currency: { label: 'usd', value: '1000' },
-                        },
-                    ],
-                    isCoinControlEnabled: false,
-                    hasCoinControlBeenOpened: false,
-                    selectedUtxos: [],
-                    feeLimit: '0',
-                    feePerUnit: '0',
-                    options: [],
-                };
+        debounce(storeFormDraftIfValid);
+    }, [isSubmitting, storeFormDraftIfValid, debounce]);
 
-                return await dispatch(
-                    sendFormActions.storeDraft({ accountKey, formState: formValues }),
-                );
-            }
-        });
-    }, [isFormValid, dispatch, debounce, accountKey, rawValues]);
-
-    const handleNavigateToReviewScreen = handleSubmit(() => {
+    const handleNavigateToReviewScreen = handleSubmit(async () => {
         navigation.navigate(SendStackRoutes.SendReview, { accountKey });
+
+        await dispatch(
+            onDeviceTransactionReviewThunk({
+                accountKey,
+                formState: constructFormDraft(rawValues),
+            }),
+        );
     });
 
     return (
