@@ -18,7 +18,7 @@ import {
 } from '@suite-common/wallet-core';
 
 import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
-import { DeviceTS3Svg } from '../assets/DeviceTS3Svg';
+import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -47,7 +47,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
                 flex={1}
                 padding="small"
             >
-                <DeviceTS3Svg />
+                <DeviceT2B1Svg />
                 <CenteredTitleHeader
                     title={<Translation id="modulePassphrase.confirmOnDevice.title" />}
                     subtitle={<Translation id="modulePassphrase.confirmOnDevice.description" />}

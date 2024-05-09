@@ -3,10 +3,10 @@ import { AcquiredDevice } from '@suite-common/suite-types';
 import { DeviceModelInternal } from '@trezor/connect';
 
 const icons = {
-    T1B1: 'trezorOne',
-    T2T1: 'trezorT',
-    T2B1: 'trezorTS3',
-    T3T1: 'trezorTS5',
+    T1B1: 'trezorT1B1',
+    T2T1: 'trezorT2T1',
+    T2B1: 'trezorT2B1',
+    T3T1: 'trezorT3T1',
 } as const satisfies Record<DeviceModelInternal, IconName>;
 
 type TrezorModelIconProps = { device: AcquiredDevice };
