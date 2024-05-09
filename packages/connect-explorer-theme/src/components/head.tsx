@@ -64,7 +64,7 @@ export function Head(): ReactElement {
           --nextra-primary-hue: ${lightHue}deg;
           --nextra-primary-saturation: ${lightSaturation}%;
           --nextra-navbar-height: 96px;
-          --nextra-menu-height: 3.75rem;
+          --nextra-menu-height: 96px;
           --nextra-banner-height: 2.5rem;
         }
 

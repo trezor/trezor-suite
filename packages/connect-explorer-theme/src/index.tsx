@@ -21,7 +21,7 @@ import { getComponents } from './mdx-components';
 import { patchedNormalizePages, renderComponent } from './utils';
 
 const GlobalStyle = createGlobalStyle<{ $elevation: Elevation }>`
-    body {
+    body, .bg-page {
         background: ${mapElevationToBackground}
     }
 `;

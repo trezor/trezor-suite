@@ -25,6 +25,7 @@ export const OnFocusItemContext = createContext<null | ((item: string | null) =>
 const Container = styled.div`
     ${variables.SCREEN_QUERY.ABOVE_TABLET} {
         top: var(--nextra-navbar-height);
+        height: calc(100vh - var(--nextra-navbar-height));
     }
 `;
 
@@ -146,7 +147,7 @@ export function Sidebar({
                         <div
                             className={cn(
                                 'nx-overflow-y-auto nx-overflow-x-hidden',
-                                'nx-p-4 nx-grow md:nx-h-[calc(100vh-var(--nextra-navbar-height)-var(--nextra-menu-height))]',
+                                'nx-p-4 nx-grow md:nx-flex-1',
                                 showSidebar ? 'nextra-scrollbar' : 'no-scrollbar',
                             )}
                             ref={sidebarRef}
@@ -184,7 +185,7 @@ export function Sidebar({
                             'nx-sticky nx-bottom-0',
                             'nx-mx-4 nx-py-4',
                             'nx-flex nx-items-center nx-gap-2',
-                            'dark:nx-border-neutral-800',
+                            'bg-page dark:nx-border-neutral-800',
                             showSidebar
                                 ? cn(hasI18n && 'nx-justify-end', 'nx-border-t')
                                 : 'nx-py-4 nx-flex-wrap nx-justify-center',
