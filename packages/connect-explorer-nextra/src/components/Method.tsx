@@ -140,16 +140,18 @@ export const getField = (field: Field<any> | FieldWithBundle<any>, props: Props)
     }
 };
 
-const MethodContent = styled.section`
+export const MethodContent = styled.div<{ $manualMode?: boolean }>(
+    ({ $manualMode }) => `
     display: grid;
-    grid-template-columns: 3fr 2fr;
+    grid-template-columns: ${$manualMode ? '3fr 2fr' : '2fr 3fr'};
     gap: 20px;
 
     & > div {
         /* CSS grid obscurities */
         min-width: 0;
     }
-`;
+`,
+);
 
 const Container = styled.div`
     position: relative;
@@ -273,7 +275,7 @@ export const Method = () => {
     ) : null;
 
     return (
-        <MethodContent>
+        <MethodContent $manualMode={manualMode}>
             <div>
                 {manualMode ? (
                     <Container>
