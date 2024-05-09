@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Paragraph, Button, Image } from '@trezor/components';
+import { Paragraph, Button, Image, Flex } from '@trezor/components';
 import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
 import { selectDevice } from '@suite-common/wallet-core';
 
@@ -221,10 +221,12 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
             )}
 
             {backup.status === 'error' && (
-                <VerticalCenter>
-                    <StyledImage image="UNI_ERROR" />
-                    <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
-                </VerticalCenter>
+                <Flex justifyContent="center">
+                    <VerticalCenter>
+                        <StyledImage image="UNI_ERROR" />
+                        <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
+                    </VerticalCenter>
+                </Flex>
             )}
         </StyledModal>
     );

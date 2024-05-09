@@ -141,6 +141,7 @@ const Body = styled.div<{ $isWithoutTopPadding: boolean }>`
     padding-top: ${({ $isWithoutTopPadding }) => $isWithoutTopPadding && 0};
     display: flex;
     flex-direction: column;
+    flex: 1;
 `;
 
 const Description = styled.div`
