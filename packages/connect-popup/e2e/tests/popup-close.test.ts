@@ -16,7 +16,6 @@ import {
 
 const url = process.env.URL || 'http://localhost:8088/';
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
-const isNextra = process.env.IS_NEXTRA === 'true';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 const WAIT_AFTER_TEST = 3000; // how long test should wait for more potential trezord requests
@@ -32,7 +31,6 @@ let explorerUrl: string;
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     log(`isWebExtension: ${isWebExtension}`);
-    log(`isNextra: ${isNextra}`);
     log(`connectSrc: ${connectSrc}`);
     log(`url: ${url}`);
 });
@@ -57,7 +55,7 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
     log('beforeEach', 'startBridge');
     await TrezorUserEnvLink.api.startBridge();
 
-    const contexts = await getContexts(page, url, isWebExtension, isNextra);
+    const contexts = await getContexts(page, url, isWebExtension);
 
     browserContext = contexts.browserContext || context;
     explorerPage = contexts.explorerPage;
@@ -74,16 +72,11 @@ const setup = async ({ page, context }: { page: Page; context?: BrowserContext }
             ...(connectSrc && { connectSrc }),
         },
         isWebExtension,
-        isNextra,
     );
 
-    if (isNextra) {
-        await waitAndClick(explorerPage, ['@navbar-logo']);
-        await explorerPage.click("a[href$='/methods/bitcoin/verifyMessage/']");
-        await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
-    }
+    await waitAndClick(explorerPage, ['@navbar-logo']);
+    await explorerPage.click("a[href$='/methods/bitcoin/verifyMessage/']");
+    await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
 
     await explorerPage.waitForSelector("button[data-test='@submit-button']", {
         state: 'visible',
@@ -216,12 +209,8 @@ test('when user cancels permissions in popup it closes automatically', async ({
 
     await popupClosedPromise;
 
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-        await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-test='@submit-button']", {
         state: 'visible',
     });
@@ -259,12 +248,8 @@ test('device dialogue cancelled IN POPUP by user', async ({ page, context }) => 
 
     await popupClosedPromise;
 
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-        await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-test='@submit-button']", {
         state: 'visible',
     });
@@ -338,12 +323,8 @@ test('popup should be focused when a call is in progress and user triggers new c
 
     await popupClosedPromise;
 
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-        await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-test='@submit-button']", {
         state: 'visible',
     });
@@ -392,12 +373,8 @@ test('popup should close when third party is closed', async ({ page, context }) 
 
     await popupClosedPromise;
 
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-        await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await explorerPage.click("[data-test='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-test='@submit-button']", {
         state: 'visible',
     });

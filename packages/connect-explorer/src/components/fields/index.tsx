@@ -4,6 +4,7 @@ import Checkbox from './Checkbox';
 import CoinSelect from './CoinSelect';
 import { ArrayWrapper } from './ArrayWrapper';
 import { BatchWrapper } from './BatchWrapper';
+import { UnionWrapper } from './UnionWrapper';
 import File from './File';
 
-export { Input, TextArea, Checkbox, CoinSelect, ArrayWrapper, BatchWrapper, File };
+export { Input, TextArea, Checkbox, CoinSelect, ArrayWrapper, BatchWrapper, UnionWrapper, File };

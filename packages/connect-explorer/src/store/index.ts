@@ -1,7 +1,8 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { createLogger } from 'redux-logger';
-import reducers from '../reducers';
+
+import { reducers } from '../reducers';
 import { trezorConnectMiddleware } from '../middlewares/trezorConnectMiddleware';
 
 const enhancers: any[] = [];
@@ -22,10 +23,12 @@ if (process.env.NODE_ENV === 'development') {
         collapsed: true,
     });
 
-    // @ts-expect-error
-    const { devToolsExtension } = window;
-    if (typeof devToolsExtension === 'function') {
-        enhancers.push(devToolsExtension());
+    if (typeof window !== 'undefined') {
+        // @ts-expect-error
+        const { devToolsExtension } = window;
+        if (typeof devToolsExtension === 'function') {
+            enhancers.push(devToolsExtension());
+        }
     }
 
     composedEnhancers = compose(applyMiddleware(...middleware, logger), ...enhancers);
@@ -33,6 +36,4 @@ if (process.env.NODE_ENV === 'development') {
     composedEnhancers = compose(applyMiddleware(...middleware), ...enhancers);
 }
 
-const store = createStore(reducers, composedEnhancers);
-
-export default store;
+export const store = createStore(reducers, composedEnhancers);

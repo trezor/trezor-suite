@@ -12,13 +12,11 @@ let popup: Page;
 let persistentContext: BrowserContext | undefined;
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
-const isNextra = process.env.IS_NEXTRA === 'true';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     log(`isWebExtension: ${isWebExtension}`);
-    log(`isNextra: ${isNextra}`);
     log(`connectSrc: ${connectSrc}`);
     log(`url: ${url}`);
 });
@@ -66,11 +64,7 @@ test('popup should display error page when device disconnected and debug mode', 
     }
 
     log('opening explorer page');
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
 
     log('waiting for explorer to load');
     await explorerPage.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
@@ -132,11 +126,7 @@ test('log page should contain logs from shared worker', async ({ page, context }
     }
 
     log(`go to: ${url}#/method/verifyMessage`);
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
 
     log('opening popup');
     [popup] = await openPopup(persistentContext, explorerPage, isWebExtension);

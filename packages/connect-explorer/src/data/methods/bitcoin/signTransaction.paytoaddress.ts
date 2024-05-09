@@ -178,7 +178,7 @@ export default [
                 value: 'bch',
                 affect: ['inputs', 'outputs'],
                 data: select.map(v => {
-                    const example = examples[v.value];
+                    const example = examples[v.value as keyof typeof examples];
 
                     return {
                         ...v,

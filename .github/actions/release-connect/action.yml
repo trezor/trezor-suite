@@ -37,11 +37,16 @@ runs:
         role-to-assume: ${{ inputs.awsRoleToAssume }}
         aws-region: ${{ inputs.awsRegion }}
 
+    - name: Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+
     - name: Install dependencies
       shell: bash
       run: |
         echo -e "\nenableScripts: false" >> .yarnrc.yml
-        yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/connect-popup @trezor/connect-webextension @trezor/connect-explorer
+        yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/connect-popup @trezor/connect-webextension @trezor/connect-explorer-theme @trezor/connect-explorer
 
     - name: Build connect-web
       shell: bash
@@ -67,29 +72,20 @@ runs:
       run: |
         yarn workspace @trezor/connect-webextension build
 
+    - name: Build connect-explorer-theme
+      shell: bash
+      run: |
+        yarn workspace @trezor/connect-explorer-theme build:all
+
     - name: Build connect-explorer
       shell: bash
       env:
-        ASSET_PREFIX: /${{ inputs.serverPath }}
         NODE_ENV: "production"
-        url: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
         __TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
+        CONNECT_EXPLORER_ASSET_PREFIX: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+        CONNECT_EXPLORER_BASE_PATH: /${{ inputs.serverPath }}
       run: |
         yarn workspace @trezor/connect-explorer build
-
-    - name: Build connect-examples webextension
-      shell: bash
-      env:
-        FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
-      run: |
-        echo "FULL_URL is set to ${FULL_URL}"
-        node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
-        node ./packages/connect-examples/update-webextensions-sw.js
-
-    - name: Build connect-explorer-webextension
-      shell: bash
-      run: |
-        yarn workspace @trezor/connect-explorer build:webextension
 
     # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
     - name: Upload connect-explorer to ${{ inputs.serverHostname }}
@@ -105,7 +101,21 @@ runs:
         cp -R ./packages/connect-explorer/build/* tmp_build_directory/
         aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
 
-    - name: Upload  connect-example webextension artifacts
+    - name: Build connect-examples webextension
+      shell: bash
+      env:
+        FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+      run: |
+        echo "FULL_URL is set to ${FULL_URL}"
+        node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
+        node ./packages/connect-examples/update-webextensions-sw.js
+
+    - name: Build connect-explorer-webextension
+      shell: bash
+      run: |
+        yarn workspace @trezor/connect-explorer build:webextension
+
+    - name: Upload connect-example webextension artifacts
       uses: actions/upload-artifact@v4
       with:
         name: connect-example-webextension

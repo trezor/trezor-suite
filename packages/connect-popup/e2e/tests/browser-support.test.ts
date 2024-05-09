@@ -4,7 +4,6 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { formatUrl, log, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
-const isNextra = process.env.IS_NEXTRA === 'true';
 
 let dir: string;
 let popup: Page;
@@ -37,11 +36,7 @@ test('unsupported browser', async ({ browser }) => {
         ...safari,
     });
     const page = await context.newPage();
-    if (isNextra) {
-        await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
-    } else {
-        await page.goto(`${url}#/method/getPublicKey`);
-    }
+    await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForSelector('text=Unsupported browser');
@@ -57,11 +52,7 @@ test('outdated-browser', async ({ browser }) => {
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/50.0',
     });
     const page = await context.newPage();
-    if (isNextra) {
-        await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
-    } else {
-        await page.goto(`${url}#/method/getPublicKey`);
-    }
+    await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
     await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForLoadState('load');
@@ -93,11 +84,7 @@ test.describe(() => {
                 ...f.device,
             });
             const page = await context.newPage();
-            if (isNextra) {
-                await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
-            } else {
-                await page.goto(`${url}#/method/getPublicKey`);
-            }
+            await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
 
             popup = await openPopup(page);
             // unfortunately webusb now does not work for connect-popup, so mobile chrome won't run even if it technically could

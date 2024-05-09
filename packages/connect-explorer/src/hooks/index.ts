@@ -1,9 +1,10 @@
 import { useRef, useMemo } from 'react';
 import { useDispatch, useSelector as useSelectorOrig } from 'react-redux';
-import { bindActionCreators } from 'redux';
-
 import type { TypedUseSelectorHook } from 'react-redux';
+
+import { bindActionCreators } from 'redux';
 import type { ActionCreatorsMapObject } from 'redux';
+
 import type { AppState, Dispatch } from '../types';
 
 export const useSelector: TypedUseSelectorHook<AppState> = useSelectorOrig;

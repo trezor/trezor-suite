@@ -3,7 +3,7 @@ import path from 'path';
 import { execSync } from 'child_process';
 
 // unimportant for the script
-// eslint-disable-next-line
+// @ts-expect-error not present in code anymore
 import oldMenu from '@trezor/connect-explorer/src/data/menu';
 
 function firstLetterToUpperCase(str: string) {
@@ -12,13 +12,13 @@ function firstLetterToUpperCase(str: string) {
 
 function findNameInMenu(url: string) {
     let found = null;
-    oldMenu.forEach(section => {
-        section.children.forEach(method => {
+    oldMenu.forEach((section: any) => {
+        section.children.forEach((method: any) => {
             if (method.url === url) {
                 found = method.name;
             }
             if (method.children) {
-                method.children.forEach(subMethod => {
+                method.children.forEach((subMethod: any) => {
                     if (subMethod.url === url) {
                         found = subMethod.name;
                     }

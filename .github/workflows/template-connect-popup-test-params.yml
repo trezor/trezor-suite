@@ -49,7 +49,8 @@ jobs:
       - name: Run connect popup test
         env:
           URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          # skip settings page, this url is set at build time anyway
+          #TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
           CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
           CI_JOB_NAME: ${{ inputs.test-name }}-${{ github.run_attempt }}
         run: |
@@ -101,15 +102,19 @@ jobs:
         id: extract_branch
 
       - name: Install dependencies
-        run: yarn install --immutable
-
-      - name: Build webextension
         run: |
-          yarn workspace @trezor/connect-webextension build
-          yarn workspace @trezor/connect-iframe build:core-module
-          yarn workspace @trezor/connect-explorer build:webextension
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-popup
+
+      - name: Download artifact from build
+        uses: actions/download-artifact@v4
+        with:
+          name: connect-explorer-webextension
+          path: |
+            packages/connect-explorer/build-webextension
 
       - name: Build example webextension
+        if: ${{ inputs.test-name == 'webextension-example.test' }}
         env:
           URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
         run: |
@@ -120,7 +125,7 @@ jobs:
       - name: Run connect popup test
         env:
           URL: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
-          TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
+          #TREZOR_CONNECT_SRC: https://${{ inputs.DEV_SERVER_HOSTNAME }}/connect/${{ steps.extract_branch.outputs.branch }}/
           IS_WEBEXTENSION: true
         run: |
           ./docker/docker-connect-popup-ci.sh ${{ inputs.test-name }}

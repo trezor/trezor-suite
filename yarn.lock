@@ -10432,54 +10432,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@trezor/connect-explorer-nextra@workspace:packages/connect-explorer-nextra":
-  version: 0.0.0-use.local
-  resolution: "@trezor/connect-explorer-nextra@workspace:packages/connect-explorer-nextra"
-  dependencies:
-    "@codemirror/state": "npm:^6.4.1"
-    "@hbsnow/rehype-sectionize": "npm:^1.0.7"
-    "@sinclair/typebox": "npm:^0.31.28"
-    "@trezor/components": "workspace:^"
-    "@trezor/connect": "workspace:^"
-    "@trezor/connect-explorer-theme": "workspace:^"
-    "@trezor/connect-web": "workspace:^"
-    "@trezor/connect-webextension": "workspace:^"
-    "@trezor/protobuf": "workspace:^"
-    "@trezor/schema-utils": "workspace:^"
-    "@trezor/theme": "workspace:^"
-    "@trezor/utils": "workspace:^"
-    "@types/redux-logger": "npm:^3.0.11"
-    "@uiw/react-codemirror": "npm:^4.21.25"
-    babel-plugin-styled-components: "npm:^2.1.4"
-    codemirror-json-schema: "npm:^0.7.0"
-    codemirror-json5: "npm:^1.0.3"
-    concurrently: "npm:^8.2.2"
-    copy-webpack-plugin: "npm:^12.0.2"
-    eslint-plugin-mdx: "npm:^3.1.5"
-    html-webpack-plugin: "npm:^5.6.0"
-    json5: "npm:^2.2.3"
-    next: "npm:^14.1.1"
-    next-mdx-remote: "npm:^4.4.1"
-    next-themes: "npm:^0.2.1"
-    nextra: "npm:^2.13.4"
-    nextra-theme-docs: "npm:^2.13.4"
-    react: "npm:^18.2.0"
-    react-dom: "npm:^18.2.0"
-    react-inspector: "npm:^6.0.2"
-    react-markdown: "npm:^9.0.1"
-    react-redux: "npm:8.0.7"
-    redux: "npm:^4.2.1"
-    redux-logger: "npm:^3.0.6"
-    redux-thunk: "npm:^2.4.2"
-    remark-gfm: "npm:^3.0.1"
-    rimraf: "npm:^5.0.5"
-    styled-components: "npm:^6.1.8"
-    tsx: "npm:^4.7.1"
-    webpack: "npm:^5.90.1"
-    webpack-cli: "npm:^5.1.4"
-  languageName: unknown
-  linkType: soft
-
 "@trezor/connect-explorer-theme@workspace:^, @trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme":
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer-theme@workspace:packages/connect-explorer-theme"
@@ -10530,45 +10482,47 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/connect-explorer@workspace:packages/connect-explorer"
   dependencies:
-    "@babel/preset-react": "npm:^7.23.3"
-    "@babel/preset-typescript": "npm:^7.23.3"
-    "@trezor/components": "workspace:*"
-    "@trezor/connect-web": "workspace:*"
+    "@codemirror/state": "npm:^6.4.1"
+    "@hbsnow/rehype-sectionize": "npm:^1.0.7"
+    "@sinclair/typebox": "npm:^0.31.28"
+    "@trezor/components": "workspace:^"
+    "@trezor/connect": "workspace:^"
+    "@trezor/connect-explorer-theme": "workspace:^"
+    "@trezor/connect-web": "workspace:^"
     "@trezor/connect-webextension": "workspace:^"
-    "@trezor/protobuf": "workspace:*"
+    "@trezor/protobuf": "workspace:^"
+    "@trezor/schema-utils": "workspace:^"
+    "@trezor/theme": "workspace:^"
     "@trezor/utils": "workspace:^"
-    "@types/markdown-it": "npm:^13.0.7"
-    "@types/markdown-it-link-attributes": "npm:^3.0.3"
-    "@types/react-router": "npm:^5.1.20"
-    "@types/react-router-dom": "npm:^5.1.7"
-    babel-loader: "npm:^9.1.3"
+    "@types/redux-logger": "npm:^3.0.11"
+    "@uiw/react-codemirror": "npm:^4.21.25"
     babel-plugin-styled-components: "npm:^2.1.4"
+    codemirror-json-schema: "npm:^0.7.0"
+    codemirror-json5: "npm:^1.0.3"
+    concurrently: "npm:^8.2.2"
     copy-webpack-plugin: "npm:^12.0.2"
+    eslint-plugin-mdx: "npm:^3.1.5"
     html-webpack-plugin: "npm:^5.6.0"
-    markdown-it: "npm:^14.0.0"
-    markdown-it-imsize: "npm:^2.0.1"
-    markdown-it-link-attributes: "npm:^4.0.1"
-    markdown-it-replace-link: "npm:^1.2.1"
-    react: "npm:18.2.0"
-    react-dom: "npm:18.2.0"
-    react-infinity-menu: "npm:^4.0.0"
+    json5: "npm:^2.2.3"
+    next: "npm:^14.1.1"
+    next-mdx-remote: "npm:^4.4.1"
+    next-themes: "npm:^0.2.1"
+    nextra: "npm:^2.13.4"
+    nextra-theme-docs: "npm:^2.13.4"
+    react: "npm:^18.2.0"
+    react-dom: "npm:^18.2.0"
     react-inspector: "npm:^6.0.2"
+    react-markdown: "npm:^9.0.1"
     react-redux: "npm:8.0.7"
-    react-router: "npm:^5.2.0"
-    react-router-dom: "npm:^5.2.0"
     redux: "npm:^4.2.1"
     redux-logger: "npm:^3.0.6"
     redux-thunk: "npm:^2.4.2"
+    remark-gfm: "npm:^3.0.1"
     rimraf: "npm:^5.0.5"
     styled-components: "npm:^6.1.8"
-    stylelint: "npm:^16.2.1"
-    stylelint-config-standard: "npm:^36.0.0"
-    terser-webpack-plugin: "npm:^5.3.9"
+    tsx: "npm:^4.7.1"
     webpack: "npm:^5.90.1"
     webpack-cli: "npm:^5.1.4"
-    webpack-dev-server: "npm:^4.15.1"
-    webpack-merge: "npm:^5.10.0"
-    webpack-plugin-serve: "npm:^1.6.0"
   languageName: unknown
   linkType: soft
 
@@ -12394,25 +12348,6 @@ __metadata:
   version: 4.0.2
   resolution: "@types/long@npm:4.0.2"
   checksum: 10/68afa05fb20949d88345876148a76f6ccff5433310e720db51ac5ca21cb8cc6714286dbe04713840ddbd25a8b56b7a23aa87d08472fabf06463a6f2ed4967707
-  languageName: node
-  linkType: hard
-
-"@types/markdown-it-link-attributes@npm:^3.0.3":
-  version: 3.0.4
-  resolution: "@types/markdown-it-link-attributes@npm:3.0.4"
-  dependencies:
-    "@types/markdown-it": "npm:*"
-  checksum: 10/e446a843060dacd60e5f103902d7900dfe24003b73b1bae87ff079e00329971f01b79d3eeb32ccb9599d97831d33a1338e4732890f341035deba3f5654c535da
-  languageName: node
-  linkType: hard
-
-"@types/markdown-it@npm:*, @types/markdown-it@npm:^13.0.7":
-  version: 13.0.7
-  resolution: "@types/markdown-it@npm:13.0.7"
-  dependencies:
-    "@types/linkify-it": "npm:*"
-    "@types/mdurl": "npm:*"
-  checksum: 10/fb9fe249e5542e1cce5d7b006125cd976dc9a1d093ef2639e6e35fbc5fce47aacc2f166f2678b1cbe27939f1f05f85e5b7b9e363269b59834cf7431d8461f48d
   languageName: node
   linkType: hard
 
@@ -19698,7 +19633,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:^4.2.0, entities@npm:^4.3.0, entities@npm:^4.4.0":
+"entities@npm:^4.2.0, entities@npm:^4.4.0":
   version: 4.4.0
   resolution: "entities@npm:4.4.0"
   checksum: 10/b627cb900e901cc7817037b83bf993a1cbf6a64850540f7526af7bcf9c7d09ebc671198e6182cfae4680f733799e2852e6a1c46aa62ff36eb99680057a038df5
@@ -23976,18 +23911,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"htmlparser2@npm:^8.0.1":
-  version: 8.0.1
-  resolution: "htmlparser2@npm:8.0.1"
-  dependencies:
-    domelementtype: "npm:^2.3.0"
-    domhandler: "npm:^5.0.2"
-    domutils: "npm:^3.0.1"
-    entities: "npm:^4.3.0"
-  checksum: 10/f891041c331ef7ef300f1e8f0e6756d663cf8096f8a343a1bf474e7a5ce34fe7cd71b9dfb0227277f7de2007e847ef2a447e8b48eab592d6f3631aae18301d22
-  languageName: node
-  linkType: hard
-
 "http-assert@npm:^1.3.0":
   version: 1.5.0
   resolution: "http-assert@npm:1.5.0"
@@ -28026,38 +27949,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-it-imsize@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "markdown-it-imsize@npm:2.0.1"
-  checksum: 10/620fc8fd50488b9352329489c8d8e5e6759d2af9e3b23a08f98647378b6c9dae3cab6299c8fd45ccfef20581127976ae59dae98e71bab73fbb90f1502b1c2e90
-  languageName: node
-  linkType: hard
-
-"markdown-it-link-attributes@npm:^4.0.1":
-  version: 4.0.1
-  resolution: "markdown-it-link-attributes@npm:4.0.1"
-  checksum: 10/e859b0a3653998b7acddaf5e37052a00e940150d76b0275322e133a14179979c3516692610df75553f3b2e5d4010e1e5138f10bc85efab4768b9293a5b39f0a6
-  languageName: node
-  linkType: hard
-
-"markdown-it-replace-link@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "markdown-it-replace-link@npm:1.2.1"
-  dependencies:
-    dom-serializer: "npm:^2.0.0"
-    htmlparser2: "npm:^8.0.1"
-  peerDependencies:
-    "@types/markdown-it": "*"
-    markdown-it: "*"
-  dependenciesMeta:
-    dom-serializer:
-      optional: true
-    htmlparser2:
-      optional: true
-  checksum: 10/0ab4e8f0ebd81dfdc8b471b884d8bd58b37a7c4b15866b403e049bc17c5a83a41b4503c493e68e88dfcd4b4798f73dc4ce0f29ad04512ee5c19324b632602070
-  languageName: node
-  linkType: hard
-
 "markdown-it@npm:^12.3.2":
   version: 12.3.2
   resolution: "markdown-it@npm:12.3.2"
@@ -30484,13 +30375,6 @@ __metadata:
   version: 2.0.1
   resolution: "nested-error-stacks@npm:2.0.1"
   checksum: 10/8430d7d80ad69b1add2992ee2992a363db6c1a26a54740963bc99a004c5acb1d2a67049397062eab2caa3a312b4da89a0b85de3bdf82d7d472a6baa166311fe6
-  languageName: node
-  linkType: hard
-
-"nested-objects@npm:0.0.2":
-  version: 0.0.2
-  resolution: "nested-objects@npm:0.0.2"
-  checksum: 10/977c9f990af3381ad3cc8e875b1421e1aca0c1843ffb6ee141467c4ca0983b9064ebdc0f649969bb3f3813955f38b40546e5adc51a0634a114c7ed667454a8c9
   languageName: node
   linkType: hard
 
@@ -33765,18 +33649,6 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17 || ^18
   checksum: 10/54a9daa2143c601a9867e96a2159a0bbe98707b5bbeb5953bfdf3342d2f04bfcaa6169907ed167c5c1f3a044630860d4f43685f4ac4e15b9cd892d1b00d54dde
-  languageName: node
-  linkType: hard
-
-"react-infinity-menu@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "react-infinity-menu@npm:4.0.0"
-  dependencies:
-    lodash.get: "npm:^4.4.2"
-    nested-objects: "npm:0.0.2"
-  peerDependencies:
-    react: ">=0.16.0"
-  checksum: 10/fe3eb0bb4050495a0d5d5a60d4dbfbdf9b01e92e434fb71af1479167984efde248ccdf3e9ddf24687af4f70ed14e8e0b158b6a94ff29de84f7f9eaa7a76ecba1
   languageName: node
   linkType: hard
 

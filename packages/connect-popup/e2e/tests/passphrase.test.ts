@@ -14,7 +14,6 @@ const url = process.env.URL || 'http://localhost:8088/';
 const bridgeVersion = '2.0.31';
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
-const isNextra = process.env.IS_NEXTRA === 'true';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
 
 let context: any = null;
@@ -25,7 +24,6 @@ let explorerUrl: string;
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     log(`isWebExtension: ${isWebExtension}`);
-    log(`isNextra: ${isNextra}`);
     log(`connectSrc: ${connectSrc}`);
     log(`url: ${url}`);
 });
@@ -51,7 +49,7 @@ test.beforeEach(async ({ page }) => {
     await TrezorUserEnvLink.api.startBridge(bridgeVersion);
 
     log('beforeEach', 'getting contexts');
-    const contexts = await getContexts(page, url, isWebExtension, isNextra);
+    const contexts = await getContexts(page, url, isWebExtension);
     browserContext = contexts.browserContext;
     explorerPage = contexts.explorerPage;
     explorerUrl = contexts.explorerUrl;
@@ -85,11 +83,7 @@ test('input passphrase in popup and device accepts it', async () => {
     log(`test: ${test.info().title}`);
 
     log(`opening ${explorerUrl}#/method/getAddress`);
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
 
     log('waiting for submit button');
     await findElementByDataTest(explorerPage, '@submit-button');
@@ -141,11 +135,7 @@ test('input passphrase in popup and device accepts it', async () => {
 test('introduce passphrase in popup and device rejects it', async () => {
     log(`test: ${test.info().title}`);
 
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -188,11 +178,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
 
     log(`test: ${test.info().title}`);
 
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -238,11 +224,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 
     log(`test: ${test.info().title}`);
 
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -293,11 +275,7 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('start', test.info().title);
     log('got to: ', `${url}#/method/getAddress`);
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
-    }
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
 
     log('Trigger getAddress call');
     // this is a little hack.

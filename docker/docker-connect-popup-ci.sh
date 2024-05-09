@@ -7,6 +7,5 @@ export TEST_FILE=$1
 export URL=$URL
 export TREZOR_CONNECT_SRC=$TREZOR_CONNECT_SRC
 export IS_WEBEXTENSION=$IS_WEBEXTENSION
-export IS_NEXTRA=$IS_NEXTRA
 
 docker compose -f ./docker/docker-compose.connect-popup-ci.yml up --build --abort-on-container-exit
