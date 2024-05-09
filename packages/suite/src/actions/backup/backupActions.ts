@@ -58,8 +58,6 @@ export const backupDevice =
             payload: 'in-progress',
         });
 
-        console.log(params);
-
         const result = await TrezorConnect.backupDevice({
             ...params,
             device: {
