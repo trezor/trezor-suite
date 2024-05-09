@@ -1,11 +1,9 @@
 /* eslint-disable @typescript-eslint/ban-types */
 import { ActionReducerMapBuilder, createReducer } from '@reduxjs/toolkit';
 
-import { ExtraDependencies } from './extraDependenciesType';
+import { ExtraDependenciesForReducer } from './extraDependenciesType';
 
 type NotFunction<T> = T extends Function ? never : T;
-
-type ExtraDependenciesForReducer = Pick<ExtraDependencies, 'actionTypes' | 'actions' | 'reducers'>;
 
 export const createReducerWithExtraDeps =
     <S extends NotFunction<any>>(
@@ -15,7 +13,7 @@ export const createReducerWithExtraDeps =
             extra: ExtraDependenciesForReducer,
         ) => void,
     ) =>
-    (extraDeps: ExtraDependencies) =>
+    (extraDeps: ExtraDependenciesForReducer) =>
         createReducer(initialState, builder =>
             builderCallback(builder, {
                 actionTypes: extraDeps.actionTypes,

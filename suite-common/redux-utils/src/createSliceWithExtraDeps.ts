@@ -6,7 +6,8 @@ import {
     SliceCaseReducers,
 } from '@reduxjs/toolkit';
 
-import { ExtraDependencies } from './extraDependenciesType';
+import { ExtraDependenciesForReducer } from './extraDependenciesType';
+
 /*
 This is nearly same function as createSlice from redux-toolkit, but instead of generating reducer it will generate
 prepareReducer function that will be used to generate reducer. This functions accepts one argument - extra dependencies.
@@ -19,7 +20,7 @@ export const createSliceWithExtraDeps = <
     options: Omit<CreateSliceOptions<State, CaseReducers, Name>, 'extraReducers'> & {
         extraReducers: (
             builder: ActionReducerMapBuilder<State>,
-            extra: Pick<ExtraDependencies, 'actionTypes' | 'actions' | 'reducers'>,
+            extra: ExtraDependenciesForReducer,
         ) => void;
     },
 ) => {
@@ -58,7 +59,7 @@ export const createSliceWithExtraDeps = <
         },
     });
 
-    const prepareReducer = (extraDeps: ExtraDependencies) =>
+    const prepareReducer = (extraDeps: ExtraDependenciesForReducer) =>
         createSlice({
             ...options,
             extraReducers: builder => {

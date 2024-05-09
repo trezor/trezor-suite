@@ -7,7 +7,6 @@ import {
     prepareDeviceReducer,
     prepareDiscoveryReducer,
     prepareFiatRatesReducer,
-    prepareSendFormReducer,
     prepareTokenDefinitionsReducer,
     prepareTransactionsReducer,
 } from '@suite-common/wallet-core';
@@ -27,6 +26,7 @@ import { notificationsReducer } from '@suite-common/toast-notifications';
 import { graphReducer, graphPersistWhitelist } from '@suite-native/graph';
 import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
+import { sendFormSlice } from '@suite-native/module-send';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -40,7 +40,7 @@ const messageSystemReducer = prepareMessageSystemReducer(extraDependencies);
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const discoveryReducer = prepareDiscoveryReducer(extraDependencies);
 const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
-const sendFormReducer = prepareSendFormReducer(extraDependencies);
+const sendFormReducer = sendFormSlice.prepareReducer(extraDependencies);
 
 export const prepareRootReducers = async () => {
     const appSettingsPersistedReducer = await preparePersistReducer({

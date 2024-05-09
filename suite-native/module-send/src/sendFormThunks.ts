@@ -9,11 +9,10 @@ import {
     selectAccountByKey,
     selectDevice,
     selectNetworkFeeInfo,
-    selectSendFormDraftByAccountKey,
     sendFormActions,
     signTransactionThunk,
 } from '@suite-common/wallet-core';
-import { Account, AccountKey, ComposeActionContext } from '@suite-common/wallet-types';
+import { Account, AccountKey, ComposeActionContext, FormState } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { SignedTransaction } from '@trezor/connect';
@@ -22,23 +21,21 @@ const SEND_MODULE_PREFIX = '@suite-native/send';
 
 export const onDeviceTransactionReviewThunk = createThunk(
     `${SEND_MODULE_PREFIX}/onDeviceTransactionReviewThunk`,
-    async ({ accountKey }: { accountKey: AccountKey }, { dispatch, getState, rejectWithValue }) => {
+    async (
+        { accountKey, formState }: { accountKey: AccountKey; formState: FormState },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
+    ) => {
         const account = selectAccountByKey(getState(), accountKey);
         const device = selectDevice(getState());
         const networkFeeInfo = selectNetworkFeeInfo(getState(), account?.symbol);
 
-        const formValues = selectSendFormDraftByAccountKey(getState(), accountKey);
-
-        if (!account || !formValues || !networkFeeInfo || !device)
-            return rejectWithValue(
-                'Failed to get account, form draft, fee info or device from redux store.',
-            );
+        if (!account || !networkFeeInfo || !device)
+            return rejectWithValue('Failed to get account, fee info or device from redux store.');
 
         const network = getNetwork(account.symbol);
 
         if (!network)
             return rejectWithValue('Failed to derive account network from account symbol.');
-
         const composeContext: ComposeActionContext = {
             account,
             network,
@@ -50,7 +47,7 @@ export const onDeviceTransactionReviewThunk = createThunk(
         //compose transaction with specific fee levels
         const composedTransactionFeeLevels = await dispatch(
             composeSendFormTransactionThunk({
-                formValues,
+                formValues: formState,
                 formState: composeContext,
             }),
         ).unwrap();
@@ -64,18 +61,17 @@ export const onDeviceTransactionReviewThunk = createThunk(
         // prepare transaction with select fee level
         const enhancedTx = await dispatch(
             prepareTransactionForSigningThunk({
-                transactionFormValues: formValues,
+                transactionFormValues: formState,
                 transactionInfo: selectedFeeLevel,
                 selectedAccount: account,
             }),
         ).unwrap();
 
         if (!enhancedTx) return rejectWithValue('Thunk prepareTransactionForSigningThunk failed.');
-
         const deviceAccessResponse = await requestPrioritizedDeviceAccess(() =>
             dispatch(
                 signTransactionThunk({
-                    formValues,
+                    formValues: formState,
                     transactionInfo: enhancedTx,
                     selectedAccount: account,
                 }),
@@ -88,7 +84,7 @@ export const onDeviceTransactionReviewThunk = createThunk(
         )
             return rejectWithValue('Device failed to sign the transaction.');
 
-        return deviceAccessResponse.payload.signedTransaction;
+        return fulfillWithValue(deviceAccessResponse.payload.signedTransaction);
     },
 );
 
