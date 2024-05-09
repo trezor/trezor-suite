@@ -83,6 +83,17 @@ export const ContentWrapper = styled.div`
     }
 `;
 
+export const MainBar = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        overflow-x: hidden;
+    }
+`;
+
 interface SuiteLayoutProps {
     children: ReactNode;
 }
@@ -109,9 +120,6 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
 
                         <ModalSwitcher />
 
-                        <ElevationDown>
-                            <SuiteBanners />
-                        </ElevationDown>
                         <CoinjoinBars />
 
                         {isMobileLayout && <MobileMenu />}
@@ -126,21 +134,23 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
                                             <Sidebar />
                                         </ElevationDown>
                                     )}
+                                    <MainBar>
+                                        <SuiteBanners />
+                                        <AppWrapper
+                                            data-test="@app"
+                                            ref={scrollRef}
+                                            id={SCROLL_WRAPPER_ID}
+                                        >
+                                            <ElevationUp>
+                                                {isMobileLayout && isAccountPage && (
+                                                    <MobileAccountsMenu />
+                                                )}
+                                                {TopMenu && <TopMenu />}
 
-                                    <AppWrapper
-                                        data-test="@app"
-                                        ref={scrollRef}
-                                        id={SCROLL_WRAPPER_ID}
-                                    >
-                                        <ElevationUp>
-                                            {isMobileLayout && isAccountPage && (
-                                                <MobileAccountsMenu />
-                                            )}
-                                            {TopMenu && <TopMenu />}
-
-                                            <ContentWrapper>{children}</ContentWrapper>
-                                        </ElevationUp>
-                                    </AppWrapper>
+                                                <ContentWrapper>{children}</ContentWrapper>
+                                            </ElevationUp>
+                                        </AppWrapper>
+                                    </MainBar>
                                 </Columns>
                             </Body>
                         </LayoutContext.Provider>
