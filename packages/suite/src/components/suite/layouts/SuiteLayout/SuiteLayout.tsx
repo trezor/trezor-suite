@@ -87,10 +87,7 @@ export const MainBar = styled.div`
     display: flex;
     flex: 1;
     flex-direction: column;
-    width: 100%;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     align-items: center;
-    position: relative;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         overflow-x: hidden;
