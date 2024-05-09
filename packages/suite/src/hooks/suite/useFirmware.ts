@@ -33,9 +33,8 @@ export const useFirmware = () => {
     const originalDevice = firmware.cachedDevice || device;
     // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first, and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt =
-        (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT ||
-            firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT) &&
-        firmware.uiEvent.payload.manual;
+        firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+        firmware.uiEvent.payload.method === 'manual';
     const showReconnectPrompt =
         // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow, T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
@@ -49,7 +48,8 @@ export const useFirmware = () => {
         modal.windowType === 'ButtonRequest_FirmwareCheck';
     const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
     const confirmOnDevice =
-        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT && firmware.uiEvent.payload.bootloader) ||
+        (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+            firmware.uiEvent.payload.method !== 'wait') ||
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
     const showConfirmationPill =
@@ -83,10 +83,8 @@ export const useFirmware = () => {
         }
         // Automatically restarting from bootloader to normal mode at the end of non-intermediary installation:
         if (
-            (firmware.uiEvent?.type === UI.FIRMWARE_DISCONNECT ||
-                (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
-                    !firmware.uiEvent.payload.bootloader)) &&
-            !firmware.uiEvent.payload.manual
+            firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+            firmware.uiEvent.payload.method === 'wait'
         ) {
             return { operation: translationString('TR_WAIT_FOR_REBOOT'), progress: 100 };
         }

@@ -183,7 +183,8 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         ) {
             return 'done';
         }
-        const rebootToBootloaderNotSupported = uiEvent?.type === UI.FIRMWARE_DISCONNECT;
+        const rebootToBootloaderNotSupported =
+            uiEvent?.type === UI.FIRMWARE_RECONNECT && !uiEvent.payload.disconnected;
         const rebootToBootloaderCancelled = device?.connected && device?.mode !== 'bootloader';
 
         return rebootToBootloaderNotSupported || rebootToBootloaderCancelled
@@ -197,15 +198,17 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const isAbortable = isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
     const showWebUsbButton = rebootPhase === 'disconnected' && isWebUSB;
 
-    const isIntermediary =
-        uiEvent?.payload && 'intermediary' in uiEvent.payload && uiEvent.payload.intermediary;
+    const toNormal =
+        uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+        uiEvent.payload.target === 'normal' &&
+        uiEvent.payload.method === 'manual';
 
     const getHeading = () => {
         if (isRebootDone) {
             return 'TR_RECONNECT_IN_BOOTLOADER_SUCCESS';
         }
 
-        if (isIntermediary) {
+        if (toNormal) {
             return 'TR_RECONNECT_IN_NORMAL';
         }
 
@@ -216,7 +219,7 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
         const deviceFwVersion = getFirmwareVersion(uiEvent?.payload.device);
         const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
 
-        if (isIntermediary) {
+        if (toNormal) {
             return 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON';
         }
 

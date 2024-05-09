@@ -24,8 +24,6 @@ export const UI_REQUEST = {
     FIRMWARE_NOT_INSTALLED: 'ui-device_firmware_not_installed',
     FIRMWARE_PROGRESS: 'ui-firmware-progress',
 
-    /** connect is waiting for device to automatically disconnect */
-    FIRMWARE_DISCONNECT: 'ui-firmware_disconnect',
     /** connect is waiting for device to be automatically reconnected */
     FIRMWARE_RECONNECT: 'ui-firmware_reconnect',
 
@@ -263,30 +261,15 @@ export interface FirmwareProgress {
 }
 
 /**
- * Prompt user to disconnect device during firmware installation.
- */
-export interface FirmwareDisconnect {
-    type: typeof UI_REQUEST.FIRMWARE_DISCONNECT;
-    payload: {
-        device: Device;
-        /** older devices need manual action (connect or disconnect cable). default is false */
-        manual: boolean;
-        intermediary?: boolean;
-    };
-}
-
-/**
  * Prompt user to reconnect device during firmware installation.
  */
 export interface FirmwareReconnect {
     type: typeof UI_REQUEST.FIRMWARE_RECONNECT;
     payload: {
         device: Device;
-        /** older devices need manual action (connect or disconnect cable). default is false */
-        manual: boolean;
-        intermediary?: boolean;
-        /** should device be connected in bootloader mode? */
-        bootloader: boolean;
+        disconnected: boolean;
+        method: 'manual' | 'auto' | 'wait';
+        target: 'normal' | 'bootloader';
         /** how many times this event was fired. resets when request is satisfied */
         i: number;
     };
@@ -306,7 +289,6 @@ export type UiEvent =
     | BundleProgress<any>
     | FirmwareProgress
     | FirmwareException
-    | FirmwareDisconnect
     | FirmwareReconnect
     | UiRequestAddressValidation
     | UiRequestSetOperation;

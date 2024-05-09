@@ -33,20 +33,45 @@ const registerEvents = (device: Device, postMessage: PostMessage) => {
     });
 };
 
-const waitForReconnectedDevice = async ({
-    params: { bootloader, manual, intermediary },
-    context: { deviceList, device, postMessage, log, abortSignal },
-}: {
-    params: { bootloader: boolean; manual: boolean; intermediary?: boolean };
-    context: {
-        deviceList: DeviceList;
-        device: Device;
-        postMessage: PostMessage;
-        log: Log;
-        abortSignal: AbortSignal;
-    };
-}): Promise<Device> => {
+type ReconnectParams = {
+    bootloader: boolean;
+    method: 'wait' | 'auto' | 'manual';
+    intermediary?: boolean;
+};
+
+type ReconnectContext = {
+    deviceList: DeviceList;
+    device: Device;
+    postMessage: PostMessage;
+    log: Log;
+    abortSignal: AbortSignal;
+};
+
+const waitForReconnectedDevice = async (
+    { bootloader, method, intermediary }: ReconnectParams,
+    { deviceList, device, postMessage, log, abortSignal }: ReconnectContext,
+): Promise<Device> => {
+    const target = intermediary || !bootloader ? 'normal' : 'bootloader';
+
     let i = 0;
+
+    if (method !== 'auto') {
+        log.debug('onCallFirmwareUpdate', 'waiting for device to disconnect');
+
+        postMessage(
+            createUiMessage(UI.FIRMWARE_RECONNECT, {
+                device: device.toMessageObject(),
+                disconnected: false,
+                method,
+                target,
+                i,
+            }),
+        );
+        await new Promise(resolve => {
+            deviceList.once('device-disconnect', resolve);
+        });
+    }
+
     log.debug(
         'onCallFirmwareUpdate',
         `waiting for device to reconnect in ${bootloader ? 'bootloader' : 'normal'} mode`,
@@ -57,9 +82,9 @@ const waitForReconnectedDevice = async ({
         postMessage(
             createUiMessage(UI.FIRMWARE_RECONNECT, {
                 device: device.toMessageObject(),
-                manual,
-                bootloader,
-                intermediary,
+                disconnected: true,
+                method,
+                target,
                 i,
             }),
         );
@@ -98,31 +123,6 @@ const waitForReconnectedDevice = async ({
     await reconnectedDevice.acquire();
 
     return reconnectedDevice;
-};
-
-const waitForDisconnectedDevice = async ({
-    params: { manual, intermediary },
-    context: { deviceList, device, postMessage, log },
-}: {
-    params: { manual: boolean; intermediary?: boolean };
-    context: {
-        deviceList: DeviceList;
-        device: Device;
-        postMessage: PostMessage;
-        log: Log;
-    };
-}): Promise<void> => {
-    log.debug('onCallFirmwareUpdate', 'waiting for device to disconnect');
-    postMessage(
-        createUiMessage(UI.FIRMWARE_DISCONNECT, {
-            device: device.toMessageObject(),
-            manual,
-            intermediary,
-        }),
-    );
-    await new Promise(resolve => {
-        deviceList.once('device-disconnect', resolve);
-    });
 };
 
 const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
@@ -325,14 +325,10 @@ export const onCallFirmwareUpdate = async ({
     } else if (manual) {
         // Device doesn't support automatic reboot to bootloader, initiate manual one
 
-        await waitForDisconnectedDevice({
-            params: { manual: true },
-            context: { deviceList, device, postMessage, log },
-        });
-        reconnectedDevice = await waitForReconnectedDevice({
-            params: { bootloader: true, manual: true },
-            context: { deviceList, device, log, postMessage, abortSignal },
-        });
+        reconnectedDevice = await waitForReconnectedDevice(
+            { bootloader: true, method: 'manual' },
+            { deviceList, device, log, postMessage, abortSignal },
+        );
     } else {
         // Device supports automatic reboot to bootloader, load translation data and do it
 
@@ -392,10 +388,10 @@ export const onCallFirmwareUpdate = async ({
         if (device.features.major_version === 1) {
             await createTimeoutPromise(2000);
         }
-        reconnectedDevice = await waitForReconnectedDevice({
-            params: { bootloader: true, manual: false },
-            context: { deviceList, device, log, postMessage, abortSignal },
-        });
+        reconnectedDevice = await waitForReconnectedDevice(
+            { bootloader: true, method: 'auto' },
+            { deviceList, device, log, postMessage, abortSignal },
+        );
     }
 
     const intermediary = !params.binary && device.firmwareRelease.intermediaryVersion;
@@ -416,14 +412,10 @@ export const onCallFirmwareUpdate = async ({
     await reconnectedDevice.release();
 
     if (intermediary) {
-        await waitForDisconnectedDevice({
-            params: { manual: true, intermediary: true },
-            context: { deviceList, log, device: reconnectedDevice, postMessage },
-        });
-        reconnectedDevice = await waitForReconnectedDevice({
-            params: { bootloader: true, manual: true, intermediary: true },
-            context: { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
-        });
+        reconnectedDevice = await waitForReconnectedDevice(
+            { bootloader: true, method: 'manual', intermediary: true },
+            { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
+        );
 
         stripped = stripFwHeaders(
             await getBinaryHelper(reconnectedDevice, params, log, postMessage),
@@ -441,14 +433,10 @@ export const onCallFirmwareUpdate = async ({
         await reconnectedDevice.release();
     }
 
-    await waitForDisconnectedDevice({
-        params: { manual: false },
-        context: { deviceList, log, device: reconnectedDevice, postMessage },
-    });
-    reconnectedDevice = await waitForReconnectedDevice({
-        params: { bootloader: false, manual: false },
-        context: { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
-    });
+    reconnectedDevice = await waitForReconnectedDevice(
+        { bootloader: false, method: 'wait' },
+        { deviceList, device: reconnectedDevice, log, postMessage, abortSignal },
+    );
 
     // features.firmware_present non-null value implies that device was initially connected with
     // features.bootloader_mode=true, which means that no automatic language update was performed
