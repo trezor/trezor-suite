@@ -280,6 +280,18 @@ export type SuiteAnalyticsEvent =
               value: 0 | 90 | 180 | 270;
           };
       }
+    | {
+          type: EventType.SettingsDeviceChangeHapticFeedback;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsDeviceChangeBrightness;
+          payload: {
+              value?: number;
+          };
+      }
     | { type: EventType.SettingsDeviceWipe }
     | {
           type: EventType.SettingsDeviceChangePassphraseProtection;

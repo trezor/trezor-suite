@@ -2663,6 +2663,26 @@ export default defineMessages({
         defaultMessage: 'Change PIN',
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
+    TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC: {
+        defaultMessage: 'Turn on on haptic feedback for device interactions',
+        id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC',
+    },
+    TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE: {
+        defaultMessage: 'Haptic feedback',
+        id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE',
+    },
+    TR_DEVICE_SETTINGS_BRIGHTNESS_DESC: {
+        defaultMessage: 'Enable brightness customization for the display on the device',
+        id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_DESC',
+    },
+    TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE: {
+        defaultMessage: 'Display Brightness',
+        id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE',
+    },
+    TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON: {
+        defaultMessage: 'Change Brightness',
+        id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON',
+    },
     TR_DEVICE_SETTINGS_WIPE_CODE_TITLE: {
         defaultMessage: 'Set up wipe code',
         id: 'TR_DEVICE_SETTINGS_WIPE_CODE_TITLE',
