@@ -35,7 +35,7 @@ export const SupportSettings = () => {
                         About <TrezorSuiteLiteHeader textVariant="body" />
                     </>
                 }
-                iconName="trezorT"
+                iconName="trezorT3T1"
                 onPress={() => navigation.navigate(SettingsStackRoutes.SettingsAbout)}
             />
         </SettingsSection>

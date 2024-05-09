@@ -3,7 +3,7 @@ import Svg, { G, Path, Defs, ClipPath, SvgProps } from 'react-native-svg';
 
 import { useActiveColorScheme } from '@suite-native/theme';
 
-export const DeviceTS3Svg = (props: SvgProps) => {
+export const DeviceT2B1Svg = (props: SvgProps) => {
     const colorScheme = useActiveColorScheme();
     const lineColor = colorScheme === 'dark' ? '#74DCB1' : '#0F6148';
     const fillColor = colorScheme === 'dark' ? '#092519' : '#F0F9F6';
