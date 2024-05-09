@@ -2,8 +2,7 @@ import { useState } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled, { useTheme } from 'styled-components';
-import { variables, Icon, Image, motionAnimation, DeviceAnimation } from '@trezor/components';
-import { DeviceModelInternal } from '@trezor/connect';
+import { variables, Icon, motionAnimation, RotateDeviceImage } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
 
 import {
@@ -118,13 +117,6 @@ const ColEjectHeader = styled(ColHeader)`
     margin: 0 20px 0 32px;
 `;
 
-const StyledImage = styled(Image)`
-    height: 36px;
-
-    /* do not apply the darkening filter in dark mode on device images */
-    filter: none;
-`;
-
 interface DeviceItemProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
@@ -207,18 +199,12 @@ export const DeviceItemLegacy = ({
                 <DeviceHeader>
                     {deviceModelInternal && (
                         <DeviceImageWrapper>
-                            {deviceModelInternal === DeviceModelInternal.T2B1 && (
-                                <DeviceAnimation
-                                    type="ROTATE"
-                                    height="36px"
-                                    width="36px"
-                                    deviceModelInternal={deviceModelInternal}
-                                    deviceUnitColor={device?.features?.unit_color}
-                                />
-                            )}
-                            {deviceModelInternal !== DeviceModelInternal.T2B1 && (
-                                <StyledImage alt="Trezor" image={`TREZOR_${deviceModelInternal}`} />
-                            )}
+                            <RotateDeviceImage
+                                animationHeight="36px"
+                                animationWidth="36px"
+                                deviceModel={deviceModelInternal}
+                                deviceColor={device?.features?.unit_color}
+                            />
                         </DeviceImageWrapper>
                     )}
                     <Col $grow={1}>
