@@ -107,6 +107,16 @@ export const ResetDeviceStep = () => {
     const isWaitingOnDevice = isWaitingForConfirmation || isDeviceLocked;
     const canChoseBackupType = deviceModel !== undefined && canChooseBackupType(deviceModel);
 
+    const getChooseBackupTranslationId = () => {
+        if (isWaitingOnDevice) {
+            return 'TR_ONBOARDING_WILL_CREATE_BACKUP_TYPE';
+        }
+
+        return isShamirBackupType(deviceDefaultBackupType)
+            ? 'TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE'
+            : 'TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE';
+    };
+
     return (
         <OnboardingStepBox
             image="KEY"
@@ -114,14 +124,7 @@ export const ResetDeviceStep = () => {
             description={
                 canChoseBackupType ? (
                     <Translation
-                        id={
-                            // eslint-disable-next-line no-nested-ternary
-                            isWaitingOnDevice
-                                ? 'TR_ONBOARDING_WILL_CREATE_BACKUP_TYPE'
-                                : isShamirBackupType(deviceDefaultBackupType)
-                                  ? 'TR_ONBOARDING_SELECTED_OPTIMAL_BACKUP_TYPE'
-                                  : 'TR_ONBOARDING_SELECTED_DEFAULT_BACKUP_TYPE'
-                        }
+                        id={getChooseBackupTranslationId()}
                         values={{
                             primary: chunks => <Text variant="primary">{chunks}</Text>,
                             br: () => <br />,
