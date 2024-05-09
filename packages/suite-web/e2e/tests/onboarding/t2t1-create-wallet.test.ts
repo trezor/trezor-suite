@@ -19,7 +19,9 @@ describe('Onboarding - create wallet', () => {
         cy.getTestElement('@onboarding/path-create-button').click();
 
         cy.log('Will be clicking on Shamir backup button');
-        cy.getTestElement('@onboarding/shamir-backup-option-button').click();
+        cy.getTestElement('@onboarding/select-seed-type-open-dialog').click();
+        cy.getTestElement('@onboarding/select-seed-type-shamir-advance').click();
+        cy.getTestElement('@onboarding/select-seed-type-confirm').click();
         cy.getTestElement('@onboarding/confirm-on-device').should('be.visible');
         cy.task('pressYes');
 
