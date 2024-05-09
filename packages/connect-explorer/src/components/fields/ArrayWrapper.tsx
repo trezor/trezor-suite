@@ -1,5 +1,7 @@
 import { ReactNode } from 'react';
+
 import styled from 'styled-components';
+
 import { Icon } from '@trezor/components';
 
 import type { FieldWithBundle } from '../../types';
@@ -14,6 +16,7 @@ const AddBatchButton = styled.div`
     display: flex;
     flex-direction: row;
     align-items: center;
+    gap: 8px;
 `;
 
 const AddButton = ({ field, onAdd, label }: AddButtonProps) => {

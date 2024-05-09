@@ -15,7 +15,6 @@ let device = {};
 let context: any = null;
 
 const isWebExtension = process.env.IS_WEBEXTENSION === 'true';
-const isNextra = process.env.IS_NEXTRA === 'true';
 
 const screenshotEmu = async (path: string) => {
     const { response } = await TrezorUserEnvLink.send({
@@ -27,7 +26,6 @@ const screenshotEmu = async (path: string) => {
 test.beforeAll(async () => {
     await TrezorUserEnvLink.connect();
     log(`isWebExtension: ${isWebExtension}`);
-    log(`isNextra: ${isNextra}`);
     log(`connectSrc: ${connectSrc}`);
     log(`url: ${url}`);
 });
@@ -45,10 +43,10 @@ test.afterAll(() => {
     buildOverview({ emuScreenshots });
 });
 
-// Some methods are not allowed in web extension because of isManagementRestricted
-const methodsUrlToSkipInWebExtension = ['wipeDevice', 'recoverDevice'];
+// Some methods are not available in new explorer
+const methodsUrlToSkip = ['wipeDevice', 'recoverDevice'];
 const filteredFixtures = fixtures.filter(f => {
-    if ((isNextra || isWebExtension) && methodsUrlToSkipInWebExtension.includes(f.url)) {
+    if (methodsUrlToSkip.includes(f.url)) {
         return false;
     }
 
@@ -88,7 +86,6 @@ filteredFixtures.forEach(f => {
             page,
             url,
             isWebExtension,
-            isNextra,
         );
         context = browserContext;
 
@@ -101,23 +98,18 @@ filteredFixtures.forEach(f => {
                     connectSrc,
                 },
                 isWebExtension,
-                isNextra,
             );
         }
 
         const [method, submethod] = f.url.split('-');
-        if (isNextra) {
-            const fullUrl = formatUrl(
-                explorerUrl,
-                `methods/${f.dir}/${method}/index.html${submethod ? '?submethod=' + submethod : ''}`,
-            );
-            await explorerPage.goto(fullUrl);
+        const fullUrl = formatUrl(
+            explorerUrl,
+            `methods/${f.dir}/${method}/index.html${submethod ? '?submethod=' + submethod : ''}`,
+        );
+        await explorerPage.goto(fullUrl);
 
-            // expand method tester
-            await explorerPage.click("[data-test='@api-playground/collapsible-box']");
-        } else {
-            await explorerPage.goto(`${explorerUrl}#/method/${f.url}`);
-        }
+        // expand method tester
+        await explorerPage.click("[data-test='@api-playground/collapsible-box']");
 
         // screenshot request
         log(f.url, 'screenshot @trezor/connect call params');

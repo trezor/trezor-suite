@@ -14,14 +14,7 @@ services:
     extends:
       service: suite-base
       file: docker-compose.suite-base.yml
-    environment:
-      - IS_NEXTRA=$IS_NEXTRA
-    command: >
-      bash -c "
-      if [ $IS_NEXTRA = true ]; 
-        then yarn workspace @trezor/connect-explorer-nextra dev; 
-        else yarn workspace @trezor/connect-explorer dev; 
-      fi"
+    command: "yarn workspace @trezor/connect-explorer dev"
     network_mode: service:trezor-user-env-unix
 
   test-run:
@@ -40,7 +33,6 @@ services:
       - PWDEBUG=console
       - TEST_FILE=$TEST_FILE
       - IS_WEBEXTENSION=$IS_WEBEXTENSION
-      - IS_NEXTRA=$IS_NEXTRA
       - TREZOR_CONNECT_SRC=$TREZOR_CONNECT_SRC
     working_dir: /trezor-suite
     command: bash -c "docker/wait-for-200.sh http://localhost:8088/index.html && yarn workspace @trezor/connect-popup test:e2e $TEST_FILE"

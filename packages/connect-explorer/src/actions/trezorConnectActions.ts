@@ -6,6 +6,7 @@ import TrezorConnect, {
 } from '@trezor/connect-web';
 
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';
+
 import * as ACTIONS from './index';
 
 type ConnectOptions = Parameters<(typeof TrezorConnect)['init']>[0];
@@ -41,11 +42,11 @@ export const init =
     async (dispatch: Dispatch) => {
         window.TrezorConnect = TrezorConnect;
 
-        // todo: is this comment correct?
         // The event `WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM` is coming from @trezor/connect-webextension/proxy
         // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
         // so Typescript cannot recognize it.
-        (TrezorConnect.on as any)(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
+        // @ts-expect-error
+        TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
             if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
                 dispatch({ type: ACTIONS.ON_HANDSHAKE_CONFIRMED });
             }
@@ -74,6 +75,11 @@ export const init =
             window.__TREZOR_CONNECT_SRC = `${window.location.origin}/`;
         }
 
+        if (window.location.search.includes('trezor-connect-src')) {
+            const search = new URLSearchParams(window.location.search);
+            window.__TREZOR_CONNECT_SRC = search.get('trezor-connect-src')?.toString();
+        }
+
         if (options.connectSrc) {
             window.__TREZOR_CONNECT_SRC = options.connectSrc;
         }
@@ -94,6 +100,7 @@ export const init =
                 appUrl: '@trezor/suite',
             },
             trustedHost: false,
+            connectSrc: window.__TREZOR_CONNECT_SRC,
             ...options,
         };
 

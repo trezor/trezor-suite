@@ -34,13 +34,13 @@ export const formatUrl = (baseUrl: string, path: string) => {
     return `${baseUrlWithoutParams}${pathWithoutParams}?${params ? `${params}&` : ''}${pathParams ?? ''}`;
 };
 
-const getExtensionPage = async (isNextra?: boolean) => {
+const getExtensionPage = async () => {
     const pathToExtension = path.join(
         __dirname,
         '..',
         '..',
         '..',
-        isNextra ? 'connect-explorer-nextra' : 'connect-explorer',
+        'connect-explorer',
         'build-webextension',
     );
 
@@ -73,7 +73,7 @@ const getExtensionPage = async (isNextra?: boolean) => {
 
     const extensionId = background.url().split('/')[2];
 
-    const url = `chrome-extension://${extensionId}/${isNextra ? '' : 'connect-explorer.html'}`;
+    const url = `chrome-extension://${extensionId}/`;
 
     return {
         page,
@@ -88,7 +88,6 @@ export const getContexts = async (
     originalPage: Page,
     originalUrl: string,
     isWebExtension: boolean,
-    isNextra?: boolean,
 ) => {
     if (!isWebExtension) {
         return {
@@ -96,7 +95,7 @@ export const getContexts = async (
             explorerPage: originalPage,
         };
     }
-    const { page, url, browserContext } = await getExtensionPage(isNextra);
+    const { page, url, browserContext } = await getExtensionPage();
 
     return {
         explorerPage: page,
@@ -146,18 +145,13 @@ export const setConnectSettings = async (
     explorerPage: Page,
     explorerUrl: string,
     { trustedHost = false, connectSrc }: { trustedHost?: boolean; connectSrc?: string },
-    isWebExtension?: boolean,
-    isNextra?: boolean,
+    _isWebExtension?: boolean,
 ) => {
-    if (isNextra) {
-        await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
-    } else {
-        await explorerPage.goto(`${explorerUrl}#/settings`);
-    }
-    if (isWebExtension && !isNextra) {
+    await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
+    /*if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
         await explorerPage.waitForSelector("div[data-test='@settings/handshake-confirmed']");
-    }
+    }*/
     if (trustedHost) {
         await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
     }

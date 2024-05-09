@@ -233,7 +233,11 @@ suite-desktop build windows codesign:
   interruptible: true
   script:
     - yarn install --immutable
-    - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/ yarn workspace @trezor/connect-explorer build
+    - NODE_ENV=production
+      __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/
+      CONNECT_EXPLORER_ASSET_PREFIX=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}
+      CONNECT_EXPLORER_BASE_PATH=/connect/${CI_COMMIT_REF_NAME}
+      yarn workspace @trezor/connect-explorer build
   artifacts:
     expire_in: 7 days
     paths:
@@ -260,7 +264,7 @@ suite-desktop build windows codesign:
     - yarn workspace @trezor/connect-webextension build
     - node ./packages/connect-examples/update-webextensions-sw.js
     # build webextension inside package @trezor/connect-explorer package
-    - yarn workspace @trezor/connect-explorer build:webextension
+    - NODE_ENV=production yarn workspace @trezor/connect-explorer build:webextension
 
   artifacts:
     expire_in: 14 days
