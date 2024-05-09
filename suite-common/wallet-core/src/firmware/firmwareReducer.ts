@@ -4,7 +4,6 @@ import {
     UI,
     DEVICE,
     FirmwareProgress,
-    FirmwareDisconnect,
     FirmwareReconnect,
     DeviceButtonRequest,
 } from '@trezor/connect';
@@ -24,7 +23,7 @@ type FirmwareUpdateCommon = {
     //  todo: !
     firmwareHashInvalid: string[];
     useDevkit: boolean;
-    uiEvent?: DeviceButtonRequest | FirmwareProgress | FirmwareDisconnect | FirmwareReconnect;
+    uiEvent?: DeviceButtonRequest | FirmwareProgress | FirmwareReconnect;
 };
 
 export type FirmwareUpdateState =
@@ -85,12 +84,9 @@ export const prepareFirmwareReducer = createReducerWithExtraDeps(initialState, (
             action => action.type === extra.actionTypes.storageLoad,
             extra.reducers.storageLoadFirmware,
         )
-        .addMatcher<
-            FirmwareProgress | FirmwareDisconnect | FirmwareReconnect | DeviceButtonRequest
-        >(
+        .addMatcher<FirmwareProgress | FirmwareReconnect | DeviceButtonRequest>(
             action =>
                 action.type === UI.FIRMWARE_RECONNECT ||
-                action.type === UI.FIRMWARE_DISCONNECT ||
                 action.type === UI.FIRMWARE_PROGRESS ||
                 action.type === DEVICE.BUTTON,
             (state, action) => {
