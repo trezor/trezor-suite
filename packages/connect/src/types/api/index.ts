@@ -18,14 +18,16 @@ import { blockchainSubscribeFiatRates } from './blockchainSubscribeFiatRates';
 import { blockchainUnsubscribe } from './blockchainUnsubscribe';
 import { blockchainUnsubscribeFiatRates } from './blockchainUnsubscribeFiatRates';
 import { cancel } from './cancel';
+import { cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
+import { cardanoComposeTransaction } from './cardanoComposeTransaction';
 import { cardanoGetAddress } from './cardanoGetAddress';
 import { cardanoGetNativeScriptHash } from './cardanoGetNativeScriptHash';
 import { cardanoGetPublicKey } from './cardanoGetPublicKey';
 import { cardanoSignTransaction } from './cardanoSignTransaction';
-import { cardanoComposeTransaction } from './cardanoComposeTransaction';
 import { changeLanguage } from './changeLanguage';
 import { changePin } from './changePin';
 import { changeWipeCode } from './changeWipeCode';
+import { checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
 import { cipherKeyValue } from './cipherKeyValue';
 import { composeTransaction } from './composeTransaction';
 import { disableWebUSB } from './disableWebUSB';
@@ -66,12 +68,14 @@ import { requestWebUSBDevice } from './requestWebUSBDevice';
 import { resetDevice } from './resetDevice';
 import { rippleGetAddress } from './rippleGetAddress';
 import { rippleSignTransaction } from './rippleSignTransaction';
+import { setBrightness } from './setBrightness';
 import { setBusy } from './setBusy';
 import { setProxy } from './setProxy';
+import { showDeviceTutorial } from './showDeviceTutorial';
 import { signMessage } from './signMessage';
 import { signTransaction } from './signTransaction';
-import { solanaGetPublicKey } from './solanaGetPublicKey';
 import { solanaGetAddress } from './solanaGetAddress';
+import { solanaGetPublicKey } from './solanaGetPublicKey';
 import { solanaSignTransaction } from './solanaSignTransaction';
 import { stellarGetAddress } from './stellarGetAddress';
 import { stellarSignTransaction } from './stellarSignTransaction';
@@ -82,9 +86,6 @@ import { uiResponse } from './uiResponse';
 import { unlockPath } from './unlockPath';
 import { verifyMessage } from './verifyMessage';
 import { wipeDevice } from './wipeDevice';
-import { checkFirmwareAuthenticity } from './checkFirmwareAuthenticity';
-import { cancelCoinjoinAuthorization } from './cancelCoinjoinAuthorization';
-import { showDeviceTutorial } from './showDeviceTutorial';
 
 export interface TrezorConnect {
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/applyFlags.md
@@ -294,6 +295,9 @@ export interface TrezorConnect {
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/rippleSignTransaction.md
     rippleSignTransaction: typeof rippleSignTransaction;
+
+    // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/setBrightness.md
+    setBrightness: typeof setBrightness;
 
     // https://github.com/trezor/trezor-suite/blob/develop/docs/packages/connect/methods/setBusy.md
     setBusy: typeof setBusy;

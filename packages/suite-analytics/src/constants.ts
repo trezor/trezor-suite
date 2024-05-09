@@ -67,6 +67,8 @@ export enum EventType {
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceUpdateAutoLock = 'settings/device/update-auto-lock',
     SettingsDeviceChangeOrientation = 'settings/device/change-orientation',
+    SettingsDeviceChangeHapticFeedback = 'settings/device/change-haptic-feedback',
+    SettingsDeviceChangeBrightness = 'settings/device/change-brightness',
     SettingsDeviceWipe = 'settings/device/wipe',
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
     SettingsGeneralChangeLanguage = 'settings/general/change-language',

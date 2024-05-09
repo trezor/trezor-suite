@@ -30,6 +30,8 @@ import { ChangeLanguage } from './ChangeLanguage';
 import { EnableViewOnly } from './EnableViewOnly';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
+import { HapticFeedback } from './HapticFeedback';
+import { Brightness } from './Brightness';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -161,6 +163,8 @@ export const SettingsDevice = () => {
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
                         <DisplayRotation isDeviceLocked={isDeviceLocked} />
+                        <Brightness isDeviceLocked={isDeviceLocked} />
+                        <HapticFeedback isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
                     </SettingsSection>
                 </>
