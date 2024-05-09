@@ -2,6 +2,7 @@ import React from 'react';
 import { DeviceAnimation } from '../animations/DeviceAnimation';
 import { DeviceModelInternal } from '@trezor/connect';
 import { Image } from '../Image/Image';
+import styled from 'styled-components';
 
 interface DeviceImageProps {
     deviceModel?: DeviceModelInternal;
@@ -10,6 +11,11 @@ interface DeviceImageProps {
     animationHeight?: string;
     animationWidth?: string;
 }
+
+const StyledImage = styled(Image)`
+    /* do not apply the darkening filter in dark mode on device images */
+    filter: none;
+`;
 
 export const RotateDeviceImage = ({
     deviceModel,
@@ -37,7 +43,7 @@ export const RotateDeviceImage = ({
                     width={animationWidth}
                 />
             ) : (
-                <Image alt="Trezor" image={`TREZOR_${deviceModel}`} className={className} />
+                <StyledImage alt="Trezor" image={`TREZOR_${deviceModel}`} className={className} />
             )}
         </>
     );
