@@ -31,6 +31,7 @@ export const FirmwareInstallation = ({
         if (
             isWebUSB &&
             uiEvent?.type === UI.FIRMWARE_RECONNECT &&
+            uiEvent.payload.disconnected &&
             uiEvent.payload.i > 2 && // Add some latency for cases when the device is already paired or is restarting.
             status !== 'done'
         ) {
