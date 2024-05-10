@@ -114,7 +114,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         // this action is blocked by modalActions.preserve()
         dispatch(modalActions.preserve());
 
-        const { serializedTx, signedTransaction } = await dispatch(
+        const { serializedTx } = await dispatch(
             signTransactionThunk({
                 formValues,
                 transactionInfo: enhancedTxInfo,
@@ -137,7 +137,6 @@ export const signAndPushSendFormTransactionThunk = createThunk(
             // push tx to the network
             return dispatch(
                 pushSendFormTransactionThunk({
-                    signedTransaction,
                     selectedAccount,
                 }),
             ).unwrap();

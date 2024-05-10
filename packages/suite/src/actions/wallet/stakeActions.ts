@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import TrezorConnect, { SignedTransaction } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import {
     selectDevice,
     replaceTransactionThunk,
@@ -35,11 +35,11 @@ export const composeTransaction =
 
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getState: GetState) => {
-    const { signedTx, precomposedForm } = getState().wallet.stake;
+    const { serializedTx, precomposedForm } = getState().wallet.stake;
     dispatch(stakeActions.requestSignTransaction());
     dispatch(stakeActions.requestPushTransaction());
     // if transaction is not signed yet interrupt signing in TrezorConnect
-    if (!signedTx) {
+    if (!serializedTx) {
         TrezorConnect.cancel('tx-cancelled');
 
         return;
@@ -55,15 +55,14 @@ export const cancelSignTx = (isSuccessTx?: boolean) => (dispatch: Dispatch, getS
 
 // private, called from signTransaction only
 const pushTransaction =
-    (signedTransaction: SignedTransaction['signedTransaction'], stakeType: StakeType) =>
-    async (dispatch: Dispatch, getState: GetState) => {
-        const { signedTx, precomposedTx } = getState().wallet.stake;
+    (stakeType: StakeType) => async (dispatch: Dispatch, getState: GetState) => {
+        const { serializedTx, precomposedTx } = getState().wallet.stake;
         const { account } = getState().wallet.selectedAccount;
         const device = selectDevice(getState());
-        if (!signedTx || !precomposedTx || !account) return;
+        if (!serializedTx || !precomposedTx || !account) return;
 
         const sentTx = await TrezorConnect.pushTransaction({
-            ...signedTx,
+            ...serializedTx,
             identity: tryGetAccountIdentity(account),
         });
 
@@ -120,7 +119,6 @@ const pushTransaction =
                     replaceTransactionThunk({
                         precomposedTx,
                         newTxid: txid,
-                        signedTransaction,
                     }),
                 );
             }
@@ -175,7 +173,6 @@ export const signTransaction =
 
         // signTransaction by Trezor
         let serializedTx: string | undefined;
-        let signedTransaction: SignedTransaction['signedTransaction'];
         if (account.networkType === 'ethereum') {
             serializedTx = await dispatch(
                 stakeFormEthereumActions.signTransaction(formValues, enhancedTxInfo),
@@ -208,6 +205,6 @@ export const signTransaction =
         );
         if (decision) {
             // push tx to the network
-            return dispatch(pushTransaction(signedTransaction, formValues.ethereumStakeType));
+            return dispatch(pushTransaction(formValues.ethereumStakeType));
         }
     };

@@ -3,10 +3,11 @@ import { createAction } from '@reduxjs/toolkit';
 import {
     FormState,
     PrecomposedTransactionFinal,
-    FormSignedTx,
+    SerializedTx,
     AccountKey,
     TxFinalCardano,
 } from '@suite-common/wallet-types';
+import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
@@ -36,7 +37,7 @@ const storePrecomposedTransaction = createAction(
 
 const storeSignedTransaction = createAction(
     `${SEND_MODULE_PREFIX}/store-signed-transaction`,
-    (payload: FormSignedTx) => ({
+    (payload: { serializedTx: SerializedTx; signedTx?: BlockbookTransaction }) => ({
         payload,
     }),
 );
