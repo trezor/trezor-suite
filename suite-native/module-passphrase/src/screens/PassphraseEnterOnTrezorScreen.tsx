@@ -69,7 +69,12 @@ export const PassphraseEnterOnTrezorScreen = () => {
                         <Translation id="modulePassphrase.title" />
                     </Text>
                     <Text>
-                        <Translation id="modulePassphrase.subtitle" />
+                        <Translation
+                            id="modulePassphrase.subtitle"
+                            values={{
+                                bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                            }}
+                        />
                     </Text>
                 </VStack>
                 <Card style={applyStyle(cardStyle)}>
