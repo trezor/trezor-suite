@@ -275,7 +275,12 @@ export const acquireDevice = createThunk(
  */
 export const authorizeDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/authorizeDevice`,
-    async (_, { dispatch, getState, extra }): Promise<boolean> => {
+    async (
+        { shouldIgnoreDeviceState }: { shouldIgnoreDeviceState: boolean } | undefined = {
+            shouldIgnoreDeviceState: false,
+        },
+        { dispatch, getState, extra },
+    ): Promise<boolean> => {
         const {
             selectors: { selectCheckFirmwareAuthenticity },
             actions: { openModal },
@@ -287,7 +292,9 @@ export const authorizeDevice = createThunk(
         const isDeviceReady =
             device.connected &&
             device.features &&
-            !device.state &&
+            // Should ignore device state serves as a variant to call "reauthorize" device. For example in passphrase mode
+            // mobile has retry button which starts passphrase flow on the same device instance to override device state.
+            (!device.state || shouldIgnoreDeviceState) &&
             device.mode === 'normal' &&
             device.firmware !== 'required';
         if (!isDeviceReady) return false;

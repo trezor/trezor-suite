@@ -20,7 +20,10 @@ import { Translation, useTranslate } from '@suite-native/intl';
 
 import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { PassphraseForm } from '../components/PassphraseForm';
-import { verifyPassphraseOnEmptyWalletThunk } from '../passphraseThunks';
+import {
+    retryPassphraseAuthenticationThunk,
+    verifyPassphraseOnEmptyWalletThunk,
+} from '../passphraseThunks';
 
 type NavigationProp = StackToTabCompositeProps<
     PassphraseStackParamList,
@@ -59,7 +62,8 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.buttonTitle" />
                 ),
                 onPressPrimaryButton: () => {
-                    // TODO https://github.com/trezor/trezor-suite/issues/12207
+                    navigation.navigate(PassphraseStackRoutes.PassphraseForm);
+                    dispatch(retryPassphraseAuthenticationThunk());
                 },
                 icon: 'warningTriangleLight',
                 pictogramVariant: 'red',

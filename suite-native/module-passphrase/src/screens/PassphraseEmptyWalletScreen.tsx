@@ -1,13 +1,23 @@
 import { DimensionValue } from 'react-native';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
 
-import { Screen } from '@suite-native/navigation';
+import { useNavigation } from '@react-navigation/native';
+
+import {
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
+    RootStackParamList,
+    Screen,
+    StackToTabCompositeProps,
+} from '@suite-native/navigation';
 import { VStack, Card, Text, Image, Button, Box } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 
 import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { EmptyWalletInfoSheet } from '../components/EmptyWalletInfoSheet';
+import { retryPassphraseAuthenticationThunk } from '../passphraseThunks';
 
 const imageStyle = prepareNativeStyle(() => ({
     width: 124.45,
@@ -32,13 +42,28 @@ const textStyle = prepareNativeStyle<{ widthPercentage: number }>((_, { widthPer
     width: `${widthPercentage}%` as DimensionValue,
 }));
 
+type NavigationProp = StackToTabCompositeProps<
+    PassphraseStackParamList,
+    PassphraseStackRoutes,
+    RootStackParamList
+>;
+
 export const PassphraseEmptyWalletScreen = () => {
     const { applyStyle } = useNativeStyles();
+
+    const dispatch = useDispatch();
+
+    const navigation = useNavigation<NavigationProp>();
 
     const [isSheetVisible, setIsSheetVisible] = useState(false);
 
     const toggleBottomSheet = () => {
         setIsSheetVisible(!isSheetVisible);
+    };
+
+    const handleTryAgain = () => {
+        navigation.navigate(PassphraseStackRoutes.PassphraseForm);
+        dispatch(retryPassphraseAuthenticationThunk());
     };
 
     return (
@@ -86,7 +111,7 @@ export const PassphraseEmptyWalletScreen = () => {
                         </Text>
                     </VStack>
                     <Box style={applyStyle(retryButtonWrapperStyle)}>
-                        <Button colorScheme="tertiaryElevation0">
+                        <Button colorScheme="tertiaryElevation0" onPress={handleTryAgain}>
                             <Translation id="modulePassphrase.emptyPassphraseWallet.expectingPassphraseWallet.button" />
                         </Button>
                     </Box>
