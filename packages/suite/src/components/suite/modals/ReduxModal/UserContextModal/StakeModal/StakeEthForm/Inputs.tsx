@@ -8,7 +8,6 @@ import { useTranslation } from 'src/hooks/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import {
     validateDecimals,
-    validateInteger,
     validateLimitsBigNum,
     validateMin,
     validateReserveOrBalance,
@@ -69,7 +68,6 @@ export const Inputs = () => {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
-            integer: validateInteger(translationString, { except: true }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             reserveOrBalance: validateReserveOrBalance(translationString, {
                 account,

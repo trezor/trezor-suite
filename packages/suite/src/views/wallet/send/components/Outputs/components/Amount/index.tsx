@@ -187,8 +187,7 @@ export const Amount = ({ output, outputId }: AmountProps) => {
         validate: {
             // allow 0 amount ONLY for ethereum transaction with data
             min: validateMin(translationString, { except: !!getDefaultValue('ethereumDataHex') }),
-            // ERC20 without decimal places
-            integer: validateInteger(translationString, { except: !!decimals }),
+            integer: validateInteger(translationString, { except: !shouldSendInSats }),
             decimals: validateDecimals(translationString, { decimals }),
             dust: (value: string) => {
                 const amountBig = new BigNumber(value);

@@ -6,12 +6,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { useSelector, useTranslation } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { variables } from '@trezor/components/src/config';
-import {
-    validateDecimals,
-    validateInteger,
-    validateLimitsBigNum,
-    validateMin,
-} from 'src/utils/suite/validation';
+import { validateDecimals, validateLimitsBigNum, validateMin } from 'src/utils/suite/validation';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { useFormatters } from '@suite-common/formatters';
 import { getInputState } from '@suite-common/wallet-utils';
@@ -63,7 +58,6 @@ export const Inputs = () => {
         required: translationString('AMOUNT_IS_NOT_SET'),
         validate: {
             min: validateMin(translationString),
-            integer: validateInteger(translationString, { except: true }),
             decimals: validateDecimals(translationString, { decimals: network.decimals }),
             limits: validateLimitsBigNum(translationString, {
                 amountLimits,
