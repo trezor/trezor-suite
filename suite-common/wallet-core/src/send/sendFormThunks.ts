@@ -71,7 +71,7 @@ export const convertSendFormDraftsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsThunk`,
     (
         { selectedAccountKey }: { selectedAccountKey?: AccountKey },
-        { dispatch, getState, extra },
+        { dispatch, getState, extra, rejectWithValue },
     ) => {
         const {
             selectors: { selectRoute, selectAreSatsAmountUnit },
@@ -83,8 +83,8 @@ export const convertSendFormDraftsThunk = createThunk(
 
         const draftEntries = Object.entries(sendFormDrafts);
 
-        if (A.isEmpty(draftEntries) || G.isNullable(selectedAccountKey)) {
-            return;
+        if (G.isNullable(selectedAccountKey)) {
+            return rejectWithValue('Account not found.');
         }
 
         // draft will be saved after leaving the form anyways – don't interfere with the logic
@@ -186,7 +186,7 @@ export const pushSendFormTransactionThunk = createThunk(
         }: {
             selectedAccount: Account;
         },
-        { dispatch, getState, extra, rejectWithValue },
+        { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
     ) => {
         const {
             actions: { onModalCancel },
@@ -199,7 +199,7 @@ export const pushSendFormTransactionThunk = createThunk(
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
         const metadata = selectMetadata(getState());
 
-        if (!serializedTx || !precomposedTx) return;
+        if (!serializedTx || !precomposedTx) return rejectWithValue('Transaction not found.');
 
         const isRbf = precomposedTx.prevTxid !== undefined;
 
@@ -207,7 +207,7 @@ export const pushSendFormTransactionThunk = createThunk(
             ? dispatch(findLabelsToBeMovedOrDeleted({ prevTxid: precomposedTx.prevTxid }))
             : undefined;
 
-        const sentTx = await TrezorConnect.pushTransaction({
+        const pushTxResponse = await TrezorConnect.pushTransaction({
             ...serializedTx,
             identity: tryGetAccountIdentity(selectedAccount),
         });
@@ -230,8 +230,8 @@ export const pushSendFormTransactionThunk = createThunk(
               )} ${token.symbol!.toUpperCase()}`
             : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol, true, areSatoshisUsed);
 
-        if (sentTx.success) {
-            const { txid } = sentTx.payload;
+        if (pushTxResponse.success) {
+            const { txid } = pushTxResponse.payload;
             dispatch(
                 notificationsActions.addToast({
                     type: 'tx-sent',
@@ -351,15 +351,18 @@ export const pushSendFormTransactionThunk = createThunk(
                         );
                     });
             }
-        } else {
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: sentTx.payload.error,
-                }),
-            );
+
+            dispatch(cancelSignSendFormTransactionThunk());
+
+            return fulfillWithValue(pushTxResponse);
         }
 
+        dispatch(
+            notificationsActions.addToast({
+                type: 'sign-tx-error',
+                error: pushTxResponse.payload.error,
+            }),
+        );
         dispatch(cancelSignSendFormTransactionThunk());
 
         return rejectWithValue(pushTxResponse);
@@ -370,7 +373,10 @@ export const pushSendFormTransactionThunk = createThunk(
 // this could be called at any time during signTransaction or pushTransaction process (from TransactionReviewModal)
 export const pushSendFormRawTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/pushSendFormRawTransactionThunk`,
-    async (payload: { tx: string; coin: NetworkSymbol; identity?: string }, { dispatch }) => {
+    async (
+        payload: { tx: string; coin: NetworkSymbol; identity?: string },
+        { dispatch, fulfillWithValue, rejectWithValue },
+    ) => {
         const sentTx = await TrezorConnect.pushTransaction(payload);
 
         if (sentTx.success) {
@@ -381,18 +387,19 @@ export const pushSendFormRawTransactionThunk = createThunk(
                 }),
             );
             dispatch(syncAccountsWithBlockchainThunk(payload.coin));
-        } else {
-            console.warn(sentTx.payload.error);
-            dispatch(
-                notificationsActions.addToast({
-                    type: 'sign-tx-error',
-                    error: sentTx.payload.error,
-                }),
-            );
+
+            return fulfillWithValue(true);
         }
 
-        // resolve sign process
-        return sentTx.success;
+        console.warn(sentTx.payload.error);
+        dispatch(
+            notificationsActions.addToast({
+                type: 'sign-tx-error',
+                error: sentTx.payload.error,
+            }),
+        );
+
+        return rejectWithValue(sentTx.payload.error);
     },
 );
 
@@ -495,12 +502,12 @@ export const prepareTransactionForSigningThunk = createThunk(
             transactionInfo: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
             selectedAccount: Account;
         },
-        { getState, dispatch },
+        { getState, dispatch, rejectWithValue },
     ) => {
         const device = selectDevice(getState());
         const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
 
-        if (!device) return;
+        if (!device) return rejectWithValue('Device not found');
 
         // native RBF is available since FW 1.9.4/2.3.5
         const nativeRbfAvailable =
