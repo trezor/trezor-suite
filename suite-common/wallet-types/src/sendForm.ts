@@ -47,7 +47,7 @@ export interface FormState {
     selectedUtxos: AccountUtxo[];
 }
 
-export type FormSignedTx = { tx: string; coin: NetworkSymbol };
+export type SerializedTx = { tx: string; coin: NetworkSymbol };
 
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
 

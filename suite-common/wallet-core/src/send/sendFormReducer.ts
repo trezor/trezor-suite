@@ -1,7 +1,8 @@
 import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
-import { FormSignedTx } from '@suite-common/wallet-types';
+import { SerializedTx } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
 import { sendFormActions } from './sendFormActions';
 import { accountsActions } from '../accounts/accountsActions';
@@ -13,12 +14,14 @@ export type SendState = {
     sendRaw?: boolean;
     precomposedTx?: PrecomposedTransactionFinal | TxFinalCardano;
     precomposedForm?: FormState;
-    signedTx?: FormSignedTx; // payload for TrezorConnect.pushTransaction
+    signedTx?: BlockbookTransaction;
+    serializedTx?: SerializedTx; // hex representation of signed transaction (payload for TrezorConnect.pushTransaction)
 };
 
 export const initialState: SendState = {
     drafts: {},
     precomposedTx: undefined,
+    serializedTx: undefined,
     signedTx: undefined,
 };
 
@@ -51,12 +54,17 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
                 state.precomposedForm = cloneObject(formState);
             },
         )
-        .addCase(sendFormActions.storeSignedTransaction, (state, { payload: signedTx }) => {
-            state.signedTx = signedTx;
-        })
+        .addCase(
+            sendFormActions.storeSignedTransaction,
+            (state, { payload: { serializedTx, signedTx } }) => {
+                state.serializedTx = serializedTx;
+                state.signedTx = signedTx;
+            },
+        )
         .addCase(sendFormActions.discardTransaction, state => {
             delete state.precomposedTx;
             delete state.precomposedForm;
+            delete state.serializedTx;
             delete state.signedTx;
         })
         .addCase(sendFormActions.sendRaw, (state, { payload: sendRaw }) => {
@@ -66,6 +74,7 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
             delete state.sendRaw;
             delete state.precomposedTx;
             delete state.precomposedForm;
+            delete state.serializedTx;
             delete state.signedTx;
         })
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadFormDrafts)
@@ -77,6 +86,7 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
 });
 
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
+export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
 export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.signedTx;
 export const selectPrecomposedSendForm = (state: SendRootState) =>
     state.wallet.send.precomposedForm;

@@ -4,7 +4,7 @@ import { FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-typ
 import { accountsActions } from '@suite-common/wallet-core';
 import { prepareSendFormReducer, initialState, sendFormActions } from '@suite-common/wallet-core';
 
-import { Account, FormSignedTx } from '@suite-common/wallet-types';
+import { Account, SerializedTx } from '@suite-common/wallet-types';
 
 import { PreloadStoreAction } from 'src/support/suite/preloadStore';
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -14,7 +14,7 @@ import { extraDependencies } from 'src/support/extraDependencies';
 // shorter and more readable, it is mocked as a plain string.
 const formStateMock = 'FormStateMock' as unknown as FormState;
 const precomposedTxMock = 'precomposedTx' as unknown as PrecomposedTransactionFinal;
-const formSignedTxMock = 'formSignedTx' as unknown as FormSignedTx;
+const formSignedTxMock = 'formSignedTx' as unknown as SerializedTx;
 
 describe('sendFormReducer', () => {
     it('STORAGE.LOAD', () => {
@@ -76,12 +76,14 @@ describe('sendFormReducer', () => {
 
     it('SEND.REQUEST_PUSH_TRANSACTION - save', () => {
         const action: Action = sendFormActions.storeSignedTransaction({
-            coin: 'btc',
-            tx: 'test',
+            serializedTx: {
+                coin: 'btc',
+                tx: 'test',
+            },
         });
 
         const state = prepareSendFormReducer(extraDependencies)(initialState, action);
-        expect(state.signedTx).toEqual({ coin: 'btc', tx: 'test' });
+        expect(state.serializedTx).toEqual({ coin: 'btc', tx: 'test' });
     });
 
     it('SEND.REQUEST_PUSH_TRANSACTION - delete', () => {
@@ -90,13 +92,13 @@ describe('sendFormReducer', () => {
         const state = prepareSendFormReducer(extraDependencies)(
             {
                 ...initialState,
-                signedTx: formSignedTxMock,
+                serializedTx: formSignedTxMock,
                 precomposedForm: formStateMock,
                 precomposedTx: precomposedTxMock,
             },
             action,
         );
-        expect(state.signedTx).toBeUndefined();
+        expect(state.serializedTx).toBeUndefined();
         expect(state.precomposedTx).toBeUndefined();
         expect(state.precomposedForm).toBeUndefined();
     });
@@ -120,13 +122,13 @@ describe('sendFormReducer', () => {
                 sendRaw: true,
                 precomposedTx: precomposedTxMock,
                 precomposedForm: formStateMock,
-                signedTx: formSignedTxMock,
+                serializedTx: formSignedTxMock,
             },
             action,
         );
         expect(state.sendRaw).toBeUndefined();
         expect(state.precomposedTx).toBeUndefined();
         expect(state.precomposedForm).toBeUndefined();
-        expect(state.signedTx).toBeUndefined();
+        expect(state.serializedTx).toBeUndefined();
     });
 });
