@@ -22,6 +22,8 @@ import {
     signTransactionThunk,
 } from '@suite-common/wallet-core';
 import { sendFormActions } from '@suite-common/wallet-core';
+import { isRejected } from '@reduxjs/toolkit';
+import { Unsuccessful } from '@trezor/connect';
 
 export const MODULE_PREFIX = '@send';
 
@@ -135,11 +137,17 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         );
         if (decision) {
             // push tx to the network
-            return dispatch(
+            const pushResponse = await dispatch(
                 pushSendFormTransactionThunk({
                     selectedAccount,
                 }),
-            ).unwrap();
+            );
+
+            if (isRejected(pushResponse)) {
+                return pushResponse.payload as Unsuccessful;
+            }
+
+            return pushResponse.payload;
         }
     },
 );
