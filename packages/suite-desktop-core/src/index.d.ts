@@ -100,4 +100,8 @@ declare type BridgeSettings = {
      * Should bridge process be spawned on application startup
      */
     startOnStartup: boolean;
+    /**
+     * Should run trezord-go
+     */
+    legacy?: boolean;
 };

@@ -132,8 +132,19 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
             ipcRenderer.send('logger/config', config);
         },
 
+        // Bridge
         getBridgeStatus: () => ipcRenderer.invoke('bridge/get-status'),
 
         toggleBridge: () => ipcRenderer.invoke('bridge/toggle'),
+
+        changeBridgeSettings: payload => {
+            if (validation.isObject({ startOnStartup: 'boolean' }, payload)) {
+                return ipcRenderer.invoke('bridge/change-settings', payload);
+            }
+
+            return Promise.resolve({ success: false, error: 'invalid params' });
+        },
+
+        getBridgeSettings: () => ipcRenderer.invoke('bridge/get-settings'),
     };
 };

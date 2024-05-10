@@ -45,8 +45,11 @@ const start = async (bridge: BridgeProcess | TrezordNode) => {
     }
 };
 
-const getBridgeInstance = () => {
-    if (bridgeLegacy || bridgeLegacyDev || bridgeLegacyTest) {
+const getBridgeInstance = (store: Dependencies['store']) => {
+    const legacyRequestedBySettings = store.getBridgeSettings().legacy;
+    const legacyRequestedByArg = bridgeLegacy || bridgeLegacyDev || bridgeLegacyTest;
+
+    if (legacyRequestedBySettings || legacyRequestedByArg) {
         return new BridgeProcess();
     }
 
@@ -69,7 +72,7 @@ const getBridgeInstance = () => {
 
 const load = async ({ store, mainWindow }: Dependencies) => {
     const { logger } = global;
-    const bridge = getBridgeInstance();
+    const bridge = getBridgeInstance(store);
 
     app.on('before-quit', () => {
         logger.info(SERVICE_NAME, 'Stopping (app quit)');
@@ -81,10 +84,10 @@ const load = async ({ store, mainWindow }: Dependencies) => {
         try {
             if (status.service) {
                 await bridge.stop();
-                store.setBridgeSettings({ startOnStartup: false });
+                store.setBridgeSettings({ ...store.getBridgeSettings(), startOnStartup: false });
             } else {
                 await start(bridge);
-                store.setBridgeSettings({ startOnStartup: true });
+                store.setBridgeSettings({ ...store.getBridgeSettings(), startOnStartup: true });
             }
 
             return { success: true };
@@ -100,6 +103,29 @@ const load = async ({ store, mainWindow }: Dependencies) => {
             const status = await bridge.status();
 
             return { success: true, payload: status };
+        } catch (error) {
+            return { success: false, error };
+        }
+    });
+
+    ipcMain.handle(
+        'bridge/change-settings',
+        (_: unknown, payload: { startOnStartup: boolean; legacy?: boolean }) => {
+            try {
+                store.setBridgeSettings(payload);
+
+                return { success: true };
+            } catch (error) {
+                return { success: false, error };
+            } finally {
+                mainWindow.webContents.send('bridge/settings', store.getBridgeSettings());
+            }
+        },
+    );
+
+    ipcMain.handle('bridge/get-settings', () => {
+        try {
+            return { success: true, payload: store.getBridgeSettings() };
         } catch (error) {
             return { success: false, error };
         }
