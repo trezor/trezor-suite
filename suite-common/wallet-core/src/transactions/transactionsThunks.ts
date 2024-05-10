@@ -23,7 +23,6 @@ import {
 import { AccountLabels } from '@suite-common/metadata-types';
 import TrezorConnect from '@trezor/connect';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import { Transaction } from '@trezor/blockchain-link-types/src/blockbook';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { accountsActions } from '../accounts/accountsActions';
@@ -32,6 +31,7 @@ import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsA
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectSendSignedTx } from '../send/sendFormReducer';
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -39,17 +39,18 @@ import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinit
  * sender account and receiver account(s)
  */
 interface ReplaceTransactionThunkParams {
-    precomposedTx: PrecomposedTransactionFinal; // tx params signed by @trezor/connect
-    newTxid: string; // new txid
-    signedTransaction?: Transaction; // tx returned from @trezor/connect (only in bitcoin-like)
+    // transaction input parameters. It has to be passed as argument rather than obtained form send-form state, because this thunk is used also by eth-staking module that uses different redux state.
+    precomposedTx: PrecomposedTransactionFinal;
+    newTxid: string;
 }
 
 export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams>(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
-    ({ precomposedTx, newTxid, signedTransaction }, { getState, dispatch }) => {
+    ({ precomposedTx, newTxid }, { getState, dispatch }) => {
         if (!precomposedTx.prevTxid) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
+        const signedTransaction = selectSendSignedTx(getState());
 
         // find all transactions to replace, they may be related to another account
         const origTransactions = findTransactions(precomposedTx.prevTxid, walletTransactions);
@@ -105,20 +106,22 @@ export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams
 );
 
 interface AddFakePendingTransactionParams {
-    transaction: Transaction;
     precomposedTx: PrecomposedTransactionFinal;
     account: Account;
 }
 
 export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams>(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ transaction, precomposedTx, account }, { dispatch, getState }) => {
+    ({ precomposedTx, account }, { dispatch, getState, rejectWithValue }) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
+        const signedTransaction = selectSendSignedTx(getState());
+
+        if (!signedTransaction) return rejectWithValue('No signed transaction found');
 
         // decide affected accounts by tx.outputs
         // only 1 pending tx may be created per affected account,
-        const affectedAccounts = transaction.vout.reduce<{
+        const affectedAccounts = signedTransaction.vout.reduce<{
             [affectedAccountKey: string]: Account;
         }>(
             (result, output) => {
@@ -144,7 +147,7 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
             if (!precomposedTx.prevTxid) {
                 // create and profile pending transaction for affected account if it's not a replacement tx
                 const affectedAccountTransaction = blockbookUtils.transformTransaction(
-                    transaction,
+                    signedTransaction,
                     affectedAccount.addresses ?? affectedAccount.descriptor,
                 );
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
@@ -164,7 +167,7 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
             const pendingAccount = getPendingAccount({
                 account: affectedAccount,
                 tx: precomposedTx,
-                txid: transaction.txid,
+                txid: signedTransaction.txid,
                 receivingAccount: account.key !== affectedAccount.key,
             });
 

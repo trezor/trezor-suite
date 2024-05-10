@@ -47,7 +47,7 @@ export const TransactionReviewModalContent = ({
 
     const deviceModelInternal = device?.features?.internal_model;
 
-    const { precomposedTx, precomposedForm, signedTx } = txInfoState;
+    const { precomposedTx, precomposedForm, serializedTx } = txInfoState;
 
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm) {
         return null;
@@ -106,7 +106,7 @@ export const TransactionReviewModalContent = ({
     const buttonRequestsCount = isCardano ? buttonRequests.length - 1 : buttonRequests.length;
 
     const onCancel =
-        isActionAbortable || signedTx
+        isActionAbortable || serializedTx
             ? () => {
                   cancelSignTx();
                   decision?.resolve(false);
@@ -119,7 +119,7 @@ export const TransactionReviewModalContent = ({
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     steps={outputs.length + 1}
-                    activeStep={signedTx ? outputs.length + 2 : buttonRequestsCount}
+                    activeStep={serializedTx ? outputs.length + 2 : buttonRequestsCount}
                     deviceModelInternal={deviceModelInternal}
                     deviceUnitColor={device?.features?.unit_color}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
@@ -144,7 +144,7 @@ export const TransactionReviewModalContent = ({
                 account={selectedAccount.account}
                 precomposedForm={precomposedForm}
                 precomposedTx={precomposedTx}
-                signedTx={signedTx}
+                signedTx={serializedTx}
                 decision={decision}
                 detailsOpen={detailsOpen}
                 outputs={outputs}

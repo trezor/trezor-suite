@@ -1,5 +1,10 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import { StakeFormState, PrecomposedTransactionFinal, Timestamp } from '@suite-common/wallet-types';
+import {
+    StakeFormState,
+    PrecomposedTransactionFinal,
+    Timestamp,
+    SerializedTx,
+} from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
@@ -10,7 +15,7 @@ import { fetchEverstakeData } from './stakeThunks';
 export interface StakeState {
     precomposedTx?: PrecomposedTransactionFinal;
     precomposedForm?: StakeFormState;
-    signedTx?: { tx: string; coin: string }; // payload for TrezorConnect.pushTransaction
+    serializedTx?: SerializedTx; // payload for TrezorConnect.pushTransaction
     data: {
         [key in NetworkSymbol]?: {
             poolStats: {
@@ -35,7 +40,7 @@ export interface StakeState {
 
 export const stakeInitialState: StakeState = {
     precomposedTx: undefined,
-    signedTx: undefined,
+    serializedTx: undefined,
     data: {},
 };
 
@@ -56,15 +61,15 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
         })
         .addCase(stakeActions.requestPushTransaction, (state, action) => {
             if (action.payload) {
-                state.signedTx = action.payload;
+                state.serializedTx = action.payload;
             } else {
-                delete state.signedTx;
+                delete state.serializedTx;
             }
         })
         .addCase(stakeActions.dispose, state => {
             delete state.precomposedTx;
             delete state.precomposedForm;
-            delete state.signedTx;
+            delete state.serializedTx;
         })
         .addCase(fetchEverstakeData.pending, (state, action) => {
             const { networkSymbol } = action.meta.arg;
