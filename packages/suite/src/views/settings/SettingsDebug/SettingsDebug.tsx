@@ -20,6 +20,7 @@ import { TriggerHighlight } from './TriggerHighlight';
 import { Backends } from './Backends';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite';
+import { PreField } from './PreField';
 
 export const SettingsDebug = () => {
     const flags = useSelector(selectSuiteFlags);
@@ -71,7 +72,7 @@ export const SettingsDebug = () => {
                 <ViewOnlySettings />
             </SettingsSection>
             <SettingsSection title="Flags JSON">
-                <pre>{JSON.stringify(flags)}</pre>
+                <PreField>{JSON.stringify(flags)}</PreField>
             </SettingsSection>
         </SettingsLayout>
     );
