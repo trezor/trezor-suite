@@ -1,4 +1,4 @@
-name: "[Test] connect"
+name: "[Test] connect core e2e"
 
 # run only if there are changes in connect or related libs paths
 on:

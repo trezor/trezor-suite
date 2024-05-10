@@ -1,4 +1,4 @@
-name: "[Test] @trezor/blockchain-link"
+name: "[Test] blockchain-link e2e"
 
 on:
   schedule:
