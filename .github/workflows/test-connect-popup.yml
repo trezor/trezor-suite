@@ -1,4 +1,4 @@
-name: "[Build/Test] Connect Explorer"
+name: "[Build/Test] connect-popup e2e"
 
 permissions:
   id-token: write # for fetching the OIDC token
@@ -33,9 +33,6 @@ on:
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
-
-env:
-  DEV_SERVER_HOSTNAME: "dev.suite.sldev.cz"
 
 jobs:
   extract-branch:
