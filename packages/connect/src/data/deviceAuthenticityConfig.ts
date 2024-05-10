@@ -47,7 +47,7 @@ export const DeviceAuthenticityConfig = Type.Intersect([
  */
 export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
     version: 1,
-    timestamp: '2024-05-06T12:00:00+00:00',
+    timestamp: '2024-05-10T12:00:00+00:00',
     T2B1: {
         rootPubKeys: [
             '04ca97480ac0d7b1e6efafe518cd433cec2bf8ab9822d76eafd34363b55d63e60380bff20acc75cde03cffcb50ab6f8ce70c878e37ebc58ff7cca0a83b16b15fa5',
@@ -71,6 +71,9 @@ export const deviceAuthenticityConfig: DeviceAuthenticityConfig = {
             '049f91ac8c7dac26fa7eb82ff3fb8c6d24978bbaeed1adb0751342a8c4c88152817d50bd0b4c16d8fb85bf12f46dca0674a398aeecbb3d1a01236cd3eb39d24c55',
             '04c5225b6d8b84401c408ad0a5aa47888e9087451a2ca4440e46efed5765fd2f5bf8f068e1cfea18dddfc5b47b19076ce0a84fbcf7269f9578d9b978679dea4189',
             '04e349de85981f8e7d95ca4b44346924a9df62875971cfc5e21fc042c3a8fb3e1ddfeac139c15fcf3f7968242a418fc80e92c98f5aef39672b13b60d0b2335c84c',
+            '04d7ddaf7e17a678bef305950f0f9d74b90553d8502fd02c439f07ac7ea494e9e0519a1c5782bf23be058162e706057d3b241d507f89b9e5518e3696a92128fa6d',
+            '0488cf1dbadb18df0a094da837b3eeb0c85489cc21e7c2b94f8f4df207edccfddbb58e428d9a6ce1e42081c38665d134c7ee6f1f524688ce7444bc1d1340a8b1f1',
+            '04ff0c6e817d7c00a0912cf1d293e4d3a8c25403dca4e8ced5e7323352e34604725ad67739d1b4bf538a3864e95d8311ebc91d522b1603da94061e82535edced56',
         ],
         debug: {
             rootPubKeys: [
