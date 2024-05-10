@@ -71,7 +71,7 @@ const SendCryptoInput = ({ isWithRate }: SendCryptoInputProps) => {
         validate: {
             min: validateMin(translationString),
             integer: validateInteger(translationString, {
-                except: !shouldSendInSats || !!decimals,
+                except: !shouldSendInSats,
             }),
             limits: validateLimits(translationString, {
                 amountLimits,
