@@ -117,6 +117,7 @@ export const PassphraseFormScreen = () => {
                             </Box>
                         </Animated.View>
                     </View>
+
                     <PassphraseForm
                         onFocus={handleAnimation}
                         inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}

@@ -4,7 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Box, Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
+import { Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -38,10 +38,9 @@ const FORM_BUTTON_FADE_IN_DURATION = 200;
 // Extra padding needed to make multiline xpub input form visible even with the sticky footer.
 const EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT = 350;
 
-const cameraStyle = prepareNativeStyle(utils => ({
+const cameraStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: utils.spacings.medium,
 }));
 
 const isBtcTestnetXpub = (xpubAddress: string) => {
@@ -191,7 +190,7 @@ export const XpubScanScreen = ({
             >
                 <SelectableNetworkItem symbol={networkSymbol} />
             </HeaderedCard>
-            <Box marginHorizontal="medium">
+            <VStack spacing="medium" marginHorizontal="medium">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection
                         onRequestCamera={handleRequestCamera}
@@ -199,7 +198,7 @@ export const XpubScanScreen = ({
                     />
                 </View>
 
-                <TextDivider title="OR" />
+                <TextDivider title="generic.orSeparator" />
                 <Form form={form}>
                     <VStack spacing="medium">
                         <TextInputField
@@ -225,7 +224,7 @@ export const XpubScanScreen = ({
                 {isDevelopOrDebugEnv() && (
                     <DevXpub symbol={networkSymbol} onSelect={goToAccountImportScreen} />
                 )}
-            </Box>
+            </VStack>
             <XpubHintBottomSheet
                 networkType={networkType}
                 isVisible={isHintSheetVisible}

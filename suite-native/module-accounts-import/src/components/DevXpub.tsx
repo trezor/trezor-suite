@@ -1,4 +1,4 @@
-import { Box, Button } from '@suite-native/atoms';
+import { Button } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 type DevXpubProps = {
@@ -28,14 +28,12 @@ export const DevXpub = ({ symbol, onSelect }: DevXpubProps) => {
     if (!xpub) return null;
 
     return (
-        <Box marginTop="medium">
-            <Button
-                data-testID={`@accounts-import/sync-coins/dev-xpub/${symbol}`}
-                onPress={() => onSelect({ xpubAddress: xpub })}
-                colorScheme="tertiaryElevation0"
-            >
-                Use dev xPub
-            </Button>
-        </Box>
+        <Button
+            data-testID={`@accounts-import/sync-coins/dev-xpub/${symbol}`}
+            onPress={() => onSelect({ xpubAddress: xpub })}
+            colorScheme="tertiaryElevation0"
+        >
+            Use dev xPub
+        </Button>
     );
 };
