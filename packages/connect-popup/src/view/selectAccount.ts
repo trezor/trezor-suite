@@ -41,10 +41,6 @@ export const selectAccount = (payload: UiRequestSelectAccount['payload']) => {
             const selectedType =
                 defaultAccountType || (accountTypes.includes('p2sh') ? 'p2sh' : 'p2wpkh');
             selectAccountContainer.className = `select-account ${selectedType}`;
-            if (accountTypes.includes('p2sh')) {
-                const bech32warn = container.getElementsByClassName('bech32-warning')[0];
-                bech32warn.removeAttribute('style'); // remove default 'display: none' from element
-            }
             for (let i = 0; i < buttons.length; i++) {
                 const button = buttons[i];
                 const type = button.getAttribute('data-tab');
