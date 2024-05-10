@@ -13,7 +13,7 @@ import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { Transport } from './Transport';
-import { Processes } from './Processes';
+import { TransportBackends } from './TransportBackends';
 import { PasswordManager } from './PasswordManager/PasswordManager';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { TriggerHighlight } from './TriggerHighlight';
@@ -55,11 +55,11 @@ export const SettingsDebug = () => {
                 <ThrowTestingError />
             </SettingsSection>
             {!isWeb() && (
-                <SettingsSection title="Processes">
-                    <Processes />
+                <SettingsSection title="Transport backends">
+                    <TransportBackends />
                 </SettingsSection>
             )}
-            <SettingsSection title="Transports">
+            <SettingsSection title="Transport clients">
                 <Transport />
             </SettingsSection>
             <SettingsSection title="Backends">

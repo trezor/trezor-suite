@@ -44,8 +44,8 @@ export const Transport = () => {
         <>
             <SectionItem data-test="@settings/debug/transport">
                 <TextColumn
-                    title="Transports"
-                    description="You may override TrezorConnect default settings here. Select preferred transports that are to be used. You will need to reload after changes"
+                    title="Transport clients"
+                    description="You may override TrezorConnect default settings here. Select your preferred transport clients that are to be used. You will need to reload after changes"
                 />
             </SectionItem>
             {/* todo: make it drag and drop sortable */}
@@ -54,7 +54,23 @@ export const Transport = () => {
                     data-test={`@settings/debug/transport/${transport.name}`}
                     key={transport.name}
                 >
-                    <TextColumn title={`${transport.name} ${transport.active ? '(Active)' : ''}`} />
+                    <TextColumn
+                        title={`${transport.name} ${transport.active ? '(Active)' : ''}`}
+                        description={(() => {
+                            switch (transport.name) {
+                                case 'BridgeTransport':
+                                    return 'Client for bridge http interface regardless node-bridge or trezord-go implementation. It expects bridge to run on http://127.0.0.1:21325/. This is the most general transport that may be used for both desktop and web version of Trezor Suite.';
+                                case 'NodeUsbTransport':
+                                    return 'Direct access to usb using node.js implementation.';
+                                case 'UdpTransport':
+                                    return 'Direct communication with emulators over udp.';
+                                case 'WebUsbTransport':
+                                    return 'Similar to NodeUsbTransport but using WebUSB API. Supported only in Chrome.';
+                                default:
+                                    return '';
+                            }
+                        })()}
+                    />
                     <ActionColumn>
                         <Checkbox
                             isChecked={debugTransports.includes(transport.name)}

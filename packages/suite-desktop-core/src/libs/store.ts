@@ -70,6 +70,7 @@ export class Store {
     public getBridgeSettings() {
         return this.store.get('bridgeSettings', {
             startOnStartup: true,
+            legacy: false,
         });
     }
 

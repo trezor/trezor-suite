@@ -12,6 +12,7 @@ import {
     HandshakeTorModule,
     TorStatusEvent,
     Status,
+    BridgeSettings,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -58,6 +59,7 @@ export interface RendererChannels {
 
     // bridge
     'bridge/status': Status;
+    'bridge/settings': BridgeSettings;
 
     'handshake/event': HandshakeEvent;
 }
@@ -77,6 +79,8 @@ export interface InvokeChannels {
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'bridge/toggle': () => InvokeResult;
     'bridge/get-status': () => InvokeResult<Status>;
+    'bridge/change-settings': (payload: BridgeSettings) => InvokeResult;
+    'bridge/get-settings': () => InvokeResult<BridgeSettings>;
     'user-data/clear': () => InvokeResult;
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
@@ -130,4 +134,6 @@ export interface DesktopApi {
     // Bridge
     getBridgeStatus: DesktopApiInvoke<'bridge/get-status'>;
     toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
+    changeBridgeSettings: DesktopApiInvoke<'bridge/change-settings'>;
+    getBridgeSettings: DesktopApiInvoke<'bridge/get-settings'>;
 }
