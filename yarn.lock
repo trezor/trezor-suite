@@ -10268,6 +10268,7 @@ __metadata:
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/transport-native-ble": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.75.2"
     react-redux: "npm:8.0.7"

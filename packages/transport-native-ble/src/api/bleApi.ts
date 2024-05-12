@@ -9,6 +9,7 @@ import {
 import * as ERRORS from '@trezor/transport/src/errors';
 import { AsyncResultWithTypedError } from '@trezor/transport/src/types';
 
+import { log } from '../logs';
 import { nativeBleManager } from './nativeBleManager';
 
 interface ConstructorParams extends AbstractApiConstructorParams {}
@@ -20,6 +21,7 @@ const debugLog = (...args: any[]) => {
         // eslint-disable-next-line no-console
         console.log('BleApi: ', ...args);
     }
+    log(`BleApi: ${args.map(arg => JSON.stringify(arg)).join(' ')}`);
 };
 
 export class BleApi extends AbstractApi {

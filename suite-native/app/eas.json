@@ -8,7 +8,8 @@
         "develop": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "develop",
-                "EXPO_PUBLIC_CODESIGN_BUILD": "false"
+                "EXPO_PUBLIC_CODESIGN_BUILD": "false",
+                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
             },
             "channel": "develop",
             "autoIncrement": true,
@@ -42,7 +43,8 @@
         "production": {
             "env": {
                 "EXPO_PUBLIC_ENVIRONMENT": "production",
-                "EXPO_PUBLIC_CODESIGN_BUILD": "true"
+                "EXPO_PUBLIC_CODESIGN_BUILD": "true",
+                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "false"
             },
             "autoIncrement": true,
             "android": {
