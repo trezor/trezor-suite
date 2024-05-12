@@ -7,22 +7,25 @@ import { BluetoothPermissionErrors } from '../hooks/useBluetoothPermissions';
 import { BluetoothPermissionError } from './BluetoothPermissionError';
 
 export const BluetoothAdapterStateManager = () => {
-    const { bluetoothState, turnOnBluetooth } = useBluetoothAdapterState();
+    const { bluetoothAdapterState, turnOnBluetoothAdapter } = useBluetoothAdapterState();
 
-    if (bluetoothState === AdapterState.PoweredOn) {
+    if (bluetoothAdapterState === AdapterState.PoweredOn) {
         // We are good to go
         return null;
     }
 
-    if (bluetoothState === AdapterState.Unknown || bluetoothState === AdapterState.Resetting) {
+    if (
+        bluetoothAdapterState === AdapterState.Unknown ||
+        bluetoothAdapterState === AdapterState.Resetting
+    ) {
         return <Loader title="Loading Bluetooth" />;
     }
 
-    if (bluetoothState === AdapterState.Unsupported) {
+    if (bluetoothAdapterState === AdapterState.Unsupported) {
         return <AlertBox title={'Bluetooth Unsupported on this device'} variant="error" />;
     }
 
-    if (bluetoothState === AdapterState.Unauthorized) {
+    if (bluetoothAdapterState === AdapterState.Unauthorized) {
         return (
             <BluetoothPermissionError
                 error={BluetoothPermissionErrors.BluetoothAccessBlocked}
@@ -30,20 +33,20 @@ export const BluetoothAdapterStateManager = () => {
         );
     }
 
-    if (bluetoothState === AdapterState.PoweredOff) {
+    if (bluetoothAdapterState === AdapterState.PoweredOff) {
         return (
             <VStack spacing="small">
                 <AlertBox
                     title={'Bluetooth is turned off. Please turn of Bluetooth to continue.'}
                     variant="error"
                 />
-                <Button onPress={turnOnBluetooth}>Turn on Bluetooth</Button>
+                <Button onPress={turnOnBluetoothAdapter}>Turn on Bluetooth</Button>
             </VStack>
         );
     }
 
     // Exhaustive check - this should never happen
-    const _exhaustiveCheck: never = bluetoothState;
+    const _exhaustiveCheck: never = bluetoothAdapterState;
 
     return _exhaustiveCheck;
 };

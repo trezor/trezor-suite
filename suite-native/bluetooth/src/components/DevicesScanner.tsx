@@ -1,12 +1,13 @@
-import { useEffect, useState } from 'react';
-import { State as AdapterState, BleError } from 'react-native-ble-plx';
+import { useEffect } from 'react';
+import { State as AdapterState } from 'react-native-ble-plx';
 
 import { AlertBox, Box, Button, Loader, Text, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { BLEScannedDevice, nativeBleManager } from '@trezor/transport-native-ble';
+import { nativeBleManager } from '@trezor/transport-native-ble';
 
 import { useBluetoothAdapterState } from '../hooks/useBluetoothAdapterState';
 import { useBluetoothPermissions } from '../hooks/useBluetoothPermissions';
+import { useBluetoothState } from '../hooks/useBluetoothState';
 import { BluetoothAdapterStateManager } from './BluetoothAdapterStateManager';
 import { BluetoothPermissionError } from './BluetoothPermissionError';
 import { ScannedDeviceItem } from './ScannedDeviceItem';
@@ -20,32 +21,23 @@ const containerStyle = prepareNativeStyle(utils => ({
 export const DevicesScanner = () => {
     const { applyStyle } = useNativeStyles();
 
-    const [scannedDevices, setScannedDevices] = useState<BLEScannedDevice[]>([]);
-    const [scanError, setScanError] = useState<BleError | null>();
-    const [isScanRunning, setIsScanRunning] = useState<boolean>(false);
     const { hasBluetoothPermissions, requestBluetoothPermissions, bluetoothPermissionError } =
         useBluetoothPermissions();
-    const { bluetoothState } = useBluetoothAdapterState();
+    const { bluetoothAdapterState } = useBluetoothAdapterState();
+    const bluetoothState = useBluetoothState();
+    const isScanRunning = bluetoothState.status === 'scanning';
+    const scannedDevices = isScanRunning ? bluetoothState.devices : [];
+    const scanError = bluetoothState.status === 'scanError' ? bluetoothState.error : null;
 
-    const stopScanning = async () => {
+    const stopScanning = () => {
         nativeBleManager.stopDeviceScan();
-        setIsScanRunning(false);
-        setScannedDevices([]);
     };
 
     const scanDevices = () => {
-        setScanError(null);
-        setIsScanRunning(true);
-        setScannedDevices([]);
-
         nativeBleManager.scanDevices(
-            newlyScannedDevices => {
-                setScannedDevices(newlyScannedDevices);
-            },
-            error => {
-                setScanError(error);
+            _newlyScannedDevices => {},
+            _error => {
                 stopScanning();
-                setScannedDevices([]);
             },
         );
     };
@@ -62,19 +54,21 @@ export const DevicesScanner = () => {
 
     const shouldShowRequestPermission = !hasBluetoothPermissions;
     const shouldShowScanDevicesButton =
-        !isScanRunning && hasBluetoothPermissions && bluetoothState === AdapterState.PoweredOn;
+        bluetoothState.status === 'idle' &&
+        hasBluetoothPermissions &&
+        bluetoothAdapterState === AdapterState.PoweredOn;
     const shouldShowBluetoothAdapterManager =
-        bluetoothState !== AdapterState.PoweredOn && !isScanRunning && hasBluetoothPermissions;
+        bluetoothAdapterState !== AdapterState.PoweredOn && hasBluetoothPermissions;
     const shouldShowBluetoothPermissionError = !!bluetoothPermissionError;
+    const shouldShowPairingBanner = bluetoothState.status === 'pairing';
 
     return (
         <VStack style={applyStyle(containerStyle)} spacing="large">
             <Text>
                 hasBluetoothPermissions: {hasBluetoothPermissions ? 'true' : 'false'} {'\n'}
                 bluetoothPermissionError: {bluetoothPermissionError} {'\n'}
-                bluetoothState: {bluetoothState} {'\n'}
-                isScanRunning: {isScanRunning ? 'true' : 'false'} {'\n'}
-                shouldShowRequestPermission: {shouldShowRequestPermission ? 'true' : 'false'} {'\n'}
+                bluetoothAdapterState: {bluetoothAdapterState} {'\n'}
+                bluetoothState: {bluetoothState.status} {'\n'}
             </Text>
             {shouldShowRequestPermission && (
                 <VStack>
@@ -84,6 +78,12 @@ export const DevicesScanner = () => {
                     />
                     <Button onPress={requestPermissions}>Request permissions</Button>
                 </VStack>
+            )}
+            {shouldShowPairingBanner && (
+                <AlertBox
+                    variant="info"
+                    title="Pairing with device... Please accept pairing both on mobile and Trezor device."
+                />
             )}
             {shouldShowBluetoothAdapterManager && <BluetoothAdapterStateManager />}
 

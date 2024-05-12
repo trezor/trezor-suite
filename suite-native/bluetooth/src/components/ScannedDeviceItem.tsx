@@ -63,6 +63,18 @@ export const ScannedDeviceItem = ({ device }: { device: BLEScannedDevice }) => {
     const { bleDevice } = device;
     const { applyStyle } = useNativeStyles();
     const [isConnecting, setIsConnecting] = useState(false);
+    const [rerender, setRerender] = useState(0);
+
+    // Rerender every second to update the "Last seen" text
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setRerender(prev => prev + 1);
+        }, 1000);
+
+        return () => {
+            clearInterval(interval);
+        };
+    }, []);
 
     const connectDevice = async () => {
         setIsConnecting(true);
@@ -78,7 +90,7 @@ export const ScannedDeviceItem = ({ device }: { device: BLEScannedDevice }) => {
     };
 
     const lastSeenInSec = Math.floor((Date.now() - device.lastSeenTimestamp) / 1000);
-    const seenQuiteLongAgo = lastSeenInSec > 10;
+    const seenQuiteLongAgo = lastSeenInSec > 5;
 
     if (lastSeenInSec > 30) {
         // This device is probably not in range anymore or it's not advertising anymore

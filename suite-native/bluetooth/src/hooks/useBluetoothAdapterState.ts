@@ -4,7 +4,7 @@ import { State as BluetoothAdapterState } from 'react-native-ble-plx';
 import { nativeBleManager } from '@trezor/transport-native-ble';
 
 export const useBluetoothAdapterState = () => {
-    const [bluetoothState, setState] = useState<BluetoothAdapterState>(
+    const [bluetoothAdapterState, setState] = useState<BluetoothAdapterState>(
         BluetoothAdapterState.Unknown,
     );
 
@@ -22,12 +22,12 @@ export const useBluetoothAdapterState = () => {
         };
     }, []);
 
-    const turnOnBluetooth = async () => {
+    const turnOnBluetoothAdapter = async () => {
         await nativeBleManager.bleManager.enable();
     };
 
     return {
-        bluetoothState,
-        turnOnBluetooth,
+        bluetoothAdapterState,
+        turnOnBluetoothAdapter,
     };
 };

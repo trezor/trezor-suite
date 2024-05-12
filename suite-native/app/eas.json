@@ -7,7 +7,8 @@
     "build": {
         "develop": {
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "develop"
+                "EXPO_PUBLIC_ENVIRONMENT": "develop",
+                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "true"
             },
             "autoIncrement": true,
             "ios": {
@@ -20,7 +21,8 @@
         },
         "production": {
             "env": {
-                "EXPO_PUBLIC_ENVIRONMENT": "production"
+                "EXPO_PUBLIC_ENVIRONMENT": "production",
+                "EXPO_PUBLIC_BLUETOOTH_ENABLED": "false"
             },
             "autoIncrement": true,
             "android": {

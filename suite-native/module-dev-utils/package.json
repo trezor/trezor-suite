@@ -29,6 +29,7 @@
         "@trezor/env-utils": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
+        "@trezor/transport-native-ble": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.75.2",
         "react-redux": "8.0.7"
