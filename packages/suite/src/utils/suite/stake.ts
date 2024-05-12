@@ -8,7 +8,7 @@ import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
-import { fromWei, toHex, toWei } from 'web3-utils';
+import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
 import BigNumber from 'bignumber.js';
@@ -278,7 +278,7 @@ export const getStakeFormsDefaultValues = ({
     selectedUtxos: [],
 });
 
-const transformTx = (
+export const transformTx = (
     tx: any,
     gasPrice: string,
     nonce: string,
@@ -286,12 +286,13 @@ const transformTx = (
 ): EthereumTransaction => {
     const transformedTx = {
         ...tx,
-        gasLimit: toHex(tx.gasLimit),
-        gasPrice: toHex(toWei(gasPrice, 'gwei')),
-        nonce: toHex(nonce),
+        gasLimit: numberToHex(tx.gasLimit),
+        gasPrice: numberToHex(toWei(gasPrice, 'gwei')),
+        nonce: numberToHex(nonce),
         chainId,
         data: sanitizeHex(tx.data),
-        value: toHex(tx.value),
+        // in send form, the amount is in ether, here in wei because it is converted earlier in stake, unstake, claimToWithdraw methods
+        value: numberToHex(tx.value),
     };
     delete transformedTx.from;
 
