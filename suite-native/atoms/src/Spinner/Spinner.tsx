@@ -40,18 +40,19 @@ export const Spinner = ({ loadingState, onComplete }: SpinnerProps) => {
     const { applyStyle } = useNativeStyles();
 
     useEffect(() => {
-        let timeoutId: ReturnType<typeof setTimeout>;
-
+        // Clear timeout happens straight after the timeout function is called to simplify code because
+        // the timeout is in the if block, meaning it wouldn't be available in the useEffect cleanup function.
         if (currentAnimation === 'start') {
-            timeoutId = setTimeout(() => {
+            const timeout = setTimeout(() => {
                 setCurrentAnimation('idle');
-                clearTimeout(timeoutId);
+                clearTimeout(timeout);
             }, animationsMap[currentAnimation].duration);
         } else if (currentAnimation === 'idle') {
             setCurrentAnimation(loadingState);
-            timeoutId = setTimeout(() => {
+        } else if (currentAnimation === 'success' || currentAnimation === 'error') {
+            const timeout = setTimeout(() => {
                 onComplete?.();
-                clearTimeout(timeoutId);
+                clearTimeout(timeout);
             }, animationsMap[loadingState].duration);
         }
     }, [currentAnimation, loadingState, onComplete]);

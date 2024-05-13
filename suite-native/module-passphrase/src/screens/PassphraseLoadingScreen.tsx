@@ -1,8 +1,9 @@
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Spinner } from '@suite-native/atoms';
+import { VStack, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
     HomeStackRoutes,
@@ -17,7 +18,6 @@ import {
     selectIsDeviceAccountless,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
-import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 
 import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 
@@ -31,11 +31,17 @@ export const PassphraseLoadingScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const isDeviceAccountless = useSelector(selectIsDeviceAccountless);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
-    const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
+    useEffect(() => {
+        if (!isDeviceAccountless || (isDeviceAccountless && !isDiscoveryActive)) {
+            setLoadingResult('success');
+        }
+    }, [isDeviceAccountless, isDiscoveryActive]);
 
     const handleSuccess = () => {
         if (!isDeviceAccountless) {
+            setLoadingResult('success');
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
@@ -43,23 +49,17 @@ export const PassphraseLoadingScreen = () => {
                 },
             });
         } else if (isDeviceAccountless && !isDiscoveryActive) {
+            setLoadingResult('success');
             navigation.navigate(RootStackRoutes.PassphraseStack, {
                 screen: PassphraseStackRoutes.PassphraseEmptyWallet,
             });
         }
     };
 
-    const loadingResult = () => {
-        if (!isDeviceAccountless) return 'success';
-        if (isDeviceReadyToUseAndAuthorized) return 'success';
-
-        return 'idle';
-    };
-
     return (
         <Screen screenHeader={<PassphraseScreenHeader />}>
             <VStack flex={1} justifyContent="center" alignItems="center">
-                <Spinner loadingState={loadingResult()} onComplete={handleSuccess} />
+                <Spinner loadingState={loadingResult} onComplete={handleSuccess} />
             </VStack>
         </Screen>
     );
