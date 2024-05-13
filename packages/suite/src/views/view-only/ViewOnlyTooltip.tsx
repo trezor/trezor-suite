@@ -52,7 +52,7 @@ export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
                         </Text>
                     </TextContent>
                     <Button variant="tertiary" onClick={handleClose}>
-                        <Translation id="TR_VIEW_ONLY_TOOLTIP_BUTTON" />
+                        <Translation id="TR_GOT_IT_BUTTON" />
                     </Button>
                 </Notification>
             }

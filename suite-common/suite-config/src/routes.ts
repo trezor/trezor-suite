@@ -114,6 +114,13 @@ export const routes = [
         params: modalAppParams,
     },
     {
+        name: 'create-multi-share-backup',
+        pattern: '/create-multi-share-backup',
+        app: 'create-multi-share-backup',
+        isForegroundApp: true,
+        params: modalAppParams,
+    },
+    {
         name: 'wallet-index',
         pattern: '/accounts',
         app: 'wallet',

@@ -71,6 +71,7 @@ export type FlexProps = FrameProps & {
     flex?: Flex;
     flexWrap?: FlexWrap;
     isReversed?: boolean;
+    className?: string;
 };
 
 const Flex = ({
@@ -83,6 +84,7 @@ const Flex = ({
     flex = 'auto',
     flexWrap = 'nowrap',
     isReversed = false,
+    className,
 }: FlexProps) => {
     const frameProps = {
         margin,
@@ -90,6 +92,7 @@ const Flex = ({
 
     return (
         <Container
+            className={className}
             $gap={gap}
             $justifyContent={justifyContent}
             $alignItems={alignItems}

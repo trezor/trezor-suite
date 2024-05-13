@@ -57,7 +57,7 @@ export const SuiteBanners = () => {
     } else if (device?.features?.unfinished_backup) {
         banner = <FailedBackup />;
         priority = 90;
-    } else if (device?.features?.needs_backup) {
+    } else if (device?.features?.backup_availability === 'Required') {
         banner = <NoBackup />;
         priority = 70;
     } else if (device?.connected && device?.features?.safety_checks === 'PromptAlways') {

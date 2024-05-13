@@ -51,7 +51,8 @@ const SecurityFeatures = () => {
     if (device && device.features) {
         // TODO: add "error - backup failed" instead of needsBackup
         // TODO: add "enable passphrase" instead of hiddenWalletCreated
-        needsBackup = device.features.needs_backup || device.features.unfinished_backup;
+        needsBackup =
+            device.features.backup_availability === 'Required' || device.features.unfinished_backup;
         pinEnabled = device.features.pin_protection;
         hiddenWalletCreated = device.features.passphrase_protection;
         backupFailed = device.features.unfinished_backup;

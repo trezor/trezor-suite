@@ -21,10 +21,11 @@ export default class RecoveryDevice extends AbstractMethod<'recoveryDevice', PRO
             language: payload.language,
             label: payload.label,
             enforce_wordlist: payload.enforce_wordlist,
+            input_method: payload.input_method,
             type: payload.type,
             u2f_counter: payload.u2f_counter,
-            dry_run: payload.dry_run,
         };
+
         this.allowDeviceMode = [...this.allowDeviceMode, UI.INITIALIZE];
         this.useDeviceState = false;
     }

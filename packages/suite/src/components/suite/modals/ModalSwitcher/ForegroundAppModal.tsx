@@ -11,33 +11,27 @@ import { SwitchDeviceLegacy } from 'src/views/suite/SwitchDevice/SwitchDeviceLeg
 import { SwitchDevice } from 'src/views/suite/SwitchDevice/SwitchDevice';
 import type { ForegroundAppRoute } from 'src/types/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { FunctionComponent } from 'react';
+import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
 
 // would not work if defined directly in the switch
 const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
 
 const getForegroundApp = (app: ForegroundAppRoute['app'], isViewOnlyModeVisible: boolean) => {
-    switch (app) {
-        case 'firmware':
-            return FirmwareUpdate;
-        case 'firmware-type':
-            return FirmwareType;
-        case 'firmware-custom':
-            return FirmwareCustom;
-        case 'bridge':
-            return InstallBridge;
-        case 'udev':
-            return UdevRules;
-        case 'version':
-            return Version;
-        case 'switch-device':
-            return isViewOnlyModeVisible ? SwitchDevice : SwitchDeviceLegacy;
-        case 'recovery':
-            return Recovery;
-        case 'backup':
-            return Backup;
-        default:
-            return null;
-    }
+    const map: Record<ForegroundAppRoute['app'], FunctionComponent<any>> = {
+        firmware: FirmwareUpdate,
+        'firmware-type': FirmwareType,
+        'firmware-custom': FirmwareCustom,
+        version: Version,
+        bridge: InstallBridge,
+        udev: UdevRules,
+        'switch-device': isViewOnlyModeVisible ? SwitchDevice : SwitchDeviceLegacy,
+        recovery: Recovery,
+        backup: Backup,
+        'create-multi-share-backup': MultiShareBackupModal,
+    };
+
+    return map[app];
 };
 
 type ForegroundAppModalProps = {

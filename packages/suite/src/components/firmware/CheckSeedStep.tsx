@@ -49,7 +49,9 @@ export const CheckSeedStep = ({ onClose, onSuccess, willBeWiped }: CheckSeedStep
 
     const handleCheckboxClick = () => setIsChecked(prev => !prev);
     const getContent = () => {
-        const isBackedUp = !device?.features?.needs_backup && !device?.features?.unfinished_backup;
+        const isBackedUp =
+            device?.features?.backup_availability !== 'Required' &&
+            !device?.features?.unfinished_backup;
 
         const noBackupHeading = (
             <Translation

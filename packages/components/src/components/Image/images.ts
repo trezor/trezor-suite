@@ -45,6 +45,8 @@ export type PngImage = keyof typeof PNG_IMAGES;
 export const PNG_IMAGES = {
     CLOUDY: 'cloudy.png',
     CLOUDY_2x: 'cloudy@2x.png',
+    CREATE_SHAMIR_GROUP: 'create-shamir-group.png',
+    CREATE_SHAMIR_GROUP_2x: 'create-shamir-group@2x.png',
     BACKUP: 'backup.png',
     BACKUP_2x: 'backup@2x.png',
     CHECK_SHIELD: 'check-shield.png',
@@ -69,6 +71,8 @@ export const PNG_IMAGES = {
     PIN_LOCKED_2x: 'pin-locked@2x.png',
     RECOVERY: 'recovery.png',
     RECOVERY_2x: 'recovery@2x.png',
+    SHAMIR_SHARES: 'shamir-shares.png',
+    SHAMIR_SHARES_2x: 'shamir-shares@2x.png',
     UNDERSTAND: 'understand.png',
     UNDERSTAND_2x: 'understand@2x.png',
     WALLET: 'wallet.png',

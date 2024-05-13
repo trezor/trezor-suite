@@ -4,6 +4,8 @@ import { configureStore } from 'src/support/tests/configureStore';
 import { renderWithProviders, findByTestId } from 'src/support/tests/hooksHelper';
 
 import { Preloader } from '../Preloader';
+import { AppState } from '../../../../reducers/store';
+import { DeepPartial } from '@trezor/type-utils';
 
 // render only Translation.id in data-test attribute
 jest.mock('src/components/suite/Translation', () => ({
@@ -186,14 +188,16 @@ describe('Preloader component', () => {
     });
 
     it('Unacquired device', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { type: 'unacquired' },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { type: 'unacquired' },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -205,14 +209,16 @@ describe('Preloader component', () => {
     });
 
     it('Unreadable device: webusb HID', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'WebUsbTransport' },
                 },
-                device: {
-                    selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -226,14 +232,16 @@ describe('Preloader component', () => {
     it('Unreadable device: missing udev on Linux', () => {
         jest.spyOn(envUtils, 'isLinux').mockImplementation(() => true);
 
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -247,14 +255,16 @@ describe('Preloader component', () => {
     it('Unreadable device: missing udev on non-Linux os (should never happen)', () => {
         jest.spyOn(envUtils, 'isLinux').mockImplementation(() => false);
 
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { type: 'unreadable', error: 'LIBUSB_ERROR_ACCESS' },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -266,14 +276,16 @@ describe('Preloader component', () => {
     });
 
     it('Unreadable device: unknown error', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { type: 'unreadable', error: 'Unexpected error' },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { type: 'unreadable', error: 'Unexpected error' },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -285,14 +297,16 @@ describe('Preloader component', () => {
     });
 
     it('Unknown device (should never happen)', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { features: undefined },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { features: null },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -304,14 +318,16 @@ describe('Preloader component', () => {
     });
 
     it('Seedless device', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { mode: 'seedless', features: {} },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { mode: 'seedless', features: {} },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -324,14 +340,18 @@ describe('Preloader component', () => {
     });
 
     it('Recovery mode device', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: {
+                features: { recovery_status: 'Recovery' },
+            },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { features: { recovery_mode: true } },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -344,14 +364,16 @@ describe('Preloader component', () => {
     });
 
     it('Not initialized device', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { mode: 'initialize', features: {} },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { mode: 'initialize', features: {} },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -364,14 +386,16 @@ describe('Preloader component', () => {
     });
 
     it('Bootloader device with installed firmware', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { mode: 'bootloader', features: { firmware_present: true } },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { mode: 'bootloader', features: { firmware_present: true } },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -384,14 +408,16 @@ describe('Preloader component', () => {
     });
 
     it('Bootloader device without firmware', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { mode: 'bootloader', features: { firmware_present: false } },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { mode: 'bootloader', features: { firmware_present: false } },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
@@ -404,14 +430,16 @@ describe('Preloader component', () => {
     });
 
     it('Required FW update device', () => {
+        const device: DeepPartial<AppState['device']> = {
+            selectedDevice: { firmware: 'required', features: {} },
+        };
+
         const store = initStore(
             getInitialState({
                 suite: {
                     transport: { type: 'BridgeTransport' },
                 },
-                device: {
-                    selectedDevice: { firmware: 'required', features: {} },
-                },
+                device,
             }),
         );
         const { unmount } = renderWithProviders(store, <Index app={store.getState().router.app} />);
