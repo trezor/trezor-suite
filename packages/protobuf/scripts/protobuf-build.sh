@@ -46,7 +46,8 @@ SRC="../../../$REPO_DIR_NAME/common/protob"
 echo 'syntax = "proto2";' > "$DIST"/messages.proto
 echo 'import "google/protobuf/descriptor.proto";' >> "$DIST"/messages.proto
 echo "Build proto file from $SRC"
-grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messages*.proto \
+# NOTE: grep sorting is not cross platform deterministic, make sure that the content of messages.proto ("Message_Type") is at the end of the generated file
+grep -hv -e '^import ' -e '^syntax' -e '^package' -e 'option java_' "$SRC"/messages-*.proto "$SRC"/messages.proto \
 | sed 's/ hw\.trezor\.messages\.common\./ /' \
 | sed 's/ common\./ /' \
 | sed 's/ ethereum_definitions\./ /' \
