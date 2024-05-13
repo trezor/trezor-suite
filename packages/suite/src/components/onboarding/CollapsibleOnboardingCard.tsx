@@ -113,7 +113,7 @@ const CardWrapperInner = styled.div<{ $expandable: boolean }>`
 `;
 
 const Text = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+    color: ${({ theme }) => theme.textSubdued};
     font-size: ${variables.FONT_SIZE.SMALL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -159,7 +159,6 @@ const CollapsibleCardInner = styled(motion.div)`
 `;
 
 const HeadingExpandable = styled.div`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     flex: 1;
