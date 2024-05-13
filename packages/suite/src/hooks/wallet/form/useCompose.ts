@@ -243,7 +243,7 @@ export const useCompose = <TFieldValues extends FormState>({
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formValues: values,
-                    transactionInfo: composedTx,
+                    precomposedTransaction: composedTx,
                     selectedAccount,
                 }),
             ).unwrap();
