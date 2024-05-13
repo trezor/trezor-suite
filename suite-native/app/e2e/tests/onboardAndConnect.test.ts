@@ -38,6 +38,12 @@ describe('Go through onboarding and connect Trezor.', () => {
             device.disableSynchronization();
             await TrezorUserEnvLink.api.startEmu();
 
+            await waitFor(element(by.id('skip-view-only-mode')))
+                .toBeVisible()
+                .withTimeout(10000); // communication between connected Trezor and app takes some time.
+
+            await element(by.id('skip-view-only-mode')).tap();
+
             await waitFor(element(by.text(TREZOR_DEVICE_LABEL)))
                 .toBeVisible()
                 .withTimeout(10000); // communication between connected Trezor and app takes some time.
