@@ -2570,7 +2570,7 @@ export default defineMessages({
         id: 'TR_BACKUP_SUCCESSFUL',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
-        defaultMessage: 'No data available',
+        defaultMessage: 'Rate unavailable',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',
     },
     TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
@@ -3864,7 +3864,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
         defaultMessage:
-            'Mix your assets with other coinjoin users, making it harder to track and analyze your transaction history.',
+            'The coinjoin feature will be/was disabled on June 1st, 2024. Your coinjoin account and funds remain accessible, but no new coinjoin rounds are possible.',
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
@@ -7960,7 +7960,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_0',
         description: '140 symbols max',
         defaultMessage:
-            'Private funds will be hidden after you leave Trezor Suite. To find them again, use the “Hidden funds” button.',
+            'Coinjoin account is not discovered automatically. If you don’t use view-only on this wallet, add the account manually again after reconnecting Trezor.',
     },
     TR_LOADING_FACT_1: {
         id: 'TR_LOADING_FACT_1',
@@ -7972,7 +7972,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_2',
         description: '140 symbols max',
         defaultMessage:
-            "To coinjoin you pay a fee to the coordinator of 0.3%. If you receive bitcoin from someone who uses coinjoin, then you don't need to pay the coordinator fee.",
+            'Coinjoin account is not discovered automatically. If you don’t use view-only on this wallet, add the account manually again after reconnecting Trezor.',
     },
     TR_LOADING_FACT_3: {
         id: 'TR_LOADING_FACT_3',
@@ -8011,12 +8011,12 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_9',
         description: '140 symbols max',
         defaultMessage:
-            'Coinjoin is a collaborative bitcoin transaction, in which you mix your bitcoin together with hundreds of others.',
+            "Privacy is not something that I'm merely entitled to, it's an absolute prerequisite. - Marlon Brando",
     },
     TR_LOADING_FACT_11: {
         id: 'TR_LOADING_FACT_11',
         description: '140 symbols max',
-        defaultMessage: 'A coinjoin is a transaction with hundreds of inputs and outputs',
+        defaultMessage: 'Privacy is not secrecy - Eric Hughes',
     },
     TR_LOADING_FACT_12: {
         id: 'TR_LOADING_FACT_12',
@@ -8038,7 +8038,8 @@ export default defineMessages({
     TR_LOADING_FACT_15: {
         id: 'TR_LOADING_FACT_15',
         description: '140 symbols max',
-        defaultMessage: 'Coinjoin transactions require a minimum input of 5000 sats',
+        defaultMessage:
+            'Privacy is the power to selectively reveal oneself to the world - Eric Hughes',
     },
     TR_LOADING_FACT_16: {
         id: 'TR_LOADING_FACT_16',
@@ -8089,7 +8090,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_24',
         description: '140 symbols max',
         defaultMessage:
-            'The largest ever Bitcoin trade was 161,500 BTC in April 2020, making it worth about $1.1bn',
+            "Privacy is not something that I'm merely entitled to, it's an absolute prerequisite. - Marlon Brando",
     },
     TR_LOADING_FACT_25: {
         id: 'TR_LOADING_FACT_25',
