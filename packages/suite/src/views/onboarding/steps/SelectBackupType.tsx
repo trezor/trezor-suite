@@ -7,6 +7,7 @@ import {
     Text,
     Warning,
     useElevation,
+    variables,
 } from '@trezor/components';
 import {
     Elevation,
@@ -19,7 +20,7 @@ import {
 } from '@trezor/theme';
 import { CSSProperties, ReactNode, forwardRef, useState } from 'react';
 import styled from 'styled-components';
-import { useSelector } from '../../../hooks/suite';
+import { useLayoutSize, useSelector } from '../../../hooks/suite';
 import { selectDevice } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
 import {
@@ -70,6 +71,7 @@ export const getDefaultBackupType = ({
 };
 
 const SELECT_ELEMENT_HEIGHT = 84;
+const SELECT_ELEMENT_HEIGHT_MOBILE = 62;
 
 const Wrapper = styled.div`
     width: 100%;
@@ -84,6 +86,11 @@ const SelectWrapper = styled.div<{ $elevation: Elevation }>`
     border: 1px solid ${mapElevationToBorder};
     background: ${mapElevationToBackground};
     height: ${SELECT_ELEMENT_HEIGHT}px;
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        height: ${SELECT_ELEMENT_HEIGHT_MOBILE}px;
+    }
+
     position: relative;
 `;
 
@@ -112,6 +119,11 @@ const OptionGroupHeading = styled.div`
     display: flex;
     flex-direction: row;
     padding: ${spacingsPx.md} ${spacingsPx.xl} 0 ${spacingsPx.xl};
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
+    }
+
     gap: ${spacingsPx.md};
     align-items: center;
 `;
@@ -120,8 +132,14 @@ const OptionStyled = styled.div`
     display: flex;
     flex-direction: row;
     padding: ${spacingsPx.md} ${spacingsPx.xl};
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        padding: ${spacingsPx.xs} ${spacingsPx.sm};
+    }
+
     gap: ${spacingsPx.md};
     align-items: center;
+    cursor: pointer;
 `;
 
 const DownComponent = () => {
@@ -162,7 +180,7 @@ type OptionProps = {
 };
 
 const Option = ({ children, onSelect, isChecked, 'data-test': dataTest }: OptionProps) => (
-    <OptionStyled>
+    <OptionStyled onClick={onSelect}>
         {children}
         <Radio isChecked={isChecked} onClick={onSelect} data-test={dataTest} />
     </OptionStyled>
@@ -182,17 +200,57 @@ type FloatingSelectionsProps = {
     defaultType: BackupType;
 };
 
-const DefaultTag = () => (
-    <Badge variant="primary" inline margin={{ left: spacings.xxs }}>
-        <Text typographyStyle="hint">
-            <Translation id="TR_ONBOARDING_BACKUP_TYPE_DEFAULT" />
-        </Text>
-    </Badge>
-);
+const DefaultTag = () => {
+    const { isMobileLayout } = useLayoutSize();
+
+    return (
+        <Badge
+            variant="primary"
+            inline
+            margin={{ left: spacings.xxs }}
+            size={isMobileLayout ? 'tiny' : undefined}
+        >
+            <Text typographyStyle="hint">
+                <Translation id="TR_ONBOARDING_BACKUP_TYPE_DEFAULT" />
+            </Text>
+        </Badge>
+    );
+};
+
+const UpgradableToMultiTag = () => {
+    const { isMobileLayout } = useLayoutSize();
+
+    return (
+        <Badge
+            variant="tertiary"
+            inline
+            margin={{ left: spacings.xxs }}
+            size={isMobileLayout ? 'tiny' : undefined}
+        >
+            <Translation id="TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI" />
+        </Badge>
+    );
+};
+
+const AdvancedTag = () => {
+    const { isMobileLayout } = useLayoutSize();
+
+    return (
+        <Badge
+            variant="tertiary"
+            inline
+            margin={{ left: spacings.xxs }}
+            size={isMobileLayout ? 'tiny' : undefined}
+        >
+            <Translation id="TR_ONBOARDING_BACKUP_TYPE_ADVANCED" />
+        </Badge>
+    );
+};
 
 const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
     ({ selected, onSelect, style, defaultType }, ref) => {
         const { elevation } = useElevation();
+        const { isMobileLayout } = useLayoutSize();
 
         return (
             <FloatingSelectionsWrapper $elevation={elevation} ref={ref} style={style}>
@@ -209,15 +267,13 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                     <OptionText>
                         <Text
                             variant={selected === 'shamir-default' ? undefined : 'tertiary'}
-                            typographyStyle="titleSmall"
+                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
                         >
                             <Translation id={typesToLabelMap['shamir-default']} />
                             {defaultType === 'shamir-default' ? (
                                 <DefaultTag />
                             ) : (
-                                <Badge variant="tertiary" inline margin={{ left: spacings.xxs }}>
-                                    <Translation id="TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI" />
-                                </Badge>
+                                <UpgradableToMultiTag />
                             )}
                         </Text>
                         <Text typographyStyle="hint">
@@ -233,13 +289,11 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                     <OptionText>
                         <Text
                             variant={selected === 'shamir-advance' ? undefined : 'tertiary'}
-                            typographyStyle="titleSmall"
+                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
                         >
                             <Translation id={typesToLabelMap['shamir-advance']} />
                             {defaultType === 'shamir-advance' && <DefaultTag />}
-                            <Badge variant="tertiary" inline margin={{ left: spacings.xxs }}>
-                                <Translation id="TR_ONBOARDING_BACKUP_TYPE_ADVANCED" />
-                            </Badge>
+                            <AdvancedTag />
                         </Text>
                         <Text typographyStyle="hint">
                             <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
@@ -263,7 +317,7 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                     <OptionText>
                         <Text
                             variant={selected === '12-words' ? undefined : 'tertiary'}
-                            typographyStyle="titleSmall"
+                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
                         >
                             <Translation id={typesToLabelMap['12-words']} />
                             {defaultType === '12-words' && <DefaultTag />}
@@ -283,7 +337,7 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                     <OptionText>
                         <Text
                             variant={selected === '24-words' ? undefined : 'tertiary'}
-                            typographyStyle="titleSmall"
+                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
                         >
                             <Translation id={typesToLabelMap['24-words']} />
                             {defaultType === '24-words' && <DefaultTag />}
@@ -317,12 +371,13 @@ export const SelectBackupType = ({
     const { elevation } = useElevation();
     const [isOpen, setIsOpen] = useState(false);
     const device = useSelector(selectDevice);
+    const { isMobileLayout } = useLayoutSize();
 
     const { refs, floatingStyles, context } = useFloating({
         open: isOpen,
         onOpenChange: setIsOpen,
         middleware: [
-            offset(-SELECT_ELEMENT_HEIGHT),
+            offset(-(isMobileLayout ? SELECT_ELEMENT_HEIGHT_MOBILE : SELECT_ELEMENT_HEIGHT)),
             size({
                 apply({ rects, elements }) {
                     Object.assign(elements.floating.style, {
@@ -366,7 +421,7 @@ export const SelectBackupType = ({
                             <Text variant="tertiary" typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
                             </Text>
-                            <Text typographyStyle="titleSmall">
+                            <Text typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}>
                                 <Translation
                                     id={
                                         isDefault
