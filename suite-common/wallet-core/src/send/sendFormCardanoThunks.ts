@@ -132,9 +132,12 @@ export const signCardanoSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/signCardanoSendFormTransactionThunk`,
     async (
         {
-            transactionInfo,
+            precomposedTransaction,
             selectedAccount,
-        }: { transactionInfo: PrecomposedTransactionFinalCardano; selectedAccount?: Account },
+        }: {
+            precomposedTransaction: PrecomposedTransactionFinalCardano;
+            selectedAccount?: Account;
+        },
         { dispatch, getState, extra },
     ) => {
         const {
@@ -148,8 +151,8 @@ export const signCardanoSendFormTransactionThunk = createThunk(
             G.isNullable(selectedAccount) ||
             selectedAccountStatus !== 'loaded' ||
             !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final'
+            !precomposedTransaction ||
+            precomposedTransaction.type !== 'final'
         )
             return;
 
@@ -166,14 +169,14 @@ export const signCardanoSendFormTransactionThunk = createThunk(
                 state: device.state,
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
-            inputs: transactionInfo.inputs,
-            outputs: transactionInfo.outputs,
-            unsignedTx: transactionInfo.unsignedTx,
+            inputs: precomposedTransaction.inputs,
+            outputs: precomposedTransaction.outputs,
+            unsignedTx: precomposedTransaction.unsignedTx,
             testnet: isTestnet(symbol),
             protocolMagic: getProtocolMagic(symbol),
             networkId: getNetworkId(symbol),
-            fee: transactionInfo.fee,
-            ttl: transactionInfo.ttl?.toString(),
+            fee: precomposedTransaction.fee,
+            ttl: precomposedTransaction.ttl?.toString(),
             derivationType: getDerivationType(accountType),
         });
 

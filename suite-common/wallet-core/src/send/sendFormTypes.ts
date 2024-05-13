@@ -1,13 +1,7 @@
-import {
-    Account,
-    FormState,
-    PrecomposedTransactionFinal,
-} from '@suite-common/wallet-types';
-
-
+import { Account, FormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 
 export type SignTransactionThunkArguments = {
     formValues: FormState;
-    transactionInfo: PrecomposedTransactionFinal;
+    precomposedTransaction: PrecomposedTransactionFinal;
     selectedAccount?: Account;
 };

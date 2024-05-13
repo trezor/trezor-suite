@@ -45,8 +45,8 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
         })
         .addCase(
             sendFormActions.storePrecomposedTransaction,
-            (state, { payload: { transactionInfo, formState } }) => {
-                state.precomposedTx = transactionInfo;
+            (state, { payload: { precomposedTransaction, formState } }) => {
+                state.precomposedTx = precomposedTransaction;
                 // Deep-cloning to prevent buggy interaction between react-hook-form and immer, see https://github.com/orgs/react-hook-form/discussions/3715#discussioncomment-2151458
                 // Otherwise, whenever the outputs fieldArray is updated after the form draft or precomposedForm is saved, there is na error:
                 // TypeError: Cannot assign to read only property of object '#<Object>'

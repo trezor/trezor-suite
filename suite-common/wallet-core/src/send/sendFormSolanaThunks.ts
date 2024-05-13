@@ -264,7 +264,7 @@ export const composeSolanaSendFormTransactionThunk = createThunk(
 export const signSolanaSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/signSolanaSendFormTransactionThunk`,
     async (
-        { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
+        { formValues, precomposedTransaction, selectedAccount }: SignTransactionThunkArguments,
         { dispatch, getState, extra },
     ) => {
         const {
@@ -278,14 +278,14 @@ export const signSolanaSendFormTransactionThunk = createThunk(
             G.isNullable(selectedAccount) ||
             selectedAccountStatus !== 'loaded' ||
             !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final' ||
-            transactionInfo.feeLimit == null
+            !precomposedTransaction ||
+            precomposedTransaction.type !== 'final' ||
+            precomposedTransaction.feeLimit == null
         )
             return;
 
         if (selectedAccount.networkType !== 'solana') return;
-        const { token } = transactionInfo;
+        const { token } = precomposedTransaction;
 
         const { blockhash, blockHeight: lastValidBlockHeight } = selectBlockchainBlockInfoBySymbol(
             getState(),
@@ -316,8 +316,8 @@ export const signSolanaSendFormTransactionThunk = createThunk(
                       blockhash,
                       lastValidBlockHeight,
                       {
-                          computeUnitPrice: transactionInfo.feePerByte,
-                          computeUnitLimit: transactionInfo.feeLimit,
+                          computeUnitPrice: precomposedTransaction.feePerByte,
+                          computeUnitLimit: precomposedTransaction.feeLimit,
                       },
                   )
                 : undefined;
@@ -333,8 +333,8 @@ export const signSolanaSendFormTransactionThunk = createThunk(
                   blockhash,
                   lastValidBlockHeight,
                   {
-                      computeUnitPrice: transactionInfo.feePerByte,
-                      computeUnitLimit: transactionInfo.feeLimit,
+                      computeUnitPrice: precomposedTransaction.feePerByte,
+                      computeUnitLimit: precomposedTransaction.feeLimit,
                   },
               );
 

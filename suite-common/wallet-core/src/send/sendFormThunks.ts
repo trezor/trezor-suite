@@ -5,10 +5,11 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     Account,
     AccountKey,
-    ComposeActionContext,
+    ExcludedUtxos,
     FormState,
     PrecomposedTransactionFinal,
     PrecomposedTransactionFinalCardano,
+    Prison,
 } from '@suite-common/wallet-types';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -443,18 +444,18 @@ export const pushSendFormRawTransactionThunk = createThunk(
     },
 );
 
-// TODO: can not be formValues obtained from the state
-// TODO: can not be transaction Info obtained from the state
 export const signTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/signTransactionThunk`,
     async (
         {
             formValues,
-            transactionInfo,
+            precomposedTransaction,
             selectedAccount,
         }: {
             formValues: FormState;
-            transactionInfo: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
+            precomposedTransaction:
+                | PrecomposedTransactionFinal
+                | PrecomposedTransactionFinalCardano;
             selectedAccount: Account;
         },
         { dispatch },
@@ -463,10 +464,10 @@ export const signTransactionThunk = createThunk(
         let serializedTx: string | undefined;
         let signedTx: BlockbookTransaction | undefined;
         // Type guard to differentiate between PrecomposedTransactionFinal and PrecomposedTransactionFinalCardano
-        if (isCardanoTx(selectedAccount, transactionInfo)) {
+        if (isCardanoTx(selectedAccount, precomposedTransaction)) {
             serializedTx = await dispatch(
                 signCardanoSendFormTransactionThunk({
-                    transactionInfo,
+                    precomposedTransaction,
                     selectedAccount,
                 }),
             ).unwrap();
@@ -476,7 +477,7 @@ export const signTransactionThunk = createThunk(
                 const response = await dispatch(
                     signBitcoinSendFormTransactionThunk({
                         formValues,
-                        transactionInfo,
+                        precomposedTransaction,
                         selectedAccount,
                     }),
                 ).unwrap();
@@ -487,7 +488,7 @@ export const signTransactionThunk = createThunk(
                 serializedTx = await dispatch(
                     signEthereumSendFormTransactionThunk({
                         formValues,
-                        transactionInfo,
+                        precomposedTransaction,
                         selectedAccount,
                     }),
                 ).unwrap();
@@ -496,7 +497,7 @@ export const signTransactionThunk = createThunk(
                 serializedTx = await dispatch(
                     signRippleSendFormTransactionThunk({
                         formValues,
-                        transactionInfo,
+                        precomposedTransaction,
                         selectedAccount,
                     }),
                 ).unwrap();
@@ -505,7 +506,7 @@ export const signTransactionThunk = createThunk(
                 serializedTx = await dispatch(
                     signSolanaSendFormTransactionThunk({
                         formValues,
-                        transactionInfo,
+                        precomposedTransaction,
                         selectedAccount,
                     }),
                 ).unwrap();
@@ -528,18 +529,18 @@ export const signTransactionThunk = createThunk(
     },
 );
 
-// TODO: can not be formValues obtained from the state
-// TODO: can not be transaction Info obtained from the state
-export const prepareTransactionForSigningThunk = createThunk(
+export const enhancePrecomposedTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/prepareTransactionForSigningThunk`,
     async (
         {
             transactionFormValues: formValues,
-            transactionInfo,
+            precomposedTransaction,
             selectedAccount,
         }: {
             transactionFormValues: FormState;
-            transactionInfo: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
+            precomposedTransaction:
+                | PrecomposedTransactionFinal
+                | PrecomposedTransactionFinalCardano;
             selectedAccount: Account;
         },
         { getState, dispatch, rejectWithValue },
@@ -569,46 +570,48 @@ export const prepareTransactionForSigningThunk = createThunk(
             (!hasDecreasedOutput && nativeRbfAvailable) ||
             (hasDecreasedOutput && decreaseOutputAvailable);
 
-        const enhancedTxInfo: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano = {
-            ...transactionInfo,
+        const enhancedPrecomposedTx:
+            | PrecomposedTransactionFinal
+            | PrecomposedTransactionFinalCardano = {
+            ...precomposedTransaction,
             rbf: formValues.options.includes('bitcoinRBF'),
         };
 
-        if (formValues.rbfParams && !isCardanoTx(selectedAccount, enhancedTxInfo)) {
-            enhancedTxInfo.prevTxid = formValues.rbfParams.txid;
-            enhancedTxInfo.feeDifference = new BigNumber(transactionInfo.fee)
+        if (formValues.rbfParams && !isCardanoTx(selectedAccount, enhancedPrecomposedTx)) {
+            enhancedPrecomposedTx.prevTxid = formValues.rbfParams.txid;
+            enhancedPrecomposedTx.feeDifference = new BigNumber(precomposedTransaction.fee)
                 .minus(formValues.rbfParams.baseFee)
                 .toFixed();
-            enhancedTxInfo.useNativeRbf = useNativeRbf;
-            enhancedTxInfo.useDecreaseOutput = hasDecreasedOutput;
+            enhancedPrecomposedTx.useNativeRbf = useNativeRbf;
+            enhancedPrecomposedTx.useDecreaseOutput = hasDecreasedOutput;
         }
 
         if (
-            !isCardanoTx(selectedAccount, enhancedTxInfo) &&
+            !isCardanoTx(selectedAccount, enhancedPrecomposedTx) &&
             selectedAccount.networkType === 'ethereum' &&
-            enhancedTxInfo.token?.contract &&
+            enhancedPrecomposedTx.token?.contract &&
             selectedAccountNetwork?.chainId
         ) {
             const isTokenKnown = await fetch(
                 `https://data.trezor.io/firmware/eth-definitions/chain-id/${
                     selectedAccountNetwork.chainId
-                }/token-${enhancedTxInfo.token.contract.substring(2).toLowerCase()}.dat`,
+                }/token-${enhancedPrecomposedTx.token.contract.substring(2).toLowerCase()}.dat`,
                 { method: 'HEAD' },
             )
                 .then(response => response.ok)
                 .catch(() => false);
 
-            enhancedTxInfo.isTokenKnown = isTokenKnown;
+            enhancedPrecomposedTx.isTokenKnown = isTokenKnown;
         }
 
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch(
             sendFormActions.storePrecomposedTransaction({
                 formState: formValues,
-                transactionInfo: enhancedTxInfo,
+                precomposedTransaction: enhancedPrecomposedTx,
             }),
         );
 
-        return enhancedTxInfo;
+        return enhancedPrecomposedTx;
     },
 );
