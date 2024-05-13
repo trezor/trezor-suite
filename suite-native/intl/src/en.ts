@@ -699,8 +699,9 @@ export const en = {
                     'Create an offline backup of your passphrase. It is irrecoverable, even by Trezor support.',
                 passphraseMismatchAlert: {
                     title: 'Passphrase mismatch',
-                    description: "Passphrase doesn't match",
-                    buttonTitle: 'Start over',
+                    description: 'Start over and enter your passphrase again.',
+                    primaryButton: 'Start over',
+                    secondaryButton: 'Cancel',
                 },
             },
         },

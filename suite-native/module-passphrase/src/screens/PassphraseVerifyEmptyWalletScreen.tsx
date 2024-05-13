@@ -21,6 +21,7 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { PassphraseForm } from '../components/PassphraseForm';
 import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
 } from '../passphraseThunks';
@@ -59,12 +60,19 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.description" />
                 ),
                 primaryButtonTitle: (
-                    <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.buttonTitle" />
+                    <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.primaryButton" />
                 ),
                 onPressPrimaryButton: () => {
                     navigation.navigate(PassphraseStackRoutes.PassphraseForm);
                     dispatch(retryPassphraseAuthenticationThunk());
                 },
+                primaryButtonVariant: 'redBold',
+                secondaryButtonTitle: (
+                    <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.secondaryButton" />
+                ),
+                onPressSecondaryButton: () =>
+                    dispatch(cancelPassphraseAndSelectStandardDeviceThunk()),
+                secondaryButtonVariant: 'redElevation0',
                 icon: 'warningTriangleLight',
                 pictogramVariant: 'red',
             });

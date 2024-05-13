@@ -11,7 +11,7 @@ import {
     Screen,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { VStack, Card, Text, Image, Button, Box } from '@suite-native/atoms';
+import { VStack, Card, Text, Image, Button, Box, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 
@@ -90,8 +90,7 @@ export const PassphraseEmptyWalletScreen = () => {
                         <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.button" />
                     </Button>
                 </Card>
-                {/* TODO https://github.com/trezor/trezor-suite/issues/12207 */}
-                <Text>OR</Text>
+                <TextDivider title="generic.orSeparator" />
                 <VStack spacing={20}>
                     <VStack alignItems="center" spacing="extraSmall">
                         <Text
