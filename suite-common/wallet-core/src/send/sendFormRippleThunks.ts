@@ -15,12 +15,16 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
     ExternalOutput,
+    FeeInfo,
+    Account,
+    FormState,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Network } from '@suite-common/wallet-config';
 
 import { selectDevice } from '../device/deviceReducer';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import { SignTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 const calculate = (
@@ -89,8 +93,17 @@ const calculate = (
 
 export const composeRippleSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeRippleSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments) => {
-        const { account, network, feeInfo } = formState;
+    async ({
+        formValues,
+        account,
+        network,
+        feeInfo,
+    }: {
+        formValues: FormState;
+        account: Account;
+        network: Network;
+        feeInfo: FeeInfo;
+    }) => {
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
 

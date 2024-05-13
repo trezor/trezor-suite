@@ -35,7 +35,7 @@ import {
     replaceTransactionThunk,
 } from '../transactions/transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectAccounts } from '../accounts/accountsReducer';
+import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectDevice } from '../device/deviceReducer';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
 import {
@@ -67,6 +67,7 @@ import {
     composeSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import { selectNetworkFeeInfo } from '../fees/feesReducer';
 
 export const convertSendFormDraftsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsThunk`,
@@ -124,38 +125,70 @@ export const convertSendFormDraftsThunk = createThunk(
     },
 );
 
-// TODO: remove formState for good, replace by account
 export const composeSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeSendFormTransactionThunk`,
     async (
-        { formValues, formState }: { formValues: FormState; formState: ComposeActionContext },
-        { dispatch },
+        {
+            formValues,
+            accountKey,
+            prison,
+            excludedUtxos,
+        }: {
+            formValues: FormState;
+            accountKey?: AccountKey;
+            prison?: Prison;
+            excludedUtxos?: ExcludedUtxos;
+        },
+        { dispatch, getState, rejectWithValue },
         // eslint-disable-next-line require-await
     ) => {
-        const { account } = formState;
+        const account = selectAccountByKey(getState(), accountKey);
+
+        if (!account) {
+            return rejectWithValue(`Account not found: ${accountKey}`);
+        }
+
+        const network = getNetwork(account.symbol);
+        // TODO: is not custom missing here?
+        const feeInfo = selectNetworkFeeInfo(getState(), account.symbol);
+
+        if (!network) {
+            return rejectWithValue(`Network not found: ${account.symbol}`);
+        }
+
+        if (!feeInfo) {
+            return rejectWithValue(`Fee info not found: ${account.symbol}`);
+        }
+
         if (account.networkType === 'bitcoin') {
             return dispatch(
-                composeBitcoinSendFormTransactionThunk({ formValues, formState }),
+                composeBitcoinSendFormTransactionThunk({
+                    formValues,
+                    account,
+                    feeInfo,
+                    prison,
+                    excludedUtxos,
+                }),
             ).unwrap();
         }
         if (account.networkType === 'ethereum') {
             return dispatch(
-                composeEthereumSendFormTransactionThunk({ formValues, formState }),
+                composeEthereumSendFormTransactionThunk({ formValues, account, feeInfo, network }),
             ).unwrap();
         }
         if (account.networkType === 'ripple') {
             return dispatch(
-                composeRippleSendFormTransactionThunk({ formValues, formState }),
+                composeRippleSendFormTransactionThunk({ formValues, account, network, feeInfo }),
             ).unwrap();
         }
         if (account.networkType === 'cardano') {
             return dispatch(
-                composeCardanoSendFormTransactionThunk({ formValues, formState }),
+                composeCardanoSendFormTransactionThunk({ formValues, account, feeInfo }),
             ).unwrap();
         }
         if (account.networkType === 'solana') {
             return dispatch(
-                composeSolanaSendFormTransactionThunk({ formValues, formState }),
+                composeSolanaSendFormTransactionThunk({ formValues, account, network, feeInfo }),
             ).unwrap();
         }
     },

@@ -14,19 +14,26 @@ import {
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {
     Account,
+    FeeInfo,
+    FormState,
     PrecomposedLevelsCardano,
     PrecomposedTransactionCardano,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { selectDevice } from '../device/deviceReducer';
-import { ComposeTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 export const composeCardanoSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeCardanoSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments, { dispatch }) => {
-        const { account, feeInfo } = formState;
+    async (
+        {
+            formValues,
+            account,
+            feeInfo,
+        }: { formValues: FormState; account: Account; feeInfo: FeeInfo },
+        { dispatch },
+    ) => {
         const changeAddress = getUnusedChangeAddress(account);
         if (!changeAddress || !account.utxo || !account.addresses) return;
 

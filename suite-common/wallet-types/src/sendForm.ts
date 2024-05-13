@@ -63,12 +63,14 @@ export type UseSendFormState = {
     metadataEnabled: boolean;
 };
 
+export type Prison = Record<string, unknown>;
+
 export interface ComposeActionContext {
     account: Account;
     network: Network;
     feeInfo: FeeInfo;
     excludedUtxos?: ExcludedUtxos;
-    prison?: Record<string, unknown>;
+    prison?: Prison;
 }
 
 export interface UtxoSelectionContext {

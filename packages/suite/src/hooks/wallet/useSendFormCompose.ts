@@ -70,13 +70,9 @@ export const useSendFormCompose = ({
             const result = await dispatch(
                 composeSendFormTransactionThunk({
                     formValues,
-                    formState: {
-                        account,
-                        network: state.network,
-                        feeInfo: state.feeInfo,
-                        excludedUtxos,
-                        prison,
-                    },
+                    accountKey: account.key,
+                    prison,
+                    excludedUtxos,
                 }),
             ).unwrap();
 
@@ -87,7 +83,7 @@ export const useSendFormCompose = ({
                 setLoading(false);
             }
         },
-        [account, dispatch, prison, excludedUtxos, setLoading, state.network, state.feeInfo],
+        [account, dispatch, prison, excludedUtxos, setLoading],
     );
 
     // Create a compose request
@@ -121,13 +117,9 @@ export const useSendFormCompose = ({
                 return dispatch(
                     composeSendFormTransactionThunk({
                         formValues: values,
-                        formState: {
-                            account,
-                            network: state.network,
-                            feeInfo: state.feeInfo,
-                            excludedUtxos,
-                            prison,
-                        },
+                        accountKey: account.key,
+                        prison,
+                        excludedUtxos,
                     }),
                 ).unwrap();
             });
@@ -155,8 +147,6 @@ export const useSendFormCompose = ({
             clearErrors,
             getValues,
             account,
-            state.network,
-            state.feeInfo,
             excludedUtxos,
             prison,
         ],

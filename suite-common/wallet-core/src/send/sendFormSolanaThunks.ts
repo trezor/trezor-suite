@@ -8,6 +8,9 @@ import {
     ExternalOutput,
     PrecomposedTransaction,
     PrecomposedLevels,
+    FormState,
+    Account,
+    FeeInfo,
 } from '@suite-common/wallet-types';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { createThunk } from '@suite-common/redux-utils';
@@ -25,10 +28,11 @@ import {
     getAssociatedTokenAccountAddress,
     dummyPriorityFeesForFeeEstimation,
 } from '@suite-common/wallet-utils';
+import { Network } from '@suite-common/wallet-config';
 
 import { selectBlockchainBlockInfoBySymbol } from '../blockchain/blockchainReducer';
 import { selectDevice } from '../device/deviceReducer';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import { SignTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 const calculate = (
@@ -124,8 +128,15 @@ const fetchAccountOwnerAndTokenInfoForAddress = async (
 
 export const composeSolanaSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeSolanaSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments, { getState }) => {
-        const { account, network, feeInfo } = formState;
+    async (
+        {
+            formValues,
+            account,
+            network,
+            feeInfo,
+        }: { formValues: FormState; account: Account; network: Network; feeInfo: FeeInfo },
+        { getState },
+    ) => {
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
 

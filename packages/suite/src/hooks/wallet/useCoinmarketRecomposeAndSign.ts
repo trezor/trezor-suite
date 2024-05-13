@@ -4,8 +4,7 @@ import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sen
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FormState, UseSendFormState } from '@suite-common/wallet-types';
-import { getFeeLevels } from '@suite-common/wallet-utils';
+import { FormState } from '@suite-common/wallet-types';
 import type { FormOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
 
@@ -14,7 +13,6 @@ export const useCoinmarketRecomposeAndSign = () => {
     const { composed, selectedFee } = useSelector(
         state => state.wallet.coinmarket.composedTransactionInfo,
     );
-    const fees = useSelector(state => state.wallet.fees);
     const dispatch = useDispatch();
 
     const recomposeAndSign = useCallback(
@@ -28,7 +26,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             ethereumAdjustGasLimit?: string,
             options: FormOptions[] = ['broadcast'],
         ) => {
-            const { account, network } = selectedAccount;
+            const { account } = selectedAccount;
 
             if (!composed) {
                 dispatch(
@@ -63,19 +61,13 @@ export const useCoinmarketRecomposeAndSign = () => {
                 selectedUtxos: [],
             };
 
-            // prepare form state for composeAction
-            const coinFees = fees[account.symbol];
-            const levels = getFeeLevels(account.networkType, coinFees);
-            const feeInfo = { ...coinFees, levels };
-            const formState = { account, network, feeInfo };
-
             // recalcCustomLimit is used in case of custom fee level, when we want to keep the feePerUnit defined by the user
             // but recompute the feeLimit based on a different transaction data (for example from ethereumDataHex)
             if (recalcCustomLimit && selectedFee === 'custom') {
                 const normalLevels = await dispatch(
                     composeSendFormTransactionThunk({
                         formValues: { ...formValues, selectedFee: 'normal' },
-                        formState: formState as UseSendFormState,
+                        accountKey: account.key,
                     }),
                 ).unwrap();
                 if (
@@ -111,7 +103,7 @@ export const useCoinmarketRecomposeAndSign = () => {
 
             // compose transaction again to recalculate fees based on real account values
             const composedLevels = await dispatch(
-                composeSendFormTransactionThunk({ formValues, formState }),
+                composeSendFormTransactionThunk({ formValues, accountKey: account.key }),
             ).unwrap();
             if (!selectedFee || !composedLevels) {
                 dispatch(

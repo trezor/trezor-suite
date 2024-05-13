@@ -23,12 +23,16 @@ import {
     PrecomposedLevels,
     PrecomposedTransaction,
     ExternalOutput,
+    FormState,
+    Account,
+    FeeInfo,
 } from '@suite-common/wallet-types';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Network } from '@suite-common/wallet-config';
 
 import { selectDevice } from '../device/deviceReducer';
 import { selectTransactions } from '../transactions/transactionsReducer';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import { SignTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 const calculate = (
@@ -110,8 +114,17 @@ const calculate = (
 
 export const composeEthereumSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeEthereumSendFormTransactionThunk`,
-    async ({ formValues, formState }: ComposeTransactionThunkArguments) => {
-        const { account, network, feeInfo } = formState;
+    async ({
+        formValues,
+        account,
+        network,
+        feeInfo,
+    }: {
+        formValues: FormState;
+        account: Account;
+        network: Network;
+        feeInfo: FeeInfo;
+    }) => {
         const composeOutputs = getExternalComposeOutput(formValues, account, network);
         if (!composeOutputs) return; // no valid Output
 

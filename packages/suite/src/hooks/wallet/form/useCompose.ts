@@ -85,7 +85,10 @@ export const useCompose = <TFieldValues extends FormState>({
                 const values = getValues();
 
                 return dispatch(
-                    composeSendFormTransactionThunk({ formValues: values, formState: state }),
+                    composeSendFormTransactionThunk({
+                        formValues: values,
+                        accountKey: selectedAccount?.key,
+                    }),
                 ).unwrap();
             });
 
@@ -104,7 +107,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, errors, debounce, clearErrors, getValues, dispatch, selectedAccount],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)

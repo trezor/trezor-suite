@@ -12,28 +12,43 @@ import {
 } from '@suite-common/wallet-utils';
 import { BTC_RBF_SEQUENCE, BTC_LOCKTIME_SEQUENCE } from '@suite-common/wallet-constants';
 import {
+    Account,
     AddressDisplayOptions,
+    ExcludedUtxos,
+    FeeInfo,
+    FormState,
     PrecomposedLevels,
     PrecomposedTransaction,
+    Prison,
 } from '@suite-common/wallet-types';
 import { createThunk } from '@suite-common/redux-utils';
 
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { selectDevice } from '../device/deviceReducer';
-import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
+import { SignTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
 export const composeBitcoinSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/composeBitcoinSendFormTransactionThunk`,
     async (
-        { formValues, formState }: ComposeTransactionThunkArguments,
+        {
+            formValues,
+            account,
+            feeInfo,
+            prison,
+            excludedUtxos,
+        }: {
+            formValues: FormState;
+            account: Account;
+            feeInfo: FeeInfo;
+            prison?: Prison;
+            excludedUtxos?: ExcludedUtxos;
+        },
         { dispatch, getState, extra },
     ) => {
         const {
             selectors: { selectAreSatsAmountUnit },
         } = extra;
-
-        const { account, excludedUtxos, feeInfo, prison } = formState;
 
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
         const device = selectDevice(getState());
