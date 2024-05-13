@@ -14,7 +14,7 @@ export const CheckRecoverySeed = ({ isDeviceLocked }: CheckRecoverySeedProps) =>
     const dispatch = useDispatch();
     const { device } = useDevice();
 
-    const needsBackup = !!device?.features?.needs_backup;
+    const needsBackup = device?.features?.backup_availability === 'Required';
     const learnMoreUrl = getCheckBackupUrl(device);
 
     const handleClick = () => dispatch(goto('recovery-index', { params: { cancelable: true } }));

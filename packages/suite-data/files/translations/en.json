@@ -2033,6 +2033,7 @@
   "TR_VIEW_ONLY_RADIOS_ENABLED_TITLE": "Enabled",
   "TR_VIEW_ONLY_SEND_COINS_INFO": "You always need to connect Trezor to move coins.",
   "TR_VIEW_ONLY_TOOLTIP_BUTTON": "Got it",
+  "TR_GOT_IT_BUTTON": "Got it",
   "TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO": "You can change it here",
   "TR_VIEW_ONLY_TOOLTIP_DESCRIPTION": "You'll see wallet balances after disconnecting Trezor",
   "TR_VIEW_ONLY_TOOLTIP_TITLE": "View-only enabled",

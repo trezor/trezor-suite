@@ -11,6 +11,13 @@ const {
     SINT_TYPE,
 } = require('./protobuf-patches');
 
+CONSOLE_RED = "\x1b[31m"
+CONSOLE_RESET = "\x1b[0m"
+
+const logError = (text) => {
+    console.error(`Error: ${CONSOLE_RED}${text}${CONSOLE_RESET}`);
+}
+
 const INDENT = ' '.repeat(4);
 
 // proto types to javascript types
@@ -38,6 +45,9 @@ const ENUM_KEYS = [
     'PinMatrixRequestType',
     'WordRequestType',
     'HomescreenFormat',
+    "RecoveryStatus",
+    "BackupAvailability",
+    "RecoveryType",
 ];
 
 const parseEnum = (itemName, item) => {
@@ -131,26 +141,40 @@ const parseMessage = (messageName, message, depth = 0) => {
 // top level messages and nested messages
 Object.keys(json.nested).map(e => parseMessage(e, json.nested[e]));
 
-// types needs reordering (used before defined)
+// Types needs reordering (used before defined).
+// The Type in the Value NEEDs (depends on) the Type in the Key.
 const ORDER = {
     BinanceCoin: 'BinanceInputOutput',
     HDNodeType: 'HDNodePathType',
-    CardanoAssetGroupType: 'CardanoTxOutputType',
-    CardanoTokenType: 'CardanoAssetGroupType',
     TxAck: 'TxAckInputWrapper',
     EthereumFieldType: 'EthereumStructMember',
     EthereumDataType: 'EthereumFieldType',
     PaymentRequestMemo: 'TxAckPaymentRequest',
+    RecoveryDevice: 'Features',
+    RecoveryType: 'RecoveryDevice',
+    RecoveryDeviceInputMethod: 'RecoveryType',
 };
 
 Object.keys(ORDER).forEach(key => {
+    if (key === ORDER[key]) {
+        logError(`ORDER map cannot have key=value`)
+    }
+
     // find indexes
-    const indexA = types.findIndex(t => t && t.name === key);
-    const indexB = types.findIndex(t => t && t.name === ORDER[key]);
-    const prevA = types[indexA];
+    const indexOfDependency = types.findIndex(t => t && t.name === key);
+    if (indexOfDependency === -1) {
+        logError(`Type from key: '${key}' not found in the 'types' variable!`)
+    }
+
+    const indexOfDependant = types.findIndex(t => t && t.name === ORDER[key]);
+    if (indexOfDependant === -1) {
+        logError(`Type from value: '${ORDER[key]}' not found in the 'types' variable!`)
+    }
+
+    const dependency = types[indexOfDependency];
     // replace values
-    delete types[indexA];
-    types.splice(indexB, 0, prevA);
+    delete types[indexOfDependency];
+    types.splice(indexOfDependant, 0, dependency);
 });
 
 // skip not needed types

@@ -4450,8 +4450,8 @@
                     "type": "bool",
                     "id": 18
                 },
-                "needs_backup": {
-                    "type": "bool",
+                "backup_availability": {
+                    "type": "BackupAvailability",
                     "id": 19
                 },
                 "flags": {
@@ -4486,8 +4486,8 @@
                     "type": "bool",
                     "id": 28
                 },
-                "recovery_mode": {
-                    "type": "bool",
+                "recovery_status": {
+                    "type": "RecoveryStatus",
                     "id": 29
                 },
                 "capabilities": {
@@ -4584,9 +4584,31 @@
                 "unit_packaging": {
                     "type": "uint32",
                     "id": 51
+                },
+                "haptic_feedback": {
+                    "type": "bool",
+                    "id": 52
+                },
+                "recovery_type": {
+                    "type": "RecoveryType",
+                    "id": 53
                 }
             },
             "nested": {
+                "BackupAvailability": {
+                    "values": {
+                        "NotAvailable": 0,
+                        "Required": 1,
+                        "Available": 2
+                    }
+                },
+                "RecoveryStatus": {
+                    "values": {
+                        "Nothing": 0,
+                        "Recovery": 1,
+                        "Backup": 2
+                    }
+                },
                 "Capability": {
                     "options": {
                         "(has_bitcoin_only_values)": true
@@ -4612,6 +4634,12 @@
                         },
                         "Capability_Translations": {
                             "(bitcoin_only)": true
+                        },
+                        "Capability_Brightness": {
+                            "(bitcoin_only)": true
+                        },
+                        "Capability_Haptic": {
+                            "(bitcoin_only)": true
                         }
                     },
                     "values": {
@@ -4633,7 +4661,9 @@
                         "Capability_ShamirGroups": 16,
                         "Capability_PassphraseEntry": 17,
                         "Capability_Solana": 18,
-                        "Capability_Translations": 19
+                        "Capability_Translations": 19,
+                        "Capability_Brightness": 20,
+                        "Capability_Haptic": 21
                     }
                 }
             }
@@ -4703,6 +4733,10 @@
                 "hide_passphrase_from_host": {
                     "type": "bool",
                     "id": 11
+                },
+                "haptic_feedback": {
+                    "type": "bool",
+                    "id": 13
                 }
             }
         },
@@ -5031,26 +5065,36 @@
                     "type": "bool",
                     "id": 6
                 },
-                "type": {
-                    "type": "RecoveryDeviceType",
+                "input_method": {
+                    "type": "RecoveryDeviceInputMethod",
                     "id": 8
                 },
                 "u2f_counter": {
                     "type": "uint32",
                     "id": 9
                 },
-                "dry_run": {
-                    "type": "bool",
-                    "id": 10
+                "type": {
+                    "type": "RecoveryType",
+                    "id": 10,
+                    "options": {
+                        "default": "NormalRecovery"
+                    }
                 }
             },
             "nested": {
-                "RecoveryDeviceType": {
+                "RecoveryDeviceInputMethod": {
                     "values": {
-                        "RecoveryDeviceType_ScrambledWords": 0,
-                        "RecoveryDeviceType_Matrix": 1
+                        "ScrambledWords": 0,
+                        "Matrix": 1
                     }
                 }
+            }
+        },
+        "RecoveryType": {
+            "values": {
+                "NormalRecovery": 0,
+                "DryRun": 1,
+                "UnlockRepeatedBackup": 2
             }
         },
         "WordRequest": {
@@ -5187,6 +5231,14 @@
         },
         "UnlockBootloader": {
             "fields": {}
+        },
+        "SetBrightness": {
+            "fields": {
+                "value": {
+                    "type": "uint32",
+                    "id": 1
+                }
+            }
         },
         "MoneroNetworkType": {
             "values": {
@@ -8081,6 +8133,10 @@
                     "(bitcoin_only)": true,
                     "(wire_in)": true
                 },
+                "MessageType_SetBrightness": {
+                    "(bitcoin_only)": true,
+                    "(wire_in)": true
+                },
                 "MessageType_SetU2FCounter": {
                     "(wire_in)": true
                 },
@@ -8765,6 +8821,7 @@
                 "MessageType_ChangeLanguage": 990,
                 "MessageType_TranslationDataRequest": 991,
                 "MessageType_TranslationDataAck": 992,
+                "MessageType_SetBrightness": 993,
                 "MessageType_SetU2FCounter": 63,
                 "MessageType_GetNextU2FCounter": 80,
                 "MessageType_NextU2FCounter": 81,

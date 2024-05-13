@@ -20,6 +20,7 @@ import { DisplayRotation } from './DisplayRotation';
 import { FirmwareTypeChange } from './FirmwareTypeChange';
 import { FirmwareVersion } from './FirmwareVersion';
 import { Homescreen } from './Homescreen';
+import { MultiShareBackup } from './MultiShareBackup';
 import { Passphrase } from './Passphrase';
 import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
@@ -28,12 +29,14 @@ import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
 import { EnableViewOnly } from './EnableViewOnly';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
     const wrongDeviceMode =
-        (device?.mode && ['seedless'].includes(device.mode)) || device?.features?.recovery_mode;
+        (device?.mode && ['seedless'].includes(device.mode)) ||
+        (device?.features !== undefined && isRecoveryInProgress(device?.features));
     const firmwareUpdateRequired = device?.firmware === 'required';
 
     return noTransportAvailable || wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
@@ -120,6 +123,7 @@ export const SettingsDevice = () => {
                     ) : (
                         <>
                             <BackupRecoverySeed isDeviceLocked={isDeviceLocked} />
+                            <MultiShareBackup />
                             <CheckRecoverySeed isDeviceLocked={isDeviceLocked} />
                         </>
                     )}

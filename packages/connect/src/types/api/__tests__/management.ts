@@ -1,4 +1,4 @@
-import { TrezorConnect } from '../../..';
+import { PROTO, TrezorConnect } from '../../..';
 
 export const management = async (api: TrezorConnect) => {
     const reset = await api.resetDevice({
@@ -65,8 +65,8 @@ export const management = async (api: TrezorConnect) => {
         passphrase_protection: true,
         pin_protection: true,
         label: 'My Trezor',
-        type: 1,
-        dry_run: true,
+        input_method: PROTO.RecoveryDeviceInputMethod.Matrix,
+        type: PROTO.RecoveryType.DryRun,
         word_count: 24,
     });
     if (recovery.success) recovery.payload.message.toLowerCase();

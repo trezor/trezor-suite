@@ -24,6 +24,7 @@ import { DeviceNoFirmware } from './DeviceNoFirmware';
 import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
+import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
 
 const Wrapper = styled.div`
     display: flex;
@@ -49,7 +50,7 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
     const isWebUsbTransport = isWebUsb(transport);
 
     const TipComponent = useMemo(
-        () => () => {
+        () => (): React.JSX.Element => {
             switch (prerequisite) {
                 case 'transport-bridge':
                     return <Transport />;
@@ -77,9 +78,11 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     return <DeviceNoFirmware />;
                 case 'firmware-required':
                     return <DeviceUpdateRequired />;
+                case 'multi-share-backup-in-progress':
+                    return <MultiShareBackupInProgress />;
 
-                default:
-                    return null;
+                case undefined:
+                    return <></>;
             }
         },
         [prerequisite, isWebUsbTransport, device],

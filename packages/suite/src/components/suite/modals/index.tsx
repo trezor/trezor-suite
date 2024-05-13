@@ -46,3 +46,4 @@ export { StakeEthInANutshellModal } from './ReduxModal/UserContextModal/StakeEth
 export { StakeModal } from './ReduxModal/UserContextModal/StakeModal/StakeModal';
 export { UnstakeModal } from './ReduxModal/UserContextModal/UnstakeModal/UnstakeModal';
 export { ClaimModal } from './ReduxModal/UserContextModal/ClaimModal/ClaimModal';
+export { MultiShareBackupModal } from './ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';

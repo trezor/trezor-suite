@@ -317,7 +317,7 @@ const inner = async (method: AbstractMethod<any>, device: Device) => {
         }
     }
 
-    const deviceNeedsBackup = device.features.needs_backup;
+    const deviceNeedsBackup = device.features.backup_availability === 'Required';
     if (deviceNeedsBackup) {
         if (
             method.noBackupConfirmationMode === 'always' ||

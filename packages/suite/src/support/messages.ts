@@ -2100,7 +2100,7 @@ export default defineMessages({
     },
     TR_BACKUP_SUBHEADING_1: {
         defaultMessage:
-            "A wallet backup is a series of randomly generated words created by your Trezor. It’s important to write down your wallet backup and keep it safe, as it's the only way to recover and access your funds.",
+            "A wallet backup is a series of randomly generated words created by your Trezor. It's important to write down your wallet backup and keep it safe, as it's the only way to recover and access your funds.",
         description: 'Explanation what recovery seed is',
         id: 'TR_BACKUP_SUBHEADING_1',
     },
@@ -2122,6 +2122,189 @@ export default defineMessages({
         defaultMessage: 'Enter your recovery seed word by word on your computer.',
         description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
+    },
+    TR_MULTI_SHARE_BACKUP: {
+        defaultMessage: 'Multi-share Backup',
+        id: 'TR_MULTI_SHARE_BACKUP',
+    },
+    TR_MULTI_SHARE_BACKUP_DESCRIPTION: {
+        defaultMessage:
+            'Generate multiple shares, each containing 20 words. These shares are used collectively to recover your funds.',
+        id: 'TR_MULTI_SHARE_BACKUP_DESCRIPTION',
+    },
+
+    TR_MULTI_SHARE_BACKUP_IN_PROGRESS: {
+        defaultMessage: 'Multi-share Backup creation in progress',
+        id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS',
+    },
+    TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING: {
+        defaultMessage: 'Please continue creating shares on your Trezor',
+        id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING',
+    },
+    TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION: {
+        defaultMessage:
+            'After successfully creating a Multi-share Backup, you will be able to continue using your device with Trezor Suite.',
+        id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION',
+    },
+
+    TR_CREATE_MULTI_SHARE_BACKUP: {
+        defaultMessage: 'Create multi-share backup',
+        id: 'TR_CREATE_MULTI_SHARE_BACKUP',
+    },
+    TR_MULTI_SHARE_BACKUP_CALLOUT_1: {
+        defaultMessage: 'What does it do?',
+        id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_1',
+    },
+    TR_MULTI_SHARE_BACKUP_CALLOUT_2: {
+        defaultMessage: 'What about my current backup?',
+        id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_2',
+    },
+    TR_MULTI_SHARE_BACKUP_CALLOUT_3: {
+        defaultMessage: 'Please note',
+        id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_3',
+    },
+    TR_MULTI_SHARE_BACKUP_EXPLANATION_1: {
+        defaultMessage:
+            'Multi backup creates multiple 20 word shares that will be needed for recovering your Trezor. You can distribute these among your family, friends, or hide them in different places. If the time comes to recover your Trezor, multiple shares must be used collectively to regain access to your funds.',
+        id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_1',
+    },
+    TR_MULTI_SHARE_BACKUP_EXPLANATION_2: {
+        defaultMessage:
+            'You existing backup will still allow you to recover your funds. You should hide it well, ideally away from the new backup shares.',
+        id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_2',
+    },
+    TR_MULTI_SHARE_BACKUP_CHECKBOX_1: {
+        defaultMessage: 'This is an advanced feature, and I understand the extra responsibility',
+        id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_1',
+    },
+    TR_MULTI_SHARE_BACKUP_CHECKBOX_2: {
+        defaultMessage: 'My current backup will still be able to recover my wallet',
+        id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_2',
+    },
+    TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP: {
+        defaultMessage: 'Tips on storing backup',
+        id: 'TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP',
+    },
+    TR_CREATE_MULTI_SHARE_BACKUP_CREATED: {
+        defaultMessage: 'Multi-share Backup created',
+        id: 'TR_CREATE_MULTI_SHARE_BACKUP_CREATED',
+    },
+    TR_MULTI_SHARE_BACKUP_GREAT: {
+        defaultMessage: 'Great!',
+        id: 'TR_MULTI_SHARE_BACKUP_GREAT',
+    },
+    TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT: {
+        defaultMessage:
+            'You’ve done a huge step for improving your security. Don’t forget to hide and distribute your backup well.',
+        id: 'TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT',
+    },
+    TR_MULTI_SHARE_BACKUP_BACKUPS: {
+        defaultMessage: 'Backups',
+        id: 'TR_MULTI_SHARE_BACKUP_BACKUPS',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_HEADER: {
+        defaultMessage: 'My previous backup',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE1: {
+        defaultMessage: 'Still recovers you funds',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE1',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2: {
+        defaultMessage: 'Hide it well',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_HEADER: {
+        defaultMessage: 'My new Multi-share Backup',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE1: {
+        defaultMessage: 'Collect the number of shares set as the threshold to recover your funds',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE1',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE2: {
+        defaultMessage: 'Hide them well. Can be different places, different people',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE2',
+    },
+    TR_MULTI_SHARE_BACKUP_SUCCESS_WHY_IS_BACKUP_IMPORTANT: {
+        defaultMessage: 'Why is backup important',
+        id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_WHY_IS_BACKUP_IMPORTANT',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR: {
+        defaultMessage: 'Lost your Trezor?',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR_INFO_TEXT: {
+        defaultMessage: 'Not a problem, recover your coins with Backup!',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR_INFO_TEXT',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP: {
+        defaultMessage: 'Lost your Backup?',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP',
+    },
+    TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT: {
+        defaultMessage:
+            'That could be very bad if you also lost your Trezor. Contact support if that happens.',
+        id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT',
+    },
+    TR_NEXT_UP: {
+        defaultMessage: 'Next up',
+        id: 'TR_NEXT_UP',
+    },
+    TR_N_MIN: {
+        defaultMessage: '{n} min',
+        id: 'TR_N_MIN',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP: {
+        defaultMessage: 'Verify Trezor ownership',
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION: {
+        defaultMessage:
+            'We need you to prove you own this wallet by entering your existing wallet backup.',
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP_CARD_1: {
+        defaultMessage: 'Grab your existing wallet backup',
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP_CARD_1',
+    },
+    TR_VERIFY_TREZOR_OWNERSHIP_CARD_2: {
+        defaultMessage: "Don't take photos, or digital copies of backup",
+        id: 'TR_VERIFY_TREZOR_OWNERSHIP_CARD_2',
+    },
+    TR_CREATE_SHARES: {
+        defaultMessage: 'Create shares on Trezor',
+        id: 'TR_CREATE_SHARES',
+    },
+    TR_CREATE_SHARES_EXPLANATION: {
+        defaultMessage:
+            "Now, you'll be selecting amount of shares, and minimum of shares required to recover your Trezor.",
+        id: 'TR_CREATE_SHARES_EXPLANATION',
+    },
+    TR_CREATE_SHARES_EXAMPLE: {
+        defaultMessage: 'e.g. 5 shares total, at least any 3 for recovery',
+        id: 'TR_CREATE_SHARES_EXAMPLE',
+    },
+    TR_CREATE_SHARES_CARD_1: {
+        defaultMessage:
+            'Grab pen and paper. Or print <cardsLink>Trezor cards</cardsLink>, or use <keepLink>Trezor Keep</keepLink>',
+        id: 'TR_CREATE_SHARES_CARD_1',
+    },
+    TR_CREATE_SHARES_CARD_2: {
+        defaultMessage: "Don't take photos, or digital copies of backup",
+        id: 'TR_CREATE_SHARES_CARD_2',
+    },
+    TR_CREATE_SHARES_CARD_3: {
+        defaultMessage: "Make sure it's just you, no curious onlookers",
+        id: 'TR_CREATE_SHARES_CARD_3',
+    },
+    TR_ENTER_EXISTING_BACKUP: {
+        defaultMessage: 'Enter existing backup on Trezor',
+        id: 'TR_ENTER_EXISTING_BACKUP',
+    },
+    TR_DONT_HAVE_BACKUP: {
+        defaultMessage: "I don't have a backup",
+        id: 'TR_DONT_HAVE_BACKUP',
     },
     TR_BCH_ADDRESS_INFO: {
         defaultMessage:
@@ -8969,8 +9152,8 @@ export default defineMessages({
         id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
         defaultMessage: 'You can change it here',
     },
-    TR_VIEW_ONLY_TOOLTIP_BUTTON: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_BUTTON',
+    TR_GOT_IT_BUTTON: {
+        id: 'TR_GOT_IT_BUTTON',
         defaultMessage: 'Got it',
     },
     TR_VIEW_ONLY_ENABLED: {
