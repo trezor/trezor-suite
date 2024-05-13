@@ -4,7 +4,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "dev": "concurrently \"next -p 8088\" \"PORT=8089 yarn workspace @trezor/connect-popup dev\"",
+        "dev": "concurrently \"next -p 8088\" \"PORT=8089 NO_HTTPS=true yarn workspace @trezor/connect-web dev\"",
         "dev:explorer": "next -p 8088",
         "build": "next build && rm -rf build && mv out build",
         "build:webextension": "BUILD_TARGET=webextension yarn build && yarn g:rimraf build-webextension && TS_NODE_PROJECT=\"tsconfig.json\" yarn webpack --config ./webpack/webextension.webpack.config.ts && bash ./webpack/replace-next-filenames.sh",
