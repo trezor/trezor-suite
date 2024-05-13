@@ -10,7 +10,10 @@ import {
 } from '@suite-common/wallet-core';
 import { BottomSheet, Box, Button, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useIsBiometricsInitialSetupFinished } from '@suite-native/biometrics';
+import {
+    getIsBiometricsFeatureAvailable,
+    useIsBiometricsInitialSetupFinished,
+} from '@suite-native/biometrics';
 import { Translation } from '@suite-native/intl';
 import {
     selectViewOnlyCancelationTimestamp,
@@ -45,6 +48,16 @@ export const EnableViewOnlyBottomSheet = () => {
     const isDeviceRemembered = useSelector(selectIsDeviceRemembered);
     const { showToast } = useToast();
     const [isVisible, setIsVisible] = useState(false);
+    const [isAvailableBiometrics, setIsAvailableBiometrics] = useState(false);
+
+    useEffect(() => {
+        const fetchBiometricsAvailability = async () => {
+            const isAvailable = await getIsBiometricsFeatureAvailable();
+            setIsAvailableBiometrics(isAvailable);
+        };
+
+        fetchBiometricsAvailability();
+    }, []);
 
     // show the bottom sheet if:
     //     View Only feature is enabled
@@ -52,7 +65,7 @@ export const EnableViewOnlyBottomSheet = () => {
     //     the device is authorized
     //     not a portfolio tracker
     //     the user hasn't made a choice yet
-    //     and biometrics initial setup was decided
+    //     and biometrics initial setup was decided or biometrics is not available
 
     const canBeShowed =
         isViewOnlyModeFeatureEnabled &&
@@ -60,7 +73,7 @@ export const EnableViewOnlyBottomSheet = () => {
         isDeviceAuthorized &&
         !isPortfolioTrackerDevice &&
         !viewOnlyCancelationTimestamp &&
-        isBiometricsInitialSetupFinished;
+        (isBiometricsInitialSetupFinished || !isAvailableBiometrics);
 
     useEffect(() => {
         let isMounted = true;
