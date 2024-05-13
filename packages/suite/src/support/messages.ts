@@ -3299,7 +3299,7 @@ export default defineMessages({
         id: 'TR_PASTE_URI',
     },
     TR_YOUR_WALLET_SUCCESSFULLY_CREATED: {
-        defaultMessage: 'Wallet successfully createdy',
+        defaultMessage: 'Wallet successfully created',
         id: 'TR_YOUR_WALLET_SUCCESSFULLY_CREATED',
     },
     TR_YOUR_WALLET_IS_ALMOST_READY_DESCRIPTION: {
