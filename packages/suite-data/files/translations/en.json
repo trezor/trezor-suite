@@ -1939,7 +1939,7 @@
   "TR_UNDISCOVERED_WALLET": "Click to discover wallet",
   "TR_UNECO_COINJOIN_AGREE": "I understand",
   "TR_UNECO_COINJOIN_EXPLANATION": "If your account balance is below the recommended minimum ({crypto}) coinjoin may be uneconomical. Press <b>Cancel</b> to go back and add more funds, or <b>I understand</b> to proceed with the coinjoin.",
-  "TR_UNECO_COINJOIN_RECEIVE_WARNING": "Coinjoin at least {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} for the best results.",
+  "TR_UNECO_COINJOIN_RECEIVE_WARNING": "You can receive funds into this account and use it like any other. Please note that the coinjoin feature will be discontinued as of June 1st 2024.",
   "TR_UNECO_COINJOIN_TITLE": "Uneconomical coinjoin",
   "TR_UNECO_COINJOIN_WARNING": "Coinjoining less than {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} is not recommended",
   "TR_UNKNOWN_CONFIRMATION_TIME": "unknown",
