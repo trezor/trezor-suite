@@ -142,7 +142,6 @@ export const ResetDeviceStep = () => {
                     <OnboardingButtonBack onClick={() => goToPreviousStep()} />
                 )
             }
-            variant="small"
         >
             {!isWaitingOnDevice ? (
                 <OptionsWrapper $fullWidth={true}>
