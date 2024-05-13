@@ -8,6 +8,7 @@ PARENT_PATH=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 BRANCH="main"
 DIST="."
+REPO_DIR_NAME="trezor-firmware-probuf-update"
 
 if [[ $# -ne 0 && $# -ne 1 ]]
     then
@@ -22,22 +23,22 @@ fi
 
 cd ../../../
 ls -la
-if test -d ./trezor-firmware; then
-    echo "trezor-firmware directory exists"
+if test -d ./$REPO_DIR_NAME; then
+    echo "$REPO_DIR_NAME directory exists"
 else
-    echo "trezor-firmware directory does not exist"
-    git clone https://github.com/trezor/trezor-firmware.git
+    echo "$REPO_DIR_NAME directory does not exist"
+    git clone https://github.com/trezor/trezor-firmware.git $REPO_DIR_NAME
 fi
 
-cd trezor-firmware
+cd $REPO_DIR_NAME
 git fetch origin
 git checkout "$BRANCH"
-git pull origin "$BRANCH"
+git reset "origin/$BRANCH" --hard
 cd ..
 
 cd "$PARENT_PATH/.."
 
-SRC="../../../trezor-firmware/common/protob"
+SRC="../../../$REPO_DIR_NAME/common/protob"
 
 # BUILD combined messages.proto file from protobuf files
 # this code was copied from ./submodules/trezor-common/protob Makekile
