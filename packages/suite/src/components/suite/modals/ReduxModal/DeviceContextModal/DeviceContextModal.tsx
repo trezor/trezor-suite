@@ -30,8 +30,8 @@ export const DeviceContextModal = ({
     data,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectDevice);
-    const intl = useIntl();
     const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
+    const intl = useIntl();
 
     if (!device) return null;
 

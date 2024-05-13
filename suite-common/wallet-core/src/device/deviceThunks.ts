@@ -338,7 +338,10 @@ export const authorizeDevice = createThunk(
 
         dispatch(deviceActions.authFailed(device));
         dispatch(
-            notificationsActions.addToast({ type: 'auth-failed', error: response.payload.error }),
+            notificationsActions.addToast({
+                type: 'auth-failed',
+                error: response.payload.error,
+            }),
         );
 
         return false;
