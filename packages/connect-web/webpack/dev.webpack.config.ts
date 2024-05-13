@@ -27,13 +27,17 @@ const dev = {
     plugins: [
         // connect-web dev needs to be served from https
         // to allow injection in 3rd party builds using trezor-connect-src param
+        // for that, you need to generate your own key and cert
         new WebpackPluginServe({
-            port: 8088,
+            port: process.env.PORT ? parseInt(process.env.PORT) : 8088,
             hmr: true,
-            https: {
-                key: fs.readFileSync(path.join(__dirname, '../webpack/connect_dev.key')),
-                cert: fs.readFileSync(path.join(__dirname, '../webpack/connect_dev.crt')),
-            },
+            https:
+                process.env.NO_HTTPS === 'true'
+                    ? undefined
+                    : {
+                          key: fs.readFileSync(path.join(__dirname, '../webpack/connect_dev.key')),
+                          cert: fs.readFileSync(path.join(__dirname, '../webpack/connect_dev.crt')),
+                      },
             static: [
                 path.join(__dirname, '../build'),
                 path.join(__dirname, '../../connect-popup/build'),
