@@ -19,8 +19,8 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
         public: {
             network: 'btc',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'https://wasabiwallet.io/wabisabi/',
-            wabisabiBackendUrl: 'https://wasabiwallet.io/',
+            coordinatorUrl: 'https://taxationistheft.io/wabisabi/',
+            wabisabiBackendUrl: 'https://taxationistheft.io/',
             blockbookUrls: [
                 'https://btc1.trezor.io',
                 'https://btc2.trezor.io',
@@ -54,9 +54,9 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
             network: 'test',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
             /* clearnet addresses */
-            coordinatorUrl: 'https://wasabiwallet.co/wabisabi/',
+            coordinatorUrl: 'https://taxationistheft.co/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'https://wasabiwallet.co/',
+            wabisabiBackendUrl: 'https://taxationistheft.co/',
             blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
             onionDomains: {
                 'trezor.io': 'trezoriovpjcahpzkrewelclulmszwbqpzmzgub37gbcjlvluxtruqad.onion',
@@ -101,9 +101,9 @@ export const COINJOIN_NETWORKS: PartialRecord<NetworkSymbol, ServerEnvironment> 
         staging: {
             network: 'test',
             coordinatorName: 'CoinJoinCoordinatorIdentifier',
-            coordinatorUrl: 'https://dev-coinjoin-testnet.trezor.io/wabisabi/',
+            coordinatorUrl: 'https://taxationistheft.io/wabisabi/',
             // backend settings
-            wabisabiBackendUrl: 'https://dev-coinjoin-testnet.trezor.io/',
+            wabisabiBackendUrl: 'https://taxationistheft.io/',
             blockbookUrls: ['https://tbtc1.trezor.io', 'https://tbtc2.trezor.io'],
             baseBlockHeight: 2349000,
             baseBlockHash: '0000000000000014af3e6e1a3f0a24be7bc65998b9bc01e4a05b134a89d304bf',
