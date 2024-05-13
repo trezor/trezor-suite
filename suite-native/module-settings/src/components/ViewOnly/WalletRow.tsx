@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 
 import { Button, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { toggleRememberDevice } from '@suite-common/wallet-core';
+import { deviceActions, toggleRememberDevice } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useToast } from '@suite-native/toasts';
 import { Icon } from '@suite-common/icons';
@@ -41,7 +41,14 @@ export const WalletRow = ({ device }: { device: AcquiredDevice }) => {
             message: <Translation id={toastTranslationId} />,
             icon: 'check',
         });
-        dispatch(toggleRememberDevice({ device }));
+
+        if (!device.connected && device.remember) {
+            // disconnected device, view-only is being disabled so it can be forgotten
+            dispatch(deviceActions.forgetDevice(device));
+        } else {
+            // device is connected or become remembered
+            dispatch(toggleRememberDevice({ device }));
+        }
     };
 
     const handleDisableViewOnly = () => {
@@ -61,7 +68,7 @@ export const WalletRow = ({ device }: { device: AcquiredDevice }) => {
             primaryButtonTitle: (
                 <Translation id="moduleSettings.viewOnly.disableDialog.buttons.primary" />
             ),
-            onPressPrimaryButton: () => toggleViewOnly(),
+            onPressPrimaryButton: toggleViewOnly,
             primaryButtonVariant: 'redBold',
             secondaryButtonTitle: (
                 <Translation id="moduleSettings.viewOnly.disableDialog.buttons.secondary" />
