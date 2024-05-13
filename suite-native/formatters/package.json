@@ -20,7 +20,7 @@
         "@suite-common/wallet-utils": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@suite-native/ethereum-tokens": "workspace:*",
-        "@suite-native/module-settings": "workspace:*",
+        "@suite-native/settings": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/styles": "workspace:*",
         "bignumber.js": "^9.1.2",

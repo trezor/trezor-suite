@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Select } from '@suite-native/atoms';
 import { FiatCurrency, fiatCurrencies, FiatCurrencyCode } from '@suite-common/suite-config';
 import { analytics, EventType } from '@suite-native/analytics';
-
-import { selectFiatCurrency, setFiatCurrency } from '../slice';
+import { selectFiatCurrency, setFiatCurrency } from '@suite-native/settings';
 
 export const transformFiatCurrencyToSelectItem = (fiatCurrency: FiatCurrency) => ({
     label: fiatCurrency.value,

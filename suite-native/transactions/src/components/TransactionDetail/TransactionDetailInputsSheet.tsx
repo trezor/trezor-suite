@@ -6,7 +6,7 @@ import { Icon } from '@suite-common/icons';
 import { AccountKey } from '@suite-common/wallet-types';
 import { Box, Text, VStack } from '@suite-native/atoms';
 import { FiatRatesRootState, TransactionsRootState } from '@suite-common/wallet-core';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { TransactionDetailSheet } from './TransactionDetailSheet';
 import { selectTransactionInputAndOutputTransfers, TransactionTranfer } from '../../selectors';

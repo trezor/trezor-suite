@@ -3,10 +3,14 @@ import {
     accountsActions,
     PORTFOLIO_TRACKER_DEVICE_STATE,
     selectAccountsByNetworkAndDeviceState,
+    updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import { AccountInfo } from '@trezor/connect';
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
 import { networks, NetworkSymbol, AccountType } from '@suite-common/wallet-config';
 import { getXpubOrDescriptorInfo } from '@trezor/utxo-lib';
+import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { paymentTypeToAccountType } from './constants';
 
@@ -64,6 +68,65 @@ export const importAccountThunk = createThunk(
                     accountLabel,
                 }),
             );
+        }
+    },
+);
+
+export const getAccountInfoThunk = createThunk(
+    `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
+    async (
+        {
+            networkSymbol,
+            fiatCurrency,
+            xpubAddress,
+        }: { networkSymbol: NetworkSymbol; fiatCurrency: FiatCurrencyCode; xpubAddress: string },
+        { dispatch, rejectWithValue },
+    ) => {
+        try {
+            const [fetchedAccountInfo] = await Promise.all([
+                TrezorConnect.getAccountInfo({
+                    coin: networkSymbol,
+                    identity: shouldUseIdentities(networkSymbol)
+                        ? getAccountIdentity({ deviceState: PORTFOLIO_TRACKER_DEVICE_STATE })
+                        : undefined,
+                    descriptor: xpubAddress,
+                    details: 'txs',
+                    suppressBackupWarning: true,
+                }),
+                dispatch(
+                    updateFiatRatesThunk({
+                        ticker: {
+                            symbol: networkSymbol,
+                        },
+                        rateType: 'current',
+                        localCurrency: fiatCurrency,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
+                    }),
+                ),
+            ]);
+
+            if (fetchedAccountInfo?.success) {
+                //fetch fiat rates for all tokens of newly discovered account
+                fetchedAccountInfo.payload.tokens?.forEach(token =>
+                    dispatch(
+                        updateFiatRatesThunk({
+                            ticker: {
+                                symbol: networkSymbol,
+                                tokenAddress: token.contract as TokenAddress,
+                            },
+                            rateType: 'current',
+                            localCurrency: fiatCurrency,
+                            fetchAttemptTimestamp: Date.now() as Timestamp,
+                        }),
+                    ),
+                );
+
+                return fetchedAccountInfo.payload;
+            } else {
+                return rejectWithValue(fetchedAccountInfo.payload.error);
+            }
+        } catch (error) {
+            return rejectWithValue(error?.message);
         }
     },
 );

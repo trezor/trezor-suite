@@ -35,8 +35,8 @@
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]

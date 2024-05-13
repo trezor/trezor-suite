@@ -8,7 +8,7 @@ import {
 import { selectEthereumTokenHasFiatRates } from '@suite-native/ethereum-tokens';
 import { TokenAddress, TokenSymbol } from '@suite-common/wallet-types';
 import { FiatRatesRootState } from '@suite-common/wallet-core';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { AccountImportOverviewCard } from './AccountImportOverviewCard';
 

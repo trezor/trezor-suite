@@ -15,7 +15,7 @@ import { Translation } from '@suite-native/intl';
 import {
     selectViewOnlyCancelationTimestamp,
     setViewOnlyCancelationTimestamp,
-} from '@suite-native/module-settings';
+} from '@suite-native/settings';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useToast } from '@suite-native/toasts';
 

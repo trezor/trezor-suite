@@ -21,7 +21,7 @@ import {
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceUsingPassphrase,
 } from '@suite-common/wallet-core';
-import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import {
     AccountsImportStackParamList,
     AccountsImportStackRoutes,
@@ -9,15 +9,12 @@ import {
     Screen,
     StackToStackCompositeScreenProps,
 } from '@suite-native/navigation';
-import TrezorConnect, { AccountInfo } from '@trezor/connect';
-import { PORTFOLIO_TRACKER_DEVICE_STATE, updateFiatRatesThunk } from '@suite-common/wallet-core';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import { getAccountIdentity, shouldUseIdentities } from '@suite-common/wallet-utils';
+import { AccountInfo } from '@trezor/connect';
+import { SpinnerLoadingState } from '@suite-native/atoms';
 
 import { AccountImportLoader } from '../components/AccountImportLoader';
 import { useShowImportError } from '../useShowImportError';
-
-const LOADING_ANIMATION_DURATION = 5000;
+import { getAccountInfoThunk } from '../accountsImportThunks';
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -33,99 +30,64 @@ export const AccountImportLoadingScreen = ({
     const dispatch = useDispatch();
     const showImportError = useShowImportError(networkSymbol, navigation);
     const [accountInfo, setAccountInfo] = useState<AccountInfo | null>(null);
-    const [isAnimationFinished, setIsAnimationFinished] = useState(false);
     const fiatCurrency = useSelector(selectFiatCurrencyCode);
+    const [error, setError] = useState<string>();
+    const [accountInfoFetchResult, setAccountInfoFetchResult] =
+        useState<SpinnerLoadingState>('idle');
+
+    const fetchAccountInfo = useCallback(async () => {
+        try {
+            const response = await dispatch(
+                getAccountInfoThunk({ networkSymbol, fiatCurrency, xpubAddress }),
+            ).unwrap();
+
+            if (response) {
+                setAccountInfo(response);
+                setAccountInfoFetchResult('success');
+            }
+        } catch (response) {
+            setError(response);
+            setAccountInfoFetchResult('error');
+        }
+    }, [dispatch, fiatCurrency, networkSymbol, xpubAddress]);
+
+    const safelyShowImportError = useCallback(
+        async (onRetry?: () => Promise<void>) => {
+            // Delay displaying the error message to avoid freezing the app on iOS. If an error occurs too quickly during the
+            // transition from ScanQRCodeModalScreen, the error modal won't appear, resulting in a frozen app.
+            await sleep(1000);
+            showImportError(error, () => {
+                if (!onRetry) return;
+                onRetry();
+
+                // This is needed because handleResult calls safelyShowImportError, which calls handleResult,
+                // so one of them is always going to be used before it was defined. However, the functionality is fine here so it's not a problem.
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                handleResult();
+            });
+        },
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        [error, showImportError],
+    );
 
     useEffect(() => {
-        if (accountInfo && isAnimationFinished)
+        fetchAccountInfo();
+    }, [fetchAccountInfo]);
+
+    const handleResult = () => {
+        if (error || !accountInfo) {
+            safelyShowImportError(fetchAccountInfo);
+        } else {
             navigation.navigate(AccountsImportStackRoutes.AccountImportSummary, {
                 accountInfo,
                 networkSymbol,
             });
-    }, [isAnimationFinished, accountInfo, navigation, networkSymbol]);
-
-    useEffect(() => {
-        // loader should disappear after 5 seconds soonest by design.
-        const timeout = setTimeout(() => setIsAnimationFinished(true), LOADING_ANIMATION_DURATION);
-
-        return () => clearTimeout(timeout);
-    }, [setIsAnimationFinished]);
-
-    const safelyShowImportError = useCallback(
-        async (message?: string, onRetry?: () => Promise<void>) => {
-            // Delay displaying the error message to avoid freezing the app on iOS. If an error occurs too quickly during the
-            // transition from ScanQRCodeModalScreen, the error modal won't appear, resulting in a frozen app.
-            await sleep(1000);
-            showImportError(message, onRetry);
-        },
-        [showImportError],
-    );
-
-    useEffect(() => {
-        let ignore = false;
-
-        const getAccountInfo = async () => {
-            const [fetchedAccountInfo] = await Promise.all([
-                TrezorConnect.getAccountInfo({
-                    coin: networkSymbol,
-                    identity: shouldUseIdentities(networkSymbol)
-                        ? getAccountIdentity({ deviceState: PORTFOLIO_TRACKER_DEVICE_STATE })
-                        : undefined,
-                    descriptor: xpubAddress,
-                    details: 'txs',
-                    suppressBackupWarning: true,
-                }),
-                dispatch(
-                    updateFiatRatesThunk({
-                        ticker: {
-                            symbol: networkSymbol,
-                        },
-                        rateType: 'current',
-                        localCurrency: fiatCurrency,
-                        fetchAttemptTimestamp: Date.now() as Timestamp,
-                    }),
-                ),
-            ]);
-
-            if (!ignore) {
-                if (fetchedAccountInfo?.success) {
-                    setAccountInfo(fetchedAccountInfo.payload);
-
-                    //fetch fiat rates for all tokens of newly discovered account
-                    fetchedAccountInfo.payload.tokens?.forEach(token =>
-                        dispatch(
-                            updateFiatRatesThunk({
-                                ticker: {
-                                    symbol: networkSymbol,
-                                    tokenAddress: token.contract as TokenAddress,
-                                },
-                                rateType: 'current',
-                                localCurrency: fiatCurrency,
-                                fetchAttemptTimestamp: Date.now() as Timestamp,
-                            }),
-                        ),
-                    );
-                } else {
-                    safelyShowImportError(fetchedAccountInfo.payload.error, getAccountInfo);
-                }
-            }
-        };
-        try {
-            getAccountInfo();
-        } catch (error) {
-            if (!ignore) {
-                safelyShowImportError(error?.message, getAccountInfo);
-            }
         }
-
-        return () => {
-            ignore = true;
-        };
-    }, [xpubAddress, networkSymbol, dispatch, safelyShowImportError, fiatCurrency]);
+    };
 
     return (
         <Screen isScrollable={false}>
-            <AccountImportLoader />
+            <AccountImportLoader loadingState={accountInfoFetchResult} onComplete={handleResult} />
         </Screen>
     );
 };

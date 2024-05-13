@@ -12,8 +12,8 @@
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         { "path": "../theme" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

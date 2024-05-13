@@ -32,10 +32,10 @@
         { "path": "../forms" },
         { "path": "../graph" },
         { "path": "../intl" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
         { "path": "../receive" },
+        { "path": "../settings" },
         { "path": "../transactions" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

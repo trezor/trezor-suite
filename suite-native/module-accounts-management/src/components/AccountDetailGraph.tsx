@@ -6,7 +6,7 @@ import { useSetAtom } from 'jotai';
 
 import { useGraphForSingleAccount, Graph, TimeSwitch } from '@suite-native/graph';
 import { VStack } from '@suite-native/atoms';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import { selectFiatCurrency } from '@suite-native/settings';
 import { FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
 
 import {

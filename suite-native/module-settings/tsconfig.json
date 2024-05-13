@@ -28,6 +28,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../toasts" },

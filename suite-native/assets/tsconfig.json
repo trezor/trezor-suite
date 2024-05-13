@@ -24,8 +24,8 @@
         { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../intl" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         { "path": "../../packages/styles" }
     ]
 }

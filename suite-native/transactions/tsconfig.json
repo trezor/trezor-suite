@@ -38,8 +38,8 @@
         { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link-types"
         },

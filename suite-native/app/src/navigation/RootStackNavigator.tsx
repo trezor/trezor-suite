@@ -12,7 +12,7 @@ import {
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';

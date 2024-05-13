@@ -6,25 +6,20 @@ import Animated, {
     withTiming,
 } from 'react-native-reanimated';
 
-import Lottie from 'lottie-react-native';
-
-import { Box, Text } from '@suite-native/atoms';
+import { Box, Spinner, SpinnerLoadingState, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
-import spinnerSuccess from '../assets/spinnerSuccess.json';
-
 const LINE_VISIBILITY_DURATION = 1000;
+
+type AccountImportLoaderProps = {
+    loadingState: SpinnerLoadingState;
+    onComplete?: () => void;
+};
 
 const loaderContainerStyle = prepareNativeStyle(() => ({
     alignItems: 'center',
     justifyContent: 'center',
     flex: 1,
-}));
-
-const successSpinnerStyle = prepareNativeStyle(utils => ({
-    width: 50,
-    height: 50,
-    marginBottom: utils.spacings.large,
 }));
 
 const ANIMATION_SAFETY_MARGIN = 5;
@@ -40,7 +35,7 @@ const textStyle = prepareNativeStyle(utils => ({
     textAlign: 'center',
 }));
 
-export const AccountImportLoader = () => {
+export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportLoaderProps) => {
     const { applyStyle } = useNativeStyles();
     const [lineHeight1, setLineHeight1] = useState(0);
     const [lineHeight2, setLineHeight2] = useState(0);
@@ -60,14 +55,8 @@ export const AccountImportLoader = () => {
 
     return (
         <Box style={applyStyle(loaderContainerStyle)}>
-            <Box>
-                <Lottie
-                    source={spinnerSuccess}
-                    autoPlay
-                    style={applyStyle(successSpinnerStyle)}
-                    loop={false}
-                    resizeMode="cover"
-                />
+            <Box marginBottom="large">
+                <Spinner loadingState={loadingState} onComplete={onComplete} />
             </Box>
             <Box style={applyStyle(textContainerStyle)}>
                 <Animated.View style={animatedTextStyle}>

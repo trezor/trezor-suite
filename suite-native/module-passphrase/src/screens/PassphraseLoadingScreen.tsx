@@ -1,9 +1,9 @@
-import { useEffect } from 'react';
 import { useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Loader } from '@suite-native/atoms';
+import { VStack, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
     HomeStackRoutes,
@@ -31,9 +31,17 @@ export const PassphraseLoadingScreen = () => {
     const navigation = useNavigation<NavigationProp>();
     const isDeviceAccountless = useSelector(selectIsDeviceAccountless);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
     useEffect(() => {
+        if (!isDeviceAccountless || (isDeviceAccountless && !isDiscoveryActive)) {
+            setLoadingResult('success');
+        }
+    }, [isDeviceAccountless, isDiscoveryActive]);
+
+    const handleSuccess = () => {
         if (!isDeviceAccountless) {
+            setLoadingResult('success');
             navigation.navigate(RootStackRoutes.AppTabs, {
                 screen: AppTabsRoutes.HomeStack,
                 params: {
@@ -41,16 +49,17 @@ export const PassphraseLoadingScreen = () => {
                 },
             });
         } else if (isDeviceAccountless && !isDiscoveryActive) {
+            setLoadingResult('success');
             navigation.navigate(RootStackRoutes.PassphraseStack, {
                 screen: PassphraseStackRoutes.PassphraseEmptyWallet,
             });
         }
-    }, [isDeviceAccountless, isDiscoveryActive, navigation]);
+    };
 
     return (
         <Screen screenHeader={<PassphraseScreenHeader />}>
             <VStack flex={1} justifyContent="center" alignItems="center">
-                <Loader />
+                <Spinner loadingState={loadingResult} onComplete={handleSuccess} />
             </VStack>
         </Screen>
     );

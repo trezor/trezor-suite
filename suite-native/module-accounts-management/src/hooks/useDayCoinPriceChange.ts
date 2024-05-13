@@ -7,7 +7,7 @@ import { getUnixTime } from 'date-fns';
 import { percentageDiff } from '@suite-native/graph';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { BlockchainRootState, selectIsElectrumBackendSelected } from '@suite-common/wallet-core';
 
 const UNIX_DAY = 24 * 60 * 60;

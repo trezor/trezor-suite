@@ -17,6 +17,7 @@
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
+        { "path": "../device" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../link" },

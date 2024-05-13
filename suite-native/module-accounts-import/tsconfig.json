@@ -10,6 +10,9 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-config"
+        },
+        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -38,9 +41,9 @@
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../settings" },
         { "path": "../video-assets" },
         {
             "path": "../../packages/blockchain-link"

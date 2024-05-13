@@ -4,7 +4,7 @@ import { D } from '@mobily/ts-belt';
 
 import { AccountsRootState, DeviceRootState, FiatRatesRootState } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { selectFilteredDeviceAccountsGroupedByNetworkAccountType } from '../selectors';
 import { AccountListPlaceholder } from './AccountListPlaceholder';

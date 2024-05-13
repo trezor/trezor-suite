@@ -5,7 +5,7 @@ import { selectDeviceNetworkAccountsGroupedByAccountType } from '@suite-native/a
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { AccountsRootState, DeviceRootState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { GroupedAccountsList } from '@suite-native/accounts/src/components/GroupedAccountsList';
+import { GroupedAccountsList } from '@suite-native/accounts';
 
 type NetworkAssetsBottomSheetProps = {
     networkSymbol: NetworkSymbol;
