@@ -14,9 +14,11 @@ export const en = {
             next: 'Next',
             dismiss: 'Dismiss',
             eject: 'Eject',
+            cancel: 'Cancel',
         },
         unknownError: 'Something went wrong',
         default: 'Default',
+        orSeparator: 'OR',
     },
     messageSystem: {
         killswitch: {
@@ -653,11 +655,16 @@ export const en = {
             enterWallet: 'Enter passphrase',
             createWalletInputLabel: 'Enter your passphrase',
             verifyPassphraseInputLabel: 'Re-enter your passphrase',
+            separatorTitle: 'OR',
+        },
+        enterPassphraseOnTrezor: {
+            button: 'Enter passphrase on Trezor',
+            title: 'Continue on Trezor',
+            subtitle: 'Enter your passphrase on your Trezor',
         },
         confirmOnDevice: {
             title: 'Confirm passphrase\non your Trezor.',
             description: 'Carefully check the passphrase you’ve just entered.',
-            button: 'Cancel',
             warningSheet: {
                 title: 'Are you sure you would like to cancel opening a passphrase wallet?',
                 primaryButton: 'Cancel',

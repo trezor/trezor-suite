@@ -49,6 +49,7 @@ export enum PassphraseStackRoutes {
     PassphraseLoading = 'PassphraseLoading',
     PassphraseEmptyWallet = 'PassphraseEmptyWallet',
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
+    PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
 }
 
 export enum DevUtilsStackRoutes {

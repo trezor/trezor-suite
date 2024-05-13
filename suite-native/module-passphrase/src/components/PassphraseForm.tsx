@@ -1,6 +1,6 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,7 +10,7 @@ import {
     PassphraseFormValues,
     formInputsMaxLength,
 } from '@suite-common/validators';
-import { Button, VStack } from '@suite-native/atoms';
+import { Button, Card, VStack, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import {
@@ -28,6 +28,10 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 
+import { EnterPassphraseOnTrezorButton } from './EnterPassphraseOnTrezorButton';
+
+const FORM_CARD_PADDING = 12;
+
 type PassphraseFormProps = {
     onFocus?: () => void;
     inputLabel: string;
@@ -36,6 +40,11 @@ type PassphraseFormProps = {
 const formStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation1,
     borderRadius: utils.borders.radii.large,
+    gap: utils.spacings.medium,
+}));
+
+const cardStyle = prepareNativeStyle(_ => ({
+    padding: FORM_CARD_PADDING,
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
@@ -46,6 +55,8 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => {
     const dispatch = useDispatch();
+
+    const [isInputFocused, setIsInputFocused] = useState(false);
 
     const { applyStyle } = useNativeStyles();
 
@@ -63,7 +74,10 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
         },
     });
 
-    const { handleSubmit, watch } = form;
+    const {
+        handleSubmit,
+        formState: { isDirty },
+    } = form;
 
     useEffect(() => {
         if (buttonRequestCodes.includes('ButtonRequest_Other')) {
@@ -77,32 +91,47 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
     });
 
-    const inputHasValue = !!watch('passphrase').length;
+    const handleFocusInput = () => {
+        setIsInputFocused(true);
+        onFocus?.();
+    };
 
     return (
         <Form form={form}>
-            <VStack spacing="medium" padding="medium" style={applyStyle(formStyle)}>
-                <TextInputField
-                    label={inputLabel}
-                    name="passphrase"
-                    maxLength={formInputsMaxLength.passphrase}
-                    accessibilityLabel="passphrase input"
-                    autoCapitalize="none"
-                    onFocus={onFocus}
-                    secureTextEntry
-                />
-                {inputHasValue && (
+            <Card style={applyStyle(cardStyle)}>
+                <VStack style={applyStyle(formStyle)}>
+                    <TextInputField
+                        label={inputLabel}
+                        name="passphrase"
+                        maxLength={formInputsMaxLength.passphrase}
+                        accessibilityLabel="passphrase input"
+                        autoCapitalize="none"
+                        onFocus={handleFocusInput}
+                        onBlur={() => setIsInputFocused(false)}
+                        secureTextEntry
+                    />
                     <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        <Button
-                            accessibilityRole="button"
-                            accessibilityLabel="confirm passphrase"
-                            onPress={handleCreateHiddenWallet}
-                        >
-                            <Translation id="modulePassphrase.form.enterWallet" />
-                        </Button>
+                        {isDirty && (
+                            <Button
+                                accessibilityRole="button"
+                                accessibilityLabel="confirm passphrase"
+                                onPress={handleCreateHiddenWallet}
+                            >
+                                <Translation id="modulePassphrase.form.enterWallet" />
+                            </Button>
+                        )}
+                        {!isDirty && !isInputFocused && (
+                            <VStack>
+                                <TextDivider
+                                    title="generic.orSeparator"
+                                    horizontalMargin={FORM_CARD_PADDING}
+                                />
+                                <EnterPassphraseOnTrezorButton />
+                            </VStack>
+                        )}
                     </Animated.View>
-                )}
-            </VStack>
+                </VStack>
+            </Card>
         </Form>
     );
 };
