@@ -7,7 +7,7 @@ import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
 import { Account, Network } from 'src/types/wallet';
-import { PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
+import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
@@ -192,7 +192,7 @@ const ReviewRbfLeftDetailsLineRight = styled.div<{ $color: string; $uppercase?: 
 
 interface TransactionReviewSummaryProps {
     estimateTime?: number;
-    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    tx: GeneralPrecomposedTransactionFinal;
     account: Account;
     network: Network;
     broadcast?: boolean;
