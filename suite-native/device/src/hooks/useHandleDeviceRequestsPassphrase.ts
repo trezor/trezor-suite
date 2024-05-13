@@ -25,13 +25,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
     const deviceState = useSelector(selectDeviceState);
 
     const handleNavigateToPassphraseForm = useCallback(() => {
-        if (deviceState) {
-            // If device already has a state, it means it's already been authorized with passphrase
-            // and we are trying to verify that user has correct passphrase that has been used to authorize this wallet
-            navigation.navigate(RootStackRoutes.PassphraseStack, {
-                screen: PassphraseStackRoutes.PassphraseVerifyEmptyWallet,
-            });
-        } else {
+        if (!deviceState) {
             navigation.navigate(RootStackRoutes.PassphraseStack, {
                 screen: PassphraseStackRoutes.PassphraseForm,
             });
