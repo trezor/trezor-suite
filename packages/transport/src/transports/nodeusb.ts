@@ -9,6 +9,7 @@ import { UsbApi } from '../api/usb';
 
 export class NodeUsbTransport extends AbstractApiTransport {
     public name = 'NodeUsbTransport' as const;
+    public apiType = 'usb' as const;
 
     constructor(params: AbstractTransportParams) {
         const { messages, logger, debugLink } = params;

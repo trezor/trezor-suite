@@ -9,6 +9,7 @@ export const DEVICE = {
     CONNECT_UNACQUIRED: 'device-connect_unacquired',
     DISCONNECT: 'device-disconnect',
     CHANGED: 'device-changed',
+    TRANSPORT_STATE_CHANGED: 'device-transport_state_changed',
     ACQUIRE: 'device-acquire',
     RELEASE: 'device-release',
     ACQUIRED: 'device-acquired',

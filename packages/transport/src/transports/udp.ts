@@ -5,6 +5,7 @@ import { AbstractApiTransport } from './abstractApi';
 
 export class UdpTransport extends AbstractApiTransport {
     public name = 'UdpTransport' as const;
+    public apiType = 'udp' as const;
     private enumerateTimeout: ReturnType<typeof setTimeout> | undefined;
 
     constructor(params: AbstractTransportParams) {

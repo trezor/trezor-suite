@@ -88,8 +88,8 @@ type ConstructorParams = Pick<ConnectSettings, 'priority' | 'debug' | '_sessions
 type InitParams = Pick<ConnectSettings, 'pendingTransportEvent' | 'transportReconnect'>;
 
 export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDeviceList {
-    // @ts-expect-error has no initializer
-    private transport: Transport;
+    // ts-expect-error has no initializer
+    // private transport: Transport;
 
     // array of transport that might be used in this environment
     private transports: Transport[];
@@ -108,11 +108,15 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     private transportCommonArgs;
 
     isConnected(): this is DeviceList {
-        return !!this.transport;
+        return this.transports.some(t => t.isActive());
     }
 
     pendingConnection() {
         return this.initPromise;
+    }
+
+    getActiveTransports() {
+        return this.transports.filter(t => t.isActive());
     }
 
     constructor({ messages, priority, debug, _sessionsBackgroundUrl }: ConstructorParams) {
@@ -186,7 +190,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         diff.forEach(async ({ descriptor, ...category }) => {
             // whenever descriptors change we need to update them so that we can use them
             // in subsequent transport.acquire calls
-            const path = descriptor.path.toString();
+            const path = `${transport.name}/${descriptor.path.toString()}`;
             const device = this.devices[path] as Device | undefined;
 
             // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
@@ -310,10 +314,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private createInitPromise(initParams: InitParams) {
-        return this.selectTransport(this.transports)
-            .then(transport => this.initializeTransport(transport, initParams))
-            .then(transport => {
-                this.transport = transport;
+        return this.initTransports(this.transports)
+            .then(transports =>
+                promiseAllSequence(
+                    transports.map(transport => () => this.setupTransport(transport, initParams)),
+                ),
+            )
+            .then(() => {
                 this.emit(TRANSPORT.START, this.getTransportInfo());
                 this.initPromise = undefined;
             })
@@ -333,14 +340,17 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return promise.then(this.createInitPromise.bind(this));
     }
 
-    private async selectTransport([transport, ...rest]: Transport[]): Promise<Transport> {
+    // TODO may be in parallel?
+    private async initTransports([transport, ...rest]: Transport[]): Promise<Transport[]> {
+        if (!transport) return [];
         const result = await transport.init();
-        if (result.success) return transport;
-        else if (rest.length) return this.selectTransport(rest);
-        else throw new Error(result.error);
+        if (result.success) return [transport, ...(await this.initTransports(rest))];
+        else return this.initTransports(rest);
+        // TODO what with errors?
     }
 
-    private async initializeTransport(transport: Transport, initParams: InitParams) {
+    private async setupTransport(transport: Transport, initParams: InitParams) {
+        console.warn('setup', transport.name);
         /**
          * listen to change of descriptors reported by @trezor/transport
          * we can say that this part lets connect know about
@@ -360,9 +370,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
             }
         });
 
+        console.warn('first enumerate', transport.name);
+
         // enumerating for the first time. we intentionally postpone emitting TRANSPORT_START
         // event until we read descriptors for the first time
         const enumerateResult = await transport.enumerate();
+
+        console.warn('first enumerate result', transport.name, enumerateResult);
 
         if (!enumerateResult.success) {
             throw new Error(enumerateResult.error);
@@ -447,10 +461,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         return this.devices[path];
     }
 
-    getFirstDevicePath() {
-        return this.asArray()[0].path;
-    }
-
     asArray(): DeviceTyped[] {
         return this.allDevices().map(device => device.toMessageObject());
     }
@@ -464,14 +474,19 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     transportType() {
-        return this.transport.name;
+        // return this.transport.name;
+        const [transport] = this.getActiveTransports();
+
+        return transport.name;
     }
 
     getTransportInfo(): TransportInfo {
+        const [transport] = this.getActiveTransports();
+
         return {
             type: this.transportType(),
-            version: this.transport.version,
-            outdated: this.transport.isOutdated,
+            version: transport.version,
+            outdated: transport.isOutdated,
         };
     }
 
@@ -482,11 +497,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     async cleanup() {
-        const { transport } = this;
         const devices = this.allDevices();
 
-        // @ts-expect-error will be fixed later
-        this.transport = undefined;
         this.authPenaltyManager.clear();
         Object.keys(this.devices).forEach(key => delete this.devices[key]);
 
@@ -506,11 +518,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
         // now we can be relatively sure that release calls have been dispatched
         // and we can safely kill all async subscriptions in transport layer
-        transport?.stop();
+        // transport?.stop();
+        this.getActiveTransports().forEach(transport => transport.stop());
     }
 
     // TODO this is fugly
-    async enumerate(transport = this.transport) {
+    async enumerate(transport: Transport = this.getActiveTransports()[0]) {
+        // is this even used?
         const res = await transport.enumerate();
 
         if (!res.success) {
@@ -536,7 +550,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     // main logic
     private async handle(descriptor: Descriptor, transport: Transport) {
-        const path = descriptor.path.toString();
+        const path = `${transport.name}/${descriptor.path.toString()}`;
+        console.warn('Handle', path, transport.name);
         try {
             // "regular" device creation
             await this._takeAndCreateDevice(descriptor, transport);
@@ -572,6 +587,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                 // but it did not work out. this device is effectively unreadable and user should do something about it
                 error.code === 'Device_InitializeFailed'
             ) {
+                console.warn('---> wtf here?', error.message);
                 const device = this._createUnreadableDevice(
                     this.creatingDevicesDescriptors[path],
                     transport,
@@ -591,7 +607,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
 
     private async _takeAndCreateDevice(descriptor: Descriptor, transport: Transport) {
         const device = Device.fromDescriptor(transport, descriptor);
-        const path = descriptor.path.toString();
+        const path = `${transport.name}/${descriptor.path.toString()}`;
         this.devices[path] = device;
         const promise = device.run();
         await promise;
@@ -600,7 +616,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
     }
 
     private _handleUsedElsewhere(descriptor: Descriptor, transport: Transport) {
-        const path = descriptor.path.toString();
+        const path = `${transport.name}/${descriptor.path.toString()}`;
 
         const device = this._createUnacquiredDevice(
             this.creatingDevicesDescriptors[path],

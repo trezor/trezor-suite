@@ -104,6 +104,8 @@ export abstract class AbstractTransport extends TransportEmitter {
         | 'NodeUsbTransport'
         | 'WebUsbTransport'
         | 'UdpTransport';
+
+    public abstract apiType: 'usb' | 'udp' | 'bluetooth';
     /**
      * transports with "external element" such as bridge can be outdated.
      */
@@ -432,6 +434,10 @@ export abstract class AbstractTransport extends TransportEmitter {
 
     public updateMessages(messages: Record<string, any>) {
         this.messages = protobuf.Root.fromJSON(messages);
+    }
+
+    public isActive() {
+        return !this.stopped;
     }
 
     protected success<T>(payload: T): Success<T> {

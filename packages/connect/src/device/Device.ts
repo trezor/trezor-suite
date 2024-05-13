@@ -94,6 +94,10 @@ export interface DeviceEvents {
     [DEVICE.ACQUIRED]: () => void;
 }
 
+type TransportState = {
+    descriptor: Descriptor;
+};
+
 /**
  * @export
  * @class Device
@@ -102,6 +106,7 @@ export interface DeviceEvents {
 export class Device extends TypedEmitter<DeviceEvents> {
     transport: Transport;
     protocol: TransportProtocol;
+    transportState: TransportState;
 
     originalDescriptor: Descriptor;
 
@@ -168,6 +173,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
         // === immutable properties
         this.transport = transport;
         this.originalDescriptor = descriptor;
+        this.transportState = {
+            descriptor, // TODO: refactor originalDescriptor
+        };
 
         // this will be released after first run
         this.firstRunPromise = createDeferred();

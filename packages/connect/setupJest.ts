@@ -5,6 +5,7 @@ import { DeviceModelInternal, type Features, type FirmwareRelease } from './src/
 
 class TestTransport extends AbstractApiTransport {
     name = 'TestTransport' as any;
+    apiType = 'usb' as const;
 
     init() {
         return this.scheduleAction(() => {

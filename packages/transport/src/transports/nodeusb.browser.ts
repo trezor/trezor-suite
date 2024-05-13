@@ -7,6 +7,7 @@ import { empty, emptySync } from '../utils/resultEmpty';
 
 export class NodeUsbTransport extends AbstractTransport {
     public name = 'NodeUsbTransport' as const;
+    public apiType = 'usb' as const;
 
     constructor(params: AbstractTransportParams) {
         super(params);

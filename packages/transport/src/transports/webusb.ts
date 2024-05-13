@@ -6,6 +6,7 @@ import { empty, emptySync } from '../utils/resultEmpty';
 // this class loads in node environment only in case of accidental use of WebusbTransport
 export class WebUsbTransport extends AbstractTransport {
     public name = 'WebUsbTransport' as const;
+    public apiType = 'usb' as const;
 
     constructor(params: AbstractTransportParams) {
         super(params);

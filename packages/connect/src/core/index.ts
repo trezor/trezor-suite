@@ -1230,6 +1230,8 @@ export class Core extends EventEmitter {
             throw error;
         }
 
+        this.deviceList.on(TRANSPORT.START, console.warn);
+
         this.deviceList.init({ pendingTransportEvent, transportReconnect });
 
         // in auto core mode, we have to wait to check if transport is available

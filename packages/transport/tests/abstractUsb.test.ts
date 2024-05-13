@@ -43,6 +43,7 @@ const createUsbMock = (optional = {}) =>
 
 class TestUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
+    public apiType = 'usb' as const;
     public sessionsClient = new SessionsClient({});
 
     constructor({ messages, api }: ConstructorParameters<typeof AbstractApiTransport>[0]) {

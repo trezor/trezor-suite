@@ -91,7 +91,8 @@ const waitForReconnectedDevice = async (
 
         await createTimeoutPromise(2000);
         try {
-            const path = deviceList.getFirstDevicePath();
+            // is this wrong? it takes 1st dev from the list but it could be totally different device
+            const [{ path }] = deviceList.asArray();
             reconnectedDevice = deviceList.getDevice(path);
         } catch {}
         i++;
