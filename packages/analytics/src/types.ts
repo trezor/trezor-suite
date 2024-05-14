@@ -1,6 +1,6 @@
 import { Environment } from '@trezor/env-utils';
 
-export type App = 'suite' | 'connect';
+export type App = 'suite' | 'connect' | 'connect-explorer';
 
 export type AnalyticsOptions = { version: string; app: App; useQueue?: boolean };
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Provider } from 'react-redux';
+import { IntlProvider } from 'react-intl';
 
 import { ThemeProvider as NextThemeProvider } from 'next-themes';
 import { ThemeProvider } from 'styled-components';
@@ -14,6 +15,8 @@ import '../styles/globals.css';
 import '@trezor/connect-explorer-theme/style.css';
 import { store } from '../store';
 import StyledComponentsRegistry from '../components/util/StyledComponentsRegistry';
+import { AnalyticsConsentWrapper } from '../components/AnalyticsConsentWrapper';
+import { AnalyticsEventType, analytics } from '../analytics';
 
 const ThemeComponent = ({ Component, pageProps }: AppProps) => {
     const { resolvedTheme } = useTheme();
@@ -31,11 +34,33 @@ const ThemeComponent = ({ Component, pageProps }: AppProps) => {
             delete window.router;
         };
     }, [router]);
+    // Track route changes for analytics
+    useEffect(() => {
+        analytics.init(false, {
+            
+        });
+
+        const handleRouteChange = (url: string) => {
+            console.log('route change', url);
+            analytics.report({
+                type: AnalyticsEventType.PageView,
+                payload: {
+                    path: url,
+                },
+            });
+        };
+        router.events.on('routeChangeComplete', handleRouteChange);
+
+        return () => {
+            router.events.off('routeChangeComplete', handleRouteChange);
+        };
+    }, [router.events]);
 
     return (
         <ThemeProvider theme={intermediaryTheme[theme]}>
             <StyledComponentsRegistry>
                 <Provider store={store}>
+                    <AnalyticsConsentWrapper />
                     <Component {...pageProps} />
                 </Provider>
             </StyledComponentsRegistry>
@@ -48,7 +73,9 @@ export default function MyApp(props: AppProps) {
             <Head>
                 <link rel="icon" type="image/png" href="images/favicon.png" />
             </Head>
-            <ThemeComponent {...props} />
+            <IntlProvider locale="en" defaultLocale="en" messages={{}}>
+                <ThemeComponent {...props} />
+            </IntlProvider>
         </NextThemeProvider>
     );
 }
