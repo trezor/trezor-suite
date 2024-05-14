@@ -1,3 +1,8 @@
+# 1.0.18-beta.1
+
+-   fix: unify solana and cardano missing symbol name length (2698f935aa)
+-   fix(blockchain-link-utils): fix solana token definitions url (5b29898216)
+
 # 1.0.17
 
 -   feat(blockchain-link-utils): solana using data.trezor.io token metadata (9bd73e9d36)
