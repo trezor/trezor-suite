@@ -66,7 +66,7 @@ describe('sendFormReducer', () => {
     it('SEND.REQUEST_SIGN_TRANSACTION - save', () => {
         const action: Action = sendFormActions.storePrecomposedTransaction({
             formState: formStateMock,
-            transactionInfo: precomposedTxMock,
+            precomposedTransaction: precomposedTxMock,
         });
 
         const state = prepareSendFormReducer(extraDependencies)(initialState, action);

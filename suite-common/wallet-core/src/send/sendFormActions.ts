@@ -29,7 +29,7 @@ const storePrecomposedTransaction = createAction(
     `${SEND_MODULE_PREFIX}/store-precomposed-transaction`,
     (payload: {
         formState: FormState;
-        transactionInfo: PrecomposedTransactionFinal | TxFinalCardano;
+        precomposedTransaction: PrecomposedTransactionFinal | TxFinalCardano;
     }) => ({
         payload,
     }),
