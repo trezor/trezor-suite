@@ -2,14 +2,13 @@ import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-na
 import { View } from 'react-native';
 
 import { useOpenLink } from '@suite-native/link';
-import { Screen } from '@suite-native/navigation';
 import { Box, Button, HStack, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 
 import { PassphraseForm } from '../components/PassphraseForm';
-import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
+import { PassphraseContentScreen } from '../components/PassphraseContentScreen';
 
 const ANIMATION_DURATION = 300;
 const ALERT_CARD_HEIGHT = 148;
@@ -33,7 +32,7 @@ const animationWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 export const PassphraseFormScreen = () => {
-    const { applyStyle, utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
 
     const { translate } = useTranslate();
 
@@ -54,76 +53,67 @@ export const PassphraseFormScreen = () => {
     };
 
     return (
-        <Screen
-            screenHeader={<PassphraseScreenHeader />}
-            customHorizontalPadding={utils.spacings.medium}
+        <PassphraseContentScreen
+            title={<Translation id="modulePassphrase.title" />}
+            subtitle={
+                <Translation
+                    id="modulePassphrase.subtitle"
+                    values={{
+                        bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                    }}
+                />
+            }
         >
-            <VStack spacing="large">
-                <VStack>
-                    <Text variant="titleMedium">
-                        <Translation id="modulePassphrase.title" />
-                    </Text>
-                    <Text>
-                        <Translation
-                            id="modulePassphrase.subtitle"
-                            values={{
-                                bold: chunks => <Text variant="highlight">{chunks}</Text>,
-                            }}
-                        />
-                    </Text>
-                </VStack>
-                <VStack spacing="medium">
-                    <View style={applyStyle(animationWrapperStyle)}>
-                        <Animated.View style={animationStyle}>
-                            <Box style={applyStyle(cardStyle)}>
-                                <VStack>
-                                    <HStack alignItems="flex-start">
-                                        <Icon
-                                            name="warningCircle"
-                                            color="textAlertBlue"
-                                            size="medium"
-                                        />
-                                        <Text
-                                            color="textAlertBlue"
-                                            variant="callout"
-                                            style={applyStyle(cardTextStyle)}
-                                        >
-                                            <Translation id="modulePassphrase.alertCard.paragraphWarning1" />
-                                        </Text>
-                                    </HStack>
-                                    <HStack>
-                                        <Icon
-                                            name="warningTriangle"
-                                            color="textDefault"
-                                            size="medium"
-                                        />
-                                        <Text
-                                            color="textDefault"
-                                            variant="hint"
-                                            style={applyStyle(cardTextStyle)}
-                                        >
-                                            <Translation id="modulePassphrase.alertCard.paragraphWarning2" />
-                                        </Text>
-                                    </HStack>
-                                    <Button
-                                        size="small"
-                                        colorScheme="blueBold"
-                                        viewLeft="arrowLineUpRight"
-                                        onPress={handleOpenLink}
+            <VStack spacing="medium">
+                <View style={applyStyle(animationWrapperStyle)}>
+                    <Animated.View style={animationStyle}>
+                        <Box style={applyStyle(cardStyle)}>
+                            <VStack>
+                                <HStack alignItems="flex-start">
+                                    <Icon
+                                        name="warningCircle"
+                                        color="textAlertBlue"
+                                        size="medium"
+                                    />
+                                    <Text
+                                        color="textAlertBlue"
+                                        variant="callout"
+                                        style={applyStyle(cardTextStyle)}
                                     >
-                                        <Translation id="modulePassphrase.alertCard.button" />
-                                    </Button>
-                                </VStack>
-                            </Box>
-                        </Animated.View>
-                    </View>
-
-                    <PassphraseForm
-                        onFocus={handleAnimation}
-                        inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
-                    />
-                </VStack>
+                                        <Translation id="modulePassphrase.alertCard.paragraphWarning1" />
+                                    </Text>
+                                </HStack>
+                                <HStack>
+                                    <Icon
+                                        name="warningTriangle"
+                                        color="textDefault"
+                                        size="medium"
+                                    />
+                                    <Text
+                                        color="textDefault"
+                                        variant="hint"
+                                        style={applyStyle(cardTextStyle)}
+                                    >
+                                        <Translation id="modulePassphrase.alertCard.paragraphWarning2" />
+                                    </Text>
+                                </HStack>
+                                <Button
+                                    size="small"
+                                    colorScheme="blueBold"
+                                    viewLeft="arrowLineUpRight"
+                                    onPress={handleOpenLink}
+                                >
+                                    <Translation id="modulePassphrase.alertCard.button" />
+                                </Button>
+                            </VStack>
+                        </Box>
+                    </Animated.View>
+                </View>
+                <PassphraseForm
+                    onFocus={handleAnimation}
+                    inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
+                />
             </VStack>
-        </Screen>
+        </PassphraseContentScreen>
     );
 };

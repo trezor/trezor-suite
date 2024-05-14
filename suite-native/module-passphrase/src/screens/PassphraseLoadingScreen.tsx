@@ -11,7 +11,6 @@ import {
     PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
@@ -19,7 +18,7 @@ import {
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
 
-import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
+import { PassphraseScreenWrapper } from '../components/PassphraseScreen';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -57,10 +56,10 @@ export const PassphraseLoadingScreen = () => {
     };
 
     return (
-        <Screen screenHeader={<PassphraseScreenHeader />}>
+        <PassphraseScreenWrapper>
             <VStack flex={1} justifyContent="center" alignItems="center">
                 <Spinner loadingState={loadingResult} onComplete={handleSuccess} />
             </VStack>
-        </Screen>
+        </PassphraseScreenWrapper>
     );
 };

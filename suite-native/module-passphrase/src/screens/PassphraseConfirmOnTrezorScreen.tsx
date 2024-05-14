@@ -7,7 +7,6 @@ import {
     PassphraseStackParamList,
     PassphraseStackRoutes,
     RootStackParamList,
-    Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
@@ -17,8 +16,8 @@ import {
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
 
-import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
+import { PassphraseScreenWrapper } from '../components/PassphraseScreen';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -39,7 +38,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     }, [isDeviceConnectedAndAuthorized, isDiscoveryActive, navigation]);
 
     return (
-        <Screen screenHeader={<PassphraseScreenHeader />}>
+        <PassphraseScreenWrapper>
             <VStack
                 spacing="large"
                 alignItems="center"
@@ -53,6 +52,6 @@ export const PassphraseConfirmOnTrezorScreen = () => {
                     subtitle={<Translation id="modulePassphrase.confirmOnDevice.description" />}
                 />
             </VStack>
-        </Screen>
+        </PassphraseScreenWrapper>
     );
 };
