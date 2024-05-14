@@ -1,3 +1,7 @@
+# 1.0.4-beta.1
+
+-   feat(connect-explorer-nextra): method json params editor (09086d0f1a)
+
 # 1.0.3
 
 -   feat(connect-explorer-nextra): complex/nested types handling, refactor (905756a4a5)
