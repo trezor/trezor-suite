@@ -103,7 +103,6 @@ const Wrapper = styled.div<WrapperParams>`
     display: flex;
     ${typography.hint}
     gap: ${spacingsPx.sm};
-    justify-content: ${({ $withIcon }) => !$withIcon && 'center'};
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
     width: 100%;
 
