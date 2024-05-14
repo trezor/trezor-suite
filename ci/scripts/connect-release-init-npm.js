@@ -47,6 +47,16 @@ const findIndexByCommit = (commitArr, searchString) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
 const initConnectRelease = async () => {
+    console.log('Using GitHub Token:', process.env.GITHUB_TOKEN ? 'Yes' : 'No');
+
+    if (process.env.GITHUB_TOKEN) {
+        // Making sure we use the proper GITHUB_TOKEN
+        exec('gh', ['auth', 'setup-git']);
+        exec('gh', ['config', 'set', '-h', 'github.com', 'oauth_token', process.env.GITHUB_TOKEN]);
+    } else {
+        throw new Error('Missing GITHUB_TOKEN');
+    }
+
     const checkResult = await checkPackageDependencies('connect', deploymentType);
 
     const update = checkResult.update.map(package => package.replace('@trezor/', ''));
