@@ -38,7 +38,7 @@ const ghWorkflowRunReleaseAction = (branch, packages, deployment) =>
         '--field',
         `packages="${packages}"`,
         '--field',
-        `deploymentType="${deployment}"`,
+        `deploymentType=${deployment}`,
     ]);
 
 const splitByNewlines = input => input.split('\n');
