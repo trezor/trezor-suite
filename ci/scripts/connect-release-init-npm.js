@@ -36,7 +36,7 @@ const ghWorkflowRunReleaseAction = (branch, packages, deployment) =>
         '--ref',
         branch,
         '--field',
-        `packages="${packages}"`,
+        `packages=${packages}`,
         '--field',
         `deploymentType=${deployment}`,
     ]);
@@ -212,7 +212,7 @@ const initConnectRelease = async () => {
     // and a pull request including all the changes.
     // Now we want to trigger the action that will trigger the actual release,
     // after approval form authorized member.
-    const dependenciesToRelease = update.join(',');
+    const dependenciesToRelease = JSON.stringify(update);
     console.log('dependenciesToRelease:', dependenciesToRelease);
     console.log('deploymentType:', deploymentType);
     console.log('branchName:', branchName);
@@ -230,7 +230,7 @@ const initConnectRelease = async () => {
     console.log('Triggering action to release connect.');
     const releaseConnectActionOutput = ghWorkflowRunReleaseAction(
         branchName,
-        ['connect', 'connect-web', 'connect-webextension'].join(','),
+        JSON.stringify(['connect', 'connect-web', 'connect-webextension']),
         deploymentType,
     );
 
