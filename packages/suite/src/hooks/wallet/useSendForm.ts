@@ -268,7 +268,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formValues: values,
-                    transactionInfo: composedTx,
+                    precomposedTransaction: composedTx,
                     selectedAccount: props.selectedAccount.account,
                 }),
             ).unwrap();

@@ -183,7 +183,7 @@ export const composeRippleSendFormTransactionThunk = createThunk(
 export const signRippleSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/signRippleSendFormTransactionThunk`,
     async (
-        { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
+        { formValues, precomposedTransaction, selectedAccount }: SignTransactionThunkArguments,
         { dispatch, getState, extra },
     ) => {
         const {
@@ -198,8 +198,8 @@ export const signRippleSendFormTransactionThunk = createThunk(
             G.isNullable(selectedAccount) ||
             selectedAccountStatus !== 'loaded' ||
             !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final'
+            !precomposedTransaction ||
+            precomposedTransaction.type !== 'final'
         )
             return;
 
@@ -223,7 +223,7 @@ export const signRippleSendFormTransactionThunk = createThunk(
             useEmptyPassphrase: device.useEmptyPassphrase,
             path: selectedAccount.path,
             transaction: {
-                fee: transactionInfo.feePerByte,
+                fee: precomposedTransaction.feePerByte,
                 flags: XRP_FLAG,
                 sequence: selectedAccount.misc.sequence,
                 payment,

@@ -149,7 +149,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             return dispatch(
                 signAndPushSendFormTransactionThunk({
                     formValues,
-                    transactionInfo: composedToSign,
+                    precomposedTransaction: composedToSign,
                     selectedAccount: account,
                 }),
             ).unwrap();

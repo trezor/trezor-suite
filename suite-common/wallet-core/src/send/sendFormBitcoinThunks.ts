@@ -212,7 +212,7 @@ export const composeBitcoinSendFormTransactionThunk = createThunk(
 export const signBitcoinSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/signBitcoinSendFormTransactionThunk`,
     async (
-        { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
+        { formValues, precomposedTransaction, selectedAccount }: SignTransactionThunkArguments,
         { dispatch, getState, extra },
     ) => {
         const {
@@ -233,8 +233,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
             G.isNullable(selectedAccount) ||
             selectedAccountStatus !== 'loaded' ||
             !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final'
+            !precomposedTransaction ||
+            precomposedTransaction.type !== 'final'
         )
             return;
 
@@ -247,7 +247,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
 
         let refTxs;
 
-        if (formValues.rbfParams && transactionInfo.useNativeRbf) {
+        if (formValues.rbfParams && precomposedTransaction.useNativeRbf) {
             const { txid, utxo, outputs } = formValues.rbfParams;
 
             // normally taproot/coinjoin account doesn't require referenced transactions while signing
@@ -265,7 +265,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
             // it's possible to add change-output if it not exists in original tx AND new utxo was added/used
             // it's possible to remove original change-output completely (give up all as a fee)
             // it's possible to decrease external output in favour of fee
-            signEnhancement.inputs = transactionInfo.inputs.map((input, i) => {
+            signEnhancement.inputs = precomposedTransaction.inputs.map((input, i) => {
                 if (utxo[i]) {
                     return { ...input, orig_index: i, orig_hash: txid };
                 }
@@ -276,7 +276,7 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
             // edge-case: original tx have change-output on index 0 while new tx doesn't have change-output at all
             // or it's moved to the last position by @trezor/connect composeTransaction process.
             signEnhancement.outputs = restoreOrigOutputsOrder(
-                transactionInfo.outputs,
+                precomposedTransaction.outputs,
                 outputs,
                 txid,
             );
@@ -300,8 +300,8 @@ export const signBitcoinSendFormTransactionThunk = createThunk(
                 state: device.state,
             },
             useEmptyPassphrase: device.useEmptyPassphrase,
-            inputs: transactionInfo.inputs,
-            outputs: transactionInfo.outputs,
+            inputs: precomposedTransaction.inputs,
+            outputs: precomposedTransaction.outputs,
             account: {
                 addresses: selectedAccount.addresses!,
                 transactions: refTxs,

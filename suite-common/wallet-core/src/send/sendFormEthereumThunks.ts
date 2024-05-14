@@ -237,7 +237,7 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
 export const signEthereumSendFormTransactionThunk = createThunk(
     `${SEND_MODULE_PREFIX}/signEthereumSendFormTransactionThunk`,
     async (
-        { formValues, transactionInfo, selectedAccount }: SignTransactionThunkArguments,
+        { formValues, precomposedTransaction, selectedAccount }: SignTransactionThunkArguments,
         { dispatch, getState, extra },
     ) => {
         const {
@@ -251,8 +251,8 @@ export const signEthereumSendFormTransactionThunk = createThunk(
             G.isNullable(selectedAccount) ||
             selectedAccountStatus !== 'loaded' ||
             !device ||
-            !transactionInfo ||
-            transactionInfo.type !== 'final'
+            !precomposedTransaction ||
+            precomposedTransaction.type !== 'final'
         )
             return;
 
@@ -292,13 +292,13 @@ export const signEthereumSendFormTransactionThunk = createThunk(
 
         // transform to TrezorConnect.ethereumSignTransaction params
         const transaction = prepareEthereumTransaction({
-            token: transactionInfo.token,
+            token: precomposedTransaction.token,
             chainId: network.chainId,
             to: formValues.outputs[0].address,
             amount: formValues.outputs[0].amount,
             data: formValues.ethereumDataHex,
-            gasLimit: transactionInfo.feeLimit || '',
-            gasPrice: transactionInfo.feePerByte,
+            gasLimit: precomposedTransaction.feeLimit || '',
+            gasPrice: precomposedTransaction.feePerByte,
             nonce,
         });
 

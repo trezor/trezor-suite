@@ -12,6 +12,6 @@ export type ComposeTransactionThunkArguments = {
 
 export type SignTransactionThunkArguments = {
     formValues: FormState;
-    transactionInfo: PrecomposedTransactionFinal;
+    precomposedTransaction: PrecomposedTransactionFinal;
     selectedAccount?: Account;
 };

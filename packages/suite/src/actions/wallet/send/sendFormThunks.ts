@@ -15,7 +15,7 @@ import {
 } from 'src/reducers/wallet/selectedAccountReducer';
 
 import {
-    prepareTransactionForSigningThunk,
+    enhancePrecomposedTransactionThunk,
     pushSendFormTransactionThunk,
     selectDevice,
     selectSendFormDrafts,
@@ -87,11 +87,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
     async (
         {
             formValues,
-            transactionInfo,
+            precomposedTransaction,
             selectedAccount,
         }: {
             formValues: FormState;
-            transactionInfo: PrecomposedTransactionFinal | PrecomposedTransactionFinalCardano;
+            precomposedTransaction:
+                | PrecomposedTransactionFinal
+                | PrecomposedTransactionFinalCardano;
             selectedAccount?: Account;
         },
         { dispatch, getState },
@@ -99,17 +101,13 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         const device = selectDevice(getState());
         if (!device || !selectedAccount) return;
 
-        const enhancedTxInfo = await dispatch(
-            prepareTransactionForSigningThunk({
+        const enhancedPrecomposedTransaction = await dispatch(
+            enhancePrecomposedTransactionThunk({
                 transactionFormValues: formValues,
-                transactionInfo,
+                precomposedTransaction,
                 selectedAccount,
             }),
         ).unwrap();
-
-        if (!enhancedTxInfo) {
-            return;
-        }
 
         // TransactionReviewModal has 2 steps: signing and pushing
         // TrezorConnect emits UI.CLOSE_UI.WINDOW after the signing process
@@ -119,7 +117,7 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         const { serializedTx } = await dispatch(
             signTransactionThunk({
                 formValues,
-                transactionInfo: enhancedTxInfo,
+                precomposedTransaction: enhancedPrecomposedTransaction,
                 selectedAccount,
             }),
         ).unwrap();
