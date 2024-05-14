@@ -25,7 +25,7 @@ jobs:
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'All' && github.repository == 'trezor/trezor-suite'}}
+    if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'All' && startsWith(github.repository, 'trezor/trezor-suite') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
