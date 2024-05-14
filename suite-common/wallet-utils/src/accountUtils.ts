@@ -22,7 +22,7 @@ import {
     PrecomposedTransactionFinal,
     ReceiveInfo,
     TokenAddress,
-    TxFinalCardano,
+    GeneralPrecomposedTransactionFinal,
     RatesByKey,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
@@ -836,7 +836,7 @@ export const getUtxoFromSignedTransaction = ({
 }: {
     account: Account;
     receivingAccount?: boolean;
-    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    tx: GeneralPrecomposedTransactionFinal;
     txid: string;
     prevTxid?: string;
 }) => {
@@ -920,7 +920,7 @@ export const getPendingAccount = ({
 }: {
     account: Account;
     receivingAccount?: boolean;
-    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    tx: GeneralPrecomposedTransactionFinal;
     txid: string;
 }) => {
     // calculate availableBalance

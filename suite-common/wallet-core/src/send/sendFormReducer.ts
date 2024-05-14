@@ -1,4 +1,4 @@
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
+import { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 import { SerializedTx } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -12,7 +12,7 @@ export type SendState = {
         [key: string]: FormState; // Key: account key
     };
     sendRaw?: boolean;
-    precomposedTx?: PrecomposedTransactionFinal | TxFinalCardano;
+    precomposedTx?: GeneralPrecomposedTransactionFinal;
     precomposedForm?: FormState;
     signedTx?: BlockbookTransaction;
     serializedTx?: SerializedTx; // hex representation of signed transaction (payload for TrezorConnect.pushTransaction)

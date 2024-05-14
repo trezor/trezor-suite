@@ -31,8 +31,7 @@ import type {
     Account,
     CurrencyOption,
     ExcludedUtxos,
-    PrecomposedTransactionFinal,
-    TxFinalCardano,
+    GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 
 import { amountToSatoshi, getUtxoOutpoint, networkAmountToSatoshi } from './accountUtils';
@@ -204,10 +203,7 @@ export const getFeeUnits = (networkType: NetworkType) => {
     return 'sat/B';
 };
 
-export const getFee = (
-    networkType: NetworkType,
-    tx: PrecomposedTransactionFinal | TxFinalCardano,
-) => {
+export const getFee = (networkType: NetworkType, tx: GeneralPrecomposedTransactionFinal) => {
     if (networkType === 'solana') return tx.fee;
 
     return tx.feePerByte;

@@ -11,11 +11,7 @@ import { useDispatch } from 'src/hooks/suite';
 import { TransactionReviewDetails } from './TransactionReviewDetails';
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import type { Account } from 'src/types/wallet';
-import type {
-    FormState,
-    PrecomposedTransactionFinal,
-    TxFinalCardano,
-} from '@suite-common/wallet-types';
+import type { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getOutputState } from 'src/utils/wallet/reviewTransactionUtils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
 import { ReviewOutput } from 'src/types/wallet/transaction';
@@ -90,7 +86,7 @@ const Nowrap = styled.span`
 export interface TransactionReviewOutputListProps {
     account: Account;
     precomposedForm: FormState | StakeFormState;
-    precomposedTx: PrecomposedTransactionFinal | TxFinalCardano;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
     signedTx?: { tx: string }; // send reducer
     decision?: { resolve: (success: boolean) => void }; // dfd
     detailsOpen: boolean;

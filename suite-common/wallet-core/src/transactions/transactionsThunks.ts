@@ -2,7 +2,7 @@ import {
     Account,
     ExportFileType,
     PrecomposedTransactionFinal,
-    TxFinalCardano,
+    PrecomposedTransactionCardanoFinal,
     WalletAccountTransaction,
     AccountKey,
 } from '@suite-common/wallet-types';
@@ -191,7 +191,7 @@ export const addFakePendingCardanoTxThunk = createThunk(
             txid,
             account,
         }: {
-            precomposedTx: Pick<TxFinalCardano, 'totalSpent' | 'fee'>;
+            precomposedTx: Pick<PrecomposedTransactionCardanoFinal, 'totalSpent' | 'fee'>;
             txid: string;
             account: Account;
         },
