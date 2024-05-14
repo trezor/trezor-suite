@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       packages:
-        description: "Comma-separated names of the packages to deploy. (example: 'connect,blockchain-link-types,blockchain-link-utils')"
+        description: 'Array string with names of the packages to deploy. (example: ["blockchain-link-utils","blockchain-link-types","analytics"])'
         required: true
         type: string
       deploymentType:
@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        package: ${{ fromJson('[' + github.event.inputs.packages + ']') }}
+        package: ${{ fromJson(github.event.inputs.packages) }}
     steps:
       - uses: actions/checkout@v4
         with:
