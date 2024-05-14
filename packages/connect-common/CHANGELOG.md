@@ -1,3 +1,8 @@
+# 0.0.33-beta.1
+
+-   chore(connect): bump required fw to 1.8.1/2.1.0 (2f14ff6703)
+-   chore(connect-common): fix bootloader_version in the first t3t1 record (6ebae70094)
+
 # 0.0.32
 
 -   feat(connect): add T3T1 releases.json (a9840087c8)
