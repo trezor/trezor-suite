@@ -134,6 +134,8 @@ export const NotificationRenderer = ({
             return error(render, notification, 'METADATA_PROVIDER_AUTH_ERROR');
         case 'metadata-unexpected-error':
             return error(render, notification, 'METADATA_PROVIDER_UNEXPECTED_ERROR');
+        case 'estimated-fee-error':
+            return info(render, notification, 'TOAST_ESTIMATED_FEE_ERROR');
         case 'auto-updater-error':
             return error(render, notification, 'TOAST_AUTO_UPDATER_ERROR', {
                 state: notification.state,

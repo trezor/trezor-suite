@@ -61,7 +61,19 @@ export type ToastPayload = (
               | 'sign-message-success'
               | 'verify-message-success'
               | 'firmware-check-authenticity-success'
-              | 'device-authenticity-success';
+              | 'device-authenticity-success'
+              | 'clear-storage'
+              | 'add-token-success'
+              | 'auto-updater-no-new'
+              | 'qr-incorrect-address'
+              | 'copy-to-clipboard'
+              | 'savings-kyc-failed'
+              | 'savings-kyc-success'
+              | 'tor-is-slow'
+              | 'coinjoin-interrupted'
+              | 'firmware-language-changed'
+              | 'firmware-language-fetch-error'
+              | 'estimated-fee-error';
       }
     | SentTransactionNotification
     | {
@@ -69,17 +81,8 @@ export type ToastPayload = (
           txid: string;
       }
     | {
-          type: 'copy-to-clipboard';
-      }
-    | {
-          type: 'clear-storage';
-      }
-    | {
           type: 'bridge-dev-restart';
           devMode: boolean;
-      }
-    | {
-          type: 'add-token-success';
       }
     | {
           type:
@@ -94,15 +97,14 @@ export type ToastPayload = (
               | 'metadata-auth-error'
               | 'metadata-not-found-error'
               | 'metadata-unexpected-error'
-              | 'device-authenticity-error';
+              | 'device-authenticity-error'
+              | 'cardano-delegate-error'
+              | 'cardano-withdrawal-error';
           error: string;
       }
     | {
           type: 'auto-updater-error';
           state: DesktopAppUpdateState;
-      }
-    | {
-          type: 'auto-updater-no-new';
       }
     | {
           type: 'auto-updater-new-version-first-run';
@@ -116,47 +118,18 @@ export type ToastPayload = (
           coin: string;
       }
     | {
-          type: 'qr-incorrect-address';
-      }
-    | {
           type: 'coin-scheme-protocol';
           scheme: PROTOCOL_SCHEME;
           address: string;
           amount?: number;
       }
     | {
-          type: 'cardano-delegate-error';
-          error: string;
-      }
-    | {
-          type: 'cardano-withdrawal-error';
-          error: string;
-      }
-    | {
-          type: 'savings-kyc-failed';
-      }
-    | {
-          type: 'savings-kyc-success';
-      }
-    | {
           type: 'tor-toggle-error';
           error: TranslationKey;
       }
     | {
-          type: 'tor-is-slow';
-      }
-    | {
-          type: 'coinjoin-interrupted';
-      }
-    | {
           type: 'successful-claim';
           symbol: string;
-      }
-    | {
-          type: 'firmware-language-changed';
-      }
-    | {
-          type: 'firmware-language-fetch-error';
       }
     | StakedTransactionNotification
     | UnstakedTransactionNotification
