@@ -111,7 +111,7 @@ const initConnectRelease = async () => {
     const { version } = packageJSON;
 
     const commitMessage = `npm-release: @trezor/connect ${version}`;
-    const branchName = `npm-release/connect-${version}`;
+    const branchName = `test-npm-release/connect-${version}`;
 
     // Check if branch exists and if so, delete it.
     const branchExists = exec('git', ['branch', '--list', branchName]).stdout;
