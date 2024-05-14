@@ -5,7 +5,7 @@ import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
 import { accountsActions, sendFormActions } from '@suite-common/wallet-core';
-import { convertSendFormDraftsThunk } from '@suite-common/wallet-core';
+import { convertSendFormDraftsBtcAmountUnitsThunk } from '@suite-common/wallet-core';
 
 export const blockchainSubscription = [
     {
@@ -163,7 +163,7 @@ export const draftsFixtures = [
                 payload: PROTO.AmountUnit.SATOSHI,
             },
             {
-                type: convertSendFormDraftsThunk.pending.type,
+                type: convertSendFormDraftsBtcAmountUnitsThunk.pending.type,
             },
             {
                 type: sendFormActions.storeDraft.type,
