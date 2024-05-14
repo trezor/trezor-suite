@@ -101,8 +101,12 @@ const exec = (cmd, params) => {
         cwd: ROOT,
     });
     if (res.status !== 0) {
-        console.log(cmd, ...params);
-        console.log(res);
+        console.error('Error executing command:', cmd, ...params);
+        console.error('Command output:', res.stdout);
+        console.error('Command error output:', res.stderr);
+        throw new Error(
+            `Command "${cmd} ${params.join(' ')}" failed with exit code ${res.status}: ${res.stderr}`,
+        );
     }
     return res;
 };
