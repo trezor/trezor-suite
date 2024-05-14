@@ -47,10 +47,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
             dispatch(selectDeviceThunk(action.payload));
         }
 
-        if (
-            deviceActions.forgetDevice.match(action) ||
-            deviceActions.forgetAndDisconnectDevice.match(action)
-        ) {
+        if (deviceActions.forgetDevice.match(action)) {
             dispatch(handleDeviceDisconnect(action.payload));
         }
 

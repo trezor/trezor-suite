@@ -453,11 +453,6 @@ const forget = (draft: State, device: TrezorDevice) => {
     }
 };
 
-const forgetAndDisconnect = (draft: State, device: TrezorDevice) => {
-    forget(draft, device);
-    disconnectDevice(draft, device);
-};
-
 const addButtonRequest = (
     draft: State,
     device: TrezorDevice | undefined,
@@ -567,10 +562,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
-        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
-        .addCase(deviceActions.forgetAndDisconnectDevice, (state, { payload }) => {
-            forgetAndDisconnect(state, payload);
-        });
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices);
 });
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;

@@ -82,13 +82,6 @@ export const removeButtonRequests = createAction(
     }),
 );
 
-export const forgetAndDisconnectDevice = createAction(
-    `${DEVICE_MODULE_PREFIX}/forgetAndDisconnectDevice`,
-    (payload: TrezorDevice) => ({
-        payload,
-    }),
-);
-
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -106,5 +99,4 @@ export const deviceActions = {
     selectDevice,
     updateSelectedDevice,
     removeButtonRequests,
-    forgetAndDisconnectDevice,
 };
