@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Text, Radio, Button, Icon, useElevation } from '@trezor/components';
+import { Text, Radio, Icon, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 
@@ -24,10 +24,6 @@ const Container = styled.div`
 const Left = styled.div``;
 
 const Title = styled.div``;
-const ConfirmButtonContainer = styled.div`
-    display: flex;
-    justify-content: flex-end;
-`;
 
 const Item = styled.div<{ $elevation: Elevation; $isChecked: boolean }>`
     display: flex;

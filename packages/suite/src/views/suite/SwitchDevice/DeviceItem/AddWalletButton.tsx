@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, HotkeyBadge, Tooltip } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
@@ -42,8 +42,6 @@ export const AddWalletButton = ({
     device,
     instances,
     addDeviceInstance,
-    // addStandardWallet,
-    // addPassphraseWallet,
     selectDeviceInstance,
 }: AddWalletButtonProps) => {
     const hasAtLeastOneWallet = instances.find(d => d.state);
@@ -60,8 +58,7 @@ export const AddWalletButton = ({
         locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
         locks.includes(SUITE.LOCK_TYPE.UI);
 
-    // @TODO fix buttons
-    const onAddWallet = (isPassphraseWallet: boolean) => {
+    const onAddWallet = () => {
         if (hasAtLeastOneWallet) {
             addDeviceInstance(device);
         } else {
@@ -79,28 +76,27 @@ export const AddWalletButton = ({
                 <Columns>
                     {!emptyPassphraseWalletExists && (
                         <Button
-                            data-test={'@switch-device/add-wallet-button'}
+                            data-test="@switch-device/add-wallet-button"
                             variant="tertiary"
                             isFullWidth
                             icon="PLUS"
                             isDisabled={isLocked}
-                            onClick={() => onAddWallet(false)}
+                            onClick={onAddWallet}
                         >
                             <Translation id="TR_ADD_WALLET" />
                         </Button>
                     )}
 
                     <Button
-                        data-test={'@switch-device/add-hidden-wallet-button'}
+                        data-test="@switch-device/add-hidden-wallet-button"
                         variant="tertiary"
                         isFullWidth
                         icon="PLUS"
                         isDisabled={isLocked}
-                        onClick={() => onAddWallet(true)}
+                        onClick={onAddWallet}
                     >
                         <Rows>
                             <Translation id="TR_ADD_HIDDEN_WALLET" />
-                            {!isLocked && <HotkeyBadge hotkey={['CTRL', 'KEY_P']} />}
                         </Rows>
                     </Button>
                 </Columns>

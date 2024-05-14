@@ -22,6 +22,11 @@ interface EjectButtonProps {
 export const EjectButton = ({ setContentType, dataTest }: EjectButtonProps) => {
     const theme = useTheme();
 
+    const onEjectClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        setContentType('ejectConfirmation');
+        e.stopPropagation();
+    };
+
     return (
         <EjectContainer>
             <Tooltip hasArrow cursor="pointer" content={<Translation id="TR_EJECT_HEADING" />}>
@@ -31,10 +36,7 @@ export const EjectButton = ({ setContentType, dataTest }: EjectButtonProps) => {
                     size={22}
                     color={theme.TYPE_LIGHT_GREY}
                     hoverColor={theme.TYPE_DARK_GREY}
-                    onClick={e => {
-                        setContentType('ejectConfirmation');
-                        e.stopPropagation();
-                    }}
+                    onClick={onEjectClick}
                 />
             </Tooltip>
         </EjectContainer>

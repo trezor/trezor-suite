@@ -11,7 +11,6 @@ export const ModalSwitcher = () => {
     const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const modal = usePreferredModal();
 
-    // return <DiscoveryLoader />; // @TODO remove
     switch (modal.type) {
         case 'foreground-app':
             return <ForegroundAppModal {...modal.payload} />;

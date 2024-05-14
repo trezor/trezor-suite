@@ -43,6 +43,11 @@ export const DeviceHeader = ({
     const theme = useTheme();
     const deviceModelInternal = device.features?.internal_model;
 
+    const onExpandClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+        setIsExpanded(!isExpanded);
+        e.stopPropagation();
+    };
+
     return (
         <Container onClick={() => onCancel?.()}>
             <Flex>
@@ -65,10 +70,7 @@ export const DeviceHeader = ({
                         icon="CARET_CIRCLE_DOWN"
                         color={theme.TYPE_LIGHT_GREY}
                         hoverColor={theme.TYPE_LIGHTER_GREY}
-                        onClick={e => {
-                            setIsExpanded(!isExpanded);
-                            e.stopPropagation();
-                        }}
+                        onClick={onExpandClick}
                     />
                 </motion.div>
             </DeviceActions>

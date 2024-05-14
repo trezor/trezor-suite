@@ -108,6 +108,11 @@ export const WalletInstance = ({
 
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
 
+    const onEjectCancelClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        setContentType('default');
+        e.stopPropagation();
+    };
+
     return (
         <RelativeContainer>
             <Card
@@ -178,10 +183,7 @@ export const WalletInstance = ({
                     <EjectConfirmation
                         instance={instance}
                         onClick={e => e.stopPropagation()}
-                        onCancel={e => {
-                            setContentType('default');
-                            e.stopPropagation();
-                        }}
+                        onCancel={onEjectCancelClick}
                     />
                 )}
             </Card>

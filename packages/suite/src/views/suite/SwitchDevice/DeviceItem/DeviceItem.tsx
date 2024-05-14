@@ -74,14 +74,6 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
         await dispatch(createDeviceInstance({ device: instance }));
         handleRedirection();
     };
-    // const addStandardWallet = async (instance: DeviceItemProps['device']) => {
-    //     await dispatch(createDeviceInstance({ device: instance, useEmptyPassphrase: true }));
-    //     handleRedirection();
-    // };
-    // const addPassphraseWallet = async (instance: DeviceItemProps['device']) => {
-    //     await dispatch(createDeviceInstance({ device: instance, useEmptyPassphrase: false }));
-    //     handleRedirection();
-    // };
 
     const onSolveIssueClick = () => {
         const needsAcquire =
@@ -125,8 +117,6 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
                     device={device}
                     instances={instances}
                     addDeviceInstance={addDeviceInstance}
-                    // addStandardWallet={addStandardWallet}
-                    // addPassphraseWallet={addPassphraseWallet}
                     selectDeviceInstance={selectDeviceInstance}
                 />
             </WalletsWrapper>

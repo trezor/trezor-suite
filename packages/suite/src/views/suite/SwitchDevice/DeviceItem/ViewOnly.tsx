@@ -67,11 +67,9 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
                             variant={isViewOnly ? 'secondary' : 'tertiary'}
                             typographyStyle="callout"
                         >
-                            {isViewOnly ? (
-                                <Translation id="TR_VIEW_ONLY_ENABLED" />
-                            ) : (
-                                <Translation id="TR_VIEW_ONLY_DISABLED" />
-                            )}
+                            <Translation
+                                id={isViewOnly ? 'TR_VIEW_ONLY_ENABLED' : 'TR_VIEW_ONLY_DISABLED'}
+                            />
                         </Text>
                     </ViewOnlyContent>
                 }

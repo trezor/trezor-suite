@@ -28,7 +28,7 @@ type AccountBannersProps = {
 export const AccountBanners = ({ account }: AccountBannersProps) => (
     <BannersWrapper>
         <CoinjoinContextMessage account={account} />
-        {/* <AuthConfirmFailed /> */}
+        <AuthConfirmFailed />
         <BackendDisconnected />
         <DeviceUnavailable />
         <TorDisconnected />

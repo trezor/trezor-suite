@@ -67,7 +67,6 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
         return (
             <PassphraseWalletConfirmation
                 onCancel={onCancel}
-                authConfirmation={authConfirmation}
                 onSubmit={onSubmit}
                 onDeviceOffer={onDeviceOffer}
                 device={device}

@@ -36,6 +36,7 @@ export const flexAlignItems = [
 export type FlexDirection = (typeof flexDirection)[number];
 export type FlexJustifyContent = (typeof flexJustifyContent)[number];
 export type FlexAlignItems = (typeof flexAlignItems)[number];
+export type Flex = string;
 
 const Container = styled.div<
     TransientFrameProps & {
@@ -43,9 +44,11 @@ const Container = styled.div<
         $justifyContent: FlexJustifyContent;
         $alignItems: FlexAlignItems;
         $direction: FlexDirection;
+        $flex: Flex;
     }
 >`
     display: flex;
+    flex: ${({ $flex }) => $flex};
     flex-direction: ${({ $direction }) => $direction};
     gap: ${({ $gap }) => $gap}px;
     justify-content: ${({ $justifyContent }) => $justifyContent};
@@ -60,6 +63,7 @@ export type FlexProps = FrameProps & {
     alignItems?: FlexAlignItems;
     children: React.ReactNode;
     direction?: FlexDirection;
+    flex?: Flex;
 };
 
 export const Flex = ({
@@ -69,6 +73,7 @@ export const Flex = ({
     children,
     direction = 'row',
     margin,
+    flex = 'auto',
 }: FlexProps) => {
     const frameProps = {
         margin,
@@ -80,6 +85,7 @@ export const Flex = ({
             $justifyContent={justifyContent}
             $alignItems={alignItems}
             $direction={direction}
+            $flex={flex}
             {...makePropsTransient(frameProps)}
         >
             {children}

@@ -26,7 +26,15 @@ export const PassphraseTypeCard: StoryObj<PassphraseTypeCardProps> = {
         submitLabel: 'Yes please',
         offerPassphraseOnDevice: true,
         singleColModal: true,
-        authConfirmation: true,
         onSubmit: () => null,
+        type: 'standard',
+    },
+    argTypes: {
+        type: {
+            options: ['standard', 'hidden'],
+            control: {
+                type: 'select',
+            },
+        },
     },
 };
