@@ -1,6 +1,6 @@
 {
     "name": "@trezor/protocol",
-    "version": "1.0.8",
+    "version": "1.0.9-beta.1",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",
