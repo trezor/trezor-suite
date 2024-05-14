@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import {
     selectDevice,
-    selectIsDeviceAuthorized,
     selectIsPortfolioTrackerDevice,
     toggleRememberDevice,
     selectIsDeviceRemembered,
 } from '@suite-common/wallet-core';
 import { BottomSheet, Box, Button, CenteredTitleHeader, VStack } from '@suite-native/atoms';
+import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     getIsBiometricsFeatureAvailable,
@@ -41,7 +41,7 @@ export const EnableViewOnlyBottomSheet = () => {
     const { applyStyle } = useNativeStyles();
     const [isViewOnlyModeFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
     const { isBiometricsInitialSetupFinished } = useIsBiometricsInitialSetupFinished();
-    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
     const device = useSelector(selectDevice);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const viewOnlyCancelationTimestamp = useSelector(selectViewOnlyCancelationTimestamp);
@@ -70,7 +70,7 @@ export const EnableViewOnlyBottomSheet = () => {
     const canBeShowed =
         isViewOnlyModeFeatureEnabled &&
         !isDeviceRemembered &&
-        isDeviceAuthorized &&
+        isDeviceReadyToUseAndAuthorized &&
         !isPortfolioTrackerDevice &&
         !viewOnlyCancelationTimestamp &&
         (isBiometricsInitialSetupFinished || !isAvailableBiometrics);
