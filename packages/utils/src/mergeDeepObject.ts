@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 // code shamelessly stolen from https://github.com/voodoocreation/ts-deepmerge
 
 type TAllKeys<T> = T extends any ? keyof T : never;
@@ -25,7 +26,7 @@ type TMerged<T> = [T] extends [Array<any>]
         : T;
 
 // istanbul ignore next
-const isObject = (obj: any) => {
+const isObject = (obj: any): obj is IObject => {
     if (typeof obj === 'object' && obj !== null) {
         if (typeof Object.getPrototypeOf === 'function') {
             const prototype = Object.getPrototypeOf(obj);
@@ -43,6 +44,28 @@ interface IObject {
     [key: string]: any;
 }
 
+const mergeValuesWithPath = (target: any, value: any, [key, ...rest]: string[]): any => {
+    if (key === undefined) {
+        return mergeValues(target, value);
+    } else if (!isObject(target)) {
+        return { [key]: mergeValuesWithPath({}, value, rest) };
+    } else {
+        return { ...target, [key]: mergeValuesWithPath(target[key], value, rest) };
+    }
+};
+
+const mergeValues = (target: any, value: any) => {
+    if (Array.isArray(target) && Array.isArray(value)) {
+        return mergeDeepObject.options.mergeArrays
+            ? Array.from(new Set((target as unknown[]).concat(value)))
+            : value;
+    } else if (isObject(target) && isObject(value)) {
+        return mergeDeepObject(target, value);
+    } else {
+        return value;
+    }
+};
+
 export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[number]> =>
     objects.reduce((result, current) => {
         if (Array.isArray(current)) {
@@ -54,14 +77,11 @@ export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[n
                 return;
             }
 
-            if (Array.isArray(result[key]) && Array.isArray(current[key])) {
-                result[key] = mergeDeepObject.options.mergeArrays
-                    ? Array.from(new Set((result[key] as unknown[]).concat(current[key])))
-                    : current[key];
-            } else if (isObject(result[key]) && isObject(current[key])) {
-                result[key] = mergeDeepObject(result[key] as IObject, current[key] as IObject);
+            if (mergeDeepObject.options.dotNotation) {
+                const [first, ...rest] = key.split('.');
+                result[first] = mergeValuesWithPath(result[first], current[key], rest);
             } else {
-                result[key] = current[key];
+                result[key] = mergeValues(result[key], current[key]);
             }
         });
 
@@ -70,17 +90,19 @@ export const mergeDeepObject = <T extends IObject[]>(...objects: T): TMerged<T[n
 
 interface IOptions {
     mergeArrays: boolean;
+    dotNotation: boolean;
 }
 
 const defaultOptions: IOptions = {
     mergeArrays: true,
+    dotNotation: false,
 };
 
 mergeDeepObject.options = defaultOptions;
 
 mergeDeepObject.withOptions = <T extends IObject[]>(options: Partial<IOptions>, ...objects: T) => {
     mergeDeepObject.options = {
-        mergeArrays: true,
+        ...defaultOptions,
         ...options,
     };
 
