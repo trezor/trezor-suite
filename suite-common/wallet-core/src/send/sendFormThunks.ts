@@ -34,7 +34,7 @@ import {
     addFakePendingTxThunk,
 } from '../transactions/transactionsThunks';
 import { accountsActions } from '../accounts/accountsActions';
-import { selectAccounts } from '../accounts/accountsReducer';
+import { selectAccountByKey } from '../accounts/accountsReducer';
 import { selectDevice } from '../device/deviceReducer';
 import { syncAccountsWithBlockchainThunk } from '../blockchain/blockchainThunks';
 import {
@@ -65,8 +65,8 @@ import {
 } from './sendFormSolanaThunks';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
 
-export const convertSendFormDraftsThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/convertSendFormDraftsThunk`,
+export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
+    `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
     (
         { selectedAccountKey }: { selectedAccountKey?: AccountKey },
         { dispatch, getState, extra, rejectWithValue },
@@ -76,7 +76,6 @@ export const convertSendFormDraftsThunk = createThunk(
         } = extra;
         const suiteRoute = selectRoute(getState());
         const sendFormDrafts = selectSendFormDrafts(getState());
-        const accounts = selectAccounts(getState());
         const areSatsAmountUnit = selectAreSatsAmountUnit(getState());
 
         const draftEntries = Object.entries(sendFormDrafts);
@@ -89,9 +88,9 @@ export const convertSendFormDraftsThunk = createThunk(
         const isOnDesktopSendPage = suiteRoute?.name === 'wallet-send';
 
         draftEntries.forEach(([accountKey, draft]) => {
-            const relatedAccount = accounts.find(account => account.key === accountKey);
+            const relatedAccount = selectAccountByKey(getState(), accountKey);
 
-            const isSelectedAccount = selectedAccountKey === relatedAccount?.key;
+            const isSelectedAccount = selectedAccountKey === accountKey;
 
             if ((isSelectedAccount && isOnDesktopSendPage) || !relatedAccount) {
                 return;
@@ -99,15 +98,15 @@ export const convertSendFormDraftsThunk = createThunk(
 
             const areSatsSupported = hasNetworkFeatures(relatedAccount, 'amount-unit');
 
-            const conversionToUse =
+            const amountFormatter =
                 areSatsAmountUnit && areSatsSupported ? amountToSatoshi : formatAmount;
 
             const updatedDraft = cloneObject(draft);
-            const decimals = getAccountDecimals(relatedAccount.symbol)!;
+            const amountDecimals = getAccountDecimals(relatedAccount.symbol)!;
 
             updatedDraft.outputs.forEach(output => {
                 if (output.amount && areSatsSupported) {
-                    output.amount = conversionToUse(output.amount, decimals);
+                    output.amount = amountFormatter(output.amount, amountDecimals);
                 }
             });
 

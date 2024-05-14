@@ -17,7 +17,7 @@ import { ROUTER } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
 import { sendFormActions } from '@suite-common/wallet-core';
-import { convertSendFormDraftsThunk } from '@suite-common/wallet-core';
+import { convertSendFormDraftsBtcAmountUnitsThunk } from '@suite-common/wallet-core';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
@@ -119,7 +119,9 @@ const walletMiddleware =
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
             const nextSelectedAccountKey = selectSelectedAccountKey(api.getState());
             api.dispatch(
-                convertSendFormDraftsThunk({ selectedAccountKey: nextSelectedAccountKey }),
+                convertSendFormDraftsBtcAmountUnitsThunk({
+                    selectedAccountKey: nextSelectedAccountKey,
+                }),
             );
             api.dispatch(coinmarketCommonActions.convertDrafts());
         }
