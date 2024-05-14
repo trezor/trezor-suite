@@ -1,3 +1,8 @@
+# 1.0.17-beta.1
+
+-   fix(suite-native): coin discovery analytics objectless structure (#11992) (7bd1a2bea0)
+-   feat(suite-native): token discovery analytics (#11846) (f81a8012d5)
+
 # 1.0.16
 
 -   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
