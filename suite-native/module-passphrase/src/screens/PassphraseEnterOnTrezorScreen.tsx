@@ -10,7 +10,6 @@ import {
     PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    Screen,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-native/atoms';
@@ -19,8 +18,8 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { cancelPassphraseAndSelectStandardDeviceThunk } from '../passphraseThunks';
-import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
+import { PassphraseContentScreen } from '../components/PassphraseContentScreen';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
@@ -62,42 +61,37 @@ export const PassphraseEnterOnTrezorScreen = () => {
     };
 
     return (
-        <Screen screenHeader={<PassphraseScreenHeader />}>
-            <VStack spacing="large">
-                <VStack>
-                    <Text variant="titleMedium">
-                        <Translation id="modulePassphrase.title" />
-                    </Text>
-                    <Text>
-                        <Translation
-                            id="modulePassphrase.subtitle"
-                            values={{
-                                bold: chunks => <Text variant="highlight">{chunks}</Text>,
-                            }}
+        <PassphraseContentScreen
+            title={<Translation id="modulePassphrase.title" />}
+            subtitle={
+                <Translation
+                    id="modulePassphrase.subtitle"
+                    values={{
+                        bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                    }}
+                />
+            }
+        >
+            <Card style={applyStyle(cardStyle)}>
+                <VStack spacing={28}>
+                    <VStack justifyContent="center" alignItems="center">
+                        <DeviceT2B1Svg />
+                        <CenteredTitleHeader
+                            title={
+                                <Translation id="modulePassphrase.enterPassphraseOnTrezor.title" />
+                            }
+                            subtitle={
+                                <Translation id="modulePassphrase.enterPassphraseOnTrezor.subtitle" />
+                            }
                         />
-                    </Text>
-                </VStack>
-                <Card style={applyStyle(cardStyle)}>
-                    <VStack spacing={28}>
-                        <VStack justifyContent="center" alignItems="center">
-                            <DeviceT2B1Svg />
-                            <CenteredTitleHeader
-                                title={
-                                    <Translation id="modulePassphrase.enterPassphraseOnTrezor.title" />
-                                }
-                                subtitle={
-                                    <Translation id="modulePassphrase.enterPassphraseOnTrezor.subtitle" />
-                                }
-                            />
-                        </VStack>
-                        <Box style={applyStyle(buttonWrapperStyle)}>
-                            <Button onPress={handleCancel} colorScheme="redElevation1">
-                                <Translation id="generic.buttons.cancel" />
-                            </Button>
-                        </Box>
                     </VStack>
-                </Card>
-            </VStack>
-        </Screen>
+                    <Box style={applyStyle(buttonWrapperStyle)}>
+                        <Button onPress={handleCancel} colorScheme="redElevation1">
+                            <Translation id="generic.buttons.cancel" />
+                        </Button>
+                    </Box>
+                </VStack>
+            </Card>
+        </PassphraseContentScreen>
     );
 };

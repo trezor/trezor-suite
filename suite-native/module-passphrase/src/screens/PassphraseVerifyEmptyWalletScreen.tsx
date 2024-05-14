@@ -12,19 +12,18 @@ import {
     PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    Screen,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { AlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 
-import { PassphraseScreenHeader } from '../components/PassphraseScreenHeader';
 import { PassphraseForm } from '../components/PassphraseForm';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
 } from '../passphraseThunks';
+import { PassphraseContentScreen } from '../components/PassphraseContentScreen';
 
 type NavigationProp = StackToTabCompositeProps<
     PassphraseStackParamList,
@@ -84,30 +83,27 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
     }, [handleVerify]);
 
     return (
-        <Screen screenHeader={<PassphraseScreenHeader />}>
-            <VStack spacing="large">
-                <VStack spacing={12}>
-                    <Text variant="titleMedium">
-                        <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.title" />
-                    </Text>
-                    <Text>
-                        <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.description" />
-                    </Text>
-                </VStack>
-                <VStack spacing="medium">
-                    <AlertBox
-                        variant="warning"
-                        title={
-                            <Text>
-                                <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle" />
-                            </Text>
-                        }
-                    />
-                    <PassphraseForm
-                        inputLabel={translate('modulePassphrase.form.verifyPassphraseInputLabel')}
-                    />
-                </VStack>
+        <PassphraseContentScreen
+            title={
+                <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.title" />
+            }
+            subtitle={
+                <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.description" />
+            }
+        >
+            <VStack spacing="medium">
+                <AlertBox
+                    variant="warning"
+                    title={
+                        <Text>
+                            <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle" />
+                        </Text>
+                    }
+                />
+                <PassphraseForm
+                    inputLabel={translate('modulePassphrase.form.verifyPassphraseInputLabel')}
+                />
             </VStack>
-        </Screen>
+        </PassphraseContentScreen>
     );
 };
