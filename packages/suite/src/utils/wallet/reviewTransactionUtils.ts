@@ -4,7 +4,7 @@ import { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 import { TrezorDevice } from 'src/types/suite/index';
-import { FormState, PrecomposedTransactionFinal, TxFinalCardano } from '@suite-common/wallet-types';
+import { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet/index';
 import { getShortFingerprint, isCardanoTx } from '@suite-common/wallet-utils';
 import { ReviewOutput } from 'src/types/wallet/transaction';
@@ -72,7 +72,7 @@ const getCardanoTokenBundle = (account: Account, output: CardanoOutput) => {
 };
 
 type ConstructOutputsParams = {
-    precomposedTx: TxFinalCardano | PrecomposedTransactionFinal;
+    precomposedTx: GeneralPrecomposedTransactionFinal;
     decreaseOutputId: number | undefined;
     account: Account;
     precomposedForm: FormState | StakeFormState;
