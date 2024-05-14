@@ -1,3 +1,10 @@
+# 1.0.13-beta.1
+
+-   fix(protobuf): deterministic protobuf order in generated file (7bdc2ebecc)
+-   fix(scripts): probuf update separate repository + fix situation when someone force-pushes the FW branch (9bdad31d67)
+-   fix(protobuf): add git fetch to update script (be86c395ad)
+-   feat(connect): update protobuf messages (41bff13bc1)
+
 # 1.0.12
 
 -   chore(protobuf): ability to build protobuf messages from the specified branch (7a6babb818)
