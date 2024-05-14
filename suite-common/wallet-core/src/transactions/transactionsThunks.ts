@@ -32,7 +32,6 @@ import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsA
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectHistoricFiatRates } from '../fiat-rates/fiatRatesSelectors';
-import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
 import { selectSendSignedTx } from '../send/sendFormReducer';
 
 /**
