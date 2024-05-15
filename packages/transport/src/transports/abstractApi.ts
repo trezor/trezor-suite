@@ -119,7 +119,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 const openDeviceResult = await this.api.openDevice(path, reset);
 
                 if (!openDeviceResult.success) {
-                    if (this.listenPromise) {
+                    if (this.listenPromise[path]) {
                         this.listenPromise[path].resolve(openDeviceResult);
                     }
 
