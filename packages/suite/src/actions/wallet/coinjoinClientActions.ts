@@ -788,11 +788,11 @@ export const initCoinjoinService =
             });
 
         try {
-            const settings = getCoinjoinConfig(symbol, environment);
+            const config = getCoinjoinConfig(symbol, environment);
             const service = await CoinjoinService.createInstance({
                 network: symbol,
                 prison,
-                settings,
+                settings: { ...config, ...debug?.coinjoinConfigOverride?.[symbol] },
             });
             if (isCoinjoinDisabledByFeatureFlag) {
                 dispatch(clientEnableFailed(symbol));
