@@ -36,6 +36,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     public init() {
         return this.scheduleAction(async () => {
             const handshakeRes = await this.sessionsClient.handshake();
+            this.stopped = !handshakeRes.success;
 
             return handshakeRes.success
                 ? this.success(undefined)
