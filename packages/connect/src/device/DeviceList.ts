@@ -78,42 +78,30 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
         const transportLogger = initLog('@trezor/transport', debug);
 
+        const transportCommonArgs = {
+            messages: this.messages,
+            logger: transportLogger,
+        };
         // mapping of provided transports[] to @trezor/transport classes
         transports.forEach(transportType => {
             if (typeof transportType === 'string') {
                 switch (transportType) {
                     case 'WebUsbTransport':
-                        this.transports.push(
-                            new WebUsbTransport({
-                                messages: this.messages,
-                                logger: transportLogger,
-                            }),
-                        );
+                        this.transports.push(new WebUsbTransport(transportCommonArgs));
                         break;
                     case 'NodeUsbTransport':
-                        this.transports.push(
-                            new NodeUsbTransport({
-                                messages: this.messages,
-                                logger: transportLogger,
-                            }),
-                        );
+                        this.transports.push(new NodeUsbTransport(transportCommonArgs));
                         break;
                     case 'BridgeTransport':
                         this.transports.push(
                             new BridgeTransport({
                                 latestVersion: getBridgeInfo().version.join('.'),
-                                messages: this.messages,
-                                logger: transportLogger,
+                                ...transportCommonArgs,
                             }),
                         );
                         break;
                     case 'UdpTransport':
-                        this.transports.push(
-                            new UdpTransport({
-                                logger: transportLogger,
-                                messages: this.messages,
-                            }),
-                        );
+                        this.transports.push(new UdpTransport(transportCommonArgs));
                         break;
                     default:
                         throw ERRORS.TypedError(
