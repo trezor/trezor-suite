@@ -17,7 +17,7 @@ import {
 } from '@suite-common/wallet-core';
 
 import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
-import { PassphraseScreenWrapper } from '../components/PassphraseScreen';
+import { PassphraseScreenWrapper } from '../components/PassphraseScreenWrapper';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,

@@ -23,7 +23,7 @@ import {
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
 } from '../passphraseThunks';
-import { PassphraseContentScreen } from '../components/PassphraseContentScreen';
+import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
 type NavigationProp = StackToTabCompositeProps<
     PassphraseStackParamList,
@@ -83,7 +83,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
     }, [handleVerify]);
 
     return (
-        <PassphraseContentScreen
+        <PassphraseContentScreenWrapper
             title={
                 <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.title" />
             }
@@ -104,6 +104,6 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     inputLabel={translate('modulePassphrase.form.verifyPassphraseInputLabel')}
                 />
             </VStack>
-        </PassphraseContentScreen>
+        </PassphraseContentScreenWrapper>
     );
 };

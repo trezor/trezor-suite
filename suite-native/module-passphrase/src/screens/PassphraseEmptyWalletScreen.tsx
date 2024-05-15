@@ -16,7 +16,7 @@ import { Translation } from '@suite-native/intl';
 
 import { EmptyWalletInfoSheet } from '../components/EmptyWalletInfoSheet';
 import { retryPassphraseAuthenticationThunk } from '../passphraseThunks';
-import { PassphraseContentScreen } from '../components/PassphraseContentScreen';
+import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
 const imageStyle = prepareNativeStyle(() => ({
     width: 124.45,
@@ -66,7 +66,7 @@ export const PassphraseEmptyWalletScreen = () => {
     };
 
     return (
-        <PassphraseContentScreen
+        <PassphraseContentScreenWrapper
             title={<Translation id="modulePassphrase.emptyPassphraseWallet.title" />}
         >
             <Card style={applyStyle(cardStyle)}>
@@ -109,6 +109,6 @@ export const PassphraseEmptyWalletScreen = () => {
                 </Box>
             </VStack>
             <EmptyWalletInfoSheet isVisible={isSheetVisible} onClose={toggleBottomSheet} />
-        </PassphraseContentScreen>
+        </PassphraseContentScreenWrapper>
     );
 };
