@@ -85,6 +85,13 @@ const SelectWrapper = styled.div<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.sm};
     border: 1px solid ${mapElevationToBorder};
     background: ${mapElevationToBackground};
+
+    /* IMPORTANT: 
+        When changing anything that causes change in height, 
+        make sure you put correct number into size() 
+        middleware of the Floating UI
+    */
+
     height: ${SELECT_ELEMENT_HEIGHT}px;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
@@ -118,11 +125,6 @@ const BackupIconWrapper = styled.div``;
 const OptionGroupHeading = styled.div`
     display: flex;
     flex-direction: row;
-    padding: ${spacingsPx.md} ${spacingsPx.xl} 0 ${spacingsPx.xl};
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
-    }
 
     gap: ${spacingsPx.md};
     align-items: center;
@@ -131,11 +133,6 @@ const OptionGroupHeading = styled.div`
 const OptionStyled = styled.div`
     display: flex;
     flex-direction: row;
-    padding: ${spacingsPx.md} ${spacingsPx.xl};
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    }
 
     gap: ${spacingsPx.md};
     align-items: center;
@@ -156,6 +153,18 @@ type SelectedOptionProps = { children: ReactNode; onClick: () => void; isDisable
 
 const SelectedOptionStyled = styled.div<{ $isDisabled: boolean }>`
     cursor: ${({ $isDisabled }) => ($isDisabled ? undefined : 'pointer')};
+
+    /* IMPORTANT: 
+        When changing anything that causes change in height, 
+        make sure you put correct number into size() 
+        middleware of the Floating UI.
+    */
+
+    padding: ${spacingsPx.md} ${spacingsPx.xl};
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        padding: ${spacingsPx.xs} ${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.sm};
+    }
 `;
 
 const SelectedOption = forwardRef<HTMLDivElement, SelectedOptionProps>(
@@ -191,6 +200,35 @@ const FloatingSelectionsWrapper = styled.div<{ $elevation: Elevation }>`
     border-radius: ${borders.radii.sm};
     box-shadow: ${({ theme }) => theme.boxShadowElevated};
     background: ${mapElevationToBackground};
+
+    /* IMPORTANT: 
+        When changing anything that causes change in height, 
+        make sure you put correct number into size() 
+        middleware of the Floating UI
+    */
+
+    padding: ${spacingsPx.xs} ${spacingsPx.xxs};
+`;
+
+const InnerScrollableWrapper = styled.div`
+    height: 100%;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    /* IMPORTANT: 
+        When changing anything that causes change in height, 
+        make sure you put correct number into size() 
+        middleware of the Floating UI
+    */
+
+    padding: ${spacingsPx.sm} ${spacingsPx.md};
+    gap: ${spacingsPx.md};
+
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
+        gap: ${spacingsPx.md};
+        padding: ${spacingsPx.xs} ${spacingsPx.sm} ${spacingsPx.md} ${spacingsPx.sm};
+    }
 `;
 
 type FloatingSelectionsProps = {
@@ -254,96 +292,98 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
 
         return (
             <FloatingSelectionsWrapper $elevation={elevation} ref={ref} style={style}>
-                <OptionGroupHeading>
-                    <Text typographyStyle="hint" variant="tertiary">
-                        <Translation id="TR_ONBOARDING_BACKUP_CATEGORY_20_WORD_BACKUPS" />
-                    </Text>
-                </OptionGroupHeading>
-                <Option
-                    onSelect={() => onSelect('shamir-default')}
-                    isChecked={selected === 'shamir-default'}
-                    data-test="@onboarding/select-seed-type-shamir-default"
-                >
-                    <OptionText>
-                        <Text
-                            variant={selected === 'shamir-default' ? undefined : 'tertiary'}
-                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                        >
-                            <Translation id={typesToLabelMap['shamir-default']} />
-                            {defaultType === 'shamir-default' ? (
-                                <DefaultTag />
-                            ) : (
-                                <UpgradableToMultiTag />
-                            )}
+                <InnerScrollableWrapper>
+                    <OptionGroupHeading>
+                        <Text typographyStyle="hint" variant="tertiary">
+                            <Translation id="TR_ONBOARDING_BACKUP_CATEGORY_20_WORD_BACKUPS" />
                         </Text>
-                        <Text typographyStyle="hint">
-                            <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
-                        </Text>
-                    </OptionText>
-                </Option>
-                <Option
-                    onSelect={() => onSelect('shamir-advance')}
-                    isChecked={selected === 'shamir-advance'}
-                    data-test="@onboarding/select-seed-type-shamir-advance"
-                >
-                    <OptionText>
-                        <Text
-                            variant={selected === 'shamir-advance' ? undefined : 'tertiary'}
-                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                        >
-                            <Translation id={typesToLabelMap['shamir-advance']} />
-                            {defaultType === 'shamir-advance' && <DefaultTag />}
-                            <AdvancedTag />
-                        </Text>
-                        <Text typographyStyle="hint">
-                            <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
-                        </Text>
-                    </OptionText>
-                </Option>
-                <Divider />
-                <OptionGroupHeading>
-                    <Text typographyStyle="hint" variant="tertiary">
-                        <Translation
-                            id="TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES"
-                            values={{ br: () => <br /> }}
-                        />
-                    </Text>
-                </OptionGroupHeading>
-                <Option
-                    onSelect={() => onSelect('12-words')}
-                    isChecked={selected === '12-words'}
-                    data-test="@onboarding/select-seed-type-12-words"
-                >
-                    <OptionText>
-                        <Text
-                            variant={selected === '12-words' ? undefined : 'tertiary'}
-                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                        >
-                            <Translation id={typesToLabelMap['12-words']} />
-                            {defaultType === '12-words' && <DefaultTag />}
-                        </Text>
-                        {defaultType === '12-words' && (
-                            <Text typographyStyle="hint">
-                                <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE" />
+                    </OptionGroupHeading>
+                    <Option
+                        onSelect={() => onSelect('shamir-default')}
+                        isChecked={selected === 'shamir-default'}
+                        data-test="@onboarding/select-seed-type-shamir-default"
+                    >
+                        <OptionText>
+                            <Text
+                                variant={selected === 'shamir-default' ? undefined : 'tertiary'}
+                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                            >
+                                <Translation id={typesToLabelMap['shamir-default']} />
+                                {defaultType === 'shamir-default' ? (
+                                    <DefaultTag />
+                                ) : (
+                                    <UpgradableToMultiTag />
+                                )}
                             </Text>
-                        )}
-                    </OptionText>
-                </Option>
-                <Option
-                    onSelect={() => onSelect('24-words')}
-                    isChecked={selected === '24-words'}
-                    data-test="@onboarding/select-seed-type-24-words"
-                >
-                    <OptionText>
-                        <Text
-                            variant={selected === '24-words' ? undefined : 'tertiary'}
-                            typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                        >
-                            <Translation id={typesToLabelMap['24-words']} />
-                            {defaultType === '24-words' && <DefaultTag />}
+                            <Text typographyStyle="hint">
+                                <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
+                            </Text>
+                        </OptionText>
+                    </Option>
+                    <Option
+                        onSelect={() => onSelect('shamir-advance')}
+                        isChecked={selected === 'shamir-advance'}
+                        data-test="@onboarding/select-seed-type-shamir-advance"
+                    >
+                        <OptionText>
+                            <Text
+                                variant={selected === 'shamir-advance' ? undefined : 'tertiary'}
+                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                            >
+                                <Translation id={typesToLabelMap['shamir-advance']} />
+                                {defaultType === 'shamir-advance' && <DefaultTag />}
+                                <AdvancedTag />
+                            </Text>
+                            <Text typographyStyle="hint">
+                                <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
+                            </Text>
+                        </OptionText>
+                    </Option>
+                    <Divider margin={{ top: spacings.zero, bottom: spacings.zero }} />
+                    <OptionGroupHeading>
+                        <Text typographyStyle="hint" variant="tertiary">
+                            <Translation
+                                id="TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES"
+                                values={{ br: () => <br /> }}
+                            />
                         </Text>
-                    </OptionText>
-                </Option>
+                    </OptionGroupHeading>
+                    <Option
+                        onSelect={() => onSelect('12-words')}
+                        isChecked={selected === '12-words'}
+                        data-test="@onboarding/select-seed-type-12-words"
+                    >
+                        <OptionText>
+                            <Text
+                                variant={selected === '12-words' ? undefined : 'tertiary'}
+                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                            >
+                                <Translation id={typesToLabelMap['12-words']} />
+                                {defaultType === '12-words' && <DefaultTag />}
+                            </Text>
+                            {defaultType === '12-words' && (
+                                <Text typographyStyle="hint">
+                                    <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE" />
+                                </Text>
+                            )}
+                        </OptionText>
+                    </Option>
+                    <Option
+                        onSelect={() => onSelect('24-words')}
+                        isChecked={selected === '24-words'}
+                        data-test="@onboarding/select-seed-type-24-words"
+                    >
+                        <OptionText>
+                            <Text
+                                variant={selected === '24-words' ? undefined : 'tertiary'}
+                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                            >
+                                <Translation id={typesToLabelMap['24-words']} />
+                                {defaultType === '24-words' && <DefaultTag />}
+                            </Text>
+                        </OptionText>
+                    </Option>
+                </InnerScrollableWrapper>
             </FloatingSelectionsWrapper>
         );
     },
@@ -379,9 +419,10 @@ export const SelectBackupType = ({
         middleware: [
             offset(-(isMobileLayout ? SELECT_ELEMENT_HEIGHT_MOBILE : SELECT_ELEMENT_HEIGHT)),
             size({
-                apply({ rects, elements }) {
+                apply: ({ rects, elements, availableHeight }) => {
                     Object.assign(elements.floating.style, {
                         width: `${rects.reference.width}px`,
+                        height: `${Math.min(availableHeight, isMobileLayout ? 317 : 341)}px`, // <--- IMPORTANT: Those number needs to be updated when auto-height of the floating element changes
                     });
                 },
                 padding: 10,
@@ -409,14 +450,9 @@ export const SelectBackupType = ({
 
     return (
         <Wrapper>
-            <SelectWrapper $elevation={elevation}>
+            <SelectWrapper $elevation={elevation} ref={refs.setReference} {...getReferenceProps()}>
                 <ElevationUp>
-                    <SelectedOption
-                        isDisabled={isDisabled}
-                        onClick={() => setIsOpen(true)}
-                        ref={refs.setReference}
-                        {...getReferenceProps()}
-                    >
+                    <SelectedOption isDisabled={isDisabled} onClick={() => setIsOpen(true)}>
                         <OptionText data-test={dataTest}>
                             <Text variant="tertiary" typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_BACKUP_TYPE" />
