@@ -195,6 +195,8 @@ const Option = ({ children, onSelect, isChecked, 'data-test': dataTest }: Option
     </OptionStyled>
 );
 
+const FLOATING_SELECTIONS_WRAPPER_PADDING = spacings.xs;
+
 const FloatingSelectionsWrapper = styled.div<{ $elevation: Elevation }>`
     z-index: ${zIndices.modal};
     border-radius: ${borders.radii.sm};
@@ -207,7 +209,7 @@ const FloatingSelectionsWrapper = styled.div<{ $elevation: Elevation }>`
         middleware of the Floating UI
     */
 
-    padding: ${spacingsPx.xs} ${spacingsPx.xxs};
+    padding: ${FLOATING_SELECTIONS_WRAPPER_PADDING}px ${spacingsPx.xxs};
 `;
 
 const InnerScrollableWrapper = styled.div`
@@ -422,7 +424,7 @@ export const SelectBackupType = ({
                 apply: ({ rects, elements, availableHeight }) => {
                     Object.assign(elements.floating.style, {
                         width: `${rects.reference.width}px`,
-                        height: `${Math.min(availableHeight, isMobileLayout ? 317 : 341)}px`, // <--- IMPORTANT: Those number needs to be updated when auto-height of the floating element changes
+                        height: `${Math.min(availableHeight, (isMobileLayout ? 317 : 350) + 2 * FLOATING_SELECTIONS_WRAPPER_PADDING)}px`, // <--- IMPORTANT: Those number needs to be updated when auto-height of the floating element changes
                     });
                 },
                 padding: 10,
