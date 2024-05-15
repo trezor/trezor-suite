@@ -1,4 +1,4 @@
-import { G, A } from '@mobily/ts-belt';
+import { G } from '@mobily/ts-belt';
 
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createThunk } from '@suite-common/redux-utils';
@@ -25,7 +25,7 @@ import {
     getNetwork,
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { Success, Unsuccessful } from '@trezor/connect';
 import { cloneObject } from '@trezor/utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
@@ -180,11 +180,11 @@ const synchronizeSentTransactionThunk = createThunk(
     (
         {
             selectedAccount,
-            precomposedTx,
+            precomposedTransaction,
             txid,
         }: {
             selectedAccount: Account;
-            precomposedTx: GeneralPrecomposedTransactionFinal;
+            precomposedTransaction: GeneralPrecomposedTransactionFinal;
             txid: string;
         },
         { dispatch },
@@ -192,17 +192,17 @@ const synchronizeSentTransactionThunk = createThunk(
         // notification from the backend may be delayed.
         // modify affected account balance.
         // TODO: make it work with ETH accounts
-        if (isCardanoTx(selectedAccount, precomposedTx)) {
+        if (isCardanoTx(selectedAccount, precomposedTransaction)) {
             const pendingAccount = getPendingAccount({
                 account: selectedAccount,
-                tx: precomposedTx,
+                tx: precomposedTransaction,
                 txid,
             });
             if (pendingAccount) {
                 // manually add fake pending tx as we don't have the data about mempool txs
                 dispatch(
                     addFakePendingCardanoTxThunk({
-                        precomposedTx,
+                        precomposedTransaction,
                         txid,
                         account: selectedAccount,
                     }),
@@ -212,7 +212,7 @@ const synchronizeSentTransactionThunk = createThunk(
         } else if (selectedAccount.networkType === 'bitcoin') {
             dispatch(
                 addFakePendingTxThunk({
-                    precomposedTx,
+                    precomposedTransaction,
                     account: selectedAccount,
                 }),
             );
@@ -224,26 +224,27 @@ const synchronizeSentTransactionThunk = createThunk(
     },
 );
 
-export const pushSendFormTransactionThunk = createThunk(
+export const pushSendFormTransactionThunk = createThunk<
+    Success<{ txid: string }>,
+    { selectedAccount: Account },
+    { rejectValue: string | Unsuccessful }
+>(
     `${SEND_MODULE_PREFIX}/pushSendFormTransactionThunk`,
     async (
-        {
-            selectedAccount,
-        }: {
-            selectedAccount: Account;
-        },
+        { selectedAccount },
         { dispatch, getState, extra, rejectWithValue, fulfillWithValue },
     ) => {
         const {
             actions: { onModalCancel },
             selectors: { selectBitcoinAmountUnit },
         } = extra;
-        const precomposedTx = selectSendPrecomposedTx(getState());
+        const precomposedTransaction = selectSendPrecomposedTx(getState());
         const serializedTx = selectSendSerializedTx(getState());
         const device = selectDevice(getState());
         const bitcoinAmountUnit = selectBitcoinAmountUnit(getState());
 
-        if (!serializedTx || !precomposedTx) return rejectWithValue('Transaction not found.');
+        if (!serializedTx || !precomposedTransaction)
+            return rejectWithValue('Transaction not found.');
 
         const pushTxResponse = await TrezorConnect.pushTransaction({
             ...serializedTx,
@@ -253,9 +254,11 @@ export const pushSendFormTransactionThunk = createThunk(
         // close modal regardless result
         dispatch(onModalCancel());
 
-        const { token } = precomposedTx;
+        const { token } = precomposedTransaction;
         const spentWithoutFee = !token
-            ? new BigNumber(precomposedTx.totalSpent).minus(precomposedTx.fee).toString()
+            ? new BigNumber(precomposedTransaction.totalSpent)
+                  .minus(precomposedTransaction.fee)
+                  .toString()
             : '0';
 
         const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, selectedAccount);
@@ -263,7 +266,7 @@ export const pushSendFormTransactionThunk = createThunk(
         // get total amount without fee OR token amount
         const formattedAmount = token
             ? `${formatAmount(
-                  precomposedTx.totalSpent,
+                  precomposedTransaction.totalSpent,
                   token.decimals,
               )} ${token.symbol!.toUpperCase()}`
             : formatNetworkAmount(spentWithoutFee, selectedAccount.symbol, true, areSatoshisUsed);
@@ -281,7 +284,13 @@ export const pushSendFormTransactionThunk = createThunk(
                 }),
             );
 
-            dispatch(synchronizeSentTransactionThunk({ selectedAccount, precomposedTx, txid }));
+            dispatch(
+                synchronizeSentTransactionThunk({
+                    selectedAccount,
+                    precomposedTransaction,
+                    txid,
+                }),
+            );
         } else {
             dispatch(
                 notificationsActions.addToast({
@@ -419,23 +428,22 @@ export const signTransactionThunk = createThunk(
     },
 );
 
-export const enhancePrecomposedTransactionThunk = createThunk(
-    `${SEND_MODULE_PREFIX}/prepareTransactionForSigningThunk`,
+export const enhancePrecomposedTransactionThunk = createThunk<
+    GeneralPrecomposedTransactionFinal,
+    {
+        transactionFormValues: FormState;
+        precomposedTransaction: GeneralPrecomposedTransactionFinal;
+        selectedAccount: Account;
+    },
+    { rejectValue: string }
+>(
+    `${SEND_MODULE_PREFIX}/enhancePrecomposedTransactionThunk`,
     async (
-        {
-            transactionFormValues: formValues,
-            precomposedTransaction,
-            selectedAccount,
-        }: {
-            transactionFormValues: FormState;
-            precomposedTransaction: GeneralPrecomposedTransactionFinal;
-            selectedAccount: Account;
-        },
+        { transactionFormValues: formValues, precomposedTransaction, selectedAccount },
         { getState, dispatch, rejectWithValue },
     ) => {
         const device = selectDevice(getState());
         const selectedAccountNetwork = getNetwork(selectedAccount.symbol);
-
         if (!device) return rejectWithValue('Device not found');
 
         // native RBF is available since FW 1.9.4/2.3.5
@@ -458,46 +466,51 @@ export const enhancePrecomposedTransactionThunk = createThunk(
             (!hasDecreasedOutput && nativeRbfAvailable) ||
             (hasDecreasedOutput && decreaseOutputAvailable);
 
-        const enhancedPrecomposedTx: GeneralPrecomposedTransactionFinal = {
+        const enhancedPrecomposedTransaction: GeneralPrecomposedTransactionFinal = {
             ...precomposedTransaction,
         };
 
-        if (formValues.rbfParams && !isCardanoTx(selectedAccount, enhancedPrecomposedTx)) {
-            enhancedPrecomposedTx.rbf = formValues.options.includes('bitcoinRBF');
-            enhancedPrecomposedTx.prevTxid = formValues.rbfParams.txid;
-            enhancedPrecomposedTx.feeDifference = new BigNumber(precomposedTransaction.fee)
-                .minus(formValues.rbfParams.baseFee)
-                .toFixed();
-            enhancedPrecomposedTx.useNativeRbf = useNativeRbf;
-            enhancedPrecomposedTx.useDecreaseOutput = hasDecreasedOutput;
+        if (!isCardanoTx(selectedAccount, enhancedPrecomposedTransaction)) {
+            enhancedPrecomposedTransaction.rbf = formValues.options.includes('bitcoinRBF');
+
+            if (formValues.rbfParams) {
+                enhancedPrecomposedTransaction.prevTxid = formValues.rbfParams.txid;
+                enhancedPrecomposedTransaction.feeDifference = new BigNumber(
+                    precomposedTransaction.fee,
+                )
+                    .minus(formValues.rbfParams.baseFee)
+                    .toFixed();
+                enhancedPrecomposedTransaction.useNativeRbf = useNativeRbf;
+                enhancedPrecomposedTransaction.useDecreaseOutput = hasDecreasedOutput;
+            }
         }
 
         if (
-            !isCardanoTx(selectedAccount, enhancedPrecomposedTx) &&
+            !isCardanoTx(selectedAccount, enhancedPrecomposedTransaction) &&
             selectedAccount.networkType === 'ethereum' &&
-            enhancedPrecomposedTx.token?.contract &&
+            enhancedPrecomposedTransaction.token?.contract &&
             selectedAccountNetwork?.chainId
         ) {
             const isTokenKnown = await fetch(
                 `https://data.trezor.io/firmware/eth-definitions/chain-id/${
                     selectedAccountNetwork.chainId
-                }/token-${enhancedPrecomposedTx.token.contract.substring(2).toLowerCase()}.dat`,
+                }/token-${enhancedPrecomposedTransaction.token.contract.substring(2).toLowerCase()}.dat`,
                 { method: 'HEAD' },
             )
                 .then(response => response.ok)
                 .catch(() => false);
 
-            enhancedPrecomposedTx.isTokenKnown = isTokenKnown;
+            enhancedPrecomposedTransaction.isTokenKnown = isTokenKnown;
         }
-
         // store formValues and transactionInfo in send reducer to be used by TransactionReviewModal
         dispatch(
             sendFormActions.storePrecomposedTransaction({
-                formState: formValues,
-                precomposedTransaction: enhancedPrecomposedTx,
+                accountKey: selectedAccount.key,
+                enhancedFormDraft: formValues,
+                precomposedTransaction: enhancedPrecomposedTransaction,
             }),
         );
 
-        return enhancedPrecomposedTx;
+        return enhancedPrecomposedTransaction;
     },
 );

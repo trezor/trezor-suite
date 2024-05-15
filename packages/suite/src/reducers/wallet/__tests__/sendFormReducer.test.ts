@@ -65,13 +65,14 @@ describe('sendFormReducer', () => {
 
     it('SEND.REQUEST_SIGN_TRANSACTION - save', () => {
         const action: Action = sendFormActions.storePrecomposedTransaction({
-            formState: formStateMock,
+            accountKey: 'key1',
+            enhancedFormDraft: formStateMock,
             precomposedTransaction: precomposedTxMock,
         });
 
         const state = prepareSendFormReducer(extraDependencies)(initialState, action);
         expect(state.precomposedTx).toEqual(precomposedTxMock);
-        expect(state.precomposedForm).toEqual(formStateMock);
+        expect(state.drafts['key1']).toEqual(formStateMock);
     });
 
     it('SEND.REQUEST_PUSH_TRANSACTION - save', () => {
@@ -93,14 +94,12 @@ describe('sendFormReducer', () => {
             {
                 ...initialState,
                 serializedTx: formSignedTxMock,
-                precomposedForm: formStateMock,
                 precomposedTx: precomposedTxMock,
             },
             action,
         );
         expect(state.serializedTx).toBeUndefined();
         expect(state.precomposedTx).toBeUndefined();
-        expect(state.precomposedForm).toBeUndefined();
     });
 
     it('SEND.SEND_RAW', () => {
@@ -121,14 +120,12 @@ describe('sendFormReducer', () => {
                 ...initialState,
                 sendRaw: true,
                 precomposedTx: precomposedTxMock,
-                precomposedForm: formStateMock,
                 serializedTx: formSignedTxMock,
             },
             action,
         );
         expect(state.sendRaw).toBeUndefined();
         expect(state.precomposedTx).toBeUndefined();
-        expect(state.precomposedForm).toBeUndefined();
         expect(state.serializedTx).toBeUndefined();
     });
 });

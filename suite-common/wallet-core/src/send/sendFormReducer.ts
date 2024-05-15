@@ -1,4 +1,8 @@
-import { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    FormState,
+    GeneralPrecomposedTransactionFinal,
+} from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 import { SerializedTx } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -9,13 +13,12 @@ import { accountsActions } from '../accounts/accountsActions';
 
 export type SendState = {
     drafts: {
-        [key: string]: FormState; // Key: account key
+        [key: AccountKey]: FormState;
     };
     sendRaw?: boolean;
     precomposedTx?: GeneralPrecomposedTransactionFinal;
-    precomposedForm?: FormState;
     signedTx?: BlockbookTransaction;
-    serializedTx?: SerializedTx; // hex representation of signed transaction (payload for TrezorConnect.pushTransaction)
+    serializedTx?: SerializedTx; // hexadecimal representation of signed transaction (payload for TrezorConnect.pushTransaction)
 };
 
 export const initialState: SendState = {
@@ -45,13 +48,13 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
         })
         .addCase(
             sendFormActions.storePrecomposedTransaction,
-            (state, { payload: { precomposedTransaction, formState } }) => {
+            (state, { payload: { precomposedTransaction, accountKey, enhancedFormDraft } }) => {
                 state.precomposedTx = precomposedTransaction;
                 // Deep-cloning to prevent buggy interaction between react-hook-form and immer, see https://github.com/orgs/react-hook-form/discussions/3715#discussioncomment-2151458
                 // Otherwise, whenever the outputs fieldArray is updated after the form draft or precomposedForm is saved, there is na error:
                 // TypeError: Cannot assign to read only property of object '#<Object>'
                 // This might not be necessary in the future when the dependencies are upgraded.
-                state.precomposedForm = cloneObject(formState);
+                state.drafts[accountKey] = cloneObject(enhancedFormDraft);
             },
         )
         .addCase(
@@ -63,7 +66,6 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
         )
         .addCase(sendFormActions.discardTransaction, state => {
             delete state.precomposedTx;
-            delete state.precomposedForm;
             delete state.serializedTx;
             delete state.signedTx;
         })
@@ -73,7 +75,6 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
         .addCase(sendFormActions.dispose, state => {
             delete state.sendRaw;
             delete state.precomposedTx;
-            delete state.precomposedForm;
             delete state.serializedTx;
             delete state.signedTx;
         })
@@ -88,6 +89,6 @@ export const prepareSendFormReducer = createReducerWithExtraDeps(initialState, (
 export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.send.precomposedTx;
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
 export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.signedTx;
-export const selectPrecomposedSendForm = (state: SendRootState) =>
-    state.wallet.send.precomposedForm;
 export const selectSendFormDrafts = (state: SendRootState) => state.wallet.send.drafts;
+export const selectSendFormDraftByAccountKey = (state: SendRootState, accountKey: AccountKey) =>
+    state.wallet.send.drafts[accountKey];

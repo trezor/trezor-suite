@@ -123,14 +123,14 @@ export const useCoinmarketRecomposeAndSign = () => {
 
                 return;
             }
-            const composedToSign = composedLevels[selectedFee];
+            const precomposedToSign = composedLevels[selectedFee];
 
-            if (!composedToSign || composedToSign.type !== 'final') {
+            if (!precomposedToSign || precomposedToSign.type !== 'final') {
                 let errorMessage: string | undefined;
-                if (composedToSign?.type === 'error' && composedToSign.errorMessage) {
+                if (precomposedToSign?.type === 'error' && precomposedToSign.errorMessage) {
                     errorMessage = translationString(
-                        composedToSign.errorMessage.id,
-                        composedToSign.errorMessage.values as { [key: string]: any },
+                        precomposedToSign.errorMessage.id,
+                        precomposedToSign.errorMessage.values as { [key: string]: any },
                     );
                 }
                 if (!errorMessage) {
@@ -149,7 +149,7 @@ export const useCoinmarketRecomposeAndSign = () => {
             return dispatch(
                 signAndPushSendFormTransactionThunk({
                     formValues,
-                    precomposedTransaction: composedToSign,
+                    precomposedTransaction: precomposedToSign,
                     selectedAccount: account,
                 }),
             ).unwrap();

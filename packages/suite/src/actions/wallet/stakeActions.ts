@@ -117,7 +117,7 @@ const pushTransaction =
                 // this will update transaction details (like time, fee etc.)
                 dispatch(
                     replaceTransactionThunk({
-                        precomposedTx,
+                        precomposedTransaction: precomposedTx,
                         newTxid: txid,
                     }),
                 );
