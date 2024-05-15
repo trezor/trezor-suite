@@ -28,4 +28,6 @@ export enum EventType {
     DiscoveryDuration = 'discovery_duration',
     CoinDiscovery = 'coin_discovery',
     CoinDiscoveryNewAccount = 'coin_discovery/new_account',
+    ViewOnlyChange = 'view_only_change',
+    ViewOnlySkipped = 'view_only_skipped',
 }
