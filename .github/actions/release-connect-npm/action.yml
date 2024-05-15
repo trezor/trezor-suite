@@ -7,7 +7,7 @@ inputs:
     type: choice
     options:
       - beta
-      - production
+      - latest
   packageName:
     description: "The name of the package to be deployed. Select from the predefined list of packages."
     required: true
@@ -57,7 +57,7 @@ runs:
 
     - name: Check version
       shell: bash
-      run: node ./ci/scripts/check-version.js ${{ inputs.packageName }} ${{ steps.extract_branch.outputs.branch }} ${{ inputs.deploymentType }}
+      run: node ./ci/scripts/check-version.js ${{ inputs.packageName }} ${{ inputs.deploymentType }}
 
     - name: Set NPM token
       shell: bash
