@@ -15,7 +15,7 @@ import {
 import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
 import { Device } from './Device';
-import type { Device as DeviceTyped } from '../types';
+import type { ConnectSettings, Device as DeviceTyped } from '../types';
 import { DataManager } from '../data/DataManager';
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
@@ -53,7 +53,6 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     devices: { [path: string]: Device } = {};
 
-    messages: JSON | Record<string, any>;
     creatingDevicesDescriptors: { [k: string]: Descriptor } = {};
 
     transportStartPending = 0;
@@ -62,13 +61,16 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     transportFirstEventPromise: Promise<void> | undefined;
 
-    constructor() {
+    constructor({
+        transports,
+        debug,
+        messages,
+    }: {
+        transports?: ConnectSettings['transports'];
+        debug?: ConnectSettings['debug'];
+        messages: Record<string, any>;
+    }) {
         super();
-
-        let { transports } = DataManager.getSettings();
-        const { debug } = DataManager.getSettings();
-        this.messages = DataManager.getProtobufMessages();
-
         // we fill in `transports` with a reasonable fallback in src/index.
         // since web index is released into npm, we can not rely
         // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
@@ -82,7 +84,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
         const abortController = new AbortController();
 
         const transportCommonArgs = {
-            messages: this.messages,
+            messages,
             logger: transportLogger,
             signal: abortController.signal,
         };
@@ -121,7 +123,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             } else if (isTransportInstance(transportType)) {
                 // custom Transport might be initialized without messages, update them if so
                 if (!transportType.getMessage()) {
-                    transportType.updateMessages(this.messages);
+                    transportType.updateMessages(messages);
                 }
                 this.transports.push(transportType);
             } else {
