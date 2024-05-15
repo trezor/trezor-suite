@@ -5,7 +5,8 @@ describe('sessions', () => {
     let requestFn: SessionsClient['request'];
 
     beforeEach(() => {
-        const background = new SessionsBackground();
+        const abortController = new AbortController();
+        const background = new SessionsBackground({ signal: abortController.signal });
         requestFn = params => background.handleMessage(params);
     });
 

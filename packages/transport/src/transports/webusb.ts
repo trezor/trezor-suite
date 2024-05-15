@@ -7,7 +7,7 @@ import { empty, emptyAbortable, emptySync } from '../utils/resultEmpty';
 export class WebUsbTransport extends AbstractTransport {
     public name = 'WebUsbTransport' as const;
 
-    constructor(params?: AbstractTransportParams) {
+    constructor(params: AbstractTransportParams) {
         super(params);
         console.error(WRONG_ENVIRONMENT);
     }

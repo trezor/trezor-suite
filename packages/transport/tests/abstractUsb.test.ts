@@ -63,8 +63,7 @@ const initTest = async () => {
     let sessionsClient: SessionsClient;
     let transport: AbstractTransport;
     let testUsbApi: UsbApi;
-    let abortController: AbortController;
-    sessionsBackground = new SessionsBackground();
+    let abortController = new AbortController();
 
     sessionsClient = new SessionsClient({
         requestFn: params => sessionsBackground.handleMessage(params),
@@ -75,6 +74,8 @@ const initTest = async () => {
         },
     });
 
+    sessionsBackground = new SessionsBackground({ signal: abortController.signal });
+
     sessionsBackground.on('descriptors', descriptors => {
         sessionsClient.emit('descriptors', descriptors);
     });
@@ -83,8 +84,6 @@ const initTest = async () => {
     testUsbApi = new UsbApi({
         usbInterface: createUsbMock(),
     });
-
-    abortController = new AbortController();
 
     transport = new TestUsbTransport({
         api: testUsbApi,
@@ -99,6 +98,7 @@ const initTest = async () => {
         sessionsClient,
         transport,
         testUsbApi,
+        abortController,
     };
 };
 
@@ -127,6 +127,7 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 api: testUsbApi,
                 sessionsClient,
+                signal: new AbortController().signal,
             });
 
             // there are no loaded messages
@@ -138,8 +139,10 @@ describe('Usb', () => {
             });
         });
 
-        it('enumerate error', async () => {
-            const sessionsBackground = new SessionsBackground();
+        it.only('enumerate error', async () => {
+            const abortController = new AbortController();
+
+            const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
 
             const sessionsClient = new SessionsClient({
                 requestFn: params => sessionsBackground.handleMessage(params),
@@ -158,6 +161,7 @@ describe('Usb', () => {
             const transport = new TestUsbTransport({
                 api: testUsbApi,
                 sessionsClient,
+                signal: abortController.signal,
             });
 
             await transport.init().promise;
@@ -168,20 +172,23 @@ describe('Usb', () => {
                 error: 'unexpected error',
                 message: 'crazy error nobody expects',
             });
+
+            abortController.abort();
         });
     });
 
     describe('with initiated transport', () => {
         it('listen twice -> error', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             const res1 = transport.listen();
             expect(res1.success).toEqual(true);
             const res2 = transport.listen();
             expect(res2.success).toEqual(false);
+            abortController.abort();
         });
 
         it('handleDescriptorsChange', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             const spy = jest.fn();
             transport.on('transport-update', spy);
 
@@ -202,10 +209,11 @@ describe('Usb', () => {
                     descriptors: [],
                 }),
             );
+            abortController.abort();
         });
 
         it('enumerate', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             const res = await transport.enumerate().promise;
             expect(res).toEqual({
                 success: true,
@@ -224,10 +232,11 @@ describe('Usb', () => {
                     },
                 ],
             });
+            abortController.abort();
         });
 
         it('acquire. transport is not listening', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             jest.useFakeTimers();
             const spy = jest.fn();
             transport.on('transport-update', spy);
@@ -244,10 +253,12 @@ describe('Usb', () => {
             });
 
             expect(spy).toHaveBeenCalledTimes(0);
+            abortController.abort();
         });
 
         it('acquire. transport listening. missing descriptor', async () => {
-            const { transport, sessionsClient, sessionsBackground } = await initTest();
+            const { transport, sessionsClient, sessionsBackground, abortController } =
+                await initTest();
 
             sessionsBackground.removeAllListeners();
 
@@ -272,10 +283,12 @@ describe('Usb', () => {
                 success: false,
                 error: 'device disconnected during action',
             });
+            abortController.abort();
         });
 
         it('acquire. transport listening. unexpected session', async () => {
-            const { transport, sessionsClient, sessionsBackground } = await initTest();
+            const { transport, sessionsClient, sessionsBackground, abortController } =
+                await initTest();
             sessionsBackground.removeAllListeners();
             const enumerateResult = await transport.enumerate().promise;
             expect(enumerateResult.success).toEqual(true);
@@ -292,10 +305,11 @@ describe('Usb', () => {
 
             const res = await acquireCall.promise;
             expect(res).toMatchObject({ success: false, error: 'wrong previous session' });
+            abortController.abort();
         });
 
         it('call error - called without acquire.', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             const res = await transport.call({
                 name: 'GetAddress',
                 data: {},
@@ -303,10 +317,11 @@ describe('Usb', () => {
                 protocol: v1Protocol,
             }).promise;
             expect(res).toEqual({ success: false, error: 'device disconnected during action' });
+            abortController.abort();
         });
 
         it('call - with valid message.', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
@@ -333,10 +348,11 @@ describe('Usb', () => {
                     },
                 },
             });
+            abortController.abort();
         });
 
         it('send and receive.', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
@@ -369,10 +385,11 @@ describe('Usb', () => {
                     },
                 },
             });
+            abortController.abort();
         });
 
         it('send protocol-v1 with custom chunkSize', async () => {
-            const { transport, testUsbApi } = await initTest();
+            const { transport, testUsbApi, abortController } = await initTest();
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
@@ -407,10 +424,11 @@ describe('Usb', () => {
             await send(); // bigger chunks
             expect(writeSpy).toHaveBeenCalledTimes(2);
             writeSpy.mockClear();
+            abortController.abort();
         });
 
         it('release', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
@@ -429,10 +447,11 @@ describe('Usb', () => {
                 success: true,
                 payload: undefined,
             });
+            abortController.abort();
         });
 
         it('call - with use abort', async () => {
-            const { transport } = await initTest();
+            const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
             const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
                 .promise;
@@ -467,6 +486,7 @@ describe('Usb', () => {
                     },
                 },
             });
+            abortController.abort();
         });
     });
 });

@@ -43,10 +43,18 @@ export class SessionsBackground extends TypedEmitter<{
     private descriptors: Sessions = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: Deferred<void>[] = [];
+    private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
     private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
 
     private lastSession = 0;
+
+    constructor({ signal }: { signal: AbortSignal }) {
+        super();
+        signal.addEventListener('abort', () => {
+            console.log('background aborted!!!');
+            this.locksQueue.forEach(lock => clearTimeout(lock.id));
+        });
+    }
 
     public async handleMessage<M extends HandleMessageParams>(
         message: M,
@@ -261,7 +269,7 @@ export class SessionsBackground extends TypedEmitter<{
             dfd.resolve(undefined);
         }, lockDuration);
 
-        this.locksQueue.push(dfd);
+        this.locksQueue.push({ id: timeout, dfd });
         this.locksTimeoutQueue.push(timeout);
 
         return this.locksQueue.length - 1;
@@ -270,7 +278,7 @@ export class SessionsBackground extends TypedEmitter<{
     private clearLock() {
         const lock = this.locksQueue[0];
         if (lock) {
-            this.locksQueue[0].resolve(undefined);
+            this.locksQueue[0].dfd.resolve(undefined);
             this.locksQueue.shift();
             clearTimeout(this.locksTimeoutQueue[0]);
             this.locksTimeoutQueue.shift();
@@ -284,7 +292,7 @@ export class SessionsBackground extends TypedEmitter<{
         if (myIndex > 0) {
             const beforeMe = this.locksQueue.slice(0, myIndex);
             if (beforeMe.length) {
-                await Promise.all(beforeMe.map(dfd => dfd.promise));
+                await Promise.all(beforeMe.map(lock => lock.dfd.promise));
             }
         }
     }

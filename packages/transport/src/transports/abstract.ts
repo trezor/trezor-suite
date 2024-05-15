@@ -46,7 +46,7 @@ type DeviceDescriptorDiff = {
 
 export interface AbstractTransportParams {
     messages?: Record<string, any>;
-    signal?: AbortSignal;
+    signal: AbortSignal;
     logger?: Logger;
 }
 
@@ -146,7 +146,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     protected logger: Logger;
 
-    constructor(params?: AbstractTransportParams) {
+    constructor(params: AbstractTransportParams) {
         const { messages, signal, logger } = params || {};
 
         super();
@@ -155,13 +155,11 @@ export abstract class AbstractTransport extends TypedEmitter<{
 
         this.abortController = new AbortController();
 
-        if (signal) {
-            const abort = () => this.abortController.abort();
-            this.abortController.signal.addEventListener('abort', () =>
-                signal.removeEventListener('abort', abort),
-            );
-            signal.addEventListener('abort', abort);
-        }
+        const abort = () => this.abortController.abort();
+        this.abortController.signal.addEventListener('abort', () =>
+            signal.removeEventListener('abort', abort),
+        );
+        signal.addEventListener('abort', abort);
 
         // some abstract inactive logger
         this.logger = logger || {
