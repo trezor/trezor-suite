@@ -7,9 +7,9 @@ const path = require('path');
 
 const args = process.argv.slice(2);
 
-if (args.length < 3)
+if (args.length < 2)
     throw new Error(
-        'Version check script requires 3 parameters: package name, branch name and dist tag (beta | latest)',
+        'Version check script requires 2 parameters: package name and dist tag (beta | latest)',
     );
 
 const [packageName, distTag] = args;
