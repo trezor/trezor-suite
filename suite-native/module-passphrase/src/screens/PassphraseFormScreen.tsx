@@ -8,7 +8,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 
 import { PassphraseForm } from '../components/PassphraseForm';
-import { PassphraseContentScreen } from '../components/PassphraseContentScreen';
+import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
 const ANIMATION_DURATION = 300;
 const ALERT_CARD_HEIGHT = 148;
@@ -53,7 +53,7 @@ export const PassphraseFormScreen = () => {
     };
 
     return (
-        <PassphraseContentScreen
+        <PassphraseContentScreenWrapper
             title={<Translation id="modulePassphrase.title" />}
             subtitle={
                 <Translation
@@ -114,6 +114,6 @@ export const PassphraseFormScreen = () => {
                     inputLabel={translate('modulePassphrase.form.createWalletInputLabel')}
                 />
             </VStack>
-        </PassphraseContentScreen>
+        </PassphraseContentScreenWrapper>
     );
 };

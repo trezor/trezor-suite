@@ -2,19 +2,19 @@ import { ReactNode } from 'react';
 
 import { VStack, Text } from '@suite-native/atoms';
 
-import { PassphraseScreenWrapper } from './PassphraseScreen';
+import { PassphraseScreenWrapper } from './PassphraseScreenWrapper';
 
-type PassphraseContentScreenProps = {
+type PassphraseContentScreenWrapperProps = {
     children: ReactNode;
     title: ReactNode;
     subtitle?: ReactNode;
 };
 
-export const PassphraseContentScreen = ({
+export const PassphraseContentScreenWrapper = ({
     children,
     title,
     subtitle,
-}: PassphraseContentScreenProps) => {
+}: PassphraseContentScreenWrapperProps) => {
     return (
         <PassphraseScreenWrapper>
             <VStack spacing="large">

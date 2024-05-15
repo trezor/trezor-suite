@@ -18,7 +18,7 @@ import {
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
 
-import { PassphraseScreenWrapper } from '../components/PassphraseScreen';
+import { PassphraseScreenWrapper } from '../components/PassphraseScreenWrapper';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,

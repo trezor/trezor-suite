@@ -19,7 +19,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 import { cancelPassphraseAndSelectStandardDeviceThunk } from '../passphraseThunks';
 import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
-import { PassphraseContentScreen } from '../components/PassphraseContentScreen';
+import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
@@ -61,7 +61,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
     };
 
     return (
-        <PassphraseContentScreen
+        <PassphraseContentScreenWrapper
             title={<Translation id="modulePassphrase.title" />}
             subtitle={
                 <Translation
@@ -92,6 +92,6 @@ export const PassphraseEnterOnTrezorScreen = () => {
                     </Box>
                 </VStack>
             </Card>
-        </PassphraseContentScreen>
+        </PassphraseContentScreenWrapper>
     );
 };
