@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Deferred } from '@trezor/utils';
 import { selectDevice, StakeState } from '@suite-common/wallet-core';
+import { FormState, StakeFormState } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 import { SendState } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
@@ -28,6 +29,14 @@ const StyledModal = styled(Modal)`
     }
 `;
 
+const isStakeState = (state: SendState | StakeState): state is StakeState => {
+    return 'data' in state;
+};
+
+const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState => {
+    return 'ethereumStakeType' in form;
+};
+
 interface TransactionReviewModalContentProps {
     decision: Deferred<boolean, string | number | undefined> | undefined;
     txInfoState: SendState | StakeState;
@@ -48,13 +57,21 @@ export const TransactionReviewModalContent = ({
 
     const deviceModelInternal = device?.features?.internal_model;
 
-    const { precomposedTx, precomposedForm, serializedTx } = txInfoState;
+    const { account } = selectedAccount;
+    const { precomposedTx, serializedTx } = txInfoState;
+
+    if (!account) {
+        return null;
+    }
+
+    const precomposedForm: FormState | StakeFormState | undefined = isStakeState(txInfoState)
+        ? txInfoState.precomposedForm
+        : txInfoState.drafts[account.key];
 
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm) {
         return null;
     }
 
-    const { account } = selectedAccount;
     const { networkType } = account;
     const isCardano = isCardanoTx(account, precomposedTx);
     const isEthereum = networkType === 'ethereum';
@@ -71,8 +88,9 @@ export const TransactionReviewModalContent = ({
         precomposedTx,
     });
 
-    const ethereumStakeType =
-        'ethereumStakeType' in precomposedForm ? precomposedForm.ethereumStakeType : null;
+    const ethereumStakeType = isStakeForm(precomposedForm)
+        ? precomposedForm.ethereumStakeType
+        : null;
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(

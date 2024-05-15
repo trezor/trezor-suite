@@ -14,10 +14,10 @@ import {
     pushSendFormTransactionThunk,
     replaceTransactionThunk,
     selectDevice,
-    selectPrecomposedSendForm,
     selectSendFormDrafts,
     signTransactionThunk,
     sendFormActions,
+    selectSendFormDraftByAccountKey,
 } from '@suite-common/wallet-core';
 import { isCardanoTx } from '@suite-common/wallet-utils';
 import { MetadataAddPayload } from '@suite-common/metadata-types';
@@ -28,7 +28,7 @@ import {
     selectSelectedAccountKey,
     selectIsSelectedAccountLoaded,
 } from 'src/reducers/wallet/selectedAccountReducer';
-import { findLabelsToBeMovedOrDeleted } from '../moveLabelsForRbfActions';
+import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLabelsForRbfActions';
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
@@ -95,19 +95,15 @@ const updateRbfLabelsThunk = createThunk(
     (
         {
             labelsToBeEdited,
-            precomposedTx,
+            precomposedTransaction,
             txid,
         }: {
             labelsToBeEdited: RbfLabelsToBeUpdated;
-            precomposedTx: PrecomposedTransactionFinal;
+            precomposedTransaction: PrecomposedTransactionFinal;
             txid: string;
         },
-        { dispatch, extra },
+        { dispatch },
     ) => {
-        const {
-            thunks: { moveLabelsForRbfAction },
-        } = extra;
-
         dispatch(
             moveLabelsForRbfAction({
                 toBeMovedOrDeletedList: labelsToBeEdited,
@@ -120,7 +116,7 @@ const updateRbfLabelsThunk = createThunk(
         // this will update transaction details (like time, fee etc.)
         dispatch(
             replaceTransactionThunk({
-                precomposedTx,
+                precomposedTransaction,
                 newTxid: txid,
             }),
         );
@@ -132,63 +128,61 @@ const applySendFormMetadataLabelsThunk = createThunk(
     (
         {
             selectedAccount,
-            precomposedTx,
+            precomposedTransaction,
             txid,
         }: {
             selectedAccount: Account;
-            precomposedTx: GeneralPrecomposedTransactionFinal;
+            precomposedTransaction: GeneralPrecomposedTransactionFinal;
             txid: string;
         },
         { dispatch, getState },
     ) => {
         const metadata = selectMetadata(getState());
-        if (metadata.enabled) {
-            const precomposedForm = selectPrecomposedSendForm(getState());
-            let outputsPermutation: number[];
-            if (isCardanoTx(selectedAccount, precomposedTx)) {
-                // cardano preserves order of outputs
-                outputsPermutation = precomposedTx?.outputs.map((_o, i) => i);
-            } else {
-                outputsPermutation = precomposedTx?.outputsPermutation;
-            }
 
-            const synchronize = getSynchronize();
+        if (!metadata.enabled) return;
 
-            precomposedForm?.outputs
-                // create array of metadata objects
-                .map((formOutput, index) => {
-                    const { label } = formOutput;
-                    // final ordering of outputs differs from order in send form
-                    // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
-                    // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
-                    const outputIndex = outputsPermutation.findIndex(p => p === index);
-                    const outputMetadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
-                        type: 'outputLabel',
-                        entityKey: selectedAccount.key,
-                        txid,
-                        outputIndex,
-                        value: label,
-                        defaultValue: '',
-                    };
+        const formDraft = selectSendFormDraftByAccountKey(getState(), selectedAccount.key);
 
-                    return outputMetadata;
-                })
-                // filter out empty values AFTER creating metadata objects (see outputs mapping above)
-                .filter(output => output.value)
-                // propagate metadata to reducers and persistent storage
-                .forEach((output, index, arr) => {
-                    const isLast = index === arr.length - 1;
+        const outputsPermutation = isCardanoTx(selectedAccount, precomposedTransaction)
+            ? precomposedTransaction?.outputs.map((_o, i) => i) // cardano preserves order of outputs
+            : precomposedTransaction?.outputsPermutation;
 
-                    synchronize(() =>
-                        dispatch(
-                            metadataLabelingActions.addAccountMetadata({
-                                ...output,
-                                skipSave: !isLast,
-                            }),
-                        ),
-                    );
-                });
-        }
+        const synchronize = getSynchronize();
+
+        formDraft?.outputs
+            // create array of metadata objects
+            .map((formOutput, index) => {
+                const { label } = formOutput;
+                // final ordering of outputs differs from order in send form
+                // outputsPermutation contains mapping from @trezor/utxo-lib outputs to send form outputs
+                // mapping goes like this: Array<@trezor/utxo-lib index : send form index>
+                const outputIndex = outputsPermutation.findIndex(p => p === index);
+                const outputMetadata: Extract<MetadataAddPayload, { type: 'outputLabel' }> = {
+                    type: 'outputLabel',
+                    entityKey: selectedAccount.key,
+                    txid,
+                    outputIndex,
+                    value: label,
+                    defaultValue: '',
+                };
+
+                return outputMetadata;
+            })
+            // filter out empty values AFTER creating metadata objects (see outputs mapping above)
+            .filter(output => output.value)
+            // propagate metadata to reducers and persistent storage
+            .forEach((output, index, arr) => {
+                const isLast = index === arr.length - 1;
+
+                synchronize(() =>
+                    dispatch(
+                        metadataLabelingActions.addAccountMetadata({
+                            ...output,
+                            skipSave: !isLast,
+                        }),
+                    ),
+                );
+            });
     },
 );
 
@@ -241,49 +235,50 @@ export const signAndPushSendFormTransactionThunk = createThunk(
         const isPushConfirmed = await dispatch(
             modalActions.openDeferredModal({ type: 'review-transaction' }),
         );
-        if (isPushConfirmed) {
-            const isRbf = precomposedTransaction.prevTxid !== undefined;
 
-            // This has to be executed prior to pushing the transaction!
-            const rbfLabelsToBeEdited = isRbf
-                ? dispatch(
-                      findLabelsToBeMovedOrDeleted({ prevTxid: precomposedTransaction.prevTxid }),
-                  )
-                : null;
+        if (!isPushConfirmed) {
+            return;
+        }
 
-            // push tx to the network
-            const pushResponse = await dispatch(
-                pushSendFormTransactionThunk({
-                    selectedAccount,
-                }),
-            );
+        const isRbf = precomposedTransaction.prevTxid !== undefined;
 
-            if (isRejected(pushResponse)) {
-                return pushResponse.payload as Unsuccessful;
-            }
+        // This has to be executed prior to pushing the transaction!
+        const rbfLabelsToBeEdited = isRbf
+            ? dispatch(findLabelsToBeMovedOrDeleted({ prevTxid: precomposedTransaction.prevTxid }))
+            : null;
 
-            const result = pushResponse.payload;
-            const { txid } = result.payload;
+        // push tx to the network
+        const pushResponse = await dispatch(
+            pushSendFormTransactionThunk({
+                selectedAccount,
+            }),
+        );
 
-            if (isRbf && rbfLabelsToBeEdited) {
-                await dispatch(
-                    updateRbfLabelsThunk({
-                        labelsToBeEdited: rbfLabelsToBeEdited,
-                        precomposedTx: precomposedTransaction,
-                        txid,
-                    }),
-                );
-            }
+        if (isRejected(pushResponse)) {
+            return pushResponse.payload as Unsuccessful;
+        }
 
+        const result = pushResponse.payload;
+        const { txid } = result.payload;
+
+        if (isRbf && rbfLabelsToBeEdited) {
             dispatch(
-                applySendFormMetadataLabelsThunk({
-                    selectedAccount,
-                    precomposedTx: precomposedTransaction,
+                updateRbfLabelsThunk({
+                    labelsToBeEdited: rbfLabelsToBeEdited,
+                    precomposedTransaction,
                     txid,
                 }),
             );
-
-            return result;
         }
+
+        dispatch(
+            applySendFormMetadataLabelsThunk({
+                selectedAccount,
+                precomposedTransaction,
+                txid,
+            }),
+        );
+
+        return result;
     },
 );

@@ -258,17 +258,17 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // get response from TransactionReviewModal
     const sign = useCallback(async () => {
         const values = getValues();
-        const composedTx = composedLevels
+        const precomposedTransaction = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
             : undefined;
-        if (composedTx && composedTx.type === 'final') {
+        if (precomposedTransaction && precomposedTransaction.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]SendFormTransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             setLoading(true);
             const result = await dispatch(
                 signAndPushSendFormTransactionThunk({
                     formValues: values,
-                    precomposedTransaction: composedTx,
+                    precomposedTransaction,
                     selectedAccount: props.selectedAccount.account,
                 }),
             ).unwrap();
