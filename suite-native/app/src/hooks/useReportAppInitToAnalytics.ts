@@ -13,6 +13,10 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import { selectIsConnectInitialized } from '@suite-native/state';
 import { useIsBiometricsEnabled } from '@suite-native/biometrics';
+import {
+    selectRememberedStandardWalletsCount,
+    selectRememberedHiddenWalletsCount,
+} from '@suite-common/wallet-core';
 
 export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const [loadDuration, setLoadDuration] = useState<number | null>(null);
@@ -25,6 +29,8 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
     const currencyCode = useSelector(selectFiatCurrencyCode);
     const bitcoinUnit = useSelector(selectBitcoinUnits);
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
+    const rememberedStandardWallets = useSelector(selectRememberedStandardWalletsCount);
+    const rememberedHiddenWallets = useSelector(selectRememberedHiddenWalletsCount);
 
     useEffect(() => {
         if (isConnectInitialized && !loadDuration) setLoadDuration(Date.now() - appLaunchTimestamp);
@@ -48,6 +54,8 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
                     discreetMode: isDiscreetMode,
                     loadDuration,
                     isBiometricsEnabled: isBiometricsOptionEnabled,
+                    rememberedStandardWallets,
+                    rememberedHiddenWallets,
                 },
             });
         }
@@ -61,5 +69,7 @@ export const useReportAppInitToAnalytics = (appLaunchTimestamp: number) => {
         isDiscreetMode,
         loadDuration,
         isBiometricsOptionEnabled,
+        rememberedStandardWallets,
+        rememberedHiddenWallets,
     ]);
 };

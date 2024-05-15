@@ -22,6 +22,8 @@ export type SuiteNativeAnalyticsEvent =
               theme: string;
               loadDuration: number;
               isBiometricsEnabled: boolean;
+              rememberedStandardWallets: number;
+              rememberedHiddenWallets: number;
           };
       }
     | {
