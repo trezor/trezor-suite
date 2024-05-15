@@ -41,7 +41,8 @@ const createTransportApi = (override = {}) =>
     }) as unknown as UsbApi;
 
 const createTestTransport = (apiMethods = {}) => {
-    const sessionsBackground = new SessionsBackground({ signal: new AbortController().signal });
+    const { signal } = new AbortController();
+    const sessionsBackground = new SessionsBackground({ signal });
     const sessionsClient = new SessionsClient({
         requestFn: params => sessionsBackground.handleMessage(params),
         registerBackgroundCallbacks: onDescriptorsCallback => {
@@ -54,7 +55,7 @@ const createTestTransport = (apiMethods = {}) => {
     const transport = new TestTransport({
         api: createTransportApi(apiMethods),
         sessionsClient,
-        signal: new AbortController().signal,
+        signal,
     });
 
     return transport;
@@ -102,11 +103,19 @@ describe('DeviceList', () => {
     });
 
     it('constructor throws error on unknown transport (class)', async () => {
-        await loadDataManager({ transports: [{}] });
+        await loadDataManager({ transports: [{}, () => {}, [], String, 1, 'meow-non-existent'] });
 
         expect(() => {
             new DeviceList();
         }).toThrow('DeviceList.init: transports[] of unexpected type');
+    });
+
+    it('constructor accepts transports in form of transport class', async () => {
+        await loadDataManager({ transports: [TestTransport] });
+
+        expect(() => {
+            new DeviceList();
+        }).not.toThrow();
     });
 
     it('.init() throws async error from transport.init()', async () => {
