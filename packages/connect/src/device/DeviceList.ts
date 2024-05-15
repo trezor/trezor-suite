@@ -1,6 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceList.js
 
-import { TypedEmitter } from '@trezor/utils';
+import { TypedEmitter, promiseAllSequence } from '@trezor/utils';
 import {
     BridgeTransport,
     WebUsbTransport,
@@ -164,6 +164,28 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 return;
             }
 
+            const createDeviceAction = async (descriptor: Descriptor) => {
+                // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
+                // other application acquires the device and changes the descriptor,
+                // the new unacquired device has correct descriptor
+                const path = descriptor.path.toString();
+                this.creatingDevicesDescriptors[path] = descriptor;
+
+                const priority = DataManager.getSettings('priority');
+                const penalty = this.getAuthPenalty();
+
+                if (priority || penalty) {
+                    await resolveAfter(501 + penalty + 100 * priority, null).promise;
+                }
+                if (this.creatingDevicesDescriptors[path].session == null) {
+                    await this._createAndSaveDevice(descriptor);
+                } else {
+                    const device = this._createUnacquiredDevice(descriptor);
+                    this.devices[path] = device;
+                    this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
+                }
+            };
+
             /**
              * listen to change of descriptors reported by @trezor/transport
              * we can say that this part lets connect know about
@@ -183,29 +205,15 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     }
                 });
 
-                diff.connected.forEach(async descriptor => {
-                    // creatingDevicesDescriptors is needed, so that if *during* creating of Device,
-                    // other application acquires the device and changes the descriptor,
-                    // the new unacquired device has correct descriptor
-                    const path = descriptor.path.toString();
-                    this.creatingDevicesDescriptors[path] = descriptor;
+                if (diff.connected.length > 0) {
+                    promiseAllSequence(
+                        diff.connected.map(descriptor => () => {
+                            return createDeviceAction(descriptor);
+                        }),
+                    );
+                }
 
-                    const priority = DataManager.getSettings('priority');
-                    const penalty = this.getAuthPenalty();
-
-                    if (priority || penalty) {
-                        await resolveAfter(501 + penalty + 100 * priority, null).promise;
-                    }
-                    if (this.creatingDevicesDescriptors[path].session == null) {
-                        await this._createAndSaveDevice(descriptor);
-                    } else {
-                        const device = this._createUnacquiredDevice(descriptor);
-                        this.devices[path] = device;
-                        this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-                    }
-                });
-
-                diff.acquiredElsewhere.forEach((descriptor: Descriptor) => {
+                diff.acquiredElsewhere.forEach(descriptor => {
                     const path = descriptor.path.toString();
                     const device = this.devices[path];
 
