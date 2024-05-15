@@ -827,6 +827,18 @@ export const selectIsDeviceRemembered = (state: DeviceRootState) => {
     return !!device?.remember;
 };
 
+export const selectRememberedStandardWalletsCount = (state: DeviceRootState) => {
+    const devices = selectPhysicalDevices(state);
+
+    return devices.filter(device => device.remember && device.useEmptyPassphrase).length;
+};
+
+export const selectRememberedHiddenWalletsCount = (state: DeviceRootState) => {
+    const devices = selectPhysicalDevices(state);
+
+    return devices.filter(device => device.remember && !device.useEmptyPassphrase).length;
+};
+
 export const selectIsDeviceConnected = (state: DeviceRootState) => {
     const device = selectDevice(state);
 
