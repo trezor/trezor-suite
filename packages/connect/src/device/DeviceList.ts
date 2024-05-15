@@ -109,6 +109,11 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                             `DeviceList.init: transports[] of unexpected type: ${transportType}`,
                         );
                 }
+            } else if (typeof transportType === 'function' && 'prototype' in transportType) {
+                const transportInstance = new transportType(transportCommonArgs);
+                if (isTransportInstance(transportInstance)) {
+                    this.transports.push(transportInstance);
+                }
             } else if (isTransportInstance(transportType)) {
                 // custom Transport might be initialized without messages, update them if so
                 if (!transportType.getMessage()) {
