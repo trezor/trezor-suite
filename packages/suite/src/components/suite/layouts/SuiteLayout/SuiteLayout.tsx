@@ -19,9 +19,9 @@ import { Sidebar } from './Sidebar/Sidebar';
 import { CoinjoinBars } from './CoinjoinBars/CoinjoinBars';
 import { MobileAccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/MobileAccountsMenu';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { useAppShortcuts } from './useAppShortcuts';
 
 export const SCROLL_WRAPPER_ID = 'layout-scroll';
-
 export const Wrapper = styled.div`
     display: flex;
     flex: 1;
@@ -110,6 +110,8 @@ export const SuiteLayout = ({ children }: SuiteLayoutProps) => {
     useClearAnchorHighlightOnClick(wrapperRef);
 
     const isAccountPage = !!selectedAccount;
+
+    useAppShortcuts();
 
     return (
         <ElevationContext baseElevation={-1}>

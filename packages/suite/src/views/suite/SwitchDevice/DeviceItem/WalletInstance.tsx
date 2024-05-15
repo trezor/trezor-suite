@@ -22,6 +22,13 @@ import { useState } from 'react';
 import { EjectConfirmation } from './EjectConfirmation';
 import { ContentType } from '../types';
 import { ViewOnly } from './ViewOnly';
+import { EjectButton } from './EjectButton';
+
+const RelativeContainer = styled.div`
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+`;
 
 const InstanceType = styled.div<{ isSelected: boolean }>`
     display: flex;
@@ -101,79 +108,85 @@ export const WalletInstance = ({
 
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
 
+    const onEjectCancelClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        setContentType('default');
+        e.stopPropagation();
+    };
+
     return (
-        <Card
-            data-test={dataTestBase}
-            key={`${instance.label}${instance.instance}${instance.state}`}
-            paddingType="small"
-            onClick={() => !editing && selectDeviceInstance(instance)}
-            tabIndex={0}
-            {...rest}
-        >
-            {isSelected && <SelectedHighlight />}
-            <Col $grow={1}>
-                {discoveryProcess && (
-                    <InstanceType isSelected={isSelected}>
-                        {instance.state ? (
-                            <MetadataLabeling
-                                defaultVisibleValue={
-                                    walletLabel === undefined || walletLabel.trim() === ''
-                                        ? defaultWalletLabel
-                                        : walletLabel
-                                }
-                                payload={{
-                                    type: 'walletLabel',
-                                    entityKey: instance.state,
-                                    defaultValue: instance.state,
-                                    value: instance?.metadata[METADATA_LABELING.ENCRYPTION_VERSION]
-                                        ? walletLabel
-                                        : '',
-                                }}
-                                defaultEditableValue={defaultWalletLabel}
+        <RelativeContainer>
+            <Card
+                data-test={dataTestBase}
+                key={`${instance.label}${instance.instance}${instance.state}`}
+                paddingType="small"
+                onClick={() => !editing && selectDeviceInstance(instance)}
+                tabIndex={0}
+                {...rest}
+            >
+                {isSelected && <SelectedHighlight />}
+                <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
+                <Col $grow={1}>
+                    {discoveryProcess && (
+                        <InstanceType isSelected={isSelected}>
+                            {instance.state ? (
+                                <MetadataLabeling
+                                    defaultVisibleValue={
+                                        walletLabel === undefined || walletLabel.trim() === ''
+                                            ? defaultWalletLabel
+                                            : walletLabel
+                                    }
+                                    payload={{
+                                        type: 'walletLabel',
+                                        entityKey: instance.state,
+                                        defaultValue: instance.state,
+                                        value: instance?.metadata[
+                                            METADATA_LABELING.ENCRYPTION_VERSION
+                                        ]
+                                            ? walletLabel
+                                            : '',
+                                    }}
+                                    defaultEditableValue={defaultWalletLabel}
+                                />
+                            ) : (
+                                <WalletLabeling device={instance} />
+                            )}
+                        </InstanceType>
+                    )}
+
+                    {!discoveryProcess && (
+                        <InstanceType isSelected={isSelected}>
+                            <Translation id="TR_UNDISCOVERED_WALLET" />
+                        </InstanceType>
+                    )}
+
+                    <InstanceTitle>
+                        <HiddenPlaceholder>
+                            <FiatHeader
+                                size="medium"
+                                fiatAmount={instanceBalance.toString() ?? '0'}
+                                localCurrency={localCurrency}
                             />
-                        ) : (
-                            <WalletLabeling device={instance} />
-                        )}
-                    </InstanceType>
+                        </HiddenPlaceholder>
+                    </InstanceTitle>
+                </Col>
+
+                <Divider />
+
+                {contentType === 'default' && enabled && discoveryProcess && (
+                    <ViewOnly
+                        dataTest={dataTestBase}
+                        setContentType={setContentType}
+                        instance={instance}
+                    />
                 )}
-
-                {!discoveryProcess && (
-                    <InstanceType isSelected={isSelected}>
-                        <Translation id="TR_UNDISCOVERED_WALLET" />
-                    </InstanceType>
+                {contentType === 'ejectConfirmation' && (
+                    <EjectConfirmation
+                        instance={instance}
+                        onClick={e => e.stopPropagation()}
+                        onCancel={onEjectCancelClick}
+                    />
                 )}
-
-                <InstanceTitle>
-                    <HiddenPlaceholder>
-                        <FiatHeader
-                            size="medium"
-                            fiatAmount={instanceBalance.toString() ?? '0'}
-                            localCurrency={localCurrency}
-                        />
-                    </HiddenPlaceholder>
-                </InstanceTitle>
-            </Col>
-
-            <Divider />
-
-            {contentType === 'default' && enabled && discoveryProcess && (
-                <ViewOnly
-                    dataTest={dataTestBase}
-                    setContentType={setContentType}
-                    instance={instance}
-                />
-            )}
-
-            {contentType === 'ejectConfirmation' && (
-                <EjectConfirmation
-                    instance={instance}
-                    onClick={e => e.stopPropagation()}
-                    onCancel={e => {
-                        setContentType('default');
-                        e.stopPropagation();
-                    }}
-                />
-            )}
-        </Card>
+            </Card>
+        </RelativeContainer>
     );
 };

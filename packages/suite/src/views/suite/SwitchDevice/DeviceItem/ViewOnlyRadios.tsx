@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 
-import { Text, Radio, Button, Icon, useElevation } from '@trezor/components';
+import { Text, Radio, Icon, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
-import { useState } from 'react';
 
 type ViewOnlyRadiosProps = {
     isViewOnlyActive: boolean;
-    setIsViewOnlyActive: (isViewOnlyActive: boolean) => void;
+    toggleViewOnly: () => void;
     dataTest?: string;
 };
 type ViewOnlyRadioProps = {
@@ -25,10 +24,6 @@ const Container = styled.div`
 const Left = styled.div``;
 
 const Title = styled.div``;
-const ConfirmButtonContainer = styled.div`
-    display: flex;
-    justify-content: flex-end;
-`;
 
 const Item = styled.div<{ $elevation: Elevation; $isChecked: boolean }>`
     display: flex;
@@ -75,20 +70,22 @@ export const ViewOnlyRadio = ({
 };
 export const ViewOnlyRadios = ({
     isViewOnlyActive,
-    setIsViewOnlyActive,
+    toggleViewOnly,
     dataTest,
 }: ViewOnlyRadiosProps) => {
-    const [isViewOnlyActiveTemp, setIsViewOnlyActiveTemp] = useState(isViewOnlyActive);
-    const handleConfirm = () => {
-        setIsViewOnlyActive(isViewOnlyActiveTemp);
+    const handleConfirm = (newValue: boolean) => {
+        const isValueChanged = isViewOnlyActive !== newValue;
+        if (isValueChanged) {
+            toggleViewOnly();
+        }
     };
 
     return (
         <Container>
             <ViewOnlyRadio
                 title={<Translation id="TR_VIEW_ONLY_RADIOS_ENABLED_TITLE" />}
-                onClick={() => setIsViewOnlyActiveTemp(true)}
-                isChecked={isViewOnlyActiveTemp}
+                onClick={() => handleConfirm(true)}
+                isChecked={isViewOnlyActive}
                 dataTest={`${dataTest}/enabled`}
             >
                 <Translation
@@ -100,8 +97,8 @@ export const ViewOnlyRadios = ({
             </ViewOnlyRadio>
             <ViewOnlyRadio
                 title={<Translation id="TR_VIEW_ONLY_RADIOS_DISABLED_TITLE" />}
-                onClick={() => setIsViewOnlyActiveTemp(false)}
-                isChecked={!isViewOnlyActiveTemp}
+                onClick={() => handleConfirm(false)}
+                isChecked={!isViewOnlyActive}
                 dataTest={`${dataTest}/disabled`}
             >
                 <Translation
@@ -111,11 +108,6 @@ export const ViewOnlyRadios = ({
                     }}
                 />
             </ViewOnlyRadio>
-            <ConfirmButtonContainer>
-                <Button size="small" onClick={handleConfirm}>
-                    <Translation id="TR_VIEW_ONLY_RADIOS_CONFIRM" />
-                </Button>
-            </ConfirmButtonContainer>
 
             <SendCoinsInfo>
                 <Icon icon="INFO" size={12} />

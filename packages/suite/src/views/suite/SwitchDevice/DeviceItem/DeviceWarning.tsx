@@ -3,17 +3,17 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import { NotificationCard, Translation } from 'src/components/suite';
 import { TrezorDevice } from 'src/types/suite';
 
-interface DeviceHeaderButtonProps {
+interface DeviceWarningProps {
     needsAttention: boolean;
     device: TrezorDevice;
     onSolveIssueClick: () => void;
 }
 
-export const DeviceHeaderButton = ({
+export const DeviceWarning = ({
     device,
     needsAttention,
     onSolveIssueClick,
-}: DeviceHeaderButtonProps) => {
+}: DeviceWarningProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
     const deviceStatusMessage = deviceUtils.getDeviceNeedsAttentionMessage(deviceStatus);
 

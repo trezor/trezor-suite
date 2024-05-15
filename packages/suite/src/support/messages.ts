@@ -9003,4 +9003,78 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_CHANGE_BUTTON',
         defaultMessage: 'Change',
     },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT',
+        defaultMessage: 'Learn how a passphrase works',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK',
+        defaultMessage: 'Go',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
+        defaultMessage: 'This passphrase wallet is empty',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_DESCRIPTION',
+        defaultMessage: 'Opening unused and knowingly empty passphrase wallet?',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_UNUSED_WALLET_BUTTON',
+        defaultMessage: 'Yes, open unused wallet',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION',
+        defaultMessage: 'Expecting passphrase wallet with funds?',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON',
+        defaultMessage: 'Try again',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_TITLE',
+        defaultMessage: 'What to do with new passphrase?',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING',
+        defaultMessage: 'No one can recover it, not even Trezor support',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM1_DESCRIPTION',
+        defaultMessage:
+            'Write your passphrase on a piece of paper and always keep it offline (no photos, USB, internet)',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM2_DESCRIPTION',
+        defaultMessage: 'Store it in a different place than your backup seed',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_ITEM3_DESCRIPTION',
+        defaultMessage: 'Never share it with anyone, not even with Trezor support',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_BUTTON',
+        defaultMessage: 'Got it, continue',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_TITLE',
+        defaultMessage: 'Confirm passphrase',
+    },
+    TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING: {
+        id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING',
+        defaultMessage:
+            'Create an offline backup of your passphrase. It is irrecoverable, even by Trezor support.',
+    },
+    TR_PASSPHRASE_DESCRIPTION_ITEM1: {
+        id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
+        defaultMessage: 'Important to first learn how passphrase works',
+    },
+    TR_PASSPHRASE_DESCRIPTION_ITEM2: {
+        id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',
+        defaultMessage: 'Passphrase opens a wallet secured by that phrase',
+    },
+    TR_PASSPHRASE_DESCRIPTION_ITEM3: {
+        id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
+        defaultMessage: 'No one can recover it, not even Trezor support',
+    },
 });

@@ -6,6 +6,7 @@ import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 import { SUITE } from 'src/actions/suite/constants';
+import { spacingsPx } from '@trezor/theme';
 
 const AddWallet = styled.div`
     display: flex;
@@ -15,6 +16,19 @@ const AddWallet = styled.div`
 
 const StyledTooltip = styled(Tooltip)`
     width: 100%;
+`;
+
+const Rows = styled.div`
+    display: flex;
+    flex-direction: row;
+    gap: ${spacingsPx.xs};
+`;
+
+const Columns = styled.div`
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: ${spacingsPx.xs};
 `;
 
 interface AddWalletButtonProps {
@@ -59,24 +73,33 @@ export const AddWalletButton = ({
                 cursor="pointer"
                 placement="bottom"
             >
-                <Button
-                    data-test={
-                        emptyPassphraseWalletExists
-                            ? '@switch-device/add-hidden-wallet-button'
-                            : '@switch-device/add-wallet-button'
-                    }
-                    variant="tertiary"
-                    isFullWidth
-                    icon="PLUS"
-                    isDisabled={isLocked}
-                    onClick={onAddWallet}
-                >
-                    {emptyPassphraseWalletExists ? (
-                        <Translation id="TR_ADD_HIDDEN_WALLET" />
-                    ) : (
-                        <Translation id="TR_ADD_WALLET" />
+                <Columns>
+                    {!emptyPassphraseWalletExists && (
+                        <Button
+                            data-test="@switch-device/add-wallet-button"
+                            variant="tertiary"
+                            isFullWidth
+                            icon="PLUS"
+                            isDisabled={isLocked}
+                            onClick={onAddWallet}
+                        >
+                            <Translation id="TR_ADD_WALLET" />
+                        </Button>
                     )}
-                </Button>
+
+                    <Button
+                        data-test="@switch-device/add-hidden-wallet-button"
+                        variant="tertiary"
+                        isFullWidth
+                        icon="PLUS"
+                        isDisabled={isLocked}
+                        onClick={onAddWallet}
+                    >
+                        <Rows>
+                            <Translation id="TR_ADD_HIDDEN_WALLET" />
+                        </Rows>
+                    </Button>
+                </Columns>
             </StyledTooltip>
         </AddWallet>
     );
