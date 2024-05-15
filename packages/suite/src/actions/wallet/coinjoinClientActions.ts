@@ -22,7 +22,7 @@ import {
     getSessionDeadline,
     getEstimatedTimePerRound,
 } from 'src/utils/wallet/coinjoinUtils';
-import { CoinjoinService } from 'src/services/coinjoin';
+import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';
 import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
@@ -646,6 +646,7 @@ const signCoinjoinTx =
                             useEmptyPassphrase: device?.useEmptyPassphrase,
                             inputs: tx.inputs,
                             outputs: tx.outputs,
+                            // @ts-expect-error wait for fw protobuf update
                             coinjoinRequest: tx.coinjoinRequest,
                             coin: network,
                             preauthorized: true,
@@ -747,8 +748,7 @@ export const initCoinjoinService =
             return knownService;
         }
 
-        const environment =
-            debug?.coinjoinServerEnvironment && debug?.coinjoinServerEnvironment[symbol];
+        const environment = debug?.coinjoinServerEnvironment?.[symbol];
 
         // or start new instance
         dispatch(clientEnable(symbol));
@@ -788,10 +788,11 @@ export const initCoinjoinService =
             });
 
         try {
+            const settings = getCoinjoinConfig(symbol, environment);
             const service = await CoinjoinService.createInstance({
                 network: symbol,
                 prison,
-                environment,
+                settings,
             });
             if (isCoinjoinDisabledByFeatureFlag) {
                 dispatch(clientEnableFailed(symbol));

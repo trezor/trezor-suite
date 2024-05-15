@@ -205,7 +205,7 @@ describe('coinjoinClientActions', () => {
                     },
                 ],
                 debug: {
-                    coinjoinServerEnvironment: { btc: 'staging' },
+                    coinjoinServerEnvironment: { btc: 'public' },
                 },
             },
         } as any); // partial required state
@@ -214,8 +214,7 @@ describe('coinjoinClientActions', () => {
         const cli1 = await store.dispatch(initCoinjoinService('btc'));
         const cli2 = await store.dispatch(initCoinjoinService('btc'));
         expect(cli1).toEqual(cli2);
-        expect(spy.mock.calls[0][0]).toEqual({
-            environment: 'staging',
+        expect(spy.mock.calls[0][0]).toMatchObject({
             network: 'btc',
             prison: [
                 {
