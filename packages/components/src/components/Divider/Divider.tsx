@@ -1,16 +1,22 @@
 import styled from 'styled-components';
-import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { Elevation, mapElevationToBorder, spacings } from '@trezor/theme';
 import { useElevation } from '../ElevationContext/ElevationContext';
+import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
 
-const Line = styled.div<{ $elevation: Elevation }>`
+const Line = styled.div<{ $elevation: Elevation } & TransientFrameProps>`
     width: 100%;
     height: 1px;
     background: ${mapElevationToBorder};
-    margin: ${spacingsPx.md} 0;
+
+    ${withFrameProps}
 `;
 
-export const Divider = () => {
+export const Divider = ({
+    margin = { top: spacings.md, bottom: spacings.md },
+}: {
+    margin?: FrameProps['margin'];
+}) => {
     const { elevation } = useElevation();
 
-    return <Line $elevation={elevation} />;
+    return <Line $elevation={elevation} $margin={margin} />;
 };
