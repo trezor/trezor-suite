@@ -7,6 +7,7 @@ import {
     toggleRememberDevice,
     selectIsDeviceRemembered,
 } from '@suite-common/wallet-core';
+import { analytics, EventType } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { selectIsDeviceReadyToUseAndAuthorized } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -100,6 +101,17 @@ export const EnableViewOnlyBottomSheet = () => {
     const handleCancel = () => {
         setIsVisible(false);
         handleSetRememberModeOfferChoiceTimestamp();
+        analytics.report({
+            type: EventType.ViewOnlySkipped,
+            payload: { action: 'button' },
+        });
+    };
+
+    const handleClose = () => {
+        analytics.report({
+            type: EventType.ViewOnlySkipped,
+            payload: { action: 'close' },
+        });
     };
 
     const handleEnable = () => {
@@ -111,6 +123,11 @@ export const EnableViewOnlyBottomSheet = () => {
                 icon: 'check',
             });
             dispatch(toggleRememberDevice({ device }));
+
+            analytics.report({
+                type: EventType.ViewOnlyChange,
+                payload: { enabled: true, origin: 'bottomSheet' },
+            });
         }
     };
 
@@ -119,7 +136,7 @@ export const EnableViewOnlyBottomSheet = () => {
     }
 
     return (
-        <BottomSheet isVisible={isVisible} onClose={() => {}} isCloseDisplayed={false}>
+        <BottomSheet isVisible={isVisible} onClose={handleClose} isCloseDisplayed={false}>
             <VStack spacing="large" paddingHorizontal="small">
                 <Box style={applyStyle(svgStyle)}>
                     <DisconnectedTrezorSvg />

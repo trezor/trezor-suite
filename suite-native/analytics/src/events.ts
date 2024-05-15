@@ -195,4 +195,12 @@ export type SuiteNativeAnalyticsEvent =
               path: string;
               type: AccountType;
           };
+      }
+    | {
+          type: EventType.ViewOnlyChange;
+          payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
+      }
+    | {
+          type: EventType.ViewOnlySkipped;
+          payload: { action: 'button' | 'close' };
       };

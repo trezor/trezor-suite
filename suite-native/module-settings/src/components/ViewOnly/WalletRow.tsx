@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import { Button, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { deviceActions, toggleRememberDevice } from '@suite-common/wallet-core';
+import { analytics, EventType } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
 import { useToast } from '@suite-native/toasts';
 import { Icon } from '@suite-common/icons';
@@ -40,6 +41,11 @@ export const WalletRow = ({ device }: { device: TrezorDevice }) => {
             variant: 'default',
             message: <Translation id={toastTranslationId} />,
             icon: 'check',
+        });
+
+        analytics.report({
+            type: EventType.ViewOnlyChange,
+            payload: { enabled: !device.remember, origin: 'settingsToggle' },
         });
 
         if (!device.connected && device.remember) {
