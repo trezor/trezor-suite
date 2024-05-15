@@ -10,7 +10,8 @@ import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
 import { Log } from '@trezor/utils';
 
-export const sessionsBackground = new SessionsBackground();
+const abortController = new AbortController();
+export const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
 
 export const sessionsClient = new SessionsClient({
     requestFn: args => sessionsBackground.handleMessage(args),

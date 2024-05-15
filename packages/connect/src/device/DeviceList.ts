@@ -78,9 +78,13 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
         const transportLogger = initLog('@trezor/transport', debug);
 
+        // todo: this should be passed from above
+        const abortController = new AbortController();
+
         const transportCommonArgs = {
             messages: this.messages,
             logger: transportLogger,
+            signal: abortController.signal,
         };
         // mapping of provided transports[] to @trezor/transport classes
         transports.forEach(transportType => {

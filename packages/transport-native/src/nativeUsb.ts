@@ -11,9 +11,9 @@ export class NativeUsbTransport extends AbstractApiTransport {
     // TODO: Not sure how to solve this type correctly.
     public name = 'NativeUsbTransport' as any;
 
-    constructor(params?: ConstructorParameters<typeof AbstractTransport>[0]) {
-        const { messages, logger } = params || {};
-        const sessionsBackground = new SessionsBackground();
+    constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
+        const { messages, logger, signal } = params;
+        const sessionsBackground = new SessionsBackground({ signal });
 
         const sessionsClient = new SessionsClient({
             requestFn: args => sessionsBackground.handleMessage(args),
@@ -30,8 +30,8 @@ export class NativeUsbTransport extends AbstractApiTransport {
                 usbInterface: new WebUSB(),
                 logger,
             }),
-
             sessionsClient,
+            signal,
         });
     }
 }

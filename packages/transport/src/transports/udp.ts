@@ -9,9 +9,9 @@ import { SessionsBackground } from '../sessions/background';
 export class UdpTransport extends AbstractApiTransport {
     public name = 'UdpTransport' as const;
 
-    constructor(params?: AbstractTransportParams) {
-        const { messages, logger } = params || {};
-        const sessionsBackground = new SessionsBackground();
+    constructor(params: AbstractTransportParams) {
+        const { messages, logger, signal } = params;
+        const sessionsBackground = new SessionsBackground({ signal });
 
         // in udp there is no synchronization yet. it depends where this transport runs (node or browser)
         const sessionsClient = new SessionsClient({
@@ -28,6 +28,7 @@ export class UdpTransport extends AbstractApiTransport {
             api: new UdpApi({ logger }),
             logger,
             sessionsClient,
+            signal,
         });
 
         const enumerateRecursive = () => {

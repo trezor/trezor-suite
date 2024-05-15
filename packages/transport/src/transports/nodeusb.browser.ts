@@ -8,7 +8,7 @@ import { empty, emptyAbortable, emptySync } from '../utils/resultEmpty';
 export class NodeUsbTransport extends AbstractTransport {
     public name = 'NodeUsbTransport' as const;
 
-    constructor(params?: AbstractTransportParams) {
+    constructor(params: AbstractTransportParams) {
         super(params);
         console.error(WRONG_ENVIRONMENT);
     }

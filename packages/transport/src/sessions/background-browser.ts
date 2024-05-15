@@ -64,7 +64,9 @@ export const initBackgroundInBrowser = () => {
         console.warn(
             'Unable to load background-sharedworker. Falling back to use local module. Say bye bye to tabs synchronization',
         );
-        const background = new SessionsBackground();
+
+        const abortController = new AbortController();
+        const background = new SessionsBackground({ signal: abortController.signal });
         const registerBackgroundCallbacks: RegisterBackgroundCallbacks = onDescriptorsCallback => {
             background.on('descriptors', descriptors => {
                 onDescriptorsCallback(descriptors);

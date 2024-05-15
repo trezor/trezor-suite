@@ -41,7 +41,7 @@ const createTransportApi = (override = {}) =>
     }) as unknown as UsbApi;
 
 const createTestTransport = (apiMethods = {}) => {
-    const sessionsBackground = new SessionsBackground();
+    const sessionsBackground = new SessionsBackground({ signal: new AbortController().signal });
     const sessionsClient = new SessionsClient({
         requestFn: params => sessionsBackground.handleMessage(params),
         registerBackgroundCallbacks: onDescriptorsCallback => {

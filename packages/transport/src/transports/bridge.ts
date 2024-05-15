@@ -72,7 +72,7 @@ export class BridgeTransport extends AbstractTransport {
 
     public name = 'BridgeTransport' as const;
 
-    constructor(params?: BridgeConstructorParameters) {
+    constructor(params: BridgeConstructorParameters) {
         const { url = DEFAULT_URL, latestVersion, ...args } = params || {};
         super(args);
         this.url = url;

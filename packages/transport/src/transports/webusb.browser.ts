@@ -13,8 +13,8 @@ import { initBackgroundInBrowser } from '../sessions/background-browser';
 export class WebUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
 
-    constructor(params?: AbstractTransportParams) {
-        const { messages, logger } = params || {};
+    constructor(params: AbstractTransportParams) {
+        const { messages, logger, signal } = params;
         const { requestFn, registerBackgroundCallbacks } = initBackgroundInBrowser();
 
         super({
@@ -30,6 +30,7 @@ export class WebUsbTransport extends AbstractApiTransport {
                 requestFn,
                 registerBackgroundCallbacks,
             }),
+            signal,
         });
     }
 }
