@@ -93,7 +93,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * once transport has been stopped, it does not emit any events
      */
-    protected stopped = false;
+    protected stopped = true;
     /**
      * once transport is listening, it will be emitting TRANSPORT.UPDATE events
      */

@@ -95,6 +95,8 @@ export class BridgeTransport extends AbstractTransport {
                 this.isOutdated = versionUtils.isNewer(this.latestVersion, this.version);
             }
 
+            this.stopped = false;
+
             return this.success(undefined);
         });
     }
