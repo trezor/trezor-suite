@@ -19,7 +19,6 @@ on:
         description: "Firmware model for the tests (example: R)"
         type: "string"
         required: false
-        default: ""
       node-environment:
         description: "Should the test run on nodejs environment, it runs by default."
         type: "boolean"
@@ -54,9 +53,13 @@ jobs:
       - run: sed -i "/\"node\"/d" package.json
       - run: yarn install
       # nightly test - run without cached txs
-      - run: 'export ADDITIONAL_ARGS="-c"'
-        if: ${{ github.event_name == 'schedule' }}
-      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" -i ${{ inputs.methods }} -m ${{ inputs.test-firmware-model}} $ADDITIONAL_ARGS'
+      - if: ${{ github.event_name == 'schedule' }}
+        run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
+      - if: ${{ inputs.test-firmware-model }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.test-firmware-model }}" >> "$GITHUB_ENV"
+      - if: ${{ inputs.methods }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
+      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" $ADDITIONAL_ARGS'
 
   web:
     name: "web-${{ inputs.test-description }}"
@@ -88,7 +91,10 @@ jobs:
       - run: cd packages/connect-iframe && tree .
       - name: "Echo download path"
         run: echo ${{steps.download.outputs.download-path}}
-      # nightly test - run without cached txs
-      - run: 'export ADDITIONAL_ARGS="-c"'
-        if: ${{ github.event_name == 'schedule' }}
-      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" -i ${{ inputs.methods }} -m ${{ inputs.test-firmware-model}} $ADDITIONAL_ARGS'
+      - if: ${{ github.event_name == 'schedule' }}
+        run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
+      - if: ${{ inputs.test-firmware-model }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.test-firmware-model }}" >> "$GITHUB_ENV"
+      - if: ${{ inputs.methods }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
+      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" $ADDITIONAL_ARGS'
