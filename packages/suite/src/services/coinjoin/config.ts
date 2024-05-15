@@ -9,7 +9,7 @@ import type { PartialRecord } from '@trezor/type-utils';
 import type { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 import type { NetworkSymbol } from '@suite-common/wallet-config';
 
-type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;
+export type CoinjoinNetworksConfig = CoinjoinBackendSettings & CoinjoinClientSettings;
 
 type ServerEnvironment = PartialRecord<CoinjoinServerEnvironment, CoinjoinNetworksConfig>;
 
