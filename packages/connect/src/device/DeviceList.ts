@@ -16,7 +16,7 @@ import { ERRORS } from '../constants';
 import { DEVICE, TransportInfo } from '../events';
 import { Device } from './Device';
 import type { ConnectSettings, Device as DeviceTyped } from '../types';
-import { DataManager } from '../data/DataManager';
+
 import { getBridgeInfo } from '../data/transportInfo';
 import { initLog } from '../utils/debug';
 import { resolveAfter } from '../utils/promiseUtils';
@@ -61,16 +61,26 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
     transportFirstEventPromise: Promise<void> | undefined;
 
+    private pendingTransportEvent: ConnectSettings['pendingTransportEvent'];
+    private priority: ConnectSettings['priority'];
+
     constructor({
         transports,
         debug,
         messages,
+        pendingTransportEvent,
+        priority,
     }: {
         transports?: ConnectSettings['transports'];
         debug?: ConnectSettings['debug'];
         messages: Record<string, any>;
+        pendingTransportEvent?: ConnectSettings['pendingTransportEvent'];
+        priority: ConnectSettings['priority'];
     }) {
         super();
+
+        this.pendingTransportEvent = pendingTransportEvent;
+        this.priority = priority;
         // we fill in `transports` with a reasonable fallback in src/index.
         // since web index is released into npm, we can not rely
         // on that that transports will be always set here. We need to provide a 'fallback of the last resort'
@@ -192,7 +202,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     const path = descriptor.path.toString();
                     this.creatingDevicesDescriptors[path] = descriptor;
 
-                    const priority = DataManager.getSettings('priority');
+                    const { priority } = this;
                     const penalty = this.getAuthPenalty();
 
                     if (priority || penalty) {
@@ -300,7 +310,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
 
             const descriptors = enumerateResult.payload;
 
-            if (descriptors.length > 0 && DataManager.getSettings('pendingTransportEvent')) {
+            if (descriptors.length > 0 && this.pendingTransportEvent) {
                 this.transportStartPending = descriptors.length;
                 // listen for self emitted events and resolve pending transport event if needed
                 this.on(DEVICE.CONNECT, this.resolveTransportEvent.bind(this));

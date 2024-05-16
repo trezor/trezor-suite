@@ -1,6 +1,5 @@
 import { parseConnectSettings } from '../../data/connectSettings';
 import { DataManager } from '../../data/DataManager';
-import { ConnectSettings } from '../../exports';
 import { DeviceList } from '../DeviceList';
 import {
     AbstractApiTransport,
@@ -62,33 +61,25 @@ const createTestTransport = (apiMethods = {}) => {
     return transport;
 };
 
-const loadDataManager = (settings: Partial<ConnectSettings> = {}) => {
-    return DataManager.load(
-        parseConnectSettings({
-            ...settings,
-        }),
-    );
-};
+const getDeviceListParams = (
+    params: Partial<ConstructorParameters<typeof DeviceList>[0]>,
+): ConstructorParameters<typeof DeviceList>[0] => {
+    const { debug, transports, priority, pendingTransportEvent } = parseConnectSettings({});
 
-const getDeviceListParams = (params: Partial<ConstructorParameters<typeof DeviceList>[0]>) => {
-    const { debug, transports } = DataManager.getSettings();
     const messages = DataManager.getProtobufMessages();
 
     return {
         debug,
-        messages,
         transports,
+        priority,
+        pendingTransportEvent,
+        messages,
         ...params,
     };
 };
 
-const createDeviceList = (
-    deviceListParams: ConstructorParameters<typeof DeviceList>[0] = { messages: {} },
-) => {
-    const list = new DeviceList({
-        ...parseConnectSettings(),
-        ...deviceListParams,
-    });
+const createDeviceList = (deviceListParams: ConstructorParameters<typeof DeviceList>[0]) => {
+    const list = new DeviceList(deviceListParams);
     const eventsSpy = jest.fn();
     (
         [
@@ -112,10 +103,12 @@ const createDeviceList = (
 };
 
 describe('DeviceList', () => {
-    beforeEach(async () => {
-        await loadDataManager();
+    beforeAll(async () => {
+        // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
+        await DataManager.load({
+            ...parseConnectSettings({}),
+        });
     });
-
     it('constructor throws error on unknown transport (string)', () => {
         const params = getDeviceListParams({
             // @ts-expect-error
@@ -276,7 +269,6 @@ describe('DeviceList', () => {
                 return { success: true, payload: [{ path: '1' }, { path: '2' }, { path: '3' }] };
             },
         });
-
         const { list, eventsSpy } = createDeviceList(
             getDeviceListParams({ transports: [transport] }),
         );
@@ -343,12 +335,10 @@ describe('DeviceList', () => {
     });
 
     it('.init() without pendingTransportEvent (device connected after start)', async () => {
-        await loadDataManager({ pendingTransportEvent: false });
-
         const transport = createTestTransport();
 
         const { list, eventsSpy } = createDeviceList(
-            getDeviceListParams({ transports: [transport] }),
+            getDeviceListParams({ transports: [transport], pendingTransportEvent: false }),
         );
 
         list.init();
