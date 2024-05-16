@@ -59,11 +59,14 @@ class TestUsbTransport extends AbstractApiTransport {
 }
 // we cant directly use abstract class (UsbTransport)
 const initTest = async () => {
+    let abortController = new AbortController();
+
     let sessionsBackground: SessionsBackground;
     let sessionsClient: SessionsClient;
     let transport: AbstractTransport;
     let testUsbApi: UsbApi;
-    let abortController = new AbortController();
+
+    sessionsBackground = new SessionsBackground({ signal: abortController.signal });
 
     sessionsClient = new SessionsClient({
         requestFn: params => sessionsBackground.handleMessage(params),
@@ -73,8 +76,6 @@ const initTest = async () => {
             });
         },
     });
-
-    sessionsBackground = new SessionsBackground({ signal: abortController.signal });
 
     sessionsBackground.on('descriptors', descriptors => {
         sessionsClient.emit('descriptors', descriptors);
@@ -139,7 +140,7 @@ describe('Usb', () => {
             });
         });
 
-        it.only('enumerate error', async () => {
+        it('enumerate error', async () => {
             const abortController = new AbortController();
 
             const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
@@ -245,9 +246,9 @@ describe('Usb', () => {
 
             jest.runAllTimers();
 
-            expect(
-                transport.acquire({ input: { path: '123', previous: null } }).promise,
-            ).resolves.toEqual({
+            const result = await transport.acquire({ input: { path: '123', previous: null } })
+                .promise;
+            expect(result).toEqual({
                 success: true,
                 payload: '1',
             });
@@ -476,7 +477,7 @@ describe('Usb', () => {
                 session: acquireRes.payload,
                 protocol: v1Protocol,
             });
-            // await promise2;
+            await promise2;
             expect(promise2).resolves.toEqual({
                 success: true,
                 payload: {
