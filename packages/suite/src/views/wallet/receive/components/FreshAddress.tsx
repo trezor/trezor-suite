@@ -109,6 +109,7 @@ interface FreshAddressProps {
     disabled: boolean;
     locked: boolean;
     pendingAddresses: string[];
+    isDeviceConnected: boolean;
 }
 
 export const FreshAddress = ({
@@ -117,6 +118,7 @@ export const FreshAddress = ({
     disabled,
     pendingAddresses,
     locked,
+    isDeviceConnected,
 }: FreshAddressProps) => {
     const isAccountUtxoBased = useSelector((state: AccountsRootState) =>
         selectIsAccountUtxoBased(state, account?.key ?? ''),
@@ -156,6 +158,13 @@ export const FreshAddress = ({
         return null;
     };
 
+    const buttonRevealAddressProps = {
+        'data-test': '@wallet/receive/reveal-address-button',
+        onClick: handleAddressReveal,
+        isDisabled: disabled || locked || coinjoinDisallowReveal || !firstFreshAddress,
+        isLoading: locked,
+    };
+
     return (
         <StyledCard>
             <AddressContainer>
@@ -172,15 +181,15 @@ export const FreshAddress = ({
                 </FreshAddressWrapper>
             </AddressContainer>
             <Tooltip content={buttonTooltipContent()}>
-                <StyledButton
-                    data-test="@wallet/receive/reveal-address-button"
-                    icon="TREZOR_LOGO"
-                    onClick={handleAddressReveal}
-                    isDisabled={disabled || locked || coinjoinDisallowReveal || !firstFreshAddress}
-                    isLoading={locked}
-                >
-                    <Translation id="RECEIVE_ADDRESS_REVEAL" />
-                </StyledButton>
+                {isDeviceConnected ? (
+                    <StyledButton icon="TREZOR_LOGO" {...buttonRevealAddressProps}>
+                        <Translation id="RECEIVE_ADDRESS_REVEAL" />
+                    </StyledButton>
+                ) : (
+                    <StyledButton {...buttonRevealAddressProps} variant="warning">
+                        <Translation id="RECEIVE_UNVERIFIED_ADDRESS_REVEAL" />
+                    </StyledButton>
+                )}
             </Tooltip>
             {account.networkType === 'ethereum' && (
                 <StyledEvmExplanationBox

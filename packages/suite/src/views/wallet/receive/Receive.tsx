@@ -8,7 +8,7 @@ import { UsedAddresses } from './components/UsedAddresses';
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
 import { ConnectDevicePromo } from './components/ConnectDevicePromo';
-import { Flex } from '@trezor/components';
+import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
 export const Receive = () => {
@@ -36,12 +36,12 @@ export const Receive = () => {
     const disabled = !!device.authConfirm;
     const showCexWarning = account?.accountType === 'coinjoin' && !isCoinjoinReceiveWarningHidden;
 
-    console.log('isDeviceLocked', isDeviceLocked);
+    const isDeviceConnected = device.connected && device.available;
 
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
-            <Flex gap={spacings.sm} direction="column" alignItems="start">
-                {true && <ConnectDevicePromo />}
+            <Column gap={spacings.sm} alignItems="start">
+                {!isDeviceConnected && <ConnectDevicePromo />}
 
                 <WalletSubpageHeading title="TR_NAV_RECEIVE" />
 
@@ -53,6 +53,7 @@ export const Receive = () => {
                     disabled={disabled}
                     locked={isDeviceLocked}
                     pendingAddresses={pendingAddresses}
+                    isDeviceConnected={isDeviceConnected}
                 />
 
                 <UsedAddresses
@@ -63,7 +64,7 @@ export const Receive = () => {
                 />
 
                 <ConfirmEvmExplanationModal account={account} route="wallet-receive" />
-            </Flex>
+            </Column>
         </WalletLayout>
     );
 };

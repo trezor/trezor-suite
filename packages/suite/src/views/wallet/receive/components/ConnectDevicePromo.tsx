@@ -1,7 +1,8 @@
-import { Columns, Image, Rows, Text, Warning } from '@trezor/components';
+import { Column, Image, Row, Text, Warning } from '@trezor/components';
 import { useSelector } from '../../../../hooks/suite';
 import { selectDevice } from '@suite-common/wallet-core';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
+import { Translation } from 'src/components/suite';
 
 export const ConnectDevicePromo = () => {
     const selectedDevice = useSelector(selectDevice);
@@ -10,19 +11,18 @@ export const ConnectDevicePromo = () => {
 
     return (
         <Warning variant="warning" withIcon={false}>
-            <Columns alignItems="center" justifyContent="space-between" gap={12} flex={1}>
-                <Rows alignItems="start">
+            <Row alignItems="center" justifyContent="space-between" gap={12} flex="1">
+                <Column alignItems="start">
                     <Text typographyStyle="highlight" variant="warning">
-                        Receive address can’t be verified
+                        <Translation id="TR_CONNECT_DEVICE_PROMO_TITLE" />
                     </Text>
                     <Text typographyStyle="titleSmall">
-                        Verify on Trezor to confirm receive address. Continuing without confirming
-                        isn’t recommended.
+                        <Translation id="TR_CONNECT_DEVICE_PROMO_DESCRIPTION" />
                     </Text>
-                </Rows>
+                </Column>
 
                 <Image alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />
-            </Columns>
+            </Row>
         </Warning>
     );
 };
