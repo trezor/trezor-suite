@@ -127,7 +127,6 @@
   "SETTINGS_UPDATE_CHECKING": "Sprawdzanie...",
   "SETTINGS_UPDATE_DOWNLOADING": "Pobieranie...",
   "SETTINGS_UPDATE_READY": "Zainstaluj teraz!",
-  "SHAMIR_SEED_DESCRIPTION": "Odzyskaj portfel łącząc ze sobą listy słów. Mogą one zostać zabezpieczone w różnych miejscach dla zwiększenia bezpieczeństwa.",
   "SIGN_TRANSACTION": "Podpis",
   "TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN": "Nowa wersja ({version}) została zainstalowana.",
   "TOAST_AUTO_UPDATER_NO_NEW": "Brak nowych aktualizacji.",
