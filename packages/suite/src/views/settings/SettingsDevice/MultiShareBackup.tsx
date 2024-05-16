@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { goto } from '../../../actions/suite/routerActions';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
     if (device?.features === undefined) {
@@ -38,7 +39,14 @@ export const MultiShareBackup = () => {
         return;
     }
 
-    const handleClick = () => dispatch(goto('create-multi-share-backup'));
+    const handleClick = () => {
+        analytics.report({
+            type: EventType.SettingsMultiShareBackup,
+            payload: { action: 'start' },
+        });
+
+        dispatch(goto('create-multi-share-backup'));
+    };
 
     return (
         <SectionItem>
