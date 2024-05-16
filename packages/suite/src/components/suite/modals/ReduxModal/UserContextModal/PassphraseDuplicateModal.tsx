@@ -1,16 +1,11 @@
-import styled from 'styled-components';
-
 import { authorizeDevice, switchDuplicatedDevice } from '@suite-common/wallet-core';
-import { Button, Image } from '@trezor/components';
+import { Button, Column, H3, Text } from '@trezor/components';
 
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
-
-const StyledImage = styled(Image)`
-    margin: 14px 0;
-`;
-
+import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
     duplicate: TrezorDevice;
@@ -26,16 +21,21 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const handleAuthorizeDevice = () => dispatch(authorizeDevice());
 
     return (
-        <Modal
-            heading={<Translation id="TR_WALLET_DUPLICATE_TITLE" />}
-            description={<Translation id="TR_WALLET_DUPLICATE_DESC" />}
-            data-test="@passphrase-duplicate"
-            bottomBarComponents={
-                <>
+        <SwitchDeviceRenderer isCancelable={false} data-test="@passphrase-duplicate">
+            <CardWithDevice device={device}>
+                <H3 margin={{ top: 12 }}>
+                    <Translation id="TR_WALLET_DUPLICATE_TITLE" />
+                </H3>
+                <Text color="textSubdued">
+                    <Translation id="TR_WALLET_DUPLICATE_DESC" />
+                </Text>
+
+                <Column gap={8} margin={{ top: 20 }}>
                     <Button
                         variant="primary"
                         onClick={handleSwitchDevice}
                         isDisabled={isDeviceLocked}
+                        isFullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_SWITCH" />
                     </Button>
@@ -43,13 +43,12 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
                         variant="tertiary"
                         onClick={handleAuthorizeDevice}
                         isDisabled={isDeviceLocked}
+                        isFullWidth
                     >
                         <Translation id="TR_WALLET_DUPLICATE_RETRY" />
                     </Button>
-                </>
-            }
-        >
-            <StyledImage image="UNI_WARNING" width="160" />
-        </Modal>
+                </Column>
+            </CardWithDevice>
+        </SwitchDeviceRenderer>
     );
 };
