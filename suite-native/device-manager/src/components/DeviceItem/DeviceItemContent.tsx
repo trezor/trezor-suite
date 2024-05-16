@@ -18,11 +18,11 @@ import { SimpleDeviceItemContent } from './SimpleDeviceItemContent';
 import { WalletDetailDeviceItemContent } from './WalletDetailDeviceItemContent';
 
 export type DeviceItemContentVariant = 'simple' | 'walletDetail';
+
 export type DeviceItemContentMode = 'compact' | 'header';
 
 export type DeviceItemContentProps = {
     deviceState: NonNullable<TrezorDevice['state']>;
-    isPortfolioLabelDisplayed?: boolean;
     headerTextVariant?: TypographyStyle;
     variant?: DeviceItemContentVariant;
     isCompact?: boolean;
@@ -34,13 +34,19 @@ const contentWrapperStyle = prepareNativeStyle<{ height: number }>((utils, { hei
     alignItems: 'center',
     spacing: utils.spacings.medium,
 }));
-const itemStyle = prepareNativeStyle(_ => ({
+
+const itemStyle = prepareNativeStyle<{ isCompact: boolean }>((_, { isCompact }) => ({
     flexShrink: 1,
+    extend: {
+        condition: !isCompact,
+        style: {
+            gap: 2,
+        },
+    },
 }));
 
 export const DeviceItemContent = ({
     deviceState,
-    isPortfolioLabelDisplayed = true,
     headerTextVariant = 'body',
     variant = 'simple',
     isCompact = true,
@@ -76,16 +82,14 @@ export const DeviceItemContent = ({
         <HStack style={applyStyle(contentWrapperStyle, { height: isCompact ? 46 : 56 })}>
             <DeviceItemIcon
                 deviceId={areAllDevicesDisconnectedOrAccountless ? undefined : device.id}
-                iconSize={isCompact ? 'large' : 'extraLarge'}
             />
-            <Box style={applyStyle(itemStyle)}>
+            <Box style={applyStyle(itemStyle, { isCompact })}>
                 {variant === 'simple' ? (
                     <SimpleDeviceItemContent
                         deviceState={deviceState}
                         headerTextVariant={headerTextVariant}
                         header={deviceHeader}
                         isPortfolioTrackerDevice={isPortfolioTrackerDevice}
-                        isPortfolioLabelDisplayed={isPortfolioLabelDisplayed}
                     />
                 ) : (
                     <WalletDetailDeviceItemContent
@@ -94,7 +98,6 @@ export const DeviceItemContent = ({
                         header={deviceHeader}
                         subHeader={walletNameLabel}
                         isPortfolioTrackerDevice={isPortfolioTrackerDevice}
-                        isPortfolioLabelDisplayed={isPortfolioLabelDisplayed}
                     />
                 )}
             </Box>

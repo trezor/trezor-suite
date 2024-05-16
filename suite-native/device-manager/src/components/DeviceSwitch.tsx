@@ -57,7 +57,6 @@ export const DeviceSwitch = () => {
                         <DeviceItemContent
                             deviceState={deviceState}
                             headerTextVariant="highlight"
-                            isPortfolioLabelDisplayed={false}
                             variant={wallets.length > 1 ? 'walletDetail' : 'simple'}
                         />
                     )}

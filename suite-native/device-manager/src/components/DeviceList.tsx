@@ -9,7 +9,6 @@ import Animated, {
 import { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
-import { A } from '@mobily/ts-belt';
 
 import {
     ConnectDeviceStackRoutes,
@@ -19,7 +18,7 @@ import {
 } from '@suite-native/navigation';
 import { analytics, EventType } from '@suite-native/analytics';
 import { selectDevice, selectInstacelessUnselectedDevices } from '@suite-common/wallet-core';
-import { Button, VStack, Box, TextDivider } from '@suite-native/atoms';
+import { Button, Box, TextDivider, VStack } from '@suite-native/atoms';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -41,13 +40,15 @@ type DeviceListProps = {
 
 const ITEM_HEIGHT = 66;
 const BUTTON_HEIGHT = 48;
-const VERTICAL_PADDING = 16;
+const BUTTON_PADDING_TOP = 8;
+const PADDING_TOP = 12;
+const PADDING_BOTTOM = 16;
 const SEPARATOR_VERTICAL_PADDING = 4;
 const SEPARATOR_HEIGHT = 26;
-const TOP_LIST_PADDING = 12;
 
 const buttonWrapperStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.medium,
+    paddingTop: utils.spacings.small,
 }));
 
 const listStaticStyle = prepareNativeStyle(utils => ({
@@ -58,8 +59,8 @@ const listStaticStyle = prepareNativeStyle(utils => ({
     borderColor: utils.colors.borderElevation0,
     marginTop: -MANAGER_MODAL_BOTTOM_RADIUS,
     marginBottom: -MANAGER_MODAL_BOTTOM_RADIUS,
-    paddingTop: MANAGER_MODAL_BOTTOM_RADIUS + TOP_LIST_PADDING,
-    paddingBottom: VERTICAL_PADDING,
+    paddingTop: MANAGER_MODAL_BOTTOM_RADIUS + PADDING_TOP,
+    paddingBottom: PADDING_BOTTOM,
     zIndex: 10,
     ...utils.boxShadows.small,
 }));
@@ -71,8 +72,10 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const device = useSelector(selectDevice);
     const notSelectedInstancelessDevices = useSelector(selectInstacelessUnselectedDevices);
     const opacity = useSharedValue(0);
-    const height = useSharedValue(0);
+    const height = useSharedValue(1000);
     const [isShown, setIsShown] = useState(false);
+
+    const hasUnselectedDevices = notSelectedInstancelessDevices.length > 0;
 
     const handleConnectDevice = () => {
         if (device) {
@@ -91,27 +94,21 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     //to hide/show the list with animation
     useEffect(() => {
         if (isVisible) {
-            const hasNotSelectedInstancelessDevices = notSelectedInstancelessDevices.length > 0;
-
-            const paddingsHeight = VERTICAL_PADDING * 2;
-
             const otherDevicesHeight = notSelectedInstancelessDevices.length * ITEM_HEIGHT;
 
-            const separatorHeight = hasNotSelectedInstancelessDevices ? SEPARATOR_HEIGHT : 0;
-
-            const separatorPaddding = hasNotSelectedInstancelessDevices
-                ? SEPARATOR_VERTICAL_PADDING * 2
+            const separatorHeight = hasUnselectedDevices
+                ? 2 * SEPARATOR_VERTICAL_PADDING + SEPARATOR_HEIGHT
                 : 0;
 
-            const radiusesHeight = MANAGER_MODAL_BOTTOM_RADIUS * 2;
+            const buttonHeight = BUTTON_PADDING_TOP + BUTTON_HEIGHT;
 
             const h =
-                otherDevicesHeight +
-                radiusesHeight +
-                separatorHeight +
-                separatorPaddding +
-                BUTTON_HEIGHT +
-                paddingsHeight;
+                MANAGER_MODAL_BOTTOM_RADIUS + //top margin for radius
+                PADDING_TOP +
+                otherDevicesHeight + // all other device
+                separatorHeight + // separator if there is one
+                buttonHeight +
+                PADDING_BOTTOM;
 
             opacity.value = withDelay(100, withTiming(1, { duration: 200 }));
             height.value = withTiming(h, { duration: 300 });
@@ -126,7 +123,14 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
                 }),
             );
         }
-    }, [height, isVisible, opacity, notSelectedInstancelessDevices.length, utils.spacings.small]);
+    }, [
+        height,
+        isVisible,
+        opacity,
+        notSelectedInstancelessDevices.length,
+        utils.spacings.small,
+        hasUnselectedDevices,
+    ]);
 
     const listAnimatedStyle = useAnimatedStyle(
         () => ({
@@ -142,40 +146,35 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
 
     return (
         <Animated.View style={[listAnimatedStyle, applyStyle(listStaticStyle)]}>
-            <VStack>
-                <Box>
-                    {notSelectedInstancelessDevices.map(d => {
-                        if (d.state === undefined) {
-                            return null;
-                        }
-
-                        return (
+            <Box>
+                {notSelectedInstancelessDevices.map(
+                    d =>
+                        d.state && (
                             <DeviceItem
                                 key={d.state}
                                 deviceState={d.state}
                                 onPress={() => onSelectDevice(d)}
                             />
-                        );
-                    })}
-                </Box>
+                        ),
+                )}
+            </Box>
 
-                {A.isEmpty(notSelectedInstancelessDevices) ? (
+            {hasUnselectedDevices ? (
+                <VStack spacing="extraSmall" paddingTop="extraSmall">
+                    <TextDivider title="generic.orSeparator" />
                     <Box style={applyStyle(buttonWrapperStyle)}>
-                        <Button colorScheme="tertiaryElevation1" onPress={handleConnectDevice}>
-                            <Translation id="deviceManager.connectButton.first" />
+                        <Button colorScheme="tertiaryElevation0" onPress={handleConnectDevice}>
+                            <Translation id="deviceManager.connectButton.another" />
                         </Button>
                     </Box>
-                ) : (
-                    <>
-                        <TextDivider title="generic.orSeparator" />
-                        <Box style={applyStyle(buttonWrapperStyle)}>
-                            <Button colorScheme="tertiaryElevation1" onPress={handleConnectDevice}>
-                                <Translation id="deviceManager.connectButton.another" />
-                            </Button>
-                        </Box>
-                    </>
-                )}
-            </VStack>
+                </VStack>
+            ) : (
+                <Box style={applyStyle(buttonWrapperStyle)}>
+                    <Button colorScheme="tertiaryElevation0" onPress={handleConnectDevice}>
+                        <Translation id="deviceManager.connectButton.first" />
+                    </Button>
+                </Box>
+            )}
         </Animated.View>
     );
 };

@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import { ReactNode } from 'react';
 
-import { HStack, Text, Box } from '@suite-native/atoms';
+import { HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { DeviceRootState, selectDeviceByState } from '@suite-common/wallet-core';
@@ -15,7 +15,6 @@ export type WalletDetailDeviceItemContentProps = {
     headerTextVariant?: TypographyStyle;
     header: ReactNode;
     subHeader?: ReactNode;
-    isPortfolioLabelDisplayed?: boolean;
     isPortfolioTrackerDevice: boolean;
 };
 
@@ -33,7 +32,7 @@ const headerTextStyle = prepareNativeStyle(() => ({
 export const WalletDetailDeviceItemContent = ({
     deviceState,
     headerTextVariant,
-    isPortfolioLabelDisplayed,
+
     header,
     subHeader,
     isPortfolioTrackerDevice,
@@ -58,20 +57,12 @@ export const WalletDetailDeviceItemContent = ({
                 </Text>
                 {!isPortfolioTrackerDevice && <ConnectionDot isConnected={device.connected} />}
             </HStack>
-            <Box>
-                {isPortfolioTrackerDevice && isPortfolioLabelDisplayed && (
-                    <Text variant="label" color="textSubdued">
-                        <Translation id="deviceManager.status.portfolioTracker" />
-                    </Text>
+            <Text variant="hint" color="textSubdued">
+                {isPortfolioTrackerDevice && (
+                    <Translation id="deviceManager.status.portfolioTracker" />
                 )}
-                {!isPortfolioTrackerDevice && (
-                    <HStack alignItems="center" spacing="small">
-                        <Text variant="label" color="textSubdued">
-                            {subHeader}
-                        </Text>
-                    </HStack>
-                )}
-            </Box>
+                {!isPortfolioTrackerDevice && subHeader}
+            </Text>
         </>
     );
 };

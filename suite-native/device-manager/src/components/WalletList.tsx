@@ -13,8 +13,13 @@ type WalletListProps = {
 export const WalletList = ({ onSelectDevice }: WalletListProps) => {
     const devices = useSelector(selectDeviceInstances);
 
+    // If there are less than 2 device instances(wallets), do not show wallet list
+    if (devices.length < 2) {
+        return null;
+    }
+
     return (
-        <VStack paddingHorizontal="medium" paddingTop="large">
+        <VStack spacing={12} paddingHorizontal="medium">
             {devices.map(device => {
                 if (!device.state) {
                     return null;

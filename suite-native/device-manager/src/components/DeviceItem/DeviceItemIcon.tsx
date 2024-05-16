@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 
-import { Icon, IconSize } from '@suite-common/icons';
+import { Icon } from '@suite-common/icons';
 import {
     DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
@@ -12,20 +12,21 @@ import { DeviceModelIcon } from '../DeviceModelIcon';
 
 type DeviceItemIconProps = {
     deviceId: TrezorDevice['id'];
-    iconSize: IconSize;
 };
 
-export const DeviceItemIcon = ({ deviceId, iconSize }: DeviceItemIconProps) => {
+const ICON_SIZE = 28;
+
+export const DeviceItemIcon = ({ deviceId }: DeviceItemIconProps) => {
     const deviceModel = useSelector((state: DeviceRootState) =>
         selectDeviceModelById(state, deviceId),
     );
 
     if (deviceId === PORTFOLIO_TRACKER_DEVICE_ID) {
-        return <Icon name="database" color="iconDefault" size={iconSize} />;
+        return <Icon name="database" color="iconDefault" size={ICON_SIZE} />;
     }
     if (deviceModel !== null) {
-        return <DeviceModelIcon deviceModel={deviceModel} size={iconSize} />;
+        return <DeviceModelIcon deviceModel={deviceModel} size={ICON_SIZE} />;
     }
 
-    return <Icon name="trezor" color="iconDefault" size={iconSize} />;
+    return <Icon name="trezor" color="iconDefault" size={ICON_SIZE} />;
 };

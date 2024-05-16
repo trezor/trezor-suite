@@ -18,7 +18,6 @@ export type SimpleDeviceItemContentProps = {
     deviceState: NonNullable<TrezorDevice['state']>;
     headerTextVariant?: TypographyStyle;
     header: ReactNode;
-    isPortfolioLabelDisplayed?: boolean;
     isPortfolioTrackerDevice: boolean;
 };
 
@@ -30,7 +29,6 @@ const headerStyle = prepareNativeStyle(_ => ({
 export const SimpleDeviceItemContent = ({
     deviceState,
     headerTextVariant,
-    isPortfolioLabelDisplayed,
     header,
     isPortfolioTrackerDevice,
 }: SimpleDeviceItemContentProps) => {
@@ -45,9 +43,7 @@ export const SimpleDeviceItemContent = ({
     }
 
     const isPortfolioTrackerSubHeaderVisible =
-        isPortfolioTrackerDevice &&
-        isPortfolioLabelDisplayed &&
-        !areAllDevicesDisconnectedOrAccountless;
+        isPortfolioTrackerDevice && !areAllDevicesDisconnectedOrAccountless;
 
     const isConnectionStateVisible =
         !isPortfolioTrackerDevice && !areAllDevicesDisconnectedOrAccountless;
@@ -68,7 +64,7 @@ export const SimpleDeviceItemContent = ({
             </Text>
             <Box>
                 {isPortfolioTrackerSubHeaderVisible && (
-                    <Text variant="label" color="textSubdued">
+                    <Text variant="hint" color="textSubdued">
                         <Translation id="deviceManager.status.portfolioTracker" />
                     </Text>
                 )}
