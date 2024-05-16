@@ -1930,6 +1930,7 @@
   "TR_UNACQUIRED": "Nem felismert eszköz",
   "TR_UNAVAILABLE_COINJOIN_ACCOUNT_OUT_OF_SYNC": "Nem elérhető. A fiók valószínűleg nincs szinkronban.",
   "TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL": "Az összegek túl kicsik a coinjoinhoz.",
+  "TR_UNAVAILABLE_COINJOIN_COORDINATOR": "A koordinátor nem elérhető.",
   "TR_UNAVAILABLE_COINJOIN_DEVICE_DISCONNECTED": "Nem elérhető. A szükséges eszköz nincs csatlakoztatva.",
   "TR_UNAVAILABLE_COINJOIN_NO_ANONYMITY_SET": "A coinjoin csak a coinok anonimitási szintjének beállítása után kezdeményezhető.",
   "TR_UNAVAILABLE_COINJOIN_NO_INTERNET": "Nem elérhető. Nincs internetkapcsolat.",

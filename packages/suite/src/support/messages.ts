@@ -2086,7 +2086,7 @@ export default defineMessages({
     },
     TR_BACKUP_FINISHED_TEXT: {
         defaultMessage:
-            "If you have written down your wallet backup, your Trezor is almost ready. Don't lose your wallet backup, otherwise your funds could be inaccessible.",
+            'If you have written down your recovery seed, your Trezor is almost ready. Do not lose your recovery seed, otherwise your funds could be inaccessible.',
         description: 'Text that appears after backup is finished',
         id: 'TR_BACKUP_FINISHED_TEXT',
     },
@@ -2580,7 +2580,7 @@ export default defineMessages({
         id: 'TR_BACKUP_SUCCESSFUL',
     },
     TR_FIAT_RATES_NOT_AVAILABLE: {
-        defaultMessage: 'Rate unavailable.',
+        defaultMessage: 'Rate not available.',
         id: 'TR_FIAT_RATES_NOT_AVAILABLE',
     },
     TR_FIAT_RATES_NOT_AVAILABLE_TOOLTIP: {
@@ -3449,7 +3449,7 @@ export default defineMessages({
         id: 'TR_START_AGAIN',
     },
     TR_START_BACKUP: {
-        defaultMessage: 'Create backup',
+        defaultMessage: 'Begin backup',
         id: 'TR_START_BACKUP',
     },
     TR_START_RECOVERY: {
@@ -3870,7 +3870,7 @@ export default defineMessages({
     TR_ACCOUNT_TYPE_SLIP25_DESC: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_DESC',
         defaultMessage:
-            'The coinjoin feature will be/was disabled on June 1st, 2024. Your coinjoin account and funds remain accessible, but no new coinjoin rounds are possible.',
+            "Starting June 1st, 2024, the coinjoin feature will be deactivated. Your coinjoin account and funds will still be accessible, but you won't be able to initiate new coinjoin rounds.",
     },
     TOAST_QR_INCORRECT_ADDRESS: {
         id: 'TOAST_QR_INCORRECT_ADDRESS',
@@ -4137,7 +4137,7 @@ export default defineMessages({
     },
     TR_UNAVAILABLE_COINJOIN_COORDINATOR: {
         id: 'TR_UNAVAILABLE_COINJOIN_COORDINATOR',
-        defaultMessage: 'Coordinator is unavailable.',
+        defaultMessage: "Coordinator isn't available.",
     },
     TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL: {
         id: 'TR_UNAVAILABLE_COINJOIN_AMOUNTS_TOO_SMALL',
@@ -6473,7 +6473,7 @@ export default defineMessages({
     TR_BACKUP_CHECKBOX_1_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_1_TITLE',
         defaultMessage:
-            'Your wallet backup lets you recover your funds in case of Trezor loss or damage.',
+            'Your recovery seed (wallet backup) lets you recover your funds in case of Trezor loss or damage.',
     },
     TR_BACKUP_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_1_DESCRIPTION',
@@ -6491,7 +6491,8 @@ export default defineMessages({
     },
     TR_BACKUP_CHECKBOX_3_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_3_TITLE',
-        defaultMessage: 'Store your wallet backup securely and never share it with anyone.',
+        defaultMessage:
+            'Store your recovery seed (wallet backup) securely and never share it with anyone.',
     },
     TR_BACKUP_CHECKBOX_3_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_3_DESCRIPTION',
@@ -8027,7 +8028,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_0',
         description: '140 symbols max',
         defaultMessage:
-            'Coinjoin account is not discovered automatically. If you don’t use view-only on this wallet, add the account manually again after reconnecting Trezor.',
+            "Your Coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
     },
     TR_LOADING_FACT_1: {
         id: 'TR_LOADING_FACT_1',
@@ -8039,7 +8040,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_2',
         description: '140 symbols max',
         defaultMessage:
-            'Coinjoin account is not discovered automatically. If you don’t use view-only on this wallet, add the account manually again after reconnecting Trezor.',
+            "Your Coinjoin account isn't detected automatically. If you haven't enabled view-only mode on this wallet, you'll need to manually re-add the account after reconnecting your Trezor.",
     },
     TR_LOADING_FACT_3: {
         id: 'TR_LOADING_FACT_3',
@@ -8078,12 +8079,12 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_9',
         description: '140 symbols max',
         defaultMessage:
-            "Privacy is not something that I'm merely entitled to, it's an absolute prerequisite. - Marlon Brando",
+            '"Privacy is not something that I\'m merely entitled to, it\'s an absolute prerequisite." - Marlon Brando',
     },
     TR_LOADING_FACT_11: {
         id: 'TR_LOADING_FACT_11',
         description: '140 symbols max',
-        defaultMessage: 'Privacy is not secrecy - Eric Hughes',
+        defaultMessage: '"Privacy is not secrecy." - Eric Hughes',
     },
     TR_LOADING_FACT_12: {
         id: 'TR_LOADING_FACT_12',
@@ -8106,7 +8107,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_15',
         description: '140 symbols max',
         defaultMessage:
-            'Privacy is the power to selectively reveal oneself to the world - Eric Hughes',
+            '"Privacy is the power to selectively reveal oneself to the world." - Eric Hughes',
     },
     TR_LOADING_FACT_16: {
         id: 'TR_LOADING_FACT_16',
@@ -8157,7 +8158,7 @@ export default defineMessages({
         id: 'TR_LOADING_FACT_24',
         description: '140 symbols max',
         defaultMessage:
-            "Privacy is not something that I'm merely entitled to, it's an absolute prerequisite. - Marlon Brando",
+            '"Privacy is not something that I\'m merely entitled to, it\'s an absolute prerequisite." - Marlon Brando',
     },
     TR_LOADING_FACT_25: {
         id: 'TR_LOADING_FACT_25',
