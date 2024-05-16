@@ -45,6 +45,7 @@ jobs:
             exit 1 # Fail the job if versions don't match
           else
             echo "Version check passed: $BRANCH_VERSION matches $EXTRACTED_VERSION"
+          fi
 
   # This job deploys to staging-connect.trezor.io/9.x.x
   deploy-staging-semantic-version:
