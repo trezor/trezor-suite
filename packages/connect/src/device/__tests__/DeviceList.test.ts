@@ -62,19 +62,14 @@ const createTestTransport = (apiMethods = {}) => {
 };
 
 const getDeviceListParams = (
-    params: Partial<ConstructorParameters<typeof DeviceList>[0]>,
+    partialSettings: Partial<ConstructorParameters<typeof DeviceList>[0]['settings']>,
 ): ConstructorParameters<typeof DeviceList>[0] => {
-    const { debug, transports, priority, pendingTransportEvent } = parseConnectSettings({});
-
-    const messages = DataManager.getProtobufMessages();
-
     return {
-        debug,
-        transports,
-        priority,
-        pendingTransportEvent,
-        messages,
-        ...params,
+        settings: {
+            ...parseConnectSettings({}),
+            ...partialSettings,
+        },
+        messages: DataManager.getProtobufMessages(),
     };
 };
 
