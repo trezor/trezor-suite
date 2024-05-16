@@ -92,9 +92,9 @@ export const ResetDeviceStep = () => {
             }
 
             updateBackupType(type);
-            updateAnalytics({ recoveryType: undefined, seedType: type });
+            updateAnalytics({ seedType: type });
         },
-        [updateAnalytics, onResetDevice, updateBackupType],
+        [updateBackupType, updateAnalytics, onResetDevice],
     );
 
     useEffect(() => {
@@ -154,6 +154,7 @@ export const ResetDeviceStep = () => {
                             <>
                                 <SelectBackupType
                                     selected={backupType}
+                                    onOpen={() => updateAnalytics({ wasSelectTypeOpened: true })}
                                     onSelect={setBackupType}
                                     isDisabled={isDeviceLocked}
                                     data-test="@onboarding/select-seed-type-open-dialog"

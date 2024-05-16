@@ -73,7 +73,7 @@ export const HELP_CENTER_ETH_STAKING =
     'https://trezor.io/learn/a/stake-ethereum-eth-in-trezor-suite';
 export const HELP_CENTER_SEED_CARD_URL = 'https://trezor.io/learn/a/recovery-seed-card';
 export const HELP_CENTER_MULTI_SHARE_BACKUP_URL =
-    'https://trezor.io/learn/a/introducing-multi-share-backup';
+    'https://trezor.io/learn/a/multi-share-backup-on-trezor';
 export const HELP_CENTER_KEEPING_SEED_SAFE_URL =
     'https://trezor.io/learn/a/keeping-your-recovery-seed-safe';
 
@@ -101,3 +101,4 @@ export const ZKSNACKS_TERMS_URL =
 export const CROWDIN_URL = 'https://crowdin.com/project/trezor-suite';
 
 export const ESHOP_KEEP_METAL_URL = 'https://trezor.io/trezor-keep-metal';
+export const ESHOP_KEEP_METAL_SINGLE_SHARE_URL = 'https://trezor.io/trezor-keep-metal-single-share';

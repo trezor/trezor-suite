@@ -18,10 +18,17 @@ import { MultiShareBackupStep5Done } from './MultiShareBackupStep5Done';
 import { isAdditionalShamirBackupInProgress } from '../../../../../../utils/device/isRecoveryInProgress';
 import { MultiShareBackupStep3VerifyOwnership } from './MultiShareBackupStep3VerifyOwnership';
 import { MultiShareBackupStep4BackupSeed } from './MultiShareBackupStep4BackupSeed';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 type Steps = 'first-info' | 'second-info' | 'verify-ownership' | 'backup-seed' | 'done';
 
-export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) => {
+type MultiShareBackupModalProps = {
+    onCancel: () => void;
+};
+
+export const MultiShareBackupModal = ({
+    onCancel: onCancelFromProps,
+}: MultiShareBackupModalProps) => {
     const device = useSelector(selectDevice);
 
     const isInBackupMode =
@@ -33,9 +40,27 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
     const [isChecked2, setIsChecked2] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
+    const learnMoreClicked = () => {
+        analytics.report({
+            type: EventType.SettingsMultiShareBackup,
+            payload: { action: 'learn-more' },
+        });
+    };
+
+    const handleCancel = () => {
+        if (step !== 'done') {
+            analytics.report({
+                type: EventType.SettingsMultiShareBackup,
+                payload: { action: 'close-modal' },
+            });
+        }
+
+        onCancelFromProps();
+    };
+
     const closeWithCancelOnDevice = () => {
         TrezorConnect.cancel('cancel');
-        onCancel();
+        handleCancel();
     };
 
     if (device === undefined) {
@@ -68,7 +93,11 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                             <Button onClick={goToStepNextStep}>
                                 <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
                             </Button>
-                            <LearnMoreButton url={HELP_CENTER_SEED_CARD_URL} size="medium" />
+                            <LearnMoreButton
+                                url={HELP_CENTER_SEED_CARD_URL}
+                                size="medium"
+                                onClick={learnMoreClicked}
+                            />
                         </>
                     ),
                 };
@@ -90,13 +119,18 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                         setStep('backup-seed');
                         TrezorConnect.backupDevice().then(response => {
                             if (response.success) {
+                                analytics.report({
+                                    type: EventType.SettingsMultiShareBackup,
+                                    payload: { action: 'done' },
+                                });
+
                                 setStep('done');
                             } else {
-                                onCancel();
+                                handleCancel();
                             }
                         });
                     } else {
-                        onCancel();
+                        handleCancel();
                     }
                 };
 
@@ -136,7 +170,7 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                     children: <MultiShareBackupStep5Done />,
                     bottomBarComponents: (
                         <>
-                            <Button onClick={onCancel}>
+                            <Button onClick={handleCancel}>
                                 <Translation id="TR_GOT_IT_BUTTON" />
                             </Button>
                             <LearnMoreButton url={HELP_CENTER_KEEPING_SEED_SAFE_URL} size="medium">
@@ -148,5 +182,5 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
         }
     };
 
-    return <Modal isCancelable onCancel={onCancel} {...getStepConfig()}></Modal>;
+    return <Modal isCancelable onCancel={handleCancel} {...getStepConfig()}></Modal>;
 };
