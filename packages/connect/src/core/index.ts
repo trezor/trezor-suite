@@ -962,11 +962,8 @@ const handleDeviceSelectionChanges = (interruptDevice?: DeviceTyped) => {
 const initDeviceList = async (transportReconnect?: boolean) => {
     try {
         _deviceList = new DeviceList({
-            debug: DataManager.getSettings('debug'),
-            transports: DataManager.getSettings('transports'),
+            settings: DataManager.getSettings(),
             messages: DataManager.getProtobufMessages(),
-            pendingTransportEvent: DataManager.getSettings('pendingTransportEvent'),
-            priority: DataManager.getSettings('priority'),
         });
 
         _deviceList.on(DEVICE.CONNECT, device => {
