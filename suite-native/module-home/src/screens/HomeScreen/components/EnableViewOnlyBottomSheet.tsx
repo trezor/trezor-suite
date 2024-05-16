@@ -20,7 +20,6 @@ import {
     selectViewOnlyCancelationTimestamp,
     setViewOnlyCancelationTimestamp,
 } from '@suite-native/settings';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useToast } from '@suite-native/toasts';
 
 import { DisconnectedTrezorSvg } from '../../../assets/DisconnectedTrezorSvg';
@@ -40,7 +39,6 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
 export const EnableViewOnlyBottomSheet = () => {
     const dispatch = useDispatch();
     const { applyStyle } = useNativeStyles();
-    const [isViewOnlyModeFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
     const { isBiometricsInitialSetupFinished } = useIsBiometricsInitialSetupFinished();
     const isDeviceReadyToUseAndAuthorized = useSelector(selectIsDeviceReadyToUseAndAuthorized);
     const device = useSelector(selectDevice);
@@ -69,7 +67,6 @@ export const EnableViewOnlyBottomSheet = () => {
     //     and biometrics initial setup was decided or biometrics is not available
 
     const canBeShowed =
-        isViewOnlyModeFeatureEnabled &&
         !isDeviceRemembered &&
         isDeviceReadyToUseAndAuthorized &&
         !isPortfolioTrackerDevice &&

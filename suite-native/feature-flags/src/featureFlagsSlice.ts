@@ -6,7 +6,6 @@ import { isDebugEnv, isDetoxTestBuild, isDevelopOrDebugEnv } from '@suite-native
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsPassphraseEnabled: 'isPassphraseEnabled',
-    IsViewOnlyEnabled: 'isViewOnlyEnabled',
     IsSendEnabled: 'isSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
 } as const;
@@ -21,7 +20,6 @@ export type FeatureFlagsRootState = {
 export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsDeviceConnectEnabled]: isAndroid() || isDebugEnv(),
     [FeatureFlag.IsPassphraseEnabled]: isDebugEnv(),
-    [FeatureFlag.IsViewOnlyEnabled]: isDebugEnv(),
     [FeatureFlag.IsSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
 };
@@ -29,7 +27,6 @@ export const featureFlagsInitialState: FeatureFlagsState = {
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsPassphraseEnabled,
-    FeatureFlag.IsViewOnlyEnabled,
     FeatureFlag.IsSendEnabled,
     FeatureFlag.IsRegtestEnabled,
 ];

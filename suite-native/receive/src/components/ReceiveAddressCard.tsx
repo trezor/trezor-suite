@@ -9,7 +9,6 @@ import {
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { UnverifiedAddress } from './UnverifiedAddress';
 
@@ -33,17 +32,10 @@ export const ReceiveAddressCard = ({
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
-    const [isViewOnlyFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
-
     const { networkType } = networks[networkSymbol];
 
     const getCardAlertProps = () => {
-        if (
-            isReceiveApproved &&
-            !isPortfolioTrackerDevice &&
-            !isDeviceInViewOnlyMode &&
-            !isViewOnlyFeatureEnabled
-        ) {
+        if (isReceiveApproved && !isPortfolioTrackerDevice && !isDeviceInViewOnlyMode) {
             return {
                 alertTitle: <Translation id="moduleReceive.receiveAddressCard.alert.success" />,
                 alertVariant: 'success',
