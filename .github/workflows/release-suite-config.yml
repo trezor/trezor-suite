@@ -9,7 +9,10 @@ on:
     inputs:
       environment:
         description: "Release environment"
-        type: environment
+        type: choice
+        options:
+          - develop-message
+          - production-message
         required: true
 concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -34,13 +37,13 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Build and sign ${{ github.event.inputs.environment }} config
-        if: ${{ github.event.inputs.environment == 'develop' && github.ref == 'refs/heads/develop' }}
+        if: ${{ github.event.inputs.environment == 'develop-message' && github.ref == 'refs/heads/develop' }}
         run: |
           yarn install
           yarn message-system-sign-config
 
       - name: Build and sign ${{ github.event.inputs.environment }} message-system config file
-        if: ${{ github.event.inputs.environment == 'production' && github.ref == 'refs/heads/develop' }}
+        if: ${{ github.event.inputs.environment == 'production-message' && github.ref == 'refs/heads/develop' }}
         env:
           IS_CODESIGN_BUILD: "true"
           JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
@@ -51,7 +54,7 @@ jobs:
       - name: Upload ${{ github.event.inputs.environment }} message-system config file
         if: ${{ github.ref == 'refs/heads/develop' }}
         run: |
-          if [ '${{ github.event.inputs.environment }}' == 'production' ]
+          if [ '${{ github.event.inputs.environment }}' == 'production-message' ]
           then
             aws s3 cp suite-common/message-system/files/config.v1.jws s3://data.trezor.io/config/stable/config.v1.jws --cache-control no-cache
             aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/config/stable/*'
