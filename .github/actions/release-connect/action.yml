@@ -17,6 +17,14 @@ inputs:
     description: "Server path (example: connect)"
     type: string
     required: true
+  buildArtifacts:
+    description: "Configures the build of artifacts"
+    type: string
+    required: false
+  uploadArtifacts:
+    description: "Configures if to upload built artifacts"
+    type: string
+    required: false
 
 runs:
   using: "composite"
@@ -88,7 +96,7 @@ runs:
         yarn workspace @trezor/connect-explorer build
 
     # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
-    - name: Upload connect-explorer to ${{ inputs.serverHostname }}
+    - name: Upload connect to ${{ inputs.serverHostname }}
       shell: bash
       env:
         DEPLOY_PATH: s3://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
@@ -102,6 +110,7 @@ runs:
         aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
 
     - name: Build connect-examples webextension
+      if: inputs.buildArtifacts == 'true'
       shell: bash
       env:
         FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
@@ -111,11 +120,13 @@ runs:
         node ./packages/connect-examples/update-webextensions-sw.js
 
     - name: Build connect-explorer-webextension
+      if: inputs.buildArtifacts == 'true'
       shell: bash
       run: |
         yarn workspace @trezor/connect-explorer build:webextension
 
     - name: Upload connect-example webextension artifacts
+      if: inputs.uploadArtifacts == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: connect-example-webextension
@@ -125,6 +136,7 @@ runs:
           packages/connect-examples/webextension-mv3-sw/build
 
     - name: Upload connect-explorer webextension artifacts
+      if: inputs.uploadArtifacts == 'true'
       uses: actions/upload-artifact@v4
       with:
         name: connect-explorer-webextension

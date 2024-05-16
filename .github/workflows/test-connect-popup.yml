@@ -62,6 +62,8 @@ jobs:
           awsRegion: "eu-central-1"
           serverHostname: "dev.suite.sldev.cz"
           serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
+          uploadArtifacts: "true"
+          buildArtifacts: "true"
 
   methods:
     needs: [build-deploy]
