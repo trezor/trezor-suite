@@ -1,12 +1,12 @@
 import styled from 'styled-components';
 
-import { Button, Tooltip } from '@trezor/components';
+import { Button, Column, Row, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 import { SUITE } from 'src/actions/suite/constants';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 const AddWallet = styled.div`
     display: flex;
@@ -16,19 +16,6 @@ const AddWallet = styled.div`
 
 const StyledTooltip = styled(Tooltip)`
     width: 100%;
-`;
-
-const Rows = styled.div`
-    display: flex;
-    flex-direction: row;
-    gap: ${spacingsPx.xs};
-`;
-
-const Columns = styled.div`
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-    gap: ${spacingsPx.xs};
 `;
 
 interface AddWalletButtonProps {
@@ -73,7 +60,7 @@ export const AddWalletButton = ({
                 cursor="pointer"
                 placement="bottom"
             >
-                <Columns>
+                <Column flex={1} gap={spacings.xs}>
                     {!emptyPassphraseWalletExists && (
                         <Button
                             data-test="@switch-device/add-wallet-button"
@@ -95,11 +82,11 @@ export const AddWalletButton = ({
                         isDisabled={isLocked}
                         onClick={onAddWallet}
                     >
-                        <Rows>
+                        <Row gap={spacings.xs}>
                             <Translation id="TR_ADD_HIDDEN_WALLET" />
-                        </Rows>
+                        </Row>
                     </Button>
-                </Columns>
+                </Column>
             </StyledTooltip>
         </AddWallet>
     );

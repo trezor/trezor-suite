@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph, variables } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { Button, Card, Icon, Paragraph, Row, variables } from '@trezor/components';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -12,12 +12,6 @@ import { selectPoolStatsApyData } from '@suite-common/wallet-core';
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxl};
     flex-direction: column;
-`;
-
-const Flex = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xxs};
-    align-items: center;
 `;
 
 const StyledP = styled(Paragraph)`
@@ -100,13 +94,13 @@ export const EmptyStakingCard = () => {
         <DashboardSection heading={<Translation id="TR_STAKE_ETH" />}>
             <StyledCard>
                 <Header>
-                    <Flex>
+                    <Row alignItems="center" gap={spacings.xxs}>
                         <Icon icon="QUESTION_FILLED" size={11} color={theme.iconPrimaryDefault} />
 
                         <GreenP>
                             <Translation id="TR_STAKE_WHAT_IS_STAKING" />
                         </GreenP>
-                    </Flex>
+                    </Row>
                     <StyledP>
                         <Translation
                             id="TR_STAKE_STAKING_IS"
