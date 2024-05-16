@@ -21,6 +21,14 @@ const waitForNthEventOfType = (
     });
 };
 
+const DEVICE_CONNECTION_SEQUENCE = [
+    'device-changed',
+    'device-acquired',
+    'device-changed',
+    'device-released',
+    'device-connect',
+];
+
 describe('DeviceList', () => {
     beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
@@ -197,22 +205,14 @@ describe('DeviceList', () => {
         list.init({ pendingTransportEvent: true });
         await list.pendingConnection();
 
-        const events = eventsSpy.mock.calls
-            .filter(call => call[0] !== 'device-changed')
-            .map(call => [call[0], call[1].path]);
+        const events = eventsSpy.mock.calls.map(([event, { path }]) => [event, path]);
 
         // note: acquire - release - connect should be ok.
         // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
         expect(events).toEqual([
-            ['device-acquired', '1'],
-            ['device-acquired', '2'],
-            ['device-acquired', '3'],
-            ['device-released', '1'],
-            ['device-connect', '1'],
-            ['device-released', '2'],
-            ['device-connect', '2'],
-            ['device-released', '3'],
-            ['device-connect', '3'],
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1']), // path 1
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '2']), // path 2
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3']), // path 3
             ['transport-start', undefined],
         ]);
     });
@@ -267,14 +267,7 @@ describe('DeviceList', () => {
         await new Promise(resolve => list.on('device-connect', resolve));
 
         const events = eventsSpy.mock.calls.map(call => call[0]);
-        expect(events).toEqual([
-            'transport-start',
-            'device-changed',
-            'device-acquired',
-            'device-changed',
-            'device-released',
-            'device-connect',
-        ]);
+        expect(events).toEqual(['transport-start', ...DEVICE_CONNECTION_SEQUENCE]);
     });
 
     it('multiple devices connected after .init()', async () => {
@@ -294,26 +287,21 @@ describe('DeviceList', () => {
         list.init({ pendingTransportEvent: true });
         await list.pendingConnection();
 
-        onChangeCallback([{ path: '1' }, { path: '2' }, { path: '3' }]);
+        // emit TRANSPORT.CHANGE 3 times
+        onChangeCallback([{ path: '1' }, { path: '2' }]);
+        onChangeCallback([{ path: '1' }, { path: '3' }]); // path 2 disconnected, path 3 connected
+        onChangeCallback([{ path: '1' }, { path: '3' }, { path: '4' }]); // path 4 connected
 
         // wait for all device-connect events
         await waitForNthEventOfType(list, 'device-connect', 3);
 
-        const events = eventsSpy.mock.calls
-            .filter(call => call[0] !== 'device-changed')
-            .map(call => [call[0], call[1].path]);
+        const events = eventsSpy.mock.calls.map(([event, { path }]) => [event, path]);
 
         expect(events).toEqual([
             ['transport-start', undefined],
-            ['device-acquired', '1'],
-            ['device-acquired', '2'],
-            ['device-acquired', '3'],
-            ['device-released', '1'],
-            ['device-connect', '1'],
-            ['device-released', '2'],
-            ['device-connect', '2'],
-            ['device-released', '3'],
-            ['device-connect', '3'],
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '1']), // path 1
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '3']), // path 3
+            ...DEVICE_CONNECTION_SEQUENCE.map(e => [e, '4']), // path 4
         ]);
     });
 });
