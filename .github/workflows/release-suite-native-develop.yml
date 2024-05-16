@@ -17,7 +17,7 @@ jobs:
   build:
     if: startsWith(github.repository, 'trezor/trezor-suite')
     name: Install and build
-    environment: develop
+    environment: develop-suite-native
     runs-on: ubuntu-latest
     env:
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

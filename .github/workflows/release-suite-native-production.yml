@@ -20,7 +20,7 @@ concurrency:
 jobs:
   ios:
     name: Build and release iOS
-    environment: production
+    environment: production-suite-native
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
@@ -49,7 +49,7 @@ jobs:
         working-directory: suite-native/app
   android:
     name: Build and release Android
-    environment: production
+    environment: production-suite-native
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
@@ -78,7 +78,7 @@ jobs:
         working-directory: suite-native/app
   androidAPK:
     name: Build Android APK to GH releases
-    environment: production
+    environment: production-suite-native
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
