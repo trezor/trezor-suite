@@ -78,19 +78,19 @@ export const DeviceManagerContent = () => {
             }
             onClose={() => setIsChangeDeviceRequested(false)}
         >
-            <VStack spacing="medium">
+            <VStack spacing={12}>
                 <DeviceList
                     isVisible={isChangeDeviceRequested || isPortfolioTrackerDevice}
                     onSelectDevice={handleSelectDevice}
                 />
                 {!isPortfolioTrackerDevice && (
-                    <>
+                    <VStack spacing={12} paddingTop="large">
                         <WalletList onSelectDevice={handleSelectDevice} />
                         <HStack style={applyStyle(deviceButtonsStyle)}>
                             <DeviceInfoButton showAsFullWidth={!isAddHiddenWalletButtonVisible} />
                             {isAddHiddenWalletButtonVisible && <AddHiddenWalletButton />}
                         </HStack>
-                    </>
+                    </VStack>
                 )}
             </VStack>
         </DeviceManagerModal>

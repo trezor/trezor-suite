@@ -62,12 +62,12 @@ export const WalletItem = ({ deviceState, onPress, isSelectable = true }: Wallet
                 key={device.instance}
                 style={applyStyle(walletItemStyle, { isSelected: showAsSelected })}
             >
-                <HStack>
+                <HStack alignItems="center">
                     <Icon
                         name={device.useEmptyPassphrase ? 'standardWallet' : 'password'}
                         size="mediumLarge"
                     />
-                    <Text>{walletNameLabel}</Text>
+                    <Text variant="callout">{walletNameLabel}</Text>
                 </HStack>
                 {isSelectable && <Radio value="" onPress={onPress} isChecked={isSelected} />}
             </HStack>
