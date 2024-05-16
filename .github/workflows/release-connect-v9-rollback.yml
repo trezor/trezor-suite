@@ -10,7 +10,7 @@ on:
 jobs:
   rollback-connect-production:
     if: startsWith(github.ref, 'refs/heads/release/connect/')
-    environment: production
+    environment: production-connect
     name: "Create rollback copy of connect.trezor.io"
     runs-on: ubuntu-latest
     env:

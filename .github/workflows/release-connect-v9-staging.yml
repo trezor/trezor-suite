@@ -50,7 +50,7 @@ jobs:
   # This job deploys to staging-connect.trezor.io/9.x.x
   deploy-staging-semantic-version:
     needs: [extract-version, check-version-match]
-    environment: production
+    environment: staging-connect
     name: "Deploying to staging-connect.trezor.io/${{ needs.extract-version.outputs.version }}"
     runs-on: ubuntu-latest
     # Branch should have been created by workflow .github/workflows/release-connect-v9-init.yml
@@ -76,7 +76,7 @@ jobs:
   # This job deploys to staging-connect.trezor.io/9
   deploy-staging-v9:
     needs: [extract-version, check-version-match]
-    environment: production
+    environment: staging-connect
     name: "Deploying to staging-connect.trezor.io/9"
     runs-on: ubuntu-latest
     # Branch should have been created by workflow .github/workflows/release-connect-v9-init.yml

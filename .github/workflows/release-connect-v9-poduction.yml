@@ -39,7 +39,7 @@ jobs:
   # set the rollback
   sync-rollback-connect-v9:
     if: startsWith(github.ref, 'refs/heads/release/connect/')
-    environment: production
+    environment: production-connect
     name: "Backing up current production version ${{ needs.extract-version.outputs.version }} to rollback bucket"
     runs-on: ubuntu-latest
     env:
@@ -57,7 +57,7 @@ jobs:
 
   deploy-production-semantic-version:
     if: startsWith(github.ref, 'refs/heads/release/connect/')
-    environment: production
+    environment: production-connect
     name: "Deploying to connect.trezor.io/9.x.x"
     runs-on: ubuntu-latest
     env:
@@ -79,7 +79,7 @@ jobs:
     # We deploy to production only if rollback sync was successful.
     needs: [sync-rollback-connect-v9]
     if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
-    environment: production
+    environment: production-connect
     name: "Deploying to connect.trezor.io/9/"
     runs-on: ubuntu-latest
     env:
