@@ -965,6 +965,8 @@ const initDeviceList = async (transportReconnect?: boolean) => {
             debug: DataManager.getSettings('debug'),
             transports: DataManager.getSettings('transports'),
             messages: DataManager.getProtobufMessages(),
+            pendingTransportEvent: DataManager.getSettings('pendingTransportEvent'),
+            priority: DataManager.getSettings('priority'),
         });
 
         _deviceList.on(DEVICE.CONNECT, device => {
