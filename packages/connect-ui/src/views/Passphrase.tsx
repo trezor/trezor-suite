@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { analytics, EventType } from '@trezor/connect-analytics';
 import { UI, UiEvent, CoreRequestMessage } from '@trezor/connect';
-import { variables, PassphraseTypeCard } from '@trezor/components';
+import { variables, PassphraseTypeCardLegacy } from '@trezor/components';
 
 import { View } from '../components/View';
 
@@ -73,7 +73,7 @@ export const Passphrase = (props: PassphraseProps) => {
             {/* maybe there could be package 'ui-flows' with something between app level logic and simple components? */}
             <Wrapper>
                 <WalletsWrapper>
-                    <PassphraseTypeCard
+                    <PassphraseTypeCardLegacy
                         title={
                             <FormattedMessage
                                 id="TR_NO_PASSPHRASE_WALLET"
@@ -96,7 +96,7 @@ export const Passphrase = (props: PassphraseProps) => {
                         onSubmit={onPassphraseSubmit}
                     />
                     <Divider />
-                    <PassphraseTypeCard
+                    <PassphraseTypeCardLegacy
                         title={
                             <FormattedMessage
                                 id="TR_WALLET_SELECTION_HIDDEN_WALLET"
