@@ -4,7 +4,7 @@ import styled, { useTheme } from 'styled-components';
 import { Tooltip, TooltipProps } from '../Tooltip/Tooltip';
 import { WalletType } from './types';
 import { Icon } from '../assets/Icon/Icon';
-import { Columns, Rows } from '../Flex/Flex';
+import { Column, Row } from '../Flex/Flex';
 import { ReactNode } from 'react';
 
 const IconWrapper = styled.div<{ $type: WalletType }>`
@@ -26,7 +26,7 @@ const Description = styled.div<{ $hasTopMargin?: boolean }>`
     ${typography.label}
 `;
 
-const ArrowCol = styled(Rows)`
+const ArrowCol = styled(Column)`
     flex: 0 0 auto;
     height: 100%;
     justify-content: center;
@@ -58,7 +58,7 @@ export const PassphraseTypeCardHeading = ({
     const theme = useTheme();
 
     return (
-        <Columns gap={spacings.xl}>
+        <Row gap={spacings.xl}>
             <IconWrapper $type={type}>
                 {type === 'standard' ? (
                     <Icon size={24} icon="WALLET" color={theme.iconPrimaryDefault} />
@@ -66,7 +66,7 @@ export const PassphraseTypeCardHeading = ({
                     <Icon size={24} icon="LOCK" color={theme.iconSubdued} />
                 )}
             </IconWrapper>
-            <Rows justifyContent="center" flex="1">
+            <Column justifyContent="center" flex="1">
                 <WalletTitle
                     $withMargin={type === 'hidden'}
                     data-test={type === 'hidden' && '@tooltip/passphrase-tooltip'}
@@ -86,12 +86,12 @@ export const PassphraseTypeCardHeading = ({
                     )}
                 </WalletTitle>
                 <Description>{description}</Description>
-            </Rows>
+            </Column>
             {type === 'standard' && (
                 <ArrowCol>
                     <Icon icon="ARROW_RIGHT" color={theme.iconSubdued} />
                 </ArrowCol>
             )}
-        </Columns>
+        </Row>
     );
 };

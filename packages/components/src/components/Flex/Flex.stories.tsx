@@ -1,10 +1,11 @@
-import { Meta, StoryObj } from '@storybook/react';
+import { ArgTypes, Meta, StoryObj } from '@storybook/react';
 import {
-    Flex as FlexComponent,
     FlexProps,
     flexAlignItems,
-    flexDirection,
     flexJustifyContent,
+    flexWrap,
+    Row as RowComponent,
+    Column as ColumnComponent,
 } from './Flex';
 import { spacings } from '@trezor/theme';
 import styled from 'styled-components';
@@ -21,63 +22,83 @@ const Box = styled.div<{ $color: string }>`
     font-weight: 900;
 `;
 
+const args: Partial<FlexProps> = {
+    children: [
+        <Box key="box-a" $color="salmon">
+            A
+        </Box>,
+        <Box key="box-b" $color="green">
+            B
+        </Box>,
+        <Box key="box-c" $color="royalblue">
+            C
+        </Box>,
+    ],
+
+    gap: 8,
+    margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+    flexWrap: 'wrap',
+    isReversed: false,
+};
+const argTypes: Partial<ArgTypes<FlexProps>> = {
+    justifyContent: {
+        options: flexJustifyContent,
+        control: {
+            type: 'select',
+        },
+    },
+    alignItems: {
+        options: flexAlignItems,
+        control: {
+            type: 'select',
+        },
+    },
+    gap: {
+        options: Object.values(spacings),
+        control: {
+            type: 'select',
+        },
+    },
+    flex: {
+        type: 'string',
+    },
+    isReversed: {
+        type: 'boolean',
+    },
+    flexWrap: {
+        options: Object.values(flexWrap),
+        control: {
+            type: 'select',
+        },
+    },
+    margin: {
+        table: {
+            category: 'Frame props',
+        },
+    },
+};
+
 const meta: Meta = {
-    title: 'Misc/Flex',
-    component: FlexComponent,
+    title: 'Misc/Layout',
 } as Meta;
 export default meta;
 
-export const Flex: StoryObj<FlexProps> = {
+export const Row: StoryObj<FlexProps> = {
     render: args => (
         <Container>
-            <FlexComponent {...args} />
+            <RowComponent {...args} />
         </Container>
     ),
-    args: {
-        children: [
-            <Box key="box-a" $color="salmon">
-                A
-            </Box>,
-            <Box key="box-b" $color="green">
-                B
-            </Box>,
-            <Box key="box-c" $color="royalblue">
-                C
-            </Box>,
-        ],
-        direction: 'row',
-        gap: 8,
-        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
-    },
-    argTypes: {
-        direction: {
-            options: flexDirection,
-            control: {
-                type: 'radio',
-            },
-        },
-        justifyContent: {
-            options: flexJustifyContent,
-            control: {
-                type: 'select',
-            },
-        },
-        alignItems: {
-            options: flexAlignItems,
-            control: {
-                type: 'select',
-            },
-        },
-        gap: {
-            options: Object.values(spacings),
-            control: {
-                type: 'select',
-            },
-        },
-        margin: {
-            table: {
-                category: 'Frame props',
-            },
-        },
-    },
+    args,
+    argTypes,
+};
+
+export const Column: StoryObj<FlexProps> = {
+    render: args => (
+        <Container>
+            <ColumnComponent {...args} />
+        </Container>
+    ),
+    args,
+    argTypes,
 };

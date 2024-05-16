@@ -3,7 +3,8 @@ import styled from 'styled-components';
 import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
 import { makePropsTransient } from '../../utils/transientProps';
 
-export const flexDirection = ['column-reverse', 'column', 'row-reverse', 'row'] as const;
+export const flexDirection = ['column', 'row'] as const;
+export const flexWrap = ['nowrap', 'wrap', 'wrap-reverse'] as const;
 
 export const flexJustifyContent = [
     'center',
@@ -36,7 +37,8 @@ export const flexAlignItems = [
 export type FlexDirection = (typeof flexDirection)[number];
 export type FlexJustifyContent = (typeof flexJustifyContent)[number];
 export type FlexAlignItems = (typeof flexAlignItems)[number];
-export type Flex = string;
+export type Flex = string | number;
+export type FlexWrap = (typeof flexWrap)[number];
 
 const Container = styled.div<
     TransientFrameProps & {
@@ -45,11 +47,14 @@ const Container = styled.div<
         $alignItems: FlexAlignItems;
         $direction: FlexDirection;
         $flex: Flex;
+        $flexWrap: FlexWrap;
+        $isReversed: boolean;
     }
 >`
     display: flex;
+    flex-flow: ${({ $direction, $isReversed, $flexWrap }) =>
+        `${$direction}${$isReversed === true ? '-reverse' : ''} ${$flexWrap}`};
     flex: ${({ $flex }) => $flex};
-    flex-direction: ${({ $direction }) => $direction};
     gap: ${({ $gap }) => $gap}px;
     justify-content: ${({ $justifyContent }) => $justifyContent};
     align-items: ${({ $alignItems }) => $alignItems};
@@ -64,9 +69,11 @@ export type FlexProps = FrameProps & {
     children: React.ReactNode;
     direction?: FlexDirection;
     flex?: Flex;
+    flexWrap?: FlexWrap;
+    isReversed?: boolean;
 };
 
-export const Flex = ({
+const Flex = ({
     gap = 0,
     justifyContent = 'flex-start',
     alignItems = 'center',
@@ -74,6 +81,8 @@ export const Flex = ({
     direction = 'row',
     margin,
     flex = 'auto',
+    flexWrap = 'nowrap',
+    isReversed = false,
 }: FlexProps) => {
     const frameProps = {
         margin,
@@ -86,6 +95,8 @@ export const Flex = ({
             $alignItems={alignItems}
             $direction={direction}
             $flex={flex}
+            $flexWrap={flexWrap}
+            $isReversed={isReversed}
             {...makePropsTransient(frameProps)}
         >
             {children}
@@ -93,5 +104,5 @@ export const Flex = ({
     );
 };
 
-export const Rows = (props: FlexProps) => <Flex {...props} direction="column" />;
-export const Columns = (props: FlexProps) => <Flex {...props} direction="row" />;
+export const Column = (props: FlexProps) => <Flex {...props} direction="column" />;
+export const Row = (props: FlexProps) => <Flex {...props} direction="row" />;
