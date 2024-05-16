@@ -43,6 +43,7 @@
         "redux": "^4.2.1",
         "redux-logger": "^3.0.6",
         "redux-thunk": "^2.4.2",
+        "remark-gemoji": "^8.0.0",
         "remark-gfm": "^3.0.1",
         "styled-components": "^6.1.8"
     },
