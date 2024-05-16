@@ -9,7 +9,10 @@ on:
     inputs:
       environment:
         description: "Release definitions environment"
-        type: environment
+        type: choice
+        options:
+          - develop-definitions
+          - production-definitions
         required: true
 
 concurrency:
@@ -35,7 +38,7 @@ jobs:
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions
-        if: ${{ github.event.inputs.environment == 'develop' && github.ref == 'refs/heads/develop' }}
+        if: ${{ github.event.inputs.environment == 'develop-definitions' && github.ref == 'refs/heads/develop' }}
         run: |
           yarn install
           cd suite-common/token-definitions
@@ -48,7 +51,7 @@ jobs:
           yarn coins advanced solana json
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions files
-        if: ${{ github.event.inputs.environment == 'production' && github.ref == 'refs/heads/develop' }}
+        if: ${{ github.event.inputs.environment == 'production-definitions' && github.ref == 'refs/heads/develop' }}
         env:
           IS_CODESIGN_BUILD: "true"
           JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
@@ -66,7 +69,7 @@ jobs:
       - name: Upload ${{ github.event.inputs.environment }} token-definitions files
         if: ${{ github.ref == 'refs/heads/develop' }}
         run: |
-          if [ '${{ github.event.inputs.environment }}' == 'production' ]
+          if [ '${{ github.event.inputs.environment }}' == 'production-definitions' ]
           then
             aws s3 sync --delete suite-common/token-definitions/files/ s3://data.trezor.io/suite/definitions/stable/ --cache-control no-cache
             aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/definitions/stable/*'
