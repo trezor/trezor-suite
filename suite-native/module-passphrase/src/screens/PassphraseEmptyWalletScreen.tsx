@@ -83,7 +83,11 @@ export const PassphraseEmptyWalletScreen = () => {
                     <Translation id="modulePassphrase.emptyPassphraseWallet.confirmCard.button" />
                 </Button>
             </Card>
-            <TextDivider title="generic.orSeparator" />
+            <TextDivider
+                title="generic.orSeparator"
+                lineColor="borderElevation0"
+                textColor="textSubdued"
+            />
             <VStack spacing={20}>
                 <VStack alignItems="center" spacing="extraSmall">
                     <Text

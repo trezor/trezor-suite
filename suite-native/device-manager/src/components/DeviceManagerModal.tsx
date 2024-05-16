@@ -79,27 +79,30 @@ export const DeviceManagerModal = ({
                     style={applyStyle(deviceManagerModalWrapperStyle, { insets })}
                 >
                     <Box style={applyStyle(deviceSwitchWrapperStyle, { insets })}>
-                        <ScreenHeaderWrapper>
-                            <HStack
-                                justifyContent="space-between"
-                                alignItems="center"
-                                spacing="medium"
-                                flex={1}
-                            >
-                                <Box style={{ flexShrink: 1 }}>
+                        <Pressable onPress={handleClose}>
+                            <ScreenHeaderWrapper>
+                                <HStack
+                                    justifyContent="space-between"
+                                    alignItems="center"
+                                    spacing="medium"
+                                    flex={1}
+                                >
                                     {deviceState && (
-                                        <DeviceItemContent
-                                            deviceState={deviceState}
-                                            headerTextVariant="titleSmall"
-                                            isCompact={false}
-                                            isPortfolioLabelDisplayed={true}
-                                        />
+                                        <Box flexShrink={1}>
+                                            <DeviceItemContent
+                                                deviceState={deviceState}
+                                                headerTextVariant="titleSmall"
+                                                isCompact={false}
+                                            />
+                                        </Box>
                                     )}
-                                </Box>
-                                {customSwitchRightView}
-                            </HStack>
-                        </ScreenHeaderWrapper>
+
+                                    {customSwitchRightView}
+                                </HStack>
+                            </ScreenHeaderWrapper>
+                        </Pressable>
                     </Box>
+
                     <Animated.View entering={FadeIn}>{children}</Animated.View>
                 </Animated.View>
             </Pressable>
