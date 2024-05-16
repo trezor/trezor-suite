@@ -10538,6 +10538,7 @@ __metadata:
     redux: "npm:^4.2.1"
     redux-logger: "npm:^3.0.6"
     redux-thunk: "npm:^2.4.2"
+    remark-gemoji: "npm:^8.0.0"
     remark-gfm: "npm:^3.0.1"
     rimraf: "npm:^5.0.5"
     styled-components: "npm:^6.1.8"
@@ -22580,6 +22581,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"gemoji@npm:^8.0.0":
+  version: 8.1.0
+  resolution: "gemoji@npm:8.1.0"
+  checksum: 10/42d8616dfdfc91d06a051a356e74083c62f628e518dbb2611d88d3edcce9ab422b0254f1e6fe37b78c7ddec4bceb71a39f63f93c6fc9bd6cdab57801f6d33e07
+  languageName: node
+  linkType: hard
+
 "gensync@npm:^1.0.0-beta.2":
   version: 1.0.0-beta.2
   resolution: "gensync@npm:1.0.0-beta.2"
@@ -28131,6 +28139,18 @@ __metadata:
     unist-util-is: "npm:^5.0.0"
     unist-util-visit-parents: "npm:^5.0.0"
   checksum: 10/59e11e853b74d8f6083950327df39e27287b383930ff836298a5100aeda5568282bb45046c27886d2156ea101580bb0689b890c29623cefa5adc74e95d9ca9ff
+  languageName: node
+  linkType: hard
+
+"mdast-util-find-and-replace@npm:^3.0.0":
+  version: 3.0.1
+  resolution: "mdast-util-find-and-replace@npm:3.0.1"
+  dependencies:
+    "@types/mdast": "npm:^4.0.0"
+    escape-string-regexp: "npm:^5.0.0"
+    unist-util-is: "npm:^6.0.0"
+    unist-util-visit-parents: "npm:^6.0.0"
+  checksum: 10/2a9bbf5508ffd6dc63d9b0067398503a017e909ff60ac8234c518fcdacf9df13a48ea26bd382402bfce398b824ec41b3911b2004785e98f9a2c80ee6b34bb9bd
   languageName: node
   linkType: hard
 
@@ -34749,6 +34769,17 @@ __metadata:
   version: 0.2.7
   resolution: "relateurl@npm:0.2.7"
   checksum: 10/f5d6ba58f2a5d5076389090600c243a0ba7072bcf347490a09e4241e2427ccdb260b4e22cea7be4f1fcd3c2bf05908b1e0d0bc9605e3199d4ecf37af1d5681fa
+  languageName: node
+  linkType: hard
+
+"remark-gemoji@npm:^8.0.0":
+  version: 8.0.0
+  resolution: "remark-gemoji@npm:8.0.0"
+  dependencies:
+    "@types/mdast": "npm:^4.0.0"
+    gemoji: "npm:^8.0.0"
+    mdast-util-find-and-replace: "npm:^3.0.0"
+  checksum: 10/692e04778ad0e2541bdc5cb75026c133521beb0bc3f5c618538f7719c41030ef2863052a8a9b0fb2d61908b1182424a47402aba8412e7a226206f50069c1da3f
   languageName: node
   linkType: hard
 

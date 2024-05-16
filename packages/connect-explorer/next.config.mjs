@@ -2,11 +2,13 @@ import path from 'path';
 import rehypeSectionize from '@hbsnow/rehype-sectionize';
 import nextra from 'nextra';
 import { execSync } from 'child_process';
+import remarkGemoji from 'remark-gemoji';
 
 const withNextra = nextra({
     theme: '@trezor/connect-explorer-theme',
     themeConfig: './theme.config.tsx',
     mdxOptions: {
+        remarkPlugins: [remarkGemoji],
         rehypePlugins: [[rehypeSectionize]],
     },
     defaultShowCopyCode: true,
