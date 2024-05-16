@@ -1,6 +1,6 @@
 import { MiddlewareAPI } from 'redux';
-
-import { deviceActions, discoveryActions } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
+import { authorizeDevice, deviceActions, discoveryActions } from '@suite-common/wallet-core';
 import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
@@ -48,6 +48,19 @@ const log =
             }
         }
 
+        if (isAnyOf(authorizeDevice.fulfilled)(action)) {
+            api.dispatch(
+                addLog({
+                    type: 'authorizeDevice.fulfilled',
+                    payload: {
+                        device: action.payload.device,
+                        firmwareRelease: undefined,
+                        unavailableCapabilities: undefined,
+                    },
+                }),
+            );
+        }
+
         switch (action.type) {
             case SUITE.SET_LANGUAGE:
             case SUITE.SET_THEME:
@@ -88,7 +101,6 @@ const log =
                     }),
                 );
                 break;
-            case deviceActions.authDevice.type:
             case DEVICE.CONNECT:
             case DEVICE.DISCONNECT:
             case discoveryActions.completeDiscovery.type:

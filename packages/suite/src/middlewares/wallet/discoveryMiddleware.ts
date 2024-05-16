@@ -10,6 +10,7 @@ import {
     stopDiscoveryThunk,
     updateNetworkSettingsThunk,
 } from '@suite-common/wallet-core';
+import { isAnyOf } from '@reduxjs/toolkit';
 import * as discoveryActions from '@suite-common/wallet-core';
 import { UI } from '@trezor/connect';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
@@ -110,7 +111,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
         }
 
         // 4. device state received
-        if (deviceActions.authDevice.match(action)) {
+        if (isAnyOf(authorizeDevice.fulfilled)(action)) {
             // `device` is always present here
             // to avoid typescript conditioning use device from action as a fallback (never used)
             dispatch(
@@ -138,7 +139,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             becomesConnected ||
             action.type === SUITE.APP_CHANGED ||
             deviceActions.selectDevice.match(action) ||
-            deviceActions.authDevice.match(action) ||
+            isAnyOf(authorizeDevice.fulfilled)(action) ||
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {

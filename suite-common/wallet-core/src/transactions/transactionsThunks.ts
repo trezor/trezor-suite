@@ -45,9 +45,12 @@ interface ReplaceTransactionThunkParams {
     signedTransaction?: Transaction; // tx returned from @trezor/connect (only in bitcoin-like)
 }
 
-export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams>(
+export const replaceTransactionThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
-    ({ precomposedTx, newTxid, signedTransaction }, { getState, dispatch }) => {
+    (
+        { precomposedTx, newTxid, signedTransaction }: ReplaceTransactionThunkParams,
+        { getState, dispatch },
+    ) => {
         if (!precomposedTx.prevTxid) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
@@ -111,9 +114,12 @@ interface AddFakePendingTransactionParams {
     account: Account;
 }
 
-export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams>(
+export const addFakePendingTxThunk = createThunk(
     `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
-    ({ transaction, precomposedTx, account }, { dispatch, getState }) => {
+    (
+        { transaction, precomposedTx, account }: AddFakePendingTransactionParams,
+        { dispatch, getState },
+    ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
 

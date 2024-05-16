@@ -15,54 +15,52 @@ import {
 
 const STAKE_MODULE = '@common/wallet-core/stake';
 
-export const fetchEverstakeData = createThunk(
-    `${STAKE_MODULE}/fetchEverstakeData`,
-    async (
-        params: {
-            networkSymbol: SupportedNetworkSymbol;
-            endpointType: EverstakeEndpointType;
-        },
-        { fulfillWithValue, rejectWithValue },
-    ) => {
-        const { networkSymbol, endpointType } = params;
-
-        const endpointSuffix = EVERSTAKE_ENDPOINT_TYPES[endpointType];
-        const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[networkSymbol];
-
-        try {
-            const response = await fetch(`${endpointPrefix}/${endpointSuffix}`);
-
-            if (!response.ok) {
-                throw Error(response.statusText);
-            }
-
-            const data = await response.json();
-
-            if (endpointType === EverstakeEndpointType.PoolStats) {
-                return fulfillWithValue({
-                    ethApy: Number(
-                        new BigNumber(data.apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN),
-                    ),
-                    nextRewardPayout: Math.ceil(data.next_reward_payout_in / 60 / 60 / 24),
-                });
-            }
-
-            return fulfillWithValue({
-                validatorsEnteringNum: data.validators_entering_num,
-                validatorsExitingNum: data.validators_exiting_num,
-                validatorsTotalCount: data.validators_total_count,
-                validatorsPerEpoch: data.validators_per_epoch,
-                validatorActivationTime: data.validator_activation_time,
-                validatorExitTime: data.validator_exit_time,
-                validatorWithdrawTime: data.validator_withdraw_time,
-                validatorAddingDelay: data.validator_adding_delay,
-                updatedAt: data.updated_at,
-            } as ValidatorsQueue);
-        } catch (error) {
-            return rejectWithValue(error.toString());
-        }
+export const fetchEverstakeData = createThunk<
+    ValidatorsQueue | { ethApy: number; nextRewardPayout: number },
+    {
+        networkSymbol: SupportedNetworkSymbol;
+        endpointType: EverstakeEndpointType;
     },
-);
+    { rejectValue: string }
+>(`${STAKE_MODULE}/fetchEverstakeData`, async (params, { fulfillWithValue, rejectWithValue }) => {
+    const { networkSymbol, endpointType } = params;
+
+    const endpointSuffix = EVERSTAKE_ENDPOINT_TYPES[endpointType];
+    const endpointPrefix = EVERSTAKE_ENDPOINT_PREFIX[networkSymbol];
+
+    try {
+        const response = await fetch(`${endpointPrefix}/${endpointSuffix}`);
+
+        if (!response.ok) {
+            throw Error(response.statusText);
+        }
+
+        const data = await response.json();
+
+        if (endpointType === EverstakeEndpointType.PoolStats) {
+            return fulfillWithValue({
+                ethApy: Number(
+                    new BigNumber(data.apr).times(100).toPrecision(3, BigNumber.ROUND_DOWN),
+                ),
+                nextRewardPayout: Math.ceil(data.next_reward_payout_in / 60 / 60 / 24),
+            });
+        }
+
+        return fulfillWithValue({
+            validatorsEnteringNum: data.validators_entering_num,
+            validatorsExitingNum: data.validators_exiting_num,
+            validatorsTotalCount: data.validators_total_count,
+            validatorsPerEpoch: data.validators_per_epoch,
+            validatorActivationTime: data.validator_activation_time,
+            validatorExitTime: data.validator_exit_time,
+            validatorWithdrawTime: data.validator_withdraw_time,
+            validatorAddingDelay: data.validator_adding_delay,
+            updatedAt: data.updated_at,
+        } as ValidatorsQueue);
+    } catch (error) {
+        return rejectWithValue(error.toString());
+    }
+});
 
 export const initStakeDataThunk = createThunk(
     `${STAKE_MODULE}/initStakeDataThunk`,

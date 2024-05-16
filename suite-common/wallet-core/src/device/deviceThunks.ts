@@ -273,14 +273,26 @@ export const acquireDevice = createThunk(
  * Called from `discoveryMiddleware`
  * Fetch device state, update `devices` reducer as result of SUITE.AUTH_DEVICE
  */
-export const authorizeDevice = createThunk(
+type AuthorizeDeviceParams = { shouldIgnoreDeviceState: boolean } | undefined;
+export type AuthorizeDeviceError = {
+    error: string;
+    device: TrezorDevice;
+    duplicate?: TrezorDevice;
+};
+type AuthorizeDeviceSuccess = { device: TrezorDevice; state: string };
+
+export const authorizeDevice = createThunk<
+    AuthorizeDeviceSuccess,
+    AuthorizeDeviceParams,
+    { rejectValue: AuthorizeDeviceError }
+>(
     `${DEVICE_MODULE_PREFIX}/authorizeDevice`,
     async (
-        { shouldIgnoreDeviceState }: { shouldIgnoreDeviceState: boolean } | undefined = {
+        { shouldIgnoreDeviceState } = {
             shouldIgnoreDeviceState: false,
         },
-        { dispatch, getState, extra },
-    ): Promise<boolean> => {
+        { dispatch, getState, extra, rejectWithValue },
+    ) => {
         const {
             selectors: { selectCheckFirmwareAuthenticity },
             actions: { openModal },
@@ -288,7 +300,9 @@ export const authorizeDevice = createThunk(
 
         const selectedCheckFirmwareAuthenticity = selectCheckFirmwareAuthenticity(getState());
         const device = selectDeviceSelector(getState());
-        if (!device) return false;
+
+        if (!device) return rejectWithValue({ error: 'no-device' } as AuthorizeDeviceError);
+
         const isDeviceReady =
             device.connected &&
             device.features &&
@@ -297,7 +311,9 @@ export const authorizeDevice = createThunk(
             (!device.state || shouldIgnoreDeviceState) &&
             device.mode === 'normal' &&
             device.firmware !== 'required';
-        if (!isDeviceReady) return false;
+
+        if (!isDeviceReady)
+            return rejectWithValue({ error: 'device-not-ready', device } as AuthorizeDeviceError);
 
         if (selectedCheckFirmwareAuthenticity) {
             await dispatch(checkFirmwareAuthenticity());
@@ -333,17 +349,19 @@ export const authorizeDevice = createThunk(
                     // reset useEmptyPassphrase field for selected device to allow future PassphraseRequests
                     dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
                 }
+
                 dispatch(openModal({ type: 'passphrase-duplicate', device, duplicate }));
 
-                return false;
+                return rejectWithValue({
+                    error: 'passphrase-duplicate',
+                    device,
+                    duplicate,
+                } as AuthorizeDeviceError);
             }
 
-            dispatch(deviceActions.authDevice({ device: freshDeviceData as TrezorDevice, state }));
-
-            return true;
+            return { device: freshDeviceData as TrezorDevice, state };
         }
 
-        dispatch(deviceActions.authFailed(device));
         dispatch(
             notificationsActions.addToast({
                 type: 'auth-failed',
@@ -351,7 +369,10 @@ export const authorizeDevice = createThunk(
             }),
         );
 
-        return false;
+        return rejectWithValue({
+            error: 'auth-failed',
+            device: device as TrezorDevice,
+        } as AuthorizeDeviceError);
     },
 );
 

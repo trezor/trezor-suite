@@ -516,11 +516,19 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
             changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
-        .addCase(deviceActions.authFailed, (state, { payload }) => {
-            authFailed(state, payload);
-        })
         .addCase(authorizeDevice.pending, state => {
             resetAuthFailed(state);
+        })
+        .addCase(authorizeDevice.fulfilled, (state, { payload }) => {
+            authDevice(state, payload.device, payload.state);
+        })
+        .addCase(authorizeDevice.rejected, (state, action) => {
+            if (action.payload && action.payload.error) {
+                const { error } = action.payload;
+                if (error === 'auth-failed') {
+                    authFailed(state, action.payload.device);
+                }
+            }
         })
         .addCase(UI.REQUEST_PIN, state => {
             resetAuthFailed(state);
@@ -536,9 +544,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
             forget(state, payload);
-        })
-        .addCase(deviceActions.authDevice, (state, { payload }) => {
-            authDevice(state, payload.device, payload.state);
         })
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
             addButtonRequest(state, payload.device, payload.buttonRequest);

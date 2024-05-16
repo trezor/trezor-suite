@@ -3,6 +3,7 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import {
     authConfirm,
+    authorizeDevice,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
@@ -21,8 +22,8 @@ import { appChanged, setFlag } from 'src/actions/suite/suiteActions';
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
-            deviceActions.authDevice,
-            deviceActions.authFailed,
+            authorizeDevice.fulfilled,
+            authorizeDevice.rejected,
             deviceActions.selectDevice,
             deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,

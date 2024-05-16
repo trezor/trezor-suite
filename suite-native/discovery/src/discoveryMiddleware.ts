@@ -1,9 +1,12 @@
+import { isAnyOf } from '@reduxjs/toolkit';
+
 import {
     deviceActions,
     selectDevice,
     discoveryActions,
     selectDeviceModel,
     selectDeviceFirmwareVersion,
+    authorizeDevice,
 } from '@suite-common/wallet-core';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { isFirmwareVersionSupported } from '@suite-native/device';
@@ -40,12 +43,12 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             }
         }
 
-        // We need to wait until is the `authDevice` action applied, because we need
+        // We need to wait until `authorizeDevice` action is fulfilled, because we need
         // to know the device state when starting discovery of newly authorized device.
         next(action);
 
         // On successful authorization, create discovery instance and run it.
-        if (deviceActions.authDevice.match(action) && isDeviceFirmwareVersionSupported) {
+        if (isAnyOf(authorizeDevice.fulfilled)(action) && isDeviceFirmwareVersionSupported) {
             dispatch(
                 startDescriptorPreloadedDiscoveryThunk({
                     deviceState: action.payload.state,
