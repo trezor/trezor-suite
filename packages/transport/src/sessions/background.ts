@@ -51,7 +51,6 @@ export class SessionsBackground extends TypedEmitter<{
     constructor({ signal }: { signal: AbortSignal }) {
         super();
         signal.addEventListener('abort', () => {
-            console.log('background aborted!!!');
             this.locksQueue.forEach(lock => clearTimeout(lock.id));
         });
     }
