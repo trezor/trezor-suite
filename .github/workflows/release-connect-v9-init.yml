@@ -19,7 +19,6 @@ jobs:
         with:
           # Number of commits to fetch. 0 indicates all history for all branches and tags.
           fetch-depth: 0
-          token: ${{ secrets.TREZOR_BOT_TOKEN }}
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -37,6 +36,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.TREZOR_BOT_TOKEN }}
 
       - name: Setup Git config
         run: |
