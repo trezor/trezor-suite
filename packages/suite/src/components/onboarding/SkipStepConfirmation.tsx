@@ -46,6 +46,10 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
             throw new Error(`Unexpected step to skip: ${activeStepId}`);
     }
 
+    const handleSkipStepConfirm = () => {
+        goToNextStep(nextStep);
+    };
+
     return (
         <StyledModal
             isCancelable
@@ -59,7 +63,7 @@ export const SkipStepConfirmation = ({ onCancel }: SkipStepConfirmationProps) =>
                     <Button
                         variant="tertiary"
                         data-test="@onboarding/skip-button-confirm"
-                        onClick={() => goToNextStep(nextStep)}
+                        onClick={handleSkipStepConfirm}
                     >
                         {text}
                     </Button>

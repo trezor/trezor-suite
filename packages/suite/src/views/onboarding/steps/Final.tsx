@@ -221,6 +221,7 @@ export const FinalStep = () => {
                                 ...onboardingAnalytics,
                                 duration: Date.now() - onboardingAnalytics.startTime!,
                                 device: device.features.internal_model,
+                                unitPackaging: device.features.unit_packaging ?? 0,
                             };
                             delete payload.startTime;
 
