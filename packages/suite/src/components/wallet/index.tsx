@@ -1,6 +1,7 @@
 import { WalletLayout } from './WalletLayout/WalletLayout';
 import { WalletSubpageHeading } from './WalletLayout/WalletSubpageHeading';
 import { InputError } from './InputError';
+import { InputChecksumInfo } from './InputChecksumInfo';
 import { AccountExceptionLayout } from './AccountExceptionLayout';
 import { DiscoveryProgress } from './DiscoveryProgress';
 import { UtxoAnonymity } from './UtxoAnonymity';
@@ -16,6 +17,7 @@ export {
     DiscoveryProgress,
     withSelectedAccountLoaded,
     InputError,
+    InputChecksumInfo,
     AccountExceptionLayout,
     UtxoAnonymity,
     Pagination,
