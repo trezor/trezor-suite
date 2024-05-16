@@ -9803,7 +9803,6 @@ __metadata:
     "@suite-native/device-manager": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"

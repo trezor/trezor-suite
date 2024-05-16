@@ -8,7 +8,6 @@ import {
     selectIsDeviceInViewOnlyMode,
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { ShowAddressViewOnlyBottomSheet } from './ShowAddressViewOnlyBottomSheet';
 
@@ -22,8 +21,6 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
 
     const openLink = useOpenLink();
 
-    const [isViewOnlyFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
-
     const [isViewOnlyBottomSheetVisible, setIsViewOnlyBottomSheetVisible] = useState(false);
 
     const handleOpenEduLink = () => {
@@ -31,7 +28,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     };
 
     const handleShowAddress = () => {
-        if (isViewOnlyFeatureEnabled && isDeviceInViewOnlyMode) {
+        if (isDeviceInViewOnlyMode) {
             setIsViewOnlyBottomSheetVisible(true);
         } else {
             onShowAddress();

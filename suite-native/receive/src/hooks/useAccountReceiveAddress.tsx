@@ -22,7 +22,6 @@ import { analytics, EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useToast } from '@suite-native/toasts';
 import { Translation } from '@suite-native/intl';
-import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
@@ -31,7 +30,6 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const navigation = useNavigation();
-    const [isViewOnlyFeatureEnabled] = useFeatureFlag(FeatureFlag.IsViewOnlyEnabled);
 
     const { showToast } = useToast();
 
@@ -134,7 +132,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 });
                 setIsReceiveApproved(true);
             }
-        } else if (isDeviceInViewOnlyMode && isViewOnlyFeatureEnabled) {
+        } else if (isDeviceInViewOnlyMode) {
             // If device is remembered,
             // no verification should happen and we display the receive address straight away.
             setIsUnverifiedAddressRevealed(true);
@@ -150,13 +148,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [
-        isDeviceInViewOnlyMode,
-        isPortfolioTrackerDevice,
-        isViewOnlyFeatureEnabled,
-        networkSymbol,
-        verifyAddressOnDevice,
-    ]);
+    }, [isDeviceInViewOnlyMode, isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
 
     return {
         address: freshAddress?.address,
