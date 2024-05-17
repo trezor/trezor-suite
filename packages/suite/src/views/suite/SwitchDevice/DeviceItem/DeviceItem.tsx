@@ -70,8 +70,11 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
         handleRedirection();
     };
 
-    const addDeviceInstance = async (instance: DeviceItemProps['device']) => {
-        await dispatch(createDeviceInstance({ device: instance }));
+    const addDeviceInstance = async (
+        instance: DeviceItemProps['device'],
+        useEmptyPassphrase?: boolean,
+    ) => {
+        await dispatch(createDeviceInstance({ device: instance, useEmptyPassphrase }));
         handleRedirection();
     };
 

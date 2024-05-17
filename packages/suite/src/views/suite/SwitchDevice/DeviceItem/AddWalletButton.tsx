@@ -21,7 +21,7 @@ const StyledTooltip = styled(Tooltip)`
 interface AddWalletButtonProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
-    addDeviceInstance: (instance: TrezorDevice) => Promise<void>;
+    addDeviceInstance: (instance: TrezorDevice, useEmptyPassphrase?: boolean) => Promise<void>;
     selectDeviceInstance: (instance: TrezorDevice) => void;
 }
 
@@ -45,9 +45,9 @@ export const AddWalletButton = ({
         locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
         locks.includes(SUITE.LOCK_TYPE.UI);
 
-    const onAddWallet = () => {
+    const onAddWallet = ({ useEmptyPassphrase }: { useEmptyPassphrase: boolean }) => {
         if (hasAtLeastOneWallet) {
-            addDeviceInstance(device);
+            addDeviceInstance(device, useEmptyPassphrase);
         } else {
             selectDeviceInstance(instances[0]);
         }
@@ -68,7 +68,7 @@ export const AddWalletButton = ({
                             isFullWidth
                             icon="PLUS"
                             isDisabled={isLocked}
-                            onClick={onAddWallet}
+                            onClick={() => onAddWallet({ useEmptyPassphrase: true })}
                         >
                             <Translation id="TR_ADD_WALLET" />
                         </Button>
@@ -80,7 +80,7 @@ export const AddWalletButton = ({
                         isFullWidth
                         icon="PLUS"
                         isDisabled={isLocked}
-                        onClick={onAddWallet}
+                        onClick={() => onAddWallet({ useEmptyPassphrase: false })}
                     >
                         <Row gap={spacings.xs}>
                             <Translation id="TR_ADD_HIDDEN_WALLET" />
