@@ -13,9 +13,10 @@ import { Box } from '@suite-native/atoms';
 
 import { BiometricsBottomSheet } from './components/BiometricsBottomSheet';
 import { EmptyHomeRenderer } from './components/EmptyHomeRenderer';
-import { PortfolioContent, PortfolioContentRef } from './components/PortfolioContent';
+import { PortfolioContent } from './components/PortfolioContent';
 import { useHomeRefreshControl } from './useHomeRefreshControl';
 import { EnableViewOnlyBottomSheet } from './components/EnableViewOnlyBottomSheet';
+import { PortfolioGraphRef } from './components/PortfolioGraph';
 
 export const HomeScreen = () => {
     const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
@@ -28,7 +29,7 @@ export const HomeScreen = () => {
             isDeviceAuthFailed || // When user click cancel on PIN entry or it fails from other reason.
             !isDeviceUnlocked); // When user click cancel, it takes some time before isDeviceAuthFailed is set.
 
-    const portfolioContentRef = useRef<PortfolioContentRef>(null);
+    const portfolioContentRef = useRef<PortfolioGraphRef>(null);
     const refreshControl = useHomeRefreshControl({
         isPortfolioEmpty: isDeviceDiscoveryEmpty,
         portfolioContentRef,

@@ -15,7 +15,7 @@ import {
 } from './PortfolioGraphHeader';
 
 export type PortfolioGraphRef = {
-    refetch: () => Promise<void>;
+    refetchGraph: () => Promise<void>;
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
@@ -45,7 +45,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     useImperativeHandle(
         ref,
         () => ({
-            refetch,
+            refetchGraph: refetch,
         }),
         [refetch],
     );

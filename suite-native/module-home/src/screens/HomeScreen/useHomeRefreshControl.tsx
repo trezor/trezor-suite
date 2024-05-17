@@ -5,14 +5,14 @@ import { useDispatch } from 'react-redux';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useNativeStyles } from '@trezor/styles';
 
-import { PortfolioContentRef } from './components/PortfolioContent';
+import { PortfolioGraphRef } from './components/PortfolioGraph';
 
 export const useHomeRefreshControl = ({
     isPortfolioEmpty,
     portfolioContentRef,
 }: {
     isPortfolioEmpty: boolean;
-    portfolioContentRef: React.MutableRefObject<PortfolioContentRef | null>;
+    portfolioContentRef: React.MutableRefObject<PortfolioGraphRef | null>;
 }) => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const dispatch = useDispatch();

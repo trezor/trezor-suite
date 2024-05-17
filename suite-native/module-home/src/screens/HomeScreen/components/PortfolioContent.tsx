@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -23,13 +23,7 @@ import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 
-export type PortfolioContentRef = {
-    refetchGraph?: () => Promise<void>;
-};
-
-export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) => {
-    const graphRef = useRef<PortfolioGraphRef>(null);
-
+export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
@@ -55,17 +49,9 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
         navigation.navigate(RootStackRoutes.SendStack, { screen: SendStackRoutes.SendAccounts });
     };
 
-    useImperativeHandle(
-        ref,
-        () => ({
-            refetchGraph: graphRef.current?.refetch,
-        }),
-        [],
-    );
-
     return (
         <VStack spacing="large" marginTop="small">
-            <PortfolioGraph ref={graphRef} />
+            <PortfolioGraph ref={ref} />
             <VStack spacing="large" marginHorizontal="small">
                 <Box>
                     <Assets />
