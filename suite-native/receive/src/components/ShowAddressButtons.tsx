@@ -28,7 +28,7 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
     };
 
     const handleShowAddress = () => {
-        if (isDeviceInViewOnlyMode) {
+        if (!isPortfolioTrackerDevice && isDeviceInViewOnlyMode) {
             setIsViewOnlyBottomSheetVisible(true);
         } else {
             onShowAddress();
