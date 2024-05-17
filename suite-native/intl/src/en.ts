@@ -704,9 +704,9 @@ export const en = {
             },
         },
         passphraseMismatch: {
-            title: 'Passphrase mismatch',
-            subtitle: 'Start over and enter your passphrase.',
-            button: 'Start over',
+            title: 'Passphrase duplicate',
+            subtitle: 'You’re trying to enter a passphrase wallet that’s already been opened.',
+            button: 'Proceed to passphrase wallet ',
         },
     },
 };

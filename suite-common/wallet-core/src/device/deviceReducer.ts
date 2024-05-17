@@ -525,7 +525,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(authorizeDevice.rejected, (state, action) => {
             if (action.payload && action.payload.error) {
                 const { error } = action.payload;
-                if (error === 'auth-failed') {
+                if (error === 'auth-failed' && action.payload.device) {
                     authFailed(state, action.payload.device);
                 }
             }

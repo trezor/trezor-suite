@@ -37,10 +37,10 @@ export const useHandleDuplicitPassphrase = () => {
     const { showAlert, hideAlert } = useAlert();
 
     const handleDuplicateDevicePassphrase = useCallback(
-        ({ device, duplicate }: { device: TrezorDevice; duplicate?: TrezorDevice }) => {
-            // Not all passphrase errors have duplicate property, but we know this one does
+        ({ device, duplicate }: { device?: TrezorDevice; duplicate?: TrezorDevice }) => {
+            // Not all passphrase errors have device property, but we know this one does
             // based on condition in `./passphraseSlice`. This if is just to keep TS happy.
-            if (duplicate) {
+            if (duplicate && device) {
                 dispatch(switchDuplicatedDevice({ device, duplicate }));
                 navigation.navigate(RootStackRoutes.AppTabs, {
                     screen: AppTabsRoutes.HomeStack,

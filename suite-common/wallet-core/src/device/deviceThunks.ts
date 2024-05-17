@@ -276,7 +276,7 @@ export const acquireDevice = createThunk(
 type AuthorizeDeviceParams = { shouldIgnoreDeviceState: boolean } | undefined;
 export type AuthorizeDeviceError = {
     error: string;
-    device: TrezorDevice;
+    device?: TrezorDevice;
     duplicate?: TrezorDevice;
 };
 type AuthorizeDeviceSuccess = { device: TrezorDevice; state: string };
@@ -301,7 +301,7 @@ export const authorizeDevice = createThunk<
         const selectedCheckFirmwareAuthenticity = selectCheckFirmwareAuthenticity(getState());
         const device = selectDeviceSelector(getState());
 
-        if (!device) return rejectWithValue({ error: 'no-device' } as AuthorizeDeviceError);
+        if (!device) return rejectWithValue({ error: 'no-device' });
 
         const isDeviceReady =
             device.connected &&
@@ -312,8 +312,7 @@ export const authorizeDevice = createThunk<
             device.mode === 'normal' &&
             device.firmware !== 'required';
 
-        if (!isDeviceReady)
-            return rejectWithValue({ error: 'device-not-ready', device } as AuthorizeDeviceError);
+        if (!isDeviceReady) return rejectWithValue({ error: 'device-not-ready', device });
 
         if (selectedCheckFirmwareAuthenticity) {
             await dispatch(checkFirmwareAuthenticity());
@@ -356,7 +355,7 @@ export const authorizeDevice = createThunk<
                     error: 'passphrase-duplicate',
                     device,
                     duplicate,
-                } as AuthorizeDeviceError);
+                });
             }
 
             return { device: freshDeviceData as TrezorDevice, state };
@@ -372,7 +371,7 @@ export const authorizeDevice = createThunk<
         return rejectWithValue({
             error: 'auth-failed',
             device: device as TrezorDevice,
-        } as AuthorizeDeviceError);
+        });
     },
 );
 
