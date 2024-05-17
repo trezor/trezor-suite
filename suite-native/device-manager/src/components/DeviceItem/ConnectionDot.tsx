@@ -10,7 +10,7 @@ const dotStyle = prepareNativeStyle<{ isConnected: boolean }>((utils, { isConnec
     width: utils.spacings.small,
     height: utils.spacings.small,
     borderRadius: utils.borders.radii.round,
-    backgroundColor: utils.colors.textSubdued,
+    backgroundColor: utils.colors.iconDisabled,
     extend: {
         condition: isConnected,
         style: {
