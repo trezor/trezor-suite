@@ -9,6 +9,7 @@ import { useToast } from '@suite-native/toasts';
 import { Icon } from '@suite-common/icons';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { setViewOnlyCancelationTimestamp } from '@suite-native/settings';
 
 const walletRowStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.medium,
@@ -47,6 +48,11 @@ export const WalletRow = ({ device }: { device: TrezorDevice }) => {
             type: EventType.ViewOnlyChange,
             payload: { enabled: !device.remember, origin: 'settingsToggle' },
         });
+
+        if (device.remember) {
+            // if user disables view-only here, save the timestamp of the cancelation not to promote it later
+            dispatch(setViewOnlyCancelationTimestamp(new Date().getTime()));
+        }
 
         if (!device.connected && device.remember) {
             // disconnected device, view-only is being disabled so it can be forgotten
