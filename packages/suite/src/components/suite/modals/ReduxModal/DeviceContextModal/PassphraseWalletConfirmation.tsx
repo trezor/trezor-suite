@@ -48,16 +48,14 @@ export const PassphraseWalletConfirmation = ({
     onSubmit,
     onDeviceOffer,
     device,
-}: PassphraseWalletConfirmationProps) => {
-    return (
-        <SwitchDeviceRenderer isCancelable onCancel={onCancel}>
-            <CardWithDevice onCancel={onCancel} device={device}>
-                <PassphraseWalletConfirmationContent
-                    onSubmit={onSubmit}
-                    onDeviceOffer={onDeviceOffer}
-                    onCancel={onCancel}
-                />
-            </CardWithDevice>
-        </SwitchDeviceRenderer>
-    );
-};
+}: PassphraseWalletConfirmationProps) => (
+    <SwitchDeviceRenderer isCancelable onCancel={onCancel}>
+        <CardWithDevice onCancel={onCancel} device={device}>
+            <PassphraseWalletConfirmationContent
+                onSubmit={onSubmit}
+                onDeviceOffer={onDeviceOffer}
+                onCancel={onCancel}
+            />
+        </CardWithDevice>
+    </SwitchDeviceRenderer>
+);

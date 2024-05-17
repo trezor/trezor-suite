@@ -1,5 +1,4 @@
 import { useCallback, useState } from 'react';
-import { useIntl } from 'react-intl';
 
 import { PassphraseTypeCard } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
@@ -9,12 +8,12 @@ import {
     selectDevices,
     onPassphraseSubmit,
     selectDeviceModel,
+    deviceActions,
 } from '@suite-common/wallet-core';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
 import type { TrezorDevice } from 'src/types/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import messages from 'src/support/messages';
 import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { PassphraseDescription } from './PassphraseDescription';
@@ -28,13 +27,16 @@ interface PassphraseModalProps {
 export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     const [submitted, setSubmitted] = useState(false);
     const devices = useSelector(selectDevices);
+
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
+
     const deviceModel = useSelector(selectDeviceModel);
     const stateConfirmation = !!device.state;
-    const hasEmptyPassphraseWallet = deviceUtils
-        .getDeviceInstances(device, devices)
-        .find(d => d.useEmptyPassphrase);
+
+    const instances = deviceUtils.getDeviceInstances(device, devices);
+    const hasEmptyPassphraseWallet = instances.find(d => d.useEmptyPassphrase);
+
     const onDeviceOffer = !!(
         device.features &&
         device.features.capabilities &&
@@ -43,9 +45,10 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const dispatch = useDispatch();
 
-    const intl = useIntl();
-
-    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    const onCancel = () => {
+        TrezorConnect.cancel('auth-confirm-cancel'); // This auth-confirm-cancel' causes the proper cleaning of the state in deviceThunks.authConfirm()
+        dispatch(deviceActions.forgetDevice(device));
+    };
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
