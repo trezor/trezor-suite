@@ -4,7 +4,7 @@ import { Box, BoxProps } from './Box';
 
 const dividerStyle = prepareNativeStyle(utils => ({
     borderBottomWidth: utils.borders.widths.small,
-    borderBottomColor: utils.colors.borderFocus,
+    borderBottomColor: utils.colors.borderElevation1,
     flex: 1,
 }));
 

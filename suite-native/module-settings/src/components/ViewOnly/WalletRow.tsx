@@ -91,7 +91,7 @@ export const WalletRow = ({ device }: { device: TrezorDevice }) => {
                     name={device.useEmptyPassphrase ? 'standardWallet' : 'password'}
                     size="mediumLarge"
                 />
-                <Text>{walletNameLabel}</Text>
+                <Text variant="callout">{walletNameLabel}</Text>
             </HStack>
             <Button
                 size="extraSmall"

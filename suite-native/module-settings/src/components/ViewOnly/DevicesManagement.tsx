@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 
 import { Box, Card, Divider, HStack, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { DeviceModelIcon } from '@suite-native/device-manager';
+import { ConnectionDot, DeviceModelIcon } from '@suite-native/device-manager';
 import { selectPhysicalDevicesGrouppedById } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -18,13 +18,6 @@ const deviceStyle = prepareNativeStyle(utils => ({
     padding: utils.spacings.medium,
     alignItems: 'center',
     gap: 12,
-}));
-
-const dotStyle = prepareNativeStyle<{ isConnected: boolean }>((utils, { isConnected }) => ({
-    width: utils.spacings.small,
-    height: utils.spacings.small,
-    borderRadius: utils.borders.radii.round,
-    backgroundColor: isConnected ? utils.colors.textSecondaryHighlight : utils.colors.textSubdued,
 }));
 
 export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
@@ -51,11 +44,7 @@ export const DevicesManagement = ({ onPressAbout }: AboutProps) => {
                                     {firstDevice.label}
                                 </Text>
                                 <HStack alignItems="center" spacing="small">
-                                    <Box
-                                        style={applyStyle(dotStyle, {
-                                            isConnected: firstDevice.connected,
-                                        })}
-                                    />
+                                    <ConnectionDot isConnected={firstDevice.connected} />
                                     <Text
                                         variant="hint"
                                         color={
