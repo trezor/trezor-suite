@@ -9589,6 +9589,7 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -9750,6 +9751,24 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@suite-native/passphrase@workspace:*, @suite-native/passphrase@workspace:suite-native/passphrase":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/passphrase@workspace:suite-native/passphrase"
+  dependencies:
+    "@react-navigation/native": "npm:6.1.10"
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/redux-utils": "workspace:*"
+    "@suite-common/suite-types": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    react: "npm:18.2.0"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
 "@suite-native/qr-code@workspace:*, @suite-native/qr-code@workspace:suite-native/qr-code":
   version: 0.0.0-use.local
   resolution: "@suite-native/qr-code@workspace:suite-native/qr-code"
@@ -9855,6 +9874,7 @@ __metadata:
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/message-system": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"

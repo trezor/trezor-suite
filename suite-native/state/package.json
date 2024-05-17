@@ -27,6 +27,7 @@
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/graph": "workspace:*",
         "@suite-native/message-system": "workspace:*",
+        "@suite-native/passphrase": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@suite-native/toasts": "workspace:*",

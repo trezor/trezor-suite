@@ -703,6 +703,11 @@ export const en = {
                 },
             },
         },
+        passphraseMismatch: {
+            title: 'Passphrase mismatch',
+            subtitle: 'Start over and enter your passphrase.',
+            button: 'Start over',
+        },
     },
 };
 

@@ -22,8 +22,7 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-
-import { cancelPassphraseAndSelectStandardDeviceThunk } from '../passphraseThunks';
+import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
 type NavigationProp = StackToTabCompositeProps<
     PassphraseStackParamList,

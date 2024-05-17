@@ -16,8 +16,8 @@ import { Box, Button, Card, CenteredTitleHeader, Text, VStack } from '@suite-nat
 import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
-import { cancelPassphraseAndSelectStandardDeviceThunk } from '../passphraseThunks';
 import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
 import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
