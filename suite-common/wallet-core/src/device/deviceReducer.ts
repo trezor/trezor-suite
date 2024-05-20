@@ -16,7 +16,7 @@ import { isNative } from '@trezor/env-utils';
 
 import { deviceActions } from './deviceActions';
 import { authorizeDevice } from './deviceThunks';
-import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from './deviceConstants';
+import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type State = {
     devices: TrezorDevice[];
@@ -784,13 +784,6 @@ export const selectDeviceFirmwareVersion = memoize((state: DeviceRootState) => {
 
     return getFirmwareVersionArray(device);
 });
-
-export const selectPersistedDeviceStates = (state: DeviceRootState) => {
-    const devices = selectDevices(state);
-
-    return [...devices.map(d => d.state), PORTFOLIO_TRACKER_DEVICE_STATE];
-};
-
 export const selectPhysicalDevices = memoize((state: DeviceRootState) => {
     const devices = selectDevices(state);
 

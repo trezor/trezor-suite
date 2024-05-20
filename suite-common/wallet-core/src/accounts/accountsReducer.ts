@@ -14,7 +14,6 @@ import {
     selectDevice,
     selectIsNoPhysicalDeviceConnected,
     selectIsPortfolioTrackerDevice,
-    selectPersistedDeviceStates,
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
@@ -364,15 +363,6 @@ export const selectIsDeviceDiscoveryEmpty = (
     const isDeviceDiscoveryActive = selectIsDeviceDiscoveryActive(state);
 
     return isDeviceAccountless && !isDeviceDiscoveryActive;
-};
-
-export const selectDevicelessAccounts = (state: AccountsRootState & DeviceRootState) => {
-    const persistedDevicesStates = selectPersistedDeviceStates(state);
-
-    return pipe(
-        selectAccounts(state),
-        A.filter(account => !persistedDevicesStates.includes(account.deviceState)),
-    ) as Account[];
 };
 
 export const selectAreAllDevicesDisconnectedOrAccountless = (

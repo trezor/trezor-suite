@@ -9,7 +9,6 @@ import {
 import { initAnalyticsThunk } from '@suite-native/analytics';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { initMessageSystemThunk } from '@suite-common/message-system';
-import { wipeDisconnectedDevicesDataThunk } from '@suite-native/device';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 
@@ -47,10 +46,6 @@ export const applicationInit = createThunk(
 
             // Create Portfolio Tracker device if it doesn't exist
             dispatch(createImportedDeviceThunk());
-
-            // In case that user closed the app while device was connected,
-            // remove its persistent data on app init if the device is not connected anymore.
-            dispatch(wipeDisconnectedDevicesDataThunk());
         } catch (error) {
             console.error(error);
         } finally {
