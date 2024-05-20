@@ -140,18 +140,18 @@ export const config = {
         },
         {
             methods: ['cardanoGetAddress', 'cardanoGetPublicKey'],
-            min: { T1B1: '0', T2T1: '2.3.2' },
-            comment: ['Shelley fork support since firmware 2.3.2'],
+            min: { T1B1: '0', T2T1: '2.4.3' },
+            comment: ['Since 2.4.3 Cardano derivation behavior has changed'],
         },
         {
             methods: ['cardanoSignTransaction'],
-            min: { T1B1: '0', T2T1: '2.4.2' },
-            comment: ['Non-streamed signing no longer supported'],
+            min: { T1B1: '0', T2T1: '2.6.0' },
+            comment: ['Before 2.6.0 not all Cardano transactions were supported'],
         },
         {
             methods: ['cardanoGetNativeScriptHash'],
             min: { T1B1: '0', T2T1: '2.4.3' },
-            comment: ['Cardano GetNativeScriptHash call added in 2.4.3'],
+            comment: ['Since 2.4.3 Cardano derivation behavior has changed'],
         },
         {
             methods: ['tezosSignTransaction'],
