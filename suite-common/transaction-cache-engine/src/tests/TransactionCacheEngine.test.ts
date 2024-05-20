@@ -36,6 +36,7 @@ describe('TransactionCacheEngine', () => {
         const engine = new TransactionCacheEngine({
             storage: new MemoryStorage(),
         });
+        await engine.init();
         const account: AccountUniqueParams = {
             coin: 'btc',
             descriptor: 'xpub',
@@ -51,6 +52,7 @@ describe('TransactionCacheEngine', () => {
         const engine = new TransactionCacheEngine({
             storage: new MemoryStorage(),
         });
+        await engine.init();
         const account: AccountUniqueParams = {
             coin: 'btc',
             descriptor: 'xpub',
@@ -67,6 +69,7 @@ describe('TransactionCacheEngine', () => {
         const engine = new TransactionCacheEngine({
             storage: new MemoryStorage(),
         });
+        await engine.init();
         const account: AccountUniqueParams = {
             coin: 'btc',
             descriptor: 'xpub',
@@ -87,6 +90,7 @@ describe('TransactionCacheEngine', () => {
         const engine = new TransactionCacheEngine({
             storage: new MemoryStorage(),
         });
+        await engine.init();
         const account: AccountUniqueParams = {
             coin: 'btc',
             descriptor: 'xpub',
@@ -108,6 +112,7 @@ describe('TransactionCacheEngine', () => {
         const engine = new TransactionCacheEngine({
             storage: new MemoryStorage(),
         });
+        await engine.init();
         const account: AccountUniqueParams = {
             coin: 'btc',
             descriptor: 'xpub',
@@ -124,6 +129,7 @@ describe('TransactionCacheEngine', () => {
         const engine = new TransactionCacheEngine({
             storage: new MemoryStorage(),
         });
+        await engine.init();
         const account: AccountUniqueParams = {
             coin: 'xrp',
             descriptor: 'xpub',

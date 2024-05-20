@@ -3,6 +3,7 @@ import { A, D, pipe } from '@mobily/ts-belt';
 
 import TrezorConnect, { AccountInfo, AccountTransaction } from '@trezor/connect';
 import { getNetworkType } from '@suite-common/wallet-config';
+import { createDeferred } from '@trezor/utils';
 
 import {
     EnsureSingleRunningInstance,
@@ -27,16 +28,16 @@ const TRANSACTION_INIT_PAGE_SIZE = 5;
 const TRANSACTION_POLL_INTERVAL_MS = 60_000;
 
 export class TransactionCacheEngine {
-    private initPromise: Promise<void>;
+    private initPromise = createDeferred();
     private storage: TransactionCacheEngineStorage;
     private periodicFetchesTimeoutIds: Record<AccountUniqueKey, ReturnType<typeof setTimeout>> = {};
 
     constructor({ storage }: { storage: TransactionCacheEngineStorage }) {
         this.storage = storage;
-        this.initPromise = this.init();
     }
 
-    private async init() {
+    public async init() {
+        // Init must be called after connect init is finished, otherwise it will fetch XRP account forever. Maybe bug in connect?
         debugLog('Initializing TransactionCacheEngine');
 
         const accounts = await this.storage.getAccounts();
@@ -52,13 +53,19 @@ export class TransactionCacheEngine {
             ),
         );
 
+        this.initPromise.resolve();
+
         accounts.forEach(account => this.watchForNewTransactions(account));
+    }
+
+    private awaitInit() {
+        return this.initPromise.promise;
     }
 
     @EnsureSingleRunningInstance()
     @TrackRunningTransactionFetches()
     async addAccount({ coin, descriptor }: AccountUniqueParams) {
-        await this.initPromise;
+        await this.awaitInit();
         if (await this.accountExists({ coin, descriptor })) {
             return;
         }
@@ -73,13 +80,13 @@ export class TransactionCacheEngine {
     }
 
     async accountExists({ coin, descriptor }: AccountUniqueParams) {
-        await this.initPromise;
+        await this.awaitInit();
 
         return this.storage.accountExist({ coin, descriptor });
     }
 
     async removeAccount({ coin, descriptor }: AccountUniqueParams) {
-        await this.initPromise;
+        await this.awaitInit();
         await this.storage.removeAccount({ coin, descriptor });
         await this.stopWatchingForNewTransactions({ coin, descriptor });
     }
@@ -87,7 +94,7 @@ export class TransactionCacheEngine {
     @WaitUntilFetchIsFinished()
     public async getTransactions({ coin, descriptor }: AccountUniqueParams) {
         debugLog(`getTransactions for ${coin} - ${descriptor}`);
-        await this.initPromise;
+        await this.awaitInit();
 
         return this.storage.getTransactions({ coin, descriptor });
     }
@@ -98,7 +105,7 @@ export class TransactionCacheEngine {
         descriptor,
         pageSize,
     }: AccountUniqueParams & { pageSize: number }) {
-        await this.initPromise;
+        await this.awaitInit();
         debugLog(`Fetching transactions for ${coin} - ${descriptor}`, { pageSize });
         if (!(await this.accountExists({ coin, descriptor }))) {
             throw new Error(
@@ -116,6 +123,10 @@ export class TransactionCacheEngine {
         while (true) {
             page += 1;
 
+            debugLog(
+                `Fetching transactions for ${coin} - ${descriptor} page ${page}, marker ${marker}`,
+            );
+
             const result = await TrezorConnect.getAccountInfo({
                 coin,
                 descriptor,
@@ -128,6 +139,10 @@ export class TransactionCacheEngine {
             if (!result.success) {
                 throw new Error(result.payload.error);
             }
+
+            debugLog(
+                `Fetched ${result.payload.history.transactions?.length} transactions for ${coin} - ${descriptor} page ${page}`,
+            );
 
             marker = result.payload.marker;
 
@@ -180,9 +195,11 @@ export class TransactionCacheEngine {
     @WaitUntilFetchIsFinished()
     async getAccountBalanceHistory(account: AccountUniqueParams) {
         if (!(await this.accountExists(account))) {
-            throw new Error(
-                'Account not registered. Please register it first using TransactionCacheEngine.addAccount',
-            );
+            await this.addAccount(account);
+            await this.fetchAndSaveAllMissingAccountTransactions({
+                ...account,
+                pageSize: TRANSACTION_INIT_PAGE_SIZE,
+            });
         }
 
         const transactions = await this.getTransactions(account);
@@ -261,7 +278,7 @@ export class TransactionCacheEngine {
     }
 
     private async subscribeToNewTransactionsAllAccounts() {
-        await this.initPromise;
+        await this.awaitInit();
 
         const accounts = await this.storage.getAccounts();
         const accountsByCoin = A.groupBy(accounts, account => account.coin);
@@ -284,7 +301,7 @@ export class TransactionCacheEngine {
     }
 
     private async unsubscribeFromNewTransactions({ coin, descriptor }: AccountUniqueParams) {
-        await this.initPromise;
+        await this.awaitInit();
 
         TrezorConnect.blockchainUnsubscribe({
             accounts: [{ descriptor }],
