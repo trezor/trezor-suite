@@ -97,6 +97,22 @@ const createDeviceList = (deviceListParams: ConstructorParameters<typeof DeviceL
     };
 };
 
+const waitForNthEventOfType = (
+    emitter: { on: (...args: any[]) => any },
+    type: string,
+    number: number,
+) => {
+    // wait for all device-connect events
+    return new Promise<void>(resolve => {
+        let i = 0;
+        emitter.on(type, () => {
+            if (++i === number) {
+                resolve();
+            }
+        });
+    });
+};
+
 describe('DeviceList', () => {
     beforeAll(async () => {
         // todo: I don't get it. If we pass empty messages: {} (see getDeviceListParams), tests behave differently.
@@ -271,17 +287,23 @@ describe('DeviceList', () => {
         list.init();
         await list.waitForTransportFirstEvent();
 
-        // NOTE: this behavior is wrong
-        const events = eventsSpy.mock.calls.map(call => call[0]);
+        const events = eventsSpy.mock.calls
+            .filter(call => call[0] !== 'device-changed')
+            .map(call => [call[0], call[1].path]);
+
+        // note: acquire - release - connect should be ok.
+        // acquire - deviceList._takeAndCreateDevice start (run -> rurInner -> getFeatures -> release) -> deviceList._takeAndCreateDevice end => emit DEVICE.CONNECT
         expect(events).toEqual([
-            'device-changed', // path 1
-            'device-acquired', // path 1
-            'device-connect_unacquired', // path 2
-            'device-connect_unacquired', // path 3
-            'device-changed', // path 2
-            'device-acquired', // path 2
-            'device-connect', // path 1
-            'transport-start',
+            ['device-acquired', '1'],
+            ['device-acquired', '2'],
+            ['device-acquired', '3'],
+            ['device-released', '1'],
+            ['device-connect', '1'],
+            ['device-released', '2'],
+            ['device-connect', '2'],
+            ['device-released', '3'],
+            ['device-connect', '3'],
+            ['transport-start', undefined],
         ]);
 
         list.dispose();
@@ -357,15 +379,15 @@ describe('DeviceList', () => {
         list.dispose();
     });
 
-    it('multiple device connected after .init()', async () => {
-        let inChangeCallback = (..._args: any[]) => {};
+    it('multiple devices connected after .init()', async () => {
+        let onChangeCallback = (..._args: any[]) => {};
         const transport = createTestTransport({
             enumerate: () => {
                 return { success: true, payload: [] };
             },
-            on: (eventName: string, callback: typeof inChangeCallback) => {
+            on: (eventName: string, callback: typeof onChangeCallback) => {
                 if (eventName === 'transport-interface-change') {
-                    inChangeCallback = callback;
+                    onChangeCallback = callback;
                 }
             },
         });
@@ -377,22 +399,26 @@ describe('DeviceList', () => {
         list.init();
         await list.waitForTransportFirstEvent();
 
-        inChangeCallback([{ path: '1' }, { path: '2' }, { path: '3' }]);
+        onChangeCallback([{ path: '1' }, { path: '2' }, { path: '3' }]);
 
-        // wait for device-connect
-        await new Promise(resolve => {
-            list.on('device-connect', resolve);
-        });
+        // wait for all device-connect events
+        await waitForNthEventOfType(list, 'device-connect', 3);
 
-        // NOTE: this behavior is wrong
-        const events = eventsSpy.mock.calls.map(call => call[0]);
+        const events = eventsSpy.mock.calls
+            .filter(call => call[0] !== 'device-changed')
+            .map(call => [call[0], call[1].path]);
+
         expect(events).toEqual([
-            'transport-start',
-            'device-changed', // path 1
-            'device-acquired', // path 1
-            'device-connect_unacquired', // path 2
-            'device-connect_unacquired', // path 3
-            'device-connect', // path 1
+            ['transport-start', undefined],
+            ['device-acquired', '1'],
+            ['device-acquired', '2'],
+            ['device-acquired', '3'],
+            ['device-released', '1'],
+            ['device-connect', '1'],
+            ['device-released', '2'],
+            ['device-connect', '2'],
+            ['device-released', '3'],
+            ['device-connect', '3'],
         ]);
 
         list.dispose();

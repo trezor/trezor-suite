@@ -197,7 +197,7 @@ export class BridgeTransport extends AbstractTransport {
     public release({ path, session, onClose }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(signal => {
             if (this.listening && !onClose) {
-                this.releasingSession = session;
+                this.releaseUnconfirmed[path] = session;
                 this.listenPromise[path] = createDeferred();
             }
 

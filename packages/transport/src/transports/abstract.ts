@@ -134,7 +134,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * used to postpone resolving of transport.release until next descriptors are delivered
      */
     protected releasePromise?: Deferred<any>;
-    protected releasingSession: string | undefined;
+    protected releaseUnconfirmed: Record<string, string> = {};
 
     /**
      * each transport class accepts signal parameter in constructor and implements it's own abort controller.
@@ -375,12 +375,12 @@ export abstract class AbstractTransport extends TypedEmitter<{
         const releasedByMyself = released.filter(
             d =>
                 this.descriptors.find(prevD => prevD.path === d.path)?.session ===
-                this.releasingSession,
+                this.releaseUnconfirmed[d.path],
         );
         const releasedElsewhere = released.filter(
             d =>
                 this.descriptors.find(prevD => prevD.path === d.path)?.session !==
-                this.releasingSession,
+                this.releaseUnconfirmed[d.path],
         );
 
         const didUpdate = connected.length + disconnected.length + changedSessions.length > 0;
@@ -423,7 +423,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         this.descriptors = nextDescriptors;
 
         Object.keys(this.listenPromise).forEach(path => {
-            const descriptor = nextDescriptors.find(device => device.path === path);
+            const descriptor = diff.descriptors.find(device => device.path === path);
 
             if (!descriptor) {
                 return this.listenPromise[path].resolve(
@@ -431,9 +431,13 @@ export abstract class AbstractTransport extends TypedEmitter<{
                 );
             }
 
+            const listenedPathChanged = diff.changedSessions.find(d => d.path === path);
+            if (!listenedPathChanged) {
+                return;
+            }
+
             if (this.acquiredUnconfirmed[path]) {
-                const reportedNextSession = descriptor.session;
-                if (reportedNextSession === this.acquiredUnconfirmed[path]) {
+                if (listenedPathChanged.session === this.acquiredUnconfirmed[path]) {
                     this.listenPromise[path].resolve(this.success(this.acquiredUnconfirmed[path]));
                 } else {
                     // another app took over
@@ -442,19 +446,18 @@ export abstract class AbstractTransport extends TypedEmitter<{
                     );
                 }
                 delete this.acquiredUnconfirmed[path];
-            } else if (this.releasingSession) {
-                this.listenPromise[path].resolve(this.success('null'));
-            } else {
-                // listen reported changes but we were not expecting any (no acquire or release in progress)
-                // this means that another application acquired session
-                this.listenPromise[path].resolve(
-                    this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS }),
-                );
+            }
+
+            if (this.releaseUnconfirmed[path]) {
+                if (!listenedPathChanged.session) {
+                    this.listenPromise[path].resolve(this.success('null'));
+                    delete this.releaseUnconfirmed[path];
+                }
+                // when releasing we don't really care about else
             }
         });
 
         this.emit(TRANSPORT.UPDATE, diff);
-        this.releasingSession = undefined;
     }
 
     /**
