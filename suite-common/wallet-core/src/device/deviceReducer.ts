@@ -70,7 +70,7 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
 
 const getShouldUseEmptyPassphrase = (device: Device, deviceInstance?: number): boolean => {
     if (!device.features) return false;
-    if (isNative() && typeof deviceInstance === 'number' && deviceInstance === 1) {
+    if (isNative() && (!deviceInstance || deviceInstance === 1)) {
         // On mobile, if device has instance === 1, we always want to use empty passphrase since we
         // connect & authorize standard wallet by default. Other instances will have `usePassphraseProtection` set same way as web/desktop app.
         return true;
