@@ -798,9 +798,9 @@ export const selectPhysicalDevices = memoize((state: DeviceRootState) => {
 });
 
 export const selectIsNoPhysicalDeviceConnected = (state: DeviceRootState) => {
-    const devices = selectDevices(state);
+    const devices = selectPhysicalDevices(state);
 
-    return devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID;
+    return devices.every(device => !device.connected);
 };
 
 export const selectIsDeviceBitcoinOnly = (state: DeviceRootState) => {
