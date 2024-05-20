@@ -38,15 +38,14 @@ export class SessionsBackground extends TypedEmitter<{
     descriptors: Descriptor[];
 }> {
     /**
-     * Dictionary where key is path and value is session
+     * Dictionary where key is path and value is Descriptor
      */
     private descriptors: Sessions = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
     private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
     private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
-
-    private lastSession = 0;
+    private lastSessionId = 0;
 
     constructor({ signal }: { signal: AbortSignal }) {
         super();
@@ -185,7 +184,9 @@ export class SessionsBackground extends TypedEmitter<{
         // new "unconfirmed" descriptors are  broadcasted. we can't yet update this.sessions object as it needs
         // to stay as it is. we can not allow 2 clients sending session:null to proceed. this way only one gets through
         const unconfirmedSessions: Sessions = JSON.parse(JSON.stringify(this.descriptors));
-        const id = `${this.getNewSessionId()}`;
+
+        this.lastSessionId++;
+        const id = `${this.lastSessionId}`;
         unconfirmedSessions[payload.path].session = id;
 
         return this.success({
@@ -203,7 +204,7 @@ export class SessionsBackground extends TypedEmitter<{
         if (!this.descriptors[payload.path]) {
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
-        this.descriptors[payload.path].session = `${this.lastSession}`;
+        this.descriptors[payload.path].session = this.lastSessionId.toString();
 
         return Promise.resolve(
             this.success({
@@ -281,9 +282,6 @@ export class SessionsBackground extends TypedEmitter<{
             this.locksQueue.shift();
             clearTimeout(this.locksTimeoutQueue[0]);
             this.locksTimeoutQueue.shift();
-        } else {
-            // should never happen if implemented correctly by all clients
-            console.warn('empty lock queue');
         }
     }
 
@@ -299,12 +297,6 @@ export class SessionsBackground extends TypedEmitter<{
     private async waitInQueue() {
         const myIndex = this.startLock();
         await this.waitForUnlocked(myIndex);
-    }
-
-    private getNewSessionId() {
-        this.lastSession++;
-
-        return this.lastSession;
     }
 
     private filterDisconnectedDevices(prevDevices: Descriptor[], paths: string[]) {

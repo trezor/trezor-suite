@@ -471,12 +471,12 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
             await this._takeAndCreateDevice(descriptor);
         } catch (error) {
             _log.debug('Cannot create device', error);
-
             if (
                 error.code === 'Device_NotFound' ||
                 error.message === TRANSPORT_ERROR.DEVICE_NOT_FOUND ||
                 error.message === TRANSPORT_ERROR.DEVICE_DISCONNECTED_DURING_ACTION ||
                 error.message === TRANSPORT_ERROR.UNEXPECTED_ERROR ||
+                error.message === TRANSPORT_ERROR.DESCRIPTOR_NOT_FOUND ||
                 // bridge died during device initialization
                 error.message === TRANSPORT_ERROR.HTTP_ERROR
             ) {

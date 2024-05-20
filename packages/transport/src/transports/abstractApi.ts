@@ -1,4 +1,4 @@
-import { createDeferred, Deferred } from '@trezor/utils';
+import { createDeferred } from '@trezor/utils';
 import { v1 as v1Protocol } from '@trezor/protocol';
 
 import {
@@ -25,7 +25,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     // which can live in couple of context (shared worker, local module, websocket server etc)
     private sessionsClient: ConstructorParams['sessionsClient'];
     private api: AbstractApi;
-    protected acquirePromise?: Deferred<void>;
 
     constructor({ messages, api, sessionsClient, signal, logger }: ConstructorParams) {
         super({ messages, signal, logger });
@@ -59,11 +58,8 @@ export abstract class AbstractApiTransport extends AbstractTransport {
             });
         });
         // 3. based on 2.sessions background distributes information about descriptors change to all clients
-        this.sessionsClient.on('descriptors', async descriptors => {
+        this.sessionsClient.on('descriptors', descriptors => {
             // 4. we propagate new descriptors to higher levels
-            if (this.acquirePromise?.promise) {
-                await this.acquirePromise.promise;
-            }
             this.handleDescriptorsChange(descriptors);
         });
 
@@ -101,13 +97,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     this.listenPromise[path] = createDeferred();
                 }
 
-                this.acquirePromise = createDeferred();
-
                 const acquireIntentResponse = await this.sessionsClient.acquireIntent(input);
-
-                if (this.acquirePromise) {
-                    this.acquirePromise.resolve(undefined);
-                }
 
                 if (!acquireIntentResponse.success) {
                     return this.error({ error: acquireIntentResponse.error });
@@ -144,10 +134,9 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     public release({ path, session, onClose }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(async () => {
             if (this.listening) {
-                this.releasingSession = session;
+                this.releaseUnconfirmed[path] = session;
                 this.listenPromise[path] = createDeferred();
             }
-
             const releaseIntentResponse = await this.sessionsClient.releaseIntent({
                 session,
             });
