@@ -1,6 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
+import { waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -29,6 +30,7 @@ test('reporting', async ({ page }) => {
 
     await page.goto(`${url}#/method/getAddress`);
 
+    await waitAndClick(page, ['@api-playground/collapsible-box']);
     await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
     const [popup] = await Promise.all([
         // It is important to call waitForEvent before click to set up waiting.

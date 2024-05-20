@@ -158,7 +158,7 @@ const Container = styled.div`
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
     border-radius: 12px;
     width: 100%;
-    overflow-x: scroll;
+    overflow-x: auto;
     padding: ${spacingsPx.sm} ${spacingsPx.md};
     word-wrap: break-word;
     word-break: break-all;
