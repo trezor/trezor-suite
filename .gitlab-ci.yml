@@ -31,7 +31,6 @@ include:
   - ci/prebuild.yml
   - ci/build.yml
   - ci/deploy.yml
-  - ci/npm-deploy.yml
   - ci/test.yml
   - ci/releases.yml
   # # to be run only on scheduled pipelines
