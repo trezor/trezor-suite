@@ -2,7 +2,6 @@ const { execSync } = require('child_process');
 
 const fs = require('fs');
 const util = require('util');
-const https = require('https');
 const fetch = require('cross-fetch');
 const tar = require('tar');
 const path = require('path');

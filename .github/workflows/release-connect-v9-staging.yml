@@ -33,19 +33,13 @@ jobs:
     runs-on: ubuntu-latest
     needs: [extract-version]
     steps:
-      - name: Check if version in package.json matches the one in branch name
-        run: |
-          # Extract the version from the branch name, assuming format 'refs/heads/release/connect/9.2.4-beta.1'
-          BRANCH_VERSION="${GITHUB_REF#*release/connect/}" # This strips everything before and including 'release/connect/'
-          EXTRACTED_VERSION="${{ needs.extract-version.outputs.version }}"
-          echo "Branch Version: $BRANCH_VERSION"
-          echo "Extracted Version: $EXTRACTED_VERSION"
-          if [[ "$BRANCH_VERSION" != "$EXTRACTED_VERSION" ]]; then
-            echo "The extracted version ($EXTRACTED_VERSION) does not match the version in the branch name ($BRANCH_VERSION)"
-            exit 1 # Fail the job if versions don't match
-          else
-            echo "Version check passed: $BRANCH_VERSION matches $EXTRACTED_VERSION"
-          fi
+      - uses: actions/checkout@v4
+
+      - name: Check connect version match
+        uses: ./.github/actions/check-connect-version-match
+        with:
+          branch_ref: "${{ github.ref }}"
+          extracted_version: "${{ needs.extract-version.outputs.version }}"
 
   # This job deploys to staging-connect.trezor.io/9.x.x
   deploy-staging-semantic-version:
@@ -68,7 +62,7 @@ jobs:
       - name: Build and deploy to staging-connect.trezor.io/9.x.x
         uses: ./.github/actions/release-connect
         with:
-          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_prod_deploy"
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_connect_staging_deploy"
           awsRegion: "eu-central-1"
           serverHostname: "staging-connect.trezor.io"
           serverPath: ${{ needs.extract-version.outputs.version }}
@@ -94,7 +88,7 @@ jobs:
       - name: Build and deploy to staging-connect.trezor.io/9
         uses: ./.github/actions/release-connect
         with:
-          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_prod_deploy"
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_connect_staging_deploy"
           awsRegion: "eu-central-1"
           serverHostname: "staging-connect.trezor.io"
           serverPath: "9"
