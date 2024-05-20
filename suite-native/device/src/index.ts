@@ -7,6 +7,5 @@ export * from './hooks/useHandleDeviceRequestsPassphrase';
 export * from './hooks/useReportDeviceConnectToAnalytics';
 export * from './screens/DeviceInfoModalScreen';
 export * from './components/ConnectDeviceAnimation';
-export * from './deviceThunks';
 export * from './utils';
 export * from './selectors';

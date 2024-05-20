@@ -3,15 +3,16 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
 import {
+    accountsActions,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
     selectDeviceThunk,
+    selectAccountsByDeviceState,
 } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-
-import { wipeDisconnectedDevicesDataThunk } from '../deviceThunks';
+import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
@@ -49,6 +50,12 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
 
         if (deviceActions.forgetDevice.match(action)) {
             dispatch(handleDeviceDisconnect(action.payload));
+
+            const deviceState = action.payload.state;
+            if (deviceState) {
+                const accounts = selectAccountsByDeviceState(getState(), deviceState);
+                dispatch(accountsActions.removeAccount(accounts));
+            }
         }
 
         const isUsbDeviceConnectFeatureEnabled = selectIsFeatureFlagEnabled(
@@ -65,7 +72,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 break;
             case DEVICE.DISCONNECT:
                 dispatch(handleDeviceDisconnect(action.payload));
-                dispatch(wipeDisconnectedDevicesDataThunk());
+                clearAndUnlockDeviceAccessQueue();
                 break;
             default:
                 break;

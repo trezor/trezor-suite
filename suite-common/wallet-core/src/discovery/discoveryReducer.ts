@@ -1,16 +1,10 @@
-import { A, pipe } from '@mobily/ts-belt';
-
 import { createDeferred } from '@trezor/utils';
 import { Discovery, PartialDiscovery } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 import { discoveryActions } from './discoveryActions';
-import {
-    DeviceRootState,
-    selectDevice,
-    selectPersistedDeviceStates,
-} from '../device/deviceReducer';
+import { DeviceRootState, selectDevice } from '../device/deviceReducer';
 
 export type DiscoveryState = Discovery[];
 
@@ -123,13 +117,4 @@ export const selectIsDiscoveryAuthConfirmationRequired = (
         (discovery.status < DiscoveryStatus.STOPPING ||
             discovery.status === DiscoveryStatus.COMPLETED)
     );
-};
-
-export const selectDevicelessDiscoveries = (state: DiscoveryRootState & DeviceRootState) => {
-    const persistedDeviceStates = selectPersistedDeviceStates(state);
-
-    return pipe(
-        selectDiscovery(state),
-        A.filter(discovery => !persistedDeviceStates.includes(discovery.deviceState)),
-    ) as Discovery[];
 };

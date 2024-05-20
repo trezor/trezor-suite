@@ -2,6 +2,7 @@ import { G } from '@mobily/ts-belt';
 import { createTransform } from 'redux-persist';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+import { deviceActions } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { selectDeviceStatesNotRemembered, filterObjectKeys } from '@suite-native/storage';
 
@@ -57,6 +58,17 @@ export const graphSlice = createSlice({
                 [accountKey]: timeframeHours,
             };
         },
+    },
+    extraReducers: builder => {
+        builder.addCase(deviceActions.forgetDevice, (state, action) => {
+            const deviceState = action.payload.state;
+            if (deviceState) {
+                state.accountToGraphTimeframeMap = filterObjectKeys(
+                    state.accountToGraphTimeframeMap,
+                    [deviceState],
+                );
+            }
+        });
     },
 });
 
