@@ -13,6 +13,7 @@ export const ONION_LINKS = '@suite/onion-links';
 export const APP_CHANGED = '@suite/app-changed';
 export const SET_THEME = '@suite/set-theme';
 export const SET_ADDRESS_DISPLAY_TYPE = '@suite/set-display-address-type';
+export const SET_DEFAULT_WALLET_LOADING = '@suite/set-default-wallet-loading';
 export const SET_AUTODETECT = '@suite/set-autodetect';
 export const COINJOIN_RECEIVE_WARNING = '@suite/coinjoin-receive-warning';
 export const DESKTOP_SUITE_PROMO = '@suite/desktop-suite-promo';

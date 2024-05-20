@@ -97,6 +97,10 @@ export const extraDependenciesMock: ExtraDependencies = {
             AddressDisplayOptions.CHUNKED,
         ),
         selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
+        selectSuiteSettings: mockSelector('selectSuiteSettings', {
+            defaultWalletLoading: 'standard',
+            isViewOnlyModeVisible: false,
+        }),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),

@@ -8,6 +8,7 @@ import {
     Account,
     AccountKey,
     AddressDisplayOptions,
+    DefaultWalletLoading,
     Discovery,
     FeeInfo,
     SelectedAccountStatus,
@@ -77,6 +78,10 @@ export type ExtraDependencies = {
         selectCheckFirmwareAuthenticity: SuiteCompatibleSelector<boolean>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
+        selectSuiteSettings: SuiteCompatibleSelector<{
+            defaultWalletLoading: DefaultWalletLoading;
+            isViewOnlyModeVisible: boolean;
+        }>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,

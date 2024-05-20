@@ -16,7 +16,7 @@ import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/p
 import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, DefaultWalletLoading } from '@suite-common/wallet-types';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -84,6 +84,7 @@ export interface SuiteSettings {
     autodetect: AutodetectSettings;
     isDeviceAuthenticityCheckDisabled: boolean;
     addressDisplayType: AddressDisplayOptions;
+    defaultWalletLoading: DefaultWalletLoading;
 }
 
 export interface SuiteState {
@@ -148,6 +149,7 @@ const initialState: SuiteState = {
             theme: true,
         },
         addressDisplayType: AddressDisplayOptions.CHUNKED,
+        defaultWalletLoading: DefaultWalletLoading.STANDARD,
     },
 };
 
@@ -236,6 +238,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_ADDRESS_DISPLAY_TYPE:
                 draft.settings.addressDisplayType = action.option;
+                break;
+
+            case SUITE.SET_DEFAULT_WALLET_LOADING:
+                draft.settings.defaultWalletLoading = action.option;
                 break;
 
             case SUITE.SET_AUTODETECT:

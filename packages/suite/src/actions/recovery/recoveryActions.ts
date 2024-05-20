@@ -128,15 +128,6 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    if (response.success && DEFAULT_PASSPHRASE_PROTECTION) {
-        // We call recoverDevice from onboarding
-        // Uninitialized device has disabled passphrase protection thus useEmptyPassphrase is set to true.
-        // It means that when user finished the onboarding process a standard wallet is automatically
-        // discovered instead of asking for selecting between standard wallet and a passphrase.
-        // This action takes cares of setting useEmptyPassphrase to false (handled by deviceReducer).
-        dispatch(deviceActions.updatePassphraseMode({ device, hidden: true }));
-    }
-
     if (!response.success) {
         dispatch(setError(response.payload.error));
     }

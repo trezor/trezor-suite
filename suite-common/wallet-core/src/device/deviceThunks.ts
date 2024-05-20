@@ -5,6 +5,7 @@ import TrezorConnect, {
     Address,
     Response as ConnectResponse,
     UI,
+    DEVICE,
 } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -33,7 +34,7 @@ import {
     selectDeviceById,
     selectDevices,
 } from './deviceReducer';
-import { deviceActions, DEVICE_MODULE_PREFIX } from './deviceActions';
+import { deviceActions, DEVICE_MODULE_PREFIX, DeviceConnectActionPayload } from './deviceActions';
 import { checkFirmwareAuthenticity } from '../firmware/firmwareThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID, portfolioTrackerDevice } from './deviceConstants';
 import { selectAccountByKey } from '../accounts/accountsReducer';
@@ -340,7 +341,9 @@ export const authorizeDeviceThunk = createThunk<
             const freshDeviceData = getSelectedDevice(device, devices);
 
             if (duplicate) {
-                if (freshDeviceData!.useEmptyPassphrase) {
+                const isStandardWallet = freshDeviceData!.useEmptyPassphrase;
+
+                if (isStandardWallet) {
                     // if currently selected device uses empty passphrase
                     // make sure that founded duplicate will also use empty passphrase
                     dispatch(
@@ -601,5 +604,29 @@ export const onPassphraseSubmit = createThunk(
                 passphraseOnDevice,
             },
         });
+    },
+);
+
+type DeviceConnectThunkEventType = typeof DEVICE.CONNECT | typeof DEVICE.CONNECT_UNACQUIRED;
+
+const deviceConnectThunksMap: Record<
+    DeviceConnectThunkEventType,
+    (payload: DeviceConnectActionPayload) => any
+> = {
+    [DEVICE.CONNECT]: deviceActions.connectDevice,
+    [DEVICE.CONNECT_UNACQUIRED]: deviceActions.connectDevice,
+};
+
+type DeviceConnectThunksParams = {
+    type: DeviceConnectThunkEventType;
+    device: Device;
+};
+
+export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, void>(
+    `${DEVICE_MODULE_PREFIX}/deviceConnectThunk`,
+    ({ type, device }, { dispatch, getState, extra }) => {
+        const settings = extra.selectors.selectSuiteSettings(getState());
+
+        dispatch(deviceConnectThunksMap[type]({ device, settings }));
     },
 );
