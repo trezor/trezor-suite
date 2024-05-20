@@ -45,6 +45,7 @@ fixtures.forEach(f => {
         log(`going to: ${url}${f.queryString}#/method/verifyMessage`);
         await page.goto(formatUrl(url, `methods/bitcoin/verifyMessage/${f.queryString}`));
         log('waiting for explorer to load');
+        await waitAndClick(page, ['@api-playground/collapsible-box']);
         await page.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });

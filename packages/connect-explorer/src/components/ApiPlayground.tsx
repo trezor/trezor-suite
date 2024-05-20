@@ -19,8 +19,7 @@ const ApiPlaygroundWrapper = styled.div`
     left: 2rem;
     right: 2rem;
     max-width: 71rem;
-    max-height: calc(100% - 150px);
-    overflow: hidden auto;
+    overflow: hidden;
     overscroll-behavior: contain;
     border-radius: 1rem;
     padding: 0;
@@ -44,12 +43,11 @@ const CollapsibleBoxStyled = styled(CollapsibleBox)`
     margin: 0;
     border: 0;
 
-    /* fix for nested sticky elements */
-    & > div:nth-child(2) {
-        overflow: visible;
-
+    /* CollapsibleBox content, fix for nested sticky elements */
+    > div:nth-child(2) {
         > div {
-            overflow: visible;
+            overflow: hidden scroll;
+            max-height: calc(100vh - 200px);
         }
     }
 `;

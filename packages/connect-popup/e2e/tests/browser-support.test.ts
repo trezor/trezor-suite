@@ -21,6 +21,7 @@ const openPopup = async (page: Page) =>
             // It is important to call waitForEvent before click to set up waiting.
             page.waitForEvent('popup'),
             // Opens popup.
+            page.click("div[data-test='@api-playground/collapsible-box']"),
             page.click("button[data-test='@submit-button']"),
         ])
     )[0];
@@ -37,6 +38,7 @@ test('unsupported browser', async ({ browser }) => {
     });
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
+    await waitAndClick(page, ['@api-playground/collapsible-box']);
     await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForSelector('text=Unsupported browser');
@@ -53,6 +55,7 @@ test('outdated-browser', async ({ browser }) => {
     });
     const page = await context.newPage();
     await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
+    await waitAndClick(page, ['@api-playground/collapsible-box']);
     await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForLoadState('load');

@@ -1,6 +1,6 @@
 import { test, chromium, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { setConnectSettings } from '../support/helpers';
+import { setConnectSettings, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -44,7 +44,7 @@ fixtures.forEach(f => {
 
         await page.click("a[data-test='@navbar-logo']");
         await page.click("a[href$='/methods/bitcoin/verifyMessage/']");
-        await page.waitForSelector("div[data-test='@api-playground/collapsible-box']");
+        await waitAndClick(page, ['@api-playground/collapsible-box']);
 
         [popup] = await Promise.all([
             page.waitForEvent('popup'),
