@@ -530,6 +530,7 @@ export class DeviceCommands {
             coin_name: 'Testnet',
             script_type: 'SPENDADDRESS',
         });
+
         return message.address;
     }
 
