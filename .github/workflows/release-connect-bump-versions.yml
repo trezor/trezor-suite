@@ -1,0 +1,37 @@
+name: "[Release] connect bump versions"
+
+on:
+  workflow_dispatch:
+    inputs:
+      semver:
+        type: choice
+        description: semver
+        options:
+          - patch
+          - minor
+          - prerelease
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  bump-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Check dependencies to update
+        run: |
+          yarn tsx ./ci/scripts/connect-bump-versions.ts ${{ github.event.inputs.semver }}

@@ -1,11 +1,13 @@
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
 
 const { checkPackageDependencies, exec, commit, comment } = require('./helpers');
 
 const args = process.argv.slice(2);
 
-if (args.length < 1) throw new Error('Check npm dependencies requires 1 parameter: semver');
+if (args.length < 1) {
+    throw new Error('Check npm dependencies requires 1 parameter: semver');
+}
 const [semver] = args;
 
 const allowedSemvers = ['patch', 'minor', 'prerelease'];
@@ -17,7 +19,7 @@ const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
 
 const ROOT = path.join(__dirname, '..', '..');
 
-const getGitCommitByPackageName = (packageName, maxCount = 10) =>
+const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
     exec('git', [
         'log',
         '--oneline',
@@ -28,39 +30,16 @@ const getGitCommitByPackageName = (packageName, maxCount = 10) =>
         `./packages/${packageName}`,
     ]);
 
-const ghWorkflowRunReleaseAction = (branch, packages, deployment) =>
-    exec('gh', [
-        'workflow',
-        'run',
-        '.github/workflows/release-connect-npm.yml',
-        '--ref',
-        branch,
-        '--field',
-        `packages=${packages}`,
-        '--field',
-        `deploymentType=${deployment}`,
-    ]);
+const splitByNewlines = (input: string): string[] => input.split('\n');
 
-const splitByNewlines = input => input.split('\n');
-
-const findIndexByCommit = (commitArr, searchString) =>
+const findIndexByCommit = (commitArr: string[], searchString: string): number =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
-const initConnectRelease = async () => {
-    console.log('Using GitHub Token:', process.env.GITHUB_TOKEN ? 'Yes' : 'No');
-
-    if (process.env.GITHUB_TOKEN) {
-        // Making sure we use the proper GITHUB_TOKEN
-        exec('gh', ['auth', 'setup-git']);
-        exec('gh', ['config', 'set', '-h', 'github.com', 'oauth_token', process.env.GITHUB_TOKEN]);
-    } else {
-        throw new Error('Missing GITHUB_TOKEN');
-    }
-
+const bumpConnect = async () => {
     const checkResult = await checkPackageDependencies('connect', deploymentType);
 
-    const update = checkResult.update.map(package => package.replace('@trezor/', ''));
-    const errors = checkResult.errors.map(package => package.replace('@trezor/', ''));
+    const update = checkResult.update.map((pkg: string) => pkg.replace('@trezor/', ''));
+    const errors = checkResult.errors.map((pkg: string) => pkg.replace('@trezor/', ''));
 
     if (update) {
         update.forEach(packageName => {
@@ -69,7 +48,7 @@ const initConnectRelease = async () => {
 
             exec('yarn', ['bump', semver, `./packages/${packageName}/package.json`]);
 
-            const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH);
+            const rawPackageJSON = fs.readFileSync(PACKAGE_JSON_PATH, 'utf-8');
             const packageJSON = JSON.parse(rawPackageJSON);
             const { version } = packageJSON;
 
@@ -79,7 +58,7 @@ const initConnectRelease = async () => {
 
             const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
 
-            const newCommits = [];
+            const newCommits: string[] = [];
             for (const commit of commitsArr) {
                 if (commit.includes(`npm-release: @trezor/${packageName}`)) {
                     break;
@@ -110,18 +89,18 @@ const initConnectRelease = async () => {
     const CONNECT_PACKAGE_PATH = path.join(ROOT, 'packages', 'connect');
     const CONNECT_PACKAGE_JSON_PATH = path.join(CONNECT_PACKAGE_PATH, 'package.json');
 
-    const preBumpRawPackageJSON = fs.readFileSync(CONNECT_PACKAGE_JSON_PATH);
+    const preBumpRawPackageJSON = fs.readFileSync(CONNECT_PACKAGE_JSON_PATH, 'utf-8');
     const preBumpPackageJSON = JSON.parse(preBumpRawPackageJSON);
     const { version: preBumpVersion } = preBumpPackageJSON;
 
     exec('yarn', ['workspace', '@trezor/connect', `version:${semver}`]);
 
-    const rawPackageJSON = fs.readFileSync(CONNECT_PACKAGE_JSON_PATH);
+    const rawPackageJSON = fs.readFileSync(CONNECT_PACKAGE_JSON_PATH, 'utf-8');
     const packageJSON = JSON.parse(rawPackageJSON);
     const { version } = packageJSON;
 
     const commitMessage = `npm-release: @trezor/connect ${version}`;
-    const branchName = `npm-release/connect-${version}`;
+    const branchName = `bump-versions/connect-${version}`;
 
     // Check if branch exists and if so, delete it.
     const branchExists = exec('git', ['branch', '--list', branchName]).stdout;
@@ -207,34 +186,6 @@ const initConnectRelease = async () => {
             body: connectGitLogText,
         });
     }
-
-    // At this point we have created the commit with the bumped versions,
-    // and a pull request including all the changes.
-    // Now we want to trigger the action that will trigger the actual release,
-    // after approval form authorized member.
-    const dependenciesToRelease = JSON.stringify(update);
-    console.log('dependenciesToRelease:', dependenciesToRelease);
-    console.log('deploymentType:', deploymentType);
-    console.log('branchName:', branchName);
-
-    const releaseDependencyActionOutput = ghWorkflowRunReleaseAction(
-        branchName,
-        dependenciesToRelease,
-        deploymentType,
-    );
-
-    console.log('releaseDependencyActionOutput output:', releaseDependencyActionOutput.stdout);
-
-    // We trigger this second action to release connect, so we can just not approve it in case
-    // the release of the dependencies to NPM was not successful.
-    console.log('Triggering action to release connect.');
-    const releaseConnectActionOutput = ghWorkflowRunReleaseAction(
-        branchName,
-        JSON.stringify(['connect', 'connect-web', 'connect-webextension']),
-        deploymentType,
-    );
-
-    console.log('releaseConnectActionOutput output:', releaseConnectActionOutput.stdout);
 };
 
-initConnectRelease();
+bumpConnect();

@@ -16,6 +16,7 @@ on:
 
 jobs:
   deploy-npm:
+    name: Deploy NPM ${{ inputs.deploymentType }}
     environment: production-connect
     runs-on: ubuntu-latest
     strategy:
