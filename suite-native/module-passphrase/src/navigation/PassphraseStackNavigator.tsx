@@ -5,7 +5,7 @@ import {
     PassphraseStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { useHandleDuplicitPassphrase } from '@suite-native/passphrase';
+import { useHandleDuplicatePassphrase } from '@suite-native/passphrase';
 
 import { PassphraseFormScreen } from '../screens/PassphraseFormScreen';
 import { PassphraseLoadingScreen } from '../screens/PassphraseLoadingScreen';
@@ -17,7 +17,7 @@ import { PassphraseEnterOnTrezorScreen } from '../screens/PassphraseEnterOnTrezo
 export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
 export const PassphraseStackNavigator = () => {
-    useHandleDuplicitPassphrase();
+    useHandleDuplicatePassphrase();
 
     return (
         <PassphraseStack.Navigator screenOptions={stackNavigationOptionsConfig}>

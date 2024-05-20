@@ -26,7 +26,7 @@ import {
     selectDevice,
     selectDeviceAuthFailed,
     removeButtonRequests,
-    authorizeDevice,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
@@ -104,7 +104,7 @@ export const PinFormControlButtons = () => {
             onPressPrimaryButton: () => {
                 if (hasDeviceAuthFailed) {
                     // Ask for new PIN entry after 3 wrong attempts.
-                    requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
+                    requestPrioritizedDeviceAccess(() => dispatch(authorizeDeviceThunk()));
                 }
             },
             secondaryButtonTitle: (

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { AuthorizeDeviceError, authorizeDevice } from '@suite-common/wallet-core';
+import { AuthorizeDeviceError, authorizeDeviceThunk } from '@suite-common/wallet-core';
 
 type PassphraseState = {
     error: AuthorizeDeviceError | null;
@@ -20,10 +20,10 @@ export const passphraseSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(authorizeDevice.pending, state => {
+            .addCase(authorizeDeviceThunk.pending, state => {
                 state.error = null;
             })
-            .addCase(authorizeDevice.rejected, (state, { payload }) => {
+            .addCase(authorizeDeviceThunk.rejected, (state, { payload }) => {
                 if (payload?.error === 'passphrase-duplicate') {
                     state.error = payload;
                 }

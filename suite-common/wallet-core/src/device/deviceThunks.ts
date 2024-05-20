@@ -275,13 +275,13 @@ export const acquireDevice = createThunk(
  */
 type AuthorizeDeviceParams = { shouldIgnoreDeviceState: boolean } | undefined;
 export type AuthorizeDeviceError = {
-    error: string;
+    error: 'no-device' | 'device-not-ready' | 'auth-failed' | 'passphrase-duplicate';
     device?: TrezorDevice;
     duplicate?: TrezorDevice;
 };
 type AuthorizeDeviceSuccess = { device: TrezorDevice; state: string };
 
-export const authorizeDevice = createThunk<
+export const authorizeDeviceThunk = createThunk<
     AuthorizeDeviceSuccess,
     AuthorizeDeviceParams,
     { rejectValue: AuthorizeDeviceError }

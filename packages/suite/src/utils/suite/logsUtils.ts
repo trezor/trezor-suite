@@ -3,9 +3,8 @@ import {
     discoveryActions,
     accountsActions,
     selectDevices,
-    authorizeDevice,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
-import { isAnyOf } from '@reduxjs/toolkit';
 import {
     getEnvironment,
     getBrowserName,
@@ -124,7 +123,7 @@ export const redactAction = (action: LogEntry) => {
         };
     }
 
-    if (isAnyOf(authorizeDevice.fulfilled)(action)) {
+    if (authorizeDeviceThunk.fulfilled.match(action)) {
         payload = {
             state: REDACTED_REPLACEMENT,
             ...redactDevice(action.payload.device),

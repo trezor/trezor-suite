@@ -6,7 +6,7 @@ import {
     discoveryActions,
     selectDevices,
     selectDevicesCount,
-    authorizeDevice,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
@@ -33,7 +33,6 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 import { updateLastAnonymityReportTimestamp } from 'src/actions/wallet/coinjoinAccountActions';
 import { Account } from '@suite-common/wallet-types';
-import { isAnyOf } from '@reduxjs/toolkit';
 
 /*
     In analytics middleware we may intercept actions we would like to log. For example:
@@ -50,7 +49,7 @@ const analyticsMiddleware =
 
         const state = api.getState();
 
-        if (isAnyOf(authorizeDevice.fulfilled)(action)) {
+        if (authorizeDeviceThunk.fulfilled.match(action)) {
             analytics.report({
                 type: EventType.SelectWalletType,
                 payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },

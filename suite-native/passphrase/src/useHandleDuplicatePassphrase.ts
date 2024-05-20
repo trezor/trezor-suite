@@ -25,7 +25,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
     RootStackParamList
 >;
 
-export const useHandleDuplicitPassphrase = () => {
+export const useHandleDuplicatePassphrase = () => {
     const dispatch = useDispatch();
 
     const passphraseError = useSelector(selectPassphraseError);
@@ -34,7 +34,7 @@ export const useHandleDuplicitPassphrase = () => {
 
     const navigation = useNavigation<NavigationProp>();
 
-    const { showAlert, hideAlert } = useAlert();
+    const { showAlert } = useAlert();
 
     const handleDuplicateDevicePassphrase = useCallback(
         ({ device, duplicate }: { device?: TrezorDevice; duplicate?: TrezorDevice }) => {
@@ -48,10 +48,9 @@ export const useHandleDuplicitPassphrase = () => {
                         screen: HomeStackRoutes.Home,
                     },
                 });
-                hideAlert();
             }
         },
-        [dispatch, hideAlert, navigation],
+        [dispatch, navigation],
     );
 
     useEffect(() => {

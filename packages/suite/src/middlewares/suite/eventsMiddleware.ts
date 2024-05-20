@@ -5,7 +5,7 @@ import {
     selectDevice,
     accountsActions,
     deviceActions,
-    authorizeDevice,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DEVICE } from '@trezor/connect';
@@ -17,7 +17,6 @@ import {
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
-import { isAnyOf } from '@reduxjs/toolkit';
 
 /*
  * Middleware for event notifications.
@@ -109,7 +108,7 @@ const eventsMiddleware =
             });
         }
 
-        if (isAnyOf(authorizeDevice.fulfilled)(action)) {
+        if (authorizeDeviceThunk.fulfilled.match(action)) {
             api.dispatch(notificationsActions.addEvent({ type: AUTH_DEVICE, seen: true }));
         }
 

@@ -15,7 +15,7 @@ import {
 import { isNative } from '@trezor/env-utils';
 
 import { deviceActions } from './deviceActions';
-import { authorizeDevice } from './deviceThunks';
+import { authorizeDeviceThunk } from './deviceThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type State = {
@@ -341,7 +341,7 @@ const authFailed = (draft: State, device: TrezorDevice) => {
 };
 
 /**
- * Action handler: authorizeDevice.pending
+ * Action handler: authorizeDeviceThunk.pending
  * Reset authFailed flag
  * @param {State} draft
  * @returns
@@ -516,13 +516,13 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
             changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
-        .addCase(authorizeDevice.pending, state => {
+        .addCase(authorizeDeviceThunk.pending, state => {
             resetAuthFailed(state);
         })
-        .addCase(authorizeDevice.fulfilled, (state, { payload }) => {
+        .addCase(authorizeDeviceThunk.fulfilled, (state, { payload }) => {
             authDevice(state, payload.device, payload.state);
         })
-        .addCase(authorizeDevice.rejected, (state, action) => {
+        .addCase(authorizeDeviceThunk.rejected, (state, action) => {
             if (action.payload && action.payload.error) {
                 const { error } = action.payload;
                 if (error === 'auth-failed' && action.payload.device) {

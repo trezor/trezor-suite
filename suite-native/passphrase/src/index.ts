@@ -1,3 +1,3 @@
 export * from './passphraseSlice';
 export * from './passphraseThunks';
-export * from './useHandleDuplicitPassphrase';
+export * from './useHandleDuplicatePassphrase';

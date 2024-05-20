@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { discoveryActions, deviceActions, authorizeDevice } from '@suite-common/wallet-core';
+import { discoveryActions, deviceActions, authorizeDeviceThunk } from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -768,14 +768,14 @@ const authorizeDeviceActions = [
     {
         description: `without device`,
         state: {},
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with disconnected device`,
         state: {
             selectedDevice: getSuiteDevice(),
         },
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with unacquired device`,
@@ -785,7 +785,7 @@ const authorizeDeviceActions = [
                 connected: true,
             }),
         },
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with device which already has state`,
@@ -795,7 +795,7 @@ const authorizeDeviceActions = [
                 state: '012345',
             }),
         },
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with device in unexpected mode`,
@@ -805,7 +805,7 @@ const authorizeDeviceActions = [
                 mode: 'bootloader',
             }),
         },
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with device which needs FW update`,
@@ -815,7 +815,7 @@ const authorizeDeviceActions = [
                 firmware: 'required',
             }),
         },
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `success`,
@@ -824,7 +824,7 @@ const authorizeDeviceActions = [
                 connected: true,
             }),
         },
-        result: authorizeDevice.fulfilled.type,
+        result: authorizeDeviceThunk.fulfilled.type,
     },
     {
         description: `duplicate detected`,
@@ -849,7 +849,7 @@ const authorizeDeviceActions = [
                 state: undefined,
             }),
         ],
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
         deviceReducerResult: [
             getSuiteDevice({
                 connected: true,
@@ -891,7 +891,7 @@ const authorizeDeviceActions = [
                 state: undefined,
             }),
         ],
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
         deviceReducerResult: [
             getSuiteDevice({
                 connected: true,
@@ -920,7 +920,7 @@ const authorizeDeviceActions = [
                 error: 'getDeviceState error',
             },
         },
-        result: authorizeDevice.rejected.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
 ];
 

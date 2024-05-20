@@ -6,7 +6,7 @@ import {
     blockchainActions,
     selectDevice,
     deviceActions,
-    authorizeDevice,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import {
     getBootloaderVersion,
@@ -56,7 +56,7 @@ const breadcrumbActions = [
     DESKTOP_UPDATE.NOT_AVAILABLE,
     DESKTOP_UPDATE.READY,
     MODAL.CLOSE,
-    authorizeDevice.fulfilled.type,
+    authorizeDeviceThunk.fulfilled.type,
     DEVICE.CONNECT,
     DEVICE.DISCONNECT,
     accountsActions.createAccount.type,

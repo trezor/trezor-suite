@@ -1,6 +1,5 @@
 import { MiddlewareAPI } from 'redux';
-import { isAnyOf } from '@reduxjs/toolkit';
-import { authorizeDevice, deviceActions, discoveryActions } from '@suite-common/wallet-core';
+import { authorizeDeviceThunk, deviceActions, discoveryActions } from '@suite-common/wallet-core';
 import { addLog } from '@suite-common/logger';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
 import { redactUserPathFromString } from '@trezor/utils';
@@ -48,10 +47,10 @@ const log =
             }
         }
 
-        if (isAnyOf(authorizeDevice.fulfilled)(action)) {
+        if (authorizeDeviceThunk.fulfilled.match(action)) {
             api.dispatch(
                 addLog({
-                    type: 'authorizeDevice.fulfilled',
+                    type: 'authorizeDeviceThunk.fulfilled',
                     payload: {
                         device: action.payload.device,
                         firmwareRelease: undefined,
