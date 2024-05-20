@@ -202,17 +202,27 @@ const getBinaryHelper = (
         version: device.firmwareRelease.release.version,
         btcOnly,
         intermediaryVersion,
-    }).then(res => {
-        postMessage(
-            createUiMessage(UI.FIRMWARE_PROGRESS, {
-                device: device.toMessageObject(),
-                operation: 'downloading',
-                progress: 100,
-            }),
-        );
+    })
+        .then(res => {
+            // suspiciously small binary. this typically happens when build does not have git lfs enabled and all
+            // you download here are some pointers to lfs objects which are around ~132 byteLength
+            if (res.byteLength < 200) {
+                throw ERRORS.TypedError('Runtime', 'Firmware binary is too small');
+            }
 
-        return res;
-    });
+            return res;
+        })
+        .then(res => {
+            postMessage(
+                createUiMessage(UI.FIRMWARE_PROGRESS, {
+                    device: device.toMessageObject(),
+                    operation: 'downloading',
+                    progress: 100,
+                }),
+            );
+
+            return res;
+        });
 };
 
 const firmwareCheck = async (
