@@ -86,6 +86,10 @@ export const extraDependencies: ExtraDependencies = {
             state.suite.settings.debug.checkFirmwareAuthenticity,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
+        selectSuiteSettings: (state: AppState) => ({
+            defaultWalletLoading: state.suite.settings.defaultWalletLoading,
+            isViewOnlyModeVisible: state.suite.flags.isViewOnlyModeVisible,
+        }),
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

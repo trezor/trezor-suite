@@ -1,11 +1,13 @@
 import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect, {
     BLOCKCHAIN_EVENT,
+    DEVICE,
     DEVICE_EVENT,
     TRANSPORT_EVENT,
     UI_EVENT,
 } from '@trezor/connect';
 import { getSynchronize } from '@trezor/utils';
+import { deviceConnectThunks } from '@suite-common/wallet-core';
 
 import { cardanoConnectPatch } from './cardanoConnectPatch';
 
@@ -30,9 +32,14 @@ export const connectInitThunk = createThunk(
         const getEnabledNetworks = () => selectEnabledNetworks(getState());
 
         // set event listeners and dispatch as
-        TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...action }) => {
+        TrezorConnect.on(DEVICE_EVENT, ({ event: _, ...eventData }) => {
             // dispatch event as action
-            dispatch(action);
+
+            if (eventData.type === DEVICE.CONNECT || eventData.type === DEVICE.CONNECT_UNACQUIRED) {
+                dispatch(deviceConnectThunks({ type: eventData.type, device: eventData.payload }));
+            } else {
+                dispatch({ type: eventData.type, payload: eventData.payload });
+            }
         });
 
         TrezorConnect.on(UI_EVENT, ({ event: _, ...action }) => {

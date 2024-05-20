@@ -72,6 +72,8 @@ export enum EventType {
     SettingsMultiShareBackup = 'settings/device/multi-share-backup',
     SettingsDeviceWipe = 'settings/device/wipe',
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
+    SettingsDeviceDefaultWalletLoading = 'settings/device/default-wallet-type',
+
     SettingsGeneralChangeLanguage = 'settings/general/change-language',
     SettingsGeneralChangeTheme = 'settings/general/change-theme',
     SettingsGeneralAddressDisplayType = 'settings/general/address-display-type',

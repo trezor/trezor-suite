@@ -15,12 +15,12 @@ import {
 } from '@suite-common/device-authenticity';
 import { isNative } from '@trezor/env-utils';
 
-import { deviceActions } from './deviceActions';
 import {
     authorizeDeviceThunk,
     createDeviceInstanceThunk,
     createImportedDeviceThunk,
 } from './deviceThunks';
+import { ConnectDeviceSettings, deviceActions } from './deviceActions';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type State = {
@@ -73,15 +73,27 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
     },
 });
 
-const getShouldUseEmptyPassphrase = (device: Device, deviceInstance?: number): boolean => {
+const getShouldUseEmptyPassphrase = (
+    device: Device,
+    deviceInstance: number | undefined,
+    settings: ConnectDeviceSettings,
+): boolean => {
     if (!device.features) return false;
+
     if (isNative() && (!deviceInstance || deviceInstance === 1)) {
         // On mobile, if device has instance === 1, we always want to use empty passphrase since we
         // connect & authorize standard wallet by default. Other instances will have `usePassphraseProtection` set same way as web/desktop app.
         return true;
-    } else {
-        return isUnlocked(device.features) && !device.features.passphrase_protection;
     }
+
+    const isPassphraseDisabledInSettings = !device.features.passphrase_protection;
+    const isLegacy = !settings.isViewOnlyModeVisible;
+
+    return (
+        isPassphraseDisabledInSettings ||
+        isLegacy ||
+        (!isLegacy && settings.defaultWalletLoading === 'standard')
+    );
 };
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
@@ -89,7 +101,7 @@ const getShouldUseEmptyPassphrase = (device: Device, deviceInstance?: number): b
  * @param {Device} device
  * @returns
  */
-const connectDevice = (draft: State, device: Device) => {
+const connectDevice = (draft: State, device: Device, settings: ConnectDeviceSettings) => {
     // connected device is unacquired/unreadable
     if (!device.features) {
         // check if device already exists in reducer
@@ -135,9 +147,11 @@ const connectDevice = (draft: State, device: Device) => {
         ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
         : undefined;
 
+    const useEmptyPassphrase = getShouldUseEmptyPassphrase(device, deviceInstance, settings);
+
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: getShouldUseEmptyPassphrase(device, deviceInstance),
+        useEmptyPassphrase,
         remember: false,
         connected: true,
         available: true,
@@ -506,12 +520,15 @@ export const setDeviceAuthenticity = (
 
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
-        .addCase(deviceActions.connectDevice, (state, { payload }) => {
-            connectDevice(state, payload);
+        .addCase(deviceActions.connectDevice, (state, { payload: { device, settings } }) => {
+            connectDevice(state, device, settings);
         })
-        .addCase(deviceActions.connectUnacquiredDevice, (state, { payload }) => {
-            connectDevice(state, payload);
-        })
+        .addCase(
+            deviceActions.connectUnacquiredDevice,
+            (state, { payload: { device, settings } }) => {
+                connectDevice(state, device, settings);
+            },
+        )
         .addCase(deviceActions.deviceChanged, (state, { payload }) => {
             changeDevice(state, payload, { connected: true, available: true });
         })

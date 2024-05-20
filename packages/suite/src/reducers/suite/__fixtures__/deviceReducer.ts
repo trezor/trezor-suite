@@ -1,5 +1,9 @@
 import { testMocks } from '@suite-common/test-utils';
-import { authorizeDeviceThunk, deviceActions } from '@suite-common/wallet-core';
+import {
+    authorizeDeviceThunk,
+    deviceActions,
+    DeviceConnectActionPayload,
+} from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 const { getConnectDevice, getSuiteDevice } = testMocks;
@@ -15,9 +19,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
@@ -39,9 +49,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
@@ -69,9 +85,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
@@ -94,9 +116,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
@@ -125,9 +153,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
@@ -159,9 +193,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
@@ -225,10 +265,16 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT_UNACQUIRED,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
@@ -251,10 +297,16 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT_UNACQUIRED,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [

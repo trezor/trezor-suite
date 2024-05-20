@@ -66,6 +66,10 @@ export type SuiteAction =
           option: AppState['suite']['settings']['addressDisplayType'];
       }
     | {
+          type: typeof SUITE.SET_DEFAULT_WALLET_LOADING;
+          option: AppState['suite']['settings']['defaultWalletLoading'];
+      }
+    | {
           type: typeof SUITE.SET_AUTODETECT;
           payload: Partial<AutodetectSettings>;
       }
@@ -96,6 +100,13 @@ export const setAddressDisplayType = (
     option: AppState['suite']['settings']['addressDisplayType'],
 ): SuiteAction => ({
     type: SUITE.SET_ADDRESS_DISPLAY_TYPE,
+    option,
+});
+
+export const setDefaultWalletLoading = (
+    option: AppState['suite']['settings']['defaultWalletLoading'],
+): SuiteAction => ({
+    type: SUITE.SET_DEFAULT_WALLET_LOADING,
     option,
 });
 

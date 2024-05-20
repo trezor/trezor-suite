@@ -70,10 +70,10 @@ const suite =
         }
 
         if (deviceActions.connectDevice.match(action)) {
-            const isT3T1 = action.payload?.features?.internal_model === DeviceModelInternal.T3T1;
+            const isT3T1 = action.payload?.device?.features?.internal_model === DeviceModelInternal.T3T1;
             const isT3T1DashboardPromoBannerActive =
                 api.getState().suite.flags.showDashboardT3T1PromoBanner;
-
+       
             if (isT3T1 && isT3T1DashboardPromoBannerActive) {
                 api.dispatch(setFlag('showDashboardT3T1PromoBanner', false));
             }
@@ -95,7 +95,7 @@ const suite =
                 break;
             case DEVICE.CONNECT:
             case DEVICE.CONNECT_UNACQUIRED:
-                api.dispatch(handleDeviceConnect(action.payload));
+                api.dispatch(handleDeviceConnect(action.payload.device));
                 break;
             case DEVICE.DISCONNECT:
                 api.dispatch(handleDeviceDisconnect(action.payload));

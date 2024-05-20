@@ -32,6 +32,7 @@ import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
 import { HapticFeedback } from './HapticFeedback';
 import { Brightness } from './Brightness';
+import { DefaultWalletLoading } from './DefaultWalletLoading';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -135,6 +136,15 @@ export const SettingsDevice = () => {
             {isViewOnlyModeVisible && (
                 <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
                     <EnableViewOnly />
+                </SettingsSection>
+            )}
+
+            {isViewOnlyModeVisible && (
+                <SettingsSection
+                    title={<Translation id="TR_DEVICE_SETTINGS_APPLICATION" />}
+                    icon="APP"
+                >
+                    <DefaultWalletLoading />
                 </SettingsSection>
             )}
 

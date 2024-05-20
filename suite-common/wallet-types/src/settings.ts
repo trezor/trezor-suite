@@ -6,8 +6,16 @@ export const AddressDisplayOptions = {
     ORIGINAL: 'original',
     CHUNKED: 'chunked',
 } as const;
+
 export type AddressDisplayOptions =
     (typeof AddressDisplayOptions)[keyof typeof AddressDisplayOptions];
+
+export const DefaultWalletLoading = {
+    STANDARD: 'standard',
+    PASSPHRASE: 'passphrase',
+} as const;
+
+export type DefaultWalletLoading = (typeof DefaultWalletLoading)[keyof typeof DefaultWalletLoading];
 
 export interface WalletSettings {
     localCurrency: FiatCurrencyCode;

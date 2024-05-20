@@ -39,9 +39,9 @@ const eventsMiddleware =
         if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
             // get TrezorDevice from @trezor/connect:Device object
             const devices = selectDevices(api.getState());
-            const device = devices.find(d => d.path === action.payload.path);
+            const device = devices.find(d => d.path === action.payload.device.path);
             if (!device) return action; // this shouldn't happen
-            const seen = deviceUtils.isSelectedDevice(action.payload, selectDevice(api.getState()));
+            const seen = deviceUtils.isSelectedDevice(action.payload.device, selectDevice(api.getState()));
 
             const toRemove = api
                 .getState()
