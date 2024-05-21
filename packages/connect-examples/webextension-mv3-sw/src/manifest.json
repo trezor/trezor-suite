@@ -12,6 +12,7 @@
     "host_permissions": [
         "*://connect.trezor.io/9/*",
         "*://suite.corp.sldev.cz/*",
-        "*://localhost/*"
+        "*://localhost/*",
+        "*://staging-connect.trezor.io/*"
     ]
 }
