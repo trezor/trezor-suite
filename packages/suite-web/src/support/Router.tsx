@@ -21,8 +21,10 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
             ({ Transactions }) => ({ default: Transactions }),
         ),
     ),
-    'wallet-receive': lazy(
-        () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/receive'),
+    'wallet-receive': lazy(() =>
+        import(/* webpackChunkName: "wallet" */ 'src/views/wallet/receive/Receive').then(
+            ({ Receive }) => ({ default: Receive }),
+        ),
     ),
     'wallet-details': lazy(
         () => import(/* webpackChunkName: "wallet" */ 'src/views/wallet/details'),

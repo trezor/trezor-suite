@@ -7,8 +7,11 @@ import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
+import { ConnectDevicePromo } from './components/ConnectDevicePromo';
+import { Column } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
-const Receive = () => {
+export const Receive = () => {
     const isCoinjoinReceiveWarningHidden = useSelector(
         state => state.suite.settings.isCoinjoinReceiveWarningHidden,
     );
@@ -33,30 +36,35 @@ const Receive = () => {
     const disabled = !!device.authConfirm;
     const showCexWarning = account?.accountType === 'coinjoin' && !isCoinjoinReceiveWarningHidden;
 
+    const isDeviceConnected = device.connected && device.available;
+
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
-            <WalletSubpageHeading title="TR_NAV_RECEIVE" />
+            <Column gap={spacings.sm} alignItems="start">
+                {!isDeviceConnected && <ConnectDevicePromo />}
 
-            {showCexWarning && <CoinjoinReceiveWarning />}
+                <WalletSubpageHeading title="TR_NAV_RECEIVE" />
 
-            <FreshAddress
-                account={account}
-                addresses={receive}
-                disabled={disabled}
-                locked={isDeviceLocked}
-                pendingAddresses={pendingAddresses}
-            />
+                {showCexWarning && <CoinjoinReceiveWarning />}
 
-            <UsedAddresses
-                account={account}
-                addresses={receive}
-                locked={isDeviceLocked}
-                pendingAddresses={pendingAddresses}
-            />
+                <FreshAddress
+                    account={account}
+                    addresses={receive}
+                    disabled={disabled}
+                    locked={isDeviceLocked}
+                    pendingAddresses={pendingAddresses}
+                    isDeviceConnected={isDeviceConnected}
+                />
 
-            <ConfirmEvmExplanationModal account={account} route="wallet-receive" />
+                <UsedAddresses
+                    account={account}
+                    addresses={receive}
+                    locked={isDeviceLocked}
+                    pendingAddresses={pendingAddresses}
+                />
+
+                <ConfirmEvmExplanationModal account={account} route="wallet-receive" />
+            </Column>
         </WalletLayout>
     );
 };
-
-export default Receive;

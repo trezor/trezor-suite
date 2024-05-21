@@ -6,13 +6,8 @@ import { Translation, Modal } from 'src/components/suite';
 import { TranslationKey } from 'src/components/suite/Translation';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { ThunkAction } from 'src/types/suite';
-import { Button, Image } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { onCancel } from 'src/actions/suite/modalActions';
-
-const StyledImage = styled(Image)`
-    align-self: center;
-    padding: 20px 0;
-`;
 
 const StyledModal = styled(Modal)`
     width: 520px;
@@ -80,9 +75,10 @@ export const ConfirmUnverifiedModal = ({
             }
             bottomBarComponents={
                 <>
-                    <Button variant="tertiary" onClick={continueUnverified}>
+                    <Button variant="warning" onClick={continueUnverified}>
                         <Translation id={showUnverifiedButtonText} />
                     </Button>
+
                     {isPassphraseRequired && (
                         <StyledButton
                             variant="primary"
@@ -92,10 +88,11 @@ export const ConfirmUnverifiedModal = ({
                             <Translation id="TR_ACCOUNT_ENABLE_PASSPHRASE" />
                         </StyledButton>
                     )}
+                    <Button onClick={close} variant="tertiary">
+                        <Translation id="TR_BACK" />
+                    </Button>
                 </>
             }
-        >
-            <StyledImage image="UNI_ERROR" />
-        </StyledModal>
+        />
     );
 };

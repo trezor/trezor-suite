@@ -4517,6 +4517,10 @@ export default defineMessages({
         id: 'RECEIVE_ADDRESS_REVEAL',
         defaultMessage: 'Show full address',
     },
+    RECEIVE_UNVERIFIED_ADDRESS_REVEAL: {
+        id: 'RECEIVE_UNVERIFIED_ADDRESS_REVEAL',
+        defaultMessage: 'Generate unverified address',
+    },
     RECEIVE_ADDRESS_COINJOIN_DISALLOW: {
         id: 'RECEIVE_ADDRESS_COINJOIN_DISALLOW',
         defaultMessage:
@@ -9076,5 +9080,14 @@ export default defineMessages({
     TR_PASSPHRASE_DESCRIPTION_ITEM3: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM3',
         defaultMessage: 'No one can recover it, not even Trezor support',
+    },
+    TR_CONNECT_DEVICE_PROMO_TITLE: {
+        id: 'TR_CONNECT_DEVICE_PROMO_TITLE',
+        defaultMessage: 'Receive address can’t be verified',
+    },
+    TR_CONNECT_DEVICE_PROMO_DESCRIPTION: {
+        id: 'TR_CONNECT_DEVICE_PROMO_DESCRIPTION',
+        defaultMessage:
+            "Verify on Trezor to confirm receive address. Continuing without confirming isn't recommended.",
     },
 });
