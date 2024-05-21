@@ -20,7 +20,7 @@ import {
     CoinmarketWatchTradeProps,
 } from 'src/types/coinmarket/coinmarketDetail';
 
-const getTradeFinalStatuses = (tradeType: string): Partial<CoinmarketTradeStatusType>[] => {
+export const getTradeFinalStatuses = (tradeType: string): Partial<CoinmarketTradeStatusType>[] => {
     if (tradeType === 'buy') {
         return ['SUCCESS', 'ERROR', 'BLOCKED'];
     }

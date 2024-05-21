@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 
 import { Card, variables } from '@trezor/components';
-import { SellFiatTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
@@ -10,6 +9,7 @@ import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentFailed from '../components/PaymentFailed';
 import { CoinmarketSellOfferInfo } from '../../components/CoinmarketSellOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
+import { getTradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 
 const Wrapper = styled.div`
     display: flex;
@@ -48,8 +48,8 @@ const CoinmarketDetail = () => {
     }
 
     const tradeStatus = trade?.data?.status || 'PENDING';
-
-    const showPending = !SellFiatTradeFinalStatuses.includes(tradeStatus);
+    const sellFiatTradeFinalStatuses = getTradeFinalStatuses('sell');
+    const showPending = !sellFiatTradeFinalStatuses.includes(tradeStatus);
 
     const exchange = trade?.data?.exchange;
     const provider =
@@ -61,7 +61,7 @@ const CoinmarketDetail = () => {
         <Wrapper>
             <StyledCard>
                 {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
-                {SellFiatTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'SUCCESS' && (
+                {sellFiatTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'SUCCESS' && (
                     <PaymentFailed
                         account={account}
                         transactionId={trade.key}
