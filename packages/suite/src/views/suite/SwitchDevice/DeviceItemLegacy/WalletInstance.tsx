@@ -4,7 +4,7 @@ import {
     toggleRememberDevice,
     deviceActions,
     selectDiscoveryByDeviceState,
-    selectFiatRates,
+    selectCurrentFiatRates,
 } from '@suite-common/wallet-core';
 import { useFormatters } from '@suite-common/formatters';
 import { Switch, Box, Icon, variables } from '@trezor/components';
@@ -87,7 +87,7 @@ export const WalletInstance = ({
     ...rest
 }: WalletInstanceProps) => {
     const accounts = useSelector(state => state.wallet.accounts);
-    const rates = useSelector(selectFiatRates);
+    const rates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
     const dispatch = useDispatch();

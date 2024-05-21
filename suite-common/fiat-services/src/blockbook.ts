@@ -1,4 +1,4 @@
-import type { LastWeekRates, TimestampedRates } from '@suite-common/wallet-types';
+import type { HistoricRates, TimestampedRates } from '@suite-common/wallet-types';
 
 import { RateLimiter } from './limiter';
 import { fetchUrl } from './fetch';
@@ -50,7 +50,7 @@ const getMultiTickers = async (
     ticker: Ticker,
     timestamps: number[],
     currency?: string,
-): Promise<LastWeekRates | null> => {
+): Promise<HistoricRates | null> => {
     const url = `${getApiUrl(ticker)}/multi-tickers/?${getQuery({
         timestamp: timestamps.join(','),
         currency,

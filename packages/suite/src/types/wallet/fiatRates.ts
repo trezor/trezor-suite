@@ -1,6 +1,1 @@
-export type {
-    TickerId,
-    CurrentFiatRates,
-    TimestampedRates,
-    LastWeekRates,
-} from '@suite-common/wallet-types';
+export type { TickerId, TimestampedRates, HistoricRates } from '@suite-common/wallet-types';

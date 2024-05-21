@@ -1,6 +1,5 @@
 import { TextProps } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatRatesLegacy } from '@trezor/blockchain-link';
 import { useFormatters } from '@suite-common/formatters';
 
 import { FormatterProps } from '../types';
@@ -10,20 +9,27 @@ import { useFiatFromCryptoValue } from '../hooks/useFiatFromCryptoValue';
 type CryptoToFiatAmountFormatterProps = FormatterProps<string | null> &
     TextProps & {
         network: NetworkSymbol;
-        customRates?: FiatRatesLegacy;
+        historicRate?: number;
+        useHistoricRate?: boolean;
         isDiscreetText?: boolean;
     };
 
 export const CryptoToFiatAmountFormatter = ({
     value,
     network,
-    customRates,
+    historicRate,
+    useHistoricRate,
     isDiscreetText = true,
     ...textProps
 }: CryptoToFiatAmountFormatterProps) => {
     const { FiatAmountFormatter } = useFormatters();
 
-    const fiatValue = useFiatFromCryptoValue({ cryptoValue: value, network, customRates });
+    const fiatValue = useFiatFromCryptoValue({
+        cryptoValue: value,
+        network,
+        historicRate,
+        useHistoricRate,
+    });
 
     const formattedFiatValue = FiatAmountFormatter.format(fiatValue ?? '0');
 

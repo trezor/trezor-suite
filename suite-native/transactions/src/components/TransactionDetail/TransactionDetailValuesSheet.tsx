@@ -3,10 +3,14 @@ import { useSelector } from 'react-redux';
 import { pipe } from '@mobily/ts-belt';
 
 import { convertCryptoToFiatAmount } from '@suite-common/formatters';
-import { CurrentFiatRates, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Timestamp, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { Card, Table, Td, Text, Th, Tr, VStack } from '@suite-native/atoms';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import {
+    FiatRatesRootState,
+    selectFiatRatesByFiatRateKey,
+    selectHistoricFiatRatesByTimestamp,
+} from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { selectFiatCurrencyCode } from '@suite-native/settings';
 import {
@@ -25,33 +29,31 @@ type TransactionDetailValuesSheetProps = {
 type TodayHeaderCellProps = {
     cryptoValue: string;
     network: NetworkSymbol;
-    historicalRates?: CurrentFiatRates['rates'];
+    historicRate?: number;
 };
 
-const TodayHeaderCell = ({ cryptoValue, network, historicalRates }: TodayHeaderCellProps) => {
+const TodayHeaderCell = ({ cryptoValue, network, historicRate }: TodayHeaderCellProps) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode);
     const currentRates = useSelector((state: FiatRatesRootState) =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );
 
-    if (!currentRates || !historicalRates) return null;
+    if (!currentRates || !historicRate) return null;
 
     const fiatTotalHistoryNumeric = pipe(
         convertCryptoToFiatAmount({
             value: cryptoValue,
-            rates: historicalRates,
+            rate: historicRate,
             network,
-            fiatCurrency: fiatCurrencyCode,
         }) ?? 0,
         Number,
     );
     const fiatTotalActualNumeric = pipe(
         convertCryptoToFiatAmount({
             value: cryptoValue,
-            rates: { [fiatCurrencyCode]: currentRates?.rate },
+            rate: currentRates?.rate,
             network,
-            fiatCurrency: fiatCurrencyCode,
         }),
         Number,
     );
@@ -79,6 +81,12 @@ export const TransactionDetailValuesSheet = ({
             ? transaction.amount
             : transaction.details.totalInput;
 
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
+    const historicRate = useSelector((state: FiatRatesRootState) =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
+    );
+
     return (
         <TransactionDetailSheet
             isVisible={isVisible}
@@ -96,7 +104,7 @@ export const TransactionDetailValuesSheet = ({
                             <Th>
                                 <TodayHeaderCell
                                     cryptoValue={transaction.amount}
-                                    historicalRates={transaction.rates}
+                                    historicRate={historicRate}
                                     network={transaction.symbol}
                                 />
                             </Th>
@@ -109,7 +117,8 @@ export const TransactionDetailValuesSheet = ({
                                     variant="hint"
                                     value={totalInput}
                                     network={transaction.symbol}
-                                    customRates={transaction.rates}
+                                    historicRate={historicRate}
+                                    useHistoricRate
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
                                 />
@@ -131,7 +140,8 @@ export const TransactionDetailValuesSheet = ({
                                     variant="hint"
                                     value={transaction.fee}
                                     network={transaction.symbol}
-                                    customRates={transaction.rates}
+                                    historicRate={historicRate}
+                                    useHistoricRate
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
                                 />
@@ -153,7 +163,8 @@ export const TransactionDetailValuesSheet = ({
                                     variant="hint"
                                     value={transaction.amount}
                                     network={transaction.symbol}
-                                    customRates={transaction.rates}
+                                    historicRate={historicRate}
+                                    useHistoricRate
                                     numberOfLines={1}
                                     adjustsFontSizeToFit
                                 />

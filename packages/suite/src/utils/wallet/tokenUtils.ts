@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 
-import { Account, Rate, TokenAddress, FiatRates } from '@suite-common/wallet-types';
+import { Account, Rate, TokenAddress, RatesByKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -30,7 +30,7 @@ export const enhanceTokensWithRates = (
     tokens: Account['tokens'],
     fiatCurrency: FiatCurrencyCode,
     symbol: NetworkSymbol,
-    rates: FiatRates | undefined,
+    rates?: RatesByKey,
 ) => {
     if (!tokens?.length) return [];
 

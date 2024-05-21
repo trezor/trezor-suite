@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { Timestamp, TokenAddress, fiatRatesResult } from '@suite-common/wallet-types';
+import { Timestamp, TokenAddress, FiatRatesResult } from '@suite-common/wallet-types';
 import BigNumber from 'bignumber.js';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
@@ -124,15 +124,9 @@ export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProp
                 return;
             }
 
-            // calculate new Amount, Fiat input times currency rate
-            // NOTE: get fresh values (currencyValue may be outdated)
-            const fiatCurrency = currencyValue.value;
-
             const decimals = token ? token.decimals : network.decimals;
 
-            const amount = fiatRate?.rate
-                ? fromFiatCurrency(value, fiatCurrency, fiatRate, decimals, false)
-                : null;
+            const amount = fiatRate?.rate ? fromFiatCurrency(value, decimals, fiatRate.rate) : null;
 
             const formattedAmount = shouldSendInSats
                 ? amountToSatoshi(amount || '0', decimals)
@@ -150,7 +144,6 @@ export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProp
         [
             isSetMaxActive,
             error,
-            currencyValue.value,
             token,
             network.decimals,
             fiatRate,
@@ -204,7 +197,7 @@ export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProp
                 );
 
                 if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                    const fiatRate = updateFiatRatesResult.payload as fiatRatesResult;
+                    const fiatRate = updateFiatRatesResult.payload as FiatRatesResult;
 
                     if (fiatRate?.rate) {
                         recalculateFiat(fiatRate.rate);

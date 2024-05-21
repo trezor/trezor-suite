@@ -2,9 +2,9 @@ import { getUnixTime, subWeeks } from 'date-fns';
 
 import type {
     TickerId,
-    LastWeekRates,
+    HistoricRates,
     Timestamp,
-    fiatRatesResult,
+    FiatRatesResult,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import TrezorConnect from '@trezor/connect';
@@ -19,7 +19,7 @@ const CONNECT_FETCH_TIMEOUT = 10_000;
 
 const parallelRequestsCache = new ParallelRequestsCache();
 
-type fiatRatesParams = {
+type FiatRatesParams = {
     ticker: TickerId;
     localCurrency: FiatCurrencyCode;
     isElectrumBackend: boolean;
@@ -47,7 +47,7 @@ export const fetchCurrentFiatRates = ({
     ticker,
     localCurrency,
     isElectrumBackend,
-}: fiatRatesParams): Promise<fiatRatesResult | null> =>
+}: FiatRatesParams): Promise<FiatRatesResult | null> =>
     parallelRequestsCache.cache(
         ['fetchCurrentFiatRates', ticker.symbol, ticker.tokenAddress, localCurrency],
         async () => {
@@ -103,7 +103,7 @@ export const fetchLastWeekFiatRates = ({
     ticker,
     localCurrency,
     isElectrumBackend,
-}: fiatRatesParams): Promise<fiatRatesResult | null> =>
+}: FiatRatesParams): Promise<FiatRatesResult | null> =>
     parallelRequestsCache.cache(
         ['fetchLastWeekFiatRates', ticker.symbol, ticker.tokenAddress, localCurrency],
         async () => {
@@ -161,7 +161,7 @@ export const getFiatRatesForTimestamps = (
     timestamps: number[],
     localCurrency: FiatCurrencyCode,
     isElectrumBackend: boolean,
-): Promise<LastWeekRates | null> =>
+): Promise<HistoricRates | null> =>
     parallelRequestsCache.cache(
         [
             'getFiatRatesForTimestamps',

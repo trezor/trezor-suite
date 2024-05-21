@@ -171,35 +171,28 @@ export const useUnstakeEthForm = ({
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
             if (currentRate) {
-                const fiatValue = toFiatCurrency(amount, localCurrency, {
-                    [localCurrency]: currentRate?.rate,
-                });
+                const fiatValue = toFiatCurrency(amount, currentRate?.rate);
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             }
 
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
             await composeRequest(CRYPTO_INPUT);
         },
-        [composeRequest, currentRate, localCurrency, setValue],
+        [composeRequest, currentRate, setValue],
     );
 
     const onFiatAmountChange = useCallback(
         async (amount: string) => {
             if (!currentRate) return;
 
-            const cryptoValue = fromFiatCurrency(
-                amount,
-                localCurrency,
-                { [localCurrency]: currentRate?.rate },
-                network.decimals,
-            );
+            const cryptoValue = fromFiatCurrency(amount, network.decimals, currentRate?.rate);
             setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
             setValue(OUTPUT_AMOUNT, cryptoValue || '', {
                 shouldDirty: true,
             });
             await composeRequest(FIAT_INPUT);
         },
-        [composeRequest, currentRate, localCurrency, network.decimals, setValue],
+        [composeRequest, currentRate, network.decimals, setValue],
     );
 
     const onOptionChange = useCallback(

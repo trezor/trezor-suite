@@ -113,6 +113,7 @@ export type ExtraDependencies = {
         storageLoadBlockchain: StorageLoadReducer;
         storageLoadAccounts: StorageLoadReducer;
         storageLoadTransactions: StorageLoadTransactionsReducer;
+        storageLoadHistoricRates: StorageLoadReducer;
         storageLoadFirmware: StorageLoadReducer;
         storageLoadDiscovery: StorageLoadReducer;
         addButtonRequestFirmware: AddButtonRequestReducer;

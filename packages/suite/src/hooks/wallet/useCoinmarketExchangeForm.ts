@@ -244,7 +244,7 @@ export const useCoinmarketExchangeForm = ({
             if (!fiatRate?.rate || !currency) return;
             const cryptoAmount =
                 amount && shouldSendInSats ? formatAmount(amount, network.decimals) : amount;
-            const fiatValue = toFiatCurrency(cryptoAmount, currency.value, fiatRate, 2, false);
+            const fiatValue = toFiatCurrency(cryptoAmount, fiatRate.rate, 2);
             setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
         },
         [shouldSendInSats, fiatRate, getValues, network.decimals, setValue],
@@ -272,7 +272,7 @@ export const useCoinmarketExchangeForm = ({
     const updateSendCryptoValue = (amount: string, decimals: number) => {
         const currency: { value: string; label: string } | undefined = getValues(FIAT_CURRENCY);
         if (!fiatRate?.rate || !currency) return;
-        const cryptoValue = fromFiatCurrency(amount, currency.value, fiatRate, decimals, false);
+        const cryptoValue = fromFiatCurrency(amount, decimals, fiatRate.rate);
         const formattedCryptoValue =
             cryptoValue && shouldSendInSats
                 ? amountToSatoshi(cryptoValue, network.decimals)

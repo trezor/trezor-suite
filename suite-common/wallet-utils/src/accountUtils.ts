@@ -24,7 +24,7 @@ import {
     ReceiveInfo,
     TokenAddress,
     TxFinalCardano,
-    FiatRates,
+    RatesByKey,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -564,7 +564,7 @@ export const enhanceHistory = ({
 export const getTokensFiatBalance = (
     account: Account,
     localCurrency: string,
-    rates: FiatRates | undefined,
+    rates?: RatesByKey,
     tokens?: Account['tokens'],
 ) => {
     let totalBalance = new BigNumber(0);
@@ -579,7 +579,7 @@ export const getTokensFiatBalance = (
 
         const tokenFiatRate = rates?.[tokenFiatRateKey];
         if (tokenFiatRate?.rate && t.balance) {
-            const tokenBalance = toFiatCurrency(t.balance, localCurrency, tokenFiatRate, 2, false);
+            const tokenBalance = toFiatCurrency(t.balance, tokenFiatRate.rate, 2);
             if (tokenBalance) {
                 totalBalance = totalBalance.plus(tokenBalance);
             }
@@ -592,7 +592,7 @@ export const getTokensFiatBalance = (
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
-    rates: FiatRates | undefined,
+    rates?: RatesByKey,
 ) => {
     const coinFiatRateKey = getFiatRateKey(
         account.symbol as NetworkSymbol,
@@ -604,13 +604,7 @@ export const getAccountFiatBalance = (
     let totalBalance = new BigNumber(0);
 
     // account fiat balance
-    const accountBalance = toFiatCurrency(
-        account.formattedBalance,
-        localCurrency,
-        coinFiatRate,
-        2,
-        false,
-    );
+    const accountBalance = toFiatCurrency(account.formattedBalance, coinFiatRate.rate, 2);
 
     // sum fiat value of all tokens
     const tokensBalance = getTokensFiatBalance(account, localCurrency, rates, account.tokens);
@@ -624,7 +618,7 @@ export const getAccountFiatBalance = (
 export const getTotalFiatBalance = (
     deviceAccounts: Account[],
     localCurrency: string,
-    rates: FiatRates | undefined,
+    rates?: RatesByKey,
 ) => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {

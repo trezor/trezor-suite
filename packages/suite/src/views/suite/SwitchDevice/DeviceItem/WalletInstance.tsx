@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { selectDiscoveryByDeviceState, selectFiatRates } from '@suite-common/wallet-core';
+import { selectDiscoveryByDeviceState, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { variables, Card, Divider } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -89,7 +89,7 @@ export const WalletInstance = ({
 }: WalletInstanceProps) => {
     const [contentType, setContentType] = useState<null | ContentType>('default');
     const accounts = useSelector(state => state.wallet.accounts);
-    const rates = useSelector(selectFiatRates);
+    const currentRiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
 
@@ -99,7 +99,7 @@ export const WalletInstance = ({
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
-    const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, rates);
+    const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, currentRiatRates);
     const isSelected = enabled && selected && !!discoveryProcess;
     const { walletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),

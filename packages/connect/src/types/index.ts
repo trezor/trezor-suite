@@ -38,7 +38,7 @@ export type {
     TokenInfo,
     TokenTransfer,
     InternalTransfer,
-    FiatRatesLegacy,
+    FiatRatesBySymbol,
     Target as TransactionTarget,
     AccountBalanceHistory as BlockchainAccountBalanceHistory,
 } from '@trezor/blockchain-link';

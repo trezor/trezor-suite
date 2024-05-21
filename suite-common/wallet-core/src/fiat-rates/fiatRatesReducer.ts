@@ -2,17 +2,18 @@ import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Timestamp } from '@suite-common/wallet-types';
 import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 
-import { updateFiatRatesThunk } from './fiatRatesThunks';
+import { updateFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 import { FiatRatesState } from './fiatRatesTypes';
 
 export const fiatRatesInitialState: FiatRatesState = {
     current: {},
     lastWeek: {},
+    historic: {},
 };
 
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
-    builder => {
+    (builder, extra) => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
                 const { ticker, localCurrency, rateType } = action.meta.arg;
@@ -81,6 +82,28 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     isLoading: false,
                     error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
                 };
-            });
+            })
+            .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
+                if (!action.payload) return;
+
+                action.payload.forEach(fiatRate => {
+                    const { tickerId, rates } = fiatRate;
+                    const { localCurrency } = action.meta.arg;
+                    const fiatRateKey = getFiatRateKeyFromTicker(tickerId, localCurrency);
+
+                    // combine new rates with existing historic rates
+                    state['historic'][fiatRateKey] = {
+                        ...state['historic'][fiatRateKey],
+                        ...rates.reduce(
+                            (acc, rate) => ({ ...acc, [rate.lastTickerTimestamp]: rate.rate }),
+                            {},
+                        ),
+                    };
+                });
+            })
+            .addMatcher(
+                action => action.type === extra.actionTypes.storageLoad,
+                extra.reducers.storageLoadHistoricRates,
+            );
     },
 );

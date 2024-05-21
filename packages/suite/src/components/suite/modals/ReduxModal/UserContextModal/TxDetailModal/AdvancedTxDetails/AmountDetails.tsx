@@ -8,12 +8,21 @@ import {
     formatCardanoDeposit,
     formatCardanoWithdrawal,
     formatNetworkAmount,
+    getFiatRateKey,
     getTxOperation,
     isNftTokenTransfer,
     isTxFeePaid,
+    roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 import BigNumber from 'bignumber.js';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
+import { useSelector } from 'src/hooks/suite';
+import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import {
+    selectHistoricFiatRates,
+    selectHistoricFiatRatesByTimestamp,
+} from '@suite-common/wallet-core';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 const MainContainer = styled.div`
     display: flex;
@@ -47,10 +56,20 @@ interface AmountDetailsProps {
 
 // TODO: Do not show FEE for sent but not mine transactions
 export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
+    const fiatCurrencyCode = useSelector(selectLocalCurrency);
+    const fiatRateKey = getFiatRateKey(tx.symbol, fiatCurrencyCode);
+
+    const historicRate = useSelector(state =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, tx.blockTime as Timestamp),
+    );
+
+    const historicFiatRates = useSelector(selectHistoricFiatRates);
+
     const amount = new BigNumber(formatNetworkAmount(tx.amount, tx.symbol));
     const fee = formatNetworkAmount(tx.fee, tx.symbol);
     const cardanoWithdrawal = formatCardanoWithdrawal(tx);
     const cardanoDeposit = formatCardanoDeposit(tx);
+    const { selectedAccount } = useSelector(state => state.wallet);
 
     return (
         <MainContainer>
@@ -104,8 +123,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <FiatValue
                                 amount={amount.abs().toString()}
                                 symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         }
                         fourthColumn={
@@ -127,8 +146,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <FiatValue
                                 amount={cardanoWithdrawal}
                                 symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         }
                         fourthColumn={<FiatValue amount={cardanoWithdrawal} symbol={tx.symbol} />}
@@ -148,8 +167,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <FiatValue
                                 amount={cardanoDeposit}
                                 symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         }
                         fourthColumn={<FiatValue amount={cardanoDeposit} symbol={tx.symbol} />}
@@ -172,8 +191,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <FiatValue
                                 amount={formatNetworkAmount(transfer.amount, tx.symbol)}
                                 symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         }
                         fourthColumn={
@@ -184,40 +203,59 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                         }
                     />
                 ))}
-                {tx.tokens.map((transfer, i) => (
-                    <AmountRow
-                        key={i}
-                        firstColumn={
-                            !tx.targets.length && !tx.internalTransfers.length && i === 0 ? (
-                                <Translation id="AMOUNT" />
-                            ) : undefined
-                        }
-                        secondColumn={
-                            isNftTokenTransfer(transfer) ? (
-                                <FormattedNftAmount
-                                    transfer={transfer}
-                                    isWithLink
-                                    signValue={getTxOperation(transfer.type, true)}
+                {tx.tokens.map((transfer, i) => {
+                    const tokenFiatRateKey = getFiatRateKey(
+                        tx.symbol,
+                        fiatCurrencyCode,
+                        transfer.contract as TokenAddress,
+                    );
+                    const roundedTimestamp = roundTimestampToNearestPastHour(
+                        tx.blockTime as Timestamp,
+                    );
+                    const historicTokenRate =
+                        historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+
+                    return (
+                        <AmountRow
+                            key={i}
+                            firstColumn={
+                                !tx.targets.length && !tx.internalTransfers.length && i === 0 ? (
+                                    <Translation id="AMOUNT" />
+                                ) : undefined
+                            }
+                            secondColumn={
+                                isNftTokenTransfer(transfer) ? (
+                                    <FormattedNftAmount
+                                        transfer={transfer}
+                                        isWithLink
+                                        signValue={getTxOperation(transfer.type, true)}
+                                    />
+                                ) : (
+                                    <FormattedCryptoAmount
+                                        value={formatAmount(transfer.amount, transfer.decimals)}
+                                        symbol={transfer.symbol as NetworkSymbol}
+                                        signValue={getTxOperation(transfer.type, true)}
+                                    />
+                                )
+                            }
+                            thirdColumn={
+                                <FiatValue
+                                    amount={formatAmount(transfer.amount, transfer.decimals)}
+                                    symbol={transfer.symbol}
+                                    historicRate={historicTokenRate}
+                                    useHistoricRate
                                 />
-                            ) : (
-                                <FormattedCryptoAmount
-                                    value={formatAmount(transfer.amount, transfer.decimals)}
-                                    symbol={transfer.symbol as NetworkSymbol}
-                                    signValue={getTxOperation(transfer.type, true)}
+                            }
+                            fourthColumn={
+                                <FiatValue
+                                    amount={formatAmount(transfer.amount, transfer.decimals)}
+                                    symbol={selectedAccount.account?.symbol as NetworkSymbol}
+                                    tokenAddress={transfer.contract}
                                 />
-                            )
-                        }
-                        // no history rates available for tokens
-                        thirdColumn={null}
-                        fourthColumn={
-                            <FiatValue
-                                amount={formatAmount(transfer.amount, transfer.decimals)}
-                                symbol={transfer.symbol}
-                                tokenAddress={transfer.contract}
-                            />
-                        }
-                    />
-                ))}
+                            }
+                        />
+                    );
+                })}
                 {/* TX FEE */}
                 {isTxFeePaid(tx) && (
                     <AmountRow
@@ -233,8 +271,8 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                             <FiatValue
                                 amount={fee}
                                 symbol={tx.symbol}
-                                source={tx.rates}
-                                useCustomSource
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         }
                         fourthColumn={<FiatValue amount={fee} symbol={tx.symbol} />}

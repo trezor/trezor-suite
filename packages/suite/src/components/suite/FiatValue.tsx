@@ -57,9 +57,8 @@ export const FiatValue = ({
     className,
     symbol,
     tokenAddress,
-    fiatCurrency,
-    source,
-    useCustomSource,
+    historicRate,
+    useHistoricRate,
     showApproximationIndicator,
     disableHiddenPlaceholder,
     fiatAmountFormatterOptions,
@@ -68,13 +67,12 @@ export const FiatValue = ({
     isLoading,
 }: FiatValueProps) => {
     const { shouldAnimate } = useLoadingSkeleton();
-    const { targetCurrency, fiatAmount, ratesSource, currentRate } = useFiatFromCryptoValue({
+    const { localCurrency, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
         symbol,
         tokenAddress,
-        fiatCurrency,
-        source,
-        useCustomSource,
+        historicRate,
+        useHistoricRate,
     });
 
     const { FiatAmountFormatter } = useFormatters();
@@ -82,10 +80,8 @@ export const FiatValue = ({
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
 
-    const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
-
     if (
-        (!fiatRateValue || !value || !currentRate?.lastTickerTimestamp || isLoading) &&
+        (!rate || !value || !currentRate?.lastTickerTimestamp || isLoading) &&
         showLoadingSkeleton &&
         !currentRate?.error
     ) {
@@ -97,16 +93,16 @@ export const FiatValue = ({
             <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈ </>}
                 <FiatAmountFormatter
-                    currency={targetCurrency.toUpperCase()}
+                    currency={localCurrency.toUpperCase()}
                     value={value}
                     {...fiatAmountFormatterOptions}
                 />
             </WrapperComponent>
         );
 
-        const fiatRateComponent = fiatRateValue ? (
+        const fiatRateComponent = rate ? (
             <SameWidthNums>
-                <FiatAmountFormatter currency={targetCurrency} value={fiatRateValue} />
+                <FiatAmountFormatter currency={localCurrency} value={rate} />
             </SameWidthNums>
         ) : null;
         if (!children) return fiatValueComponent;
@@ -114,7 +110,7 @@ export const FiatValue = ({
         return children({
             value: fiatValueComponent,
             rate: fiatRateComponent,
-            timestamp: useCustomSource ? null : currentRate?.lastTickerTimestamp ?? null,
+            timestamp: historicRate ? null : currentRate?.lastTickerTimestamp ?? null,
         });
     }
     if (!children) return null;

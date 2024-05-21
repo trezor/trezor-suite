@@ -3,7 +3,7 @@ import { AccountItem } from './AccountItem';
 import { Account } from 'src/types/wallet';
 import { borders, spacingsPx } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
-import { selectFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { getTokensFiatBalance } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
@@ -57,7 +57,7 @@ export const AccountItemsGroup = ({
 
     const routeName = useSelector(selectRouteName);
     const localCurrency = useSelector(selectLocalCurrency);
-    const rates = useSelector(selectFiatRates);
+    const rates = useSelector(selectCurrentFiatRates);
 
     const tokensFiatBalance = getTokensFiatBalance(account, localCurrency, rates, tokens);
 

@@ -2,7 +2,7 @@ import { saveAs } from 'file-saver';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { getAccountKey } from '@suite-common/wallet-utils';
+import { getAccountKey, buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
 import {
     DeviceRootState,
     selectIsPendingTransportEvent,
@@ -11,6 +11,7 @@ import {
     DiscoveryRootState,
     selectDiscoveryByDeviceState,
     deviceActions,
+    FiatRatesState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
@@ -115,6 +116,13 @@ export const extraDependencies: ExtraDependencies = {
                 }
                 state.transactions[k][item.order] = item.tx;
             });
+        },
+        storageLoadHistoricRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
+            if (payload.historicRates) {
+                const fiatRates = payload.historicRates.map(rate => rate.value);
+                const historicRates = buildHistoricRatesFromStorage(fiatRates);
+                state.historic = historicRates;
+            }
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             payload.accounts.map(acc =>

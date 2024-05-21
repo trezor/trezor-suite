@@ -1,6 +1,10 @@
+import { useSelector } from 'react-redux';
+
 import { Box, DiscreetTextTrigger, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
-import { TransactionType } from '@suite-common/wallet-types';
+import { FiatRatesRootState, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { Timestamp, TransactionType } from '@suite-common/wallet-types';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -10,6 +14,7 @@ import {
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { SignValue } from '@suite-common/suite-types';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -61,6 +66,16 @@ export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
 }: TransactionDetailHeaderProps) => {
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(
+        transaction.symbol,
+        fiatCurrencyCode,
+        tokenTransfer?.contract,
+    );
+    const historicRate = useSelector((state: FiatRatesRootState) =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
+    );
+
     const { type } = transaction;
     const { text } = transactionTypeInfo[type];
 
@@ -109,8 +124,7 @@ export const TransactionDetailHeader = ({
                         />
                     )}
                 </Box>
-
-                {transaction.rates && (
+                {historicRate !== undefined && historicRate !== 0 && (
                     <Box flexDirection="row">
                         <Text>≈ </Text>
                         {tokenTransfer ? (
@@ -118,12 +132,15 @@ export const TransactionDetailHeader = ({
                                 contract={tokenTransfer.contract}
                                 value={tokenTransfer.amount}
                                 decimals={tokenTransfer.decimals}
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         ) : (
                             <CryptoToFiatAmountFormatter
                                 value={transaction.amount}
                                 network={transaction.symbol}
-                                customRates={transaction.rates}
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         )}
                     </Box>

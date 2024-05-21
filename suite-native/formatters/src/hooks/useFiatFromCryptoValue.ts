@@ -4,8 +4,7 @@ import { convertCryptoToFiatAmount } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { FiatRatesRootState, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey, isTestnet, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode, selectFiatCurrency } from '@suite-native/settings';
-import { FiatRatesLegacy } from '@trezor/blockchain-link';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { TokenAddress } from '@suite-common/wallet-types';
 
 import { convertTokenValueToDecimal } from '../utils';
@@ -15,7 +14,8 @@ type useFiatFromCryptoValueParams = {
     network: NetworkSymbol;
     tokenAddress?: TokenAddress;
     tokenDecimals?: number;
-    customRates?: FiatRatesLegacy;
+    historicRate?: number;
+    useHistoricRate?: boolean;
 };
 
 export const useFiatFromCryptoValue = ({
@@ -23,7 +23,8 @@ export const useFiatFromCryptoValue = ({
     network,
     tokenAddress,
     tokenDecimals = 0,
-    customRates,
+    historicRate,
+    useHistoricRate,
 }: useFiatFromCryptoValueParams) => {
     const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
     const fiatRateKey = getFiatRateKey(network, fiatCurrencyCode, tokenAddress);
@@ -31,23 +32,21 @@ export const useFiatFromCryptoValue = ({
         selectFiatRatesByFiatRateKey(state, fiatRateKey),
     );
 
-    const rates = customRates ?? { [fiatCurrencyCode]: currentRate?.rate };
-    const fiatCurrency = useSelector(selectFiatCurrency);
+    const rate = useHistoricRate ? historicRate : currentRate?.rate;
 
     const isTestnetCoin = isTestnet(network);
 
-    if (!cryptoValue || !rates || rates.error || isTestnetCoin) return null;
+    if (!cryptoValue || !rate || currentRate?.error || isTestnetCoin) return null;
 
     if (tokenAddress) {
         const decimalValue = convertTokenValueToDecimal(cryptoValue, tokenDecimals);
 
-        return toFiatCurrency(decimalValue.toString(), fiatCurrencyCode, rates);
+        return toFiatCurrency(decimalValue.toString(), rate);
     }
 
     return convertCryptoToFiatAmount({
         value: cryptoValue,
-        rates,
-        fiatCurrency: fiatCurrency.label,
+        rate,
         network,
     });
 };

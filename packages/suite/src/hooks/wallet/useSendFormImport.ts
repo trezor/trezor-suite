@@ -5,18 +5,23 @@ import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
-import { amountToSatoshi, formatAmount, getFiatRateKey } from '@suite-common/wallet-utils';
+import {
+    amountToSatoshi,
+    formatAmount,
+    fromFiatCurrency,
+    getFiatRateKey,
+    toFiatCurrency,
+} from '@suite-common/wallet-utils';
 import {
     UseSendFormState,
     Output,
     Timestamp,
-    fiatRatesResult,
+    FiatRatesResult,
     Rate,
     FiatRates,
 } from '@suite-common/wallet-types';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import BigNumber from 'bignumber.js';
 
 type useSendFormImportProps = {
     network: UseSendFormState['network'];
@@ -66,7 +71,7 @@ export const useSendFormImport = ({
                 );
 
                 if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                    const fiatRate = updateFiatRatesResult.payload as fiatRatesResult;
+                    const fiatRate = updateFiatRatesResult.payload as FiatRatesResult;
 
                     rates.push({ currency, rate: fiatRate?.rate });
                 }
@@ -104,14 +109,10 @@ export const useSendFormImport = ({
 
                     // calculate Fiat from Amount
                     if (fiatRate?.rate) {
-                        const formattedAmount = new BigNumber(
-                            shouldSendInSats
-                                ? formatAmount(output.amount, network.decimals)
-                                : output.amount,
-                        );
-                        const fiatValueBigNumber = formattedAmount.multipliedBy(fiatRate.rate);
-
-                        output.fiat = fiatValueBigNumber.toFixed(2) || '';
+                        const cryptoValue = shouldSendInSats
+                            ? formatAmount(output.amount, network.decimals)
+                            : output.amount;
+                        output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
                     }
                 } else if (
                     Object.keys(fiatCurrencies).find(currency => currency === itemCurrency) &&
@@ -121,14 +122,11 @@ export const useSendFormImport = ({
                     output.currency = { value: itemCurrency, label: itemCurrency.toUpperCase() };
                     output.fiat = item.amount || '';
                     // calculate Amount from Fiat
-                    const formattedLocalAmount = output.fiat.replace(',', '.');
-                    const amount = new BigNumber(formattedLocalAmount)
-                        .div(itemRate)
-                        .toFixed(network.decimals);
+                    const cryptoValue = fromFiatCurrency(output.fiat, network.decimals, itemRate);
                     const cryptoAmount =
-                        amount && shouldSendInSats
-                            ? amountToSatoshi(amount, network.decimals)
-                            : amount ?? '';
+                        cryptoValue && shouldSendInSats
+                            ? amountToSatoshi(cryptoValue, network.decimals)
+                            : cryptoValue ?? '';
 
                     output.amount = cryptoAmount;
                 } else if (tokens) {

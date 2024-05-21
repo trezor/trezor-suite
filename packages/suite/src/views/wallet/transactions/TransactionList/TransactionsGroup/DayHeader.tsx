@@ -98,13 +98,13 @@ export const DayHeader = ({
                         />
                     </ColDate>
                     <ColAmount $isVisible={isHovered}>
-                        {totalAmount.gte(0) && <span>+</span>}
+                        {totalAmount.gt(0) && <span>+</span>}
                         <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
                     </ColAmount>
                     {showFiatValue && !isMissingFiatRates && (
                         <ColFiat>
                             <HiddenPlaceholder>
-                                {totalFiatAmountPerDay.gte(0) && <span>+</span>}
+                                {totalFiatAmountPerDay.gt(0) && <span>+</span>}
                                 <FiatAmountFormatter
                                     currency={localCurrency}
                                     value={totalFiatAmountPerDay.toFixed()}

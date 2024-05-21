@@ -153,11 +153,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
                     delete state.transactions[a.key];
                 });
             })
-            .addCase(transactionsActions.updateTransactionFiatRate, (state, { payload }) => {
-                payload.forEach(u => {
-                    updateTransaction(state, u.account, u.txid, u.updateObject);
-                });
-            })
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 extra.reducers.storageLoadTransactions,

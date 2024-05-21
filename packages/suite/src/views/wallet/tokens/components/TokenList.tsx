@@ -9,7 +9,7 @@ import {
 } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 import { useSelector } from 'src/hooks/suite';
-import { selectFiatRates } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -110,7 +110,7 @@ export const TokenList = ({
 }: TokenListProps) => {
     const theme = useTheme();
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, networkSymbol));
-    const fiatRates = useSelector(selectFiatRates);
+    const fiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
 
     const tokensWithRates = enhanceTokensWithRates(tokens, localCurrency, networkSymbol, fiatRates);
