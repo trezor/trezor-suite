@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
 import { Card, variables } from '@trezor/components';
-import { useCoinmarketSellDetailContext } from 'src/hooks/wallet/useCoinmarketSellDetail';
-import { SellFiatTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
@@ -51,14 +49,12 @@ const CoinmarketDetail = () => {
     }
 
     const tradeStatus = trade?.data?.status || 'PENDING';
-
-    const showPending = !SellFiatTradeFinalStatuses.includes(tradeStatus);
+    const sellFiatTradeFinalStatuses = getTradeFinalStatuses('sell');
+    const showPending = !sellFiatTradeFinalStatuses.includes(tradeStatus);
 
     const exchange = trade?.data?.exchange;
     const provider =
-        sellInfo && sellInfo.providerInfos && exchange
-            ? sellInfo.providerInfos[exchange]
-            : undefined;
+        info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
@@ -66,7 +62,7 @@ const CoinmarketDetail = () => {
         <Wrapper>
             <StyledCard>
                 {tradeStatus === 'SUCCESS' && <PaymentSuccessful account={account} />}
-                {SellFiatTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'SUCCESS' && (
+                {sellFiatTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'SUCCESS' && (
                     <PaymentFailed
                         account={account}
                         transactionId={trade.key}
@@ -77,7 +73,7 @@ const CoinmarketDetail = () => {
             </StyledCard>
             <CoinmarketSellOfferInfo
                 account={account}
-                providers={sellInfo?.providerInfos}
+                providers={info?.providerInfos}
                 selectedQuote={trade.data}
                 transactionId={trade.key}
             />
