@@ -4,6 +4,7 @@ import {
     ElevationUp,
     Icon,
     Radio,
+    Row,
     Text,
     Warning,
     useElevation,
@@ -247,7 +248,7 @@ const DefaultTag = () => {
         <Badge
             variant="primary"
             inline
-            margin={{ left: spacings.xxs }}
+            margin={{ left: spacings.xs }}
             size={isMobileLayout ? 'tiny' : undefined}
         >
             <Text typographyStyle="hint">
@@ -264,7 +265,7 @@ const UpgradableToMultiTag = () => {
         <Badge
             variant="tertiary"
             inline
-            margin={{ left: spacings.xxs }}
+            margin={{ left: spacings.xs }}
             size={isMobileLayout ? 'tiny' : undefined}
         >
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_UPGRADABLE_TO_MULTI" />
@@ -279,7 +280,7 @@ const AdvancedTag = () => {
         <Badge
             variant="tertiary"
             inline
-            margin={{ left: spacings.xxs }}
+            margin={{ left: spacings.xs }}
             size={isMobileLayout ? 'tiny' : undefined}
         >
             <Translation id="TR_ONBOARDING_BACKUP_TYPE_ADVANCED" />
@@ -306,17 +307,20 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                         data-test="@onboarding/select-seed-type-shamir-default"
                     >
                         <OptionText>
-                            <Text
-                                variant={selected === 'shamir-default' ? undefined : 'tertiary'}
-                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                            >
-                                <Translation id={typesToLabelMap['shamir-default']} />
+                            <Row alignItems="center">
+                                <Text
+                                    variant={selected === 'shamir-default' ? undefined : 'tertiary'}
+                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                                >
+                                    <Translation id={typesToLabelMap['shamir-default']} />
+                                </Text>
                                 {defaultType === 'shamir-default' ? (
                                     <DefaultTag />
                                 ) : (
                                     <UpgradableToMultiTag />
                                 )}
-                            </Text>
+                            </Row>
+
                             <Text typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
                             </Text>
@@ -328,14 +332,16 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                         data-test="@onboarding/select-seed-type-shamir-advance"
                     >
                         <OptionText>
-                            <Text
-                                variant={selected === 'shamir-advance' ? undefined : 'tertiary'}
-                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                            >
-                                <Translation id={typesToLabelMap['shamir-advance']} />
+                            <Row alignItems="center">
+                                <Text
+                                    variant={selected === 'shamir-advance' ? undefined : 'tertiary'}
+                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                                >
+                                    <Translation id={typesToLabelMap['shamir-advance']} />
+                                </Text>
                                 {defaultType === 'shamir-advance' && <DefaultTag />}
                                 <AdvancedTag />
-                            </Text>
+                            </Row>
                             <Text typographyStyle="hint">
                                 <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
                             </Text>
@@ -356,13 +362,15 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                         data-test="@onboarding/select-seed-type-12-words"
                     >
                         <OptionText>
-                            <Text
-                                variant={selected === '12-words' ? undefined : 'tertiary'}
-                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                            >
-                                <Translation id={typesToLabelMap['12-words']} />
+                            <Row alignItems="center">
+                                <Text
+                                    variant={selected === '12-words' ? undefined : 'tertiary'}
+                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                                >
+                                    <Translation id={typesToLabelMap['12-words']} />
+                                </Text>
                                 {defaultType === '12-words' && <DefaultTag />}
-                            </Text>
+                            </Row>
                             {defaultType === '12-words' && (
                                 <Text typographyStyle="hint">
                                     <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE" />
@@ -376,13 +384,15 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                         data-test="@onboarding/select-seed-type-24-words"
                     >
                         <OptionText>
-                            <Text
-                                variant={selected === '24-words' ? undefined : 'tertiary'}
-                                typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                            >
-                                <Translation id={typesToLabelMap['24-words']} />
+                            <Row alignItems="center">
+                                <Text
+                                    variant={selected === '24-words' ? undefined : 'tertiary'}
+                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                                >
+                                    <Translation id={typesToLabelMap['24-words']} />
+                                </Text>
                                 {defaultType === '24-words' && <DefaultTag />}
-                            </Text>
+                            </Row>
                         </OptionText>
                     </Option>
                 </InnerScrollableWrapper>
