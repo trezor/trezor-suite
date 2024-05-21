@@ -25,6 +25,9 @@
             "path": "../../suite-common/token-definitions"
         },
         {
+            "path": "../../suite-common/transaction-cache-engine"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../accounts" },

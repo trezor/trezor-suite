@@ -11,6 +11,7 @@ import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { initMessageSystemThunk } from '@suite-common/message-system';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
 import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
+import { TransactionCacheEngine } from '@suite-common/transaction-cache-engine';
 
 let isAlreadyInitialized = false;
 
@@ -30,6 +31,8 @@ export const applicationInit = createThunk(
             dispatch(initDevices());
 
             await dispatch(connectInitThunk());
+
+            TransactionCacheEngine.init();
 
             dispatch(setIsConnectInitialized(true));
 

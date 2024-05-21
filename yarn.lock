@@ -8658,6 +8658,7 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
+    "@trezor/utils": "workspace:*"
     bignumber.js: "npm:^9.1.2"
   languageName: unknown
   linkType: soft
@@ -8868,6 +8869,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
+    "@suite-common/transaction-cache-engine": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/alerts": "workspace:*"
