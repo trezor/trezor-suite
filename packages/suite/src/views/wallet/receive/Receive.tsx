@@ -7,7 +7,7 @@ import { FreshAddress } from './components/FreshAddress';
 import { UsedAddresses } from './components/UsedAddresses';
 import { CoinjoinReceiveWarning } from './components/CoinjoinReceiveWarning';
 import { ConfirmEvmExplanationModal } from 'src/components/suite/modals';
-import { ConnectDevicePromo } from './components/ConnectDevicePromo';
+import { ConnectDeviceReceivePromo } from './components/ConnectDevicePromo';
 import { Column } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 
@@ -41,7 +41,7 @@ export const Receive = () => {
     return (
         <WalletLayout title="TR_NAV_RECEIVE" isSubpage account={selectedAccount}>
             <Column gap={spacings.sm} alignItems="start">
-                {!isDeviceConnected && <ConnectDevicePromo />}
+                {!isDeviceConnected && <ConnectDeviceReceivePromo />}
 
                 <WalletSubpageHeading title="TR_NAV_RECEIVE" />
 

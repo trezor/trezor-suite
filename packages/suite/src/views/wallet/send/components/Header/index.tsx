@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import { Button, Dropdown, DropdownMenuItemProps } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { useDispatch } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { WalletSubpageHeading } from 'src/components/wallet';
 import { sendFormActions } from '@suite-common/wallet-core';
 import { FADE_IN } from '@trezor/components/src/config/animations';
+import { ConnectDeviceSendPromo } from 'src/views/wallet/receive/components/ConnectDevicePromo';
 
 const ClearButton = styled(Button)`
     animation: ${FADE_IN} 0.16s;
@@ -13,6 +14,7 @@ const ClearButton = styled(Button)`
 
 export const Header = () => {
     const dispatch = useDispatch();
+    const { device } = useDevice();
     const {
         outputs,
         account: { networkType },
@@ -48,30 +50,34 @@ export const Header = () => {
             label: <Translation id="SEND_RAW" />,
         },
     ];
+    const isDeviceConnected = device?.connected && device?.available;
 
     return (
-        <WalletSubpageHeading title="TR_NAV_SEND">
-            {isDirty && (
-                <ClearButton
-                    size="small"
-                    variant="tertiary"
-                    onClick={resetContext}
-                    data-test="clear-form"
-                >
-                    <Translation id="TR_CLEAR_ALL" />
-                </ClearButton>
-            )}
+        <>
+            {!isDeviceConnected && <ConnectDeviceSendPromo />}
+            <WalletSubpageHeading title="TR_NAV_SEND">
+                {isDirty && (
+                    <ClearButton
+                        size="small"
+                        variant="tertiary"
+                        onClick={resetContext}
+                        data-test="clear-form"
+                    >
+                        <Translation id="TR_CLEAR_ALL" />
+                    </ClearButton>
+                )}
 
-            <Dropdown
-                alignMenu="bottom-right"
-                data-test="@send/header-dropdown"
-                items={[
-                    {
-                        key: 'header',
-                        options,
-                    },
-                ]}
-            />
-        </WalletSubpageHeading>
+                <Dropdown
+                    alignMenu="bottom-right"
+                    data-test="@send/header-dropdown"
+                    items={[
+                        {
+                            key: 'header',
+                            options,
+                        },
+                    ]}
+                />
+            </WalletSubpageHeading>
+        </>
     );
 };
