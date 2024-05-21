@@ -10,6 +10,7 @@ import {
     observeSelectedDevice,
     selectDeviceThunk,
     selectAccountsByDeviceState,
+    selectDiscoveryByDeviceState,
 } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
@@ -38,6 +39,10 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
         if (action.type === DEVICE.DISCONNECT) {
             dispatch(forgetDisconnectedDevices(action.payload));
+
+            if (selectDiscoveryByDeviceState(getState(), action.payload.state)) {
+                dispatch(deviceActions.forgetDevice(action.payload));
+            }
         }
 
         /* The `next` function has to be executed here, because the further dispatched actions of this middleware
