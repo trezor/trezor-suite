@@ -21,15 +21,15 @@ function confirm {
 SOURCE=../build/
 
 # Set destination
-if [ "x$1" == "xstaging-wallet" ]; then
+if [ "$1" == "staging-wallet" ]; then
     BUCKET=stage.mytrezor.com
     DISTRIBUTION_ID=E24M0QWO692FQL
     DESTDIR=/wallet/web
-elif [ "x$1" == "xstaging-suite" ]; then
+elif [ "$1" == "staging-suite" ]; then
     BUCKET=staging-suite.trezor.io
     DISTRIBUTION_ID=E232X8775ST76R
     DESTDIR=/web
-elif [ "x$1" == "xsuite" ]; then
+elif [ "$1" == "suite" ]; then
     BUCKET=suite.trezor.io
     DISTRIBUTION_ID=E4TDVEWU4P4CY
     DESTDIR=/web
@@ -39,19 +39,19 @@ fi
 
 echo "sync $SOURCE with $BUCKET"
 
-if [ "x$1" == "xsuite" ]; then
+if [ "$1" == "suite" ]; then
     confirm
 fi
 
 set -e
 cd "$(dirname "$0")"
 
-if [ "x$2" == "x-clear" ]; then
-    aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET$DESTDIR
+if [ "$2" == "-clear" ]; then
+    aws s3 sync --delete --cache-control 'public, max-age=3600' $SOURCE s3://"$BUCKET""$DESTDIR"
 else
-    aws s3 sync --cache-control 'public, max-age=3600' $SOURCE s3://$BUCKET$DESTDIR
+    aws s3 sync --cache-control 'public, max-age=3600' $SOURCE s3://"$BUCKET""$DESTDIR"
 fi
 
-aws cloudfront create-invalidation --distribution-id $DISTRIBUTION_ID --paths "$DESTDIR/*"
+aws cloudfront create-invalidation --distribution-id "$DISTRIBUTION_ID" --paths "$DESTDIR/*"
 
 echo "DONE"
