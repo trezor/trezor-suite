@@ -1,10 +1,8 @@
 import { Dimensions } from 'react-native';
-import { useMemo } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
 import { Text, Card, Image, VStack, Button } from '@suite-native/atoms';
-import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import {
@@ -34,16 +32,6 @@ type NavigationProp = StackToTabCompositeNavigationProp<
 export const EmptyPortfolioTrackerState = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
-
-    const colorScheme = useActiveColorScheme();
-
-    const image = useMemo(() => {
-        if (colorScheme === 'dark') {
-            return require('../../../assets/darkDashboard.png');
-        }
-
-        return require('../../../assets/dashboard.png');
-    }, [colorScheme]);
 
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -78,7 +66,11 @@ export const EmptyPortfolioTrackerState = () => {
                             <Translation id="moduleHome.emptyState.portfolioTracker.subtitle" />
                         </Text>
                     </VStack>
-                    <Image source={image} contentFit="contain" style={applyStyle(imageStyle)} />
+                    <Image
+                        source={require('../../../assets/dashboard.png')}
+                        contentFit="contain"
+                        style={applyStyle(imageStyle)}
+                    />
                     <Button onPress={handleSyncMyCoins} testID="@home/portfolio/sync-coins-button">
                         <Translation id="moduleHome.emptyState.portfolioTracker.primaryButton" />
                     </Button>

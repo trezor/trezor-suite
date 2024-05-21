@@ -18,7 +18,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
-import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
+import { DeviceT3T1Svg } from '../assets/DeviceT3T1Svg';
 import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
@@ -75,7 +75,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
             <Card style={applyStyle(cardStyle)}>
                 <VStack spacing={28}>
                     <VStack justifyContent="center" alignItems="center">
-                        <DeviceT2B1Svg />
+                        <DeviceT3T1Svg />
                         <CenteredTitleHeader
                             title={
                                 <Translation id="modulePassphrase.enterPassphraseOnTrezor.title" />
