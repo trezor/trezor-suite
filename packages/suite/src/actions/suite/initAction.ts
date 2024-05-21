@@ -7,6 +7,7 @@ import {
     periodicCheckStakeDataThunk,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 
 import * as routerActions from 'src/actions/suite/routerActions';
 import * as analyticsActions from 'src/actions/suite/analyticsActions';
@@ -16,7 +17,6 @@ import type { Dispatch, GetState } from 'src/types/suite';
 
 import { SUITE } from './constants';
 import { onSuiteReady } from './suiteActions';
-import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {

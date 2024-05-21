@@ -821,4 +821,8 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             return walletSettings;
         });
     }
+
+    if (oldVersion < 46) {
+        db.createObjectStore('tokenManagement');
+    }
 };

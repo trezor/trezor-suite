@@ -124,6 +124,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         setDeviceMetadataReducer: mockReducer('setDeviceMetadataReducer'),
         storageLoadDevices: mockReducer('storageLoadDevices'),
         storageLoadFormDrafts: mockReducer('storageLoadFormDrafts'),
+        storageLoadTokenManagement: mockReducer('storageLoadTokenManagement'),
     },
     utils: {
         saveAs: (data, fileName) =>

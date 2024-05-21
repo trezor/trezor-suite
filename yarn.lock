@@ -3808,7 +3808,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@expo/json-file@npm:^8.2.37, @expo/json-file@npm:^8.3.0, @expo/json-file@npm:~8.3.0":
+"@expo/json-file@npm:^8.2.37, @expo/json-file@npm:~8.3.0":
+  version: 8.3.0
+  resolution: "@expo/json-file@npm:8.3.0"
+  dependencies:
+    "@babel/code-frame": "npm:~7.10.4"
+    json5: "npm:^2.2.2"
+    write-file-atomic: "npm:^2.3.0"
+  checksum: 10/f2b12862f45ce6a47dbea8b93363fcc4eeaa7fc3d280955db7d0780475afaa9407fc208c357d9b3d0f7811c7a8ed3051e693ad408603450e93313407e16f62e4
+  languageName: node
+  linkType: hard
+
+"@expo/json-file@npm:^8.3.0":
   version: 8.3.3
   resolution: "@expo/json-file@npm:8.3.3"
   dependencies:
@@ -6931,6 +6942,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@reduxjs/toolkit@npm:^2.2.5":
+  version: 2.2.5
+  resolution: "@reduxjs/toolkit@npm:2.2.5"
+  dependencies:
+    immer: "npm:^10.0.3"
+    redux: "npm:^5.0.1"
+    redux-thunk: "npm:^3.1.0"
+    reselect: "npm:^5.1.0"
+  peerDependencies:
+    react: ^16.9.0 || ^17.0.0 || ^18
+    react-redux: ^7.2.1 || ^8.1.3 || ^9.0.0
+  peerDependenciesMeta:
+    react:
+      optional: true
+    react-redux:
+      optional: true
+  checksum: 10/5f20196a02848f88122ac2f4e30ce7f932ec8d6c1e840943973c261240f5e1b49eedc81f4222ca1ccb50b02ed00e1558786980c0974b9ed30ed7bf90b98a0106
+  languageName: node
+  linkType: hard
+
 "@remix-run/node@npm:^2.7.2":
   version: 2.9.2
   resolution: "@remix-run/node@npm:2.9.2"
@@ -7333,10 +7364,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/cli-darwin@npm:2.27.0":
+  version: 2.27.0
+  resolution: "@sentry/cli-darwin@npm:2.27.0"
+  conditions: os=darwin
+  languageName: node
+  linkType: hard
+
 "@sentry/cli-darwin@npm:2.30.4":
   version: 2.30.4
   resolution: "@sentry/cli-darwin@npm:2.30.4"
   conditions: os=darwin
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-arm64@npm:2.27.0":
+  version: 2.27.0
+  resolution: "@sentry/cli-linux-arm64@npm:2.27.0"
+  conditions: (os=linux | os=freebsd) & cpu=arm64
   languageName: node
   linkType: hard
 
@@ -7347,10 +7392,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/cli-linux-arm@npm:2.27.0":
+  version: 2.27.0
+  resolution: "@sentry/cli-linux-arm@npm:2.27.0"
+  conditions: (os=linux | os=freebsd) & cpu=arm
+  languageName: node
+  linkType: hard
+
 "@sentry/cli-linux-arm@npm:2.30.4":
   version: 2.30.4
   resolution: "@sentry/cli-linux-arm@npm:2.30.4"
   conditions: (os=linux | os=freebsd) & cpu=arm
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-linux-i686@npm:2.27.0":
+  version: 2.27.0
+  resolution: "@sentry/cli-linux-i686@npm:2.27.0"
+  conditions: (os=linux | os=freebsd) & (cpu=x86 | cpu=ia32)
   languageName: node
   linkType: hard
 
@@ -7361,10 +7420,24 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/cli-linux-x64@npm:2.27.0":
+  version: 2.27.0
+  resolution: "@sentry/cli-linux-x64@npm:2.27.0"
+  conditions: (os=linux | os=freebsd) & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@sentry/cli-linux-x64@npm:2.30.4":
   version: 2.30.4
   resolution: "@sentry/cli-linux-x64@npm:2.30.4"
   conditions: (os=linux | os=freebsd) & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@sentry/cli-win32-i686@npm:2.27.0":
+  version: 2.27.0
+  resolution: "@sentry/cli-win32-i686@npm:2.27.0"
+  conditions: os=win32 & (cpu=x86 | cpu=ia32)
   languageName: node
   linkType: hard
 
@@ -7375,6 +7448,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@sentry/cli-win32-x64@npm:2.27.0":
+  version: 2.27.0
+  resolution: "@sentry/cli-win32-x64@npm:2.27.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
 "@sentry/cli-win32-x64@npm:2.30.4":
   version: 2.30.4
   resolution: "@sentry/cli-win32-x64@npm:2.30.4"
@@ -7382,7 +7462,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@sentry/cli@npm:2.30.4, @sentry/cli@npm:^2.22.3":
+"@sentry/cli@npm:2.30.4":
   version: 2.30.4
   resolution: "@sentry/cli@npm:2.30.4"
   dependencies:
@@ -7416,6 +7496,43 @@ __metadata:
   bin:
     sentry-cli: bin/sentry-cli
   checksum: 10/f30760c3a5f2928835baa57ab94000133644844ed2d899da5d3c72b38bcc17d86b88523b0f940595cb53dd3749c3ea99313cd2fe50d874e394cdb77db6fab564
+  languageName: node
+  linkType: hard
+
+"@sentry/cli@npm:^2.22.3":
+  version: 2.27.0
+  resolution: "@sentry/cli@npm:2.27.0"
+  dependencies:
+    "@sentry/cli-darwin": "npm:2.27.0"
+    "@sentry/cli-linux-arm": "npm:2.27.0"
+    "@sentry/cli-linux-arm64": "npm:2.27.0"
+    "@sentry/cli-linux-i686": "npm:2.27.0"
+    "@sentry/cli-linux-x64": "npm:2.27.0"
+    "@sentry/cli-win32-i686": "npm:2.27.0"
+    "@sentry/cli-win32-x64": "npm:2.27.0"
+    https-proxy-agent: "npm:^5.0.0"
+    node-fetch: "npm:^2.6.7"
+    progress: "npm:^2.0.3"
+    proxy-from-env: "npm:^1.1.0"
+    which: "npm:^2.0.2"
+  dependenciesMeta:
+    "@sentry/cli-darwin":
+      optional: true
+    "@sentry/cli-linux-arm":
+      optional: true
+    "@sentry/cli-linux-arm64":
+      optional: true
+    "@sentry/cli-linux-i686":
+      optional: true
+    "@sentry/cli-linux-x64":
+      optional: true
+    "@sentry/cli-win32-i686":
+      optional: true
+    "@sentry/cli-win32-x64":
+      optional: true
+  bin:
+    sentry-cli: bin/sentry-cli
+  checksum: 10/7ccebc0866136008161151fc328373480040fd601a7f5f093612a4d4b3587bc047a6aaeae1ad37924289e834065074f5f3fcac21f73d35a74bb901d5f5246248
   languageName: node
   linkType: hard
 
@@ -8796,6 +8913,7 @@ __metadata:
   resolution: "@suite-common/token-definitions@workspace:suite-common/token-definitions"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
+    "@reduxjs/toolkit": "npm:^2.2.5"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -24547,6 +24665,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"immer@npm:^10.0.3":
+  version: 10.1.1
+  resolution: "immer@npm:10.1.1"
+  checksum: 10/9dacf1e8c201d69191ccd88dc5d733bafe166cd45a5a360c5d7c88f1de0dff974a94114d72b35f3106adfe587fcfb131c545856184a2247d89d735ad25589863
+  languageName: node
+  linkType: hard
+
 "immutable@npm:^4.3.4":
   version: 4.3.6
   resolution: "immutable@npm:4.3.6"
@@ -28110,7 +28235,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:^10.0.0, lru-cache@npm:^10.0.1, lru-cache@npm:^9.1.1 || ^10.0.0":
+"lru-cache@npm:^10.0.0, lru-cache@npm:^9.1.1 || ^10.0.0":
+  version: 10.2.0
+  resolution: "lru-cache@npm:10.2.0"
+  checksum: 10/502ec42c3309c0eae1ce41afca471f831c278566d45a5273a0c51102dee31e0e250a62fa9029c3370988df33a14188a38e682c16143b794de78668de3643e302
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^10.0.1":
   version: 10.2.2
   resolution: "lru-cache@npm:10.2.2"
   checksum: 10/ff1a496d30b5eaec2c9079080965bb0cede203cf878371f7033a007f1e54cd4aa13cc8abf7ccec4c994a83a22ed5476e83a55bb57cc07e6c1547a42937e42c37
@@ -30342,7 +30474,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.0.3, minipass@npm:^7.0.4":
+"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.0.4":
+  version: 7.0.4
+  resolution: "minipass@npm:7.0.4"
+  checksum: 10/e864bd02ceb5e0707696d58f7ce3a0b89233f0d686ef0d447a66db705c0846a8dc6f34865cd85256c1472ff623665f616b90b8ff58058b2ad996c5de747d2d18
+  languageName: node
+  linkType: hard
+
+"minipass@npm:^7.0.3":
   version: 7.1.2
   resolution: "minipass@npm:7.1.2"
   checksum: 10/c25f0ee8196d8e6036661104bacd743785b2599a21de5c516b32b3fa2b83113ac89a2358465bc04956baab37ffb956ae43be679b2262bf7be15fce467ccd7950
@@ -35066,12 +35205,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"redux-thunk@npm:^3.1.0":
+  version: 3.1.0
+  resolution: "redux-thunk@npm:3.1.0"
+  peerDependencies:
+    redux: ^5.0.0
+  checksum: 10/38c563db5f0bbec90d2e65cc27f3c870c1b6102e0c071258734fac41cb0e51d31d894125815c2f4133b20aff231f51f028ad99bccc05a7e3249f1a5d5a959ed3
+  languageName: node
+  linkType: hard
+
 "redux@npm:^4.0.0, redux@npm:^4.0.5, redux@npm:^4.2.1":
   version: 4.2.1
   resolution: "redux@npm:4.2.1"
   dependencies:
     "@babel/runtime": "npm:^7.9.2"
   checksum: 10/371e4833b671193303a7dea7803c8fdc8e0d566740c78f580e0a3b77b4161da25037626900a2205a5d616117fa6ad09a4232e5a110bd437186b5c6355a041750
+  languageName: node
+  linkType: hard
+
+"redux@npm:^5.0.1":
+  version: 5.0.1
+  resolution: "redux@npm:5.0.1"
+  checksum: 10/a373f9ed65693ead58bea5ef61c1d6bef39da9f2706db3be6f84815f3a1283230ecd1184efb1b3daa7f807d8211b0181564ca8f336fc6ee0b1e2fa0ba06737c2
   languageName: node
   linkType: hard
 
@@ -35494,6 +35649,13 @@ __metadata:
   version: 4.1.8
   resolution: "reselect@npm:4.1.8"
   checksum: 10/199984d9872f71cd207f4aa6e6fd2bd48d95154f7aa9b3aee3398335f39f5491059e732f28c12e9031d5d434adab2c458dc8af5afb6564d0ad37e1644445e09c
+  languageName: node
+  linkType: hard
+
+"reselect@npm:^5.1.0":
+  version: 5.1.0
+  resolution: "reselect@npm:5.1.0"
+  checksum: 10/657c379d9461781b7cb5f0a32133e23b4266886660c94fcc77c102bec8abe484b32bf43a911b99b747ecf7439f157696561d744d40dc920024611beb1a0d921f
   languageName: node
   linkType: hard
 
@@ -42138,10 +42300,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.21.4, zod@npm:^3.22.3":
+"zod@npm:^3.21.4":
   version: 3.23.4
   resolution: "zod@npm:3.23.4"
   checksum: 10/29117ce59f16af155d9a3aab024d18e858e55b4b51c1f848772516ec6f019e617a0cdaf4c6e20f15154360a9f4c160056aba34502ec68072c8f0af31dfd653d6
+  languageName: node
+  linkType: hard
+
+"zod@npm:^3.22.3":
+  version: 3.22.4
+  resolution: "zod@npm:3.22.4"
+  checksum: 10/73622ca36a916f785cf528fe612a884b3e0f183dbe6b33365a7d0fc92abdbedf7804c5e2bd8df0a278e1472106d46674281397a3dd800fa9031dc3429758c6ac
   languageName: node
   linkType: hard
 

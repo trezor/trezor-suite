@@ -2,8 +2,10 @@ import {
     caseContractAddressForNetworkFixtures,
     getSupportedDefinitionTypesFixtures,
     isTokenDefinitionKnownFixtures,
+    buildTokenDefinitionsFromStorageFixtures,
 } from '../__fixtures__/utils';
 import {
+    buildTokenDefinitionsFromStorage,
     caseContractAddressForNetwork,
     getSupportedDefinitionTypes,
     isTokenDefinitionKnown,
@@ -36,6 +38,14 @@ describe('getSupportedDefinitionTypes', () => {
     getSupportedDefinitionTypesFixtures.forEach(({ testName, networkSymbol, result }) => {
         test(testName, () => {
             expect(getSupportedDefinitionTypes(networkSymbol)).toEqual(result);
+        });
+    });
+});
+
+describe('buildTokenDefinitionsFromStorage', () => {
+    buildTokenDefinitionsFromStorageFixtures.forEach(({ testName, storage, result }) => {
+        test(testName, () => {
+            expect(buildTokenDefinitionsFromStorage(storage)).toEqual(result);
         });
     });
 });
