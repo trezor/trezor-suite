@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { VStack, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
+import { VStack, Text, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
     HomeStackRoutes,
@@ -17,6 +17,7 @@ import {
     selectIsDeviceAccountless,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
+import { Translation } from '@suite-native/intl';
 
 import { PassphraseScreenWrapper } from '../components/PassphraseScreenWrapper';
 
@@ -57,8 +58,11 @@ export const PassphraseLoadingScreen = () => {
 
     return (
         <PassphraseScreenWrapper>
-            <VStack flex={1} justifyContent="center" alignItems="center">
+            <VStack flex={1} justifyContent="center" alignItems="center" spacing="extraLarge">
                 <Spinner loadingState={loadingResult} onComplete={handleSuccess} />
+                <Text variant="titleSmall" textAlign="center">
+                    <Translation id="modulePassphrase.loadingTitle" />
+                </Text>
             </VStack>
         </PassphraseScreenWrapper>
     );

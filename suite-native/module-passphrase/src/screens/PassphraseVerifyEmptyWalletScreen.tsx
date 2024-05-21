@@ -96,7 +96,12 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     variant="warning"
                     title={
                         <Text>
-                            <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle" />
+                            <Translation
+                                id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"
+                                values={{
+                                    bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                                }}
+                            />
                         </Text>
                     }
                 />
