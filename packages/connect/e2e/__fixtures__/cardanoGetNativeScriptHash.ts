@@ -20,12 +20,6 @@ export default {
             result: {
                 scriptHash: '29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'PUB_KEY script containing a path',
@@ -39,12 +33,6 @@ export default {
             result: {
                 scriptHash: '29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'ALL script',
@@ -67,12 +55,6 @@ export default {
             result: {
                 scriptHash: 'af5c2ce476a6ede1c879f7b1909d6a0b96cb2081391712d4a355cef6',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'ALL script containing a path',
@@ -95,12 +77,6 @@ export default {
             result: {
                 scriptHash: 'af5c2ce476a6ede1c879f7b1909d6a0b96cb2081391712d4a355cef6',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'ALL script containing a 1855 path',
@@ -123,12 +99,6 @@ export default {
             result: {
                 scriptHash: 'fbf6672eb655c29b0f148fa1429be57c2174b067a7b3e3942e967fe8',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'ANY script',
@@ -151,12 +121,6 @@ export default {
             result: {
                 scriptHash: 'd6428ec36719146b7b5fb3a2d5322ce702d32762b8c7eeeb797a20db',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'ANY script containing a path',
@@ -179,12 +143,6 @@ export default {
             result: {
                 scriptHash: 'd6428ec36719146b7b5fb3a2d5322ce702d32762b8c7eeeb797a20db',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'N_OF_K script',
@@ -212,12 +170,6 @@ export default {
             result: {
                 scriptHash: '2b2b17fd18e18acae4601d4818a1dee00a917ff72e772fa8482e36c9',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'N_OF_K script containing a path',
@@ -245,12 +197,6 @@ export default {
             result: {
                 scriptHash: '2b2b17fd18e18acae4601d4818a1dee00a917ff72e772fa8482e36c9',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'INVALID_BEFORE script',
@@ -273,12 +219,6 @@ export default {
             result: {
                 scriptHash: 'c6262ef9bb2b1291c058d93b46dabf458e2d135f803f60713f84b0b7',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'INVALID_HEREAFTER script',
@@ -301,12 +241,6 @@ export default {
             result: {
                 scriptHash: 'b12ac304f89f4cd4d23f59a2b90d2b2697f7540b8f470d6aa05851b5',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
         {
             description: 'Nested script',
@@ -371,12 +305,6 @@ export default {
             result: {
                 scriptHash: '4a6b4288459bf34668c0b281f922691460caf0c7c09caee3a726c27a',
             },
-            legacyResults: [
-                {
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
     ],
 };

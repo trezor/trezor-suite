@@ -396,41 +396,6 @@ const VALIDITY_INTERVAL_START = '47';
 const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a4f6ff89e02';
 const TOTAL_COLLATERAL = '1000';
 
-const legacyResults = {
-    beforeTransactionStreaming: {
-        // FW without transaction streaming is no longer supported by Connect
-        rules: ['<2.4.2', '1'],
-        success: false,
-    },
-    beforeMultisig: {
-        // older FW doesn't support multisig
-        rules: ['<2.4.3', '1'],
-        payload: false,
-    },
-    beforePlutus: {
-        // older FW doesn't support plutus-related features (OutputDatumHash, ScriptDataHash,
-        // Plutus, KeyHashStakeCredential)
-        rules: ['<2.4.4', '1'],
-        payload: false,
-    },
-    beforeBabbage: {
-        // older FW doesn't support babbage-related features (inlineDatum, referenceScript, collateralReturn,
-        // totalCollateral, referenceInputs)
-        rules: ['<2.5.2', '1'],
-        payload: false,
-    },
-    beforeCIP36Registration: {
-        // older FW doesn't support CIP36 registration format
-        rules: ['<2.5.3', '1'],
-        payload: false,
-    },
-    beforeCIP36RegistrationExternalPaymentAddress: {
-        // older FW doesn't support payment address given as a string in vote key registrations
-        rules: ['<2.5.4', '1'],
-        payload: false,
-    },
-};
-
 export default {
     method: 'cardanoSignTransaction',
     setup: {
@@ -462,7 +427,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -490,7 +454,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -520,7 +483,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -550,7 +512,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -580,7 +541,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -610,7 +570,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -638,7 +597,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -666,7 +624,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -704,7 +661,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -739,7 +695,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -775,7 +730,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -839,7 +793,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -884,7 +837,6 @@ export default {
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -929,7 +881,6 @@ export default {
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -986,7 +937,6 @@ export default {
                         '2671b8e668ffce235647ac89deda6cc222e7b31a3d44606c2723fcf711b29f9af1e30b0c6b4f87ba37ddf9f6adf0226c39c09e655255890644a3dc4e64c3a001',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
@@ -1039,7 +989,6 @@ export default {
                         'ebc00c615f988c6fc2e132d4419a719f04bbec56fe2569a00746a9e9b0d6e5bdd0809515cb2522c773c991c5ae39834403654d36b37e70b14897c0e98c8c0a0c',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
@@ -1088,7 +1037,6 @@ export default {
                         'ba05ac525e5dcc74e5a6cdbb7fb111d8e21163d79fe76777a5b730fe93512f09415f6f7b4904b12c6f12fe33b6c553d9889beb024299fa1256a0d3e98c8ff203',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36RegistrationExternalPaymentAddress],
         },
 
         {
@@ -1115,7 +1063,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1143,7 +1090,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1175,7 +1121,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1203,7 +1148,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1231,7 +1175,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1258,13 +1201,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support validity interval start
-                    rules: ['<2.3.5', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1290,13 +1226,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support multiasset outputs
-                    rules: ['<2.3.5', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1333,13 +1262,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support token minting
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1376,7 +1298,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1405,7 +1326,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1444,7 +1364,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1480,7 +1399,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1517,7 +1435,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1579,7 +1496,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1609,13 +1525,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support a zero ttl
-                    rules: ['<2.4.2', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1646,13 +1555,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support a zero validityIntervalStart
-                    rules: ['<2.4.2', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1839,7 +1741,6 @@ export default {
                         '3064949c9f186138f95e228075d0119dd5cb50e1b7e75d24d569fa547e018a597615da7c79a39ca8e394ee1ba8acb83e70be80f37e69aef3b86e7c4a6bd44903',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
@@ -1868,13 +1769,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support network id in tx body
-                    rules: ['<2.4.4', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1906,7 +1800,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1952,7 +1845,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1990,7 +1882,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2038,7 +1929,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2083,7 +1973,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2129,7 +2018,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2182,7 +2070,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2228,7 +2115,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2276,7 +2162,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2355,7 +2240,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2382,7 +2266,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2417,7 +2300,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2453,7 +2335,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2519,7 +2400,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2546,7 +2426,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2573,7 +2452,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2624,7 +2502,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2673,7 +2550,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
     ],
 };
