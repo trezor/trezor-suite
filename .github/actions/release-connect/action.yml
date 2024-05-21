@@ -113,7 +113,7 @@ runs:
       if: inputs.buildArtifacts == 'true'
       shell: bash
       env:
-        FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+        FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
       run: |
         echo "FULL_URL is set to ${FULL_URL}"
         node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
