@@ -13,7 +13,6 @@ import {
     BuyTradeResponse,
     BuyTradeFormResponse,
     BuyTrade,
-    WatchBuyTradeResponse,
     CountryInfo,
     SellListResponse,
     SellVoucherTradeQuoteRequest,
@@ -25,7 +24,6 @@ import {
     SellFiatTradeQuoteResponse,
     SellFiatTradeRequest,
     SellFiatTradeResponse,
-    WatchSellTradeResponse,
     CryptoSymbolsResponse,
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
@@ -33,7 +31,7 @@ import type { InvityServerEnvironment, InvityServers } from '@suite-common/invit
 import {
     CoinmarketTradeMapProps,
     CoinmarketTradeType,
-    CoinmarketWatchTradeResponseType,
+    CoinmarketWatchTradeResponseMapProps,
 } from 'src/types/coinmarket/coinmarketDetail';
 
 type BodyType =
@@ -321,25 +319,6 @@ class InvityAPI {
         }
     };
 
-    private watchBuyTrade = async (
-        trade: BuyTrade,
-        counter: number,
-    ): Promise<WatchBuyTradeResponse> => {
-        try {
-            const response: WatchBuyTradeResponse = await this.request(
-                this.BUY_WATCH_TRADE.replace('{{counter}}', counter.toString()),
-                trade,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[watchBuyTrade]', error);
-
-            return { error: error.toString() };
-        }
-    };
-
     getSellList = async (): Promise<SellListResponse | undefined> => {
         try {
             const response = await this.request(this.SELL_LIST, {}, 'GET');
@@ -448,42 +427,49 @@ class InvityAPI {
         }
     };
 
-    watchSellTrade = async (
-        trade: SellFiatTrade,
+    getCoinLogoUrl(coin: string): string {
+        return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
+    }
+
+    private getWatchTradeData = (tradeType: CoinmarketTradeType) => {
+        const tradesData = {
+            exchange: {
+                url: this.EXCHANGE_WATCH_TRADE,
+                logPrefix: '[watchExchangeTrade]',
+            },
+            buy: {
+                url: this.BUY_WATCH_TRADE,
+                logPrefix: '[watchBuyTrade]',
+            },
+
+            sell: {
+                url: this.SELL_FIAT_WATCH_TRADE,
+                logPrefix: '[watchSellFiatTrade]',
+            },
+        };
+
+        return tradesData[tradeType];
+    };
+
+    watchTrade = async <T extends CoinmarketTradeType>(
+        trade: CoinmarketTradeMapProps[T],
         counter: number,
-    ): Promise<WatchSellTradeResponse> => {
+    ): Promise<CoinmarketWatchTradeResponseMapProps[T]> => {
+        const tradesData = this.getWatchTradeData(trade.tradeType);
+
         try {
-            const response: WatchSellTradeResponse = await this.request(
-                this.SELL_FIAT_WATCH_TRADE.replace('{{counter}}', counter.toString()),
-                trade,
+            const response: CoinmarketWatchTradeResponseMapProps[T] = await this.request(
+                tradesData.url.replace('{{counter}}', counter.toString()),
+                trade.data,
                 'POST',
             );
 
             return response;
         } catch (error) {
-            console.log('[watchSellFiatTrade]', error);
+            console.log(tradesData.logPrefix, error);
 
             return { error: error.toString() };
         }
-    };
-
-    getCoinLogoUrl(coin: string): string {
-        return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
-    }
-
-    watchTrade = async <T extends CoinmarketTradeType>(
-        trade: CoinmarketTradeMapProps[T],
-        counter: number,
-    ): Promise<CoinmarketWatchTradeResponseType> => {
-        if (trade.tradeType === 'exchange') {
-            return await this.watchExchangeTrade(trade.data, counter);
-        }
-
-        if (trade.tradeType === 'sell') {
-            return await this.watchSellTrade(trade.data, counter);
-        }
-
-        return await this.watchBuyTrade(trade.data, counter);
     };
 }
 

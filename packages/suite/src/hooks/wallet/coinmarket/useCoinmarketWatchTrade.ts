@@ -7,7 +7,12 @@ import invityAPI from 'src/services/suite/invityAPI';
 import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
-import { BuyTrade, ExchangeTrade, SellFiatTrade } from 'invity-api';
+import {
+    ExchangeTrade,
+    WatchBuyTradeResponse,
+    WatchExchangeTradeResponse,
+    WatchSellTradeResponse,
+} from 'invity-api';
 import {
     CoinmarketTradeStatusType,
     CoinmarketTradeType,
@@ -15,7 +20,7 @@ import {
     CoinmarketWatchTradeProps,
 } from 'src/types/coinmarket/coinmarketDetail';
 
-const getTradeFinalStatuses = (tradeType: string): Partial<CoinmarketTradeStatusType>[] => {
+export const getTradeFinalStatuses = (tradeType: string): Partial<CoinmarketTradeStatusType>[] => {
     if (tradeType === 'buy') {
         return ['SUCCESS', 'ERROR', 'BLOCKED'];
     }
@@ -47,24 +52,46 @@ const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
     if (!response) return;
     if (response.status && response.status !== trade.data.status) {
         const newDate = new Date().toISOString();
-        const tradeData = {
-            ...trade.data,
-            status: response.status,
-            error: response.error,
-        };
 
         if (trade.tradeType === 'buy') {
-            dispatch(saveBuyTrade(tradeData as BuyTrade, account, newDate));
+            const buyResponse = response as WatchBuyTradeResponse;
+            const tradeData = {
+                ...trade.data,
+                status: buyResponse.status,
+                error: buyResponse.error,
+            };
+
+            dispatch(saveBuyTrade(tradeData, account, newDate));
         }
 
         if (trade.tradeType === 'sell') {
-            dispatch(saveSellTrade(tradeData as SellFiatTrade, account, newDate));
+            const sellResponse = response as WatchSellTradeResponse;
+            const tradeData = {
+                ...trade.data,
+                status: sellResponse.status,
+                error: sellResponse.error,
+            };
+
+            if (sellResponse.destinationAddress) {
+                tradeData.destinationAddress = sellResponse.destinationAddress;
+                tradeData.destinationPaymentExtraId = sellResponse.destinationPaymentExtraId;
+            }
+
+            dispatch(saveSellTrade(tradeData, account, newDate));
         }
 
         if (trade.tradeType === 'exchange') {
+            const exchangeResponse = response as WatchExchangeTradeResponse;
+            const tradeData = {
+                ...trade.data,
+                status: exchangeResponse.status,
+                error: exchangeResponse.error,
+            };
+
             dispatch(saveExchangeTrade(tradeData as ExchangeTrade, account, newDate));
         }
     }
+
     if (response.status && getTradeFinalStatuses(trade.tradeType).includes(response.status)) {
         removeDraft(account.key);
     }

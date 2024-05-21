@@ -240,7 +240,7 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     };
 
     const sendTransaction = async () => {
-        // destinationAddress may be set by useWatchSellTrade hook to the trade object
+        // destinationAddress may be set by useCoinmarketWatchTrade hook to the trade object
         const destinationAddress =
             selectedQuote?.destinationAddress || trade?.data?.destinationAddress;
         if (
