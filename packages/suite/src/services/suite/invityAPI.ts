@@ -43,8 +43,11 @@ import {
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
-import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
-import { WatchTradeResponse } from 'src/types/coinmarket/coinmarketDetail';
+import {
+    CoinmarketTradeMapProps,
+    CoinmarketTradeType,
+    CoinmarketWatchTradeResponseType,
+} from 'src/types/coinmarket/coinmarketDetail';
 
 export const SavingsTradeKYCFinalStatuses: SavingsKYCStatus[] = ['Failed', 'Verified'];
 
@@ -604,11 +607,10 @@ class InvityAPI {
         return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
     }
 
-    watchTrade = async (trade: Trade, counter: number): Promise<WatchTradeResponse> => {
-        if (trade.tradeType === 'buy') {
-            return await this.watchBuyTrade(trade.data, counter);
-        }
-
+    watchTrade = async <T extends CoinmarketTradeType>(
+        trade: CoinmarketTradeMapProps[T],
+        counter: number,
+    ): Promise<CoinmarketWatchTradeResponseType> => {
         if (trade.tradeType === 'exchange') {
             return await this.watchExchangeTrade(trade.data, counter);
         }
@@ -617,7 +619,7 @@ class InvityAPI {
             return await this.watchSellTrade(trade.data, counter);
         }
 
-        return null;
+        return await this.watchBuyTrade(trade.data, counter);
     };
 }
 
