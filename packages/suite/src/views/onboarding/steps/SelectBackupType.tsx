@@ -419,11 +419,11 @@ export const SelectBackupType = ({
         open: isOpen,
         onOpenChange: setIsOpen,
         middleware: [
-            offset(-(isMobileLayout ? SELECT_ELEMENT_HEIGHT_MOBILE : SELECT_ELEMENT_HEIGHT)),
+            offset(-(isMobileLayout ? SELECT_ELEMENT_HEIGHT_MOBILE : SELECT_ELEMENT_HEIGHT) + 1),
             size({
                 apply: ({ rects, elements, availableHeight }) => {
                     Object.assign(elements.floating.style, {
-                        width: `${rects.reference.width}px`,
+                        width: `${rects.reference.width - 2}px`,
                         height: `${Math.min(availableHeight, (isMobileLayout ? 317 : 350) + 2 * FLOATING_SELECTIONS_WRAPPER_PADDING)}px`, // <--- IMPORTANT: Those number needs to be updated when auto-height of the floating element changes
                     });
                 },
