@@ -1,7 +1,7 @@
 import styled, { ThemeProvider } from 'styled-components';
 import { ReactNode, MutableRefObject } from 'react';
 import { transparentize } from 'polished';
-import { spacings, zIndices } from '@trezor/theme';
+import { ZIndexValues, spacings, zIndices } from '@trezor/theme';
 import { TooltipContent, TooltipFloatingUi, TooltipTrigger } from './TooltipFloatingUi';
 import { Placement, ShiftOptions } from '@floating-ui/react';
 import { TooltipBox, TooltipBoxProps } from './TooltipBox';
@@ -53,6 +53,7 @@ type TooltipUiProps = {
     placement?: Placement;
     hasArrow?: boolean;
     appendTo?: HTMLElement | null | MutableRefObject<HTMLElement | null>;
+    zIndex?: ZIndexValues;
 };
 
 export type TooltipProps = (ManagedModeProps | UnmanagedModeProps) &
@@ -80,6 +81,7 @@ export const Tooltip = ({
     hasArrow = false,
     appendTo,
     shift,
+    zIndex = zIndices.tooltip,
 }: TooltipProps) => {
     if (!content || !children) {
         return <>{children}</>;
@@ -104,7 +106,7 @@ export const Tooltip = ({
 
                 <TooltipContent
                     data-test="@tooltip"
-                    style={{ zIndex: zIndices.tooltip }}
+                    style={{ zIndex }}
                     arrowRender={hasArrow ? TooltipArrow : undefined}
                     appendTo={appendTo}
                 >
