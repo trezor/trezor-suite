@@ -5,7 +5,6 @@ import {
     ExchangeTradeQuoteRequest,
     ConfirmExchangeTradeRequest,
     ExchangeTrade,
-    WatchExchangeTradeResponse,
     BuyListResponse,
     BuyTradeQuoteRequest,
     BuyTradeQuoteResponse,
@@ -42,7 +41,6 @@ import {
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
 import {
-    CoinmarketTradeMapProps,
     CoinmarketTradeType,
     CoinmarketWatchTradeResponseMapProps,
 } from 'src/types/coinmarket/coinmarketDetail';
@@ -268,25 +266,6 @@ class InvityAPI {
             console.log('[doExchangeTrade]', error);
 
             return { error: error.toString(), exchange: tradeRequest.trade.exchange };
-        }
-    };
-
-    watchExchangeTrade = async (
-        trade: ExchangeTrade,
-        counter: number,
-    ): Promise<WatchExchangeTradeResponse> => {
-        try {
-            const response: WatchExchangeTradeResponse = await this.request(
-                this.EXCHANGE_WATCH_TRADE.replace('{{counter}}', counter.toString()),
-                trade,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[watchExchangeTrade]', error);
-
-            return { error: error.toString() };
         }
     };
 
@@ -588,15 +567,16 @@ class InvityAPI {
     };
 
     watchTrade = async <T extends CoinmarketTradeType>(
-        trade: CoinmarketTradeMapProps[T],
+        tradeData: BuyTrade | SellFiatTrade | ExchangeTrade,
+        tradeType: CoinmarketTradeType,
         counter: number,
     ): Promise<CoinmarketWatchTradeResponseMapProps[T]> => {
-        const tradesData = this.getWatchTradeData(trade.tradeType);
+        const tradesData = this.getWatchTradeData(tradeType);
 
         try {
             const response: CoinmarketWatchTradeResponseMapProps[T] = await this.request(
                 tradesData.url.replace('{{counter}}', counter.toString()),
-                trade.data,
+                tradeData,
                 'POST',
             );
 

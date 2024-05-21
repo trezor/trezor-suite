@@ -7,11 +7,11 @@ import { TradeExchange } from 'src/types/wallet/coinmarketCommonTypes';
 import { goto } from 'src/actions/suite/routerActions';
 import { saveTransactionId } from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
-import { useWatchExchangeTrade } from 'src/hooks/wallet/useCoinmarket';
 import { Translation, FormattedDate, FormattedCryptoAmount } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 
 const Wrapper = styled.div`
     display: flex;
@@ -110,7 +110,7 @@ interface ExchangeTransactionProps {
 export const ExchangeTransaction = ({ trade, providers, account }: ExchangeTransactionProps) => {
     const dispatch = useDispatch();
     const theme = useTheme();
-    useWatchExchangeTrade(account, trade);
+    useCoinmarketWatchTrade({ account, trade });
 
     const { date, data } = trade;
     const { send, sendStringAmount, receive, receiveStringAmount, exchange } = data;
