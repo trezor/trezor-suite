@@ -380,7 +380,7 @@ export const en = {
                         0: 'Reconnect your Trezor',
                         1: 'Use a different USB data cable',
                         2: 'Use a different mobile device',
-                        3: 'Confirm connection via mobile device system message',
+                        3: 'Enable connection for Trezor Suite Lite via phone system message',
                     },
                 },
                 4: {
@@ -389,7 +389,6 @@ export const en = {
                         0: 'Trezor One: from version 1.12.1',
                         1: 'Trezor T: from version 2.6.3',
                         2: 'Trezor Safe 3: from version 2.6.3',
-                        3: 'Trezor Safe 5: from version 2.7.1',
                     },
                 },
                 5: {
@@ -401,8 +400,8 @@ export const en = {
                     answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
                 7: {
-                    question: 'Are my data safe?',
-                    answer: 'Yes, the mobile app does not store any private keys or sensitive information on your mobile device. This means that even if your phone is lost or stolen, your cryptocurrency assets are still safe and protected.',
+                    question: 'What is View-only?',
+                    answer: 'Even when your Trezor device is disconnected, you can still keep track of your balances with the View-Only. This feature provides peace of mind by allowing you to monitor your funds without compromising security. Plus no more waiting for retrieving all the assets and balances while connecting your Trezor device.',
                 },
             },
             usbDisabled: {
@@ -430,10 +429,6 @@ export const en = {
                     question:
                         'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
                     answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
-                },
-                6: {
-                    question: 'Are my data safe?',
-                    answer: 'Yes, the mobile app does not store any private keys or sensitive information on your mobile device. This means that even if your phone is lost or stolen, your cryptocurrency assets are still safe and protected.',
                 },
             },
         },
