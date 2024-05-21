@@ -6,7 +6,7 @@ import {
     DeviceRootState,
     selectDevice,
     selectDevices,
-    State,
+    DeviceState,
     selectDeviceByState,
     deviceActions,
 } from '@suite-common/wallet-core';
@@ -194,7 +194,7 @@ export const selectAccountLabels = (state: {
  * Select metadata of type 'labels' for requested device
  */
 export const selectLabelingDataForWallet = (
-    state: { metadata: MetadataState; device: State },
+    state: { metadata: MetadataState; device: DeviceState },
     deviceState?: string,
 ) => {
     const provider = selectSelectedProviderForLabels(state);

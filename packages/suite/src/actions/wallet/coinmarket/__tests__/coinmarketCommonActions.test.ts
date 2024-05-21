@@ -9,7 +9,7 @@ import {
     VERIFY_EXCHANGE_ADDRESS_FIXTURES,
 } from '../__fixtures__/coinmarketCommonActions/verifyAddress';
 import { transactionsReducer, accountsReducer } from 'src/reducers/wallet';
-import { State as DeviceState } from '@suite-common/wallet-core';
+import { DeviceState } from '@suite-common/wallet-core';
 import { SuiteState } from 'src/reducers/suite/suiteReducer';
 import type { DeepPartial } from '@trezor/type-utils';
 
