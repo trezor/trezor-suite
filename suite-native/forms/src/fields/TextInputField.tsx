@@ -20,8 +20,30 @@ export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrap
     valueTransformer?: (value: string) => string;
 }
 
+const SECURE_TEXT_PROPS: Partial<FieldProps> = {
+    secureTextEntry: true,
+    importantForAutofill: 'no',
+    autoComplete: 'off',
+    textContentType: 'oneTimeCode',
+};
+
 export const TextInputField = forwardRef<TextInput, FieldProps>(
-    ({ name, label, hint, onBlur, defaultValue = '', valueTransformer, ...otherProps }, ref) => {
+    (
+        {
+            name,
+            label,
+            hint,
+            onBlur,
+            defaultValue = '',
+            valueTransformer,
+            secureTextEntry,
+            importantForAutofill,
+            autoComplete,
+            textContentType,
+            ...otherProps
+        },
+        ref,
+    ) => {
         const field = useField({ name, label, defaultValue, valueTransformer });
         const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field;
 
@@ -42,6 +64,9 @@ export const TextInputField = forwardRef<TextInput, FieldProps>(
                     hasError={hasError}
                     label={label}
                     ref={ref}
+                    // We want to prevent secure inputs from interacting with any password managers and autofill.
+                    // Passphrases or other crypto secrets should be never saved anywhere!
+                    {...(secureTextEntry ? SECURE_TEXT_PROPS : {})}
                 />
             </InputWrapper>
         );
