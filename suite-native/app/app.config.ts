@@ -146,6 +146,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         slug: appSlugs[buildType],
         owner: 'trezorcompany',
         version: suiteNativeVersion,
+        orientation: 'portrait',
         splash: {
             image: './assets/splash_icon.png',
             backgroundColor: '#25292E',
