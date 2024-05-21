@@ -1,11 +1,24 @@
 import { A, D, O } from '@mobily/ts-belt';
 
-import { DeviceRootState } from '@suite-common/wallet-core';
+import {
+    DeviceRootState,
+    DiscoveryRootState,
+    selectDiscoveryByDeviceState,
+    PORTFOLIO_TRACKER_DEVICE_ID,
+} from '@suite-common/wallet-core';
 
-export const selectDeviceStatesNotRemembered = (state: DeviceRootState) => {
-    return A.filterMap(state.device.devices, device =>
-        device.remember || !device.state ? O.None : O.Some(device.state),
-    );
+export const selectDeviceStatesNotRemembered = (state: DeviceRootState & DiscoveryRootState) => {
+    return A.filterMap(state.device.devices, device => {
+        if (
+            !device.state ||
+            device.id === PORTFOLIO_TRACKER_DEVICE_ID ||
+            (device.remember && !selectDiscoveryByDeviceState(state, device.state))
+        ) {
+            return O.None;
+        }
+
+        return O.Some(device.state);
+    });
 };
 
 export const filterObjectKeys = <O extends Record<string, any>>(

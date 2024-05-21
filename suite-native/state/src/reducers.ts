@@ -100,14 +100,6 @@ export const prepareRootReducers = async () => {
         version: 1,
     });
 
-    const devicePersistedReducer = await preparePersistReducer({
-        reducer: deviceReducer,
-        persistedKeys: ['devices'],
-        key: 'devices',
-        version: 1,
-        transforms: [devicePersistTransform],
-    });
-
     const discoveryConfigPersistedReducer = await preparePersistReducer({
         reducer: discoveryConfigReducer,
         persistedKeys: discoveryConfigPersistWhitelist,
@@ -137,7 +129,7 @@ export const prepareRootReducers = async () => {
             wallet: walletPersistedReducer,
             featureFlags: featureFlagsPersistedReducer,
             graph: graphReducer,
-            device: devicePersistedReducer,
+            device: deviceReducer,
             logs: logsSlice.reducer,
             notifications: notificationsReducer,
             discoveryConfig: discoveryConfigPersistedReducer,
@@ -146,8 +138,8 @@ export const prepareRootReducers = async () => {
         }),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.
-        persistedKeys: ['wallet', 'graph'],
-        transforms: [walletPersistTransform, graphPersistTransform],
+        persistedKeys: ['wallet', 'graph', 'device'],
+        transforms: [walletPersistTransform, graphPersistTransform, devicePersistTransform],
         mergeLevel: 2,
         key: 'root',
         version: 1,
