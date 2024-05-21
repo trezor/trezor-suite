@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 46
+
+-   added `tokenManagement`
+
 ## 45
 
 -   added `historicRates`

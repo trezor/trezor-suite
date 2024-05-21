@@ -32,6 +32,10 @@ import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
 import { PROTO } from '@trezor/connect';
+import {
+    TokenDefinitionsState,
+    buildTokenDefinitionsFromStorage,
+} from '@suite-common/token-definitions';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -122,6 +126,18 @@ export const extraDependencies: ExtraDependencies = {
                 const fiatRates = payload.historicRates.map(rate => rate.value);
                 const historicRates = buildHistoricRatesFromStorage(fiatRates);
                 state.historic = historicRates;
+            }
+        },
+        storageLoadTokenManagement: (
+            state: TokenDefinitionsState,
+            { payload }: StorageLoadAction,
+        ) => {
+            if (payload.tokenManagement) {
+                const tokenDefinitions = buildTokenDefinitionsFromStorage(payload.tokenManagement);
+                Object.keys(tokenDefinitions).forEach(networkSymbol => {
+                    const symbol = networkSymbol as NetworkSymbol;
+                    state[symbol] = tokenDefinitions[symbol];
+                });
             }
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>

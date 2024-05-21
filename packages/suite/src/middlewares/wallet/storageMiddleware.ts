@@ -33,6 +33,8 @@ import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
 import { sendFormActions } from '@suite-common/wallet-core';
+import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
+import { TokenManagementAction } from '@suite-common/token-definitions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -173,6 +175,23 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             if (deviceActions.forgetDevice.match(action)) {
                 api.dispatch(storageActions.forgetDevice(action.payload));
                 api.dispatch(storageActions.forgetDeviceMetadataError(action.payload));
+            }
+
+            if (tokenDefinitionsActions.setTokenStatus.match(action)) {
+                api.dispatch(
+                    storageActions.saveTokenManagement(
+                        action.payload.networkSymbol,
+                        action.payload.type,
+                        TokenManagementAction.HIDE,
+                    ),
+                );
+                api.dispatch(
+                    storageActions.saveTokenManagement(
+                        action.payload.networkSymbol,
+                        action.payload.type,
+                        TokenManagementAction.SHOW,
+                    ),
+                );
             }
 
             if (deviceActions.updateSelectedDevice.match(action)) {

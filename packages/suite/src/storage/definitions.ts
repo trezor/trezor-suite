@@ -10,11 +10,11 @@ import type { MessageState } from '@suite-common/message-system';
 import type { MessageSystem } from '@suite-common/suite-types';
 import type { Account, Discovery, Network, WalletAccountTransaction } from 'src/types/wallet';
 import type { CoinjoinAccount, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
-
 import type { BackendSettings, WalletSettings } from '@suite-common/wallet-types';
 import type { StorageUpdateMessage } from '@trezor/suite-storage';
 import { AnalyticsState } from '@suite-common/analytics';
 import { GraphData } from '../types/wallet/graph';
+import { SimpleTokenStructure } from '@suite-common/token-definitions';
 
 export interface DBWalletAccountTransaction {
     tx: WalletAccountTransaction;
@@ -67,6 +67,10 @@ export interface SuiteDBSchema extends DBSchema {
         indexes: {
             deviceState: string;
         };
+    };
+    tokenManagement: {
+        key: string;
+        value: SimpleTokenStructure;
     };
     coinjoinAccounts: {
         key: string; // accountKey

@@ -120,6 +120,7 @@ export type ExtraDependencies = {
         setDeviceMetadataReducer: BaseReducer;
         storageLoadDevices: StorageLoadReducer;
         storageLoadFormDrafts: StorageLoadReducer;
+        storageLoadTokenManagement: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;

@@ -18,6 +18,10 @@ import {
     periodicCheckStakeDataThunk,
     updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import {
+    initTokenDefinitionsThunk,
+    periodicCheckTokenDefinitionsThunk,
+} from '@suite-common/token-definitions';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 import TrezorConnect from '@trezor/connect';
 
@@ -34,10 +38,6 @@ import type { AppState } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { appChanged } from '../suiteActions';
-import {
-    initTokenDefinitionsThunk,
-    periodicCheckTokenDefinitionsThunk,
-} from '@suite-common/token-definitions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
