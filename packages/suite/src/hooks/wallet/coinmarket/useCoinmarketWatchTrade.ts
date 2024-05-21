@@ -8,7 +8,6 @@ import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActio
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
 import {
-    ExchangeTrade,
     WatchBuyTradeResponse,
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
@@ -48,7 +47,7 @@ const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
     dispatch,
     removeDraft,
 }: CoinmarketWatchTradeProps<T>) => {
-    const response = await invityAPI.watchTrade<T>(trade, refreshCount);
+    const response = await invityAPI.watchTrade<T>(trade.data, trade.tradeType, refreshCount);
     if (!response) return;
     if (response.status && response.status !== trade.data.status) {
         const newDate = new Date().toISOString();
@@ -88,7 +87,7 @@ const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
                 error: exchangeResponse.error,
             };
 
-            dispatch(saveExchangeTrade(tradeData as ExchangeTrade, account, newDate));
+            dispatch(saveExchangeTrade(tradeData, account, newDate));
         }
     }
 

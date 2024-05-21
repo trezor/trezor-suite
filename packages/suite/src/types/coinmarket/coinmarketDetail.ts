@@ -14,12 +14,9 @@ import type {
 } from 'src/types/wallet/coinmarketCommonTypes';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
-    BuyTrade,
     BuyTradeStatus,
-    ExchangeTrade,
     ExchangeTradeStatus,
     SavingsTradeItemStatus,
-    SellFiatTrade,
     SellTradeStatus,
     WatchBuyTradeResponse,
     WatchExchangeTradeResponse,
@@ -45,12 +42,6 @@ export type CoinmarketTradeInfoMapProps = {
     buy: BuyInfo;
     sell: SellInfo;
     exchange: ExchangeInfo;
-};
-
-export type CoinmarketTradeDataMapProps = {
-    buy: BuyTrade;
-    sell: SellFiatTrade;
-    exchange: ExchangeTrade;
 };
 
 export type CoinmarketWatchTradeResponseMapProps = {
