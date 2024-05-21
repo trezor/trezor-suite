@@ -12,7 +12,7 @@ import { spacingsPx } from '@trezor/theme';
 import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { WalletParams } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
-import { useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -39,6 +39,7 @@ export const HeaderActions = () => {
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
 
     const dispatch = useDispatch();
+    const { device } = useDevice();
     const layoutSize = useSelector(state => state.resize.size);
     const isMobileLayout = layoutSize === 'TINY';
 
@@ -89,6 +90,7 @@ export const HeaderActions = () => {
     const isAccountLoading = selectedAccount.status === 'loading';
 
     const ButtonComponent = isMobileLayout ? IconButton : Button;
+    const isDeviceConnected = device?.connected && device?.available;
 
     return (
         <Container>
@@ -141,6 +143,7 @@ export const HeaderActions = () => {
                             goToWithAnalytics('wallet-send', { preserveParams: true });
                         }}
                         data-test="@wallet/menu/wallet-send"
+                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
                     >
                         <Translation id="TR_NAV_SEND" />
                     </ButtonComponent>
@@ -152,6 +155,7 @@ export const HeaderActions = () => {
                             goToWithAnalytics('wallet-receive', { preserveParams: true });
                         }}
                         data-test="@wallet/menu/wallet-receive"
+                        variant={isDeviceConnected ? 'primary' : 'tertiary'}
                     >
                         <Translation id="TR_NAV_RECEIVE" />
                     </ButtonComponent>
