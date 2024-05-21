@@ -13,7 +13,6 @@ import {
     BuyTradeResponse,
     BuyTradeFormResponse,
     BuyTrade,
-    WatchBuyTradeResponse,
     CountryInfo,
     SellListResponse,
     SellVoucherTradeQuoteRequest,
@@ -25,7 +24,6 @@ import {
     SellFiatTradeQuoteResponse,
     SellFiatTradeRequest,
     SellFiatTradeResponse,
-    WatchSellTradeResponse,
     P2pListResponse,
     P2pQuotesRequest,
     P2pQuotesResponse,
@@ -46,7 +44,7 @@ import type { InvityServerEnvironment, InvityServers } from '@suite-common/invit
 import {
     CoinmarketTradeMapProps,
     CoinmarketTradeType,
-    CoinmarketWatchTradeResponseType,
+    CoinmarketWatchTradeResponseMapProps,
 } from 'src/types/coinmarket/coinmarketDetail';
 
 export const SavingsTradeKYCFinalStatuses: SavingsKYCStatus[] = ['Failed', 'Verified'];
@@ -348,25 +346,6 @@ class InvityAPI {
         }
     };
 
-    private watchBuyTrade = async (
-        trade: BuyTrade,
-        counter: number,
-    ): Promise<WatchBuyTradeResponse> => {
-        try {
-            const response: WatchBuyTradeResponse = await this.request(
-                this.BUY_WATCH_TRADE.replace('{{counter}}', counter.toString()),
-                trade,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[watchBuyTrade]', error);
-
-            return { error: error.toString() };
-        }
-    };
-
     getSellList = async (): Promise<SellListResponse | undefined> => {
         try {
             const response = await this.request(this.SELL_LIST, {}, 'GET');
@@ -472,25 +451,6 @@ class InvityAPI {
             console.log('[doSellConfirm]', error);
 
             return { error: error.toString(), exchange: trade.exchange };
-        }
-    };
-
-    watchSellTrade = async (
-        trade: SellFiatTrade,
-        counter: number,
-    ): Promise<WatchSellTradeResponse> => {
-        try {
-            const response: WatchSellTradeResponse = await this.request(
-                this.SELL_FIAT_WATCH_TRADE.replace('{{counter}}', counter.toString()),
-                trade,
-                'POST',
-            );
-
-            return response;
-        } catch (error) {
-            console.log('[watchSellFiatTrade]', error);
-
-            return { error: error.toString() };
         }
     };
 
@@ -607,19 +567,45 @@ class InvityAPI {
         return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
     }
 
+    private getWatchTradeData = (tradeType: CoinmarketTradeType) => {
+        const tradesData = {
+            exchange: {
+                url: this.EXCHANGE_WATCH_TRADE,
+                logPrefix: '[watchExchangeTrade]',
+            },
+            buy: {
+                url: this.BUY_WATCH_TRADE,
+                logPrefix: '[watchBuyTrade]',
+            },
+
+            sell: {
+                url: this.SELL_FIAT_WATCH_TRADE,
+                logPrefix: '[watchSellFiatTrade]',
+            },
+        };
+
+        return tradesData[tradeType];
+    };
+
     watchTrade = async <T extends CoinmarketTradeType>(
         trade: CoinmarketTradeMapProps[T],
         counter: number,
-    ): Promise<CoinmarketWatchTradeResponseType> => {
-        if (trade.tradeType === 'exchange') {
-            return await this.watchExchangeTrade(trade.data, counter);
-        }
+    ): Promise<CoinmarketWatchTradeResponseMapProps[T]> => {
+        const tradesData = this.getWatchTradeData(trade.tradeType);
 
-        if (trade.tradeType === 'sell') {
-            return await this.watchSellTrade(trade.data, counter);
-        }
+        try {
+            const response: CoinmarketWatchTradeResponseMapProps[T] = await this.request(
+                tradesData.url.replace('{{counter}}', counter.toString()),
+                trade.data,
+                'POST',
+            );
 
-        return await this.watchBuyTrade(trade.data, counter);
+            return response;
+        } catch (error) {
+            console.log(tradesData.logPrefix, error);
+
+            return { error: error.toString() };
+        }
     };
 }
 

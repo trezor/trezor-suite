@@ -1,7 +1,5 @@
 import styled, { useTheme } from 'styled-components';
 import { SellProviderInfo } from 'invity-api';
-
-import { useWatchSellTrade } from 'src/hooks/wallet/useCoinmarket';
 import { goto } from 'src/actions/suite/routerActions';
 import { saveComposedTransactionInfo } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
@@ -22,6 +20,7 @@ import { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 
 const Wrapper = styled.div`
     display: flex;
@@ -129,7 +128,7 @@ export const SellTransaction = ({ trade, providers, account }: SellTransactionPr
         state => state.wallet.coinmarket.composedTransactionInfo,
     );
     const dispatch = useDispatch();
-    useWatchSellTrade(account, trade);
+    useCoinmarketWatchTrade({ account, trade });
 
     const { date, data } = trade;
     const {
