@@ -1,8 +1,6 @@
 import styled from 'styled-components';
 
 import { Card, variables } from '@trezor/components';
-import { useCoinmarketExchangeDetailContext } from 'src/hooks/wallet/useCoinmarketExchangeDetail';
-import { ExchangeTradeFinalStatuses } from 'src/hooks/wallet/useCoinmarket';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
@@ -53,15 +51,13 @@ const CoinmarketDetail = () => {
     }
 
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
-
+    const exchangeTradeFinalStatuses = getTradeFinalStatuses('exchange');
     const showSending =
-        !ExchangeTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'CONVERTING';
+        !exchangeTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'CONVERTING';
 
     const exchange = trade?.data?.exchange;
     const provider =
-        exchangeInfo && exchangeInfo.providerInfos && exchange
-            ? exchangeInfo.providerInfos[exchange]
-            : undefined;
+        info && info.providerInfos && exchange ? info.providerInfos[exchange] : undefined;
     const supportUrlTemplate = provider?.statusUrl || provider?.supportUrl;
     const supportUrl = supportUrlTemplate?.replace('{{orderId}}', trade?.data?.orderId || '');
 
@@ -84,7 +80,7 @@ const CoinmarketDetail = () => {
             </StyledCard>
             <CoinmarketExchangeOfferInfo
                 account={account}
-                exchangeInfo={exchangeInfo}
+                exchangeInfo={info}
                 selectedQuote={trade.data}
                 transactionId={trade.key}
             />

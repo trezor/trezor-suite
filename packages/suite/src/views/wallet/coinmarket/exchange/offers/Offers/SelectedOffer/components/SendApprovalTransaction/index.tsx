@@ -105,8 +105,14 @@ const SendApprovalTransactionComponent = () => {
     });
     useEffect(() => {
         if (selectedQuote && shouldRefresh(selectedQuote)) {
-            cancelRefresh();
-            invityAPI.watchExchangeTrade(selectedQuote, refreshCount).then(response => {
+            const watchTradeAsync = async () => {
+                cancelRefresh();
+                const response = await invityAPI.watchTrade<'exchange'>(
+                    selectedQuote,
+                    'exchange',
+                    refreshCount,
+                );
+
                 if (response.status && response.status !== selectedQuote.status) {
                     selectedQuote.status = response.status;
                     selectedQuote.error = response.error;
@@ -116,7 +122,9 @@ const SendApprovalTransactionComponent = () => {
                     }
                 }
                 resetRefresh();
-            });
+            };
+
+            watchTradeAsync();
         }
     }, [cancelRefresh, confirmTrade, refreshCount, resetRefresh, selectedQuote, setSelectedQuote]);
 
