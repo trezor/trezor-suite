@@ -29,7 +29,8 @@
             "matches": [
                 "*://connect.trezor.io/9/popup.html",
                 "*://suite.corp.sldev.cz/*",
-                "*://dev.suite.sldev.cz/*"
+                "*://dev.suite.sldev.cz/*",
+                "*://staging-connect.trezor.io/*"
             ],
             "js": ["./vendor/trezor-content-script.js"]
         }
