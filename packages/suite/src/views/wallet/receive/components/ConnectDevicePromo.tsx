@@ -4,7 +4,12 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 import { Translation } from 'src/components/suite';
 
-export const ConnectDevicePromo = () => {
+type ConnectDevicePromoProps = {
+    title: JSX.Element | string;
+    description: JSX.Element | string;
+};
+
+const ConnectDevicePromo = ({ title, description }: ConnectDevicePromoProps) => {
     const selectedDevice = useSelector(selectDevice);
     const selectedDeviceModelInternal =
         selectedDevice?.features?.internal_model || DEFAULT_FLAGSHIP_MODEL;
@@ -14,11 +19,9 @@ export const ConnectDevicePromo = () => {
             <Row alignItems="center" justifyContent="space-between" gap={12} flex="1">
                 <Column alignItems="start">
                     <Text typographyStyle="highlight" variant="warning">
-                        <Translation id="TR_CONNECT_DEVICE_PROMO_TITLE" />
+                        {title}
                     </Text>
-                    <Text typographyStyle="titleSmall">
-                        <Translation id="TR_CONNECT_DEVICE_PROMO_DESCRIPTION" />
-                    </Text>
+                    <Text typographyStyle="titleSmall">{description}</Text>
                 </Column>
 
                 <Image alt="Trezor" image={`TREZOR_${selectedDeviceModelInternal}`} />
@@ -26,3 +29,17 @@ export const ConnectDevicePromo = () => {
         </Warning>
     );
 };
+
+export const ConnectDeviceReceivePromo = () => (
+    <ConnectDevicePromo
+        title={<Translation id="TR_CONNECT_DEVICE_RECEIVE_PROMO_TITLE" />}
+        description={<Translation id="TR_CONNECT_DEVICE_RECEIVE_PROMO_DESCRIPTION" />}
+    />
+);
+
+export const ConnectDeviceSendPromo = () => (
+    <ConnectDevicePromo
+        title={<Translation id="TR_CONNECT_DEVICE_SEND_PROMO_TITLE" />}
+        description={<Translation id="TR_CONNECT_DEVICE_SEND_PROMO_DESCRIPTION" />}
+    />
+);
