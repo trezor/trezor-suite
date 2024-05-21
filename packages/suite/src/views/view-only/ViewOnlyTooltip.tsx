@@ -1,5 +1,5 @@
 import { Button, Text, Tooltip } from '@trezor/components';
-import { spacingsPx } from '@trezor/theme';
+import { spacingsPx, zIndices } from '@trezor/theme';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import styled from 'styled-components';
@@ -37,6 +37,7 @@ export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
             isOpen={isViewOnlyModeVisible === true && viewOnlyTooltipClosed === false}
             hasArrow
             shift={{ padding: { left: 10 } }}
+            zIndex={zIndices.navigationBar}
             content={
                 <Notification>
                     <TextContent>
