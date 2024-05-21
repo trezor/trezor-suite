@@ -108,6 +108,11 @@ const initDevice = async (devicePath?: string) => {
     // in TrezorConnect.init, this method may emit UI.SELECT_DEVICE with wrong parameters (for example it thinks that it does not use weubsb although it should)
     await _deviceList.transportFirstEventPromise;
 
+    if (!_deviceList) {
+        // Need to check again if _deviceList is still available
+        throw ERRORS.TypedError('Transport_Missing');
+    }
+
     const isWebUsb = _deviceList.transportType() === 'WebUsbTransport';
     let device: Device | typeof undefined;
     let showDeviceSelection = isWebUsb;
