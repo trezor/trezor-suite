@@ -5,7 +5,13 @@ import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import type { CoinmarketTradeCommonProps } from 'src/reducers/wallet/coinmarketReducer';
 import type { Account } from 'src/types/wallet';
-import type { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
+import type {
+    Trade,
+    TradeBuy,
+    TradeExchange,
+    TradeSell,
+    TradeType,
+} from 'src/types/wallet/coinmarketCommonTypes';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import {
     BuyTradeStatus,
@@ -18,43 +24,87 @@ import {
 } from 'invity-api';
 import { AnyAction, Dispatch } from '@reduxjs/toolkit';
 
-export type TradeStatus =
+export type CoinmarketTradeBuyType = 'buy';
+export type CoinmarketTradeSellType = 'sell';
+export type CoinmarketTradeExchangeType = 'exchange';
+export type CoinmarketTradeType =
+    | CoinmarketTradeBuyType
+    | CoinmarketTradeSellType
+    | CoinmarketTradeExchangeType;
+
+export type CoinmarketTradeMapProps = {
+    buy: TradeBuy;
+    sell: TradeSell;
+    exchange: TradeExchange;
+};
+
+export type CoinmarketTradeInfoMapProps = {
+    buy: BuyInfo;
+    sell: SellInfo;
+    exchange: ExchangeInfo;
+};
+
+export interface CoinmarketGetTypedTradeProps {
+    trades: Trade[];
+    tradeType: CoinmarketTradeType;
+    transactionId: string | undefined;
+}
+
+export type CoinmarketTradeStatusType =
     | BuyTradeStatus
     | SellTradeStatus
     | ExchangeTradeStatus
     | SavingsTradeItemStatus;
 
-export type UseCoinmarketBuyDetailProps = WithSelectedAccountLoadedProps;
+export type CoinmarketUseBuyDetailProps = WithSelectedAccountLoadedProps;
 
-export interface CoinmarketDetailContextValues extends CoinmarketTradeCommonProps {
+export interface CoinmarketDetailContextValues<T extends CoinmarketTradeType>
+    extends CoinmarketTradeCommonProps {
     account: Account;
-    trade: Trade | undefined;
-    info?: BuyInfo | SellInfo | ExchangeInfo;
+    trade: CoinmarketTradeMapProps[T] | undefined;
+    info?: CoinmarketTradeInfoMapProps[T] | undefined;
 }
 
-export interface GetCoinmarketDetailDataProps {
+export interface CoinmarketGetDetailDataProps {
     coinmarket: State;
     tradeType: TradeType;
 }
 
-export interface UseCoinmarketDetailProps {
+export interface CoinmarketGetTypedInfoTradeProps {
+    coinmarket: State;
+    tradeType: CoinmarketTradeType;
+}
+
+export interface CoinmarketGetDetailDataOutputProps<T extends CoinmarketTradeType> {
+    transactionId?: string;
+    info?: CoinmarketTradeInfoMapProps[T] | undefined;
+    trade?: CoinmarketTradeMapProps[T] | undefined;
+}
+
+export interface CoinmarketUseDetailProps {
     selectedAccount: SelectedAccountLoaded;
     tradeType: TradeType;
 }
 
-export type WatchTradeResponse =
-    | WatchBuyTradeResponse
-    | WatchExchangeTradeResponse
-    | WatchSellTradeResponse
-    | null;
-
-export interface UseCoinmarketWatchTradeProps {
-    account: Account | undefined;
-    trade: Trade | undefined;
+export interface CoinmarketUseDetailOutputProps<T extends CoinmarketTradeType> {
+    transactionId: string | undefined;
+    info: CoinmarketTradeInfoMapProps[T] | undefined;
+    trade: CoinmarketTradeMapProps[T] | undefined;
+    account: Account;
 }
 
-export interface CoinmarketWatchTradeProps {
-    trade: Trade;
+export type CoinmarketWatchTradeResponseType =
+    | WatchBuyTradeResponse
+    | WatchExchangeTradeResponse
+    | WatchSellTradeResponse;
+
+export interface CoinmarketUseWatchTradeProps<T extends CoinmarketTradeType> {
+    account: Account | undefined;
+    trade: CoinmarketTradeMapProps[T] | undefined;
+}
+
+export interface CoinmarketWatchTradeProps<T extends CoinmarketTradeType> {
+    trade: CoinmarketTradeMapProps[T];
     account: Account;
     refreshCount: number;
     dispatch: Dispatch<AnyAction>;
