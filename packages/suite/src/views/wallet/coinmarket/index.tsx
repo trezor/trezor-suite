@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Icon, variables, SelectBar, Card } from '@trezor/components';
+import { Icon, variables, SelectBar, Card, Paragraph } from '@trezor/components';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -87,4 +87,9 @@ export const SavingsKYCCard = styled(Card)`
     align-items: center;
     height: 104px;
     width: 100%;
+`;
+
+export const CoinmarketParagraph = styled(Paragraph)`
+    text-align: center;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
