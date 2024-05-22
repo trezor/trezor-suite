@@ -243,6 +243,16 @@ export const selectDeviceAccountsByNetworkSymbol = memoizeWithArgs(
     },
 );
 
+export const selectVisibleDeviceAccountsByNetworkSymbol = memoizeWithArgs(
+    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol | null) =>
+        selectDeviceAccountsByNetworkSymbol(state, networkSymbol).filter(
+            account => account.visible,
+        ),
+    {
+        size: Object.keys(networks).length,
+    },
+);
+
 export const selectVisibleNonEmptyDeviceAccountsByNetworkSymbol = (
     state: AccountsRootState & DeviceRootState,
     networkSymbol: NetworkSymbol | null,
