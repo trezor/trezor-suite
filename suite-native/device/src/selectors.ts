@@ -1,8 +1,13 @@
+import { memoizeWithArgs } from 'proxy-memoize';
+
 import {
     AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
     selectDevice,
+    FiatRatesRootState,
+    selectAccountsByDeviceState,
+    selectCurrentFiatRates,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
     selectIsConnectedDeviceUninitialized,
@@ -10,8 +15,9 @@ import {
     selectIsEmptyDevice,
     selectIsUnacquiredDevice,
 } from '@suite-common/wallet-core';
+import { SettingsSliceRootState, selectFiatCurrencyCode } from '@suite-native/settings';
 
-import { isFirmwareVersionSupported } from './utils';
+import { getTotalFiatBalanceNative, isFirmwareVersionSupported } from './utils';
 
 export const selectIsDeviceFirmwareSupported = (state: DeviceRootState) => {
     const deviceFwVersion = selectDeviceFirmwareVersion(state);
@@ -47,3 +53,22 @@ export const selectDeviceError = (
 
     return device?.error;
 };
+
+export const selectDeviceTotalFiatBalanceNative = memoizeWithArgs(
+    (
+        state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState,
+        deviceState: string,
+    ) => {
+        const accounts = deviceState ? selectAccountsByDeviceState(state, deviceState) : [];
+
+        const rates = selectCurrentFiatRates(state);
+        const fiatCurrencyCode = selectFiatCurrencyCode(state);
+        const fiatBalance = getTotalFiatBalanceNative(accounts, fiatCurrencyCode, rates);
+
+        return fiatBalance;
+    },
+    {
+        // reasonably high cache size for a lot of devices and passphrases
+        size: 20,
+    },
+);
