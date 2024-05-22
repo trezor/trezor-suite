@@ -28,7 +28,7 @@ export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': Descriptor[];
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
-    logger: Logger;
+    protected logger: Logger;
 
     constructor({ logger }: AbstractApiConstructorParams) {
         super();
@@ -113,7 +113,7 @@ export abstract class AbstractApi extends TypedEmitter<{
     /**
      * packet size for api
      */
-    abstract chunkSize: number;
+    public abstract chunkSize: number;
 
     protected success<T>(payload: T): Success<T> {
         return success(payload);
