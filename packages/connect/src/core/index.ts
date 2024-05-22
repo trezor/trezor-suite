@@ -38,6 +38,7 @@ import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, Device as DeviceTyped } from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
+import { initCoreManager } from './coreManager';
 
 // Public variables
 let _core: Core; // Class with event emitter
@@ -1133,56 +1134,49 @@ export class Core extends EventEmitter {
         }
         _deviceList.enumerate();
     }
-}
 
-/**
- * Module initialization.
- * This will download the config.json, init Core emitter instance.
- * Returns Core, an event emitter instance.
- * @param {Object} settings - optional // TODO
- * @returns {Promise<Core>}
- * @memberof Core
- */
-export const initCore = async (
-    settings: ConnectSettings,
-    onCoreEvent: (message: CoreEventMessage) => void,
-    logWriterFactory?: () => LogWriter | undefined,
-) => {
-    if (logWriterFactory) {
-        setLogWriter(logWriterFactory);
-    }
-    try {
-        await DataManager.load(settings);
-        enableLog(DataManager.getSettings('debug'));
-        _core = new Core();
-
-        // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
-        _interactionTimeout = new InteractionTimeout(
-            settings.popup ? settings.interactionTimeout : 0,
-        );
-
-        _core.on(CORE_EVENT, onCoreEvent);
-    } catch (error) {
-        // TODO: kill app
-        _log.error('init', error);
-        throw error;
-    }
-
-    try {
-        if (!DataManager.getSettings('transportReconnect')) {
-            // try only once, if it fails kill and throw initialization error
-            await initDeviceList(false);
-        } else {
-            // don't wait for DeviceList result, further communication will be thru TRANSPORT events
-            initDeviceList(true);
+    async init(
+        settings: ConnectSettings,
+        onCoreEvent: (message: CoreEventMessage) => void,
+        logWriterFactory?: () => LogWriter | undefined,
+    ) {
+        if (logWriterFactory) {
+            setLogWriter(logWriterFactory);
         }
-    } catch (error) {
-        _log.error('initTransport', error);
-        throw error;
-    }
+        try {
+            await DataManager.load(settings);
+            enableLog(DataManager.getSettings('debug'));
 
-    return _core;
-};
+            // TODO NOTE: i'm leaving reference to avoid complex changes, top-level reference is used by methods above Core context
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
+            _core = this;
+
+            // If we're not in popup mode, set the interaction timeout to 0 (= disabled)
+            _interactionTimeout = new InteractionTimeout(
+                settings.popup ? settings.interactionTimeout : 0,
+            );
+
+            this.on(CORE_EVENT, onCoreEvent);
+        } catch (error) {
+            // TODO: kill app
+            _log.error('init', error);
+            throw error;
+        }
+
+        try {
+            if (!DataManager.getSettings('transportReconnect')) {
+                // try only once, if it fails kill and throw initialization error
+                await initDeviceList(false);
+            } else {
+                // don't wait for DeviceList result, further communication will be thru TRANSPORT events
+                initDeviceList(true);
+            }
+        } catch (error) {
+            _log.error('initTransport', error);
+            throw error;
+        }
+    }
+}
 
 const disableWebUSBTransport = async () => {
     if (!_deviceList) return;
@@ -1210,4 +1204,11 @@ const disableWebUSBTransport = async () => {
     } catch (error) {
         // do nothing
     }
+};
+
+/**
+ * State initialization
+ */
+export const initCoreState = () => {
+    return initCoreManager(new Core());
 };

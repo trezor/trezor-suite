@@ -401,7 +401,7 @@ const initCoreInPopup = async (
 
     const { connectSrc } = payload.settings;
     // core is built in a separate build step.
-    const { initCore, initTransport } = await import(
+    const { initCoreState, initTransport } = await import(
         /* webpackIgnore: true */ `${connectSrc}js/core.js`
     ).catch(_err => {
         fail({
@@ -410,7 +410,7 @@ const initCoreInPopup = async (
         });
     });
 
-    if (!initCore) return;
+    if (!initCoreState) return;
     if (disposed) return;
 
     const state = getState();
@@ -433,7 +433,8 @@ const initCoreInPopup = async (
             handleResponseEvent(message);
         }
     };
-    const core: Core = await initCore(
+    const coreManager = initCoreState();
+    const core: Core = await coreManager.getOrInitCore(
         { ...payload.settings, trustedHost: false },
         onCoreEvent,
         logWriterFactory,
