@@ -1,6 +1,65 @@
 /* WARNING! This file should be imported ONLY in tests! */
 
+import {
+    AbstractApiTransport,
+    UsbApi,
+    SessionsClient,
+    SessionsBackground,
+} from '@trezor/transport';
 import { DeviceModelInternal, type Features, type FirmwareRelease } from './src/types';
+
+class TestTransport extends AbstractApiTransport {
+    name = 'TestTransport' as any;
+}
+
+// mock of navigator.usb
+const createTransportApi = (override = {}) =>
+    ({
+        chunkSize: 0,
+        enumerate: () => {
+            return Promise.resolve({ success: true, payload: [{ path: '1' }] });
+        },
+        on: () => {},
+        off: () => {},
+        openDevice: (path: string) => {
+            return Promise.resolve({ success: true, payload: [{ path }] });
+        },
+        closeDevice: () => {
+            return Promise.resolve({ success: true });
+        },
+        write: () => {
+            return Promise.resolve({ success: true });
+        },
+        read: () => {
+            return Promise.resolve({
+                success: true,
+                payload: Buffer.from('3f232300110000000c1002180020006000aa010154', 'hex'), // partial proto.Features
+                // payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
+            });
+        },
+        ...override,
+    }) as unknown as UsbApi;
+
+export const createTestTransport = (apiMethods = {}) => {
+    const { signal } = new AbortController();
+    const sessionsBackground = new SessionsBackground({ signal });
+    const sessionsClient = new SessionsClient({
+        requestFn: params => sessionsBackground.handleMessage(params),
+        registerBackgroundCallbacks: onDescriptorsCallback => {
+            sessionsBackground.on('descriptors', descriptors => {
+                onDescriptorsCallback(descriptors);
+            });
+        },
+    });
+
+    const transport = new TestTransport({
+        api: createTransportApi(apiMethods),
+        sessionsClient,
+        signal,
+    });
+
+    return transport;
+};
 
 export const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     vendor: 'trezor.io',
@@ -77,6 +136,7 @@ declare global {
         getReleaseT2: typeof getReleaseT2;
         getReleasesT1: typeof getReleasesT1;
         getReleasesT2: typeof getReleasesT2;
+        createTestTransport: typeof createTestTransport;
     };
 
     type TestFixtures<TestedMethod extends (...args: any) => any> = {
@@ -92,4 +152,5 @@ global.JestMocks = {
     getReleaseT2,
     getReleasesT1,
     getReleasesT2,
+    createTestTransport,
 };
