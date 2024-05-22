@@ -14,7 +14,7 @@ export class NodeUsbTransport extends AbstractApiTransport {
 
     constructor(params: AbstractTransportParams) {
         const { messages, logger, signal } = params;
-        const sessionsBackground = new SessionsBackground({ signal });
+        const sessionsBackground = new SessionsBackground();
 
         // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
         // so far, sessionsClient has direct access to sessionBackground

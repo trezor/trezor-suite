@@ -5,7 +5,6 @@ import { Descriptor } from '../types';
 import {
     EnumerateDoneRequest,
     AcquireIntentRequest,
-    ReleaseIntentRequest,
     ReleaseDoneRequest,
     GetPathBySessionRequest,
     AcquireDoneRequest,
@@ -54,10 +53,6 @@ export class SessionsClient extends TypedEmitter<{
     handshake() {
         return this.request({ type: 'handshake' });
     }
-
-    enumerateIntent() {
-        return this.request({ type: 'enumerateIntent' });
-    }
     enumerateDone(payload: EnumerateDoneRequest) {
         return this.request({ type: 'enumerateDone', payload });
     }
@@ -66,9 +61,6 @@ export class SessionsClient extends TypedEmitter<{
     }
     acquireDone(payload: AcquireDoneRequest) {
         return this.request({ type: 'acquireDone', payload });
-    }
-    releaseIntent(payload: ReleaseIntentRequest) {
-        return this.request({ type: 'releaseIntent', payload });
     }
     releaseDone(payload: ReleaseDoneRequest) {
         return this.request({ type: 'releaseDone', payload });

@@ -10,8 +10,7 @@ import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
 import { Log } from '@trezor/utils';
 
-const abortController = new AbortController();
-export const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
+export const sessionsBackground = new SessionsBackground();
 
 export const sessionsClient = new SessionsClient({
     requestFn: args => sessionsBackground.handleMessage(args),
@@ -85,8 +84,6 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
     };
 
     const enumerate = async () => {
-        await sessionsClient.enumerateIntent();
-
         const enumerateResult = await api.enumerate();
         if (!enumerateResult.success) {
             return enumerateResult;
@@ -119,7 +116,6 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
     };
 
     const release = async ({ session, path }: ReleaseInput) => {
-        await sessionsClient.releaseIntent({ session });
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });

@@ -9,14 +9,12 @@
  * - we can say we trust the caller but not really thats why we implement auto-unlock
  */
 
-import { createDeferred, Deferred } from '@trezor/utils';
 import { TypedEmitter } from '@trezor/utils';
 
 import type {
     EnumerateDoneRequest,
     AcquireIntentRequest,
     AcquireDoneRequest,
-    ReleaseIntentRequest,
     ReleaseDoneRequest,
     GetPathBySessionRequest,
     HandleMessageParams,
@@ -26,9 +24,6 @@ import type {
 import type { Descriptor, Success } from '../types';
 
 import * as ERRORS from '../errors';
-
-// in nodeusb, enumeration operation takes ~3 seconds
-const lockDuration = 1000 * 4;
 
 export class SessionsBackground extends TypedEmitter<{
     /**
@@ -42,16 +37,10 @@ export class SessionsBackground extends TypedEmitter<{
      */
     private descriptors: Sessions = {};
 
-    // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
-    private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
     private lastSessionId = 0;
 
-    constructor({ signal }: { signal: AbortSignal }) {
+    constructor() {
         super();
-        signal.addEventListener('abort', () => {
-            this.locksQueue.forEach(lock => clearTimeout(lock.id));
-        });
     }
 
     public async handleMessage<M extends HandleMessageParams>(
@@ -69,9 +58,6 @@ export class SessionsBackground extends TypedEmitter<{
                 case 'handshake':
                     result = this.handshake();
                     break;
-                case 'enumerateIntent':
-                    result = await this.enumerateIntent();
-                    break;
                 case 'enumerateDone':
                     result = await this.enumerateDone(message.payload);
                     break;
@@ -83,9 +69,6 @@ export class SessionsBackground extends TypedEmitter<{
                     break;
                 case 'getSessions':
                     result = await this.getSessions();
-                    break;
-                case 'releaseIntent':
-                    result = await this.releaseIntent(message.payload);
                     break;
                 case 'releaseDone':
                     result = await this.releaseDone(message.payload);
@@ -110,23 +93,13 @@ export class SessionsBackground extends TypedEmitter<{
         } finally {
             if (result && result.success && result.payload && 'descriptors' in result.payload) {
                 const { descriptors } = result.payload;
-                setTimeout(() => this.emit('descriptors', Object.values(descriptors)), 0);
+                setTimeout(() => this.emit('descriptors', Object.values(descriptors)));
             }
         }
     }
 
     private handshake() {
         return this.success(undefined);
-    }
-    /**
-     * enumerate intent
-     * - caller wants to enumerate usb
-     * - basically "wait for unlocked and lock"
-     */
-    async enumerateIntent() {
-        await this.waitInQueue();
-
-        return this.success({ sessions: this.descriptors });
     }
 
     /**
@@ -135,7 +108,6 @@ export class SessionsBackground extends TypedEmitter<{
      * - caller informs about disconnected devices so that they may be removed from sessions list
      */
     private enumerateDone(payload: EnumerateDoneRequest) {
-        this.clearLock();
         const disconnectedDevices = this.filterDisconnectedDevices(
             Object.values(this.descriptors),
             payload.descriptors.map(d => d.path), // which paths are occupied paths after last interface read
@@ -172,12 +144,8 @@ export class SessionsBackground extends TypedEmitter<{
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
 
-        await this.waitInQueue();
-
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
         if (previous !== this.descriptors[payload.path]?.session) {
-            this.clearLock();
-
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
@@ -200,7 +168,6 @@ export class SessionsBackground extends TypedEmitter<{
      * - assign client a new "session". this session will be used in all subsequent communication
      */
     private acquireDone(payload: AcquireDoneRequest) {
-        this.clearLock();
         if (!this.descriptors[payload.path]) {
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
@@ -213,22 +180,8 @@ export class SessionsBackground extends TypedEmitter<{
         );
     }
 
-    private async releaseIntent(payload: ReleaseIntentRequest) {
-        const path = this.getPathFromSessions({ session: payload.session });
-
-        if (!path) {
-            return this.error(ERRORS.SESSION_NOT_FOUND);
-        }
-
-        await this.waitInQueue();
-
-        return this.success({ path });
-    }
-
     private releaseDone(payload: ReleaseDoneRequest) {
         this.descriptors[payload.path].session = null;
-
-        this.clearLock();
 
         return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
     }
@@ -255,48 +208,6 @@ export class SessionsBackground extends TypedEmitter<{
         });
 
         return path;
-    }
-
-    private startLock() {
-        // todo: create a deferred with built-in timeout functionality (util)
-        const dfd = createDeferred();
-
-        // to ensure that communication with device will not get stuck forever,
-        // lock times out:
-        // - if cleared by client (enumerateIntent, enumerateDone)
-        // - after n second automatically
-        const timeout = setTimeout(() => {
-            dfd.resolve(undefined);
-        }, lockDuration);
-
-        this.locksQueue.push({ id: timeout, dfd });
-        this.locksTimeoutQueue.push(timeout);
-
-        return this.locksQueue.length - 1;
-    }
-
-    private clearLock() {
-        const lock = this.locksQueue[0];
-        if (lock) {
-            this.locksQueue[0].dfd.resolve(undefined);
-            this.locksQueue.shift();
-            clearTimeout(this.locksTimeoutQueue[0]);
-            this.locksTimeoutQueue.shift();
-        }
-    }
-
-    private async waitForUnlocked(myIndex: number) {
-        if (myIndex > 0) {
-            const beforeMe = this.locksQueue.slice(0, myIndex);
-            if (beforeMe.length) {
-                await Promise.all(beforeMe.map(lock => lock.dfd.promise));
-            }
-        }
-    }
-
-    private async waitInQueue() {
-        const myIndex = this.startLock();
-        await this.waitForUnlocked(myIndex);
     }
 
     private filterDisconnectedDevices(prevDevices: Descriptor[], paths: string[]) {

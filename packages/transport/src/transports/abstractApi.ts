@@ -68,8 +68,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     public enumerate() {
         return this.scheduleAction(async () => {
-            // notify sessions background that a client is going to access usb
-            await this.sessionsClient.enumerateIntent();
             // enumerate usb api
             const enumerateResult = await this.api.enumerate();
 
@@ -137,21 +135,15 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 this.releaseUnconfirmed[path] = session;
                 this.listenPromise[path] = createDeferred();
             }
-            const releaseIntentResponse = await this.sessionsClient.releaseIntent({
-                session,
-            });
 
-            if (!releaseIntentResponse.success) {
-                return this.error({ error: releaseIntentResponse.error });
-            }
+            const releasePromise = this.releaseDevice(path);
 
-            const releasePromise = this.releaseDevice(releaseIntentResponse.payload.path);
             if (onClose) return this.success(undefined);
 
             await releasePromise;
 
             await this.sessionsClient.releaseDone({
-                path: releaseIntentResponse.payload.path,
+                path,
             });
 
             if (!this.listenPromise[path]) {

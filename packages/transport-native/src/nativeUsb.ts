@@ -13,7 +13,7 @@ export class NativeUsbTransport extends AbstractApiTransport {
 
     constructor(params: ConstructorParameters<typeof AbstractTransport>[0]) {
         const { messages, logger, signal } = params;
-        const sessionsBackground = new SessionsBackground({ signal });
+        const sessionsBackground = new SessionsBackground();
 
         const sessionsClient = new SessionsClient({
             requestFn: args => sessionsBackground.handleMessage(args),

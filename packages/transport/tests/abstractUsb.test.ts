@@ -66,7 +66,7 @@ const initTest = async () => {
     let transport: AbstractTransport;
     let testUsbApi: UsbApi;
 
-    sessionsBackground = new SessionsBackground({ signal: abortController.signal });
+    sessionsBackground = new SessionsBackground();
 
     sessionsClient = new SessionsClient({
         requestFn: params => sessionsBackground.handleMessage(params),
@@ -143,7 +143,7 @@ describe('Usb', () => {
         it('enumerate error', async () => {
             const abortController = new AbortController();
 
-            const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
+            const sessionsBackground = new SessionsBackground();
 
             const sessionsClient = new SessionsClient({
                 requestFn: params => sessionsBackground.handleMessage(params),

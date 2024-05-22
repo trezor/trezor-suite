@@ -496,10 +496,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 // or possibly there are 2 applications without common sessions background
                 error.message === TRANSPORT_ERROR.INTERFACE_UNABLE_TO_OPEN_DEVICE ||
                 // catch one of trezord LIBUSB_ERRORs
-                error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0 ||
-                // we tried to initialize device (either automatically after enumeration or after user click)
-                // but it did not work out. this device is effectively unreadable and user should do something about it
-                error.code === 'Device_InitializeFailed'
+                error.message?.indexOf(ERRORS.LIBUSB_ERROR_MESSAGE) >= 0
             ) {
                 const device = this._createUnreadableDevice(
                     this.creatingDevicesDescriptors[path],
@@ -507,7 +504,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                 );
                 this.devices[path] = device;
                 this.emit(DEVICE.CONNECT_UNACQUIRED, device.toMessageObject());
-            } else if (error.code === 'Device_UsedElsewhere') {
+            } else if (
+                error.code === 'Device_UsedElsewhere' ||
+                error.code === 'Device_InitializeFailed'
+            ) {
                 // most common error - someone else took the device at the same time
                 this._handleUsedElsewhere(descriptor);
             } else {

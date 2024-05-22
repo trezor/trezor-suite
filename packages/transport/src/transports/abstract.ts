@@ -147,19 +147,13 @@ export abstract class AbstractTransport extends TypedEmitter<{
     protected logger: Logger;
 
     constructor(params: AbstractTransportParams) {
-        const { messages, signal, logger } = params || {};
+        const { messages, logger } = params || {};
 
         super();
         this.descriptors = [];
         this.messages = protobuf.Root.fromJSON(messages || {});
 
         this.abortController = new AbortController();
-
-        const abort = () => this.abortController.abort();
-        this.abortController.signal.addEventListener('abort', () =>
-            signal.removeEventListener('abort', abort),
-        );
-        signal.addEventListener('abort', abort);
 
         // some abstract inactive logger
         this.logger = logger || {
@@ -453,7 +447,6 @@ export abstract class AbstractTransport extends TypedEmitter<{
                     this.listenPromise[path].resolve(this.success('null'));
                     delete this.releaseUnconfirmed[path];
                 }
-                // when releasing we don't really care about else
             }
         });
 

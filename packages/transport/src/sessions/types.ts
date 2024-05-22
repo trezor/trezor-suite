@@ -10,11 +10,6 @@ export type Sessions = Record<string, Descriptor>;
 export type HandshakeRequest = Record<string, never>;
 export type HandshakeResponse = BackgroundResponse<undefined>;
 
-export type EnumerateIntentRequest = Record<string, never>;
-export type EnumerateIntentResponse = BackgroundResponse<{
-    descriptors: Descriptor[];
-}>;
-
 export type EnumerateDoneRequest = {
     descriptors: Descriptor[];
 };
@@ -41,15 +36,6 @@ export type AcquireDoneResponse = BackgroundResponseWithError<
     },
     typeof ERRORS.DESCRIPTOR_NOT_FOUND
 >;
-export interface ReleaseIntentRequest {
-    session: string;
-}
-
-export type ReleaseIntentResponse = BackgroundResponseWithError<
-    { path: string },
-    typeof ERRORS.SESSION_NOT_FOUND
->;
-
 export interface ReleaseDoneRequest {
     path: string;
 }
@@ -82,11 +68,9 @@ export type Params = {
 
 export interface HandleMessageApi {
     handshake: () => HandshakeResponse;
-    enumerateIntent: () => EnumerateIntentResponse;
     enumerateDone: (payload: EnumerateDoneRequest) => EnumerateDoneResponse;
     acquireIntent: (payload: AcquireIntentRequest) => AcquireIntentResponse;
     acquireDone: (payload: AcquireDoneRequest) => AcquireDoneResponse;
-    releaseIntent: (payload: ReleaseIntentRequest) => ReleaseIntentResponse;
     releaseDone: (payload: ReleaseDoneRequest) => ReleaseDoneResponse;
     getSessions: () => GetSessionsResponse;
     getPathBySession: (payload: GetPathBySessionRequest) => GetPathBySessionResponse;
