@@ -23,6 +23,19 @@ class AccountImportActions {
         await scrollUntilVisible(by.text(accountName));
     }
 
+    async importSameAccount({
+        networkSymbol,
+        xpub,
+    }: {
+        networkSymbol: string;
+        xpub: string;
+        accountName: string;
+    }) {
+        await this.selectCoin({ networkSymbol });
+        await this.submitXpub({ xpub, isValid: true });
+        await detoxExpect(element(by.text('Coin already synced'))).toBeVisible();
+    }
+
     async selectCoin({ networkSymbol }: { networkSymbol: string }) {
         // not all coin types are visible, so first check if visible, if not, scroll
         await scrollUntilVisible(by.id(`@onboarding/select-coin/${networkSymbol.toLowerCase()}`));
