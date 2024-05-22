@@ -10,6 +10,7 @@ import PaymentFailed from '../components/PaymentFailed';
 import { CoinmarketSellOfferInfo } from '../../components/CoinmarketSellOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { getTradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarketDetail';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +29,7 @@ const StyledCard = styled(Card)`
 const CoinmarketDetail = () => {
     useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-sell" />);
 
-    const { account, trade, info } = useCoinmarketDetailContext<'sell'>();
+    const { account, trade, info } = useCoinmarketDetailContext<CoinmarketTradeSellType>();
     const dispatch = useDispatch();
 
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
