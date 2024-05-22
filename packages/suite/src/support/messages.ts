@@ -1924,6 +1924,10 @@ export default defineMessages({
         defaultMessage: 'Reload page',
         id: 'TR_COINMARKET_NO_OFFERS_RELOAD_PAGE_BUTTON',
     },
+    TR_COINMARKET_OFFERS_EMPTY: {
+        defaultMessage: 'No offer for your request. Please change country or buy amount.',
+        id: 'TR_COINMARKET_OFFERS_EMPTY',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',

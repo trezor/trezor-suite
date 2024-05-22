@@ -93,7 +93,7 @@ const IconWrapper = styled.div`
 
 const ErrorText = styled.div``;
 
-interface QuoteProps {
+interface CoinmarketOffersItemProps {
     className?: string;
     quote: BuyTrade;
     wantCrypto: boolean;
@@ -198,7 +198,7 @@ export function getQuoteError(quote: BuyTrade, wantCrypto: boolean) {
     return '';
 }
 
-export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
+const CoinmarketOffersItem = ({ className, quote, wantCrypto }: CoinmarketOffersItemProps) => {
     const theme = useTheme();
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     const { tag, infoNote } = getTagAndInfoNote(quote);
@@ -278,3 +278,5 @@ export const BuyQuote = ({ className, quote, wantCrypto }: QuoteProps) => {
         </Card>
     );
 };
+
+export default CoinmarketOffersItem;
