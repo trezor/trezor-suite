@@ -29,9 +29,7 @@ const CoinmarketDetail = () => {
     useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-buy" />);
 
     const coinmarketDetailContext = useCoinmarketDetailContext<CoinmarketTradeBuyType>();
-    const { trade } = coinmarketDetailContext;
-    const { info } = coinmarketDetailContext;
-    const { account } = coinmarketDetailContext;
+    const { trade, info, account } = coinmarketDetailContext;
     const dispatch = useDispatch();
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default coinmarket page, the trade is shown there in the previous trades
