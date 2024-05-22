@@ -8,6 +8,7 @@ import {
     Icon,
     Image,
     ImageType,
+    Text,
     motionEasing,
     useElevation,
     variables,
@@ -110,12 +111,6 @@ const CardWrapper = styled.div<CardWrapperProps>`
 
 const CardWrapperInner = styled.div<{ $expandable: boolean }>`
     overflow: ${({ $expandable }) => $expandable && 'hidden'};
-`;
-
-const Text = styled.span`
-    color: ${({ theme }) => theme.textSubdued};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
 
 const CardImageWrapper = styled.div`
@@ -257,7 +252,7 @@ export const CollapsibleOnboardingCard = ({
 
                             {description && (
                                 <Description $hasChildren={!!children}>
-                                    <Text>{description}</Text>
+                                    <Text typographyStyle="callout">{description}</Text>
                                 </Description>
                             )}
 
