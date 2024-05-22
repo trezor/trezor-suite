@@ -5,7 +5,7 @@ import { useOnClickOutside } from '@trezor/react-utils';
 import { DATA_TOS_INVITY_URL, INVITY_URL } from '@trezor/urls';
 import { CoinmarketProvidedByInvity } from './CoinmarketProvidedByInvity';
 import { Translation } from 'src/components/suite';
-import { borders, zIndices } from '@trezor/theme';
+import { borders, spacingsPx, zIndices } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -13,7 +13,7 @@ const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     padding-top: 20px;
-    margin-top: auto;
+    margin-top: ${spacingsPx.xxxl};
     border-top: 1px solid ${({ theme }) => theme.borderElevation1};
 `;
 
