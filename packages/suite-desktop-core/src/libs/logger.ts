@@ -23,18 +23,13 @@ export type Options = {
     outputPath: string; // path for the output
     logFormat: string; // Output format of the log
     dedupeTimeout: number; // After how many ms are the same messages deduplicated
+    writeToMemory?: boolean; // Output is stored in memory
+    memoryCap: number; // Maximum number of messages stored in memory
 };
 
 const logLevelSwitchValue = app?.commandLine.getSwitchValue('log-level');
 const logLevelByEnv = isDevEnv ? 'debug' : 'error';
 const logLevelDefault = isLogLevel(logLevelSwitchValue) ? logLevelSwitchValue : logLevelByEnv;
-
-type LogMessage = {
-    date: Date;
-    level: LogLevel;
-    topic: string;
-    text: string;
-};
 
 type RepeatedLogMessage = LogMessage & {
     repetition?: number;
@@ -46,6 +41,7 @@ export class Logger implements ILogger {
     private defaultOptions: Options;
     private options: Options;
     private logLevel = 0;
+    private memory: LogMessage[] = [];
 
     constructor(level?: LogLevel, options?: Partial<Options>) {
         const logLevel = level || logLevelDefault;
@@ -64,6 +60,8 @@ export class Logger implements ILogger {
                 (userDataDir ? `${userDataDir}/logs` : process.cwd()),
             logFormat: '%dt - %lvl(%top): %rep%msg',
             dedupeTimeout: 500,
+            writeToMemory: false,
+            memoryCap: 1000,
         };
 
         this.options = {
@@ -116,9 +114,9 @@ export class Logger implements ILogger {
     }
 
     private log(level: LogLevel, topic: string, message: string | string[]) {
-        const { writeToConsole, writeToDisk, logFormat } = this.options;
+        const { writeToConsole, writeToDisk, writeToMemory, logFormat } = this.options;
 
-        if ((!writeToConsole && !writeToDisk) || !logFormat) {
+        if ((!writeToConsole && !writeToDisk && !writeToMemory) || !logFormat) {
             return;
         }
 
@@ -174,6 +172,14 @@ export class Logger implements ILogger {
             msg: text,
             rep: (repetition ?? 0) > 1 ? `(${repetition}x) ` : '',
         });
+
+        // write to memory
+        if (this.options.writeToMemory) {
+            this.memory.push({ date, level, topic, text });
+            if (this.memory.length > this.options.memoryCap) {
+                this.memory.shift();
+            }
+        }
 
         if (this.options.writeToConsole) {
             console.log(this.options.colors ? this.color(level, message) : message);
@@ -273,5 +279,9 @@ export class Logger implements ILogger {
         if (options?.writeToDisk) {
             this.logBasicInfo();
         }
+    }
+
+    public getLog() {
+        return this.memory;
     }
 }
