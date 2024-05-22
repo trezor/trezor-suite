@@ -1,65 +1,8 @@
 import { parseConnectSettings } from '../../data/connectSettings';
 import { DataManager } from '../../data/DataManager';
 import { DeviceList } from '../DeviceList';
-import {
-    AbstractApiTransport,
-    UsbApi,
-    SessionsClient,
-    SessionsBackground,
-} from '@trezor/transport';
 
-class TestTransport extends AbstractApiTransport {
-    name = 'TestTransport' as any;
-}
-
-// mock of navigator.usb
-const createTransportApi = (override = {}) =>
-    ({
-        chunkSize: 0,
-        enumerate: () => {
-            return Promise.resolve({ success: true, payload: [{ path: '1' }] });
-        },
-        on: () => {},
-        off: () => {},
-        openDevice: (path: string) => {
-            return Promise.resolve({ success: true, payload: [{ path }] });
-        },
-        closeDevice: () => {
-            return Promise.resolve({ success: true });
-        },
-        write: () => {
-            return Promise.resolve({ success: true });
-        },
-        read: () => {
-            return Promise.resolve({
-                success: true,
-                payload: Buffer.from('3f232300110000000c1002180020006000aa010154', 'hex'), // partial proto.Features
-                // payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
-            });
-        },
-        ...override,
-    }) as unknown as UsbApi;
-
-const createTestTransport = (apiMethods = {}) => {
-    const { signal } = new AbortController();
-    const sessionsBackground = new SessionsBackground({ signal });
-    const sessionsClient = new SessionsClient({
-        requestFn: params => sessionsBackground.handleMessage(params),
-        registerBackgroundCallbacks: onDescriptorsCallback => {
-            sessionsBackground.on('descriptors', descriptors => {
-                onDescriptorsCallback(descriptors);
-            });
-        },
-    });
-
-    const transport = new TestTransport({
-        api: createTransportApi(apiMethods),
-        sessionsClient,
-        signal,
-    });
-
-    return transport;
-};
+const { createTestTransport } = global.JestMocks;
 
 const getDeviceListParams = (
     partialSettings: Partial<ConstructorParameters<typeof DeviceList>[0]['settings']>,
@@ -143,8 +86,10 @@ describe('DeviceList', () => {
     });
 
     it('constructor accepts transports in form of transport class', () => {
+        const transport = createTestTransport();
+        const classConstructor = transport.constructor as unknown as typeof transport;
         expect(() => {
-            new DeviceList(getDeviceListParams({ transports: [TestTransport] }));
+            new DeviceList(getDeviceListParams({ transports: [classConstructor] }));
         }).not.toThrow();
     });
 

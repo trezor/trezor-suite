@@ -4,8 +4,8 @@ import TrezorConnect from '../../../src';
 const INIT_ERROR = { code: 'Init_ManifestMissing' };
 
 describe('TrezorConnect.init', () => {
-    afterEach(async () => {
-        await TrezorConnect.dispose();
+    afterEach(() => {
+        TrezorConnect.dispose();
     });
 
     beforeAll(() => {
@@ -50,6 +50,21 @@ describe('TrezorConnect.init', () => {
         } catch (error) {
             expect(error).toMatchObject({ code: 'Init_AlreadyInitialized' });
         }
+    });
+
+    it('calling multiple methods synchronously', async () => {
+        TrezorConnect.manifest({
+            appUrl: 'a',
+            email: 'b',
+        });
+
+        const result = await Promise.all([
+            TrezorConnect.getCoinInfo({ coin: 'btc' }),
+            TrezorConnect.blockchainEstimateFee({ request: { blocks: [1] }, coin: 'test' }),
+        ]);
+
+        // success, success
+        expect(result.map(r => r.success)).toEqual([true, true]);
     });
 
     it('init success', async () => {
