@@ -17,11 +17,11 @@ const Option = styled.div`
     align-items: center;
 `;
 
-interface BuyQuoteFilter {
+interface CoinmarketHeaderFilterProps {
     quotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
 }
 
-export const BuyQuoteFilter = ({ quotesFilterReducer }: BuyQuoteFilter) => {
+const CoinmarketHeaderFilter = ({ quotesFilterReducer }: CoinmarketHeaderFilterProps) => {
     const { state, dispatch } = quotesFilterReducer;
     const { translationString } = useTranslation();
     const defaultMethod: PaymentMethodListProps = {
@@ -58,3 +58,5 @@ export const BuyQuoteFilter = ({ quotesFilterReducer }: BuyQuoteFilter) => {
         </Wrapper>
     );
 };
+
+export default CoinmarketHeaderFilter;
