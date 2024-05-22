@@ -1,8 +1,14 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { Button, HStack, Text } from '@suite-native/atoms';
+import { Button, HStack, Loader, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
-import { deviceActions, toggleRememberDevice } from '@suite-common/wallet-core';
+import {
+    DeviceRootState,
+    DiscoveryRootState,
+    deviceActions,
+    selectIsDiscoveryActiveByDeviceState,
+    toggleRememberDevice,
+} from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { useAlert } from '@suite-native/alerts';
 import { useToast } from '@suite-native/toasts';
@@ -11,6 +17,10 @@ import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { setViewOnlyCancelationTimestamp } from '@suite-native/settings';
 
+type WalletRowProps = {
+    device: TrezorDevice;
+};
+
 const walletRowStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.medium,
     justifyContent: 'space-between',
@@ -18,11 +28,14 @@ const walletRowStyle = prepareNativeStyle(utils => ({
     height: 60,
 }));
 
-export const WalletRow = ({ device }: { device: TrezorDevice }) => {
+export const WalletRow = ({ device }: WalletRowProps) => {
     const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
     const { showToast } = useToast();
     const { applyStyle } = useNativeStyles();
+    const isDeviceDiscoveryActive = useSelector((state: DiscoveryRootState & DeviceRootState) =>
+        selectIsDiscoveryActiveByDeviceState(state, device.state),
+    );
 
     const walletNameLabel = device.useEmptyPassphrase ? (
         <Translation id="moduleSettings.viewOnly.wallet.standard" />
@@ -90,6 +103,8 @@ export const WalletRow = ({ device }: { device: TrezorDevice }) => {
         });
     };
 
+    const showToggleButton = device.remember || !isDeviceDiscoveryActive;
+
     return (
         <HStack key={device.instance} style={applyStyle(walletRowStyle)}>
             <HStack spacing={12} alignItems="center">
@@ -99,19 +114,23 @@ export const WalletRow = ({ device }: { device: TrezorDevice }) => {
                 />
                 <Text variant="callout">{walletNameLabel}</Text>
             </HStack>
-            <Button
-                size="extraSmall"
-                colorScheme={device.remember ? 'redElevation0' : 'primary'}
-                onPress={() => (device.remember ? handleDisableViewOnly() : toggleViewOnly())}
-            >
-                <Translation
-                    id={
-                        device.remember
-                            ? 'moduleSettings.viewOnly.button.disable'
-                            : 'moduleSettings.viewOnly.button.enable'
-                    }
-                />
-            </Button>
+            {showToggleButton ? (
+                <Button
+                    size="extraSmall"
+                    colorScheme={device.remember ? 'redElevation0' : 'primary'}
+                    onPress={() => (device.remember ? handleDisableViewOnly() : toggleViewOnly())}
+                >
+                    <Translation
+                        id={
+                            device.remember
+                                ? 'moduleSettings.viewOnly.button.disable'
+                                : 'moduleSettings.viewOnly.button.enable'
+                        }
+                    />
+                </Button>
+            ) : (
+                <Loader size="small" />
+            )}
         </HStack>
     );
 };

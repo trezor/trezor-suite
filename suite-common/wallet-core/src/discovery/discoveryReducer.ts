@@ -91,8 +91,11 @@ export const selectDeviceDiscovery = (state: DiscoveryRootState & DeviceRootStat
     return selectDiscoveryByDeviceState(state, selectedDevice?.state);
 };
 
-export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
-    const discovery = selectDeviceDiscovery(state);
+export const selectIsDiscoveryActiveByDeviceState = (
+    state: DiscoveryRootState & DeviceRootState,
+    deviceState: string | undefined,
+) => {
+    const discovery = selectDiscoveryByDeviceState(state, deviceState);
 
     if (!discovery) return false;
 
@@ -100,6 +103,12 @@ export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & Device
         discovery.status === DiscoveryStatus.RUNNING ||
         discovery.status === DiscoveryStatus.STOPPING
     );
+};
+
+export const selectIsDeviceDiscoveryActive = (state: DiscoveryRootState & DeviceRootState) => {
+    const discovery = selectDeviceDiscovery(state);
+
+    return selectIsDiscoveryActiveByDeviceState(state, discovery?.deviceState);
 };
 
 /**
