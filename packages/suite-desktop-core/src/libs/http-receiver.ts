@@ -4,6 +4,7 @@ import { xssFilters } from '@trezor/utils';
 import { HttpServer, allowReferers } from '@trezor/node-utils';
 
 import { HTTP_ORIGINS_DEFAULT } from './constants';
+import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 type TemplateOptions = {
     title?: string;
@@ -38,7 +39,10 @@ const applyTemplate = (content: string, options?: TemplateOptions) => {
 };
 
 export const createHttpReceiver = () => {
-    const httpReceiver = new HttpServer<Events>({ logger: global.logger, port: 21335 });
+    const httpReceiver = new HttpServer<Events>({
+        logger: convertILoggerToLog(global.logger, { serviceName: 'http-receiver' }),
+        port: 21335,
+    });
 
     httpReceiver.use([
         (request, response, next) => {

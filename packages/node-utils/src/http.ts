@@ -3,29 +3,13 @@ import * as net from 'net';
 import * as url from 'url';
 
 import type { RequiredKey } from '@trezor/type-utils';
-import { LogMessage, TypedEmitter } from '@trezor/utils';
+import { Log, TypedEmitter } from '@trezor/utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { getFreePort } from './getFreePort';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 type EventMap = { [event: string]: any };
-
-type LogFn = (message: string | string[]) => void;
-type Logger = {
-    info: LogFn;
-    warn: LogFn;
-    error: LogFn;
-    getLog: () => LogMessage[];
-};
-
-type OriginalLogFn = (topic: string, message: string | string[]) => void;
-type OriginalLogger = {
-    info: OriginalLogFn;
-    warn: OriginalLogFn;
-    error: OriginalLogFn;
-    getLog?: () => LogMessage[];
-};
 
 type RequestWithParams = Request & {
     params: Record<string, string>;
@@ -42,7 +26,7 @@ export type Handler<R extends Request = RequestWithParams> = (
     request: R,
     response: Response,
     next: Next<R>,
-    { logger }: { logger: Logger },
+    { logger }: { logger: Log },
 ) => void;
 
 type Route = {
@@ -66,28 +50,18 @@ type BaseEvents = {
  */
 export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents> {
     public server: http.Server;
-    public logger: Logger;
+    public logger: Log;
     private routes: Route[] = [];
     private readonly emitter: TypedEmitter<BaseEvents> = this;
     private port?: number;
     private sockets: Record<number, net.Socket> = {};
 
-    constructor({ logger, port }: { logger: OriginalLogger; port?: number }) {
+    constructor({ logger, port }: { logger: Log; port?: number }) {
         super();
 
         this.port = port;
 
-        // this class accepts subset of suite-desktop-core "ILogger" interface.
-        // - in order to omit need for passing the first argument "topic" in each call, we wrap the logger and prepend "http: ${this.port}" to each call
-        // - here it implements also only a subset of ILogger functionality
-        // - todo: unify loggers across the codebase
-        this.logger = {
-            info: (message: string | string[]) => logger.info(`${this.logName}`, message),
-            warn: (message: string | string[]) => logger.warn(`${this.logName}`, message),
-            error: (message: string | string[]) => logger.error(`${this.logName}`, message),
-            getLog: () => (logger.getLog ? logger.getLog() : []),
-        };
-        // this.logger = logger;
+        this.logger = logger;
         this.server = http.createServer(this.onRequest);
     }
 
@@ -337,7 +311,7 @@ const checkOrigin = ({
     request: Parameters<Handler>[0];
     allowedOrigin: string[];
     pathname: string;
-    logger: Logger;
+    logger: Log;
 }) => {
     const { origin } = request.headers;
     const origins = allowedOrigin ?? [];
@@ -373,7 +347,7 @@ const checkReferer = ({
     request: Parameters<Handler>[0];
     allowedReferer: string[];
     pathname: string;
-    logger: Logger;
+    logger: Log;
 }) => {
     const { referer } = request.headers;
     const referers = allowedReferer ?? [];
