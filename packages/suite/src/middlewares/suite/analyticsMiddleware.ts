@@ -6,7 +6,7 @@ import {
     discoveryActions,
     selectDevices,
     selectDevicesCount,
-    deviceActions,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { TRANSPORT, DEVICE } from '@trezor/connect';
@@ -49,7 +49,7 @@ const analyticsMiddleware =
 
         const state = api.getState();
 
-        if (deviceActions.authDevice.match(action)) {
+        if (authorizeDeviceThunk.fulfilled.match(action)) {
             analytics.report({
                 type: EventType.SelectWalletType,
                 payload: { type: action.payload.device.walletNumber ? 'hidden' : 'standard' },

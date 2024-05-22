@@ -4,6 +4,7 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
 import {
     accountsActions,
+    authorizeDeviceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
@@ -17,8 +18,8 @@ import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
-            deviceActions.authDevice,
-            deviceActions.authFailed,
+            authorizeDeviceThunk.fulfilled,
+            authorizeDeviceThunk.rejected,
             deviceActions.selectDevice,
             deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,

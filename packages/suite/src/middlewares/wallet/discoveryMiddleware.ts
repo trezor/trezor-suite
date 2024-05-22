@@ -1,5 +1,5 @@
 import {
-    authorizeDevice,
+    authorizeDeviceThunk,
     deviceActions,
     selectDevice,
     selectDeviceDiscovery,
@@ -106,11 +106,11 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
 
         // 3. begin auth process
         if (authorizationIntent) {
-            dispatch(authorizeDevice());
+            dispatch(authorizeDeviceThunk());
         }
 
         // 4. device state received
-        if (deviceActions.authDevice.match(action)) {
+        if (authorizeDeviceThunk.fulfilled.match(action)) {
             // `device` is always present here
             // to avoid typescript conditioning use device from action as a fallback (never used)
             dispatch(
@@ -138,7 +138,7 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             becomesConnected ||
             action.type === SUITE.APP_CHANGED ||
             deviceActions.selectDevice.match(action) ||
-            deviceActions.authDevice.match(action) ||
+            authorizeDeviceThunk.fulfilled.match(action) ||
             walletSettingsActions.changeNetworks.match(action) ||
             accountsActions.changeAccountVisibility.match(action)
         ) {

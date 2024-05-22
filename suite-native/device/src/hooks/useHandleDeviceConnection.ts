@@ -13,13 +13,13 @@ import {
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
-    authorizeDevice,
     selectIsPortfolioTrackerDevice,
     selectDeviceRequestedPin,
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceUsingPassphrase,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -53,7 +53,7 @@ export const useHandleDeviceConnection = () => {
             !isDeviceConnectedAndAuthorized &&
             !isBiometricsOverlayVisible
         ) {
-            requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
+            requestPrioritizedDeviceAccess(() => dispatch(authorizeDeviceThunk()));
 
             // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
             // post auth navigation is handled in @suite-native/module-passphrase for custom UX flow.

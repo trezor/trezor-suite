@@ -1,6 +1,6 @@
 import { createThunk } from '@suite-common/redux-utils';
 import {
-    authorizeDevice,
+    authorizeDeviceThunk,
     deviceActions,
     selectDevice,
     selectDeviceThunk,
@@ -65,6 +65,6 @@ export const retryPassphraseAuthenticationThunk = createThunk(
 
         if (!device) return;
         dispatch(deviceActions.removeButtonRequests({ device }));
-        dispatch(authorizeDevice({ shouldIgnoreDeviceState: true }));
+        dispatch(authorizeDeviceThunk({ shouldIgnoreDeviceState: true }));
     },
 );

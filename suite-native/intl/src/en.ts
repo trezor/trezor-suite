@@ -703,6 +703,11 @@ export const en = {
                 },
             },
         },
+        passphraseMismatch: {
+            title: 'Passphrase duplicate',
+            subtitle: 'You’re trying to enter a passphrase wallet that’s already been opened.',
+            button: 'Proceed to passphrase wallet ',
+        },
     },
 };
 

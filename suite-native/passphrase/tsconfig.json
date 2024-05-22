@@ -1,0 +1,19 @@
+{
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": { "outDir": "libDev" },
+    "references": [
+        {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
+            "path": "../../suite-common/suite-types"
+        },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../alerts" },
+        { "path": "../intl" },
+        { "path": "../navigation" },
+        { "path": "../../packages/connect" }
+    ]
+}

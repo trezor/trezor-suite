@@ -16,13 +16,13 @@ import {
 } from '@suite-native/navigation';
 import { AlertBox, Text, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-
-import { PassphraseForm } from '../components/PassphraseForm';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
-} from '../passphraseThunks';
+} from '@suite-native/passphrase';
+
+import { PassphraseForm } from '../components/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
 type NavigationProp = StackToTabCompositeProps<

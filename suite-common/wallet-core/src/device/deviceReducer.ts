@@ -15,7 +15,7 @@ import {
 import { isNative } from '@trezor/env-utils';
 
 import { deviceActions } from './deviceActions';
-import { authorizeDevice } from './deviceThunks';
+import { authorizeDeviceThunk } from './deviceThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type State = {
@@ -341,7 +341,7 @@ const authFailed = (draft: State, device: TrezorDevice) => {
 };
 
 /**
- * Action handler: authorizeDevice.pending
+ * Action handler: authorizeDeviceThunk.pending
  * Reset authFailed flag
  * @param {State} draft
  * @returns
@@ -516,11 +516,19 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
             changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
-        .addCase(deviceActions.authFailed, (state, { payload }) => {
-            authFailed(state, payload);
-        })
-        .addCase(authorizeDevice.pending, state => {
+        .addCase(authorizeDeviceThunk.pending, state => {
             resetAuthFailed(state);
+        })
+        .addCase(authorizeDeviceThunk.fulfilled, (state, { payload }) => {
+            authDevice(state, payload.device, payload.state);
+        })
+        .addCase(authorizeDeviceThunk.rejected, (state, action) => {
+            if (action.payload && action.payload.error) {
+                const { error } = action.payload;
+                if (error === 'auth-failed' && action.payload.device) {
+                    authFailed(state, action.payload.device);
+                }
+            }
         })
         .addCase(UI.REQUEST_PIN, state => {
             resetAuthFailed(state);
@@ -536,9 +544,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
             forget(state, payload);
-        })
-        .addCase(deviceActions.authDevice, (state, { payload }) => {
-            authDevice(state, payload.device, payload.state);
         })
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
             addButtonRequest(state, payload.device, payload.buttonRequest);

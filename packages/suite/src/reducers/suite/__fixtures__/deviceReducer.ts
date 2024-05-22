@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { deviceActions } from '@suite-common/wallet-core';
+import { authorizeDeviceThunk, deviceActions } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 const { getConnectDevice, getSuiteDevice } = testMocks;
@@ -850,7 +850,7 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: SUITE_DEVICE,
                     state: 'A',
@@ -875,7 +875,7 @@ const authDevice = [
         },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: SUITE_DEVICE,
                     state: 'A',
@@ -904,7 +904,7 @@ const authDevice = [
         },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: getSuiteDevice({ instance: 1 }),
                     state: 'A',
@@ -933,7 +933,7 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: getConnectDevice({
                         type: 'unacquired',
@@ -953,7 +953,7 @@ const authDevice = [
         initialState: { devices: [] },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: SUITE_DEVICE,
                     state: 'A',

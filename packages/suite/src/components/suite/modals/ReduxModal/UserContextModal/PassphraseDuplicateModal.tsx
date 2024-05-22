@@ -1,5 +1,6 @@
-import { authorizeDevice, switchDuplicatedDevice } from '@suite-common/wallet-core';
 import { Button, Column, H3, Text } from '@trezor/components';
+
+import { authorizeDeviceThunk, switchDuplicatedDevice } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
@@ -18,7 +19,7 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const isDeviceLocked = isLocked();
 
     const handleSwitchDevice = () => dispatch(switchDuplicatedDevice({ device, duplicate }));
-    const handleAuthorizeDevice = () => dispatch(authorizeDevice());
+    const handleAuthorizeDevice = () => dispatch(authorizeDeviceThunk());
 
     return (
         <SwitchDeviceRenderer isCancelable={false} data-test="@passphrase-duplicate">

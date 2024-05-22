@@ -4,12 +4,18 @@ import { notificationsActions, ToastPayload } from '@suite-common/toast-notifica
 
 import { ACTION_PREFIX, deviceAuthenticityActions } from './deviceAuthenticityActions';
 
-export const checkDeviceAuthenticityThunk = createThunk<{
-    allowDebugKeys: boolean;
-    skipSuccessToast?: boolean;
-}>(
+export const checkDeviceAuthenticityThunk = createThunk(
     `${ACTION_PREFIX}/checkDeviceAuthenticity`,
-    async ({ allowDebugKeys, skipSuccessToast }, { dispatch, getState, extra }) => {
+    async (
+        {
+            allowDebugKeys,
+            skipSuccessToast,
+        }: {
+            allowDebugKeys: boolean;
+            skipSuccessToast?: boolean;
+        },
+        { dispatch, getState, extra },
+    ) => {
         const {
             selectors: { selectDevice },
         } = extra;

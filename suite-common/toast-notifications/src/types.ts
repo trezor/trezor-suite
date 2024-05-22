@@ -137,13 +137,10 @@ export type ToastPayload = (
 ) &
     NotificationOptions;
 
+export const AUTH_DEVICE = 'auth-device';
 export type NotificationEventPayload = (
     | {
-          // only temporary, must be same as AUTH_DEVICE value in packages/suite/src/actions/suite/constants/suiteConstants.ts
-          // once that will be migrated to @suite-common, this should be replaced directly by suiteActions.authDevice.type
-          // this should not break type safety, if someone will change value of AUTH_DEVICE, it will throw error in place
-          // where action is used and you will need to change it also here
-          type: '@suite/device/authDevice';
+          type: typeof AUTH_DEVICE;
       }
     | ReceivedTransactionNotification
     | {

@@ -1,4 +1,4 @@
-import { authorizeDevice } from '@suite-common/wallet-core';
+import { authorizeDeviceThunk } from '@suite-common/wallet-core';
 
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -8,7 +8,7 @@ export const AuthFailed = () => {
     const dispatch = useDispatch();
     const { isLocked } = useDevice();
 
-    const handleClick = () => dispatch(authorizeDevice());
+    const handleClick = () => dispatch(authorizeDeviceThunk());
 
     return (
         <AccountExceptionLayout

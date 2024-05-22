@@ -29,6 +29,7 @@ import { graphReducer, graphPersistTransform } from '@suite-native/graph';
 import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-native/discovery';
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
+import { passphraseReducer } from '@suite-native/passphrase';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -143,6 +144,7 @@ export const prepareRootReducers = async () => {
             discoveryConfig: discoveryConfigPersistedReducer,
             messageSystem: messageSystemPersistedReducer,
             tokenDefinitions: tokenDefinitionsReducer,
+            passphrase: passphraseReducer,
         }),
         // 'wallet' and 'graph' need to be persisted at the top level to ensure device state
         // is accessible for transformation.

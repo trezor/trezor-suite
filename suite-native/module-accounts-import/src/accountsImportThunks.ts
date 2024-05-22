@@ -72,16 +72,13 @@ export const importAccountThunk = createThunk(
     },
 );
 
-export const getAccountInfoThunk = createThunk(
+export const getAccountInfoThunk = createThunk<
+    AccountInfo,
+    { networkSymbol: NetworkSymbol; fiatCurrency: FiatCurrencyCode; xpubAddress: string },
+    { rejectValue: string }
+>(
     `${ACCOUNTS_IMPORT_MODULE_PREFIX}/getAccountInfo`,
-    async (
-        {
-            networkSymbol,
-            fiatCurrency,
-            xpubAddress,
-        }: { networkSymbol: NetworkSymbol; fiatCurrency: FiatCurrencyCode; xpubAddress: string },
-        { dispatch, rejectWithValue },
-    ) => {
+    async ({ networkSymbol, fiatCurrency, xpubAddress }, { dispatch, rejectWithValue }) => {
         try {
             const [fetchedAccountInfo] = await Promise.all([
                 TrezorConnect.getAccountInfo({

@@ -9,7 +9,11 @@ import { Translation } from '@suite-native/intl';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen } from '@suite-native/navigation';
-import { selectDevice, selectIsDeviceAuthorized, authorizeDevice } from '@suite-common/wallet-core';
+import {
+    selectDevice,
+    selectIsDeviceAuthorized,
+    authorizeDeviceThunk,
+} from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 import { ConnectDeviceScreenHeader } from '../components/ConnectDeviceScreenHeader';
@@ -40,7 +44,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
     useEffect(() => {
         if (isFocused && device && !isDeviceAuthorized) {
             // When user cancelled the authorization, we need to authorize the device again.
-            requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
+            requestPrioritizedDeviceAccess(() => dispatch(authorizeDeviceThunk()));
         }
     }, [isDeviceAuthorized, device, dispatch, isFocused]);
 

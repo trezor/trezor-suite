@@ -96,6 +96,7 @@
         },
         { "path": "suite-native/navigation" },
         { "path": "suite-native/notifications" },
+        { "path": "suite-native/passphrase" },
         { "path": "suite-native/qr-code" },
         {
             "path": "suite-native/react-native-graph"
