@@ -9,7 +9,7 @@ import {
     parseBodyText,
     Handler,
 } from '@trezor/node-utils';
-import { Descriptor } from '@trezor/transport/src/types';
+import { Descriptor, Session } from '@trezor/transport/src/types';
 import { Log, arrayPartition } from '@trezor/utils';
 
 import { sessionsClient, createApi } from './core';
@@ -148,7 +148,10 @@ export class TrezordNode {
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
                     this.api
-                        .acquire({ path: req.params.path, previous: req.params.previous })
+                        .acquire({
+                            path: req.params.path,
+                            previous: req.params.previous as Session | 'null',
+                        })
                         .then(result => {
                             if (!result.success) {
                                 res.statusCode = 400;
@@ -165,7 +168,7 @@ export class TrezordNode {
                 (req, res) => {
                     this.api
                         .release({
-                            session: req.params.session,
+                            session: req.params.session as Session,
                             // @ts-expect-error
                             path: req.body,
                         })
@@ -185,7 +188,7 @@ export class TrezordNode {
                 (req, res) => {
                     this.api
                         .call({
-                            session: req.params.session,
+                            session: req.params.session as Session,
                             // @ts-expect-error
                             data: req.body,
                         })
@@ -203,7 +206,7 @@ export class TrezordNode {
             app.post('/read/:session', [
                 parseBodyJSON,
                 (req, res) => {
-                    this.api.receive({ session: req.params.session }).then(result => {
+                    this.api.receive({ session: req.params.session as Session }).then(result => {
                         if (!result.success) {
                             res.statusCode = 400;
 
@@ -219,7 +222,7 @@ export class TrezordNode {
                 (req, res) => {
                     this.api
                         .send({
-                            session: req.params.session,
+                            session: req.params.session as Session,
                             // @ts-expect-error
                             data: req.body,
                         })

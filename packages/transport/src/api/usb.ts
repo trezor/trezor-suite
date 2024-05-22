@@ -1,5 +1,5 @@
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
-import { AsyncResultWithTypedError } from '../types';
+import { AsyncResultWithTypedError, DescriptorApiLevel } from '../types';
 import {
     CONFIGURATION_ID,
     ENDPOINT_ID,
@@ -86,7 +86,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    private devicesToDescriptors() {
+    private devicesToDescriptors(): DescriptorApiLevel[] {
         return this.devices.map(d => ({
             path: d.path,
             type: this.matchDeviceType(d.device),

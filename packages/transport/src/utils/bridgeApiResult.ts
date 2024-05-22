@@ -1,6 +1,6 @@
 // input checks for high-level transports
 
-import type { Descriptor } from '../types';
+import type { Descriptor, Session } from '../types';
 
 import { success, error } from './result';
 import * as ERRORS from '../errors';
@@ -75,7 +75,7 @@ export function acquire(res: UnknownPayload) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
 
-    return success(session);
+    return success(session as Session);
 }
 
 export function call(res: UnknownPayload) {

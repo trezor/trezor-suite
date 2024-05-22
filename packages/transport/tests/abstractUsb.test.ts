@@ -299,7 +299,7 @@ describe('Usb', () => {
             transport.listen();
 
             // set some initial descriptors
-            const acquireCall = transport.acquire({ input: { path: '123' } });
+            const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
             setTimeout(() => {
                 sessionsClient.emit('descriptors', [{ path: '123', session: '2' }]);
             }, 1);

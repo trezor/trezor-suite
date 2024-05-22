@@ -1,5 +1,11 @@
 import { TypedEmitter } from '@trezor/utils';
-import type { AnyError, AsyncResultWithTypedError, Success, Logger, Descriptor } from '../types';
+import type {
+    AnyError,
+    AsyncResultWithTypedError,
+    Success,
+    Logger,
+    DescriptorApiLevel,
+} from '../types';
 import { success, error, unknownError } from '../utils/result';
 
 import * as ERRORS from '../errors';
@@ -25,7 +31,7 @@ export enum DEVICE_TYPE {
  * This is not public API. Only a building block which is used in src/transports
  */
 export abstract class AbstractApi extends TypedEmitter<{
-    'transport-interface-change': Descriptor[];
+    'transport-interface-change': DescriptorApiLevel[];
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
     protected logger: Logger;
@@ -45,7 +51,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      * enumerate connected devices
      */
     abstract enumerate(): AsyncResultWithTypedError<
-        { path: string; type: DEVICE_TYPE }[],
+        DescriptorApiLevel[],
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
         | typeof ERRORS.UNEXPECTED_ERROR

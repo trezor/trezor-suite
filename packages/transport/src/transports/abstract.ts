@@ -21,12 +21,12 @@ import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 
 export type AcquireInput = {
     path: string;
-    previous?: Session;
+    previous: Session | null;
 };
 
 export type ReleaseInput = {
     path: string;
-    session: string;
+    session: Session;
     onClose?: boolean;
 };
 
@@ -110,7 +110,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * another application might have acquired session right after this application which means that
      * the originally received session is not longer valid and device is used by another application
      */
-    protected acquiredUnconfirmed: Record<string, string> = {};
+    protected acquiredUnconfirmed: Record<string, Session> = {};
     /**
      * promise that resolves on when next descriptors are delivered
      */
@@ -118,7 +118,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         string,
         Deferred<
             ResultWithTypedError<
-                string,
+                Session,
                 | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
                 | typeof ERRORS.SESSION_WRONG_PREVIOUS
                 | typeof ERRORS.DEVICE_NOT_FOUND
@@ -134,7 +134,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * used to postpone resolving of transport.release until next descriptors are delivered
      */
     protected releasePromise?: Deferred<any>;
-    protected releaseUnconfirmed: Record<string, string> = {};
+    protected releaseUnconfirmed: Record<string, Session> = {};
 
     /**
      * each transport class accepts signal parameter in constructor and implements it's own abort controller.
@@ -215,7 +215,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * Acquire session
      */
     abstract acquire({ input }: { input: AcquireInput }): AbortableCall<
-        string,
+        Session,
         // webusb
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
         | typeof ERRORS.DESCRIPTOR_NOT_FOUND
@@ -265,7 +265,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     abstract send(params: {
         path?: string;
-        session: string;
+        session: Session;
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
@@ -290,7 +290,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     abstract receive(params: {
         path?: string;
-        session: string;
+        session: Session;
         protocol?: TransportProtocol;
     }): AbortableCall<
         MessageFromTrezor,
@@ -312,7 +312,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * Send and read after that
      */
     abstract call(params: {
-        session: string;
+        session: Session;
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
@@ -450,7 +450,9 @@ export abstract class AbstractTransport extends TypedEmitter<{
 
             if (this.releaseUnconfirmed[path]) {
                 if (!listenedPathChanged.session) {
-                    this.listenPromise[path].resolve(this.success('null'));
+                    // todo: solve me! this value is not used anyway. should be typed better
+                    // @ts-expect-error
+                    this.listenPromise[path].resolve(this.success(null));
                     delete this.releaseUnconfirmed[path];
                 }
                 // when releasing we don't really care about else

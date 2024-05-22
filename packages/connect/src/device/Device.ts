@@ -1,7 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { TypedEmitter } from '@trezor/utils';
-import { createDeferred, Deferred } from '@trezor/utils';
-import { versionUtils } from '@trezor/utils';
+import { versionUtils, createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
+import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
 import { DeviceCommands, PassphrasePromptResponse } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
@@ -120,7 +119,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     firstRunPromise: Deferred<boolean>;
 
-    activitySessionID?: string | null;
+    activitySessionID?: Session | null;
 
     commands?: DeviceCommands;
 
