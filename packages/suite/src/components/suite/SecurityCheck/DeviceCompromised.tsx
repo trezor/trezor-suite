@@ -4,7 +4,7 @@ import { Card } from '@trezor/components';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL } from '@trezor/urls';
 
-import { WelcomeLayout } from 'src/components/suite';
+import { WelcomeLayout } from 'src/components/suite/layouts/WelcomeLayout/WelcomeLayout';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { captureSentryMessage, withSentryScope } from 'src/utils/suite/sentry';
 import {
