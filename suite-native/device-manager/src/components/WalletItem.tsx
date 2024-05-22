@@ -7,6 +7,8 @@ import { Icon } from '@suite-common/icons';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { selectDevice, selectDeviceByState } from '@suite-common/wallet-core';
+import { FiatAmountFormatter } from '@suite-native/formatters';
+import { selectDeviceTotalFiatBalanceNative } from '@suite-native/device';
 
 type WalletItemProps = {
     deviceState: NonNullable<TrezorDevice['state']>;
@@ -14,29 +16,48 @@ type WalletItemProps = {
     isSelectable?: boolean;
 };
 
-const walletItemStyle = prepareNativeStyle<{ isSelected: boolean }>((utils, { isSelected }) => ({
-    paddingHorizontal: utils.spacings.medium,
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    height: 60,
-    gap: 12,
-    backgroundColor: utils.colors.backgroundSurfaceElevation1,
-    borderWidth: utils.borders.widths.small,
-    borderRadius: 12,
-    borderColor: utils.colors.borderElevation1,
-    extend: {
-        condition: isSelected,
-        style: {
-            borderWidth: utils.borders.widths.large,
-            borderColor: utils.colors.borderSecondary,
-        },
-    },
+type WalletItemStyleProps = { isSelected: boolean; isSelectable: boolean };
+
+const walletItemStyle = prepareNativeStyle<WalletItemStyleProps>(
+    (utils, { isSelected, isSelectable }) => ({
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        height: 60,
+        gap: 12,
+        borderRadius: 12,
+        borderColor: utils.colors.borderElevation1,
+        flex: 1,
+        extend: [
+            {
+                condition: isSelected,
+                style: {
+                    borderWidth: utils.borders.widths.large,
+                    borderColor: utils.colors.borderSecondary,
+                },
+            },
+            {
+                condition: isSelectable,
+                style: {
+                    paddingHorizontal: utils.spacings.medium,
+                    backgroundColor: utils.colors.backgroundSurfaceElevation1,
+                    borderWidth: utils.borders.widths.small,
+                },
+            },
+        ],
+    }),
+);
+
+const labelStyle = prepareNativeStyle(() => ({
+    flex: 1,
 }));
 
 export const WalletItem = ({ deviceState, onPress, isSelectable = true }: WalletItemProps) => {
     const { applyStyle } = useNativeStyles();
     const device = useSelector((state: any) => selectDeviceByState(state, deviceState));
     const selectedDevice = useSelector(selectDevice);
+    const fiatBalance = useSelector((state: any) =>
+        selectDeviceTotalFiatBalanceNative(state, deviceState),
+    );
 
     if (!device) {
         return null;
@@ -60,16 +81,25 @@ export const WalletItem = ({ deviceState, onPress, isSelectable = true }: Wallet
         <Pressable onPress={onPress}>
             <HStack
                 key={device.instance}
-                style={applyStyle(walletItemStyle, { isSelected: showAsSelected })}
+                style={applyStyle(walletItemStyle, { isSelected: showAsSelected, isSelectable })}
             >
-                <HStack alignItems="center">
+                <HStack alignItems="center" flex={1}>
                     <Icon
                         name={device.useEmptyPassphrase ? 'standardWallet' : 'password'}
                         size="mediumLarge"
                     />
-                    <Text variant="callout">{walletNameLabel}</Text>
+                    <Text variant="callout" numberOfLines={1} style={applyStyle(labelStyle)}>
+                        {walletNameLabel}
+                    </Text>
                 </HStack>
-                {isSelectable && <Radio value="" onPress={onPress} isChecked={isSelected} />}
+                <HStack alignItems="center" spacing={12}>
+                    <FiatAmountFormatter
+                        value={String(fiatBalance)}
+                        variant="hint"
+                        color="textSubdued"
+                    />
+                    {isSelectable && <Radio value="" onPress={onPress} isChecked={isSelected} />}
+                </HStack>
             </HStack>
         </Pressable>
     );
