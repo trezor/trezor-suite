@@ -1,8 +1,7 @@
 import styled from 'styled-components';
 
-import { WelcomeLayout } from 'src/components/suite';
-
 import { StartContent } from './StartContent';
+import { WelcomeLayout } from '../../components/suite/layouts/WelcomeLayout/WelcomeLayout';
 
 const Content = styled.div`
     display: flex;

@@ -7,6 +7,7 @@ import {
     Column,
     ElevationDown,
     ElevationUp,
+    NewModal,
     Row,
     useElevation,
     variables,
@@ -78,26 +79,28 @@ export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
                     data-testid="@welcome-layout/body"
                     alignItems="normal"
                 >
-                    <ElevationDown>
-                        <LoggedOutSidebar />
-                    </ElevationDown>
+                    <NewModal.Provider>
+                        <ElevationDown>
+                            <LoggedOutSidebar />
+                        </ElevationDown>
 
-                    <Right
-                        bannerSlot={
-                            bannerMessage && (
-                                <MessageSystemBanner
-                                    message={bannerMessage}
-                                    margin={spacings.xs}
-                                    width="100%"
-                                />
-                            )
-                        }
-                    >
-                        {children}
-                    </Right>
+                        <Right
+                            bannerSlot={
+                                bannerMessage && (
+                                    <MessageSystemBanner
+                                        message={bannerMessage}
+                                        margin={spacings.xs}
+                                        width="100%"
+                                    />
+                                )
+                            }
+                        >
+                            {children}
+                        </Right>
 
-                    <GuideButton />
-                    <GuideRouter />
+                        <GuideButton />
+                        <GuideRouter />
+                    </NewModal.Provider>
                 </Row>
             </Column>
             {theme.variant === 'debug' && <DebugLegend />}

@@ -4,7 +4,6 @@ import { Address } from './Address';
 import { DeviceConfirmImage } from './DeviceConfirmImage';
 import { CheckItem } from './CheckItem';
 import { PrerequisitesGuide } from './PrerequisitesGuide/PrerequisitesGuide';
-import { WelcomeLayout } from './layouts/WelcomeLayout/WelcomeLayout';
 import { WordInput } from './WordInput';
 import { WordInputAdvanced } from './WordInputAdvanced';
 import { Loading } from './Loading';
@@ -61,7 +60,6 @@ export {
     DeviceConfirmImage,
     CheckItem,
     PrerequisitesGuide,
-    WelcomeLayout,
     FiatValue,
     Translation,
     WordInput,

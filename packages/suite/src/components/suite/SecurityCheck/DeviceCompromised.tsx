@@ -5,7 +5,6 @@ import {
     TREZOR_SUPPORT_FW_REVISION_CHECK_FAILED_URL,
 } from '@trezor/urls';
 
-import { WelcomeLayout } from 'src/components/suite';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectFirmwareHashCheckErrorIfEnabled,
@@ -15,6 +14,7 @@ import {
 
 import { SecurityCheckFail, SecurityCheckFailProps } from './SecurityCheckFail';
 import { hardFailureChecklistItems, softFailureChecklistItems } from './checklistItems';
+import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 
 const useSecurityCheckFailProps = (): SecurityCheckFailProps => {
     const { device } = useDevice();
