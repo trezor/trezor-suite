@@ -8,7 +8,8 @@ import * as ERRORS from '../errors';
 
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
-    interface = UDP.createSocket('udp4');
+
+    protected interface = UDP.createSocket('udp4');
     protected communicating = false;
 
     constructor({ logger }: AbstractApiConstructorParams) {
