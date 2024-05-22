@@ -6,37 +6,72 @@ import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuy
 import { CoinmarketRefreshTime } from '..';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import CoinmarketHeaderSummary from './CoinmarketHeaderSummary';
+import styled from 'styled-components';
+import { spacingsPx } from '@trezor/theme';
+
+const Header = styled.div`
+    padding-top: ${spacingsPx.md};
+`;
+
+const HeaderTop = styled.div`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const HeaderH2 = styled(H2)`
+    flex: auto;
+    width: 100%;
+`;
+
+const HeaderBottom = styled.div`
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: ${spacingsPx.xl};
+`;
+
+const HeaderCoinmarketRefreshTime = styled.div`
+    margin-left: auto;
+    padding-left: ${spacingsPx.lg};
+`;
 
 interface CoinmarketHeaderProps {
     title: ExtendedMessageDescriptor['id'];
+    titleTimer: ExtendedMessageDescriptor['id'];
+    showTimerNextToTitle?: boolean;
 }
 
-const CoinmarketHeader = ({ title }: CoinmarketHeaderProps) => {
+const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: CoinmarketHeaderProps) => {
     const { innerQuotesFilterReducer, timer } = useCoinmarketBuyOffersContext();
 
-    return (
-        <div>
-            <div>
-                <H2>
-                    <Translation id={title} />
-                </H2>
-                <div>
-                    <CoinmarketHeaderFilter quotesFilterReducer={innerQuotesFilterReducer} />
-                </div>
-                <div>
-                    <CoinmarketRefreshTime
-                        isLoading={timer.isLoading}
-                        refetchInterval={InvityAPIReloadQuotesAfterSeconds}
-                        seconds={timer.timeSpend.seconds}
-                        label={<Translation id="TR_BUY_OFFERS_REFRESH" />}
-                    />
-                </div>
+    const Timer = () => (
+        <CoinmarketRefreshTime
+            isLoading={timer.isLoading}
+            refetchInterval={InvityAPIReloadQuotesAfterSeconds}
+            seconds={timer.timeSpend.seconds}
+            label={<Translation id={titleTimer} />}
+        />
+    );
 
-                <div>
-                    <CoinmarketHeaderSummary />
-                </div>
-            </div>
-        </div>
+    return (
+        <Header>
+            <HeaderTop>
+                <HeaderH2>
+                    <Translation id={title} />
+                </HeaderH2>
+                {showTimerNextToTitle && <Timer />}
+            </HeaderTop>
+            <HeaderBottom>
+                <CoinmarketHeaderFilter quotesFilterReducer={innerQuotesFilterReducer} />
+                <CoinmarketHeaderSummary />
+                {!showTimerNextToTitle && (
+                    <HeaderCoinmarketRefreshTime>
+                        <Timer />
+                    </HeaderCoinmarketRefreshTime>
+                )}
+            </HeaderBottom>
+        </Header>
     );
 };
 

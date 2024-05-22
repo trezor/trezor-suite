@@ -4,6 +4,12 @@ import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { spacingsPx } from '@trezor/theme';
+
+const SummaryWrap = styled.div`
+    margin-top: -3px;
+    padding-left: 10px;
+`;
 
 const SummaryRow = styled.div`
     display: flex;
@@ -16,8 +22,8 @@ const OrigAmount = styled.div`
 `;
 
 const StyledIcon = styled(Icon)`
-    padding: 0 10px;
-    margin: 0 20px;
+    padding: 0 ${spacingsPx.sm};
+    margin: 0 ${spacingsPx.lg};
 `;
 
 const TokenLogo = styled.img`
@@ -27,14 +33,11 @@ const TokenLogo = styled.img`
 `;
 
 const Send = styled(H2)`
-    padding-top: 3px;
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
-const Receive = styled(H2)`
-    padding-top: 3px;
+const Receive = styled(Send)`
     padding-left: 10px;
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
 `;
 
 const CoinmarketHeaderSummary = () => {
@@ -44,7 +47,7 @@ const CoinmarketHeaderSummary = () => {
     const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
 
     return (
-        <>
+        <SummaryWrap>
             <SummaryRow>
                 <Send>
                     <CoinmarketFiatAmount
@@ -68,7 +71,7 @@ const CoinmarketHeaderSummary = () => {
                     ≈ <CoinmarketFiatAmount amount={fiatStringAmount} currency={fiatCurrency} />
                 </OrigAmount>
             )}
-        </>
+        </SummaryWrap>
     );
 };
 

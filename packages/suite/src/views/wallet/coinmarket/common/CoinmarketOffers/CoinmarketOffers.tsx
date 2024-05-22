@@ -11,7 +11,7 @@ const CoinmarketOffers = () => {
 
     return (
         <>
-            <CoinmarketHeader title="TR_BUY_SHOW_OFFERS" />
+            <CoinmarketHeader title="TR_BUY_SHOW_OFFERS" titleTimer="TR_BUY_OFFERS_REFRESH" />
             {noOffers ? (
                 <CoinmarketOffersEmpty />
             ) : (

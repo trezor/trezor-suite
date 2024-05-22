@@ -9,7 +9,14 @@ import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/C
 import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
-    margin-top: ${spacingsPx.lg};
+    display: flex;
+    flex-wrap: wrap;
+`;
+
+const SelectWrapper = styled(Select)`
+    width: 254px;
+    max-width: 100%;
+    margin-right: ${spacingsPx.md};
 `;
 
 const Option = styled.div`
@@ -31,7 +38,7 @@ const CoinmarketHeaderFilter = ({ quotesFilterReducer }: CoinmarketHeaderFilterP
 
     return (
         <Wrapper data-test="@coinmarket/buy/filter">
-            <Select
+            <SelectWrapper
                 onChange={(selected: PaymentMethodListProps) => {
                     dispatch({ type: 'FILTER_PAYMENT_METHOD', payload: selected.value });
                 }}
