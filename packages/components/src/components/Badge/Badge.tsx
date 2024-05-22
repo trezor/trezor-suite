@@ -124,7 +124,6 @@ export const Badge = ({
         <Container
             $size={size}
             $variant={variant}
-            disabled={!!isDisabled}
             $hasAlert={!!hasAlert}
             className={className}
             $margin={margin}

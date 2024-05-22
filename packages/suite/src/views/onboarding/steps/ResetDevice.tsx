@@ -126,7 +126,7 @@ export const ResetDeviceStep = () => {
                     <Translation
                         id={getChooseBackupTranslationId()}
                         values={{
-                            primary: chunks => <Text variant="primary">{chunks}</Text>,
+                            primary: chunks => <Text variant="secondary">{chunks}</Text>,
                             br: () => <br />,
                         }}
                     />
