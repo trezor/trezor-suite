@@ -379,11 +379,32 @@ export class BridgeTransport extends AbstractTransport {
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<R, AnyError> {
         const { timeout, signal, ...restOptions } = options;
+        let { body } = restOptions;
+
+        let params = options.params;
+        try {
+            if (endpoint !== '/' && !versionUtils.isNewerOrEqual(this.version, '3.0.0')) {
+                params = params?.substring(params.indexOf('-') + 1);
+                if (Array.isArray(body)) {
+                    body = body.map(b => {
+                        if (b?.path && typeof b.path === 'string') {
+                            return {
+                                ...b,
+                                path: b.path.substring(b.path.indexOf('-') + 1),
+                            };
+                        }
+                    });
+                }
+            }
+        } catch (err) {
+            console.log('err', err);
+        }
 
         const response = await bridgeApiCall({
             ...restOptions,
+            body,
             method: 'POST',
-            url: `${this.url + endpoint}${options?.params ? `/${options.params}` : ''}`,
+            url: `${this.url + endpoint}${params ? `/${params}` : ''}`,
             skipContentTypeHeader: true,
         });
 

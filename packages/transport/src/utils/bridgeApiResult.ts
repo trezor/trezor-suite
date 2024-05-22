@@ -12,6 +12,7 @@ function isString(payload: UnknownPayload): payload is string {
 }
 
 export function info(res: UnknownPayload) {
+    console.log('res', res);
     if (isString(res)) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
@@ -54,7 +55,8 @@ export function devices(res: UnknownPayload) {
     return success(
         res.map(
             (o: any): Descriptor => ({
-                path: o.path,
+                // fallback for trezord-go bridge, adding path prefix
+                path: o.path.includes('-') ? o.path : `usb-${o.path}`,
                 session: o.session,
                 product: o.product,
                 // @ts-expect-error - this is part of response too, might add it to type later

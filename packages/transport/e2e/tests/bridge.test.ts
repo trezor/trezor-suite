@@ -54,7 +54,7 @@ describe('bridge', () => {
                     success: true,
                     payload: [
                         {
-                            path: '1',
+                            path: 'usb-1',
                             session: null,
                             product: 0,
                             vendor: 0,
