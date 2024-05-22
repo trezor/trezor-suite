@@ -1,6 +1,13 @@
 // Include suite globals (as some dependencies from @suite can rely on them)
 /// <reference path="../../suite/global.d.ts" />
 
+type LogMessage = {
+    date: Date;
+    level: LogLevel;
+    topic: string;
+    text: string;
+};
+
 declare interface ILogger {
     /**
      * Exit the Logger (will correctly end the log file)
@@ -48,6 +55,10 @@ declare interface ILogger {
      * @param options(Partial<Options>) - Log options
      */
     config;
+    /**
+     * If logs are stored in memory, return array of logs
+     */
+    getLog: () => LogMessage[];
 }
 
 // Globals
