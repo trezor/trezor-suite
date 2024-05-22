@@ -14,13 +14,21 @@ import {
     CoinmarketUseDetailProps,
 } from 'src/types/coinmarket/coinmarketDetail';
 import { useCoinmarketWatchTrade } from './useCoinmarketWatchTrade';
+import { Trade, TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
+
+const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 
 const getTypedTrade = <T extends CoinmarketTradeType>({
     trades,
     tradeType,
     transactionId,
 }: CoinmarketGetTypedTradeProps): CoinmarketTradeMapProps[T] | undefined => {
-    const trade = trades.find(trade => trade.tradeType === tradeType && trade.key == transactionId);
+    const trade = trades.find(
+        trade =>
+            trade.tradeType === tradeType &&
+            (trade.key == transactionId ||
+                (isBuyTrade(trade) && trade.data?.originalPaymentId === transactionId)),
+    );
 
     if (!trade) {
         return undefined;
