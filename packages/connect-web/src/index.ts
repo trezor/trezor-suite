@@ -203,8 +203,9 @@ const call: CallMethod = async params => {
 
     if (iframe.timeout) {
         // this.init was called, but iframe doesn't return handshake yet
-        return createErrorMessage(ERRORS.TypedError('Init_ManifestMissing'));
+        await iframe.initPromise.promise;
     }
+
     if (iframe.error) {
         // iframe was initialized with error
         return createErrorMessage(iframe.error);

@@ -2,7 +2,7 @@ import EventEmitter from 'events';
 
 import { createDeferredManager } from '@trezor/utils';
 
-import { Core, initCore } from './core';
+import { initCoreState } from './core';
 import { factory } from './factory';
 import { parseConnectSettings } from './data/connectSettings';
 import { initLog } from './utils/debug';
@@ -28,8 +28,8 @@ export const eventEmitter = new EventEmitter();
 const _log = initLog('@trezor/connect');
 
 let _settings = parseConnectSettings();
-let _core: Core | null = null;
 
+const coreManager = initCoreState();
 const messagePromises = createDeferredManager({ initialId: 1 });
 
 const manifest = (data: Manifest) => {
@@ -42,20 +42,15 @@ const manifest = (data: Manifest) => {
 const dispose = () => {
     eventEmitter.removeAllListeners();
     _settings = parseConnectSettings();
-    if (_core) {
-        _core.dispose();
-        _core = null;
-    }
+    coreManager.dispose();
 };
 
-// handle message received from iframe
-const handleMessage = (message: CoreEventMessage) => {
+// handle message received from Core
+const onCoreEvent = (message: CoreEventMessage) => {
     const { event, type, payload } = message;
 
-    if (!_core) return;
-
     if (type === UI.REQUEST_UI_WINDOW) {
-        _core.handleMessage({ type: POPUP.HANDSHAKE });
+        coreManager.getCore()?.handleMessage({ type: POPUP.HANDSHAKE });
 
         return;
     }
@@ -99,7 +94,7 @@ const handleMessage = (message: CoreEventMessage) => {
 };
 
 const init = async (settings: Partial<ConnectSettings> = {}) => {
-    if (_core) {
+    if (coreManager.getCore() || coreManager.getInitPromise()) {
         throw ERRORS.TypedError('Init_AlreadyInitialized');
     }
     _settings = parseConnectSettings({ ..._settings, ...settings, popup: false });
@@ -120,25 +115,23 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
         return;
     }
 
-    _core = await initCore(_settings, handleMessage);
+    await coreManager.getOrInitCore(_settings, onCoreEvent);
 };
 
 const call: CallMethod = async params => {
-    if (!_core) {
-        try {
-            await init(_settings);
-        } catch (error) {
-            return createErrorMessage(error);
+    let core;
+    try {
+        if (!coreManager.getCore() && !coreManager.getInitPromise()) {
+            await init();
         }
+        core = await coreManager.getOrInitCore(_settings, onCoreEvent);
+    } catch (error) {
+        return createErrorMessage(error);
     }
 
     try {
-        if (!_core) {
-            throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
-        }
-
         const { promiseId, promise } = messagePromises.create();
-        _core.handleMessage({
+        core.handleMessage({
             type: IFRAME.CALL,
             payload: params,
             id: promiseId,
@@ -158,15 +151,17 @@ const call: CallMethod = async params => {
 };
 
 const uiResponse = (response: UiResponseEvent) => {
-    if (!_core) {
+    const core = coreManager.getCore();
+    if (!core) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
-    _core.handleMessage(response);
+    core.handleMessage(response);
 };
 
 const requestLogin = async (params: any) => {
     if (typeof params.callback === 'function') {
         const { callback } = params;
+        const core = coreManager.getCore();
 
         // TODO: set message listener only if _core is loaded correctly
         const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
@@ -174,12 +169,12 @@ const requestLogin = async (params: any) => {
             if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
                 try {
                     const payload = await callback();
-                    _core?.handleMessage({
+                    core?.handleMessage({
                         type: UI.LOGIN_CHALLENGE_RESPONSE,
                         payload,
                     });
                 } catch (error) {
-                    _core?.handleMessage({
+                    core?.handleMessage({
                         type: UI.LOGIN_CHALLENGE_RESPONSE,
                         payload: error.message,
                     });
@@ -187,14 +182,14 @@ const requestLogin = async (params: any) => {
             }
         };
 
-        _core?.on(CORE_EVENT, loginChallengeListener);
+        core?.on(CORE_EVENT, loginChallengeListener);
         const response = await call({
             method: 'requestLogin',
             ...params,
             asyncChallenge: true,
             callback: null,
         });
-        _core?.removeListener(CORE_EVENT, loginChallengeListener);
+        core?.removeListener(CORE_EVENT, loginChallengeListener);
 
         return response;
     }
@@ -203,11 +198,12 @@ const requestLogin = async (params: any) => {
 };
 
 const cancel = (error?: string) => {
-    if (!_core) {
+    const core = coreManager.getCore();
+    if (!core) {
         throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
     }
 
-    _core.handleMessage({
+    core.handleMessage({
         type: POPUP.CLOSED,
         payload: error ? { error } : null,
     });
