@@ -1,5 +1,11 @@
 import type { AcquireInput } from '../transports/abstract';
-import type { Descriptor, ResultWithTypedError, Success } from '../types';
+import type {
+    Descriptor,
+    DescriptorApiLevel,
+    ResultWithTypedError,
+    Session,
+    Success,
+} from '../types';
 import * as ERRORS from '../errors';
 
 type BackgroundResponseWithError<T, E> = ResultWithTypedError<T, E> & { id: number };
@@ -16,7 +22,7 @@ export type EnumerateIntentResponse = BackgroundResponse<{
 }>;
 
 export type EnumerateDoneRequest = {
-    descriptors: Descriptor[];
+    descriptors: DescriptorApiLevel[];
 };
 
 export type EnumerateDoneResponse = BackgroundResponse<{
@@ -26,7 +32,7 @@ export type EnumerateDoneResponse = BackgroundResponse<{
 export type AcquireIntentRequest = AcquireInput;
 
 export type AcquireIntentResponse = BackgroundResponseWithError<
-    { session: string },
+    { session: Session },
     typeof ERRORS.SESSION_WRONG_PREVIOUS | typeof ERRORS.DESCRIPTOR_NOT_FOUND
 >;
 
@@ -36,13 +42,13 @@ export type AcquireDoneRequest = {
 
 export type AcquireDoneResponse = BackgroundResponseWithError<
     {
-        session: string;
+        session: Session;
         descriptors: Descriptor[];
     },
     typeof ERRORS.DESCRIPTOR_NOT_FOUND
 >;
 export interface ReleaseIntentRequest {
-    session: string;
+    session: Session;
 }
 
 export type ReleaseIntentResponse = BackgroundResponseWithError<
@@ -63,7 +69,7 @@ export type GetSessionsResponse = BackgroundResponse<{
     descriptors: Descriptor[];
 }>;
 export interface GetPathBySessionRequest {
-    session: string;
+    session: Session;
 }
 
 export type GetPathBySessionResponse = BackgroundResponseWithError<

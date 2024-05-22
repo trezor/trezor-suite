@@ -186,11 +186,10 @@ export class SessionsBackground extends TypedEmitter<{
         const unconfirmedSessions: Sessions = JSON.parse(JSON.stringify(this.descriptors));
 
         this.lastSessionId++;
-        const id = `${this.lastSessionId}`;
-        unconfirmedSessions[payload.path].session = id;
+        unconfirmedSessions[payload.path].session = `${this.lastSessionId}`;
 
         return this.success({
-            session: id,
+            session: unconfirmedSessions[payload.path].session,
             descriptors: Object.values(unconfirmedSessions),
         });
     }
@@ -204,7 +203,7 @@ export class SessionsBackground extends TypedEmitter<{
         if (!this.descriptors[payload.path]) {
             return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
         }
-        this.descriptors[payload.path].session = this.lastSessionId.toString();
+        this.descriptors[payload.path].session = `${this.lastSessionId}`;
 
         return Promise.resolve(
             this.success({

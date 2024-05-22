@@ -1,7 +1,7 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { randomBytes } from 'crypto';
-import { Transport } from '@trezor/transport';
+import { Transport, Session } from '@trezor/transport';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { versionUtils } from '@trezor/utils';
 import { ERRORS } from '../constants';
@@ -91,7 +91,7 @@ export class DeviceCommands {
 
     transport: Transport;
 
-    sessionId: string;
+    sessionId: Session;
 
     disposed: boolean;
 
@@ -101,7 +101,7 @@ export class DeviceCommands {
     _cancelableRequest?: (error?: any) => void;
     _cancelableRequestBySend?: boolean;
 
-    constructor(device: Device, transport: Transport, sessionId: string) {
+    constructor(device: Device, transport: Transport, sessionId: Session) {
         this.device = device;
         this.transport = transport;
         this.sessionId = sessionId;
