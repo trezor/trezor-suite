@@ -5,7 +5,7 @@ import {
     AccountsRootState,
     DeviceRootState,
     selectAccounts,
-    selectDeviceAccountsByNetworkSymbol,
+    selectVisibleDeviceAccountsByNetworkSymbol,
     selectDeviceAccounts,
     FiatRatesRootState,
 } from '@suite-common/wallet-core';
@@ -51,7 +51,7 @@ export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWi
 export const selectDeviceNetworkAccountsGroupedByAccountType = memoizeWithArgs(
     (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol) =>
         pipe(
-            selectDeviceAccountsByNetworkSymbol(state, networkSymbol),
+            selectVisibleDeviceAccountsByNetworkSymbol(state, networkSymbol),
             sortAccountsByNetworksAndAccountTypes,
             groupAccountsByNetworkAccountType,
         ) as GroupedAccounts,
