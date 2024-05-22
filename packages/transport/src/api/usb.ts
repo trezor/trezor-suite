@@ -42,18 +42,15 @@ export class UsbApi extends AbstractApi {
         }
 
         this.usbInterface.onconnect = event => {
-            this.devices = [...this.devices, ...this.createDevices([event.device])];
+            const [_hidDevices, nonHidDevices] = this.filterDevices([event.device]);
+            this.devices = [...this.devices, ...this.createDevices(nonHidDevices)];
             this.emit('transport-interface-change', this.devicesToDescriptors());
         };
 
         this.usbInterface.ondisconnect = event => {
             const { device } = event;
             if (!device.serialNumber) {
-                // this should never happen, if it does, it means, that there is something that passes
-                // filters (TREZOR_USB_DESCRIPTORS) but does not have serial number. this could indicate error in fw
-                this.emit('transport-interface-error', ERRORS.DEVICE_UNREADABLE);
-                this.logger.error('device does not have serial number');
-
+                // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
                 return;
             }
 
@@ -97,7 +94,6 @@ export class UsbApi extends AbstractApi {
         try {
             const devices = await this.usbInterface.getDevices();
             const [hidDevices, nonHidDevices] = this.filterDevices(devices);
-
             if (hidDevices.length) {
                 // hidDevices that do not support webusb. these are very very old. we used to emit unreadable
                 // device for these but I am not sure if it is still worth the effort.
