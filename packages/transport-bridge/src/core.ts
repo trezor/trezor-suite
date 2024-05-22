@@ -8,7 +8,7 @@ import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
-import { Session } from '@trezor/transport/src/types';
+import { Path, Session } from '@trezor/transport/src/types';
 import { Log } from '@trezor/utils';
 
 const abortController = new AbortController();
@@ -39,7 +39,7 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         sessionsClient.enumerateDone({ descriptors });
     });
 
-    const writeUtil = async ({ path, data }: { path: string; data: string }) => {
+    const writeUtil = async ({ path, data }: { path: Path; data: string }) => {
         const { messageType, payload } = protocolBridge.decode(
             new Uint8Array(Buffer.from(data, 'hex')),
         );
@@ -63,7 +63,7 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         return { success: true as const };
     };
 
-    const readUtil = async ({ path }: { path: string }) => {
+    const readUtil = async ({ path }: { path: Path }) => {
         try {
             const { messageType, payload } = await receiveUtil(
                 () =>

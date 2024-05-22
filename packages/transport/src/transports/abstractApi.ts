@@ -11,6 +11,7 @@ import { buildMessage, createChunks } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import { SessionsClient } from '../sessions/client';
 import * as ERRORS from '../errors';
+import { Path } from '../types';
 
 interface ConstructorParams extends AbstractTransportParams {
     api: AbstractApi;
@@ -320,7 +321,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         });
     }
 
-    releaseDevice(path: string) {
+    releaseDevice(path: Path) {
         return this.api.closeDevice(path);
     }
 

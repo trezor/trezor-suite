@@ -1,5 +1,5 @@
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
-import { AsyncResultWithTypedError, DescriptorApiLevel } from '../types';
+import { AsyncResultWithTypedError, DescriptorApiLevel, Path, PathPrefix } from '../types';
 import {
     CONFIGURATION_ID,
     ENDPOINT_ID,
@@ -18,7 +18,7 @@ interface ConstructorParams extends AbstractApiConstructorParams {
 
 interface TransportInterfaceDevice {
     session?: null | string;
-    path: string;
+    path: Path;
     device: USBDevice;
 }
 
@@ -29,6 +29,7 @@ const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
 
 export class UsbApi extends AbstractApi {
     chunkSize = 64;
+    pathPrefix = 'usb' as PathPrefix;
 
     protected devices: TransportInterfaceDevice[] = [];
     protected usbInterface: ConstructorParams['usbInterface'];
@@ -114,7 +115,7 @@ export class UsbApi extends AbstractApi {
     }
 
     public async read(
-        path: string,
+        path: Path,
     ): AsyncResultWithTypedError<
         ArrayBuffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -145,7 +146,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async write(path: string, buffer: Buffer) {
+    public async write(path: Path, buffer: Buffer) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
@@ -179,7 +180,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async openDevice(path: string, first: boolean) {
+    public async openDevice(path: Path, first: boolean) {
         // note: multiple retries to open device. reason:  when another window acquires device, changed session
         // is broadcasted to other clients. they are responsible for releasing interface, which takes some time.
         // if there is only one client working with device, this will succeed using only one attempt.
@@ -198,7 +199,7 @@ export class UsbApi extends AbstractApi {
         return this.openInternal(path, first);
     }
 
-    public async openInternal(path: string, first: boolean) {
+    public async openInternal(path: Path, first: boolean) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
@@ -235,7 +236,7 @@ export class UsbApi extends AbstractApi {
         return this.success(undefined);
     }
 
-    public async closeDevice(path: string) {
+    public async closeDevice(path: Path) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
@@ -263,7 +264,7 @@ export class UsbApi extends AbstractApi {
         return this.success(undefined);
     }
 
-    private findDevice(path: string) {
+    private findDevice(path: Path) {
         const device = this.devices.find(d => d.path === path);
         if (!device) {
             return;
@@ -279,10 +280,13 @@ export class UsbApi extends AbstractApi {
             // path is just serial number
             // more bootloaders => number them, hope for the best
             const { serialNumber } = device;
-            let path = serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
-            if (path === 'bootloader') {
+            const serialNumberMissing = serialNumber == null || serialNumber === '';
+            let path: Path = serialNumberMissing
+                ? `${this.pathPrefix}-bootloader${bootloaderId}`
+                : `${this.pathPrefix}-${serialNumber}`;
+
+            if (serialNumberMissing) {
                 bootloaderId++;
-                path += bootloaderId;
             }
 
             return { path, device };

@@ -2,12 +2,13 @@ import UDP from 'dgram';
 import { isNotUndefined } from '@trezor/utils';
 
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
-import { AsyncResultWithTypedError, ResultWithTypedError } from '../types';
+import { AsyncResultWithTypedError, Path, PathPrefix, ResultWithTypedError } from '../types';
 
 import * as ERRORS from '../errors';
 
 export class UdpApi extends AbstractApi {
     chunkSize = 64;
+    pathPrefix = 'udp' as PathPrefix;
 
     protected interface = UDP.createSocket('udp4');
     protected communicating = false;
@@ -43,7 +44,7 @@ export class UdpApi extends AbstractApi {
     }
 
     public read(
-        _path: string,
+        _path: Path,
     ): AsyncResultWithTypedError<
         ArrayBuffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -89,7 +90,7 @@ export class UdpApi extends AbstractApi {
         });
     }
 
-    private async ping(path: string) {
+    private async ping(path: Path) {
         await this.write(path, Buffer.from('PINGPING'));
 
         const pinged = new Promise<boolean>(resolve => {
@@ -117,7 +118,7 @@ export class UdpApi extends AbstractApi {
 
     public async enumerate() {
         // in theory we could support multiple devices, but we don't yet
-        const paths = ['127.0.0.1:21324'];
+        const paths: Path[] = [`${this.pathPrefix}-127.0.0.1:21324`];
 
         const enumerateResult = await Promise.all(
             paths.map(path =>
@@ -130,12 +131,12 @@ export class UdpApi extends AbstractApi {
         return this.success(enumerateResult);
     }
 
-    public openDevice(_path: string, _first: boolean) {
+    public openDevice(_path: Path, _first: boolean) {
         // todo: maybe ping?
         return Promise.resolve(this.success(undefined));
     }
 
-    public closeDevice(_path: string) {
+    public closeDevice(_path: Path) {
         return Promise.resolve(this.success(undefined));
     }
 }

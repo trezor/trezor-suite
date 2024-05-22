@@ -13,6 +13,7 @@ import {
     Success,
     AnyError,
     Logger,
+    Path,
 } from '../types';
 import { success, error, unknownError } from '../utils/result';
 
@@ -20,12 +21,12 @@ import * as ERRORS from '../errors';
 import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 
 export type AcquireInput = {
-    path: string;
+    path: Path;
     previous: Session | null;
 };
 
 export type ReleaseInput = {
-    path: string;
+    path: Path;
     session: Session;
     onClose?: boolean;
 };
@@ -258,13 +259,13 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * For transports with native access (webusb), this informs lower transport layer
      * that device is not going to be used anymore
      */
-    abstract releaseDevice(path: string): AsyncResultWithTypedError<void, string>;
+    abstract releaseDevice(path: Path): AsyncResultWithTypedError<void, string>;
 
     /**
      * Encode data and write it to transport layer
      */
     abstract send(params: {
-        path?: string;
+        path?: Path;
         session: Session;
         name: string;
         data: Record<string, unknown>;
@@ -289,7 +290,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * Only read from transport
      */
     abstract receive(params: {
-        path?: string;
+        path?: Path;
         session: Session;
         protocol?: TransportProtocol;
     }): AbortableCall<

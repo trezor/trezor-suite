@@ -2,6 +2,7 @@ import type { AcquireInput } from '../transports/abstract';
 import type {
     Descriptor,
     DescriptorApiLevel,
+    Path,
     ResultWithTypedError,
     Session,
     Success,
@@ -37,7 +38,7 @@ export type AcquireIntentResponse = BackgroundResponseWithError<
 >;
 
 export type AcquireDoneRequest = {
-    path: string;
+    path: Path;
 };
 
 export type AcquireDoneResponse = BackgroundResponseWithError<
@@ -52,12 +53,12 @@ export interface ReleaseIntentRequest {
 }
 
 export type ReleaseIntentResponse = BackgroundResponseWithError<
-    { path: string },
+    { path: Path },
     typeof ERRORS.SESSION_NOT_FOUND
 >;
 
 export interface ReleaseDoneRequest {
-    path: string;
+    path: Path;
 }
 
 export type ReleaseDoneResponse = BackgroundResponse<{
@@ -74,7 +75,7 @@ export interface GetPathBySessionRequest {
 
 export type GetPathBySessionResponse = BackgroundResponseWithError<
     {
-        path: string;
+        path: Path;
     },
     typeof ERRORS.SESSION_NOT_FOUND
 >;

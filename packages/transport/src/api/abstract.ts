@@ -5,6 +5,8 @@ import type {
     Success,
     Logger,
     DescriptorApiLevel,
+    PathPrefix,
+    Path,
 } from '../types';
 import { success, error, unknownError } from '../utils/result';
 
@@ -35,6 +37,7 @@ export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
     protected logger: Logger;
+    protected abstract pathPrefix: PathPrefix;
 
     constructor({ logger }: AbstractApiConstructorParams) {
         super();
@@ -61,7 +64,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      * read from device on path
      */
     abstract read(
-        path: string,
+        path: Path,
     ): AsyncResultWithTypedError<
         ArrayBuffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -76,7 +79,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      * write to device on path
      */
     abstract write(
-        path: string,
+        path: Path,
         buffers: Buffer,
     ): AsyncResultWithTypedError<
         undefined,
@@ -91,7 +94,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      * set device to the state when it is available to read/write
      */
     abstract openDevice(
-        path: string,
+        path: Path,
         first: boolean,
     ): AsyncResultWithTypedError<
         undefined,
@@ -106,7 +109,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      * set device to the state when it is available to openDevice again
      */
     abstract closeDevice(
-        path: string,
+        path: Path,
     ): AsyncResultWithTypedError<
         undefined,
         | typeof ERRORS.DEVICE_NOT_FOUND

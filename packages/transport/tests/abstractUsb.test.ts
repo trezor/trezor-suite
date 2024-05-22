@@ -193,19 +193,19 @@ describe('Usb', () => {
             const spy = jest.fn();
             transport.on('transport-update', spy);
 
-            transport.handleDescriptorsChange([{ path: '1', session: null }]);
+            transport.handleDescriptorsChange([{ path: 'usb-1', session: null }]);
 
             expect(spy).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    connected: [{ path: '1', session: null }],
+                    connected: [{ path: 'usb-1', session: null }],
                     didUpdate: true,
-                    descriptors: [{ path: '1', session: null }],
+                    descriptors: [{ path: 'usb-1', session: null }],
                 }),
             );
             transport.handleDescriptorsChange([]);
             expect(spy).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    disconnected: [{ path: '1', session: null }],
+                    disconnected: [{ path: 'usb-1', session: null }],
                     didUpdate: true,
                     descriptors: [],
                 }),
@@ -220,13 +220,13 @@ describe('Usb', () => {
                 success: true,
                 payload: [
                     {
-                        path: '123',
+                        path: 'usb-123',
                         session: null,
                         type: 1,
                         product: 21441,
                     },
                     {
-                        path: 'bootloader1',
+                        path: 'usb-bootloader0',
                         session: null,
                         type: 1,
                         product: 21441,
@@ -246,7 +246,7 @@ describe('Usb', () => {
 
             jest.runAllTimers();
 
-            const result = await transport.acquire({ input: { path: '123', previous: null } })
+            const result = await transport.acquire({ input: { path: 'usb-123', previous: null } })
                 .promise;
             expect(result).toEqual({
                 success: true,
@@ -272,10 +272,10 @@ describe('Usb', () => {
             transport.listen();
 
             // set some initial descriptors
-            const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
+            const acquireCall = transport.acquire({ input: { path: 'usb-123', previous: null } });
 
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [{ path: '321', session: '1' }]);
+                sessionsClient.emit('descriptors', [{ path: 'usb-321', session: '1' }]);
             }, 1);
 
             const res = await acquireCall.promise;
@@ -299,9 +299,9 @@ describe('Usb', () => {
             transport.listen();
 
             // set some initial descriptors
-            const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
+            const acquireCall = transport.acquire({ input: { path: 'usb-123', previous: null } });
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [{ path: '123', session: '2' }]);
+                sessionsClient.emit('descriptors', [{ path: 'usb-123', session: '2' }]);
             }, 1);
 
             const res = await acquireCall.promise;
@@ -324,8 +324,9 @@ describe('Usb', () => {
         it('call - with valid message.', async () => {
             const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
-                .promise;
+            const acquireRes = await transport.acquire({
+                input: { path: 'usb-123', previous: null },
+            }).promise;
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -355,8 +356,9 @@ describe('Usb', () => {
         it('send and receive.', async () => {
             const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
-                .promise;
+            const acquireRes = await transport.acquire({
+                input: { path: 'usb-123', previous: null },
+            }).promise;
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -392,8 +394,9 @@ describe('Usb', () => {
         it('send protocol-v1 with custom chunkSize', async () => {
             const { transport, testUsbApi, abortController } = await initTest();
             await transport.enumerate().promise;
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
-                .promise;
+            const acquireRes = await transport.acquire({
+                input: { path: 'usb-123', previous: null },
+            }).promise;
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -431,8 +434,9 @@ describe('Usb', () => {
         it('release', async () => {
             const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
-                .promise;
+            const acquireRes = await transport.acquire({
+                input: { path: 'usb-123', previous: null },
+            }).promise;
             expect(acquireRes.success).toEqual(true);
             if (!acquireRes.success) return;
 
@@ -441,7 +445,7 @@ describe('Usb', () => {
             // doesn't really matter what what message we send
             const res = await transport.release({
                 session: acquireRes.payload,
-                path: '123',
+                path: 'usb-123',
                 onClose: false,
             }).promise;
             expect(res).toEqual({
@@ -454,8 +458,9 @@ describe('Usb', () => {
         it('call - with use abort', async () => {
             const { transport, abortController } = await initTest();
             await transport.enumerate().promise;
-            const acquireRes = await transport.acquire({ input: { path: '123', previous: null } })
-                .promise;
+            const acquireRes = await transport.acquire({
+                input: { path: 'usb-123', previous: null },
+            }).promise;
             if (!acquireRes.success) return;
 
             const { promise, abort } = transport.call({

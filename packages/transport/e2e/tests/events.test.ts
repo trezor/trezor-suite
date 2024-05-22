@@ -27,9 +27,9 @@ const wait = () =>
 const getDescriptor = (descriptor: any): Descriptor => ({
     debug: true,
     debugSession: null,
-    path: '1',
+    path: 'usb-1',
     product: 0,
-    session: '1',
+    session: 'usb-1',
     vendor: 0,
     ...descriptor,
 });
@@ -75,7 +75,7 @@ describe('bridge', () => {
 
         expect(descriptors).toEqual([
             {
-                path: '1',
+                path: 'usb-1',
                 session: null,
                 product: 0,
                 vendor: 0,
@@ -96,18 +96,19 @@ describe('bridge', () => {
         const bride1spy = jest.spyOn(bridge1, 'emit');
         const bride2spy = jest.spyOn(bridge2, 'emit');
 
-        const session1 = await bridge1.acquire({ input: { previous: null, path: '1' } }).promise;
+        const session1 = await bridge1.acquire({ input: { previous: null, path: 'usb-1' } })
+            .promise;
         expect(session1).toEqual({
             success: true,
-            payload: '1',
+            payload: 'usb-1',
         });
 
         // todo: waiting not nice
         await wait();
 
         const expectedDescriptor1 = getDescriptor({
-            path: '1',
-            session: '1',
+            path: 'usb-1',
+            session: 'usb-1',
         });
 
         expect(bride1spy).toHaveBeenLastCalledWith('transport-update', {
@@ -142,12 +143,12 @@ describe('bridge', () => {
             return;
         }
 
-        await bridge1.release({ path: '1', session: session1.payload }).promise;
+        await bridge1.release({ path: 'usb-1', session: session1.payload }).promise;
 
         await wait();
 
         const expectedDescriptor2 = getDescriptor({
-            path: '1',
+            path: 'usb-1',
             session: null,
         });
 
@@ -179,7 +180,8 @@ describe('bridge', () => {
             releasedElsewhere: [expectedDescriptor2], // difference here
         });
 
-        const session2 = await bridge2.acquire({ input: { previous: null, path: '1' } }).promise;
+        const session2 = await bridge2.acquire({ input: { previous: null, path: 'usb-1' } })
+            .promise;
         expect(session2).toEqual({ success: true, payload: '2' });
     });
 
@@ -187,9 +189,10 @@ describe('bridge', () => {
         const bride1spy = jest.spyOn(bridge1, 'emit');
         const bride2spy = jest.spyOn(bridge2, 'emit');
 
-        const session1 = await bridge1.acquire({ input: { previous: null, path: '1' } }).promise;
+        const session1 = await bridge1.acquire({ input: { previous: null, path: 'usb-1' } })
+            .promise;
 
-        expect(session1).toEqual({ success: true, payload: '1' });
+        expect(session1).toEqual({ success: true, payload: 'usb-1' });
         if (!session1.success) {
             return;
         }
@@ -198,13 +201,13 @@ describe('bridge', () => {
 
         // bridge 2 steals session
         const session2 = await bridge2.acquire({
-            input: { previous: session1.payload, path: '1' },
+            input: { previous: session1.payload, path: 'usb-1' },
         }).promise;
 
         expect(session2).toEqual({ success: true, payload: '2' });
 
         const expectedDescriptor = getDescriptor({
-            path: '1',
+            path: 'usb-1',
             session: '2',
         });
 

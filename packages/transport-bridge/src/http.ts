@@ -9,7 +9,7 @@ import {
     parseBodyText,
     Handler,
 } from '@trezor/node-utils';
-import { Descriptor, Session } from '@trezor/transport/src/types';
+import { Descriptor, Path, Session } from '@trezor/transport/src/types';
 import { Log, arrayPartition } from '@trezor/utils';
 
 import { sessionsClient, createApi } from './core';
@@ -149,7 +149,7 @@ export class TrezordNode {
                     res.setHeader('Content-Type', 'text/plain');
                     this.api
                         .acquire({
-                            path: req.params.path,
+                            path: req.params.path as Path,
                             previous: req.params.previous as Session | 'null',
                         })
                         .then(result => {
