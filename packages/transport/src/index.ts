@@ -11,7 +11,7 @@ export * as TRANSPORT_ERROR from './errors';
 protobuf.util.Long = Long;
 protobuf.configure();
 
-export type { Descriptor } from './types';
+export type { Descriptor, Session } from './types';
 export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
 export { AbstractTransport as Transport, isTransportInstance } from './transports/abstract';

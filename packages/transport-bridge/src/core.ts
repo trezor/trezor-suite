@@ -8,6 +8,7 @@ import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
+import { Session } from '@trezor/transport/src/types';
 import { Log } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
@@ -106,7 +107,9 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return enumerateDoneResponse;
     };
 
-    const acquire = async (acquireInput: AcquireInput) => {
+    const acquire = async (
+        acquireInput: Omit<AcquireInput, 'previous'> & { previous: Session | 'null' },
+    ) => {
         const acquireIntentResult = await sessionsClient.acquireIntent({
             path: acquireInput.path,
             previous: acquireInput.previous === 'null' ? null : acquireInput.previous,
@@ -139,7 +142,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
     };
 
-    const call = async ({ session, data }: { session: string; data: string }) => {
+    const call = async ({ session, data }: { session: Session; data: string }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -161,7 +164,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return readUtil({ path });
     };
 
-    const send = async ({ session, data }: { session: string; data: string }) => {
+    const send = async ({ session, data }: { session: Session; data: string }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -179,7 +182,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return writeUtil({ path, data });
     };
 
-    const receive = async ({ session }: { session: string }) => {
+    const receive = async ({ session }: { session: Session }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });

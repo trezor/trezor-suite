@@ -167,7 +167,9 @@ export default defineConfig({
                     await bridge.init().promise;
                     const enumerateRes = await bridge.enumerate().promise;
                     if (!enumerateRes.success) return null;
-                    await bridge.acquire({ input: { path: enumerateRes.payload[0].path } }).promise;
+                    await bridge.acquire({
+                        input: { path: enumerateRes.payload[0].path, previous: null },
+                    }).promise;
 
                     return null;
                 },

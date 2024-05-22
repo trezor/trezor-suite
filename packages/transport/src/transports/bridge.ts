@@ -11,7 +11,7 @@ import {
 } from './abstract';
 
 import * as ERRORS from '../errors';
-import { AnyError, AsyncResultWithTypedError, Descriptor } from '../types';
+import { AnyError, AsyncResultWithTypedError, Descriptor, Session } from '../types';
 
 const DEFAULT_URL = 'http://127.0.0.1:21325';
 
@@ -326,7 +326,7 @@ export class BridgeTransport extends AbstractTransport {
         endpoint: '/acquire',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<
-        string,
+        Session,
         | BridgeCommonErrors
         | typeof ERRORS.DEVICE_NOT_FOUND
         | typeof ERRORS.SESSION_WRONG_PREVIOUS
