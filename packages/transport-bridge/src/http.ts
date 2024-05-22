@@ -48,11 +48,10 @@ export class TrezordNode {
         port: number;
         api: 'usb' | 'udp' | AbstractApi;
         assetPrefix?: string;
-        logger?: Log;
+        logger: Log;
     }) {
         this.port = port || defaults.port;
-        this.logger = logger || new Log('@trezor/transport-bridge', true);
-
+        this.logger = logger;
         this.descriptors = [];
 
         this.listenSubscriptions = [];
@@ -273,7 +272,7 @@ export class TrezordNode {
                         intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
                         version: this.version,
                         devices: enumerateResult.success ? enumerateResult.payload.descriptors : [],
-                        logs: app.logger.getLog().slice(-20),
+                        logs: this.logger.getLog().slice(-20),
                     };
 
                     res.end(str(props));

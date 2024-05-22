@@ -6,6 +6,8 @@ import { TrezordNode } from '@trezor/transport-bridge';
 import { app, ipcMain } from '../typed-electron';
 import { BridgeProcess } from '../libs/processes/BridgeProcess';
 import { b2t } from '../libs/utils';
+import { Logger } from '../libs/logger';
+import { convertILoggerToLog } from '../utils/IloggerToLog';
 
 import type { Module, Dependencies } from './index';
 
@@ -53,20 +55,17 @@ const getBridgeInstance = (store: Dependencies['store']) => {
         return new BridgeProcess();
     }
 
+    const bridgeLogger = new Logger('info', {
+        writeToDisk: false,
+        writeToMemory: true,
+    });
+
     return new TrezordNode({
         port: 21325,
         api: bridgeDev || bridgeTest ? 'udp' : 'usb',
         assetPrefix: '../build/node-bridge',
         // passing down ILogger where Log is expected.
-        // @ts-expect-error
-        logger: {
-            ...global.logger,
-            log: (...args) => logger.info('trezord-node', args.join(' ')),
-            info: (...args) => logger.info('trezord-node', args.join(' ')),
-            warn: (...args) => logger.warn('trezord-node', args.join(' ')),
-            debug: (...args) => logger.debug('trezord-node', args.join(' ')),
-            error: (...args) => logger.error('trezord-node', args.join(' ')),
-        },
+        logger: convertILoggerToLog(bridgeLogger, { serviceName: 'trezord-node' }),
     });
 };
 

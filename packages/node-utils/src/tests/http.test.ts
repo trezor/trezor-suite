@@ -14,6 +14,7 @@ describe('HttpServer', () => {
     let server: HttpServer<Events>;
     beforeEach(() => {
         server = new HttpServer<Events>({
+            // @ts-expect-error
             logger: muteLogger,
         });
     });
@@ -45,6 +46,7 @@ describe('HttpServer', () => {
     });
 
     test('a port can be passed to the constructor', async () => {
+        // @ts-expect-error
         server = new HttpServer<Events>({ logger: muteLogger, port: 65526 });
         await server.start();
         expect(server.getServerAddress()).toMatchObject({
@@ -119,10 +121,7 @@ describe('HttpServer', () => {
         await new Promise(resolve => setTimeout(resolve, 500));
         controller.abort();
         await new Promise(resolve => setTimeout(resolve, 500));
-        expect(muteLogger.info).toHaveBeenLastCalledWith(
-            expect.any(String),
-            'Request GET /foo aborted',
-        );
+        expect(muteLogger.info).toHaveBeenLastCalledWith('Request GET /foo aborted');
     });
 
     test('allowReferer middleware lets request with allowed referer through', async () => {
