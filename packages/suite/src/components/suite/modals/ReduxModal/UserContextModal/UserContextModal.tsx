@@ -53,6 +53,7 @@ import { CardanoWithdrawModal } from '../CardanoWithdrawModal';
 import { ConnectAddressConfirmation } from './ConnectAddressConfirmation';
 import { ConnectErrorModal } from './ConnectErrorModal';
 import { ConnectLoadingModal } from './ConnectLoadingModal';
+import { ThpPairingFailedModal } from './ThpPairingFailedModal';
 import { TradingDCAModal } from './TradingDCAModal';
 import { EverstakeModal } from './UnstakeModal/EverstakeModal';
 import { WalletConnectProposalModal } from './WalletConnectProposalModal';
@@ -226,6 +227,8 @@ export const UserContextModal = ({ payload }: ReduxModalProps<typeof MODAL.CONTE
             return <ConnectErrorModal />;
         case 'connect-loading':
             return <ConnectLoadingModal />;
+        case 'thp-pairing-failed':
+            return <ThpPairingFailedModal onCancel={onCancel} />;
         default:
             return null;
     }

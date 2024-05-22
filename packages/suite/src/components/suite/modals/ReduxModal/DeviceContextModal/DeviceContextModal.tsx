@@ -13,6 +13,9 @@ import {
     PassphraseOnDeviceModal,
     PinInvalidModal,
     PinModal,
+    ThpAutoconnectModal,
+    ThpConnectionModal,
+    ThpPairingModal,
     TransactionReviewModal,
 } from 'src/components/suite/modals';
 import { useSelector } from 'src/hooks/suite';
@@ -43,6 +46,10 @@ export const DeviceContextModal = ({
         // Passphrase on host
         case UI.REQUEST_PASSPHRASE:
             return <PassphraseModal device={device} />;
+
+        case UI.REQUEST_THP_PAIRING:
+            return <ThpPairingModal onCancel={abort} />;
+
         // T2T1 firmware
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
         case 'ButtonRequest_PassphraseEntry':
@@ -73,7 +80,6 @@ export const DeviceContextModal = ({
         case 'ButtonRequest_UnknownDerivationPath':
         case 'ButtonRequest_FirmwareUpdate':
         case 'ButtonRequest_PinEntry':
-            return <ConfirmActionModal device={device} />;
         case 'ButtonRequest_Address':
             return data?.type === 'address' ? (
                 <ConfirmAddressModal
@@ -84,6 +90,12 @@ export const DeviceContextModal = ({
             ) : null;
         case 'ButtonRequest_PublicKey':
             return <ConfirmXpubModal onCancel={abort} />;
+        case 'ButtonRequest_ThpPairingRequest':
+            return <ThpConnectionModal device={device} />;
+        case 'ButtonRequest_ThpConnection':
+            return <ThpConnectionModal device={device} isAutoConnectAvailable />;
+        case 'ButtonRequest_ThpAutoconnect':
+            return <ThpAutoconnectModal device={device} />;
         default:
             return null;
     }

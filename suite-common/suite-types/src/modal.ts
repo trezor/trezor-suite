@@ -212,4 +212,5 @@ export type UserContextPayload =
       }
     | {
           type: 'connect-loading';
-      };
+      }
+    | { type: 'thp-pairing-failed' };

@@ -68,20 +68,36 @@ const modalReducer = (state: State = initialState, action: Action): State => {
         case UI.INVALID_PIN:
         case UI.REQUEST_PASSPHRASE:
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case UI.REQUEST_THP_PAIRING:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
                 windowType: action.type,
                 preserve: state.preserve,
             };
-        case UI.REQUEST_BUTTON:
+        case UI.REQUEST_BUTTON: {
+            const windowType = (() => {
+                switch (action.payload.name) {
+                    case 'thp_pairing_request':
+                        return 'ButtonRequest_ThpPairingRequest';
+                    case 'thp_connection_request':
+                        return 'ButtonRequest_ThpConnection';
+                    case 'thp_autoconnect_credential_request':
+                        return 'ButtonRequest_ThpAutoconnect';
+                    default:
+                        return action.payload.code;
+                }
+            })();
+
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
-                windowType: action.payload.code,
+                windowType,
                 data: action.payload.data,
                 preserve: state.preserve,
             };
+        }
+
         case UI.FIRMWARE_PROGRESS:
             // firmware update first sends UI.REQUEST_BUTTON. Clear it after first progress is received
             return initialState;
