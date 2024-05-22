@@ -45,6 +45,7 @@ const modalReducer = (state: State = initialState, action: Action): State => {
         case UI.INVALID_PIN:
         case UI.REQUEST_PASSPHRASE:
         case UI.REQUEST_PASSPHRASE_ON_DEVICE:
+        case UI.REQUEST_THP_PAIRING:
             return {
                 context: MODAL.CONTEXT_DEVICE,
                 device: action.payload.device,
