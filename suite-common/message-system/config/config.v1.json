@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-05-15T00:00:00+00:00",
-    "sequence": 54,
+    "timestamp": "2024-05-23T00:00:00+00:00",
+    "sequence": 55,
     "actions": [
         {
             "conditions": [
@@ -699,6 +699,22 @@
                             "bootloader": "*",
                             "variant": "*",
                             "firmwareRevision": "33e3da8ed3cdb5e689099b7d1c1d24fac254aa2c",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T",
+                            "firmware": ">2.6.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "88e1f8c7a5c7615723664c64b0a25adc0c409dee",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T2T1",
+                            "firmware": ">2.6.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "88e1f8c7a5c7615723664c64b0a25adc0c409dee",
                             "vendor": "*"
                         }
                     ]
