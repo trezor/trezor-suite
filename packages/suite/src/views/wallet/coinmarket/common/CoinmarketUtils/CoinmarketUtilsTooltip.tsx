@@ -7,6 +7,7 @@ import CoinmarketUtilsTooltipFee from './CoinmarketUtilsTooltipFee';
 const TooltipWrap = styled.div`
     display: flex;
     align-items: center;
+    margin-top: ${spacingsPx.xxxs};
 `;
 
 const TooltipIcon = styled(Icon)`
@@ -34,7 +35,7 @@ const TooltipText = styled.div<{ $isYellow?: boolean }>`
 // IN TESTING MODE
 const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quote'>) => {
     const theme = useTheme();
-    const isFeesIncluded = true;
+    const isFeesIncluded = false;
     const notIncludedContent =
         "Certain fees are not included in the displayed price. You will review the final price on the provider's website.";
 

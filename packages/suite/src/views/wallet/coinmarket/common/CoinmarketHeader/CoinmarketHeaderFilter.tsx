@@ -16,7 +16,7 @@ const Wrapper = styled.div`
 const SelectWrapper = styled(Select)`
     width: 254px;
     max-width: 100%;
-    margin-right: ${spacingsPx.md};
+    padding: ${spacingsPx.xxs} ${spacingsPx.md} ${spacingsPx.xxs} 0;
 `;
 
 const Option = styled.div`
