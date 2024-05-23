@@ -137,4 +137,9 @@ export class UdpApi extends AbstractApi {
     public closeDevice(_path: string) {
         return Promise.resolve(this.success(undefined));
     }
+
+    public dispose() {
+        this.interface.removeAllListeners();
+        this.interface.close();
+    }
 }

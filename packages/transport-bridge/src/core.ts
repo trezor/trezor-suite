@@ -190,6 +190,10 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         return readUtil({ path });
     };
 
+    const dispose = () => {
+        api.dispose();
+    };
+
     return {
         enumerate,
         acquire,
@@ -197,5 +201,6 @@ export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
         call,
         send,
         receive,
+        dispose,
     };
 };

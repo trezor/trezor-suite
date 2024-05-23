@@ -108,6 +108,8 @@ export abstract class AbstractApi extends TypedEmitter<{
         | typeof ERRORS.UNEXPECTED_ERROR
     >;
 
+    abstract dispose(): void;
+
     /**
      * packet size for api
      */
