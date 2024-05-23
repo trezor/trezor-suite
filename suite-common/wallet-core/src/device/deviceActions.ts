@@ -2,12 +2,12 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { Device, DEVICE } from '@trezor/connect';
 import { ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
-import { DefaultWalletLoading } from '@suite-common/wallet-types';
+import { WalletType } from '@suite-common/wallet-types';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
 export type ConnectDeviceSettings = {
-    defaultWalletLoading: DefaultWalletLoading;
+    defaultWalletLoading: WalletType;
     isViewOnlyModeVisible: boolean;
 };
 

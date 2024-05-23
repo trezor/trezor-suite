@@ -62,7 +62,7 @@ const suite =
         next(action);
 
         if (createDeviceInstanceThunk.fulfilled.match(action)) {
-            api.dispatch(selectDeviceThunk(action.payload.device));
+            api.dispatch(selectDeviceThunk({ device: action.payload }));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

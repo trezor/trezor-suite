@@ -8,11 +8,11 @@ import {
     Account,
     AccountKey,
     AddressDisplayOptions,
-    DefaultWalletLoading,
     Discovery,
     FeeInfo,
     SelectedAccountStatus,
     WalletAccountTransaction,
+    WalletType,
 } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
@@ -79,7 +79,7 @@ export type ExtraDependencies = {
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
         selectSuiteSettings: SuiteCompatibleSelector<{
-            defaultWalletLoading: DefaultWalletLoading;
+            defaultWalletLoading: WalletType;
             isViewOnlyModeVisible: boolean;
         }>;
     };

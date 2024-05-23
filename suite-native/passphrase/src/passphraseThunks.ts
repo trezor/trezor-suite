@@ -24,7 +24,7 @@ export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
         );
 
         TrezorConnect.cancel();
-        dispatch(selectDeviceThunk(devices[standardWalletDeviceIndex]));
+        dispatch(selectDeviceThunk({ device: devices[standardWalletDeviceIndex] }));
 
         // Remove device on which the passphrase flow was canceled
         dispatch(deviceActions.forgetDevice(device));

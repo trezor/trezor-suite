@@ -141,7 +141,13 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
                   action: () =>
-                      dispatch(createDeviceInstanceThunk({ device: device as AcquiredDevice })),
+                      dispatch(
+                          createDeviceInstanceThunk({
+                              device: device as AcquiredDevice,
+                              useEmptyPassphrase: false,
+                          }),
+                      ),
+
                   dataTest: 'create-hidden-wallet',
                   isDisabled: isDeviceLocked,
               },

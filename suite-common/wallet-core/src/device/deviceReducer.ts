@@ -462,7 +462,7 @@ const forget = (draft: State, device: TrezorDevice) => {
         delete draft.devices[index].authFailed;
         draft.devices[index].state = undefined;
         draft.devices[index].walletNumber = undefined;
-        draft.devices[index].useEmptyPassphrase = !device.features.passphrase_protection;
+        // draft.devices[index].useEmptyPassphrase = !device.features.passphrase_protection;
         draft.devices[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
         draft.devices[index].remember = false;

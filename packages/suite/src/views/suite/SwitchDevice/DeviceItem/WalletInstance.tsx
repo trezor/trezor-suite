@@ -83,7 +83,7 @@ interface WalletInstanceProps {
     instance: AcquiredDevice;
     enabled: boolean;
     selected: boolean;
-    selectDeviceInstance: (instance: TrezorDevice) => void;
+    selectDeviceInstance: (params: { device: TrezorDevice }) => void;
     index: number; // used only in data-test
 }
 
@@ -131,7 +131,7 @@ export const WalletInstance = ({
                 data-test={dataTestBase}
                 key={`${instance.label}${instance.instance}${instance.state}`}
                 paddingType="small"
-                onClick={() => !editing && selectDeviceInstance(instance)}
+                onClick={() => !editing && selectDeviceInstance({ device: instance })}
                 tabIndex={0}
                 {...rest}
             >

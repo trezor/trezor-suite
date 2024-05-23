@@ -164,12 +164,12 @@ export const DeviceItemLegacy = ({
     };
 
     const selectDeviceInstance = (instance: DeviceItemProps['device']) => {
-        dispatch(selectDeviceThunk(instance));
+        dispatch(selectDeviceThunk({ device: instance }));
         handleRedirection();
     };
 
     const addDeviceInstance = async (instance: DeviceItemProps['device']) => {
-        await dispatch(createDeviceInstanceThunk({ device: instance }));
+        await dispatch(createDeviceInstanceThunk({ device: instance, useEmptyPassphrase: false }));
         handleRedirection();
     };
 
@@ -189,7 +189,7 @@ export const DeviceItemLegacy = ({
         // await needed otherwise it just selects first account (???)
         await dispatch(goto('settings-device'));
         if (!isSelected) {
-            dispatch(selectDeviceThunk(device));
+            dispatch(selectDeviceThunk({ device }));
         }
     };
 
