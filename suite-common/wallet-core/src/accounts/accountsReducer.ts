@@ -12,7 +12,7 @@ import { formattedAccountTypeMap } from './accountsConstants';
 import {
     DeviceRootState,
     selectDevice,
-    selectIsNoPhysicalDeviceConnected,
+    selectDevicesCount,
     selectIsPortfolioTrackerDevice,
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
@@ -356,7 +356,7 @@ export const selectAccountsSymbols = memoize(
 export const selectIsDeviceAccountless = (state: AccountsRootState & DeviceRootState) =>
     pipe(selectDeviceAccounts(state), A.isEmpty);
 
-export const selectIsDeviceDiscoveryEmpty = (
+export const selectIsDeviceDiscoveryEmptyAndAccountless = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
     const isDeviceAccountless = selectIsDeviceAccountless(state);
@@ -365,20 +365,21 @@ export const selectIsDeviceDiscoveryEmpty = (
     return isDeviceAccountless && !isDeviceDiscoveryActive;
 };
 
-export const selectAreAllDevicesDisconnectedOrAccountless = (
+export const selectHasOnlyAccountlessPortfolioTracker = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
-    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
-    const isNoPhysicalDeviceConnected = selectIsNoPhysicalDeviceConnected(state);
+    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmptyAndAccountless(state);
+    const isNoPhysicalDeviceConnected = selectIsPortfolioTrackerDevice(state);
+    const deviceCount = selectDevicesCount(state);
 
-    return isDeviceDiscoveryEmpty && isNoPhysicalDeviceConnected;
+    return isDeviceDiscoveryEmpty && isNoPhysicalDeviceConnected && deviceCount === 1;
 };
 
 export const selectIsPortfolioTrackerEmpty = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
     const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
-    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
+    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmptyAndAccountless(state);
 
     return isPortfolioTrackerDevice && isDeviceDiscoveryEmpty;
 };

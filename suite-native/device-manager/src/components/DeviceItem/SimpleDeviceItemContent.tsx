@@ -6,7 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     DeviceRootState,
-    selectAreAllDevicesDisconnectedOrAccountless,
+    selectHasOnlyAccountlessPortfolioTracker,
     selectDeviceByState,
 } from '@suite-common/wallet-core';
 import { TypographyStyle } from '@trezor/theme';
@@ -36,21 +36,19 @@ export const SimpleDeviceItemContent = ({
 }: SimpleDeviceItemContentProps) => {
     const { applyStyle } = useNativeStyles();
     const device = useSelector((state: DeviceRootState) => selectDeviceByState(state, deviceState));
-    const areAllDevicesDisconnectedOrAccountless = useSelector(
-        selectAreAllDevicesDisconnectedOrAccountless,
+    const hasOnlyAccountlessPortfolioTracker = useSelector(
+        selectHasOnlyAccountlessPortfolioTracker,
     );
 
     if (!device) {
         return null;
     }
 
-    const isPortfolioTrackerSubHeaderVisible =
-        isPortfolioTrackerDevice &&
-        !areAllDevicesDisconnectedOrAccountless &&
-        !isSubHeaderForceHidden;
+    const isPortfolioTrackerSubHeaderVisible =ƒ
+        isPortfolioTrackerDevice && !hasOnlyAccountlessPortfolioTracker && !isSubHeaderForceHidden;
 
     const isConnectionStateVisible =
-        !isPortfolioTrackerDevice && !areAllDevicesDisconnectedOrAccountless;
+        !isPortfolioTrackerDevice && !hasOnlyAccountlessPortfolioTracker;
 
     return (
         <>
@@ -60,7 +58,7 @@ export const SimpleDeviceItemContent = ({
                 numberOfLines={1}
                 style={applyStyle(headerStyle)}
             >
-                {areAllDevicesDisconnectedOrAccountless ? (
+                {hasOnlyAccountlessPortfolioTracker ? (
                     <Translation id="deviceManager.defaultHeader" />
                 ) : (
                     header

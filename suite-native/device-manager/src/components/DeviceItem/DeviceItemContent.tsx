@@ -7,7 +7,7 @@ import {
     selectDeviceByState,
     DeviceRootState,
     PORTFOLIO_TRACKER_DEVICE_ID,
-    selectAreAllDevicesDisconnectedOrAccountless,
+    selectHasOnlyAccountlessPortfolioTracker,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { TypographyStyle } from '@trezor/theme';
@@ -57,8 +57,8 @@ export const DeviceItemContent = ({
     const { applyStyle } = useNativeStyles();
 
     const device = useSelector((state: DeviceRootState) => selectDeviceByState(state, deviceState));
-    const areAllDevicesDisconnectedOrAccountless = useSelector(
-        selectAreAllDevicesDisconnectedOrAccountless,
+    const hasOnlyAccountlessPortfolioTracker = useSelector(
+        selectHasOnlyAccountlessPortfolioTracker,
     );
 
     const isPortfolioTrackerDevice = device?.id === PORTFOLIO_TRACKER_DEVICE_ID;
@@ -82,9 +82,7 @@ export const DeviceItemContent = ({
 
     return (
         <HStack style={applyStyle(contentWrapperStyle, { height: isCompact ? 46 : 56 })}>
-            <DeviceItemIcon
-                deviceId={areAllDevicesDisconnectedOrAccountless ? undefined : device.id}
-            />
+            <DeviceItemIcon deviceId={hasOnlyAccountlessPortfolioTracker ? undefined : device.id} />
             <Box style={applyStyle(itemStyle, { isCompact })}>
                 {variant === 'simple' ? (
                     <SimpleDeviceItemContent
