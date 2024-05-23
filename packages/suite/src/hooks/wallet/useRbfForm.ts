@@ -15,6 +15,7 @@ import { FormState, FeeInfo } from '@suite-common/wallet-types';
 import { useFees } from './form/useFees';
 import { useCompose } from './form/useCompose';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
+import { selectTxStakeName } from 'src/reducers/suite/modalReducer';
 import { useCoinjoinRegisteredUtxos } from 'src/hooks/wallet/form/useCoinjoinRegisteredUtxos';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 
@@ -84,6 +85,7 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
     const symbolFees = useSelector(state => state.wallet.fees[account.symbol]);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const coinjoinRegisteredUtxos = useCoinjoinRegisteredUtxos({ account });
+    const txStakeName = useSelector(selectTxStakeName);
 
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
@@ -161,6 +163,7 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
             coinjoinRegisteredUtxos,
             chainedTxs,
             shouldSendInSats,
+            txStakeName,
             formValues: {
                 ...DEFAULT_VALUES,
                 outputs,
@@ -181,13 +184,14 @@ const useRbfState = ({ selectedAccount, rbfParams, chainedTxs }: UseRbfProps) =>
         rbfParams,
         shouldSendInSats,
         targetAnonymity,
+        txStakeName,
     ]);
 };
 
 export const useRbf = (props: UseRbfProps) => {
     // local state
     const state = useRbfState(props);
-    const { formValues, feeInfo, account } = state;
+    const { formValues, feeInfo, account, txStakeName } = state;
 
     const [isReduceChangePossible, setIsReduceChangePossible] = useState(false);
     const [showDecreasedOutputs, setShowDecreasedOutputs] = useState(false);
@@ -209,6 +213,7 @@ export const useRbf = (props: UseRbfProps) => {
             ...useFormMethods,
             state,
             defaultField: 'selectedFee',
+            txStakeName,
         });
 
     // sub-hook

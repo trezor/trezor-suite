@@ -46,3 +46,9 @@ export const transformTxFixtures = [
         },
     },
 ];
+
+export const getUnstakeAmountFixtures = {
+    ethereumData: '3a29dbae0000000000000000000000000000000000000000000000000000000000000001',
+    expectedAmountWei: '1',
+    expectedAmountEther: '0.000000000000000001',
+};

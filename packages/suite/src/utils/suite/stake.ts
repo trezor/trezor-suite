@@ -3,12 +3,13 @@ import {
     StakeFormState,
     StakeType,
     WalletAccountTransaction,
+    FormState,
 } from '@suite-common/wallet-types';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
-import { fromWei, numberToHex, toWei } from 'web3-utils';
+import { fromWei, numberToHex, toWei, hexToNumberString } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -559,4 +560,25 @@ export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => 
     const daysToWait = secondsToDays(secondsToWait);
 
     return daysToWait <= 0 ? 1 : daysToWait;
+};
+
+export const getUnstakeAmount = (ethereumData: string) => {
+    const dataBuffer = Buffer.from(ethereumData, 'hex');
+
+    return hexToNumberString('0x' + dataBuffer.subarray(4, 36).toString('hex'));
+};
+
+export const handleStakeTransaction = (values: FormState, txStakeName: StakeType) => {
+    const updatedValues = { ...values, ethereumStakeType: txStakeName };
+
+    if (txStakeName === 'unstake') {
+        const ethereumData = values.rbfParams?.ethereumData;
+        const amount = ethereumData && getUnstakeAmount(ethereumData);
+
+        if (amount) {
+            updatedValues.outputs[0].amount = fromWei(amount, 'ether');
+        }
+    }
+
+    return updatedValues;
 };

@@ -6,6 +6,7 @@ import { useAsyncDebounce } from '@trezor/react-utils';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
+import { composeTransaction } from 'src/actions/wallet/stakeActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
@@ -19,6 +20,8 @@ import {
 } from '@suite-common/wallet-types';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { StakeType } from '@suite-common/wallet-types';
+import { handleStakeTransaction } from 'src/utils/suite/stake';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -27,6 +30,7 @@ interface Props<TFieldValues extends FormState> extends UseFormReturn<TFieldValu
     // TODO: but it is not in Coinmarket hooks (Spend, Exchange, Sell)
     state?: ComposeActionContext;
     defaultField?: FieldPath<TFieldValues>;
+    txStakeName?: StakeType | null;
 }
 
 // shareable sub-hook used in useRbfForm and useSendForm (TODO)
@@ -37,6 +41,7 @@ export const useCompose = <TFieldValues extends FormState>({
     getValues,
     formState: { errors },
     clearErrors,
+    txStakeName,
     ...props
 }: Props<TFieldValues>) => {
     const [isLoading, setLoading] = useState(false);
@@ -84,6 +89,12 @@ export const useCompose = <TFieldValues extends FormState>({
 
                 const values = getValues();
 
+                if (txStakeName) {
+                    const updatedValues = handleStakeTransaction(values, txStakeName);
+
+                    return dispatch(composeTransaction(updatedValues, state));
+                }
+
                 return dispatch(
                     composeSendFormTransactionThunk({ formValues: values, formState: state }),
                 ).unwrap();
@@ -104,7 +115,7 @@ export const useCompose = <TFieldValues extends FormState>({
                 }
             }
         },
-        [state, errors, debounce, clearErrors, getValues, dispatch],
+        [state, errors, debounce, clearErrors, getValues, dispatch, txStakeName],
     );
 
     // update fields AFTER composedLevels change or selectedFee change (below)

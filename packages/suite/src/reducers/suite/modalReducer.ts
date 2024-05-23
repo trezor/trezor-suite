@@ -3,6 +3,9 @@ import { UserContextPayload } from '@suite-common/suite-types';
 
 import { MODAL } from 'src/actions/suite/constants';
 import type { Action, TrezorDevice } from 'src/types/suite';
+import type { AppState } from 'src/types/suite';
+import { isStakeTypeTx, signatureToStakeNameMap } from '@suite-common/suite-utils';
+import { StakeType } from '@suite-common/wallet-types';
 
 export type State = ModalState & { preserve?: boolean };
 
@@ -95,6 +98,21 @@ const modalReducer = (state: State = initialState, action: Action): State => {
         default:
             return state;
     }
+};
+
+export const selectTxStakeName = (state: AppState): StakeType | null => {
+    if (
+        state.modal.context === MODAL.CONTEXT_USER &&
+        state.modal.payload.type == 'transaction-detail'
+    ) {
+        const { tx } = state.modal.payload;
+        const { methodId: signature } = tx.ethereumSpecific?.parsedData || {};
+        if (signature && isStakeTypeTx(signature)) {
+            return signatureToStakeNameMap[signature];
+        }
+    }
+
+    return null;
 };
 
 export default modalReducer;
