@@ -58,6 +58,7 @@ export const DeviceSwitch = () => {
                             deviceState={deviceState}
                             headerTextVariant="highlight"
                             variant={wallets.length > 1 ? 'walletDetail' : 'simple'}
+                            isSubHeaderForceHidden={true}
                         />
                     )}
                     <Icon name="chevronUpAndDown" color="iconDefault" />
