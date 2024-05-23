@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, Column, Row, Tooltip } from '@trezor/components';
+import { Button, Column, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
@@ -35,6 +35,7 @@ export const AddWalletButton = ({
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
     const locks = useSelector(state => state.suite.locks);
+    const isPassphraseProtectionEnabled = Boolean(device?.features?.passphrase_protection);
 
     // opportunity to bring useDeviceLocks back (extract it from useDevice hook)?
     // useDevice hook is not really suited for this since we need to pass the device as a prop
@@ -74,18 +75,18 @@ export const AddWalletButton = ({
                         </Button>
                     )}
 
-                    <Button
-                        data-test="@switch-device/add-hidden-wallet-button"
-                        variant="tertiary"
-                        isFullWidth
-                        icon="PLUS"
-                        isDisabled={isLocked}
-                        onClick={() => onAddWallet({ useEmptyPassphrase: false })}
-                    >
-                        <Row gap={spacings.xs}>
+                    {isPassphraseProtectionEnabled && (
+                        <Button
+                            data-test="@switch-device/add-hidden-wallet-button"
+                            variant="tertiary"
+                            isFullWidth
+                            icon="PLUS"
+                            isDisabled={isLocked}
+                            onClick={() => onAddWallet({ useEmptyPassphrase: false })}
+                        >
                             <Translation id="TR_ADD_HIDDEN_WALLET" />
-                        </Row>
-                    </Button>
+                        </Button>
+                    )}
                 </Column>
             </StyledTooltip>
         </AddWallet>
