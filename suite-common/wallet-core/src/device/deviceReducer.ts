@@ -86,14 +86,15 @@ const getShouldUseEmptyPassphrase = (
         return true;
     }
 
-    const isPassphraseDisabledInSettings = !device.features.passphrase_protection;
     const isLegacy = !settings.isViewOnlyModeVisible;
 
-    return (
-        isPassphraseDisabledInSettings ||
-        isLegacy ||
-        (!isLegacy && settings.defaultWalletLoading === 'standard')
-    );
+    if (isLegacy) {
+        return isUnlocked(device.features) && !device.features.passphrase_protection;
+    }
+
+    const isPassphraseDisabledInSettings = !device.features.passphrase_protection;
+
+    return isPassphraseDisabledInSettings || settings.defaultWalletLoading === 'standard';
 };
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
