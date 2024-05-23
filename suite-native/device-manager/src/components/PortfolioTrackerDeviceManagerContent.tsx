@@ -11,7 +11,7 @@ import {
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsDeviceDiscoveryEmpty } from '@suite-common/wallet-core';
+import { selectIsEmptyDevice } from '@suite-common/wallet-core';
 import { useOpenLink } from '@suite-native/link';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
@@ -37,7 +37,7 @@ export const PortfolioTrackerDeviceManagerContent = () => {
     const openLink = useOpenLink();
     const { applyStyle } = useNativeStyles();
 
-    const isDeviceDiscoveryEmpty = useSelector(selectIsDeviceDiscoveryEmpty);
+    const isEmptyDevice = useSelector(selectIsEmptyDevice);
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -73,7 +73,7 @@ export const PortfolioTrackerDeviceManagerContent = () => {
     const syncButtonTitle = (
         <Translation
             id={
-                isDeviceDiscoveryEmpty
+                isEmptyDevice
                     ? 'deviceManager.syncCoinsButton.syncMyCoins'
                     : 'deviceManager.syncCoinsButton.syncAnother'
             }
