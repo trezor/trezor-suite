@@ -5,10 +5,16 @@ import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtil
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
 import { spacingsPx } from '@trezor/theme';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const SummaryWrap = styled.div`
     margin-top: -3px;
     padding-left: 10px;
+
+    ${SCREEN_QUERY.BELOW_TABLET} {
+        padding-left: 0;
+        margin-top: 0;
+    }
 `;
 
 const SummaryRow = styled.div`
@@ -34,20 +40,28 @@ const TokenLogo = styled.img`
 
 const Send = styled(H2)`
     font-weight: ${variables.FONT_WEIGHT.REGULAR};
+
+    ${SCREEN_QUERY.BELOW_TABLET} {
+        font-size: ${variables.FONT_SIZE.H2};
+    }
 `;
 
 const Receive = styled(Send)`
     padding-left: 10px;
 `;
 
-const CoinmarketHeaderSummary = () => {
+interface CoinmarketHeaderSummaryProps {
+    className?: string;
+}
+
+const CoinmarketHeaderSummary = ({ className }: CoinmarketHeaderSummaryProps) => {
     const { quotesRequest, quotes } = useCoinmarketBuyOffersContext();
 
     if (!quotesRequest || !quotes || quotes.length === 0) return null;
     const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
 
     return (
-        <SummaryWrap>
+        <SummaryWrap className={className}>
             <SummaryRow>
                 <Send>
                     <CoinmarketFiatAmount

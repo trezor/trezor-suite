@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import { Button, variables, Card } from '@trezor/components';
+import { Button, Card } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { BuyTrade } from 'invity-api';
 import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
-import { spacings, spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
-import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const OfferWrap = styled(Card)`
     min-height: 100px;
@@ -14,7 +14,11 @@ const OfferWrap = styled(Card)`
 
 const Offer = styled.div`
     display: flex;
-    height: 100px;
+    min-height: 100px;
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        flex-wrap: wrap;
+    }
 `;
 
 const OfferColumn = styled.div`
@@ -24,18 +28,42 @@ const OfferColumn = styled.div`
 `;
 
 const OfferColumn1 = styled(OfferColumn)`
-    width: 28.75%;
+    width: 27.3%;
     justify-content: center;
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        width: 200px;
+    }
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        width: 100%;
+    }
 `;
 
 const OfferColumn2 = styled(OfferColumn)`
     width: 100%;
     flex: auto;
     justify-content: center;
+    padding: 0 ${spacingsPx.md};
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        width: calc(100% - 200px);
+    }
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        width: 100%;
+        padding: ${spacingsPx.xs} 0 0 0;
+    }
 `;
 
 const OfferColumn3 = styled(OfferColumn)`
     justify-content: center;
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        align-items: flex-end;
+        margin-top: ${spacingsPx.md};
+        width: 100%;
+    }
 `;
 
 const OfferProvider = styled(CoinmarketUtilsProvider)<{ $isMargined?: boolean }>`
@@ -46,18 +74,26 @@ const OfferBadgeWrap = styled.div`
     display: flex;
     align-items: center;
     width: 100%;
+    flex-wrap: wrap;
+`;
+
+/*
+const OfferBadge = styled(Badge)`
+    margin-right: ${spacingsPx.xs};
+    margin-bottom: ${spacingsPx.xs};
 `;
 
 const OfferBadgeInfo = styled.div`
-    margin-left: ${spacingsPx.xs};
     ${typography.label};
+    padding: ${spacingsPx.xxxs} 0;
     color: ${({ theme }) => theme.textSubdued};
 `;
+*/
 
 const StyledButton = styled(Button)`
     width: 180px;
 
-    @media (max-width: ${variables.SCREEN_SIZE.SM}) {
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
         width: 100%;
     }
 `;
@@ -70,16 +106,16 @@ export interface CoinmarketOffersItemProps {
 const CoinmarketOffersItem = ({ quote, wantCrypto }: CoinmarketOffersItemProps) => {
     const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
     const { exchange } = quote;
-    const { tag } = getTagAndInfoNote(quote);
-    const tagsExist = !!tag;
+    // const { tag } = getTagAndInfoNote(quote);
+    const tagsExist = false;
 
     return (
         <OfferWrap margin={{ top: spacings.md }}>
             <Offer>
                 <OfferColumn1>
                     <OfferBadgeWrap>
-                        {/*<Badge variant="primary">Limited offer</Badge>*/}
-                        <OfferBadgeInfo>{/*0% fees on all buys*/}</OfferBadgeInfo>
+                        {/*<OfferBadge variant="primary">No documents required</OfferBadge>
+                        <OfferBadgeInfo>0% fees on all buys</OfferBadgeInfo>*/}
                     </OfferBadgeWrap>
                     <OfferProvider
                         exchange={exchange}

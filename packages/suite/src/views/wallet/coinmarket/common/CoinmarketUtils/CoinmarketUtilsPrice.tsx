@@ -4,6 +4,7 @@ import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersI
 import styled from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
+import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const PriceWrap = styled.div``;
 
@@ -14,17 +15,19 @@ const PriceTitle = styled.div`
 
 const PriceValueWrap = styled.div`
     display: flex;
-    align-items: flex-end;
+    align-items: center;
+    flex-wrap: wrap;
 `;
 
 const PriceValue = styled.div`
     ${typography.titleSmall}
     color: ${({ theme }) => theme.textDefault};
     margin-top: ${spacingsPx.xxs};
-`;
+    margin-right: ${spacingsPx.sm};
 
-const PriceTooltip = styled.div`
-    margin-left: ${spacingsPx.sm};
+    ${SCREEN_QUERY.MOBILE} {
+        font-size: ${FONT_SIZE.BIG};
+    }
 `;
 
 const CoinmarketUtilsPrice = ({ quote, wantCrypto }: CoinmarketOffersItemProps) => {
@@ -47,7 +50,7 @@ const CoinmarketUtilsPrice = ({ quote, wantCrypto }: CoinmarketOffersItemProps) 
                         />
                     )}
                 </PriceValue>
-                <PriceTooltip>{/*<CoinmarketUtilsPrice quote={quote} wantCrypto />*/}</PriceTooltip>
+                {/*<CoinmarketUtilsTooltip quote={quote} />*/}
             </PriceValueWrap>
         </PriceWrap>
     );
