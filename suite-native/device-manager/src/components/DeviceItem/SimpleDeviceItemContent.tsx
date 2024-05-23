@@ -19,6 +19,7 @@ export type SimpleDeviceItemContentProps = {
     headerTextVariant?: TypographyStyle;
     header: ReactNode;
     isPortfolioTrackerDevice: boolean;
+    isSubHeaderForceHidden: boolean;
 };
 
 const headerStyle = prepareNativeStyle(_ => ({
@@ -31,6 +32,7 @@ export const SimpleDeviceItemContent = ({
     headerTextVariant,
     header,
     isPortfolioTrackerDevice,
+    isSubHeaderForceHidden,
 }: SimpleDeviceItemContentProps) => {
     const { applyStyle } = useNativeStyles();
     const device = useSelector((state: DeviceRootState) => selectDeviceByState(state, deviceState));
@@ -43,7 +45,9 @@ export const SimpleDeviceItemContent = ({
     }
 
     const isPortfolioTrackerSubHeaderVisible =
-        isPortfolioTrackerDevice && !areAllDevicesDisconnectedOrAccountless;
+        isPortfolioTrackerDevice &&
+        !areAllDevicesDisconnectedOrAccountless &&
+        !isSubHeaderForceHidden;
 
     const isConnectionStateVisible =
         !isPortfolioTrackerDevice && !areAllDevicesDisconnectedOrAccountless;

@@ -26,6 +26,7 @@ export type DeviceItemContentProps = {
     headerTextVariant?: TypographyStyle;
     variant?: DeviceItemContentVariant;
     isCompact?: boolean;
+    isSubHeaderForceHidden?: boolean;
 };
 
 const contentWrapperStyle = prepareNativeStyle<{ height: number }>((utils, { height }) => ({
@@ -50,6 +51,7 @@ export const DeviceItemContent = ({
     headerTextVariant = 'body',
     variant = 'simple',
     isCompact = true,
+    isSubHeaderForceHidden = false,
 }: DeviceItemContentProps) => {
     const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
@@ -90,6 +92,7 @@ export const DeviceItemContent = ({
                         headerTextVariant={headerTextVariant}
                         header={deviceHeader}
                         isPortfolioTrackerDevice={isPortfolioTrackerDevice}
+                        isSubHeaderForceHidden={isSubHeaderForceHidden}
                     />
                 ) : (
                     <WalletDetailDeviceItemContent
