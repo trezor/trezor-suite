@@ -84,7 +84,7 @@ export interface SuiteSettings {
     autodetect: AutodetectSettings;
     isDeviceAuthenticityCheckDisabled: boolean;
     addressDisplayType: AddressDisplayOptions;
-    defaultWalletLoading: DefaultWalletLoading;
+    defaultWalletLoading: WalletType;
 }
 
 export interface SuiteState {

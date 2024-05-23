@@ -85,8 +85,6 @@ export const DeviceItem = ({
         device: DeviceItemProps['device'];
         walletType?: WalletType;
     }) => {
-        console.log('walletType', walletType);
-
         if (walletType !== undefined) {
             dispatch(
                 deviceActions.updatePassphraseMode({
