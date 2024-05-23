@@ -1933,6 +1933,14 @@ export default defineMessages({
         defaultMessage: 'No offer for your request. Please change country or buy amount.',
         id: 'TR_COINMARKET_OFFERS_EMPTY',
     },
+    TR_COINMARKET_UNKNOWN_PROVIDER: {
+        defaultMessage: 'Unknown provider',
+        id: 'TR_UNKNOWN_PROVIDER',
+    },
+    TR_COINMARKET_YOU_GET: {
+        defaultMessage: 'You will get',
+        id: 'TR_COINMARKET_YOU_GET',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
