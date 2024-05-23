@@ -10,7 +10,7 @@ import {
     Handler,
 } from '@trezor/node-utils';
 import { Descriptor, Session } from '@trezor/transport/src/types';
-import { Log, arrayPartition } from '@trezor/utils';
+import { Log, arrayPartition, Throttler } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
 import { sessionsClient, createApi } from './core';
@@ -29,7 +29,7 @@ export class TrezordNode {
     descriptors: Descriptor[];
     /** pending /listen subscriptions that are supposed to be resolved whenever descriptors change is detected */
     listenSubscriptions: {
-        descriptors: string;
+        descriptors: Descriptor[];
         req: Parameters<Handler>[0];
         res: Parameters<Handler>[1];
     }[];
@@ -38,6 +38,7 @@ export class TrezordNode {
     api: ReturnType<typeof createApi>;
     logger: Log;
     assetPrefix: string;
+    throttler = new Throttler(500);
 
     constructor({
         port,
@@ -62,10 +63,15 @@ export class TrezordNode {
 
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
         this.descriptors = descriptors;
-        const [affected, unaffected] = arrayPartition(
-            this.listenSubscriptions,
-            subscription => subscription.descriptors !== JSON.stringify(this.descriptors),
-        );
+
+        if (!this.listenSubscriptions.length) {
+            return;
+        }
+
+        const [affected, unaffected] = arrayPartition(this.listenSubscriptions, subscription => {
+            return JSON.stringify(subscription.descriptors) !== JSON.stringify(this.descriptors);
+        });
+
         affected.forEach(subscription => {
             subscription.res.end(str(this.descriptors));
         });
@@ -75,7 +81,9 @@ export class TrezordNode {
     public start() {
         // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
         sessionsClient.on('descriptors', descriptors => {
-            this.resolveListenSubscriptions(descriptors);
+            this.throttler.throttle('resolve-listen-subscriptions', () => {
+                return this.resolveListenSubscriptions(descriptors);
+            });
         });
 
         return new Promise<void>(resolve => {
@@ -364,6 +372,7 @@ export class TrezordNode {
     public stop() {
         // send empty descriptors (imitate that all devices have disconnected)
         this.resolveListenSubscriptions([]);
+        this.throttler.dispose();
         sessionsClient.removeAllListeners('descriptors');
         this.api.dispose();
 
