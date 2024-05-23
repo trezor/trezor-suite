@@ -12,8 +12,7 @@ import { formattedAccountTypeMap } from './accountsConstants';
 import {
     DeviceRootState,
     selectDevice,
-    selectIsNoPhysicalDeviceConnected,
-    selectIsPortfolioTrackerDevice,
+    selectHasOnlyPortfolioDevice,
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
@@ -356,7 +355,8 @@ export const selectAccountsSymbols = memoize(
 export const selectIsDeviceAccountless = (state: AccountsRootState & DeviceRootState) =>
     pipe(selectDeviceAccounts(state), A.isEmpty);
 
-export const selectIsDeviceDiscoveryEmpty = (
+// Selected device has no accounts and no active discovery. It can be empty portfolio device.
+export const selectIsEmptyDevice = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
     const isDeviceAccountless = selectIsDeviceAccountless(state);
@@ -365,20 +365,11 @@ export const selectIsDeviceDiscoveryEmpty = (
     return isDeviceAccountless && !isDeviceDiscoveryActive;
 };
 
-export const selectAreAllDevicesDisconnectedOrAccountless = (
+export const selectHasOnlyEmptyPortfolioTracker = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
-    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
-    const isNoPhysicalDeviceConnected = selectIsNoPhysicalDeviceConnected(state);
+    const isEmptyDevice = selectIsEmptyDevice(state);
+    const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
 
-    return isDeviceDiscoveryEmpty && isNoPhysicalDeviceConnected;
-};
-
-export const selectIsPortfolioTrackerEmpty = (
-    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
-) => {
-    const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
-    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
-
-    return isPortfolioTrackerDevice && isDeviceDiscoveryEmpty;
+    return isEmptyDevice && hasOnlyPortfolioDevice;
 };

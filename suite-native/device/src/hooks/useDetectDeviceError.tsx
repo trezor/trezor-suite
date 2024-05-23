@@ -153,7 +153,10 @@ export const useDetectDeviceError = () => {
     ]);
 
     useEffect(() => {
-        // Hide the error alert on disconnect of the device
+        // Hide the error alert when the device is disconnected.
+        // Device with error can't be view-only.
+        // Edge case: If user has connected two devices simultaneously,
+        // it will not hide the alert.
         if (isNoPhysicalDeviceConnected) {
             hideAlert();
         }
