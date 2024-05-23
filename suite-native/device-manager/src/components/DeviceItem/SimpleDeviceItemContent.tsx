@@ -44,7 +44,7 @@ export const SimpleDeviceItemContent = ({
         return null;
     }
 
-    const isPortfolioTrackerSubHeaderVisible =ƒ
+    const isPortfolioTrackerSubHeaderVisible =
         isPortfolioTrackerDevice && !hasOnlyAccountlessPortfolioTracker && !isSubHeaderForceHidden;
 
     const isConnectionStateVisible =
