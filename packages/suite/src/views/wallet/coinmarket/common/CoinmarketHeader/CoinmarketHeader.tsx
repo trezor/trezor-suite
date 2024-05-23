@@ -8,9 +8,10 @@ import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmark
 import CoinmarketHeaderSummary from './CoinmarketHeaderSummary';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const Header = styled.div`
-    padding-top: ${spacingsPx.md};
+    padding-top: ${spacingsPx.sm};
     padding-bottom: ${spacingsPx.xs};
 `;
 
@@ -18,11 +19,20 @@ const HeaderTop = styled.div`
     display: flex;
     justify-content: space-between;
     align-items: center;
+
+    ${SCREEN_QUERY.BELOW_TABLET} {
+        flex-direction: column;
+        align-items: flex-start;
+    }
 `;
 
 const HeaderH2 = styled(H2)`
     flex: auto;
     width: 100%;
+
+    ${SCREEN_QUERY.BELOW_TABLET} {
+        padding-bottom: ${spacingsPx.xs};
+    }
 `;
 
 const HeaderBottom = styled.div`
@@ -30,11 +40,29 @@ const HeaderBottom = styled.div`
     align-items: center;
     flex-wrap: wrap;
     margin-top: ${spacingsPx.xl};
+
+    ${SCREEN_QUERY.BELOW_TABLET} {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-top: 0;
+    }
 `;
 
 const HeaderCoinmarketRefreshTime = styled.div`
     margin-left: auto;
-    padding-left: ${spacingsPx.lg};
+    padding: ${spacingsPx.xxs} 0 ${spacingsPx.xxs} ${spacingsPx.lg};
+
+    ${SCREEN_QUERY.MOBILE} {
+        order: -2;
+        margin-left: 0;
+        padding: ${spacingsPx.xxs} 0;
+    }
+`;
+
+const CoinmarketHeaderSummaryWrap = styled(CoinmarketHeaderSummary)`
+    ${SCREEN_QUERY.BELOW_TABLET} {
+        order: -1;
+    }
 `;
 
 interface CoinmarketHeaderProps {
@@ -65,7 +93,7 @@ const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: Coinmarke
             </HeaderTop>
             <HeaderBottom>
                 <CoinmarketHeaderFilter quotesFilterReducer={innerQuotesFilterReducer} />
-                <CoinmarketHeaderSummary />
+                <CoinmarketHeaderSummaryWrap />
                 {!showTimerNextToTitle && (
                     <HeaderCoinmarketRefreshTime>
                         <Timer />
