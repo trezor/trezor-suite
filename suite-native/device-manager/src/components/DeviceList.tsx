@@ -103,7 +103,7 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const notSelectedInstancelessDevices = useSelector(selectInstacelessUnselectedDevices);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const opacity = useSharedValue(0);
-    const height = useSharedValue(1000);
+    const height = useSharedValue(0);
     const [isShown, setIsShown] = useState(false);
 
     const hasUnselectedDevices = notSelectedInstancelessDevices.length > 0;
