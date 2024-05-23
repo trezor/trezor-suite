@@ -140,7 +140,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(
                 <CardComponent {...props} ref={ref} />
             </Container>
         ) : (
-            <CardComponent {...props} {...frameProps} ref={ref} />
+            <CardComponent {...props} {...makePropsTransient(frameProps)} ref={ref} />
         );
     },
 );
