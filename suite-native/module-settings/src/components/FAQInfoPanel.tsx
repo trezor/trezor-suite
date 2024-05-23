@@ -1,29 +1,6 @@
-import { Fragment } from 'react';
-import { FlatList } from 'react-native';
-
-import { AccordionItem, Box, Text, VStack } from '@suite-native/atoms';
+import { AccordionItem, BulletListItem, VStack, Text } from '@suite-native/atoms';
 import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 import { useTranslate } from '@suite-native/intl';
-
-type BulletListProps = {
-    texts: string[];
-};
-
-const BulletList = ({ texts }: BulletListProps) => {
-    const data = texts.map(text => ({ key: text }));
-
-    return (
-        <FlatList
-            data={data}
-            renderItem={({ item }) => (
-                <Box flexDirection="row">
-                    <Text variant="label"> • </Text>
-                    <Text variant="label">{item.key}</Text>
-                </Box>
-            )}
-        />
-    );
-};
 
 type QuestionItemProps = {
     question: string;
@@ -31,13 +8,20 @@ type QuestionItemProps = {
 };
 
 const QuestionItem = ({ question, answer }: QuestionItemProps) => {
-    const txt = typeof answer === 'string' ? answer : <BulletList texts={answer} />;
-
-    return (
-        <Fragment key={question}>
-            <AccordionItem title={question} content={txt} />
-        </Fragment>
-    );
+    if (typeof answer === 'string') {
+        return <AccordionItem title={question} content={<Text variant="label">{answer}</Text>} />;
+    } else {
+        return (
+            <AccordionItem
+                title={question}
+                content={answer.map((text, index) => (
+                    <BulletListItem key={`${text}-${index}`} variant="label">
+                        {text}
+                    </BulletListItem>
+                ))}
+            />
+        );
+    }
 };
 
 const EnabledUsbFAQ = () => {
@@ -127,7 +111,7 @@ export const FAQInfoPanel = () => {
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     return (
-        <VStack marginHorizontal="medium">
+        <VStack paddingHorizontal="small">
             {isUsbDeviceConnectFeatureEnabled ? <EnabledUsbFAQ /> : <DisabledUsbFAQ />}
         </VStack>
     );
