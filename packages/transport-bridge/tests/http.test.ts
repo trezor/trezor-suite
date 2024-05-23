@@ -1,5 +1,6 @@
 import { getFreePort } from '@trezor/node-utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
+import { bridgeApiCall } from '@trezor/transport/src/utils/bridgeApiCall';
 
 import { TrezordNode } from '../src/http';
 
@@ -65,6 +66,74 @@ describe('http', () => {
             api: createTransportApi(),
             // @ts-expect-error
             logger: muteLogger,
+        });
+    });
+
+    it('stop should make previously used port available again', async () => {
+        const trezordNode = new TrezordNode({
+            port,
+            api: createTransportApi(),
+            // @ts-expect-error
+            logger: muteLogger,
+        });
+        await trezordNode.start();
+        await trezordNode.stop();
+        const anotherInstance = new TrezordNode({
+            port,
+            api: createTransportApi(),
+            // @ts-expect-error
+            logger: muteLogger,
+        });
+        await anotherInstance.start();
+        await anotherInstance.stop();
+    });
+
+    describe('endpoints', () => {
+        let trezordNode: TrezordNode;
+
+        beforeAll(async () => {
+            trezordNode = new TrezordNode({
+                port,
+                api: createTransportApi(),
+                // @ts-expect-error
+                logger: muteLogger,
+            });
+            await trezordNode.start();
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        });
+
+        afterAll(async () => {
+            await trezordNode.stop();
+        });
+
+        describe('GET', () => {
+            ['/', '/status'].forEach(endpoint => {
+                it(endpoint, async () => {
+                    const url = trezordNode.server!.getRouteAddress('/')!;
+                    const response = await bridgeApiCall({
+                        url,
+                        method: 'GET',
+                    });
+                    if (!response.success) {
+                        throw new Error(response.error);
+                    }
+                    expect(response.payload).toContain('<html');
+                });
+            });
+        });
+
+        describe('POST', () => {
+            it('/', async () => {
+                const url = trezordNode.server!.getRouteAddress('/')!;
+                const response = await bridgeApiCall({
+                    url,
+                    method: 'POST',
+                });
+                if (!response.success) {
+                    throw new Error(response.error);
+                }
+                expect(response.payload).toEqual({ version: trezordNode.version });
+            });
         });
     });
 });
