@@ -6255,6 +6255,11 @@ export default defineMessages({
         defaultMessage: 'These outputs are likely smaller than the fee required to spend them.',
         description: 'Sub-heading in Coin control section',
     },
+    TR_SEARCH_UTXOS: {
+        id: 'TR_SEARCH_UTXOS',
+        defaultMessage: 'Address, transaction ID, or label',
+        description: 'Placeholder text in Coin control search input',
+    },
     TR_CONNECTED_TO_PROVIDER: {
         defaultMessage: 'Connected to {provider} as {user}',
         id: 'TR_CONNECTED_TO_PROVIDER',

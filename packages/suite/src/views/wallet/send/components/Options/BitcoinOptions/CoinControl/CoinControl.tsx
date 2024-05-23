@@ -13,7 +13,10 @@ import { Card, Checkbox, Icon, Switch, variables } from '@trezor/components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectCurrentTargetAnonymity } from 'src/reducers/wallet/coinjoinReducer';
+import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { UtxoSelectionList } from './UtxoSelectionList';
+import { UtxoSearch } from './UtxoSearch';
+import { filterAndCategorizeUtxos } from 'src/utils/wallet/filterAndCategorizeUtxosUtils';
 
 const Row = styled.div`
     align-items: center;
@@ -44,6 +47,10 @@ const AmountWrapper = styled.div`
     text-align: right;
 `;
 
+const SearchWrapper = styled.div`
+    margin-top: 20px;
+`;
+
 const MissingToInput = styled.div<{ $isVisible: boolean }>`
     /* using visibility rather than display to prevent line height change */
     visibility: ${({ $isVisible }) => !$isVisible && 'hidden'};
@@ -65,7 +72,8 @@ interface CoinControlProps {
 
 export const CoinControl = ({ close }: CoinControlProps) => {
     const [currentPage, setSelectedPage] = useState(1);
-
+    const [searchQuery, setSearchQuery] = useState('');
+    const { outputLabels } = useSelector(selectLabelingDataForSelectedAccount);
     const targetAnonymity = useSelector(selectCurrentTargetAnonymity);
     const dispatch = useDispatch();
 
@@ -124,17 +132,28 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     const formattedTotal = getFormattedAmount(totalInputs);
     const formattedMissing = isMissingVisible ? getFormattedAmount(missingToInput) : ''; // set to empty string when hidden to avoid affecting the layout
 
+    // Filter UTXOs based on searchQuery
+    const { filteredUtxos, filteredSpendableUtxos, filteredLowAnonymityUtxos, filteredDustUtxos } =
+        filterAndCategorizeUtxos({
+            searchQuery,
+            utxos: account.utxo || [],
+            spendableUtxos,
+            lowAnonymityUtxos,
+            dustUtxos,
+            outputLabels,
+        });
+
     // pagination
-    const totalItems = account.utxo?.length || 0;
+    const totalItems = filteredUtxos.length;
     const utxosPerPage = getTxsPerPage(account.networkType);
     const showPagination = totalItems > utxosPerPage;
 
     // UTXOs and categories displayed on page
     let previousItemsLength = 0;
     const [spendableUtxosOnPage, lowAnonymityUtxosOnPage, dustUtxosOnPage] = [
-        spendableUtxos,
-        lowAnonymityUtxos,
-        dustUtxos,
+        filteredSpendableUtxos,
+        filteredLowAnonymityUtxos,
+        filteredDustUtxos,
     ].map(utxoCategory => {
         const lastIndexOnPage = currentPage * utxosPerPage - previousItemsLength;
         previousItemsLength += utxoCategory.length;
@@ -166,6 +185,12 @@ export const CoinControl = ({ close }: CoinControlProps) => {
         amount: <FormattedCryptoAmount value={formattedMissing} symbol={account.symbol} />,
     };
 
+    const handleAllUtxosSelected = () => {
+        setSearchQuery('');
+        setSelectedPage(1);
+        toggleCheckAllUtxos();
+    };
+
     return (
         <Card>
             <Row>
@@ -178,7 +203,7 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                 <Checkbox
                     isChecked={allUtxosSelected}
                     isDisabled={!hasEligibleUtxos}
-                    onClick={toggleCheckAllUtxos}
+                    onClick={handleAllUtxosSelected}
                 >
                     <GreyText>
                         <Translation id="TR_SELECTED" values={{ amount: inputs.length }} />
@@ -195,6 +220,15 @@ export const CoinControl = ({ close }: CoinControlProps) => {
                     </MissingToInput>
                 </AmountWrapper>
             </SecondRow>
+            {hasEligibleUtxos && (
+                <SearchWrapper>
+                    <UtxoSearch
+                        searchQuery={searchQuery}
+                        setSearch={setSearchQuery}
+                        setSelectedPage={setSelectedPage}
+                    />
+                </SearchWrapper>
+            )}
             {!!spendableUtxosOnPage.length && (
                 <UtxoSelectionList
                     withHeader={isCoinjoinAccount}
