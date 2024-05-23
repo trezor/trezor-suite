@@ -801,6 +801,12 @@ export const selectIsNoPhysicalDeviceConnected = (state: DeviceRootState) => {
     return devices.every(device => !device.connected);
 };
 
+export const selectHasOnlyPortfolioDevice = (state: DeviceRootState) => {
+    const devices = selectDevices(state);
+
+    return devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID;
+};
+
 export const selectIsDeviceBitcoinOnly = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
 
