@@ -11,6 +11,7 @@ import { spacingsPx } from '@trezor/theme';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.md};
+    padding-bottom: ${spacingsPx.xs};
 `;
 
 const HeaderTop = styled.div`
