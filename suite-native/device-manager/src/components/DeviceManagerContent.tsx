@@ -44,7 +44,7 @@ export const DeviceManagerContent = () => {
     const dispatch = useDispatch();
 
     const handleSelectDevice = (selectedDevice: TrezorDevice) => {
-        dispatch(selectDeviceThunk(selectedDevice));
+        dispatch(selectDeviceThunk({ device: selectedDevice }));
         setIsChangeDeviceRequested(false);
         setIsDeviceManagerVisible(false);
 

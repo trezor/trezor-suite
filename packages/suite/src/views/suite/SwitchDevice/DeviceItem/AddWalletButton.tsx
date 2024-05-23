@@ -7,6 +7,7 @@ import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 import { SUITE } from 'src/actions/suite/constants';
 import { spacings } from '@trezor/theme';
+import { WalletType } from '@suite-common/wallet-types';
 
 const AddWallet = styled.div`
     display: flex;
@@ -21,8 +22,8 @@ const StyledTooltip = styled(Tooltip)`
 interface AddWalletButtonProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
-    addDeviceInstance: (instance: TrezorDevice, useEmptyPassphrase?: boolean) => Promise<void>;
-    selectDeviceInstance: (instance: TrezorDevice) => void;
+    addDeviceInstance: (params: { device: TrezorDevice; walletType: WalletType }) => Promise<void>;
+    selectDeviceInstance: (params: { device: TrezorDevice; walletType: WalletType }) => void;
 }
 
 export const AddWalletButton = ({
@@ -46,11 +47,11 @@ export const AddWalletButton = ({
         locks.includes(SUITE.LOCK_TYPE.DEVICE) ||
         locks.includes(SUITE.LOCK_TYPE.UI);
 
-    const onAddWallet = ({ useEmptyPassphrase }: { useEmptyPassphrase: boolean }) => {
+    const onAddWallet = ({ walletType }: { walletType: WalletType }) => {
         if (hasAtLeastOneWallet) {
-            addDeviceInstance(device, useEmptyPassphrase);
+            addDeviceInstance({ device, walletType });
         } else {
-            selectDeviceInstance(instances[0]);
+            selectDeviceInstance({ device: instances[0], walletType });
         }
     };
 
@@ -69,7 +70,7 @@ export const AddWalletButton = ({
                             isFullWidth
                             icon="PLUS"
                             isDisabled={isLocked}
-                            onClick={() => onAddWallet({ useEmptyPassphrase: true })}
+                            onClick={() => onAddWallet({ walletType: WalletType.STANDARD })}
                         >
                             <Translation id="TR_ADD_WALLET" />
                         </Button>
@@ -82,7 +83,7 @@ export const AddWalletButton = ({
                             isFullWidth
                             icon="PLUS"
                             isDisabled={isLocked}
-                            onClick={() => onAddWallet({ useEmptyPassphrase: false })}
+                            onClick={() => onAddWallet({ walletType: WalletType.PASSPHRASE })}
                         >
                             <Translation id="TR_ADD_HIDDEN_WALLET" />
                         </Button>

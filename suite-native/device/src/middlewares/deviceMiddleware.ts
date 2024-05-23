@@ -47,7 +47,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
         next(action);
 
         if (createDeviceInstanceThunk.fulfilled.match(action)) {
-            dispatch(selectDeviceThunk(action.payload.device));
+            dispatch(selectDeviceThunk({ device: action.payload.device }));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

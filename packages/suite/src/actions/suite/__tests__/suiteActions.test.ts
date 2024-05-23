@@ -142,7 +142,7 @@ describe('Suite Actions', () => {
         it(`selectDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device);
             const store = initStore(state);
-            await store.dispatch(selectDeviceThunk(f.device));
+            await store.dispatch(selectDeviceThunk({ device: f.device }));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -285,7 +285,10 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             await store.dispatch(
-                createDeviceInstanceThunk({ device: f.state.device.selectedDevice }),
+                createDeviceInstanceThunk({
+                    device: f.state.device.selectedDevice,
+                    useEmptyPassphrase: false,
+                }),
             );
             const action = store.getActions().pop();
             expect(action?.type).toEqual(f.result);

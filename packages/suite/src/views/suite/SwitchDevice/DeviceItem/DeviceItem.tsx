@@ -6,6 +6,7 @@ import {
     selectDevice,
     createDeviceInstanceThunk,
     selectDeviceThunk,
+    deviceActions,
 } from '@suite-common/wallet-core';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
@@ -19,6 +20,7 @@ import type { getBackgroundRoute } from 'src/utils/suite/router';
 import { spacingsPx } from '@trezor/theme';
 import { CardWithDevice } from '../CardWithDevice';
 import { DeviceWarning } from './DeviceWarning';
+import { WalletType } from '@suite-common/wallet-types';
 
 const WalletsWrapper = styled.div<{ $enabled: boolean }>`
     opacity: ${({ $enabled }) => ($enabled ? 1 : 0.5)};
@@ -76,16 +78,41 @@ export const DeviceItem = ({
         onCancel(preserveParams);
     };
 
-    const selectDeviceInstance = (instance: DeviceItemProps['device']) => {
-        dispatch(selectDeviceThunk(instance));
+    const selectDeviceInstance = ({
+        device,
+        walletType,
+    }: {
+        device: DeviceItemProps['device'];
+        walletType?: WalletType;
+    }) => {
+        console.log('walletType', walletType);
+
+        if (walletType !== undefined) {
+            dispatch(
+                deviceActions.updatePassphraseMode({
+                    device,
+                    hidden: walletType === WalletType.PASSPHRASE,
+                }),
+            );
+        }
+
+        dispatch(selectDeviceThunk({ device }));
         handleRedirection();
     };
 
-    const addDeviceInstance = async (
-        instance: DeviceItemProps['device'],
-        useEmptyPassphrase?: boolean,
-    ) => {
-        await dispatch(createDeviceInstanceThunk({ device: instance, useEmptyPassphrase }));
+    const addDeviceInstance = async ({
+        device,
+        walletType,
+    }: {
+        device: DeviceItemProps['device'];
+        walletType: WalletType;
+    }) => {
+        await dispatch(
+            createDeviceInstanceThunk({
+                device,
+                useEmptyPassphrase: walletType === WalletType.STANDARD,
+            }),
+        );
         handleRedirection();
     };
 
@@ -97,7 +124,7 @@ export const DeviceItem = ({
         if (needsAcquire) {
             dispatch(acquireDevice(device));
         } else {
-            selectDeviceInstance(device);
+            selectDeviceInstance({ device });
         }
     };
 

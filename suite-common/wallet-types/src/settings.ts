@@ -10,12 +10,12 @@ export const AddressDisplayOptions = {
 export type AddressDisplayOptions =
     (typeof AddressDisplayOptions)[keyof typeof AddressDisplayOptions];
 
-export const DefaultWalletLoading = {
+export const WalletType = {
     STANDARD: 'standard',
     PASSPHRASE: 'passphrase',
 } as const;
 
-export type DefaultWalletLoading = (typeof DefaultWalletLoading)[keyof typeof DefaultWalletLoading];
+export type WalletType = (typeof WalletType)[keyof typeof WalletType];
 
 export interface WalletSettings {
     localCurrency: FiatCurrencyCode;

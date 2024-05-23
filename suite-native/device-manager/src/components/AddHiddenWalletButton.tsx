@@ -48,7 +48,7 @@ export const AddHiddenWalletButton = () => {
         if (!device) return;
         setIsDeviceManagerVisible(false);
 
-        dispatch(createDeviceInstanceThunk({ device }));
+        dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
 
         // Create device instance thunk already handles passphrase enabling, so we just redirect to this screen and wait for success / error
         if (!isPassphraseEnabledOnDevice) {

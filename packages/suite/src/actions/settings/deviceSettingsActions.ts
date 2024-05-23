@@ -14,6 +14,7 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
 import { createThunk } from '@suite-common/redux-utils';
+import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -148,6 +149,7 @@ export const resetDevice =
     (params: Parameters<typeof TrezorConnect.resetDevice>[0] = {}) =>
     async (dispatch: Dispatch, getState: GetState) => {
         const device = selectDevice(getState());
+        const { isViewOnlyModeVisible } = selectSuiteFlags(getState());
 
         if (!device || !device.features) return;
 
@@ -166,7 +168,8 @@ export const resetDevice =
             ...params,
         });
 
-        if (result.success && DEVICE.DEFAULT_PASSPHRASE_PROTECTION) {
+        // Todo: delete this whole IF once we remove Legacy part and ViewOnly will be default
+        if (!isViewOnlyModeVisible && result.success && DEVICE.DEFAULT_PASSPHRASE_PROTECTION) {
             // We call resetDevice from onboarding (generating new seed)
             // Uninitialized device has disabled passphrase protection thus useEmptyPassphrase is set to true.
             // It means that when user finished the onboarding process a standard wallet is automatically

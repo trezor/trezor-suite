@@ -16,7 +16,7 @@ export const ActionRenderer = ({ render: View, ...props }: ActionRendererProps) 
         case DEVICE.CONNECT:
             action = {
                 label: 'TR_SELECT_DEVICE',
-                onClick: () => dispatch(selectDeviceThunk(device)),
+                onClick: () => dispatch(selectDeviceThunk({ device })),
             };
             break;
         case DEVICE.CONNECT_UNACQUIRED:
