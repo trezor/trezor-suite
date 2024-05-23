@@ -301,4 +301,11 @@ export class UsbApi extends AbstractApi {
 
         return [hidDevices, nonHidDevices];
     }
+
+    public dispose() {
+        if (this.usbInterface) {
+            this.usbInterface.onconnect = null;
+            this.usbInterface.ondisconnect = null;
+        }
+    }
 }
