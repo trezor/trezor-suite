@@ -11,6 +11,7 @@ import {
 } from '@trezor/node-utils';
 import { Descriptor } from '@trezor/transport/src/types';
 import { Log, arrayPartition } from '@trezor/utils';
+import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
 import { sessionsClient, createApi } from './core';
 
@@ -45,7 +46,7 @@ export class TrezordNode {
         logger,
     }: {
         port: number;
-        api: 'usb' | 'udp';
+        api: 'usb' | 'udp' | AbstractApi;
         assetPrefix?: string;
         logger?: Log;
     }) {

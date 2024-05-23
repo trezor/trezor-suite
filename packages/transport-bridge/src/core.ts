@@ -9,6 +9,7 @@ import { UsbApi } from '@trezor/transport/src/api/usb';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
 import { Log } from '@trezor/utils';
+import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
 const abortController = new AbortController();
 export const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
@@ -22,16 +23,22 @@ sessionsBackground.on('descriptors', descriptors => {
     sessionsClient.emit('descriptors', descriptors);
 });
 
-export const createApi = (apiStr: 'usb' | 'udp', logger?: Log) => {
-    const api =
-        apiStr === 'udp'
-            ? new UdpApi({ logger })
-            : new UsbApi({
-                  logger,
-                  usbInterface: new WebUSB({
-                      allowAllDevices: true, // return all devices, not only authorized
-                  }),
-              });
+export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
+    let api: AbstractApi;
+
+    if (typeof apiArg === 'string') {
+        api =
+            apiArg === 'udp'
+                ? new UdpApi({ logger })
+                : new UsbApi({
+                      logger,
+                      usbInterface: new WebUSB({
+                          allowAllDevices: true, // return all devices, not only authorized
+                      }),
+                  });
+    } else {
+        api = apiArg;
+    }
 
     // whenever low-level api reports changes to descriptors, report them to sessions module
     api.on('transport-interface-change', descriptors => {
