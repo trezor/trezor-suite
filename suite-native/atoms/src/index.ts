@@ -1,4 +1,4 @@
-export * from './AccordionItem';
+export * from './Accordion/AccordionItem';
 export * from './AlertBox';
 export * from './Text';
 export * from './Box';
