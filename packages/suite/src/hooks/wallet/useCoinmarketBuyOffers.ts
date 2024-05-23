@@ -54,7 +54,9 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
         useSelector(state => state.wallet.coinmarket.buy);
 
     const innerQuotesFilterReducer = useCoinmarketFilterReducer(quotes);
-    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(quotes);
+    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
+        quotes?.filter(q => q.error === undefined),
+    );
 
     if (invityServerEnvironment) {
         invityAPI.setInvityServersEnvironment(invityServerEnvironment);
@@ -72,10 +74,11 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
                     return;
                 }
                 const [quotes] = processQuotes(allQuotes);
-                setInnerQuotes(quotes);
+                const successQuotes = quotes.filter(q => q.error === undefined);
+                setInnerQuotes(successQuotes);
                 innerQuotesFilterReducer.dispatch({
                     type: 'FILTER_SET_PAYMENT_METHODS',
-                    payload: quotes,
+                    payload: successQuotes,
                 });
             } else {
                 setInnerQuotes(undefined);
