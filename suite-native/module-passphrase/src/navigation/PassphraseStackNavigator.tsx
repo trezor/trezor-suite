@@ -13,6 +13,7 @@ import { PassphraseConfirmOnTrezorScreen } from '../screens/PassphraseConfirmOnT
 import { PassphraseEmptyWalletScreen } from '../screens/PassphraseEmptyWalletScreen';
 import { PassphraseVerifyEmptyWalletScreen } from '../screens/PassphraseVerifyEmptyWalletScreen';
 import { PassphraseEnterOnTrezorScreen } from '../screens/PassphraseEnterOnTrezorScreen';
+import { PassphraseEnableOnDeviceScreen } from '../screens/PassphraseEnableOnDeviceScreen';
 
 export const PassphraseStack = createNativeStackNavigator<PassphraseStackParamList>();
 
@@ -44,6 +45,10 @@ export const PassphraseStackNavigator = () => {
             <PassphraseStack.Screen
                 name={PassphraseStackRoutes.PassphraseEnterOnTrezor}
                 component={PassphraseEnterOnTrezorScreen}
+            />
+            <PassphraseStack.Screen
+                name={PassphraseStackRoutes.PassphraseEnableOnDevice}
+                component={PassphraseEnableOnDeviceScreen}
             />
         </PassphraseStack.Navigator>
     );

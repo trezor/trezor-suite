@@ -100,15 +100,14 @@ export const toggleRememberDevice = createThunk(
  * @param {Device} device
  * @param {boolean} [useEmptyPassphrase=false]
  */
-export const createDeviceInstance = createThunk(
+export type CreateDeviceInstanceError = { error: 'passphrase-enabling-cancelled' };
+export const createDeviceInstance = createThunk<
+    void,
+    { device: TrezorDevice; useEmptyPassphrase?: boolean },
+    { rejectValue: CreateDeviceInstanceError }
+>(
     `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
-    async (
-        {
-            device,
-            useEmptyPassphrase = false,
-        }: { device: TrezorDevice; useEmptyPassphrase?: boolean },
-        { dispatch, getState },
-    ) => {
+    async ({ device, useEmptyPassphrase = false }, { dispatch, getState, rejectWithValue }) => {
         if (!device.features) return;
         if (!device.features.passphrase_protection) {
             const response = await TrezorConnect.applySettings({
@@ -121,7 +120,7 @@ export const createDeviceInstance = createThunk(
                     notificationsActions.addToast({ type: 'error', error: response.payload.error }),
                 );
 
-                return;
+                return rejectWithValue({ error: 'passphrase-enabling-cancelled' });
             }
 
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));

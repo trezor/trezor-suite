@@ -1,9 +1,14 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-import { AuthorizeDeviceError, authorizeDeviceThunk } from '@suite-common/wallet-core';
+import {
+    AuthorizeDeviceError,
+    CreateDeviceInstanceError,
+    authorizeDeviceThunk,
+    createDeviceInstance,
+} from '@suite-common/wallet-core';
 
 type PassphraseState = {
-    error: AuthorizeDeviceError | null;
+    error: AuthorizeDeviceError | CreateDeviceInstanceError | null;
 };
 
 type PassphraseRootState = {
@@ -25,6 +30,15 @@ export const passphraseSlice = createSlice({
             })
             .addCase(authorizeDeviceThunk.rejected, (state, { payload }) => {
                 if (payload?.error === 'passphrase-duplicate') {
+                    state.error = payload;
+                }
+            });
+        builder
+            .addCase(createDeviceInstance.pending, state => {
+                state.error = null;
+            })
+            .addCase(createDeviceInstance.rejected, (state, { payload }) => {
+                if (payload?.error === 'passphrase-enabling-cancelled') {
                     state.error = payload;
                 }
             });

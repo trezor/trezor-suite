@@ -860,7 +860,14 @@ export const selectIsDeviceUsingPassphrase = (state: DeviceRootState) => {
     const isDeviceProtectedByPassphrase = selectIsDeviceProtectedByPassphrase(state);
     const device = selectDevice(state);
 
-    return isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false;
+    // If device instance is higher than 1 (newly created device instance), connect returns
+    // `passphrase_protection: false` in features. But we still want to treat it as passphrase protected.
+    const shouldIgnorePassphraseProtection = device?.instance ?? 1 > 1;
+
+    return (
+        (isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false) ||
+        shouldIgnorePassphraseProtection
+    );
 };
 
 export const selectPhysicalDevicesGrouppedById = memoize((state: DeviceRootState) => {

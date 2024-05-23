@@ -54,7 +54,7 @@ export const useHandleDuplicatePassphrase = () => {
     );
 
     useEffect(() => {
-        if (passphraseError) {
+        if (passphraseError && passphraseError.error === 'passphrase-duplicate') {
             showAlert({
                 title: translate('modulePassphrase.passphraseMismatch.title'),
                 description: translate('modulePassphrase.passphraseMismatch.subtitle'),
