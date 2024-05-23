@@ -18,7 +18,7 @@ import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frame
 
 export type WarningVariant = Extract<
     UIVariant,
-    'primary' | 'info' | 'warning' | 'destructive' | 'tertiary'
+    'primary' | 'secondary' | 'info' | 'warning' | 'destructive' | 'tertiary'
 >;
 
 export interface WarningProps {
@@ -40,6 +40,7 @@ type MapArgs = {
 const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
+        secondary: 'backgroundNeutralBold',
         info: 'backgroundAlertBlueSubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
@@ -52,6 +53,7 @@ const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): 
 const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'textPrimaryDefault',
+        secondary: 'textDefaultInverted',
         info: 'textAlertBlue',
         warning: 'textAlertYellow',
         destructive: 'textAlertRed',
@@ -63,6 +65,7 @@ const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
 const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'iconPrimaryDefault',
+        secondary: 'iconDefaultInverted',
         info: 'iconAlertBlue',
         warning: 'iconAlertYellow',
         destructive: 'iconAlertRed',
@@ -75,6 +78,7 @@ const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
 const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconType => {
     const iconMap: Record<WarningVariant, IconType> = {
         primary: 'LIGHTBULB',
+        secondary: 'INFO',
         info: 'INFO',
         warning: 'WARNING',
         destructive: 'WARNING',

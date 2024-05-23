@@ -9380,4 +9380,16 @@ export default defineMessages({
         defaultMessage:
             "Verify on Trezor to confirm receive address. Continuing without confirming isn't recommended.",
     },
+    TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE: {
+        id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE',
+        defaultMessage: 'Do you primarily use passphrase?',
+    },
+    TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION: {
+        id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION',
+        defaultMessage: 'Enable showing passphrase entry dialog right when you open Suite.',
+    },
+    TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON: {
+        id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON',
+        defaultMessage: 'Manage',
+    },
 });
