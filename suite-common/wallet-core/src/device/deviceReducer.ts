@@ -521,15 +521,6 @@ export const setDeviceAuthenticity = (
 
 export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (builder, extra) => {
     builder
-        .addCase(deviceActions.connectDevice, (state, { payload: { device, settings } }) => {
-            connectDevice(state, device, settings);
-        })
-        .addCase(
-            deviceActions.connectUnacquiredDevice,
-            (state, { payload: { device, settings } }) => {
-                connectDevice(state, device, settings);
-            },
-        )
         .addCase(deviceActions.deviceChanged, (state, { payload }) => {
             changeDevice(state, payload, { connected: true, available: true });
         })
@@ -592,6 +583,12 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),
             (state, { payload }) => {
                 createInstance(state, payload.device);
+            },
+        )
+        .addMatcher(
+            isAnyOf(deviceActions.connectDevice, deviceActions.connectUnacquiredDevice),
+            (state, { payload: { device, settings } }) => {
+                connectDevice(state, device, settings);
             },
         );
 });

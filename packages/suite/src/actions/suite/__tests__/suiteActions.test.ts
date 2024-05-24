@@ -197,7 +197,7 @@ describe('Suite Actions', () => {
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
-                expect(a.payload).toMatchObject(f.result[i]);
+                expect(a.payload.device).toMatchObject(f.result[i]);
             });
         });
     });
