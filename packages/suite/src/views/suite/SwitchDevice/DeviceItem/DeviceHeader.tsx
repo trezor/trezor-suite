@@ -11,11 +11,11 @@ import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 const Flex = styled.div`
     flex: 1;
 `;
-const Container = styled.div<{ isCloseButtonVisible: boolean }>`
+const Container = styled.div<{ $isCloseButtonVisible: boolean }>`
     display: flex;
     align-items: center;
     flex: 1;
-    ${({ isCloseButtonVisible }) => (isCloseButtonVisible ? `cursor: pointer;` : '')}
+    ${({ $isCloseButtonVisible }) => ($isCloseButtonVisible ? `cursor: pointer;` : '')}
 `;
 
 const DeviceActions = styled.div`
@@ -44,7 +44,7 @@ export const DeviceHeader = ({ onCancel, device, isCloseButtonVisible }: DeviceH
     };
 
     return (
-        <Container onClick={onHeaderClick} isCloseButtonVisible={isCloseButtonVisible}>
+        <Container onClick={onHeaderClick} $isCloseButtonVisible={isCloseButtonVisible}>
             <Flex>
                 {deviceModelInternal && (
                     <DeviceStatus deviceModel={deviceModelInternal} device={device} />

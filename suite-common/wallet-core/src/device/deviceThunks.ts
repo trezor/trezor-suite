@@ -1,3 +1,5 @@
+import { AnyAction } from '@reduxjs/toolkit';
+
 import { createThunk } from '@suite-common/redux-utils';
 import TrezorConnect, {
     Device,
@@ -617,7 +619,7 @@ type DeviceConnectThunkEventType = typeof DEVICE.CONNECT | typeof DEVICE.CONNECT
 
 const deviceConnectThunksMap: Record<
     DeviceConnectThunkEventType,
-    (payload: DeviceConnectActionPayload) => any
+    (payload: DeviceConnectActionPayload) => AnyAction
 > = {
     [DEVICE.CONNECT]: deviceActions.connectDevice,
     [DEVICE.CONNECT_UNACQUIRED]: deviceActions.connectDevice,

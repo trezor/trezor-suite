@@ -62,7 +62,7 @@ const suite =
         next(action);
 
         if (createDeviceInstanceThunk.fulfilled.match(action)) {
-            api.dispatch(selectDeviceThunk({ device: action.payload }));
+            api.dispatch(selectDeviceThunk({ device: action.payload.device }));
         }
 
         if (deviceActions.forgetDevice.match(action)) {
@@ -70,10 +70,11 @@ const suite =
         }
 
         if (deviceActions.connectDevice.match(action)) {
-            const isT3T1 = action.payload?.device?.features?.internal_model === DeviceModelInternal.T3T1;
+            const isT3T1 =
+                action.payload?.device?.features?.internal_model === DeviceModelInternal.T3T1;
             const isT3T1DashboardPromoBannerActive =
                 api.getState().suite.flags.showDashboardT3T1PromoBanner;
-       
+
             if (isT3T1 && isT3T1DashboardPromoBannerActive) {
                 api.dispatch(setFlag('showDashboardT3T1PromoBanner', false));
             }

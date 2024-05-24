@@ -36,12 +36,12 @@ const DividerWrapper = styled.div`
     width: calc(100% + ${spacingsPx.lg});
 `;
 
-const InstanceType = styled.div<{ isSelected: boolean }>`
+const InstanceType = styled.div<{ $isSelected: boolean }>`
     display: flex;
     gap: ${spacingsPx.xxs};
     align-items: center;
-    color: ${({ theme, isSelected }) => (isSelected ? theme.textDefault : theme.textSubdued)};
-    ${({ isSelected }) => isSelected && typography.highlight}
+    color: ${({ theme, $isSelected }) => ($isSelected ? theme.textDefault : theme.textSubdued)};
+    ${({ $isSelected }) => $isSelected && typography.highlight}
     /* these styles ensure proper metadata behavior */
     white-space: nowrap;
     overflow: hidden;
@@ -97,7 +97,7 @@ export const WalletInstance = ({
 }: WalletInstanceProps) => {
     const [contentType, setContentType] = useState<null | ContentType>('default');
     const accounts = useSelector(state => state.wallet.accounts);
-    const currentRiatRates = useSelector(selectCurrentFiatRates);
+    const currentFiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
 
@@ -107,7 +107,7 @@ export const WalletInstance = ({
     const { defaultAccountLabelString } = useWalletLabeling();
 
     const deviceAccounts = getAllAccounts(instance.state, accounts);
-    const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, currentRiatRates);
+    const instanceBalance = getTotalFiatBalance(deviceAccounts, localCurrency, currentFiatRates);
     const isSelected = enabled && selected && !!discoveryProcess;
     const { walletLabel } = useSelector(state =>
         selectLabelingDataForWallet(state, instance.state),
@@ -139,7 +139,7 @@ export const WalletInstance = ({
 
                 <Col $grow={1}>
                     {discoveryProcess && (
-                        <InstanceType isSelected={isSelected}>
+                        <InstanceType $isSelected={isSelected}>
                             {!instance.useEmptyPassphrase && (
                                 <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
                                     <Icon icon="ASTERISK" color="textDefault" size={12} />
@@ -171,7 +171,7 @@ export const WalletInstance = ({
                     )}
 
                     {!discoveryProcess && (
-                        <InstanceType isSelected={isSelected}>
+                        <InstanceType $isSelected={isSelected}>
                             <Translation id="TR_UNDISCOVERED_WALLET" />
                         </InstanceType>
                     )}

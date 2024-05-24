@@ -145,13 +145,23 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
  * @returns {Device}
  */
 const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Device => {
-    if (dev && typeof dev.type === 'string' && dev.type !== 'acquired') {
+    if (dev && typeof dev.type === 'string' && dev.type === 'unreadable') {
+        return {
+            type: 'unreadable',
+            path: dev && dev.path ? dev.path : '1',
+            label: dev && dev.label ? dev.label : 'My Trezor',
+            name: 'name of unreadable device',
+            error: 'unreadable device',
+        };
+    }
+
+    if (dev && typeof dev.type === 'string' && dev.type === 'unacquired') {
         return {
             type: dev.type,
             path: dev && dev.path ? dev.path : '1',
             label: dev && dev.label ? dev.label : 'My Trezor',
-            features: undefined,
-        } as Device;
+            name: 'name of unacquired device',
+        };
     }
 
     const features = getDeviceFeatures(feat);
@@ -171,9 +181,12 @@ const getConnectDevice = (dev?: Partial<Device>, feat?: Partial<Features>): Devi
             feat && feat.capabilities && !feat?.capabilities.includes('Capability_Bitcoin_like')
                 ? FirmwareType.BitcoinOnly
                 : FirmwareType.Regular,
+        name: '',
+        availableTranslations: [],
         ...dev,
+        error: undefined,
         type: 'acquired',
-    } as Device;
+    };
 };
 
 /**

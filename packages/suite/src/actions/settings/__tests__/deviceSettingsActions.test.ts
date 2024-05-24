@@ -1,27 +1,22 @@
 import { testMocks } from '@suite-common/test-utils';
-import { prepareDeviceReducer, deviceActions } from '@suite-common/wallet-core';
+import { deviceActions } from '@suite-common/wallet-core';
 import TrezorConnect from '@trezor/connect';
 
 import { configureStore } from 'src/support/tests/configureStore';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
-import { extraDependencies } from 'src/support/extraDependencies';
 
-import fixtures from '../__fixtures__/deviceSettings';
+import fixtures, {
+    DeviceSettingsFixtureState,
+    deviceReducer,
+} from '../__fixtures__/deviceSettings';
 
 const { getSuiteDevice } = testMocks;
-
-const deviceReducer = prepareDeviceReducer(extraDependencies);
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
 
 const DEVICE = getSuiteDevice({ path: '1', connected: true });
 
-type State = {
-    suite: ReturnType<typeof suiteReducer>;
-    device: ReturnType<typeof deviceReducer>;
-};
-
-export const getInitialState = (state: Partial<State> = {}) => ({
+export const getInitialState = (state: Partial<DeviceSettingsFixtureState> = {}) => ({
     suite: {
         ...suiteReducer(undefined, { type: '@suite/init' }),
     },
@@ -32,9 +27,9 @@ export const getInitialState = (state: Partial<State> = {}) => ({
     router: {},
 });
 
-const mockStore = configureStore<State, any>();
+const mockStore = configureStore<DeviceSettingsFixtureState, any>();
 
-const initStore = (state: State) => {
+const initStore = (state: DeviceSettingsFixtureState) => {
     const store = mockStore(state);
     store.subscribe(() => {
         const action = store.getActions().pop();

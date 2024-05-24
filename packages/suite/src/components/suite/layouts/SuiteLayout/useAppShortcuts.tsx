@@ -12,7 +12,7 @@ export const useAppShortcuts = () => {
 
         // press CMD + P to show PassphraseModal
         if (modKey && e.key === 'p' && device) {
-            dispatch(createDeviceInstanceThunk({ device , useEmptyPassphrase: false }));
+            dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
             e.preventDefault(); // prevent default behavior
         }
 
