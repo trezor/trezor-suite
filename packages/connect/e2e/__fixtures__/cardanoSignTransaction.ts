@@ -441,7 +441,7 @@ const legacyResults = {
     // FW <2.6.0 is not supported by Connect at all
     beforeConway: {
         // older FW doesn't support Conway certificates
-        rules: ['<2.6.5', '1'],
+        rules: ['<2.7.1', '1'],
         payload: false,
     },
 };
