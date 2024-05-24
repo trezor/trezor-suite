@@ -111,7 +111,7 @@ export const WalletInstance = ({
 
     const handleRememberChange = () => dispatch(toggleRememberDevice({ device: instance }));
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice(instance));
+        dispatch(deviceActions.forgetDevice({ device: instance }));
         analytics.report({
             type: EventType.SwitchDeviceEject,
         });

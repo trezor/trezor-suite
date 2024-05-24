@@ -47,7 +47,7 @@ const rememberDevice = createAction(
 
 const forgetDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
-    (payload: TrezorDevice) => ({
+    (payload: { device: TrezorDevice }) => ({
         payload,
     }),
 );

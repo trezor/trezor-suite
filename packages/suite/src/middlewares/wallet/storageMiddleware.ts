@@ -173,8 +173,8 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (deviceActions.forgetDevice.match(action)) {
-                api.dispatch(storageActions.forgetDevice(action.payload));
-                api.dispatch(storageActions.forgetDeviceMetadataError(action.payload));
+                api.dispatch(storageActions.forgetDevice(action.payload.device));
+                api.dispatch(storageActions.forgetDeviceMetadataError(action.payload.device));
             }
 
             if (tokenDefinitionsActions.setTokenStatus.match(action)) {

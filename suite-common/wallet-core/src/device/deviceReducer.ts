@@ -563,7 +563,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             remember(state, payload.device, payload.remember, payload.forceRemember);
         })
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
-            forget(state, payload);
+            forget(state, payload.device);
         })
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
             addButtonRequest(state, payload.device, payload.buttonRequest);

@@ -455,7 +455,7 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
-        dispatch(deviceActions.forgetDevice(d));
+        dispatch(deviceActions.forgetDevice({ device: d }));
     });
     await db.removeDatabase();
     dispatch(

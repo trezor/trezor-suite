@@ -14,8 +14,8 @@ import { selectAreTestnetsEnabled, toggleAreTestnetsEnabled } from './discoveryC
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     (action, { dispatch, next, getState }) => {
-        if (deviceActions.forgetDevice.match(action) && action.payload.state) {
-            dispatch(discoveryActions.removeDiscovery(action.payload.state));
+        if (deviceActions.forgetDevice.match(action) && action.payload.device.state) {
+            dispatch(discoveryActions.removeDiscovery(action.payload.device.state));
         }
 
         const device = selectDevice(getState());

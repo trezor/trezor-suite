@@ -66,7 +66,7 @@ const suite =
         }
 
         if (deviceActions.forgetDevice.match(action)) {
-            api.dispatch(handleDeviceDisconnect(action.payload));
+            api.dispatch(handleDeviceDisconnect(action.payload.device));
         }
 
         if (deviceActions.connectDevice.match(action)) {
