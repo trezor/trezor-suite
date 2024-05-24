@@ -8991,6 +8991,19 @@ export default defineMessages({
         id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON',
         defaultMessage: 'Cancel',
     },
+    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE: {
+        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE',
+        defaultMessage: 'Disabling view-only will eject this wallet',
+    },
+    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION: {
+        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION',
+        defaultMessage:
+            "Your funds and transactions won't be visible until you reconnect your device.",
+    },
+    TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON: {
+        id: 'TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON',
+        defaultMessage: 'Disable & eject',
+    },
     TR_VIEW_ONLY: {
         id: 'TR_VIEW_ONLY',
         defaultMessage: 'View-only',

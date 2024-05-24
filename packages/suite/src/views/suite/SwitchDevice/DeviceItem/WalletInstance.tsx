@@ -19,7 +19,7 @@ import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatHeader } from 'src/views/dashboard/components/FiatHeader';
 import { useState } from 'react';
-import { EjectConfirmation } from './EjectConfirmation';
+import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConfirmation';
 import { ContentType } from '../types';
 import { ViewOnly } from './ViewOnly';
 import { EjectButton } from './EjectButton';
@@ -108,6 +108,9 @@ export const WalletInstance = ({
 
     const defaultWalletLabel = defaultAccountLabelString({ device: instance });
 
+    const stopPropagation = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+        e.stopPropagation();
+
     const onEjectCancelClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         setContentType('default');
         e.stopPropagation();
@@ -182,7 +185,14 @@ export const WalletInstance = ({
                 {contentType === 'ejectConfirmation' && (
                     <EjectConfirmation
                         instance={instance}
-                        onClick={e => e.stopPropagation()}
+                        onClick={stopPropagation}
+                        onCancel={onEjectCancelClick}
+                    />
+                )}
+                {contentType === 'disabling-view-only-ejects-wallet' && (
+                    <EjectConfirmationDisableViewOnly
+                        instance={instance}
+                        onClick={stopPropagation}
                         onCancel={onEjectCancelClick}
                     />
                 )}

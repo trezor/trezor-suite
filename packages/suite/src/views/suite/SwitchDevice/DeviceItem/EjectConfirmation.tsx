@@ -5,7 +5,7 @@ import { Translation } from 'src/components/suite';
 import { deviceActions } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { AcquiredDevice } from '@suite-common/suite-types';
-import { MouseEventHandler } from 'react';
+import { MouseEventHandler, ReactNode } from 'react';
 import { spacingsPx } from '@trezor/theme';
 
 const Container = styled.div`
@@ -22,13 +22,26 @@ const Buttons = styled.div`
     gap: ${spacingsPx.xxs};
 `;
 
-interface EjectConfirmationProps {
-    instance: AcquiredDevice;
+type EjectConfirmationProps = {
     onCancel: MouseEventHandler<HTMLButtonElement> | undefined;
-    onClick: MouseEventHandler<HTMLDivElement> | undefined;
-}
+    onClick: (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => void;
+    instance: AcquiredDevice;
+};
 
-export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => {
+type EjectConfirmationContainerProps = EjectConfirmationProps & {
+    title: ReactNode;
+    description: ReactNode;
+    primaryButtonLabel: ReactNode;
+};
+
+const EjectConfirmationContainer = ({
+    onClick,
+    onCancel,
+    title,
+    description,
+    primaryButtonLabel,
+    instance,
+}: EjectConfirmationContainerProps) => {
     const dispatch = useDispatch();
     const handleEject = () => {
         dispatch(deviceActions.forgetDevice(instance));
@@ -39,12 +52,10 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
 
     return (
         <Container onClick={onClick}>
-            <H3>
-                <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE" />
-            </H3>
+            <H3>{title}</H3>
             <Description>
                 <Text variant="tertiary" typographyStyle="label">
-                    <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />
+                    {description}
                 </Text>
             </Description>
             <Buttons>
@@ -55,7 +66,7 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
                     variant="primary"
                     isFullWidth
                 >
-                    <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON" />
+                    {primaryButtonLabel}
                 </Button>
                 <Button size="small" onClick={onCancel} variant="tertiary" isFullWidth>
                     <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_CANCEL_BUTTON" />
@@ -64,3 +75,33 @@ export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirma
         </Container>
     );
 };
+
+export const EjectConfirmation = ({ onClick, onCancel, instance }: EjectConfirmationProps) => (
+    <EjectConfirmationContainer
+        title={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_TITLE" />}
+        description={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DESCRIPTION" />}
+        primaryButtonLabel={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_PRIMARY_BUTTON" />}
+        onClick={onClick}
+        onCancel={onCancel}
+        instance={instance}
+    />
+);
+
+export const EjectConfirmationDisableViewOnly = ({
+    onClick,
+    onCancel,
+    instance,
+}: EjectConfirmationProps) => (
+    <EjectConfirmationContainer
+        title={<Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_TITLE" />}
+        description={
+            <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_DESCRIPTION" />
+        }
+        primaryButtonLabel={
+            <Translation id="TR_SWITCH_DEVICE_EJECT_CONFIRMATION_DISABLE_VIEW_ONLY_PRIMARY_BUTTON" />
+        }
+        onClick={onClick}
+        onCancel={onCancel}
+        instance={instance}
+    />
+);
