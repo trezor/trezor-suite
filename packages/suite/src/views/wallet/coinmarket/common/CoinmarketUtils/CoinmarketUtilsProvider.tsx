@@ -53,7 +53,7 @@ export const CoinmarketUtilsProvider = ({
                     <IconText>{provider.brandName ?? provider.companyName}</IconText>
                 </>
             ) : (
-                <Translation id="TR_COINMARKET_UNKNOWN_PROVIDER" />
+                <>{exchange ? exchange : <Translation id="TR_COINMARKET_UNKNOWN_PROVIDER" />}</>
             )}
         </IconWrap>
     );
