@@ -31,6 +31,7 @@ const contentWrapperStyle = prepareNativeStyle(() => ({
     position: 'absolute',
     left: 0,
     top: 0,
+    maxWidth: '100%',
 }));
 
 const contentStyle = prepareNativeStyle(utils => ({
@@ -66,6 +67,7 @@ export const AccordionItem = ({ title, content }: AccordionItemProps) => {
                                 iconName="chevronRight"
                                 colorScheme="tertiaryElevation0"
                                 size="small"
+                                onPress={toggleIsOpen}
                             />
                         </Animated.View>
                     </Box>
