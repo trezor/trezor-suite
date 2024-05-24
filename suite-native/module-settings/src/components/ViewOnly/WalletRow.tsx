@@ -69,7 +69,7 @@ export const WalletRow = ({ device }: WalletRowProps) => {
 
         if (!device.connected && device.remember) {
             // disconnected device, view-only is being disabled so it can be forgotten
-            dispatch(deviceActions.forgetDevice(device));
+            dispatch(deviceActions.forgetDevice({ device }));
         } else {
             // device is connected or become remembered
             dispatch(toggleRememberDevice({ device }));

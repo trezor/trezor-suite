@@ -33,7 +33,7 @@ const walletMiddleware =
         const prevState = api.getState();
 
         if (deviceActions.forgetDevice.match(action)) {
-            const deviceState = action.payload.state;
+            const deviceState = action.payload.device.state;
             const accounts = api
                 .getState()
                 .wallet.accounts.filter(a => a.deviceState === deviceState);
@@ -96,7 +96,7 @@ const walletMiddleware =
 
         if (
             deviceActions.forgetDevice.match(action) &&
-            prevState.wallet.selectedAccount.account?.deviceState === action.payload.state
+            prevState.wallet.selectedAccount.account?.deviceState === action.payload.device.state
         ) {
             // if currently selected account is related to forgotten device
             resetReducers = true;

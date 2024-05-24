@@ -51,9 +51,9 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
         }
 
         if (deviceActions.forgetDevice.match(action)) {
-            dispatch(handleDeviceDisconnect(action.payload));
+            dispatch(handleDeviceDisconnect(action.payload.device));
 
-            const deviceState = action.payload.state;
+            const deviceState = action.payload.device.state;
             if (deviceState) {
                 const accounts = selectAccountsByDeviceState(getState(), deviceState);
                 dispatch(accountsActions.removeAccount(accounts));

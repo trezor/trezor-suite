@@ -1038,15 +1038,15 @@ const forget = [
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: getSuiteDevice({ instance: 1 }),
+                payload: { device: getSuiteDevice({ instance: 1 }) },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: SUITE_DEVICE,
+                payload: { devoice: SUITE_DEVICE },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: getSuiteDevice({ connected: true, instance: 3 }),
+                payload: { device: getSuiteDevice({ connected: true, instance: 3 }) },
             },
         ],
         result: [

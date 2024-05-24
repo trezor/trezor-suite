@@ -47,7 +47,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const onCancel = () => {
         TrezorConnect.cancel('auth-confirm-cancel'); // This auth-confirm-cancel' causes the proper cleaning of the state in deviceThunks.authConfirm()
-        dispatch(deviceActions.forgetDevice(device));
+        dispatch(deviceActions.forgetDevice({ device }));
     };
 
     const onSubmit = useCallback(

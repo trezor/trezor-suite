@@ -44,7 +44,7 @@ const EjectConfirmationContainer = ({
 }: EjectConfirmationContainerProps) => {
     const dispatch = useDispatch();
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice(instance));
+        dispatch(deviceActions.forgetDevice({ device: instance }));
         analytics.report({
             type: EventType.SwitchDeviceEject,
         });

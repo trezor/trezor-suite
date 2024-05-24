@@ -28,8 +28,8 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             prevDiscovery.status > DiscoveryStatus.IDLE &&
             prevDiscovery.status < DiscoveryStatus.STOPPING;
 
-        if (deviceActions.forgetDevice.match(action) && action.payload.state) {
-            dispatch(discoveryActions.removeDiscovery(action.payload.state));
+        if (deviceActions.forgetDevice.match(action) && action.payload.device.state) {
+            dispatch(discoveryActions.removeDiscovery(action.payload.device.state));
         }
 
         // do not close user context modals during discovery

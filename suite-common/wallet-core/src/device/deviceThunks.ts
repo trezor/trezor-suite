@@ -220,7 +220,7 @@ export const forgetDisconnectedDevices = createThunk(
         const deviceInstances = devices.filter(d => d.id === device.id);
         deviceInstances.forEach(d => {
             if (d.features && !d.remember) {
-                dispatch(deviceActions.forgetDevice(d));
+                dispatch(deviceActions.forgetDevice({ device: d }));
             }
         });
     },
@@ -409,7 +409,7 @@ export const authConfirm = createThunk(
                 // needs await to propagate all actions
                 await dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
                 // forget previous empty wallet
-                dispatch(deviceActions.forgetDevice(device));
+                dispatch(deviceActions.forgetDevice({ device }));
 
                 return;
             }
@@ -457,7 +457,7 @@ export const switchDuplicatedDevice = createThunk(
         // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
         await dispatch(selectDeviceThunk({ device: duplicate }));
         // remove stateless instance
-        dispatch(deviceActions.forgetDevice(device));
+        dispatch(deviceActions.forgetDevice({ device }));
     },
 );
 
