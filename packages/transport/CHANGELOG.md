@@ -1,3 +1,13 @@
+# 1.1.29-beta.1
+
+-   feat(transport-bridge): introduce dispose method in transport-bridge (7fe9e7cd56)
+-   fix(transport): usb device filtering (d5ba4383c0)
+-   fix(connect): simultaneous read of connected devices (f181c988a4)
+-   test(transport): enable skipped unit tests (6516c718b7)
+-   fix(transport): AbstractApiTransport.acquire listenPromise condition (c37d12961a)
+-   fix(transport): Transport.stopped initial value (e9638f48ed)
+-   feat(transport): make signal required param in constructor (4b82f8d505)
+
 # 1.1.28
 
 -   chore(protobuf): ability to build protobuf messages from the specified branch (7a6babb818)
