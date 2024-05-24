@@ -10,10 +10,16 @@ export default meta;
 export const Spinner: StoryObj<SpinnerProps> = {
     args: {
         size: 50,
+        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
     },
     argTypes: {
         className: {
             control: false,
+        },
+        margin: {
+            table: {
+                category: 'Frame props',
+            },
         },
     },
 };

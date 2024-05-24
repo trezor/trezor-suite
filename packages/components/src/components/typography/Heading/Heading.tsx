@@ -4,9 +4,12 @@ import { TypographyStyle, typography } from '@trezor/theme';
 import { FrameProps, TransientFrameProps, withFrameProps } from '../../common/frameProps';
 import { makePropsTransient } from '../../../utils/transientProps';
 
+type Align = 'left' | 'center' | 'right';
+
 type BasicProps = {
     children: React.ReactNode;
     'data-test'?: string;
+    align?: Align;
     onClick?: () => void;
 };
 
@@ -17,7 +20,7 @@ type HeadingProps = TransientFrameProps &
 
 const Heading = styled.h1<HeadingProps>`
     ${({ $typographyStyle }) => typography[$typographyStyle]};
-
+    ${({ align = 'left' }) => `text-align: ${align};`}
     ${withFrameProps}
 `;
 

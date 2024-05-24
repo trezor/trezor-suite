@@ -1,10 +1,11 @@
 import styled from 'styled-components';
-import { H3, Spinner, Text } from '@trezor/components';
+import { H3, Spinner } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
 import { useSelector } from 'src/hooks/suite';
 import { selectDevice } from '@suite-common/wallet-core';
+import { spacingsPx } from '@trezor/theme';
 
 const Expand = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const Expand = styled.div`
     width: 100%;
     justify-content: center;
     align-items: center;
-    margin: 40px 0;
+    margin: ${spacingsPx.xxxl} 0 ${spacingsPx.xl};
 `;
 
 export const DiscoveryLoader = () => {
@@ -23,13 +24,10 @@ export const DiscoveryLoader = () => {
         <SwitchDeviceRenderer isCancelable={false} data-test="@discovery/loader">
             <CardWithDevice device={device}>
                 <Expand>
-                    <Spinner size={80} isGrey={false} />
-                    <H3>
-                        <Translation id="TR_COIN_DISCOVERY_IN_PROGRESS" />
+                    <Spinner size={80} isGrey={false} margin={{ bottom: 48 }} />
+                    <H3 align="center">
+                        <Translation id="TR_COIN_DISCOVERY_LOADER_DESCRIPTION" />
                     </H3>
-                    <Text color="textSubdued">
-                        <Translation id="TR_TO_FIND_YOUR_ACCOUNTS_AND" />
-                    </Text>
                 </Expand>
             </CardWithDevice>
         </SwitchDeviceRenderer>
