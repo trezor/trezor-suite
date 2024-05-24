@@ -1,3 +1,7 @@
+# 1.0.17-beta.2
+
+-   Chore/refactor fiat rates (#11592) (f40b8bf7d8)
+
 # 1.0.16
 
 -   chore(deps): bump @solana/web3.js from 1.90.0 to 1.90.2 (962e51f4ca)
