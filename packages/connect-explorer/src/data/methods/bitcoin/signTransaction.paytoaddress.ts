@@ -6,7 +6,13 @@ const docs = 'methods/signTransaction.md';
 const btc = {
     inputs: [
         {
-            address_n: [44 | 0x80000000, 0 | 0x80000000, 0 | 0x80000000, 0, 5],
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                0,
+                5,
+            ],
             prev_hash: '50f6f1209ca92d7359564be803cb2c932cde7d370f7cee50fd1fad6790f6206d',
             prev_index: 1,
         },
@@ -23,7 +29,13 @@ const btc = {
 const bch = {
     inputs: [
         {
-            address_n: [44 | 0x80000000, 145 | 0x80000000, 0 | 0x80000000, 0, 0],
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (145 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                0,
+                0,
+            ],
             amount: '1995344',
             prev_hash: 'bc37c28dfb467d2ecb50261387bf752a3977d7e5337915071bb4151e6b711a78',
             prev_index: 0,
@@ -32,7 +44,13 @@ const bch = {
     ],
     outputs: [
         {
-            address_n: [44 | 0x80000000, 145 | 0x80000000, 0 | 0x80000000, 1, 0],
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (145 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                1,
+                0,
+            ],
             amount: '1896050',
             script_type: 'PAYTOADDRESS',
         },
@@ -175,7 +193,7 @@ export default [
             {
                 name: 'coin',
                 type: 'select',
-                value: 'bch',
+                value: 'btc',
                 affect: ['inputs', 'outputs'],
                 data: select.map(v => {
                     const example = examples[v.value as keyof typeof examples];
