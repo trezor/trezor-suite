@@ -40,7 +40,7 @@ describe('Go through onboarding and connect Trezor.', () => {
 
             await waitFor(element(by.id('skip-view-only-mode')))
                 .toBeVisible()
-                .withTimeout(20000); // communication between connected Trezor and app takes some time.
+                .withTimeout(60000); // communication between connected Trezor and app takes some time.
 
             await element(by.id('skip-view-only-mode')).tap();
 
