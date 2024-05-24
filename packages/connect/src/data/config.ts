@@ -103,6 +103,18 @@ export const config = {
             download: 'https://www.mozilla.org/en-US/firefox/new/',
             update: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version',
         },
+        brave: {
+            // Chromium based
+            version: 59,
+            download: 'https://brave.com/download/',
+            update: 'https://brave.com/download/',
+        },
+        edge: {
+            // Since version 79, Edge is based on Chromium
+            version: 79,
+            download: 'https://www.microsoft.com/en-us/edge',
+            update: 'https://www.microsoft.com/en-us/edge',
+        },
     },
     supportedFirmware: [
         {
