@@ -172,10 +172,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                     '$(PRODUCT_NAME) needs Face ID and Touch ID to keep sensitive data about your portfolio private.',
                 NSMicrophoneUsageDescription: 'This app does not require access to the microphone.',
                 ITSAppUsesNonExemptEncryption: false,
-                UISupportedInterfaceOrientations: [
-                    'UIInterfaceOrientationPortrait',
-                    'UIInterfaceOrientationPortraitUpsideDown',
-                ],
                 NSAppTransportSecurity: {
                     NSAllowsArbitraryLoads: true,
                     NSExceptionDomains: {
