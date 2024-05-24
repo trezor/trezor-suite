@@ -5799,6 +5799,10 @@ export default defineMessages({
         description: 'Sign and send button used in send form',
         defaultMessage: 'Review & Send',
     },
+    TR_CONNECT_TREZOR_TO_SEND_BUTTON: {
+        id: 'TR_CONNECT_TREZOR_TO_SEND_BUTTON',
+        defaultMessage: 'Connect Trezor to Send',
+    },
     SEND_RAW: {
         id: 'SEND_RAW',
         description: 'item in dropdown menu',

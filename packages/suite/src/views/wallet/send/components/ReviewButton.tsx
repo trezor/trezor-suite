@@ -86,6 +86,7 @@ export const ReviewButton = () => {
     const values = getValues();
     const broadcastEnabled = options.includes('broadcast');
     const coinControlOpen = options.includes('utxoSelection');
+    const isDeviceConnected = device?.connected && device?.available;
     const composedTx = composedLevels ? composedLevels[values.selectedFee || 'normal'] : undefined;
     const isLowAnonymity =
         Array.isArray(errors.outputs) &&
@@ -107,6 +108,10 @@ export const ReviewButton = () => {
 
     const toggleUtxoSelection = () => toggleOption('utxoSelection');
     const getPrimaryText = () => {
+        if (!isDeviceConnected) {
+            return 'TR_CONNECT_TREZOR_TO_SEND_BUTTON';
+        }
+
         if (showCoinControlWarning) {
             return broadcastEnabled
                 ? 'TR_SEND_NOT_ANONYMIZED_COINS'
