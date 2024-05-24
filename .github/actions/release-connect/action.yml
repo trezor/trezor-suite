@@ -122,6 +122,9 @@ runs:
     - name: Build connect-explorer-webextension
       if: inputs.buildArtifacts == 'true'
       shell: bash
+      env:
+        NODE_ENV: "production"
+        __TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
       run: |
         yarn workspace @trezor/connect-explorer build:webextension
 
