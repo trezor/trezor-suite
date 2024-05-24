@@ -37,6 +37,10 @@ import type { AssetGroupWithTokens } from '../cardanoTokenBundle';
 import { tokenBundleToProto } from '../cardanoTokenBundle';
 import { AssertWeak, Type } from '@trezor/schema-utils';
 
+const CardanoSignTransactionFeatures = Object.freeze({
+    // Minimum firmware (2.6.0) currently supports all features
+});
+
 export type CardanoSignTransactionParams = {
     signingMode: PROTO.CardanoTxSigningMode;
     inputsWithPath: InputWithPath[];
@@ -228,6 +232,23 @@ export default class CardanoSignTransaction extends AbstractMethod<
         return 'Sign Cardano transaction';
     }
 
+    _isFeatureSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
+        return this.device.atLeast(CardanoSignTransactionFeatures[feature]);
+    }
+
+    _ensureFeatureIsSupported(feature: keyof typeof CardanoSignTransactionFeatures) {
+        if (!this._isFeatureSupported(feature)) {
+            throw ERRORS.TypedError(
+                'Method_InvalidParameter',
+                `Feature ${feature} not supported by device firmware`,
+            );
+        }
+    }
+
+    _ensureFirmwareSupportsParams() {
+        // Currently, there are no additional features to check for
+    }
+
     async _sign_tx(): Promise<CardanoSignedTxData> {
         const typedCall = this.device.getCommands().typedCall.bind(this.device.getCommands());
 
@@ -374,6 +395,8 @@ export default class CardanoSignTransaction extends AbstractMethod<
     }
 
     async run() {
+        this._ensureFirmwareSupportsParams();
+
         const result = await this._sign_tx();
 
         if (!this.params.unsignedTx) return result;
