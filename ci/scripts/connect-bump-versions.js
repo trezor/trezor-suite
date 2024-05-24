@@ -1,5 +1,5 @@
-import path from 'path';
-import fs from 'fs';
+const path = require('path');
+const fs = require('fs');
 
 const { checkPackageDependencies, exec, commit, comment } = require('./helpers');
 
@@ -19,7 +19,7 @@ const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
 
 const ROOT = path.join(__dirname, '..', '..');
 
-const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
+const getGitCommitByPackageName = (packageName, maxCount = 10) =>
     exec('git', [
         'log',
         '--oneline',
@@ -30,16 +30,16 @@ const getGitCommitByPackageName = (packageName: string, maxCount = 10) =>
         `./packages/${packageName}`,
     ]);
 
-const splitByNewlines = (input: string): string[] => input.split('\n');
+const splitByNewlines = input => input.split('\n');
 
-const findIndexByCommit = (commitArr: string[], searchString: string): number =>
+const findIndexByCommit = (commitArr, searchString) =>
     commitArr.findIndex(commit => commit.includes(searchString));
 
 const bumpConnect = async () => {
     const checkResult = await checkPackageDependencies('connect', deploymentType);
 
-    const update = checkResult.update.map((pkg: string) => pkg.replace('@trezor/', ''));
-    const errors = checkResult.errors.map((pkg: string) => pkg.replace('@trezor/', ''));
+    const update = checkResult.update.map(pkg => pkg.replace('@trezor/', ''));
+    const errors = checkResult.errors.map(pkg => pkg.replace('@trezor/', ''));
 
     if (update) {
         update.forEach(packageName => {
@@ -58,7 +58,7 @@ const bumpConnect = async () => {
 
             const CHANGELOG_PATH = path.join(PACKAGE_PATH, 'CHANGELOG.md');
 
-            const newCommits: string[] = [];
+            const newCommits = [];
             for (const commit of commitsArr) {
                 if (commit.includes(`npm-release: @trezor/${packageName}`)) {
                     break;
