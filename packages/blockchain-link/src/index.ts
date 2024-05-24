@@ -1,7 +1,6 @@
-import { createDeferred, createDeferredManager, TypedEmitter } from '@trezor/utils';
+import { createDeferred, createDeferredManager, TypedEmitter, Throttler } from '@trezor/utils';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import { Throttler } from './workers/throttler';
 import type { BlockchainSettings } from '@trezor/blockchain-link-types';
 import type * as ResponseTypes from '@trezor/blockchain-link-types/src/responses';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';

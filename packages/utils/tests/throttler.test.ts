@@ -1,4 +1,4 @@
-import { Throttler } from '../../src/workers/throttler';
+import { Throttler } from '../src/throttler';
 
 const delay = (ms: number) => jest.advanceTimersByTime(ms);
 
