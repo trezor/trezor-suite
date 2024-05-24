@@ -39,7 +39,7 @@ import { AssertWeak, Type } from '@trezor/schema-utils';
 
 const CardanoSignTransactionFeatures = Object.freeze({
     // FW <2.6.0 is not supported by Connect at all
-    Conway: ['0', '2.6.5'],
+    Conway: ['0', '2.7.1'],
 });
 
 export type CardanoSignTransactionParams = {
