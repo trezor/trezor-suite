@@ -7,7 +7,7 @@ interface CoinmarketCryptoAmountProps {
 
 export const CoinmarketCryptoAmount = ({ amount, symbol }: CoinmarketCryptoAmountProps) => {
     if (amount) {
-        return <FormattedCryptoAmount value={amount} symbol={symbol} />;
+        return <FormattedCryptoAmount value={amount} symbol={symbol} disableHiddenPlaceholder />;
     }
 
     return <>{symbol?.toUpperCase()}</>;
