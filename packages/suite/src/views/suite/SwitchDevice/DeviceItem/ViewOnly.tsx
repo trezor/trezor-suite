@@ -78,6 +78,7 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
                     isViewOnlyActive={isViewOnly}
                     toggleViewOnly={handleRememberChange}
                     dataTest={`${dataTest}/view-only-radio`}
+                    setContentType={setContentType}
                 />
             </CollapsibleBox>
         </ViewOnlyContainer>

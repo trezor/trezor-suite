@@ -1,1 +1,1 @@
-export type ContentType = 'default' | 'ejectConfirmation';
+export type ContentType = 'default' | 'ejectConfirmation' | 'disabling-view-only-ejects-wallet';
