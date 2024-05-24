@@ -1,9 +1,43 @@
 | Package                          | stable |    canary    |
 | -------------------------------- | :----: | :----------: |
-| npm @trezor/connect              | 9.2.2  | 9.2.4-beta.1 |
-| npm @trezor/connect-web          | 9.2.2  | 9.2.4-beta.1 |
-| npm @trezor/connect-webextension | 9.2.2  | 9.2.4-beta.1 |
+| npm @trezor/connect              | 9.2.2  | 9.2.4-beta.2 |
+| npm @trezor/connect-web          | 9.2.2  | 9.2.4-beta.2 |
+| npm @trezor/connect-webextension | 9.2.2  | 9.2.4-beta.2 |
 | connect.trezor.io/9              | 9.2.2  |      x       |
+
+# 9.2.4-beta.2
+
+-   chore(connect): re-add feature support checking in cardanoSignTransaction (acf9ffc2cb)
+-   chore(connect): fw-update: add error message when binary is too small (b0c1173f8d)
+-   chore(connect): remove legacyresults from cardano fixtures (acd9e1e510)
+-   chore(connect): bump fw versions required for cardano (c3d96b3ca7)
+-   chore(connect): remove validation in cardanoSignTransaction, cardanoAddressParameters, cardanoGetAddress, device.validateState (33efb4b8bd,013047bdb1, 21fadd17a6, 29311b5d61)
+-   feat(connect): use full version in URL when beta (26c70f48f7)
+-   fix(connect): simultaneous read of connected devices (f181c988a4)
+-   chore(connect): DeviceList now has two params - full settings object and messages (b6167266c9)
+-   chore(connect): remove DataManager from DeviceList (afc8760213)
+-   chore(connect): remove DataManager dependency from DeviceList constructor (7971515d71)
+-   chore(connect): simplify reduce code duplication in DeviceList (0cf8a04ed0)
+
+## connect-explorer
+
+-   fix(connect-explorer): method testing tool scrollbars (f15f6487d8)
+-   fix(connect-explorer): support GitHub emoji (fda80e5aa3)
+
+## connect-popup
+
+-   fix(connect-popup): use PassphraseTypeCardLegacy (629d6f8671)
+
+## transport
+
+-   feat(transport): make signal required param in constructor (4b82f8d505)
+
+## Dependencies update
+
+-   npm-release: @trezor/blockchain-link 2.1.30-beta.2
+-   npm-release: @trezor/blockchain-link-types 1.0.17-beta.2
+-   npm-release: @trezor/connect-analytics 1.0.15-beta.1
+-   npm-release: @trezor/transport 1.1.29-beta.1
 
 # 9.2.4-beta.1
 
