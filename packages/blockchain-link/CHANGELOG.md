@@ -1,3 +1,7 @@
+# 2.1.30-beta.2
+
+-   Chore/refactor fiat rates (#11592) (f40b8bf7d8)
+
 # 2.1.29
 
 -   chore(blockchain-link): skip failing tests (34833c4751)
