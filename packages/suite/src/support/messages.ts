@@ -2175,6 +2175,10 @@ export default defineMessages({
         defaultMessage: 'Checking balances',
         id: 'TR_COIN_DISCOVERY_IN_PROGRESS',
     },
+    TR_COIN_DISCOVERY_LOADER_DESCRIPTION: {
+        defaultMessage: 'Checking passphrase wallet for balances & transactions',
+        id: 'TR_COIN_DISCOVERY_LOADER_DESCRIPTION',
+    },
     TR_COINS: {
         defaultMessage: 'Coins',
         id: 'TR_COINS',
@@ -9013,7 +9017,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK',
-        defaultMessage: 'Go',
+        defaultMessage: 'Learn',
     },
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_TITLE',
