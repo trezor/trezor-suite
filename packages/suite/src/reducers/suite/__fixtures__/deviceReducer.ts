@@ -231,9 +231,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                } satisfies DeviceConnectActionPayload,
             },
         ],
         result: [
