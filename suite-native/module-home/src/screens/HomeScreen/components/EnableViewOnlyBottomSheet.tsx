@@ -109,6 +109,7 @@ export const EnableViewOnlyBottomSheet = () => {
     };
 
     const handleClose = () => {
+        setIsVisible(false);
         analytics.report({
             type: EventType.ViewOnlySkipped,
             payload: { action: 'close' },
