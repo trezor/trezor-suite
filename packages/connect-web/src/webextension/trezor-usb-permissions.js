@@ -1,8 +1,11 @@
 const VERSION = '9.2.4-beta.1';
 const versionN = VERSION.split('.').map(s => parseInt(s, 10));
-// const DIRECTORY = `${ versionN[0] }${ (versionN[1] > 0 ? `.${versionN[1]}` : '') }/`;
-const DIRECTORY = `${versionN[0]}/`;
-const url = `https://connect.trezor.io/${DIRECTORY}`;
+
+const isBeta = VERSION.includes('beta');
+
+const url = isBeta
+    ? `https://connect.trezor.io/${VERSION}/`
+    : `https://connect.trezor.io/${versionN[0]}/`;
 
 /* Handling messages from usb permissions iframe */
 const switchToPopupTab = event => {
