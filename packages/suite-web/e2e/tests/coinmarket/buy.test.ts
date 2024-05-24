@@ -76,30 +76,35 @@ describe('Coinmarket buy', () => {
 
         // Verifies the offers displayed match the mock
         cy.fixture('./invity/buy/quotes').then((quotes: any) => {
-            const exchangeProvider = [
-                ['banxa', 'banxa'],
-                ['btcdirect', 'btcdirect'],
-            ];
+            const exchangeProvider: string[] = ['banxa', 'btcdirect'];
 
-            exchangeProvider.forEach((provider: string[]) => {
-                // Tests offer accordance with the mocks
-                const valueFromFixtures = quotes.find(
-                    (quote: any) => quote.exchange === provider[1],
-                );
-                cy.contains('[class*="BuyQuote__Details"]', provider[0], { matchCase: false })
-                    .should('exist')
-                    .find('[class*="CryptoAmount__Value"]') // Returns element handle
-                    .invoke('text')
-                    .then((readValue: string) => {
-                        const coinValueFromApp: number = parseFloat(readValue);
-                        const coinValueFromQuote: number = parseFloat(
-                            valueFromFixtures.receiveStringAmount,
-                        );
-                        expect(coinValueFromApp).to.be.eq(coinValueFromQuote);
-                    });
-            });
+            // Get all displayed quotes
+            cy.get('[class*="Card__CardContainer"]')
+                .should('exist')
+                // Loop all displayed quotes
+                .each(($el, elIndex) => {
+                    // Test provider
+                    cy.wrap($el)
+                        .find('[class*="CoinmarketUtilsProvider__IconWrap"]')
+                        .then($el => {
+                            const text = $el.text();
+
+                            expect(exchangeProvider).to.include(text);
+                        });
+                    // Test quote receive amount
+                    cy.wrap($el)
+                        .find('[class*="FormattedCryptoAmount__Value"]')
+                        .invoke('text')
+                        .then((readValue: string) => {
+                            const coinValueFromApp: number = parseFloat(readValue);
+                            const coinValueFromQuote: number = parseFloat(
+                                quotes[elIndex].receiveStringAmount,
+                            );
+
+                            expect(coinValueFromApp).to.be.eq(coinValueFromQuote);
+                        });
+                });
         });
-
         // Gets the deal
         cy.getTestElement('@coinmarket/buy/offers/get-this-deal-button').eq(2).click();
         cy.getTestElement('@modal').should('be.visible');
