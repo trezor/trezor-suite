@@ -10,6 +10,9 @@ feat: allow provided config object to extend other configs
 feat(lang): added polish language
 ```
 
+### Commit linting
+Use `yarn lint:commits` to validate your commit messages compared to `$BASE_BRANCH_NAME` (default: `develop`)
+
 ### Git hook
 
 Use this git hook to auto-check your commit messages. Save the following snippet into `.git/hooks/commit-msg`. This way, the check will run locally and can avoid some unnecessary CI runs.
@@ -17,17 +20,7 @@ Use this git hook to auto-check your commit messages. Save the following snippet
 ```bash
 #!/bin/sh
 
-commit_msg=$(cat "$1")
-if echo "$commit_msg" | grep -qE "^(Revert|fixup! )"; then
-  # Skip validation in case of fixup and revert commits
-  exit 0
-fi
-
-if ! grep -qE "^(build|ci|docs|feat|fix|perf|refactor|style|test|chore|revert)(\([a-z, -]+\))?: " "$1" ; then
-  echo "Conventional Commits validation failed"
-  exit 1
-fi
-
+LINT_COMMIT_MSG="$1" ./scripts/check-commit-messages.sh
 ```
 
 If you want to bypass commit-msg hook check, you may always use
