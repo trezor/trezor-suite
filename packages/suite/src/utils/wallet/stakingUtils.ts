@@ -23,7 +23,7 @@ export const getAccountEverstakeStakingPool = (
         restakedReward: fromWei(pool.restakedReward, 'ether'),
         withdrawTotalAmount: fromWei(pool.withdrawTotalAmount, 'ether'),
         totalPendingStakeBalance: fromWei(
-            new BigNumber(pool.pendingBalance).plus(pool.pendingDepositedBalance).toString(),
+            new BigNumber(pool.pendingBalance).plus(pool.pendingDepositedBalance).toString(10),
             'ether',
         ),
         canClaim:
