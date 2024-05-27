@@ -1,5 +1,4 @@
-import { Type } from '@sinclair/typebox';
-
+import { Type } from '@trezor/schema-utils';
 import { PROTO } from '@trezor/connect/src/constants';
 
 import { CommonParamsLink } from '../../../components/CommonParamsLink';
@@ -37,8 +36,8 @@ export const SignTransactionSchema = Type.Object({
     timestamp: Type.Optional(Type.Number()),
     branchId: Type.Optional(Type.Number()),
     push: Type.Optional(Type.Boolean()),
-    amountUnit: Type.Optional(Type.Object({})),
-    unlockPath: Type.Optional(Type.Object({})),
+    amountUnit: Type.Optional(PROTO.EnumAmountUnit),
+    unlockPath: Type.Optional(PROTO.UnlockPath),
     serialize: Type.Optional(Type.Boolean()),
     chunkify: Type.Optional(Type.Boolean()),
 });
