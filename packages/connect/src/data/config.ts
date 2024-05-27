@@ -46,6 +46,11 @@ export const config = {
             label: 'Rainbow',
             icon: '',
         },
+        {
+            origin: 'acmacodkjbdgmoleebolmdjonilkdbch',
+            label: 'Rabby',
+            icon: '',
+        },
         { origin: 'file://', label: ' ', icon: '' },
     ],
     onionDomains: {
