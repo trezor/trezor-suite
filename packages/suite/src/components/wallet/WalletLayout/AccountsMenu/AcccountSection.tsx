@@ -4,7 +4,7 @@ import { AccountItem } from './AccountItem';
 import { useSelector } from 'src/hooks/suite';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { isSupportedNetworkSymbol } from '@suite-common/wallet-core';
+import { isSupportedNetworkSymbol, selectAccountHasStaked } from '@suite-common/wallet-core';
 
 interface AccountSectionProps {
     account: Account;
@@ -27,11 +27,11 @@ export const AccountSection = ({
         descriptor,
         formattedBalance,
         tokens: accountTokens = [],
-        misc,
     } = account;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
-    const hasStaked = networkType === 'ethereum' && !!misc?.stakingPools?.length;
+    const hasStaked = useSelector(state => selectAccountHasStaked(state, account));
+
     const isStakeShown = isSupportedNetworkSymbol(symbol) && hasStaked;
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);

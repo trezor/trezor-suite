@@ -1,17 +1,22 @@
+import { fromWei } from 'web3-utils';
+
 import { Account, StakingPoolExtended } from '@suite-common/wallet-types';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { fromWei } from 'web3-utils';
+
+export const getEverstakePool = (account?: Account) => {
+    if (account?.networkType !== 'ethereum') {
+        return undefined;
+    }
+
+    return account?.misc?.stakingPools?.find(pool => pool.name === 'Everstake');
+};
 
 export const getAccountEverstakeStakingPool = (
     account?: Account,
 ): StakingPoolExtended | undefined => {
-    if (account?.networkType !== 'ethereum') {
-        return;
-    }
+    const pool = getEverstakePool(account);
 
-    const pool = account?.misc?.stakingPools?.find(pool => pool.name === 'Everstake');
-
-    if (!pool) return;
+    if (!pool) return undefined;
 
     return {
         ...pool,

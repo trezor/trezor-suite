@@ -4,10 +4,10 @@ import { useTheme } from 'styled-components';
 import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { AccentP, CardBottomContent, GreyP, StyledCard } from './styled';
-import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from 'src/hooks/suite';
 import { BACKUP_REWARD_PAYOUT_DAYS } from 'src/constants/suite/ethStaking';
+import { getAccountAutocompoundBalance } from '@suite-common/wallet-utils';
 
 interface PayoutCardProps {
     nextRewardPayout?: number | null;

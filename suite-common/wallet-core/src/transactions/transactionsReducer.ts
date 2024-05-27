@@ -6,6 +6,7 @@ import {
     getConfirmations,
     isPending,
     getIsPhishingTransaction,
+    getEverstakePool,
 } from '@suite-common/wallet-utils';
 import { isClaimTx, isStakeTx, isStakeTypeTx, isUnstakeTx } from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -333,4 +334,10 @@ export const selectAccountClaimTransactions = (
     const transactions = selectAccountTransactions(state, accountKey);
 
     return transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId));
+};
+
+export const selectAccountHasStaked = (state: TransactionsRootState, account: Account) => {
+    const stakeTxs = selectAccountStakeTransactions(state, account.key);
+
+    return stakeTxs.length > 0 || !!getEverstakePool(account);
 };
