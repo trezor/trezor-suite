@@ -71,7 +71,8 @@ rootPaths.forEach(dir => {
     ['trezor-usb-permissions.js'].forEach(p => {
         let content = fs.readFileSync(path.join(srcPath, 'src', 'webextension', p), 'utf-8');
         if (trezorConnectSrc !== DEFAULT_SRC) {
-            content = content.replace(/^const url = .*$/gm, `const url = '${trezorConnectSrc}';`);
+            const urlRegex = /const url = .*?;/s;
+            content = content.replace(urlRegex, `const url = '${trezorConnectSrc}';`);
         }
         fs.writeFileSync(path.join(rootPath, buildFolder, 'vendor', p), content, 'utf-8');
     });
