@@ -2,7 +2,7 @@ import produce from 'immer';
 import { CARDANO_STAKING } from 'src/actions/wallet/constants';
 import { WalletAction } from 'src/types/wallet';
 import { CardanoNetwork, PendingStakeTx, PoolsResponse } from 'src/types/wallet/cardanoStaking';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export interface State {
     pendingTx: PendingStakeTx[];

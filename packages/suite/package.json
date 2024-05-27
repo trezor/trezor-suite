@@ -77,7 +77,6 @@
         "@trezor/type-utils": "workspace:*",
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "bignumber.js": "^9.1.2",
         "bs58check": "^3.0.1",
         "date-fns": "^2.30.0",
         "dropbox": "^10.34.0",

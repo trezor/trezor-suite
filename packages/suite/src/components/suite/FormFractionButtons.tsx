@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { Button, Tooltip } from '@trezor/components';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     MIN_ETH_AMOUNT_FOR_STAKING,
     MIN_ETH_BALANCE_FOR_STAKING,

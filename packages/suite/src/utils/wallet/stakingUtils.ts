@@ -1,5 +1,5 @@
 import { Account, StakingPoolExtended } from '@suite-common/wallet-types';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fromWei } from 'web3-utils';
 
 export const getAccountEverstakeStakingPool = (

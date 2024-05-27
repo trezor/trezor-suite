@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { variables, Card, SkeletonRectangle } from '@trezor/components';
 import { HiddenPlaceholder, FormattedCryptoAmount, Sign } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 const Wrapper = styled(Card)`
     display: flex;

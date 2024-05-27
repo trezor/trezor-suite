@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { Timestamp, TokenAddress, FiatRatesResult } from '@suite-common/wallet-types';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 

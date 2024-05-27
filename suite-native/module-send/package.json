@@ -26,7 +26,7 @@
         "@suite-native/forms": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "bignumber.js": "^9.1.2",
+        "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "react-redux": "8.0.7"
     }

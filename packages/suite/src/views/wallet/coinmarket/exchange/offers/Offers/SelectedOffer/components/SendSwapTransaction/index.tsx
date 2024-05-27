@@ -4,7 +4,7 @@ import { Translation, AccountLabeling, FormattedCryptoAmount } from 'src/compone
 import { Button, Icon, Input, Paragraph, SelectBar, Tooltip, variables } from '@trezor/components';
 import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
 import useDebounce from 'react-use/lib/useDebounce';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FieldError } from 'react-hook-form';
 import { BottomText } from '@trezor/components/src/components/form/BottomText';
 import { TranslationKey } from '@suite-common/intl-types';

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const toFiatCurrency = (amount: string, rate?: number, decimals = 2) => {
     if (!rate) {

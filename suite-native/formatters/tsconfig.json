@@ -26,6 +26,7 @@
         {
             "path": "../../packages/blockchain-link"
         },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/utils" }
     ]
 }

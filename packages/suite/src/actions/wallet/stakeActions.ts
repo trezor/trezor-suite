@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import TrezorConnect, { SignedTransaction } from '@trezor/connect';
 import {

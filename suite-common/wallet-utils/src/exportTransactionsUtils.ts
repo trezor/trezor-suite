@@ -1,8 +1,8 @@
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
 import { format } from 'date-fns';
-import BigNumber from 'bignumber.js';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { trezorLogo } from '@suite-common/suite-constants';
 import { TransactionTarget } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';

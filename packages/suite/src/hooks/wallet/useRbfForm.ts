@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createContext, useContext, useState, useEffect, useMemo } from 'react';
 import { useForm } from 'react-hook-form';
 import { fromWei } from 'web3-utils';

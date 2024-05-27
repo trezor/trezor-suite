@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js';
 import { fromWei, toWei } from 'web3-utils';
 import { addDays, startOfMonth } from 'date-fns';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     Account,
     RbfTransactionParams,

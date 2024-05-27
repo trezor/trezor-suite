@@ -40,3 +40,4 @@ export * from './typedEventEmitter';
 export * from './urlToOnion';
 export * from './logs';
 export * from './logsManager';
+export * from './bigNumber';

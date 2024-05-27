@@ -9,7 +9,7 @@ import {
 } from 'react';
 
 import { Control, FieldValues, useController, UseControllerProps } from 'react-hook-form';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Input, InputProps } from '@trezor/components';
 import { localizeNumber } from '@suite-common/wallet-utils';

@@ -1,4 +1,4 @@
-import Bignumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { NotificationCard, Translation } from 'src/components/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from 'src/types/wallet/index';
@@ -10,8 +10,8 @@ interface XRPReserveProps {
 
 export const XRPReserve = ({ account }: XRPReserveProps) => {
     if (account?.networkType !== 'ripple') return null;
-    const bigBalance = new Bignumber(account.balance);
-    const bigReserve = new Bignumber(account.misc.reserve);
+    const bigBalance = new BigNumber(account.balance);
+    const bigReserve = new BigNumber(account.misc.reserve);
 
     return bigBalance.isLessThan(bigReserve) ? (
         <NotificationCard

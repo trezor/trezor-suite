@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const useIsTxStatusShown = (totalPendingStake: BigNumber, accountDescriptor?: string) => {
     // Handling the edge case, when a user can witness sudden change of pending stake deposit to 0.

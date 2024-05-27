@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-
+import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 import { isNotUndefined, topologicalSort } from '@trezor/utils';
 import type { Transaction, EnhancedVinVout } from '@trezor/blockchain-link-types/src/common';
 import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
@@ -35,7 +34,7 @@ export const enhanceVinVout =
         isAccountOwned: isAccountOwned(addresses)(vinVout) || undefined,
     });
 
-export const sumVinVout = (sum: BigNumber.Value, { value }: VinVout): BigNumber.Value =>
+export const sumVinVout = (sum: BigNumberValue, { value }: VinVout): BigNumberValue =>
     typeof value === 'string' ? new BigNumber(value || '0').plus(sum) : sum;
 
 export const transformTarget = (target: VinVout, incoming: VinVout[]) => ({

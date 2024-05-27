@@ -9,7 +9,7 @@ import {
     MemoHash,
     MemoReturn,
 } from '@stellar/stellar-sdk';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 /**
  * Transforms Signer to TrezorConnect.StellarTransaction.Signer

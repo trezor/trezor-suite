@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { formatAmount, formatNetworkAmount, isTestnet } from '@suite-common/wallet-utils';
 import { selectDevice } from '@suite-common/wallet-core';

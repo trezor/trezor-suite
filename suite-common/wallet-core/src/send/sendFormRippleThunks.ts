@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
 import { G } from '@mobily/ts-belt';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel, RipplePayment } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {

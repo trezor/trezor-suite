@@ -54,7 +54,7 @@ import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolU
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TokenAddress } from '@suite-common/wallet-types';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';

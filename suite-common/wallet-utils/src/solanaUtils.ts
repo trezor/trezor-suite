@@ -1,8 +1,8 @@
 import * as BufferLayout from '@solana/buffer-layout';
 import { A, F, pipe } from '@mobily/ts-belt';
-import BigNumber from 'bignumber.js';
 import type { Transaction } from '@solana/web3.js';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { TokenAccount } from '@trezor/blockchain-link-types';
 import { solanaUtils as SolanaBlockchainLinkUtils } from '@trezor/blockchain-link-utils';
 

@@ -17,7 +17,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { TransactionHeader } from './TransactionHeader';
 import { WalletAccountTransaction } from 'src/types/wallet';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { BlurWrapper } from './TransactionItemBlurWrapper';
 
 const Wrapper = styled.span`

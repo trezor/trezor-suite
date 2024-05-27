@@ -8,7 +8,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 
 const GreyP = styled(Paragraph)`
