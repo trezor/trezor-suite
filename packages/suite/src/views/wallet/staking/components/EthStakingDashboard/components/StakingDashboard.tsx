@@ -56,10 +56,10 @@ export const StakingDashboard = () => {
     );
 
     const stakeTxs = useSelector(state =>
-        selectAccountStakeTransactions(state, account?.descriptor ?? ''),
+        selectAccountStakeTransactions(state, account?.key ?? ''),
     );
     const unstakeTxs = useSelector(state =>
-        selectAccountUnstakeTransactions(state, account?.descriptor ?? ''),
+        selectAccountUnstakeTransactions(state, account?.key ?? ''),
     );
 
     const daysToAddToPool = getDaysToAddToPool(stakeTxs, data);
