@@ -9,7 +9,7 @@ import PaymentProcessing from '../components/PaymentProcessing';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import WaitingForUser from '../components/WaitingForUser';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarketDetail';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;

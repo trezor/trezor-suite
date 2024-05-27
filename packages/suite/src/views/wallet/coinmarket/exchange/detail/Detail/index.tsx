@@ -12,7 +12,7 @@ import PaymentSending from '../components/PaymentSending';
 import { CoinmarketExchangeOfferInfo } from '../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { getTradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarketDetail';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;

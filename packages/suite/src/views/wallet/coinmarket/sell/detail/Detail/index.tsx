@@ -10,7 +10,7 @@ import PaymentFailed from '../components/PaymentFailed';
 import { CoinmarketSellOfferInfo } from '../../components/CoinmarketSellOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { getTradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarketDetail';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;

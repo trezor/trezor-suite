@@ -43,7 +43,7 @@ import type { InvityServerEnvironment, InvityServers } from '@suite-common/invit
 import {
     CoinmarketTradeType,
     CoinmarketWatchTradeResponseMapProps,
-} from 'src/types/coinmarket/coinmarketDetail';
+} from 'src/types/coinmarket/coinmarket';
 
 export const SavingsTradeKYCFinalStatuses: SavingsKYCStatus[] = ['Failed', 'Verified'];
 
