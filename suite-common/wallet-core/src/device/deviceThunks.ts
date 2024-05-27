@@ -101,7 +101,7 @@ export const toggleRememberDevice = createThunk(
  * @param {boolean} [useEmptyPassphrase=false]
  */
 export type CreateDeviceInstanceError = { error: 'passphrase-enabling-cancelled' };
-export const createDeviceInstance = createThunk<
+export const createDeviceInstanceThunk = createThunk<
     void,
     { device: TrezorDevice; useEmptyPassphrase?: boolean },
     { rejectValue: CreateDeviceInstanceError }
@@ -396,7 +396,7 @@ export const authConfirm = createThunk(
             // handle error passed from Passphrase modal
             if (response.payload.error === 'auth-confirm-cancel') {
                 // needs await to propagate all actions
-                await dispatch(createDeviceInstance({ device }));
+                await dispatch(createDeviceInstanceThunk({ device }));
                 // forget previous empty wallet
                 dispatch(deviceActions.forgetDevice(device));
 

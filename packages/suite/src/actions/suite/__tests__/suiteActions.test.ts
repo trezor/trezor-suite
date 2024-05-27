@@ -11,7 +11,7 @@ import {
     acquireDevice,
     authConfirm,
     authorizeDeviceThunk,
-    createDeviceInstance,
+    createDeviceInstanceThunk,
     forgetDisconnectedDevices,
     handleDeviceConnect,
     observeSelectedDevice,
@@ -284,7 +284,9 @@ describe('Suite Actions', () => {
             setTrezorConnectFixtures(f.applySettings);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(createDeviceInstance({ device: f.state.device.selectedDevice }));
+            await store.dispatch(
+                createDeviceInstanceThunk({ device: f.state.device.selectedDevice }),
+            );
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {

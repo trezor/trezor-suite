@@ -5,7 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Translation } from '@suite-native/intl';
 import { HStack, Text } from '@suite-native/atoms';
 import {
-    createDeviceInstance,
+    createDeviceInstanceThunk,
     selectDevice,
     selectIsDeviceProtectedByPassphrase,
 } from '@suite-common/wallet-core';
@@ -48,7 +48,7 @@ export const AddHiddenWalletButton = () => {
         if (!device) return;
         setIsDeviceManagerVisible(false);
 
-        dispatch(createDeviceInstance({ device }));
+        dispatch(createDeviceInstanceThunk({ device }));
 
         // Create device instance thunk already handles passphrase enabling, so we just redirect to this screen and wait for success / error
         if (!isPassphraseEnabledOnDevice) {

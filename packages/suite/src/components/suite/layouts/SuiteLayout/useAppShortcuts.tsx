@@ -1,4 +1,4 @@
-import { createDeviceInstance, selectDevice } from '@suite-common/wallet-core';
+import { createDeviceInstanceThunk, selectDevice } from '@suite-common/wallet-core';
 import { useEvent } from 'react-use';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -12,7 +12,7 @@ export const useAppShortcuts = () => {
 
         // press CMD + P to show PassphraseModal
         if (modKey && e.key === 'p' && device) {
-            dispatch(createDeviceInstance({ device }));
+            dispatch(createDeviceInstanceThunk({ device }));
             e.preventDefault(); // prevent default behaviour
         }
 

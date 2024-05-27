@@ -2,7 +2,11 @@ import styled from 'styled-components';
 import { variables } from '@trezor/components';
 import * as deviceUtils from '@suite-common/suite-utils';
 
-import { selectDevice, createDeviceInstance, selectDeviceThunk } from '@suite-common/wallet-core';
+import {
+    selectDevice,
+    createDeviceInstanceThunk,
+    selectDeviceThunk,
+} from '@suite-common/wallet-core';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 
@@ -81,7 +85,7 @@ export const DeviceItem = ({
         instance: DeviceItemProps['device'],
         useEmptyPassphrase?: boolean,
     ) => {
-        await dispatch(createDeviceInstance({ device: instance, useEmptyPassphrase }));
+        await dispatch(createDeviceInstanceThunk({ device: instance, useEmptyPassphrase }));
         handleRedirection();
     };
 

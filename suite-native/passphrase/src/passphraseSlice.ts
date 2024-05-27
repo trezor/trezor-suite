@@ -4,7 +4,7 @@ import {
     AuthorizeDeviceError,
     CreateDeviceInstanceError,
     authorizeDeviceThunk,
-    createDeviceInstance,
+    createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 
 type PassphraseState = {
@@ -34,10 +34,10 @@ export const passphraseSlice = createSlice({
                 }
             });
         builder
-            .addCase(createDeviceInstance.pending, state => {
+            .addCase(createDeviceInstanceThunk.pending, state => {
                 state.error = null;
             })
-            .addCase(createDeviceInstance.rejected, (state, { payload }) => {
+            .addCase(createDeviceInstanceThunk.rejected, (state, { payload }) => {
                 if (payload?.error === 'passphrase-enabling-cancelled') {
                     state.error = payload;
                 }
