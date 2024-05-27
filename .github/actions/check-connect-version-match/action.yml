@@ -14,6 +14,7 @@ runs:
   using: "composite"
   steps:
     - name: Extract branch version
+      shell: bash
       id: extract-branch-version
       run: |
         BRANCH_REF="${{ inputs.branch_ref }}"
@@ -21,6 +22,7 @@ runs:
         echo "branch_version=$BRANCH_VERSION" >> $GITHUB_OUTPUT
 
     - name: Check if version in package.json matches the one in branch name
+      shell: bash
       run: |
         BRANCH_VERSION="${{ steps.extract-branch-version.outputs.branch_version }}"
         EXTRACTED_VERSION="${{ inputs.extracted_version }}"
