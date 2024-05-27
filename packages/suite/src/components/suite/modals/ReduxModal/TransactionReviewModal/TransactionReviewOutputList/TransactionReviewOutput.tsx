@@ -1,5 +1,5 @@
 import { ReactNode, forwardRef } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Translation } from 'src/components/suite';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';

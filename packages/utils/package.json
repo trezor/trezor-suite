@@ -35,5 +35,8 @@
     },
     "devDependencies": {
         "tsx": "^4.7.0"
+    },
+    "dependencies": {
+        "bignumber.js": "^9.1.2"
     }
 }

@@ -23,7 +23,7 @@
         "@suite-native/settings": "workspace:*",
         "@trezor/blockchain-link": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "bignumber.js": "^9.1.2",
+        "@trezor/utils": "workspace:*",
         "react": "18.2.0",
         "react-native": "0.73.6",
         "react-redux": "8.0.7",

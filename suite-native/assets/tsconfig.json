@@ -26,6 +26,7 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../settings" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/utils" }
     ]
 }

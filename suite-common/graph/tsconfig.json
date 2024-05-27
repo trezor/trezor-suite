@@ -14,6 +14,7 @@
         {
             "path": "../../packages/blockchain-link"
         },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/utils" }
     ]
 }

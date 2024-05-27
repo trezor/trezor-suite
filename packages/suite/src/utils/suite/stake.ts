@@ -11,7 +11,7 @@ import { Ethereum } from '@everstake/wallet-sdk';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { ValidatorsQueue } from '@suite-common/wallet-core';
 
 // Gas reserve ensuring txs are processed

@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
 import { memoize } from 'proxy-memoize';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,

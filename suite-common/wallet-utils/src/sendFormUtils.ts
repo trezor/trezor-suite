@@ -7,9 +7,9 @@ import {
     Merge,
 } from 'react-hook-form';
 
-import BigNumber from 'bignumber.js';
 import { fromWei, numberToHex, padLeft, toWei } from 'web3-utils';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Network, NetworkType } from '@suite-common/wallet-config';

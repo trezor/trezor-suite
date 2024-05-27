@@ -1,6 +1,6 @@
 import { A, D, F, pipe } from '@mobily/ts-belt';
-import BigNumber from 'bignumber.js';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Target, TokenTransfer, Transaction } from '@trezor/blockchain-link-types/src';
 import { arrayPartition } from '@trezor/utils';
 import type {

@@ -1,7 +1,7 @@
 import { A, D, pipe } from '@mobily/ts-belt';
-import BigNumber from 'bignumber.js';
 import { differenceInMinutes, eachMinuteOfInterval, fromUnixTime, getUnixTime } from 'date-fns';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { getBlockbookSafeTime } from '@suite-common/suite-utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';

@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/SignTransaction.js
 
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';

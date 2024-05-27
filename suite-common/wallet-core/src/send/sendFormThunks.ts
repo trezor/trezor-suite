@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
 import { G, A } from '@mobily/ts-belt';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     Account,

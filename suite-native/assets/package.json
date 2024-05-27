@@ -27,7 +27,7 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "bignumber.js": "^9.1.2",
+        "@trezor/utils": "workspace:*",
         "jotai": "1.9.1",
         "proxy-memoize": "2.0.2",
         "react": "^18.2.0",

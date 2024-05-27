@@ -1,5 +1,6 @@
-import BigNumber from 'bignumber.js';
 import { FormatNumberOptions } from '@formatjs/intl';
+
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { makeFormatter } from '../makeFormatter';
 import { FormatterConfig } from '../types';

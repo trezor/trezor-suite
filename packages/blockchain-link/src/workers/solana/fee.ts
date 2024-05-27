@@ -1,5 +1,5 @@
 import { Connection, Message, PublicKey } from '@solana/web3.js';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 const COMPUTE_BUDGET_PROGRAM_ID = 'ComputeBudget111111111111111111111111111111';
 const DEFAULT_COMPUTE_UNIT_PRICE_MICROLAMPORTS = 100_000; // micro-lamports, value taken from other wallets

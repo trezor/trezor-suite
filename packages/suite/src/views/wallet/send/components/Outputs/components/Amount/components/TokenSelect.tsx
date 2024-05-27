@@ -7,7 +7,7 @@ import { Account } from 'src/types/wallet';
 import { Output } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';

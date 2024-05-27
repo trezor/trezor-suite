@@ -1,5 +1,5 @@
 import produce from 'immer';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { memoizeWithArgs } from 'proxy-memoize';
 
 import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';

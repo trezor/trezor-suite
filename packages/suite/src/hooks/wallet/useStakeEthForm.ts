@@ -1,7 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import useDebounce from 'react-use/lib/useDebounce';
 
 import {

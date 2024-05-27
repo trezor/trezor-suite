@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { useTheme } from 'styled-components';
 import { Icon } from '@trezor/components';
 import { Translation } from 'src/components/suite';

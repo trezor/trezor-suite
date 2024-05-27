@@ -14,7 +14,7 @@ import {
     isTxFeePaid,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 import { useSelector } from 'src/hooks/suite';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
