@@ -89,8 +89,8 @@ runs:
       shell: bash
       env:
         NODE_ENV: "production"
-        __TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
-        CONNECT_EXPLORER_ASSET_PREFIX: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+        __TREZOR_CONNECT_SRC: /${{ inputs.serverPath }}/
+        CONNECT_EXPLORER_ASSET_PREFIX: /${{ inputs.serverPath }}
         CONNECT_EXPLORER_BASE_PATH: /${{ inputs.serverPath }}
       run: |
         yarn workspace @trezor/connect-explorer build
