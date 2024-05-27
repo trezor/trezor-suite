@@ -102,7 +102,7 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_trezor_suite_prod_deploy
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
           aws-region: eu-central-1
 
       - name: Synching production bucket with current staging
