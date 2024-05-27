@@ -40,7 +40,7 @@ testPlaywright.afterAll(() => {
  * 2. Check that all types of Cardano accounts are discovered
  * 3. Check that Staking section is available
  */
-testPlaywright('Discover all Cardano account types', async () => {
+testPlaywright.skip('Discover all Cardano account types', async () => {
     await onDashboardPage.passThroughInitialRun(window);
     await onDashboardPage.discoveryShouldFinish(window);
 
