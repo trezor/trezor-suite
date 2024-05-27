@@ -4,17 +4,19 @@ import { createContext, useContext } from 'react';
 import {
     CoinmarketDetailContextValues,
     CoinmarketGetDetailDataOutputProps,
+    CoinmarketUseDetailOutputProps,
+    CoinmarketUseDetailProps,
+} from 'src/types/coinmarket/coinmarketDetail';
+import { useCoinmarketWatchTrade } from './useCoinmarketWatchTrade';
+import { Trade, TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
+import {
     CoinmarketGetDetailDataProps,
     CoinmarketGetTypedInfoTradeProps,
     CoinmarketGetTypedTradeProps,
     CoinmarketTradeInfoMapProps,
     CoinmarketTradeMapProps,
     CoinmarketTradeType,
-    CoinmarketUseDetailOutputProps,
-    CoinmarketUseDetailProps,
-} from 'src/types/coinmarket/coinmarketDetail';
-import { useCoinmarketWatchTrade } from './useCoinmarketWatchTrade';
-import { Trade, TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
+} from 'src/types/coinmarket/coinmarket';
 
 const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 

@@ -17,7 +17,7 @@ import {
     CoinmarketTradeType,
     CoinmarketUseWatchTradeProps,
     CoinmarketWatchTradeProps,
-} from 'src/types/coinmarket/coinmarketDetail';
+} from 'src/types/coinmarket/coinmarket';
 
 export const getTradeFinalStatuses = (tradeType: string): Partial<CoinmarketTradeStatusType>[] => {
     if (tradeType === 'buy') {
