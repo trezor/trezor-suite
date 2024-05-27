@@ -1,4 +1,4 @@
-name: "[Build/Test] suite-desktop e2e"
+name: "[Test] suite-desktop e2e"
 # this action builds a desktop version of Suite and runs basic test suite for it
 
 # run only if there are changes in suite or related libs paths
@@ -40,6 +40,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Run and store git values for Currents
+        run: |
+          echo "COMMIT_MESSAGE=$(git show -s --pretty=%B)" >> $GITHUB_ENV
+          echo "COMMIT_EMAIL=$(git show -s --pretty=%ae)" >> $GITHUB_ENV
+          echo "COMMIT_AUTHOR=$(git show -s --pretty=%an)" >> $GITHUB_ENV
+          echo "COMMIT_SHA=$(git show -s --pretty=%H)" >> $GITHUB_ENV
+          echo "COMMIT_TIMESTAMP=$(git show -s --pretty=%ct)" >> $GITHUB_ENV
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -61,6 +71,22 @@ jobs:
 
       - name: Run e2e desktop tests
         env:
+          GITHUB_WORKFLOW: ${{github.workflow}}
+          GITHUB_ACTION: true
+          GITHUB_EVENT_NAME: ${{github.event_name}}
+          GITHUB_RUN_ID: ${{github.run_id}}
+          GITHUB_RUN_ATTEMPT: ${{github.run_attempt}}
+          GITHUB_REPOSITORY: ${{github.repository}}
+          COMMIT_INFO_BRANCH: ${{github.head_ref}}
+          COMMIT_INFO_MESSAGE: ${{env.COMMIT_MESSAGE}}
+          COMMIT_INFO_EMAIL: ${{env.COMMIT_EMAIL}}
+          COMMIT_INFO_AUTHOR: ${{env.COMMIT_AUTHOR}}
+          COMMIT_INFO_SHA: ${{env.COMMIT_SHA}}
+          COMMIT_INFO_TIMESTAMP: ${{env.COMMIT_TIMESTAMP}}
+          COMMIT_INFO_REMOTE: ${{github.repository}}
+          CURRENTS_PROJECT_ID: 4ytF0E
+          CURRENTS_RECORD_KEY: ${{ secrets.CURRENTS_RECORD_KEY }}
+          CURRENTS_CI_BUILD_ID: pr-run-${{github.run_id}}
           COMPOSE_FILE: ./docker/docker-compose.suite-desktop-ci.yml
           TEST_FILE: ${{ matrix.TEST_FILE }}
         run: |
