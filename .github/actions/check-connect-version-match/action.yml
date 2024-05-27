@@ -1,7 +1,7 @@
 name: "Check Connect Version Match with Branch"
 description: "Check if the version in package.json matches the version in the branch name"
 inputs:
- branch_ref:
+  branch_ref:
     description: "The full ref of the branch"
     required: true
     type: string
