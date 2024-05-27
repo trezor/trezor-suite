@@ -17,5 +17,6 @@ export * from './solanaUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
 export * from './antiFraud';
+export * from './stakingUtils';
 
 export { analyzeTransactions as analyzeTransactionsFixtures } from './__fixtures__/transactionUtils';

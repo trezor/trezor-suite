@@ -1,4 +1,5 @@
 import { Account } from '@suite-common/wallet-types';
+
 import { getAccountAutocompoundBalance, getAccountEverstakeStakingPool } from '../stakingUtils';
 import {
     getAccountAutocompoundBalanceFixtures,

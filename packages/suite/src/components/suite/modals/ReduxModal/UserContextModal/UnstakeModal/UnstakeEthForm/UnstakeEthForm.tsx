@@ -10,7 +10,7 @@ import { Options } from './Options';
 import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import UnstakeFees from './Fees';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
-import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
+import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};

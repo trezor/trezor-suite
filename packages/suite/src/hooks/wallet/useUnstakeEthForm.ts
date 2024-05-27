@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import {
     fromFiatCurrency,
+    getAccountAutocompoundBalance,
     getFeeLevels,
     getFiatRateKey,
     toFiatCurrency,
@@ -34,7 +35,6 @@ import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
 import { useFees } from './form/useFees';
-import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitsString;
