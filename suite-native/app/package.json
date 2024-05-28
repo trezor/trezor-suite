@@ -1,7 +1,7 @@
 {
     "name": "@suite-native/app",
     "version": "1.0.0",
-    "suiteNativeVersion": "24.5.0",
+    "suiteNativeVersion": "24.6.0",
     "main": "index.js",
     "scripts": {
         "android": "expo run:android",
