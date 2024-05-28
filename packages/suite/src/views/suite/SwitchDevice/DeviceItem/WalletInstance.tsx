@@ -1,7 +1,7 @@
 import styled, { css } from 'styled-components';
 
 import { selectDiscoveryByDeviceState, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { variables, Card, Divider } from '@trezor/components';
+import { variables, Card, Divider, Icon, Tooltip } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
 
@@ -32,6 +32,8 @@ const RelativeContainer = styled.div`
 
 const InstanceType = styled.div<{ isSelected: boolean }>`
     display: flex;
+    gap: ${spacingsPx.xxs};
+    align-items: center;
     color: ${({ theme, isSelected }) => (isSelected ? theme.textDefault : theme.textSubdued)};
     ${({ isSelected }) => isSelected && typography.highlight}
     /* these styles ensure proper metadata behavior */
@@ -131,6 +133,11 @@ export const WalletInstance = ({
                 <Col $grow={1}>
                     {discoveryProcess && (
                         <InstanceType isSelected={isSelected}>
+                            {!instance.useEmptyPassphrase && (
+                                <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
+                                    <Icon icon="ASTERISK" color="textDefault" size={12} />
+                                </Tooltip>
+                            )}
                             {instance.state ? (
                                 <MetadataLabeling
                                     defaultVisibleValue={
