@@ -1,10 +1,10 @@
 import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
 import styled from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { FONT_SIZE, SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
 
 const PriceWrap = styled.div``;
 
@@ -30,7 +30,15 @@ const PriceValue = styled.div`
     }
 `;
 
-const CoinmarketUtilsPrice = ({ quote, wantCrypto }: CoinmarketOffersItemProps) => {
+const CoinmarketUtilsPrice = ({
+    wantCrypto,
+    fiatAmount,
+    fiatCurrency,
+    cryptoAmount,
+    cryptoCurrency,
+}: CoinmarketCryptoAmountProps) => {
+    // TODO: control for sell
+
     return (
         <PriceWrap>
             <PriceTitle>
@@ -39,14 +47,11 @@ const CoinmarketUtilsPrice = ({ quote, wantCrypto }: CoinmarketOffersItemProps) 
             <PriceValueWrap>
                 <PriceValue>
                     {wantCrypto ? (
-                        <CoinmarketFiatAmount
-                            amount={quote.fiatStringAmount}
-                            currency={quote.fiatCurrency}
-                        />
+                        <CoinmarketFiatAmount amount={fiatAmount} currency={fiatCurrency} />
                     ) : (
                         <CoinmarketCryptoAmount
-                            amount={quote.receiveStringAmount}
-                            symbol={cryptoToCoinSymbol(quote.receiveCurrency!)}
+                            amount={cryptoAmount}
+                            symbol={cryptoToCoinSymbol(cryptoCurrency!)}
                         />
                     )}
                 </PriceValue>
