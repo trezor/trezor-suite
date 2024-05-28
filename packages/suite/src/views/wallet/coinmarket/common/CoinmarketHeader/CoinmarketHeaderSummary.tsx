@@ -2,10 +2,9 @@ import { H2, Icon, variables } from '@trezor/components';
 import styled from 'styled-components';
 import { CoinmarketCryptoAmount, CoinmarketFiatAmount } from '..';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import invityAPI from 'src/services/suite/invityAPI';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
 
 const SummaryWrap = styled.div`
     margin-top: -3px;
@@ -22,20 +21,9 @@ const SummaryRow = styled.div`
     align-items: center;
 `;
 
-const OrigAmount = styled.div`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
 const StyledIcon = styled(Icon)`
     padding: 0 ${spacingsPx.sm};
     margin: 0 ${spacingsPx.lg};
-`;
-
-const TokenLogo = styled.img`
-    display: flex;
-    align-items: center;
-    height: 21px;
 `;
 
 const Send = styled(H2)`
@@ -46,45 +34,32 @@ const Send = styled(H2)`
     }
 `;
 
-const Receive = styled(Send)`
-    padding-left: 10px;
-`;
-
-interface CoinmarketHeaderSummaryProps {
-    className?: string;
-}
-
-const CoinmarketHeaderSummary = ({ className }: CoinmarketHeaderSummaryProps) => {
-    const { quotesRequest, quotes } = useCoinmarketBuyOffersContext();
-
-    if (!quotesRequest || !quotes || quotes.length === 0) return null;
-    const { fiatStringAmount, fiatCurrency, wantCrypto } = quotesRequest;
+const CoinmarketHeaderSummary = ({
+    className,
+    wantCrypto,
+    fiatAmount,
+    fiatCurrency,
+    cryptoAmount,
+    cryptoCurrency,
+}: CoinmarketCryptoAmountProps) => {
+    // TODO: control for sell
 
     return (
         <SummaryWrap className={className}>
             <SummaryRow>
                 <Send>
                     <CoinmarketFiatAmount
-                        amount={!wantCrypto ? quotes[0].fiatStringAmount : ''}
-                        currency={quotes[0].fiatCurrency}
+                        amount={!wantCrypto ? fiatAmount : ''}
+                        currency={fiatCurrency}
                     />
                 </Send>
                 <StyledIcon icon="ARROW_RIGHT_LONG" />
-                <TokenLogo
-                    src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(quotes[0].receiveCurrency!))}
+                <CoinmarketCryptoAmount
+                    amount={wantCrypto ? cryptoAmount : ''}
+                    symbol={cryptoToCoinSymbol(cryptoCurrency!)}
+                    displaySymbol
                 />
-                <Receive>
-                    <CoinmarketCryptoAmount
-                        amount={wantCrypto ? quotes[0].receiveStringAmount : ''}
-                        symbol={cryptoToCoinSymbol(quotes[0].receiveCurrency!)}
-                    />
-                </Receive>
             </SummaryRow>
-            {!wantCrypto && (
-                <OrigAmount>
-                    ≈ <CoinmarketFiatAmount amount={fiatStringAmount} currency={fiatCurrency} />
-                </OrigAmount>
-            )}
         </SummaryWrap>
     );
 };

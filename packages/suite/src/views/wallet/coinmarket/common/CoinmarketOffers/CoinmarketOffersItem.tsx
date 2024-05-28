@@ -1,12 +1,16 @@
 import styled from 'styled-components';
 import { Button, Card } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { BuyTrade } from 'invity-api';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
+import {
+    getCryptoAmountProps,
+    getProvidersInfoProps,
+} from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const OfferWrap = styled(Card)`
     min-height: 100px;
@@ -99,12 +103,14 @@ const StyledButton = styled(Button)`
 `;
 
 export interface CoinmarketOffersItemProps {
-    quote: BuyTrade;
-    wantCrypto: boolean;
+    quote: CoinmarketTradeDetailMapProps[keyof CoinmarketTradeDetailMapProps];
 }
 
-const CoinmarketOffersItem = ({ quote, wantCrypto }: CoinmarketOffersItemProps) => {
-    const { selectQuote, providersInfo } = useCoinmarketBuyOffersContext();
+const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
+    const context = useCoinmarketOffersContext();
+    const { selectQuote } = context;
+    const { providers } = getProvidersInfoProps(context);
+    const cryptoAmountProps = getCryptoAmountProps(context);
     const { exchange } = quote;
     // const { tag } = getTagAndInfoNote(quote);
     const tagsExist = false;
@@ -119,22 +125,22 @@ const CoinmarketOffersItem = ({ quote, wantCrypto }: CoinmarketOffersItemProps) 
                     </OfferBadgeWrap>
                     <OfferProvider
                         exchange={exchange}
-                        providers={providersInfo}
+                        providers={providers}
                         $isMargined={tagsExist}
                     />
                 </OfferColumn1>
                 <OfferColumn2>
-                    <CoinmarketUtilsPrice quote={quote} wantCrypto={wantCrypto} />
+                    <CoinmarketUtilsPrice {...cryptoAmountProps} />
                 </OfferColumn2>
                 <OfferColumn3>
                     {quote.status === 'LOGIN_REQUEST' ? (
-                        <StyledButton onClick={() => selectQuote(quote)}>
+                        <StyledButton onClick={() => selectQuote(quote as any)}>
                             <Translation id="TR_LOGIN_PROCEED" />
                         </StyledButton>
                     ) : (
                         <StyledButton
                             isDisabled={!!quote.error}
-                            onClick={() => selectQuote(quote)}
+                            onClick={() => selectQuote(quote as any)}
                             data-test="@coinmarket/buy/offers/get-this-deal-button"
                         >
                             <Translation id="TR_BUY_GET_THIS_OFFER" />
