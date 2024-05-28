@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import { ExchangeTrade } from 'invity-api';
 
@@ -21,8 +21,8 @@ import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import {
-    CoinmarketExchangeOffersContextProps,
     CoinmarketExchangeStepType,
+    CoinmarketOffersContextValues,
 } from 'src/types/coinmarket/coinmarketOffers';
 
 export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketProps) => {
@@ -40,7 +40,9 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const [suiteReceiveAccounts, setSuiteReceiveAccounts] =
-        useState<CoinmarketExchangeOffersContextProps['suiteReceiveAccounts']>();
+        useState<
+            CoinmarketOffersContextValues<CoinmarketTradeExchangeType>['suiteReceiveAccounts']
+        >();
 
     const [exchangeStep, setExchangeStep] =
         useState<CoinmarketExchangeStepType>('RECEIVING_ADDRESS');
@@ -329,16 +331,6 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
         receiveAccount,
         setReceiveAccount,
         getQuotes,
+        type: 'exchange' as const,
     };
-};
-
-export const CoinmarketExchangeOffersContext =
-    createContext<CoinmarketExchangeOffersContextProps | null>(null);
-CoinmarketExchangeOffersContext.displayName = 'CoinmarketExchangeOffersContext';
-
-export const useCoinmarketExchangeOffersContext = () => {
-    const context = useContext(CoinmarketExchangeOffersContext);
-    if (context === null) throw Error('CoinmarketExchangeOffersContext used without Context');
-
-    return context;
 };

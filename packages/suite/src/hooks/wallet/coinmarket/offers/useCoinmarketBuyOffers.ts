@@ -1,5 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
-
+import { useState, useEffect, useCallback } from 'react';
 import { BuyTrade } from 'invity-api';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
@@ -15,7 +14,6 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import { useCoinmarketFilterReducer } from '../../../../reducers/wallet/useCoinmarketFilterReducer';
 import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
 import { CoinmarketTradeBuyType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketBuyOffersContextProps } from 'src/types/coinmarket/coinmarketOffers';
 
 export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) => {
     const {
@@ -182,17 +180,6 @@ export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) 
         account,
         timer,
         getQuotes,
+        type: 'buy' as const,
     };
-};
-
-export const CoinmarketBuyOffersContext = createContext<CoinmarketBuyOffersContextProps | null>(
-    null,
-);
-CoinmarketBuyOffersContext.displayName = 'CoinmarketBuyOffersContext';
-
-export const useCoinmarketBuyOffersContext = () => {
-    const context = useContext(CoinmarketBuyOffersContext);
-    if (context === null) throw Error('CoinmarketBuyOffersContext used without Context');
-
-    return context;
 };
