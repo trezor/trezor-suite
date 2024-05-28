@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Button, Card } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { BuyTrade } from 'invity-api';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';

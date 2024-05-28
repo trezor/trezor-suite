@@ -1,5 +1,4 @@
 import { useSelector } from 'src/hooks/suite';
-import invityAPI from 'src/services/suite/invityAPI';
 import { createContext, useContext } from 'react';
 import {
     CoinmarketDetailContextValues,
@@ -17,6 +16,7 @@ import {
     CoinmarketTradeMapProps,
     CoinmarketTradeType,
 } from 'src/types/coinmarket/coinmarket';
+import { useServerEnvironment } from './useServerEnviroment';
 
 const isBuyTrade = (trade: Trade): trade is TradeBuy => trade.tradeType === 'buy';
 
@@ -86,15 +86,6 @@ const getCoinmarketDetailData = <T extends CoinmarketTradeType>({
         info,
         trade,
     };
-};
-
-const useServerEnvironment = () => {
-    const invityServerEnvironment = useSelector(
-        state => state.suite.settings.debug.invityServerEnvironment,
-    );
-    if (invityServerEnvironment) {
-        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
-    }
 };
 
 export const useCoinmarketDetail = <T extends CoinmarketTradeType>({

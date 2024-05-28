@@ -10,7 +10,7 @@ import {
 } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { UseFormReturn } from 'react-hook-form';
 import type { Account } from 'src/types/wallet';

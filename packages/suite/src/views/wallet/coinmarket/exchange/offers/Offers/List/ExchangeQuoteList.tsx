@@ -7,7 +7,7 @@ import {
     QuestionTooltip,
     Translation,
 } from 'src/components/suite';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import { useSelector } from 'src/hooks/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { ExchangeQuote } from './ExchangeQuote';

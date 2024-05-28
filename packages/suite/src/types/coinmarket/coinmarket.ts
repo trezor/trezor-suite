@@ -9,9 +9,12 @@ import type {
     TradeType,
 } from 'src/types/wallet/coinmarketCommonTypes';
 import {
+    BuyTrade,
     BuyTradeStatus,
+    ExchangeTrade,
     ExchangeTradeStatus,
     SavingsTradeItemStatus,
+    SellFiatTrade,
     SellTradeStatus,
     WatchBuyTradeResponse,
     WatchExchangeTradeResponse,
@@ -20,6 +23,9 @@ import {
 import { Account } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
+import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+
+export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 
 export type CoinmarketTradeBuyType = 'buy';
 export type CoinmarketTradeSellType = 'sell';
@@ -33,6 +39,12 @@ export type CoinmarketTradeMapProps = {
     buy: TradeBuy;
     sell: TradeSell;
     exchange: TradeExchange;
+};
+
+export type CoinmarketTradeDetailMapProps = {
+    buy: BuyTrade;
+    sell: SellFiatTrade;
+    exchange: ExchangeTrade;
 };
 
 export type CoinmarketTradeInfoMapProps = {
