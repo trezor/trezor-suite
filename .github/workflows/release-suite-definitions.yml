@@ -34,7 +34,7 @@ jobs:
       - name: Configure aws credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production_definitions
+          role-to-assume: ${{ github.event.inputs.environment == 'develop-definitions' && 'arn:aws:iam::538326561891:role/gh_actions_suite_develop_definitions' || 'arn:aws:iam::538326561891:role/gh_actions_suite_production_definitions' }}
           aws-region: ${{ env.AWS_REGION }}
 
       - name: Build and sign ${{ github.event.inputs.environment }} token-definitions
