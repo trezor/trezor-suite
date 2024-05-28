@@ -2,13 +2,17 @@ import { H2 } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import CoinmarketHeaderFilter from './CoinmarketHeaderFilter';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import { CoinmarketRefreshTime } from '..';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import CoinmarketHeaderSummary from './CoinmarketHeaderSummary';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import {
+    isCoinmarketBuyOffers,
+    useCoinmarketOffersContext,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { getCryptoAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -71,8 +75,29 @@ interface CoinmarketHeaderProps {
     showTimerNextToTitle?: boolean;
 }
 
+/*
+    buy
+        fiatAmount
+            amount: !wantCrypto ? quotes[0].fiatStringAmount : ''
+            currency: quotes[0].fiatCurrency
+        cryptoAmount
+            amount: wantCrypto ? quotes[0].receiveStringAmount : ''
+            symbol: cryptoToCoinSymbol(quotes[0].receiveCurrency!)
+        coinSymbol: quotes[0].receiveCurrency!
+    sell
+        fiatAmount
+            amount: !amountInCrypto ? quotes[0].fiatStringAmount : ''
+            currency: quotes[0].fiatCurrency
+        cryptoAmount
+            amount: amountInCrypto ? quotes[0].cryptoStringAmount : ''
+            symbol: cryptoToCoinSymbol(quotes[0].receiveCurrency!)
+        coinSymbol: quotes[0].cryptoCurrency!
+*/
+
 const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: CoinmarketHeaderProps) => {
-    const { innerQuotesFilterReducer, timer } = useCoinmarketBuyOffersContext();
+    const context = useCoinmarketOffersContext();
+    const { timer } = context;
+    const headerProps = getCryptoAmountProps(context);
 
     const Timer = () => (
         <CoinmarketRefreshTime
@@ -92,8 +117,12 @@ const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: Coinmarke
                 {showTimerNextToTitle && <Timer />}
             </HeaderTop>
             <HeaderBottom>
-                <CoinmarketHeaderFilter quotesFilterReducer={innerQuotesFilterReducer} />
-                <CoinmarketHeaderSummaryWrap />
+                {isCoinmarketBuyOffers(context) && (
+                    <CoinmarketHeaderFilter
+                        quotesFilterReducer={context.innerQuotesFilterReducer}
+                    />
+                )}
+                <CoinmarketHeaderSummaryWrap {...headerProps} />
                 {!showTimerNextToTitle && (
                     <HeaderCoinmarketRefreshTime>
                         <Timer />
