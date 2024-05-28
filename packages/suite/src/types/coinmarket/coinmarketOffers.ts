@@ -15,22 +15,27 @@ import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { UseCoinmarketFilterReducerOutputProps } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 import { TradeSell } from '../wallet/coinmarketCommonTypes';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
+import { CoinmarketTradeType } from './coinmarket';
 
-export type CoinmarketBuyOffersContextProps = {
+type CoinmarketOffersContextProps = {
+    type: CoinmarketTradeType;
+    device: AppState['device']['selectedDevice'];
     account: Account;
     callInProgress: boolean;
+    timer: Timer;
+    getQuotes: () => Promise<void>;
+};
+
+type CoinmarketBuyOffersContextProps = CoinmarketOffersContextProps & {
     alternativeQuotes: AppState['wallet']['coinmarket']['buy']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
-    device: AppState['device']['selectedDevice'];
     selectedQuote?: BuyTrade;
     verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
     addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
     providersInfo?: BuyInfo['providerInfos'];
     selectQuote: (quote: BuyTrade) => void;
     goToPayment: (address: string) => void;
-    timer: Timer;
-    getQuotes: () => Promise<void>;
     innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
 };
 
@@ -40,13 +45,10 @@ export type CoinmarketBuyAddressOptionsType = {
 
 export type CoinmarketSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 
-export type CoinmarketSellOffersContextProps = {
-    callInProgress: boolean;
-    account: Account;
+type CoinmarketSellOffersContextProps = CoinmarketOffersContextProps & {
     quotes: AppState['wallet']['coinmarket']['sell']['quotes'];
     alternativeQuotes: AppState['wallet']['coinmarket']['sell']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
-    device: AppState['device']['selectedDevice'];
     selectedQuote?: SellFiatTrade;
     trade?: TradeSell;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
@@ -57,9 +59,7 @@ export type CoinmarketSellOffersContextProps = {
     addBankAccount: () => void;
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => void;
-    timer: Timer;
     needToRegisterOrVerifyBankAccount: (quote: SellFiatTrade) => boolean;
-    getQuotes: () => Promise<void>;
 };
 
 export type CoinmarketExchangeStepType =
@@ -67,14 +67,11 @@ export type CoinmarketExchangeStepType =
     | 'SEND_TRANSACTION'
     | 'SEND_APPROVAL_TRANSACTION';
 
-export type CoinmarketExchangeOffersContextProps = {
-    callInProgress: boolean;
-    account: Account;
+type CoinmarketExchangeOffersContextProps = CoinmarketOffersContextProps & {
     fixedQuotes: AppState['wallet']['coinmarket']['exchange']['fixedQuotes'];
     floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
     dexQuotes: AppState['wallet']['coinmarket']['exchange']['dexQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
-    device: AppState['device']['selectedDevice'];
     selectedQuote?: ExchangeTrade;
     setSelectedQuote: (quote?: ExchangeTrade) => void;
     suiteReceiveAccounts?: AppState['wallet']['accounts'];
@@ -89,8 +86,6 @@ export type CoinmarketExchangeOffersContextProps = {
     setReceiveAccount: (account?: Account) => void;
     confirmTrade: (address: string, extraField?: string) => Promise<boolean>;
     sendTransaction: () => void;
-    timer: Timer;
-    getQuotes: () => Promise<void>;
 };
 
 export enum P2pStep {
@@ -98,18 +93,26 @@ export enum P2pStep {
     RECEIVING_ADDRESS,
 }
 
-export type CoinmarketP2pOffersContextProps = {
-    device: AppState['device']['selectedDevice'];
-    account: Account;
+export type CoinmarketP2pOffersContextProps = Omit<
+    CoinmarketOffersContextProps,
+    'getQuotes' | 'type'
+> & {
     providers?: { [name: string]: P2pProviderInfo };
-    timer: Timer;
     quotesRequest?: P2pQuotesRequest;
     quotes?: P2pQuote[];
     selectQuote: (quote: P2pQuote) => void;
     selectedQuote?: P2pQuote;
     p2pStep: P2pStep;
     goToProvider: () => void;
-    callInProgress: boolean;
     providerVisited: boolean;
     goToReceivingAddress: () => void;
 };
+
+export type CoinmarketOffersMapProps = {
+    buy: CoinmarketBuyOffersContextProps;
+    sell: CoinmarketSellOffersContextProps;
+    exchange: CoinmarketExchangeOffersContextProps;
+};
+
+export type CoinmarketOffersContextValues<T extends CoinmarketTradeType> =
+    CoinmarketOffersMapProps[T];

@@ -7,10 +7,11 @@ import {
     QuestionTooltip,
     Translation,
 } from 'src/components/suite';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import { useSelector } from 'src/hooks/suite';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { ExchangeQuote } from './ExchangeQuote';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -74,7 +75,7 @@ export const ExchangeQuoteList = ({ quotes, type }: ListProps) => {
     const {
         quotesRequest,
         account: { symbol },
-    } = useCoinmarketExchangeOffersContext();
+    } = useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
     const fee = useSelector(state => state.wallet.coinmarket.composedTransactionInfo.composed?.fee);
 
     if (!quotesRequest || !quotes) return null;
