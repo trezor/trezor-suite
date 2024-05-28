@@ -1,12 +1,20 @@
 | Package                          | stable |    canary    |
 | -------------------------------- | :----: | :----------: |
-| npm @trezor/connect              | 9.2.2  | 9.2.4-beta.2 |
-| npm @trezor/connect-web          | 9.2.2  | 9.2.4-beta.2 |
-| npm @trezor/connect-webextension | 9.2.2  | 9.2.4-beta.2 |
-| connect.trezor.io/9              | 9.2.2  |      x       |
+| npm @trezor/connect              | 9.2.4  | 9.2.4-beta.2 |
+| npm @trezor/connect-web          | 9.2.4  | 9.2.4-beta.2 |
+| npm @trezor/connect-webextension | 9.2.4  | 9.2.4-beta.2 |
 
-# 9.2.4-beta.2
+| Connect explorer    | stable |    canary    |
+| ------------------- | :----: | :----------: |
+| connect.trezor.io/9 | 9.2.4  | 9.2.4-beta.2 |
 
+User the persistent link connect.trezor.io/9 to access the latest stable version of Connect Explorer.
+
+# 9.2.4
+
+-   chore: BigNumber wrapper (d18ba9a879)
+-   chore(connect): add Rabby to knownHosts (1ec4c5bfc5)
+-   chore(transport): make Session type literal (72570f2219)
 -   chore(connect): re-add feature support checking in cardanoSignTransaction (acf9ffc2cb)
 -   chore(connect): fw-update: add error message when binary is too small (b0c1173f8d)
 -   chore(connect): remove legacyresults from cardano fixtures (acd9e1e510)
@@ -18,29 +26,6 @@
 -   chore(connect): remove DataManager from DeviceList (afc8760213)
 -   chore(connect): remove DataManager dependency from DeviceList constructor (7971515d71)
 -   chore(connect): simplify reduce code duplication in DeviceList (0cf8a04ed0)
-
-## connect-explorer
-
--   fix(connect-explorer): method testing tool scrollbars (f15f6487d8)
--   fix(connect-explorer): support GitHub emoji (fda80e5aa3)
-
-## connect-popup
-
--   fix(connect-popup): use PassphraseTypeCardLegacy (629d6f8671)
-
-## transport
-
--   feat(transport): make signal required param in constructor (4b82f8d505)
-
-## Dependencies update
-
--   npm-release: @trezor/blockchain-link 2.1.30-beta.2
--   npm-release: @trezor/blockchain-link-types 1.0.17-beta.2
--   npm-release: @trezor/connect-analytics 1.0.15-beta.1
--   npm-release: @trezor/transport 1.1.29-beta.1
-
-# 9.2.4-beta.1
-
 -   feat(connect): BackupDevice now has params (4120912)
 -   chore(connect): update protobuf messages (41bff13)
 -   chore(connect): add new TS3 CA pubkeys and update timestamp (3ae06ac)
@@ -49,10 +34,23 @@
 -   fix(connect): intermediary reconnect improved, device authenticity, multi-apps synchronization, reading translations, bin_outputs in txcache (115c718, de1b969, 140ec9a a881142, 88d7608, 0bb13d3)
 -   fix(connect): bin_outputs in txcache (0bb13d3)
 
+## connect-examples
+
+-   Update building process to allow multiple lines replacing of url mv2 and mv3 (e88b6f6f47)
+
+## connect-explorer
+
+Connect-explorer has been completely revamped into a new design :tada:
+
+-   feat(connect-explorer): use relative paths for assets and connect (f6f7cdf32c)
+-   fix(connect-explorer): method testing tool scrollbars (f15f6487d8)
+-   fix(connect-explorer): support GitHub emoji (fda80e5aa3)
+
 ## connect-popup
 
 In general measures to address popup closing unexpectedly were taken. Update of content-script.js will be needed to make these changes effective.
 
+-   fix(connect-popup): use PassphraseTypeCardLegacy (629d6f8671)
 -   fix(connect-popup): update text in selectAccount (21f4382)
 -   fix(connect-popup): add delay before popup bootstrap to allow contentscript load (00b2056)
 -   fix(connect-popup): webextension example e2e (b9cce02)
@@ -61,20 +59,25 @@ In general measures to address popup closing unexpectedly were taken. Update of 
 -   fix(connect-popup): delay popup.js loading to allow content script to init (92d15bc)
 -   fix(connect-popup): wait for POPUP.LOADED in webextension (cb18673)
 
-## connect-explorer
+## transport
 
-Connect-explorer has been completely revamped into a new design :tada:
+-   feat(transport): make signal required param in constructor (4b82f8d505)
 
 ## Dependencies update
 
--   npm-release: @trezor/blockchain-link-utils 1.0.18-beta.1
--   npm-release: @trezor/blockchain-link-types 1.0.17-beta.1
--   npm-release: @trezor/analytics 1.0.17-beta.1
--   npm-release: @trezor/connect-common 0.0.33-beta.1
--   npm-release: @trezor/env-utils 1.0.17-beta.1
--   npm-release: @trezor/protobuf 1.0.13-beta.1
--   npm-release: @trezor/schema-utils 1.0.4-beta.1
--   npm-release: @trezor/protocol 1.0.9-beta.1
+-   npm-release: @trezor/blockchain-link 2.1.30
+-   npm-release: @trezor/blockchain-link-utils 1.0.18
+-   npm-release: @trezor/blockchain-link-types 1.0.17
+-   npm-release: @trezor/connect-analytics 1.0.15
+-   npm-release: @trezor/analytics 1.0.17
+-   npm-release: @trezor/connect-common 0.0.33
+-   npm-release: @trezor/env-utils 1.0.17
+-   npm-release: @trezor/transport 1.1.29
+-   npm-release: @trezor/protobuf 1.0.13
+-   npm-release: @trezor/schema-utils 1.0.4
+-   npm-release: @trezor/protocol 1.0.9
+-   npm-release: @trezor/utxo-lib 2.0.10
+-   npm-release: @trezor/utils 9.0.24
 
 # 9.2.3
 
