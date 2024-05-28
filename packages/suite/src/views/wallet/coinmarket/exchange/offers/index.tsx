@@ -1,11 +1,9 @@
 import { withSelectedAccountLoaded } from 'src/components/wallet';
 import styled from 'styled-components';
-import {
-    CoinmarketExchangeOffersContext,
-    useCoinmarketExchangeOffers,
-} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import Offers from './Offers';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
 const Wrapper = styled.div`
     display: flex;
@@ -17,11 +15,11 @@ const OffersIndex = (props: UseCoinmarketProps) => {
     const coinmarketExchangeOffers = useCoinmarketExchangeOffers(props);
 
     return (
-        <CoinmarketExchangeOffersContext.Provider value={coinmarketExchangeOffers}>
+        <CoinmarketOffersContext.Provider value={coinmarketExchangeOffers}>
             <Wrapper>
                 <Offers />
             </Wrapper>
-        </CoinmarketExchangeOffersContext.Provider>
+        </CoinmarketOffersContext.Provider>
     );
 };
 

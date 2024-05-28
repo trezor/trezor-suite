@@ -11,7 +11,6 @@ import { useSelector, useTranslation } from 'src/hooks/suite';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { isQuoteError } from 'src/utils/wallet/coinmarket/exchangeUtils';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import {
     CoinmarketCryptoAmount,
     CoinmarketProviderInfo,
@@ -19,6 +18,8 @@ import {
 } from 'src/views/wallet/coinmarket/common';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Details = styled.div`
     display: flex;
@@ -183,7 +184,7 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     const { translationString } = useTranslation();
 
     const { account, selectQuote, exchangeInfo, callInProgress } =
-        useCoinmarketExchangeOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
 
     const feePerByte = useSelector(
         state => state.wallet.coinmarket.composedTransactionInfo.composed?.feePerByte,

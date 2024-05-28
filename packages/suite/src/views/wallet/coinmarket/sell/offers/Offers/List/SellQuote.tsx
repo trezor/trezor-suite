@@ -12,7 +12,8 @@ import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 
 const Details = styled.div`
     display: flex;
@@ -214,7 +215,7 @@ interface QuoteProps {
 export const SellQuote = ({ className, quote, amountInCrypto }: QuoteProps) => {
     const theme = useTheme();
     const { selectQuote, sellInfo, needToRegisterOrVerifyBankAccount } =
-        useCoinmarketSellOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeSellType>();
     const { tag, infoNote } = getTagAndInfoNote(quote);
     const { paymentMethod, paymentMethodName, exchange, error, bankAccounts } = quote;
     if (!exchange || !sellInfo) return null;
