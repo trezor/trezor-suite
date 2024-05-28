@@ -11,22 +11,15 @@ import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import { Translation } from '@suite-native/intl';
-import { Icon, IconName } from '@suite-common/icons';
+import { DeviceModelIcon } from '@suite-common/icons';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
     PassphraseStackRoutes.PassphraseForm,
     RootStackParamList
 >;
-
-const trezorIconNameMap = {
-    [DeviceModelInternal.T1B1]: 'trezorT1B1',
-    [DeviceModelInternal.T2B1]: 'trezorT2B1',
-    [DeviceModelInternal.T2T1]: 'trezorT2T1',
-    [DeviceModelInternal.T3T1]: 'trezorT2T1', // TODO replace with correct icon when available
-} as const satisfies Record<DeviceModelInternal, IconName>;
 
 export const EnterPassphraseOnTrezorButton = () => {
     const dispatch = useDispatch();
@@ -56,7 +49,7 @@ export const EnterPassphraseOnTrezorButton = () => {
         <Button
             onPress={handleSubmitOnDevice}
             colorScheme="tertiaryElevation0"
-            viewLeft={<Icon name={trezorIconNameMap[deviceModel]} />}
+            viewLeft={<DeviceModelIcon deviceModel={deviceModel} />}
         >
             <Translation id="modulePassphrase.enterPassphraseOnTrezor.button" />
         </Button>

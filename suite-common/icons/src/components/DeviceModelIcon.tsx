@@ -1,5 +1,8 @@
-import { Icon, IconName, IconSize } from '@suite-common/icons';
 import { DeviceModelInternal } from '@trezor/connect';
+
+import { IconSize } from '../config';
+import { IconName } from '../icons';
+import { Icon } from './Icon';
 
 type DeviceModelIconProps = {
     deviceModel: DeviceModelInternal;
