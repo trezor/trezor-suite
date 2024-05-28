@@ -29,7 +29,7 @@ export class TrezordNode {
     descriptors: Descriptor[];
     /** pending /listen subscriptions that are supposed to be resolved whenever descriptors change is detected */
     listenSubscriptions: {
-        descriptors: string;
+        descriptors: Descriptor[];
         req: Parameters<Handler>[0];
         res: Parameters<Handler>[1];
     }[];
@@ -64,7 +64,8 @@ export class TrezordNode {
         this.descriptors = descriptors;
         const [affected, unaffected] = arrayPartition(
             this.listenSubscriptions,
-            subscription => subscription.descriptors !== JSON.stringify(this.descriptors),
+            subscription =>
+                JSON.stringify(subscription.descriptors) !== JSON.stringify(this.descriptors),
         );
         affected.forEach(subscription => {
             subscription.res.end(str(this.descriptors));
