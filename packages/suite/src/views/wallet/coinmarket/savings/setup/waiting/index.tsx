@@ -1,9 +1,9 @@
-import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { useCoinmarketSavingsSetupWaiting } from 'src/hooks/wallet/useCoinmarketSavingsSetupWaiting';
 import { Button, Spinner } from '@trezor/components';
 import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { withCoinmarket } from '../../withCoinmarket';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,7 +20,7 @@ const StyledLoader = styled(Spinner)`
     margin: 32px 0;
 `;
 
-const CoinmarketSavingsSetupWaiting = (props: WithSelectedAccountLoadedProps) => {
+const CoinmarketSavingsSetupWaiting = (props: UseCoinmarketProps) => {
     const { handleGoToInvity } = useCoinmarketSavingsSetupWaiting(props);
 
     return (

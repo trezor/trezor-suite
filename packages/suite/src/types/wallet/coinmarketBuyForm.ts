@@ -3,11 +3,6 @@ import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
 import type { AmountLimits, DefaultCountryOption, Option } from './coinmarketCommonTypes';
 import type { CryptoSymbol } from 'invity-api';
-import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-
-export type UseCoinmarketBuyFormProps = WithSelectedAccountLoadedProps;
-
-export type Props = WithSelectedAccountLoadedProps;
 
 export type FormState = {
     fiatInput?: string;

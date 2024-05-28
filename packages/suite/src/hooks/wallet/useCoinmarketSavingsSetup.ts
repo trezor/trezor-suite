@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 import type {
     SavingsSetupContextValues,
     SavingsSetupFormState,
-    UseSavingsSetupProps,
 } from 'src/types/wallet/coinmarketSavingsSetup';
 import { useForm, useWatch } from 'react-hook-form';
 import { InitSavingsTradeRequest } from 'invity-api';
@@ -31,10 +30,11 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const useSavingsSetup = ({
     selectedAccount,
-}: UseSavingsSetupProps): SavingsSetupContextValues => {
+}: UseCoinmarketProps): SavingsSetupContextValues => {
     const { account } = selectedAccount;
     const selectedProvider = useSelector(state => state.wallet.coinmarket.savings.selectedProvider);
     const supportedCountries = useSelector(

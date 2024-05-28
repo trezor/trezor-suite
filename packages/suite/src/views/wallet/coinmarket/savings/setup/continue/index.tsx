@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
-
-import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import {
     AddressOptions,
     KycError,
@@ -17,6 +15,7 @@ import { AllFeesIncluded } from '../../AllFeesIncluded';
 import { ProvidedBy } from '../../ProvidedBy';
 import { CoinmarketReauthorizationCard } from '../../CoinmarketReauthorizationCard';
 import { withCoinmarket } from '../../withCoinmarket';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 const Header = styled.div`
     font-weight: 500;
@@ -65,7 +64,7 @@ const Footer = styled.div`
     margin-top: 30px;
 `;
 
-const CoinmarketSavingsSetupContinue = (props: WithSelectedAccountLoadedProps) => {
+const CoinmarketSavingsSetupContinue = (props: UseCoinmarketProps) => {
     const {
         control,
         annualSavingsCryptoAmount,

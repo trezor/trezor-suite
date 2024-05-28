@@ -1,5 +1,4 @@
 import type { PaymentFrequency } from 'invity-api';
-import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import type {
     CountryOption,
     PaymentFrequencyOption,
@@ -7,8 +6,6 @@ import type {
 } from 'src/types/wallet/coinmarketCommonTypes';
 import type { Account } from 'src/types/wallet';
 import { UseFormReturn } from 'react-hook-form';
-
-export type UseSavingsSetupProps = WithSelectedAccountLoadedProps;
 
 export interface SavingsSetupFormState extends Savings {
     country?: CountryOption;

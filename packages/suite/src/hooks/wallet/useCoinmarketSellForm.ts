@@ -28,7 +28,6 @@ import {
 } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import {
     SellFormState,
-    UseCoinmarketSellFormProps,
     SellFormContextValues,
     CRYPTO_INPUT,
     FIAT_INPUT,
@@ -55,12 +54,13 @@ import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
 
 const useSellState = (
-    selectedAccount: UseCoinmarketSellFormProps['selectedAccount'],
+    selectedAccount: UseCoinmarketProps['selectedAccount'],
     fees: AppState['wallet']['fees'],
     currentState: boolean,
     defaultFormValues?: SellFormState,
@@ -83,7 +83,7 @@ const useSellState = (
 
 export const useCoinmarketSellForm = ({
     selectedAccount,
-}: UseCoinmarketSellFormProps): SellFormContextValues => {
+}: UseCoinmarketProps): SellFormContextValues => {
     const dispatch = useDispatch();
 
     useEffect(() => {

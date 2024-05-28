@@ -11,9 +11,8 @@ import type {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import type { Option, DefaultCountryOption, AmountLimits } from './coinmarketCommonTypes';
-import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { Rate } from '@suite-common/wallet-types';
-import { SendContextValues } from './sendForm';
+import { SendContextValues } from 'src/types/wallet/sendForm';
 
 export const OUTPUT_AMOUNT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
@@ -21,10 +20,6 @@ export const FIAT_INPUT = 'fiatInput';
 export const FIAT_CURRENCY_SELECT = 'fiatCurrencySelect';
 export const CRYPTO_INPUT = 'cryptoInput';
 export const CRYPTO_CURRENCY_SELECT = 'cryptoCurrencySelect';
-
-export type UseCoinmarketSellFormProps = WithSelectedAccountLoadedProps;
-
-export type Props = WithSelectedAccountLoadedProps;
 
 export interface SellFormState extends FormState {
     fiatInput?: string;

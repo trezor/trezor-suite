@@ -2,7 +2,6 @@ import { useCallback, useEffect } from 'react';
 import type {
     SavingsSetupContinueFormState,
     SavingsSetupContinueContextValues,
-    UseSavingsSetupContinueProps,
 } from 'src/types/wallet/coinmarketSavingsSetupContinue';
 import { useForm, useWatch } from 'react-hook-form';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -23,10 +22,11 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const useSavingsSetupContinue = ({
     selectedAccount,
-}: UseSavingsSetupContinueProps): SavingsSetupContinueContextValues => {
+}: UseCoinmarketProps): SavingsSetupContinueContextValues => {
     const { account } = selectedAccount;
     const {
         isSavingsTradeLoading,

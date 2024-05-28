@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-
-import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { Button, variables, Select, Flag } from '@trezor/components';
 import { useSavingsSetup } from 'src/hooks/wallet/useCoinmarketSavingsSetup';
 import { Controller } from 'react-hook-form';
@@ -19,6 +17,7 @@ import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { useDispatch } from 'src/hooks/suite';
 import { Timestamp } from '@suite-common/wallet-types';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 const Header = styled.div`
     font-weight: 500;
@@ -94,7 +93,7 @@ const ConfirmButton = styled(Button)`
     margin: 42px auto 0;
 `;
 
-const CoinmarketSavingsSetup = (props: WithSelectedAccountLoadedProps) => {
+const CoinmarketSavingsSetup = (props: UseCoinmarketProps) => {
     const {
         control,
         defaultFiatAmount,
