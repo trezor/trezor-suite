@@ -69,8 +69,15 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                 secondaryButtonTitle: (
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.secondaryButton" />
                 ),
-                onPressSecondaryButton: () =>
-                    dispatch(cancelPassphraseAndSelectStandardDeviceThunk()),
+                onPressSecondaryButton: () => {
+                    dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+                    navigation.navigate(RootStackRoutes.AppTabs, {
+                        screen: AppTabsRoutes.HomeStack,
+                        params: {
+                            screen: HomeStackRoutes.Home,
+                        },
+                    });
+                },
                 secondaryButtonVariant: 'redElevation0',
                 icon: 'warningTriangleLight',
                 pictogramVariant: 'red',
