@@ -108,9 +108,9 @@ declare type TorSettings =
 
 declare type BridgeSettings = {
     /**
-     * Should bridge process be spawned on application startup
+     * Force suite not to start bridge on application startup
      */
-    startOnStartup: boolean;
+    doNotStartOnStartup: boolean;
     /**
      * Should run trezord-go
      */

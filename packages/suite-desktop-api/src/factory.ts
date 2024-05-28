@@ -138,7 +138,7 @@ export const factory = <R extends StrictIpcRenderer<any, IpcRendererEvent>>(
         toggleBridge: () => ipcRenderer.invoke('bridge/toggle'),
 
         changeBridgeSettings: payload => {
-            if (validation.isObject({ startOnStartup: 'boolean' }, payload)) {
+            if (validation.isObject({ doNotStartOnStartup: 'boolean' }, payload)) {
                 return ipcRenderer.invoke('bridge/change-settings', payload);
             }
 
