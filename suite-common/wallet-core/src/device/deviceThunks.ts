@@ -95,20 +95,21 @@ export const toggleRememberDevice = createThunk(
     },
 );
 
-/**
- * Triggered by `@trezor/connect DEVICE_EVENT`
- * @param {Device} device
- * @param {boolean} [useEmptyPassphrase=false]
- */
-export type CreateDeviceInstanceError = { error: 'passphrase-enabling-cancelled' };
+export type CreateDeviceInstanceError = {
+    error: 'passphrase-enabling-cancelled' | 'features-unavailable';
+};
 export const createDeviceInstanceThunk = createThunk<
-    void,
+    { device: TrezorDevice },
     { device: TrezorDevice; useEmptyPassphrase?: boolean },
     { rejectValue: CreateDeviceInstanceError }
 >(
     `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
-    async ({ device, useEmptyPassphrase = false }, { dispatch, getState, rejectWithValue }) => {
-        if (!device.features) return;
+    async (
+        { device, useEmptyPassphrase = false },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
+    ) => {
+        if (!device.features) return rejectWithValue({ error: 'features-unavailable' });
+
         if (!device.features.passphrase_protection) {
             const response = await TrezorConnect.applySettings({
                 device,
@@ -127,13 +128,14 @@ export const createDeviceInstanceThunk = createThunk<
         }
 
         const devices = selectDevices(getState());
-        dispatch(
-            deviceActions.createDeviceInstance({
+
+        return fulfillWithValue({
+            device: {
                 ...device,
                 useEmptyPassphrase,
                 instance: getNewInstanceNumber(devices, device),
-            }),
-        );
+            },
+        });
     },
 );
 
@@ -486,14 +488,18 @@ export const initDevices = createThunk(
     },
 );
 
-export const createImportedDeviceThunk = createThunk(
+export const createImportedDeviceThunk = createThunk<
+    { device: TrezorDevice },
+    undefined,
+    { rejectValue: { error: 'already-created' } }
+>(
     `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
-    (_, { getState, dispatch }) => {
+    (_, { getState, rejectWithValue, fulfillWithValue }) => {
         const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
-        if (!device) {
-            dispatch(deviceActions.createDeviceInstance(portfolioTrackerDevice));
-        }
+        if (device) return rejectWithValue({ error: 'already-created' });
+
+        return fulfillWithValue({ device: portfolioTrackerDevice });
     },
 );
 

@@ -4,6 +4,7 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 import {
     authConfirm,
     authorizeDeviceThunk,
+    createDeviceInstanceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
@@ -60,8 +61,8 @@ const suite =
         // pass action to reducers
         next(action);
 
-        if (deviceActions.createDeviceInstance.match(action)) {
-            api.dispatch(selectDeviceThunk(action.payload));
+        if (createDeviceInstanceThunk.fulfilled.match(action)) {
+            api.dispatch(selectDeviceThunk(action.payload.device));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

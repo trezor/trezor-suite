@@ -11,6 +11,7 @@ import {
     observeSelectedDevice,
     selectDeviceThunk,
     selectAccountsByDeviceState,
+    createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
@@ -45,8 +46,8 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
 
-        if (deviceActions.createDeviceInstance.match(action)) {
-            dispatch(selectDeviceThunk(action.payload));
+        if (createDeviceInstanceThunk.fulfilled.match(action)) {
+            dispatch(selectDeviceThunk(action.payload.device));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

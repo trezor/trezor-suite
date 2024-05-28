@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 
 import {
     AuthorizeDeviceError,
@@ -25,26 +25,30 @@ export const passphraseSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder
-            .addCase(authorizeDeviceThunk.pending, state => {
-                state.error = null;
-            })
-            .addCase(authorizeDeviceThunk.rejected, (state, { payload }) => {
-                if (payload?.error === 'passphrase-duplicate') {
-                    state.error = payload;
-                }
-            });
-        builder
-            .addCase(createDeviceInstanceThunk.pending, state => {
-                state.error = null;
-            })
-            .addCase(createDeviceInstanceThunk.rejected, (state, { payload }) => {
-                if (payload?.error === 'passphrase-enabling-cancelled') {
-                    state.error = payload;
-                }
-            });
+            .addMatcher(
+                isAnyOf(authorizeDeviceThunk.pending, createDeviceInstanceThunk.pending),
+                state => {
+                    state.error = null;
+                },
+            )
+            .addMatcher(
+                isAnyOf(authorizeDeviceThunk.rejected, createDeviceInstanceThunk.rejected),
+                (state, { payload }) => {
+                    if (
+                        payload?.error === 'passphrase-duplicate' ||
+                        payload?.error === 'passphrase-enabling-cancelled'
+                    ) {
+                        state.error = payload;
+                    }
+                },
+            );
     },
 });
 
 export const selectPassphraseError = (state: PassphraseRootState) => state.passphrase.error;
+
+export const selectPassphraseDuplicateError = (state: PassphraseRootState) => {
+    return state.passphrase.error?.error === 'passphrase-duplicate' ? state.passphrase.error : null;
+};
 
 export const passphraseReducer = passphraseSlice.reducer;
