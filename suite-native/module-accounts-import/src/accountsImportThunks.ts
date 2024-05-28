@@ -66,6 +66,7 @@ export const importAccountThunk = createThunk(
                     accountInfo,
                     imported,
                     accountLabel,
+                    visible: true,
                 }),
             );
         }

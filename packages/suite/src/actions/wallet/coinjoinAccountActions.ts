@@ -616,6 +616,7 @@ export const createCoinjoinAccount =
                     descriptor: publicKey.payload.xpubSegwit || publicKey.payload.xpub,
                     legacyXpub: publicKey.payload.xpub,
                 },
+                visible: true,
             }),
         );
 

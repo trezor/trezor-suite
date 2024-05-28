@@ -35,6 +35,7 @@ type CreateAccountActionProps = {
     accountInfo: AccountInfo;
     imported?: boolean;
     accountLabel?: string;
+    visible: boolean;
 };
 
 type CreateIndexLabeledAccountActionProps = Omit<
@@ -48,6 +49,7 @@ const composeCreateAccountActionPayload = ({
     accountInfo,
     imported,
     accountLabel,
+    visible,
 }: CreateAccountActionProps): Account => ({
     deviceState,
     accountLabel,
@@ -69,10 +71,7 @@ const composeCreateAccountActionPayload = ({
         : {
               backendType: discoveryItem.backendType,
           }),
-    visible:
-        !accountInfo.empty ||
-        discoveryItem.accountType === 'coinjoin' ||
-        (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
+    visible,
     balance: accountInfo.balance,
     availableBalance: accountInfo.availableBalance,
     formattedBalance: formatNetworkAmount(
@@ -96,8 +95,14 @@ const createIndexLabeledAccount = createAction(
         deviceState,
         discoveryItem,
         accountInfo,
+        visible,
     }: CreateIndexLabeledAccountActionProps): { payload: Account } => ({
-        payload: composeCreateAccountActionPayload({ deviceState, discoveryItem, accountInfo }),
+        payload: composeCreateAccountActionPayload({
+            deviceState,
+            discoveryItem,
+            accountInfo,
+            visible,
+        }),
     }),
 );
 
@@ -109,6 +114,7 @@ const createAccount = createAction(
         accountInfo,
         imported,
         accountLabel,
+        visible,
     }: CreateAccountActionProps): { payload: Account } => ({
         payload: composeCreateAccountActionPayload({
             deviceState,
@@ -116,6 +122,7 @@ const createAccount = createAction(
             accountInfo,
             imported,
             accountLabel,
+            visible,
         }),
     }),
 );

@@ -148,6 +148,8 @@ const handleProgressThunk = createThunk(
                     deviceState,
                     discoveryItem: item,
                     accountInfo: response,
+                    // first normal account is always visible on web & desktop (but not in suite-native)
+                    visible: (item.accountType === 'normal' && item.index === 0) || !response.empty,
                 }),
             );
         }
