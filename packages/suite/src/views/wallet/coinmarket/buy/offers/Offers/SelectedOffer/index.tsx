@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { Card, variables } from '@trezor/components';
 import VerifyAddress from './components/VerifyAddress';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import { CoinmarketBuyOfferInfo } from '../../../components/CoinmarketBuyOfferInfo';
 import { spacingsPx } from '@trezor/theme';
 

@@ -9,9 +9,9 @@ import { variables, Select } from '@trezor/components';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import type { Account } from 'src/types/wallet';
 import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
-import { AddressOptionsFormState } from 'src/types/wallet/coinmarketBuyOffers';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { useSelector } from 'src/hooks/suite';
+import { CoinmarketBuyAddressOptionsType } from 'src/types/coinmarket/coinmarketOffers';
 
 const AddressWrapper = styled.div`
     display: flex;
@@ -68,7 +68,7 @@ const buildOptions = (addresses: Account['addresses']) => {
     return [unused, used];
 };
 
-interface AddressOptionsProps<TFieldValues extends AddressOptionsFormState>
+interface AddressOptionsProps<TFieldValues extends CoinmarketBuyAddressOptionsType>
     extends Pick<UseFormReturn<TFieldValues>, 'setValue'> {
     control: Control<TFieldValues>;
     receiveSymbol?: string;
@@ -76,7 +76,7 @@ interface AddressOptionsProps<TFieldValues extends AddressOptionsFormState>
     address?: string;
     menuPlacement?: MenuPlacement;
 }
-export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
+export const AddressOptions = <TFieldValues extends CoinmarketBuyAddressOptionsType>({
     receiveSymbol,
     address,
     account,
@@ -84,7 +84,8 @@ export const AddressOptions = <TFieldValues extends AddressOptionsFormState>({
     ...props
 }: AddressOptionsProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
-    const { control, setValue } = props as unknown as UseFormReturn<AddressOptionsFormState>;
+    const { control, setValue } =
+        props as unknown as UseFormReturn<CoinmarketBuyAddressOptionsType>;
 
     const addresses = account?.addresses;
     const addressDictionary = useAccountAddressDictionary(account);

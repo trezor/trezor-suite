@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { SellFiatTrade } from 'invity-api';
 
 import { variables, Icon, H2 } from '@trezor/components';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { Translation } from 'src/components/suite';
 import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
@@ -11,6 +10,7 @@ import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/Coinmar
 import { SellQuote } from './SellQuote';
 import invityAPI from 'src/services/suite/invityAPI';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;

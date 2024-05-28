@@ -2,7 +2,7 @@ import { H2 } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 import CoinmarketHeaderFilter from './CoinmarketHeaderFilter';
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import { CoinmarketRefreshTime } from '..';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import CoinmarketHeaderSummary from './CoinmarketHeaderSummary';

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, variables, Spinner } from '@trezor/components';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
 
 const Wrapper = styled.div`
     display: flex;

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 import { Card, Icon, variables, colors } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import VerifyAddress from './components/VerifyAddress';
 import SendTransaction from './components/SendTransaction';
 import { Translation } from 'src/components/suite';
