@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { desktopApi } from '@trezor/suite-desktop-api';
-import { UseCoinmarketSpendProps, SpendContextValues } from 'src/types/wallet/coinmarketSpend';
+import { SpendContextValues } from 'src/types/wallet/coinmarketSpend';
 import invityAPI from 'src/services/suite/invityAPI';
 import { SellVoucherTrade } from 'invity-api';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -20,12 +20,13 @@ import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const SpendContext = createContext<SpendContextValues | null>(null);
 SpendContext.displayName = 'CoinmarketSpendContext';
 
 const useSpendState = (
-    selectedAccount: UseCoinmarketSpendProps['selectedAccount'],
+    selectedAccount: UseCoinmarketProps['selectedAccount'],
     fees: AppState['wallet']['fees'],
     currentState: boolean,
 ) => {
@@ -50,9 +51,7 @@ const useSpendState = (
     };
 };
 
-export const useCoinmarketSpend = ({
-    selectedAccount,
-}: UseCoinmarketSpendProps): SpendContextValues => {
+export const useCoinmarketSpend = ({ selectedAccount }: UseCoinmarketProps): SpendContextValues => {
     const [voucherSiteUrl, setVoucherSiteUrl] = useState<string | undefined>('error');
 
     const { addNotification, setShowLeaveModal, saveTrade, loadInvityData } = useActions({

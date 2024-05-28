@@ -1,18 +1,19 @@
 import styled from 'styled-components';
 
 import { P2pFormContext, useCoinmarketP2pForm } from 'src/hooks/wallet/useCoinmarketP2pForm';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { withSelectedAccountLoaded } from 'src/components/wallet';
 import { Wrapper } from 'src/views/wallet/coinmarket';
 import { CoinmarketLayout } from 'src/views/wallet/coinmarket/common';
 import { Inputs } from './Inputs';
 import { P2pInfo } from './P2pInfo';
 import { Footer } from './Footer';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 const Form = styled.form`
     width: 100%;
 `;
 
-const CoinmarketP2p = (props: WithSelectedAccountLoadedProps) => {
+const CoinmarketP2p = (props: UseCoinmarketProps) => {
     const coinmarketP2pContextValues = useCoinmarketP2pForm(props);
     const {
         isDraft,

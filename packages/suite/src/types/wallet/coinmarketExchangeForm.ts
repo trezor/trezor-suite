@@ -10,7 +10,6 @@ import type {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import type { AmountLimits, CryptoAmountLimits, Option } from './coinmarketCommonTypes';
-import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 import { Rate, SendContextValues } from '@suite-common/wallet-types';
 import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
 
@@ -18,8 +17,6 @@ export const CRYPTO_INPUT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
 export const FIAT_INPUT = 'outputs.0.fiat';
 export const FIAT_CURRENCY = 'outputs.0.currency';
-
-export type UseCoinmarketExchangeFormProps = WithSelectedAccountLoadedProps;
 
 export type ExchangeFormState = FormState & {
     // NOTE: react-select value type cannot be undefined, but at least null works

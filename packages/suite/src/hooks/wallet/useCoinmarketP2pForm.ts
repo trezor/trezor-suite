@@ -5,11 +5,7 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { isChanged } from '@suite-common/suite-utils';
 
-import {
-    FormState,
-    P2pFormContextValues,
-    UseCoinmarketP2pFormProps,
-} from 'src/types/wallet/coinmarketP2pForm';
+import { FormState, P2pFormContextValues } from 'src/types/wallet/coinmarketP2pForm';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { saveQuotes, saveQuotesRequest } from 'src/actions/wallet/coinmarketP2pActions';
 import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
@@ -17,13 +13,14 @@ import { useCoinmarketP2pFormDefaultValues } from 'src/hooks/wallet/useCoinmarke
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import invityAPI from 'src/services/suite/invityAPI';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const P2pFormContext = createContext<P2pFormContextValues | null>(null);
 P2pFormContext.displayName = 'CoinmarketP2pContext';
 
 export const useCoinmarketP2pForm = ({
     selectedAccount,
-}: UseCoinmarketP2pFormProps): P2pFormContextValues => {
+}: UseCoinmarketProps): P2pFormContextValues => {
     const p2pInfo = useSelector(state => state.wallet.coinmarket.p2p.p2pInfo);
     const dispatch = useDispatch();
 
