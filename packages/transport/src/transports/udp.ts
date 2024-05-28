@@ -8,6 +8,7 @@ import { SessionsBackground } from '../sessions/background';
 
 export class UdpTransport extends AbstractApiTransport {
     public name = 'UdpTransport' as const;
+    private enumerateTimeout: ReturnType<typeof setTimeout> | undefined;
 
     constructor(params: AbstractTransportParams) {
         const { messages, logger, signal } = params;
@@ -30,12 +31,27 @@ export class UdpTransport extends AbstractApiTransport {
             sessionsClient,
             signal,
         });
+    }
 
+    public listen() {
         const enumerateRecursive = () => {
-            setTimeout(() => {
+            if (!this.listening) return;
+
+            this.enumerateTimeout = setTimeout(() => {
                 this.enumerate().promise.finally(enumerateRecursive);
             }, 500);
         };
         enumerateRecursive();
+
+        return super.listen();
+    }
+
+    public stop() {
+        if (this.enumerateTimeout) {
+            clearTimeout(this.enumerateTimeout);
+            this.enumerateTimeout = undefined;
+        }
+
+        return super.stop();
     }
 }
