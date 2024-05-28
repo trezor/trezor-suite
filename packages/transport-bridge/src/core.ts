@@ -107,6 +107,22 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return enumerateDoneResponse;
     };
 
+    let listening = true;
+    let enumerateTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    if (api instanceof UdpApi) {
+        // same as UdpTransport listen, set timeout to ping udp devices
+        const enumerateRecursive = () => {
+            if (!listening) return;
+
+            enumerateTimeout = setTimeout(() => {
+                enumerate().finally(enumerateRecursive);
+            }, 500);
+        };
+
+        enumerateRecursive();
+    }
+
     const acquire = async (
         acquireInput: Omit<AcquireInput, 'previous'> & { previous: Session | 'null' },
     ) => {
@@ -201,6 +217,11 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
     };
 
     const dispose = () => {
+        listening = false;
+        if (enumerateTimeout) {
+            clearTimeout(enumerateTimeout);
+            enumerateTimeout = undefined;
+        }
         api.dispose();
     };
 
