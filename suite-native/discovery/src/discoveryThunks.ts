@@ -205,6 +205,7 @@ const addAccountByDescriptorThunk = createThunk(
                     discoveryItem: bundleItem,
                     deviceState,
                     accountInfo,
+                    visible: true,
                 }),
             );
 
@@ -262,6 +263,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
                         discoveryItem: bundleItem,
                         deviceState,
                         accountInfo,
+                        visible: !accountInfo.empty,
                     }),
                 );
             }

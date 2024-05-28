@@ -6,7 +6,7 @@ import {
     AccountsRootState,
     DeviceRootState,
     FiatRatesRootState,
-    selectDeviceAccounts,
+    selectVisibleDeviceAccounts,
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
@@ -29,7 +29,7 @@ const sumBalance = (balances: string[]): BigNumber =>
 
 export const selectDeviceBalancesPerNetwork = memoize(
     (state: AssetsRootState & DeviceRootState): FormattedAssets => {
-        const accounts = selectDeviceAccounts(state);
+        const accounts = selectVisibleDeviceAccounts(state);
 
         const assets: Assets = {};
         accounts.forEach(account => {

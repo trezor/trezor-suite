@@ -58,6 +58,7 @@ describe('Account Reducer', () => {
                         unconfirmed: 0,
                     },
                 },
+                visible: true,
             }),
         );
         expect(store.getState().wallet.accounts.length).toEqual(1);
