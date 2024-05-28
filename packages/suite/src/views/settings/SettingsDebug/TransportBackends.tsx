@@ -96,11 +96,11 @@ export const TransportBackends = () => {
                 <TextColumn title="Run on startup" />
                 <ActionColumn>
                     <Checkbox
-                        isChecked={bridgeSettings.startOnStartup}
+                        isChecked={!bridgeSettings.doNotStartOnStartup}
                         onClick={() => {
                             changeBridgeSettings({
                                 ...bridgeSettings,
-                                startOnStartup: !bridgeSettings.startOnStartup,
+                                doNotStartOnStartup: !bridgeSettings.doNotStartOnStartup,
                             });
                         }}
                     />

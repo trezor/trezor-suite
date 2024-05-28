@@ -83,10 +83,16 @@ const load = async ({ store, mainWindow }: Dependencies) => {
         try {
             if (status.service) {
                 await bridge.stop();
-                store.setBridgeSettings({ ...store.getBridgeSettings(), startOnStartup: false });
+                store.setBridgeSettings({
+                    ...store.getBridgeSettings(),
+                    doNotStartOnStartup: false,
+                });
             } else {
                 await start(bridge);
-                store.setBridgeSettings({ ...store.getBridgeSettings(), startOnStartup: true });
+                store.setBridgeSettings({
+                    ...store.getBridgeSettings(),
+                    doNotStartOnStartup: true,
+                });
             }
 
             return { success: true };
@@ -109,7 +115,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
 
     ipcMain.handle(
         'bridge/change-settings',
-        (_: unknown, payload: { startOnStartup: boolean; legacy?: boolean }) => {
+        (_: unknown, payload: { doNotStartOnStartup: boolean; legacy?: boolean }) => {
             try {
                 store.setBridgeSettings(payload);
 
@@ -130,7 +136,7 @@ const load = async ({ store, mainWindow }: Dependencies) => {
         }
     });
 
-    if (!store.getBridgeSettings().startOnStartup) {
+    if (store.getBridgeSettings().doNotStartOnStartup) {
         return;
     }
 

@@ -104,7 +104,7 @@ export type Status = {
 
 // todo: duplicate, see prev comment
 export type BridgeSettings = {
-    startOnStartup: boolean;
+    doNotStartOnStartup: boolean;
     legacy?: boolean;
 };
 
