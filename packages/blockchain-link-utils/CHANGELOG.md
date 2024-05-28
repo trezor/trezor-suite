@@ -1,3 +1,7 @@
+# 1.0.18
+
+-   chore: BigNumber wrapper (d18ba9a879)
+
 # 1.0.18-beta.1
 
 -   fix: unify solana and cardano missing symbol name length (2698f935aa)
