@@ -1,12 +1,11 @@
 import { useEffect, useMemo, useRef } from 'react';
-import { isPending } from '@suite-common/wallet-utils';
+import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 import { selectAccountClaimTransactions } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ClaimReadyCard } from './ClaimReadyCard';
 import { ClaimPendingCard } from './ClaimPendingCard';
-import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 
 export const ClaimCard = () => {
     const selectedAccount = useSelector(selectSelectedAccount);

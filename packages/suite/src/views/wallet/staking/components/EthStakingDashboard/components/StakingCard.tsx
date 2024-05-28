@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 import { Button, Card, Icon, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
-import { isPending } from '@suite-common/wallet-utils';
+import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
 import { FiatValue, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -12,7 +12,6 @@ import { InfoBox, ProgressBar } from './styled';
 import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
-import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 import { TrimmedCryptoAmount } from './TrimmedCryptoAmount';
 
 const StyledCard = styled(Card)`

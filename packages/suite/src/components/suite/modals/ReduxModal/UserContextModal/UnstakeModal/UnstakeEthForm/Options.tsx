@@ -9,7 +9,7 @@ import { useSelector } from 'src/hooks/suite';
 import { useUnstakeEthFormContext } from 'src/hooks/wallet/useUnstakeEthForm';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
+import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};

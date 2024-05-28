@@ -3,11 +3,10 @@ import { AccountItem } from './AccountItem';
 import { Account } from 'src/types/wallet';
 import { borders, spacingsPx } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
-import { selectFiatRates } from '@suite-common/wallet-core';
-import { getTokensFiatBalance } from '@suite-common/wallet-utils';
+import { getAccountAutocompoundBalance, getTokensFiatBalance } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { getAccountAutocompoundBalance } from 'src/utils/wallet/stakingUtils';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { selectFiatRates } from '@suite-common/wallet-core';
 
 const Section = styled.div<{ $selected?: boolean }>`
     display: flex;

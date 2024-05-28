@@ -7,8 +7,8 @@ import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { spacingsPx } from '@trezor/theme';
 import ClaimFees from './Fees';
-import { getAccountEverstakeStakingPool } from 'src/utils/wallet/stakingUtils';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
 
 const AmountInfo = styled.div`
     display: flex;
