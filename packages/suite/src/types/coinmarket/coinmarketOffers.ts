@@ -4,6 +4,7 @@ import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import {
     BankAccount,
     BuyTrade,
+    CryptoSymbol,
     ExchangeTrade,
     P2pProviderInfo,
     P2pQuote,
@@ -116,3 +117,12 @@ export type CoinmarketOffersMapProps = {
 
 export type CoinmarketOffersContextValues<T extends CoinmarketTradeType> =
     CoinmarketOffersMapProps[T];
+
+export interface CoinmarketCryptoAmountProps {
+    wantCrypto: boolean | undefined;
+    fiatAmount: string | number | undefined;
+    fiatCurrency: string | undefined;
+    cryptoAmount: string | number | undefined;
+    cryptoCurrency: CryptoSymbol | undefined;
+    className?: string;
+}
