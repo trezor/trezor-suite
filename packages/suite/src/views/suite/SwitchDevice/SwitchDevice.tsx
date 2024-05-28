@@ -36,13 +36,14 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     return (
         <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel}>
             <Flex>
-                {sortedDevices.map(device => (
+                {sortedDevices.map((device, index) => (
                     <DeviceItem
                         key={`${device.id}-${device.instance}`}
                         device={device}
                         instances={deviceUtils.getDeviceInstances(device, devices)}
                         backgroundRoute={backgroundRoute}
                         onCancel={onCancel}
+                        isCloseButtonVisible={index === 0}
                     />
                 ))}
             </Flex>

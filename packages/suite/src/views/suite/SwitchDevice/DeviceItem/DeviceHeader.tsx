@@ -11,11 +11,11 @@ import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 const Flex = styled.div`
     flex: 1;
 `;
-const Container = styled.div`
+const Container = styled.div<{ isCloseButtonVisible: boolean }>`
     display: flex;
     align-items: center;
     flex: 1;
-    cursor: pointer;
+    ${({ isCloseButtonVisible }) => (isCloseButtonVisible ? `cursor: pointer;` : '')}
 `;
 
 const DeviceActions = styled.div`
@@ -28,28 +28,23 @@ const DeviceActions = styled.div`
 interface DeviceHeaderProps {
     device: TrezorDevice;
     onCancel?: ForegroundAppProps['onCancel'];
-    setIsExpanded: (expanded: boolean) => void;
-    isExpanded: boolean;
+    isCloseButtonVisible: boolean;
 }
 
-export const DeviceHeader = ({
-    onCancel,
-    device,
-    setIsExpanded,
-    isExpanded,
-}: DeviceHeaderProps) => {
+export const DeviceHeader = ({ onCancel, device, isCloseButtonVisible }: DeviceHeaderProps) => {
     const transport = useSelector(state => state.suite.transport);
     const isWebUsbTransport = isWebUsb(transport);
     const theme = useTheme();
     const deviceModelInternal = device.features?.internal_model;
 
-    const onExpandClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setIsExpanded(!isExpanded);
-        e.stopPropagation();
+    const onHeaderClick = () => {
+        if (isCloseButtonVisible && onCancel) {
+            onCancel();
+        }
     };
 
     return (
-        <Container onClick={() => onCancel?.()}>
+        <Container onClick={onHeaderClick} isCloseButtonVisible={isCloseButtonVisible}>
             <Flex>
                 {deviceModelInternal && (
                     <DeviceStatus deviceModel={deviceModelInternal} device={device} />
@@ -58,21 +53,24 @@ export const DeviceHeader = ({
 
             <DeviceActions>
                 {isWebUsbTransport && <WebUsbButton variant="tertiary" size="small" />}
-                <motion.div
-                    animate={{
-                        rotate: isExpanded ? 180 : 0,
-                    }}
-                    style={{ originX: '50%', originY: '50%' }}
-                >
-                    <Icon
-                        useCursorPointer
-                        size={20}
-                        icon="CARET_CIRCLE_DOWN"
-                        color={theme.TYPE_LIGHT_GREY}
-                        hoverColor={theme.TYPE_LIGHTER_GREY}
-                        onClick={onExpandClick}
-                    />
-                </motion.div>
+                {isCloseButtonVisible && (
+                    <motion.div
+                        exit={{ rotate: 0 }}
+                        animate={{
+                            rotate: 180,
+                        }}
+                        style={{ originX: '50%', originY: '50%' }}
+                    >
+                        <Icon
+                            useCursorPointer
+                            size={20}
+                            icon="CARET_CIRCLE_DOWN"
+                            color={theme.TYPE_LIGHT_GREY}
+                            hoverColor={theme.TYPE_LIGHTER_GREY}
+                            onClick={() => onCancel?.()}
+                        />
+                    </motion.div>
+                )}
             </DeviceActions>
         </Container>
     );

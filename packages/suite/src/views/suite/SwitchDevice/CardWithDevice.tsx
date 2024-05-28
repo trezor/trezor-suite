@@ -1,4 +1,4 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode } from 'react';
 
 import { AnimatePresence, motion } from 'framer-motion';
 import styled from 'styled-components';
@@ -41,6 +41,7 @@ interface CardWithDeviceProps {
     deviceWarning?: ReactNode;
     onCancel?: ForegroundAppProps['onCancel'];
     device: TrezorDevice;
+    isCloseButtonVisible?: boolean;
 }
 
 export const CardWithDevice = ({
@@ -48,9 +49,9 @@ export const CardWithDevice = ({
     onCancel,
     device,
     deviceWarning,
+    isCloseButtonVisible = false,
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
-    const [isExpanded, setIsExpanded] = useState(true);
 
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
     const isUnknown = device.type !== 'acquired';
@@ -62,15 +63,14 @@ export const CardWithDevice = ({
                 <DeviceHeader
                     onCancel={onCancel}
                     device={device}
-                    isExpanded={isExpanded}
-                    setIsExpanded={setIsExpanded}
+                    isCloseButtonVisible={isCloseButtonVisible}
                 />
 
                 {deviceWarning}
 
                 {!needsAttention && (
                     <AnimatePresence initial={false}>
-                        {!isUnknown && isExpanded && (
+                        {!isUnknown && (
                             <Content $elevation={elevation}>
                                 <motion.div {...motionAnimation.expand}>{children}</motion.div>
                             </Content>
