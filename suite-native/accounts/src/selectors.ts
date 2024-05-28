@@ -6,11 +6,9 @@ import {
     DeviceRootState,
     selectAccounts,
     selectVisibleDeviceAccountsByNetworkSymbol,
-    selectDeviceAccounts,
+    selectVisibleDeviceAccounts,
     FiatRatesRootState,
 } from '@suite-common/wallet-core';
-import { TokenInfoBranded } from '@suite-common/wallet-types';
-import { selectEthereumAccountsTokensWithFiatRates } from '@suite-native/ethereum-tokens';
 import { SettingsSliceRootState } from '@suite-native/settings';
 import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 
@@ -21,26 +19,19 @@ import {
     sortAccountsByNetworksAndAccountTypes,
 } from './utils';
 
+// TODO: It searches for filterValue even in tokens without fiat rates.
+// These are currently hidden in UI, but they should be made accessible in some way.
 export const selectFilteredDeviceAccountsGroupedByNetworkAccountType = memoizeWithArgs(
     (
         state: AccountsRootState & FiatRatesRootState & SettingsSliceRootState & DeviceRootState,
         filterValue: string,
     ) => {
-        const accounts = selectDeviceAccounts(state);
+        const accounts = selectVisibleDeviceAccounts(state);
 
         return pipe(
             accounts,
             sortAccountsByNetworksAndAccountTypes,
-            A.map(account => ({
-                ...account,
-                // Select only tokens with fiat rates To apply filter only one those tokens later.
-                tokens: selectEthereumAccountsTokensWithFiatRates(
-                    state,
-                    account.key,
-                ) as TokenInfoBranded[],
-            })),
-            accountsWithFiatRatedTokens =>
-                filterAccountsByLabelAndNetworkNames(accountsWithFiatRatedTokens, filterValue),
+            accountsSorted => filterAccountsByLabelAndNetworkNames(accountsSorted, filterValue),
             groupAccountsByNetworkAccountType,
         ) as GroupedAccounts;
     },
