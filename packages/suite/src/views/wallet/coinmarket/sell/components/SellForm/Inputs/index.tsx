@@ -1,5 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled from 'styled-components';
 
 import { useCoinmarketSellFormContext } from 'src/hooks/wallet/useCoinmarketSellForm';

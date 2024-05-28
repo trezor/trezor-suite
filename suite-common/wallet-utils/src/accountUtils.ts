@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-
+import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 import {
     AccountInfo,
     AccountAddresses,
@@ -277,7 +276,7 @@ export const getAccountDecimals = (symbol: NetworkSymbol) => {
 export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
 
-export const formatAmount = (amount: BigNumber.Value, decimals: number) => {
+export const formatAmount = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -290,7 +289,7 @@ export const formatAmount = (amount: BigNumber.Value, decimals: number) => {
     }
 };
 
-export const amountToSatoshi = (amount: BigNumber.Value, decimals: number) => {
+export const amountToSatoshi = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -304,7 +303,7 @@ export const amountToSatoshi = (amount: BigNumber.Value, decimals: number) => {
     }
 };
 
-export const satoshiAmountToBtc = (amount: BigNumber.Value) => {
+export const satoshiAmountToBtc = (amount: BigNumberValue) => {
     try {
         const satsAmount = new BigNumber(amount);
         if (satsAmount.isNaN()) {

@@ -18,7 +18,6 @@
         "@trezor/connect": "workspace:*",
         "@trezor/env-utils": "workspace:*",
         "@trezor/type-utils": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "bignumber.js": "^9.1.2"
+        "@trezor/utils": "workspace:*"
     }
 }

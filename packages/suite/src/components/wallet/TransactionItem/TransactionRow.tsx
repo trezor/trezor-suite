@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FiatValue, Translation } from 'src/components/suite';
 import {
     formatCardanoWithdrawal,

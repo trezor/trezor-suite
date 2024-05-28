@@ -8,10 +8,10 @@ import { Output } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import {
     selectCoinDefinitions,
-    updateFiatRatesThunk,
     selectFiatRates,
+    updateFiatRatesThunk,
 } from '@suite-common/wallet-core';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Timestamp, TokenAddress, TokenDefinitions } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';

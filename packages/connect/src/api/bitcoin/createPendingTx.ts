@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Transaction as BitcoinJsTransaction } from '@trezor/utxo-lib';
 import { getSerializedPath } from '../../utils/pathUtils';

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { FiatRatesLegacy } from '@trezor/connect';
 import { Rate } from '@suite-common/wallet-types';

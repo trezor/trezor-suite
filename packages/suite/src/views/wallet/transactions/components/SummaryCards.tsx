@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Translation, HiddenPlaceholder, FormattedDate } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
 

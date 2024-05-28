@@ -39,3 +39,4 @@ export * from './stake/stakeReducer';
 export * from './stake/stakeSelectors';
 export * from './stake/stakeMiddleware';
 export * from './stake/stakeThunks';
+export * from './stake/stakeTypes';

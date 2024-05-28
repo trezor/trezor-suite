@@ -1,6 +1,6 @@
 import { RippleAPI, APIOptions } from 'ripple-lib';
 import { RippleError } from 'ripple-lib/dist/npm/common/errors';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { BaseWorker, CONTEXT, ContextType } from '../baseWorker';

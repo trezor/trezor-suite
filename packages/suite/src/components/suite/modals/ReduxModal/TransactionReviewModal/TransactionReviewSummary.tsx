@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
 import { Icon, CoinLogo, variables } from '@trezor/components';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';

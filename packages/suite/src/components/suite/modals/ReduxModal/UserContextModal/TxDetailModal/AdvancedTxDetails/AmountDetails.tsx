@@ -12,7 +12,7 @@ import {
     isNftTokenTransfer,
     isTxFeePaid,
 } from '@suite-common/wallet-utils';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
 
 const MainContainer = styled.div`

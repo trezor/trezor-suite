@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import {
     formatNetworkAmount,

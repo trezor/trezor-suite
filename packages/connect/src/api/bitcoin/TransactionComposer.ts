@@ -1,6 +1,6 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/tx/TransactionComposer.js
 
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { composeTx, ComposeOutput } from '@trezor/utxo-lib';
 import { FeeLevels } from './Fees';
 import { Blockchain } from '../../backend/BlockchainLink';

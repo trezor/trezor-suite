@@ -1,9 +1,9 @@
-import BigNumber from 'bignumber.js';
 import { D } from '@mobily/ts-belt';
 
-import type { TokenDefinitions, WalletAccountTransaction } from '@suite-common/wallet-types';
-import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import type { WalletAccountTransaction, TokenDefinitions } from '@suite-common/wallet-types';
 import { getNetworkType } from '@suite-common/wallet-config';
+import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
 
 import { isNftTokenTransfer } from './transactionUtils';
 

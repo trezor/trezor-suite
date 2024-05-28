@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js';
 import { toWei } from 'web3-utils';
 import { G } from '@mobily/ts-belt';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel, TokenInfo } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import {

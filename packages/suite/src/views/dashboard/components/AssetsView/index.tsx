@@ -1,5 +1,5 @@
 import styled, { useTheme } from 'styled-components';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 import { Icon, Button, LoadingContent, Card } from '@trezor/components';
 import { selectDeviceSupportedNetworks, selectFiatRates } from '@suite-common/wallet-core';

@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-
+import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 import type {
     BlockfrostUtxos,
     BlockfrostTransaction,
@@ -203,7 +202,7 @@ export const transformTransaction = (
 
     let type: Transaction['type'];
     let targets: VinVout[] = [];
-    let amount: BigNumber.Value =
+    let amount: BigNumberValue =
         blockfrostTxData.txData.output_amount.find(b => b.unit === 'lovelace')?.quantity || '0';
     const fee = blockfrostTxData.txData.fees;
 

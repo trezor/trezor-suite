@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const MIN_ETH_AMOUNT_FOR_STAKING = new BigNumber(0.1);
 export const MIN_ETH_FOR_WITHDRAWALS = new BigNumber(0.03);

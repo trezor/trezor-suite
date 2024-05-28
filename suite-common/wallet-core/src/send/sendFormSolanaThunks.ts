@@ -1,6 +1,6 @@
-import BigNumber from 'bignumber.js';
 import { G } from '@mobily/ts-belt';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
 import type { TokenInfo, TokenAccount } from '@trezor/blockchain-link-types';
 import { SYSTEM_PROGRAM_PUBLIC_KEY } from '@trezor/blockchain-link-utils/src/solana';

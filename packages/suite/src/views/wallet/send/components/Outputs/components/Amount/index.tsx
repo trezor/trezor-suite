@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled, { useTheme } from 'styled-components';
 
 import { Icon, Warning, variables } from '@trezor/components';

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 /** Matches three groups: 1. currency symbol,  2. whole number part and 3. decimal part. */
 const BALANCE_PARSING_REGEX = /^(\D+)([\d,]+)(?:\.(\d+))?$/u;
