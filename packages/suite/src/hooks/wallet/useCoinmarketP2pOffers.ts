@@ -5,15 +5,18 @@ import { P2pQuote } from 'invity-api';
 import { useTimer } from '@trezor/react-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
-import { ContextValues, P2pStep, UseOffersProps } from 'src/types/wallet/coinmarketP2pOffers';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { openCoinmarketP2pConfirmModal } from 'src/actions/wallet/coinmarketP2pActions';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { submitRequestForm } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketP2pOffersContextProps, P2pStep } from 'src/types/coinmarket/coinmarketOffers';
 
-export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues => {
+export const useOffers = ({
+    selectedAccount,
+}: UseCoinmarketProps): CoinmarketP2pOffersContextProps => {
     const timer = useTimer();
 
     const device = useSelector(selectDevice);
@@ -114,7 +117,9 @@ export const useOffers = ({ selectedAccount }: UseOffersProps): ContextValues =>
     };
 };
 
-export const CoinmarketP2pOffersContext = createContext<ContextValues | null>(null);
+export const CoinmarketP2pOffersContext = createContext<CoinmarketP2pOffersContextProps | null>(
+    null,
+);
 CoinmarketP2pOffersContext.displayName = 'CoinmarketP2pOffersContext';
 
 export const useCoinmarketP2pOffersContext = () => {

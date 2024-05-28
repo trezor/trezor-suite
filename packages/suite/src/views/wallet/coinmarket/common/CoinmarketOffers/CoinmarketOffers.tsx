@@ -1,4 +1,4 @@
-import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/useCoinmarketBuyOffers';
+import { useCoinmarketBuyOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import CoinmarketOffersEmpty from './CoinmarketOffersEmpty';
 import CoinmarketHeader from '../CoinmarketHeader/CoinmarketHeader';
 import CoinmarketOffersItem from './CoinmarketOffersItem';

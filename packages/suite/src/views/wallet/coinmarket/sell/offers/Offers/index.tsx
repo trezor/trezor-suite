@@ -4,11 +4,11 @@ import { CoinmarketFooter, NoOffers } from 'src/views/wallet/coinmarket/common';
 import { variables } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useLayout } from 'src/hooks/suite/useLayout';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { SelectedOffer } from './SelectedOffer';
 import { SellQuoteList } from './List/SellQuoteList';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
 
 const Wrapper = styled.div`
     padding: 16px 32px 32px;

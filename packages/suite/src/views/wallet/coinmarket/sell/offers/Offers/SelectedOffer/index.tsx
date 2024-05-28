@@ -3,10 +3,10 @@ import styled from 'styled-components';
 import { Card, Icon, variables, colors } from '@trezor/components';
 import { SelectBankAccount } from './components/SelectBankAccount';
 import { SendTransaction } from './components/SendTransaction';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/useCoinmarketSellOffers';
 import { Translation } from 'src/components/suite';
 import { CoinmarketSellOfferInfo } from '../../../components/CoinmarketSellOfferInfo';
 import { spacingsPx } from '@trezor/theme';
+import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
 
 const Wrapper = styled.div`
     display: flex;
