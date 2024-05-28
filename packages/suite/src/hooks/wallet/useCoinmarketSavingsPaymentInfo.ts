@@ -1,17 +1,15 @@
 import { useCallback, useState } from 'react';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { saveSavingsTradeResponse } from 'src/actions/wallet/coinmarketSavingsActions';
-import type {
-    SavingsPaymentInfoContextValues,
-    UseSavingsPaymentInfoProps,
-} from 'src/types/wallet/coinmarketSavingsPaymentInfo';
+import type { SavingsPaymentInfoContextValues } from 'src/types/wallet/coinmarketSavingsPaymentInfo';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketSavingsPaymentInfoCopy } from 'src/hooks/wallet/useCoinmarketSavingsPaymentInfoCopy';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const useSavingsPaymentInfo = ({
     selectedAccount,
-}: UseSavingsPaymentInfoProps): SavingsPaymentInfoContextValues => {
+}: UseCoinmarketProps): SavingsPaymentInfoContextValues => {
     const { navigateToSavingsSetupContinue, navigateToSavingsOverview } = useCoinmarketNavigation(
         selectedAccount.account,
     );

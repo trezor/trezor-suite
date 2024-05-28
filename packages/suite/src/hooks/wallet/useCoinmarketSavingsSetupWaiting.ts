@@ -1,8 +1,5 @@
 import { useCallback, useEffect } from 'react';
-import type {
-    UseCoinmarketSavingsSetupWaitingProps,
-    UseCoinmarketSavingsSetupWaitingValues,
-} from 'src/types/wallet/coinmarketSavingsSetupWaiting';
+import type { UseCoinmarketSavingsSetupWaitingValues } from 'src/types/wallet/coinmarketSavingsSetupWaiting';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -16,10 +13,11 @@ import {
 import invityAPI, { SavingsTradeKYCFinalStatuses } from 'src/services/suite/invityAPI';
 import { createReturnLink } from 'src/utils/wallet/coinmarket/savingsUtils';
 import { isDesktop } from '@trezor/env-utils';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const useCoinmarketSavingsSetupWaiting = ({
     selectedAccount,
-}: UseCoinmarketSavingsSetupWaitingProps): UseCoinmarketSavingsSetupWaitingValues => {
+}: UseCoinmarketProps): UseCoinmarketSavingsSetupWaitingValues => {
     const { account } = selectedAccount;
     const savingsTrade = useSelector(state => state.wallet.coinmarket.savings.savingsTrade);
     const dispatch = useDispatch();

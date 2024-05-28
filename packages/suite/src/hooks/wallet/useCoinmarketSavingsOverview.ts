@@ -1,8 +1,5 @@
 import { createContext, useCallback, useContext } from 'react';
-import type {
-    SavingsOverviewContextValues,
-    UseSavingsOverviewProps,
-} from 'src/types/wallet/coinmarketSavingsOverview';
+import type { SavingsOverviewContextValues } from 'src/types/wallet/coinmarketSavingsOverview';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useSelector } from 'src/hooks/suite';
 import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
@@ -10,13 +7,14 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const SavingsOverviewContext = createContext<SavingsOverviewContextValues | null>(null);
 SavingsOverviewContext.displayName = 'SavingsOverviewContext';
 
 export const useSavingsOverview = ({
     selectedAccount,
-}: UseSavingsOverviewProps): SavingsOverviewContextValues => {
+}: UseCoinmarketProps): SavingsOverviewContextValues => {
     const { account } = selectedAccount;
 
     const { navigateToSavingsSetupContinue } = useCoinmarketNavigation(account);
