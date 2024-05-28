@@ -642,11 +642,14 @@ export const en = {
     },
     modulePassphrase: {
         title: 'Passphrase',
-        subtitle: 'Entering a <bold>passphrase opens a wallet</bold> secured by that very phrase.',
+        subtitle:
+            'Entering a <bold>passphrase opens a distinct wallet</bold> secured by that specific phrase.',
         alertCard: {
             paragraphWarning1:
                 'It’s essential to understand how a passphrase works before using it.',
-            paragraphWarning2: 'No one can recover it, not even Trezor support.',
+            paragraphWarning2:
+                'Keep your passphrase elsewhere than your recovery seed & Trezor device.',
+            paragraphWarning3: 'No one can recover it, not even Trezor support.',
             button: 'How passphrase works',
         },
         form: {
@@ -660,9 +663,10 @@ export const en = {
             title: 'Continue on Trezor',
             subtitle: 'Enter your passphrase on your Trezor',
         },
+        loadingTitle: 'Checking passphrase wallet for balances & transactions',
         confirmOnDevice: {
             title: 'Confirm passphrase\non your Trezor.',
-            description: 'Carefully check the passphrase you’ve just entered.',
+            description: 'Go to your device and confirm the passphrase you’ve entered.',
             warningSheet: {
                 title: 'Are you sure you would like to cancel opening a passphrase wallet?',
                 primaryButton: 'Cancel',
@@ -672,29 +676,30 @@ export const en = {
         emptyPassphraseWallet: {
             title: 'This passphrase wallet is empty',
             confirmCard: {
-                description: 'Opening unused and knowingly empty passphrase wallet?',
-                button: 'Yes, open unused wallet',
+                description:
+                    "This wallet is empty and hasn't been used before. Do you want to open it?",
+                button: 'Yes, open',
             },
             expectingPassphraseWallet: {
-                title: 'Expecting passphrase wallet with funds?',
-                description: "You might've made a typo. Try entering your passphrase again.",
+                title: 'Expecting a passphrase wallet with funds?',
+                description: "It's possible there was a typo. Try again and enter your passphrase.",
                 button: 'Try again',
             },
             confirmEmptyWalletSheet: {
-                title: 'What to do with new passphrase?',
+                title: 'Passphrase best practises',
                 list: {
-                    backup: 'Backup your passphrase on a piece of paper and always keep it offline (no photos, USB, internet).',
-                    store: 'Store it elsewhere than your recovery seed and Trezor.',
-                    neverShare: 'Never share it with anyone, not even with Trezor support.',
+                    backup: 'Write it down on paper & keep it away from anything digital (no cloud, USB, internet, phone).',
+                    store: 'Store it in a secure location, separate from both your wallet backup and Trezor device.',
+                    neverShare: 'Never share it with anyone, not even with Trezor Support.',
                 },
-                button: 'Got it, continue',
+                button: 'Got it',
                 alertTitle: 'No one can recover your passphrase, not even Trezor support',
             },
             verifyEmptyWallet: {
-                title: 'Confirm empty passphrase',
-                description: 'Carefully re-enter your passphrase to confirm it.',
+                title: 'Confirm empty passphrase wallet',
+                description: 'Re-enter your passphrase to open this wallet.',
                 alertTitle:
-                    'Create an offline backup of your passphrase. It is irrecoverable, even by Trezor support.',
+                    '<bold>Write down your passphrase on paper, nothing digital. It’s impossible to recover</bold>— not even Trezor Support can help.',
                 passphraseMismatchAlert: {
                     title: 'Passphrase mismatch',
                     description: 'Start over and enter your passphrase again.',

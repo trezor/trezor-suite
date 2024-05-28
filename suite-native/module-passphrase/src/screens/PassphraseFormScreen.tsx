@@ -11,7 +11,7 @@ import { PassphraseForm } from '../components/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
 
 const ANIMATION_DURATION = 300;
-const ALERT_CARD_HEIGHT = 148;
+const ALERT_CARD_HEIGHT = 204;
 
 const cardStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundAlertBlueSubtleOnElevation1,
@@ -68,35 +68,51 @@ export const PassphraseFormScreen = () => {
                 <View style={applyStyle(animationWrapperStyle)}>
                     <Animated.View style={animationStyle}>
                         <Box style={applyStyle(cardStyle)}>
-                            <VStack>
-                                <HStack alignItems="flex-start">
-                                    <Icon
-                                        name="warningCircle"
-                                        color="textAlertBlue"
-                                        size="medium"
-                                    />
-                                    <Text
-                                        color="textAlertBlue"
-                                        variant="callout"
-                                        style={applyStyle(cardTextStyle)}
-                                    >
-                                        <Translation id="modulePassphrase.alertCard.paragraphWarning1" />
-                                    </Text>
-                                </HStack>
-                                <HStack>
-                                    <Icon
-                                        name="warningTriangle"
-                                        color="textDefault"
-                                        size="medium"
-                                    />
-                                    <Text
-                                        color="textDefault"
-                                        variant="hint"
-                                        style={applyStyle(cardTextStyle)}
-                                    >
-                                        <Translation id="modulePassphrase.alertCard.paragraphWarning2" />
-                                    </Text>
-                                </HStack>
+                            <VStack spacing="medium">
+                                <VStack>
+                                    <HStack alignItems="flex-start">
+                                        <Icon
+                                            name="warningCircle"
+                                            color="textAlertBlue"
+                                            size="medium"
+                                        />
+                                        <Text
+                                            color="textAlertBlue"
+                                            variant="callout"
+                                            style={applyStyle(cardTextStyle)}
+                                        >
+                                            <Translation id="modulePassphrase.alertCard.paragraphWarning1" />
+                                        </Text>
+                                    </HStack>
+                                    <HStack>
+                                        <Icon
+                                            name="eyeSlashLight"
+                                            color="textDefault"
+                                            size="medium"
+                                        />
+                                        <Text
+                                            color="textDefault"
+                                            variant="hint"
+                                            style={applyStyle(cardTextStyle)}
+                                        >
+                                            <Translation id="modulePassphrase.alertCard.paragraphWarning2" />
+                                        </Text>
+                                    </HStack>
+                                    <HStack>
+                                        <Icon
+                                            name="warningTriangle"
+                                            color="textDefault"
+                                            size="medium"
+                                        />
+                                        <Text
+                                            color="textDefault"
+                                            variant="hint"
+                                            style={applyStyle(cardTextStyle)}
+                                        >
+                                            <Translation id="modulePassphrase.alertCard.paragraphWarning3" />
+                                        </Text>
+                                    </HStack>
+                                </VStack>
                                 <Button
                                     size="small"
                                     colorScheme="blueBold"
