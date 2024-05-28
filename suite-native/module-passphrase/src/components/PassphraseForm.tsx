@@ -97,8 +97,8 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                         onBlur={() => setIsInputFocused(false)}
                         secureTextEntry
                     />
-                    <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        {isDirty && (
+                    {isDirty && (
+                        <Animated.View entering={FadeIn} exiting={FadeOut}>
                             <Button
                                 accessibilityRole="button"
                                 accessibilityLabel="confirm passphrase"
@@ -106,8 +106,10 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                             >
                                 <Translation id="modulePassphrase.form.enterWallet" />
                             </Button>
-                        )}
-                        {!isDirty && !isInputFocused && (
+                        </Animated.View>
+                    )}
+                    {!isDirty && !isInputFocused && (
+                        <Animated.View entering={FadeIn} exiting={FadeOut}>
                             <VStack>
                                 <TextDivider
                                     title="generic.orSeparator"
@@ -115,8 +117,8 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                                 />
                                 <EnterPassphraseOnTrezorButton />
                             </VStack>
-                        )}
-                    </Animated.View>
+                        </Animated.View>
+                    )}
                 </VStack>
             </Card>
         </Form>
