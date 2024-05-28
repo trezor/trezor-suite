@@ -5,6 +5,7 @@ import { CommonActions, useNavigation } from '@react-navigation/native';
 import { A, pipe } from '@mobily/ts-belt';
 
 import { AccountType, NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { Account } from '@suite-common/wallet-types';
 import {
     AccountsRootState,
     DeviceRootState,
@@ -12,6 +13,7 @@ import {
     selectDevice,
     selectDeviceAccounts,
     selectIsDeviceInViewOnlyMode,
+    accountsActions,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import {
@@ -73,7 +75,7 @@ export const useAddCoinAccount = () => {
     const supportedNetworks = useSelector((state: DeviceRootState) =>
         selectDiscoverySupportedNetworks(state, areTestnetsEnabled),
     );
-    const accounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+    const deviceAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
         selectDeviceAccounts(state),
     );
     const device = useSelector(selectDevice);
@@ -180,52 +182,28 @@ export const useAddCoinAccount = () => {
         setNetworkSymbolWithTypeToBeAdded([networkSymbol, defaultType]);
     };
 
-    const getAccountsForNetworSymbolkWithAccountType = ({
-        networkSymbol,
-        accountType,
-    }: {
-        networkSymbol: NetworkSymbol;
-        accountType: AccountType;
-    }) =>
-        accounts.filter(
-            account => account.symbol === networkSymbol && account.accountType === accountType,
-        );
-
     const clearNetworkWithTypeToBeAdded = () => {
         setNetworkSymbolWithTypeToBeAdded(null);
     };
 
-    const checkCanAddAccount = ({
-        networkSymbol,
-        accountType,
-    }: {
-        networkSymbol: NetworkSymbol;
-        accountType?: AccountType;
-    }) => {
+    const checkCanAddAccount = (accounts: Account[]) => {
         if (isDeviceInViewOnlyMode) {
             showViewOnlyAddAccountAlert();
 
             return false;
         }
 
-        const selectedType = accountType ?? NORMAL_ACCOUNT_TYPE;
-
-        const currentAccountTypeAccounts = getAccountsForNetworSymbolkWithAccountType({
-            networkSymbol,
-            accountType: selectedType,
-        });
-
         // Do not allow adding more than 10 accounts of the same type
-        if (currentAccountTypeAccounts.length >= LIMIT) {
+        if (accounts.length >= LIMIT) {
             showTooManyAccountsAlert();
 
             return false;
         }
 
-        // Do not allow adding another empty account if there is already one
-        const emptyAccounts = currentAccountTypeAccounts.filter(account => account.empty);
+        // Do not allow showing another empty account if there is already one
+        const hasVisibleEmptyAccount = accounts.some(account => account.empty && account.visible);
 
-        if (emptyAccounts.length > 0) {
+        if (hasVisibleEmptyAccount) {
             showAnotherEmptyAccountAlert();
 
             return false;
@@ -283,12 +261,12 @@ export const useAddCoinAccount = () => {
 
     const addCoinAccount = async ({
         networkSymbol,
-        accountType,
         flowType,
+        accountType = NORMAL_ACCOUNT_TYPE,
     }: {
         networkSymbol: NetworkSymbol;
-        accountType?: AccountType;
         flowType: AddCoinFlowType;
+        accountType?: AccountType;
     }) => {
         clearNetworkWithTypeToBeAdded();
         if (!device?.state) {
@@ -297,37 +275,39 @@ export const useAddCoinAccount = () => {
             return;
         }
 
-        const selectedType = accountType ?? NORMAL_ACCOUNT_TYPE;
+        const accounts = deviceAccounts.filter(
+            account => account.symbol === networkSymbol && account.accountType === accountType,
+        );
 
-        const canAddAccount = checkCanAddAccount({
-            networkSymbol,
-            accountType: selectedType,
-        });
+        const firstHiddenEmptyAccount = accounts.find(account => account.empty && !account.visible);
+
+        const canAddAccount = checkCanAddAccount(accounts);
 
         if (!canAddAccount) {
             return;
         }
 
-        const network = getNetworkToAdd({ networkSymbol, accountType: selectedType });
-
-        const accountsWithTypeLength = getAccountsForNetworSymbolkWithAccountType({
-            networkSymbol,
-            accountType: selectedType,
-        }).length;
+        const network = getNetworkToAdd({ networkSymbol, accountType });
 
         navigateToSuccessorScreen({
             flowType,
             networkSymbol,
-            accountType: selectedType,
-            accountIndex: accountsWithTypeLength,
+            accountType,
+            accountIndex: firstHiddenEmptyAccount?.index ?? accounts.length,
         });
 
-        const account = await dispatch(
-            addAndDiscoverNetworkAccountThunk({
-                network,
-                deviceState: device.state,
-            }),
-        ).unwrap();
+        if (firstHiddenEmptyAccount) {
+            dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
+        }
+
+        const account =
+            firstHiddenEmptyAccount ||
+            (await dispatch(
+                addAndDiscoverNetworkAccountThunk({
+                    network,
+                    deviceState: device.state,
+                }),
+            ).unwrap());
 
         if (!account) {
             let screen = AppTabsRoutes.HomeStack;
