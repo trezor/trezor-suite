@@ -124,7 +124,6 @@ connect v9 rollback production:
     - connect-web build production
     - connect-explorer build production
   needs:
-    - release commit messages
     - connect-web build production
     - connect-explorer build production
   before_script:
