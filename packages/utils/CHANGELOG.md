@@ -1,3 +1,8 @@
+# 9.0.24
+
+-   chore: BigNumber wrapper (d18ba9a879)
+-   chore(utils): silence eslint in logs util (9d4324dc24)
+
 # 9.0.23
 
 -   chore(connect): move logs to @trezor/utils (28c2b9fe57)
