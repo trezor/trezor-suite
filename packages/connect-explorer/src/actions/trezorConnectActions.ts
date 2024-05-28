@@ -37,6 +37,12 @@ export const onConnectOptionChange = (option: string, value: any) => ({
     },
 });
 
+const isRelativePath = (path: string) => {
+    // This regex checks if the path starts with a scheme (like http://, https://, file://, etc.)
+    // or an absolute path indicator (like //)
+    return !/^(?:[a-z]+:)?\/\//i.test(path);
+};
+
 export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
@@ -66,7 +72,11 @@ export const init =
         const { host } = window.location;
 
         if (process?.env?.__TREZOR_CONNECT_SRC && host !== 'connect.trezor.io') {
-            window.__TREZOR_CONNECT_SRC = process?.env?.__TREZOR_CONNECT_SRC;
+            let src = process?.env?.__TREZOR_CONNECT_SRC;
+            if (isRelativePath(src)) {
+                src = `${window.location.origin}${src}`;
+            }
+            window.__TREZOR_CONNECT_SRC = src;
         }
         // yarn workspace @trezor/connect-explorer dev starts @trezor/connect-web on localhost port
         // so we may use it
