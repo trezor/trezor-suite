@@ -1,3 +1,8 @@
+# 1.1.29
+
+-   chore(transport): make Session type literal (72570f2219)
+-   chore(transport): specify apis fields more verbosely (public/protected) (786fa92fdc)
+
 # 1.1.29-beta.1
 
 -   feat(transport-bridge): introduce dispose method in transport-bridge (7fe9e7cd56)
