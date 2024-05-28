@@ -11,7 +11,7 @@ import { useSelector, useTranslation } from 'src/hooks/suite';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { isQuoteError } from 'src/utils/wallet/coinmarket/exchangeUtils';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/useCoinmarketExchangeOffers';
+import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import {
     CoinmarketCryptoAmount,
     CoinmarketProviderInfo,

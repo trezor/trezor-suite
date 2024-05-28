@@ -2,10 +2,8 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 
-import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
-import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -21,31 +19,38 @@ import {
     setIsFromRedirect,
 } from 'src/actions/wallet/coinmarketSellActions';
 import { goto } from 'src/actions/suite/routerActions';
-import { UseOffersProps, ContextValues, SellStep } from 'src/types/wallet/coinmarketSellOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
-import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
+import { useCoinmarketRecomposeAndSign } from './../../useCoinmarketRecomposeAndSign';
+import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import { CoinmarketTradeSellType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketSellOffersContextProps,
+    CoinmarketSellStepType,
+} from 'src/types/coinmarket/coinmarketOffers';
 
-export const useOffers = ({ selectedAccount }: UseOffersProps) => {
-    const timer = useTimer();
-
-    const { account, network } = selectedAccount;
+export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+    const {
+        callInProgress,
+        account,
+        selectedQuote,
+        timer,
+        device,
+        setCallInProgress,
+        setSelectedQuote,
+        checkQuotesTimer,
+    } = useCoinmarketCommonOffers<CoinmarketTradeSellType>({ selectedAccount });
+    const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const [callInProgress, setCallInProgress] = useState<boolean>(false);
-    const [selectedQuote, setSelectedQuote] = useState<SellFiatTrade>();
 
-    const [sellStep, setSellStep] = useState<SellStep>('BANK_ACCOUNT');
+    const [sellStep, setSellStep] = useState<CoinmarketSellStepType>('BANK_ACCOUNT');
     const { navigateToSellForm } = useCoinmarketNavigation(account);
-    const invityServerEnvironment = useSelector(
-        state => state.suite.settings.debug.invityServerEnvironment,
-    );
+
     const { alternativeQuotes, isFromRedirect, quotes, quotesRequest, sellInfo, transactionId } =
         useSelector(state => state.wallet.coinmarket.sell);
-    const device = useSelector(selectDevice);
     const trades = useSelector(state => state.wallet.coinmarket.trades);
     const dispatch = useDispatch();
 
@@ -55,10 +60,6 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
         SellFiatTrade[] | undefined
     >(alternativeQuotes);
-
-    if (invityServerEnvironment) {
-        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
-    }
 
     const { selectedFee, composed, recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
@@ -105,25 +106,20 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
 
             dispatch(setIsFromRedirect(false));
         }
-        if (!timer.isLoading && !timer.isStopped) {
-            if (timer.resetCount >= 40) {
-                timer.stop();
-            }
 
-            if (timer.timeSpend.seconds === InvityAPIReloadQuotesAfterSeconds) {
-                getQuotes();
-            }
-        }
+        checkQuotesTimer(getQuotes);
     }, [
-        dispatch,
         quotesRequest,
         isFromRedirect,
         timer,
-        navigateToSellForm,
         transactionId,
-        getQuotes,
         trades,
         trade,
+        dispatch,
+        getQuotes,
+        navigateToSellForm,
+        checkQuotesTimer,
+        setSelectedQuote,
     ]);
 
     const doSellTrade = async (quote: SellFiatTrade) => {
@@ -331,7 +327,9 @@ export const useOffers = ({ selectedAccount }: UseOffersProps) => {
     };
 };
 
-export const CoinmarketSellOffersContext = createContext<ContextValues | null>(null);
+export const CoinmarketSellOffersContext = createContext<CoinmarketSellOffersContextProps | null>(
+    null,
+);
 CoinmarketSellOffersContext.displayName = 'CoinmarketSellOffersContext';
 
 export const useCoinmarketSellOffersContext = () => {

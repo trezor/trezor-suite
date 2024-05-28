@@ -2,44 +2,48 @@ import { createContext, useContext, useState, useEffect, useCallback } from 'rea
 
 import { ExchangeTrade } from 'invity-api';
 
-import { useTimer } from '@trezor/react-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networksCompatibility as networks } from '@suite-common/wallet-config';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
-import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
-import { useActions, useSelector, useDevice, useDispatch } from 'src/hooks/suite';
+import { useActions, useSelector } from 'src/hooks/suite';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
-import {
-    UseCoinmarketExchangeFormProps,
-    ContextValues,
-    ExchangeStep,
-} from 'src/types/wallet/coinmarketExchangeOffers';
 import { splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
-import { useCoinmarketRecomposeAndSign } from './useCoinmarketRecomposeAndSign';
+import { useCoinmarketRecomposeAndSign } from '../../useCoinmarketRecomposeAndSign';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketExchangeOffersContextProps,
+    CoinmarketExchangeStepType,
+} from 'src/types/coinmarket/coinmarketOffers';
 
-export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) => {
-    const timer = useTimer();
-    const { isLocked } = useDevice();
-    const dispatch = useDispatch();
-    const { account, network } = selectedAccount;
+export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+    const {
+        callInProgress,
+        account,
+        selectedQuote,
+        timer,
+        device,
+        setCallInProgress,
+        setSelectedQuote,
+        checkQuotesTimer,
+    } = useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount });
+    const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
-    const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
-    const [selectedQuote, setSelectedQuote] = useState<ExchangeTrade>();
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
     const [suiteReceiveAccounts, setSuiteReceiveAccounts] =
-        useState<ContextValues['suiteReceiveAccounts']>();
+        useState<CoinmarketExchangeOffersContextProps['suiteReceiveAccounts']>();
 
-    const [exchangeStep, setExchangeStep] = useState<ExchangeStep>('RECEIVING_ADDRESS');
+    const [exchangeStep, setExchangeStep] =
+        useState<CoinmarketExchangeStepType>('RECEIVING_ADDRESS');
     const { navigateToExchangeForm, navigateToExchangeDetail } = useCoinmarketNavigation(account);
     const {
         saveTrade,
@@ -58,11 +62,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         verifyAddress: coinmarketExchangeActions.verifyAddress,
     });
 
-    const invityServerEnvironment = useSelector(
-        state => state.suite.settings.debug.invityServerEnvironment,
-    );
     const accounts = useSelector(state => state.wallet.accounts);
-    const device = useSelector(selectDevice);
     const { addressVerified, dexQuotes, exchangeInfo, fixedQuotes, floatQuotes, quotesRequest } =
         useSelector(state => state.wallet.coinmarket.exchange);
     const isDebug = useSelector(selectIsDebugModeActive);
@@ -75,10 +75,6 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     );
     const [innerDexQuotes, setInnerDexQuotes] = useState<ExchangeTrade[] | undefined>(dexQuotes);
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
-
-    if (invityServerEnvironment) {
-        invityAPI.setInvityServersEnvironment(invityServerEnvironment);
-    }
 
     const getQuotes = useCallback(async () => {
         if (!selectedQuote && quotesRequest) {
@@ -114,15 +110,7 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             return;
         }
 
-        if (!timer.isLoading && !timer.isStopped) {
-            if (timer.resetCount >= 40) {
-                timer.stop();
-            }
-
-            if (timer.timeSpend.seconds === InvityAPIReloadQuotesAfterSeconds) {
-                getQuotes();
-            }
-        }
+        checkQuotesTimer(getQuotes);
     });
 
     const selectQuote = async (quote: ExchangeTrade) => {
@@ -352,7 +340,8 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
     };
 };
 
-export const CoinmarketExchangeOffersContext = createContext<ContextValues | null>(null);
+export const CoinmarketExchangeOffersContext =
+    createContext<CoinmarketExchangeOffersContextProps | null>(null);
 CoinmarketExchangeOffersContext.displayName = 'CoinmarketExchangeOffersContext';
 
 export const useCoinmarketExchangeOffersContext = () => {

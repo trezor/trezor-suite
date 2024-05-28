@@ -1,10 +1,11 @@
 import styled from 'styled-components';
 import Detail from './Detail';
-import { withSelectedAccountLoaded, WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { withSelectedAccountLoaded } from 'src/components/wallet';
 import {
     CoinmarketDetailContext,
     useCoinmarketDetail,
 } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
+import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -12,7 +13,7 @@ const Wrapper = styled.div`
     flex-direction: column;
 `;
 
-const DetailIndex = (props: WithSelectedAccountLoadedProps) => {
+const DetailIndex = (props: UseCoinmarketProps) => {
     const coinmarketDetailContext = useCoinmarketDetail({
         selectedAccount: props.selectedAccount,
         tradeType: 'sell',
