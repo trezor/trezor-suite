@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 import type { BankAccount, SellFiatTrade } from 'invity-api';
 
@@ -26,11 +26,12 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './../../useCoinmarketRecomposeAndSign';
 import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
-import { CoinmarketTradeSellType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import {
-    CoinmarketSellOffersContextProps,
-    CoinmarketSellStepType,
-} from 'src/types/coinmarket/coinmarketOffers';
+    CoinmarketTradeSellType,
+    CoinmarketTradeType,
+    UseCoinmarketProps,
+} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
 
 export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps) => {
     const {
@@ -324,17 +325,6 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
         sellInfo,
         needToRegisterOrVerifyBankAccount,
         getQuotes,
+        type: 'sell' as CoinmarketTradeType,
     };
-};
-
-export const CoinmarketSellOffersContext = createContext<CoinmarketSellOffersContextProps | null>(
-    null,
-);
-CoinmarketSellOffersContext.displayName = 'CoinmarketSellOffersContext';
-
-export const useCoinmarketSellOffersContext = () => {
-    const context = useContext(CoinmarketSellOffersContext);
-    if (context === null) throw Error('CoinmarketSellOffersContext used without Context');
-
-    return context;
 };

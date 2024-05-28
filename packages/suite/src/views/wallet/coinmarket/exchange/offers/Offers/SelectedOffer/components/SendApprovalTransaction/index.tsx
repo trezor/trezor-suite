@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, Spinner, Radio, variables, Paragraph } from '@trezor/components';
-import { useCoinmarketExchangeOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketExchangeOffers';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { DexApprovalType, ExchangeTrade } from 'invity-api';
 import useTimeoutFn from 'react-use/lib/useTimeoutFn';
 import useUnmount from 'react-use/lib/useUnmount';
 import invityAPI from 'src/services/suite/invityAPI';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 // add APPROVED means no approval request is necessary
 type ExtendedDexApprovalType = DexApprovalType | 'APPROVED';
@@ -87,7 +88,7 @@ const SendApprovalTransactionComponent = () => {
         confirmTrade,
         sendTransaction,
         setExchangeStep,
-    } = useCoinmarketExchangeOffersContext();
+    } = useCoinmarketOffersContext<CoinmarketTradeExchangeType>();
     const [approvalType, setApprovalType] = useState<ExtendedDexApprovalType>(
         selectedQuote?.status === 'CONFIRM' ? 'APPROVED' : 'MINIMAL',
     );

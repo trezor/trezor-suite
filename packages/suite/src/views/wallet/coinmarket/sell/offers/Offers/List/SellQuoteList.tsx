@@ -10,7 +10,8 @@ import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/Coinmar
 import { SellQuote } from './SellQuote';
 import invityAPI from 'src/services/suite/invityAPI';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
 const Wrapper = styled.div``;
 const Quotes = styled.div``;
@@ -90,7 +91,7 @@ interface ListProps {
 }
 
 export const SellQuoteList = ({ isAlternative, quotes }: ListProps) => {
-    const { quotesRequest, timer } = useCoinmarketSellOffersContext();
+    const { quotesRequest, timer } = useCoinmarketOffersContext<CoinmarketTradeSellType>();
 
     if (!quotesRequest) return null;
     const { fiatStringAmount, fiatCurrency, amountInCrypto } = quotesRequest;

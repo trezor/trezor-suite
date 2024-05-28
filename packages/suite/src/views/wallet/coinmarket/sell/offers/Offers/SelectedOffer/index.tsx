@@ -6,7 +6,8 @@ import { SendTransaction } from './components/SendTransaction';
 import { Translation } from 'src/components/suite';
 import { CoinmarketSellOfferInfo } from '../../../components/CoinmarketSellOfferInfo';
 import { spacingsPx } from '@trezor/theme';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -65,7 +66,8 @@ const Middle = styled.div`
 `;
 
 export const SelectedOffer = () => {
-    const { account, selectedQuote, sellInfo, sellStep } = useCoinmarketSellOffersContext();
+    const { account, selectedQuote, sellInfo, sellStep } =
+        useCoinmarketOffersContext<CoinmarketTradeSellType>();
     if (!selectedQuote) return null;
 
     return (

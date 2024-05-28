@@ -2,7 +2,8 @@ import styled from 'styled-components';
 import { Translation, AccountLabeling } from 'src/components/suite';
 import { Button, variables, Spinner } from '@trezor/components';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
-import { useCoinmarketSellOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketSellOffers';
+import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
     display: flex;
@@ -57,7 +58,7 @@ const Title = styled.div`
 
 export const SendTransaction = () => {
     const { account, callInProgress, selectedQuote, sellInfo, sendTransaction, trade } =
-        useCoinmarketSellOffersContext();
+        useCoinmarketOffersContext<CoinmarketTradeSellType>();
     useCoinmarketWatchTrade({
         account,
         trade,
