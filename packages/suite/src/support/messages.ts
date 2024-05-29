@@ -25,6 +25,10 @@ export default defineMessages({
         defaultMessage: 'Hidden wallet',
         id: 'TR_WALLET_SELECTION_HIDDEN_WALLET',
     },
+    TR_WALLET_PASSPHRASE_WALLET: {
+        defaultMessage: 'Passphrase wallet',
+        id: 'TR_WALLET_PASSPHRASE_WALLET',
+    },
     TR_HIDDEN_WALLET_TOOLTIP: {
         id: 'TR_HIDDEN_WALLET_TOOLTIP',
         defaultMessage:
