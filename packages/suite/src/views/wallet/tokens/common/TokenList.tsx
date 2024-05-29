@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { Card, Dropdown, IconButton, ButtonGroup, Button } from '@trezor/components';
+import { Card, Dropdown, IconButton, ButtonGroup, Button, Icon } from '@trezor/components';
 import {
     FiatValue,
     FormattedCryptoAmount,
@@ -8,7 +8,7 @@ import {
     TrendTicker,
     TrezorLink,
 } from 'src/components/suite';
-import { useDispatch, useLayoutSize } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useTranslation } from 'src/hooks/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import { TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -21,6 +21,8 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { BlurUrls } from './UrlBlur';
+import { copyToClipboard } from '@trezor/dom-utils';
+import { notificationsActions } from '@suite-common/toast-notifications';
 
 const Table = styled(Card)`
     padding-bottom: ${spacingsPx.md};
@@ -98,24 +100,18 @@ const StyledTrezorLink = styled(TrezorLink)`
     ${typography.hint}
 `;
 
-const DropdownFooter = styled.div`
-    display: flex;
-    flex-direction: column;
-    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
-    padding: ${spacingsPx.xs} ${spacingsPx.sm} 0 ${spacingsPx.sm};
-    margin-top: ${spacingsPx.xxs};
-`;
-
-const FooterTitle = styled.div`
-    ${typography.label};
-    color: ${({ theme }) => theme.textSubdued};
-`;
-
 const ContractAddress = styled.div`
     ${typography.hint};
     color: ${({ theme }) => theme.textDefault};
-    max-width: 175px;
+    display: inline-block;
+    max-width: 185px;
     word-break: break-all;
+    white-space: wrap;
+`;
+
+const StyledIcon = styled(Icon)`
+    display: inline-block;
+    margin-left: ${spacingsPx.xs};
 `;
 
 interface TokenListProps {
@@ -128,6 +124,7 @@ interface TokenListProps {
 export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: TokenListProps) => {
     const dispatch = useDispatch();
     const { isMobileLayout } = useLayoutSize();
+    const { translationString } = useTranslation();
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (network.networkType) {
@@ -137,6 +134,13 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
             });
         }
         dispatch(goto(routeName, options));
+    };
+
+    const onCopyContractAddress = (contractAddress: string) => {
+        const result = copyToClipboard(contractAddress);
+        if (typeof result !== 'string') {
+            dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+        }
     };
 
     const explorerUrl =
@@ -190,6 +194,7 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                     <PriceTicker
                                         symbol={network.symbol}
                                         contractAddress={t.contract as TokenAddress}
+                                        noEmptyStateTooltip
                                     />
                                 </PriceTickerWrapper>
                             </Cell>
@@ -197,11 +202,11 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                 <TrendTicker
                                     symbol={network.symbol}
                                     contractAddress={t.contract as TokenAddress}
+                                    noEmptyStateTooltip
                                 />
                             </Cell>
                         </>
                     )}
-
                     <Cell $isActions>
                         <Dropdown
                             alignMenu="bottom-right"
@@ -216,6 +221,7 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                                     preserveParams: true,
                                                 });
                                             },
+                                            isDisabled: t.balance === '0',
                                             isHidden:
                                                 tokenStatusType === TokenManagementAction.HIDE
                                                     ? !isMobileLayout
@@ -269,15 +275,22 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                         },
                                     ],
                                 },
+                                {
+                                    key: 'footer',
+                                    label: translationString('TR_CONTRACT_ADDRESS'),
+                                    options: [
+                                        {
+                                            label: (
+                                                <ContractAddress>
+                                                    {t.contract}
+                                                    <StyledIcon icon="COPY" size={14} />
+                                                </ContractAddress>
+                                            ),
+                                            onClick: () => onCopyContractAddress(t.contract),
+                                        },
+                                    ],
+                                },
                             ]}
-                            footer={
-                                <DropdownFooter>
-                                    <FooterTitle>
-                                        <Translation id="TR_CONTRACT_ADDRESS" />
-                                    </FooterTitle>
-                                    <ContractAddress>{t.contract}</ContractAddress>
-                                </DropdownFooter>
-                            }
                         />
                         {!isMobileLayout &&
                             (tokenStatusType === TokenManagementAction.SHOW ? (
@@ -302,6 +315,7 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                 <ButtonGroup size="small" variant="tertiary">
                                     <IconButton
                                         label={<Translation id="TR_NAV_SEND" />}
+                                        isDisabled={t.balance === '0'}
                                         key="token-send"
                                         variant="tertiary"
                                         icon="SEND"

@@ -11,7 +11,7 @@ import { TokenTransfer } from '@trezor/blockchain-link-types';
 interface CommonOwnProps {
     amount: string;
     symbol: Network['symbol'] | TokenTransfer['symbol'];
-    tokenAddress?: string;
+    tokenAddress?: TokenAddress;
     fiatCurrency?: string;
 }
 
@@ -28,11 +28,7 @@ export const useFiatFromCryptoValue = ({
     useHistoricRate,
 }: useFiatFromCryptoValueParams) => {
     const localCurrency = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(
-        symbol as NetworkSymbol,
-        localCurrency,
-        tokenAddress as TokenAddress,
-    );
+    const fiatRateKey = getFiatRateKey(symbol as NetworkSymbol, localCurrency, tokenAddress);
 
     const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 

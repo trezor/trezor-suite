@@ -6768,6 +6768,14 @@ export default defineMessages({
         id: 'TR_EXPORT_AS',
         defaultMessage: 'Export as {as}',
     },
+    TR_HIDE_TOKEN: {
+        id: 'TR_HIDE_TOKEN',
+        defaultMessage: 'Hide token',
+    },
+    TR_VIEW_IN_EXPLORER: {
+        id: 'TR_VIEW_IN_EXPLORER',
+        defaultMessage: 'View in explorer',
+    },
     TR_EXPORT_FAIL: {
         id: 'TR_EXPORT_FAIL',
         defaultMessage: 'Export failed.',
@@ -6906,6 +6914,10 @@ export default defineMessages({
     TR_TOKEN_TRANSFERS: {
         id: 'TR_TOKEN_TRANSFERS',
         defaultMessage: '{standard} Token Transfers',
+    },
+    TR_CONTRACT_ADDRESS: {
+        id: 'TR_CONTRACT_ADDRESS',
+        defaultMessage: 'Contract address:',
     },
     TR_ANALYZE_IN_BLOCKBOOK: {
         id: 'TR_ANALYZE_IN_BLOCKBOOK',
@@ -9208,6 +9220,10 @@ export default defineMessages({
     TR_VIEW_ONLY: {
         id: 'TR_VIEW_ONLY',
         defaultMessage: 'View-only',
+    },
+    TR_URL_IN_TOKEN: {
+        id: 'TR_URL_IN_TOKEN',
+        defaultMessage: 'Never visit URLs provided in tokens. They are usually scams.',
     },
     TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE: {
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE',
