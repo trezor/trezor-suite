@@ -36,7 +36,6 @@ type RepeatedLogMessage = LogMessage & {
 };
 
 export class Logger implements ILogger {
-    static instance: Logger;
     private stream?: Promise<fs.WriteStream | undefined>;
     private defaultOptions: Options;
     private options: Options;
