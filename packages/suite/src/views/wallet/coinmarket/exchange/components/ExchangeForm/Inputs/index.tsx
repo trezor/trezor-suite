@@ -158,7 +158,7 @@ const Inputs = () => {
                             amount={balance}
                             symbol={account.symbol}
                             showApproximationIndicator
-                            tokenAddress={tokenData?.contract}
+                            tokenAddress={tokenData?.contract as TokenAddress}
                         />
                     </Balance>
                 </Left>

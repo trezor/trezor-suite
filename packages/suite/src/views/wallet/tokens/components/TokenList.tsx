@@ -1,16 +1,16 @@
-import { Fragment } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { variables, Icon, Card } from '@trezor/components';
+import styled, { css } from 'styled-components';
+import { Card, Dropdown, IconButton, ButtonGroup } from '@trezor/components';
 import {
     FiatValue,
     FormattedCryptoAmount,
-    QuestionTooltip,
+    PriceTicker,
+    Translation,
+    TrendTicker,
     TrezorLink,
 } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useLayoutSize, useSelector } from 'src/hooks/suite';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { spacingsPx, typography } from '@trezor/theme';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
@@ -18,75 +18,93 @@ import { blurUrls, enhanceTokensWithRates, sortTokensWithRates } from 'src/utils
 import { Rate, TokenAddress } from '@suite-common/wallet-types';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
-import { LastUpdateTooltip } from 'src/components/suite/Ticker/LastUpdateTooltip';
+import { EventType, analytics } from '@trezor/suite-analytics';
+import { goto } from 'src/actions/suite/routerActions';
 
-const Wrapper = styled(Card)<{ $fiatRateHidden?: boolean }>`
-    display: grid;
-    padding: 12px 16px;
-    grid-template-columns: ${props =>
-        props.$fiatRateHidden ? 'auto auto 44px' : 'auto auto auto 44px'};
+const Table = styled(Card)`
+    padding-bottom: ${spacingsPx.md};
     word-break: break-all;
 `;
 
-const TokenSymbol = styled.span`
-    ${typography.body}
-    text-transform: uppercase;
-    padding-right: 2px;
+const Columns = styled.div`
+    display: flex;
+    padding: 0 ${spacingsPx.lg};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
-interface ColProps {
-    $justify?: 'left' | 'right';
-    $fiatRateHidden?: boolean;
-}
-
-const Col = styled.div<ColProps>`
+const ColName = styled.div`
     ${typography.hint}
+    margin: ${spacingsPx.md} 0;
+    color: ${({ theme }) => theme.textSubdued};
+    width: 20%;
+`;
+
+const Cell = styled.div<{ $isActions?: boolean; $isBigger?: boolean }>`
+    ${typography.hint}
+    align-items: center;
     padding: 10px ${spacingsPx.sm} 10px 0;
-    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
+    width: ${({ $isBigger }) => ($isBigger ? `60%` : '20%')};
+    gap: ${spacingsPx.xxs};
 
-    &:nth-child(${({ $fiatRateHidden }) => ($fiatRateHidden ? '-n + 3' : '-n + 4')}) {
-        /* first row */
-        border-top: none;
-    }
-
-    ${({ $justify }) =>
-        $justify &&
+    ${({ $isActions }) =>
+        $isActions &&
         css`
-            justify-content: ${$justify === 'right' ? 'flex-end' : 'flex-start'};
-            text-align: ${$justify === 'right' ? 'right' : 'left'};
+            display: flex;
+            justify-content: flex-end;
+            text-align: right;¨
+            width: 10%;
         `}
 `;
 
-const TokenName = styled.span`
-    @media only screen and (max-width: ${variables.SCREEN_SIZE.SM}) {
-        display: none;
+const Token = styled.div`
+    display: flex;
+    align-items: center;
+    padding: ${spacingsPx.xs} 0;
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
+    margin: 0 ${spacingsPx.lg};
+
+    &:last-child {
+        border-bottom: none;
     }
 `;
 
-const FiatWrapper = styled.div`
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
+const TokenName = styled.span`
+    ${typography.body}
+`;
+
+const Amount = styled.div`
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+`;
+
+const StyledFiatValue = styled(FiatValue)`
+    ${typography.body}
+`;
+
+const StyledPriceTicker = styled(PriceTicker)`
     width: 100%;
 `;
 
 const CryptoAmount = styled(FormattedCryptoAmount)`
-    ${typography.body}
-    color: ${({ theme }) => theme.textDefault};
+    ${typography.hint}
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
-const StyledNoRatesTooltip = styled(NoRatesTooltip)`
-    justify-content: flex-end;
+const StyledTrezorLink = styled(TrezorLink)`
+    ${typography.hint}
 `;
 
-const StyledQuestionTooltip = styled(QuestionTooltip)<{ $addMarginTop: boolean }>`
-    ${({ $addMarginTop }) =>
-        $addMarginTop &&
-        css`
-            margin-top: ${spacingsPx.xxl};
-        `}
-    margin-bottom: ${spacingsPx.sm};
+const DropdownFooter = styled.div`
+    display: flex;
+    flex-direction: column;
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
+    padding: ${spacingsPx.sm};
+    margin-top: ${spacingsPx.xxs};
+`;
+
+const FooterTitle = styled.div`
+    ${typography.label}}
+    color: black;
 `;
 
 interface TokenListProps {
@@ -108,10 +126,11 @@ export const TokenList = ({
     explorerUrlQueryString,
     isTestnet,
 }: TokenListProps) => {
-    const theme = useTheme();
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, networkSymbol));
     const fiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
+    const dispatch = useDispatch();
+    const { isMobileLayout } = useLayoutSize();
 
     const tokensWithRates = enhanceTokensWithRates(tokens, localCurrency, networkSymbol, fiatRates);
 
@@ -119,10 +138,19 @@ export const TokenList = ({
 
     if (!tokens || tokens.length === 0) return null;
 
+    const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
+        if (networkSymbol) {
+            analytics.report({
+                type: EventType.AccountsActions,
+                payload: { symbol: networkSymbol, action: routeName },
+            });
+        }
+        dispatch(goto(routeName, options));
+    };
+
     const hasCoinDefinitions = getNetworkFeatures(networkSymbol).includes('coin-definitions');
-    const { knownTokens, unknownTokens } = sortedTokens.reduce<{
+    const { knownTokens } = sortedTokens.reduce<{
         knownTokens: EnhancedTokenInfo[];
-        unknownTokens: EnhancedTokenInfo[];
     }>(
         (acc, token) => {
             if (
@@ -130,101 +158,155 @@ export const TokenList = ({
                 isTokenDefinitionKnown(coinDefinitions?.data, networkSymbol, token.contract)
             ) {
                 acc.knownTokens.push(token);
-            } else {
-                acc.unknownTokens.push(token);
             }
 
             return acc;
         },
-        { knownTokens: [], unknownTokens: [] },
+        { knownTokens: [] },
     );
 
     return (
-        <>
-            {[knownTokens, unknownTokens].map((tokens, groupIndex) => {
-                const fiatRateHidden = groupIndex === 1 || isTestnet;
-
-                return tokens.length ? (
-                    <Fragment key={groupIndex === 0 ? 'knownTokens' : 'unknownTokens'}>
-                        {groupIndex === 1 && (
-                            <StyledQuestionTooltip
-                                label="TR_TOKEN_UNRECOGNIZED_BY_TREZOR"
-                                tooltip="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP"
-                                $addMarginTop={!!knownTokens.length}
-                            />
+        knownTokens.length > 0 && (
+            <Table paddingType="none">
+                <Columns>
+                    <ColName>
+                        <Translation id="TR_TOKEN" />
+                    </ColName>
+                    <ColName>
+                        <Translation id="AMOUNT" />
+                    </ColName>
+                    {!isTestnet && (
+                        <>
+                            <ColName>
+                                <Translation id="TR_EXCHANGE_RATE" />
+                            </ColName>
+                            <ColName>
+                                <Translation id="TR_7D_CHANGE" />
+                            </ColName>
+                        </>
+                    )}
+                </Columns>
+                {knownTokens.map(t => (
+                    <Token key={t.contract}>
+                        <Cell>
+                            <TokenName>{blurUrls(t.name)}</TokenName>
+                        </Cell>
+                        <Cell $isBigger={isTestnet}>
+                            <Amount>
+                                {!isTestnet && (
+                                    <StyledFiatValue
+                                        amount={t.balance || '1'}
+                                        symbol={networkSymbol}
+                                        tokenAddress={t.contract as TokenAddress}
+                                        showLoadingSkeleton
+                                    />
+                                )}
+                                <CryptoAmount
+                                    value={t.balance}
+                                    customSymbol={
+                                        networkType === 'cardano'
+                                            ? undefined
+                                            : blurUrls(t.symbol?.toUpperCase())
+                                    }
+                                />
+                            </Amount>
+                        </Cell>
+                        {!isTestnet && (
+                            <>
+                                <Cell>
+                                    <StyledPriceTicker
+                                        symbol={networkSymbol}
+                                        contractAddress={t.contract as TokenAddress}
+                                    />
+                                </Cell>
+                                <Cell>
+                                    <TrendTicker
+                                        symbol={networkSymbol}
+                                        contractAddress={t.contract as TokenAddress}
+                                    />
+                                </Cell>
+                            </>
                         )}
-                        <Wrapper $fiatRateHidden={fiatRateHidden} paddingType="none">
-                            {tokens.map(t => {
-                                const symbolMatchesName =
-                                    networkType === 'cardano' &&
-                                    t.symbol?.toLowerCase() === t.name?.toLowerCase();
-                                const noSymbol = !t.symbol || symbolMatchesName;
-
-                                return (
-                                    <Fragment key={t.contract}>
-                                        <Col $fiatRateHidden={fiatRateHidden}>
-                                            {!noSymbol && (
-                                                <TokenSymbol>{blurUrls(t.symbol)}</TokenSymbol>
-                                            )}
-                                            <TokenName>
-                                                {!noSymbol && ` - `}
-                                                {blurUrls(t.name)}
-                                            </TokenName>
-                                        </Col>
-                                        <Col $fiatRateHidden={fiatRateHidden} $justify="right">
-                                            {t.balance && (
-                                                <CryptoAmount
-                                                    value={t.balance}
-                                                    customSymbol={
-                                                        networkType === 'cardano'
-                                                            ? undefined
-                                                            : blurUrls(t.symbol?.toUpperCase())
-                                                    }
-                                                />
-                                            )}
-                                        </Col>
-                                        {!fiatRateHidden && (
-                                            <Col $fiatRateHidden={fiatRateHidden} $justify="right">
-                                                <FiatWrapper>
-                                                    <FiatValue
-                                                        amount={t.balance || '1'}
-                                                        symbol={networkSymbol}
-                                                        tokenAddress={t.contract as TokenAddress}
-                                                        showLoadingSkeleton
+                        <Cell $isActions>
+                            <Dropdown
+                                alignMenu="bottom-right"
+                                items={[
+                                    {
+                                        key: 'export',
+                                        options: [
+                                            {
+                                                label: <Translation id="TR_NAV_SEND" />,
+                                                onClick: () => {
+                                                    goToWithAnalytics('wallet-send', {
+                                                        preserveParams: true,
+                                                    });
+                                                },
+                                                isHidden: !isMobileLayout,
+                                            },
+                                            {
+                                                label: <Translation id="TR_NAV_RECEIVE" />,
+                                                onClick: () => {
+                                                    goToWithAnalytics('wallet-receive', {
+                                                        preserveParams: true,
+                                                    });
+                                                },
+                                                isHidden: !isMobileLayout,
+                                            },
+                                            {
+                                                label: <Translation id="TR_HIDE_TOKEN" />,
+                                                onClick: () => console.log(''),
+                                            },
+                                            {
+                                                label: (
+                                                    <StyledTrezorLink
+                                                        variant="nostyle"
+                                                        href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
                                                     >
-                                                        {({ value, timestamp }) =>
-                                                            value && timestamp ? (
-                                                                <LastUpdateTooltip
-                                                                    timestamp={timestamp}
-                                                                >
-                                                                    {value}
-                                                                </LastUpdateTooltip>
-                                                            ) : (
-                                                                <StyledNoRatesTooltip />
-                                                            )
-                                                        }
-                                                    </FiatValue>
-                                                </FiatWrapper>
-                                            </Col>
-                                        )}
-                                        <Col $fiatRateHidden={fiatRateHidden} $justify="right">
-                                            <TrezorLink
-                                                href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
-                                            >
-                                                <Icon
-                                                    icon="EXTERNAL_LINK"
-                                                    size={16}
-                                                    color={theme.iconSubdued}
-                                                />
-                                            </TrezorLink>
-                                        </Col>
-                                    </Fragment>
-                                );
-                            })}
-                        </Wrapper>
-                    </Fragment>
-                ) : null;
-            })}
-        </>
+                                                        <Translation id="TR_VIEW_IN_EXPLORER" />
+                                                    </StyledTrezorLink>
+                                                ),
+                                            },
+                                        ],
+                                    },
+                                ]}
+                                footer={
+                                    <DropdownFooter>
+                                        <FooterTitle>
+                                            <Translation id="TR_CONTRACT_ADDRESS" />
+                                        </FooterTitle>
+                                    </DropdownFooter>
+                                }
+                            />
+                            {!isMobileLayout && (
+                                <ButtonGroup size="small" withTooltips variant="tertiary">
+                                    <IconButton
+                                        label={<Translation id="TR_NAV_SEND" />}
+                                        key="token-send"
+                                        variant="tertiary"
+                                        icon="SEND"
+                                        onClick={() => {
+                                            goToWithAnalytics('wallet-send', {
+                                                preserveParams: true,
+                                            });
+                                        }}
+                                    />
+                                    <IconButton
+                                        label={<Translation id="TR_NAV_RECEIVE" />}
+                                        key="token-receive"
+                                        variant="tertiary"
+                                        icon="RECEIVE"
+                                        onClick={() => {
+                                            goToWithAnalytics('wallet-receive', {
+                                                preserveParams: true,
+                                            });
+                                        }}
+                                    />
+                                </ButtonGroup>
+                            )}
+                        </Cell>
+                    </Token>
+                ))}
+            </Table>
+        )
     );
 };

@@ -4,6 +4,7 @@ import { FiatValue } from 'src/components/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { typography } from '@trezor/theme';
 import { LastUpdateTooltip } from './LastUpdateTooltip';
+import { TokenAddress } from '@suite-common/wallet-types';
 
 const FiatRateWrapper = styled.span`
     ${typography.callout}
@@ -12,20 +13,31 @@ const FiatRateWrapper = styled.span`
     color: ${({ theme }) => theme.textDefault};
 `;
 
+const Empty = styled.div`
+    ${typography.callout}
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
 interface PriceTickerProps {
     symbol: string;
+    contractAddress?: TokenAddress;
+    noEmptyStateTooltip?: boolean;
 }
 
-export const PriceTicker = ({ symbol }: PriceTickerProps) => (
-    <FiatValue amount="1" symbol={symbol} showLoadingSkeleton>
-        {({ rate, timestamp }) =>
-            rate && timestamp ? (
-                <LastUpdateTooltip timestamp={timestamp}>
-                    <FiatRateWrapper>{rate}</FiatRateWrapper>
-                </LastUpdateTooltip>
-            ) : (
-                <NoRatesTooltip />
-            )
-        }
-    </FiatValue>
-);
+export const PriceTicker = ({ symbol, contractAddress, noEmptyStateTooltip }: PriceTickerProps) => {
+    const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
+
+    return (
+        <FiatValue amount="1" symbol={symbol} tokenAddress={contractAddress} showLoadingSkeleton>
+            {({ rate, timestamp }) =>
+                rate && timestamp ? (
+                    <LastUpdateTooltip timestamp={timestamp}>
+                        <FiatRateWrapper>{rate}</FiatRateWrapper>
+                    </LastUpdateTooltip>
+                ) : (
+                    emptyStateComponent
+                )
+            }
+        </FiatValue>
+    );
+};

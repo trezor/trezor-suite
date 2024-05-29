@@ -1,14 +1,17 @@
 import styled, { useTheme } from 'styled-components';
+
 import { spacingsPx, typography } from '@trezor/theme';
 import { Icon } from '@trezor/components';
 import { getFiatRateKey, localizePercentage } from '@suite-common/wallet-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { TokenAddress } from '@suite-common/wallet-types';
+
 import { FiatValue } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
-import { NoRatesTooltip } from './NoRatesTooltip';
-import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { NoRatesTooltip } from './NoRatesTooltip';
 
 const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
     ${typography.callout}
@@ -19,15 +22,22 @@ const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
         $isRateGoingUp ? theme.textPrimaryDefault : theme.textAlertRed};
 `;
 
+const Empty = styled.div`
+    ${typography.callout}
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
 const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
 
 interface TickerProps {
     symbol: NetworkSymbol;
+    contractAddress?: TokenAddress;
+    noEmptyStateTooltip?: boolean;
 }
-export const TrendTicker = ({ symbol }: TickerProps) => {
+export const TrendTicker = ({ symbol, contractAddress, noEmptyStateTooltip }: TickerProps) => {
     const locale = useSelector(selectLanguage);
     const localCurrency = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(symbol, localCurrency);
+    const fiatRateKey = getFiatRateKey(symbol, localCurrency, contractAddress);
     const lastWeekRate = useSelector(state =>
         selectFiatRatesByFiatRateKey(state, fiatRateKey, 'lastWeek'),
     );
@@ -44,8 +54,10 @@ export const TrendTicker = ({ symbol }: TickerProps) => {
         ? calculatePercentageDifference(currentRate.rate!, lastWeekRate.rate!)
         : 0;
 
+    const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
+
     return (
-        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton isLoading={!percentageChange}>
+        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton>
             {({ rate, timestamp }) =>
                 rate && timestamp && percentageChange ? (
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
@@ -57,7 +69,7 @@ export const TrendTicker = ({ symbol }: TickerProps) => {
                         {localizePercentage({ valueInFraction: percentageChange, locale })}
                     </PercentageWrapper>
                 ) : (
-                    <NoRatesTooltip />
+                    emptyStateComponent
                 )
             }
         </FiatValue>

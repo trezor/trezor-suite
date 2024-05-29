@@ -18,7 +18,7 @@ export const Tokens = () => {
     const explorerUrlQueryString = network.explorer.queryString;
 
     return (
-        <WalletLayout title="TR_TOKENS" account={selectedAccount} showEmptyHeaderPlaceholder>
+        <WalletLayout title="TR_TOKENS" account={selectedAccount}>
             <TokenList
                 isTestnet={isTestnet(account.symbol)}
                 explorerUrl={explorerUrl}

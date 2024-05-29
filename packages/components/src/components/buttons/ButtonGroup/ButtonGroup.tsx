@@ -6,7 +6,10 @@ import { ButtonSize, ButtonVariant } from '../buttonStyleUtils';
 import { IconButton, IconButtonProps } from '../IconButton/IconButton';
 import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 
-const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
+const Container = styled.div<{
+    $variant?: Exclude<ButtonVariant, 'danger'>;
+    $withTooltips?: boolean;
+}>`
     position: relative;
     display: flex;
     align-items: center;
@@ -25,7 +28,8 @@ const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
         border-radius: 0 ${borders.radii.full} ${borders.radii.full} 0;
     }
 
-    > :not(:last-child) {
+    > button:not(:last-child),
+    > div:not(:last-child) button {
         position: relative;
 
         &::after {
@@ -74,6 +78,7 @@ export const ButtonGroup = ({
     isDisabled,
     className,
     children,
+    withTooltips,
 }: ButtonGroupProps) => {
     const areChildrenValid = isValidChildrenElement(children);
 
@@ -116,7 +121,7 @@ export const ButtonGroup = ({
     });
 
     return (
-        <Container $variant={variant} className={className}>
+        <Container $variant={variant} $withTooltips={withTooltips} className={className}>
             {childrenWithProps}
         </Container>
     );
