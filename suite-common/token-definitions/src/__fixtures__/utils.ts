@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { DefinitionType } from '../types';
+import { DefinitionType } from '../tokenDefinitionsTypes';
 
 export const caseContractAddressForNetworkFixtures = [
     {

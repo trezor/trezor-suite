@@ -12,9 +12,9 @@ import {
     TOKEN_DEFINITIONS_PREFIX_URL,
     TOKEN_DEFINITIONS_SUFFIX_URL,
     JWS_SIGN_ALGORITHM,
-} from './constants';
-import { DefinitionType } from './types';
-import { getSupportedDefinitionTypes } from './utils';
+} from './tokenDefinitionsConstants';
+import { DefinitionType } from './tokenDefinitionsTypes';
+import { getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
 const TOKEN_DEFINITIONS_MODULE = '@common/wallet-core/token-definitions';
 

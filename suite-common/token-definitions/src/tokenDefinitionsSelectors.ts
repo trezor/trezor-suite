@@ -4,8 +4,8 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenInfo } from '@trezor/connect';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 
-import { TokenDefinitionsRootState } from './types';
-import { isTokenDefinitionKnown } from './utils';
+import { TokenDefinitionsRootState } from './tokenDefinitionsTypes';
+import { isTokenDefinitionKnown } from './tokenDefinitionsUtils';
 
 export const selectNetworkTokenDefinitions = (
     state: TokenDefinitionsRootState,

@@ -9,7 +9,7 @@ import {
     caseContractAddressForNetwork,
     getSupportedDefinitionTypes,
     isTokenDefinitionKnown,
-} from '../utils';
+} from '../tokenDefinitionsUtils';
 
 describe('caseContractAddressForNetwork', () => {
     caseContractAddressForNetworkFixtures.forEach(
