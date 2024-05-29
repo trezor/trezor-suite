@@ -101,7 +101,7 @@ export const groupTransactionsByDate = (
                 const key =
                     !isTxPending && item.blockTime && item.blockTime > 0
                         ? keyFormatter(new Date(item.blockTime * 1000))
-                        : 'pending';
+                        : `pending-${keyFormatter(new Date(item.blockTime ? item.blockTime * 1000 : new Date()))}`;
                 const prev = r[key] ?? [];
 
                 return {

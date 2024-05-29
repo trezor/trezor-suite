@@ -131,7 +131,7 @@ export const TransactionList = ({
     const listItems = useMemo(
         () =>
             Object.entries(transactionsByDate).map(([dateKey, value], groupIndex) => {
-                const isPending = dateKey === 'pending';
+                const isPending = dateKey.startsWith('pending');
 
                 return (
                     <TransactionsGroup
