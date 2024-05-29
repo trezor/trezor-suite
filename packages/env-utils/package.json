@@ -28,15 +28,18 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "expo-constants": "15.4.5",
         "ua-parser-js": "^1.0.37"
     },
     "peerDependencies": {
+        "expo-constants": "*",
         "expo-localization": "*",
         "react-native": "*",
         "tslib": "^2.6.2"
     },
     "peerDependenciesMeta": {
+        "expo-constants": {
+            "optional": true
+        },
         "expo-localization": {
             "optional": true
         },
