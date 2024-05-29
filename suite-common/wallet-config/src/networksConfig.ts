@@ -82,7 +82,16 @@ export const networks = {
             'staking',
         ],
         customBackends: ['blockbook'],
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // ledger (live)
+                bip43Path: "m/44'/60'/i'/0/0",
+            },
+            legacy: {
+                // ledger (legacy)
+                bip43Path: "m/44'/60'/0'/i",
+            },
+        },
         coingeckoId: 'ethereum',
     },
     etc: {
@@ -274,10 +283,9 @@ export const networks = {
         coingeckoId: 'zcash',
     },
     ada: {
-        // icarus derivation
         name: 'Cardano',
         networkType: 'cardano',
-        bip43Path: "m/1852'/1815'/i'",
+        bip43Path: "m/1852'/1815'/i'", // icarus derivation
         decimals: 6,
         testnet: false,
         features: ['tokens', 'staking', 'coin-definitions'],
@@ -309,7 +317,7 @@ export const networks = {
     sol: {
         name: 'Solana',
         networkType: 'solana',
-        bip43Path: "m/44'/501'/i'/0'",
+        bip43Path: "m/44'/501'/i'/0'", // phantom - bip44Change
         decimals: 9,
         testnet: false,
         features: ['tokens', 'coin-definitions' /*, 'staking' */],
@@ -325,7 +333,12 @@ export const networks = {
             [DeviceModelInternal.T3T1]: '2.7.1',
         },
         customBackends: ['solana'],
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // bip44Change - Ledger Live
+                bip43Path: "m/44'/501'/i'",
+            },
+        },
         coingeckoId: 'solana',
     },
     matic: {
@@ -344,7 +357,16 @@ export const networks = {
         },
         features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
         customBackends: ['blockbook'],
-        accountTypes: {},
+        accountTypes: {
+            ledger: {
+                // ledger (live)
+                bip43Path: "m/44'/60'/i'/0/0",
+            },
+            legacy: {
+                // ledger (legacy)
+                bip43Path: "m/44'/60'/0'/i",
+            },
+        },
         coingeckoId: 'polygon-pos',
     },
     bsc: {
