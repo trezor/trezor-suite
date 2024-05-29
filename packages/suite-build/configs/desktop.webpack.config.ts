@@ -63,8 +63,8 @@ const config: webpack.Configuration = {
                 )
                 .concat([
                     {
-                        from: path.join(__dirname, '../../', 'transport-bridge/dist'),
-                        to: path.join(baseDir, 'build/node-bridge'),
+                        from: path.join(__dirname, '../../', 'transport-bridge/dist/ui'),
+                        to: path.join(baseDir, 'build/node-bridge/ui'),
                     },
                 ]),
             options: {
