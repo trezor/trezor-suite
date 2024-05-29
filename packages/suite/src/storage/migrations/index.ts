@@ -810,5 +810,15 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return tx;
         });
+
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            Object.keys(walletSettings.lastUsedFeeLevel).forEach(coin => {
+                if (walletSettings.lastUsedFeeLevel[coin].label === 'low') {
+                    delete walletSettings.lastUsedFeeLevel[coin];
+                }
+            });
+
+            return walletSettings;
+        });
     }
 };
