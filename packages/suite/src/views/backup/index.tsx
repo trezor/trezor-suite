@@ -144,6 +144,15 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
         );
     }
 
+    const backupParams: Parameters<typeof backupDevice>[0] =
+        device?.features?.backup_type === 'Slip39_Basic' ||
+        device?.features?.backup_type === 'Slip39_Basic_Extendable'
+            ? {
+                  group_threshold: 1,
+                  groups: [{ member_count: 1, member_threshold: 1 }],
+              }
+            : {};
+
     return (
         <StyledModal
             isCancelable={cancelable}
@@ -158,7 +167,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         <>
                             <StyledButton
                                 data-test="@backup/start-button"
-                                onClick={() => dispatch(backupDevice())}
+                                onClick={() => dispatch(backupDevice(backupParams))}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
                                 <Translation id="TR_CREATE_BACKUP" />
