@@ -891,10 +891,23 @@ export enum CardanoCertificateType {
     STAKE_DEREGISTRATION = 1,
     STAKE_DELEGATION = 2,
     STAKE_POOL_REGISTRATION = 3,
+    STAKE_REGISTRATION_CONWAY = 7,
+    STAKE_DEREGISTRATION_CONWAY = 8,
+    VOTE_DELEGATION = 9,
 }
 
 export type EnumCardanoCertificateType = Static<typeof EnumCardanoCertificateType>;
 export const EnumCardanoCertificateType = Type.Enum(CardanoCertificateType);
+
+export enum CardanoDRepType {
+    KEY_HASH = 0,
+    SCRIPT_HASH = 1,
+    ABSTAIN = 2,
+    NO_CONFIDENCE = 3,
+}
+
+export type EnumCardanoDRepType = Static<typeof EnumCardanoDRepType>;
+export const EnumCardanoDRepType = Type.Enum(CardanoDRepType);
 
 export enum CardanoPoolRelayType {
     SINGLE_HOST_IP = 0,
@@ -1065,6 +1078,7 @@ export const CardanoSignTxInit = Type.Object(
         total_collateral: Type.Optional(Type.Uint()),
         reference_inputs_count: Type.Optional(Type.Number()),
         chunkify: Type.Optional(Type.Boolean()),
+        tag_cbor_sets: Type.Optional(Type.Boolean()),
     },
     { $id: 'CardanoSignTxInit' },
 );
@@ -1175,6 +1189,16 @@ export const CardanoPoolParametersType = Type.Object(
     { $id: 'CardanoPoolParametersType' },
 );
 
+export type CardanoDRep = Static<typeof CardanoDRep>;
+export const CardanoDRep = Type.Object(
+    {
+        type: EnumCardanoDRepType,
+        key_hash: Type.Optional(Type.String()),
+        script_hash: Type.Optional(Type.String()),
+    },
+    { $id: 'CardanoDRep' },
+);
+
 export type CardanoTxCertificate = Static<typeof CardanoTxCertificate>;
 export const CardanoTxCertificate = Type.Object(
     {
@@ -1184,6 +1208,8 @@ export const CardanoTxCertificate = Type.Object(
         pool_parameters: Type.Optional(CardanoPoolParametersType),
         script_hash: Type.Optional(Type.String()),
         key_hash: Type.Optional(Type.String()),
+        deposit: Type.Optional(Type.Number()),
+        drep: Type.Optional(CardanoDRep),
     },
     { $id: 'CardanoTxCertificate' },
 );
@@ -2126,6 +2152,9 @@ export enum Enum_BackupType {
     Bip39 = 0,
     Slip39_Basic = 1,
     Slip39_Advanced = 2,
+    Slip39_Single_Extendable = 3,
+    Slip39_Basic_Extendable = 4,
+    Slip39_Advanced_Extendable = 5,
 }
 
 export type EnumEnum_BackupType = Static<typeof EnumEnum_BackupType>;
@@ -2818,12 +2847,6 @@ export const NEMDecryptedMessage = Type.Object(
     { $id: 'NEMDecryptedMessage' },
 );
 
-export type experimental_message = Static<typeof experimental_message>;
-export const experimental_message = Type.Object({}, { $id: 'experimental_message' });
-
-export type experimental_field = Static<typeof experimental_field>;
-export const experimental_field = Type.Object({}, { $id: 'experimental_field' });
-
 export type RippleGetAddress = Static<typeof RippleGetAddress>;
 export const RippleGetAddress = Type.Object(
     {
@@ -3398,6 +3421,12 @@ export const TezosSignedTx = Type.Object(
     { $id: 'TezosSignedTx' },
 );
 
+export type experimental_message = Static<typeof experimental_message>;
+export const experimental_message = Type.Object({}, { $id: 'experimental_message' });
+
+export type experimental_field = Static<typeof experimental_field>;
+export const experimental_field = Type.Object({}, { $id: 'experimental_field' });
+
 export type MessageType = Static<typeof MessageType>;
 export const MessageType = Type.Object(
     {
@@ -3480,6 +3509,7 @@ export const MessageType = Type.Object(
         CardanoPoolRelayParameters,
         CardanoPoolMetadataType,
         CardanoPoolParametersType,
+        CardanoDRep,
         CardanoTxCertificate,
         CardanoTxWithdrawal,
         CardanoCVoteRegistrationDelegation,
@@ -3626,8 +3656,6 @@ export const MessageType = Type.Object(
         NEMSignedTx,
         NEMDecryptMessage,
         NEMDecryptedMessage,
-        experimental_message,
-        experimental_field,
         RippleGetAddress,
         RippleAddress,
         RipplePayment,
@@ -3676,6 +3704,8 @@ export const MessageType = Type.Object(
         TezosBallotOp,
         TezosSignTx,
         TezosSignedTx,
+        experimental_message,
+        experimental_field,
     },
     { $id: 'MessageType' },
 );

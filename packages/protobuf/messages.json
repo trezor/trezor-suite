@@ -1652,7 +1652,18 @@
                 "STAKE_REGISTRATION": 0,
                 "STAKE_DEREGISTRATION": 1,
                 "STAKE_DELEGATION": 2,
-                "STAKE_POOL_REGISTRATION": 3
+                "STAKE_POOL_REGISTRATION": 3,
+                "STAKE_REGISTRATION_CONWAY": 7,
+                "STAKE_DEREGISTRATION_CONWAY": 8,
+                "VOTE_DELEGATION": 9
+            }
+        },
+        "CardanoDRepType": {
+            "values": {
+                "KEY_HASH": 0,
+                "SCRIPT_HASH": 1,
+                "ABSTAIN": 2,
+                "NO_CONFIDENCE": 3
             }
         },
         "CardanoPoolRelayType": {
@@ -2005,6 +2016,13 @@
                 "chunkify": {
                     "type": "bool",
                     "id": 22
+                },
+                "tag_cbor_sets": {
+                    "type": "bool",
+                    "id": 23,
+                    "options": {
+                        "default": false
+                    }
                 }
             }
         },
@@ -2226,6 +2244,23 @@
                 }
             }
         },
+        "CardanoDRep": {
+            "fields": {
+                "type": {
+                    "rule": "required",
+                    "type": "CardanoDRepType",
+                    "id": 1
+                },
+                "key_hash": {
+                    "type": "bytes",
+                    "id": 2
+                },
+                "script_hash": {
+                    "type": "bytes",
+                    "id": 3
+                }
+            }
+        },
         "CardanoTxCertificate": {
             "fields": {
                 "type": {
@@ -2256,6 +2291,14 @@
                 "key_hash": {
                     "type": "bytes",
                     "id": 6
+                },
+                "deposit": {
+                    "type": "uint64",
+                    "id": 7
+                },
+                "drep": {
+                    "type": "CardanoDRep",
+                    "id": 8
                 }
             }
         },
@@ -4289,7 +4332,10 @@
             "values": {
                 "Bip39": 0,
                 "Slip39_Basic": 1,
-                "Slip39_Advanced": 2
+                "Slip39_Advanced": 2,
+                "Slip39_Single_Extendable": 3,
+                "Slip39_Basic_Extendable": 4,
+                "Slip39_Advanced_Extendable": 5
             }
         },
         "SafetyCheckLevel": {
