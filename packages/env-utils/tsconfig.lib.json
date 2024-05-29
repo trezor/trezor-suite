@@ -4,9 +4,5 @@
         "outDir": "lib"
     },
     "include": ["./src"],
-    "references": [
-        {
-            "path": "../../suite-common/wallet-constants"
-        }
-    ]
+    "references": []
 }

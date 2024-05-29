@@ -28,7 +28,6 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@suite-common/wallet-constants": "workspace:*",
         "expo-constants": "15.4.5",
         "ua-parser-js": "^1.0.37"
     },
