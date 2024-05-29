@@ -52,8 +52,8 @@ const cacheDevice = createAction(
 );
 
 export const firmwareActions = {
-    setStatus,
     setHashInvalid,
+    setStatus,
     setError,
     setTargetType,
     setIsCustomFirmware,

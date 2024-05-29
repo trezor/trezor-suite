@@ -139,7 +139,7 @@ export const firmwareUpdate = createThunk(
             language => language.startsWith(suiteLanguage),
         );
 
-        const firmwareUpdateReponse = await TrezorConnect.firmwareUpdate({
+        const firmwareUpdateResponse = await TrezorConnect.firmwareUpdate({
             device,
             baseUrl,
             btcOnly: toBitcoinOnlyFirmware,
@@ -148,17 +148,17 @@ export const firmwareUpdate = createThunk(
             language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
         });
 
-        if (!firmwareUpdateReponse.success) {
+        if (!firmwareUpdateResponse.success) {
             dispatch(firmwareActions.setStatus('error'));
-            dispatch(firmwareActions.setError(firmwareUpdateReponse.payload.error));
+            dispatch(firmwareActions.setError(firmwareUpdateResponse.payload.error));
         } else {
-            const { check } = firmwareUpdateReponse.payload;
+            const { check } = firmwareUpdateResponse.payload;
             if (check === 'mismatch') {
                 handleFwHashMismatch(device);
             } else if (check === 'other-error') {
                 // TrezorConnect error. Only 'softly' inform user that we were not able to
                 // validate firmware hash
-                handleFwHashError(firmwareUpdateReponse.payload.checkError);
+                handleFwHashError(firmwareUpdateResponse.payload.checkError);
             } else {
                 dispatch(firmwareActions.setStatus('done'));
             }
