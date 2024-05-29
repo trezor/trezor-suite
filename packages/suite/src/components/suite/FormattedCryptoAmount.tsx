@@ -13,6 +13,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { isSignValuePositive } from '@suite-common/formatters';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
+import { BlurUrls } from 'src/views/wallet/tokens/common/UrlBlur';
 
 const Container = styled.span`
     max-width: 100%;
@@ -23,8 +24,6 @@ const Value = styled.span`
     overflow: hidden;
     text-overflow: ellipsis;
 `;
-
-const Symbol = styled.span``;
 
 export interface FormattedCryptoAmountProps {
     value?: string | number;
@@ -90,10 +89,8 @@ export const FormattedCryptoAmount = ({
     const content = (
         <Container className={className}>
             {!!signValue && <Sign value={signValue} />}
-
             <Value data-test={dataTest}>{formattedValue}</Value>
-
-            {symbol && <Symbol>&nbsp;{formattedSymbol}</Symbol>}
+            {formattedSymbol && <BlurUrls text={' ' + formattedSymbol} />}
         </Container>
     );
 

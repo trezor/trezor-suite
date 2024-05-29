@@ -14,8 +14,8 @@ import { NoRatesTooltip } from 'src/components/suite/Ticker/NoRatesTooltip';
 import { TokenInfo } from '@trezor/blockchain-link-types';
 import { spacingsPx, typography } from '@trezor/theme';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
-import { Rate } from '@suite-common/wallet-types';
+import { blurUrls, enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
+import { Rate, TokenAddress } from '@suite-common/wallet-types';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 import { LastUpdateTooltip } from 'src/components/suite/Ticker/LastUpdateTooltip';
@@ -163,20 +163,22 @@ export const TokenList = ({
                                 return (
                                     <Fragment key={t.contract}>
                                         <Col $fiatRateHidden={fiatRateHidden}>
-                                            {!noSymbol && <TokenSymbol>{t.symbol}</TokenSymbol>}
+                                            {!noSymbol && (
+                                                <TokenSymbol>{blurUrls(t.symbol)}</TokenSymbol>
+                                            )}
                                             <TokenName>
                                                 {!noSymbol && ` - `}
-                                                {t.name}
+                                                {blurUrls(t.name)}
                                             </TokenName>
                                         </Col>
                                         <Col $fiatRateHidden={fiatRateHidden} $justify="right">
                                             {t.balance && (
                                                 <CryptoAmount
                                                     value={t.balance}
-                                                    symbol={
+                                                    customSymbol={
                                                         networkType === 'cardano'
                                                             ? undefined
-                                                            : t.symbol
+                                                            : blurUrls(t.symbol?.toUpperCase())
                                                     }
                                                 />
                                             )}
@@ -187,7 +189,7 @@ export const TokenList = ({
                                                     <FiatValue
                                                         amount={t.balance || '1'}
                                                         symbol={networkSymbol}
-                                                        tokenAddress={t.contract}
+                                                        tokenAddress={t.contract as TokenAddress}
                                                         showLoadingSkeleton
                                                     >
                                                         {({ value, timestamp }) =>

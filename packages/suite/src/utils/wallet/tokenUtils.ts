@@ -3,8 +3,13 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Account, Rate, TokenAddress, RatesByKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import {
+    EnhancedTokenInfo,
+    TokenDefinition,
+    isTokenDefinitionKnown,
+} from '@suite-common/token-definitions';
 
 interface TokensWithRates extends TokenInfo {
     fiatValue: BigNumber;
@@ -61,48 +66,29 @@ export const formatTokenSymbol = (symbol: string) => {
     return isTokenSymbolLong ? `${upperCasedSymbol.slice(0, 7)}...` : upperCasedSymbol;
 };
 
-export const blurUrls = (text?: string): (string | JSX.Element)[] => {
-    if (!text) return [];
-
-    const urlRegex =
-        /\b(?:https?:\/\/|www\.)[a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]+(?:\.[a-zA-Z]{2,})\b|[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)+/gi;
-
-    const parts = text.split(urlRegex);
-
-    const matches = [...text.matchAll(urlRegex)];
-
-    const elements: (string | JSX.Element)[] = [];
-
-    parts.forEach((part, index) => {
-        elements.push(part);
-        if (matches[index]) {
-            elements.push(
-                <StyledTooltip content={<Translation id="TR_URL_IN_TOKEN" />}>
-                    <BlurWrapper key={index} $isBlurred>
-                        {matches[index][0]}
-                    </BlurWrapper>
-                </StyledTooltip>,
-            );
-        }
-    });
-
-    return elements;
-};
-
-export const getShownTokens = (
-    tokens: EnhancedTokenInfo[],
+export const getTokens = (
+    tokens: EnhancedTokenInfo[] | TokenInfo[],
     symbol: NetworkSymbol,
+    filterType: 'shown' | 'hidden' | 'unverified',
     coinDefinitions?: TokenDefinition,
 ): EnhancedTokenInfo[] => {
     const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 
-    const shownTokens = tokens.filter(
-        token =>
-            !hasCoinDefinitions ||
-            (isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract) &&
-                !coinDefinitions?.hide.includes(token.contract)) ||
-            coinDefinitions?.show.some(contract => contract === token.contract),
-    );
+    const filteredTokens = tokens.filter(token => {
+        const isKnown = isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract);
+        const isHidden = coinDefinitions?.hide.includes(token.contract);
+        const isShown = coinDefinitions?.show.includes(token.contract);
 
-    return shownTokens;
+        if (filterType === 'shown') {
+            return !hasCoinDefinitions || (isKnown && !isHidden) || isShown;
+        } else if (filterType === 'unverified') {
+            return hasCoinDefinitions && !isKnown && !isShown;
+        } else if (filterType === 'hidden') {
+            return isKnown && isHidden;
+        }
+
+        return false;
+    });
+
+    return filteredTokens;
 };
