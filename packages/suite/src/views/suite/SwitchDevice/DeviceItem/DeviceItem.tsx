@@ -37,9 +37,16 @@ interface DeviceItemProps {
     instances: AcquiredDevice[];
     onCancel: ForegroundAppProps['onCancel'];
     backgroundRoute: ReturnType<typeof getBackgroundRoute>;
+    isCloseButtonVisible?: boolean;
 }
 
-export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: DeviceItemProps) => {
+export const DeviceItem = ({
+    device,
+    instances,
+    onCancel,
+    backgroundRoute,
+    isCloseButtonVisible,
+}: DeviceItemProps) => {
     const selectedDevice = useSelector(selectDevice);
     const dispatch = useDispatch();
     const deviceStatus = deviceUtils.getStatus(device);
@@ -101,6 +108,7 @@ export const DeviceItem = ({ device, instances, onCancel, backgroundRoute }: Dev
             }
             onCancel={onCancel}
             device={device}
+            isCloseButtonVisible={isCloseButtonVisible}
         >
             <WalletsWrapper $enabled>
                 <InstancesWrapper>

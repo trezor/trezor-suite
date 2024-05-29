@@ -22,7 +22,7 @@ export const DiscoveryLoader = () => {
 
     return (
         <SwitchDeviceRenderer isCancelable={false} data-test="@discovery/loader">
-            <CardWithDevice device={device}>
+            <CardWithDevice device={device} isCloseButtonVisible={false}>
                 <Expand>
                     <Spinner size={80} isGrey={false} margin={{ bottom: 48 }} />
                     <H3 align="center">
