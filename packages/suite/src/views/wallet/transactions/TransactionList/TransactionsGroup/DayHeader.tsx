@@ -36,6 +36,11 @@ const ColDate = styled(Col)`
     flex: 1;
 `;
 
+const PendingTitleWrapper = styled(Col)`
+    display: flex;
+    flex-direction: column;
+`;
+
 const ColPending = styled(Col)`
     color: ${({ theme }) => theme.TYPE_ORANGE};
     font-variant-numeric: tabular-nums;
@@ -79,14 +84,27 @@ export const DayHeader = ({
 
     const parsedDate = parseTransactionDateKey(dateKey);
     const showFiatValue = !isTestnet(symbol);
+    const pendingDate = dateKey.split('-').slice(1).join('-');
+    const parsedPendingDate = parseTransactionDateKey(pendingDate);
+    const isPending = dateKey.startsWith('pending');
 
     return (
         <Wrapper>
-            {dateKey === 'pending' ? (
-                <ColPending data-test="@transaction-group/pending/count">
-                    <Translation id="TR_PENDING_TX_HEADING" values={{ count: txsCount }} /> •{' '}
-                    {txsCount}
-                </ColPending>
+            {isPending ? (
+                <PendingTitleWrapper>
+                    <ColPending data-test="@transaction-group/pending/count">
+                        <Translation id="TR_PENDING_TX_HEADING" values={{ count: txsCount }} /> •{' '}
+                        {txsCount}
+                    </ColPending>
+                    <ColDate>
+                        <FormattedDate
+                            value={parsedPendingDate ?? undefined}
+                            day="numeric"
+                            month="long"
+                            year="numeric"
+                        />
+                    </ColDate>
+                </PendingTitleWrapper>
             ) : (
                 <>
                     <ColDate>
