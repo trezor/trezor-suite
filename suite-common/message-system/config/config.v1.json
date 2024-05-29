@@ -1,7 +1,7 @@
 {
     "version": 1,
-    "timestamp": "2024-05-23T00:00:00+00:00",
-    "sequence": 55,
+    "timestamp": "2024-05-29T00:00:00+00:00",
+    "sequence": 56,
     "actions": [
         {
             "conditions": [
@@ -858,6 +858,70 @@
                     "it": "Aggiornare il firmware per poter firmare le transazioni Zcash",
                     "fr": "Veuillez mettre à jour le micrologiciel pour pouvoir signer des transactions Zcash.",
                     "de": "Aktualisiere deine Firmware, um Zcash-Transaktionen signieren zu können"
+                },
+                "cta": {
+                    "action": "internal-link",
+                    "link": "firmware-index",
+                    "label": {
+                        "en-GB": "Update Firmware",
+                        "en": "Update Firmware",
+                        "es": "Actualizar firmware",
+                        "cs": "Aktualizovat Firmware",
+                        "ru": "Обновить прошивку",
+                        "ja": "ファームウェアのアップデート",
+                        "hu": "Firmware frissítése",
+                        "it": "Aggiornamento del firmware",
+                        "fr": "Mettre à jour le micrologiciel",
+                        "de": "Firmware aktualisieren"
+                    }
+                }
+            }
+        },
+        {
+            "conditions": [
+                {
+                    "environment": {
+                        "desktop": ">=21.7.1",
+                        "mobile": "!",
+                        "web": ">=21.7.1"
+                    },
+                    "devices": [
+                        {
+                            "model": "1",
+                            "firmware": "<1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        },
+                        {
+                            "model": "T1B1",
+                            "firmware": "<1.7.0",
+                            "bootloader": "*",
+                            "variant": "*",
+                            "firmwareRevision": "*",
+                            "vendor": "*"
+                        }
+                    ]
+                }
+            ],
+            "message": {
+                "id": "51a6aa24-a394-4def-a5b8-449093eaee3b",
+                "priority": 94,
+                "dismissible": true,
+                "variant": "warning",
+                "category": "banner",
+                "content": {
+                    "en-GB": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
+                    "en": "Please update device firmware now: Your Trezor will not be recognized or usable in new versions of Trezor Suite.",
+                    "es": "Actualice ahora el firmware del dispositivo: Su Trezor no será reconocido ni utilizable en las nuevas versiones de Trezor Suite.",
+                    "cs": "Aktualizujte firmware zařízení: Váš Trezor nebude v nových verzích Trezor Suite rozpoznán ani použitelný.",
+                    "ru": "Пожалуйста, обновите прошивку устройства прямо сейчас: Ваш Trezor не будет распознан и его нельзя будет использовать в новых версия Trezor Suite.",
+                    "ja": "今すぐデバイスのファームウェアをアップデートしてください： お使いのTrezorは、新しいバージョンのTrezor Suiteでは認識されず、使用できません.",
+                    "hu": "Kérjük, frissítse a készülék firmware-ét: A Trezor Suite új verziói nem ismerik fel és nem használhatók.",
+                    "it": "Aggiornare subito il firmware del dispositivo: Il dispositivo Trezor non sarà riconosciuto o utilizzabile nelle nuove versioni di Trezor Suite.",
+                    "fr": "Veuillez mettre à jour le micrologiciel de l'appareil maintenant : Votre Trezor ne sera pas reconnu ou utilisable dans les nouvelles versions de Trezor Suite.",
+                    "de": "Bitte aktualisieren Sie jetzt die Firmware: Ihr Trezor wird in neuen Versionen der Trezor Suite nicht mehr erkannt und kann nicht verwendet werden."
                 },
                 "cta": {
                     "action": "internal-link",
