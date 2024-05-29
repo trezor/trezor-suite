@@ -328,6 +328,80 @@ const DividerWrapper = styled.div`
     }
 `;
 
+type SelectWithContentProps = {
+    value: BackupType;
+    selected: BackupType;
+    onSelect: (value: BackupType) => void;
+    defaultType: BackupType;
+    children: ReactNode;
+    tags: ReactNode;
+};
+
+const SelectWithContent = ({
+    onSelect,
+    selected,
+    value,
+    children,
+    tags,
+}: SelectWithContentProps) => {
+    const { isMobileLayout } = useLayoutSize();
+
+    return (
+        <Option
+            onSelect={() => onSelect(value)}
+            isChecked={selected === value}
+            data-test="@onboarding/select-seed-type-12-words"
+        >
+            <OptionText>
+                <Row alignItems="center">
+                    <Text
+                        variant={selected === value ? undefined : 'tertiary'}
+                        typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
+                    >
+                        <Translation id={typesToLabelMap[value]} />
+                    </Text>
+                    {tags}
+                </Row>
+                {children}
+            </OptionText>
+        </Option>
+    );
+};
+
+type LegacySelectsProps = {
+    selected: BackupType;
+    onSelect: (value: BackupType) => void;
+    defaultType: BackupType;
+};
+
+const LegacySelects = ({ defaultType, onSelect, selected }: LegacySelectsProps) => {
+    return (
+        <>
+            <SelectWithContent
+                onSelect={onSelect}
+                selected={selected}
+                value="12-words"
+                tags={<>{defaultType === '12-words' && <DefaultTag />}</>}
+            >
+                {defaultType === '12-words' && (
+                    <Text typographyStyle="hint">
+                        <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE" />
+                    </Text>
+                )}
+            </SelectWithContent>
+
+            <SelectWithContent
+                onSelect={onSelect}
+                selected={selected}
+                value="24-words"
+                tags={<>{defaultType === '24-words' && <DefaultTag />}</>}
+            >
+                <></>
+            </SelectWithContent>
+        </>
+    );
+};
+
 const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
     ({ selected, onSelect, style, defaultType }, ref) => {
         const { elevation } = useElevation();
@@ -398,45 +472,11 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                             />
                         </Text>
                     </OptionGroupHeading>
-                    <Option
-                        onSelect={() => onSelect('12-words')}
-                        isChecked={selected === '12-words'}
-                        data-test="@onboarding/select-seed-type-12-words"
-                    >
-                        <OptionText>
-                            <Row alignItems="center">
-                                <Text
-                                    variant={selected === '12-words' ? undefined : 'tertiary'}
-                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                                >
-                                    <Translation id={typesToLabelMap['12-words']} />
-                                </Text>
-                                {defaultType === '12-words' && <DefaultTag />}
-                            </Row>
-                            {defaultType === '12-words' && (
-                                <Text typographyStyle="hint">
-                                    <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE" />
-                                </Text>
-                            )}
-                        </OptionText>
-                    </Option>
-                    <Option
-                        onSelect={() => onSelect('24-words')}
-                        isChecked={selected === '24-words'}
-                        data-test="@onboarding/select-seed-type-24-words"
-                    >
-                        <OptionText>
-                            <Row alignItems="center">
-                                <Text
-                                    variant={selected === '24-words' ? undefined : 'tertiary'}
-                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                                >
-                                    <Translation id={typesToLabelMap['24-words']} />
-                                </Text>
-                                {defaultType === '24-words' && <DefaultTag />}
-                            </Row>
-                        </OptionText>
-                    </Option>
+                    <LegacySelects
+                        defaultType={defaultType}
+                        onSelect={onSelect}
+                        selected={selected}
+                    />
                 </InnerScrollableWrapper>
             </FloatingSelectionsWrapper>
         );
