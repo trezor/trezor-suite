@@ -1,4 +1,5 @@
 name: "[Template] connect unit"
+
 on:
   workflow_call:
     inputs:
@@ -60,6 +61,11 @@ jobs:
       - if: ${{ inputs.methods }}
         run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
       - run: './docker/docker-connect-test.sh node -p "${{ inputs.testPattern }}" -f "${{ inputs.testsFirmware }}" $ADDITIONAL_ARGS'
+      - name: "Upload partial coverage report"
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ inputs.testDescription }}
+          path: ./packages/connect/coverage
 
   web:
     name: "web-${{ inputs.testDescription }}"
