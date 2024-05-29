@@ -1,6 +1,6 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
 import { useDispatch, useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -13,14 +13,7 @@ import {
 import { Button, Card, VStack, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import {
-    deviceActions,
-    onPassphraseSubmit,
-    selectDevice,
-    selectDeviceButtonRequestsCodes,
-    selectDeviceState,
-    selectIsDeviceDiscoveryActive,
-} from '@suite-common/wallet-core';
+import { deviceActions, onPassphraseSubmit, selectDevice } from '@suite-common/wallet-core';
 import {
     PassphraseStackParamList,
     PassphraseStackRoutes,
@@ -61,9 +54,6 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
     const { applyStyle } = useNativeStyles();
 
     const device = useSelector(selectDevice);
-    const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);
-    const deviceState = useSelector(selectDeviceState);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -80,16 +70,10 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
         reset,
     } = form;
 
-    useEffect(() => {
-        if (buttonRequestCodes.includes('ButtonRequest_Other')) {
-            navigation.navigate(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
-            dispatch(deviceActions.removeButtonRequests({ device }));
-        }
-    }, [buttonRequestCodes, device, deviceState, dispatch, isDiscoveryActive, navigation]);
-
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         dispatch(deviceActions.removeButtonRequests({ device }));
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
+        navigation.push(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
         reset();
     });
@@ -113,8 +97,8 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                         onBlur={() => setIsInputFocused(false)}
                         secureTextEntry
                     />
-                    <Animated.View entering={FadeIn} exiting={FadeOut}>
-                        {isDirty && (
+                    {isDirty && (
+                        <Animated.View entering={FadeIn} exiting={FadeOut}>
                             <Button
                                 accessibilityRole="button"
                                 accessibilityLabel="confirm passphrase"
@@ -122,8 +106,10 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                             >
                                 <Translation id="modulePassphrase.form.enterWallet" />
                             </Button>
-                        )}
-                        {!isDirty && !isInputFocused && (
+                        </Animated.View>
+                    )}
+                    {!isDirty && !isInputFocused && (
+                        <Animated.View entering={FadeIn} exiting={FadeOut}>
                             <VStack>
                                 <TextDivider
                                     title="generic.orSeparator"
@@ -131,8 +117,8 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                                 />
                                 <EnterPassphraseOnTrezorButton />
                             </VStack>
-                        )}
-                    </Animated.View>
+                        </Animated.View>
+                    )}
                 </VStack>
             </Card>
         </Form>
