@@ -58,6 +58,7 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
             <CollapsibleBox
                 variant="small"
                 filled="none"
+                hasDivider={false}
                 isOpen={isViewOnlyExpanded}
                 onCollapse={() => setIsViewOnlyExpanded(!isViewOnlyExpanded)}
                 heading={

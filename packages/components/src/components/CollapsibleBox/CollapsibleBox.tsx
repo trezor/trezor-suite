@@ -120,6 +120,7 @@ type ContentProps = {
     $variant: CollapsibleBoxProps['variant'];
     $elevation: Elevation;
     $filled: Fill;
+    $hasDivider: boolean;
 };
 
 const Content = styled.div<ContentProps>`
@@ -131,8 +132,9 @@ const Content = styled.div<ContentProps>`
             : `${spacingsPx.xl} ${spacingsPx.md}`};
 
     overflow: hidden;
-    ${({ $filled, theme, $elevation }) =>
+    ${({ $filled, theme, $elevation, $hasDivider }) =>
         $filled &&
+        $hasDivider &&
         css`
             border-top: 1px solid ${mapElevationToBorder({ $elevation, theme })};
         `}
@@ -152,6 +154,7 @@ export interface CollapsibleBoxProps {
     onCollapse?: () => void;
     children?: ReactNode;
     isUpwards?: boolean; // Open upwards, affects the icon rotation
+    hasDivider?: boolean;
 }
 
 type CollapsibleBoxSubcomponents = {
@@ -171,6 +174,7 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
     onCollapse,
     filled = 'default',
     isUpwards = false,
+    hasDivider = true,
     ...rest
 }: CollapsibleBoxProps) => {
     const [isCollapsed, setIsCollapsed] = useState(!isOpen);
@@ -219,7 +223,12 @@ const CollapsibleBox: FC<CollapsibleBoxProps> & CollapsibleBoxSubcomponents = ({
                 }}
                 data-test="@collapsible-box/body"
             >
-                <Content $elevation={elevation} $variant={variant} $filled={filled}>
+                <Content
+                    $elevation={elevation}
+                    $variant={variant}
+                    $filled={filled}
+                    $hasDivider={hasDivider}
+                >
                     <ElevationUp>{children}</ElevationUp>
                 </Content>
             </Collapser>
