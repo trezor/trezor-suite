@@ -29,29 +29,38 @@ export const useFirmware = () => {
     const modal = useSelector(state => state.modal);
     const { device } = useDevice();
 
-    // Device in its state before installation is cached when installation begins. Until then, access device as normal.
+    // Device in its state before installation is cached when installation begins.
+    // Until then, access device as normal.
     const originalDevice = firmware.cachedDevice || device;
-    // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first, and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
+
+    // To instruct user to reboot to bootloader manually, UI.FIRMWARE_DISCONNECT event is emitted first,
+    // and UI.FIRMWARE_RECONNECT is emitted after the device disconnects.
     const showManualReconnectPrompt =
         firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
         firmware.uiEvent.payload.method === 'manual';
+
     const showReconnectPrompt =
-        // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow, T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
+        // T1 emits ButtonRequest_ProtectCall in reboot_and_wait flow,
+        // T2 devices emit ButtonRequest_Other in reboot_and_wait and reboot_and_upgrade flows:
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code &&
             ['ButtonRequest_ProtectCall', 'ButtonRequest_Other'].includes(
                 firmware.uiEvent.payload.code,
             )) ||
         showManualReconnectPrompt;
+
     const showFingerprintCheck =
         modal.context === MODAL.CONTEXT_DEVICE &&
         modal.windowType === 'ButtonRequest_FirmwareCheck';
+
     const isCurrentlyBitcoinOnly = hasBitcoinOnlyFirmware(originalDevice);
+
     const confirmOnDevice =
         (firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
             firmware.uiEvent.payload.method !== 'wait') ||
         (firmware.uiEvent?.type === DEVICE.BUTTON &&
             firmware.uiEvent.payload.code === 'ButtonRequest_FirmwareUpdate');
+
     const showConfirmationPill =
         !showReconnectPrompt &&
         !!firmware.uiEvent &&
@@ -67,6 +76,7 @@ export const useFirmware = () => {
                 progress: 100,
             };
         }
+
         if (firmware.uiEvent?.type === UI.FIRMWARE_PROGRESS) {
             switch (firmware.uiEvent.payload.operation) {
                 case 'flashing':
@@ -81,6 +91,7 @@ export const useFirmware = () => {
                     };
             }
         }
+
         // Automatically restarting from bootloader to normal mode at the end of non-intermediary installation:
         if (
             firmware.uiEvent?.type === UI.FIRMWARE_RECONNECT &&
