@@ -335,6 +335,7 @@ export const signSolanaSendFormTransactionThunk = createThunk(
                 instance: device.instance,
                 state: device.state,
             },
+            useEmptyPassphrase: device.useEmptyPassphrase,
             path: selectedAccount.path,
             serializedTx,
             additionalInfo:
