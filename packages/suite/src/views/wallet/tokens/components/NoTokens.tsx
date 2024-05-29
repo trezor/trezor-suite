@@ -3,25 +3,20 @@ import { AccountExceptionLayout } from 'src/components/wallet';
 import { Translation } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 export const NoTokens = () => {
-    const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const isDebug = useSelector(selectIsDebugModeActive);
     const dispatch = useDispatch();
 
-    if (selectedAccount.status !== 'loaded') return null;
-
-    const { account } = selectedAccount;
-
     const handleButtonClick = () => dispatch(openModal({ type: 'add-token' }));
-
-    const allowAddToken = account.networkType !== 'cardano' && account.networkType !== 'solana';
 
     return (
         <AccountExceptionLayout
             title={<Translation id="TR_TOKENS_EMPTY" />}
             image="CLOUDY"
             actionComponent={
-                allowAddToken ? (
+                isDebug ? (
                     <Button variant="primary" onClick={handleButtonClick}>
                         <Translation id="TR_TOKENS_ADD" />
                     </Button>
