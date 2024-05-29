@@ -245,7 +245,17 @@ export const getBundleThunk = createThunk(
                 !discovery.availableCardanoDerivations?.includes(configNetwork.accountType);
 
             if (!hasEmptyAccount && !failed && !skipCardanoDerivation) {
-                const index = prevAccounts[0] ? prevAccounts[0].index + 1 : 0;
+                let index = prevAccounts[0] ? prevAccounts[0].index + 1 : 0;
+
+                // first index is same as Trezor
+                if (
+                    configNetwork.networkType === 'ethereum' &&
+                    accountType === 'ledger' &&
+                    index === 0
+                ) {
+                    index++;
+                }
+
                 bundle.push({
                     path: configNetwork.bip43Path.replace('i', index.toString()),
                     coin: configNetwork.symbol,
