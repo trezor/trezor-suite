@@ -1,7 +1,6 @@
 import UAParser from 'ua-parser-js';
 
-import { publicKey } from '@suite-common/wallet-constants';
-
+import { publicKey } from './jws';
 import { EnvUtils, Environment } from './types';
 
 export const isWeb = () => process.env.SUITE_TYPE === 'web';

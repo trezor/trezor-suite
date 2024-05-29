@@ -3,8 +3,7 @@ import { Dimensions, Platform } from 'react-native';
 import { getLocales } from 'expo-localization';
 import Constants from 'expo-constants';
 
-import { publicKey } from '@suite-common/wallet-constants';
-
+import { publicKey } from './jws';
 import { EnvUtils } from './types';
 
 const isWeb = () => false;
