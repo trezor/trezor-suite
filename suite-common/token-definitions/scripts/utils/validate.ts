@@ -5,7 +5,7 @@ import Ajv from 'ajv';
 import { join } from 'path';
 
 import { SCHEMA_FILENAME_SUFFIX, SCHEMA_PATH } from '../constants';
-import { TokenStructure } from '../../src/types';
+import { TokenStructure } from '../../src/tokenDefinitionsTypes';
 
 // checks that a config meets the criteria specified by the schema
 export const validateStructure = (nftData: TokenStructure, structure: string) => {

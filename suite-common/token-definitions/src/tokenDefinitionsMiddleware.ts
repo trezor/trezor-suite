@@ -3,7 +3,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { selectNetworkTokenDefinitions } from './tokenDefinitionsSelectors';
 import { getTokenDefinitionThunk } from './tokenDefinitionsThunks';
-import { getSupportedDefinitionTypes } from './utils';
+import { getSupportedDefinitionTypes } from './tokenDefinitionsUtils';
 
 const CHANGE_NETWORKS = '@wallet-settings/change-networks'; // from walletSettings.ts
 

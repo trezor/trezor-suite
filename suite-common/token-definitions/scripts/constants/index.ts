@@ -1,6 +1,6 @@
 import { join, resolve } from 'path';
 
-import { VERSION } from '../../src/constants';
+import { VERSION } from '../../src/tokenDefinitionsConstants';
 
 export const PACKAGE_ROOT = resolve(__dirname, '..', '..');
 

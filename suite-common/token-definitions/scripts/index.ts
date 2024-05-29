@@ -7,7 +7,7 @@ import { signData } from './utils/sign';
 import { validateStructure } from './utils/validate';
 import { FILES_PATH, DEFINITIONS_FILENAME_SUFFIX } from './constants';
 import { fetchCoinData } from './utils/fetchCoins';
-import { TokenStructure } from '../src/types';
+import { TokenStructure } from '../src/tokenDefinitionsTypes';
 
 const main = async () => {
     const argv = process.argv.slice(2);

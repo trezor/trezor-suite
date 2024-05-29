@@ -6,7 +6,7 @@ import {
     TokenDefinitionsState,
     TokenManagementAction,
     TokenManagementStorage,
-} from './types';
+} from './tokenDefinitionsTypes';
 
 export const caseContractAddressForNetwork = (
     networkSymbol: NetworkSymbol,
