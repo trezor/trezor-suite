@@ -1,6 +1,6 @@
 export * as TRANSPORT_ERROR from './errors';
 
-export type { Descriptor, Session } from './types';
+export type { Descriptor, Session, MessageResponse } from './types';
 export { TREZOR_USB_DESCRIPTORS, TRANSPORT } from './constants';
 
 export { AbstractTransport as Transport, isTransportInstance } from './transports/abstract';

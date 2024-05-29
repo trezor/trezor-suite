@@ -100,20 +100,18 @@ export type ParseThpMessageProps = {
 };
 
 export const parseThpMessage = ({ decoded, messages, thpState }: ParseThpMessageProps) => {
-    const isAckExpected = protocolThp.isAckExpected(thpState?.expectedResponses || []);
-
     const message = protocolThp.decode(
         decoded,
         (messageType, data) => decodeMessage(messages, messageType, data),
         thpState,
     );
 
-    if (isAckExpected) {
+    // TODO: isAckExpected() should be method of thpState?
+    if (protocolThp.isAckExpected(thpState?.expectedResponses || [])) {
         thpState?.updateSyncBit('recv');
     }
 
     if (thpState?.shouldUpdateNonce(message.type)) {
-        thpState?.updateNonce('send');
         thpState?.updateNonce('recv');
     }
 

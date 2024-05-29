@@ -70,6 +70,7 @@ export const sendThpMessage = async ({
         logger?.debug('sendThpMessage result', result.success);
         if (result.success) {
             thpState?.updateSyncBit('send');
+            thpState?.updateNonce('send');
             thpState?.setExpectedResponse(expectedResponses);
         }
 
