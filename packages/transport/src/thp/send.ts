@@ -1,13 +1,11 @@
-// send with ThpAck
-
-import { thp as protocolThp } from '@trezor/protocol';
+import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
 import { scheduleAction } from '@trezor/utils';
 
-import { ReceiveThpMessageProps, readWithExpectedState } from './receive';
-import { error } from '../utils/result';
+import type { ReceiveThpMessageProps } from './receive';
+import { error, success } from '../utils/result';
 import { sendChunks } from '../utils/send';
 
-type SendThpMessageProps = Omit<ReceiveThpMessageProps, 'apiChunkSize'> & {
+export type SendThpMessageProps = Omit<ReceiveThpMessageProps, 'apiChunkSize'> & {
     chunks: Buffer[];
 };
 
@@ -19,21 +17,34 @@ export const sendThpMessage = async ({
     signal,
     logger,
 }: SendThpMessageProps) => {
-    const expectedResponses = protocolThp.getExpectedResponse(chunks[0]);
+    if (!thpState) {
+        return error({ error: 'ThpStateMissing' });
+    }
+
+    const expectedResponses = protocolThp.getExpectedResponses(chunks[0]);
     const isAckExpected = protocolThp.isAckExpected(chunks[0]);
+    // ThpAck is not expected. just set expectedResponses and continue
     if (!isAckExpected) {
         const sendResult = await sendChunks(chunks, apiWrite);
         if (!sendResult.success) {
             return sendResult;
         }
-        thpState?.setExpectedResponse(expectedResponses);
+        thpState.setExpectedResponses(expectedResponses);
 
         return sendResult;
     }
 
-    let attempt = 0;
-    thpState?.setExpectedResponse([0x20]);
+    // ThpAck is expected.
+    // set expectedResponses to ThpAck
+    // thpState.setExpectedResponses([protocolThp.constants.THP_CONTINUATION_PACKET]);
+    thpState.setExpectedResponses([0x20]); // TODO: export it from thp package
 
+    let attempt = 0;
+
+    // create sequence of scheduled actions controlled by one AbortSignal (from Transport call/send)
+    // 1. send message
+    // 2. try to read ThpAck/ThpError with deadline/timeout
+    // if ThpAck is not received  try to send and read again
     try {
         const result = await scheduleAction(
             async attemptSignal => {
@@ -45,13 +56,11 @@ export const sendThpMessage = async ({
                 }
                 logger?.log(`sendThpMessage read ThpAck start`);
 
-                return scheduleAction(
-                    readSignal => readWithExpectedState(apiRead, thpState, readSignal, logger),
-                    {
-                        signal: attemptSignal,
-                        deadline: Date.now() + 3000,
-                    },
-                );
+                // read until ThpAck or ThpError
+                return scheduleAction(() => apiRead(protocolThp.getExpectedHeaders(thpState)), {
+                    signal: attemptSignal,
+                    deadline: Date.now() + 3000,
+                });
             },
             {
                 signal,
@@ -67,16 +76,29 @@ export const sendThpMessage = async ({
             },
         );
 
-        logger?.log('sendThpMessage result', result.success);
-        if (result.success) {
-            thpState?.updateSyncBit('send');
-            thpState?.setExpectedResponse(expectedResponses);
+        if (!result.success) {
+            logger?.log('sendThpMessage error', result);
+
+            return result;
         }
 
-        return result;
-    } catch (e) {
-        logger?.log('sendWithRetransmission error', attempt, error);
+        // parse and check the result
+        const decodedResult = protocolThp.decodeSendAck(protocolV2.decode(result.payload));
+        // fail on ThpError
+        if (decodedResult.type === 'ThpError') {
+            const { code, message } = decodedResult.message;
 
-        return error({ error: e.message });
+            return error({ error: code, message });
+        }
+
+        logger?.log('sendThpMessage success', decodedResult);
+        // prepare expectedResponses for receiveThpMessage
+        thpState.setExpectedResponses(expectedResponses);
+
+        return success(undefined);
+    } catch (e) {
+        logger?.log('sendThpMessage failure', attempt, error);
+
+        return error({ error: e.code, message: e.message });
     }
 };

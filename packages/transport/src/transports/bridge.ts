@@ -14,6 +14,7 @@ import {
 } from './abstract';
 import { TRANSPORT } from '../constants';
 import * as ERRORS from '../errors';
+import { parseThpMessage } from '../thp/receive';
 import {
     AnyError,
     AsyncResultWithTypedError,
@@ -242,18 +243,37 @@ export class BridgeTransport extends AbstractTransport {
                     protocol,
                     thpState,
                 });
+                console.log('Bridge call bytes', thpState, bytes);
+
                 const response = await this.post(`/call`, {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
                     signal,
                 });
+
+                console.log('Bridge call response', response);
                 if (!response.success) {
                     return response;
                 }
 
+                const respBytes = Buffer.from(response.payload.data, 'hex');
+                if (protocol.name === 'v2') {
+                    // THP Should throw error on invalid setup? (v2 + old bridge)
+                    // THP callThpMessage with retransmission is done in @trezor/transport-bridge
+                    thpState?.sync('send', name);
+                    const message = parseThpMessage({
+                        decoded: protocol.decode(respBytes),
+                        messages: this.messages,
+                        thpState,
+                    });
+                    thpState?.sync('recv', message.type);
+
+                    return this.success(message);
+                }
+
                 return receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
+                    () => Promise.resolve(this.success(respBytes)),
                     protocol,
                     thpState,
                 );
@@ -280,6 +300,8 @@ export class BridgeTransport extends AbstractTransport {
                     protocol,
                     thpState,
                 });
+                // THP Should throw error on invalid setup? (v2 + old bridge)
+                // THP sendThpMessage with retransmission is done in transport-bridge
                 const response = await this.post('/post', {
                     params: session,
                     body: this.getRequestBody(bytes, protocol, thpState),
@@ -314,9 +336,23 @@ export class BridgeTransport extends AbstractTransport {
                     return response;
                 }
 
+                const respBytes = Buffer.from(response.payload.data, 'hex');
+                if (protocol.name === 'v2') {
+                    // THP Should throw error on invalid setup? (v2 + old bridge)
+                    // THP readThpMessage with retransmission is done in @trezor/transport-bridge
+                    const message = parseThpMessage({
+                        decoded: protocol.decode(respBytes),
+                        messages: this.messages,
+                        thpState,
+                    });
+                    thpState?.sync('recv', message.type);
+
+                    return this.success(message);
+                }
+
                 return receiveAndParse(
                     this.messages,
-                    () => Promise.resolve(this.success(Buffer.from(response.payload.data, 'hex'))),
+                    () => Promise.resolve(this.success(respBytes)),
                     protocol,
                     thpState,
                 );

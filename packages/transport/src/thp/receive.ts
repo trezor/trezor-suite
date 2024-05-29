@@ -1,47 +1,23 @@
 // receive with ThpAck
 
 import { decodeMessage } from '@trezor/protobuf';
-import { thp as protocolThp, v2 as v2Protocol } from '@trezor/protocol';
-import { scheduleAction } from '@trezor/utils';
+import { thp as protocolThp, v2 as protocolV2 } from '@trezor/protocol';
 
-import { AsyncResultWithTypedError, Logger } from '../types';
+import type { AbstractApi } from '../api/abstract';
+import { Logger } from '../types';
 import { receive } from '../utils/receive';
 import { error } from '../utils/result';
 
 export type ReceiveThpMessageProps = {
-    apiChunkSize: number;
-    apiWrite: (chunk: Buffer, signal?: AbortSignal) => AsyncResultWithTypedError<any, any>;
-    apiRead: (signal?: AbortSignal) => AsyncResultWithTypedError<any, any>;
+    apiWrite: (chunk: Buffer, signal?: AbortSignal) => ReturnType<AbstractApi['write']>;
+    apiRead: (expectedResponses: Buffer[]) => ReturnType<AbstractApi['read']>;
     thpState?: protocolThp.ThpState;
     signal?: AbortSignal;
     logger?: Logger;
 };
 
-export const readWithExpectedState = async (
-    apiRead: ReceiveThpMessageProps['apiRead'],
-    thpState?: protocolThp.ThpState,
-    signal?: AbortSignal,
-    logger?: Logger,
-): ReturnType<typeof apiRead> => {
-    logger?.log('readWithExpectedState start', thpState?.expectedResponses);
-    const chunk = await apiRead(signal);
-    if (!chunk.success) {
-        return chunk;
-    }
-
-    logger?.log('readWithExpectedState chunk', chunk.payload.toString('hex'));
-    const expected = protocolThp.isExpectedResponse(chunk.payload, thpState);
-    if (expected) {
-        return { success: true as const, payload: chunk.payload };
-    }
-    logger?.log('readWithExpectedState unexpected chunk', thpState?.expectedResponses);
-    // handle and exclude this error in scheduleAction attemptFailureHandler
-    throw new Error('Unexpected chunk');
-};
-
 export const receiveThpMessage = async ({
     thpState,
-    apiChunkSize,
     apiRead,
     apiWrite,
     signal,
@@ -49,22 +25,13 @@ export const receiveThpMessage = async ({
 }: ReceiveThpMessageProps): ReturnType<typeof receive> => {
     logger?.log('receiveThpMessage start', thpState?.expectedResponses);
     try {
+        if (!thpState) {
+            throw new Error('ThpStateMissing');
+        }
+
         const decoded = await receive(
-            () =>
-                scheduleAction(
-                    readSignal => readWithExpectedState(apiRead, thpState, readSignal, logger),
-                    {
-                        signal,
-                        attempts: 20,
-                        attemptFailureHandler: e => {
-                            if (e.message !== 'Unexpected chunk') {
-                                // break attempts on unexpected errors
-                                return e;
-                            }
-                        },
-                    },
-                ),
-            v2Protocol,
+            () => apiRead(protocolThp.getExpectedHeaders(thpState)),
+            protocolV2,
         );
         if (!decoded.success) {
             return decoded;
@@ -72,8 +39,7 @@ export const receiveThpMessage = async ({
 
         const isAckExpected = protocolThp.isAckExpected(thpState?.expectedResponses || []);
         if (isAckExpected) {
-            const chunk = Buffer.alloc(apiChunkSize).fill(0);
-            protocolThp.encodeAck(decoded.payload.header).copy(chunk, 0);
+            const chunk = protocolThp.encodeAck(decoded.payload.header);
 
             const ackResult = await apiWrite(chunk, signal);
             if (!ackResult.success) {
@@ -85,7 +51,7 @@ export const receiveThpMessage = async ({
     } catch (e) {
         logger?.log('receiveThpMessage error', e);
 
-        return error({ error: e.message });
+        return error({ error: e.code, message: e.message }); // TODO: confusing error/code/message
     }
 };
 
@@ -96,22 +62,41 @@ export type ParseThpMessageProps = {
 };
 
 export const parseThpMessage = ({ decoded, messages, thpState }: ParseThpMessageProps) => {
-    const isAckExpected = protocolThp.isAckExpected(thpState?.expectedResponses || []);
-
     const message = protocolThp.decode(
         decoded,
         (messageType, data) => decodeMessage(messages, messageType, data),
         thpState,
     );
 
-    if (isAckExpected) {
-        thpState?.updateSyncBit('recv');
-    }
+    return message;
+};
 
-    if (thpState?.shouldUpdateNonce(message.type)) {
-        thpState?.updateNonce('send');
-        thpState?.updateNonce('recv');
-    }
+type ThpReceiveAndParseProps = ReceiveThpMessageProps & {
+    messages: Parameters<typeof decodeMessage>[0];
+};
+
+export const thpReceiveAndParse = async ({
+    messages,
+    thpState,
+    apiRead,
+    apiWrite,
+    signal,
+    logger,
+}: ThpReceiveAndParseProps) => {
+    const readResult = await receiveThpMessage({
+        thpState,
+        apiRead,
+        apiWrite,
+        signal,
+        logger,
+    });
+    if (!readResult.success) return readResult;
+
+    const message = protocolThp.decode(
+        readResult.payload,
+        (messageType, payload) => decodeMessage(messages, messageType, payload),
+        thpState,
+    );
 
     return message;
 };
