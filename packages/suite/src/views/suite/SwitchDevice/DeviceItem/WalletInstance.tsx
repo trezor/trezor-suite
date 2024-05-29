@@ -30,6 +30,12 @@ const RelativeContainer = styled.div`
     overflow: hidden;
 `;
 
+const DividerWrapper = styled.div`
+    position: relative;
+    left: -${spacingsPx.xs};
+    width: calc(100% + ${spacingsPx.lg});
+`;
+
 const InstanceType = styled.div<{ isSelected: boolean }>`
     display: flex;
     color: ${({ theme, isSelected }) => (isSelected ? theme.textDefault : theme.textSubdued)};
@@ -118,6 +124,7 @@ export const WalletInstance = ({
 
     return (
         <RelativeContainer>
+            <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
             <Card
                 data-test={dataTestBase}
                 key={`${instance.label}${instance.instance}${instance.state}`}
@@ -127,7 +134,7 @@ export const WalletInstance = ({
                 {...rest}
             >
                 {isSelected && <SelectedHighlight />}
-                <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
+
                 <Col $grow={1}>
                     {discoveryProcess && (
                         <InstanceType isSelected={isSelected}>
@@ -173,7 +180,9 @@ export const WalletInstance = ({
                     </InstanceTitle>
                 </Col>
 
-                <Divider />
+                <DividerWrapper>
+                    <Divider />
+                </DividerWrapper>
 
                 {contentType === 'default' && enabled && discoveryProcess && (
                     <ViewOnly
