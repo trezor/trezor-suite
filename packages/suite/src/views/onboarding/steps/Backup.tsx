@@ -41,7 +41,7 @@ export const BackupStep = () => {
         dispatch(updateAnalytics({ backup: 'create' }));
 
         const backupParams: Parameters<typeof backupDevice>[0] =
-            backupType === 'shamir-default'
+            backupType === 'shamir-single'
                 ? {
                       group_threshold: 1,
                       groups: [{ member_count: 1, member_threshold: 1 }],

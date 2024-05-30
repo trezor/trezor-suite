@@ -15,8 +15,8 @@ export interface OnboardingRootState {
 export type DeviceTutorialStatus = 'active' | 'completed' | 'cancelled' | null;
 
 export const selectBackupTypes = [
-    'shamir-default',
-    'shamir-advance',
+    'shamir-single',
+    'shamir-advanced',
     '12-words',
     '24-words',
 ] as const;
@@ -45,7 +45,7 @@ const initialState: OnboardingState = {
     path: [],
     onboardingAnalytics: {},
     tutorialStatus: null,
-    backupType: 'shamir-default',
+    backupType: 'shamir-single',
 };
 
 const addPath = (path: AnyPath, state: OnboardingState) => {
