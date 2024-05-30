@@ -9,7 +9,7 @@ import { amountToSatoshi } from '@suite-common/wallet-utils';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import invityAPI from 'src/services/suite/invityAPI';
-import { useActions, useSelector, useDevice } from 'src/hooks/suite';
+import { useActions, useSelector, useDevice, useDispatch } from 'src/hooks/suite';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
 import {
@@ -30,6 +30,7 @@ import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) => {
     const timer = useTimer();
     const { isLocked } = useDevice();
+    const dispatch = useDispatch();
     const { account, network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() || false);
@@ -46,7 +47,9 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         saveTransactionId,
         addNotification,
         verifyAddress,
+        clearQuoteRequest,
     } = useActions({
+        clearQuoteRequest: coinmarketExchangeActions.clearQuoteRequest,
         saveTrade: coinmarketExchangeActions.saveTrade,
         openCoinmarketExchangeConfirmModal:
             coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
@@ -315,6 +318,12 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
             });
         }
     };
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearQuoteRequest());
+        };
+    }, [clearQuoteRequest, dispatch]);
 
     return {
         callInProgress,

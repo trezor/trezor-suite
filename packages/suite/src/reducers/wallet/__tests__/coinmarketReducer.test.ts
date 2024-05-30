@@ -222,6 +222,17 @@ describe('settings reducer', () => {
         });
     });
 
+    it('COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST,
+            }),
+        ).toEqual({
+            ...initialState,
+            exchange: { ...initialState.exchange, quotesRequest: undefined },
+        });
+    });
+
     it('COINMARKET_EXCHANGE.VERIFY_ADDRESS', () => {
         expect(
             reducer(undefined, {

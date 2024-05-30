@@ -66,7 +66,7 @@ interface Buy {
 
 interface Exchange {
     exchangeInfo?: ExchangeInfo;
-    quotesRequest?: ExchangeTradeQuoteRequest;
+    quotesRequest?: ExchangeTradeQuoteRequest | undefined;
     fixedQuotes: ExchangeTrade[] | undefined;
     floatQuotes: ExchangeTrade[] | undefined;
     dexQuotes: ExchangeTrade[] | undefined;
@@ -229,6 +229,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST:
                 draft.exchange.quotesRequest = action.request;
+                break;
+            case COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST:
+                draft.exchange.quotesRequest = undefined;
                 break;
             case COINMARKET_EXCHANGE.SAVE_QUOTES:
                 draft.exchange.fixedQuotes = action.fixedQuotes;
