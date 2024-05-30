@@ -3239,7 +3239,23 @@
                     peer: '@trezor/connect-web',
                 },
             };
+
+            // Workaround for popup-content-script-loaded earlier than popup-loaded
+            let contentScriptLoadedPayload = null;
+            const handlePopupContentScriptLoaded = event => {
+                if (event.data.type === 'popup-content-script-loaded') {
+                    contentScriptLoadedPayload = event.data;
+                } else if (event.data.type === 'popup-loaded') {
+                    if (contentScriptLoadedPayload) {
+                        window.postMessage(contentScriptLoadedPayload, '*');
+                    }
+                    window.removeEventListener('message', handlePopupContentScriptLoaded);
+                }
+            };
+            window.addEventListener('message', handlePopupContentScriptLoaded);
+
             setTimeout(() => {
+                console.log('popup-bootstrap');
                 // Slight delay to ensure content script (if present) is initialized first
                 if (window.opener) {
                     window.opener.postMessage(message, '*');
