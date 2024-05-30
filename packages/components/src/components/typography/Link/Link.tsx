@@ -53,7 +53,7 @@ interface LinkProps {
     onClick?: (event: MouseEvent<any>) => void;
     children?: ReactNode;
     className?: string;
-    variant?: 'default' | 'nostyle' | 'underline';
+    variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
     icon?: IconProps['icon'];
     iconProps?: IconProps;
     'data-test'?: string;

@@ -80,23 +80,27 @@ export const OnboardingStepBox = ({
         <>
             <StyledBackdrop $show={isBackDropVisible} />
             {!disableConfirmWrapper && (
-                <ConfirmWrapper data-test="@onboarding/confirm-on-device">
+                <div data-test="@onboarding/confirm-on-device">
                     {deviceModelInternal && (
-                        <ConfirmOnDevice
-                            title={devicePromptTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />}
-                            deviceModelInternal={deviceModelInternal}
-                            deviceUnitColor={device?.features?.unit_color}
-                            onCancel={
-                                isActionAbortable
-                                    ? () =>
-                                          TrezorConnect.cancel(
-                                              intl.formatMessage(messages.TR_CANCELLED),
-                                          )
-                                    : undefined
-                            }
-                        />
+                        <ConfirmWrapper>
+                            <ConfirmOnDevice
+                                title={
+                                    devicePromptTitle || <Translation id="TR_CONFIRM_ON_TREZOR" />
+                                }
+                                deviceModelInternal={deviceModelInternal}
+                                deviceUnitColor={device?.features?.unit_color}
+                                onCancel={
+                                    isActionAbortable
+                                        ? () =>
+                                              TrezorConnect.cancel(
+                                                  intl.formatMessage(messages.TR_CANCELLED),
+                                              )
+                                        : undefined
+                                }
+                            />
+                        </ConfirmWrapper>
                     )}
-                </ConfirmWrapper>
+                </div>
             )}
 
             <StyledCollapsibleCard

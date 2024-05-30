@@ -94,3 +94,6 @@ export const TOR_PROJECT_URL = 'https://www.torproject.org/';
 export const ZKSNACKS_TERMS_URL =
     'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';
 export const CROWDIN_URL = 'https://crowdin.com/project/trezor-suite';
+
+export const HELP_CENTER_MULTI_SHARE_BACKUP_URL =
+    'https://trezor.io/learn/a/introducing-multi-share-backup';

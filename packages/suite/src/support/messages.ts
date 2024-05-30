@@ -5103,7 +5103,8 @@ export default defineMessages({
     },
     TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION: {
         id: 'TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION',
-        defaultMessage: 'Supports upgrade to Multi-share Backup.',
+        defaultMessage:
+            'Generates a single set of 20 words that recovers your wallet. This backup type is upgradable to Multi-share Backup whenever you’re ready.',
     },
     TR_ONBOARDING_SEED_TYPE_ADVANCED: {
         id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED',
@@ -5111,7 +5112,8 @@ export default defineMessages({
     },
     TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION: {
         id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION',
-        defaultMessage: 'Creates multiple shares of your wallet backup.',
+        defaultMessage:
+            'Generates multiple 20-word lists (shares) to recover your wallet. Set a minimum recovery number then distribute shares to trusted individuals or hide them securely. When needed, collect the required number of shares to regain access to your wallet.',
     },
     TR_ONBOARDING_SEED_TYPE_12_WORDS: {
         id: 'TR_ONBOARDING_SEED_TYPE_12_WORDS',
@@ -5146,6 +5148,24 @@ export default defineMessages({
         id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES',
         defaultMessage:
             "Backup types <br></br> These options don't support upgrading to Multi-share Backup.",
+    },
+    TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
+        id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
+        defaultMessage: 'Secure options, not easily upgradable',
+    },
+    TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
+        id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
+        defaultMessage:
+            'Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can’t be easily upgraded to a Multi-share Backup without risking your privacy and costing fees. <a>Read more</a>',
+    },
+    TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP: {
+        id: 'TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP',
+        defaultMessage:
+            "If you're unsure, choose the Default option for simplicity <nowrap>and flexibility.</nowrap>",
+    },
+    TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT: {
+        id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT',
+        defaultMessage: 'Legacy backup types',
     },
     TR_ONBOARDING_BACKUP_LEGACY_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_LEGACY_WARNING',

@@ -8,7 +8,11 @@ import { useDispatch, useSelector, useOnboarding, useDevice } from 'src/hooks/su
 import { resetDevice } from 'src/actions/settings/deviceSettingsActions';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { Button, Divider, Text } from '@trezor/components';
-import { SelectBackupType, getDefaultBackupType, isShamirBackupType } from './SelectBackupType';
+import {
+    SelectBackupType,
+    getDefaultBackupType,
+    isShamirBackupType,
+} from './SelectBackupType/SelectBackupType';
 import { DeviceModelInternal } from '@trezor/connect';
 import { BackupType } from '../../../reducers/onboarding/onboardingReducer';
 
@@ -34,13 +38,13 @@ export const ResetDeviceStep = () => {
     const deviceModel = device?.features?.internal_model;
     const unitPackaging = device?.features?.unit_packaging ?? 0;
 
-    const deviceDefaultBackupType =
+    const deviceDefaultBackupType: BackupType =
         deviceModel !== undefined
             ? getDefaultBackupType({
                   model: deviceModel,
                   packaging: unitPackaging,
               })
-            : 'shamir-default';
+            : 'shamir-single';
 
     const [submitted, setSubmitted] = useState(false);
     const [backupType, setBackupType] = useState<BackupType>(deviceDefaultBackupType);
@@ -73,10 +77,10 @@ export const ResetDeviceStep = () => {
     const handleSubmit = useCallback(
         async (type: BackupType) => {
             switch (type) {
-                case 'shamir-default':
+                case 'shamir-single':
                     await onResetDevice({ backup_type: 1 });
                     break;
-                case 'shamir-advance':
+                case 'shamir-advanced':
                     await onResetDevice({ backup_type: 1 });
                     break;
                 case '12-words':
