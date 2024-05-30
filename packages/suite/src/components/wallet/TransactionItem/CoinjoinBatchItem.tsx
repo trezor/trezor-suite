@@ -182,7 +182,7 @@ export const CoinjoinBatchItem = ({
 
     return (
         <StyledCollapsibleBox
-            variant="large"
+            paddingType="large"
             $isPending={isPending}
             heading={
                 <>

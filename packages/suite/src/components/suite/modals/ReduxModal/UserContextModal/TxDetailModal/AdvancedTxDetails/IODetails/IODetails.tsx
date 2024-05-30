@@ -477,8 +477,8 @@ const CollapsibleIOSection = ({
         <StyledCollapsibleBox
             $elevation={elevation}
             heading={heading}
-            isOpen={opened}
-            variant="large"
+            defaultIsOpen={opened}
+            paddingType="large"
         >
             <IOSectionColumn
                 tx={tx}

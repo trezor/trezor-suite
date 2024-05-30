@@ -310,7 +310,6 @@ export const Feedback = ({ type }: FeedbackProps) => {
 
                 <CollapsibleBox
                     subHeading={<Translation id="TR_GUIDE_FEEDBACK_SYSTEM_INFO_NOTICE" />}
-                    variant="small"
                 >
                     <AnonymousDataList>
                         <AnonymousDataItem>

@@ -224,7 +224,6 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                           </NetworksWrapper>
                           {!!disabledTestnetNetworks.length && (
                               <StyledCollapsibleBox
-                                  variant="small"
                                   heading={<Translation id="TR_TESTNET_COINS" />}
                                   data-test="@modal/account/activate_more_coins"
                               >

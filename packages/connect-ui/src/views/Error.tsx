@@ -268,7 +268,7 @@ export const ErrorView = (props: ErrorViewProps) => {
                                     </HeadingText>
                                 </Heading>
                             }
-                            variant="large"
+                            paddingType="large"
                         >
                             <StepsList>
                                 {tip.detail.steps.map((step, index) => (
