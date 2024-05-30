@@ -328,29 +328,28 @@ const DividerWrapper = styled.div`
     }
 `;
 
-type SelectWithContentProps = {
+type OptionWithContentProps = {
     value: BackupType;
     selected: BackupType;
     onSelect: (value: BackupType) => void;
-    defaultType: BackupType;
     children: ReactNode;
     tags: ReactNode;
 };
 
-const SelectWithContent = ({
+const OptionWithContent = ({
     onSelect,
     selected,
     value,
     children,
     tags,
-}: SelectWithContentProps) => {
+}: OptionWithContentProps) => {
     const { isMobileLayout } = useLayoutSize();
 
     return (
         <Option
             onSelect={() => onSelect(value)}
             isChecked={selected === value}
-            data-test="@onboarding/select-seed-type-12-words"
+            data-test={`@onboarding/select-seed-type-${value}`}
         >
             <OptionText>
                 <Row alignItems="center">
@@ -368,16 +367,16 @@ const SelectWithContent = ({
     );
 };
 
-type LegacySelectsProps = {
+type LegacyOptionsProps = {
     selected: BackupType;
     onSelect: (value: BackupType) => void;
     defaultType: BackupType;
 };
 
-const LegacySelects = ({ defaultType, onSelect, selected }: LegacySelectsProps) => {
+const LegacyOptions = ({ defaultType, onSelect, selected }: LegacyOptionsProps) => {
     return (
         <>
-            <SelectWithContent
+            <OptionWithContent
                 onSelect={onSelect}
                 selected={selected}
                 value="12-words"
@@ -388,24 +387,62 @@ const LegacySelects = ({ defaultType, onSelect, selected }: LegacySelectsProps) 
                         <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE" />
                     </Text>
                 )}
-            </SelectWithContent>
+            </OptionWithContent>
 
-            <SelectWithContent
+            <OptionWithContent
                 onSelect={onSelect}
                 selected={selected}
                 value="24-words"
                 tags={<>{defaultType === '24-words' && <DefaultTag />}</>}
             >
                 <></>
-            </SelectWithContent>
+            </OptionWithContent>
         </>
     );
 };
 
+type ShamirOptionsProps = {
+    selected: BackupType;
+    onSelect: (value: BackupType) => void;
+    defaultType: BackupType;
+};
+
+const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptionsProps) => (
+    <>
+        <OptionWithContent
+            onSelect={onSelect}
+            selected={selected}
+            value="shamir-default"
+            tags={
+                <>{defaultType === 'shamir-default' ? <DefaultTag /> : <UpgradableToMultiTag />}</>
+            }
+        >
+            <Text typographyStyle="hint">
+                <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
+            </Text>
+        </OptionWithContent>
+
+        <OptionWithContent
+            onSelect={onSelect}
+            selected={selected}
+            value="shamir-advance"
+            tags={
+                <>
+                    {defaultType === 'shamir-advance' && <DefaultTag />}
+                    <AdvancedTag />
+                </>
+            }
+        >
+            <Text typographyStyle="hint">
+                <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
+            </Text>
+        </OptionWithContent>
+    </>
+);
+
 const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
     ({ selected, onSelect, style, defaultType }, ref) => {
         const { elevation } = useElevation();
-        const { isMobileLayout } = useLayoutSize();
 
         return (
             <FloatingSelectionsWrapper $elevation={elevation} ref={ref} style={style}>
@@ -415,55 +452,15 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                             <Translation id="TR_ONBOARDING_BACKUP_CATEGORY_20_WORD_BACKUPS" />
                         </Text>
                     </OptionGroupHeading>
-                    <Option
-                        onSelect={() => onSelect('shamir-default')}
-                        isChecked={selected === 'shamir-default'}
-                        data-test="@onboarding/select-seed-type-shamir-default"
-                    >
-                        <OptionText>
-                            <Row alignItems="center">
-                                <Text
-                                    variant={selected === 'shamir-default' ? undefined : 'tertiary'}
-                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                                >
-                                    <Translation id={typesToLabelMap['shamir-default']} />
-                                </Text>
-                                {defaultType === 'shamir-default' ? (
-                                    <DefaultTag />
-                                ) : (
-                                    <UpgradableToMultiTag />
-                                )}
-                            </Row>
-
-                            <Text typographyStyle="hint">
-                                <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
-                            </Text>
-                        </OptionText>
-                    </Option>
-                    <Option
-                        onSelect={() => onSelect('shamir-advance')}
-                        isChecked={selected === 'shamir-advance'}
-                        data-test="@onboarding/select-seed-type-shamir-advance"
-                    >
-                        <OptionText>
-                            <Row alignItems="center">
-                                <Text
-                                    variant={selected === 'shamir-advance' ? undefined : 'tertiary'}
-                                    typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                                >
-                                    <Translation id={typesToLabelMap['shamir-advance']} />
-                                </Text>
-                                {defaultType === 'shamir-advance' && <DefaultTag />}
-                                <AdvancedTag />
-                            </Row>
-                            <Text typographyStyle="hint">
-                                <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
-                            </Text>
-                        </OptionText>
-                    </Option>
+                    <ShamirOptions
+                        defaultType={defaultType}
+                        onSelect={onSelect}
+                        selected={selected}
+                    />
                     <DividerWrapper>
                         <Divider margin={{ top: spacings.zero, bottom: spacings.zero }} />
                     </DividerWrapper>
+
                     <OptionGroupHeading>
                         <Text typographyStyle="hint" variant="tertiary">
                             <Translation
@@ -472,7 +469,7 @@ const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
                             />
                         </Text>
                     </OptionGroupHeading>
-                    <LegacySelects
+                    <LegacyOptions
                         defaultType={defaultType}
                         onSelect={onSelect}
                         selected={selected}
