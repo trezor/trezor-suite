@@ -2,6 +2,7 @@ import {
     AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
+    selectDevice,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
     selectIsConnectedDeviceUninitialized,
@@ -37,4 +38,12 @@ export const selectIsDeviceReadyToUseAndAuthorized = (
     const isEmptyDevice = selectIsEmptyDevice(state);
 
     return isDeviceReadyToUse && isDeviceConnectedAndAuthorized && !isEmptyDevice;
+};
+
+export const selectDeviceError = (
+    state: DeviceRootState & AccountsRootState & DiscoveryRootState,
+) => {
+    const device = selectDevice(state);
+
+    return device?.error;
 };

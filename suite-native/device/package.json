@@ -13,6 +13,7 @@
         "@mobily/ts-belt": "^3.13.1",
         "@react-navigation/native": "6.1.17",
         "@reduxjs/toolkit": "1.9.5",
+        "@sentry/react-native": "5.19.1",
         "@suite-common/icons": "workspace:*",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",

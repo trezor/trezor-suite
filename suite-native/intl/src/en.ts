@@ -260,6 +260,15 @@ export const en = {
             description:
                 'To continue using your Trezor with this app, set it up with Trezor Suite for desktop or web.',
         },
+        genericErrorModal: {
+            title: 'Please reconnect your Trezor device.',
+            description:
+                'Unfortunately, we’ve encountered an unexpected error. If the problem persists, please reach out to our support.',
+            buttons: {
+                reconnect: 'Reconnect device',
+                help: 'Contact support',
+            },
+        },
         unacquiredDeviceModal: {
             title: 'Connected Trezor is used by another application.',
             description: "Trezor can't be used by multiple applications.",
