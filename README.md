@@ -18,7 +18,7 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 
 ### Getting started
 
--   `git clone git@github.com:trezor/trezor-suite.git`
+-   `git clone https://github.com/trezor/trezor-suite.git`
 -   `git submodule update --init --recursive`
 -   `git lfs install` // Set up Git LFS for your user account. You only need to run this once per user account.
 -   `git lfs pull`
