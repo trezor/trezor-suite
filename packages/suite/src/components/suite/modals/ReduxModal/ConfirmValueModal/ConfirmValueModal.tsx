@@ -16,6 +16,7 @@ import { TransactionReviewStepIndicator } from '../TransactionReviewModal/Transa
 import { TransactionReviewOutputElement } from '../TransactionReviewModal/TransactionReviewOutputList/TransactionReviewOutputElement';
 import { Account } from '@suite-common/wallet-types';
 import { borders } from '@trezor/theme';
+import { getNetworkFeatures } from '@suite-common/wallet-config';
 
 const Wrapper = styled.div`
     display: flex;
@@ -110,6 +111,7 @@ export const ConfirmValueModal = ({
             confirmLabel: confirmStepLabel,
         },
     ];
+    const showTokensSubheading = getNetworkFeatures(account.symbol).includes('tokens');
 
     const copy = () => {
         const result = copyToClipboard(value);
@@ -137,6 +139,7 @@ export const ConfirmValueModal = ({
         <StyledModal
             isCancelable={isCancelable}
             heading={heading}
+            subheading={showTokensSubheading && <Translation id="TR_INCLUDING_TOKENS" />}
             modalPrompt={
                 canConfirmOnDevice ? (
                     <ConfirmOnDevice
