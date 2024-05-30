@@ -1,6 +1,7 @@
 import { ListenerMethod, SendMethod, InvokeMethod } from './methods';
 import {
     SuiteThemeVariant,
+    HandshakeInit,
     HandshakeClient,
     HandshakeElectron,
     HandshakeEvent,
@@ -68,7 +69,7 @@ export interface RendererChannels {
 // Sent by DesktopApi.[method] via ipcRenderer.invoke (./main)
 // Handled by ipcMain.handle (see packages/suite-desktop/src/modules/*)
 export interface InvokeChannels {
-    'handshake/client': () => void;
+    'handshake/client': () => HandshakeInit;
     'handshake/load-modules': (payload: HandshakeClient) => InvokeResult<HandshakeElectron>;
     'handshake/load-tor-module': () => HandshakeTorModule;
     'metadata/read': (options: { file: string }) => InvokeResult<string>;

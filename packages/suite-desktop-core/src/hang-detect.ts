@@ -17,7 +17,10 @@ const showDialog = async (mainWindow: BrowserWindow) => {
     return (['wait', 'quit', 'reload'] as const)[resp.response];
 };
 
-export const hangDetect = (mainWindow: BrowserWindow): Promise<HandshakeResult> => {
+export const hangDetect = (
+    mainWindow: BrowserWindow,
+    statePatch?: Record<string, any>,
+): Promise<HandshakeResult> => {
     const { logger } = global;
     let timeout: ReturnType<typeof setTimeout>;
 
@@ -36,10 +39,10 @@ export const hangDetect = (mainWindow: BrowserWindow): Promise<HandshakeResult> 
         ipcMain.handleOnce('handshake/client', () => {
             clearTimeout(timeout);
             // always resolve repeated handshakes from renderer (e.g. Ctrl+R)
-            ipcMain.handle('handshake/client', () => Promise.resolve());
+            ipcMain.handle('handshake/client', () => Promise.resolve({}));
             resolve('success');
 
-            return Promise.resolve();
+            return Promise.resolve({ statePatch });
         });
         logger.debug('init', `Load URL (${APP_SRC})`);
         mainWindow.loadURL(APP_SRC);

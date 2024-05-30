@@ -45,6 +45,10 @@ export type HandshakeEvent =
 
 export type HandshakeClient = any;
 
+export type HandshakeInit = {
+    statePatch?: Record<string, any>;
+};
+
 export type HandshakeTorModule = {
     shouldRunTor: boolean;
 };
