@@ -16,6 +16,7 @@ import {
     IFrameCallMessage,
     IFrameLogRequest,
     CoreEventMessage,
+    PopupContentScriptLoaded,
 } from '@trezor/connect/src/exports';
 import type { Core } from '@trezor/connect/src/core';
 import { config } from '@trezor/connect/src/data/config';
@@ -208,14 +209,7 @@ const handleInitMessage = (event: MessageEvent<PopupEvent | IFrameLogRequest>) =
 
     // case of webextension which uses cross origin communication via content script
     if (data.type === POPUP.CONTENT_SCRIPT_LOADED) {
-        log.debug('content-script loaded', data.payload);
-        setState({
-            settings: {
-                ...getState().settings!,
-                origin: data.payload.id,
-            },
-        });
-        reactEventBus.dispatch({ type: 'state-update', payload: getState() });
+        handleContentScriptLoaded(data);
 
         return;
     }
@@ -291,6 +285,12 @@ const handleMessageInCoreMode = (
 
     if (disposed) return;
 
+    if (data.type === POPUP.CONTENT_SCRIPT_LOADED) {
+        handleContentScriptLoaded(data);
+
+        return;
+    }
+
     if (data.type === POPUP.HANDSHAKE) {
         handshake(data, getState().settings?.origin || '');
         const core = ensureCore();
@@ -338,6 +338,17 @@ const handleLogMessage = (event: MessageEvent<IFrameLogRequest>) => {
             ...data.payload.message,
         );
     }
+};
+
+const handleContentScriptLoaded = (data: PopupContentScriptLoaded) => {
+    log.debug('content-script loaded', data.payload);
+    setState({
+        settings: {
+            ...getState().settings!,
+            origin: data.payload.id,
+        },
+    });
+    reactEventBus.dispatch({ type: 'state-update', payload: getState() });
 };
 
 // handle POPUP.INIT message from window.opener

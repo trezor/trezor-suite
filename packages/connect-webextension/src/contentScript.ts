@@ -28,6 +28,16 @@ window.addEventListener('message', event => {
     ) {
         return;
     }
+    if (event.data?.type === POPUP.LOADED) {
+        window.postMessage(
+            {
+                type: POPUP.CONTENT_SCRIPT_LOADED,
+                payload: { ...chrome.runtime.getManifest(), id: chrome.runtime.id },
+            },
+            window.location.origin,
+        );
+    }
+
     if (event.source === window && event.data) {
         if (channelReady) {
             channel.postMessage(event.data, { usePromise: false });
@@ -39,15 +49,6 @@ window.addEventListener('message', event => {
 
 channel.init().then(() => {
     channelReady = true;
-
-    // once script is loaded. send information about the webextension that injected it into the popup
-    window.postMessage(
-        {
-            type: POPUP.CONTENT_SCRIPT_LOADED,
-            payload: { ...chrome.runtime.getManifest(), id: chrome.runtime.id },
-        },
-        window.location.origin,
-    );
 
     /**
      * Passing messages from service worker to popup
