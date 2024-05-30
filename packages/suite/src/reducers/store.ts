@@ -80,6 +80,13 @@ const devTools =
           }
         : false;
 
+const patchConfirm = (statePatch: any) =>
+    !isCodesignBuild() ||
+    confirm(
+        `Trezor Suite is starting with partially predefined state. Press OK only if you intended to do that!\n\n` +
+            JSON.stringify(statePatch, null, 4),
+    );
+
 export const initStore = (
     preloadStoreAction?: PreloadStoreAction,
     statePatch?: Record<string, any>,
@@ -91,7 +98,7 @@ export const initStore = (
         : undefined;
 
     const patchedState =
-        preloadedState && statePatch
+        preloadedState && statePatch && patchConfirm(statePatch)
             ? mergeDeepObject.withOptions({ dotNotation: true }, preloadedState, statePatch)
             : preloadedState;
 
