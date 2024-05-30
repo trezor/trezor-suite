@@ -11,16 +11,17 @@ const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
     display: flex;
     align-items: center;
 
-    > button,
-    div > button {
+    button {
         border-radius: 0;
     }
 
-    > :first-child {
+    > :first-child,
+    > :first-child button {
         border-radius: ${borders.radii.full} 0 0 ${borders.radii.full};
     }
 
-    > :last-child {
+    > :last-child,
+    > :last-child button {
         border-radius: 0 ${borders.radii.full} ${borders.radii.full} 0;
     }
 
@@ -40,7 +41,7 @@ const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
     }
 `;
 
-const checkChildren = (children: Array<React.ReactNode>) =>
+const isValidChildrenElement = (children: Array<React.ReactNode>) =>
     children.every(child => {
         if (React.isValidElement(child)) {
             if (child.type === Button || child.type === IconButton) {
@@ -56,12 +57,14 @@ const checkChildren = (children: Array<React.ReactNode>) =>
         return false;
     });
 
+type AllowedChildrenPropsType = ButtonProps | IconButtonProps;
+
 interface ButtonGroupProps {
     variant?: Exclude<ButtonVariant, 'danger'>;
     size?: ButtonSize;
     isDisabled?: boolean;
     className?: string;
-    children: React.ReactElement<ButtonProps | IconButtonProps | TooltipProps>[];
+    children: React.ReactElement<AllowedChildrenPropsType | TooltipProps>[];
     withTooltips?: boolean;
 }
 
@@ -72,7 +75,7 @@ export const ButtonGroup = ({
     className,
     children,
 }: ButtonGroupProps) => {
-    const areChildrenValid = checkChildren(children);
+    const areChildrenValid = isValidChildrenElement(children);
 
     if (!areChildrenValid) {
         console.error(
@@ -90,7 +93,7 @@ export const ButtonGroup = ({
             ) {
                 const tooltipProps = child.props as TooltipProps;
                 const tooltipChild = tooltipProps.children as React.ReactElement;
-                const tooltipChildProps: ButtonProps | IconButtonProps = tooltipChild?.props;
+                const tooltipChildProps: AllowedChildrenPropsType = tooltipChild?.props;
                 const childWithProps = React.cloneElement(tooltipChild, {
                     variant: tooltipChildProps.variant || variant,
                     size: tooltipChildProps.size || size,
@@ -100,7 +103,7 @@ export const ButtonGroup = ({
                 return React.cloneElement(child, {}, childWithProps);
             }
 
-            const childProps = child.props as ButtonProps | IconButtonProps;
+            const childProps = child.props as AllowedChildrenPropsType;
 
             return React.cloneElement(child, {
                 variant: childProps.variant || variant,

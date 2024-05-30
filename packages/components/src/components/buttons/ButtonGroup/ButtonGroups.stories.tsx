@@ -17,7 +17,7 @@ export const ButtonGroups: StoryObj = {
         <StoryColumn minWidth={350} maxWidth={420}>
             <ButtonGroup>
                 <Button>Button 1</Button>
-                <Tooltip content="Ahoj!" cursor="pointer">
+                <Tooltip content="Ahoj!" cursor="pointer" hasArrow>
                     <Button>Button 2 with tooltip</Button>
                 </Tooltip>
                 <Button>Button 3</Button>
