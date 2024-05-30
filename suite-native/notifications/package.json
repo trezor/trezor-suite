@@ -10,7 +10,7 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/native": "6.1.10",
+        "@react-navigation/native": "6.1.17",
         "@suite-common/icons": "workspace:*",
         "@suite-common/toast-notifications": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
@@ -24,10 +24,10 @@
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.73.6",
-        "react-native-gesture-handler": "2.15.0",
-        "react-native-reanimated": "3.8.1",
-        "react-native-safe-area-context": "4.9.0",
+        "react-native": "0.74.1",
+        "react-native-gesture-handler": "2.16.2",
+        "react-native-reanimated": "3.11.0",
+        "react-native-safe-area-context": "4.10.3",
         "react-redux": "8.0.7"
     }
 }

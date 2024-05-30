@@ -24,8 +24,6 @@ const middlewares: Middleware[] = [
 ];
 
 if (__DEV__) {
-    const createDebugger = require('redux-flipper').default;
-    middlewares.push(createDebugger());
     if (IS_REDUX_LOGGER_ENABLED) middlewares.push(logger);
 }
 

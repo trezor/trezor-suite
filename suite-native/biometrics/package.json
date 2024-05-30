@@ -18,9 +18,9 @@
         "@suite-native/intl": "workspace:*",
         "@suite-native/storage": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "expo-local-authentication": "13.8.0",
+        "expo-local-authentication": "14.0.1",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native": "0.73.6"
+        "react-native": "0.74.1"
     }
 }

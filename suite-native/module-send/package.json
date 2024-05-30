@@ -11,8 +11,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.10",
-        "@react-navigation/native-stack": "6.9.18",
+        "@react-navigation/native": "6.1.17",
+        "@react-navigation/native-stack": "6.9.26",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/validators": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",

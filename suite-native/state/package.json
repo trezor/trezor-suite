@@ -34,11 +34,10 @@
         "@trezor/connect": "workspace:*",
         "@trezor/transport-native": "workspace:*",
         "@trezor/utils": "workspace:*",
-        "expo-device": "5.9.3",
+        "expo-device": "6.0.2",
         "react": "18.2.0",
-        "react-native": "0.73.6",
+        "react-native": "0.74.1",
         "react-redux": "8.0.7",
-        "redux-flipper": "^2.0.2",
         "redux-logger": "^3.0.6",
         "redux-persist": "6.0.0"
     },
