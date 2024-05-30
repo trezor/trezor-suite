@@ -2367,6 +2367,10 @@ export default defineMessages({
         defaultMessage: 'Coins',
         id: 'TR_COINS',
     },
+    TR_HIDDEN: {
+        defaultMessage: 'Hidden',
+        id: 'TR_HIDDEN',
+    },
     TR_CONFIRM: {
         defaultMessage: 'Confirm',
         id: 'TR_CONFIRM',
@@ -5728,6 +5732,14 @@ export default defineMessages({
         id: 'TR_TOKENS_EMPTY',
         defaultMessage: 'No tokens... yet.',
     },
+    TR_TOKENS_EMPTY_CHECK_HIDDEN: {
+        id: 'TR_TOKENS_EMPTY_CHECK_HIDDEN',
+        defaultMessage: 'No tokens. They may be hidden.',
+    },
+    TR_HIDDEN_TOKENS_EMPTY: {
+        id: 'TR_HIDDEN_TOKENS_EMPTY',
+        defaultMessage: 'You have no hidden tokens.',
+    },
     TR_ADD_TOKEN_TITLE: {
         id: 'TR_ADD_TOKEN_TITLE',
         defaultMessage: 'Add ERC20 token',
@@ -6771,6 +6783,14 @@ export default defineMessages({
     TR_HIDE_TOKEN: {
         id: 'TR_HIDE_TOKEN',
         defaultMessage: 'Hide token',
+    },
+    TR_UNHIDE_TOKEN: {
+        id: 'TR_UNHIDE_TOKEN',
+        defaultMessage: 'Unhide token',
+    },
+    TR_UNHIDE: {
+        id: 'TR_UNHIDE',
+        defaultMessage: 'Unhide',
     },
     TR_VIEW_IN_EXPLORER: {
         id: 'TR_VIEW_IN_EXPLORER',
@@ -9223,7 +9243,7 @@ export default defineMessages({
     },
     TR_URL_IN_TOKEN: {
         id: 'TR_URL_IN_TOKEN',
-        defaultMessage: 'Never visit URLs provided in tokens. They are usually scams.',
+        defaultMessage: 'Never visit URLs in token names or symbols. They are usually scams.',
     },
     TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE: {
         id: 'TR_DEVICE_SETTINGS_ENABLE_VIEW_ONLY_TITLE',

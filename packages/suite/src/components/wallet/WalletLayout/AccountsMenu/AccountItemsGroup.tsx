@@ -95,7 +95,11 @@ export const AccountItemsGroup = ({
                     <AccountItem
                         account={account}
                         type="tokens"
-                        isSelected={selected && routeName === 'wallet-tokens'}
+                        isSelected={
+                            selected &&
+                            (routeName === 'wallet-tokens-coins' ||
+                                routeName === 'wallet-tokens-hidden')
+                        }
                         formattedBalance={account.formattedBalance}
                         isGroup
                         isGroupSelected={selected}

@@ -2,12 +2,12 @@ import { Account } from '@suite-common/wallet-types';
 import { AccountItemsGroup } from './AccountItemsGroup';
 import { AccountItem } from './AccountItem';
 import { useSelector } from 'src/hooks/suite';
-import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import {
     isSupportedEthStakingNetworkSymbol,
     selectAccountHasStaked,
 } from '@suite-common/wallet-core';
+import { getTokens } from 'src/utils/wallet/tokenUtils';
 
 interface AccountSectionProps {
     account: Account;
@@ -39,12 +39,7 @@ export const AccountSection = ({
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
-    const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
-    const tokens = !hasCoinDefinitions
-        ? accountTokens
-        : accountTokens.filter(token =>
-              isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract),
-          );
+    const tokens = getTokens(accountTokens, account.symbol, 'shown', coinDefinitions);
 
     const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 

@@ -9,7 +9,8 @@ import Notification from 'src/views/suite/notifications';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
 import { Receive } from 'src/views/wallet/receive/Receive';
 import WalletDetails from 'src/views/wallet/details';
-import WalletTokens from 'src/views/wallet/tokens';
+import { Coins } from 'src/views/wallet/tokens/coins';
+import { HiddenTokens } from 'src/views/wallet/tokens/hidden-tokens';
 import WalletSend from 'src/views/wallet/send';
 import { WalletStaking } from 'src/views/wallet/staking/WalletStaking';
 import WalletSignVerify from 'src/views/wallet/sign-verify';
@@ -44,7 +45,8 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-index': Transactions,
     'wallet-receive': Receive,
     'wallet-details': WalletDetails,
-    'wallet-tokens': WalletTokens,
+    'wallet-tokens-coins': Coins,
+    'wallet-tokens-hidden': HiddenTokens,
     'wallet-send': WalletSend,
     'wallet-staking': WalletStaking,
     'wallet-sign-verify': WalletSignVerify,

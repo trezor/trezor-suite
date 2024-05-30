@@ -5,24 +5,15 @@ import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { goto } from 'src/actions/suite/routerActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
-import { Route } from '@suite-common/suite-types';
+import { NavigationItem, SubpageNavigation } from 'src/components/suite/layouts/SuiteLayout';
 
-// to make sure the routes are taken from the main route definition
-type AccountTab = Extract<
-    Route['name'],
-    'wallet-index' | 'wallet-details' | 'wallet-tokens' | 'wallet-staking'
->;
-
-export const ACCOUNT_TABS = ['wallet-index', 'wallet-details', 'wallet-tokens', 'wallet-staking'];
-
-type NavigationItem = {
-    id: AccountTab;
-    callback: () => void;
-    title: JSX.Element;
-    'data-test'?: string;
-    isHidden?: boolean;
-};
+export const ACCOUNT_TABS = [
+    'wallet-index',
+    'wallet-details',
+    'wallet-tokens-coins',
+    'wallet-tokens-hidden',
+    'wallet-staking',
+];
 
 export const AccountNavigation = () => {
     const account = useSelector(selectSelectedAccount);
@@ -69,12 +60,13 @@ export const AccountNavigation = () => {
             isHidden: !hasNetworkFeatures(account, 'staking'),
         },
         {
-            id: 'wallet-tokens',
+            id: 'wallet-tokens-coins',
             callback: () => {
-                goToWithAnalytics('wallet-tokens', { preserveParams: true });
+                goToWithAnalytics('wallet-tokens-coins', { preserveParams: true });
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
+            isTabActive: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
         },
     ];
 
