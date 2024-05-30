@@ -11,13 +11,13 @@ import {
     acquireDevice,
     authConfirm,
     authorizeDeviceThunk,
-    createDeviceInstance,
     forgetDisconnectedDevices,
     handleDeviceConnect,
     observeSelectedDevice,
     switchDuplicatedDevice,
     selectDeviceThunk,
     handleDeviceDisconnect,
+    createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
@@ -284,13 +284,11 @@ describe('Suite Actions', () => {
             setTrezorConnectFixtures(f.applySettings);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(createDeviceInstance({ device: f.state.device.selectedDevice }));
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
-                expect(action?.type).toEqual(f.result);
-            }
+            await store.dispatch(
+                createDeviceInstanceThunk({ device: f.state.device.selectedDevice }),
+            );
+            const action = store.getActions().pop();
+            expect(action?.type).toEqual(f.result);
         });
     });
 

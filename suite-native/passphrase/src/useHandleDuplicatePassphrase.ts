@@ -17,7 +17,7 @@ import {
 import { TrezorDevice } from '@suite-common/suite-types';
 import { useTranslate } from '@suite-native/intl';
 
-import { selectPassphraseError } from './passphraseSlice';
+import { selectPassphraseDuplicateError } from './passphraseSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -28,7 +28,7 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 export const useHandleDuplicatePassphrase = () => {
     const dispatch = useDispatch();
 
-    const passphraseError = useSelector(selectPassphraseError);
+    const passphraseDuplicateError = useSelector(selectPassphraseDuplicateError);
 
     const { translate } = useTranslate();
 
@@ -54,17 +54,17 @@ export const useHandleDuplicatePassphrase = () => {
     );
 
     useEffect(() => {
-        if (passphraseError) {
+        if (passphraseDuplicateError) {
             showAlert({
                 title: translate('modulePassphrase.passphraseMismatch.title'),
                 description: translate('modulePassphrase.passphraseMismatch.subtitle'),
                 primaryButtonTitle: translate('modulePassphrase.passphraseMismatch.button'),
                 onPressPrimaryButton: () =>
                     handleDuplicateDevicePassphrase({
-                        device: passphraseError.device,
-                        duplicate: passphraseError.duplicate,
+                        device: passphraseDuplicateError.device,
+                        duplicate: passphraseDuplicateError.duplicate,
                     }),
             });
         }
-    }, [handleDuplicateDevicePassphrase, passphraseError, showAlert, translate]);
+    }, [handleDuplicateDevicePassphrase, passphraseDuplicateError, showAlert, translate]);
 };

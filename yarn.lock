@@ -9587,6 +9587,7 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/passphrase": "workspace:*"
     "@suite-native/theme": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"

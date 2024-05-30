@@ -713,6 +713,11 @@ export const en = {
             subtitle: 'You’re trying to enter a passphrase wallet that’s already been opened.',
             button: 'Proceed to passphrase wallet ',
         },
+        enablePassphrase: {
+            title: 'Enable passphrase on your Trezor.',
+            subtitle: 'Go to your device and confirm you’d like to enable passphase.',
+            cancelledError: 'Passphrase enabling cancelled.',
+        },
     },
 };
 

@@ -8,7 +8,7 @@ import * as deviceUtils from '@suite-common/suite-utils';
 import {
     selectDevice,
     acquireDevice,
-    createDeviceInstance,
+    createDeviceInstanceThunk,
     selectDeviceThunk,
 } from '@suite-common/wallet-core';
 import { Translation } from 'src/components/suite';
@@ -169,7 +169,7 @@ export const DeviceItemLegacy = ({
     };
 
     const addDeviceInstance = async (instance: DeviceItemProps['device']) => {
-        await dispatch(createDeviceInstance({ device: instance }));
+        await dispatch(createDeviceInstanceThunk({ device: instance }));
         handleRedirection();
     };
 

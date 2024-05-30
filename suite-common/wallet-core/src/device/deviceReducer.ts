@@ -1,4 +1,5 @@
 import { memoize } from 'proxy-memoize';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import * as deviceUtils from '@suite-common/suite-utils';
 import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
@@ -15,7 +16,11 @@ import {
 import { isNative } from '@trezor/env-utils';
 
 import { deviceActions } from './deviceActions';
-import { authorizeDeviceThunk } from './deviceThunks';
+import {
+    authorizeDeviceThunk,
+    createDeviceInstanceThunk,
+    createImportedDeviceThunk,
+} from './deviceThunks';
 import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type State = {
@@ -536,9 +541,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.receiveAuthConfirm, (state, { payload }) => {
             authConfirm(state, payload.device, payload.success);
         })
-        .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
-            createInstance(state, payload);
-        })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
             remember(state, payload.device, payload.remember, payload.forceRemember);
         })
@@ -567,7 +569,13 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
-        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices);
+        .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
+        .addMatcher(
+            isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),
+            (state, { payload }) => {
+                createInstance(state, payload.device);
+            },
+        );
 });
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
@@ -860,7 +868,14 @@ export const selectIsDeviceUsingPassphrase = (state: DeviceRootState) => {
     const isDeviceProtectedByPassphrase = selectIsDeviceProtectedByPassphrase(state);
     const device = selectDevice(state);
 
-    return isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false;
+    // If device instance is higher than 1 (newly created device instance), connect returns
+    // `passphrase_protection: false` in features. But we still want to treat it as passphrase protected.
+    const shouldTreatAsPassphraseProtected = device?.instance ?? 1 > 1;
+
+    return (
+        (isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false) ||
+        shouldTreatAsPassphraseProtected
+    );
 };
 
 export const selectPhysicalDevicesGrouppedById = memoize((state: DeviceRootState) => {

@@ -964,118 +964,6 @@ const authDevice = [
     },
 ];
 
-const createInstance = [
-    {
-        description: `Create instance, 1 connected`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
-            },
-        ],
-        result: [
-            {
-                instance: undefined,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 1,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `Create instance, 2 connected, 1 affected`,
-        initialState: {
-            devices: [
-                getSuiteDevice(undefined, {
-                    device_id: 'ignored-device-id',
-                }),
-                SUITE_DEVICE,
-            ],
-        },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
-            },
-        ],
-        result: [
-            {
-                features: {
-                    device_id: 'ignored-device-id',
-                },
-            },
-            {
-                instance: undefined,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 1,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `Create instance from instance`,
-        initialState: {
-            devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
-        },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 2 }),
-            },
-        ],
-        result: [
-            {
-                instance: undefined,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 1,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 2,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `device is unacquired`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({
-                    type: 'unacquired',
-                }),
-            },
-        ],
-        result: [
-            {
-                state: undefined,
-            },
-        ],
-    },
-];
-
 const forget = [
     {
         description: `Forget multiple instances (2 connected, 5 instances, 3 affected, last instance remains with undefined state)`,
@@ -1377,7 +1265,6 @@ export default {
     updateTimestamp,
     changePassphraseMode,
     authDevice,
-    createInstance,
     forget,
     remember,
 };

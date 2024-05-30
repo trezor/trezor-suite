@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDevice, createDeviceInstance } from '@suite-common/wallet-core';
+import { selectDevice, createDeviceInstanceThunk } from '@suite-common/wallet-core';
 import { Button, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
@@ -140,7 +140,7 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
                   action: () =>
-                      dispatch(createDeviceInstance({ device: device as AcquiredDevice })),
+                      dispatch(createDeviceInstanceThunk({ device: device as AcquiredDevice })),
                   dataTest: 'create-hidden-wallet',
                   isDisabled: isDeviceLocked,
               },

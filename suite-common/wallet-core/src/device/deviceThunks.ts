@@ -95,21 +95,21 @@ export const toggleRememberDevice = createThunk(
     },
 );
 
-/**
- * Triggered by `@trezor/connect DEVICE_EVENT`
- * @param {Device} device
- * @param {boolean} [useEmptyPassphrase=false]
- */
-export const createDeviceInstance = createThunk(
+export type CreateDeviceInstanceError = {
+    error: 'passphrase-enabling-cancelled' | 'features-unavailable';
+};
+export const createDeviceInstanceThunk = createThunk<
+    { device: TrezorDevice },
+    { device: TrezorDevice; useEmptyPassphrase?: boolean },
+    { rejectValue: CreateDeviceInstanceError }
+>(
     `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
     async (
-        {
-            device,
-            useEmptyPassphrase = false,
-        }: { device: TrezorDevice; useEmptyPassphrase?: boolean },
-        { dispatch, getState },
+        { device, useEmptyPassphrase = false },
+        { dispatch, getState, rejectWithValue, fulfillWithValue },
     ) => {
-        if (!device.features) return;
+        if (!device.features) return rejectWithValue({ error: 'features-unavailable' });
+
         if (!device.features.passphrase_protection) {
             const response = await TrezorConnect.applySettings({
                 device,
@@ -121,20 +121,21 @@ export const createDeviceInstance = createThunk(
                     notificationsActions.addToast({ type: 'error', error: response.payload.error }),
                 );
 
-                return;
+                return rejectWithValue({ error: 'passphrase-enabling-cancelled' });
             }
 
             dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
         }
 
         const devices = selectDevices(getState());
-        dispatch(
-            deviceActions.createDeviceInstance({
+
+        return fulfillWithValue({
+            device: {
                 ...device,
                 useEmptyPassphrase,
                 instance: getNewInstanceNumber(devices, device),
-            }),
-        );
+            },
+        });
     },
 );
 
@@ -397,7 +398,7 @@ export const authConfirm = createThunk(
             // handle error passed from Passphrase modal
             if (response.payload.error === 'auth-confirm-cancel') {
                 // needs await to propagate all actions
-                await dispatch(createDeviceInstance({ device }));
+                await dispatch(createDeviceInstanceThunk({ device }));
                 // forget previous empty wallet
                 dispatch(deviceActions.forgetDevice(device));
 
@@ -487,14 +488,18 @@ export const initDevices = createThunk(
     },
 );
 
-export const createImportedDeviceThunk = createThunk(
+export const createImportedDeviceThunk = createThunk<
+    { device: TrezorDevice },
+    undefined,
+    { rejectValue: { error: 'already-created' } }
+>(
     `${DEVICE_MODULE_PREFIX}/createImportedDevice`,
-    (_, { getState, dispatch }) => {
+    (_, { getState, rejectWithValue, fulfillWithValue }) => {
         const device = selectDeviceById(getState(), PORTFOLIO_TRACKER_DEVICE_ID);
 
-        if (!device) {
-            dispatch(deviceActions.createDeviceInstance(portfolioTrackerDevice));
-        }
+        if (device) return rejectWithValue({ error: 'already-created' });
+
+        return fulfillWithValue({ device: portfolioTrackerDevice });
     },
 );
 

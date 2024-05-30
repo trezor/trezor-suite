@@ -1,5 +1,10 @@
 import { testMocks } from '@suite-common/test-utils';
-import { discoveryActions, deviceActions, authorizeDeviceThunk } from '@suite-common/wallet-core';
+import {
+    discoveryActions,
+    deviceActions,
+    authorizeDeviceThunk,
+    createDeviceInstanceThunk,
+} from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
@@ -1000,7 +1005,7 @@ const createDeviceInstance = [
                 }),
             },
         },
-        result: undefined,
+        result: createDeviceInstanceThunk.rejected.type,
     },
     {
         description: `without passphrase_protection`,
@@ -1011,7 +1016,7 @@ const createDeviceInstance = [
                 }),
             },
         },
-        result: deviceActions.createDeviceInstance.type,
+        result: createDeviceInstanceThunk.fulfilled.type,
     },
     {
         description: `without passphrase_protection and @trezor/connect error`,
@@ -1028,7 +1033,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: notificationsActions.addToast.type,
+        result: createDeviceInstanceThunk.rejected.type,
     },
     {
         description: `with passphrase_protection enabled`,
@@ -1050,7 +1055,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: deviceActions.createDeviceInstance.type,
+        result: createDeviceInstanceThunk.fulfilled.type,
     },
 ];
 
