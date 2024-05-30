@@ -13,7 +13,7 @@ import { Bundle } from '../types';
 import { GetPublicKey as GetPublicKeySchema } from '../types/api/getPublicKey';
 
 type Params = PROTO.GetPublicKey & {
-    coinInfo: BitcoinNetworkInfo;
+    coinInfo?: BitcoinNetworkInfo;
     suppressBackupWarning?: boolean;
     unlockPath?: PROTO.UnlockPath;
 };
@@ -43,7 +43,11 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
             if (coinInfo && !batch.crossChain) {
                 validateCoinPath(address_n, coinInfo);
             } else if (!coinInfo) {
-                coinInfo = getBitcoinNetwork(address_n) ?? getBitcoinNetwork('btc')!;
+                // NOTE: Some 3rd parties are calling getPublicKey with non-bitcoin coins, like "ETH".
+                // This is incorrect usage, but we need to keep backward compatibility.
+                // So if no coin is provided, we will keep coinInfo undefined, which will
+                // lead to getPublicKeyLabel returning a label based on the path
+                coinInfo = getBitcoinNetwork(address_n); // ?? getBitcoinNetwork('btc')!;
             }
 
             // set required firmware from coinInfo support
@@ -88,7 +92,9 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         const cmd = this.device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const { coinInfo, unlockPath, ...batch } = this.params[i];
-            const response = await cmd.getHDNode(batch, { coinInfo, unlockPath });
+            // if coinInfo is not provided, use fallback (see above in init method)
+            const coinInfoFallback = coinInfo ?? getBitcoinNetwork('btc')!;
+            const response = await cmd.getHDNode(batch, { coinInfo: coinInfoFallback, unlockPath });
             responses.push(response);
 
             if (this.hasBundle) {
