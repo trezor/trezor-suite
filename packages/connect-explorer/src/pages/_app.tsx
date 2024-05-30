@@ -43,10 +43,12 @@ const ThemeComponent = ({ Component, pageProps }: AppProps) => {
     );
 };
 export default function MyApp(props: AppProps) {
+    const router = useRouter();
+
     return (
         <NextThemeProvider attribute="class" disableTransitionOnChange>
             <Head>
-                <link rel="icon" type="image/png" href="images/favicon.png" />
+                <link rel="icon" type="image/png" href={router.basePath + '/images/favicon.png'} />
             </Head>
             <ThemeComponent {...props} />
         </NextThemeProvider>
