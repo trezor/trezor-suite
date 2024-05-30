@@ -82,9 +82,8 @@ export const init = async (container: HTMLElement) => {
     root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
-    const store = initStore(preloadAction);
-
-    await desktopApi.handshake();
+    const { statePatch } = await desktopApi.handshake();
+    const store = initStore(preloadAction, statePatch);
 
     // start logging to file if Debug menu is active
     if (
