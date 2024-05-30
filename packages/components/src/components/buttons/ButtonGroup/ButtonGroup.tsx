@@ -8,7 +8,6 @@ import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 
 const Container = styled.div<{
     $variant?: Exclude<ButtonVariant, 'danger'>;
-    $withTooltips?: boolean;
 }>`
     position: relative;
     display: flex;
@@ -69,7 +68,6 @@ interface ButtonGroupProps {
     isDisabled?: boolean;
     className?: string;
     children: React.ReactElement<AllowedChildrenPropsType | TooltipProps>[];
-    withTooltips?: boolean;
 }
 
 export const ButtonGroup = ({
@@ -78,7 +76,6 @@ export const ButtonGroup = ({
     isDisabled,
     className,
     children,
-    withTooltips,
 }: ButtonGroupProps) => {
     const areChildrenValid = isValidChildrenElement(children);
 
@@ -121,7 +118,7 @@ export const ButtonGroup = ({
     });
 
     return (
-        <Container $variant={variant} $withTooltips={withTooltips} className={className}>
+        <Container $variant={variant} className={className}>
             {childrenWithProps}
         </Container>
     );

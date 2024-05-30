@@ -8,6 +8,7 @@ import { SUBPAGE_NAV_HEIGHT } from 'src/constants/suite/layout';
 import { selectIsLoggedOut } from 'src/reducers/suite/suiteReducer';
 import { HoverAnimation } from '../../HoverAnimation';
 import { AppNavigationTooltip } from '../../AppNavigation/AppNavigationTooltip';
+import { Route } from '@suite-common/suite-types';
 
 const Container = styled.div<{ $isFullWidth: boolean }>`
     position: sticky;
@@ -55,12 +56,15 @@ const StyledNavLink = styled.div<{ $isActive: boolean; $isNavigationDisabled: bo
         $isActive || $isNavigationDisabled ? 'default' : 'pointer'};
 `;
 
+type TabRoute = Route['name'] | undefined;
+
 export type NavigationItem = {
-    id: string;
+    id: Route['name'];
     callback: () => void;
     title: JSX.Element;
     'data-test'?: string;
     isHidden?: boolean;
+    isTabActive?: TabRoute[];
 };
 
 interface SubpageNavigationProps {
@@ -81,9 +85,11 @@ export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) 
         <Container $isFullWidth={isLoggedOut} className={className}>
             <LayoutGroup id={items[0].id}>
                 {visibleItems.map(item => {
-                    const { id, title } = item;
+                    const { id, title, isTabActive } = item;
 
-                    const isActive = routeName === id;
+                    const isActive = isTabActive
+                        ? isTabActive.includes(routeName)
+                        : routeName === id;
                     const isHoverable = !isActive && !isAccountLoading;
                     const onClick = isAccountLoading ? undefined : item.callback;
 

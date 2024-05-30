@@ -5,7 +5,11 @@ import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
-export const NoTokens = () => {
+interface NoTokensProps {
+    title: JSX.Element | string;
+}
+
+export const NoTokens = ({ title }: NoTokensProps) => {
     const isDebug = useSelector(selectIsDebugModeActive);
     const dispatch = useDispatch();
 
@@ -13,7 +17,7 @@ export const NoTokens = () => {
 
     return (
         <AccountExceptionLayout
-            title={<Translation id="TR_TOKENS_EMPTY" />}
+            title={title}
             image="CLOUDY"
             actionComponent={
                 isDebug ? (

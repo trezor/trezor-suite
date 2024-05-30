@@ -250,7 +250,7 @@ export const AmountDetails = ({ tx, isTestnet }: AmountDetailsProps) => {
                                 <FiatValue
                                     amount={formatAmount(transfer.amount, transfer.decimals)}
                                     symbol={selectedAccount.account?.symbol as NetworkSymbol}
-                                    tokenAddress={transfer.contract}
+                                    tokenAddress={transfer.contract as TokenAddress}
                                 />
                             }
                         />

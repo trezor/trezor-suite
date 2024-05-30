@@ -189,7 +189,7 @@ export const AccountItem = forwardRef(
                 case 'staking':
                     return 'wallet-staking';
                 case 'tokens':
-                    return 'wallet-tokens';
+                    return 'wallet-tokens-coins';
             }
         };
 

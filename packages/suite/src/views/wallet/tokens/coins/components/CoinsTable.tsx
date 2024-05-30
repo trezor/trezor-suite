@@ -6,12 +6,13 @@ import { TokenManagementAction, selectCoinDefinitions } from '@suite-common/toke
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import {
     enhanceTokensWithRates,
-    getShownTokens,
+    getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
 import { TokenList } from '../../common/TokenList';
+import { Translation } from 'src/components/suite';
 
 interface CoinsTableProps {
     selectedAccount: SelectedAccountLoaded;
@@ -33,16 +34,28 @@ export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
     );
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
-    const tokens = getShownTokens(sortedTokens, account.symbol, coinDefinitions);
+    const shownTokens = getTokens(sortedTokens, account.symbol, 'shown', coinDefinitions);
+    const unverifiedTokens = getTokens(sortedTokens, account.symbol, 'unverified', coinDefinitions);
+    const hiddenTokens = getTokens(sortedTokens, account.symbol, 'hidden', coinDefinitions);
 
-    return tokens.length > 0 ? (
+    return shownTokens.length > 0 ? (
         <TokenList
             hideRates={isTestnet(account.symbol)}
             tokenStatusType={TokenManagementAction.HIDE}
-            tokens={tokens}
+            tokens={shownTokens}
             network={network}
         />
     ) : (
-        <NoTokens />
+        <NoTokens
+            title={
+                <Translation
+                    id={
+                        unverifiedTokens.length + hiddenTokens.length > 0
+                            ? 'TR_TOKENS_EMPTY_CHECK_HIDDEN'
+                            : 'TR_TOKENS_EMPTY'
+                    }
+                />
+            }
+        />
     );
 };

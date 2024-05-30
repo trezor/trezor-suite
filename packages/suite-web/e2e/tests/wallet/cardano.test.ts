@@ -61,7 +61,7 @@ describe('Cardano', () => {
         cy.getTestElement('@account-subpage/back').last().click();
 
         // go to cardano account #1 - staking
-        cy.getTestElement('@wallet/menu/wallet-tokens').click();
+        cy.getTestElement('@wallet/menu/wallet-tokens-coins').click();
         cy.getTestElement('@app').matchImageSnapshot('cardano-tokens');
 
         // lets 'hack' routing
