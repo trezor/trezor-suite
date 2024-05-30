@@ -33,7 +33,10 @@ export const NavigationItemBase = styled.div.attrs(() => ({
     ${getFocusShadowStyle()}
 `;
 
-const Container = styled(NavigationItemBase)<{ $elevation: Elevation; $isActive?: boolean }>`
+const Container = styled(NavigationItemBase)<{
+    $elevation: Elevation;
+    $isActive?: boolean;
+}>`
     ${({ theme, $isActive }) =>
         $isActive
             ? css<{ $elevation: Elevation }>`
@@ -54,6 +57,10 @@ const Container = styled(NavigationItemBase)<{ $elevation: Elevation; $isActive?
                       }
                   }
               `}
+`;
+
+const Count = styled.div`
+    color: ${({ theme }) => theme.textSubdued};
 `;
 
 export interface NavigationItemProps {
@@ -108,6 +115,7 @@ export const NavigationItem = ({
         >
             <StyledIcon name={icon} size={iconSize} color="iconSubdued" />
             <Translation id={nameId} values={values} />
+            {itemsCount && <Count>{itemsCount}</Count>}
         </Container>
     );
 };
