@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { IconName } from '@suite-common/icons';
+import { SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Elevation, borders, spacingsPx, mapElevationToBorder, typography } from '@trezor/theme';
 import { useElevation, variables } from '@trezor/components';
 
@@ -46,7 +48,11 @@ const Divider = () => {
     return <StyledDivider $elevation={elevation} />;
 };
 
-export const TokensLayoutNavigation = () => {
+interface TokensLayoutNavigationProps {
+    selectedAccount: SelectedAccountLoaded;
+}
+
+export const TokensLayoutNavigation = ({ selectedAccount }: TokensLayoutNavigationProps) => {
     const routeName = useSelector(state => state.router.route?.name);
     const coinDefinitions = useSelector(state =>
         selectCoinDefinitions(state, selectedAccount.account.symbol),

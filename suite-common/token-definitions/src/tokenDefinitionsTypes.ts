@@ -1,4 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { Rate } from '@suite-common/wallet-types';
+import { TokenInfo } from '@trezor/blockchain-link-types';
 
 export type SimpleTokenStructure = string[];
 
@@ -24,7 +26,7 @@ export type TokenDefinitionsState = {
 
 export type TokenDefinitionsRootState = { tokenDefinitions: TokenDefinitionsState };
 
-type TokenDefinition = {
+export type TokenDefinition = {
     error: boolean;
     data?: SimpleTokenStructure;
     isLoading: boolean;
@@ -38,3 +40,5 @@ export type TokenDefinitions = {
 };
 
 export type TokenManagementStorage = { key: string; value: SimpleTokenStructure };
+
+export type EnhancedTokenInfo = TokenInfo & { fiatRate?: Rate };

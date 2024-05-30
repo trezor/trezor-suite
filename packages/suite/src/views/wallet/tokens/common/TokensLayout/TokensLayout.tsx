@@ -11,7 +11,7 @@ interface TokensLayoutProps {
 
 export const TokensLayout = ({ children, selectedAccount }: TokensLayoutProps) => (
     <WalletLayout title="TR_TOKENS" account={selectedAccount}>
-        <TokensLayoutNavigation />
+        <TokensLayoutNavigation selectedAccount={selectedAccount} />
         {children}
     </WalletLayout>
 );
