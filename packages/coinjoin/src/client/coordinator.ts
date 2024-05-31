@@ -11,7 +11,7 @@ import {
 import { AFFILIATION_ID } from '../constants';
 
 const request = <T>(...args: Parameters<typeof coordinatorRequest>) =>
-    coordinatorRequest<T>(...args).then(patchResponse);
+    coordinatorRequest<T>(...args).then<T>(patchResponse);
 
 export const getStatus = async (options: RequestOptions) => {
     const data = await request<CoinjoinStatus>(

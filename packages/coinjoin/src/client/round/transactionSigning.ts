@@ -5,6 +5,7 @@ import * as middleware from '../middleware';
 import {
     getRoundEvents,
     compareOutpoint,
+    getRoundParams,
     getAffiliateRequest,
     scheduleDelay,
 } from '../../utils/roundUtils';
@@ -85,7 +86,10 @@ const getTransactionData = (
     return {
         inputs,
         outputs,
-        affiliateRequest: getAffiliateRequest(round.roundParameters, round.affiliateRequest),
+        affiliateRequest: {
+            ...getRoundParams(round.roundParameters),
+            ...(options.affiliationId ? getAffiliateRequest(round.affiliateRequest) : {}),
+        },
     };
 };
 
@@ -188,7 +192,7 @@ export const transactionSigning = async (
         return round;
     }
 
-    if (!round.affiliateRequest) {
+    if (options.affiliationId && !round.affiliateRequest) {
         logger.warn(`Missing affiliate request. Waiting for status`);
         round.setSessionPhase(SessionPhase.AwaitingCoinjoinTransaction);
         round.transactionSignTries.push(Date.now());

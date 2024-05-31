@@ -19,7 +19,7 @@ import {
     CoinjoinResponseEvent,
     BroadcastedTransactionDetails,
 } from '../types/round';
-import { Round, CoinjoinRoundParameters } from '../types/coordinator';
+import { Round, CoinjoinRoundParameters, AffiliationId } from '../types/coordinator';
 import { Account } from './Account';
 import { Alice } from './Alice';
 import { CoinjoinPrison } from './CoinjoinPrison';
@@ -38,6 +38,7 @@ export interface CoinjoinRoundOptions {
     coordinatorUrl: string;
     middlewareUrl: string;
     logger: Logger;
+    affiliationId?: AffiliationId;
     setSessionPhase: (event: CoinjoinClientEvents['session-phase']) => void;
 }
 

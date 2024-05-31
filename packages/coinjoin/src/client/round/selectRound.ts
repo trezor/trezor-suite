@@ -458,7 +458,7 @@ export const selectRound = async ({
     const unregisteredAccountKeys = unregisteredAccounts.map(({ accountKey }) => accountKey);
 
     logger.info('Looking for rounds');
-    if (!runningAffiliateServer) {
+    if (options.affiliationId && !runningAffiliateServer) {
         logger.warn('Affiliate server is not running. Round selection ignored');
         setSessionPhase({
             phase: SessionPhase.AffiliateServerOffline,

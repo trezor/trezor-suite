@@ -1,4 +1,5 @@
 import { CoinjoinPrisonInmate } from './client';
+import { AffiliationId } from './coordinator';
 
 interface BaseSettings {
     network: 'btc' | 'test' | 'regtest';
@@ -18,6 +19,7 @@ export interface CoinjoinClientSettings extends BaseSettings {
     coordinatorUrl: string;
     coordinatorName: string; // identifier used in commitment data and ownership proof
     middlewareUrl: string;
+    affiliationId?: AffiliationId;
     prison?: CoinjoinPrisonInmate[];
 }
 
