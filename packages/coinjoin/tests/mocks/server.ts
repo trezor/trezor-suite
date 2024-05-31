@@ -207,6 +207,7 @@ interface MockedServerEvents {
 export interface MockedServer extends Exclude<http.Server, 'addListener'> {
     requestOptions: {
         network: any;
+        affiliationId: 'trezor';
         coordinatorName: string;
         wabisabiBackendUrl: string;
         coordinatorUrl: string;
@@ -251,6 +252,7 @@ export const createServer = async () => {
     server.requestOptions = {
         network: 'test',
         coordinatorName: 'CoinJoinCoordinatorIdentifier',
+        affiliationId: 'trezor',
         wabisabiBackendUrl: url,
         coordinatorUrl: url,
         middlewareUrl: url,
