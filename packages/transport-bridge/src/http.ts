@@ -283,7 +283,7 @@ export class TrezordNode {
                         intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
                         version: this.version,
                         devices: enumerateResult.success ? enumerateResult.payload.descriptors : [],
-                        logs: this.logger.getLog().slice(-20),
+                        logs: this.logger.getLog(),
                     };
 
                     res.end(str(props));

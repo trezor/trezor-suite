@@ -1,3 +1,5 @@
+import { useEffect } from 'react';
+
 import styled from 'styled-components';
 
 import { LogMessage } from '@trezor/utils';
@@ -21,6 +23,13 @@ export interface LogsProps {
 }
 
 export const Logs = ({ logs }: LogsProps) => {
+    useEffect(() => {
+        logs.forEach(log => {
+            // eslint-disable-next-line no-console
+            console.log(log.message.join(' '));
+        });
+    }, [logs]);
+
     return (
         <>
             <H2>
