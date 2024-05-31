@@ -1,8 +1,6 @@
 import { ReactNode } from 'react';
-import { IntlProvider } from 'react-intl';
 
-// FIXME this is only temporary until Intl refactor will be finished
-import enMessages from '@trezor/suite-data/files/translations/en.json';
+import { IntlProvider } from '@suite-native/intl';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { createRenderer, StylesProvider } from '@trezor/styles';
 import { prepareNativeTheme } from '@trezor/theme';
@@ -21,7 +19,7 @@ export const GraphContextProvider = ({ children }: ProviderProps) => {
     const theme = prepareNativeTheme({ colorVariant });
 
     return (
-        <IntlProvider locale="en" defaultLocale="en" messages={enMessages}>
+        <IntlProvider>
             <StylesProvider theme={theme} renderer={renderer}>
                 {children}
             </StylesProvider>

@@ -30,7 +30,6 @@
         { "path": "../storage" },
         { "path": "../theme" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/suite-data" },
         { "path": "../../packages/theme" }
     ]
 }
