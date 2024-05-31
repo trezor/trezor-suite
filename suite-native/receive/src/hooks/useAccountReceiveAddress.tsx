@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
@@ -15,6 +15,8 @@ import {
     selectIsPortfolioTrackerDevice,
     confirmAddressOnDeviceThunk,
     selectIsDeviceInViewOnlyMode,
+    deviceActions,
+    selectDevice,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
@@ -48,13 +50,26 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         selectIsAccountUtxoBased(state, accountKey),
     );
 
+    const device = useSelector(selectDevice);
+
     const freshAddress = useMemo(() => {
         if (account) {
             return getFirstFreshAddress(account, [], pendingAddresses, isAccountUtxoBased);
         }
     }, [account, pendingAddresses, isAccountUtxoBased]);
 
-    const verifyAddressOnDevice = useCallback(async (): Promise<boolean> => {
+    const handleCancel = () => {
+        TrezorConnect.cancel();
+        setIsUnverifiedAddressRevealed(false);
+        dispatch(
+            deviceActions.removeButtonRequests({
+                device,
+                buttonRequestCode: 'ButtonRequest_Other',
+            }),
+        );
+    };
+
+    const verifyAddressOnDevice = async (): Promise<boolean> => {
         if (accountKey && freshAddress) {
             const response = await requestPrioritizedDeviceAccess(() => {
                 const thunkResponse = dispatch(
@@ -104,13 +119,20 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 showAlert({
                     title: response.payload.payload.code,
                     description: response.payload.payload.error,
-                    icon: 'warningCircle',
-                    pictogramVariant: 'red',
-                    primaryButtonTitle: 'Cancel',
+                    primaryButtonVariant: 'redBold',
+                    primaryButtonTitle: <Translation id="generic.buttons.tryAgain" />,
                     onPressPrimaryButton: () => {
-                        TrezorConnect.cancel();
-                        navigation.goBack();
-                        setIsUnverifiedAddressRevealed(false);
+                        handleCancel();
+                        // Handle show address calls verifyAddressOnDevice and here we want to trigger it again so there is cyclic dependency
+                        // between these calls.
+                        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                        handleShowAddress();
+                    },
+                    secondaryButtonVariant: 'redElevation0',
+                    secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                    onPressSecondaryButton: () => {
+                        handleCancel();
+                        if (navigation.canGoBack()) navigation.goBack();
                     },
                 });
 
@@ -121,9 +143,9 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
 
         return false;
-    }, [accountKey, freshAddress, dispatch, showToast, navigation, showAlert]);
+    };
 
-    const handleShowAddress = useCallback(async () => {
+    const handleShowAddress = async () => {
         if (isPortfolioTrackerDevice) {
             if (networkSymbol) {
                 analytics.report({
@@ -148,7 +170,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [isDeviceInViewOnlyMode, isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
+    };
 
     return {
         address: freshAddress?.address,

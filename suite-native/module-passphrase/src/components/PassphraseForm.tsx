@@ -71,7 +71,12 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
     } = form;
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
-        dispatch(deviceActions.removeButtonRequests({ device }));
+        dispatch(
+            deviceActions.removeButtonRequests({
+                device,
+                buttonRequestCode: 'ButtonRequest_Other',
+            }),
+        );
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
         navigation.push(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)

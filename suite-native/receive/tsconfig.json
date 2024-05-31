@@ -27,6 +27,7 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
+        { "path": "../passphrase" },
         { "path": "../qr-code" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },

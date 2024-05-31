@@ -23,6 +23,11 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
+import TrezorConnect from '@trezor/connect';
+
+type PassphraseScreenHeaderProps = {
+    isWalletRemovedOnClose: boolean;
+};
 
 type NavigationProp = StackToTabCompositeProps<
     PassphraseStackParamList,
@@ -35,7 +40,7 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
     gap: 12,
 }));
 
-export const PassphraseScreenHeader = () => {
+export const PassphraseScreenHeader = ({ isWalletRemovedOnClose }: PassphraseScreenHeaderProps) => {
     const route = useRoute();
 
     const { applyStyle } = useNativeStyles();
@@ -47,13 +52,20 @@ export const PassphraseScreenHeader = () => {
     const [shouldShowWarningBottomSheet, setShouldShowWarningBottomSheet] = useState(false);
 
     const handleClose = () => {
-        dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.HomeStack,
-            params: {
-                screen: HomeStackRoutes.Home,
-            },
-        });
+        if (isWalletRemovedOnClose) {
+            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+            navigation.navigate(RootStackRoutes.AppTabs, {
+                screen: AppTabsRoutes.HomeStack,
+                params: {
+                    screen: HomeStackRoutes.Home,
+                },
+            });
+        } else {
+            // If cancel happens on screen where passphrase was requested by some feature (receive, add account, send, etc),
+            // only cancel the TrezorConnect call and go back to previous screen. We want to keep the passphrase wallet.
+            TrezorConnect.cancel();
+            if (navigation.canGoBack()) navigation.goBack();
+        }
     };
 
     const handlePress = () => {

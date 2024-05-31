@@ -15,6 +15,7 @@ export const en = {
             dismiss: 'Dismiss',
             eject: 'Eject',
             cancel: 'Cancel',
+            tryAgain: 'Try again',
         },
         unknownError: 'Something went wrong',
         default: 'Default',
@@ -726,6 +727,10 @@ export const en = {
             title: 'Enable passphrase on your Trezor.',
             subtitle: 'Go to your device and confirm you’d like to enable passphase.',
             cancelledError: 'Passphrase enabling cancelled.',
+        },
+        passphraseFeatureUnlock: {
+            title: 'Enter passphrase to continue',
+            label: 'Enter your passphrase',
         },
     },
 };

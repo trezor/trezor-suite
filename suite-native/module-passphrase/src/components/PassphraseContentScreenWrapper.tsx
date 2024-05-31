@@ -8,15 +8,17 @@ type PassphraseContentScreenWrapperProps = {
     children: ReactNode;
     title: ReactNode;
     subtitle?: ReactNode;
+    isWalletRemovedOnClose?: boolean;
 };
 
 export const PassphraseContentScreenWrapper = ({
     children,
     title,
     subtitle,
+    isWalletRemovedOnClose = true,
 }: PassphraseContentScreenWrapperProps) => {
     return (
-        <PassphraseScreenWrapper>
+        <PassphraseScreenWrapper isWalletRemovedOnClose={isWalletRemovedOnClose}>
             <VStack spacing="large">
                 <VStack>
                     <Text variant="titleMedium">{title}</Text>

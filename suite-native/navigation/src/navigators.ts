@@ -129,6 +129,7 @@ export type PassphraseStackParamList = {
     [PassphraseStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
     [PassphraseStackRoutes.PassphraseEnterOnTrezor]: undefined;
     [PassphraseStackRoutes.PassphraseEnableOnDevice]: undefined;
+    [PassphraseStackRoutes.PassphraseFeatureUnlockScreen]: undefined;
 };
 
 export type RootStackParamList = {

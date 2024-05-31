@@ -1,14 +1,9 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { G } from '@mobily/ts-belt';
 
 import { ErrorMessage, VStack, Box } from '@suite-native/atoms';
-import {
-    AccountsRootState,
-    removeButtonRequests,
-    selectAccountByKey,
-    selectDevice,
-} from '@suite-common/wallet-core';
+import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { Translation } from '@suite-native/intl';
 
@@ -24,12 +19,10 @@ type AccountReceiveProps = {
 };
 
 export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProps) => {
-    const dispatch = useDispatch();
-
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
-    const device = useSelector(selectDevice);
+
     const hasReceiveButtonRequest = useSelector(hasReceiveAddressButtonRequest);
 
     const { address, isReceiveApproved, isUnverifiedAddressRevealed, handleShowAddress } =
@@ -39,12 +32,6 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
 
     if (G.isNullable(account) || G.isNullable(address))
         return <ErrorMessage errorMessage={<Translation id="generic.unknownError" />} />;
-
-    const handleShowAddressAndRemoveButtonRequests = async () => {
-        await handleShowAddress();
-        if (!device) return;
-        dispatch(removeButtonRequests({ device }));
-    };
 
     const isConfirmOnTrezorReady =
         isUnverifiedAddressRevealed && !isReceiveApproved && hasReceiveButtonRequest;
@@ -64,7 +51,7 @@ export const ReceiveAccount = ({ accountKey, tokenContract }: AccountReceiveProp
                     isEthereumTokenAddress={!!tokenContract}
                     isReceiveApproved={isReceiveApproved}
                     isUnverifiedAddressRevealed={isUnverifiedAddressRevealed}
-                    onShowAddress={handleShowAddressAndRemoveButtonRequests}
+                    onShowAddress={handleShowAddress}
                 />
             </VStack>
 
