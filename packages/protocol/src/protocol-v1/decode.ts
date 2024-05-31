@@ -23,6 +23,12 @@ const readHeaderChunked = (buffer: Buffer) => {
 // Parses first raw input that comes from Trezor and returns some information about the whole message.
 // [compatibility]: accept Buffer just like decode does. But this would require changes in lower levels
 export const decode: TransportProtocolDecode = bytes => {
+    // note: the occasionally appearing error "Attempt to access memory outside buffer bounds" comes from here in certain cases
+    // when usb.transferIn (read) did not receive any data but resolved with success. bytes has byteLength 0 in this case.
+    if (bytes.byteLength === 0) {
+        console.error('protocol-v1: decode: received empty buffer');
+    }
+
     const buffer = Buffer.from(bytes);
     const { magic, sharp1, sharp2, messageType, length } = readHeaderChunked(buffer);
 
