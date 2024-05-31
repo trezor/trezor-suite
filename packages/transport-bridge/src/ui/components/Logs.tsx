@@ -8,6 +8,7 @@ import { Translation } from './Translation';
 const Log = styled.div`
     font-family: monospace;
     font-size: 12px;
+    line-break: anywhere;
 `;
 
 const ScrollableLogs = styled.div`
