@@ -1367,7 +1367,7 @@
   "TR_RBF_STATUS_FINAL": "Final",
   "TR_RBF_STATUS_NOT_FINAL": "No final",
   "TR_READ_AND_UNDERSTOOD": "He leído y entendido lo anterior.",
-  "TR_REBOOT_INTO_BOOTLOADER": "Reinicia tu Trezor en modo bootloader",
+  "TR_REBOOT_INTO_BOOTLOADER": "Reinicia tu Trezor en modo bootloader.",
   "TR_RECEIVE": "Recibir",
   "TR_RECEIVED": "Recibido",
   "TR_RECEIVED_SYMBOL": "Se han recibido {multiple, select, true {multiple tokens} false {{symbol}} other {{symbol}}}",
