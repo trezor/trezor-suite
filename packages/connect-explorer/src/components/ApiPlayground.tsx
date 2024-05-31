@@ -131,8 +131,8 @@ export const ApiPlayground = ({ options }: ApiPlaygroundProps) => {
         <ApiPlaygroundWrapper>
             <CollapsibleBoxStyled
                 heading="Method testing tool"
-                variant="large"
-                isUpwards
+                paddingType="large"
+                isIconFlipped
                 data-test="@api-playground/collapsible-box"
             >
                 <OptionsRow $manualMode={manualMode}>

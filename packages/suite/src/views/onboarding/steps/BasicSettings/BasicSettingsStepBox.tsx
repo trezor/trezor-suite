@@ -58,7 +58,7 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                         />
                     </>
                 }
-                variant="large"
+                paddingType="large"
             >
                 <StyledCoinsGroup
                     networks={testnets}

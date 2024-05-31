@@ -148,7 +148,6 @@ export const DataAnalytics = ({
                     </Description>
 
                     <CollapsibleBox
-                        variant="small"
                         heading={
                             <FormattedMessage
                                 id="TR_WHAT_DATA_WE_COLLECT"

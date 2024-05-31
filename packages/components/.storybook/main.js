@@ -7,6 +7,7 @@ module.exports = {
         getAbsolutePath('@storybook/addon-links'),
         getAbsolutePath('@storybook/addon-controls'),
         getAbsolutePath('@storybook/addon-viewport'),
+        getAbsolutePath('@storybook/addon-actions'),
     ],
     staticDirs: ['../public'],
     framework: {

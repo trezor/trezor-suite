@@ -56,11 +56,10 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
             }}
         >
             <CollapsibleBox
-                variant="small"
-                filled="none"
+                fillType="none"
                 hasDivider={false}
                 isOpen={isViewOnlyExpanded}
-                onCollapse={() => setIsViewOnlyExpanded(!isViewOnlyExpanded)}
+                onToggle={() => setIsViewOnlyExpanded(!isViewOnlyExpanded)}
                 heading={
                     <ViewOnlyContent>
                         <Circle $isHighlighted={isViewOnly} />

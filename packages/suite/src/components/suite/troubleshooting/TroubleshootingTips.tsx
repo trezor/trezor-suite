@@ -7,8 +7,6 @@ import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@trezor/env-utils';
 import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
-const WhiteCollapsibleBox = styled(CollapsibleBox)``;
-
 const ItemLabel = styled.span`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.SMALL};
@@ -122,11 +120,11 @@ export const TroubleshootingTips = ({
     );
 
     return (
-        <WhiteCollapsibleBox
-            variant="large"
+        <CollapsibleBox
+            paddingType="large"
             heading={cta}
             iconLabel={label}
-            isOpen={opened}
+            defaultIsOpen={opened}
             data-test={dataTest || '@onboarding/expand-troubleshooting-tips'}
         >
             {items.length > 0 && <Items>{memoizedItems}</Items>}
@@ -152,6 +150,6 @@ export const TroubleshootingTips = ({
                     </Button>
                 </TrezorLink>
             </ContactSupport>
-        </WhiteCollapsibleBox>
+        </CollapsibleBox>
     );
 };
