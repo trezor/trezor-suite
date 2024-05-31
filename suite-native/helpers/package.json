@@ -14,8 +14,8 @@
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "expo-clipboard": "5.0.1",
+        "expo-clipboard": "6.0.3",
         "react": "18.2.0",
-        "react-native": "0.73.6"
+        "react-native": "0.74.1"
     }
 }

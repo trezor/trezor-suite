@@ -27,12 +27,6 @@ Transport layer not working for iOS but it's possible to run app in watch-only m
 3. Open `ios/TrezorSuite.xcworkspace` in Xcode
 4. Hit ▶️ `Run` button
 
-## Debugging with Flipper - deprecated
-
-Because of usage of new Fabric architecture, it is not possible to use Chrome debugger anymore. We are compiling our own version of Hermes core with added functions.
-
-Best way how to debug app is download [Flipper](https://fbflipper.com).
-
 ### Installation
 
 Make sure you have the latest version of the Xcode command line tools installed:

@@ -88,7 +88,6 @@ const getPlugins = (): ExpoPlugins => {
                 },
                 ios: {
                     deploymentTarget: '14.0',
-                    flipper: true,
                 },
             },
         ],
@@ -99,7 +98,6 @@ const getPlugins = (): ExpoPlugins => {
                 'android:allowBackup': false,
             },
         ],
-        // Define FLIPPER_VERSION
         './plugins/withGradleProperties.js',
         [
             '@config-plugins/detox',

@@ -1,5 +1,5 @@
-import { configureStore, Middleware } from '@reduxjs/toolkit';
-import logger from 'redux-logger';
+import { configureStore, Middleware, StoreEnhancer } from '@reduxjs/toolkit';
+import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { messageSystemMiddleware } from '@suite-native/message-system';
@@ -11,8 +11,6 @@ import { blockchainMiddleware } from '@suite-native/blockchain';
 import { extraDependencies } from './extraDependencies';
 import { prepareRootReducers } from './reducers';
 
-const IS_REDUX_LOGGER_ENABLED = false;
-
 const middlewares: Middleware[] = [
     messageSystemMiddleware,
     blockchainMiddleware,
@@ -23,10 +21,10 @@ const middlewares: Middleware[] = [
     prepareTransactionCacheMiddleware(extraDependencies),
 ];
 
+const enhancers: Array<StoreEnhancer<any, any>> = [];
+
 if (__DEV__) {
-    const createDebugger = require('redux-flipper').default;
-    middlewares.push(createDebugger());
-    if (IS_REDUX_LOGGER_ENABLED) middlewares.push(logger);
+    enhancers.push(devToolsEnhancer()!);
 }
 
 export const initStore = async () =>
@@ -40,4 +38,5 @@ export const initStore = async () =>
                 serializableCheck: false,
                 immutableCheck: false,
             }).concat(middlewares),
+        enhancers: defaultEnhancers => defaultEnhancers.concat(enhancers),
     });
