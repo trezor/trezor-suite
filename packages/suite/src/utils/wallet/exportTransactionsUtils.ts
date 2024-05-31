@@ -1,13 +1,11 @@
+import { format } from 'date-fns';
 import type { TDocumentDefinitions } from 'pdfmake/interfaces';
 import { fromWei } from 'web3-utils';
-import { format } from 'date-fns';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { trezorLogo } from '@suite-common/suite-constants';
-import { TransactionTarget } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { Network } from '@suite-common/wallet-config';
+import { trezorLogo } from '@suite-common/suite-constants';
 import { TokenDefinitions } from '@suite-common/token-definitions';
+import { Network } from '@suite-common/wallet-config';
 import {
     ExportFileType,
     RatesByTimestamps,
@@ -15,12 +13,19 @@ import {
     TokenAddress,
     WalletAccountTransaction,
 } from '@suite-common/wallet-types';
+import { TransactionTarget } from '@trezor/connect';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
-import { formatNetworkAmount, formatAmount } from './accountUtils';
-import { getNftTokenId, isNftTokenTransfer } from './transactionUtils';
-import { localizeNumber } from './localizeNumberUtils';
-import { getIsPhishingTransaction } from './antiFraud';
-import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
+import {
+    formatAmount,
+    formatNetworkAmount,
+    getFiatRateKey,
+    getIsPhishingTransaction,
+    getNftTokenId,
+    isNftTokenTransfer,
+    localizeNumber,
+    roundTimestampToNearestPastHour,
+} from '@suite-common/wallet-utils';
 
 type AccountTransactionForExports = Omit<WalletAccountTransaction, 'targets'> & {
     targets: (TransactionTarget & { metadataLabel?: string })[];
