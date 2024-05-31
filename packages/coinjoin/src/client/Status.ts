@@ -59,7 +59,11 @@ export class Status extends TypedEmitter<StatusEvents> {
                 const known = this.rounds.find(prevRound => prevRound.Id === nextRound.Id);
                 if (!known) return true; // new phase
                 if (nextRound.Phase === known.Phase + 1) return true; // expected update
-                if (nextRound.Phase === RoundPhase.TransactionSigning && !known.AffiliateRequest) {
+                if (
+                    nextRound.Phase === RoundPhase.TransactionSigning &&
+                    this.settings.affiliationId &&
+                    !known.AffiliateRequest
+                ) {
                     return true; // affiliateRequest is propagated asynchronously, might be added after phase change
                 }
 
@@ -171,19 +175,22 @@ export class Status extends TypedEmitter<StatusEvents> {
     }
 
     private processStatus(status: coordinator.CoinjoinStatus) {
-        // add matching coinjoinRequest to rounds
-        status.RoundStates.forEach(round => {
-            const roundRequest = status.AffiliateInformation?.AffiliateData[round.Id];
-            round.AffiliateRequest = roundRequest?.trezor;
-        });
+        const { affiliationId } = this.settings;
+        if (affiliationId) {
+            // add matching coinjoinRequest to rounds
+            status.RoundStates.forEach(round => {
+                const roundRequest = status.AffiliateInformation?.AffiliateData[round.Id];
+                round.AffiliateRequest = roundRequest?.[affiliationId];
+            });
 
-        // report affiliate server status
-        const runningAffiliateServer =
-            !!status.AffiliateInformation?.RunningAffiliateServers.includes('trezor');
-        if (this.runningAffiliateServer !== runningAffiliateServer) {
-            this.emit('affiliate-server', runningAffiliateServer);
+            // report affiliate server status
+            const runningAffiliateServer =
+                !!status.AffiliateInformation?.RunningAffiliateServers.includes(affiliationId);
+            if (this.runningAffiliateServer !== runningAffiliateServer) {
+                this.emit('affiliate-server', runningAffiliateServer);
+            }
+            this.runningAffiliateServer = runningAffiliateServer;
         }
-        this.runningAffiliateServer = runningAffiliateServer;
 
         const changed = this.compareStatus(status.RoundStates);
         if (changed.length > 0) {

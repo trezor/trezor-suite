@@ -208,6 +208,7 @@ export class CoinjoinClient extends TypedEmitter<CoinjoinClientEvents> {
                     coordinatorName: this.settings.coordinatorName,
                     coordinatorUrl: this.settings.coordinatorUrl,
                     middlewareUrl: this.settings.middlewareUrl,
+                    affiliationId: this.settings.affiliationId,
                     logger: this.logger,
                     setSessionPhase: sessionPhase => this.setSessionPhase(sessionPhase),
                 },

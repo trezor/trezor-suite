@@ -166,11 +166,14 @@ export interface Round {
     AffiliateRequest?: string; // conditionally added by ./client/Status
 }
 
-export interface CoinjoinAffiliateRequest {
-    fee_rate: number;
-    no_fee_threshold: number;
-    min_registrable_amount: number;
+interface CoinjoinAffiliateFields {
     mask_public_key: string;
     coinjoin_flags_array: number[];
     signature: string;
+}
+
+export interface CoinjoinAffiliateRequest extends Partial<CoinjoinAffiliateFields> {
+    fee_rate: number;
+    no_fee_threshold: number;
+    min_registrable_amount: number;
 }

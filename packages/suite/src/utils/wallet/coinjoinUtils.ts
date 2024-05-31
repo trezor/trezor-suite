@@ -248,7 +248,7 @@ export const prepareCoinjoinTransaction = (
 
     const tx = {
         inputs: transaction.inputs.map((input, index) => {
-            const flags = affiliateRequest.coinjoin_flags_array[index];
+            const flags = affiliateRequest.coinjoin_flags_array?.[index];
             if (isInternalInput(input)) {
                 return {
                     script_type: inputScriptType,
