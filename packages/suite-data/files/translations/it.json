@@ -166,6 +166,7 @@
   "TOAST_COPY_TO_CLIPBOARD": "Copiato negli appunti",
   "TOAST_DEVICE_WIPED": "Dispositivo pulito",
   "TOAST_DISCOVERY_ERROR": "Errore di rilevamento del conto {error}",
+  "TOAST_ESTIMATED_FEE_ERROR": "",
   "TOAST_GENERIC_ERROR": "Errore: {error}",
   "TOAST_PIN_CHANGED": "Pin modificato",
   "TOAST_QR_INCORRECT_ADDRESS": "Il codice QR contiene un indirizzo non valido per questo conto",
