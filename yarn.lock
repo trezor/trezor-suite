@@ -1803,6 +1803,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@babel/runtime@npm:^7.23.5":
+  version: 7.24.6
+  resolution: "@babel/runtime@npm:7.24.6"
+  dependencies:
+    regenerator-runtime: "npm:^0.14.0"
+  checksum: 10/6c4e12731cd9206a883c19d48fa04f6aaaf7ee83f049b22631e6521b866edc20832b4d5db30aa86d8ae799c4dcf57761fe8a4af2bf7e233245c079c1dafb5668
+  languageName: node
+  linkType: hard
+
 "@babel/template@npm:^7.0.0, @babel/template@npm:^7.16.7, @babel/template@npm:^7.22.15, @babel/template@npm:^7.24.0, @babel/template@npm:^7.3.3":
   version: 7.24.0
   resolution: "@babel/template@npm:7.24.0"
@@ -6775,6 +6784,67 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@redux-devtools/core@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "@redux-devtools/core@npm:4.0.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.5"
+    "@redux-devtools/instrument": "npm:^2.2.0"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    react: ^16.8.4 || ^17.0.0 || ^18.0.0
+    react-redux: ^7.0.0 || ^8.0.0 || ^9.0.0
+    redux: ^3.5.2 || ^4.0.0 || ^5.0.0
+  checksum: 10/4206c1cff3dafe2b16843f396f939f4ffb4d92714f4bb3ea3a2f1860add919d0b40757ffd43e59cc8b7c0d9c5427e8fe9247a6a3c6c3c67dda419b5d6320de6e
+  languageName: node
+  linkType: hard
+
+"@redux-devtools/instrument@npm:^2.2.0":
+  version: 2.2.0
+  resolution: "@redux-devtools/instrument@npm:2.2.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+    lodash: "npm:^4.17.21"
+  peerDependencies:
+    redux: ^3.4.0 || ^4.0.0 || ^5.0.0
+  checksum: 10/6c0d977c5a86cf5c54a666f87266f7f0387ae8cfa7ef760b39da8a66fe6592b3b32d013cfe7cd7de52a5b68bd93b38441bc4e85e8a9b4228b246924ec92ae1af
+  languageName: node
+  linkType: hard
+
+"@redux-devtools/serialize@npm:^0.4.2":
+  version: 0.4.2
+  resolution: "@redux-devtools/serialize@npm:0.4.2"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.2"
+    jsan: "npm:^3.1.14"
+  peerDependencies:
+    immutable: ^4.0.0
+  checksum: 10/c0ef1d04aa906e98a4768190bb3073d09db98444ba8d10549ed80740677d8c4da5b66e40366924b999ea3cb8d401ae5eb9ee7923057624b536e854e5cdbc8e49
+  languageName: node
+  linkType: hard
+
+"@redux-devtools/utils@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "@redux-devtools/utils@npm:3.0.0"
+  dependencies:
+    "@babel/runtime": "npm:^7.23.5"
+    "@redux-devtools/core": "npm:^4.0.0"
+    "@redux-devtools/serialize": "npm:^0.4.2"
+    "@types/get-params": "npm:^0.1.2"
+    get-params: "npm:^0.1.2"
+    immutable: "npm:^4.3.4"
+    jsan: "npm:^3.1.14"
+    lodash: "npm:^4.17.21"
+    nanoid: "npm:^5.0.4"
+    redux: "npm:^4.2.1"
+  peerDependencies:
+    "@redux-devtools/core": ^4.0.0
+    immutable: ^4.3.4
+    redux: ^4.0.0 || ^5.0.0
+  checksum: 10/8c465ddc91ebbef69db447de617b0b8c1b208103151821f2a749d05410c270e4301d32d783c849713d32007643873f1539254fc0f1bf573a7f1812ffac02f5f2
+  languageName: node
+  linkType: hard
+
 "@reduxjs/toolkit@npm:1.9.5":
   version: 1.9.5
   resolution: "@reduxjs/toolkit@npm:1.9.5"
@@ -9801,12 +9871,11 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/redux-logger": "npm:^3.0.11"
     expo-device: "npm:6.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-redux: "npm:8.0.7"
-    redux-logger: "npm:^3.0.6"
+    redux-devtools-expo-dev-plugin: "npm:^0.1.0"
     redux-persist: "npm:6.0.0"
   languageName: unknown
   linkType: soft
@@ -11966,6 +12035,13 @@ __metadata:
     "@types/jsonfile": "npm:*"
     "@types/node": "npm:*"
   checksum: 10/acc4c1eb0cde7b1f23f3fe6eb080a14832d8fa9dc1761aa444c5e2f0f6b6fa657ed46ebae32fb580a6700fc921b6165ce8ac3e3ba030c3dd15f10ad4dd4cae98
+  languageName: node
+  linkType: hard
+
+"@types/get-params@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "@types/get-params@npm:0.1.2"
+  checksum: 10/bf573d5d114696e5565ce305cdce461fe9ef434f31b8ad3bf21656bcf9fcd1f9851a3348c471aaec0246debc749303d41731b9fd9887276dc5098d59208d0e8a
   languageName: node
   linkType: hard
 
@@ -22520,6 +22596,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"get-params@npm:^0.1.2":
+  version: 0.1.2
+  resolution: "get-params@npm:0.1.2"
+  checksum: 10/7768710dd5e68805b51981a6fbb0a689728d280357f5dd1a080fd7e732d9b4ccf7fc5e0fc792ff482022d8af37242ff5e72b2b50dbafccb21db4f77eb9c646c4
+  languageName: node
+  linkType: hard
+
 "get-port@npm:^3.2.0":
   version: 3.2.0
   resolution: "get-port@npm:3.2.0"
@@ -24149,6 +24232,13 @@ __metadata:
   version: 9.0.21
   resolution: "immer@npm:9.0.21"
   checksum: 10/8455d6b4dc8abfe40f06eeec9bcc944d147c81279424c0f927a4d4905ae34e5af19ab6da60bcc700c14f51c452867d7089b3b9236f5a9a2248e39b4a09ee89de
+  languageName: node
+  linkType: hard
+
+"immutable@npm:^4.3.4":
+  version: 4.3.6
+  resolution: "immutable@npm:4.3.6"
+  checksum: 10/59fedb67f26e265035616b27e33ef90b53b434cf76fb09212ec2d6ae32ee8d2fe2641e6dc32dbc78498c521fbf5f72c6740d39affba63a0a36a3884272371857
   languageName: node
   linkType: hard
 
@@ -26033,6 +26123,13 @@ __metadata:
   dependencies:
     xmlcreate: "npm:^2.0.4"
   checksum: 10/42ccb1372844b6e1d9166254b01fe31d485a0e398fba4f2b095bcca081a2c2f4414b0bd4a32263cd20e01cee681684608255778034fec050e3f5929fd776936c
+  languageName: node
+  linkType: hard
+
+"jsan@npm:^3.1.14":
+  version: 3.1.14
+  resolution: "jsan@npm:3.1.14"
+  checksum: 10/960cd5059bfb50a9c86d391d7bb5173eaf748e8a1b0794892d929f894045dbbdee61c03f1dad4d5b8fc21f924a8e217ed05598adf9339a56b46ab0433a2206f1
   languageName: node
   linkType: hard
 
@@ -30232,6 +30329,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"nanoid@npm:^5.0.4":
+  version: 5.0.7
+  resolution: "nanoid@npm:5.0.7"
+  bin:
+    nanoid: bin/nanoid.js
+  checksum: 10/25ab0b0cf9082ae6747f0f55cec930e6c1cc5975103aa3a5fda44be5720eff57d9b25a8a9850274bfdde8def964b49bf03def71c6aa7ad1cba32787819b79f60
+  languageName: node
+  linkType: hard
+
 "napi-build-utils@npm:^1.0.1":
   version: 1.0.2
   resolution: "napi-build-utils@npm:1.0.2"
@@ -34404,6 +34510,20 @@ __metadata:
     react: ">= 15.2.1"
     react-native: ">= 0.30.0"
   checksum: 10/84c2fc1ee7d109e21ca30813f646a5d490a33fa789d1fb3f7f7854c191895de010109563ba1c67a35ec28340a872a039ceb6233a57053480098c48205fc147e9
+  languageName: node
+  linkType: hard
+
+"redux-devtools-expo-dev-plugin@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "redux-devtools-expo-dev-plugin@npm:0.1.0"
+  dependencies:
+    "@redux-devtools/instrument": "npm:^2.2.0"
+    "@redux-devtools/utils": "npm:^3.0.0"
+    jsan: "npm:^3.1.14"
+  peerDependencies:
+    expo: "*"
+    redux: "*"
+  checksum: 10/b8f074a006972e849d94ae3c1eb03f9c33820e92eaa210b7d0044700cf1e81e38cbd42f822675cbe1c1d412e99ecca615cacca11c47da71e0a98e7d361a14a6c
   languageName: node
   linkType: hard
 

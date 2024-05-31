@@ -38,10 +38,7 @@
         "react": "18.2.0",
         "react-native": "0.74.1",
         "react-redux": "8.0.7",
-        "redux-logger": "^3.0.6",
+        "redux-devtools-expo-dev-plugin": "^0.1.0",
         "redux-persist": "6.0.0"
-    },
-    "devDependencies": {
-        "@types/redux-logger": "^3.0.11"
     }
 }
