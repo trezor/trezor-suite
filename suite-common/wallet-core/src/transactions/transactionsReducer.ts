@@ -8,7 +8,7 @@ import {
     getIsPhishingTransaction,
     getEverstakePool,
 } from '@suite-common/wallet-utils';
-import { isClaimTx, isStakeTx, isStakeTypeTx, isUnstakeTx } from '@suite-common/suite-utils';
+import { isClaimTx, isStakeTx, isUnstakeTx } from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
 import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
@@ -298,15 +298,6 @@ export const selectIsPhishingTransaction = (
     if (!tokenDefinitions) return false;
 
     return getIsPhishingTransaction(transaction, tokenDefinitions);
-};
-
-export const selectAccountStakeTypeTransactions = (
-    state: TransactionsRootState,
-    accountKey: AccountKey,
-) => {
-    const transactions = selectAccountTransactions(state, accountKey);
-
-    return transactions.filter(tx => isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountStakeTransactions = (

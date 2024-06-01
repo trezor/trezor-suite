@@ -67,7 +67,6 @@ export const Transactions = () => {
                             <TransactionList
                                 account={account}
                                 transactions={accountTransactions}
-                                symbol={account.symbol}
                                 isLoading={transactionsIsLoading}
                             />
                         )}
@@ -89,7 +88,6 @@ export const Transactions = () => {
                 <TransactionList
                     account={account}
                     transactions={accountTransactions}
-                    symbol={account.symbol}
                     isLoading={transactionsIsLoading}
                 />
             </Layout>
