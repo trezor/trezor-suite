@@ -238,7 +238,7 @@ const initialRun = [
                 dashboardGraphHidden: false,
                 securityStepsHidden: false,
                 dashboardAssetsGridMode: true,
-                showDashboardT2B1PromoBanner: false,
+                showDashboardT3T1PromoBanner: false,
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
                 showDashboardStakingPromoBanner: true,

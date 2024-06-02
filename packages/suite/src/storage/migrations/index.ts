@@ -820,5 +820,12 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
             return walletSettings;
         });
+
+        await updateAll(transaction, 'suiteSettings', suiteSettings => {
+            // @ts-expect-error
+            delete suiteSettings.flags.showDashboardT2B1PromoBanner;
+
+            return suiteSettings;
+        });
     }
 };
