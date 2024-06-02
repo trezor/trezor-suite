@@ -17,6 +17,7 @@ import {
 import {
     getFiatRateKey,
     getFiatRateKeyFromTicker,
+    isNftTokenTransfer,
     roundTimestampToNearestPastHour,
 } from '@suite-common/wallet-utils';
 
@@ -147,17 +148,19 @@ export const selectTransactionsWithMissingRates = (
                 const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
                 const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
 
-                const isMissingTokenRate = tx.tokens?.some(token => {
-                    const tokenFiatRateKey = getFiatRateKey(
-                        tx.symbol,
-                        localCurrency,
-                        token.contract as TokenAddress,
-                    );
-                    const historicTokenRate =
-                        historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+                const isMissingTokenRate = tx.tokens
+                    .filter(token => !isNftTokenTransfer(token))
+                    .some(token => {
+                        const tokenFiatRateKey = getFiatRateKey(
+                            tx.symbol,
+                            localCurrency,
+                            token.contract as TokenAddress,
+                        );
+                        const historicTokenRate =
+                            historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
 
-                    return historicTokenRate === undefined || historicTokenRate === 0;
-                });
+                        return historicTokenRate === undefined || historicTokenRate === 0;
+                    });
 
                 return historicRate === undefined || historicRate === 0 || isMissingTokenRate;
             }),
