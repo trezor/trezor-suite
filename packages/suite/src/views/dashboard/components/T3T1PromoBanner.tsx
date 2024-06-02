@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 import { EventType, analytics } from '@trezor/suite-analytics';
-import { TREZOR_URL } from '@trezor/urls';
+import { TREZOR_SAFE_5_URL } from '@trezor/urls';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectIsDashboardT2B1PromoBannerShown } from 'src/reducers/suite/suiteReducer';
+import { selectIsDashboardT3T1PromoBannerShown } from 'src/reducers/suite/suiteReducer';
 import {
     Button,
     IconButton,
@@ -21,10 +21,11 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { colorVariants } from '@trezor/theme';
 import { rgba } from 'polished';
+import { T3T1PromoLogo } from './T3T1PromoLogo';
 
 const BannerWrapper = styled(motion.div)`
     display: grid;
-    grid-template-columns: 338px 1fr minmax(109px, 145px) 42px;
+    grid-template-columns: 520px 1fr minmax(142px, 145px) 42px;
     grid-template-rows: 42px 1fr 0;
     column-gap: 8px;
     background-color: ${colorVariants.standard.backgroundPrimaryDefault};
@@ -35,29 +36,23 @@ const BannerWrapper = styled(motion.div)`
     padding-right: 24px;
     overflow: hidden;
 
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        height: 132px;
+    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+        grid-template-columns: 370px 1fr minmax(142px, 145px) 42px;
         padding-left: 12px;
         padding-right: 12px;
     }
 
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
+    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
         height: 190px;
-        grid-template-columns: 171px 1fr 0 32px;
+        grid-template-columns: 340px 1fr 0 32px;
         grid-template-rows: 36px 1fr 36px;
     }
-`;
 
-const TrezorSafe3Logo = styled(Image)`
-    grid-column: 1;
-    grid-row: 1;
-    height: fit-content;
-    filter: none;
-
-    padding-top: 28px;
-
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        padding-top: 16px;
+    ${variables.SCREEN_QUERY.MOBILE} {
+        height: 240px;
+        padding-left: 8px;
+        padding-right: 8px;
+        grid-template-columns: 260px 1fr 0 32px;
     }
 `;
 
@@ -75,9 +70,9 @@ const NextGenerationText = styled.p`
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     z-index: 1;
 
-    ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        font-size: 24px;
-        line-height: 26px;
+    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+        font-size: 28px;
+        line-height: 30px;
         margin-bottom: 16px;
     }
 
@@ -104,7 +99,7 @@ const NextGenerationTextBlockHighlight = styled(NextGenerationTextBlock)`
 `;
 
 const NextGenerationTextBlockSecurity = styled(NextGenerationTextBlock)`
-    white-space: nowrap;
+    # white-space: nowrap;
 `;
 
 const ProductsImageWrapper = styled.div`
@@ -122,19 +117,28 @@ const ProductsImage = styled(Image)`
     position: absolute;
     max-width: none;
     filter: none;
-    height: 481px;
-    bottom: -200px;
-    right: -175px;
+    height: 200px;
+    bottom: -45px;
+    right: 30px;
+
+    ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
+        right: 0;
+    }
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        right: -145px;
-        bottom: -162px;
-        height: 390px;
+        right: 10px;
+        bottom: -80px;
+        height: 220px;
     }
 
     ${variables.SCREEN_QUERY.BELOW_TABLET} {
-        right: -207px;
-        bottom: -138px;
+        right: 10px;
+        bottom: -40px;
+    }
+
+    ${variables.SCREEN_QUERY.MOBILE} {
+        right: -44px;
+        bottom: -34px;
     }
 `;
 
@@ -146,13 +150,9 @@ const LinkButtonShopNow = styled(TrezorLink)`
     align-self: end;
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        margin-bottom: 16px;
-    }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
         grid-column: 1;
         grid-row: 3;
-        width: 128px;
+        width: 145px;
         height: 36px;
         margin-bottom: 12px;
     }
@@ -196,10 +196,6 @@ const ButtonClose = styled(IconButton)`
     }
 
     ${variables.SCREEN_QUERY.BELOW_LAPTOP} {
-        margin-bottom: 16px;
-    }
-
-    ${variables.SCREEN_QUERY.BELOW_TABLET} {
         grid-column: 4;
         grid-row: 1;
         align-self: auto;
@@ -215,16 +211,16 @@ const ButtonClose = styled(IconButton)`
     }
 `;
 
-export const T2B1PromoBanner = () => {
+export const T3T1PromoBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
 
     const dispatch = useDispatch();
 
-    const shouldShowDashboardT2B1PromoBanner = useSelector(selectIsDashboardT2B1PromoBannerShown);
+    const shouldShowDashboardT3T1PromoBanner = useSelector(selectIsDashboardT3T1PromoBannerShown);
 
     const onCloseBanner = () => {
         analytics.report({
-            type: EventType.T2B1DashboardPromo,
+            type: EventType.T3T1DashboardPromo,
             payload: {
                 action: 'close',
             },
@@ -232,11 +228,11 @@ export const T2B1PromoBanner = () => {
         setIsVisible(false);
     };
 
-    const onShopNow = () =>
+    const onPreorderNow = () =>
         analytics.report({
-            type: EventType.T2B1DashboardPromo,
+            type: EventType.T3T1DashboardPromo,
             payload: {
-                action: 'shop',
+                action: 'preorder',
             },
         });
 
@@ -257,7 +253,7 @@ export const T2B1PromoBanner = () => {
         },
     };
 
-    if (!shouldShowDashboardT2B1PromoBanner) return null;
+    if (!shouldShowDashboardT3T1PromoBanner) return null;
 
     return (
         <AnimatePresence>
@@ -266,25 +262,38 @@ export const T2B1PromoBanner = () => {
                     key="container"
                     {...promoBannerAnimationConfig}
                     onAnimationComplete={() =>
-                        dispatch(setFlag('showDashboardT2B1PromoBanner', false))
+                        dispatch(setFlag('showDashboardT3T1PromoBanner', false))
                     }
                 >
-                    <TrezorSafe3Logo image="TREZOR_SAFE_PROMO_LOGO" />
+                    <T3T1PromoLogo />
                     <NextGenerationText>
-                        <NextGenerationTextBlock>Get the </NextGenerationTextBlock>
-                        <NextGenerationTextBlockHighlight>
-                            next-generation
-                        </NextGenerationTextBlockHighlight>
-                        <NextGenerationTextBlockSecurity>
-                            of security today
-                        </NextGenerationTextBlockSecurity>
+                        <Translation
+                            id="TR_PROMO_BANNER_DASHBOARD"
+                            values={{
+                                underline: text => (
+                                    <NextGenerationTextBlockHighlight>
+                                        {text}
+                                    </NextGenerationTextBlockHighlight>
+                                ),
+                                rest: text => (
+                                    <NextGenerationTextBlockSecurity>
+                                        {text}
+                                    </NextGenerationTextBlockSecurity>
+                                ),
+                            }}
+                            isNested={true}
+                        />
                     </NextGenerationText>
                     <ProductsImageWrapper>
                         <ProductsImage image="TREZOR_SAFE_PROMO_PRODUCTS" />
                     </ProductsImageWrapper>
-                    <LinkButtonShopNow href={TREZOR_URL} variant="nostyle" onClick={onShopNow}>
+                    <LinkButtonShopNow
+                        href={TREZOR_SAFE_5_URL}
+                        variant="nostyle"
+                        onClick={onPreorderNow}
+                    >
                         <ButtonShopNow variant="secondary">
-                            <Translation id="TR_SHOP_NOW" />
+                            <Translation id="TR_PREORDER_NOW" />
                         </ButtonShopNow>
                     </LinkButtonShopNow>
                     <ButtonClose icon="CROSS_LIGHT" variant="secondary" onClick={onCloseBanner} />

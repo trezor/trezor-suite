@@ -791,9 +791,14 @@ export default defineMessages({
         defaultMessage: 'Required',
         id: 'TR_REQUIRED_FIELD',
     },
-    TR_SHOP_NOW: {
-        defaultMessage: 'Shop now',
-        id: 'TR_SHOP_NOW',
+    TR_PREORDER_NOW: {
+        defaultMessage: 'Pre-order now',
+        id: 'TR_PREORDER_NOW',
+    },
+    TREZOR_SAFE_PROMO_TEXT: {
+        id: 'TREZOR_SAFE_PROMO_TEXT',
+        defaultMessage:
+            '<underline>The most convenient</underline> <white>hardware wallet to securely manage your crypto</white>',
     },
     TR_SELL_VALIDATION_ERROR_MINIMUM_FIAT: {
         defaultMessage: 'Minimum is {minimum} {currency}',
@@ -8672,6 +8677,11 @@ export default defineMessages({
     TR_MOBILE_APP_PROMO_TEXT_FOOTER: {
         id: 'TR_MOBILE_APP_PROMO_TEXT_FOOTER',
         defaultMessage: 'Sync & track on your phone with <b>Trezor Suite Lite</b>',
+    },
+    TR_PROMO_BANNER_DASHBOARD: {
+        id: 'TR_PROMO_BANNER_DASHBOARD',
+        defaultMessage:
+            '<underline>The most convenient</underline> <rest>hardware wallet to securely manage your crypto</rest>',
     },
     TR_CANDIDATE_TRANSACTION_HEADER: {
         id: 'TR_CANDIDATE_TRANSACTION_HEADER',

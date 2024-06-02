@@ -58,7 +58,7 @@ export interface Flags {
     securityStepsHidden: boolean; // dashboard UI
     dashboardGraphHidden: boolean; // dashboard UI
     dashboardAssetsGridMode: boolean; // dashboard UI
-    showDashboardT2B1PromoBanner: boolean;
+    showDashboardT3T1PromoBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
     showDashboardStakingPromoBanner: boolean;
@@ -115,7 +115,7 @@ const initialState: SuiteState = {
         securityStepsHidden: false,
         dashboardGraphHidden: false,
         dashboardAssetsGridMode: true,
-        showDashboardT2B1PromoBanner: true,
+        showDashboardT3T1PromoBanner: true,
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
         showDashboardStakingPromoBanner: true,
@@ -354,8 +354,8 @@ export const selectPrerequisite = (state: SuiteRootState & RouterRootState & Dev
     return prerequisite;
 };
 
-export const selectIsDashboardT2B1PromoBannerShown = (state: SuiteRootState) =>
-    state.suite.flags.showDashboardT2B1PromoBanner;
+export const selectIsDashboardT3T1PromoBannerShown = (state: SuiteRootState) =>
+    state.suite.flags.showDashboardT3T1PromoBanner;
 
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState) =>
     state.suite.flags.showSettingsDesktopAppPromoBanner;

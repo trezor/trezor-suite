@@ -426,9 +426,9 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.T2B1DashboardPromo;
+          type: EventType.T3T1DashboardPromo;
           payload: {
-              action: 'shop' | 'close';
+              action: 'preorder' | 'close';
           };
       }
     | {

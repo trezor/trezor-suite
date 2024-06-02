@@ -105,5 +105,5 @@ export const ZKSNACKS_TERMS_URL =
     'https://github.com/zkSNACKs/WalletWasabi/blob/master/WalletWasabi/Legal/Assets/LegalDocumentsWw2.txt';
 export const CROWDIN_URL = 'https://crowdin.com/project/trezor-suite';
 
-export const ESHOP_KEEP_METAL_URL = 'https://trezor.io/trezor-keep-metal';
+export const TREZOR_SAFE_5_URL = 'https://trezor.io/trezor-safe-5';
 export const ESHOP_KEEP_METAL_SINGLE_SHARE_URL = 'https://trezor.io/trezor-keep-metal-single-share';

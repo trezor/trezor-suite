@@ -70,12 +70,12 @@ const suite =
         }
 
         if (deviceActions.connectDevice.match(action)) {
-            const isT2B1 = action.payload?.features?.internal_model === DeviceModelInternal.T2B1;
-            const isT2B1DashboardPromoBannerActive =
-                api.getState().suite.flags.showDashboardT2B1PromoBanner;
+            const isT3T1 = action.payload?.features?.internal_model === DeviceModelInternal.T3T1;
+            const isT3T1DashboardPromoBannerActive =
+                api.getState().suite.flags.showDashboardT3T1PromoBanner;
 
-            if (isT2B1 && isT2B1DashboardPromoBannerActive) {
-                api.dispatch(setFlag('showDashboardT2B1PromoBanner', false));
+            if (isT3T1 && isT3T1DashboardPromoBannerActive) {
+                api.dispatch(setFlag('showDashboardT3T1PromoBanner', false));
             }
         }
 
