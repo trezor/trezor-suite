@@ -5,7 +5,7 @@ import { AssetsView } from './components/AssetsView';
 import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
-import { T2B1PromoBanner } from './components/T2B1PromoBanner';
+import { T3T1PromoBanner } from './components/T3T1PromoBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { StakeEthCard } from './components/StakeEthCard/StakeEthCard';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
@@ -28,7 +28,7 @@ export const Dashboard = () => {
     return (
         <Wrapper data-test="@dashboard/index">
             <PortfolioCard />
-            <T2B1PromoBanner />
+            <T3T1PromoBanner />
             <AssetsView />
             {!isViewOnlyModeVisible && <SecurityFeatures />}
             <StakeEthCard />
