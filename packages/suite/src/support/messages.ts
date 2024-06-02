@@ -3786,6 +3786,66 @@ export default defineMessages({
         defaultMessage: 'Bip44Change account',
         dynamic: true,
     },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_LEDGER_NAME: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_LEDGER_NAME',
+        defaultMessage: 'Bip44Change Ledger',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_LEDGER_TECH: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_LEDGER_TECH',
+        defaultMessage: 'BIP44, Base58',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_LEDGER_DESC: {
+        id: 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_LEDGER_DESC',
+        defaultMessage: 'Account used in Ledger Live',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_NAME: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_NAME',
+        defaultMessage: 'Bip44',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_LEDGER_NAME: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_LEDGER_NAME',
+        defaultMessage: 'Ledger Live',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_LEGACY_NAME: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_LEGACY_NAME',
+        defaultMessage: 'Ledger Legacy',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_TECH: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_TECH',
+        defaultMessage: 'BIP44',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_LEDGER_TECH: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_LEDGER_TECH',
+        defaultMessage: 'BIP44',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_LEGACY_TECH: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_LEGACY_TECH',
+        defaultMessage: 'BIP44',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_DESC: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_DESC',
+        defaultMessage: 'HD path defined by the BIP44 protocol.',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_LEDGER_DESC: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_LEDGER_DESC',
+        defaultMessage: 'Ledger official HD path.',
+        dynamic: true,
+    },
+    TR_ACCOUNT_TYPE_EVM_BIP44_LEGACY_DESC: {
+        id: 'TR_ACCOUNT_TYPE_EVM_BIP44_LEGACY_DESC',
+        defaultMessage: 'HD path used by MEW / Mycrypto.',
+        dynamic: true,
+    },
     TR_ACCOUNT_TYPE_SLIP25_NAME: {
         id: 'TR_ACCOUNT_TYPE_SLIP25_NAME',
         defaultMessage: 'Coinjoin',

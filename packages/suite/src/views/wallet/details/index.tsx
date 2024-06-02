@@ -75,7 +75,7 @@ const Details = () => {
         return <WalletLayout title="TR_ACCOUNT_DETAILS_HEADER" account={selectedAccount} />;
     }
 
-    const { account } = selectedAccount;
+    const { account, network } = selectedAccount;
     const locked = isLocked(true);
     const disabled = !!device.authConfirm || locked;
 
@@ -86,10 +86,10 @@ const Details = () => {
             : undefined;
     // display type name only if there is more than 1 network type
     const accountTypeName =
-        accountTypes && accountTypes.length > 1 ? getAccountTypeName(account.path) : undefined;
-    const accountTypeTech = getAccountTypeTech(account.path);
-    const accountTypeUrl = getAccountTypeUrl(account.path);
-    const accountTypeDesc = getAccountTypeDesc(account.path);
+        accountTypes && accountTypes.length > 1 ? getAccountTypeName(network) : undefined;
+    const accountTypeTech = getAccountTypeTech(network);
+    const accountTypeUrl = getAccountTypeUrl(network);
+    const accountTypeDesc = getAccountTypeDesc(network);
     const isCoinjoinAccount = account.backendType === 'coinjoin';
 
     const handleXpubClick = () => dispatch(showXpub());

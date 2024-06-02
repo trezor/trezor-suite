@@ -11,17 +11,18 @@ const Info = styled(Paragraph)`
 `;
 
 interface AccountTypeDescriptionProps {
-    bip43Path: Network['bip43Path'];
+    network: Network;
     hasMultipleAccountTypes: boolean;
 }
 
 export const AccountTypeDescription = ({
-    bip43Path,
+    network,
     hasMultipleAccountTypes,
 }: AccountTypeDescriptionProps) => {
     if (!hasMultipleAccountTypes) return null;
-    const accountTypeUrl = getAccountTypeUrl(bip43Path);
-    const accountTypeDesc = getAccountTypeDesc(bip43Path);
+
+    const accountTypeUrl = getAccountTypeUrl(network);
+    const accountTypeDesc = getAccountTypeDesc(network);
 
     return (
         <>

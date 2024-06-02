@@ -185,19 +185,38 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
     }
 };
 
-export const getAccountTypePrefix = (path: string) => {
+export const getAccountTypePrefix = (network: Network) => {
+    const { bip43Path: path, accountType } = network;
+
     if (typeof path !== 'string') return null;
     const coinType = path.split('/')[2];
-    switch (coinType) {
-        case `501'`: {
-            return 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE';
+
+    // sol and dsol
+    if (coinType === "501'") {
+        if (accountType === 'ledger') {
+            return 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE_LEDGER';
         }
-        default:
-            return null;
+
+        return 'TR_ACCOUNT_TYPE_SOLANA_BIP44_CHANGE';
     }
+    // evm
+    if (coinType === "60'") {
+        if (accountType === 'ledger') {
+            return 'TR_ACCOUNT_TYPE_EVM_BIP44_LEDGER';
+        }
+        if (accountType === 'legacy') {
+            return 'TR_ACCOUNT_TYPE_EVM_BIP44_LEGACY';
+        }
+
+        return 'TR_ACCOUNT_TYPE_EVM_BIP44';
+    }
+
+    return null;
 };
 
-export const getBip43Type = (path: string) => {
+export const getBip43Type = (network: Network) => {
+    const { bip43Path: path } = network;
+
     if (typeof path !== 'string') return 'unknown';
     // https://github.com/bitcoin/bips/blob/master/bip-0043.mediawiki
     const bip43 = path.split('/')[1];
@@ -219,10 +238,11 @@ export const getBip43Type = (path: string) => {
     }
 };
 
-export const getAccountTypeName = (path: string) => {
-    const accountTypePrefix = getAccountTypePrefix(path);
+export const getAccountTypeName = (network: Network) => {
+    const accountTypePrefix = getAccountTypePrefix(network);
     if (accountTypePrefix) return `${accountTypePrefix}_NAME` as const;
-    const bip43 = getBip43Type(path);
+
+    const bip43 = getBip43Type(network);
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_NAME';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_NAME';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_NAME';
@@ -232,10 +252,11 @@ export const getAccountTypeName = (path: string) => {
     return 'TR_ACCOUNT_TYPE_BIP44_NAME';
 };
 
-export const getAccountTypeTech = (path: string) => {
-    const accountTypePrefix = getAccountTypePrefix(path);
+export const getAccountTypeTech = (network: Network) => {
+    const accountTypePrefix = getAccountTypePrefix(network);
     if (accountTypePrefix) return `${accountTypePrefix}_TECH` as const;
-    const bip43 = getBip43Type(path);
+
+    const bip43 = getBip43Type(network);
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_TECH';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_TECH';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_TECH';
@@ -245,10 +266,11 @@ export const getAccountTypeTech = (path: string) => {
     return 'TR_ACCOUNT_TYPE_BIP44_TECH';
 };
 
-export const getAccountTypeDesc = (path: string) => {
-    const accountTypePrefix = getAccountTypePrefix(path);
+export const getAccountTypeDesc = (network: Network) => {
+    const accountTypePrefix = getAccountTypePrefix(network);
     if (accountTypePrefix) return `${accountTypePrefix}_DESC` as const;
-    const bip43 = getBip43Type(path);
+
+    const bip43 = getBip43Type(network);
     if (bip43 === 'bip86') return 'TR_ACCOUNT_TYPE_BIP86_DESC';
     if (bip43 === 'bip84') return 'TR_ACCOUNT_TYPE_BIP84_DESC';
     if (bip43 === 'bip49') return 'TR_ACCOUNT_TYPE_BIP49_DESC';
@@ -258,8 +280,8 @@ export const getAccountTypeDesc = (path: string) => {
     return 'TR_ACCOUNT_TYPE_BIP44_DESC';
 };
 
-export const getAccountTypeUrl = (path: string) => {
-    const bip43 = getBip43Type(path);
+export const getAccountTypeUrl = (network: Network) => {
+    const bip43 = getBip43Type(network);
     switch (bip43) {
         case 'bip86':
             return HELP_CENTER_TAPROOT_URL;

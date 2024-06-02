@@ -29,10 +29,11 @@ type Option = ReturnType<typeof buildAccountTypeOption>;
 
 const formatLabel = (option: Option) => (
     <LabelWrapper>
-        <Translation id={getAccountTypeName(option.value.bip43Path)} />
+        <Translation id={getAccountTypeName(option.value)} />
 
         <TypeInfo>
-            <Translation id={getAccountTypeTech(option.value.bip43Path)} />
+            <Translation id={getAccountTypeTech(option.value)} />
+            &nbsp;({option.value.bip43Path})
         </TypeInfo>
     </LabelWrapper>
 );
@@ -63,7 +64,7 @@ export const AccountTypeSelect = ({
                 onChange={(option: Option) => onSelectAccountType(option.value)}
             />
             <AccountTypeDescription
-                bip43Path={network.bip43Path}
+                network={network}
                 hasMultipleAccountTypes={accountTypes && accountTypes?.length > 1}
             />
         </>
