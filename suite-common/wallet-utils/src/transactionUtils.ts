@@ -975,11 +975,17 @@ export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) =
     // checks RBF status
     !tx.rbf || confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
 
+/**
+ * TODO: in case user swaps tokens on SOL/ADA, we probably say that he received SOL/ADA
+ *
+ * @param {WalletAccountTransaction} transaction
+ */
 export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
+    // check if tx has exactly one token
     const isSingleTokenTransaction = transaction.tokens.length === 1;
-    const transfer = transaction.tokens[0];
-    // In case of single token transactions show the token symbol instead of symbol of a main network
-    const symbol = !isSingleTokenTransaction || !transfer ? transaction.symbol : transfer.symbol;
+
+    // if there's exactly one token, use its symbol; otherwise, use the main network symbol
+    const symbol = isSingleTokenTransaction ? transaction.tokens[0].symbol : transaction.symbol;
 
     return symbol;
 };
