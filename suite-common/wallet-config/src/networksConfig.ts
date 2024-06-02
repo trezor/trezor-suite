@@ -86,10 +86,12 @@ export const networks = {
             ledger: {
                 // ledger (live)
                 bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
             },
             legacy: {
                 // ledger (legacy)
                 bip43Path: "m/44'/60'/0'/i",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'ethereum',
@@ -306,10 +308,12 @@ export const networks = {
             legacy: {
                 // icarus-trezor derivation
                 bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
             },
             ledger: {
                 // ledger derivation
                 bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'cardano',
@@ -337,6 +341,7 @@ export const networks = {
             ledger: {
                 // bip44Change - Ledger Live
                 bip43Path: "m/44'/501'/i'",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'solana',
@@ -361,10 +366,12 @@ export const networks = {
             ledger: {
                 // ledger (live)
                 bip43Path: "m/44'/60'/i'/0/0",
+                isDebugOnlyAccountType: true,
             },
             legacy: {
                 // ledger (legacy)
                 bip43Path: "m/44'/60'/0'/i",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: 'polygon-pos',
@@ -454,7 +461,7 @@ export const networks = {
                 bip43Path: "m/44'/1'/i'",
             },
         },
-        isDebugOnly: true,
+        isDebugOnlyNetwork: true,
         coingeckoId: undefined,
     },
     tsep: {
@@ -537,10 +544,12 @@ export const networks = {
             legacy: {
                 // icarus-trezor derivation
                 bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
             },
             ledger: {
                 // ledger derivation
                 bip43Path: "m/1852'/1815'/i'",
+                isDebugOnlyAccountType: true,
             },
         },
         coingeckoId: undefined,
@@ -606,7 +615,8 @@ export type Network = Without<NetworkValue, 'accountTypes'> & {
     support?: {
         [key in DeviceModelInternal]: string;
     };
-    isDebugOnly?: boolean;
+    isDebugOnlyNetwork?: boolean;
+    isDebugOnlyAccountType?: boolean;
     coingeckoId?: string;
 };
 
@@ -626,11 +636,13 @@ export const networksCompatibility: Network[] = Object.entries(networks).flatMap
 );
 
 export const getMainnets = (debug = false) =>
-    networksCompatibility.filter(n => !n.accountType && !n.testnet && (!n.isDebugOnly || debug));
+    networksCompatibility.filter(
+        n => !n.accountType && !n.testnet && (!n.isDebugOnlyNetwork || debug),
+    );
 
 export const getTestnets = (debug = false) =>
     networksCompatibility.filter(
-        n => !n.accountType && n.testnet === true && (!n.isDebugOnly || debug),
+        n => !n.accountType && n.testnet === true && (!n.isDebugOnlyNetwork || debug),
     );
 
 export const getAllNetworkSymbols = () => networksCompatibility.map(n => n.symbol);
