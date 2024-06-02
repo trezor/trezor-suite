@@ -200,10 +200,7 @@ export const sumTransactionsFiat = (
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
-        const isWithToken = tx.tokens[0]?.contract;
-        const amount = isWithToken
-            ? formatAmount(tx.tokens[0]?.amount, tx.tokens[0]?.decimals)
-            : formatNetworkAmount(tx.amount, tx.symbol);
+        const amount = formatNetworkAmount(tx.amount, tx.symbol);
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
         const fiatRateKey = getFiatRateKey(tx.symbol, fiatCurrency);
