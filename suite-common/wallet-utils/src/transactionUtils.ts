@@ -550,15 +550,22 @@ const getEthereumRbfParams = (
     tx: AccountTransaction,
     account: Account,
 ): RbfTransactionParams | undefined => {
-    if (account.networkType !== 'ethereum') return;
-    if (tx.type === 'recv' || !tx.ethereumSpecific || !isPending(tx)) return; // ignore non rbf and mined transactions
+    if (
+        account.networkType !== 'ethereum' ||
+        tx.type === 'recv' ||
+        !tx.ethereumSpecific ||
+        !isPending(tx)
+    )
+        return; // ignore non rbf and mined transactions
 
     const { vout } = tx.details;
+    // The standard transfer method ERC-20 tokens is limited to sending to one recipient per tx
+    // TODO: limit this method just for standard transfers
     const token = tx.tokens[0];
 
     const output = token
         ? {
-              address: token.to!,
+              address: token.to,
               token: token.contract,
               amount: token.amount,
               formattedAmount: formatAmount(token.amount, token.decimals),
@@ -570,9 +577,7 @@ const getEthereumRbfParams = (
           };
 
     const ethereumData =
-        tx.ethereumSpecific.data && tx.ethereumSpecific.data.indexOf('0x') === 0
-            ? tx.ethereumSpecific.data.substring(2)
-            : '';
+        tx.ethereumSpecific.data?.indexOf('0x') === 0 ? tx.ethereumSpecific.data.substring(2) : '';
 
     return {
         txid: tx.txid,
