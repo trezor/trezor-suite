@@ -9,7 +9,6 @@ import {
     TrezorLink,
 } from 'src/components/suite';
 import {
-    formatAmount,
     formatNetworkAmount,
     getTargetAmount,
     getTxHeaderSymbol,
@@ -94,24 +93,14 @@ export const TransactionHeading = ({
     const theme = useTheme();
 
     const symbol = getTxHeaderSymbol(transaction);
-    const nTokens = transaction.tokens.length;
-    const isTokenTransaction = transaction.tokens.length;
-    const isSingleTokenTransaction = nTokens === 1;
     const target = transaction.targets[0];
-    const transfer = transaction.tokens[0];
     const targetSymbol = transaction.type === 'self' ? transaction.symbol : symbol;
     let amount = null;
 
     if (useSingleRowLayout) {
-        // For single token transaction instead of showing coin amount we rather show the token amount
         // In case of sent-to-self transaction we rely on getTargetAmount returning transaction.amount which will be equal to a fee
-        const targetAmount =
-            !isSingleTokenTransaction || transaction.type === 'self'
-                ? getTargetAmount(target, transaction)
-                : formatAmount(transfer.amount, transfer.decimals);
-        const operation = !isTokenTransaction
-            ? getTxOperation(transaction.type)
-            : getTxOperation(transfer.type);
+        const targetAmount = getTargetAmount(target, transaction);
+        const operation = getTxOperation(transaction.type);
 
         amount = targetAmount && (
             <StyledCryptoAmount
