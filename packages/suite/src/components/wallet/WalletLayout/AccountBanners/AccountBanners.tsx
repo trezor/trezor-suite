@@ -8,11 +8,14 @@ import { XRPReserve } from './XRPReserve';
 import { AccountImported } from './AccountImported';
 import { AccountOutOfSync } from './AccountOutOfSync';
 import { TorDisconnected } from './TorDisconnected';
-import { CoinjoinContextMessage } from './CoinjoinContextMessage';
+import { ContextMessage } from './ContextMessage';
 import { StakeEthBanner } from './StakeEthBanner';
 import { spacingsPx } from '@trezor/theme';
 import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { TaprootBanner } from './TaprootBanner';
+import { Context } from '@suite-common/message-system';
+import { useSelector } from 'src/hooks/suite';
+import { isSupportedNetworkSymbol } from '@suite-common/wallet-core';
 
 const BannersWrapper = styled.div`
     display: flex;
@@ -25,18 +28,25 @@ type AccountBannersProps = {
     account?: Account;
 };
 
-export const AccountBanners = ({ account }: AccountBannersProps) => (
-    <BannersWrapper>
-        <CoinjoinContextMessage account={account} />
-        <AuthConfirmFailed />
-        <BackendDisconnected />
-        <DeviceUnavailable />
-        <TorDisconnected />
-        <XRPReserve account={account} />
-        <AccountImported account={account} />
-        <AccountOutOfSync account={account} />
-        <EvmExplanationBanner account={account} />
-        <TaprootBanner account={account} />
-        {account?.symbol && <StakeEthBanner account={account} />}
-    </BannersWrapper>
-);
+export const AccountBanners = ({ account }: AccountBannersProps) => {
+    const { pathname } = useSelector(state => state.router);
+
+    return (
+        <BannersWrapper>
+            {account?.accountType === 'coinjoin' && <ContextMessage context={Context.coinjoin} />}
+            {account?.symbol &&
+                isSupportedNetworkSymbol(account.symbol) &&
+                pathname === '/accounts/staking' && <ContextMessage context={Context.ethStaking} />}
+            <AuthConfirmFailed />
+            <BackendDisconnected />
+            <DeviceUnavailable />
+            <TorDisconnected />
+            <XRPReserve account={account} />
+            <AccountImported account={account} />
+            <AccountOutOfSync account={account} />
+            <EvmExplanationBanner account={account} />
+            <TaprootBanner account={account} />
+            {account?.symbol && <StakeEthBanner account={account} />}
+        </BannersWrapper>
+    );
+};
