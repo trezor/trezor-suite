@@ -1,3 +1,7 @@
+# 1.0.18-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 1.0.17-beta.1
 
 -   fix(suite-native): coin discovery analytics objectless structure (#11992) (7bd1a2bea0)
