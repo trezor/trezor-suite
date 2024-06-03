@@ -32,7 +32,6 @@
         "@suite-native/storage": "workspace:*",
         "@suite-native/theme": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "@trezor/suite-data": "workspace:*",
         "@trezor/theme": "workspace:*",
         "date-fns": "^2.30.0",
         "expo-haptics": "13.0.1",
