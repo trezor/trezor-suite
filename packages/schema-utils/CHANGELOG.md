@@ -1,3 +1,7 @@
+# 1.0.5-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 1.0.4-beta.1
 
 -   feat(connect-explorer-nextra): method json params editor (09086d0f1a)
