@@ -9,7 +9,7 @@ export const supportedNetworkSymbols = ['eth', 'thol'] as const;
 
 export type SupportedNetworkSymbol = (typeof supportedNetworkSymbols)[number];
 
-export function isSupportedNetworkSymbol(
+export function isSupportedEthStakingNetworkSymbol(
     networkSymbols: NetworkSymbol,
 ): networkSymbols is SupportedNetworkSymbol {
     return (supportedNetworkSymbols as readonly string[]).includes(networkSymbols);
@@ -18,7 +18,7 @@ export function isSupportedNetworkSymbol(
 export const getStakingSymbols = (networkSymbols: NetworkSymbol[]) =>
     networkSymbols.reduce((acc, networkSymbol) => {
         if (
-            isSupportedNetworkSymbol(networkSymbol) &&
+            isSupportedEthStakingNetworkSymbol(networkSymbol) &&
             getNetworkFeatures(networkSymbol).includes('staking')
         ) {
             acc.push(networkSymbol);

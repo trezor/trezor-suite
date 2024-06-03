@@ -15,7 +15,7 @@ import { EvmExplanationBanner } from './EvmExplanationBanner';
 import { TaprootBanner } from './TaprootBanner';
 import { Context } from '@suite-common/message-system';
 import { useSelector } from 'src/hooks/suite';
-import { isSupportedNetworkSymbol } from '@suite-common/wallet-core';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 
 const BannersWrapper = styled.div`
     display: flex;
@@ -35,7 +35,7 @@ export const AccountBanners = ({ account }: AccountBannersProps) => {
         <BannersWrapper>
             {account?.accountType === 'coinjoin' && <ContextMessage context={Context.coinjoin} />}
             {account?.symbol &&
-                isSupportedNetworkSymbol(account.symbol) &&
+                isSupportedEthStakingNetworkSymbol(account.symbol) &&
                 pathname === '/accounts/staking' && <ContextMessage context={Context.ethStaking} />}
             <AuthConfirmFailed />
             <BackendDisconnected />
