@@ -37,8 +37,6 @@ const CoinmarketUtilsPrice = ({
     cryptoAmount,
     cryptoCurrency,
 }: CoinmarketCryptoAmountProps) => {
-    // TODO: control for sell
-
     return (
         <PriceWrap>
             <PriceTitle>
