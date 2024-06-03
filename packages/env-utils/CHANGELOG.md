@@ -1,3 +1,7 @@
+# 1.0.18-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 1.0.15
 
 -   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
