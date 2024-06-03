@@ -1,3 +1,7 @@
+# 2.0.11-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 2.0.9
 
 -   fix(utxo-lib): support checksums in descriptor parsing (4db4c2e903)
