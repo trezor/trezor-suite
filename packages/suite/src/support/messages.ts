@@ -8388,7 +8388,7 @@ export default defineMessages({
     TR_UNECO_COINJOIN_RECEIVE_WARNING: {
         id: 'TR_UNECO_COINJOIN_RECEIVE_WARNING',
         defaultMessage:
-            'Coinjoin at least {crypto} {isAccountWithRate, select, true {(~{fiat})} false {} other {}} for the best results.',
+            'You can receive funds into this account and use it like any other. Please note that the coinjoin feature will be discontinued as of June 1st 2024.',
     },
     TR_UNECO_COINJOIN_AGREE: {
         id: 'TR_UNECO_COINJOIN_AGREE',
