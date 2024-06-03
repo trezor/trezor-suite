@@ -1,24 +1,43 @@
-/* eslint-disable camelcase */
+import fs from 'fs';
+import path from 'path';
+import semver from 'semver';
+import fetch from 'cross-fetch';
 
-const fs = require('fs');
-const util = require('util');
-const path = require('path');
-const child_process = require('child_process');
-const semver = require('semver');
+import { ChildProcessWithoutNullStreams, spawn } from 'child_process';
 
-const readFile = util.promisify(fs.readFile);
+import { promisify } from 'util';
+
+const readFile = promisify(fs.readFile);
 
 const { getLocalAndRemoteChecksums } = require('./check-npm-and-local');
 
 const ROOT = path.join(__dirname, '..', '..');
 
-const updateNeeded = [];
-const errors = [];
+const updateNeeded: string[] = [];
+const errors: string[] = [];
 
-const checkPackageDependencies = async (packageName, deploymentType) => {
+export const gettingNpmDistributionTags = async (packageName: string) => {
+    const npmRegistryUrl = `https://registry.npmjs.org/${packageName}`;
+    console.log(`fetching npm registry info from: ${npmRegistryUrl}`);
+    const response = await fetch(npmRegistryUrl);
+    const data = await response.json();
+    if (data.error) {
+        return { success: false };
+    }
+
+    return data['dist-tags'];
+};
+
+export const checkPackageDependencies = async (
+    packageName: string,
+    deploymentType: 'stable' | 'canary',
+): Promise<{ update: string[]; errors: string[] }> => {
     console.log('######################################################');
     console.log(`Checking package ${packageName}`);
-    const rawPackageJSON = await readFile(path.join(ROOT, 'packages', packageName, 'package.json'));
+    const rawPackageJSON = await readFile(
+        path.join(ROOT, 'packages', packageName, 'package.json'),
+        'utf-8',
+    );
 
     const packageJSON = JSON.parse(rawPackageJSON);
     const {
@@ -27,11 +46,11 @@ const checkPackageDependencies = async (packageName, deploymentType) => {
     } = packageJSON;
 
     if (!dependencies || !Object.keys(dependencies)) {
-        return;
+        return { errors, update: updateNeeded };
     }
 
     // eslint-disable-next-line no-restricted-syntax
-    for await (const [dependency, version] of Object.entries(dependencies)) {
+    for await (const [dependency, _version] of Object.entries(dependencies)) {
         // is not a dependency released from monorepo. we don't care
         if (!dependency.startsWith('@trezor')) {
             // eslint-disable-next-line no-continue
@@ -86,31 +105,55 @@ const checkPackageDependencies = async (packageName, deploymentType) => {
     };
 };
 
-const exec = (cmd, params) => {
+export const exec = async (
+    cmd: string,
+    params: any[],
+): Promise<{ stdout: string; stderr: string }> => {
     console.log(cmd, ...params);
 
-    const res = child_process.spawnSync(cmd, params, {
-        encoding: 'utf-8',
+    const res: ChildProcessWithoutNullStreams = spawn(cmd, params, {
         cwd: ROOT,
     });
-    if (res.status !== 0) {
-        console.error('Error executing command:', cmd, ...params);
-        console.error('Command output:', res.stdout);
-        console.error('Command error output:', res.stderr);
-        throw new Error(
-            `Command "${cmd} ${params.join(' ')}" failed with exit code ${res.status}: ${res.stderr}`,
-        );
-    }
-    return res;
+
+    return new Promise((resolve, reject) => {
+        let stdout = '';
+        let stderr = '';
+
+        res.stdout.on('data', data => {
+            stdout += data;
+        });
+
+        res.stderr.on('data', data => {
+            stderr += data;
+        });
+
+        res.on('close', status => {
+            if (status !== 0) {
+                console.error('Error executing command:', cmd, ...params);
+                console.error('Command output:', stdout);
+                console.error('Command error output:', stderr);
+                reject(
+                    new Error(
+                        `Command "${cmd} ${params.join(' ')}" failed with exit code ${status}: ${stderr}`,
+                    ),
+                );
+            } else {
+                resolve({ stdout, stderr });
+            }
+        });
+
+        res.on('error', err => {
+            console.error('Failed to start process:', err);
+            reject(err);
+        });
+    });
 };
 
-const commit = ({ path, message }) => {
-    exec('git', ['add', path]);
-    exec('git', ['commit', '-m', `${message}`]);
+export const commit = async ({ path, message }: { path: string; message: string }) => {
+    await exec('git', ['add', path]);
+    await exec('git', ['commit', '-m', `${message}`]);
 };
 
-const comment = ({ prNumber, body }) => {
-    exec('gh', ['pr', 'comment', `${prNumber}`, '--body', body]);
+export const comment = async ({ prNumber, body }: { prNumber: string; body: string }) => {
+    await exec('gh', ['pr', 'comment', `${prNumber}`, '--body', body]);
 };
-
-module.exports = { checkPackageDependencies, exec, commit, comment };
