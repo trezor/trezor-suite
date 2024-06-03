@@ -3,8 +3,8 @@
 // - added blake256 and hash160blake256 methods (decred)
 
 import blakeHash from 'blake-hash';
-import createHash from 'create-hash';
 import createHmac from 'create-hmac';
+import { createHash } from 'crypto';
 
 export function ripemd160(buffer: Buffer): Buffer {
     try {

@@ -11749,7 +11749,6 @@ __metadata:
     "@types/bchaddrjs": "npm:^0.4.2"
     "@types/bs58": "npm:^4.0.4"
     "@types/bs58check": "npm:^2.1.1"
-    "@types/create-hash": "npm:^1.2.6"
     "@types/create-hmac": "npm:^1.1.2"
     "@types/wif": "npm:^2.0.5"
     bchaddrjs: "npm:^0.5.2"
@@ -11761,7 +11760,6 @@ __metadata:
     bn.js: "npm:^5.2.1"
     bs58: "npm:^5.0.0"
     bs58check: "npm:^3.0.1"
-    create-hash: "npm:^1.2.0"
     create-hmac: "npm:^1.1.7"
     int64-buffer: "npm:^1.0.1"
     minimaldata: "npm:^1.0.2"
@@ -12078,15 +12076,6 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10/469bd85e29a35977099a3745c78e489916011169a664e97c4c3d6538143b0a16e4cc72b05b407dc008df3892ed7bf595f9b7c0f1f4680e169565ee9d64966bde
-  languageName: node
-  linkType: hard
-
-"@types/create-hash@npm:^1.2.6":
-  version: 1.2.6
-  resolution: "@types/create-hash@npm:1.2.6"
-  dependencies:
-    "@types/node": "npm:*"
-  checksum: 10/6418b1e84570165c070cda666099e966f6e1710b4946e71d379b744f920697050dd49210cf0c44dba8d9b61d1f4c5dc1630d29f443930fff23bbf853d66b2882
   languageName: node
   linkType: hard
 
