@@ -1936,6 +1936,10 @@ export default defineMessages({
         defaultMessage: 'You will get',
         id: 'TR_COINMARKET_YOU_GET',
     },
+    TR_COINMARKET_SHOW_OFFERS: {
+        defaultMessage: 'Compare offers',
+        id: 'TR_COINMARKET_SHOW_OFFERS',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
