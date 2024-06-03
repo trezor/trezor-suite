@@ -36,7 +36,7 @@ jobs:
         id: set-version
         run: echo "version=$(node ./ci/scripts/get-connect-version.js)" >> $GITHUB_OUTPUT
 
-  check-version-match:
+  sanity-check-version-match:
     runs-on: ubuntu-latest
     needs: [extract-version]
     steps:
@@ -48,10 +48,30 @@ jobs:
           branch_ref: "${{ github.ref }}"
           extracted_version: "${{ needs.extract-version.outputs.version }}"
 
+  deploy-production-semantic-version:
+    needs: [extract-version, check-version-match]
+    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    environment: production-connect
+    name: "Deploying ${{ inputs.deploymentType }} to connect.trezor.io/9.x.x"
+    runs-on: ubuntu-latest
+    env:
+      CURRENT_VERSION: ${{ needs.extract-version.outputs.version }}
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
+          aws-region: eu-central-1
+
+      - name: Synching production bucket with current staging
+        run: |
+          aws s3 sync --delete --cache-control 'public, max-age=3600' "s3://staging-connect.trezor.io/${{ env.CURRENT_VERSION }}/" "s3://connect.trezor.io/${{ env.CURRENT_VERSION }}/"
+          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
+
   # set the rollback
   sync-rollback-connect-v9:
     needs: [extract-version, check-version-match]
-    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
     environment: production-connect
     name: "Backing up current production version ${{ needs.extract-version.outputs.version }} to rollback bucket"
     runs-on: ubuntu-latest
@@ -68,33 +88,13 @@ jobs:
         run: |
           aws s3 sync "s3://connect.trezor.io/${{ env.LATEST_VERSION }}/" "s3://rollback-connect.trezor.io/${{ env.LATEST_VERSION }}/"
 
-  deploy-production-semantic-version:
-    needs: [extract-version, check-version-match]
-    if: startsWith(github.ref, 'refs/heads/release/connect/')
-    environment: production-connect
-    name: "Deploying to connect.trezor.io/9.x.x"
-    runs-on: ubuntu-latest
-    env:
-      CURRENT_VERSION: ${{ needs.extract-version.outputs.version }}
-    steps:
-      - name: Configure aws credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
-          aws-region: eu-central-1
-
-      - name: Synching production bucket with current staging
-        run: |
-          aws s3 sync --delete --cache-control 'public, max-age=3600' "s3://staging-connect.trezor.io/${{ env.CURRENT_VERSION }}/" "s3://connect.trezor.io/${{ env.CURRENT_VERSION }}/"
-          aws cloudfront create-invalidation --distribution-id E3LVNAOGT94E37 --paths '/*'
-
   # From staging move it to production
   deploy-production-v9:
     # We deploy to production only if rollback sync was successful.
     needs: [extract-version, check-version-match, sync-rollback-connect-v9]
     if: startsWith(github.ref, 'refs/heads/release/connect/') && github.event.inputs.deploymentType == 'stable'
     environment: production-connect
-    name: "Deploying to connect.trezor.io/9/"
+    name: "Deploying ${{ inputs.deploymentType }} to connect.trezor.io/9"
     runs-on: ubuntu-latest
     env:
       LATEST_VERSION: 9

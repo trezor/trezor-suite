@@ -113,4 +113,13 @@ const comment = ({ prNumber, body }) => {
     exec('gh', ['pr', 'comment', `${prNumber}`, '--body', body]);
 };
 
-module.exports = { checkPackageDependencies, exec, commit, comment };
+const getLocalVersion = packageName => {
+    const packageJsonPath = path.join(ROOT, 'packages', packageName, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+        throw new Error(`package.json not found for package: ${packageName}`);
+    }
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    return packageJson.version;
+};
+
+module.exports = { checkPackageDependencies, exec, commit, comment, getLocalVersion };

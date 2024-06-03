@@ -4,16 +4,12 @@ permissions:
   id-token: write # for fetching the OIDC token
   contents: read # for actions/checkout
 
+# This workflow is intended to be run from merged PR to ???
 on:
-  workflow_dispatch:
-    inputs:
-      commit_sha:
-        description: "The commit SHA to checkout"
-        required: true
-        type: string
+  pull_request:
+    branches: [release/connect/**]
 
 jobs:
-  # Version should have been bumped by now thanks to ./ci/scripts/connect-release-init-npm.js
   extract-version:
     runs-on: ubuntu-latest
     outputs:
@@ -24,8 +20,6 @@ jobs:
         with:
           # Number of commits to fetch. 0 indicates all history for all branches and tags.
           fetch-depth: 0
-          # Checkout the specified commit
-          ref: ${{ github.event.inputs.commit_sha }}
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -36,31 +30,66 @@ jobs:
         id: set-version
         run: echo "version=$(node ./ci/scripts/get-connect-version.js)" >> $GITHUB_OUTPUT
 
-  create-push-release-branch:
-    needs: [extract-version]
-    name: "Create release branch for version ${{ needs.extract-version.outputs.version }}"
+  sanity-check-version-match:
     runs-on: ubuntu-latest
-    outputs:
-      branch_name: ${{ steps.push-branch.outputs.branch_name }}
+    needs: [extract-version]
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+
+      - name: Check connect version match
+        uses: ./.github/actions/check-connect-version-match
         with:
-          # Ensure the full commit history is available is required to get specific `ref`.
-          fetch-depth: 0
-          # Checkout the specified commit
-          ref: ${{ github.event.inputs.commit_sha }}
-          token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          branch_ref: "${{ github.ref }}"
+          extracted_version: "${{ needs.extract-version.outputs.version }}"
 
-      - name: Setup Git config
-        run: |
-          git config --global user.name "trezor-ci"
-          git config --global user.email "${{ secrets.TREZOR_BOT_EMAIL }}"
+  # This job deploys to staging-connect.trezor.io/9.x.x
+  deploy-staging-semantic-version:
+    needs: [extract-version, check-version-match]
+    environment: staging-connect
+    name: "Deploying to staging-connect.trezor.io/${{ needs.extract-version.outputs.version }}"
+    runs-on: ubuntu-latest
+    # Branch should have been created by workflow .github/workflows/release-connect-v9-init.yml
+    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/connect/${{  needs.extract-version.outputs.version }}
 
-      - name: Create and push new branch
-        env:
-          BRANCH_NAME: "release/connect/${{ needs.extract-version.outputs.version }}"
-        run: |
-          echo ${{ env.BRANCH_NAME }}
-          git checkout -b ${{ env.BRANCH_NAME }}
-          git push origin ${{ env.BRANCH_NAME }}
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Build and deploy to staging-connect.trezor.io/9.x.x
+        uses: ./.github/actions/release-connect
+        with:
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_connect_staging_deploy"
+          awsRegion: "eu-central-1"
+          serverHostname: "staging-connect.trezor.io"
+          serverPath: ${{ needs.extract-version.outputs.version }}
+
+  # This job deploys to staging-connect.trezor.io/9
+  deploy-staging-v9:
+    needs: [extract-version, check-version-match]
+    environment: staging-connect
+    name: "Deploying to staging-connect.trezor.io/9"
+    runs-on: ubuntu-latest
+    # Branch should have been created by workflow .github/workflows/release-connect-v9-init.yml
+    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: release/connect/${{  needs.extract-version.outputs.version }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Build and deploy to staging-connect.trezor.io/9
+        uses: ./.github/actions/release-connect
+        with:
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_connect_staging_deploy"
+          awsRegion: "eu-central-1"
+          serverHostname: "staging-connect.trezor.io"
+          serverPath: "9"
