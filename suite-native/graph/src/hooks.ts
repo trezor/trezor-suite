@@ -150,9 +150,12 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
     );
 
     const handleSelectPortfolioTimeframe = useCallback(
-        (timeframeHours: TimeframeHoursValue) =>
-            dispatch(setPortfolioGraphTimeframe({ timeframeHours })),
-        [dispatch],
+        (timeframeHours: TimeframeHoursValue) => {
+            if (portfolioGraphTimeframe !== timeframeHours) {
+                dispatch(setPortfolioGraphTimeframe({ timeframeHours }));
+            }
+        },
+        [dispatch, portfolioGraphTimeframe],
     );
 
     useWatchTimeframeChangeForAnalytics(portfolioGraphTimeframe);
