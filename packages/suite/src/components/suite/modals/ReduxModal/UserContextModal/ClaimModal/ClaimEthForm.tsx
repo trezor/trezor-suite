@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button, Paragraph, Warning } from '@trezor/components';
+import { Button, Paragraph, Tooltip, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
@@ -9,6 +9,7 @@ import { spacingsPx } from '@trezor/theme';
 import ClaimFees from './Fees';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const AmountInfo = styled.div`
     display: flex;
@@ -46,6 +47,8 @@ const GreyP = styled(Paragraph)`
 export const ClaimEthForm = () => {
     const { device, isLocked } = useDevice();
     const account = useSelector(selectSelectedAccount);
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking();
+
     const {
         account: { symbol },
         formState: { errors, isSubmitting },
@@ -98,15 +101,18 @@ export const ClaimEthForm = () => {
                 <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
             </ClaimingPeriodWrapper>
 
-            <Button
-                type="submit"
-                isFullWidth
-                isDisabled={isDisabled}
-                isLoading={isComposing || isSubmitting}
-                onClick={handleSubmit(signTx)}
-            >
-                <Translation id="TR_STAKE_CLAIM" />
-            </Button>
+            <Tooltip content={claimingMessageContent}>
+                <Button
+                    type="submit"
+                    isFullWidth
+                    isDisabled={isDisabled || isClaimingDisabled}
+                    isLoading={isComposing || isSubmitting}
+                    onClick={handleSubmit(signTx)}
+                    icon={isClaimingDisabled ? 'INFO' : undefined}
+                >
+                    <Translation id="TR_STAKE_CLAIM" />
+                </Button>
+            </Tooltip>
         </form>
     );
 };

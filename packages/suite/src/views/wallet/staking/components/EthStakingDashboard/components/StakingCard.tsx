@@ -1,6 +1,6 @@
 import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, variables } from '@trezor/components';
+import { Button, Card, Icon, Tooltip, variables } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool, isPending } from '@suite-common/wallet-utils';
@@ -13,6 +13,7 @@ import { ProgressLabels } from './ProgressLabels/ProgressLabels';
 import { useProgressLabelsData } from '../hooks/useProgressLabelsData';
 import { useIsTxStatusShown } from '../hooks/useIsTxStatusShown';
 import { TrimmedCryptoAmount } from './TrimmedCryptoAmount';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.md};
@@ -88,6 +89,13 @@ export const StakingCard = ({
     const selectedAccount = useSelector(selectSelectedAccount);
 
     const {
+        isStakingDisabled,
+        isUnstakingDisabled,
+        stakingMessageContent,
+        unstakingMessageContent,
+    } = useMessageSystemStaking();
+
+    const {
         autocompoundBalance = '0',
         depositedBalance = '0',
         restakedReward = '0',
@@ -124,10 +132,14 @@ export const StakingCard = ({
 
     const dispatch = useDispatch();
     const openStakeModal = () => {
-        dispatch(openModal({ type: 'stake' }));
+        if (!isStakingDisabled) {
+            dispatch(openModal({ type: 'stake' }));
+        }
     };
     const openUnstakeModal = () => {
-        dispatch(openModal({ type: 'unstake' }));
+        if (!isUnstakingDisabled) {
+            dispatch(openModal({ type: 'unstake' }));
+        }
     };
 
     if (!selectedAccount?.symbol) {
@@ -269,12 +281,24 @@ export const StakingCard = ({
             </Info>
 
             <ButtonsWrapper>
-                <StyledButton onClick={openStakeModal}>
-                    <Translation id="TR_STAKE_STAKE_MORE" />
-                </StyledButton>
-                <StyledButton isDisabled={!canUnstake} onClick={openUnstakeModal}>
-                    <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
-                </StyledButton>
+                <Tooltip content={stakingMessageContent}>
+                    <StyledButton
+                        onClick={openStakeModal}
+                        isDisabled={isStakingDisabled}
+                        icon={isStakingDisabled ? 'INFO' : undefined}
+                    >
+                        <Translation id="TR_STAKE_STAKE_MORE" />
+                    </StyledButton>
+                </Tooltip>
+                <Tooltip content={unstakingMessageContent}>
+                    <StyledButton
+                        isDisabled={!canUnstake || isUnstakingDisabled}
+                        onClick={openUnstakeModal}
+                        icon={isUnstakingDisabled ? 'INFO' : undefined}
+                    >
+                        <Translation id="TR_STAKE_UNSTAKE_TO_CLAIM" />
+                    </StyledButton>
+                </Tooltip>
             </ButtonsWrapper>
         </StyledCard>
     );

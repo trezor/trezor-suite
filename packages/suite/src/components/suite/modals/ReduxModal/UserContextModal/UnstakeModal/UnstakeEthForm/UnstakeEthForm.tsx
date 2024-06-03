@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button, Divider, Paragraph, Warning } from '@trezor/components';
+import { Button, Divider, Paragraph, Tooltip, Warning } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useDevice, useSelector } from 'src/hooks/suite';
@@ -11,6 +11,7 @@ import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
 import UnstakeFees from './Fees';
 import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const GreyP = styled(Paragraph)`
     color: ${({ theme }) => theme.textSubdued};
@@ -47,6 +48,7 @@ const UpToDaysWrapper = styled.div`
 export const UnstakeEthForm = () => {
     const { device, isLocked } = useDevice();
     const selectedAccount = useSelector(selectSelectedAccount);
+    const { isUnstakingDisabled, unstakingMessageContent } = useMessageSystemStaking();
 
     const {
         account,
@@ -114,16 +116,18 @@ export const UnstakeEthForm = () => {
                     }}
                 />
             </UpToDaysWrapper>
-
-            <Button
-                type="submit"
-                isFullWidth
-                isDisabled={isDisabled}
-                isLoading={isComposing || isSubmitting}
-                onClick={handleSubmit(signTx)}
-            >
-                <Translation id="TR_STAKE_UNSTAKE" />
-            </Button>
+            <Tooltip content={unstakingMessageContent}>
+                <Button
+                    type="submit"
+                    isFullWidth
+                    isDisabled={isDisabled || isUnstakingDisabled}
+                    isLoading={isComposing || isSubmitting}
+                    onClick={handleSubmit(signTx)}
+                    icon={isUnstakingDisabled ? 'INFO' : undefined}
+                >
+                    <Translation id="TR_STAKE_UNSTAKE" />
+                </Button>
+            </Tooltip>
         </form>
     );
 };
