@@ -1,36 +1,45 @@
+import { spacingsPx } from '@trezor/theme';
 import { FormattedCryptoAmount } from 'src/components/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import styled from 'styled-components';
 
-const TokenLogo = styled.img`
+const Wrapper = styled.div`
     display: flex;
     align-items: center;
+`;
+
+const TokenLogo = styled.img`
     height: 21px;
+    margin-right: ${spacingsPx.sm};
 `;
 
 interface CoinmarketCryptoAmountProps {
     amount?: string | number;
     symbol?: string;
-    displaySymbol?: boolean;
+    displayLogo?: boolean;
 }
 
 export const CoinmarketCryptoAmount = ({
     amount,
     symbol,
-    displaySymbol,
+    displayLogo,
 }: CoinmarketCryptoAmountProps) => {
-    if (amount) {
-        if (displaySymbol && symbol) {
-            return (
-                <>
-                    <TokenLogo src={invityAPI.getCoinLogoUrl(symbol)} />
-                    <FormattedCryptoAmount value={amount} symbol={symbol} />
-                </>
-            );
-        }
+    const Logo = () =>
+        displayLogo && symbol && <TokenLogo src={invityAPI.getCoinLogoUrl(symbol)} />;
 
-        return <FormattedCryptoAmount value={amount} symbol={symbol} disableHiddenPlaceholder />;
+    if (!amount || amount === '') {
+        return (
+            <Wrapper>
+                <Logo />
+                {symbol?.toUpperCase()}
+            </Wrapper>
+        );
     }
 
-    return <>{symbol?.toUpperCase()}</>;
+    return (
+        <Wrapper>
+            <Logo />
+            <FormattedCryptoAmount value={amount} symbol={symbol} disableHiddenPlaceholder />
+        </Wrapper>
+    );
 };

@@ -8,7 +8,7 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
 import {
-    getCryptoAmountProps,
+    getCryptoQuoteAmountProps,
     getProvidersInfoProps,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
@@ -110,10 +110,12 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const context = useCoinmarketOffersContext();
     const { selectQuote } = context;
     const { providers } = getProvidersInfoProps(context);
-    const cryptoAmountProps = getCryptoAmountProps(context);
+    const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
     // const { tag } = getTagAndInfoNote(quote);
     const tagsExist = false;
+
+    if (!cryptoAmountProps) return null;
 
     return (
         <OfferWrap margin={{ top: spacings.md }}>
