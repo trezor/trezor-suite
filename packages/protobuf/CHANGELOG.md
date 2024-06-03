@@ -1,3 +1,7 @@
+# 1.0.14-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 1.0.13-beta.1
 
 -   fix(protobuf): deterministic protobuf order in generated file (7bdc2ebecc)
