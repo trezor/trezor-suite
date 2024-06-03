@@ -1,3 +1,7 @@
+# 0.0.34-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 0.0.33-beta.1
 
 -   chore(connect): bump required fw to 1.8.1/2.1.0 (2f14ff6703)
