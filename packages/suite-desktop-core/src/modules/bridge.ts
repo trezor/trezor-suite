@@ -2,6 +2,7 @@
  * Bridge runner
  */
 import { TrezordNode } from '@trezor/transport-bridge';
+import { isDevEnv } from '@suite-common/suite-utils';
 
 import { app, ipcMain } from '../typed-electron';
 import { BridgeProcess } from '../libs/processes/BridgeProcess';
@@ -17,6 +18,8 @@ const bridgeLegacyTest = app.commandLine.hasSwitch('bridge-legacy-test');
 // bridge node is intended for internal testing
 const bridgeTest = app.commandLine.hasSwitch('bridge-test');
 const bridgeDev = app.commandLine.hasSwitch('bridge-dev');
+
+const skipNewBridgeRollout = app.commandLine.hasSwitch('skip-new-bridge-rollout');
 
 export const SERVICE_NAME = 'bridge';
 
@@ -51,7 +54,18 @@ const getBridgeInstance = (store: Dependencies['store']) => {
     const legacyRequestedBySettings = store.getBridgeSettings().legacy;
     const legacyRequestedByArg = bridgeLegacy || bridgeLegacyDev || bridgeLegacyTest;
 
-    if (legacyRequestedBySettings || legacyRequestedByArg) {
+    // handle rollout
+    if (store.getBridgeSettings().newBridgeRollout === undefined) {
+        const newBridgeRollout = Math.round(Math.random() * 100) / 100;
+        store.setBridgeSettings({ ...store.getBridgeSettings(), newBridgeRollout });
+    }
+    const newBridgeRollout = store.getBridgeSettings().newBridgeRollout || 0;
+    // note that this variable is duplicated with UI
+    const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0;
+    const legacyBridgeReasonRollout =
+        !isDevEnv && !skipNewBridgeRollout && newBridgeRollout >= NEW_BRIDGE_ROLLOUT_THRESHOLD;
+
+    if (legacyRequestedBySettings || legacyRequestedByArg || legacyBridgeReasonRollout) {
         return new BridgeProcess();
     }
 
@@ -83,16 +97,8 @@ const load = async ({ store, mainWindow }: Dependencies) => {
         try {
             if (status.service) {
                 await bridge.stop();
-                store.setBridgeSettings({
-                    ...store.getBridgeSettings(),
-                    doNotStartOnStartup: false,
-                });
             } else {
                 await start(bridge);
-                store.setBridgeSettings({
-                    ...store.getBridgeSettings(),
-                    doNotStartOnStartup: true,
-                });
             }
 
             return { success: true };

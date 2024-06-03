@@ -5,11 +5,14 @@ import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { BridgeSettings } from '@trezor/suite-desktop-api/src/messages';
-
+import { isDevEnv } from '@suite-common/suite-utils';
 interface Process {
     service: boolean;
     process: boolean;
 }
+
+// note that this variable is duplicated with suite-desktop-core
+const NEW_BRIDGE_ROLLOUT_THRESHOLD = 0;
 
 export const TransportBackends = () => {
     const [bridgeProcess, setBridgeProcess] = useState<Process>({ service: false, process: false });
@@ -28,8 +31,6 @@ export const TransportBackends = () => {
         });
 
         desktopApi.getBridgeSettings().then(result => {
-            console.log('bridge settings', result);
-
             if (result.success) {
                 setBridgeSettings(result.payload);
             } else {
@@ -38,7 +39,6 @@ export const TransportBackends = () => {
         });
 
         desktopApi.on('bridge/settings', (settings: BridgeSettings) => {
-            console.log('bridge settings', settings);
             setBridgeSettings(settings);
         });
 
@@ -106,6 +106,14 @@ export const TransportBackends = () => {
                     />
                 </ActionColumn>
             </SectionItem>
+            {!isDevEnv && (
+                <SectionItem data-test="@settings/debug/processes/newBridgeRollout">
+                    <TextColumn
+                        title="New bridge rollout"
+                        description={`New bridge is being rolled out to only ${NEW_BRIDGE_ROLLOUT_THRESHOLD * 100}% of Trezor Suite instances. Your rollout score is ${((bridgeSettings.newBridgeRollout ?? 0) * 100).toFixed()}%`}
+                    />
+                </SectionItem>
+            )}
         </>
     );
 };
