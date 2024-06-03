@@ -8,7 +8,7 @@ import { setFlag } from 'src/actions/suite/suiteActions';
 import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 import { Account } from '@suite-common/wallet-types';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
-import { isSupportedNetworkSymbol } from '@suite-common/wallet-core';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -71,7 +71,7 @@ export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
         pathname !== '/accounts' ||
         stakeEthBannerClosed ||
         !account ||
-        !isSupportedNetworkSymbol(account.symbol)
+        !isSupportedEthStakingNetworkSymbol(account.symbol)
     ) {
         return null;
     }
