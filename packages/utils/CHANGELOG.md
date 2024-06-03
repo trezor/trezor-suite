@@ -1,3 +1,7 @@
+# 9.0.25-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 9.0.24
 
 -   chore: BigNumber wrapper (d18ba9a879)
