@@ -1,3 +1,7 @@
+# 1.0.10-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 1.0.8
 
 -   feat(protocol): separate chunking from encoding (2f445ba734)
