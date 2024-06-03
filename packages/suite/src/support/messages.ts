@@ -8751,7 +8751,7 @@ export default defineMessages({
     },
     TR_STAKE_DAYS: {
         id: 'TR_STAKE_DAYS',
-        defaultMessage: '{days} days',
+        defaultMessage: '{count, plural, one {# day} few {# days} other {# days}}',
     },
     TR_STAKE_MAX_REWARD_DAYS: {
         id: 'TR_STAKE_MAX_REWARD_DAYS',
