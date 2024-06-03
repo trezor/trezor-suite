@@ -1,15 +1,11 @@
 {
     "version": 1,
-    "timestamp": "2024-05-29T00:00:00+00:00",
-    "sequence": 56,
+    "timestamp": "2024-06-03T00:00:00+00:00",
+    "sequence": 57,
     "actions": [
         {
             "conditions": [
                 {
-                    "duration": {
-                        "from": "2024-05-15T00:00:00+00:00",
-                        "to": "2024-06-02T00:00:00+00:00"
-                    },
                     "environment": {
                         "desktop": ">=24.5.1",
                         "mobile": "!",
@@ -24,16 +20,16 @@
                 "variant": "warning",
                 "category": ["context"],
                 "content": {
-                    "en-GB": "Coinjoin will be discontinued in Trezor Suite on June 1st 2024. Your funds will remain accessible, and no action is needed.",
-                    "en": "Coinjoin will be discontinued in Trezor Suite on June 1st 2024. Your funds will remain accessible, and no action is needed.",
-                    "es": "Coinjoin dejará de funcionar en Trezor Suite el 1 de junio de 2024. Sus fondos seguirán siendo accesibles y no es necesario realizar ninguna acción.",
-                    "cs": "Od 1. června 2024 CoinJoin v Trezor Suite již nebude podporován. Vaše finanční prostředky zůstanou přístupné bez nutnosti dalších kroků.",
-                    "ru": "Coinjoin будет выключен в Trezor Suite 1 июня 2024 года. Ваши средства останутся доступными, и никаких действий предпринимать не нужно.",
-                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されます。お客様の資金は引き続きご利用いただけます。詳細はこちらをご覧ください",
-                    "hu": "A Coinjoin 2024. június 1-jén megszűnik a Trezor Suite-ban. Az Ön pénzeszközei továbbra is elérhetőek maradnak, és nincs szükség semmilyen intézkedésre.",
-                    "it": "Coinjoin sarà interrotto in Trezor Suite il 1° giugno 2024. I vostri fondi rimarranno accessibili e non è necessario alcun intervento.”",
-                    "fr": "Coinjoin sera désactivé dans Trezor Suite le 1er juin 2024. Vos fonds resteront accessibles et aucune action n'est nécessaire.",
-                    "de": "Coinjoin wird in der Trezor Suite am 1. Juni 2024 eingestellt. Ihre Gelder bleiben zugänglich, und es sind keine Maßnahmen erforderlich."
+                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
+                    "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Your funds will remain accessible, and no action is needed.",
+                    "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Sus fondos seguirán siendo accesibles y no es necesario realizar ninguna acción.",
+                    "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Vaše finanční prostředky zůstanou přístupné bez nutnosti dalších kroků.",
+                    "ru": "Coinjoin был прекращен в Trezor Suite 1 июня 2024 года. Ваши средства останутся доступными, и никаких действий предпринимать не нужно.",
+                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されました。お客様の資金は引き続きご利用いただけます。",
+                    "hu": "A Coinjoin 2024. június 1-jén megszűnt a Trezor Suite-ban. Az Ön pénzeszközei továbbra is elérhetőek maradnak, és nincs szükség semmilyen intézkedésre.",
+                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. I vostri fondi rimarranno accessibili e non è necessario alcun intervento.”",
+                    "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Vos fonds resteront accessibles et aucune action n'est nécessaire.",
+                    "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Ihre Gelder bleiben zugänglich, und es sind keine Maßnahmen erforderlich."
                 },
                 "cta": {
                     "action": "external-link",
@@ -57,10 +53,6 @@
         {
             "conditions": [
                 {
-                    "duration": {
-                        "from": "2024-05-15T00:00:00+00:00",
-                        "to": "2024-06-02T00:00:00+00:00"
-                    },
                     "environment": {
                         "desktop": "<24.5.1",
                         "mobile": "!",
@@ -75,16 +67,16 @@
                 "variant": "warning",
                 "category": ["context"],
                 "content": {
-                    "en-GB": "Coinjoin will be discontinued in Trezor Suite on 1st June 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
-                    "en": "Coinjoin will be discontinued in Trezor Suite on 1st June 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
-                    "es": "Coinjoin dejará de funcionar en Trezor Suite a partir del 1 de junio de 2024. Por favor, actualice a la última versión de Trezor Suite para asegurarse de que sus fondos siguen siendo accesibles.",
-                    "cs": "Od 1. června 2024 nebude již coinjoin v Trezor Suite podporován. Prosíme, aktualizujte Trezor Suite na nejnovější verzi pro zachování přístupu k vašim finančním prostředkům.",
-                    "ru": "Coinjoin будет прекращен в Trezor Suite 1 июня 2024 года. Пожалуйста, обновите Trezor Suite до последней версии, чтобы ваши средства оставались доступными.",
-                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されます。資金が引き続きアクセス可能であることを確認するために、最新版のTrezor Suiteにアップデートしてください。",
-                    "hu": "A Coinjoin 2024. június 1-jén megszűnik a Trezor Suite-ban. Kérjük, frissítsen a Trezor Suite legújabb verziójára, hogy pénzeszközei továbbra is elérhetőek maradjanak.",
-                    "it": "Coinjoin sarà interrotto in Trezor Suite il 1° giugno 2024. Si prega di aggiornare alla versione più recente di Trezor Suite per garantire che i fondi rimangano accessibili.",
-                    "fr": "Coinjoin sera retiré de Trezor Suite le 1er juin 2024. Veuillez mettre à jour la dernière version de Trezor Suite pour vous assurer que vos fonds restent accessibles.",
-                    "de": "Coinjoin wird in der Trezor Suite am 1. Juni 2024 eingestellt. Bitte aktualisieren Sie auf die neueste Version der Trezor Suite, um sicherzustellen, dass Sie weiterhin Zugriff auf Ihre Kryptowährungen haben."
+                    "en-GB": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
+                    "en": "Coinjoin was discontinued in Trezor Suite on June 1st, 2024. Please update to the latest version of Trezor Suite to ensure your funds remain accessible.",
+                    "es": "Coinjoin dejó de funcionar en Trezor Suite el 1 de junio de 2024. Por favor, actualice a la última versión de Trezor Suite para asegurarse de que sus fondos siguen siendo accesibles.",
+                    "cs": "Služba Coinjoin byla v Trezor Suite ukončena 1. června 2024. Prosíme, aktualizujte Trezor Suite na nejnovější verzi pro zachování přístupu k vašim finančním prostředkům.",
+                    "ru": "Coinjoin был прекращен в Trezor Suite 1 июня 2024 года. Пожалуйста, обновите Trezor Suite до последней версии, чтобы ваши средства оставались доступными.",
+                    "ja": "Coinjoinは2024年6月1日にTrezor Suiteで廃止されました。資金が引き続きアクセス可能であることを確認するために、最新版のTrezor Suiteにアップデートしてください。",
+                    "hu": "A Coinjoin 2024. június 1-jén megszűnt a Trezor Suite-ban. Kérjük, frissítsen a Trezor Suite legújabb verziójára, hogy pénzeszközei továbbra is elérhetőek maradjanak.",
+                    "it": "Coinjoin è stato interrotto in Trezor Suite il 1° giugno 2024. Si prega di aggiornare alla versione più recente di Trezor Suite per garantire che i fondi rimangano accessibili.",
+                    "fr": "Coinjoin a été supprimé dans Trezor Suite le 1er juin 2024. Veuillez mettre à jour la dernière version de Trezor Suite pour vous assurer que vos fonds restent accessibles.",
+                    "de": "Coinjoin wurde in der Trezor Suite am 1. Juni 2024 eingestellt. Bitte aktualisieren Sie auf die neueste Version der Trezor Suite, um sicherzustellen, dass Sie weiterhin Zugriff auf Ihre Kryptowährungen haben."
                 },
                 "cta": {
                     "action": "external-link",
