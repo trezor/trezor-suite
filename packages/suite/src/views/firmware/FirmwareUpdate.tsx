@@ -2,7 +2,7 @@ import { DeviceModelInternal } from '@trezor/connect';
 
 import { FirmwareInitial } from 'src/components/firmware';
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import { useDispatch, useFirmware } from 'src/hooks/suite';
+import { useDevice, useDispatch, useFirmware } from 'src/hooks/suite';
 import { FirmwareModal } from './FirmwareModal';
 
 type FirmwareUpdateProps = {
@@ -10,13 +10,16 @@ type FirmwareUpdateProps = {
 };
 
 export const FirmwareUpdate = ({ shouldSwitchFirmwareType = false }: FirmwareUpdateProps) => {
-    const { firmwareUpdate, getTargetFirmwareType, uiEvent } = useFirmware();
+    const { device } = useDevice();
+    const { firmwareUpdate, getTargetFirmwareType } = useFirmware();
     const dispatch = useDispatch();
 
-    const deviceModelInternal = uiEvent?.payload.device.features?.internal_model;
-    // Device will be wiped because Universal and Bitcoin-only firmware have different vendor headers on T2B1 or later devices.
+    const deviceModelInternal = device?.features?.internal_model;
+    // Device will be wiped because Universal and Bitcoin-only firmware have different vendor headers, except T1B1 and T2T1.
     const deviceWillBeWiped =
-        shouldSwitchFirmwareType && deviceModelInternal === DeviceModelInternal.T2B1;
+        shouldSwitchFirmwareType &&
+        deviceModelInternal &&
+        [DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal);
 
     const close = () => dispatch(closeModalApp());
     const installTargetFirmware = () =>
