@@ -1,0 +1,44 @@
+name: "[Release] suite coin icons"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  workflow_dispatch:
+  # schedule:
+  # Runs at midnight UTC every day at 01:00 AM CET
+  # - cron: "0 0 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  release-coin-icons:
+    environment: production-icons
+    runs-on: ubuntu-latest
+    env:
+      AWS_REGION: "eu-central-1"
+      AWS_CLOUDFRONT_ID: E1ERY5K2OTKKI1
+      COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production_icons
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Download crypto icons
+        run: |
+          yarn install
+          cd suite-common/icons
+          yarn download-crypto-icons
+
+      - name: Upload crypto icons
+        run: |
+          aws s3 sync suite-common/icons/files/cryptoIcons s3://data.trezor.io/suite/icons/coins
+          aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths '/suite/icons/coins/*'
