@@ -1,3 +1,7 @@
+# 1.1.30-beta.1
+
+-   ci: automate connect version table generation (a7089f7)
+
 # 1.1.29
 
 -   chore(transport): make Session type literal (72570f2219)
