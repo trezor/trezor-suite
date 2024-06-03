@@ -5,11 +5,13 @@ import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtil
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
+import {
+    isCoinmarketBuyOffers,
+    isCoinmarketSellOffers,
+    useCoinmarketOffersContext,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 
 const SummaryWrap = styled.div`
-    margin-top: -3px;
-    padding-left: 10px;
-
     ${SCREEN_QUERY.BELOW_TABLET} {
         padding-left: 0;
         margin-top: 0;
@@ -26,9 +28,7 @@ const StyledIcon = styled(Icon)`
     margin: 0 ${spacingsPx.lg};
 `;
 
-const Send = styled(H2)`
-    font-weight: ${variables.FONT_WEIGHT.REGULAR};
-
+const TextWrap = styled(H2)`
     ${SCREEN_QUERY.BELOW_TABLET} {
         font-size: ${variables.FONT_SIZE.H2};
     }
@@ -36,29 +36,53 @@ const Send = styled(H2)`
 
 const CoinmarketHeaderSummary = ({
     className,
-    wantCrypto,
     fiatAmount,
     fiatCurrency,
-    cryptoAmount,
     cryptoCurrency,
+    cryptoAmount,
 }: CoinmarketCryptoAmountProps) => {
-    // TODO: control for sell
+    const context = useCoinmarketOffersContext();
 
     return (
         <SummaryWrap className={className}>
             <SummaryRow>
-                <Send>
-                    <CoinmarketFiatAmount
-                        amount={!wantCrypto ? fiatAmount : ''}
-                        currency={fiatCurrency}
-                    />
-                </Send>
-                <StyledIcon icon="ARROW_RIGHT_LONG" />
-                <CoinmarketCryptoAmount
-                    amount={wantCrypto ? cryptoAmount : ''}
-                    symbol={cryptoToCoinSymbol(cryptoCurrency!)}
-                    displaySymbol
-                />
+                {isCoinmarketBuyOffers(context) && (
+                    <>
+                        <TextWrap>
+                            <CoinmarketFiatAmount
+                                amount={fiatAmount ?? ''}
+                                currency={fiatCurrency}
+                            />
+                        </TextWrap>
+                        <StyledIcon icon="ARROW_RIGHT_LONG" />
+                        {cryptoCurrency && (
+                            <TextWrap>
+                                <CoinmarketCryptoAmount
+                                    symbol={cryptoToCoinSymbol(cryptoCurrency)}
+                                    displayLogo
+                                />
+                            </TextWrap>
+                        )}
+                    </>
+                )}
+
+                {isCoinmarketSellOffers(context) && (
+                    <>
+                        {cryptoCurrency && (
+                            <TextWrap>
+                                <CoinmarketCryptoAmount
+                                    amount={cryptoAmount ?? ''}
+                                    symbol={cryptoToCoinSymbol(cryptoCurrency)}
+                                    displayLogo
+                                />
+                            </TextWrap>
+                        )}
+                        <StyledIcon icon="ARROW_RIGHT_LONG" />
+                        <TextWrap>
+                            <CoinmarketFiatAmount currency={fiatCurrency} />
+                        </TextWrap>
+                    </>
+                )}
             </SummaryRow>
         </SummaryWrap>
     );

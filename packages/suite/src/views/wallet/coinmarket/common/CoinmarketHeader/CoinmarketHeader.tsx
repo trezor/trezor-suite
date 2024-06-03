@@ -12,7 +12,7 @@ import {
     isCoinmarketBuyOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { getCryptoAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { getCryptoHeaderAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -75,29 +75,12 @@ interface CoinmarketHeaderProps {
     showTimerNextToTitle?: boolean;
 }
 
-/*
-    buy
-        fiatAmount
-            amount: !wantCrypto ? quotes[0].fiatStringAmount : ''
-            currency: quotes[0].fiatCurrency
-        cryptoAmount
-            amount: wantCrypto ? quotes[0].receiveStringAmount : ''
-            symbol: cryptoToCoinSymbol(quotes[0].receiveCurrency!)
-        coinSymbol: quotes[0].receiveCurrency!
-    sell
-        fiatAmount
-            amount: !amountInCrypto ? quotes[0].fiatStringAmount : ''
-            currency: quotes[0].fiatCurrency
-        cryptoAmount
-            amount: amountInCrypto ? quotes[0].cryptoStringAmount : ''
-            symbol: cryptoToCoinSymbol(quotes[0].receiveCurrency!)
-        coinSymbol: quotes[0].cryptoCurrency!
-*/
-
 const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: CoinmarketHeaderProps) => {
     const context = useCoinmarketOffersContext();
     const { timer } = context;
-    const headerProps = getCryptoAmountProps(context);
+    const headerProps = getCryptoHeaderAmountProps(context);
+
+    if (!headerProps) return null;
 
     const Timer = () => (
         <CoinmarketRefreshTime

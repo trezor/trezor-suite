@@ -18,7 +18,7 @@ const CoinmarketOffers = () => {
     return (
         <>
             <CoinmarketHeader
-                title="TR_BUY_SHOW_OFFERS"
+                title="TR_COINMARKET_SHOW_OFFERS"
                 titleTimer={
                     isCoinmarketSellOffers(context)
                         ? 'TR_SELL_OFFERS_REFRESH'
