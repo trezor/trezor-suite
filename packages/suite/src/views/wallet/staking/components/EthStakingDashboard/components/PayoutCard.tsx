@@ -48,7 +48,7 @@ export const PayoutCard = ({
                             values={{ days: BACKUP_REWARD_PAYOUT_DAYS }}
                         />
                     ) : (
-                        <Translation id="TR_STAKE_DAYS" values={{ days: payout }} />
+                        <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />
                     )}
                 </AccentP>
                 <GreyP>

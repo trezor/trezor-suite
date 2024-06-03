@@ -219,7 +219,7 @@ export const StakingCard = ({
                                         <Translation
                                             id="TR_STAKE_DAYS"
                                             values={{
-                                                days: daysToUnstake,
+                                                count: daysToUnstake,
                                             }}
                                         />
                                         )
