@@ -19,7 +19,7 @@ export const FirmwareUpdate = ({ shouldSwitchFirmwareType = false }: FirmwareUpd
     const deviceWillBeWiped =
         shouldSwitchFirmwareType &&
         deviceModelInternal &&
-        [DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModelInternal);
+        ![DeviceModelInternal.T1B1, DeviceModelInternal.T2T1].includes(deviceModelInternal);
 
     const close = () => dispatch(closeModalApp());
     const installTargetFirmware = () =>
