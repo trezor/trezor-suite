@@ -29,7 +29,7 @@ const LANGUAGES = {
     sk: { name: 'Slovenčina', en: 'Slovak' },
     sr: { name: 'Српски', en: 'Serbian' },
     sv: { name: 'Svenska', en: 'Swedish' },
-    tr: { name: 'Türkçe', en: 'Turkish' },
+    tr: { name: 'Türkçe', en: 'Turkish', type: 'community' },
     uk: { name: 'Українська', en: 'Ukrainian' },
     vi: { name: 'Tiếng Việt', en: 'Vietnamese' },
     'zh-CN': { name: '中文(简体)', en: 'Chinese Simplified' },
