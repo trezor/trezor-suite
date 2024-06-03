@@ -73,7 +73,7 @@ export class PopupManager extends EventEmitter {
         this.origin = getOrigin(settings.popupSrc);
         this.logger = logger;
 
-        if (this.settings.env === 'webextension') {
+        if (this.isWebExtensionWithTab()) {
             this.channel = new ServiceWorkerWindowChannel<CoreEventMessage>({
                 name: 'trezor-connect',
                 channel: {
@@ -121,7 +121,7 @@ export class PopupManager extends EventEmitter {
             // Core mode
             this.handshakePromise = createDeferred();
             this.channel.on('message', this.handleCoreMessage.bind(this));
-        } else if (this.settings.env === 'webextension') {
+        } else if (this.isWebExtensionWithTab()) {
             // Webextension iframe
             this.channel.on('message', this.handleExtensionMessage.bind(this));
         } else {
@@ -210,7 +210,7 @@ export class PopupManager extends EventEmitter {
     }
 
     openWrapper(url: string) {
-        if (this.settings.env === 'webextension') {
+        if (this.isWebExtensionWithTab()) {
             chrome.windows.getCurrent(currentWindow => {
                 this.logger.debug('opening popup. currentWindow: ', currentWindow);
                 // Request coming from extension popup,
@@ -446,5 +446,15 @@ export class PopupManager extends EventEmitter {
         } else if (this.popupWindow?.mode === 'tab') {
             this.channel.postMessage(message);
         }
+    }
+
+    private isWebExtensionWithTab() {
+        // Check if webextension actually has access to chrome.tabs API
+        // This is not the case when used in offscreen context
+        return (
+            this.settings?.env === 'webextension' &&
+            typeof chrome !== 'undefined' &&
+            typeof chrome?.tabs !== 'undefined'
+        );
     }
 }
