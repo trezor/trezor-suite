@@ -3,20 +3,22 @@ import { Link } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { selectContextMessageContent, Context } from '@suite-common/message-system';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
-import { Account } from 'src/types/wallet';
+import styled from 'styled-components';
 
-type CoinjoinContextMessageProps = {
-    account?: Account;
+type ContextMessageProps = {
+    context: (typeof Context)[keyof typeof Context];
 };
 
-export const CoinjoinContextMessage = ({ account }: CoinjoinContextMessageProps) => {
-    const language = useSelector(selectLanguage);
-    const message = useSelector(state =>
-        selectContextMessageContent(state, Context.coinjoin, language),
-    );
+const StyledNotificationCard = styled(NotificationCard)`
+    margin-bottom: 0;
+`;
 
-    return account?.accountType === 'coinjoin' && message ? (
-        <NotificationCard
+export const ContextMessage = ({ context }: ContextMessageProps) => {
+    const language = useSelector(selectLanguage);
+    const message = useSelector(state => selectContextMessageContent(state, context, language));
+
+    return message ? (
+        <StyledNotificationCard
             button={
                 message.cta
                     ? {
@@ -31,6 +33,6 @@ export const CoinjoinContextMessage = ({ account }: CoinjoinContextMessageProps)
             variant={message.variant === 'critical' ? 'destructive' : message.variant}
         >
             {message.content}
-        </NotificationCard>
+        </StyledNotificationCard>
     ) : null;
 };

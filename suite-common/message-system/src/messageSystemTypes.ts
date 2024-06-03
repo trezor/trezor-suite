@@ -25,6 +25,7 @@ export type FeatureDomain = (typeof Feature)[keyof typeof Feature];
 
 export const Context = {
     coinjoin: 'accounts.coinjoin',
+    ethStaking: 'accounts.eth.staking',
 } as const;
 
 export type ContextDomain = (typeof Context)[keyof typeof Context];
