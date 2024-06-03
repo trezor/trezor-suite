@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Button, Card, Icon, Paragraph, Row, variables } from '@trezor/components';
+import { Button, Card, Icon, Paragraph, Row, Tooltip, variables } from '@trezor/components';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, StakingFeature } from 'src/components/suite';
 import { openModal } from 'src/actions/suite/modalActions';
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.xl} ${spacingsPx.xl} ${spacingsPx.xxl};
@@ -40,6 +41,7 @@ const FlexRow = styled.div`
 
     ${variables.SCREEN_QUERY.BELOW_DESKTOP} {
         flex-direction: column;
+        gap: 12px;
     }
 `;
 
@@ -47,14 +49,23 @@ const FlexRowChild = styled.div`
     flex: 1 0 200px;
 `;
 
+const StyledTooltip = styled(Tooltip)`
+    width: fit-content;
+`;
+
 export const EmptyStakingCard = () => {
     const theme = useTheme();
     const account = useSelector(selectSelectedAccount);
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking();
+
     const ethApy = useSelector(state => selectPoolStatsApyData(state, account?.symbol));
 
     const dispatch = useDispatch();
-    const openStakingEthInANutshellModal = () =>
-        dispatch(openModal({ type: 'stake-eth-in-a-nutshell' }));
+    const openStakingEthInANutshellModal = () => {
+        if (!isStakingDisabled) {
+            dispatch(openModal({ type: 'stake-eth-in-a-nutshell' }));
+        }
+    };
 
     const stakeEthFeatures = useMemo(
         () => [
@@ -127,9 +138,15 @@ export const EmptyStakingCard = () => {
                     </FlexRow>
 
                     {/* TODO: Add arrow line down icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
-                    <Button onClick={openStakingEthInANutshellModal}>
-                        <Translation id="TR_STAKE_START_STAKING" />
-                    </Button>
+                    <StyledTooltip content={stakingMessageContent}>
+                        <Button
+                            onClick={openStakingEthInANutshellModal}
+                            isDisabled={isStakingDisabled}
+                            icon={isStakingDisabled ? 'INFO' : undefined}
+                        >
+                            <Translation id="TR_STAKE_START_STAKING" />
+                        </Button>
+                    </StyledTooltip>
                 </Body>
             </StyledCard>
         </DashboardSection>

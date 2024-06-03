@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
@@ -10,6 +10,7 @@ import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { Inputs } from './Inputs';
 import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
 import { AvailableBalance } from '../AvailableBalance';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const Body = styled.div`
     margin-bottom: ${spacingsPx.xl};
@@ -45,6 +46,8 @@ export const StakeEthForm = () => {
         signTx,
         isLoading,
     } = useStakeEthFormContext();
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking();
+
     const { formattedBalance, symbol } = account;
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
@@ -93,15 +96,17 @@ export const StakeEthForm = () => {
 
                     <StakeFees />
                 </Body>
-
-                <Button
-                    isFullWidth
-                    isDisabled={isDisabled}
-                    isLoading={isComposing || isSubmitting}
-                    onClick={handleSubmit(onSubmit)}
-                >
-                    <Translation id="TR_CONTINUE" />
-                </Button>
+                <Tooltip content={stakingMessageContent}>
+                    <Button
+                        isFullWidth
+                        isDisabled={isDisabled || isStakingDisabled}
+                        isLoading={isComposing || isSubmitting}
+                        onClick={handleSubmit(onSubmit)}
+                        icon={isStakingDisabled ? 'INFO' : undefined}
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </Button>
+                </Tooltip>
             </form>
         </>
     );
