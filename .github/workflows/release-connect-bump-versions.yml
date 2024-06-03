@@ -41,4 +41,4 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
         run: |
-          node ./ci/scripts/connect-bump-versions.js ${{ github.event.inputs.semver }}
+          yarn tsx ./ci/scripts/connect-bump-versions.ts ${{ github.event.inputs.semver }}

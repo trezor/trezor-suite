@@ -155,6 +155,7 @@
         { "path": "packages/request-manager" },
         { "path": "packages/schema-utils" },
         { "path": "scripts" },
+        { "path": "ci/scripts" },
         { "path": "packages/styles" },
         { "path": "packages/suite" },
         { "path": "packages/suite-analytics" },

@@ -1,11 +1,10 @@
 // This script should check what packages are from the repository have different most recent version in NPM
 // as the on e in the package.json and trigger the workflow to release to NPM those packages.
 
-import { exec } from './helpers';
+import { exec, gettingNpmDistributionTags } from './helpers';
 import fs from 'fs';
 import util from 'util';
 import path from 'path';
-import fetch from 'cross-fetch';
 import semver from 'semver';
 
 const args = process.argv.slice(2);
@@ -26,7 +25,7 @@ const readFile = util.promisify(fs.readFile);
 
 const ROOT = path.join(__dirname, '..', '..');
 
-const triggerReleaseNpmWorkflow = (branch, packages, type) =>
+const triggerReleaseNpmWorkflow = (branch: string, packages: string, type: 'stable' | 'canary') =>
     exec('gh', [
         'workflow',
         'run',
@@ -40,18 +39,9 @@ const triggerReleaseNpmWorkflow = (branch, packages, type) =>
     ]);
 
 const getNpmRemoteGreatestVersion = async (moduleName: string) => {
-    const [_prefix] = moduleName.split('/');
-    const npmRegistryUrl = `https://registry.npmjs.org/${moduleName}`;
-
     try {
-        console.log(`fetching npm registry info from: ${npmRegistryUrl}`);
-        const response = await fetch(npmRegistryUrl);
-        const data = await response.json();
-        if (data.error) {
-            return { success: false };
-        }
+        const distributionTags = await gettingNpmDistributionTags(moduleName);
 
-        const distributionTags = data['dist-tags'];
         const versionArray: string[] = Object.values(distributionTags);
         const greatestVersion = versionArray.reduce((max, current) => {
             return semver.gt(current, max) ? current : max;
