@@ -98,6 +98,7 @@ export class PopupManager extends EventEmitter {
                 },
                 logger,
                 origin: this.origin,
+                legacyMode: !this.settings.useCoreInPopup,
             });
         }
 
@@ -349,6 +350,7 @@ export class PopupManager extends EventEmitter {
             if (this.openTimeout) clearTimeout(this.openTimeout);
             if (this.popupPromise) {
                 this.popupPromise.resolve();
+                this.popupPromise = undefined;
             }
             // popup is successfully loaded
             this.iframeHandshakePromise?.promise.then(payload => {
@@ -363,7 +365,11 @@ export class PopupManager extends EventEmitter {
                     },
                 });
             });
-        } else if (data.type === POPUP.CANCEL_POPUP_REQUEST || data.type === UI.CLOSE_UI_WINDOW) {
+        } else if (data.type === POPUP.CANCEL_POPUP_REQUEST) {
+            if (this.popupPromise) {
+                this.close();
+            }
+        } else if (data.type === UI.CLOSE_UI_WINDOW) {
             this.clear(false);
         }
     }

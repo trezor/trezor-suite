@@ -26,7 +26,8 @@ export class WindowWindowChannel<
         channel,
         logger,
         origin,
-    }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger'> & {
+        legacyMode,
+    }: Pick<AbstractMessageChannelConstructorParams, 'channel' | 'logger' | 'legacyMode'> & {
         windowHere: Window;
         // specific peer can change over time, for example when different popup is opened
         // therefore it's a function that returns the current peer
@@ -39,6 +40,7 @@ export class WindowWindowChannel<
                 windowPeer()?.postMessage(message, origin);
             },
             logger,
+            legacyMode,
         });
 
         this._listener = this.listener.bind(this);
