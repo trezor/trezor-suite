@@ -20,6 +20,7 @@ on:
       - ".github/workflows/build-desktop*"
       - ".github/workflows/release*"
       - ".github/workflows/template*"
+      - ".github/actions/release*/**"
 
 env:
   DEV_SERVER_URL: "https://dev.suite.sldev.cz"
