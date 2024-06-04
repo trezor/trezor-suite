@@ -252,7 +252,7 @@ export const CollapsibleOnboardingCard = ({
 
                             {description && (
                                 <Description $hasChildren={!!children}>
-                                    <Text typographyStyle="callout">{description}</Text>
+                                    <Text typographyStyle="hint">{description}</Text>
                                 </Description>
                             )}
 
