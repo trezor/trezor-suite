@@ -4,7 +4,7 @@
 | npm @trezor/connect-web          | 9.2.4  | -      |
 | npm @trezor/connect-webextension | 9.2.4  | -      |
 
-| Package             | Stable | Canary |
+| Deployment          | Stable | Canary |
 | ------------------- | ------ | ------ |
 | connect.trezor.io/9 | 9.2.4  | -      |
 
