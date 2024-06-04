@@ -1,27 +1,84 @@
 name: "[Release] Connect NPM"
 on:
   workflow_dispatch:
-    inputs:
-      packages:
-        description: 'Array string with names of the packages to deploy. (example: ["blockchain-link-utils","blockchain-link-types","analytics"])'
-        required: true
-        type: string
-      deploymentType:
-        description: "Specifies the deployment type for the npm package. (example: canary, stable)"
-        required: true
-        type: choice
-        options:
-          - canary
-          - stable
 
 jobs:
-  deploy-npm:
-    name: Deploy NPM ${{ inputs.deploymentType }}
+  extract-version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set-version.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Number of commits to fetch. 0 indicates all history for all branches and tags.
+          fetch-depth: 0
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Extract connect version
+        id: set-version
+        run: echo "version=$(node ./ci/scripts/get-connect-version.js)" >> $GITHUB_OUTPUT
+
+  sanity-check-version-match:
+    runs-on: ubuntu-latest
+    needs: [extract-version]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check connect version match
+        uses: ./.github/actions/check-connect-version-match
+        with:
+          branch_ref: "${{ github.ref }}"
+          extracted_version: "${{ needs.extract-version.outputs.version }}"
+
+  identify-release-packages:
+    runs-on: ubuntu-latest
+    needs: [extract-version, sanity-check-version-match]
+    outputs:
+      packagesNeedRelease: ${{ steps.set-packages-need-release.outputs.packagesNeedRelease }}
+      deploymentType: ${{ steps.determine-deployment-type.outputs.deploymentType }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Get packages that need release
+        id: set-packages-need-release
+        run: echo "packagesNeedRelease=$(yarn tsx ./ci/scripts/get-connect-dependencies-to-release.ts)" >> $GITHUB_OUTPUT
+
+      - name: Determine Deployment Type from version in branch
+        id: determine-deployment-type
+        outputs:
+          deploymentType: ${{ steps.determine-deployment-type.outputs.deploymentType }}
+        run: echo "deploymentType=$(yarn tsx ./ci/scripts/determine-deployment-type.ts ${{ needs.extract-version.outputs.version }})" >> $GITHUB_OUTPUT
+
+      - name: Sanity Check - All Packages Same Deployment Type
+        env:
+          PACKAGES: ${{ steps.set-packages-need-release.outputs.packagesNeedRelease }}
+          DEPLOYMENT_TYPE: ${{ steps.determine-deployment-type.outputs.deploymentType }}
+        run: |
+          yarn tsx ./ci/scripts/check-packages-same-deployment-type.ts '${{ env.PACKAGES }}' "${{ env.DEPLOYMENT_TYPE }}"
+
+  deploy-npm-connect-dependencies:
+    name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
+    needs: [extract-version, sanity-check-version-match, identify-release-packages]
     environment: production-connect
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        package: ${{ fromJson(github.event.inputs.packages) }}
+        package: ${{ fromJson(needs.identify-release-packages.outputs.packagesNeedRelease) }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -30,12 +87,41 @@ jobs:
       - name: Set deployment type
         id: set_deployment_type
         run: |
-          if [ "${{ github.event.inputs.deploymentType }}" == "canary" ]; then
+          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
             echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
           else
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
           fi
+      - name: Deploy to NPM ${{ matrix.package }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        uses: ./.github/actions/release-connect-npm
+        with:
+          deploymentType: ${{ env.DEPLOYMENT_TYPE }}
+          packageName: ${{ matrix.package }}
 
+  deploy-npm-connect:
+    name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
+    # We only deploy connect NPM once dependencies have been deployed successfully.
+    needs: [deploy-npm-connect-dependencies]
+    environment: production-connect
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ["connect", "connect-web", "connect-webextension"]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+      - name: Set deployment type
+        id: set_deployment_type
+        run: |
+          if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
+            echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
+          else
+            echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
+          fi
       - name: Deploy to NPM ${{ matrix.package }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
