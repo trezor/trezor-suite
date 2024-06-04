@@ -1,0 +1,44 @@
+name: "[WIP] just for testing"
+
+on:
+  pull_request:
+    paths:
+      - ".github/workflows/wip.yml"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  bump-versions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          ref: ${{ github.head_ref }}
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Build dependencies
+        run: yarn build:libs
+
+      - name: Debug Git State
+        run: |
+          git status
+          git log -3
+          git branch
+          git log -1 --format="%H"
+          git branch --show-current
+          git rev-parse --abbrev-ref HEAD
+
+      - name: Test script
+        run: |
+          yarn tsx ./ci/scripts/wip-test-packages.ts prerelease

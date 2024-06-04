@@ -133,7 +133,7 @@ const getLocalAndRemoteChecksums = async moduleName => {
         const greatestSemver =
             betaVersion && semver.gt(betaVersion, latestVersion) ? betaVersion : latestVersion;
 
-        console.log(`greatest remove version in npm registry: ${greatestSemver}`);
+        console.log(`greatest remote version in npm registry: ${greatestSemver}`);
 
         const tarballUrl = data.versions[greatestSemver].dist.tarball;
 
