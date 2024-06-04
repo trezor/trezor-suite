@@ -4,7 +4,7 @@ import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
-import { Form, TextInputField, useForm } from '@suite-native/forms';
+import { Form, SecureTextInputField, useForm } from '@suite-native/forms';
 import {
     passphraseFormSchema,
     PassphraseFormValues,
@@ -87,7 +87,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
         <Form form={form}>
             <Card style={applyStyle(cardStyle)}>
                 <VStack style={applyStyle(formStyle)}>
-                    <TextInputField
+                    <SecureTextInputField
                         label={inputLabel}
                         name="passphrase"
                         maxLength={formInputsMaxLength.passphrase}
