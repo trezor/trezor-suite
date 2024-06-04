@@ -7,6 +7,8 @@ import { openApp } from '../utils';
 import { onOnboarding } from '../pageObjects/onboardingActions';
 
 const TREZOR_DEVICE_LABEL = 'Trezor T - Tester';
+// Contains only one BTC account with a single transaction to make the discovery as fast as possible.
+const SIMPLE_SEED = 'immune enlist rule measure fan swarm mandate track point menu security fan';
 const platform = device.getPlatform();
 
 describe('Go through onboarding and connect Trezor.', () => {
@@ -16,7 +18,10 @@ describe('Go through onboarding and connect Trezor.', () => {
             await TrezorUserEnvLink.api.trezorUserEnvDisconnect();
             await TrezorUserEnvLink.api.trezorUserEnvConnect();
             await TrezorUserEnvLink.api.startEmu({ wipe: true });
-            await TrezorUserEnvLink.api.setupEmu({ label: TREZOR_DEVICE_LABEL });
+            await TrezorUserEnvLink.api.setupEmu({
+                label: TREZOR_DEVICE_LABEL,
+                mnemonic: SIMPLE_SEED,
+            });
             await TrezorUserEnvLink.api.startBridge();
             await TrezorUserEnvLink.api.stopEmu();
         }
@@ -31,18 +36,11 @@ describe('Go through onboarding and connect Trezor.', () => {
         await device.terminateApp();
     });
 
-    it('Redirect from first to second screen', async () => {
+    it('Navigate to dashboard', async () => {
         await onOnboarding.finishOnboarding();
 
         if (platform === 'android') {
-            device.disableSynchronization();
             await TrezorUserEnvLink.api.startEmu();
-
-            await waitFor(element(by.id('skip-view-only-mode')))
-                .toBeVisible()
-                .withTimeout(60000); // communication between connected Trezor and app takes some time.
-
-            await element(by.id('skip-view-only-mode')).tap();
 
             await waitFor(element(by.text(TREZOR_DEVICE_LABEL)))
                 .toBeVisible()
