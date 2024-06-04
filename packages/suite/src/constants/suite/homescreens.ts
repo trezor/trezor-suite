@@ -65,12 +65,10 @@ export const homescreens = {
     ],
     [DeviceModelInternal.T3T1]: [
         'original_t3t1', // note - has to be first
-        'trezor-3d',
-        'pigeon',
-        'smile-1',
-        'stain-1',
-        'stain-2',
-        'stain-3',
+        'gradient',
+        'green',
+        'orange',
+        'solid',
         'smile-2',
     ],
 } as const;
