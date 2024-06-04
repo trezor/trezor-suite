@@ -276,13 +276,11 @@ export class TrezordNode {
             ]);
 
             app.get('/status-data', [
-                async (_req, res) => {
-                    const enumerateResult = await this.api.enumerate();
-
+                (_req, res) => {
                     const props = {
                         intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
                         version: this.version,
-                        devices: enumerateResult.success ? enumerateResult.payload.descriptors : [],
+                        devices: this.descriptors,
                         logs: this.logger.getLog(),
                     };
 
