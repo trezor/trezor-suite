@@ -43,6 +43,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
 
     // whenever low-level api reports changes to descriptors, report them to sessions module
     api.on('transport-interface-change', descriptors => {
+        logger?.debug(`core: transport-interface-change ${JSON.stringify(descriptors)}`);
         sessionsClient.enumerateDone({ descriptors });
     });
 
@@ -72,15 +73,24 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
 
     const readUtil = async ({ path }: { path: string }) => {
         try {
-            const { messageType, payload } = await receiveUtil(
-                () =>
-                    api.read(path).then(result => {
-                        if (result.success) {
-                            return result.payload;
-                        }
-                        throw new Error(result.error);
-                    }),
-                protocolV1,
+            const { messageType, payload } = await receiveUtil(() => {
+                logger?.debug(`core: readUtil: api.read: reading next chunk`);
+
+                return api.read(path).then(result => {
+                    if (result.success) {
+                        logger?.debug(
+                            `core: readUtil partial result: byteLength: ${result.payload.byteLength}`,
+                        );
+
+                        return result.payload;
+                    }
+                    logger?.debug(`core: readUtil partial result: error: ${result.error}`);
+                    throw new Error(result.error);
+                });
+            }, protocolV1);
+
+            logger?.debug(
+                `core: readUtil result: messageType: ${messageType} byteLength: ${payload?.byteLength}`,
             );
 
             return {
@@ -88,6 +98,8 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
                 payload: protocolBridge.encode(payload, { messageType }).toString('hex'),
             };
         } catch (err) {
+            logger?.debug(`core: readUtil catch: ${err.message}`);
+
             return { success: false as const, error: err.message as string };
         }
     };
@@ -135,6 +147,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         }
 
         const openDeviceResult = await api.openDevice(acquireInput.path, true);
+        logger?.debug(`core: openDevice: result: ${JSON.stringify(openDeviceResult)}`);
 
         if (!openDeviceResult.success) {
             return openDeviceResult;
@@ -159,23 +172,36 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
     };
 
     const call = async ({ session, data }: { session: Session; data: string }) => {
+        logger?.debug(`core: call: session: ${session}`);
+
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
         if (!sessionsResult.success) {
+            logger?.error(`core: call: retrieving path error: ${sessionsResult.error}`);
+
             return sessionsResult;
         }
         const { path } = sessionsResult.payload;
+        logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
         const openResult = await api.openDevice(path, false);
+
         if (!openResult.success) {
+            logger?.error(`core: call: api.openDevice error: ${openResult.error}`);
+
             return openResult;
         }
+        logger?.debug(`core: call: api.openDevice done`);
 
+        logger?.debug('core: call: writeUtil');
         const writeResult = await writeUtil({ path, data });
         if (!writeResult.success) {
+            logger?.error(`core: call: writeUtil ${writeResult.error}`);
+
             return writeResult;
         }
+        logger?.debug('core: call: readUtil');
 
         return readUtil({ path });
     };

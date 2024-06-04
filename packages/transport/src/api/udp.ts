@@ -27,7 +27,7 @@ export class UdpApi extends AbstractApi {
         >(resolve => {
             this.interface.send(buffer, Number.parseInt(port, 10), hostname, err => {
                 if (err) {
-                    this.logger.error(err.message);
+                    this.logger?.error(err.message);
 
                     return resolve(
                         this.error({
@@ -62,7 +62,7 @@ export class UdpApi extends AbstractApi {
             >
         >(resolve => {
             const onError = (err: Error) => {
-                this.logger.error(err.message);
+                this.logger?.error(err.message);
 
                 resolve(
                     this.error({

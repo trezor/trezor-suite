@@ -70,6 +70,7 @@ const init = async () => {
 
     // Logger
     const logger = new Logger();
+
     global.logger = logger;
 
     logger.info('main', `Application starting`);

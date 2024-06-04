@@ -34,18 +34,12 @@ export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-change': DescriptorApiLevel[];
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
-    protected logger: Logger;
+    protected logger?: Logger;
 
     constructor({ logger }: AbstractApiConstructorParams) {
         super();
 
-        // some abstract inactive logger
-        this.logger = logger || {
-            debug: (..._args: string[]) => {},
-            log: (..._args: string[]) => {},
-            warn: (..._args: string[]) => {},
-            error: (..._args: string[]) => {},
-        };
+        this.logger = logger;
     }
     /**
      * enumerate connected devices
@@ -130,6 +124,8 @@ export abstract class AbstractApi extends TypedEmitter<{
     }
 
     protected unknownError<E extends AnyError>(err: Error, expectedErrors: E[]) {
+        this.logger?.error('transport: abstract api: unknown error', err);
+
         return unknownError(err, expectedErrors);
     }
 }

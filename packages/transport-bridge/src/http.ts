@@ -64,6 +64,10 @@ export class TrezordNode {
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
         this.descriptors = descriptors;
 
+        this.logger?.debug(
+            `http: resolving listen subscriptions. n of subscriptions: ${this.listenSubscriptions.length}`,
+        );
+
         if (!this.listenSubscriptions.length) {
             return;
         }
@@ -71,6 +75,10 @@ export class TrezordNode {
         const [affected, unaffected] = arrayPartition(this.listenSubscriptions, subscription => {
             return JSON.stringify(subscription.descriptors) !== JSON.stringify(this.descriptors);
         });
+
+        this.logger?.debug(
+            `http: affected subscriptions ${affected.length}. unaffected subscriptions ${unaffected.length}`,
+        );
 
         affected.forEach(subscription => {
             subscription.res.end(str(this.descriptors));
@@ -81,6 +89,9 @@ export class TrezordNode {
     public start() {
         // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
         sessionsClient.on('descriptors', descriptors => {
+            this.logger?.debug(
+                `http: sessionsClient reported descriptors: ${JSON.stringify(descriptors)}`,
+            );
             this.throttler.throttle('resolve-listen-subscriptions', () => {
                 return this.resolveListenSubscriptions(descriptors);
             });
