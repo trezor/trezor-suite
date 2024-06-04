@@ -17,6 +17,7 @@ export type Descriptor = DescriptorApiLevel & {
 };
 
 export interface Logger {
+    info(...args: any): void;
     debug(...args: any): void;
     log(...args: any): void;
     warn(...args: any): void;

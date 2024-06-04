@@ -144,7 +144,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * and instance of logger from @trezor/connect/src/utils/debug could be passed to activate logs from transport
      */
-    protected logger: Logger;
+    protected logger?: Logger;
 
     constructor(params: AbstractTransportParams) {
         const { messages, signal, logger } = params || {};
@@ -161,13 +161,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         );
         signal.addEventListener('abort', abort);
 
-        // some abstract inactive logger
-        this.logger = logger || {
-            debug: (..._args: string[]) => {},
-            log: (..._args: string[]) => {},
-            warn: (..._args: string[]) => {},
-            error: (..._args: string[]) => {},
-        };
+        this.logger = logger;
     }
 
     /**
@@ -414,7 +408,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
             return;
         }
         const diff = this.getDiff(nextDescriptors);
-        this.logger.debug('nextDescriptors', nextDescriptors, 'diff', diff);
+        this.logger?.debug('nextDescriptors', nextDescriptors, 'diff', diff);
 
         if (!diff.didUpdate) {
             return;
@@ -483,7 +477,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
     }
 
     protected unknownError = <E extends AnyError>(err: Error | string, expectedErrors: E[]) => {
-        this.logger.error(this.name, 'unexpected error: ', err);
+        this.logger?.error(this.name, 'unexpected error: ', err);
 
         return unknownError(typeof err !== 'string' ? err : new Error(err), expectedErrors);
     };
