@@ -2413,11 +2413,6 @@ export default defineMessages({
         description: 'Device status',
         id: 'TR_CONNECTED',
     },
-    TR_CONTACT_OUR_SUPPORT_LINK: {
-        defaultMessage: 'contact Trezor support',
-        description: 'Part of sentence TR_DID_YOU_PURCHASE. Link to support',
-        id: 'TR_CONTACT_OUR_SUPPORT_LINK',
-    },
     TR_CONTACT_SUPPORT: {
         defaultMessage: 'Contact support',
         description: 'Button to click to contact support',
@@ -3314,11 +3309,6 @@ export default defineMessages({
         defaultMessage: 'Trans. ID:',
         id: 'TR_SPEND_TRANS_ID',
     },
-    TR_PACKAGING_LINK: {
-        defaultMessage: 'here',
-        description: 'Part of sentence TR_DID_YOU_PURCHASE. Link to support',
-        id: 'TR_PACKAGING_LINK',
-    },
     TR_PASSPHRASE_CASE_SENSITIVE: {
         defaultMessage: 'Note: Passphrase is case-sensitive.',
         id: 'TR_PASSPHRASE_CASE_SENSITIVE',
@@ -3460,12 +3450,6 @@ export default defineMessages({
         defaultMessage:
             'Stores wallet for watch-only mode. You will see your wallet even if your Trezor is disconnected.',
         id: 'TR_REMEMBER_ALLOWS_YOU_TO',
-    },
-    TR_RESELLERS_LINK: {
-        defaultMessage: 'our trusted resellers',
-        description:
-            'Part of sentence TR_DID_YOU_PURCHASE. Link to page with trusted resellers list',
-        id: 'TR_RESELLERS_LINK',
     },
     TR_RETRY: {
         defaultMessage: 'Retry',
@@ -6073,10 +6057,6 @@ export default defineMessages({
     FEE_LEVEL_NORMAL: {
         defaultMessage: 'Normal',
         id: 'FEE_LEVEL_NORMAL',
-    },
-    FEE_LEVEL_ECONOMY: {
-        defaultMessage: 'Economy',
-        id: 'FEE_LEVEL_ECONOMY',
     },
     FEE_LEVEL_LOW: {
         defaultMessage: 'Low',
@@ -8985,10 +8965,6 @@ export default defineMessages({
         id: 'TR_STAKE_REWARDS',
         defaultMessage: 'Rewards',
     },
-    TR_STAKE_WAITING_TO_BE_ADDED: {
-        id: 'TR_STAKE_WAITING_TO_BE_ADDED',
-        defaultMessage: 'Your {symbol} is waiting to be added {br} to the staking pool.',
-    },
     TR_TX_CONFIRMED: {
         id: 'TR_TX_CONFIRMED',
         defaultMessage: 'Transaction confirmed',
@@ -9084,10 +9060,6 @@ export default defineMessages({
     TR_STAKE_TOTAL_PENDING: {
         id: 'TR_STAKE_TOTAL_PENDING',
         defaultMessage: 'Total stake pending:',
-    },
-    TR_STAKE_LAST_STAKE_REQUEST_STATE: {
-        id: 'TR_STAKE_LAST_STAKE_REQUEST_STATE',
-        defaultMessage: 'Last stake request',
     },
     TR_STAKE_UNSTAKING: {
         id: 'TR_STAKE_UNSTAKING',
@@ -9185,10 +9157,6 @@ export default defineMessages({
         id: 'TR_VIEW_ONLY_RADIOS_DISABLED_DESCRIPTION',
         defaultMessage:
             'Balances & transactions <strong>aren’t visible</strong> in the app after Trezor is disconnected.',
-    },
-    TR_VIEW_ONLY_RADIOS_CONFIRM: {
-        id: 'TR_VIEW_ONLY_RADIOS_CONFIRM',
-        defaultMessage: 'Confirm',
     },
     TR_VIEW_ONLY_SEND_COINS_INFO: {
         id: 'TR_VIEW_ONLY_SEND_COINS_INFO',
