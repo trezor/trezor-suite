@@ -9414,9 +9414,11 @@ __metadata:
   resolution: "@suite-native/forms@workspace:suite-native/forms"
   dependencies:
     "@hookform/resolvers": "npm:3.3.4"
+    "@suite-common/icons": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.50.1"
+    react-native: "npm:0.74.1"
     yup: "npm:^1.4.0"
   languageName: unknown
   linkType: soft
