@@ -51,18 +51,4 @@ export const useFeatureRequestsPassphrase = () => {
             );
         }
     }, [buttonRequestCodes, device, dispatch, navigation]);
-
-    const handleFeatureRequestsPassphrase = useCallback(() => {
-        navigation.navigate(RootStackRoutes.PassphraseStack, {
-            screen: PassphraseStackRoutes.PassphraseFeatureUnlockScreen,
-        });
-    }, [navigation]);
-
-    useEffect(() => {
-        TrezorConnect.on('ui-request_passphrase', () => {
-            handleFeatureRequestsPassphrase();
-        });
-
-        return TrezorConnect.off('ui-request_passphrase', handleFeatureRequestsPassphrase);
-    }, [handleFeatureRequestsPassphrase]);
 };
