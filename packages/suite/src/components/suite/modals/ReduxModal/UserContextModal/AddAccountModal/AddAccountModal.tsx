@@ -6,7 +6,7 @@ import { arrayPartition } from '@trezor/utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Button, CoinLogo, CollapsibleBox } from '@trezor/components';
 import { FirmwareType } from '@trezor/connect';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { Translation, Modal, CoinList } from 'src/components/suite';
 import { NETWORKS } from 'src/config/wallet';
 import { Account, Network } from 'src/types/wallet';
@@ -35,10 +35,6 @@ const CoinLogoWrapper = styled.span`
     display: inline;
     margin-right: ${spacingsPx.xxs};
     vertical-align: text-top;
-`;
-
-const StyledCollapsibleBox = styled(CollapsibleBox)`
-    margin-top: ${spacingsPx.md};
 `;
 
 interface AddAccountProps {
@@ -223,16 +219,17 @@ export const AddAccountModal = ({ device, onCancel, symbol, noRedirect }: AddAcc
                               />
                           </NetworksWrapper>
                           {!!disabledTestnetNetworks.length && (
-                              <StyledCollapsibleBox
+                              <CollapsibleBox
                                   heading={<Translation id="TR_TESTNET_COINS" />}
                                   data-test="@modal/account/activate_more_coins"
+                                  margin={{ top: spacings.md }}
                               >
                                   <CoinList
                                       onToggle={selectNetwork}
                                       networks={disabledTestnetNetworks}
                                       selectedNetworks={selectedNetworks}
                                   />
-                              </StyledCollapsibleBox>
+                              </CollapsibleBox>
                           )}
                       </>
                   ),

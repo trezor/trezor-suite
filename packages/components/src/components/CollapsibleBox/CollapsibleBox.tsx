@@ -60,6 +60,8 @@ type CollapsibleBoxCommon = {
     hasDivider?: boolean;
     margin?: FrameProps['margin'];
     'data-test'?: string;
+    /** @deprecated */
+    className?: string;
 };
 type CollapsibleBoxSubcomponents = {
     Header: typeof Header;
@@ -195,6 +197,7 @@ const CollapsibleBoxContent = ({
     hasDivider = true,
     children,
     margin,
+    className,
     'data-test': dataTest,
 }: CollapsibleBoxContentProps) => {
     const { elevation } = useElevation();
@@ -259,6 +262,7 @@ const CollapsibleBoxContent = ({
     const containerProps = {
         $margin: margin,
         'data-test': dataTest,
+        className,
     };
 
     return fillType === 'default' ? (
