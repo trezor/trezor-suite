@@ -52,7 +52,7 @@ jobs:
         run: yarn prebuild --platform android --clean
 
       - name: Build Detox test .apk
-        run: yarn build:e2e android.emu.release
+        run: ../../node_modules/.bin/detox build -PreactNativeArchitectures=x86_64 --configuration android.emu.release
         working-directory: ./suite-native/app
 
       - name: Save build to cache
