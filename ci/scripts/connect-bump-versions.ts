@@ -48,13 +48,12 @@ type ConnectVersionMatrix = {
     canary: string;
 };
 
-const tableToMarkdown = (table: ConnectVersionMatrix[], includeCanary = false) => {
-    let markdown = '| Package | Stable |' + (includeCanary ? ' Canary |\n' : '\n');
-    markdown += '| ------- | ------ |' + (includeCanary ? ' ------ |\n' : ' \n');
+const tableToMarkdown = (table: ConnectVersionMatrix[], type: 'Package' | 'Deployment') => {
+    let markdown = `| ${type} | Stable | Canary |\n`;
+    markdown += '| ------- | ------ | ------ |\n';
 
     table.forEach(row => {
-        markdown +=
-            `| ${row.package} | ${row.stable} |` + (includeCanary ? ` ${row.canary} |\n` : '\n');
+        markdown += `| ${row.package} | ${row.stable} | ${row.canary} |\n`;
     });
 
     return markdown;
@@ -66,7 +65,6 @@ const updateConnectChangelog = async (
     canaryVersion: string,
 ) => {
     try {
-        const includeCanary = !!canaryVersion;
         const stable = stableVersion;
         const canary = canaryVersion;
 
@@ -87,8 +85,8 @@ const updateConnectChangelog = async (
 
         const connectExplorerTable = [{ package: 'connect.trezor.io/9', stable, canary }];
 
-        const markdownNpmTable = tableToMarkdown(npmTable, includeCanary);
-        const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, includeCanary);
+        const markdownNpmTable = tableToMarkdown(npmTable, 'Package');
+        const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, 'Deployment');
 
         const updatedContent =
             markdownNpmTable + '\n' + markdownConnectExplorerTable + '\n' + oldContent;
