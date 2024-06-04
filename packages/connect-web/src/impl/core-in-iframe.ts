@@ -17,320 +17,332 @@ import {
     createUiMessage,
     createErrorMessage,
     UiResponseEvent,
-    CallMethod,
     CoreEventMessage,
+    CallMethodPayload,
 } from '@trezor/connect/src/events';
 import type { ConnectSettings, Manifest } from '@trezor/connect/src/types';
-import { factory } from '@trezor/connect/src/factory';
-import { initLog } from '@trezor/connect/src/utils/debug';
+import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
+import { Log, initLog } from '@trezor/connect/src/utils/debug';
 import { config } from '@trezor/connect/src/data/config';
-import { createDeferredManager } from '@trezor/utils/src/createDeferredManager';
+import { DeferredManager, createDeferredManager } from '@trezor/utils/src/createDeferredManager';
 
 import * as iframe from '../iframe';
 import * as popup from '../popup';
 import webUSBButton from '../webusb/button';
 import { parseConnectSettings } from '../connectSettings';
 
-const eventEmitter = new EventEmitter();
-const _log = initLog('@trezor/connect-web');
+export class CoreInIframe implements ConnectFactoryDependencies {
+    public eventEmitter = new EventEmitter();
+    protected _settings: ConnectSettings;
 
-let _settings = parseConnectSettings();
-let _popupManager: popup.PopupManager | undefined;
+    private _log: Log;
+    private _popupManager?: popup.PopupManager;
+    private _messagePromises: DeferredManager<{ id: number; success: boolean; payload: any }>;
 
-const messagePromises = createDeferredManager({ initialId: 1 });
+    private readonly boundHandleMessage = this.handleMessage.bind(this);
+    private readonly boundDispose = this.dispose.bind(this);
 
-const initPopupManager = () => {
-    const pm = new popup.PopupManager(_settings, { logger: _log });
-    pm.on(POPUP.CLOSED, (error?: string) => {
-        iframe.postMessage({
-            type: POPUP.CLOSED,
-            payload: error ? { error } : null,
+    public constructor() {
+        this._settings = parseConnectSettings();
+        this._log = initLog('@trezor/connect-web');
+        this._messagePromises = createDeferredManager({ initialId: 1 });
+    }
+
+    private initPopupManager() {
+        const pm = new popup.PopupManager(this._settings, { logger: this._log });
+        pm.on(POPUP.CLOSED, (error?: string) => {
+            iframe.postMessage({
+                type: POPUP.CLOSED,
+                payload: error ? { error } : null,
+            });
         });
-    });
 
-    return pm;
-};
-
-const manifest = (data: Manifest) => {
-    _settings = parseConnectSettings({
-        ..._settings,
-        manifest: data,
-    });
-};
-
-const dispose = () => {
-    eventEmitter.removeAllListeners();
-    iframe.dispose();
-    _settings = parseConnectSettings();
-    if (_popupManager) {
-        _popupManager.close();
+        return pm;
     }
 
-    return Promise.resolve(undefined);
-};
-
-const cancel = (error?: string) => {
-    if (_popupManager) {
-        _popupManager.emit(POPUP.CLOSED, error);
+    public manifest(data: Manifest) {
+        this._settings = parseConnectSettings({
+            ...this._settings,
+            manifest: data,
+        });
     }
-};
 
-// handle message received from iframe
-const handleMessage = (messageEvent: MessageEvent<CoreEventMessage>) => {
-    // ignore messages from domain other then iframe origin
-    if (messageEvent.origin !== iframe.origin) return;
-
-    const message = parseMessage<CoreEventMessage>(messageEvent.data);
-
-    _log.log('handleMessage', message);
-
-    switch (message.event) {
-        case RESPONSE_EVENT: {
-            const { id = 0, success, payload } = message;
-            const resolved = messagePromises.resolve(id, { id, success, payload });
-            if (!resolved) _log.warn(`Unknown message id ${id}`);
-            break;
+    public dispose() {
+        this.eventEmitter.removeAllListeners();
+        iframe.dispose();
+        this._settings = parseConnectSettings();
+        if (this._popupManager) {
+            this._popupManager.close();
         }
-        case DEVICE_EVENT:
-            // pass DEVICE event up to html
-            eventEmitter.emit(message.event, message);
-            eventEmitter.emit(message.type, message.payload); // DEVICE_EVENT also emit single events (connect/disconnect...)
-            break;
+        window.removeEventListener('message', this.boundHandleMessage);
+        window.removeEventListener('unload', this.boundDispose);
 
-        case TRANSPORT_EVENT:
-            eventEmitter.emit(message.event, message);
-            eventEmitter.emit(message.type, message.payload);
-            break;
+        return Promise.resolve(undefined);
+    }
 
-        case BLOCKCHAIN_EVENT:
-            eventEmitter.emit(message.event, message);
-            eventEmitter.emit(message.type, message.payload);
-            break;
+    public cancel(error?: string) {
+        if (this._popupManager) {
+            this._popupManager.emit(POPUP.CLOSED, error);
+        }
+    }
 
-        case UI_EVENT:
-            if (message.type === IFRAME.BOOTSTRAP) {
-                iframe.clearTimeout();
+    // handle message received from iframe
+    private handleMessage(messageEvent: MessageEvent<CoreEventMessage>) {
+        // ignore messages from domain other then iframe origin
+        if (messageEvent.origin !== iframe.origin) return;
+
+        const message = parseMessage<CoreEventMessage>(messageEvent.data);
+
+        this._log.log('handleMessage', message);
+
+        switch (message.event) {
+            case RESPONSE_EVENT: {
+                const { id = 0, success, payload } = message;
+                const resolved = this._messagePromises.resolve(id, { id, success, payload });
+                if (!resolved) this._log.warn(`Unknown message id ${id}`);
                 break;
             }
-            if (message.type === IFRAME.LOADED) {
-                iframe.initPromise.resolve();
-            }
-            if (message.type === IFRAME.ERROR) {
-                iframe.initPromise.reject(message.payload.error as any);
-            }
+            case DEVICE_EVENT:
+                // pass DEVICE event up to html
+                this.eventEmitter.emit(message.event, message);
+                this.eventEmitter.emit(message.type, message.payload); // DEVICE_EVENT also emit single events (connect/disconnect...)
+                break;
 
-            // pass UI event up
-            eventEmitter.emit(message.event, message);
-            eventEmitter.emit(message.type, message.payload);
-            break;
+            case TRANSPORT_EVENT:
+                this.eventEmitter.emit(message.event, message);
+                this.eventEmitter.emit(message.type, message.payload);
+                break;
 
-        default:
-            _log.log('Undefined message', messageEvent.data);
-    }
-};
+            case BLOCKCHAIN_EVENT:
+                this.eventEmitter.emit(message.event, message);
+                this.eventEmitter.emit(message.type, message.payload);
+                break;
 
-const init = async (settings: Partial<ConnectSettings> = {}): Promise<void> => {
-    if (iframe.instance) {
-        throw ERRORS.TypedError('Init_AlreadyInitialized');
-    }
-
-    _settings = parseConnectSettings({ ..._settings, ...settings });
-
-    if (!_settings.manifest) {
-        throw ERRORS.TypedError('Init_ManifestMissing');
-    }
-
-    // defaults for connect-web
-    if (!_settings.transports?.length) {
-        _settings.transports = ['BridgeTransport', 'WebUsbTransport'];
-    }
-
-    if (_settings.lazyLoad) {
-        // reset "lazyLoad" after first use
-        _settings.lazyLoad = false;
-
-        return;
-    }
-
-    if (!_popupManager) {
-        _popupManager = initPopupManager();
-    }
-
-    _log.enabled = !!_settings.debug;
-
-    window.addEventListener('message', handleMessage);
-    window.addEventListener('unload', dispose);
-
-    await iframe.init(_settings);
-
-    // sharedLogger can be disable but it is enable by default.
-    if (_settings.sharedLogger !== false) {
-        // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
-        iframe.initIframeLogger();
-    }
-};
-
-const call: CallMethod = async params => {
-    if (!iframe.instance && !iframe.timeout) {
-        // init popup with lazy loading before iframe initialization
-        _settings = parseConnectSettings(_settings);
-
-        if (!_settings.manifest) {
-            return createErrorMessage(ERRORS.TypedError('Init_ManifestMissing'));
-        }
-
-        if (!_popupManager) {
-            _popupManager = initPopupManager();
-        }
-        _popupManager.request();
-
-        // auto init with default settings
-        try {
-            await init(_settings);
-        } catch (error) {
-            if (_popupManager) {
-                // Catch fatal iframe errors (not loading)
-                if (['Init_IframeBlocked', 'Init_IframeTimeout'].includes(error.code)) {
-                    _popupManager.postMessage(createUiMessage(UI.IFRAME_FAILURE));
-                } else {
-                    _popupManager.clear();
+            case UI_EVENT:
+                if (message.type === IFRAME.BOOTSTRAP) {
+                    iframe.clearTimeout();
+                    break;
                 }
+                if (message.type === IFRAME.LOADED) {
+                    iframe.initPromise.resolve();
+                }
+                if (message.type === IFRAME.ERROR) {
+                    iframe.initPromise.reject(message.payload.error as any);
+                }
+
+                // pass UI event up
+                this.eventEmitter.emit(message.event, message);
+                this.eventEmitter.emit(message.type, message.payload);
+                break;
+
+            default:
+                this._log.log('Undefined message', messageEvent.data);
+        }
+    }
+
+    public async init(settings: Partial<ConnectSettings> = {}) {
+        if (iframe.instance) {
+            throw ERRORS.TypedError('Init_AlreadyInitialized');
+        }
+
+        this._settings = parseConnectSettings({ ...this._settings, ...settings });
+
+        if (!this._settings.manifest) {
+            throw ERRORS.TypedError('Init_ManifestMissing');
+        }
+
+        // defaults for connect-web
+        if (!this._settings.transports?.length) {
+            this._settings.transports = ['BridgeTransport', 'WebUsbTransport'];
+        }
+
+        if (this._settings.lazyLoad) {
+            // reset "lazyLoad" after first use
+            this._settings.lazyLoad = false;
+
+            return;
+        }
+
+        if (!this._popupManager) {
+            this._popupManager = this.initPopupManager();
+        }
+
+        this._log.enabled = !!this._settings.debug;
+
+        window.addEventListener('message', this.boundHandleMessage);
+        window.addEventListener('unload', this.boundDispose);
+
+        await iframe.init(this._settings);
+
+        // sharedLogger can be disable but it is enable by default.
+        if (this._settings.sharedLogger !== false) {
+            // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
+            iframe.initIframeLogger();
+        }
+    }
+
+    public async call(params: CallMethodPayload) {
+        if (!iframe.instance && !iframe.timeout) {
+            // init popup with lazy loading before iframe initialization
+            this._settings = parseConnectSettings(this._settings);
+
+            if (!this._settings.manifest) {
+                return createErrorMessage(ERRORS.TypedError('Init_ManifestMissing'));
+            }
+
+            if (!this._popupManager) {
+                this._popupManager = this.initPopupManager();
+            }
+            this._popupManager.request();
+
+            // auto init with default settings
+            try {
+                await this.init(this._settings);
+            } catch (error) {
+                if (this._popupManager) {
+                    // Catch fatal iframe errors (not loading)
+                    if (['Init_IframeBlocked', 'Init_IframeTimeout'].includes(error.code)) {
+                        this._popupManager.postMessage(createUiMessage(UI.IFRAME_FAILURE));
+                    } else {
+                        this._popupManager.clear();
+                    }
+                }
+
+                return createErrorMessage(error);
+            }
+        }
+
+        if (iframe.timeout) {
+            // this.init was called, but iframe doesn't return handshake yet
+            await iframe.initPromise.promise;
+        }
+
+        if (iframe.error) {
+            // iframe was initialized with error
+            return createErrorMessage(iframe.error);
+        }
+
+        // request popup window it might be used in the future
+        if (this._settings.popup && this._popupManager) {
+            this._popupManager.request();
+        }
+
+        // post message to iframe
+        try {
+            const { promiseId, promise } = this._messagePromises.create();
+            iframe.postMessage({ id: promiseId, type: IFRAME.CALL, payload: params });
+            const response = await promise;
+            if (response) {
+                if (
+                    !response.success &&
+                    response.payload.code !== 'Device_CallInProgress' &&
+                    this._popupManager
+                ) {
+                    this._popupManager.unlock();
+                }
+
+                return response;
+            }
+            if (this._popupManager) {
+                this._popupManager.unlock();
+            }
+
+            return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
+        } catch (error) {
+            this._log.error('__call error', error);
+            if (this._popupManager) {
+                this._popupManager.clear(false);
             }
 
             return createErrorMessage(error);
         }
     }
 
-    if (iframe.timeout) {
-        // this.init was called, but iframe doesn't return handshake yet
-        await iframe.initPromise.promise;
+    public uiResponse(response: UiResponseEvent) {
+        if (!iframe.instance) {
+            throw ERRORS.TypedError('Init_NotInitialized');
+        }
+        iframe.postMessage(response);
     }
 
-    if (iframe.error) {
-        // iframe was initialized with error
-        return createErrorMessage(iframe.error);
+    public renderWebUSBButton(className?: string) {
+        webUSBButton(className, this._settings.webusbSrc);
     }
 
-    // request popup window it might be used in the future
-    if (_settings.popup && _popupManager) {
-        _popupManager.request();
-    }
+    public async requestLogin(params: any) {
+        if (typeof params.callback === 'function') {
+            const { callback } = params;
 
-    // post message to iframe
-    try {
-        const { promiseId, promise } = messagePromises.create();
-        iframe.postMessage({ id: promiseId, type: IFRAME.CALL, payload: params });
-        const response = await promise;
-        if (response) {
-            if (
-                !response.success &&
-                response.payload.code !== 'Device_CallInProgress' &&
-                _popupManager
-            ) {
-                _popupManager.unlock();
-            }
+            // TODO: set message listener only if iframe is loaded correctly
+            const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
+                const { data } = event;
+                if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
+                    try {
+                        const payload = await callback();
+                        iframe.postMessage({
+                            type: UI.LOGIN_CHALLENGE_RESPONSE,
+                            payload,
+                        });
+                    } catch (error) {
+                        iframe.postMessage({
+                            type: UI.LOGIN_CHALLENGE_RESPONSE,
+                            payload: error.message,
+                        });
+                    }
+                }
+            };
+
+            window.addEventListener('message', loginChallengeListener, false);
+
+            const response = await this.call({
+                method: 'requestLogin',
+                ...params,
+                asyncChallenge: true,
+                callback: null,
+            });
+            window.removeEventListener('message', loginChallengeListener);
 
             return response;
         }
-        if (_popupManager) {
-            _popupManager.unlock();
+
+        return this.call({ method: 'requestLogin', ...params });
+    }
+
+    public disableWebUSB() {
+        if (!iframe.instance) {
+            throw ERRORS.TypedError('Init_NotInitialized');
         }
+        iframe.postMessage({ type: TRANSPORT.DISABLE_WEBUSB });
+    }
 
-        return createErrorMessage(ERRORS.TypedError('Method_NoResponse'));
-    } catch (error) {
-        _log.error('__call error', error);
-        if (_popupManager) {
-            _popupManager.clear(false);
+    /**
+     * Initiate device pairing procedure.
+     */
+    public async requestWebUSBDevice() {
+        try {
+            await window.navigator.usb.requestDevice({ filters: config.webusb });
+            iframe.postMessage({ type: TRANSPORT.REQUEST_DEVICE });
+        } catch (_err) {
+            // user hits cancel gets "DOMException: No device selected."
+            // no need to log this
         }
-
-        return createErrorMessage(error);
     }
-};
+}
 
-const uiResponse = (response: UiResponseEvent) => {
-    if (!iframe.instance) {
-        throw ERRORS.TypedError('Init_NotInitialized');
-    }
-    iframe.postMessage(response);
-};
+const methods = new CoreInIframe();
 
-const renderWebUSBButton = (className?: string) => {
-    webUSBButton(className, _settings.webusbSrc);
-};
-
-const requestLogin = async (params: any) => {
-    if (typeof params.callback === 'function') {
-        const { callback } = params;
-
-        // TODO: set message listener only if iframe is loaded correctly
-        const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
-            const { data } = event;
-            if (data && data.type === UI.LOGIN_CHALLENGE_REQUEST) {
-                try {
-                    const payload = await callback();
-                    iframe.postMessage({
-                        type: UI.LOGIN_CHALLENGE_RESPONSE,
-                        payload,
-                    });
-                } catch (error) {
-                    iframe.postMessage({
-                        type: UI.LOGIN_CHALLENGE_RESPONSE,
-                        payload: error.message,
-                    });
-                }
-            }
-        };
-
-        window.addEventListener('message', loginChallengeListener, false);
-
-        const response = await call({
-            method: 'requestLogin',
-            ...params,
-            asyncChallenge: true,
-            callback: null,
-        });
-        window.removeEventListener('message', loginChallengeListener);
-
-        return response;
-    }
-
-    return call({ method: 'requestLogin', ...params });
-};
-
-const disableWebUSB = () => {
-    if (!iframe.instance) {
-        throw ERRORS.TypedError('Init_NotInitialized');
-    }
-    iframe.postMessage({ type: TRANSPORT.DISABLE_WEBUSB });
-};
-
-/**
- * Initiate device pairing procedure.
- */
-const requestWebUSBDevice = async () => {
-    try {
-        await window.navigator.usb.requestDevice({ filters: config.webusb });
-        iframe.postMessage({ type: TRANSPORT.REQUEST_DEVICE });
-    } catch (_err) {
-        // user hits cancel gets "DOMException: No device selected."
-        // no need to log this
-    }
-};
-
-export const methods = {
-    eventEmitter,
-    manifest,
-    init,
-    call,
-    requestLogin,
-    uiResponse,
-    renderWebUSBButton,
-    disableWebUSB,
-    requestWebUSBDevice,
-    cancel,
-    dispose,
-};
-
-const TrezorConnect = factory(methods);
-
-export default TrezorConnect;
+// Exported to enable using directly
+export const TrezorConnect = factory({
+    // Bind all methods due to shadowing `this`
+    eventEmitter: methods.eventEmitter,
+    init: methods.init.bind(methods),
+    call: methods.call.bind(methods),
+    manifest: methods.manifest.bind(methods),
+    requestLogin: methods.requestLogin.bind(methods),
+    uiResponse: methods.uiResponse.bind(methods),
+    renderWebUSBButton: methods.renderWebUSBButton.bind(methods),
+    disableWebUSB: methods.disableWebUSB.bind(methods),
+    requestWebUSBDevice: methods.requestWebUSBDevice.bind(methods),
+    cancel: methods.cancel.bind(methods),
+    dispose: methods.dispose.bind(methods),
+});
