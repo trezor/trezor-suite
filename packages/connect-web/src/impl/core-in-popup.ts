@@ -198,8 +198,10 @@ export class CoreInPopup implements ConnectFactoryDependencies {
 }
 
 const methods = new CoreInPopup();
-// Bind all methods due to shadowing `this`
-const TrezorConnect = factory({
+
+// Exported to enable using directly
+export const TrezorConnect = factory({
+    // Bind all methods due to shadowing `this`
     eventEmitter: methods.eventEmitter,
     init: methods.init.bind(methods),
     call: methods.call.bind(methods),
@@ -212,5 +214,3 @@ const TrezorConnect = factory({
     cancel: methods.cancel.bind(methods),
     dispose: methods.dispose.bind(methods),
 });
-
-export default TrezorConnect;
