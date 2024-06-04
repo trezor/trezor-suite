@@ -20,6 +20,8 @@ import expo.modules.kotlin.exception.CodedException
 import expo.modules.core.errors.ModuleDestroyedException
 import java.nio.ByteBuffer
 
+// Convert Android USBDevice to JS compatible WebUSBDevice
+typealias WebUSBDevice = Map<String, Any?>
 
 const val ON_DEVICE_CONNECT_EVENT_NAME = "onDeviceConnect"
 const val ON_DEVICE_DISCONNECT_EVENT_NAME = "onDeviceDisconnect"
@@ -133,13 +135,17 @@ class ReactNativeUsbModule : Module() {
             for (device in devicesList) {
                 if (usbManager.hasPermission(device)) {
                     Log.d("ReactNativeUsbModule", "Has permission, send event onDeviceConnected: $device")
-                    val webUsbDevice = getWebUSBDevice(device)
+                    val webUsbDevice = openDevice(device.deviceName)
                     sendEvent(ON_DEVICE_CONNECT_EVENT_NAME, webUsbDevice)
                     devicesHistory[device.deviceName] = webUsbDevice
                 } else {
                     Log.d("ReactNativeUsbModule", "No permission for device: $device")
                 }
             }
+        }
+
+        OnActivityEntersBackground {
+            closeAllOpenedDevices()
         }
 
         OnDestroy {
@@ -149,9 +155,7 @@ class ReactNativeUsbModule : Module() {
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(null)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(null)
 
-            openedConnections.forEach { (deviceName, _) ->
-                closeDevice(deviceName)
-            }
+            closeAllOpenedDevices()
 
             try {
                 moduleCoroutineScope.cancel(ModuleDestroyedException())
@@ -214,6 +218,13 @@ class ReactNativeUsbModule : Module() {
         val usbConnection = getOpenedConnection(deviceName)
         usbConnection.close()
         openedConnections.remove(deviceName)
+    }
+
+    private fun closeAllOpenedDevices() {
+        Log.d("ReactNativeUsbModule", "Closing all devices")
+        openedConnections.forEach { (deviceName, _) ->
+            closeDevice(deviceName)
+        }
     }
 
     private fun selectConfiguration(deviceName: String, configurationIndex: Int) {
@@ -308,6 +319,12 @@ class ReactNativeUsbModule : Module() {
         return openedConnections[deviceName] ?: throw Exception("Device $deviceName not opened")
     }
 
+    private fun hasOpenedConnection(deviceName: String): Boolean {
+        val isConnectionOpened = openedConnections.containsKey(deviceName)
+        Log.d("ReactNativeUsbModule", "Device $deviceName hasOpenedConnection: $isConnectionOpened")
+        return isConnectionOpened
+    }
+
 
     private fun getDeviceByName(deviceName: String): UsbDevice {
         Log.d("ReactNativeUsbModule", "getDeviceByName: $deviceName")
@@ -338,13 +355,9 @@ class ReactNativeUsbModule : Module() {
         Log.d("ReactNativeUsbModule", "getDevices: $devices")
         return devices
     }
-}
 
-// Convert Android USBDevice to JS compatible WebUSBDevice
-typealias WebUSBDevice = Map<String, Any?>
-
-fun getWebUSBDevice(device: UsbDevice): WebUSBDevice {
-    return mapOf(
+    private fun getWebUSBDevice(device: UsbDevice): WebUSBDevice {
+        return mapOf(
             "deviceName" to device.deviceName,
             //"usbVersionMajor" to device.usbVersionMajor,
             //"usbVersionMinor" to device.usbVersionMinor,
@@ -362,6 +375,7 @@ fun getWebUSBDevice(device: UsbDevice): WebUSBDevice {
             "serialNumber" to device.serialNumber,
             //"configuration" to device.configuration,
             //"configurations" to device.configurations,
-            "opened" to false,
-    )
+            "opened" to hasOpenedConnection(device.deviceName),
+        )
+    }
 }
