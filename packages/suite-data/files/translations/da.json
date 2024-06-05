@@ -39,7 +39,6 @@
   "EVENT_WALLET_CREATED": "{walletLabel} oprettet",
   "FEE": "Gebyr",
   "FEE_LEVEL_CUSTOM": "Brugerdefineret",
-  "FEE_LEVEL_ECONOMY": "Økonomi",
   "FEE_LEVEL_HIGH": "Høj",
   "FEE_LEVEL_LOW": "Lav",
   "FEE_LEVEL_NORMAL": "Normal",
