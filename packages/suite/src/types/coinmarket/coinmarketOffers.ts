@@ -28,7 +28,6 @@ type CoinmarketOffersContextProps = {
 };
 
 type CoinmarketBuyOffersContextProps = CoinmarketOffersContextProps & {
-    alternativeQuotes: AppState['wallet']['coinmarket']['buy']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
     quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
     selectedQuote?: BuyTrade;
@@ -48,7 +47,6 @@ export type CoinmarketSellStepType = 'BANK_ACCOUNT' | 'SEND_TRANSACTION';
 
 type CoinmarketSellOffersContextProps = CoinmarketOffersContextProps & {
     quotes: AppState['wallet']['coinmarket']['sell']['quotes'];
-    alternativeQuotes: AppState['wallet']['coinmarket']['sell']['alternativeQuotes'];
     quotesRequest: AppState['wallet']['coinmarket']['sell']['quotesRequest'];
     selectedQuote?: SellFiatTrade;
     trade?: TradeSell;

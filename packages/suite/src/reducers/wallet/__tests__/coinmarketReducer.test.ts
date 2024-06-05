@@ -142,16 +142,14 @@ describe('settings reducer', () => {
                 paymentMethod: 'creditCard',
             },
         ];
-        const alternativeQuotes: BuyTrade[] = [];
         expect(
             reducer(undefined, {
                 type: COINMARKET_BUY.SAVE_QUOTES,
                 quotes,
-                alternativeQuotes,
             }),
         ).toEqual({
             ...initialState,
-            buy: { ...initialState.buy, quotes, alternativeQuotes },
+            buy: { ...initialState.buy, quotes },
         });
     });
 
@@ -359,7 +357,7 @@ describe('settings reducer', () => {
             }),
         ).toEqual({
             ...initialState,
-            buy: { ...initialState.buy, quotes: undefined, alternativeQuotes: undefined },
+            buy: { ...initialState.buy, quotes: undefined },
         });
     });
 
@@ -381,7 +379,7 @@ describe('settings reducer', () => {
             }),
         ).toEqual({
             ...initialState,
-            sell: { ...initialState.sell, quotes: undefined, alternativeQuotes: undefined },
+            sell: { ...initialState.sell, quotes: undefined },
         });
     });
 });

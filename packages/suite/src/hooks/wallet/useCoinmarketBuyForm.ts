@@ -17,7 +17,7 @@ import {
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import invityAPI from 'src/services/suite/invityAPI';
-import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/buyUtils';
+import { getAmountLimits } from 'src/utils/wallet/coinmarket/buyUtils';
 import type { FormState, BuyFormContextValues } from 'src/types/wallet/coinmarketBuyForm';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
@@ -27,7 +27,8 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTradeBuyType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
 BuyFormContext.displayName = 'CoinmarketBuyContext';
@@ -139,12 +140,12 @@ export const useCoinmarketBuyForm = ({
         dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         const allQuotes = await invityAPI.getBuyQuotes(request);
         if (Array.isArray(allQuotes)) {
-            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+            const quotes = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
             const limits = getAmountLimits(request, quotes);
             if (limits) {
                 setAmountLimits(limits);
             } else {
-                dispatch(saveQuotes(quotes, alternativeQuotes));
+                dispatch(saveQuotes(quotes));
                 navigateToBuyOffers();
             }
         } else {
