@@ -34,6 +34,7 @@ export type CoinmarketTradeType =
     | CoinmarketTradeBuyType
     | CoinmarketTradeSellType
     | CoinmarketTradeExchangeType;
+export type CoinmarketTradeBuySellType = Exclude<CoinmarketTradeType, CoinmarketTradeExchangeType>;
 
 export type CoinmarketTradeMapProps = {
     buy: TradeBuy;
@@ -47,6 +48,7 @@ export type CoinmarketTradeDetailMapProps = {
     sell: SellFiatTrade;
     exchange: ExchangeTrade;
 };
+export type CoinmarketTradeBuySellDetailMapProps = Omit<CoinmarketTradeDetailMapProps, 'exchange'>;
 
 export type CoinmarketTradeInfoMapProps = {
     buy: BuyInfo;

@@ -6,7 +6,7 @@ import { isDesktop } from '@trezor/env-utils';
 
 import invityAPI from 'src/services/suite/invityAPI';
 import { useActions, useSelector } from 'src/hooks/suite';
-import { processQuotes, createQuoteLink, createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
+import { createQuoteLink, createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -14,6 +14,7 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import { useCoinmarketFilterReducer } from '../../../../reducers/wallet/useCoinmarketFilterReducer';
 import { getFilteredSuccessQuotes, useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
 import { CoinmarketTradeBuyType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) => {
     const {
@@ -47,8 +48,9 @@ export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) 
         goto: routerActions.goto,
     });
 
-    const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest, alternativeQuotes } =
-        useSelector(state => state.wallet.coinmarket.buy);
+    const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest } = useSelector(
+        state => state.wallet.coinmarket.buy,
+    );
 
     const innerQuotesFilterReducer = useCoinmarketFilterReducer(quotes);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
@@ -66,7 +68,7 @@ export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) 
 
                     return;
                 }
-                const [quotes] = processQuotes(allQuotes);
+                const quotes = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
                 const successQuotes = getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotes);
                 setInnerQuotes(successQuotes);
                 innerQuotesFilterReducer.dispatch({
@@ -174,7 +176,6 @@ export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) 
         quotesRequest,
         addressVerified,
         quotes: innerQuotesFilterReducer.actions.handleFilterQuotes(innerQuotes),
-        alternativeQuotes,
         innerQuotesFilterReducer,
         selectQuote,
         account,

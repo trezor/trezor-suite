@@ -19,13 +19,15 @@ import {
     FormattedDate,
     FormattedCryptoAmount,
 } from 'src/components/suite';
-import { getStatusMessage, processQuotes } from 'src/utils/wallet/coinmarket/buyUtils';
+import { getStatusMessage } from 'src/utils/wallet/coinmarket/buyUtils';
 import { TradeBuy } from 'src/types/wallet/coinmarketCommonTypes';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -165,8 +167,8 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
         dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         const allQuotes = await invityAPI.getBuyQuotes(request);
         if (allQuotes) {
-            const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-            dispatch(saveQuotes(quotes, alternativeQuotes));
+            const quotes = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
+            dispatch(saveQuotes(quotes));
         } else {
             dispatch(clearQuotes());
         }

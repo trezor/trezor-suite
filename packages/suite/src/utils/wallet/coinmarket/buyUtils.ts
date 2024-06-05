@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import { desktopApi } from '@trezor/suite-desktop-api';
 import { Account } from 'src/types/wallet';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
@@ -52,23 +51,6 @@ export function getAmountLimits(
             ? { currency: request.receiveCurrency, maxCrypto: maxAmount }
             : { currency: request.fiatCurrency, maxFiat: maxAmount };
     }
-}
-
-// split the quotes to base and alternative and assign order and payment ids
-export function processQuotes(allQuotes: BuyTrade[]): [BuyTrade[], BuyTrade[]] {
-    if (!allQuotes) allQuotes = [];
-    allQuotes.forEach(q => {
-        q.orderId = uuidv4();
-        if (!q.paymentId) {
-            q.paymentId = uuidv4();
-        }
-    });
-    const quotes = allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
-    const alternativeQuotes = allQuotes.filter(
-        q => q.tags && q.tags.includes('alternativeCurrency') && !q.error,
-    );
-
-    return [quotes, alternativeQuotes];
 }
 
 export const createQuoteLink = async (request: BuyTradeQuoteRequest, account: Account) => {

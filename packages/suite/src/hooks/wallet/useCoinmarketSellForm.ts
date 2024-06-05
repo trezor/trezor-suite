@@ -37,8 +37,9 @@ import {
 import {
     getComposeAddressPlaceholder,
     mapTestnetSymbol,
+    processSellAndBuyQuotes,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { getAmountLimits, processQuotes } from 'src/utils/wallet/coinmarket/sellUtils';
+import { getAmountLimits } from 'src/utils/wallet/coinmarket/sellUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import type { AppState } from 'src/types/suite';
@@ -54,7 +55,7 @@ import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTradeSellType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';
@@ -357,8 +358,8 @@ export const useCoinmarketSellForm = ({
             if (limits) {
                 setAmountLimits(limits);
             } else {
-                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                dispatch(saveQuotes(quotes, alternativeQuotes));
+                const quotes = processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes);
+                dispatch(saveQuotes(quotes));
                 navigateToSellOffers();
             }
         } else {
