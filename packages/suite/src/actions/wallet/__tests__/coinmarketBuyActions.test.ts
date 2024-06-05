@@ -227,10 +227,8 @@ describe('Coinmarket Buy Actions', () => {
                 paymentId: 'e709df77-ee9e-4d12-98c2-84004a19c548',
             },
         ];
-        const alternativeQuotes: BuyTrade[] = [];
 
-        store.dispatch(coinmarketBuyActions.saveQuotes(quotes, alternativeQuotes));
+        store.dispatch(coinmarketBuyActions.saveQuotes(quotes));
         expect(store.getState().wallet.coinmarket.buy.quotes).toEqual(quotes);
-        expect(store.getState().wallet.coinmarket.buy.alternativeQuotes).toEqual(alternativeQuotes);
     });
 });

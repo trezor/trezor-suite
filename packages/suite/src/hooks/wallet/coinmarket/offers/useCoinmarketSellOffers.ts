@@ -7,7 +7,7 @@ import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 import invityAPI from 'src/services/suite/invityAPI';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { processQuotes, createQuoteLink } from 'src/utils/wallet/coinmarket/sellUtils';
+import { createQuoteLink } from 'src/utils/wallet/coinmarket/sellUtils';
 import {
     loadInvityData,
     submitRequestForm,
@@ -20,7 +20,10 @@ import {
 } from 'src/actions/wallet/coinmarketSellActions';
 import { goto } from 'src/actions/suite/routerActions';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    getUnusedAddressFromAccount,
+    processSellAndBuyQuotes,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
@@ -50,8 +53,9 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
     const [sellStep, setSellStep] = useState<CoinmarketSellStepType>('BANK_ACCOUNT');
     const { navigateToSellForm } = useCoinmarketNavigation(account);
 
-    const { alternativeQuotes, isFromRedirect, quotes, quotesRequest, sellInfo, transactionId } =
-        useSelector(state => state.wallet.coinmarket.sell);
+    const { isFromRedirect, quotes, quotesRequest, sellInfo, transactionId } = useSelector(
+        state => state.wallet.coinmarket.sell,
+    );
     const trades = useSelector(state => state.wallet.coinmarket.trades);
     const dispatch = useDispatch();
 
@@ -60,9 +64,6 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
         getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes),
     );
-    const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
-        SellFiatTrade[] | undefined
-    >(alternativeQuotes);
 
     const { selectedFee, composed, recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
@@ -77,12 +78,10 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
 
                     return;
                 }
-                const [quotes, alternativeQuotes] = processQuotes(allQuotes);
+                const quotes = processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes);
                 setInnerQuotes(getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes));
-                setInnerAlternativeQuotes(alternativeQuotes);
             } else {
                 setInnerQuotes(undefined);
-                setInnerAlternativeQuotes(undefined);
             }
             timer.reset();
         }
@@ -318,7 +317,6 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
         addBankAccount,
         quotesRequest,
         quotes: innerQuotes,
-        alternativeQuotes: innerAlternativeQuotes,
         sellStep,
         setSellStep,
         selectQuote,
