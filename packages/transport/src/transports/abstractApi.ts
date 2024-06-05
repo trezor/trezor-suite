@@ -69,9 +69,9 @@ export abstract class AbstractApiTransport extends AbstractTransport {
     }
 
     public enumerate() {
-        return this.scheduleAction(async () => {
+        return this.scheduleAction(async signal => {
             // enumerate usb api
-            const enumerateResult = await this.api.enumerate();
+            const enumerateResult = await this.api.enumerate(signal);
 
             if (!enumerateResult.success) {
                 return enumerateResult;
@@ -90,7 +90,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     public acquire({ input }: AbstractTransportMethodParams<'acquire'>) {
         return this.scheduleAction(
-            async () => {
+            async signal => {
                 const { path } = input;
 
                 if (this.listening) {
@@ -106,7 +106,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                 this.acquiredUnconfirmed[path] = acquireIntentResponse.payload.session;
 
                 const reset = !!input.previous;
-                const openDeviceResult = await this.api.openDevice(path, reset);
+                const openDeviceResult = await this.api.openDevice(path, reset, signal);
 
                 if (!openDeviceResult.success) {
                     if (this.listenPromise[path]) {
@@ -173,7 +173,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         protocol: customProtocol,
     }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
-            async () => {
+            async signal => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                     session,
                 });
@@ -203,7 +203,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     for (let i = 0; i < buffers.length; i++) {
                         const chunk = buffers[i];
 
-                        await this.api.write(path, chunk).then(result => {
+                        await this.api.write(path, chunk, signal).then(result => {
                             if (!result.success) {
                                 throw new Error(result.error);
                             }
@@ -213,7 +213,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     const message = await receiveAndParse(
                         this.messages,
                         () =>
-                            this.api.read(path).then(result => {
+                            this.api.read(path, signal).then(result => {
                                 if (result.success) {
                                     return result.payload;
                                 }
@@ -243,7 +243,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     public send({ data, session, name, protocol }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(
-            async () => {
+            async signal => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                     session,
                 });
@@ -264,7 +264,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     for (let i = 0; i < buffers.length; i++) {
                         const chunk = buffers[i];
 
-                        await this.api.write(path, chunk).then(result => {
+                        await this.api.write(path, chunk, signal).then(result => {
                             if (!result.success) {
                                 throw new Error(result.error);
                             }
@@ -277,7 +277,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         this.enumerate();
                     }
 
-                    return this.unknownError(err, [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION]);
+                    return this.unknownError(err, [
+                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
+                        ERRORS.ABORTED_BY_SIGNAL,
+                    ]);
                 }
             },
             { timeout: undefined },
@@ -289,7 +292,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
         protocol: customProtocol,
     }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(
-            async () => {
+            async signal => {
                 const getPathBySessionResponse = await this.sessionsClient.getPathBySession({
                     session,
                 });
@@ -303,7 +306,7 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                     const message = await receiveAndParse(
                         this.messages,
                         () =>
-                            this.api.read(path).then(result => {
+                            this.api.read(path, signal).then(result => {
                                 if (!result.success) {
                                     throw new Error(result.error);
                                 }
@@ -319,7 +322,10 @@ export abstract class AbstractApiTransport extends AbstractTransport {
                         this.enumerate();
                     }
 
-                    return this.unknownError(err, [ERRORS.DEVICE_DISCONNECTED_DURING_ACTION]);
+                    return this.unknownError(err, [
+                        ERRORS.DEVICE_DISCONNECTED_DURING_ACTION,
+                        ERRORS.ABORTED_BY_SIGNAL,
+                    ]);
                 }
             },
             { timeout: undefined },
