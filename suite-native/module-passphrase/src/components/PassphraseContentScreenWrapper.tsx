@@ -8,16 +8,18 @@ type PassphraseContentScreenWrapperProps = {
     children: ReactNode;
     title: ReactNode;
     subtitle?: ReactNode;
+    footer?: ReactNode;
 };
 
 export const PassphraseContentScreenWrapper = ({
     children,
     title,
     subtitle,
+    footer,
 }: PassphraseContentScreenWrapperProps) => {
     return (
-        <PassphraseScreenWrapper>
-            <VStack spacing="large">
+        <PassphraseScreenWrapper footer={footer}>
+            <VStack spacing="large" flex={1}>
                 <VStack>
                     <Text variant="titleMedium">{title}</Text>
                     {subtitle && <Text>{subtitle}</Text>}

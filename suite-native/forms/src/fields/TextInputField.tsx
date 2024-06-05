@@ -21,15 +21,36 @@ export interface FieldProps extends AllowedTextInputFieldProps, AllowedInputWrap
 }
 
 export const TextInputField = forwardRef<TextInput, FieldProps>(
-    ({ name, label, hint, onBlur, defaultValue = '', valueTransformer, ...otherProps }, ref) => {
+    (
+        {
+            name,
+            label,
+            hint,
+            onBlur,
+            onChangeText,
+            defaultValue = '',
+            valueTransformer,
+            ...otherProps
+        },
+        ref,
+    ) => {
         const field = useField({ name, label, defaultValue, valueTransformer });
-        const { errorMessage, onBlur: hookFormOnBlur, onChange, value, hasError } = field;
+        const {
+            errorMessage,
+            onBlur: hookFormOnBlur,
+            onChange: hookFormOnChange,
+            value,
+            hasError,
+        } = field;
 
         const handleOnBlur = () => {
             hookFormOnBlur();
-            if (onBlur) {
-                onBlur();
-            }
+            onBlur?.();
+        };
+
+        const handleOnChangeText = (text: string) => {
+            hookFormOnChange(text);
+            onChangeText?.(text);
         };
 
         return (
@@ -37,7 +58,7 @@ export const TextInputField = forwardRef<TextInput, FieldProps>(
                 <Input
                     {...otherProps}
                     onBlur={handleOnBlur}
-                    onChangeText={onChange}
+                    onChangeText={handleOnChangeText}
                     value={value}
                     hasError={hasError}
                     label={label}

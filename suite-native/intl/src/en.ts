@@ -662,7 +662,7 @@ export const en = {
             button: 'How passphrase works',
         },
         form: {
-            enterWallet: 'Enter passphrase',
+            submitButton: 'Confirm passphrase',
             createWalletInputLabel: 'Enter your passphrase',
             verifyPassphraseInputLabel: 'Re-enter your passphrase',
             separatorTitle: 'OR',

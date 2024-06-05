@@ -14,7 +14,7 @@ import {
     RootStackRoutes,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
-import { AlertBox, Text, VStack } from '@suite-native/atoms';
+import { AlertBox, Text } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import {
     cancelPassphraseAndSelectStandardDeviceThunk,
@@ -22,8 +22,7 @@ import {
     verifyPassphraseOnEmptyWalletThunk,
 } from '@suite-native/passphrase';
 
-import { PassphraseForm } from '../components/PassphraseForm';
-import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
+import { PassphraseFormScreenWrapper } from '../components/PassphraseFormScreenWrapper';
 
 type NavigationProp = StackToTabCompositeProps<
     PassphraseStackParamList,
@@ -90,32 +89,28 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
     }, [handleVerify]);
 
     return (
-        <PassphraseContentScreenWrapper
+        <PassphraseFormScreenWrapper
             title={
                 <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.title" />
             }
             subtitle={
                 <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.description" />
             }
+            inputLabel={translate('modulePassphrase.form.verifyPassphraseInputLabel')}
         >
-            <VStack spacing="medium">
-                <AlertBox
-                    variant="warning"
-                    title={
-                        <Text>
-                            <Translation
-                                id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"
-                                values={{
-                                    bold: chunks => <Text variant="highlight">{chunks}</Text>,
-                                }}
-                            />
-                        </Text>
-                    }
-                />
-                <PassphraseForm
-                    inputLabel={translate('modulePassphrase.form.verifyPassphraseInputLabel')}
-                />
-            </VStack>
-        </PassphraseContentScreenWrapper>
+            <AlertBox
+                variant="warning"
+                title={
+                    <Text>
+                        <Translation
+                            id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.alertTitle"
+                            values={{
+                                bold: chunks => <Text variant="highlight">{chunks}</Text>,
+                            }}
+                        />
+                    </Text>
+                }
+            />
+        </PassphraseFormScreenWrapper>
     );
 };
