@@ -4,6 +4,7 @@ import { OnboardingStepBox, OnboardingStepBoxProps } from 'src/components/onboar
 import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
 import { CollapsibleBox } from '@trezor/components';
+import { spacings } from '@trezor/theme';
 
 const Separator = styled.hr`
     height: 1px;
@@ -12,25 +13,6 @@ const Separator = styled.hr`
     border: 0;
     border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
     margin-bottom: 30px;
-`;
-
-const StyledCollapsibleBox = styled(CollapsibleBox)`
-    background: none;
-    box-shadow: none;
-    margin-top: 12px;
-    width: 100%;
-
-    ${CollapsibleBox.Header} {
-        padding: 24px 12px 24px 6px;
-    }
-
-    ${CollapsibleBox.Content} {
-        padding: 0;
-    }
-`;
-
-const StyledCoinsGroup = styled(CoinGroup)`
-    margin-top: 30px;
 `;
 
 export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
@@ -49,7 +31,8 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                 onToggle={setEnabled}
                 selectedNetworks={enabledNetworks}
             />
-            <StyledCollapsibleBox
+            <CollapsibleBox
+                margin={{ top: spacings.xl }}
                 heading={
                     <>
                         <Translation id="TR_TESTNET_COINS" />
@@ -60,12 +43,12 @@ export const BasicSettingsStepBox = (props: OnboardingStepBoxProps) => {
                 }
                 paddingType="large"
             >
-                <StyledCoinsGroup
+                <CoinGroup
                     networks={testnets}
                     onToggle={setEnabled}
                     selectedNetworks={enabledNetworks}
                 />
-            </StyledCollapsibleBox>
+            </CollapsibleBox>
         </OnboardingStepBox>
     );
 };
