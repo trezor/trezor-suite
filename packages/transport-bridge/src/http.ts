@@ -65,15 +65,21 @@ export class TrezordNode {
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
         this.descriptors = descriptors;
 
-        this.logger?.debug(
-            `http: resolving listen subscriptions. n of subscriptions: ${this.listenSubscriptions.length}`,
-        );
-
         if (!this.listenSubscriptions.length) {
             return;
         }
 
-        const [affected, unaffected] = arrayPartition(this.listenSubscriptions, subscription => {
+        const [aborted, notAborted] = arrayPartition(this.listenSubscriptions, subscription => {
+            return subscription.res.destroyed;
+        });
+
+        if (aborted.length) {
+            this.logger?.debug(
+                `http: resolving listen subscriptions. n of aborted subscriptions: ${aborted.length}`,
+            );
+        }
+
+        const [affected, unaffected] = arrayPartition(notAborted, subscription => {
             return stringify(subscription.descriptors) !== stringify(this.descriptors);
         });
 
@@ -85,6 +91,15 @@ export class TrezordNode {
             subscription.res.end(str(this.descriptors));
         });
         this.listenSubscriptions = unaffected;
+    }
+
+    private createAbortSignal(res: any) {
+        const abortController = new AbortController();
+        res.addListener('close', () => {
+            abortController.abort();
+        });
+
+        return abortController.signal;
     }
 
     public start() {
@@ -140,7 +155,8 @@ export class TrezordNode {
             app.post('/enumerate', [
                 (_req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
-                    this.api.enumerate().then(result => {
+                    const signal = this.createAbortSignal(res);
+                    this.api.enumerate({ signal }).then(result => {
                         if (!result.success) {
                             res.statusCode = 400;
 
@@ -168,10 +184,12 @@ export class TrezordNode {
             app.post('/acquire/:path/:previous', [
                 (req, res) => {
                     res.setHeader('Content-Type', 'text/plain');
+                    const signal = this.createAbortSignal(res);
                     this.api
                         .acquire({
                             path: req.params.path,
                             previous: req.params.previous as Session | 'null',
+                            signal,
                         })
                         .then(result => {
                             if (!result.success) {
@@ -207,11 +225,13 @@ export class TrezordNode {
             app.post('/call/:session', [
                 parseBodyText,
                 (req, res) => {
+                    const signal = this.createAbortSignal(res);
                     this.api
                         .call({
                             session: req.params.session as Session,
                             // @ts-expect-error
                             data: req.body,
+                            signal,
                         })
                         .then(result => {
                             if (!result.success) {
@@ -227,25 +247,30 @@ export class TrezordNode {
             app.post('/read/:session', [
                 parseBodyJSON,
                 (req, res) => {
-                    this.api.receive({ session: req.params.session as Session }).then(result => {
-                        if (!result.success) {
-                            res.statusCode = 400;
+                    const signal = this.createAbortSignal(res);
+                    this.api
+                        .receive({ session: req.params.session as Session, signal })
+                        .then(result => {
+                            if (!result.success) {
+                                res.statusCode = 400;
 
-                            return res.end(str({ error: result.error }));
-                        }
-                        res.end(str(result.payload));
-                    });
+                                return res.end(str({ error: result.error }));
+                            }
+                            res.end(str(result.payload));
+                        });
                 },
             ]);
 
             app.post('/post/:session', [
                 parseBodyText,
                 (req, res) => {
+                    const signal = this.createAbortSignal(res);
                     this.api
                         .send({
                             session: req.params.session as Session,
                             // @ts-expect-error
                             data: req.body,
+                            signal,
                         })
                         .then(result => {
                             if (!result.success) {
