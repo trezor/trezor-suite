@@ -1,6 +1,6 @@
 import { decode, verify } from 'jws';
 
-import { getEnvironment, isCodesignBuild } from '@trezor/env-utils';
+import { getJWSPublicKey, isCodesignBuild, isNative } from '@trezor/env-utils';
 import { scheduleAction } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import { MessageSystem } from '@suite-common/suite-types';
@@ -21,8 +21,6 @@ import {
     selectMessageSystemCurrentSequence,
 } from './messageSystemSelectors';
 import { jws as configJwsLocal } from '../files/config.v1';
-
-const isMobile = () => getEnvironment() === 'mobile';
 
 const getConfigJws = async () => {
     const remoteConfigUrl = isCodesignBuild()
@@ -56,13 +54,13 @@ const getConfigJws = async () => {
 
 export const fetchConfigThunk = createThunk(
     `${ACTION_PREFIX}/fetchConfig`,
-    async (jwsPublicKey: string, { dispatch, getState }) => {
+    async (_, { dispatch, getState }) => {
         const timestamp = selectMessageSystemTimestamp(getState());
         const currentSequence = selectMessageSystemCurrentSequence(getState());
 
         if (
             Date.now() >=
-            timestamp + (isMobile() ? FETCH_INTERVAL_IN_MS_MOBILE : FETCH_INTERVAL_IN_MS)
+            timestamp + (isNative() ? FETCH_INTERVAL_IN_MS_MOBILE : FETCH_INTERVAL_IN_MS)
         ) {
             try {
                 const { configJws, isRemote } = await getConfigJws();
@@ -78,7 +76,17 @@ export const fetchConfigThunk = createThunk(
                     throw Error(`Wrong algorithm in JWS config header: ${algorithmInHeader}`);
                 }
 
-                const isAuthenticityValid = verify(configJws, JWS_SIGN_ALGORITHM, jwsPublicKey);
+                const authenticityPublicKey = getJWSPublicKey();
+
+                if (!authenticityPublicKey) {
+                    throw Error('JWS public key is not defined!');
+                }
+
+                const isAuthenticityValid = verify(
+                    configJws,
+                    JWS_SIGN_ALGORITHM,
+                    authenticityPublicKey,
+                );
 
                 if (!isAuthenticityValid) {
                     throw Error('Config authenticity is invalid');
@@ -116,19 +124,15 @@ export const fetchConfigThunk = createThunk(
 
 export const initMessageSystemThunk = createThunk(
     `${ACTION_PREFIX}/init`,
-    async ({ jwsPublicKey }: { jwsPublicKey?: string }, { dispatch }) => {
-        if (!jwsPublicKey) {
-            throw Error('JWS public key is not defined!');
-        }
-
+    async (_, { dispatch }) => {
         const checkConfig = async () => {
-            await dispatch(fetchConfigThunk(jwsPublicKey));
+            await dispatch(fetchConfigThunk());
 
             setTimeout(
                 () => {
                     checkConfig();
                 },
-                isMobile() ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE : FETCH_CHECK_INTERVAL_IN_MS,
+                isNative() ? FETCH_CHECK_INTERVAL_IN_MS_MOBILE : FETCH_CHECK_INTERVAL_IN_MS,
             );
         };
 

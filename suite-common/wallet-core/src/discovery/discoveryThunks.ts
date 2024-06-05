@@ -3,7 +3,11 @@ import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import TrezorConnect, { AccountInfo, BundleProgress, UI } from '@trezor/connect';
 import { TrezorDevice } from '@suite-common/suite-types';
-import { getDerivationType, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import {
+    tryGetAccountIdentity,
+    getDerivationType,
+    isTrezorConnectBackendType,
+} from '@suite-common/wallet-utils';
 import { Discovery, DiscoveryItem, PartialDiscovery } from '@suite-common/wallet-types';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
@@ -59,7 +63,23 @@ export const filterUnavailableNetworks = (
 const calculateProgress =
     (discovery: Discovery) =>
     (_dispatch: any, getState: any): PartialDiscovery => {
-        let total = LIMIT * discovery.networks.length;
+        const numberOfNonCardano = discovery.networks.filter(s => s !== 'ada').length;
+
+        // This is ugly hack, but it works in both scenarios:
+        //
+        //      1) We some `discovery.networks` (we added Cardano), but only some are allowed,
+        //         the `availableCardanoDerivations` < discovery.networks(===ada).length` so it works
+        //
+        //      2) When we remove Cardano, the `availableCardanoDerivations` keeps some stuff,
+        //         but because `discovery.networks(===ada).length` becomes 0 it works
+        //
+        const numberOfCardano = Math.min(
+            discovery.availableCardanoDerivations?.length ?? 0,
+            discovery.networks.filter(s => s === 'ada').length,
+        );
+
+        let total = LIMIT * (numberOfNonCardano + numberOfCardano);
+
         let loaded = 0;
         const accounts = selectAccounts(getState());
         const accountsByDeviceState = accounts.filter(a => a.deviceState === discovery.deviceState);
@@ -128,6 +148,8 @@ const handleProgressThunk = createThunk(
                     deviceState,
                     discoveryItem: item,
                     accountInfo: response,
+                    // first normal account is always visible on web & desktop (but not in suite-native)
+                    visible: (item.accountType === 'normal' && item.index === 0) || !response.empty,
                 }),
             );
         }
@@ -227,6 +249,10 @@ export const getBundleThunk = createThunk(
                 bundle.push({
                     path: configNetwork.bip43Path.replace('i', index.toString()),
                     coin: configNetwork.symbol,
+                    identity: tryGetAccountIdentity({
+                        networkType: configNetwork.networkType,
+                        deviceState: discovery.deviceState,
+                    }),
                     details: 'txs',
                     index,
                     pageSize: getTxsPerPage(configNetwork.networkType),
@@ -571,7 +597,14 @@ export const startDiscoveryThunk = createThunk(
                 }
             }
 
-            if (result.payload.error && device.connected) {
+            if (
+                result.payload.error &&
+                device.connected &&
+                // but not when another application stole this device. no need to release session in this case
+                result.payload.code !== 'Device_UsedElsewhere' &&
+                // also not when user disconnected device during discovery
+                result.payload.code !== 'Device_Disconnected'
+            ) {
                 // call getFeatures to release device session
                 await TrezorConnect.getFeatures({
                     device,

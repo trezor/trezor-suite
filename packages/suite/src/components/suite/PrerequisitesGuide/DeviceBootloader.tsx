@@ -33,6 +33,8 @@ export const DeviceBootloader = ({ device }: DeviceBootloaderProps) => {
                         default: 'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_BUTTON',
                         [DeviceModelInternal.T2T1]:
                             'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
+                        [DeviceModelInternal.T3T1]:
+                            'TR_DEVICE_CONNECTED_BOOTLOADER_RECONNECT_IN_NORMAL_NO_TOUCH',
                     })}
                 />
             ),

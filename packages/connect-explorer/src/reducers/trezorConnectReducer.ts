@@ -1,4 +1,5 @@
 import TrezorConnect, { DEVICE } from '@trezor/connect-web';
+
 import * as ACTIONS from '../actions/index';
 import { TrezorConnectDevice, Action, Field } from '../types';
 
@@ -61,6 +62,7 @@ const onOptionChange = <T>(state: ConnectState, field: Field<T>, value: T): Conn
             },
         };
     }
+    // @ts-expect-error field name must be key of options
     newState.options[field.name] = value;
 
     return newState;

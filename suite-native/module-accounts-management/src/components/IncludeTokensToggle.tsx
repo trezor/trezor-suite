@@ -23,7 +23,6 @@ export const IncludeTokensToggle = ({ isToggled, onToggle }: IncludeTokensToggle
                     <AlertBox
                         variant="info"
                         title="Note, your Ethereum balance doesn’t include tokens."
-                        isStandalone
                     />
                 </Box>
             </Animated.View>

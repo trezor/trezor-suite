@@ -3,6 +3,7 @@ import { useForm, useWatch } from 'react-hook-form';
 
 import {
     fromFiatCurrency,
+    getAccountAutocompoundBalance,
     getFeeLevels,
     getFiatRateKey,
     toFiatCurrency,
@@ -15,11 +16,9 @@ import {
     OUTPUT_AMOUNT,
     UseStakeFormsProps,
 } from 'src/types/wallet/stakeForms';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import { MIN_ETH_AMOUNT_FOR_STAKING } from 'src/constants/suite/ethStaking';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
 import {
@@ -35,7 +34,7 @@ import { isChanged } from '@suite-common/suite-utils';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
-import { selectSelectedAccountAutocompoundBalance } from '../../reducers/wallet/selectedAccountReducer';
+import { useFees } from './form/useFees';
 
 type UnstakeContextValues = UnstakeContextValuesBase & {
     amountLimits: AmountLimitsString;
@@ -49,27 +48,19 @@ export const useUnstakeEthForm = ({
 }: UseStakeFormsProps): UnstakeContextValues => {
     const dispatch = useDispatch();
 
-    const localCurrency = useSelector(selectLocalCurrency);
-    const fees = useSelector(state => state.wallet.fees);
-
     const { account, network } = selectedAccount;
     const { symbol } = account;
 
-    const symbolForFiat = mapTestnetSymbol(symbol);
-    const currentRate = useSelector(state =>
-        selectFiatRatesByFiatRateKey(
-            state,
-            getFiatRateKey(symbolForFiat, localCurrency),
-            'current',
-        ),
-    );
-    // TODO: Implement fee switcher
-    const selectedFee = 'normal';
+    const localCurrency = useSelector(selectLocalCurrency);
+    const symbolFees = useSelector(state => state.wallet.fees[symbol]);
 
-    const autocompoundBalance = useSelector(selectSelectedAccountAutocompoundBalance);
+    const currentRate = useSelector(state =>
+        selectFiatRatesByFiatRateKey(state, getFiatRateKey(symbol, localCurrency), 'current'),
+    );
+
+    const autocompoundBalance = getAccountAutocompoundBalance(account);
     const amountLimits: AmountLimitsString = {
         currency: symbol,
-        minCrypto: MIN_ETH_AMOUNT_FOR_STAKING.toString(),
         maxCrypto: autocompoundBalance,
     };
 
@@ -82,18 +73,18 @@ export const useUnstakeEthForm = ({
             ...getStakeFormsDefaultValues({
                 address: poolAddress,
                 ethereumStakeType: 'unstake',
+                amount: autocompoundBalance,
             }),
         } as UnstakeFormState;
-    }, [account.symbol]);
+    }, [account.symbol, autocompoundBalance]);
 
     const { saveDraft, getDraft, removeDraft } = useFormDraft<UnstakeFormState>('unstake-eth');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
     const state = useMemo(() => {
-        const coinFees = fees[account.symbol];
-        const levels = getFeeLevels(account.networkType, coinFees);
-        const feeInfo = { ...coinFees, levels };
+        const levels = getFeeLevels(account.networkType, symbolFees);
+        const feeInfo = { ...symbolFees, levels };
 
         return {
             account,
@@ -101,7 +92,7 @@ export const useUnstakeEthForm = ({
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, fees, network]);
+    }, [account, defaultValues, symbolFees, network]);
 
     const methods = useForm<UnstakeFormState>({
         mode: 'onChange',
@@ -134,10 +125,25 @@ export const useUnstakeEthForm = ({
         isLoading: isComposing,
         composeRequest,
         composedLevels,
+        onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
         state,
     });
+
+    // sub-hook, FeeLevels handler
+    const fees = useSelector(state => state.wallet.fees);
+    const coinFees = fees[account.symbol];
+    const levels = getFeeLevels(account.networkType, coinFees);
+    const feeInfo = { ...coinFees, levels };
+    const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
+        defaultValue: 'normal',
+        feeInfo,
+        onChange: onFeeLevelChange,
+        composeRequest,
+        ...methods,
+    });
+    const selectedFee = _selectedFee ?? 'normal';
 
     useDebounce(
         () => {
@@ -165,35 +171,28 @@ export const useUnstakeEthForm = ({
     const onCryptoAmountChange = useCallback(
         async (amount: string) => {
             if (currentRate) {
-                const fiatValue = toFiatCurrency(amount, localCurrency, {
-                    [localCurrency]: currentRate?.rate,
-                });
+                const fiatValue = toFiatCurrency(amount, currentRate?.rate);
                 setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
             }
 
             setValue(OUTPUT_AMOUNT, amount || '', { shouldDirty: true });
             await composeRequest(CRYPTO_INPUT);
         },
-        [composeRequest, currentRate, localCurrency, setValue],
+        [composeRequest, currentRate, setValue],
     );
 
     const onFiatAmountChange = useCallback(
         async (amount: string) => {
             if (!currentRate) return;
 
-            const cryptoValue = fromFiatCurrency(
-                amount,
-                localCurrency,
-                { [localCurrency]: currentRate?.rate },
-                network.decimals,
-            );
+            const cryptoValue = fromFiatCurrency(amount, network.decimals, currentRate?.rate);
             setValue(CRYPTO_INPUT, cryptoValue || '', { shouldDirty: true, shouldValidate: true });
             setValue(OUTPUT_AMOUNT, cryptoValue || '', {
                 shouldDirty: true,
             });
             await composeRequest(FIAT_INPUT);
         },
-        [composeRequest, currentRate, localCurrency, network.decimals, setValue],
+        [composeRequest, currentRate, network.decimals, setValue],
     );
 
     const onOptionChange = useCallback(
@@ -227,7 +226,7 @@ export const useUnstakeEthForm = ({
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm]);
+    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
     return {
         ...methods,
@@ -247,6 +246,8 @@ export const useUnstakeEthForm = ({
         clearErrors,
         onOptionChange,
         currentRate,
+        feeInfo,
+        changeFeeLevel,
     };
 };
 

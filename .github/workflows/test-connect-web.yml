@@ -1,0 +1,39 @@
+name: "[Test] connect-web e2e"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  push:
+    branches: [release/connect/**]
+  pull_request:
+    paths:
+      - "packages/connect/**"
+      - "packages/connect-common/**"
+      - "packages/utils/**"
+      - ".github/workflows/connect-web-e2e-test.yml"
+      - "yarn.lock"
+  workflow_dispatch:
+
+jobs:
+  connect-web-e2e:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/connect-web
+
+      - name: Run E2E tests
+        run: yarn workspace @trezor/connect-web test:e2e

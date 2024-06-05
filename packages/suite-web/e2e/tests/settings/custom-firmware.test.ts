@@ -27,12 +27,15 @@ describe('Install custom firmware', () => {
         //
         // Test execution
         //
-        cy.getTestElement('@firmware-custom').then(fileUploadModal => {
+        cy.getTestElement('@firmware-modal').then(fileUploadModal => {
             cy.wrap(fileUploadModal)
                 .find('input[type=file]')
-                .attachFile(testBinFile, { subjectType: 'drag-n-drop' });
+                .attachFile(
+                    { filePath: testBinFile, encoding: 'binary' },
+                    { subjectType: 'drag-n-drop' },
+                );
         });
-        cy.getTestElement('@firmware-custom').then(installFWbutton => {
+        cy.getTestElement('@firmware-modal').then(installFWbutton => {
             cy.wrap(installFWbutton)
                 .find('[class*="Button"]')
                 .should('not.be.disabled')
@@ -44,7 +47,7 @@ describe('Install custom firmware', () => {
         //
         // Assert
         //
-        cy.getTestElement('@firmware/reconnect-device/bootloader').should('be.visible');
+        cy.getTestElement('@firmware/reconnect-device').should('be.visible');
     });
 });
 

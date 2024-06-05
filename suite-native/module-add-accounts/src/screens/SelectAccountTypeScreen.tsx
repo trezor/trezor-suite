@@ -86,17 +86,17 @@ export const SelectAccountTypeScreen = ({
     route,
     navigation,
 }: StackProps<AddCoinAccountStackParamList, AddCoinAccountStackRoutes.SelectAccountType>) => {
-    const { accountType: defaultType, network, flowType } = route.params;
+    const { accountType: defaultType, networkSymbol, flowType } = route.params;
     const { translate } = useTranslate();
     const openLink = useOpenLink();
     const insets = useSafeAreaInsets();
     const { applyStyle, utils } = useNativeStyles();
 
-    const { getAvailableAccountTypesForNetwork, addCoinAccount } = useAddCoinAccount();
+    const { getAvailableAccountTypesForNetworkSymbol, addCoinAccount } = useAddCoinAccount();
 
     const [selectedAccountType, setSelectedAccountType] = useState<AccountType>(defaultType);
 
-    const types: AccountType[] = getAvailableAccountTypesForNetwork({ network });
+    const types: AccountType[] = getAvailableAccountTypesForNetworkSymbol({ networkSymbol });
     const { titleKey: accountTypeKey } = accountTypeTranslationKeys[selectedAccountType];
 
     const handleClose = () => navigation.goBack();
@@ -104,7 +104,7 @@ export const SelectAccountTypeScreen = ({
     const handleMoreTap = () => openLink(ACCOUNT_TYPES_URL);
 
     const handleConfirmTap = () =>
-        addCoinAccount({ network, accountType: selectedAccountType, flowType });
+        addCoinAccount({ networkSymbol, accountType: selectedAccountType, flowType });
 
     return (
         <>
@@ -112,7 +112,7 @@ export const SelectAccountTypeScreen = ({
                 screenHeader={
                     <ScreenSubHeader
                         content={translate('moduleAddAccounts.selectAccountTypeScreen.title', {
-                            symbol: _ => network.symbol.toUpperCase(),
+                            symbol: _ => networkSymbol.toUpperCase(),
                         })}
                         leftIcon={
                             <IconButton
@@ -132,8 +132,8 @@ export const SelectAccountTypeScreen = ({
                         return (
                             <SelectableItem
                                 key={`select-type-${item}`}
-                                title={translate(titleKey)}
-                                subtitle={translate(subtitleKey)}
+                                title={<Translation id={titleKey} />}
+                                subtitle={<Translation id={subtitleKey} />}
                                 content={bulletsForKeyPath(descKey)}
                                 isSelected={selectedAccountType === item}
                                 isDefault={defaultType === item}
@@ -148,7 +148,7 @@ export const SelectAccountTypeScreen = ({
                         <Translation id="moduleAddAccounts.selectAccountTypeScreen.aboutTypesLabel" />
                     </Text>
                     <Button size="medium" colorScheme="tertiaryElevation0" onPress={handleMoreTap}>
-                        {translate('moduleAddAccounts.selectAccountTypeScreen.buttons.more')}
+                        <Translation id="moduleAddAccounts.selectAccountTypeScreen.buttons.more" />
                     </Button>
                 </View>
             </Screen>
@@ -162,9 +162,12 @@ export const SelectAccountTypeScreen = ({
                 />
                 <View style={applyStyle(buttonWrapperStyle)}>
                     <Button size="medium" onPress={handleConfirmTap}>
-                        {translate('moduleAddAccounts.selectAccountTypeScreen.buttons.confirm', {
-                            type: _ => translate(accountTypeKey),
-                        })}
+                        <Translation
+                            id="moduleAddAccounts.selectAccountTypeScreen.buttons.confirm"
+                            values={{
+                                type: _ => translate(accountTypeKey),
+                            }}
+                        />
                     </Button>
                 </View>
             </View>

@@ -2,13 +2,12 @@ import styled from 'styled-components';
 import { useForm } from 'react-hook-form';
 import { analytics, EventType } from '@trezor/suite-analytics';
 import { Card, Textarea, Button, Tooltip, H3, IconButton } from '@trezor/components';
+import { sendFormActions, pushSendFormRawTransactionThunk } from '@suite-common/wallet-core';
 
 import { Translation } from 'src/components/suite';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
-import { pushSendFormRawTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
-import { getInputState, isHexValid } from '@suite-common/wallet-utils';
-import { Network } from 'src/types/wallet';
+import { tryGetAccountIdentity, getInputState, isHexValid } from '@suite-common/wallet-utils';
+import { Account } from 'src/types/wallet';
 import { OpenGuideFromTooltip } from 'src/components/guide';
 import { spacingsPx } from '@trezor/theme';
 
@@ -27,7 +26,7 @@ const StyledTextarea = styled(Textarea)`
 
     > :first-child {
         background-color: ${({ theme }) => theme.backgroundNeutralSubtleOnElevation1};
-        border-color: ${({ theme }) => theme.borderOnElevation1};
+        border-color: ${({ theme }) => theme.borderElevation2};
     }
 `;
 
@@ -37,12 +36,12 @@ const SendButton = styled(Button)`
 `;
 
 interface RawProps {
-    network: Network;
+    account: Account;
 }
 
 const INPUT_NAME = 'rawTx';
 
-export const Raw = ({ network }: RawProps) => {
+export const Raw = ({ account }: RawProps) => {
     const {
         register,
         setValue,
@@ -60,7 +59,7 @@ export const Raw = ({ network }: RawProps) => {
     const inputValue = watch(INPUT_NAME);
     const error = errors[INPUT_NAME];
     const inputState = getInputState(error);
-    const prefix = network.networkType === 'ethereum' ? '0x' : undefined;
+    const prefix = account.networkType === 'ethereum' ? '0x' : undefined;
 
     const { ref: inputRef, ...inputField } = register(INPUT_NAME, {
         required: translationString('RAW_TX_NOT_SET'),
@@ -73,7 +72,11 @@ export const Raw = ({ network }: RawProps) => {
 
     const send = async () => {
         const result = await dispatch(
-            pushSendFormRawTransactionThunk({ tx: inputValue, coin: network.symbol }),
+            pushSendFormRawTransactionThunk({
+                tx: inputValue,
+                coin: account.symbol,
+                identity: tryGetAccountIdentity(account),
+            }),
         ).unwrap();
 
         if (result) {
@@ -81,7 +84,7 @@ export const Raw = ({ network }: RawProps) => {
             analytics.report({
                 type: EventType.SendRawTransaction,
                 payload: {
-                    networkSymbol: network.symbol,
+                    networkSymbol: account.symbol,
                 },
             });
         }
@@ -93,12 +96,9 @@ export const Raw = ({ network }: RawProps) => {
         <StyledCard>
             <H3>
                 <Tooltip
-                    addon={instance => (
-                        <OpenGuideFromTooltip
-                            id="/3_send-and-receive/transactions-in-depth/send-raw.md"
-                            instance={instance}
-                        />
-                    )}
+                    addon={
+                        <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/send-raw.md" />
+                    }
                     content={<Translation id="SEND_RAW_TRANSACTION_TOOLTIP" />}
                     dashed
                 >

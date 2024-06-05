@@ -3,8 +3,8 @@ import * as trezorConnectActions from '@suite-common/connect-init';
 import {
     initBlockchainThunk,
     initDevices,
-    periodicCheckTokenDefinitionsThunk,
     periodicFetchFiatRatesThunk,
+    periodicCheckStakeDataThunk,
 } from '@suite-common/wallet-core';
 
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -16,6 +16,7 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { SUITE } from './constants';
 import { onSuiteReady } from './suiteActions';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
 
 export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     const {
@@ -40,7 +41,7 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     dispatch(languageActions.setLanguage(language));
 
     // 3. fetch message system config
-    dispatch(initMessageSystemThunk({ jwsPublicKey: process.env.JWS_PUBLIC_KEY }));
+    dispatch(initMessageSystemThunk());
 
     // 4. redirecting user into welcome screen (if needed)
     dispatch(routerActions.initialRedirection());
@@ -86,6 +87,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     // immediately after suite start.
     dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
-    // 11. backend connected, suite is ready to use
+    // 11. start fetching staking data if needed, does need to be waited
+    dispatch(periodicCheckStakeDataThunk());
+
+    // 12. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };

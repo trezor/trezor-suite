@@ -3,11 +3,9 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import { FeeLevel } from '@trezor/connect';
 import { useAsyncDebounce } from '@trezor/react-utils';
-import { useDispatch, useTranslation } from 'src/hooks/suite';
-import {
-    signSendFormTransactionThunk,
-    composeSendFormTransactionThunk,
-} from 'src/actions/wallet/send/sendFormThunks';
+import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
+import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     FormState,
@@ -20,6 +18,7 @@ import {
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
@@ -47,6 +46,7 @@ export const useCompose = <TFieldValues extends FormState>({
         useState<SendContextValues['composedLevels']>(undefined);
     const [composeField, setComposeField] = useState<string | undefined>(undefined);
     const { translationString } = useTranslation();
+    const selectedAccount = useSelector(selectSelectedAccount);
 
     const dispatch = useDispatch();
 
@@ -231,14 +231,18 @@ export const useCompose = <TFieldValues extends FormState>({
     // called from the UI, triggers signing process
     const sign = async () => {
         const values = getValues();
-        const composedTx = composedLevels
+        const precomposedTransaction = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
             : undefined;
-        if (composedTx && composedTx.type === 'final') {
+        if (precomposedTransaction && precomposedTransaction.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]TransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             const result = await dispatch(
-                signSendFormTransactionThunk({ formValues: values, transactionInfo: composedTx }),
+                signAndPushSendFormTransactionThunk({
+                    formValues: values,
+                    precomposedTransaction,
+                    selectedAccount,
+                }),
             ).unwrap();
 
             return result?.success;

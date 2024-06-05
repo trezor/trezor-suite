@@ -1,5 +1,5 @@
 import { useCallback, useState } from 'react';
-import { checkAddressChecksum, toChecksumAddress } from 'web3-utils';
+import { checkAddressCheckSum, toChecksumAddress } from 'web3-utils';
 import styled from 'styled-components';
 import { capitalizeFirstLetter } from '@trezor/utils';
 import { Input, Button, IconButton } from '@trezor/components';
@@ -19,15 +19,11 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import type { Output } from 'src/types/wallet/sendForm';
+import type { Output } from '@suite-common/wallet-types';
 import { InputError } from 'src/components/wallet';
 
 const Container = styled.div`
     position: relative;
-`;
-
-const Heading = styled.p`
-    position: absolute;
 `;
 
 const Text = styled.span`
@@ -203,7 +199,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             },
             // eth addresses are valid without checksum but Trezor displays them as checksummed
             checksum: (value: string) => {
-                if (networkType === 'ethereum' && !checkAddressChecksum(value)) {
+                if (networkType === 'ethereum' && !checkAddressCheckSum(value)) {
                     return translationString('RECIPIENT_IS_NOT_VALID');
                 }
             },
@@ -228,13 +224,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
 
     return (
         <Container>
-            <Heading>
-                <Translation
-                    id={outputsCount > 1 ? 'TR_SEND_RECIPIENT_ADDRESS' : 'TR_SEND_ADDRESS_SECTION'}
-                    values={{ index: recipientId }}
-                />
-            </Heading>
-
             <Input
                 inputState={inputState}
                 innerAddon={
@@ -266,10 +255,22 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         <Translation id="RECIPIENT_ADDRESS" />
                     </Text>
                 }
-                labelHoverAddon={
+                labelHoverRight={
                     <Button variant="tertiary" size="tiny" icon="QR" onClick={handleQrClick}>
                         <Translation id="RECIPIENT_SCAN" />
                     </Button>
+                }
+                labelLeft={
+                    <p>
+                        <Translation
+                            id={
+                                outputsCount > 1
+                                    ? 'TR_SEND_RECIPIENT_ADDRESS'
+                                    : 'TR_SEND_ADDRESS_SECTION'
+                            }
+                            values={{ index: recipientId }}
+                        />
+                    </p>
                 }
                 labelRight={
                     outputsCount > 1 ? (

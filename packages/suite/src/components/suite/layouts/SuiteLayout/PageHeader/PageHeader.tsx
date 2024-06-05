@@ -20,7 +20,7 @@ const Container = styled.div`
     min-height: ${HEADER_HEIGHT}px;
     padding: ${spacingsPx.xs} ${spacingsPx.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
     overflow: hidden;
     z-index: ${zIndices.pageHeader};
 `;

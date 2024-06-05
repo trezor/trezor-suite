@@ -47,7 +47,7 @@ export interface TokenTransfer {
     to: string;
     contract: string;
     name: string;
-    symbol: string;
+    symbol?: string;
     decimals: number;
     value?: string;
     multiTokenValues?: MultiTokenValue[];
@@ -108,6 +108,17 @@ export interface FeeStats {
     totalFeesSat: string;
     averageFeePerKb: number;
     decilesFeePerKb: number[];
+}
+export interface StakingPool {
+    contract: string;
+    pendingBalance: string;
+    pendingDepositedBalance: string;
+    depositedBalance: string;
+    withdrawTotalAmount: string;
+    claimableAmount: string;
+    restakedReward: string;
+    autocompoundBalance: string;
+    name: string;
 }
 export interface ContractInfo {
     type: string;

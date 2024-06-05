@@ -4,7 +4,7 @@ import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { fixtures } from './__fixtures__/methods';
 import { buildOverview } from '../support/buildOverview';
 import { ensureDirectoryExists } from '@trezor/node-utils';
-import { getContexts, log, openPopup, setConnectSettings } from '../support/helpers';
+import { getContexts, log, formatUrl, openPopup, setConnectSettings } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 const connectSrc = process.env.TREZOR_CONNECT_SRC;
@@ -43,10 +43,10 @@ test.afterAll(() => {
     buildOverview({ emuScreenshots });
 });
 
-// Some methods are not allowed in web extension because of isManagementRestricted
-const methodsUrlToSkipInWebExtension = ['wipeDevice', 'recoverDevice'];
+// Some methods are not available in new explorer
+const methodsUrlToSkip = ['wipeDevice', 'recoverDevice'];
 const filteredFixtures = fixtures.filter(f => {
-    if (isWebExtension && methodsUrlToSkipInWebExtension.includes(f.url)) {
+    if (methodsUrlToSkip.includes(f.url)) {
         return false;
     }
 
@@ -90,13 +90,26 @@ filteredFixtures.forEach(f => {
         context = browserContext;
 
         if (connectSrc) {
-            await setConnectSettings(explorerPage, explorerUrl, {
-                trustedHost: false,
-                connectSrc,
-            });
+            await setConnectSettings(
+                explorerPage,
+                explorerUrl,
+                {
+                    trustedHost: false,
+                    connectSrc,
+                },
+                isWebExtension,
+            );
         }
 
-        await explorerPage.goto(`${explorerUrl}#/method/${f.url}`);
+        const [method, submethod] = f.url.split('-');
+        const fullUrl = formatUrl(
+            explorerUrl,
+            `methods/${f.dir}/${method}/index.html${submethod ? '?submethod=' + submethod : ''}`,
+        );
+        await explorerPage.goto(fullUrl);
+
+        // expand method tester
+        await explorerPage.click("[data-test='@api-playground/collapsible-box']");
 
         // screenshot request
         log(f.url, 'screenshot @trezor/connect call params');
@@ -119,6 +132,12 @@ filteredFixtures.forEach(f => {
             timeout: 40000,
         });
         await popup.click("button[data-test='@analytics/continue-button']");
+
+        if (isWebExtension) {
+            log(f.url, 'waiting for select device');
+            await popup.waitForSelector('.select-device-list button.list', { state: 'visible' });
+            await popup.click('.select-device-list button.list');
+        }
 
         log(f.url, 'waiting for confirm permissions button');
         await popup.waitForSelector('button.confirm', { state: 'visible' });

@@ -9,7 +9,7 @@ import { APP_NAME } from './libs/constants';
 import { Store } from './libs/store';
 import { MIN_HEIGHT, MIN_WIDTH } from './libs/screen';
 import { getBuildInfo, getComputerInfo } from './libs/info';
-import { restartApp } from './libs/app-utils';
+import { restartApp, processStatePatch } from './libs/app-utils';
 import { clearAppCache, initUserData } from './libs/user-data';
 import { initSentry } from './libs/sentry';
 import { initModules, mainThreadEmitter } from './modules';
@@ -168,8 +168,9 @@ const init = async () => {
 
     ipcMain.handle('handshake/load-tor-module', () => loadTorModule());
 
+    const statePatch = processStatePatch();
     // load and wait for handshake message from renderer
-    const handshake = await hangDetect(mainWindow);
+    const handshake = await hangDetect(mainWindow, statePatch);
 
     // handle hangDetect errors
     if (handshake === 'quit') {

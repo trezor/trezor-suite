@@ -16,7 +16,6 @@ const Wrapper = styled.div`
 
 const Content = styled.div``;
 const Header = styled.div`
-    display: flex;
     align-items: center;
     padding-bottom: 32px;
 `;
@@ -29,7 +28,6 @@ const NoTransactions = styled.div`
 `;
 
 const StyledH2 = styled(H2)`
-    display: flex;
     flex-direction: column;
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
 `;
@@ -89,6 +87,8 @@ export const CoinmarketAccountTransactions = () => {
                     <Header>
                         <StyledH2>
                             <Translation id="TR_BUY_ACCOUNT_TRANSACTIONS" />
+                        </StyledH2>
+                        <p>
                             <TransactionCount>
                                 {buyTransactions.length} <Translation id="TR_TRADE_BUYS" /> •{' '}
                                 {sellTransactions.length} <Translation id="TR_TRADE_SELLS" /> •{' '}
@@ -97,7 +97,7 @@ export const CoinmarketAccountTransactions = () => {
                                 <Translation id="TR_TRADE_SPENDS" /> • {savingsTransactions.length}{' '}
                                 <Translation id="TR_TRADE_SAVINGS" />
                             </TransactionCount>
-                        </StyledH2>
+                        </p>
                     </Header>
                     <Content>
                         {sortedAccountTransactions.map(trade => {

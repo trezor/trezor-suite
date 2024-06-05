@@ -11,7 +11,6 @@ export const TransactionSummaryDropdown = () => (
                 label: <Translation id="TR_GRAPH_VIEW" />,
                 options: [
                     {
-                        key: 'graphView',
                         label: <GraphScaleDropdownItem />,
                         shouldCloseOnClick: false,
                     },

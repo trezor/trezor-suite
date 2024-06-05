@@ -9,4 +9,4 @@ export LOCAL_USER_ID
 export CYPRESS_SNAPSHOT=1
 export CYPRESS_updateSnapshots=1
 
-docker-compose -f ./docker/docker-compose.suite-test.yml up --build --abort-on-container-exit
+docker compose -f ./docker/docker-compose.suite-test.yml up --build --abort-on-container-exit

@@ -10,12 +10,18 @@ const InlineTooltip = styled(Tooltip)`
 type TooltipSymbolProps = {
     content: ReactNode;
     icon?: IconType;
+    iconColor?: string;
     className?: string;
 };
 
-const TooltipSymbol = ({ content, icon = 'QUESTION', className }: TooltipSymbolProps) => (
+const TooltipSymbol = ({
+    content,
+    icon = 'QUESTION',
+    iconColor,
+    className,
+}: TooltipSymbolProps) => (
     <InlineTooltip content={content} maxWidth={250} className={className}>
-        <Icon icon={icon} size={16} />
+        <Icon icon={icon} size={16} color={iconColor} />
     </InlineTooltip>
 );
 

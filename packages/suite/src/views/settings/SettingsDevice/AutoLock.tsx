@@ -1,16 +1,10 @@
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import {
-    ActionColumn,
-    ActionSelect,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, ActionSelect, TextColumn, Translation } from 'src/components/suite';
 import { useDevice, useDispatch, useLocales } from 'src/hooks/suite';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { formatDurationStrict } from '@suite-common/suite-utils';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 // auto lock times in seconds; allowed lock times by device: <1 minute, 6 days>
@@ -33,7 +27,6 @@ interface AutoLockProps {
 
 export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Autolock);
     const { device } = useDevice();
     const locale = useLocales();
 
@@ -61,11 +54,7 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/device/autolock"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.Autolock}>
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING" />}
@@ -83,6 +72,6 @@ export const AutoLock = ({ isDeviceLocked }: AutoLockProps) => {
                     data-test="@settings/auto-lock-select"
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

@@ -8,6 +8,8 @@ import {
     useFiatFromCryptoValueParams,
 } from 'src/hooks/suite/useFiatFromCryptoValue';
 import { HiddenPlaceholderProps } from './HiddenPlaceholder';
+import { useLoadingSkeleton } from 'src/hooks/suite';
+import { SkeletonRectangle } from '@trezor/components';
 
 const StyledHiddenPlaceholder = styled((props: HiddenPlaceholderProps) => (
     <HiddenPlaceholder {...props} />
@@ -32,7 +34,9 @@ type FiatValueProps = useFiatFromCryptoValueParams & {
     disableHiddenPlaceholder?: boolean;
     fiatAmountFormatterOptions?: FormatNumberOptions;
     shouldConvert?: boolean;
+    showLoadingSkeleton?: boolean;
     className?: string;
+    isLoading?: boolean;
 };
 
 /**
@@ -53,43 +57,52 @@ export const FiatValue = ({
     className,
     symbol,
     tokenAddress,
-    fiatCurrency,
-    source,
-    useCustomSource,
+    historicRate,
+    useHistoricRate,
     showApproximationIndicator,
     disableHiddenPlaceholder,
     fiatAmountFormatterOptions,
     shouldConvert = true,
+    showLoadingSkeleton,
+    isLoading,
 }: FiatValueProps) => {
-    const { targetCurrency, fiatAmount, ratesSource, currentRate } = useFiatFromCryptoValue({
+    const { shouldAnimate } = useLoadingSkeleton();
+    const { localCurrency, fiatAmount, rate, currentRate } = useFiatFromCryptoValue({
         amount,
         symbol,
         tokenAddress,
-        fiatCurrency,
-        source,
-        useCustomSource,
+        historicRate,
+        useHistoricRate,
     });
 
     const { FiatAmountFormatter } = useFormatters();
     const value = shouldConvert ? fiatAmount : amount;
 
     const WrapperComponent = disableHiddenPlaceholder ? SameWidthNums : StyledHiddenPlaceholder;
+
+    if (
+        (!rate || !value || !currentRate?.lastTickerTimestamp || isLoading) &&
+        showLoadingSkeleton &&
+        !currentRate?.error
+    ) {
+        return <SkeletonRectangle animate={shouldAnimate} />;
+    }
+
     if (value) {
         const fiatValueComponent = (
             <WrapperComponent className={className}>
                 {showApproximationIndicator && <>≈ </>}
                 <FiatAmountFormatter
-                    currency={targetCurrency.toUpperCase()}
+                    currency={localCurrency.toUpperCase()}
                     value={value}
                     {...fiatAmountFormatterOptions}
                 />
             </WrapperComponent>
         );
 
-        const fiatRateValue = ratesSource?.[targetCurrency] ?? null;
-        const fiatRateComponent = fiatRateValue ? (
+        const fiatRateComponent = rate ? (
             <SameWidthNums>
-                <FiatAmountFormatter currency={targetCurrency} value={fiatRateValue} />
+                <FiatAmountFormatter currency={localCurrency} value={rate} />
             </SameWidthNums>
         ) : null;
         if (!children) return fiatValueComponent;
@@ -97,7 +110,7 @@ export const FiatValue = ({
         return children({
             value: fiatValueComponent,
             rate: fiatRateComponent,
-            timestamp: useCustomSource ? null : currentRate?.lastTickerTimestamp ?? null,
+            timestamp: historicRate ? null : currentRate?.lastTickerTimestamp ?? null,
         });
     }
     if (!children) return null;

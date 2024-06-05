@@ -1,13 +1,15 @@
 import UDP from 'dgram';
 import { isNotUndefined } from '@trezor/utils';
 
-import { AbstractApi, AbstractApiConstructorParams } from './abstract';
+import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
 import { AsyncResultWithTypedError, ResultWithTypedError } from '../types';
 
 import * as ERRORS from '../errors';
 
 export class UdpApi extends AbstractApi {
-    interface = UDP.createSocket('udp4');
+    chunkSize = 64;
+
+    protected interface = UDP.createSocket('udp4');
     protected communicating = false;
 
     constructor({ logger }: AbstractApiConstructorParams) {
@@ -118,7 +120,11 @@ export class UdpApi extends AbstractApi {
         const paths = ['127.0.0.1:21324'];
 
         const enumerateResult = await Promise.all(
-            paths.map(path => this.ping(path).then(pinged => (pinged ? path : undefined))),
+            paths.map(path =>
+                this.ping(path).then(pinged =>
+                    pinged ? { path, type: DEVICE_TYPE.TypeEmulator } : undefined,
+                ),
+            ),
         ).then(res => res.filter(isNotUndefined));
 
         return this.success(enumerateResult);
@@ -131,5 +137,10 @@ export class UdpApi extends AbstractApi {
 
     public closeDevice(_path: string) {
         return Promise.resolve(this.success(undefined));
+    }
+
+    public dispose() {
+        this.interface.removeAllListeners();
+        this.interface.close();
     }
 }

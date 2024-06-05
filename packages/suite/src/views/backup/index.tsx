@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
-import { Paragraph, Button, Image } from '@trezor/components';
-import { HELP_CENTER_FAILED_BACKUP_URL } from '@trezor/urls';
+import { Paragraph, Button, Image, Row } from '@trezor/components';
+import { HELP_CENTER_RECOVERY_ISSUES_URL } from '@trezor/urls';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
@@ -112,7 +112,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
     if (
         backup.status !== 'finished' &&
         !backup.error &&
-        device.features.needs_backup === false &&
+        device.features.backup_availability !== 'Required' &&
         device.features.unfinished_backup !== null
     ) {
         return (
@@ -127,7 +127,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         <StyledImage image="UNI_ERROR" />
                         <StyledP data-test="@backup/already-failed-message">
                             <Translation id="BACKUP_BACKUP_ALREADY_FAILED_DESCRIPTION" />
-                            <TrezorLink icon="EXTERNAL_LINK" href={HELP_CENTER_FAILED_BACKUP_URL}>
+                            <TrezorLink icon="EXTERNAL_LINK" href={HELP_CENTER_RECOVERY_ISSUES_URL}>
                                 <Translation id="TR_LEARN_MORE" />
                             </TrezorLink>
                         </StyledP>
@@ -144,6 +144,15 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
         );
     }
 
+    const backupParams: Parameters<typeof backupDevice>[0] =
+        device?.features?.backup_type === 'Slip39_Basic' ||
+        device?.features?.backup_type === 'Slip39_Basic_Extendable'
+            ? {
+                  group_threshold: 1,
+                  groups: [{ member_count: 1, member_threshold: 1 }],
+              }
+            : {};
+
     return (
         <StyledModal
             isCancelable={cancelable}
@@ -158,7 +167,7 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
                         <>
                             <StyledButton
                                 data-test="@backup/start-button"
-                                onClick={() => dispatch(backupDevice())}
+                                onClick={() => dispatch(backupDevice(backupParams))}
                                 isDisabled={!canStart(backup.userConfirmed, locks)}
                             >
                                 <Translation id="TR_CREATE_BACKUP" />
@@ -221,10 +230,12 @@ export const Backup = ({ cancelable, onCancel }: ForegroundAppProps) => {
             )}
 
             {backup.status === 'error' && (
-                <VerticalCenter>
-                    <StyledImage image="UNI_ERROR" />
-                    <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
-                </VerticalCenter>
+                <Row justifyContent="center">
+                    <VerticalCenter>
+                        <StyledImage image="UNI_ERROR" />
+                        <StyledP data-test="@backup/error-message">{backup.error}</StyledP>
+                    </VerticalCenter>
+                </Row>
             )}
         </StyledModal>
     );

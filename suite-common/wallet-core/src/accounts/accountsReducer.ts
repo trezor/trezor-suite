@@ -1,5 +1,5 @@
 import { isAnyOf } from '@reduxjs/toolkit';
-import { A, D, G, pipe } from '@mobily/ts-belt';
+import { A, D, F, G, pipe } from '@mobily/ts-belt';
 import { memoize, memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
@@ -8,21 +8,21 @@ import { Account, AccountKey } from '@suite-common/wallet-types';
 import { AccountType, networks, NetworkSymbol } from '@suite-common/wallet-config';
 
 import { accountsActions } from './accountsActions';
-import { formattedAccountTypeMap } from './constants';
+import { formattedAccountTypeMap } from './accountsConstants';
 import {
     DeviceRootState,
     selectDevice,
-    selectIsNoPhysicalDeviceConnected,
-    selectIsPortfolioTrackerDevice,
-    selectPersistedDeviceStates,
+    selectHasOnlyPortfolioDevice,
 } from '../device/deviceReducer';
 import { DiscoveryRootState, selectIsDeviceDiscoveryActive } from '../discovery/discoveryReducer';
 
-export const accountsInitialState: Account[] = [];
+export type AccountsState = Account[];
+
+export const accountsInitialState: AccountsState = [];
 
 export type AccountsRootState = {
     wallet: {
-        accounts: Account[];
+        accounts: AccountsState;
     };
 };
 
@@ -148,6 +148,17 @@ export const selectAccountsByDeviceState = memoizeWithArgs(
     { size: 3 },
 );
 
+export const selectAccountsByDeviceStateAndNetworkSymbol = (
+    state: AccountsRootState,
+    deviceState: string,
+    networkSymbol: NetworkSymbol,
+): Account[] =>
+    pipe(
+        selectAccountsByDeviceState(state, deviceState),
+        A.filter(account => account.symbol === networkSymbol),
+        F.toMutable,
+    );
+
 export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState) => {
     const device = selectDevice(state);
 
@@ -155,6 +166,10 @@ export const selectDeviceAccounts = (state: AccountsRootState & DeviceRootState)
 
     return selectAccountsByDeviceState(state, device.state);
 };
+
+export const selectVisibleDeviceAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
+    selectDeviceAccounts(state).filter(account => account.visible),
+);
 
 export const selectDeviceAccountsForNetworkSymbolAndAccountType = memoizeWithArgs(
     (
@@ -193,15 +208,6 @@ export const selectDeviceAccountKeyForNetworkSymbolAndAccountTypeWithIndex = (
     return accounts[accountIndex]?.key;
 };
 
-export const selectDeviceAccountsLengthPerNetwork = (state: AccountsRootState & DeviceRootState) =>
-    pipe(
-        selectDeviceAccounts(state),
-        A.groupBy(account => account.symbol),
-        Object.entries,
-        A.map(([symbol, accounts]) => [symbol, accounts.length]),
-        pairs => Object.fromEntries(pairs),
-    );
-
 export const selectDeviceMainnetAccounts = memoize((state: AccountsRootState & DeviceRootState) =>
     pipe(
         selectDeviceAccounts(state),
@@ -236,6 +242,16 @@ export const selectDeviceAccountsByNetworkSymbol = memoizeWithArgs(
 
         return A.filter(accounts, account => account.symbol === networkSymbol);
     },
+    {
+        size: Object.keys(networks).length,
+    },
+);
+
+export const selectVisibleDeviceAccountsByNetworkSymbol = memoizeWithArgs(
+    (state: AccountsRootState & DeviceRootState, networkSymbol: NetworkSymbol | null) =>
+        selectDeviceAccountsByNetworkSymbol(state, networkSymbol).filter(
+            account => account.visible,
+        ),
     {
         size: Object.keys(networks).length,
     },
@@ -351,9 +367,10 @@ export const selectAccountsSymbols = memoize(
 );
 
 export const selectIsDeviceAccountless = (state: AccountsRootState & DeviceRootState) =>
-    pipe(selectDeviceAccounts(state), A.isEmpty);
+    pipe(selectVisibleDeviceAccounts(state), A.isEmpty);
 
-export const selectIsDeviceDiscoveryEmpty = (
+// Selected device has no accounts and no active discovery. It can be empty portfolio device.
+export const selectIsEmptyDevice = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
     const isDeviceAccountless = selectIsDeviceAccountless(state);
@@ -362,29 +379,11 @@ export const selectIsDeviceDiscoveryEmpty = (
     return isDeviceAccountless && !isDeviceDiscoveryActive;
 };
 
-export const selectDevicelessAccounts = (state: AccountsRootState & DeviceRootState) => {
-    const persistedDevicesStates = selectPersistedDeviceStates(state);
-
-    return pipe(
-        selectAccounts(state),
-        A.filter(account => !persistedDevicesStates.includes(account.deviceState)),
-    ) as Account[];
-};
-
-export const selectAreAllDevicesDisconnectedOrAccountless = (
+export const selectHasOnlyEmptyPortfolioTracker = (
     state: AccountsRootState & DeviceRootState & DiscoveryRootState,
 ) => {
-    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
-    const isNoPhysicalDeviceConnected = selectIsNoPhysicalDeviceConnected(state);
+    const isEmptyDevice = selectIsEmptyDevice(state);
+    const hasOnlyPortfolioDevice = selectHasOnlyPortfolioDevice(state);
 
-    return isDeviceDiscoveryEmpty && isNoPhysicalDeviceConnected;
-};
-
-export const selectIsPortfolioTrackerEmpty = (
-    state: AccountsRootState & DeviceRootState & DiscoveryRootState,
-) => {
-    const isPortfolioTrackerDevice = selectIsPortfolioTrackerDevice(state);
-    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
-
-    return isPortfolioTrackerDevice && isDeviceDiscoveryEmpty;
+    return isEmptyDevice && hasOnlyPortfolioDevice;
 };

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import * as SplashScreen from 'expo-splash-screen';
 import * as Sentry from '@sentry/react-native';
 
-import TrezorConnect from '@trezor/connect';
 import { selectIsAppReady, selectIsConnectInitialized, StoreProvider } from '@suite-native/state';
 import { FormatterProvider } from '@suite-common/formatters';
 import { NavigationContainerWithAnalytics } from '@suite-native/navigation';
@@ -34,42 +33,6 @@ const APP_STARTED_TIMESTAMP = Date.now();
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
-
-// NOTE: This is a workaround wrapper for connect methods to prevent sending useEmptyPassphrase as undefined until we will implement passphrase behavior in mobile.
-type ConnectKey = keyof typeof TrezorConnect;
-const wrappedMethods = [
-    'getAccountInfo',
-    'blockchainEstimateFee',
-    'blockchainSetCustomBackend',
-    'blockchainSubscribeFiatRates',
-    'blockchainGetCurrentFiatRates',
-    'blockchainSubscribe',
-    'blockchainUnsubscribe',
-    'cardanoGetPublicKey',
-    'getDeviceState',
-    'cardanoGetAddress',
-    'getAddress',
-    'rippleGetAddress',
-    'ethereumGetAddress',
-    'solanaGetAddress',
-    'blockchainGetFiatRatesForTimestamps',
-    'getAccountDescriptor',
-    'blockchainGetAccountBalanceHistory',
-    'blockchainUnsubscribeFiatRates',
-];
-
-wrappedMethods.forEach(key => {
-    const original: any = TrezorConnect[key as ConnectKey];
-    if (!original) return;
-    (TrezorConnect[key as ConnectKey] as any) = async (params: any) => {
-        const result = await original({
-            ...params,
-            useEmptyPassphrase: true,
-        });
-
-        return result;
-    };
-});
 
 const AppComponent = () => {
     const dispatch = useDispatch();

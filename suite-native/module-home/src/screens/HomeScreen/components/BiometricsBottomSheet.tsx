@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Platform } from 'react-native';
+import { useSelector } from 'react-redux';
 
+import { selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 import { analytics, EventType } from '@suite-native/analytics';
 import { BottomSheet, Box, Button, Text } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
@@ -9,9 +10,9 @@ import {
     getIsBiometricsFeatureAvailable,
     useIsBiometricsInitialSetupFinished,
     useBiometricsSettings,
-    BiometricsIcons,
+    BiometricsIcon,
 } from '@suite-native/biometrics';
-import { Translation, TxKeyPath, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 const SHOW_TIMEOUT = 1500;
 
@@ -33,65 +34,15 @@ const buttonWrapperStyle = prepareNativeStyle(utils => ({
     paddingHorizontal: utils.spacings.small,
 }));
 
-const getBottomSheetTranslations = ({
-    isFacialEnabled,
-    isFingerprintEnabled,
-}: {
-    isFacialEnabled: boolean;
-    isFingerprintEnabled: boolean;
-}): { titleTransKey: TxKeyPath; descriptionTransKey: TxKeyPath } => {
-    if (Platform.OS === 'ios') {
-        return isFacialEnabled
-            ? {
-                  titleTransKey: 'moduleHome.biometricsModal.title.ios.faceId',
-                  descriptionTransKey: 'moduleHome.biometricsModal.description.ios.faceId',
-              }
-            : {
-                  titleTransKey: 'moduleHome.biometricsModal.title.ios.touchId',
-                  descriptionTransKey: 'moduleHome.biometricsModal.description.ios.touchId',
-              };
-    }
-
-    if (Platform.OS === 'android') {
-        if (isFingerprintEnabled && isFacialEnabled)
-            return {
-                titleTransKey: 'moduleHome.biometricsModal.title.android.combined',
-                descriptionTransKey: 'moduleHome.biometricsModal.description.android.combined',
-            };
-        if (isFingerprintEnabled)
-            return {
-                titleTransKey: 'moduleHome.biometricsModal.title.android.fingerprint',
-                descriptionTransKey: 'moduleHome.biometricsModal.description.android.fingerprint',
-            };
-
-        if (isFacialEnabled)
-            return {
-                titleTransKey: 'moduleHome.biometricsModal.title.android.facial',
-                descriptionTransKey: 'moduleHome.biometricsModal.description.android.facial',
-            };
-    }
-
-    return {
-        titleTransKey: 'moduleHome.biometricsModal.title.unknown',
-        descriptionTransKey: 'moduleHome.biometricsModal.description.unknown',
-    };
-};
-
 export const BiometricsBottomSheet = () => {
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
     const { isBiometricsInitialSetupFinished, setIsBiometricsInitialSetupFinished } =
         useIsBiometricsInitialSetupFinished();
     const { isBiometricsOptionEnabled } = useIsBiometricsEnabled();
-    const { toggleBiometricsOption, isFacialEnabled, isFingerprintEnabled } =
-        useBiometricsSettings();
+    const { toggleBiometricsOption } = useBiometricsSettings();
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
 
     const [isVisible, setIsVisible] = useState(false);
-
-    const { titleTransKey, descriptionTransKey } = getBottomSheetTranslations({
-        isFacialEnabled,
-        isFingerprintEnabled,
-    });
 
     useEffect(() => {
         let isMounted = true;
@@ -106,13 +57,16 @@ export const BiometricsBottomSheet = () => {
                 }, SHOW_TIMEOUT);
             }
         };
-        checkBiometrics();
+
+        if (isDeviceAuthorized) {
+            checkBiometrics();
+        }
 
         return () => {
             clearTimeout(timerId);
             isMounted = false;
         };
-    }, [isBiometricsOptionEnabled, isBiometricsInitialSetupFinished]);
+    }, [isBiometricsOptionEnabled, isBiometricsInitialSetupFinished, isDeviceAuthorized]);
 
     const handleClose = () => {
         setIsVisible(false);
@@ -141,26 +95,26 @@ export const BiometricsBottomSheet = () => {
     return (
         <BottomSheet isVisible={isVisible} onClose={handleClose} isCloseDisplayed={false}>
             <Box style={applyStyle(cardStyle)}>
-                <BiometricsIcons />
+                <BiometricsIcon />
                 <Box style={applyStyle(textContentStyle)}>
                     <Text variant="titleSmall" textAlign="center">
-                        <Translation id={titleTransKey} />
+                        <Translation id="moduleHome.biometricsModal.title" />
                     </Text>
                     <Text textAlign="center" color="textSubdued">
-                        <Translation id={descriptionTransKey} />
+                        <Translation id="moduleHome.biometricsModal.description" />
                     </Text>
                 </Box>
             </Box>
             <Box style={applyStyle(buttonWrapperStyle)}>
+                <Button testID="enable-biometrics" onPress={handleEnable}>
+                    <Translation id="moduleHome.biometricsModal.button.enable" />
+                </Button>
                 <Button
                     colorScheme="tertiaryElevation0"
-                    data-testID="reject-biometrics"
+                    testID="reject-biometrics"
                     onPress={handleClose}
                 >
-                    {translate('moduleHome.biometricsModal.button.later')}
-                </Button>
-                <Button data-testID="enable-biometrics" onPress={handleEnable}>
-                    {translate('moduleHome.biometricsModal.button.enable')}
+                    <Translation id="moduleHome.biometricsModal.button.later" />
                 </Button>
             </Box>
         </BottomSheet>

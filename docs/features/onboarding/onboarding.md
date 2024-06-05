@@ -197,11 +197,7 @@ User proceeds by clicking "Install firmware" CTA. Since the device without firmw
 
 ##### Intermediary firmware
 
-T1B1 is shipped with bootloader version `1.4.0` (note that we will send newer one in 2022). Such devices cannot be upgraded to latest firmware directly. First we'll install so called intermediary firmware (and set flag `firmware.intermediaryInstalled` to true), which will bump bootloader to newer version. After installation is completed the user will be asked to reconnect the device in normal mode (which is standard procedure after installing a regular firmware). However, because intermediary firmware only bumps bootloader and doesn't install any firmware, device will be in bootloader mode regardless of how the user reconnects it.
-
-In firmwareMiddleware we detect such a device thanks to `intermediaryInstalled` flag and the fact that it was connected in bootloader mode despite the instructions for connecting in normal mode.
-Then it triggers an installation of subsequent firmware, which will be the latest firmware available. It will follow basically same flow as with the first installation.
-At the end of the process the user will be asked to reconnect the device in normal mode once again. After that the installation process is fully completed and the user can continue to a next step.
+T1B1 devices with old bootloader cannot be upgraded to latest firmware directly. First we'll install so called intermediary firmware, which will bump bootloader to newer version. After installation is completed, the user will be asked to reconnect the device. Because intermediary firmware only bumps bootloader and doesn't install any firmware, device will be in bootloader mode regardless of how the user reconnects it (whether they press a button or not). Then it triggers an installation of subsequent firmware, which will be the latest firmware available. It will follow basically the same flow as with the first installation.
 
 ##### WebUSB
 

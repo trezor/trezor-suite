@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { FeeLevel } from '@trezor/connect';
@@ -6,14 +5,16 @@ import { Translation } from 'src/components/suite';
 import { getFeeUnits } from '@suite-common/wallet-utils';
 import { formatDuration } from '@suite-common/suite-utils';
 import { Network } from 'src/types/wallet';
+
+import { useState, useEffect } from 'react';
 import {
-    FeeInfo,
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
-} from 'src/types/wallet/sendForm';
+    FeeInfo,
+} from '@suite-common/wallet-types';
 
 const Wrapper = styled.div`
-    display: flex;
+    display: inline-flex;
     align-items: baseline;
     gap: ${spacingsPx.sm};
     ${typography.hint}
@@ -38,67 +39,100 @@ interface DetailsProps {
     feeInfo: FeeInfo;
 
     transactionInfo?: PrecomposedTransaction | PrecomposedTransactionCardano;
+
+    showFee: boolean;
 }
 
-const BitcoinDetails = ({ networkType, feeInfo, selectedLevel, transactionInfo }: DetailsProps) => (
+const BitcoinDetails = ({
+    networkType,
+    feeInfo,
+    selectedLevel,
+    transactionInfo,
+    showFee,
+}: DetailsProps) => (
     <Wrapper>
-        <span>
-            <Label>
-                <Translation id="ESTIMATED_TIME" />:
-            </Label>
-            {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
-        </span>
+        {showFee && (
+            <>
+                <span>
+                    <Label>
+                        <Translation id="ESTIMATED_TIME" />:
+                    </Label>
+                    {formatDuration(feeInfo.blockTime * selectedLevel.blocks * 60)}
+                </span>
 
-        <span>
-            <Label>
-                <Translation id="TR_FEE_RATE" />:
-            </Label>
-            {`${
-                transactionInfo && transactionInfo.type !== 'error'
-                    ? transactionInfo.feePerByte
-                    : selectedLevel.feePerUnit
-            } ${getFeeUnits(networkType)}`}
-        </span>
+                <span>
+                    <Label>
+                        <Translation id="TR_FEE_RATE" />:
+                    </Label>
+                    {`${
+                        transactionInfo && transactionInfo.type !== 'error'
+                            ? transactionInfo.feePerByte
+                            : selectedLevel.feePerUnit
+                    } ${getFeeUnits(networkType)}`}
+                </span>
 
-        {transactionInfo && transactionInfo.type !== 'error' && (
-            <span>({transactionInfo.bytes} B)</span>
+                {transactionInfo && transactionInfo.type !== 'error' && (
+                    <span>({transactionInfo.bytes} B)</span>
+                )}
+            </>
         )}
     </Wrapper>
 );
 
-const EthereumDetails = ({ networkType, selectedLevel, transactionInfo }: DetailsProps) => {
-    const [fee, setFee] = useState<string | undefined>(selectedLevel.feeLimit);
+const EthereumDetails = ({
+    networkType,
+    selectedLevel,
+    transactionInfo,
+    showFee,
+}: DetailsProps) => {
+    // States to remember the last known values of feeLimit and feePerByte when isComposedTx was true.
+    const [lastKnownFeeLimit, setLastKnownFeeLimit] = useState('');
+    const [lastKnownFeePerByte, setLastKnownFeePerByte] = useState('');
 
     const isComposedTx = transactionInfo && transactionInfo.type !== 'error';
 
     useEffect(() => {
-        if (isComposedTx) {
-            setFee(transactionInfo.feeLimit);
+        if (isComposedTx && transactionInfo.feeLimit) {
+            setLastKnownFeeLimit(transactionInfo.feeLimit);
+            setLastKnownFeePerByte(transactionInfo.feePerByte);
         }
     }, [isComposedTx, transactionInfo]);
 
+    const gasLimit = isComposedTx
+        ? transactionInfo.feeLimit
+        : lastKnownFeeLimit || selectedLevel.feeLimit;
+    const gasPrice = isComposedTx
+        ? transactionInfo.feePerByte
+        : lastKnownFeePerByte || selectedLevel.feePerUnit;
+
     return (
         <Wrapper>
-            <span>
-                <Label>
-                    <Translation id="TR_GAS_LIMIT" />:
-                </Label>
-                <FeeItem>{isComposedTx ? transactionInfo.feeLimit : fee}</FeeItem>
-            </span>
+            {showFee && (
+                <>
+                    <span>
+                        <Label>
+                            <Translation id="TR_GAS_LIMIT" />:
+                        </Label>
+                        <FeeItem>{gasLimit}</FeeItem>
+                    </span>
 
-            <span>
-                <Label>
-                    <Translation id="TR_GAS_PRICE" />:
-                </Label>
-                <FeeItem>{`${selectedLevel.feePerUnit} ${getFeeUnits(networkType)}`}</FeeItem>
-            </span>
+                    <span>
+                        <Label>
+                            <Translation id="TR_GAS_PRICE" />:
+                        </Label>
+                        <FeeItem>
+                            {gasPrice} {getFeeUnits(networkType)}
+                        </FeeItem>
+                    </span>
+                </>
+            )}
         </Wrapper>
     );
 };
 
-const RippleDetails = ({ networkType, selectedLevel }: DetailsProps) => (
+const RippleDetails = ({ networkType, selectedLevel, showFee }: DetailsProps) => (
     <Wrapper>
-        <span>{`${selectedLevel.feePerUnit}: ${getFeeUnits(networkType)}`}</span>
+        {showFee && <span>{`${selectedLevel.feePerUnit}: ${getFeeUnits(networkType)}`}</span>}
     </Wrapper>
 );
 

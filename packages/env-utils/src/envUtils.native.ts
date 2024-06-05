@@ -3,6 +3,7 @@ import { Dimensions, Platform } from 'react-native';
 import { getLocales } from 'expo-localization';
 import Constants from 'expo-constants';
 
+import { publicKey } from './jws';
 import { EnvUtils } from './types';
 
 const isWeb = () => false;
@@ -75,6 +76,8 @@ const getOsNameWeb = () => '';
 
 const getOsFamily = (): 'Linux' => 'Linux';
 
+export const getJWSPublicKey = () => (isCodesignBuild() ? publicKey.codesign : publicKey.dev);
+
 export const envUtils: EnvUtils = {
     isWeb,
     isDesktop,
@@ -107,4 +110,5 @@ export const envUtils: EnvUtils = {
     getOsName,
     getOsNameWeb,
     getOsFamily,
+    getJWSPublicKey,
 };

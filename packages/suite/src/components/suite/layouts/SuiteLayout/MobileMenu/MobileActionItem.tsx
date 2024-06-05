@@ -10,7 +10,7 @@ const MobileWrapper = styled.div`
     align-items: center;
 
     & + & {
-        border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+        border-top: 1px solid ${({ theme }) => theme.borderElevation2};
     }
 `;
 

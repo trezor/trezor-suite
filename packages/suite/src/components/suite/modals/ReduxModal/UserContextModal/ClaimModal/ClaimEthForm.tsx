@@ -1,14 +1,15 @@
 import { useEffect } from 'react';
 import styled from 'styled-components';
-import { Button, Paragraph, Warning } from '@trezor/components';
+import { Button, Paragraph, Tooltip, Warning } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
-import { FeesInfo } from 'src/components/wallet/FeesInfo';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useDevice, useSelector } from 'src/hooks/suite';
 import { useClaimEthFormContext } from 'src/hooks/wallet/useClaimEthForm';
-import { selectSelectedAccountEverstakeStakingPool } from 'src/reducers/wallet/selectedAccountReducer';
 import { CRYPTO_INPUT } from 'src/types/wallet/stakeForms';
 import { spacingsPx } from '@trezor/theme';
+import ClaimFees from './Fees';
+import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getAccountEverstakeStakingPool } from '@suite-common/wallet-utils';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const AmountInfo = styled.div`
     display: flex;
@@ -36,7 +37,7 @@ const ClaimingPeriodWrapper = styled.div`
     justify-content: space-between;
     padding: ${spacingsPx.lg} 0 ${spacingsPx.md};
     margin-top: ${spacingsPx.xl};
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
 `;
 
 const GreyP = styled(Paragraph)`
@@ -45,23 +46,23 @@ const GreyP = styled(Paragraph)`
 
 export const ClaimEthForm = () => {
     const { device, isLocked } = useDevice();
+    const account = useSelector(selectSelectedAccount);
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking();
+
     const {
         account: { symbol },
         formState: { errors, isSubmitting },
-        composedLevels,
-        selectedFee,
         watch,
         isComposing,
         handleSubmit,
         onClaimChange,
         signTx,
     } = useClaimEthFormContext();
-    const mappedSymbol = mapTestnetSymbol(symbol);
     const hasValues = Boolean(watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-    const transactionInfo = composedLevels?.[selectedFee];
-    const { claimableAmount = '0' } = useSelector(selectSelectedAccountEverstakeStakingPool) ?? {};
+
+    const { claimableAmount = '0' } = getAccountEverstakeStakingPool(account) ?? {};
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
@@ -80,7 +81,7 @@ export const ClaimEthForm = () => {
                     </GreyP>
                     <Paragraph>
                         <GreenTxt>
-                            <FiatValue amount={claimableAmount} symbol={mappedSymbol} />
+                            <FiatValue amount={claimableAmount} symbol={symbol} />
                         </GreenTxt>
                     </Paragraph>
                 </TxtRight>
@@ -90,11 +91,7 @@ export const ClaimEthForm = () => {
                 <StyledWarning variant="destructive">{errors[CRYPTO_INPUT]?.message}</StyledWarning>
             )}
 
-            <FeesInfo
-                transactionInfo={transactionInfo}
-                symbol={symbol}
-                helperText={<Translation id="TR_STAKE_PAID_FROM_BALANCE" />}
-            />
+            <ClaimFees />
 
             <ClaimingPeriodWrapper>
                 <GreyP>
@@ -104,15 +101,18 @@ export const ClaimEthForm = () => {
                 <Translation id="TR_STAKE_CLAIM_IN_NEXT_BLOCK" />
             </ClaimingPeriodWrapper>
 
-            <Button
-                type="submit"
-                isFullWidth
-                isDisabled={isDisabled}
-                isLoading={isComposing || isSubmitting}
-                onClick={handleSubmit(signTx)}
-            >
-                <Translation id="TR_STAKE_CLAIM" />
-            </Button>
+            <Tooltip content={claimingMessageContent}>
+                <Button
+                    type="submit"
+                    isFullWidth
+                    isDisabled={isDisabled || isClaimingDisabled}
+                    isLoading={isComposing || isSubmitting}
+                    onClick={handleSubmit(signTx)}
+                    icon={isClaimingDisabled ? 'INFO' : undefined}
+                >
+                    <Translation id="TR_STAKE_CLAIM" />
+                </Button>
+            </Tooltip>
         </form>
     );
 };

@@ -12,9 +12,9 @@ import { UsbApi } from '../api/usb';
 export class NodeUsbTransport extends AbstractApiTransport {
     public name = 'NodeUsbTransport' as const;
 
-    constructor(params?: AbstractTransportParams) {
-        const { messages, logger } = params || {};
-        const sessionsBackground = new SessionsBackground();
+    constructor(params: AbstractTransportParams) {
+        const { messages, logger, signal } = params;
+        const sessionsBackground = new SessionsBackground({ signal });
 
         // in nodeusb there is no synchronization yet. this is a followup and needs to be decided
         // so far, sessionsClient has direct access to sessionBackground
@@ -36,6 +36,7 @@ export class NodeUsbTransport extends AbstractApiTransport {
                 logger,
             }),
             sessionsClient,
+            signal,
         });
     }
 }

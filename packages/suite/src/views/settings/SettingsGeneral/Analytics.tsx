@@ -5,8 +5,8 @@ import { selectHasUserAllowedTracking } from '@suite-common/analytics';
 import { Switch } from '@trezor/components';
 import { analytics } from '@trezor/suite-analytics';
 
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const PositionedSwitch = styled.div`
@@ -14,16 +14,10 @@ const PositionedSwitch = styled.div`
 `;
 
 export const Analytics = () => {
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Analytics);
-
     const userAllowedTracking = useSelector(selectHasUserAllowedTracking);
 
     return (
-        <SectionItem
-            data-test="@settings/analytics"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.Analytics}>
             <TextColumn
                 title={<Translation id="TR_ALLOW_ANALYTICS" />}
                 description={<Translation id="TR_ALLOW_ANALYTICS_DESCRIPTION" />}
@@ -43,6 +37,6 @@ export const Analytics = () => {
                     />
                 </PositionedSwitch>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

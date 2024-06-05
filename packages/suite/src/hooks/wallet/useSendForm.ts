@@ -6,7 +6,7 @@ import {
     getSendFormDraftThunk,
     removeSendFormDraftThunk,
     saveSendFormDraftThunk,
-    signSendFormTransactionThunk,
+    signAndPushSendFormTransactionThunk,
 } from 'src/actions/wallet/send/sendFormThunks';
 import {
     getLastUsedFeeLevel,
@@ -37,7 +37,7 @@ import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { useUtxoSelection } from './form/useUtxoSelection';
 import { useExcludedUtxos } from './form/useExcludedUtxos';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import { selectCurrentFiatRates, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 export const SendContext = createContext<SendContextValues | null>(null);
@@ -116,6 +116,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
         token as TokenAddress,
     );
     const fiatRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
+    const currentRates = useSelector(selectCurrentFiatRates);
 
     // register array fields (outputs array in react-hook-form)
     const outputsFieldArray = useFieldArray({
@@ -233,8 +234,9 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     const { importTransaction, validateImportedTransaction } = useSendFormImport({
         network: state.network,
         tokens: state.account.tokens,
-        fiatRate,
         localCurrencyOption,
+        fiatRate,
+        currentRates,
     });
 
     const loadTransaction = async () => {
@@ -256,15 +258,19 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
     // get response from TransactionReviewModal
     const sign = useCallback(async () => {
         const values = getValues();
-        const composedTx = composedLevels
+        const precomposedTransaction = composedLevels
             ? composedLevels[values.selectedFee || 'normal']
             : undefined;
-        if (composedTx && composedTx.type === 'final') {
+        if (precomposedTransaction && precomposedTransaction.type === 'final') {
             // sign workflow in Actions:
             // signSendFormTransactionThunk > sign[COIN]SendFormTransactionThunk > sendFormActions.storeSignedTransaction (modal with promise decision)
             setLoading(true);
             const result = await dispatch(
-                signSendFormTransactionThunk({ formValues: values, transactionInfo: composedTx }),
+                signAndPushSendFormTransactionThunk({
+                    formValues: values,
+                    precomposedTransaction,
+                    selectedAccount: props.selectedAccount.account,
+                }),
             ).unwrap();
 
             setLoading(false);
@@ -273,7 +279,7 @@ export const useSendForm = (props: UseSendFormProps): SendContextValues => {
                 dispatch(goto('wallet-index', { preserveParams: true }));
             }
         }
-    }, [getValues, composedLevels, dispatch, resetContext]);
+    }, [getValues, composedLevels, dispatch, resetContext, props.selectedAccount.account]);
 
     // reset on account change
     useEffect(() => {

@@ -1,4 +1,4 @@
-import { TrezorConnect } from '../../..';
+import { PROTO, TrezorConnect } from '../../..';
 
 export const management = async (api: TrezorConnect) => {
     const reset = await api.resetDevice({
@@ -42,31 +42,31 @@ export const management = async (api: TrezorConnect) => {
         binary: new ArrayBuffer(0),
     });
     if (fwBinary.success) {
-        fwBinary.payload.challenge.toLowerCase();
-        fwBinary.payload.hash.toLowerCase();
+        fwBinary.payload.check.toLocaleLowerCase();
     }
 
     const fwAuto = await api.firmwareUpdate({
-        version: [2, 2, 0],
         btcOnly: false,
+        language: 'en-EN',
+        baseUrl: 'https://example.com',
     });
+
     if (fwAuto.success) {
-        fwAuto.payload.challenge.toLowerCase();
-        fwAuto.payload.hash.toLowerCase();
+        fwAuto.payload.check.toLowerCase();
     }
 
     api.firmwareUpdate({
         binary: new ArrayBuffer(0),
         // @ts-expect-error: cannot use both
-        version: [2, 2, 0],
+        btcOnly: true,
     });
 
     const recovery = await api.recoveryDevice({
         passphrase_protection: true,
         pin_protection: true,
         label: 'My Trezor',
-        type: 1,
-        dry_run: true,
+        input_method: PROTO.RecoveryDeviceInputMethod.Matrix,
+        type: PROTO.RecoveryType.DryRun,
         word_count: 24,
     });
     if (recovery.success) recovery.payload.message.toLowerCase();

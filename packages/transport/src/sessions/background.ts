@@ -33,20 +33,26 @@ const lockDuration = 1000 * 4;
 export class SessionsBackground extends TypedEmitter<{
     /**
      * updated descriptors (session has changed)
-     * note: we can't send diff from here (see abtract transport) altough it would make sense, because we need to support also bridge which  does not use this sessions background.
+     * note: we can't send diff from here (see abstract transport) although it would make sense, because we need to support also bridge which does not use this sessions background.
      */
     descriptors: Descriptor[];
 }> {
     /**
-     * Dictionary where key is path and value is session
+     * Dictionary where key is path and value is Descriptor
      */
-    private sessions: Sessions = {};
+    private descriptors: Sessions = {};
 
     // if lock is set, somebody is doing something with device. we have to wait
-    private locksQueue: Deferred<void>[] = [];
+    private locksQueue: { id: ReturnType<typeof setTimeout>; dfd: Deferred<void> }[] = [];
     private locksTimeoutQueue: ReturnType<typeof setTimeout>[] = [];
+    private lastSessionId = 0;
 
-    private lastSession = 0;
+    constructor({ signal }: { signal: AbortSignal }) {
+        super();
+        signal.addEventListener('abort', () => {
+            this.locksQueue.forEach(lock => clearTimeout(lock.id));
+        });
+    }
 
     public async handleMessage<M extends HandleMessageParams>(
         message: M,
@@ -91,7 +97,9 @@ export class SessionsBackground extends TypedEmitter<{
                     throw new Error(ERRORS.UNEXPECTED_ERROR);
             }
 
-            return { ...result, id: message.id } as HandleMessageResponse<M>;
+            result = JSON.parse(JSON.stringify({ ...result, id: message.id }));
+
+            return result;
         } catch (err) {
             // catch unexpected errors and notify client.
             // background should never stay in "hanged" state
@@ -102,7 +110,7 @@ export class SessionsBackground extends TypedEmitter<{
         } finally {
             if (result && result.success && result.payload && 'descriptors' in result.payload) {
                 const { descriptors } = result.payload;
-                setTimeout(() => this.emit('descriptors', descriptors), 0);
+                setTimeout(() => this.emit('descriptors', Object.values(descriptors)), 0);
             }
         }
     }
@@ -118,7 +126,7 @@ export class SessionsBackground extends TypedEmitter<{
     async enumerateIntent() {
         await this.waitInQueue();
 
-        return this.success({ sessions: this.sessions });
+        return this.success({ sessions: this.descriptors });
     }
 
     /**
@@ -129,26 +137,23 @@ export class SessionsBackground extends TypedEmitter<{
     private enumerateDone(payload: EnumerateDoneRequest) {
         this.clearLock();
         const disconnectedDevices = this.filterDisconnectedDevices(
-            this.sessionsToDescriptors(),
-            payload.paths, // payload.paths are occupied paths after last interface read
+            Object.values(this.descriptors),
+            payload.descriptors.map(d => d.path), // which paths are occupied paths after last interface read
         );
 
         disconnectedDevices.forEach(d => {
-            delete this.sessions[d.path];
+            delete this.descriptors[d.path];
         });
 
-        payload.paths.forEach(d => {
-            if (!this.sessions[d]) {
-                this.sessions[d] = null;
+        payload.descriptors.forEach(d => {
+            if (!this.descriptors[d.path]) {
+                this.descriptors[d.path] = { ...d, session: null };
             }
         });
 
-        const descriptors = this.sessionsToDescriptors();
-
         return Promise.resolve(
             this.success({
-                sessions: this.sessions,
-                descriptors,
+                descriptors: Object.values(this.descriptors),
             }),
         );
     }
@@ -157,16 +162,20 @@ export class SessionsBackground extends TypedEmitter<{
      * acquire intent
      */
     private async acquireIntent(payload: AcquireIntentRequest) {
-        const previous = this.sessions[payload.path];
+        const previous = this.descriptors[payload.path]?.session;
 
         if (payload.previous && payload.previous !== previous) {
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
         }
 
+        if (!this.descriptors[payload.path]) {
+            return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
+        }
+
         await this.waitInQueue();
 
         // in case there are 2 simultaneous acquireIntents, one goes through, the other one waits and gets error here
-        if (previous !== this.sessions[payload.path]) {
+        if (previous !== this.descriptors[payload.path]?.session) {
             this.clearLock();
 
             return this.error(ERRORS.SESSION_WRONG_PREVIOUS);
@@ -174,15 +183,14 @@ export class SessionsBackground extends TypedEmitter<{
 
         // new "unconfirmed" descriptors are  broadcasted. we can't yet update this.sessions object as it needs
         // to stay as it is. we can not allow 2 clients sending session:null to proceed. this way only one gets through
-        const unconfirmedSessions = JSON.parse(JSON.stringify(this.sessions));
-        const id = `${this.getNewSessionId()}`;
-        unconfirmedSessions[payload.path] = id;
+        const unconfirmedSessions: Sessions = JSON.parse(JSON.stringify(this.descriptors));
 
-        const descriptors = this.sessionsToDescriptors(unconfirmedSessions);
+        this.lastSessionId++;
+        unconfirmedSessions[payload.path].session = `${this.lastSessionId}`;
 
         return this.success({
-            session: id,
-            descriptors,
+            session: unconfirmedSessions[payload.path].session,
+            descriptors: Object.values(unconfirmedSessions),
         });
     }
 
@@ -192,13 +200,14 @@ export class SessionsBackground extends TypedEmitter<{
      */
     private acquireDone(payload: AcquireDoneRequest) {
         this.clearLock();
-        this.sessions[payload.path] = `${this.lastSession}`;
-
-        const descriptors = this.sessionsToDescriptors();
+        if (!this.descriptors[payload.path]) {
+            return this.error(ERRORS.DESCRIPTOR_NOT_FOUND);
+        }
+        this.descriptors[payload.path].session = `${this.lastSessionId}`;
 
         return Promise.resolve(
             this.success({
-                descriptors,
+                descriptors: Object.values(this.descriptors),
             }),
         );
     }
@@ -216,16 +225,15 @@ export class SessionsBackground extends TypedEmitter<{
     }
 
     private releaseDone(payload: ReleaseDoneRequest) {
-        this.sessions[payload.path] = null;
+        this.descriptors[payload.path].session = null;
 
         this.clearLock();
-        const descriptors = this.sessionsToDescriptors();
 
-        return Promise.resolve(this.success({ descriptors }));
+        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
     }
 
     private getSessions() {
-        return Promise.resolve(this.success({ sessions: this.sessions }));
+        return Promise.resolve(this.success({ descriptors: Object.values(this.descriptors) }));
     }
 
     private getPathBySession({ session }: GetPathBySessionRequest) {
@@ -239,8 +247,8 @@ export class SessionsBackground extends TypedEmitter<{
 
     private getPathFromSessions({ session }: GetPathBySessionRequest) {
         let path: string | undefined;
-        Object.keys(this.sessions).forEach(pathKey => {
-            if (this.sessions[pathKey] === session) {
+        Object.keys(this.descriptors).forEach(pathKey => {
+            if (this.descriptors[pathKey]?.session === session) {
                 path = pathKey;
             }
         });
@@ -260,7 +268,7 @@ export class SessionsBackground extends TypedEmitter<{
             dfd.resolve(undefined);
         }, lockDuration);
 
-        this.locksQueue.push(dfd);
+        this.locksQueue.push({ id: timeout, dfd });
         this.locksTimeoutQueue.push(timeout);
 
         return this.locksQueue.length - 1;
@@ -269,13 +277,10 @@ export class SessionsBackground extends TypedEmitter<{
     private clearLock() {
         const lock = this.locksQueue[0];
         if (lock) {
-            this.locksQueue[0].resolve(undefined);
+            this.locksQueue[0].dfd.resolve(undefined);
             this.locksQueue.shift();
             clearTimeout(this.locksTimeoutQueue[0]);
             this.locksTimeoutQueue.shift();
-        } else {
-            // should never happen if implemented correctly by all clients
-            console.warn('empty lock queue');
         }
     }
 
@@ -283,7 +288,7 @@ export class SessionsBackground extends TypedEmitter<{
         if (myIndex > 0) {
             const beforeMe = this.locksQueue.slice(0, myIndex);
             if (beforeMe.length) {
-                await Promise.all(beforeMe.map(dfd => dfd.promise));
+                await Promise.all(beforeMe.map(lock => lock.dfd.promise));
             }
         }
     }
@@ -291,19 +296,6 @@ export class SessionsBackground extends TypedEmitter<{
     private async waitInQueue() {
         const myIndex = this.startLock();
         await this.waitForUnlocked(myIndex);
-    }
-
-    private getNewSessionId() {
-        this.lastSession++;
-
-        return this.lastSession;
-    }
-
-    private sessionsToDescriptors(sessions?: Sessions): Descriptor[] {
-        return Object.entries(sessions || this.sessions).map(obj => ({
-            path: obj[0],
-            session: obj[1],
-        }));
     }
 
     private filterDisconnectedDevices(prevDevices: Descriptor[], paths: string[]) {

@@ -11,7 +11,7 @@ const DaysToAddToPool = styled.div`
 `;
 
 interface UseProgressLabelsData {
-    daysToAddToPool: number;
+    daysToAddToPool?: number;
     isDaysToAddToPoolShown: boolean;
     isStakeConfirming: boolean;
     isStakePending: boolean;
@@ -55,7 +55,7 @@ export const useProgressLabelsData = ({
                                 <Translation
                                     id="TR_STAKE_DAYS"
                                     values={{
-                                        days: daysToAddToPool,
+                                        count: daysToAddToPool,
                                     }}
                                 />
                             </DaysToAddToPool>

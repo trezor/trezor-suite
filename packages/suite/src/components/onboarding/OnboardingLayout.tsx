@@ -99,7 +99,6 @@ const ProgressBarRow = styled.div`
 const Content = styled.div`
     display: flex;
     flex-direction: column;
-    color: ${({ theme }) => theme.textSubdued};
     justify-content: center;
     align-items: center;
     max-width: ${MAX_ONBOARDING_WIDTH}px;

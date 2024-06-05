@@ -1,0 +1,36 @@
+name: "Check Connect Version Match with Branch"
+description: "Check if the version in package.json matches the version in the branch name"
+inputs:
+  branch_ref:
+    description: "The full ref of the branch"
+    required: true
+    type: string
+  extracted_version:
+    description: "The version extracted from the package.json or other source"
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Extract branch version
+      shell: bash
+      id: extract-branch-version
+      run: |
+        BRANCH_REF="${{ inputs.branch_ref }}"
+        BRANCH_VERSION="${BRANCH_REF#refs/heads/release/connect/}"
+        echo "branch_version=$BRANCH_VERSION" >> $GITHUB_OUTPUT
+
+    - name: Check if version in package.json matches the one in branch name
+      shell: bash
+      run: |
+        BRANCH_VERSION="${{ steps.extract-branch-version.outputs.branch_version }}"
+        EXTRACTED_VERSION="${{ inputs.extracted_version }}"
+        echo "Branch Version: $BRANCH_VERSION"
+        echo "Extracted Version: $EXTRACTED_VERSION"
+        if [[ "$BRANCH_VERSION" != "$EXTRACTED_VERSION" ]]; then
+          echo "The extracted version ($EXTRACTED_VERSION) does not match the version in the branch name ($BRANCH_VERSION)"
+          exit 1 # Fail the job if versions don't match
+        else
+          echo "Version check passed: $BRANCH_VERSION matches $EXTRACTED_VERSION"
+        fi

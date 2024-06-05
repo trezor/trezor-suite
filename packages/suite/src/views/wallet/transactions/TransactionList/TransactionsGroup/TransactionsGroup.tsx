@@ -2,7 +2,18 @@ import { useState, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Network, WalletAccountTransaction } from 'src/types/wallet';
 import { DayHeader } from './DayHeader';
-import { sumTransactions, sumTransactionsFiat } from '@suite-common/wallet-utils';
+import {
+    getFiatRateKey,
+    isNftTokenTransfer,
+    roundTimestampToNearestPastHour,
+    sumTransactions,
+    sumTransactionsFiat,
+} from '@suite-common/wallet-utils';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectHistoricFiatRates } from '@suite-common/wallet-core';
+import { useSelector } from 'src/hooks/suite';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
+import { isTokenDefinitionKnown, selectCoinDefinitions } from '@suite-common/token-definitions';
 
 const TransactionsGroupWrapper = styled.div`
     display: flex;
@@ -22,7 +33,7 @@ interface TransactionsGroupProps {
     transactions: WalletAccountTransaction[];
     children?: ReactNode;
     symbol: Network['symbol'];
-    localCurrency: string;
+    localCurrency: FiatCurrencyCode;
     index: number;
 }
 
@@ -36,9 +47,42 @@ export const TransactionsGroup = ({
     ...rest
 }: TransactionsGroupProps) => {
     const [isHovered, setIsHovered] = useState(false);
+    const historicFiatRates = useSelector(selectHistoricFiatRates);
+    const tokenDefinitions = useSelector(state => selectCoinDefinitions(state, symbol));
     const totalAmountPerDay = sumTransactions(transactions);
-    const totalFiatAmountPerDay = sumTransactionsFiat(transactions, localCurrency);
-    const isMissingFiatRates = transactions.some(tx => !tx.rates?.[localCurrency]);
+    const totalFiatAmountPerDay = sumTransactionsFiat(
+        transactions,
+        localCurrency,
+        historicFiatRates,
+    );
+    const isMissingFiatRates = transactions.some(tx => {
+        const fiatRateKey = getFiatRateKey(tx.symbol, localCurrency);
+        const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+        const historicCryptoRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
+
+        const isMissingTokenRate = tx.tokens
+            .filter(token => !isNftTokenTransfer(token))
+            .some(token => {
+                const isTokenKnown = isTokenDefinitionKnown(
+                    tokenDefinitions?.data,
+                    symbol,
+                    token.contract,
+                );
+
+                if (!isTokenKnown) return false;
+
+                const tokenFiatRateKey = getFiatRateKey(
+                    tx.symbol,
+                    localCurrency,
+                    token.contract as TokenAddress,
+                );
+                const historicTokenRate = historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+
+                return historicTokenRate === undefined || historicTokenRate === 0;
+            });
+
+        return historicCryptoRate === undefined || historicCryptoRate === 0 || isMissingTokenRate;
+    });
 
     return (
         <TransactionsGroupWrapper

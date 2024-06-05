@@ -221,7 +221,7 @@ const IOGridGroupWrapper = ({
 interface GridRowGroupComponentProps {
     from?: string;
     to?: string;
-    symbol: string;
+    symbol?: string;
     amount?: string | ReactNode;
     isPhishingTransaction?: boolean;
 }
@@ -477,8 +477,8 @@ const CollapsibleIOSection = ({
         <StyledCollapsibleBox
             $elevation={elevation}
             heading={heading}
-            isOpen={opened}
-            variant="large"
+            defaultIsOpen={opened}
+            paddingType="large"
         >
             <IOSectionColumn
                 tx={tx}

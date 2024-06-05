@@ -7,6 +7,7 @@ const DeviceModelInternal = 'DeviceModelInternal';
 
 // type rule fixes, ideally it should not be here
 const RULE_PATCH = {
+    'BackupDevice.groups': "optional", // protobuf repeated bytes are always optional (fallback to [])
     'MultisigRedeemScriptType.nodes': 'optional', // its valid to be undefined according to implementation/tests
     'MultisigRedeemScriptType.address_n': 'optional', // its valid to be undefined according to implementation/tests
     'TxRequestDetailsType.request_index': 'required',
@@ -47,7 +48,7 @@ const RULE_PATCH = {
     'Features.imported': 'required',
     'Features.unlocked': 'required',
     'Features.firmware_present': 'required',
-    'Features.needs_backup': 'required',
+    'Features.backup_availability': 'required',
     'Features.flags': 'required',
     'Features.fw_major': 'required',
     'Features.fw_minor': 'required',
@@ -57,7 +58,7 @@ const RULE_PATCH = {
     'Features.internal_model': 'required',
     'Features.unfinished_backup': 'required',
     'Features.no_backup': 'required',
-    'Features.recovery_mode': 'required',
+    'Features.recovery_status': 'required',
     'Features.backup_type': 'required',
     'Features.sd_card_present': 'required',
     'Features.sd_protection': 'required',
@@ -94,7 +95,7 @@ const TYPE_PATCH = {
     'Features.imported': 'boolean | null',
     'Features.unlocked': 'boolean | null',
     'Features.firmware_present': 'boolean | null',
-    'Features.needs_backup': 'boolean | null',
+    'Features.backup_availability': 'BackupAvailability | null',
     'Features.flags': 'number | null',
     'Features.fw_major': 'number | null',
     'Features.fw_minor': 'number | null',
@@ -102,7 +103,7 @@ const TYPE_PATCH = {
     'Features.fw_vendor': 'string | null',
     'Features.unfinished_backup': 'boolean | null',
     'Features.no_backup': 'boolean | null',
-    'Features.recovery_mode': 'boolean | null',
+    'Features.recovery_status': 'RecoveryStatus | null',
     'Features.backup_type': 'BackupType | null',
     'Features.sd_card_present': 'boolean | null',
     'Features.sd_protection': 'boolean | null',
@@ -128,6 +129,7 @@ const TYPE_PATCH = {
     'CardanoPoolParametersType.cost': UINT_TYPE,
     'CardanoPoolParametersType.margin_numerator': UINT_TYPE,
     'CardanoPoolParametersType.margin_denominator': UINT_TYPE,
+    'CardanoTxCertificate.deposit': UINT_TYPE,
     'CardanoSignTxInit.ttl': UINT_TYPE,
     'CardanoSignTxInit.validity_interval_start': UINT_TYPE,
     'CardanoSignTxInit.total_collateral': UINT_TYPE,
@@ -169,7 +171,7 @@ const TYPE_PATCH = {
     'EosActionUnlinkAuth.type': 'string',
     'EosActionNewAccount.creator': 'string',
     'EosActionNewAccount.name': 'string',
-    'ResetDevice.backup_type': 'string | number', // BackupType is a enum. in Features displayed as string, in resetDevice method param accepted as number
+    'ResetDevice.backup_type': 'Enum_BackupType',
     'StellarAsset.type': '0 | 1 | 2  | "NATIVE" | "ALPHANUM4" | "ALPHANUM12"', // StellarAssetType is a enum, accepted as both number and string
     'StellarSignTx.sequence_number': UINT_TYPE,
     'StellarSignTx.memo_id': UINT_TYPE,
@@ -202,6 +204,7 @@ const TYPE_PATCH = {
     'TezosDelegationOp.source': 'Uint8Array',
     'TezosDelegationOp.delegate': 'Uint8Array',
     'TezosSignTx.branch': 'Uint8Array',
+    'Features.recovery_type': 'RecoveryType',
 };
 
 const DEFINITION_PATCH = {

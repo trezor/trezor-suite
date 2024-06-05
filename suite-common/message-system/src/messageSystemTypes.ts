@@ -19,12 +19,16 @@ export type MessageSystemRootState = {
 export const Feature = {
     coinjoin: 'coinjoin',
     killswitch: 'killswitch',
+    ethStake: 'eth.staking.stake',
+    ethUnstake: 'eth.staking.unstake',
+    ethClaim: 'eth.staking.claim',
 } as const;
 
 export type FeatureDomain = (typeof Feature)[keyof typeof Feature];
 
 export const Context = {
     coinjoin: 'accounts.coinjoin',
+    ethStaking: 'accounts.eth.staking',
 } as const;
 
 export type ContextDomain = (typeof Context)[keyof typeof Context];

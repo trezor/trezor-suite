@@ -208,11 +208,11 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
         ws.on('message', this.onMessage.bind(this));
         ws.on('close', () => {
             this.onClose();
-            this.emitter.emit('disconnected');
         });
     }
 
     disconnect() {
+        this.emitter.emit('disconnected');
         this.ws?.close();
     }
 
@@ -234,7 +234,7 @@ export abstract class BaseWebsocket<T extends EventMap> extends TypedEmitter<T &
     }
 
     dispose() {
-        this.onClose();
         this.removeAllListeners();
+        this.onClose();
     }
 }

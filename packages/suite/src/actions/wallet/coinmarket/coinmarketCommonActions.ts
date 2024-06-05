@@ -29,7 +29,9 @@ import {
     COINMARKET_SAVINGS,
     COINMARKET_COMMON,
 } from '../constants';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 
 export type CoinmarketCommonAction =
     | {

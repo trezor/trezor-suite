@@ -4,10 +4,11 @@ import { DeviceSelector } from '../DeviceSelector/DeviceSelector';
 import { Navigation } from './Navigation';
 import { AccountsMenu } from 'src/components/wallet/WalletLayout/AccountsMenu/AccountsMenu';
 import { QuickActions } from './QuickActions';
-import { ElevationContext } from '@trezor/components';
+import { ElevationUp, useElevation } from '@trezor/components';
 import { SIDEBAR_WIDTH_NUMERIC } from 'src/constants/suite/layout';
+import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
-const Container = styled.nav`
+const Container = styled.nav<{ $elevation: Elevation }>`
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
@@ -16,18 +17,22 @@ const Container = styled.nav`
     min-width: 200px;
     max-width: 400px;
     height: 100%;
-    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-right: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    background: ${mapElevationToBackground};
+    border-right: 1px solid ${mapElevationToBorder};
     overflow: auto;
 `;
 
-export const Sidebar = () => (
-    <Container>
-        <ElevationContext baseElevation={-1}>
-            <DeviceSelector />
-            <Navigation />
-            <AccountsMenu />
-            <QuickActions />
-        </ElevationContext>
-    </Container>
-);
+export const Sidebar = () => {
+    const { elevation } = useElevation();
+
+    return (
+        <Container $elevation={elevation}>
+            <ElevationUp>
+                <DeviceSelector />
+                <Navigation />
+                <AccountsMenu />
+                <QuickActions />
+            </ElevationUp>
+        </Container>
+    );
+};

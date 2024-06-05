@@ -165,6 +165,13 @@ export const CardanoPoolParameters = Type.Object({
     metadata: Type.Optional(CardanoPoolMetadata),
 });
 
+export type CardanoDRep = Static<typeof CardanoDRep>;
+export const CardanoDRep = Type.Object({
+    type: PROTO.EnumCardanoDRepType,
+    keyHash: Type.Optional(Type.String()),
+    scriptHash: Type.Optional(Type.String()),
+});
+
 export type CardanoCertificate = Static<typeof CardanoCertificate>;
 export const CardanoCertificate = Type.Object({
     type: PROTO.EnumCardanoCertificateType,
@@ -173,6 +180,8 @@ export const CardanoCertificate = Type.Object({
     poolParameters: Type.Optional(CardanoPoolParameters),
     scriptHash: Type.Optional(Type.String()),
     keyHash: Type.Optional(Type.String()),
+    deposit: Type.Optional(Type.String()),
+    dRep: Type.Optional(CardanoDRep),
 });
 
 export type CardanoWithdrawal = Static<typeof CardanoWithdrawal>;
@@ -253,6 +262,7 @@ export const CardanoSignTransaction = Type.Object({
     derivationType: Type.Optional(PROTO.EnumCardanoDerivationType),
     includeNetworkId: Type.Optional(Type.Boolean()),
     chunkify: Type.Optional(Type.Boolean()),
+    tagCborSets: Type.Optional(Type.Boolean()),
 });
 
 export type CardanoSignTransactionExtended = Static<typeof CardanoSignTransactionExtended>;

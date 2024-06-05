@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Text, Card, Image, VStack, Button } from '@suite-native/atoms';
 import { useActiveColorScheme } from '@suite-native/theme';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     AccountsImportStackRoutes,
     HomeStackParamList,
@@ -35,8 +35,6 @@ export const EmptyPortfolioTrackerState = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
 
-    const { translate } = useTranslate();
-
     const colorScheme = useActiveColorScheme();
 
     const image = useMemo(() => {
@@ -57,7 +55,7 @@ export const EmptyPortfolioTrackerState = () => {
         <VStack spacing="extraLarge">
             <Card
                 alertVariant="info"
-                alertTitle={translate('moduleHome.emptyState.portfolioTracker.alert')}
+                alertTitle={<Translation id="moduleHome.emptyState.portfolioTracker.alert" />}
             >
                 <VStack
                     spacing="extraLarge"
@@ -81,8 +79,8 @@ export const EmptyPortfolioTrackerState = () => {
                         </Text>
                     </VStack>
                     <Image source={image} contentFit="contain" style={applyStyle(imageStyle)} />
-                    <Button onPress={handleSyncMyCoins}>
-                        {translate('moduleHome.emptyState.portfolioTracker.primaryButton')}
+                    <Button onPress={handleSyncMyCoins} testID="@home/portfolio/sync-coins-button">
+                        <Translation id="moduleHome.emptyState.portfolioTracker.primaryButton" />
                     </Button>
                 </VStack>
             </Card>

@@ -7,7 +7,7 @@ import routes from 'src/constants/suite/routes';
 import { Dashboard } from 'src/views/dashboard';
 import Notification from 'src/views/suite/notifications';
 import { Transactions } from 'src/views/wallet/transactions/Transactions';
-import WalletReceive from 'src/views/wallet/receive';
+import { Receive } from 'src/views/wallet/receive/Receive';
 import WalletDetails from 'src/views/wallet/details';
 import WalletTokens from 'src/views/wallet/tokens';
 import WalletSend from 'src/views/wallet/send';
@@ -42,7 +42,7 @@ const components: { [key: string]: ComponentType<any> } = {
     'notifications-index': Notification,
 
     'wallet-index': Transactions,
-    'wallet-receive': WalletReceive,
+    'wallet-receive': Receive,
     'wallet-details': WalletDetails,
     'wallet-tokens': WalletTokens,
     'wallet-send': WalletSend,

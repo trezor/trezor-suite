@@ -1,6 +1,6 @@
 {
     "name": "@trezor/env-utils",
-    "version": "1.0.14",
+    "version": "1.0.17",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/env-utils",
     "npmPublishAccess": "public",
     "license": "See LICENSE.md in repo root",
@@ -28,15 +28,18 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "expo-constants": "15.4.5",
         "ua-parser-js": "^1.0.37"
     },
     "peerDependencies": {
+        "expo-constants": "*",
         "expo-localization": "*",
         "react-native": "*",
         "tslib": "^2.6.2"
     },
     "peerDependenciesMeta": {
+        "expo-constants": {
+            "optional": true
+        },
         "expo-localization": {
             "optional": true
         },

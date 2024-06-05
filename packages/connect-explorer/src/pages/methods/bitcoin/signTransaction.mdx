@@ -1,0 +1,267 @@
+import { Type } from '@trezor/schema-utils';
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { ParamsTable } from '../../../components/ParamsTable';
+import signTransactionCustom from '../../../data/methods/bitcoin/signTransaction.custom';
+import signTransactionMultisig from '../../../data/methods/bitcoin/signTransaction.multisig';
+import signTransactionOpreturn from '../../../data/methods/bitcoin/signTransaction.opreturn';
+import signTransactionP2SH from '../../../data/methods/bitcoin/signTransaction.p2sh';
+import signTransactionPaytoaddress from '../../../data/methods/bitcoin/signTransaction.paytoaddress';
+import signTransactionZcash from '../../../data/methods/bitcoin/signTransaction.zcash';
+
+<ApiPlayground
+    options={[
+        { title: 'PayToAddress', legacyConfig: signTransactionPaytoaddress[0] },
+        { title: 'P2SH', legacyConfig: signTransactionP2SH[0] },
+        { title: 'OpReturn', legacyConfig: signTransactionOpreturn[0] },
+        { title: 'Multisig', legacyConfig: signTransactionMultisig[0] },
+        { title: 'Zcash', legacyConfig: signTransactionZcash[0] },
+        { title: 'Custom', legacyConfig: signTransactionCustom[0] },
+    ]}
+/>
+
+export const SignTransactionSchema = Type.Object({
+    coin: Type.String(),
+    inputs: Type.Array(PROTO.TxInputType),
+    outputs: Type.Array(PROTO.TxOutputType),
+    paymentRequests: Type.Optional(Type.Array(PROTO.TxAckPaymentRequest)),
+    refTxs: Type.Optional(Type.Array(Type.Object({}))),
+    locktime: Type.Optional(Type.Number()),
+    version: Type.Optional(Type.Number()),
+    expiry: Type.Optional(Type.Number()),
+    versionGroupId: Type.Optional(Type.Number()),
+    overwintered: Type.Optional(Type.Boolean()),
+    timestamp: Type.Optional(Type.Number()),
+    branchId: Type.Optional(Type.Number()),
+    push: Type.Optional(Type.Boolean()),
+    amountUnit: Type.Optional(PROTO.EnumAmountUnit),
+    unlockPath: Type.Optional(PROTO.UnlockPath),
+    serialize: Type.Optional(Type.Boolean()),
+    chunkify: Type.Optional(Type.Boolean()),
+});
+
+export const paramDescriptions = {
+    coin:
+        '> Determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file.\n' +
+        '> Coin `shortcut`, `name` or `label` can be used.\n',
+    inputs: 'of [PROTO.TxInputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)',
+    outputs:
+        'of [PROTO.TxOutputType](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)',
+    paymentRequests:
+        'of [PROTO.TxAckPaymentRequest](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts). See [SLIP-24](https://github.com/satoshilabs/slips/blob/slip24/slip-0024.md)',
+    refTxs:
+        'of [RefTransaction](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts).\n' +
+        "> If you don't want to use build-in `blockbook` backend you can optionally provide those data from your own backend transformed to `Trezor` format.\n" +
+        '> Since Firmware 2.3.0/1.9.0 referenced transactions are required.\n' +
+        '> Zcash and Komodo refTxs should also contains `expiry`, `version_group_id` and `extra_data` fields.',
+    locktime: '',
+    version: 'transaction version,',
+    expiry: 'only for Decred and Zcash,',
+    versionGroupId: 'only for Zcash, nVersionGroupId when overwintered is set,',
+    overwintered: 'only for Zcash',
+    timestamp: 'only for Capricoin, transaction timestamp,',
+    branchId: 'only for Zcash, BRANCH_ID when overwintered is set',
+    push: 'Broadcast signed transaction to blockchain. Default is set to false',
+    amountUnit: 'show amounts in BTC, mBTC, uBTC, sat',
+    serialize:
+        'default `true` serialize the full transaction, as opposed to only outputting the signatures',
+    chunkify:
+        'determines if recipient address will be displayed in chunks of 4 characters. Default is set to `false`',
+};
+
+## Sign transaction
+
+Asks device to sign given
+inputs and outputs of pre-composed transaction. User is asked to confirm all transaction
+details on Trezor.
+
+```javascript
+const result = await TrezorConnect.signTransaction(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### SignTransaction
+
+[SignTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
+
+<ParamsTable schema={SignTransactionSchema} descriptions={paramDescriptions} />
+
+### Example
+
+###### PAYTOADDRESS
+
+```javascript
+TrezorConnect.signTransaction({
+    inputs: [
+        {
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                0,
+            ],
+            prev_index: 0,
+            prev_hash: 'b035d89d4543ce5713c553d69431698116a822c57c03ddacf3f04b763d1999ac',
+            amount: 3431747,
+        },
+    ],
+    outputs: [
+        {
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                1,
+            ],
+            amount: 3181747,
+            script_type: 'PAYTOADDRESS',
+        },
+        {
+            address: '18WL2iZKmpDYWk1oFavJapdLALxwSjcSk2',
+            amount: 200000,
+            script_type: 'PAYTOADDRESS',
+        },
+    ],
+    coin: 'btc',
+});
+```
+
+###### SPENDP2SHWITNESS
+
+```javascript
+TrezorConnect.signTransaction({
+    inputs: [
+        {
+            address_n: [
+                (49 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                0,
+            ],
+            prev_index: 0,
+            prev_hash: 'b035d89d4543ce5713c553d69431698116a822c57c03ddacf3f04b763d1999ac',
+            amount: 3431747,
+            script_type: 'SPENDP2SHWITNESS',
+        },
+    ],
+    outputs: [
+        {
+            address_n: [
+                (49 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                1,
+            ],
+            amount: 3181747,
+            script_type: 'PAYTOP2SHWITNESS',
+        },
+        {
+            address: '18WL2iZKmpDYWk1oFavJapdLALxwSjcSk2',
+            amount: 200000,
+            script_type: 'PAYTOADDRESS',
+        },
+    ],
+    coin: 'btc',
+});
+```
+
+###### PAYTOADDRESS with refTxs (transaction data provided from custom backend)
+
+```javascript
+TrezorConnect.signTransaction({
+    inputs: [
+        {
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                0,
+            ],
+            prev_index: 0,
+            prev_hash: 'b035d89d4543ce5713c553d69431698116a822c57c03ddacf3f04b763d1999ac',
+            amount: 3431747,
+        },
+    ],
+    outputs: [
+        {
+            address_n: [
+                (44 | 0x80000000) >>> 0,
+                (0 | 0x80000000) >>> 0,
+                (2 | 0x80000000) >>> 0,
+                1,
+                1,
+            ],
+            amount: 3181747,
+            script_type: 'PAYTOADDRESS',
+        },
+        {
+            address: '18WL2iZKmpDYWk1oFavJapdLALxwSjcSk2',
+            amount: 200000,
+            script_type: 'PAYTOADDRESS',
+        },
+    ],
+    refTxs: [
+        {
+            hash: 'b035d89d4543ce5713c553d69431698116a822c57c03ddacf3f04b763d1999ac',
+            inputs: [
+                {
+                    prev_hash: '448946a44f1ef514601ccf9b22cc3e638c69ea3900b67b87517ea673eb0293dc',
+                    prev_index: 0,
+                    script_sig:
+                        '47304402202872cb8459eed053dcec0f353c7e293611fe77615862bfadb4d35a5d8807a4cf022015057aa0aaf72ab342b5f8939f86f193ad87b539931911a72e77148a1233e022012103f66bbe3c721f119bb4b8a1e6c1832b98f2cf625d9f59242008411dd92aab8d94',
+                    sequence: 4294967295,
+                },
+            ],
+            bin_outputs: [
+                {
+                    amount: 3431747,
+                    script_pubkey: '76a91441352a84436847a7b660d5e76518f6ebb718dedc88ac',
+                },
+                {
+                    amount: 10000,
+                    script_pubkey: '76a9141403b451c79d34e6a7f6e36806683308085467ac88ac',
+                },
+            ],
+            lock_time: 0,
+            version: 1,
+        },
+    ],
+    coin: 'btc',
+});
+```
+
+### Result
+
+[SignedTransaction type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/bitcoin/index.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        signatures: Array<string>, // Array of signer signatures
+        serializedTx: string,      // serialized transaction
+        txid?: string,             // broadcasted transaction id
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

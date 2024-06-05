@@ -1,22 +1,28 @@
 import { useMemo, useEffect } from 'react';
 import { Controller } from 'react-hook-form';
-import { Select, variables } from '@trezor/components';
-import { components } from 'react-select';
+import { Select } from '@trezor/components';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
-import { Output } from 'src/types/wallet/sendForm';
+import { Output } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectCoinDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
-import BigNumber from 'bignumber.js';
-import { Timestamp, TokenAddress, TokenDefinitions } from '@suite-common/wallet-types';
+import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
-import { enhanceTokensWithRates, sortTokensWithRates } from 'src/utils/wallet/tokenUtils';
-import { getShortFingerprint } from '@suite-common/wallet-utils';
+import {
+    enhanceTokensWithRates,
+    formatTokenSymbol,
+    sortTokensWithRates,
+} from 'src/utils/wallet/tokenUtils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import { isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import {
+    TokenDefinitions,
+    isTokenDefinitionKnown,
+    selectCoinDefinitions,
+} from '@suite-common/token-definitions';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;
@@ -27,7 +33,6 @@ interface Option {
     options: {
         label: string;
         value: string | null;
-        fingerprint?: string;
     }[];
     label?: React.ReactNode;
 }
@@ -37,10 +42,10 @@ export const buildTokenOptions = (
     symbol: Account['symbol'],
     coinDefinitions: TokenDefinitions['coin'],
 ) => {
-    // ETH option
+    // native token option
     const result: Option[] = [
         {
-            options: [{ value: null, fingerprint: undefined, label: symbol.toUpperCase() }],
+            options: [{ value: null, label: symbol.toUpperCase() }],
         },
     ];
 
@@ -53,7 +58,8 @@ export const buildTokenOptions = (
                 return;
             }
 
-            const tokenName = token.symbol || 'N/A';
+            // if symbol is missing, use start of contract address
+            const tokenSymbol = formatTokenSymbol(token.symbol || token.contract);
 
             if (
                 !hasCoinDefinitions ||
@@ -61,14 +67,12 @@ export const buildTokenOptions = (
             ) {
                 result[0].options.push({
                     value: token.contract,
-                    label: tokenName.toUpperCase(),
-                    fingerprint: token.name,
+                    label: tokenSymbol,
                 });
             } else {
                 unknownTokens.push({
                     value: token.contract,
-                    label: `${tokenName.toUpperCase().slice(0, 7)}…`,
-                    fingerprint: token.name,
+                    label: tokenSymbol,
                 });
             }
         });
@@ -96,67 +100,6 @@ interface TokenSelectProps {
     outputId: number;
 }
 
-const OptionValueName = styled.div`
-    text-overflow: ellipsis;
-    overflow: hidden;
-    height: 1.2em;
-    white-space: nowrap;
-    margin: 5px 0;
-`;
-
-const OptionWrapper = styled.div`
-    max-width: 200px;
-
-    @media (max-width: ${variables.SCREEN_SIZE.XL}) {
-        max-width: 120px;
-    }
-`;
-
-const OptionValue = styled.div`
-    word-break: break-all;
-    font-variant-numeric: slashed-zero tabular-nums;
-`;
-
-const OptionEmptyName = styled.div`
-    font-style: italic;
-`;
-
-const CardanoOption = ({ tokenInputName, ...optionProps }: any) => (
-    <components.Option
-        {...optionProps}
-        innerProps={{
-            ...optionProps.innerProps,
-            'data-test': `${tokenInputName}/option/${optionProps.value}`,
-        }}
-    >
-        <OptionWrapper>
-            <OptionValueName>
-                {optionProps.data.fingerprint &&
-                optionProps.data.label.toLowerCase() ===
-                    optionProps.data.fingerprint.toLowerCase() ? (
-                    <OptionEmptyName>No name</OptionEmptyName>
-                ) : (
-                    optionProps.data.label
-                )}
-            </OptionValueName>
-            <OptionValue>
-                {optionProps.data.fingerprint
-                    ? getShortFingerprint(optionProps.data.fingerprint)
-                    : null}
-            </OptionValue>
-        </OptionWrapper>
-    </components.Option>
-);
-
-const CardanoSingleValue = ({ tokenInputName, ...optionProps }: any) => (
-    <components.SingleValue {...optionProps} innerProps={{ ...optionProps.innerProps }}>
-        {optionProps.data.fingerprint &&
-        optionProps.data.label.toLowerCase() === optionProps.data.fingerprint.toLowerCase()
-            ? getShortFingerprint(optionProps.data.fingerprint)
-            : optionProps.data.label}
-    </components.SingleValue>
-);
-
 export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     const {
         account,
@@ -171,7 +114,13 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     } = useSendFormContext();
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const localCurrency = useSelector(selectLocalCurrency);
-    const tokensWithRates = enhanceTokensWithRates(account.tokens, localCurrency, account.symbol);
+    const fiatRates = useSelector(selectCurrentFiatRates);
+    const tokensWithRates = enhanceTokensWithRates(
+        account.tokens,
+        localCurrency,
+        account.symbol,
+        fiatRates,
+    );
     const dispatch = useDispatch();
 
     const sortedTokens = useMemo(() => {
@@ -197,14 +146,6 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         }
     }, [outputId, tokenWatch, setAmount, getValues, account.networkType, isSetMaxActive]);
 
-    const customComponents =
-        account.networkType === 'cardano'
-            ? {
-                  Option: CardanoOption,
-                  SingleValue: CardanoSingleValue,
-              }
-            : undefined;
-
     const values = getValues();
     const fiatCurrency = values?.outputs?.[0]?.currency;
 
@@ -224,7 +165,6 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                         .flatMap(group => group.options)
                         .find(option => option.value === tokenValue)}
                     isClearable={false}
-                    components={customComponents}
                     isClean
                     onChange={async (selected: Option['options'][0]) => {
                         // change selected value
@@ -237,7 +177,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
                                 },
                                 localCurrency: fiatCurrency?.value as FiatCurrencyCode,
                                 rateType: 'current',
-                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                                fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
                         );
                         // clear errors in Amount input

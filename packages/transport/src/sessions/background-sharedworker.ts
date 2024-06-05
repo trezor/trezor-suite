@@ -5,7 +5,9 @@ import { HandleMessageParams } from './types';
 
 declare let self: SharedWorkerGlobalScope;
 
-const background = new SessionsBackground();
+const abortController = new AbortController();
+const background = new SessionsBackground({ signal: abortController.signal });
+
 const ports: MessagePort[] = [];
 
 const handleMessage = async (message: HandleMessageParams, port: MessagePort) => {

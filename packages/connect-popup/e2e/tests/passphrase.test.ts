@@ -2,6 +2,7 @@ import { test, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import {
     findElementByDataTest,
+    formatUrl,
     getContexts,
     log,
     openPopup,
@@ -82,19 +83,31 @@ test('input passphrase in popup and device accepts it', async () => {
     log(`test: ${test.info().title}`);
 
     log(`opening ${explorerUrl}#/method/getAddress`);
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
 
     log('waiting for submit button');
+    await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     log('opening popup');
     [popup] = await openPopup(context, explorerPage, isWebExtension);
+    await popup.waitForLoadState('load');
 
     log('waiting for analytics continue button');
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
+    if (isWebExtension) {
+        // There is an issue in web extension, core takes time to load and accepting analytics too quickly can cause error
+        await popup.waitForTimeout(1000);
+    }
     log('clicking on analytics continue button');
     await waitAndClick(popup, ['@analytics/continue-button']);
+
+    if (isWebExtension) {
+        log('waiting for device list');
+        await popup.waitForSelector('.select-device-list button.list');
+        await popup.click('.select-device-list button.list');
+    }
 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
@@ -123,14 +136,26 @@ test('input passphrase in popup and device accepts it', async () => {
 test('introduce passphrase in popup and device rejects it', async () => {
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
+    await popup.waitForLoadState('load');
 
     await findElementByDataTest(popup, '@analytics/continue-button', 40 * 1000);
 
+    if (isWebExtension) {
+        // There is an issue in web extension, core takes time to load and accepting analytics too quickly can cause error
+        await popup.waitForTimeout(1000);
+    }
     await waitAndClick(popup, ['@analytics/continue-button']);
+
+    if (isWebExtension) {
+        log('waiting for device list');
+        await popup.waitForSelector('.select-device-list button.list');
+        await popup.click('.select-device-list button.list');
+    }
 
     log('waiting for confirm permissions button');
     await waitAndClick(popup, ['@permissions/confirm-button', '@export-address/confirm-button']);
@@ -155,7 +180,8 @@ test('introduce passphrase successfully next time should not ask for it', async 
 
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -201,7 +227,8 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
 
     log(`test: ${test.info().title}`);
 
-    await explorerPage.goto(`${explorerUrl}#/method/getAddress`);
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
+    await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     [popup] = await openPopup(context, explorerPage, isWebExtension);
@@ -252,7 +279,7 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('start', test.info().title);
     log('got to: ', `${url}#/method/getAddress`);
-    await page.goto(`${url}#/method/getAddress`);
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/getAddress/index.html`));
 
     log('Trigger getAddress call');
     // this is a little hack.
@@ -291,9 +318,6 @@ test('passphrase mismatch', async ({ page }) => {
 
     log('waiting and click for invalid passphrase try again button');
     await waitAndClick(popup, ['@invalid-passphrase/try-again']);
-
-    log('waiting and click confirm permissions button');
-    await waitAndClick(popup, ['@permissions/confirm-button']);
 
     log('typing passphrase');
     // Input right passphrase.

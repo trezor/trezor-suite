@@ -1,6 +1,13 @@
 import { test, Page, BrowserContext, expect } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { getContexts, openPopup, log, setConnectSettings } from '../support/helpers';
+import {
+    getContexts,
+    openPopup,
+    log,
+    setConnectSettings,
+    formatUrl,
+    waitAndClick,
+} from '../support/helpers';
 
 import fs from 'fs';
 
@@ -64,8 +71,11 @@ test('popup should display error page when device disconnected and debug mode', 
     }
 
     log('opening explorer page');
-    await explorerPage.goto(`${explorerUrl}#/method/verifyMessage`);
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
+
     log('waiting for explorer to load');
+    await waitAndClick(page, ['@api-playground/collapsible-box']);
+    await page.waitForSelector("div[data-test='@api-playground/collapsible-box']");
     await explorerPage.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
 
     log('opening popup');
@@ -125,7 +135,8 @@ test('log page should contain logs from shared worker', async ({ page, context }
     }
 
     log(`go to: ${url}#/method/verifyMessage`);
-    await explorerPage.goto(`${url}#/method/verifyMessage`);
+    await explorerPage.goto(formatUrl(explorerUrl, `methods/bitcoin/verifyMessage/`));
+
     log('opening popup');
     [popup] = await openPopup(persistentContext, explorerPage, isWebExtension);
 

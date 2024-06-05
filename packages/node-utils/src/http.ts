@@ -3,27 +3,13 @@ import * as net from 'net';
 import * as url from 'url';
 
 import type { RequiredKey } from '@trezor/type-utils';
-import { TypedEmitter } from '@trezor/utils';
+import { Log, TypedEmitter } from '@trezor/utils';
 import { arrayPartition } from '@trezor/utils';
 
 import { getFreePort } from './getFreePort';
 
 type Request = RequiredKey<http.IncomingMessage, 'url'>;
 type EventMap = { [event: string]: any };
-
-type LogFn = (message: string | string[]) => void;
-type Logger = {
-    info: LogFn;
-    warn: LogFn;
-    error: LogFn;
-};
-
-type OriginalLogFn = (topic: string, message: string | string[]) => void;
-type OriginalLogger = {
-    info: OriginalLogFn;
-    warn: OriginalLogFn;
-    error: OriginalLogFn;
-};
 
 type RequestWithParams = Request & {
     params: Record<string, string>;
@@ -40,7 +26,7 @@ export type Handler<R extends Request = RequestWithParams> = (
     request: R,
     response: Response,
     next: Next<R>,
-    { logger }: { logger: Logger },
+    { logger }: { logger: Log },
 ) => void;
 
 type Route = {
@@ -63,28 +49,19 @@ type BaseEvents = {
  * Http server listening on localhost.
  */
 export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents> {
-    server: http.Server;
+    public server: http.Server;
+    public logger: Log;
     private routes: Route[] = [];
-    private logger: Logger;
     private readonly emitter: TypedEmitter<BaseEvents> = this;
     private port?: number;
     private sockets: Record<number, net.Socket> = {};
 
-    constructor({ logger, port }: { logger: OriginalLogger; port?: number }) {
+    constructor({ logger, port }: { logger: Log; port?: number }) {
         super();
 
         this.port = port;
 
-        // this class accepts subset of suite-desktop-core "ILogger" interface.
-        // - in order to omit need for passing the first argument "topic" in each call, we wrap the logger and prepend "http: ${this.port}" to each call
-        // - here it implements also only a subset of ILogger functionality
-        // - todo: unify loggers across the codebase
-        this.logger = {
-            info: (message: string | string[]) => logger.info(`${this.logName}`, message),
-            warn: (message: string | string[]) => logger.warn(`${this.logName}`, message),
-            error: (message: string | string[]) => logger.error(`${this.logName}`, message),
-        };
-        // this.logger = logger;
+        this.logger = logger;
         this.server = http.createServer(this.onRequest);
     }
 
@@ -140,7 +117,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
                 const errorCode: string = e.code;
 
                 const errorMessage =
-                    errorCode === 'EADDRINUSE'
+                    errorCode === 'EADDRINUSE' || errorCode === 'EACCES'
                         ? `Port ${port} already in use!` // TODO: Try different port?
                         : `Start error code: ${errorCode}`;
 
@@ -268,7 +245,7 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
         }
 
         request.on('aborted', () => {
-            this.logger.info(`Request ${request.url} aborted`);
+            this.logger.info(`Request ${request.method} ${request.url} aborted`);
         });
 
         const { pathname } = url.parse(request.url, true);
@@ -279,12 +256,12 @@ export class HttpServer<T extends EventMap> extends TypedEmitter<T & BaseEvents>
 
             return;
         }
-        this.logger.info(`Handling request for ${pathname}`);
+        this.logger.info(`Handling request for ${request.method} ${pathname}`);
 
         const route = this.findBestMatchingRoute(pathname, request.method);
         if (!route) {
-            this.emitter.emit('server/error', `Route not found for ${pathname}`);
-            this.logger.warn(`Route not found for ${pathname}`);
+            this.emitter.emit('server/error', `Route not found for ${request.method} ${pathname}`);
+            this.logger.warn(`Route not found for ${request.method} ${pathname}`);
 
             return;
         }
@@ -332,11 +309,11 @@ const checkOrigin = ({
     logger,
 }: {
     request: Parameters<Handler>[0];
-    allowedOrigin?: string[];
+    allowedOrigin: string[];
     pathname: string;
-    logger: Logger;
+    logger: Log;
 }) => {
-    const { referer } = request.headers;
+    const { origin } = request.headers;
     const origins = allowedOrigin ?? [];
     let isOriginAllowed = false;
     // Allow all origins
@@ -344,9 +321,45 @@ const checkOrigin = ({
         isOriginAllowed = true;
     }
 
+    if (origin) {
+        isOriginAllowed = origins.some(o => {
+            // match from the end to allow subdomains
+            return new URL(origin).hostname.endsWith(new URL(o).hostname);
+        });
+    }
+    if (!isOriginAllowed) {
+        logger.warn(`Origin rejected for ${pathname}`);
+        logger.warn(`- Received: origin: '${origin}'`);
+        logger.warn(`- Allowed origins: ${origins.map(o => `'${o}'`).join(', ')}`);
+
+        return false;
+    }
+
+    return true;
+};
+
+const checkReferer = ({
+    request,
+    allowedReferer,
+    pathname,
+    logger,
+}: {
+    request: Parameters<Handler>[0];
+    allowedReferer: string[];
+    pathname: string;
+    logger: Log;
+}) => {
+    const { referer } = request.headers;
+    const referers = allowedReferer ?? [];
+    let isRefererAllowed = false;
+    // Allow all origins
+    if (referers.includes('*')) {
+        isRefererAllowed = true;
+    }
+
     // If referer is not defined, check if empty referrers are allowed
     else if (referer === undefined) {
-        isOriginAllowed = origins.includes('');
+        isRefererAllowed = referers.includes('');
     } else {
         // Domain of referer has to be in the allowed origins for that endpoint
         let domain: string;
@@ -359,21 +372,21 @@ const checkOrigin = ({
         }
 
         return (
-            origins.findIndex(origin => {
+            referers.findIndex(r => {
                 // Wildcard for subdomains
-                if (origin.startsWith('*')) {
-                    return domain.endsWith(origin.substring(1));
+                if (r.startsWith('*')) {
+                    return domain.endsWith(r.substring(1));
                 }
 
-                return origin.includes(domain);
+                return r.includes(domain);
             }) > -1
         );
     }
 
-    if (!isOriginAllowed) {
-        logger.warn(`Origin rejected for ${pathname}`);
-        logger.warn(`- Received: '${referer}'`);
-        logger.warn(`- Allowed origins: ${origins.map(o => `'${o}'`).join(', ')}`);
+    if (!isRefererAllowed) {
+        logger.warn(`Referer rejected for ${pathname}`);
+        logger.warn(`- Received: referer: '${referer}', origin: '${origin}'`);
+        logger.warn(`- Allowed referers: ${referers.map(o => `'${o}'`).join(', ')}`);
 
         return false;
     }
@@ -385,12 +398,30 @@ const checkOrigin = ({
  * Built-middleware "allow origin"
  */
 export const allowOrigins =
-    (allowedOrigin?: string[]): Handler =>
+    (allowedOrigin: string[]): Handler =>
     (request, _response, next, { logger }) => {
         if (
             checkOrigin({
                 request,
                 allowedOrigin,
+                pathname: request.url,
+                logger,
+            })
+        ) {
+            next(request, _response);
+        }
+    };
+
+/**
+ * Built-middleware "allow referers"
+ */
+export const allowReferers =
+    (allowedReferer: string[]): Handler =>
+    (request, _response, next, { logger }) => {
+        if (
+            checkReferer({
+                request,
+                allowedReferer,
                 pathname: request.url,
                 logger,
             })

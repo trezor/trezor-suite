@@ -9,8 +9,11 @@ import {
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { getNetworkFeatures } from '@suite-common/wallet-config';
-import { TokenDefinitions } from '@suite-common/wallet-types';
-import { DefinitionType, isTokenDefinitionKnown } from '@suite-common/token-definitions';
+import {
+    DefinitionType,
+    TokenDefinitions,
+    isTokenDefinitionKnown,
+} from '@suite-common/token-definitions';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -206,7 +209,6 @@ export const getComposeAddressPlaceholder = async (
 export const mapTestnetSymbol = (symbol: Network['symbol']) => {
     if (symbol === 'test') return 'btc';
     if (symbol === 'tsep') return 'eth';
-    if (symbol === 'tgor') return 'eth';
     if (symbol === 'thol') return 'eth';
     if (symbol === 'txrp') return 'xrp';
     if (symbol === 'tada') return 'ada';

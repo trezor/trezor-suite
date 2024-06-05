@@ -1,12 +1,12 @@
 import styled, { useTheme } from 'styled-components';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
-import { Button, Icon, Paragraph, variables } from '@trezor/components';
+import { Button, Icon, Paragraph, Tooltip, variables } from '@trezor/components';
 import { borders, spacingsPx } from '@trezor/theme';
 import { openModal } from 'src/actions/suite/modalActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { mapTestnetSymbol } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { FiatValueWrapper, FormattedCryptoAmountWrapper } from './styled';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const StyledCard = styled.div`
     border-radius: ${borders.radii.md};
@@ -20,6 +20,10 @@ const StyledCard = styled.div`
     );
     position: relative;
     overflow: hidden;
+`;
+
+const StyledIcon = styled(Icon)`
+    transform: rotate(20deg);
 `;
 
 const BgImgWrapper = styled.div<{ $top: number; $left: number }>`
@@ -64,16 +68,23 @@ interface ClaimReadyCardProps {
 export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
     const theme = useTheme();
     const { symbol } = useSelector(selectSelectedAccount) ?? {};
-    const mappedSymbol = mapTestnetSymbol(symbol ?? 'eth');
+    const { isClaimingDisabled, claimingMessageContent } = useMessageSystemStaking();
+
     const dispatch = useDispatch();
     const openClaimModal = () => {
-        dispatch(openModal({ type: 'claim' }));
+        if (!isClaimingDisabled) {
+            dispatch(openModal({ type: 'claim' }));
+        }
     };
+
+    if (!symbol) {
+        return null;
+    }
 
     return (
         <StyledCard>
             <BgImgWrapper $top={30} $left={-16}>
-                <Icon icon="PIGGY_BANK_FILLED" size={31} color={theme.iconPrimaryDefault} />
+                <StyledIcon icon="PIGGY_BANK_FILLED" size={31} color={theme.iconPrimaryDefault} />
             </BgImgWrapper>
             <BgImgWrapper $top={103} $left={126}>
                 <Icon icon="CURRENCY_ETH" size={29} color={theme.iconPrimaryDefault} />
@@ -101,7 +112,7 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
                             <FiatValue
                                 showApproximationIndicator
                                 amount={claimAmount}
-                                symbol={mappedSymbol}
+                                symbol={symbol}
                             />
                         </FiatValueWrapper>
                     </div>
@@ -117,9 +128,15 @@ export const ClaimReadyCard = ({ claimAmount }: ClaimReadyCardProps) => {
                     </div>
                 </InfoWrapper>
 
-                <Button onClick={openClaimModal}>
-                    <Translation id="TR_STAKE_CLAIM" />
-                </Button>
+                <Tooltip content={claimingMessageContent}>
+                    <Button
+                        onClick={openClaimModal}
+                        isDisabled={isClaimingDisabled}
+                        icon={isClaimingDisabled ? 'INFO' : undefined}
+                    >
+                        <Translation id="TR_STAKE_CLAIM" />
+                    </Button>
+                </Tooltip>
             </Flex>
         </StyledCard>
     );

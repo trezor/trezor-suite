@@ -14,7 +14,7 @@ services:
     extends:
       service: suite-base
       file: docker-compose.suite-base.yml
-    command: bash -c "yarn workspace @trezor/connect-explorer dev"
+    command: "yarn workspace @trezor/connect-explorer dev"
     network_mode: service:trezor-user-env-unix
 
   test-run:

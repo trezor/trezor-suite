@@ -180,6 +180,10 @@ packages/suite-data/files/translations/master.json
 
 packages/connect-explorer/build-webextension
 
+# @trezor/connect-explorer-theme
+
+packages/connect-explorer-theme/style.css
+
 # cypress download folder
 
 packages/suite-web/e2e/downloads

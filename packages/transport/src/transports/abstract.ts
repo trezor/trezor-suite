@@ -21,12 +21,12 @@ import { ACTION_TIMEOUT, TRANSPORT } from '../constants';
 
 export type AcquireInput = {
     path: string;
-    previous?: Session;
+    previous: Session | null;
 };
 
 export type ReleaseInput = {
     path: string;
-    session: string;
+    session: Session;
     onClose?: boolean;
 };
 
@@ -46,7 +46,7 @@ type DeviceDescriptorDiff = {
 
 export interface AbstractTransportParams {
     messages?: Record<string, any>;
-    signal?: AbortSignal;
+    signal: AbortSignal;
     logger?: Logger;
 }
 
@@ -93,7 +93,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
     /**
      * once transport has been stopped, it does not emit any events
      */
-    protected stopped = false;
+    protected stopped = true;
     /**
      * once transport is listening, it will be emitting TRANSPORT.UPDATE events
      */
@@ -110,7 +110,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * another application might have acquired session right after this application which means that
      * the originally received session is not longer valid and device is used by another application
      */
-    protected acquiredUnconfirmed: Record<string, string> = {};
+    protected acquiredUnconfirmed: Record<string, Session> = {};
     /**
      * promise that resolves on when next descriptors are delivered
      */
@@ -118,7 +118,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         string,
         Deferred<
             ResultWithTypedError<
-                string,
+                Session,
                 | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
                 | typeof ERRORS.SESSION_WRONG_PREVIOUS
                 | typeof ERRORS.DEVICE_NOT_FOUND
@@ -134,7 +134,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * used to postpone resolving of transport.release until next descriptors are delivered
      */
     protected releasePromise?: Deferred<any>;
-    protected releasingSession: string | undefined;
+    protected releaseUnconfirmed: Record<string, Session> = {};
 
     /**
      * each transport class accepts signal parameter in constructor and implements it's own abort controller.
@@ -146,7 +146,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     protected logger: Logger;
 
-    constructor(params?: AbstractTransportParams) {
+    constructor(params: AbstractTransportParams) {
         const { messages, signal, logger } = params || {};
 
         super();
@@ -155,13 +155,11 @@ export abstract class AbstractTransport extends TypedEmitter<{
 
         this.abortController = new AbortController();
 
-        if (signal) {
-            const abort = () => this.abortController.abort();
-            this.abortController.signal.addEventListener('abort', () =>
-                signal.removeEventListener('abort', abort),
-            );
-            signal.addEventListener('abort', abort);
-        }
+        const abort = () => this.abortController.abort();
+        this.abortController.signal.addEventListener('abort', () =>
+            signal.removeEventListener('abort', abort),
+        );
+        signal.addEventListener('abort', abort);
 
         // some abstract inactive logger
         this.logger = logger || {
@@ -217,9 +215,10 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * Acquire session
      */
     abstract acquire({ input }: { input: AcquireInput }): AbortableCall<
-        string,
+        Session,
         // webusb
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
+        | typeof ERRORS.DESCRIPTOR_NOT_FOUND
         // bridge
         | typeof ERRORS.WRONG_RESULT_TYPE
         | typeof ERRORS.HTTP_ERROR
@@ -266,7 +265,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     abstract send(params: {
         path?: string;
-        session: string;
+        session: Session;
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
@@ -291,7 +290,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      */
     abstract receive(params: {
         path?: string;
-        session: string;
+        session: Session;
         protocol?: TransportProtocol;
     }): AbortableCall<
         MessageFromTrezor,
@@ -313,7 +312,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * Send and read after that
      */
     abstract call(params: {
-        session: string;
+        session: Session;
         name: string;
         data: Record<string, unknown>;
         protocol?: TransportProtocol;
@@ -344,10 +343,16 @@ export abstract class AbstractTransport extends TypedEmitter<{
     private getDiff(nextDescriptors: Descriptor[]): DeviceDescriptorDiff {
         const connected = nextDescriptors.filter(
             nextDescriptor =>
-                !this.descriptors.find(descriptor => descriptor.path === nextDescriptor.path),
+                !this.descriptors.find(
+                    descriptor =>
+                        `${descriptor.path}${descriptor.product}` ===
+                        `${nextDescriptor.path}${nextDescriptor.product}`,
+                ),
         );
         const disconnected = this.descriptors.filter(
-            d => nextDescriptors.find(x => x.path === d.path) === undefined,
+            d =>
+                nextDescriptors.find(x => `${x.path}${x.product}` === `${d.path}${d.product}`) ===
+                undefined,
         );
         const changedSessions = nextDescriptors.filter(d => {
             const currentDescriptor = this.descriptors.find(x => x.path === d.path);
@@ -370,12 +375,12 @@ export abstract class AbstractTransport extends TypedEmitter<{
         const releasedByMyself = released.filter(
             d =>
                 this.descriptors.find(prevD => prevD.path === d.path)?.session ===
-                this.releasingSession,
+                this.releaseUnconfirmed[d.path],
         );
         const releasedElsewhere = released.filter(
             d =>
                 this.descriptors.find(prevD => prevD.path === d.path)?.session !==
-                this.releasingSession,
+                this.releaseUnconfirmed[d.path],
         );
 
         const didUpdate = connected.length + disconnected.length + changedSessions.length > 0;
@@ -418,7 +423,7 @@ export abstract class AbstractTransport extends TypedEmitter<{
         this.descriptors = nextDescriptors;
 
         Object.keys(this.listenPromise).forEach(path => {
-            const descriptor = nextDescriptors.find(device => device.path === path);
+            const descriptor = diff.descriptors.find(device => device.path === path);
 
             if (!descriptor) {
                 return this.listenPromise[path].resolve(
@@ -426,9 +431,13 @@ export abstract class AbstractTransport extends TypedEmitter<{
                 );
             }
 
+            const listenedPathChanged = diff.changedSessions.find(d => d.path === path);
+            if (!listenedPathChanged) {
+                return;
+            }
+
             if (this.acquiredUnconfirmed[path]) {
-                const reportedNextSession = descriptor.session;
-                if (reportedNextSession === this.acquiredUnconfirmed[path]) {
+                if (listenedPathChanged.session === this.acquiredUnconfirmed[path]) {
                     this.listenPromise[path].resolve(this.success(this.acquiredUnconfirmed[path]));
                 } else {
                     // another app took over
@@ -437,19 +446,20 @@ export abstract class AbstractTransport extends TypedEmitter<{
                     );
                 }
                 delete this.acquiredUnconfirmed[path];
-            } else if (this.releasingSession) {
-                this.listenPromise[path].resolve(this.success('null'));
-            } else {
-                // listen reported changes but we were not expecting any (no acquire or release in progress)
-                // this means that another application acquired session
-                this.listenPromise[path].resolve(
-                    this.error({ error: ERRORS.SESSION_WRONG_PREVIOUS }),
-                );
+            }
+
+            if (this.releaseUnconfirmed[path]) {
+                if (!listenedPathChanged.session) {
+                    // todo: solve me! this value is not used anyway. should be typed better
+                    // @ts-expect-error
+                    this.listenPromise[path].resolve(this.success(null));
+                    delete this.releaseUnconfirmed[path];
+                }
+                // when releasing we don't really care about else
             }
         });
 
         this.emit(TRANSPORT.UPDATE, diff);
-        this.releasingSession = undefined;
     }
 
     /**

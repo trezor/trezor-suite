@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { toWei } from 'web3-utils';
 import { isDesktop } from '@trezor/env-utils';
 import type { State } from 'src/reducers/wallet/settingsReducer';
@@ -750,6 +750,75 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
             }
 
             return metadata;
+        });
+    }
+
+    if (oldVersion < 44) {
+        // remove tgor network transactions
+        await updateAll(transaction, 'txs', tx => {
+            // @ts-expect-error
+            if (tx.tx.symbol === 'tgor') {
+                return null;
+            }
+
+            return tx;
+        });
+
+        // remove tgor network accounts
+        await updateAll(transaction, 'accounts', account => {
+            // @ts-expect-error
+            if (account.symbol === 'tgor') {
+                return null;
+            }
+
+            return account;
+        });
+
+        // remove tgor from coin settings
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            walletSettings.enabledNetworks = walletSettings.enabledNetworks.filter(
+                // @ts-expect-error
+                network => network !== 'tgor',
+            );
+
+            return walletSettings;
+        });
+
+        await updateAll(transaction, 'discovery', discovery => {
+            // remove tgor from discovery networks
+            discovery.networks = discovery.networks.filter(
+                // @ts-expect-error
+                network => network !== 'tgor',
+            );
+            discovery.failed = [];
+
+            return discovery;
+        });
+
+        // remove tgor from backend settings
+        const backendSettings = transaction.objectStore('backendSettings');
+        // @ts-expect-error
+        backendSettings.delete('tgor');
+    }
+
+    if (oldVersion < 45) {
+        db.createObjectStore('historicRates');
+
+        await updateAll(transaction, 'txs', tx => {
+            // @ts-expect-error
+            delete tx.tx.rates;
+
+            return tx;
+        });
+
+        await updateAll(transaction, 'walletSettings', walletSettings => {
+            Object.keys(walletSettings.lastUsedFeeLevel).forEach(coin => {
+                if (walletSettings.lastUsedFeeLevel[coin].label === 'low') {
+                    delete walletSettings.lastUsedFeeLevel[coin];
+                }
+            });
+
+            return walletSettings;
         });
     }
 };

@@ -7,12 +7,12 @@ const path = require('path');
 
 const args = process.argv.slice(2);
 
-if (args.length < 3)
+if (args.length < 2)
     throw new Error(
-        'Version check script requires 3 parameters: package name, branch name and dist tag (beta | latest)',
+        'Version check script requires 2 parameters: package name and dist tag (beta | latest)',
     );
 
-const [packageName, branch, distTag] = args;
+const [packageName, distTag] = args;
 
 if (!['latest', 'beta'].includes(distTag)) {
     throw new Error('distTag (3rd parameter) must be either "beta" or "latest"');
@@ -42,24 +42,9 @@ if (npmInfo && npmInfo.error && npmInfo.error.code === 'E404') {
 
 const npmVersion = npmInfo[packageJSON.name]['dist-tags'][distTag];
 
-const PRODUCTION = ['npm-release'];
-
 if (!semver.valid(version)) throw new Error(`${version} is not a valid version`);
 
-if (PRODUCTION.find(b => branch.startsWith(b))) {
-    if (semver.prerelease(version)) {
-        throw new Error(`${version} is a prerelease version`);
-    }
-} else {
-    const pre = semver.prerelease(version);
-    if (!pre) {
-        throw new Error(`${version} is not a prerelease version`);
-    }
-    if (pre[0] !== 'beta') {
-        throw new Error(`${version} prerelease version should contain "-beta" suffix`);
-    }
-}
-
-if (!semver.gt(version, npmVersion)) {
+// When npmVersion is undefined it means that there was no previous release on that distTag so every version is valid.
+if (npmVersion && !semver.gt(version, npmVersion)) {
     throw new Error(`${version} is the same or lower than the npm registry version ${npmVersion}`);
 }

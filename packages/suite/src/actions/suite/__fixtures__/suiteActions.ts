@@ -1,9 +1,14 @@
 import { testMocks } from '@suite-common/test-utils';
-import { discoveryActions, deviceActions } from '@suite-common/wallet-core';
+import {
+    discoveryActions,
+    deviceActions,
+    authorizeDeviceThunk,
+    createDeviceInstanceThunk,
+} from '@suite-common/wallet-core';
 import { DEVICE, TRANSPORT } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
-import { SUITE, MODAL } from 'src/actions/suite/constants';
+import { SUITE } from 'src/actions/suite/constants';
 import { TorStatus } from 'src/types/suite';
 
 import * as suiteActions from '../suiteActions';
@@ -236,6 +241,10 @@ const initialRun = [
                 showDashboardT2B1PromoBanner: false,
                 showSettingsDesktopAppPromoBanner: true,
                 stakeEthBannerClosed: false,
+                showDashboardStakingPromoBanner: true,
+                isViewOnlyModeVisible: false,
+                viewOnlyPromoClosed: true,
+                viewOnlyTooltipClosed: true,
             },
         },
     },
@@ -365,18 +374,6 @@ const handleDeviceConnect = [
             suite: {},
         },
         device: CONNECT_DEVICE,
-    },
-    {
-        description: `waiting-for-bootloader`,
-        state: {
-            device: {
-                selectedDevice: SUITE_DEVICE,
-            },
-            suite: {},
-            firmware: { status: 'waiting-for-bootloader' },
-        },
-        device: getConnectDevice({ path: '3', mode: 'bootloader' }),
-        result: deviceActions.selectDevice.type,
     },
 ];
 
@@ -772,18 +769,18 @@ const acquireDevice = [
     },
 ];
 
-const authorizeDevice = [
+const authorizeDeviceActions = [
     {
         description: `without device`,
         state: {},
-        result: undefined,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with disconnected device`,
         state: {
             selectedDevice: getSuiteDevice(),
         },
-        result: undefined,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with unacquired device`,
@@ -793,7 +790,7 @@ const authorizeDevice = [
                 connected: true,
             }),
         },
-        result: undefined,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with device which already has state`,
@@ -803,7 +800,7 @@ const authorizeDevice = [
                 state: '012345',
             }),
         },
-        result: undefined,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with device in unexpected mode`,
@@ -813,7 +810,7 @@ const authorizeDevice = [
                 mode: 'bootloader',
             }),
         },
-        result: undefined,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `with device which needs FW update`,
@@ -823,7 +820,7 @@ const authorizeDevice = [
                 firmware: 'required',
             }),
         },
-        result: undefined,
+        result: authorizeDeviceThunk.rejected.type,
     },
     {
         description: `success`,
@@ -832,7 +829,7 @@ const authorizeDevice = [
                 connected: true,
             }),
         },
-        result: deviceActions.authDevice.type,
+        result: authorizeDeviceThunk.fulfilled.type,
     },
     {
         description: `duplicate detected`,
@@ -857,7 +854,7 @@ const authorizeDevice = [
                 state: undefined,
             }),
         ],
-        result: MODAL.OPEN_USER_CONTEXT,
+        result: authorizeDeviceThunk.rejected.type,
         deviceReducerResult: [
             getSuiteDevice({
                 connected: true,
@@ -899,7 +896,7 @@ const authorizeDevice = [
                 state: undefined,
             }),
         ],
-        result: MODAL.OPEN_USER_CONTEXT,
+        result: authorizeDeviceThunk.rejected.type,
         deviceReducerResult: [
             getSuiteDevice({
                 connected: true,
@@ -928,7 +925,7 @@ const authorizeDevice = [
                 error: 'getDeviceState error',
             },
         },
-        result: notificationsActions.addToast.type,
+        result: authorizeDeviceThunk.rejected.type,
     },
 ];
 
@@ -1008,7 +1005,7 @@ const createDeviceInstance = [
                 }),
             },
         },
-        result: undefined,
+        result: createDeviceInstanceThunk.rejected.type,
     },
     {
         description: `without passphrase_protection`,
@@ -1019,7 +1016,7 @@ const createDeviceInstance = [
                 }),
             },
         },
-        result: deviceActions.createDeviceInstance.type,
+        result: createDeviceInstanceThunk.fulfilled.type,
     },
     {
         description: `without passphrase_protection and @trezor/connect error`,
@@ -1036,7 +1033,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: notificationsActions.addToast.type,
+        result: createDeviceInstanceThunk.rejected.type,
     },
     {
         description: `with passphrase_protection enabled`,
@@ -1058,7 +1055,7 @@ const createDeviceInstance = [
                 error: 'applySettings error',
             },
         },
-        result: deviceActions.createDeviceInstance.type,
+        result: createDeviceInstanceThunk.fulfilled.type,
     },
 ];
 
@@ -1093,7 +1090,7 @@ export default {
     forgetDisconnectedDevices,
     observeSelectedDevice,
     acquireDevice,
-    authorizeDevice,
+    authorizeDeviceActions,
     authConfirm,
     createDeviceInstance,
     switchDuplicatedDevice,

@@ -6,6 +6,8 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { spacingsPx } from '@trezor/theme';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { getUnstakingPeriodInDays } from 'src/utils/suite/stake';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
 
 const StyledModal = styled(Modal)`
     width: 380px;
@@ -64,11 +66,16 @@ interface StakeEthInANutshellModalProps {
 export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalProps) => {
     const theme = useTheme();
     const account = useSelector(selectSelectedAccount);
+    const { validatorWithdrawTime } = useSelector(state =>
+        selectValidatorsQueueData(state, account?.symbol),
+    );
+
+    const unstakingPeriod = getUnstakingPeriodInDays(validatorWithdrawTime);
 
     const dispatch = useDispatch();
-    const proceedToStaking = () => {
+    const proceedToEverstakeModal = () => {
         onCancel();
-        dispatch(openModal({ type: 'stake' }));
+        dispatch(openModal({ type: 'everstake' }));
     };
 
     return (
@@ -87,12 +94,18 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                         <Icon icon={icon} color={theme.iconPrimaryDefault} />
 
                         <GreyP>
-                            <Translation id={translationId} values={{ symbol: account?.symbol }} />
+                            <Translation
+                                id={translationId}
+                                values={{
+                                    symbol: account?.symbol.toUpperCase(),
+                                    days: unstakingPeriod,
+                                }}
+                            />
                         </GreyP>
                     </Flex>
                 ))}
             </VStack>
-            <Button isFullWidth onClick={proceedToStaking}>
+            <Button isFullWidth onClick={proceedToEverstakeModal}>
                 <Translation id="TR_GOT_IT" />
             </Button>
         </StyledModal>

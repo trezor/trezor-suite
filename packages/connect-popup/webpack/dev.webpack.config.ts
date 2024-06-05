@@ -12,7 +12,7 @@ const dev = {
     },
     plugins: [
         new WebpackPluginServe({
-            port: 8088,
+            port: process.env.PORT ? parseInt(process.env.PORT) : 8088,
             hmr: true,
             static: [path.join(__dirname, '../build')],
         }),

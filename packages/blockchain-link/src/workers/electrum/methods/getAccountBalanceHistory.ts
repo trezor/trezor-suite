@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { discovery } from '@trezor/utxo-lib';
 import { sumVinVout } from '@trezor/blockchain-link-utils';
 import { Api, tryGetScripthash, getTransactions, discoverAddress, AddressHistory } from '../utils';

@@ -3,12 +3,12 @@ import { Button, Card, Icon, Paragraph, variables, IconButton } from '@trezor/co
 import { spacingsPx } from '@trezor/theme';
 import { Translation, IconBorderedWrapper } from 'src/components/suite';
 import { goto } from 'src/actions/suite/routerActions';
-import { useDispatch, useSelector, useEverstakePoolStats } from 'src/hooks/suite';
-import {
-    selectSelectedAccount,
-    selectSelectedAccountHasSufficientEthForStaking,
-} from 'src/reducers/wallet/selectedAccountReducer';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { setFlag } from 'src/actions/suite/suiteActions';
+import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
+import { Account } from '@suite-common/wallet-types';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { isSupportedEthStakingNetworkSymbol } from '@suite-common/wallet-core';
 
 const StyledCard = styled(Card)`
     padding: ${spacingsPx.lg} ${spacingsPx.xxl} ${spacingsPx.lg} ${spacingsPx.md};
@@ -48,15 +48,16 @@ const Text = styled.div`
     line-height: 24px;
 `;
 
-export const StakeEthBanner = () => {
+interface StakeEthBannerProps {
+    account: Account;
+}
+
+export const StakeEthBanner = ({ account }: StakeEthBannerProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
-    const { stakeEthBannerClosed } = useSelector(state => state.suite.flags);
-    const hasSufficientEthForStaking = useSelector(selectSelectedAccountHasSufficientEthForStaking);
+    const { stakeEthBannerClosed } = useSelector(selectSuiteFlags);
     const { pathname } = useSelector(state => state.router);
-    const isShown = !stakeEthBannerClosed && pathname === '/accounts' && hasSufficientEthForStaking;
-    const { ethApy } = useEverstakePoolStats();
-    const account = useSelector(selectSelectedAccount);
+    const ethApy = useSelector(state => selectPoolStatsApyData(state, account.symbol));
 
     const closeBanner = () => {
         dispatch(setFlag('stakeEthBannerClosed', true));
@@ -66,7 +67,14 @@ export const StakeEthBanner = () => {
         dispatch(goto('wallet-staking', { preserveParams: true }));
     };
 
-    if (!isShown) return null;
+    if (
+        pathname !== '/accounts' ||
+        stakeEthBannerClosed ||
+        !account ||
+        !isSupportedEthStakingNetworkSymbol(account.symbol)
+    ) {
+        return null;
+    }
 
     return (
         <StyledCard>
@@ -83,7 +91,10 @@ export const StakeEthBanner = () => {
                         <Paragraph>
                             <Translation
                                 id="TR_STAKE_ANY_AMOUNT_ETH"
-                                values={{ apyPercent: ethApy, symbol: account?.symbol }}
+                                values={{
+                                    apyPercent: ethApy,
+                                    symbol: account?.symbol.toUpperCase(),
+                                }}
                             />
                         </Paragraph>
                     </Text>

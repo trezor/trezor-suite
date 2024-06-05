@@ -11,8 +11,8 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@react-navigation/native": "6.1.10",
-        "@react-navigation/native-stack": "6.9.18",
+        "@react-navigation/native": "6.1.17",
+        "@react-navigation/native-stack": "6.9.26",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/graph": "workspace:*",
@@ -32,10 +32,10 @@
         "@suite-native/forms": "workspace:*",
         "@suite-native/graph": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@suite-native/module-settings": "workspace:*",
         "@suite-native/navigation": "workspace:*",
         "@suite-native/qr-code": "workspace:*",
         "@suite-native/receive": "workspace:*",
+        "@suite-native/settings": "workspace:*",
         "@suite-native/transactions": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
@@ -43,8 +43,8 @@
         "jotai": "1.9.1",
         "react": "18.2.0",
         "react-hook-form": "^7.50.1",
-        "react-native": "0.73.2",
-        "react-native-reanimated": "3.7.0-nightly-20240101-9d365ae7b",
+        "react-native": "0.74.1",
+        "react-native-reanimated": "3.11.0",
         "react-redux": "8.0.7"
     }
 }

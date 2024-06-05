@@ -3,11 +3,12 @@ import styled, { css } from 'styled-components';
 import { motion } from 'framer-motion';
 import { Elevation, borders, mapElevationToBackground, zIndices } from '@trezor/theme';
 import {
-    ElevationContext,
+    ElevationUp,
     H2,
     Icon,
     Image,
     ImageType,
+    Text,
     motionEasing,
     useElevation,
     variables,
@@ -33,14 +34,16 @@ const animationVariants = {
     },
 };
 
-const CardWrapper = styled.div<{
+type CardWrapperProps = {
     $expandable?: boolean;
     $expanded?: boolean;
     $nested?: boolean;
     $variant?: 'small' | 'large';
     $elevation: Elevation;
     $withImage: boolean;
-}>`
+};
+
+const CardWrapper = styled.div<CardWrapperProps>`
     position: relative;
     padding: ${({ $variant }) => ($variant === 'large' ? '40px 80px' : '20px 30px')};
     width: ${({ $variant }) => ($variant === 'large' ? '100%' : 'auto')};
@@ -110,12 +113,6 @@ const CardWrapperInner = styled.div<{ $expandable: boolean }>`
     overflow: ${({ $expandable }) => $expandable && 'hidden'};
 `;
 
-const Text = styled.span`
-    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
 const CardImageWrapper = styled.div`
     width: 100px;
     height: 100px;
@@ -157,7 +154,6 @@ const CollapsibleCardInner = styled(motion.div)`
 `;
 
 const HeadingExpandable = styled.div`
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
     font-size: ${variables.FONT_SIZE.NORMAL};
     font-weight: ${variables.FONT_WEIGHT.MEDIUM};
     flex: 1;
@@ -224,7 +220,7 @@ export const CollapsibleOnboardingCard = ({
                 animate={expanded ? 'expanded' : 'closed'}
                 transition={{ duration: 0.4, ease: motionEasing.transition }}
             >
-                <ElevationContext baseElevation={elevation}>
+                <ElevationUp>
                     <CardWrapperInner $expandable={expandable}>
                         {expandable && (
                             <CollapsibleCardInner
@@ -256,7 +252,7 @@ export const CollapsibleOnboardingCard = ({
 
                             {description && (
                                 <Description $hasChildren={!!children}>
-                                    <Text>{description}</Text>
+                                    <Text typographyStyle="hint">{description}</Text>
                                 </Description>
                             )}
 
@@ -269,7 +265,7 @@ export const CollapsibleOnboardingCard = ({
                             <ChildrenWrapper>{children}</ChildrenWrapper>
                         </motion.div>
                     </CardWrapperInner>
-                </ElevationContext>
+                </ElevationUp>
             </motion.div>
         </CardWrapper>
     );

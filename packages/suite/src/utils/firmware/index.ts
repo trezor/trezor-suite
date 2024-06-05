@@ -1,7 +1,7 @@
 import { valid, satisfies } from 'semver';
 import { getFirmwareVersion } from '@trezor/device-utils';
 
-import { type AppState, type TrezorDevice, type ExtendedMessageDescriptor } from 'src/types/suite';
+import { type TrezorDevice, type ExtendedMessageDescriptor } from 'src/types/suite';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
 
 export const getFormattedFingerprint = (fingerprint: string) =>
@@ -13,40 +13,6 @@ export const getFormattedFingerprint = (fingerprint: string) =>
     ]
         .join('\n')
         .toUpperCase();
-
-export const getTextForStatus = (status: AppState['firmware']['status']) => {
-    switch (status) {
-        case 'started':
-        case 'installing':
-            return 'TR_INSTALLING';
-        case 'wait-for-reboot':
-            return 'TR_WAIT_FOR_REBOOT';
-        case 'validation':
-            return 'TR_VALIDATION';
-        case 'unplug':
-        case 'reconnect-in-normal':
-        case 'done':
-        case 'partially-done':
-            return 'TR_FIRMWARE_STATUS_INSTALLATION_COMPLETED';
-        default:
-            return null;
-    }
-};
-
-export const getDescriptionForStatus = (
-    status: AppState['firmware']['status'],
-    webUSB?: boolean,
-) => {
-    switch (status) {
-        case 'started':
-        case 'installing':
-            return 'TR_DO_NOT_DISCONNECT';
-        case 'wait-for-reboot':
-            return webUSB ? 'TR_WAIT_FOR_REBOOT_WEBUSB_DESCRIPTION' : 'TR_DO_NOT_DISCONNECT';
-        default:
-            return null;
-    }
-};
 
 // naming is based on fw version and chip, not model
 enum FirmwareFormat {
@@ -60,7 +26,11 @@ const FORMAT_MAP: { [format in FirmwareFormat]: DeviceModelInternal[] } = {
     [FirmwareFormat.T1]: [DeviceModelInternal.T1B1],
     [FirmwareFormat.T1_EMBEDDED_V2]: [DeviceModelInternal.T1B1],
     [FirmwareFormat.T1_V2]: [DeviceModelInternal.T1B1],
-    [FirmwareFormat.T2]: [DeviceModelInternal.T2T1, DeviceModelInternal.T2B1],
+    [FirmwareFormat.T2]: [
+        DeviceModelInternal.T2T1,
+        DeviceModelInternal.T2B1,
+        DeviceModelInternal.T3T1,
+    ],
 };
 
 export const parseFirmwareFormat = (fw: ArrayBuffer): FirmwareFormat | undefined => {

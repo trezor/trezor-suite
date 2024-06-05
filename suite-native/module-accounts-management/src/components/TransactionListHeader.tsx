@@ -18,7 +18,7 @@ import {
     RootStackRoutes,
     TabToStackCompositeNavigationProp,
 } from '@suite-native/navigation';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { AccountDetailGraph } from './AccountDetailGraph';
 import { AccountDetailCryptoValue } from './AccountDetailCryptoValue';
@@ -93,7 +93,6 @@ export const TransactionListHeader = memo(
         toggleIncludeTokenTransactions,
         tokenContract,
     }: AccountDetailHeaderProps) => {
-        const { translate } = useTranslate();
         const navigation = useNavigation<AccountsNavigationProps>();
 
         const account = useSelector((state: AccountsRootState) =>
@@ -129,8 +128,8 @@ export const TransactionListHeader = memo(
                     />
                     {accountHasTransactions && (
                         <Box marginVertical="medium" paddingHorizontal="medium">
-                            <Button iconLeft="receive" size="large" onPress={handleReceive}>
-                                {translate('transactions.receive')}
+                            <Button viewLeft="receive" size="large" onPress={handleReceive}>
+                                <Translation id="transactions.receive" />
                             </Button>
                         </Box>
                     )}

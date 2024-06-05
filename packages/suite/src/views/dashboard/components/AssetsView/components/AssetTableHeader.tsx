@@ -9,7 +9,7 @@ const Header = styled.div`
     color: ${({ theme }) => theme.textSubdued};
     align-items: center;
     padding: ${spacingsPx.sm} 0;
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
 
     &:last-child {
         padding-right: ${spacingsPx.md};

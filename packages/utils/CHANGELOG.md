@@ -1,3 +1,15 @@
+# 9.0.24
+
+-   chore: BigNumber wrapper (d18ba9a879)
+-   chore(utils): silence eslint in logs util (9d4324dc24)
+
+# 9.0.23
+
+-   chore(connect): move logs to @trezor/utils (28c2b9fe57)
+-   feat(connect-explorer-nextra): scaffolding (b216443045)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 9.0.22
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)

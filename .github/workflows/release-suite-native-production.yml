@@ -1,0 +1,106 @@
+name: "[Release] suite-native production"
+
+on:
+  workflow_dispatch:
+    inputs:
+      PLATFORM:
+        type: choice
+        options:
+          - All
+          - iOS
+          - Android
+          - Android APK
+        description: Select platform to run build
+        required: true
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  ios:
+    name: Build and release iOS
+    environment: production-suite-native
+    runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_ENVIRONMENT: production
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'All' && startsWith(github.repository, 'trezor/trezor-suite') }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install libs
+        run: yarn workspaces focus @suite-native/app
+      - name: Build on EAS iOS
+        run: eas build
+          --platform ios
+          --profile production
+          --non-interactive
+          --auto-submit
+          --message ${{ github.sha }}
+        working-directory: suite-native/app
+  android:
+    name: Build and release Android
+    environment: production-suite-native
+    runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_ENVIRONMENT: production
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'All' && github.repository == 'trezor/trezor-suite' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install libs
+        run: yarn workspaces focus @suite-native/app
+      - name: Build on EAS Android
+        run: eas build
+          --platform android
+          --profile production
+          --non-interactive
+          --auto-submit
+          --message ${{ github.sha }}
+        working-directory: suite-native/app
+  androidAPK:
+    name: Build Android APK to GH releases
+    environment: production-suite-native
+    runs-on: ubuntu-latest
+    env:
+      EXPO_PUBLIC_ENVIRONMENT: production
+      SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+    if: ${{ github.event.inputs.PLATFORM == 'Android APK' || github.event.inputs.PLATFORM == 'All' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+      - name: Install libs
+        run: yarn workspaces focus @suite-native/app
+      - name: Build on EAS Android
+        run: eas build
+          --platform android
+          --profile productionAPK
+          --non-interactive
+          --message ${{ github.sha }}
+        working-directory: suite-native/app

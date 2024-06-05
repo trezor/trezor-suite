@@ -57,9 +57,15 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
         control,
     } = form;
 
-    // Focus account label input field and open keyboard on the first render.
     useEffect(() => {
-        inputRef.current?.focus();
+        // Focus account label input field and open keyboard on the first render.
+        // Timeout is needed to prevent random placement of the cursor at beginning of the input field instead of the end.
+        // Also it's needed to prevent the keyboard from opening when the modal is animating.
+        const timeout = setTimeout(() => {
+            inputRef.current?.focus();
+        }, 300);
+
+        return () => clearTimeout(timeout);
     }, [inputRef]);
 
     if (!account) return null;
@@ -78,9 +84,15 @@ export const AccountRenameForm = ({ accountKey, onSubmit }: AccountRenameFormPro
                         name="accountLabel"
                         label="Coin label"
                         maxLength={MAX_ACCOUNT_LABEL_LENGTH}
+                        testID="@account-detail/settings/account-rename/input"
                     />
                     <AccountLabelFieldHint formControl={control} />
-                    <Button onPress={handleRenameAccount} size="large" isDisabled={!isValid}>
+                    <Button
+                        onPress={handleRenameAccount}
+                        size="large"
+                        isDisabled={!isValid}
+                        testID="@account-detail/settings/account-rename/confirm-button"
+                    >
                         Confirm
                     </Button>
                 </VStack>

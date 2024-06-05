@@ -13,47 +13,67 @@ import { CheckFirmwareAuthenticity } from './CheckFirmwareAuthenticity';
 import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { Transport } from './Transport';
-import { Processes } from './Processes';
+import { TransportBackends } from './TransportBackends';
 import { PasswordManager } from './PasswordManager/PasswordManager';
+import { ViewOnlySettings } from './ViewOnlySettings';
+import { TriggerHighlight } from './TriggerHighlight';
+import { Backends } from './Backends';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { useSelector } from 'src/hooks/suite';
+import { PreField } from './PreField';
 
-export const SettingsDebug = () => (
-    <SettingsLayout>
-        {isWeb() && (
-            <SettingsSection title="Localization">
-                <TranslationMode />
+export const SettingsDebug = () => {
+    const flags = useSelector(selectSuiteFlags);
+
+    return (
+        <SettingsLayout>
+            {isWeb() && (
+                <SettingsSection title="Localization">
+                    <TranslationMode />
+                </SettingsSection>
+            )}
+            <SettingsSection title="Debug">
+                <GithubIssue />
+                {!isWeb() && <WipeData />}
+                <TriggerHighlight />
             </SettingsSection>
-        )}
-        <SettingsSection title="Debug">
-            <GithubIssue />
-            {!isWeb() && <WipeData />}
-        </SettingsSection>
-        <SettingsSection title="Invity">
-            <InvityApi />
-        </SettingsSection>
-        <SettingsSection title="OAuth">
-            <OAuthApi />
-        </SettingsSection>
-        <SettingsSection title="Coinjoin">
-            <CoinjoinApi />
-        </SettingsSection>
-        <SettingsSection title="Device">
-            <DeviceAuthenticity />
-            <Devkit />
-            <CheckFirmwareAuthenticity />
-        </SettingsSection>
-        <SettingsSection title="Testing">
-            <ThrowTestingError />
-        </SettingsSection>
-        {!isWeb() && (
-            <SettingsSection title="Processes">
-                <Processes />
+            <SettingsSection title="Invity">
+                <InvityApi />
             </SettingsSection>
-        )}
-        <SettingsSection title="Transports">
-            <Transport />
-        </SettingsSection>
-        <SettingsSection title="Password manager">
-            <PasswordManager />
-        </SettingsSection>
-    </SettingsLayout>
-);
+            <SettingsSection title="OAuth">
+                <OAuthApi />
+            </SettingsSection>
+            <SettingsSection title="Coinjoin">
+                <CoinjoinApi />
+            </SettingsSection>
+            <SettingsSection title="Device">
+                <DeviceAuthenticity />
+                <Devkit />
+                <CheckFirmwareAuthenticity />
+            </SettingsSection>
+            <SettingsSection title="Testing">
+                <ThrowTestingError />
+            </SettingsSection>
+            {!isWeb() && (
+                <SettingsSection title="Transport backends">
+                    <TransportBackends />
+                </SettingsSection>
+            )}
+            <SettingsSection title="Transport clients">
+                <Transport />
+            </SettingsSection>
+            <SettingsSection title="Backends">
+                <Backends />
+            </SettingsSection>
+            <SettingsSection title="Password manager">
+                <PasswordManager />
+            </SettingsSection>
+            <SettingsSection title="View only">
+                <ViewOnlySettings />
+            </SettingsSection>
+            <SettingsSection title="Flags JSON">
+                <PreField>{JSON.stringify(flags)}</PreField>
+            </SettingsSection>
+        </SettingsLayout>
+    );
+};

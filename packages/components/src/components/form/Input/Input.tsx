@@ -66,7 +66,7 @@ const InputLabel = styled(Label)`
     /* move up when input is focused OR has a placeholder OR has value  */
     input:focus ~ &,
     input:not(:placeholder-shown) ~ &,
-    input:not([placeholder='']):placeholder-shown ~ & {
+    input:not([value='']) ~ & {
         transform: ${LABEL_TRANSFORM};
     }
 `;
@@ -77,8 +77,9 @@ export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
     value?: string;
     innerRef?: Ref<HTMLInputElement>;
     label?: ReactElement | string;
-    labelHoverAddon?: ReactElement;
-    labelRight?: ReactElement;
+    labelHoverRight?: React.ReactNode;
+    labelLeft?: React.ReactNode;
+    labelRight?: React.ReactNode;
     innerAddon?: ReactElement;
     /**
      * @description pass `null` if bottom text can be `undefined`
@@ -103,8 +104,9 @@ const Input = ({
     innerRef,
     inputState,
     label,
-    labelHoverAddon,
+    labelLeft,
     labelRight,
+    labelHoverRight,
     innerAddon,
     innerAddonAlign = 'right',
     bottomText,
@@ -138,7 +140,12 @@ const Input = ({
             $hasBottomPadding={hasBottomPadding === true && bottomText === null}
             className={className}
         >
-            <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
+            <TopAddons
+                isHovered={isHovered}
+                addonLeft={labelLeft}
+                hoverAddonRight={labelHoverRight}
+                addonRight={labelRight}
+            />
 
             <InputWrapper>
                 {innerAddon && innerAddonAlign === 'left' && (

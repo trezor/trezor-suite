@@ -1,0 +1,131 @@
+name: "[Test] connect core e2e"
+
+# run only if there are changes in connect or related libs paths
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  push:
+    branches: [release/connect/**]
+  pull_request:
+    paths:
+      - "packages/blockchain-link/**"
+      - "packages/connect-common/**"
+      - "packages/connect-iframe/**"
+      - "packages/connect-web/**"
+      - "packages/connect/**"
+      - "packages/protobuf/**"
+      - "packages/schema-utils/**"
+      - "packages/transport/**"
+      - "packages/utils/**"
+      - "packages/utxo-lib/**"
+      - "docker/**"
+      - "submodules/trezor-common/**"
+      - "yarn.lock"
+      - ".github/workflows/connect-test.yml"
+      - ".github/workflows/template-connect-test-params.yml"
+      - "docker/docker-connect-test.sh"
+      - "docker/docker-compose.connect-test.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  # todo: meaning of 'build' job is questionable. only 'web' tests use part of this jobs output
+  build:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+          cache-dependency-path: "**/yarn.lock"
+      - run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+      - run: yarn workspaces focus @trezor/connect-iframe @trezor/connect-web
+      - run: yarn workspace @trezor/connect-iframe build
+      - run: yarn workspace @trezor/connect-web build
+      # upload + download takes longer than doing yarn build:libs
+      - name: Upload build connect-web
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact-connect-web
+          path: packages/connect-web/build
+      - name: Upload build connect-iframe
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifact-connect-iframe
+          path: packages/connect-iframe/build
+
+  set-matrix:
+    runs-on: ubuntu-latest
+    outputs:
+      dailyMatrix: ${{ steps.set-matrix-daily.outputs.dailyMatrix }}
+      otherDevicesMatrix: ${{ steps.set-matrix-other-devices.outputs.otherDevicesMatrix }}
+      legacyCanaryFirmwareMatrix: ${{ steps.set-matrix-legacy-canary-firmware.outputs.legacyCanaryFirmwareMatrix }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set daily matrix
+        id: set-matrix-daily
+        run: echo "dailyMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js daily)" >> $GITHUB_OUTPUT
+
+      - name: Set other devices matrix
+        id: set-matrix-other-devices
+        run: echo "otherDevicesMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
+
+      - name: Set other devices matrix
+        id: set-matrix-legacy-canary-firmware
+        run: echo "legacyCanaryFirmwareMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js legacyCanaryFirmware)" >> $GITHUB_OUTPUT
+
+  connect-daily:
+    needs: [build, set-matrix]
+    name: daily-${{ matrix.name }}
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      test-pattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.methods }}
+      tests-firmware: ${{ matrix.firmware }}
+      test-description: ${{ matrix.name }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.dailyMatrix) }}
+
+  connect-legacy-canary-firmware:
+    needs: [build, set-matrix]
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+    name: legacy-canary-${{ matrix.name }}
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      test-pattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.methods }}
+      tests-firmware: ${{ matrix.firmware }}
+      test-description: ${{ matrix.name }}-${{ matrix.firmware }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.legacyCanaryFirmwareMatrix) }}
+
+  connect-other-devices:
+    needs: [build, set-matrix]
+    if: github.event_name == 'schedule' &&  github.repository == 'trezor/trezor-suite'
+    name: other-devices-${{ matrix.name }}-${{ matrix.model }}
+    uses: ./.github/workflows/template-connect-test-params.yml
+    with:
+      test-pattern: ${{ matrix.pattern }}
+      methods: ${{ matrix.methods }}
+      tests-firmware: ${{ matrix.firmware }}
+      test-firmware-model: ${{ matrix.model }}
+      node-environment: ${{ matrix.node-environment }}
+      web-environment: ${{ matrix.web-environment }}
+      test-description: ${{ matrix.name }}-${{ matrix.firmware }}-${{ matrix.model }}
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.set-matrix.outputs.otherDevicesMatrix) }}

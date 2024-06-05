@@ -2,7 +2,7 @@ import { isWithinInterval, fromUnixTime } from 'date-fns';
 import { Dispatch, GetState } from 'src/types/suite';
 import { Account } from 'src/types/wallet';
 
-import { isTrezorConnectBackendType } from '@suite-common/wallet-utils';
+import { tryGetAccountIdentity, isTrezorConnectBackendType } from '@suite-common/wallet-utils';
 
 import TrezorConnect from '@trezor/connect';
 
@@ -90,6 +90,7 @@ export const fetchAccountGraphData =
         const localCurrency = selectLocalCurrency(getState());
         const response = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             groupBy: 3600 * 24, // day
         });

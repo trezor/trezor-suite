@@ -32,8 +32,6 @@ export const FirmwareInstallButton = (props: FirmwareInstallButtonProps) => {
                 cursor="default"
                 maxWidth={200}
                 placement="bottom"
-                interactive={false}
-                hideOnClick={false}
                 content={<div>{translationString('TR_INSTALL_FW_DISABLED_MULTIPLE_DEVICES')}</div>}
             >
                 <InstallButtonCommon {...rest} isDisabled />

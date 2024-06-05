@@ -2,9 +2,11 @@ import { isAnyOf } from '@reduxjs/toolkit';
 
 import { isNative } from '@trezor/env-utils';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
+import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 
 import {
     fetchFiatRatesThunk,
+    updateFiatRatesThunk,
     updateMissingTxFiatRatesThunk,
     updateTxsFiatRatesThunk,
 } from './fiatRatesThunks';
@@ -78,6 +80,26 @@ export const prepareFiatRatesMiddleware = createMiddlewareWithExtraDeps(
                     }),
                 );
             }
+        }
+
+        // Fetch fiat rates for all tokens of newly suite-native discovered account.
+        if (accountsActions.createIndexLabeledAccount.match(action)) {
+            const localCurrency = selectLocalCurrency(getState());
+
+            const { tokens, symbol } = action.payload;
+            tokens?.forEach(token => {
+                dispatch(
+                    updateFiatRatesThunk({
+                        ticker: {
+                            symbol,
+                            tokenAddress: token.contract as TokenAddress,
+                        },
+                        rateType: 'current',
+                        localCurrency,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
+                    }),
+                );
+            });
         }
 
         return next(action);

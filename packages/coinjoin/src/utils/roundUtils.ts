@@ -15,7 +15,6 @@ import {
     Round,
     CoinjoinStateEvent,
     CoinjoinRoundParameters,
-    CoinjoinAffiliateRequest,
     CoinjoinStatus,
     CoinjoinState,
 } from '../types/coordinator';
@@ -225,10 +224,7 @@ export const compareOutpoint = (a: string, b: string) =>
 // sum input Credentials
 export const sumCredentials = (c: Credentials[]) => c.reduce((sum, cre) => sum + cre.Value, 0);
 
-export const getAffiliateRequest = (
-    roundParameters: CoinjoinRoundParameters,
-    base64data?: string,
-): CoinjoinAffiliateRequest => {
+export const getAffiliateRequest = (base64data?: string) => {
     if (!base64data) {
         throw new Error('Missing affiliate request data');
     }
@@ -245,14 +241,17 @@ export const getAffiliateRequest = (
     }
 
     return {
-        fee_rate: roundParameters.CoordinationFeeRate.Rate * 10 ** 8,
-        no_fee_threshold: roundParameters.CoordinationFeeRate.PlebsDontPayThreshold,
-        min_registrable_amount: roundParameters.AllowedInputAmounts.Min,
         mask_public_key: mask.toString('hex'),
         signature: signature.toString('hex'),
         coinjoin_flags_array: flags,
     };
 };
+
+export const getRoundParams = (roundParameters: CoinjoinRoundParameters) => ({
+    fee_rate: roundParameters.CoordinationFeeRate.Rate * 10 ** 8,
+    no_fee_threshold: roundParameters.CoordinationFeeRate.PlebsDontPayThreshold,
+    min_registrable_amount: roundParameters.AllowedInputAmounts.Min,
+});
 
 export const getBroadcastedTxDetails = ({
     coinjoinState: { IsFullySigned, Witnesses },

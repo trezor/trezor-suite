@@ -13,7 +13,6 @@ import { WebUsbButton } from './WebUsbButton';
 import { HiddenPlaceholder } from './HiddenPlaceholder';
 import { QuestionTooltip } from './QuestionTooltip';
 import { DeviceInvalidModeLayout } from './DeviceInvalidModeLayout';
-import { Ticker } from './Ticker/Ticker';
 import { TrendTicker } from './Ticker/TrendTicker';
 import { PriceTicker } from './Ticker/PriceTicker';
 import { Translation } from './Translation';
@@ -80,7 +79,6 @@ export {
     QuestionTooltip,
     FormattedCryptoAmount,
     FormattedNftAmount,
-    Ticker,
     TrendTicker,
     PriceTicker,
     Sign,

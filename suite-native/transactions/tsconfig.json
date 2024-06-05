@@ -16,6 +16,9 @@
             "path": "../../suite-common/suite-utils"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -35,8 +38,8 @@
         { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link-types"
         },

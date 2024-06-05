@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import {
     authConfirm,
-    authorizeDevice,
+    authorizeDeviceThunk,
     restartDiscoveryThunk as restartDiscovery,
 } from '@suite-common/wallet-core';
 import * as accountUtils from '@suite-common/wallet-utils';
@@ -135,7 +135,7 @@ export const Exception = ({ exception, discovery }: ExceptionProps) => {
                     title="TR_ACCOUNT_EXCEPTION_AUTH_ERROR"
                     description="TR_ACCOUNT_EXCEPTION_AUTH_ERROR_DESC"
                     cta={{
-                        action: () => dispatch(authorizeDevice()),
+                        action: () => dispatch(authorizeDeviceThunk()),
                     }}
                     dataTestBase={exception.type}
                 />

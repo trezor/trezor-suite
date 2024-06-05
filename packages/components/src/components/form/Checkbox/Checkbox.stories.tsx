@@ -26,5 +26,16 @@ export const Checkbox: StoryObj<CheckboxProps> = {
             </CheckboxComponent>
         );
     },
-    args: { children: 'Checkbox' },
+    args: {
+        children: 'Checkbox',
+        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+    },
+
+    argTypes: {
+        margin: {
+            table: {
+                category: 'Frame props',
+            },
+        },
+    },
 };

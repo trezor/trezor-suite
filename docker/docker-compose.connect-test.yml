@@ -16,8 +16,8 @@ services:
       - TESTS_INCLUDED_METHODS=$TESTS_INCLUDED_METHODS
       - TESTS_EXCLUDED_METHODS=$TESTS_EXCLUDED_METHODS
       - TESTS_PATTERN=$TESTS_PATTERN
-      - TESTS_USE_TX_CACHE=false
-      - TESTS_USE_WS_CACHE=false
+      - TESTS_USE_TX_CACHE=$TESTS_USE_TX_CACHE
+      - TESTS_USE_WS_CACHE=$TESTS_USE_WS_CACHE
     depends_on:
       - trezor-user-env-unix
     network_mode: service:trezor-user-env-unix

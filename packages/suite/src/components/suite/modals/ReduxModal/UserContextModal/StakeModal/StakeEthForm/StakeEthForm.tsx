@@ -1,15 +1,16 @@
 import styled from 'styled-components';
-import { Button } from '@trezor/components';
+import { Button, Tooltip } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import { Translation } from 'src/components/suite';
 import { useStakeEthFormContext } from 'src/hooks/wallet/useStakeEthForm';
 import { useDevice } from 'src/hooks/suite';
 import { FormFractionButtons } from 'src/components/suite/FormFractionButtons';
-import { FeesInfo } from 'src/components/wallet/FeesInfo';
+import StakeFees from './Fees';
 import { CRYPTO_INPUT, FIAT_INPUT } from 'src/types/wallet/stakeForms';
 import { Inputs } from './Inputs';
 import { ConfirmStakeEthModal } from './ConfirmStakeEthModal';
 import { AvailableBalance } from '../AvailableBalance';
+import { useMessageSystemStaking } from 'src/hooks/suite/useMessageSystemStaking';
 
 const Body = styled.div`
     margin-bottom: ${spacingsPx.xl};
@@ -43,21 +44,25 @@ export const StakeEthForm = () => {
         isConfirmModalOpen,
         closeConfirmModal,
         signTx,
-        composedLevels,
-        selectedFee,
+        isLoading,
     } = useStakeEthFormContext();
+    const { isStakingDisabled, stakingMessageContent } = useMessageSystemStaking();
+
     const { formattedBalance, symbol } = account;
     const hasValues = Boolean(watch(FIAT_INPUT) || watch(CRYPTO_INPUT));
     // used instead of formState.isValid, which is sometimes returning false even if there are no errors
     const formIsValid = Object.keys(errors).length === 0;
-    const transactionInfo = composedLevels?.[selectedFee];
     const isDisabled =
         !(formIsValid && hasValues) || isSubmitting || isLocked() || !device?.available;
 
     return (
         <>
             {isConfirmModalOpen && (
-                <ConfirmStakeEthModal onConfirm={signTx} onCancel={closeConfirmModal} />
+                <ConfirmStakeEthModal
+                    isLoading={isLoading}
+                    onConfirm={signTx}
+                    onCancel={closeConfirmModal}
+                />
             )}
 
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -89,17 +94,19 @@ export const StakeEthForm = () => {
                         <Inputs />
                     </InputsWrapper>
 
-                    <FeesInfo transactionInfo={transactionInfo} symbol={symbol} />
+                    <StakeFees />
                 </Body>
-
-                <Button
-                    isFullWidth
-                    isDisabled={isDisabled}
-                    isLoading={isComposing || isSubmitting}
-                    onClick={handleSubmit(onSubmit)}
-                >
-                    <Translation id="TR_CONTINUE" />
-                </Button>
+                <Tooltip content={stakingMessageContent}>
+                    <Button
+                        isFullWidth
+                        isDisabled={isDisabled || isStakingDisabled}
+                        isLoading={isComposing || isSubmitting}
+                        onClick={handleSubmit(onSubmit)}
+                        icon={isStakingDisabled ? 'INFO' : undefined}
+                    >
+                        <Translation id="TR_CONTINUE" />
+                    </Button>
+                </Tooltip>
             </form>
         </>
     );

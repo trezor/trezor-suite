@@ -2,18 +2,21 @@ import { bridge } from '../src/index';
 
 describe('protocol-bridge', () => {
     it('encode', () => {
-        let chunks;
+        let result;
         // encode small chunk, message without data
-        chunks = bridge.encode(Buffer.alloc(0), { messageType: 55 });
-        expect(chunks.length).toEqual(1);
-        expect(chunks[0].length).toEqual(6);
+        result = bridge.encode(Buffer.alloc(0), { messageType: 55 });
+        expect(result.length).toEqual(6);
 
         // encode big chunk, message with data
-        chunks = bridge.encode(Buffer.alloc(371), { messageType: 55 });
-        expect(chunks.length).toEqual(1);
-        expect(chunks[0].subarray(0, 6).toString('hex')).toEqual('003700000173');
-        expect(chunks[0].readUint32BE(2)).toEqual(371);
-        expect(chunks[0].length).toEqual(371 + 6);
+        result = bridge.encode(Buffer.alloc(371), { messageType: 55 });
+        expect(result.subarray(0, 6).toString('hex')).toEqual('003700000173');
+        expect(result.readUint32BE(2)).toEqual(371);
+        expect(result.length).toEqual(371 + 6);
+
+        // fail to encode unsupported messageType (string)
+        expect(() => bridge.encode(Buffer.alloc(64), { messageType: 'Initialize' })).toThrow(
+            'Unsupported message type Initialize',
+        );
     });
 
     it('decode', () => {
@@ -23,7 +26,7 @@ describe('protocol-bridge', () => {
         data.writeUint32BE(379, 2);
 
         const read = bridge.decode(data);
-        expect(read.typeId).toEqual(55);
+        expect(read.messageType).toEqual(55);
         expect(read.length).toEqual(379);
     });
 });

@@ -1,0 +1,45 @@
+name: "[Release] Connect NPM"
+on:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: 'Array string with names of the packages to deploy. (example: ["blockchain-link-utils","blockchain-link-types","analytics"])'
+        required: true
+        type: string
+      deploymentType:
+        description: "Specifies the deployment type for the npm package. (example: canary, stable)"
+        required: true
+        type: choice
+        options:
+          - canary
+          - stable
+
+jobs:
+  deploy-npm:
+    name: Deploy NPM ${{ inputs.deploymentType }}
+    environment: production-connect
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: ${{ fromJson(github.event.inputs.packages) }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: develop
+
+      - name: Set deployment type
+        id: set_deployment_type
+        run: |
+          if [ "${{ github.event.inputs.deploymentType }}" == "canary" ]; then
+            echo "DEPLOYMENT_TYPE=beta" >> $GITHUB_ENV
+          else
+            echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
+          fi
+
+      - name: Deploy to NPM ${{ matrix.package }}
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        uses: ./.github/actions/release-connect-npm
+        with:
+          deploymentType: ${{ env.DEPLOYMENT_TYPE }}
+          packageName: ${{ matrix.package }}

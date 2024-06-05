@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled, { useTheme } from 'styled-components';
 
 import { Button, variables, Icon, H3, Card } from '@trezor/components';
@@ -106,6 +106,10 @@ const IconWrapper = styled.div`
     padding-right: 3px;
 `;
 
+const CoinmarketTagWrapper = styled.div`
+    margin: 0 16px 2px;
+`;
+
 const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 4px;
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
@@ -202,9 +206,9 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
     let swapFeeFiat: string | null = null;
     if (quote.isDex && quote.approvalGasEstimate && quote.swapGasEstimate && feePerByte) {
         approvalFee = quote.approvalGasEstimate * Number(feePerByte) * 1e-9;
-        approvalFeeFiat = toFiatCurrency(approvalFee.toString(), localCurrency, fiatRate, 2, false);
+        approvalFeeFiat = toFiatCurrency(approvalFee.toString(), fiatRate?.rate, 2);
         swapFee = quote.swapGasEstimate * Number(feePerByte) * 1e-9;
-        swapFeeFiat = toFiatCurrency(swapFee.toString(), localCurrency, fiatRate, 2, false);
+        swapFeeFiat = toFiatCurrency(swapFee.toString(), fiatRate?.rate, 2);
 
         if (quote.send === account.symbol.toUpperCase() && !errorQuote) {
             // if base currency, it is necessary to check that there is some value left for the fees
@@ -230,7 +234,9 @@ export const ExchangeQuote = ({ className, quote }: QuoteProps) => {
                                 value={receiveStringAmount}
                                 symbol={cryptoToCoinSymbol(receive!)}
                             />
-                            <CoinmarketTag tag={tag} />
+                            <CoinmarketTagWrapper>
+                                <CoinmarketTag tag={tag} />
+                            </CoinmarketTagWrapper>
                         </H3>
                     )}
                 </Column>

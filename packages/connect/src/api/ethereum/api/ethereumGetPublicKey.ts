@@ -17,7 +17,6 @@ type Params = PROTO.EthereumGetPublicKey & {
 
 export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPublicKey', Params[]> {
     hasBundle?: boolean;
-    confirmed?: boolean;
 
     init() {
         this.requiredPermissions = ['read'];
@@ -58,27 +57,11 @@ export default class EthereumGetPublicKey extends AbstractMethod<'ethereumGetPub
         return 'Export multiple public keys';
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-xpub',
-                label: this.info,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
+    get confirmation() {
+        return {
+            view: 'export-xpub' as const,
+            label: this.info,
+        };
     }
 
     async run() {

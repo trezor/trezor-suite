@@ -141,7 +141,7 @@ export const isSelectedDevice = (selected?: TrezorDevice | Device, device?: Trez
     return selected.id === device.id;
 };
 
-export const getFwUpdateVersion = (device: AcquiredDevice) =>
+export const getFwUpdateVersion = (device: Device) =>
     device.firmwareRelease?.release?.version?.join('.') || null;
 
 export const getCoinUnavailabilityMessage = (reason: UnavailableCapability) => {
@@ -235,7 +235,7 @@ export const getSelectedDevice = (
     });
 };
 
-export const getChangelogUrl = (device: TrezorDevice, revision?: string | null) => {
+export const getChangelogUrl = (device: Device, revision?: string | null) => {
     const deviceModelInternal = device.features?.internal_model;
     const commit = revision || 'main';
     const isDeviceWithLegacyFirmware = deviceModelInternal === DeviceModelInternal.T1B1;
@@ -361,6 +361,28 @@ export const getDeviceInstances = (
 };
 
 /**
+ * Returns all device instances sorted by `instance` field for all connected and remembered devices
+ * * @param {TrezorDevice[]} devices
+ * @returns {AcquiredDevice[][]}
+ */
+export const getDeviceInstancesGroupedByDeviceId = (devices: TrezorDevice[]): AcquiredDevice[][] =>
+    devices.reduce((deviceGroups, device) => {
+        if (!device.features || !device.id) {
+            return deviceGroups;
+        }
+        const existingGroupIndex = deviceGroups.findIndex(group => group[0].id === device.id);
+        if (existingGroupIndex === -1) {
+            // If the device ID is not yet in the accumulator, add a new group
+            const newGroup = getDeviceInstances(device, devices);
+            if (newGroup.length > 0) {
+                deviceGroups.push(newGroup);
+            }
+        }
+
+        return deviceGroups;
+    }, [] as AcquiredDevice[][]);
+
+/**
  * Returns first available instance for each device sorted by priority
  * @param {TrezorDevice[]} devices
  * @returns {TrezorDevice[]}
@@ -386,6 +408,20 @@ export const getPhysicalDeviceUniqueIds = (devices: Device[]) =>
 
 export const getPhysicalDeviceCount = (devices: Device[]) =>
     getPhysicalDeviceUniqueIds(devices).length;
+
+export const getSortedDevicesWithoutInstances = (
+    devices: TrezorDevice[],
+    excludedDeviceId?: string | null,
+) =>
+    getDeviceInstancesGroupedByDeviceId(devices)
+        .flatMap(group => group[0])
+        .filter(d => d?.id !== excludedDeviceId && d?.id)
+        .sort((a, b) => {
+            if (!a.connected) return -1;
+            if (!b.connected) return 1;
+
+            return 0;
+        });
 
 export const parseFirmwareChangelog = (release?: FirmwareRelease) => {
     if (!release?.changelog?.length || !release) {

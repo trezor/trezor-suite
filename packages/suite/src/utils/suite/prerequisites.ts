@@ -2,16 +2,18 @@ import type { TransportInfo } from '@trezor/connect';
 import { DefinedUnionMember } from '@trezor/type-utils';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import type { TrezorDevice, AppState } from 'src/types/suite';
+import {
+    isAdditionalShamirBackupInProgress,
+    isRecoveryInProgress,
+} from '../device/isRecoveryInProgress';
 
-export const getPrerequisiteName = ({
-    router,
-    device,
-    transport,
-}: {
+type GetPrerequisiteNameParams = {
     router: AppState['router'];
     device?: TrezorDevice;
     transport?: Partial<TransportInfo>;
-}) => {
+};
+
+export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisiteNameParams) => {
     if (!router || router.app === 'unknown') return;
 
     // no transport available
@@ -40,7 +42,13 @@ export const getPrerequisiteName = ({
     // similar to initialize, there is no seed in device
     // difference is it is in recovery mode.
     // todo: this could be added to @trezor/connect to device.mode I think.
-    if (device.features.recovery_mode) return 'device-recovery-mode';
+    if (isRecoveryInProgress(device.features)) {
+        return 'device-recovery-mode';
+    }
+
+    if (isAdditionalShamirBackupInProgress(device.features)) {
+        return 'multi-share-backup-in-progress';
+    }
 
     // device is not initialized
     // todo: should not happen and redirect to onboarding instead?
@@ -68,6 +76,7 @@ export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[
             'device-bootloader',
             'firmware-missing',
             'firmware-required',
+            'multi-share-backup-in-progress',
         ];
     }
 

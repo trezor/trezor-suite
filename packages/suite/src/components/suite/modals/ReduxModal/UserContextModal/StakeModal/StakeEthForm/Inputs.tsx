@@ -96,7 +96,7 @@ export const Inputs = () => {
                 }}
             />
 
-            {currentRate && (
+            {currentRate?.rate && (
                 <>
                     {/* TODO: Add new transfer icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
                     <StyledIcon icon="TRANSFER" size={16} />
@@ -122,7 +122,7 @@ export const Inputs = () => {
                         id="TR_STAKE_LEFT_AMOUNT_FOR_WITHDRAWAL"
                         values={{
                             amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                            symbol: account.symbol,
+                            symbol: account.symbol.toUpperCase(),
                         }}
                     />
                 </StyledWarning>
@@ -133,7 +133,7 @@ export const Inputs = () => {
                         id="TR_STAKE_RECOMMENDED_AMOUNT_FOR_WITHDRAWALS"
                         values={{
                             amount: MIN_ETH_FOR_WITHDRAWALS.toString(),
-                            symbol: account.symbol,
+                            symbol: account.symbol.toUpperCase(),
                         }}
                     />
                 </StyledWarning>

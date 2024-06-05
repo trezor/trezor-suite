@@ -19,7 +19,7 @@ const pickerItemWrapperStyle = prepareNativeStyle<{ isColorSchemeActive: boolean
         borderWidth: utils.borders.widths.medium,
         borderColor: isColorSchemeActive
             ? utils.colors.borderSecondary
-            : utils.colors.borderOnElevation0,
+            : utils.colors.borderElevation1,
     }),
 );
 

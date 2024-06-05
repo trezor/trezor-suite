@@ -1,0 +1,71 @@
+import { Callout } from 'nextra/components';
+
+import { ApplySettings } from '@trezor/connect/src/types/api/applySettings';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import applySettings from '../../../data/methods/management/applySettings.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Apply settings', legacyConfig: applySettings[0] },
+        { title: 'Advanced schema', method: 'applySettings', schema: ApplySettings },
+    ]}
+/>
+
+export const paramDescriptions = {
+    flags: '',
+    use_passphrase: '',
+    homescreen: '',
+    auto_lock_delay_ms: '',
+    display_rotation: '',
+    passphrase_always_on_device: '',
+    safety_checks: '',
+    experimental_features: '',
+    hide_passphrase_from_host: '',
+};
+
+## Apply settings
+
+<Callout type="error">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
+
+Change device settings
+
+```javascript
+const result = await TrezorConnect.applySettings(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### ApplySettings
+
+<ParamsTable schema={ApplySettings} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "Settings applied"
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

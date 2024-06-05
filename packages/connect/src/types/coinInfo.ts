@@ -1,5 +1,6 @@
 import { Type, Static } from '@trezor/schema-utils';
 import { FeeLevel } from './fees';
+import { DeviceModelInternal } from './device';
 
 // TODO: refactor in utxo-lib
 // import { Network } from '@trezor/utxo-lib';
@@ -23,15 +24,19 @@ export const Network = Type.Object({
 export type CoinObj = Static<typeof CoinObj>;
 export const CoinObj = Type.Object({
     coin: Type.String(),
+    identity: Type.Optional(Type.String()),
 });
 
 export type CoinSupport = Static<typeof CoinSupport>;
-export const CoinSupport = Type.Object({
-    connect: Type.Boolean(),
-    T1B1: Type.Union([Type.String(), Type.Literal(false)]),
-    T2T1: Type.Union([Type.String(), Type.Literal(false)]),
-    T2B1: Type.Union([Type.String(), Type.Literal(false)]),
-});
+export const CoinSupport = Type.Composite([
+    Type.Object({
+        connect: Type.Boolean(),
+    }),
+    Type.Record(
+        Type.KeyOfEnum(DeviceModelInternal),
+        Type.Union([Type.String(), Type.Literal(false)]),
+    ),
+]);
 
 export type BlockchainLink = Static<typeof BlockchainLink>;
 export const BlockchainLink = Type.Object({

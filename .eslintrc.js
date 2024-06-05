@@ -121,6 +121,7 @@ module.exports = {
         // It's fine.
         'react/no-multi-comp': 'off',
         'react/no-unescaped-entities': 'off',
+        'react/jsx-curly-brace-presence': ['warn', { props: 'never', children: 'never' }],
         // This is fine.
         'class-methods-use-this': 'off',
         'lines-between-class-members': 'off',

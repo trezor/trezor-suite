@@ -1,10 +1,20 @@
+import { useEffect } from 'react';
 import { Dimensions } from 'react-native';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { useIsFocused } from '@react-navigation/native';
 
 import { Text, VStack } from '@suite-native/atoms';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Screen } from '@suite-native/navigation';
+import {
+    selectDevice,
+    selectIsDeviceAuthorized,
+    authorizeDeviceThunk,
+} from '@suite-common/wallet-core';
+import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
 import { ConnectDeviceScreenHeader } from '../components/ConnectDeviceScreenHeader';
 
@@ -24,8 +34,19 @@ const animationStyle = prepareNativeStyle(() => ({
 }));
 
 export const ConnectAndUnlockDeviceScreen = () => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
+    const dispatch = useDispatch();
+
+    const device = useSelector(selectDevice);
+    const isDeviceAuthorized = useSelector(selectIsDeviceAuthorized);
+    const isFocused = useIsFocused();
+
+    useEffect(() => {
+        if (isFocused && device && !isDeviceAuthorized) {
+            // When user cancelled the authorization, we need to authorize the device again.
+            requestPrioritizedDeviceAccess(() => dispatch(authorizeDeviceThunk()));
+        }
+    }, [isDeviceAuthorized, device, dispatch, isFocused]);
 
     return (
         <Screen
@@ -37,7 +58,7 @@ export const ConnectAndUnlockDeviceScreen = () => {
         >
             <VStack style={applyStyle(screenContentStyle)}>
                 <Text variant="titleMedium" textAlign="center">
-                    {translate('moduleConnectDevice.connectAndUnlockScreen.title')}
+                    <Translation id="moduleConnectDevice.connectAndUnlockScreen.title" />
                 </Text>
                 <ConnectDeviceAnimation style={applyStyle(animationStyle)} />
             </VStack>

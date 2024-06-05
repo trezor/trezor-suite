@@ -32,7 +32,7 @@ testPlaywright.afterAll(() => {
  * 3. Write into feedback field
  * 4. Submit bug report (reporttext)
  */
-testPlaywright('Send a bug report @debug', async () => {
+testPlaywright('Send a bug report', async () => {
     const testData = {
         desiredLocation: 'Account',
         reportText: 'Henlo this is testy test writing hangry test user report',

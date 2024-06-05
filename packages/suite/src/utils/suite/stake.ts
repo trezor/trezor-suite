@@ -1,25 +1,37 @@
-import { PrecomposedLevels, StakeFormState, StakeType } from '@suite-common/wallet-types';
+import {
+    PrecomposedLevels,
+    StakeFormState,
+    StakeType,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
-import { fromWei, toHex, toWei } from 'web3-utils';
+import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
 import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { ValidatorsQueue } from '@suite-common/wallet-core';
 
 // Gas reserve ensuring txs are processed
-const GAS_RESERVE = 120000;
+const GAS_RESERVE = 220000;
 // source is a required parameter for some functions in the Everstake Wallet SDK.
 // This parameter is used for some contract calls.
 // It is a constant which allows the SDK to define which app calls its functions.
 // Each app which integrates the SDK has its own source, e.g. source for Trezor Suite is '1'.
 export const WALLET_SDK_SOURCE = '1';
 
+// Used when Everstake unstaking period is not available from the API.
+export const UNSTAKING_ETH_PERIOD = 3;
+
+const secondsToDays = (seconds: number) => Math.round(seconds / 60 / 60 / 24);
+
+const SEVEN_DAYS_IN_SECONDS = 7 * 24 * 60 * 60;
+
 export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
     const ethNetworks = {
         thol: 'holesky',
-        tgor: 'goerli',
         eth: 'mainnet',
     };
 
@@ -31,12 +43,14 @@ export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
 type StakeTxBaseArgs = {
     from: string;
     symbol: NetworkSymbol;
+    identity?: string;
 };
 
 const stake = async ({
     from,
     amount,
     symbol,
+    identity,
 }: StakeTxBaseArgs & {
     amount: string;
 }) => {
@@ -55,6 +69,7 @@ const stake = async ({
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: symbol,
+            identity,
             request: {
                 blocks: [2],
                 specific: {
@@ -86,6 +101,7 @@ const stake = async ({
 const unstake = async ({
     from,
     amount,
+    identity,
     interchanges,
     symbol,
 }: StakeTxBaseArgs & {
@@ -95,6 +111,7 @@ const unstake = async ({
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: symbol,
+            identity,
             details: 'tokenBalances',
             descriptor: from,
         });
@@ -102,7 +119,7 @@ const unstake = async ({
             throw new Error(accountInfo.payload.error);
         }
 
-        const { autocompoundBalance } = accountInfo.payload.stakingPools?.[0] ?? {};
+        const { autocompoundBalance } = accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
         if (!autocompoundBalance) {
             throw new Error('Failed to get the autocompound balance');
         }
@@ -130,6 +147,7 @@ const unstake = async ({
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: symbol,
+            identity,
             request: {
                 blocks: [2],
                 specific: {
@@ -157,10 +175,11 @@ const unstake = async ({
     }
 };
 
-const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
+const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs) => {
     try {
         const accountInfo = await TrezorConnect.getAccountInfo({
             coin: symbol,
+            identity,
             details: 'tokenBalances',
             descriptor: from,
         });
@@ -169,7 +188,7 @@ const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
         }
 
         const { withdrawTotalAmount, claimableAmount } =
-            accountInfo.payload.stakingPools?.[0] ?? {};
+            accountInfo.payload?.misc?.stakingPools?.[0] ?? {};
         if (!withdrawTotalAmount || !claimableAmount) {
             throw new Error('Failed to get the claimable or withdraw total amount');
         }
@@ -190,6 +209,7 @@ const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
         // amount is essential for a proper calculation of gasLimit (via blockbook/geth)
         const estimatedFee = await TrezorConnect.blockchainEstimateFee({
             coin: symbol,
+            identity,
             request: {
                 blocks: [2],
                 specific: {
@@ -224,18 +244,21 @@ const claimWithdrawRequest = async ({ from, symbol }: StakeTxBaseArgs) => {
 interface GetStakeFormsDefaultValuesParams {
     address: string;
     ethereumStakeType: StakeFormState['ethereumStakeType'];
+    amount?: string;
 }
 
 export const getStakeFormsDefaultValues = ({
     address,
     ethereumStakeType,
+    amount,
 }: GetStakeFormsDefaultValuesParams) => ({
     fiatInput: '',
-    cryptoInput: '',
+    cryptoInput: amount || '',
     outputs: [
         {
             ...DEFAULT_PAYMENT,
             address,
+            amount: amount || '',
         },
     ],
     options: ['broadcast'],
@@ -249,9 +272,13 @@ export const getStakeFormsDefaultValues = ({
     feeLimit: '',
     feePerUnit: '',
     selectedFee: undefined,
+
+    isCoinControlEnabled: false,
+    hasCoinControlBeenOpened: false,
+    selectedUtxos: [],
 });
 
-const transformTx = (
+export const transformTx = (
     tx: any,
     gasPrice: string,
     nonce: string,
@@ -259,12 +286,13 @@ const transformTx = (
 ): EthereumTransaction => {
     const transformedTx = {
         ...tx,
-        gasLimit: toHex(tx.gasLimit),
-        gasPrice: toHex(toWei(gasPrice, 'gwei')),
-        nonce: toHex(nonce),
+        gasLimit: numberToHex(tx.gasLimit),
+        gasPrice: numberToHex(toWei(gasPrice, 'gwei')),
+        nonce: numberToHex(nonce),
         chainId,
         data: sanitizeHex(tx.data),
-        value: toHex(tx.value),
+        // in send form, the amount is in ether, here in wei because it is converted earlier in stake, unstake, claimToWithdraw methods
+        value: numberToHex(tx.value),
     };
     delete transformedTx.from;
 
@@ -273,6 +301,7 @@ const transformTx = (
 
 interface PrepareStakeEthTxParams {
     symbol: NetworkSymbol;
+    identity?: string;
     from: string;
     amount: string;
     gasPrice: string;
@@ -296,12 +325,14 @@ export const prepareStakeEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    identity,
 }: PrepareStakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await stake({
             from,
             amount,
             symbol,
+            identity,
         });
         const transformedTx = transformTx(tx, gasPrice, nonce, chainId);
 
@@ -330,12 +361,14 @@ export const prepareUnstakeEthTx = async ({
     gasPrice,
     nonce,
     chainId,
+    identity,
     interchanges = 0,
 }: PrepareUnstakeEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
         const tx = await unstake({
             from,
             amount,
+            identity,
             interchanges,
             symbol,
         });
@@ -359,13 +392,14 @@ interface PrepareClaimEthTxParams extends Omit<PrepareStakeEthTxParams, 'amount'
 
 export const prepareClaimEthTx = async ({
     symbol,
+    identity,
     from,
     gasPrice,
     nonce,
     chainId,
 }: PrepareClaimEthTxParams): Promise<PrepareStakeEthTxResponse> => {
     try {
-        const tx = await claimWithdrawRequest({ from, symbol });
+        const tx = await claimWithdrawRequest({ from, symbol, identity });
         const transformedTx = transformTx(tx, gasPrice, nonce, chainId);
 
         return {
@@ -387,6 +421,7 @@ interface GetStakeTxGasLimitParams {
     from: string;
     amount: string;
     symbol: NetworkSymbol;
+    identity?: string;
 }
 
 export type GetStakeTxGasLimitResponse =
@@ -404,6 +439,7 @@ export const getStakeTxGasLimit = async ({
     from,
     amount,
     symbol,
+    identity,
 }: GetStakeTxGasLimitParams): Promise<GetStakeTxGasLimitResponse> => {
     const genericError: PrecomposedLevels = {
         normal: {
@@ -425,7 +461,7 @@ export const getStakeTxGasLimit = async ({
 
         let txData;
         if (ethereumStakeType === 'stake') {
-            txData = await stake({ from, amount, symbol });
+            txData = await stake({ from, amount, symbol, identity });
         }
         if (ethereumStakeType === 'unstake') {
             // Increase allowedInterchangeNum to enable instant unstaking.
@@ -434,10 +470,11 @@ export const getStakeTxGasLimit = async ({
                 amount,
                 interchanges: 0,
                 symbol,
+                identity,
             });
         }
         if (ethereumStakeType === 'claim') {
-            txData = await claimWithdrawRequest({ from, symbol });
+            txData = await claimWithdrawRequest({ from, symbol, identity });
         }
 
         if (!txData) {
@@ -456,4 +493,73 @@ export const getStakeTxGasLimit = async ({
             error: genericError,
         };
     }
+};
+
+export const getUnstakingPeriodInDays = (validatorWithdrawTimeInSeconds?: number) => {
+    if (validatorWithdrawTimeInSeconds === undefined) {
+        return UNSTAKING_ETH_PERIOD;
+    }
+
+    return secondsToDays(validatorWithdrawTimeInSeconds);
+};
+
+export const getDaysToAddToPool = (
+    stakeTxs: WalletAccountTransaction[],
+    validatorsQueue?: ValidatorsQueue,
+) => {
+    if (
+        validatorsQueue?.validatorAddingDelay === undefined ||
+        validatorsQueue?.validatorActivationTime === undefined
+    ) {
+        return undefined;
+    }
+
+    const lastTx = stakeTxs[0];
+
+    if (!lastTx?.blockTime) return 1;
+
+    const now = Math.floor(Date.now() / 1000);
+    const secondsToWait =
+        lastTx.blockTime +
+        validatorsQueue.validatorAddingDelay +
+        validatorsQueue.validatorActivationTime +
+        SEVEN_DAYS_IN_SECONDS -
+        now;
+    const daysToWait = secondsToDays(secondsToWait);
+
+    return daysToWait <= 0 ? 1 : daysToWait;
+};
+
+export const getDaysToUnstake = (
+    unstakeTxs: WalletAccountTransaction[],
+    validatorsQueue?: ValidatorsQueue,
+) => {
+    if (validatorsQueue?.validatorWithdrawTime === undefined) {
+        return undefined;
+    }
+
+    const lastTx = unstakeTxs[0];
+
+    if (!lastTx?.blockTime) return 1;
+
+    const now = Math.floor(Date.now() / 1000);
+    const secondsToWait = lastTx.blockTime + validatorsQueue.validatorWithdrawTime - now;
+    const daysToWait = secondsToDays(secondsToWait);
+
+    return daysToWait <= 0 ? 1 : daysToWait;
+};
+
+export const getDaysToAddToPoolInitial = (validatorsQueue?: ValidatorsQueue) => {
+    if (
+        validatorsQueue?.validatorAddingDelay === undefined ||
+        validatorsQueue?.validatorActivationTime === undefined
+    ) {
+        return undefined;
+    }
+
+    const secondsToWait =
+        validatorsQueue.validatorAddingDelay + validatorsQueue.validatorActivationTime;
+    const daysToWait = secondsToDays(secondsToWait);
+
+    return daysToWait <= 0 ? 1 : daysToWait;
 };

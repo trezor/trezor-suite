@@ -1,18 +1,17 @@
 import { storage } from '@trezor/connect-common';
 import { versionUtils } from '@trezor/utils';
-import { Deferred } from '@trezor/utils';
 import { DataManager } from '../data/DataManager';
-import { ERRORS, NETWORK } from '../constants';
+import { NETWORK } from '../constants';
 import {
     UI,
     DEVICE,
-    createUiMessage,
     createDeviceMessage,
     CallMethodPayload,
     CallMethodResponse,
     UiRequestButtonData,
     UiPromiseCreator,
     CoreEventMessage,
+    UiRequestConfirmation,
 } from '../events';
 import { getHost } from '../utils/urlUtils';
 import type { Device } from '../device/Device';
@@ -25,6 +24,7 @@ export const DEFAULT_FIRMWARE_RANGE: FirmwareRange = {
     T1B1: { min: '1.0.0', max: '0' },
     T2T1: { min: '2.0.0', max: '0' },
     T2B1: { min: '2.6.1', max: '0' },
+    T3T1: { min: '2.7.1', max: '0' },
 };
 
 export abstract class AbstractMethod<Name extends CallMethodPayload['method'], Params = undefined> {
@@ -59,6 +59,10 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         return '';
     } // method info, displayed in popup info-panel
 
+    get confirmation(): UiRequestConfirmation['payload'] | undefined {
+        return undefined;
+    }
+
     useUi: boolean; // should use popup?
 
     useDevice: boolean; // use device
@@ -83,9 +87,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
 
     useCardanoDerivation: boolean;
 
-    confirmation?(): Promise<boolean | undefined>;
-
-    noBackupConfirmation?(allowSuppression?: boolean): Promise<boolean>;
+    noBackupConfirmationMode: 'never' | 'always' | 'popup-only';
 
     getButtonRequestData?(code: string): UiRequestButtonData | undefined;
 
@@ -93,11 +95,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
     // @ts-expect-error: strictPropertyInitialization
     postMessage: (message: CoreEventMessage) => void;
     // @ts-expect-error: strictPropertyInitialization
-    getPopupPromise: () => Deferred<void>;
-    // @ts-expect-error: strictPropertyInitialization
     createUiPromise: UiPromiseCreator;
-    // @ts-expect-error: strictPropertyInitialization
-    removeUiPromise: (promise: Deferred<any>) => void;
 
     initAsync?(): Promise<void>;
 
@@ -147,6 +145,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
             typeof payload.useCardanoDerivation === 'boolean'
                 ? payload.useCardanoDerivation
                 : payload.method.startsWith('cardano');
+        this.noBackupConfirmationMode = 'never';
     }
 
     setDevice(device: Device) {
@@ -155,29 +154,6 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         // NOTE: every method should always send "device" parameter
         const originalFn = this.createUiPromise;
         this.createUiPromise = (t, d) => originalFn(t, d || device);
-    }
-
-    async requestPermissions() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_PERMISSION);
-        this.postMessage(
-            createUiMessage(UI.REQUEST_PERMISSION, {
-                permissions: this.requiredPermissions,
-                device: this.device.toMessageObject(),
-            }),
-        );
-        // wait for response
-        const uiResp = await uiPromise.promise;
-        const { granted, remember } = uiResp.payload;
-        if (granted) {
-            this.savePermissions(!remember);
-
-            return true;
-        }
-
-        return false;
     }
 
     private getOriginPermissions() {
@@ -250,7 +226,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
     }
 
-    async checkFirmwareRange(isUsingPopup?: boolean) {
+    checkFirmwareRange() {
         if (this.skipFirmwareCheck) {
             return;
         }
@@ -280,23 +256,7 @@ export abstract class AbstractMethod<Name extends CallMethodPayload['method'], P
         }
 
         if (range.max !== '0' && versionUtils.isNewer(version, range.max)) {
-            if (isUsingPopup) {
-                // wait for popup handshake
-                await this.getPopupPromise().promise;
-                // initialize user response promise
-                const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-                // show unexpected state information and wait for confirmation
-                this.postMessage(
-                    createUiMessage(UI.FIRMWARE_NOT_COMPATIBLE, device.toMessageObject()),
-                );
-
-                const uiResp = await uiPromise.promise;
-                if (!uiResp.payload) {
-                    throw ERRORS.TypedError('Method_PermissionsNotGranted');
-                }
-            } else {
-                return UI.FIRMWARE_NOT_COMPATIBLE;
-            }
+            return UI.FIRMWARE_NOT_COMPATIBLE;
         }
     }
 

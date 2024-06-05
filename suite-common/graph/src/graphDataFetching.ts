@@ -1,7 +1,7 @@
 import { A, D, G, pipe } from '@mobily/ts-belt';
-import BigNumber from 'bignumber.js';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
@@ -48,17 +48,20 @@ export const addBalanceForAccountMovementHistory = (
     return historyWithBalance;
 };
 
-export const getLatestAccountBalance = async ({
+const getLatestAccountBalance = async ({
     coin,
+    identity,
     descriptor,
 }: {
     coin: NetworkSymbol;
+    identity?: string;
     descriptor: string;
 }) => {
     const networkType = getNetworkType(coin);
 
     const accountInfo = await TrezorConnect.getAccountInfo({
         coin,
+        identity,
         descriptor,
         suppressBackupWarning: true,
     });
@@ -78,13 +81,15 @@ export const getLatestAccountBalance = async ({
 
 const accountBalanceHistoryCache: Record<string, AccountHistoryBalancePoint[]> = {};
 
-export const getAccountBalanceHistory = async ({
+const getAccountBalanceHistory = async ({
     coin,
+    identity,
     descriptor,
     endOfTimeFrameDate,
     forceRefetch,
 }: {
     coin: NetworkSymbol;
+    identity?: string;
     descriptor: string;
     endOfTimeFrameDate: Date;
     forceRefetch?: boolean;
@@ -105,6 +110,7 @@ export const getAccountBalanceHistory = async ({
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
             coin,
+            identity,
             descriptor,
             to: endTimeFrameTimestamp,
             groupBy: 1,
@@ -125,7 +131,7 @@ export const getAccountBalanceHistory = async ({
 
     const [accountMovementHistory, latestAccountBalance] = await Promise.all([
         getBalanceHistory(),
-        getLatestAccountBalance({ coin, descriptor }),
+        getLatestAccountBalance({ coin, identity, descriptor }),
     ]);
 
     const accountMovementHistoryWithBalance = addBalanceForAccountMovementHistory(
@@ -209,17 +215,27 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     isElectrumBackend: boolean;
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
-        accounts.map(({ coin, descriptor }) =>
+        accounts.map(({ coin, descriptor, identity }) =>
             getAccountBalanceHistory({
                 coin,
                 descriptor,
+                identity,
                 endOfTimeFrameDate,
                 forceRefetch,
-            }).then(balanceHistory => ({
-                coin,
-                descriptor,
-                balanceHistory,
-            })),
+            })
+                .then(balanceHistory => ({
+                    coin,
+                    descriptor,
+                    balanceHistory,
+                }))
+                .catch(error => {
+                    console.error(
+                        `Unable to fetch GRAPH balance history for ${coin} account:`,
+                        error,
+                    );
+                    error.message = `${coin.toUpperCase()}: ${error.message}`;
+                    throw error;
+                }),
         ),
     );
 
@@ -255,12 +271,21 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
                     fiatCurrency,
                     forceRefetch,
                     isElectrumBackend,
-                }).then(res => {
-                    if (res === null)
-                        throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
+                })
+                    .then(res => {
+                        if (res === null)
+                            throw new Error(`Unable to fetch fiat rates for defined timestamps.`);
 
-                    return [coin, res] as const;
-                }),
+                        return [coin, res] as const;
+                    })
+                    .catch(error => {
+                        console.error(
+                            `Unable to fetch GRAPH fiat rates ${fiatCurrency} for ${coin}:`,
+                            error,
+                        );
+                        error.message = `${coin.toUpperCase()} (${fiatCurrency}): ${error.message}`;
+                        throw error;
+                    }),
             ),
         ),
     );

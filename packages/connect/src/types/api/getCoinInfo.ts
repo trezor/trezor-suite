@@ -1,4 +1,4 @@
-import type { CommonParamsWithCoin, Response } from '../params';
+import type { CommonParams, Response } from '../params';
 import type { CoinInfo } from '../coinInfo';
 
-export declare function getCoinInfo(params: CommonParamsWithCoin): Response<CoinInfo>;
+export declare function getCoinInfo(params: CommonParams & { coin: string }): Response<CoinInfo>;

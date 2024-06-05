@@ -22,6 +22,7 @@ const postProgressMessage = (
     postMessage(
         createUiMessage(UI.FIRMWARE_PROGRESS, {
             device: device.toMessageObject(),
+            operation: 'flashing',
             progress,
         }),
     );
@@ -36,10 +37,21 @@ export const uploadFirmware = async (
     if (device.features.major_version === 1) {
         postConfirmationMessage(device);
         await typedCall('FirmwareErase', 'Success', {});
+
         postProgressMessage(device, 0, postMessage);
-        const { message } = await typedCall('FirmwareUpload', 'Success', {
+
+        let i = 0;
+        const progressTimer = setInterval(() => {
+            i++;
+            postProgressMessage(device, Math.min(i * 2, 99), postMessage);
+        }, 300);
+
+        const message = await typedCall('FirmwareUpload', 'Success', {
             payload,
+        }).finally(() => {
+            clearInterval(progressTimer);
         });
+
         postProgressMessage(device, 100, postMessage);
 
         return message;

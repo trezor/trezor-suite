@@ -19,6 +19,9 @@
             "path": "../../suite-common/toast-notifications"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../accounts" },
@@ -29,7 +32,8 @@
         { "path": "../feature-flags" },
         { "path": "../graph" },
         { "path": "../message-system" },
-        { "path": "../module-settings" },
+        { "path": "../passphrase" },
+        { "path": "../settings" },
         { "path": "../storage" },
         { "path": "../toasts" },
         { "path": "../../packages/connect" },

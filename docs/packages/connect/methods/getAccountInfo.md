@@ -112,7 +112,7 @@ TrezorConnect.getAccountInfo({
         misc?: {
             // Ethereum-like accounts only
             nonce: string,
-            erc20Contract?: TokenInfo, // subject of contractFilter param
+            contractInfo?: TokenInfo, // subject of contractFilter param
             // XRP accounts only
             sequence?: number,
             reserve?: string,

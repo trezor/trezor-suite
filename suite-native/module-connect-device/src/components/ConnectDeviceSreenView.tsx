@@ -9,18 +9,25 @@ import { ConnectDeviceScreenHeader } from './ConnectDeviceScreenHeader';
 type ConnectDeviceSreenViewProps = {
     children: ReactNode;
     style?: NativeStyleObject;
+    shouldDisplayCancelButton?: boolean;
 };
 
 const contentStyle = prepareNativeStyle(_ => ({
     flex: 1,
 }));
 
-export const ConnectDeviceSreenView = ({ children, style }: ConnectDeviceSreenViewProps) => {
+export const ConnectDeviceSreenView = ({
+    children,
+    style,
+    shouldDisplayCancelButton,
+}: ConnectDeviceSreenViewProps) => {
     const { applyStyle } = useNativeStyles();
 
     return (
         <Screen
-            screenHeader={<ConnectDeviceScreenHeader shouldDisplayCancelButton={false} />}
+            screenHeader={
+                <ConnectDeviceScreenHeader shouldDisplayCancelButton={shouldDisplayCancelButton} />
+            }
             customHorizontalPadding={0}
             customVerticalPadding={0}
         >

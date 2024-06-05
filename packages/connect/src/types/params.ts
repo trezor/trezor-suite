@@ -30,6 +30,7 @@ export type BundledParams<T> = CommonParams & Bundle<T>;
 
 export interface CommonParamsWithCoin extends CommonParams {
     coin: string;
+    identity?: string; // ensures that different backend connections are opened for different identities
 }
 
 export interface Unsuccessful {
@@ -46,8 +47,8 @@ export type Response<T> = Promise<Success<T> | Unsuccessful>;
 
 export type DerivationPath = string | number[];
 export const DerivationPath = Type.Union([Type.String(), Type.Array(Type.Number())], {
-    description: 'Derivation Path. minimum length is `1`',
-    default: `m/49'/0'/0'`,
+    description: 'Derivation Path (BIP32).',
+    $id: 'DerivationPath',
 });
 
 // replace type `T` address_n field type `A` with address_n type `R`

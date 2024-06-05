@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-import { Icon } from '@trezor/components';
-import { zIndices } from '@trezor/theme';
+import { Icon, useElevation } from '@trezor/components';
+import { Elevation, mapElevationToBackground, mapElevationToBorder, zIndices } from '@trezor/theme';
 import { useGuide } from 'src/hooks/guide';
 import { FreeFocusInside } from 'react-focus-lock';
 
-const Wrapper = styled.button<{ $isGuideOpen: boolean }>`
+const Wrapper = styled.button<{ $isGuideOpen: boolean; $elevation: Elevation }>`
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,9 +17,9 @@ const Wrapper = styled.button<{ $isGuideOpen: boolean }>`
     height: 40px;
     border-radius: 50%;
     cursor: pointer;
-    border: solid 1px ${({ theme }) => theme.borderOnElevation1};
-    background: ${({ theme }) => theme.backgroundSurfaceElevation1};
-    box-shadow: ${({ theme }) => theme.boxShadowBase};
+    border: solid 1px ${mapElevationToBorder};
+    background: ${mapElevationToBackground};
+    box-shadow: ${({ theme, $elevation }) => ($elevation === 1 ? theme.boxShadowBase : undefined)};
     transition: opacity 0.3s ease 0.3s;
     opacity: ${({ $isGuideOpen }) => ($isGuideOpen ? 0 : 1)};
 
@@ -34,10 +34,16 @@ const Wrapper = styled.button<{ $isGuideOpen: boolean }>`
 
 export const GuideButton = () => {
     const { openGuide, isGuideOpen } = useGuide();
+    const { elevation } = useElevation();
 
     return (
         <FreeFocusInside>
-            <Wrapper data-test="@guide/button-open" onClick={openGuide} $isGuideOpen={isGuideOpen}>
+            <Wrapper
+                data-test="@guide/button-open"
+                onClick={openGuide}
+                $isGuideOpen={isGuideOpen}
+                $elevation={elevation}
+            >
                 <Icon size={18} icon="LIGHTBULB" />
             </Wrapper>
         </FreeFocusInside>

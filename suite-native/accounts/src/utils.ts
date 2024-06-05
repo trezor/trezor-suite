@@ -1,9 +1,10 @@
 import { A, D, G } from '@mobily/ts-belt';
 
 import { AccountType, networks } from '@suite-common/wallet-config';
-import { formattedAccountTypeMap } from '@suite-common/wallet-core/src/accounts/constants';
+import { formattedAccountTypeMap } from '@suite-common/wallet-core';
 import { Account } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
+import { discoverySupportedNetworks, orderedAccountTypes } from '@suite-native/config';
 
 const accountTypeToSectionHeader: Readonly<Partial<Record<AccountType, string>>> = {
     normal: 'default',
@@ -76,3 +77,21 @@ export const groupAccountsByNetworkAccountType = A.groupBy((account: Account) =>
 
     return `${networkName} ${formattedAccountType} accounts`;
 });
+
+export const sortAccountsByNetworksAndAccountTypes = (accounts: readonly Account[]) => {
+    return A.sort(accounts, (a, b) => {
+        const aOrder = discoverySupportedNetworks.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
+        const bOrder = discoverySupportedNetworks.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
+
+        if (aOrder === bOrder) {
+            const aAccountTypeOrder =
+                orderedAccountTypes.indexOf(a.accountType) ?? Number.MAX_SAFE_INTEGER;
+            const bAccountTypeOrder =
+                orderedAccountTypes.indexOf(b.accountType) ?? Number.MAX_SAFE_INTEGER;
+
+            return aAccountTypeOrder - bAccountTypeOrder;
+        }
+
+        return aOrder - bOrder;
+    });
+};

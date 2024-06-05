@@ -57,6 +57,12 @@ export const ApplicationSettings = () => {
                 subtitle="Analytics, Discreet mode, Biometrics"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
             />
+            <SettingsSectionItem
+                title="View-only"
+                iconName="bookmark"
+                subtitle="Check balances without your Trezor"
+                onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
+            />
         </SettingsSection>
     );
 };

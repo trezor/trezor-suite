@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import styled from 'styled-components';
 
 import { isDesktop } from '@trezor/env-utils';
 import { selectBannerMessage } from '@suite-common/message-system';
@@ -6,6 +7,7 @@ import { selectDevice } from '@suite-common/wallet-core';
 
 import { isTranslationMode } from 'src/utils/suite/l10n';
 import { useSelector } from 'src/hooks/suite';
+import { MAX_CONTENT_WIDTH } from 'src/constants/suite/layout';
 
 import { MessageSystemBanner } from '../MessageSystemBanner';
 import { OnlineStatus } from './OnlineStatusBanner';
@@ -16,12 +18,10 @@ import { FailedBackup } from './FailedBackupBanner';
 import { SafetyChecksBanner } from './SafetyChecksBanner';
 import { TranslationMode } from './TranslationModeBanner';
 import { FirmwareHashMismatch } from './FirmwareHashMismatchBanner';
-import styled from 'styled-components';
 
 const Container = styled.div<{ $isVisible?: boolean }>`
-    background: ${({ theme }) => theme.backgroundSurfaceElevationNegative};
-    border-bottom: ${({ $isVisible, theme }) =>
-        $isVisible ? `solid 1px ${theme.borderOnElevation0}` : 'none'};
+    width: 100%;
+    max-width: ${MAX_CONTENT_WIDTH};
 `;
 
 export const SuiteBanners = () => {
@@ -57,7 +57,7 @@ export const SuiteBanners = () => {
     } else if (device?.features?.unfinished_backup) {
         banner = <FailedBackup />;
         priority = 90;
-    } else if (device?.features?.needs_backup) {
+    } else if (device?.features?.backup_availability === 'Required') {
         banner = <NoBackup />;
         priority = 70;
     } else if (device?.connected && device?.features?.safety_checks === 'PromptAlways') {
@@ -90,7 +90,7 @@ export const SuiteBanners = () => {
     const useMessageSystemBanner = bannerMessage && bannerMessage.priority >= priority;
 
     return (
-        <Container $isVisible={banner !== null}>
+        <Container>
             {useMessageSystemBanner && <MessageSystemBanner message={bannerMessage} />}
             {isTranslationMode() && <TranslationMode />}
             <OnlineStatus isOnline={online} />

@@ -1,0 +1,100 @@
+name: "[Template] connect unit"
+on:
+  workflow_call:
+    inputs:
+      methods:
+        description: "List of methods to include in tests (example: applySettings,applyFlags,getFeatures)"
+        type: "string"
+        required: false
+      test-pattern:
+        description: "Test pattern to use (example: `init` or `methods`)"
+        type: "string"
+        required: true
+      tests-firmware:
+        description: "Firmware version for the tests (example: 2-latest, 2.2.0, 2-main)"
+        type: "string"
+        required: false
+        default: "2-latest"
+      test-firmware-model:
+        description: "Firmware model for the tests (example: R)"
+        type: "string"
+        required: false
+      node-environment:
+        description: "Should the test run on nodejs environment, it runs by default."
+        type: "boolean"
+        required: false
+        default: true
+      web-environment:
+        description: "Should the test run on web environment, it runs by default."
+        type: "boolean"
+        required: false
+        default: true
+      test-description:
+        description: "A description to make test title more descriptive (example: 2-latest-R)"
+        type: "string"
+        required: false
+        default: ""
+
+jobs:
+  node:
+    name: "node-${{ inputs.test-description }}"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.node-environment }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      # todo: ideally do not install everything. possibly only devDependencies could be enough for testing (if there was not for building libs)?
+      - run: sed -i "/\"node\"/d" package.json
+      - run: yarn install
+      # nightly test - run without cached txs
+      - if: ${{ github.event_name == 'schedule' }}
+        run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
+      - if: ${{ inputs.test-firmware-model }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.test-firmware-model }}" >> "$GITHUB_ENV"
+      - if: ${{ inputs.methods }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
+      - run: './docker/docker-connect-test.sh node -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" $ADDITIONAL_ARGS'
+
+  web:
+    name: "web-${{ inputs.test-description }}"
+    runs-on: ubuntu-latest
+    if: ${{ inputs.web-environment }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+      # Install dependencies only for @trezor/connect package
+      - run: yarn workspaces focus @trezor/connect
+      - name: Retrieve build connect-web
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact-connect-web
+          path: packages/connect-web/build
+      - name: Retrieve build connect-iframe
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifact-connect-iframe
+          path: packages/connect-iframe/build
+      - run: cd packages/connect-iframe && tree .
+      - name: "Echo download path"
+        run: echo ${{steps.download.outputs.download-path}}
+      - if: ${{ github.event_name == 'schedule' }}
+        run: echo "ADDITIONAL_ARGS=-c" >> "$GITHUB_ENV"
+      - if: ${{ inputs.test-firmware-model }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -m ${{ inputs.test-firmware-model }}" >> "$GITHUB_ENV"
+      - if: ${{ inputs.methods }}
+        run: echo "ADDITIONAL_ARGS=$ADDITIONAL_ARGS -i ${{ inputs.methods }}" >> "$GITHUB_ENV"
+      - run: './docker/docker-connect-test.sh web -p "${{ inputs.test-pattern }}" -f "${{ inputs.tests-firmware }}" $ADDITIONAL_ARGS'

@@ -1,4 +1,4 @@
-import { useCallback, useRef, ReactNode } from 'react';
+import { useCallback, useRef, ReactNode, useMemo } from 'react';
 import ReactSelect, { Props as ReactSelectProps, StylesConfig, SelectInstance } from 'react-select';
 import styled, { css, DefaultTheme, useTheme } from 'styled-components';
 import {
@@ -16,7 +16,13 @@ import {
 import { INPUT_HEIGHTS, LABEL_TRANSFORM, Label, baseInputStyle } from '../InputStyles';
 import { BOTTOM_TEXT_MIN_HEIGHT, BottomText } from '../BottomText';
 import { InputState, InputSize } from '../inputTypes';
-import { Control, GroupHeading, Option } from './customComponents';
+import {
+    Control,
+    ControlComponentProps,
+    GroupHeading,
+    Option,
+    OptionComponentProps,
+} from './customComponents';
 import { useOnKeyDown } from './useOnKeyDown';
 import { useDetectPortalTarget } from './useDetectPortalTarget';
 import { DROPDOWN_MENU, menuStyle } from '../../Dropdown/menuStyle';
@@ -292,6 +298,25 @@ export const Select = ({
         [onChange, menuIsOpen],
     );
 
+    /**
+     * This memoization is necessary to prevent jumping of the Select
+     * to the corder. This may happen when parent component re-renders
+     * and if this is not the same object for some reason it won't work.
+     */
+    const memoizedComponents = useMemo(
+        () => ({
+            Control: (controlProps: ControlComponentProps) => (
+                <Control {...controlProps} dataTest={dataTest} />
+            ),
+            Option: (optionProps: OptionComponentProps) => (
+                <Option {...optionProps} dataTest={dataTest} />
+            ),
+            GroupHeading,
+            ...components,
+        }),
+        [components, dataTest],
+    );
+
     return (
         <Wrapper
             className={className}
@@ -312,6 +337,7 @@ export const Select = ({
                 classNamePrefix={reactSelectClassNamePrefix}
                 openMenuOnFocus
                 closeMenuOnScroll={closeMenuOnScroll}
+                menuPosition="fixed" // Required for closeMenuOnScroll to work properly when near page bottom
                 menuPortalTarget={menuPortalTarget}
                 styles={createSelectStyle(theme, elevation)}
                 onChange={handleOnChange}
@@ -321,12 +347,7 @@ export const Select = ({
                 menuPlacement="auto"
                 placeholder={placeholder || ''}
                 {...props}
-                components={{
-                    Control: controlProps => <Control {...controlProps} dataTest={dataTest} />,
-                    Option: optionProps => <Option {...optionProps} dataTest={dataTest} />,
-                    GroupHeading,
-                    ...components,
-                }}
+                components={memoizedComponents}
             />
 
             {label && (

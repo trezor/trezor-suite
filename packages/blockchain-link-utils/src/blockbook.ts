@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type {
     Utxo,
     Transaction,
@@ -341,31 +340,36 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
             total: payload.totalPages,
         };
     }
-    let misc: AccountInfo['misc'] = {};
-    if (typeof payload.nonce === 'string') {
-        misc.nonce = payload.nonce;
+    // Blockbook is used for both Bitcoin-like and Ethereum-like networks; there is no parameter to distinguish them.
+    // However, the nonce is specific to Ethereum, so we can determine the network type based on its availability.
+    const isEVM = typeof payload.nonce === 'string';
+    let misc: AccountInfo['misc'];
+    if (isEVM) {
+        misc = {
+            nonce: payload.nonce,
+            contractInfo: payload.contractInfo,
+            stakingPools: payload.stakingPools,
+            addressAliases: payload.addressAliases,
+        };
     }
-    if (payload.erc20Contract) {
-        const token = transformTokenInfo([
-            { ...payload.erc20Contract, type: payload.erc20Contract.type || 'ERC20' },
-        ]);
-        if (token) {
-            const [erc20Contract] = token;
-            misc.erc20Contract = erc20Contract;
-        }
-    }
-    if (Object.keys(misc).length < 1) {
-        misc = undefined;
-    }
+
     const descriptor = payload.address;
     const addresses = transformAddresses(payload.tokens);
     const tokens = transformTokenInfo(payload.tokens);
-    const unconfirmed = new BigNumber(payload.unconfirmedBalance);
-    // reduce or increase availableBalance
-    const availableBalance =
-        !unconfirmed.isNaN() && !unconfirmed.isZero()
-            ? unconfirmed.plus(payload.balance).toString()
-            : payload.balance;
+    const unconfirmedBalance = new BigNumber(payload.unconfirmedBalance);
+
+    let availableBalance = payload.balance;
+    if (!unconfirmedBalance.isNaN()) {
+        if (!isEVM) {
+            availableBalance = unconfirmedBalance.plus(payload.balance).toString();
+        } else if (isEVM && unconfirmedBalance.lt(0)) {
+            // if unconfirmed balance is positive it means that address has pending receive transaction
+            // this address cannot use this balance yet so it should not be visible
+            // however, for negative it has to be applied, otherwise it would not be possible to e.g. bump fee
+            // (when tx is pending the balance is still on the account)
+            availableBalance = unconfirmedBalance.plus(payload.balance).toString();
+        }
+    }
     const empty =
         payload.txs === 0 &&
         payload.unconfirmedTxs === 0 &&
@@ -392,7 +396,6 @@ export const transformAccountInfo = (payload: BlockbookAccountInfo): AccountInfo
         },
         misc,
         page,
-        stakingPools: payload?.stakingPools,
     };
 };
 

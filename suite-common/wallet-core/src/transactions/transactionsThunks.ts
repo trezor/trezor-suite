@@ -1,36 +1,31 @@
+import { createThunk } from '@suite-common/redux-utils';
 import {
     Account,
-    ExportFileType,
-    PrecomposedTransactionFinal,
-    TxFinalCardano,
-    WalletAccountTransaction,
     AccountKey,
+    PrecomposedTransactionCardanoFinal,
+    PrecomposedTransactionFinal,
+    WalletAccountTransaction,
 } from '@suite-common/wallet-types';
 import {
-    findTransactions,
-    formatData,
-    getAccountTransactions,
-    getExportedFileName,
-    isTrezorConnectBackendType,
-    getPendingAccount,
-    findAccountsByAddress,
     enhanceTransaction,
+    findAccountsByAddress,
+    findTransactions,
+    getAccountTransactions,
+    getPendingAccount,
     getRbfParams,
+    isTrezorConnectBackendType,
     replaceEthereumSpecific,
-    advancedSearchTransactions,
+    tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
-import { AccountLabels } from '@suite-common/metadata-types';
-import TrezorConnect from '@trezor/connect';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import { Transaction } from '@trezor/blockchain-link-types/src/blockbook';
-import { createThunk } from '@suite-common/redux-utils';
+import TrezorConnect from '@trezor/connect';
 
 import { accountsActions } from '../accounts/accountsActions';
-import { selectTransactions } from './transactionsReducer';
-import { transactionsActionsPrefix, transactionsActions } from './transactionsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
-import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
+import { selectSendSignedTx } from '../send/sendFormReducer';
+import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
+import { selectTransactions } from './transactionsReducer';
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -38,20 +33,27 @@ import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinit
  * sender account and receiver account(s)
  */
 interface ReplaceTransactionThunkParams {
-    precomposedTx: PrecomposedTransactionFinal; // tx params signed by @trezor/connect
-    newTxid: string; // new txid
-    signedTransaction?: Transaction; // tx returned from @trezor/connect (only in bitcoin-like)
+    // transaction input parameters. It has to be passed as argument rather than obtained form send-form state, because this thunk is used also by eth-staking module that uses different redux state.
+    precomposedTransaction: PrecomposedTransactionFinal;
+    newTxid: string;
 }
 
-export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams>(
-    `${transactionsActionsPrefix}/replaceTransactionThunk`,
-    ({ precomposedTx, newTxid, signedTransaction }, { getState, dispatch }) => {
-        if (!precomposedTx.prevTxid) return; // ignore if it's not a replacement tx
+export const replaceTransactionThunk = createThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/replaceTransactionThunk`,
+    (
+        { precomposedTransaction, newTxid }: ReplaceTransactionThunkParams,
+        { getState, dispatch },
+    ) => {
+        if (!precomposedTransaction.prevTxid) return; // ignore if it's not a replacement tx
 
         const walletTransactions = selectTransactions(getState());
+        const signedTransaction = selectSendSignedTx(getState());
 
         // find all transactions to replace, they may be related to another account
-        const origTransactions = findTransactions(precomposedTx.prevTxid, walletTransactions);
+        const origTransactions = findTransactions(
+            precomposedTransaction.prevTxid,
+            walletTransactions,
+        );
 
         // prepare replace actions for txs
         const actions = origTransactions.flatMap(origTx => {
@@ -73,17 +75,17 @@ export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams
                 newTx = {
                     ...origTx.tx,
                     txid: newTxid,
-                    fee: precomposedTx.fee,
-                    rbf: !!precomposedTx.rbf,
+                    fee: precomposedTransaction.fee,
+                    rbf: !!precomposedTransaction.rbf,
                     blockTime: Math.round(new Date().getTime() / 1000),
                     // TODO: details: {}, is it worth it?
                 };
 
                 // update ethereumSpecific values
-                newTx.ethereumSpecific = replaceEthereumSpecific(newTx, precomposedTx);
+                newTx.ethereumSpecific = replaceEthereumSpecific(newTx, precomposedTransaction);
 
                 // finalized and recv tx shouldn't have rbfParams
-                if (!precomposedTx.rbf || origTx.tx.type === 'recv') {
+                if (!precomposedTransaction.rbf || origTx.tx.type === 'recv') {
                     delete newTx.rbfParams;
                 } else {
                     // update tx rbfParams
@@ -93,7 +95,7 @@ export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams
 
             return transactionsActions.replaceTransaction({
                 key: origTx.key,
-                txid: precomposedTx.prevTxid,
+                txid: precomposedTransaction.prevTxid,
                 tx: newTx,
             });
         });
@@ -104,20 +106,25 @@ export const replaceTransactionThunk = createThunk<ReplaceTransactionThunkParams
 );
 
 interface AddFakePendingTransactionParams {
-    transaction: Transaction;
-    precomposedTx: PrecomposedTransactionFinal;
+    precomposedTransaction: PrecomposedTransactionFinal;
     account: Account;
 }
 
-export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams>(
-    `${transactionsActionsPrefix}/addFakePendingTransaction`,
-    ({ transaction, precomposedTx, account }, { dispatch, getState }) => {
+export const addFakePendingTxThunk = createThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
+    (
+        { precomposedTransaction, account }: AddFakePendingTransactionParams,
+        { dispatch, getState, rejectWithValue },
+    ) => {
         const blockHeight = selectBlockchainHeightBySymbol(getState(), account.symbol);
         const accounts = selectAccounts(getState());
+        const signedTransaction = selectSendSignedTx(getState());
+
+        if (!signedTransaction) return rejectWithValue('No signed transaction found');
 
         // decide affected accounts by tx.outputs
         // only 1 pending tx may be created per affected account,
-        const affectedAccounts = transaction.vout.reduce<{
+        const affectedAccounts = signedTransaction.vout.reduce<{
             [affectedAccountKey: string]: Account;
         }>(
             (result, output) => {
@@ -140,10 +147,10 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
 
         Object.keys(affectedAccounts).forEach(key => {
             const affectedAccount = affectedAccounts[key];
-            if (!precomposedTx.prevTxid) {
+            if (!precomposedTransaction.prevTxid) {
                 // create and profile pending transaction for affected account if it's not a replacement tx
                 const affectedAccountTransaction = blockbookUtils.transformTransaction(
-                    transaction,
+                    signedTransaction,
                     affectedAccount.addresses ?? affectedAccount.descriptor,
                 );
                 const prependingTx = { ...affectedAccountTransaction, deadline: blockHeight + 2 };
@@ -162,8 +169,8 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
 
             const pendingAccount = getPendingAccount({
                 account: affectedAccount,
-                tx: precomposedTx,
-                txid: transaction.txid,
+                tx: precomposedTransaction,
+                txid: signedTransaction.txid,
                 receivingAccount: account.key !== affectedAccount.key,
             });
 
@@ -175,14 +182,14 @@ export const addFakePendingTxThunk = createThunk<AddFakePendingTransactionParams
 );
 
 export const addFakePendingCardanoTxThunk = createThunk(
-    `${transactionsActionsPrefix}/addFakePendingTransaction`,
+    `${TRANSACTIONS_MODULE_PREFIX}/addFakePendingTransaction`,
     (
         {
-            precomposedTx,
+            precomposedTransaction,
             txid,
             account,
         }: {
-            precomposedTx: Pick<TxFinalCardano, 'totalSpent' | 'fee'>;
+            precomposedTransaction: Pick<PrecomposedTransactionCardanoFinal, 'totalSpent' | 'fee'>;
             txid: string;
             account: Account;
         },
@@ -198,10 +205,10 @@ export const addFakePendingCardanoTxThunk = createThunk(
             blockTime: Math.floor(new Date().getTime() / 1000),
             blockHash: undefined,
             // amounts (as most of props below) don't matter much since it is temp fake anyway
-            amount: precomposedTx.totalSpent,
-            fee: precomposedTx.fee,
+            amount: precomposedTransaction.totalSpent,
+            fee: precomposedTransaction.fee,
             feeRate: '0',
-            totalSpent: precomposedTx.totalSpent,
+            totalSpent: precomposedTransaction.totalSpent,
             targets: [],
             tokens: [],
             internalTransfers: [],
@@ -219,84 +226,8 @@ export const addFakePendingCardanoTxThunk = createThunk(
     },
 );
 
-export const exportTransactionsThunk = createThunk(
-    `${transactionsActionsPrefix}/exportTransactions`,
-    async (
-        {
-            account,
-            accountName,
-            type,
-            searchQuery,
-            accountMetadata,
-        }: {
-            account: Account;
-            accountName: string;
-            type: ExportFileType;
-            searchQuery: string;
-            accountMetadata: AccountLabels;
-        },
-        { getState, extra },
-    ) => {
-        const { utils, selectors } = extra;
-        // Get state of transactions
-        const allTransactions = selectTransactions(getState());
-        const localCurrency = selectors.selectLocalCurrency(getState());
-        const tokenDefinitions = selectNetworkTokenDefinitions(getState(), account.symbol) || {};
-
-        // TODO: this is not nice (copy-paste)
-        // metadata reducer is still not part of trezor-common and I can not import it
-        // here. so either followup, or maybe when I have a moment I'll refactor it  before merging this
-        // eslint-disable-next-line no-restricted-syntax
-        const provider = getState().metadata?.providers.find(
-            // @ts-expect-error
-            // eslint-disable-next-line no-restricted-syntax
-            p => p.clientId === getState().metadata.selectedProvider.labels,
-        );
-        const metadataKeys = account?.metadata[1];
-        let labels = {};
-        if (!metadataKeys || !metadataKeys?.fileName || !provider?.data[metadataKeys.fileName]) {
-            labels = { outputLabels: {} };
-        } else {
-            labels = provider.data[metadataKeys.fileName];
-        }
-
-        const transactions = getAccountTransactions(account.key, allTransactions)
-            .filter(transaction => transaction.blockHeight !== -1)
-            .map(transaction => ({
-                ...transaction,
-                targets: transaction.targets.map(target => ({
-                    ...target,
-                    // @ts-expect-error
-                    metadataLabel: labels.outputLabels?.[transaction.txid]?.[target.n],
-                })),
-            }));
-
-        const filteredTransaction =
-            searchQuery.trim() !== ''
-                ? advancedSearchTransactions(transactions, accountMetadata, searchQuery)
-                : transactions;
-
-        // Prepare data in right format
-        const data = await formatData(
-            {
-                coin: account.symbol,
-                accountName,
-                type,
-                transactions: filteredTransaction,
-                localCurrency,
-            },
-            tokenDefinitions,
-        );
-
-        // Save file
-        const fileName = getExportedFileName(accountName, type);
-
-        utils.saveAs(data, fileName);
-    },
-);
-
 export const fetchTransactionsThunk = createThunk(
-    `${transactionsActionsPrefix}/fetchTransactionsThunk`,
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsThunk`,
     async (
         {
             accountKey,
@@ -328,7 +259,7 @@ export const fetchTransactionsThunk = createThunk(
             (page > 1 && txsForPage.length === perPage) ||
             txsForPage.length === account.history.total
         ) {
-            if (recursive && !signal.aborted) {
+            if (recursive && !signal.aborted && account.history.total) {
                 const promise = dispatch(
                     fetchTransactionsThunk({
                         accountKey,
@@ -354,6 +285,7 @@ export const fetchTransactionsThunk = createThunk(
         const { marker } = account;
         const result = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
             page, // useful for every network except ripple

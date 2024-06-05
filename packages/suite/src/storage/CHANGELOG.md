@@ -1,5 +1,14 @@
 # Storage changelog
 
+## 45
+
+-   added `historicRates`
+-   remove rates for all transactions since we are using selectors to get rates
+
+## 44
+
+-   remove goerli accounts, txs and settings
+
 ## 43
 
 -   fixes bug cannot set properties of undefined (setting 'passwords') introduced by migration 41

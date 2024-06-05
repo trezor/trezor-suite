@@ -28,6 +28,7 @@ export type InputProps = TextInputProps & {
     hasError?: boolean;
     hasWarning?: boolean;
     leftIcon?: ReactNode;
+    rightIcon?: ReactNode;
     elevation?: SurfaceElevation;
 };
 
@@ -50,11 +51,12 @@ type InputWrapperStyleProps = {
 
 type InputLabelStyleProps = {
     isLabelMinimized: boolean;
-    isIconDisplayed: boolean;
+    isLeftIconDisplayed: boolean;
 };
 
 type InputStyleProps = {
-    isIconDisplayed: boolean;
+    isLeftIconDisplayed: boolean;
+    isRightIconDisplayed: boolean;
 };
 
 const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
@@ -99,22 +101,25 @@ const inputWrapperStyle = prepareNativeStyle<InputWrapperStyleProps>(
     }),
 );
 
-const inputStyle = prepareNativeStyle<InputStyleProps>((utils, { isIconDisplayed }) => ({
-    ...utils.typography.body,
-    // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
-    // This resets it to the default TextInput value.
-    letterSpacing: 0,
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: INPUT_TEXT_HEIGHT,
-    color: utils.colors.textDefault,
-    left: isIconDisplayed ? utils.spacings.large : 0,
-    borderWidth: 0,
-    flex: 1,
-    // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
-    paddingTop: utils.spacings.large,
-    paddingBottom: utils.spacings.extraSmall,
-}));
+const inputStyle = prepareNativeStyle<InputStyleProps>(
+    (utils, { isLeftIconDisplayed, isRightIconDisplayed }) => ({
+        ...utils.typography.body,
+        // letterSpacing from `typography.body` is making strange layout jumps on Android while filling the input.
+        // This resets it to the default TextInput value.
+        letterSpacing: 0,
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: INPUT_TEXT_HEIGHT,
+        color: utils.colors.textDefault,
+        left: isLeftIconDisplayed ? utils.spacings.large : 0,
+        marginRight: isRightIconDisplayed ? utils.spacings.extraLarge : 0,
+        borderWidth: 0,
+        flex: 1,
+        // Make the text input uniform on both platforms (https://stackoverflow.com/a/68458803/1281305)
+        paddingTop: utils.spacings.large,
+        paddingBottom: utils.spacings.extraSmall,
+    }),
+);
 
 const inputHitSlop = {
     left: INPUT_WRAPPER_PADDING_HORIZONTAL,
@@ -124,11 +129,11 @@ const inputHitSlop = {
 };
 
 const inputLabelStyle = prepareNativeStyle(
-    (utils, { isLabelMinimized, isIconDisplayed }: InputLabelStyleProps) => ({
+    (utils, { isLabelMinimized, isLeftIconDisplayed }: InputLabelStyleProps) => ({
         ...D.deleteKey(utils.typography.body, 'fontSize'),
         color: utils.colors.textSubdued,
         position: 'absolute',
-        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isIconDisplayed ? utils.spacings.large : 0),
+        left: INPUT_WRAPPER_PADDING_HORIZONTAL + (isLeftIconDisplayed ? utils.spacings.large : 0),
         top: INPUT_LABEL_TOP_PADDING,
         extend: {
             condition: isLabelMinimized,
@@ -140,13 +145,20 @@ const inputLabelStyle = prepareNativeStyle(
     }),
 );
 
-const leftIconStyle = prepareNativeStyle(utils => ({
+const iconStyle = prepareNativeStyle(() => ({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
+    top: 20,
+}));
+
+const leftIconStyle = prepareNativeStyle(utils => ({
     marginRight: 3,
-    top: 15,
     left: utils.spacings.small,
+}));
+
+const rightIconStyle = prepareNativeStyle(utils => ({
+    right: utils.spacings.medium,
 }));
 
 const useInputLabelAnimationStyles = ({
@@ -195,6 +207,7 @@ export const Input = forwardRef<TextInput, InputProps>(
             onBlur,
             label,
             leftIcon,
+            rightIcon,
             hasError = false,
             hasWarning = false,
             elevation = '0',
@@ -204,7 +217,8 @@ export const Input = forwardRef<TextInput, InputProps>(
     ) => {
         const [isFocused, setIsFocused] = useState<boolean>(false);
         const isLabelMinimized = isFocused || !!value?.length;
-        const isIconDisplayed = !!leftIcon;
+        const isLeftIconDisplayed = !!leftIcon;
+        const isRightIconDisplayed = !!rightIcon;
 
         const { applyStyle } = useNativeStyles();
         const { animatedInputLabelStyle } = useInputLabelAnimationStyles({
@@ -232,7 +246,11 @@ export const Input = forwardRef<TextInput, InputProps>(
                         elevation,
                     })}
                 >
-                    {leftIcon && <Box style={applyStyle(leftIconStyle)}>{leftIcon}</Box>}
+                    {leftIcon && (
+                        <Box style={[applyStyle(iconStyle), applyStyle(leftIconStyle)]}>
+                            {leftIcon}
+                        </Box>
+                    )}
                     <Animated.Text
                         style={[
                             /*
@@ -241,7 +259,7 @@ export const Input = forwardRef<TextInput, InputProps>(
                             in both places (native and animated style).
                             */
                             animatedInputLabelStyle,
-                            applyStyle(inputLabelStyle, { isLabelMinimized, isIconDisplayed }),
+                            applyStyle(inputLabelStyle, { isLabelMinimized, isLeftIconDisplayed }),
                         ]}
                         numberOfLines={1}
                     >
@@ -250,7 +268,10 @@ export const Input = forwardRef<TextInput, InputProps>(
                     <Box flexDirection="row" alignItems="center">
                         <TextInput
                             ref={ref}
-                            style={applyStyle(inputStyle, { isIconDisplayed })}
+                            style={applyStyle(inputStyle, {
+                                isLeftIconDisplayed,
+                                isRightIconDisplayed,
+                            })}
                             onFocus={handleOnFocus}
                             onBlur={handleOnBlur}
                             hitSlop={inputHitSlop}
@@ -258,8 +279,12 @@ export const Input = forwardRef<TextInput, InputProps>(
                             {...props}
                         />
                     </Box>
+                    {rightIcon && (
+                        <Box style={[applyStyle(iconStyle), applyStyle(rightIconStyle)]}>
+                            {rightIcon}
+                        </Box>
+                    )}
                 </Box>
-                {isLabelMinimized}
             </>
         );
     },

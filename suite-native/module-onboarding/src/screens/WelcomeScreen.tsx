@@ -13,7 +13,7 @@ import {
     Screen,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { Icon } from '@suite-common/icons';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { useActiveColorScheme } from '@suite-native/theme';
@@ -54,8 +54,6 @@ const cardStyle = prepareNativeStyle(utils => ({
 }));
 
 export const WelcomeScreen = () => {
-    const { translate } = useTranslate();
-
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const navigation =
@@ -114,7 +112,7 @@ export const WelcomeScreen = () => {
                             </Box>
                         </Box>
                         <Text color="textSubdued" textAlign="center">
-                            {translate('moduleOnboarding.welcomeScreen.subtitle')}
+                            <Translation id="moduleOnboarding.welcomeScreen.subtitle" />
                         </Text>
                     </Box>
                     <Box flex={1} justifyContent="flex-end">
@@ -133,7 +131,9 @@ export const WelcomeScreen = () => {
                 <Box alignItems="center" marginTop="large">
                     <OnboardingFooter
                         redirectTarget={handleRedirect}
-                        nextButtonTitle={translate('moduleOnboarding.welcomeScreen.nextButton')}
+                        nextButtonTitle={
+                            <Translation id="moduleOnboarding.welcomeScreen.nextButton" />
+                        }
                     />
                 </Box>
             </Screen>

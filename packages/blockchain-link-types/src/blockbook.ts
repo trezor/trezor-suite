@@ -8,7 +8,7 @@ import type {
     EstimateFeeParams,
     AccountInfoParams,
 } from './params';
-import type { AccountBalanceHistory, FiatRatesLegacy, TokenStandard, StakingPool } from './common';
+import type { AccountBalanceHistory, FiatRatesBySymbol, TokenStandard } from './common';
 import type {
     Tx as BlockbookTx,
     Vin,
@@ -21,6 +21,9 @@ import type {
     MempoolTxidFilterEntries,
     Token as BlockbookToken,
     TokenTransfer as BlockbookTokenTransfer,
+    AddressAlias,
+    ContractInfo,
+    StakingPool,
 } from './blockbook-api';
 
 type OptionalKey<M, K extends keyof M> = Omit<M, K> & Partial<Pick<M, K>>;
@@ -102,7 +105,8 @@ export interface AccountInfo {
     transactions?: Transaction[];
     nonce?: string;
     tokens?: (XPUBAddress | ERC20 | ERC721 | ERC1155)[];
-    erc20Contract?: ERC20;
+    contractInfo?: ContractInfo;
+    addressAliases?: { [key: string]: AddressAlias };
     stakingPools?: StakingPool[];
 }
 
@@ -152,12 +156,12 @@ export interface AddressNotification {
 }
 
 export interface FiatRatesNotification {
-    rates: FiatRatesLegacy;
+    rates: FiatRatesBySymbol;
 }
 
 export interface TimestampedFiatRates {
     ts: number;
-    rates: FiatRatesLegacy;
+    rates: FiatRatesBySymbol;
 }
 
 export interface FiatRatesForTimestamp {

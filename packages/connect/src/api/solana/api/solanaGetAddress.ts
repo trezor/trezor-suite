@@ -15,9 +15,9 @@ type Params = PROTO.SolanaGetAddress & {
 export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
-    confirmed?: boolean;
 
     init() {
+        this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,
@@ -50,7 +50,6 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
             this.params.length === 1 &&
             typeof this.params[0].address === 'string' &&
             this.params[0].show_display;
-        this.confirmed = useEventListener;
         this.useUi = !useEventListener;
     }
 
@@ -72,55 +71,16 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
         }
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        let label: string;
-        if (this.params.length > 1) {
-            label = 'Export multiple Solana addresses';
-        } else {
-            label = `Export Solana address for account #${
-                fromHardened(this.params[0].address_n[2]) + 1
-            }`;
-        }
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-address',
-                label,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
-    }
-
-    async noBackupConfirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'no-backup',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
+    get confirmation() {
+        return {
+            view: 'export-address' as const,
+            label:
+                this.params.length > 1
+                    ? 'Export multiple Solana addresses'
+                    : `Export Solana address for account #${
+                          fromHardened(this.params[0].address_n[2]) + 1
+                      }`,
+        };
     }
 
     async _call({ address_n, show_display, chunkify }: Params) {

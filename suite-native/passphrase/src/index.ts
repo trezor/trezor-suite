@@ -1,2 +1,3 @@
-export * from './PassphraseModalRenderer';
-export * from './isPassphraseModalVisibleAtom';
+export * from './passphraseSlice';
+export * from './passphraseThunks';
+export * from './useHandleDuplicatePassphrase';

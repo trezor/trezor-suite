@@ -1,13 +1,13 @@
 import styled, { useTheme } from 'styled-components';
-import BigNumber from 'bignumber.js';
-import { getFeeUnits, formatNetworkAmount, formatAmount } from '@suite-common/wallet-utils';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { getFeeUnits, formatNetworkAmount, formatAmount, getFee } from '@suite-common/wallet-utils';
 import { Icon, CoinLogo, variables } from '@trezor/components';
 import { formatDuration, isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Translation, FormattedCryptoAmount, AccountLabel } from 'src/components/suite';
 import { Account, Network } from 'src/types/wallet';
-import { PrecomposedTransactionFinal, TxFinalCardano } from 'src/types/wallet/sendForm';
+import { GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 
@@ -86,7 +86,7 @@ const AccountWrapper = styled.div`
 `;
 
 const Separator = styled.div`
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation2};
     margin: 10px 0 0;
     padding: 0 0 10px;
     width: 100%;
@@ -192,7 +192,7 @@ const ReviewRbfLeftDetailsLineRight = styled.div<{ $color: string; $uppercase?: 
 
 interface TransactionReviewSummaryProps {
     estimateTime?: number;
-    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    tx: GeneralPrecomposedTransactionFinal;
     account: Account;
     network: Network;
     broadcast?: boolean;
@@ -220,7 +220,7 @@ export const TransactionReviewSummary = ({
     const theme = useTheme();
 
     const { symbol, accountType, index } = account;
-    const { feePerByte } = tx;
+    const fee = getFee(network.networkType, tx);
 
     const spentWithoutFee = !tx.token ? new BigNumber(tx.totalSpent).minus(tx.fee).toString() : '';
     const amount = !tx.token
@@ -229,7 +229,7 @@ export const TransactionReviewSummary = ({
 
     const formFeeRate = drafts[currentAccountKey]?.feePerUnit;
     const isFeeCustom = drafts[currentAccountKey]?.selectedFee === 'custom';
-    const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== feePerByte;
+    const isComposedFeeRateDifferent = isFeeCustom && formFeeRate !== fee;
 
     return (
         <Wrapper>
@@ -278,7 +278,7 @@ export const TransactionReviewSummary = ({
                         </ReviewRbfLeftDetailsLineRight>
                     </LeftDetailsRow>
                 )}
-                {!!tx.feeLimit && (
+                {!!tx.feeLimit && network.networkType !== 'solana' && (
                     <LeftDetailsRow>
                         <ReviewRbfLeftDetailsLineLeft>
                             <Icon size={12} color={theme.iconSubdued} icon="GAS" />
@@ -300,7 +300,7 @@ export const TransactionReviewSummary = ({
                     </ReviewRbfLeftDetailsLineLeft>
 
                     <ReviewRbfLeftDetailsLineRight $color={theme.textSubdued}>
-                        {feePerByte} {getFeeUnits(network.networkType)}
+                        {fee} {getFeeUnits(network.networkType)}
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
 
@@ -325,21 +325,23 @@ export const TransactionReviewSummary = ({
                         <Translation id={broadcast ? 'TR_ON' : 'TR_OFF'} />
                     </ReviewRbfLeftDetailsLineRight>
                 </LeftDetailsRow>
-                {isFeatureFlagEnabled('RBF') && network.features?.includes('rbf') && (
-                    <LeftDetailsRow>
-                        <ReviewRbfLeftDetailsLineLeft>
-                            <Icon size={12} color={theme.textSubdued} icon="RBF" />
-                            <Translation id="RBF" />
-                        </ReviewRbfLeftDetailsLineLeft>
+                {isFeatureFlagEnabled('RBF') &&
+                    network.features?.includes('rbf') &&
+                    network.networkType !== 'ethereum' && (
+                        <LeftDetailsRow>
+                            <ReviewRbfLeftDetailsLineLeft>
+                                <Icon size={12} color={theme.textSubdued} icon="RBF" />
+                                <Translation id="RBF" />
+                            </ReviewRbfLeftDetailsLineLeft>
 
-                        <ReviewRbfLeftDetailsLineRight
-                            $color={tx.rbf ? theme.textPrimaryDefault : theme.textAlertYellow}
-                            $uppercase
-                        >
-                            <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
-                        </ReviewRbfLeftDetailsLineRight>
-                    </LeftDetailsRow>
-                )}
+                            <ReviewRbfLeftDetailsLineRight
+                                $color={tx.rbf ? theme.textPrimaryDefault : theme.textAlertYellow}
+                                $uppercase
+                            >
+                                <Translation id={tx.rbf ? 'TR_ON' : 'TR_OFF'} />
+                            </ReviewRbfLeftDetailsLineRight>
+                        </LeftDetailsRow>
+                    )}
                 {tx.inputs.length !== 0 && (
                     <LeftDetailsBottom>
                         <Separator />

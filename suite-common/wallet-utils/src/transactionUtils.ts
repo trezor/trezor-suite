@@ -1,7 +1,7 @@
-import BigNumber from 'bignumber.js';
 import { fromWei, toWei } from 'web3-utils';
 import { addDays, startOfMonth } from 'date-fns';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import {
     Account,
     RbfTransactionParams,
@@ -9,6 +9,9 @@ import {
     ChainedTransactions,
     PrecomposedTransactionFinal,
     AccountKey,
+    TokenAddress,
+    RatesByTimestamps,
+    Timestamp,
 } from '@suite-common/wallet-types';
 import {
     AccountAddress,
@@ -19,9 +22,11 @@ import {
 import { SignOperator } from '@suite-common/suite-types';
 import { arrayPartition } from '@trezor/utils';
 import { AccountLabels } from '@suite-common/metadata-types';
+import { FiatCurrencyCode } from '@suite-common/suite-config';
 
 import { formatAmount, formatNetworkAmount } from './accountUtils';
-import { toFiatCurrency } from './fiatConverterUtils';
+import { toFiatCurrency } from '../src/fiatConverterUtils';
+import { getFiatRateKey, roundTimestampToNearestPastHour } from './fiatRatesUtils';
 
 export const sortByBlockHeight = (a: { blockHeight?: number }, b: { blockHeight?: number }) => {
     // if both are missing the blockHeight don't change their order
@@ -161,7 +166,7 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
         }
 
         // count in only if Inputs/Outputs includes my account (EVM does not need to)
-        if (tx.targets.length && tx.type === 'sent') {
+        if (tx.type === 'sent') {
             totalAmount = totalAmount.minus(amount);
         }
 
@@ -190,48 +195,76 @@ export const sumTransactions = (transactions: WalletAccountTransaction[]) => {
 
 export const sumTransactionsFiat = (
     transactions: WalletAccountTransaction[],
-    fiatCurrency: string,
+    fiatCurrency: FiatCurrencyCode,
+    historicFiatRates: RatesByTimestamps | undefined,
 ) => {
     let totalAmount = new BigNumber(0);
     transactions.forEach(tx => {
         const amount = formatNetworkAmount(tx.amount, tx.symbol);
         const fee = formatNetworkAmount(tx.fee, tx.symbol);
 
+        const fiatRateKey = getFiatRateKey(tx.symbol, fiatCurrency);
+        const roundedTimestamp = roundTimestampToNearestPastHour(tx.blockTime as Timestamp);
+        const historicRate = historicFiatRates?.[fiatRateKey]?.[roundedTimestamp];
+
         if (tx.type === 'self') {
             const cardanoWithdrawal = formatCardanoWithdrawal(tx);
             if (cardanoWithdrawal) {
                 totalAmount = totalAmount.plus(
-                    toFiatCurrency(cardanoWithdrawal, fiatCurrency, tx.rates, -1) ?? 0,
+                    toFiatCurrency(cardanoWithdrawal, historicRate, -1) ?? 0,
                 );
             }
 
             const cardanoDeposit = formatCardanoDeposit(tx);
             if (cardanoDeposit) {
                 totalAmount = totalAmount.minus(
-                    toFiatCurrency(cardanoDeposit, fiatCurrency, tx.rates, -1) ?? 0,
+                    toFiatCurrency(cardanoDeposit, historicRate, -1) ?? 0,
                 );
             }
         }
 
-        // count in only if Inputs/Outputs includes my account (EVM does not need to)
-        if (tx.targets.length && tx.type === 'sent') {
-            totalAmount = totalAmount.minus(
-                toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0,
-            );
-        }
+        if (tx.tokens.length > 0) {
+            tx.tokens.forEach(token => {
+                const transferType = token.type;
 
-        if (tx.type === 'recv' || tx.type === 'joint') {
-            totalAmount = totalAmount.plus(toFiatCurrency(amount, fiatCurrency, tx.rates, -1) ?? 0);
+                const tokenFiatRateKey = getFiatRateKey(
+                    tx.symbol,
+                    fiatCurrency,
+                    token.contract as TokenAddress,
+                );
+                const historicTokenRate = historicFiatRates?.[tokenFiatRateKey]?.[roundedTimestamp];
+                const tokenAmount = formatAmount(token.amount, token.decimals);
+
+                if (transferType === 'sent') {
+                    totalAmount = totalAmount.minus(
+                        toFiatCurrency(tokenAmount, historicTokenRate, -1) ?? 0,
+                    );
+                }
+
+                if (transferType === 'recv') {
+                    totalAmount = totalAmount.plus(
+                        toFiatCurrency(tokenAmount, historicTokenRate, -1) ?? 0,
+                    );
+                }
+            });
+        } else {
+            // count in only if Inputs/Outputs includes my account (EVM does not need to)
+            if (tx.type === 'sent') {
+                totalAmount = totalAmount.minus(toFiatCurrency(amount, historicRate, -1) ?? 0);
+            }
+
+            if (tx.type === 'recv' || tx.type === 'joint') {
+                totalAmount = totalAmount.plus(toFiatCurrency(amount, historicRate, -1) ?? 0);
+            }
         }
 
         if (isTxFeePaid(tx)) {
-            totalAmount = totalAmount.minus(toFiatCurrency(fee, fiatCurrency, tx.rates, -1) ?? 0);
+            totalAmount = totalAmount.minus(toFiatCurrency(fee, historicRate, -1) ?? 0);
         }
 
         tx.internalTransfers.forEach(internalTx => {
             const amountInternal = formatNetworkAmount(internalTx.amount, tx.symbol);
-            const amountInternalFiat =
-                toFiatCurrency(amountInternal, fiatCurrency, tx.rates, -1) ?? 0;
+            const amountInternalFiat = toFiatCurrency(amountInternal, historicRate, -1) ?? 0;
 
             if (internalTx.type === 'sent') {
                 totalAmount = totalAmount.minus(amountInternalFiat);
@@ -517,15 +550,22 @@ const getEthereumRbfParams = (
     tx: AccountTransaction,
     account: Account,
 ): RbfTransactionParams | undefined => {
-    if (account.networkType !== 'ethereum') return;
-    if (tx.type === 'recv' || !tx.ethereumSpecific || !isPending(tx)) return; // ignore non rbf and mined transactions
+    if (
+        account.networkType !== 'ethereum' ||
+        tx.type === 'recv' ||
+        !tx.ethereumSpecific ||
+        !isPending(tx)
+    )
+        return; // ignore non rbf and mined transactions
 
     const { vout } = tx.details;
+    // The standard transfer method ERC-20 tokens is limited to sending to one recipient per tx
+    // TODO: limit this method just for standard transfers
     const token = tx.tokens[0];
 
     const output = token
         ? {
-              address: token.to!,
+              address: token.to,
               token: token.contract,
               amount: token.amount,
               formattedAmount: formatAmount(token.amount, token.decimals),
@@ -537,9 +577,7 @@ const getEthereumRbfParams = (
           };
 
     const ethereumData =
-        tx.ethereumSpecific.data && tx.ethereumSpecific.data.indexOf('0x') === 0
-            ? tx.ethereumSpecific.data.substring(2)
-            : '';
+        tx.ethereumSpecific.data?.indexOf('0x') === 0 ? tx.ethereumSpecific.data.substring(2) : '';
 
     return {
         txid: tx.txid,
@@ -662,7 +700,6 @@ export const getOriginalTransaction = ({
     deviceState,
     symbol,
     rbfParams,
-    rates,
     ...tx
 }: WalletAccountTransaction): AccountTransaction => tx;
 
@@ -943,11 +980,37 @@ export const isTxFinal = (tx: WalletAccountTransaction, confirmations: number) =
     // checks RBF status
     !tx.rbf || confirmations > 0 || tx.solanaSpecific?.status === 'confirmed';
 
+/**
+ * TODO: in case user swaps tokens on SOL/ADA, we probably say that he received SOL/ADA
+ *
+ * @param {WalletAccountTransaction} transaction
+ */
 export const getTxHeaderSymbol = (transaction: WalletAccountTransaction) => {
+    // check if tx has exactly one token
     const isSingleTokenTransaction = transaction.tokens.length === 1;
-    const transfer = transaction.tokens[0];
-    // In case of single token transactions show the token symbol instead of symbol of a main network
-    const symbol = !isSingleTokenTransaction || !transfer ? transaction.symbol : transfer.symbol;
+
+    // if there's exactly one token, use its symbol; otherwise, use the main network symbol
+    const symbol = isSingleTokenTransaction ? transaction.tokens[0].symbol : transaction.symbol;
 
     return symbol;
+};
+
+export const groupTokensTransactionsByContractAddress = (
+    txs: WalletAccountTransaction[],
+): Record<TokenAddress, WalletAccountTransaction[]> => {
+    const groupedTokensTxs: Record<TokenAddress, WalletAccountTransaction[]> = {};
+
+    txs.forEach(tx => {
+        if (tx.tokens && tx.tokens.length > 0) {
+            tx.tokens.forEach(token => {
+                const groupKey = token.contract as TokenAddress;
+                if (!groupedTokensTxs[groupKey]) {
+                    groupedTokensTxs[groupKey] = [];
+                }
+                groupedTokensTxs[groupKey].push(tx);
+            });
+        }
+    });
+
+    return groupedTokensTxs;
 };

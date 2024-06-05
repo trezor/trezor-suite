@@ -1,4 +1,5 @@
-import { configureStore, Middleware } from '@reduxjs/toolkit';
+import { configureStore, Middleware, StoreEnhancer } from '@reduxjs/toolkit';
+import devToolsEnhancer from 'redux-devtools-expo-dev-plugin';
 
 import { prepareFiatRatesMiddleware } from '@suite-common/wallet-core';
 import { messageSystemMiddleware } from '@suite-native/message-system';
@@ -20,9 +21,10 @@ const middlewares: Middleware[] = [
     prepareTransactionCacheMiddleware(extraDependencies),
 ];
 
+const enhancers: Array<StoreEnhancer<any, any>> = [];
+
 if (__DEV__) {
-    const createDebugger = require('redux-flipper').default;
-    middlewares.push(createDebugger());
+    enhancers.push(devToolsEnhancer({ maxAge: 150 })!);
 }
 
 export const initStore = async () =>
@@ -36,4 +38,5 @@ export const initStore = async () =>
                 serializableCheck: false,
                 immutableCheck: false,
             }).concat(middlewares),
+        enhancers: defaultEnhancers => defaultEnhancers.concat(enhancers),
     });

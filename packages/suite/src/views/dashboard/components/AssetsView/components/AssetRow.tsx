@@ -32,7 +32,7 @@ const StyledCol = styled.div<{ $isLastRow?: boolean }>`
     align-items: center;
     padding: 16px 0;
     border-bottom: ${({ $isLastRow, theme }) =>
-        $isLastRow ? 'none' : `1px solid ${theme.borderOnElevation1}`};
+        $isLastRow ? 'none' : `1px solid ${theme.borderElevation2}`};
 `;
 
 const CoinLogoWrapper = styled(StyledCol)`
@@ -190,10 +190,10 @@ export const AssetRow = memo(
                     </FailedCol>
                 )}
                 <ExchangeRateWrapper $isLastRow={isLastRow}>
-                    {!isTestnet(symbol) && <PriceTicker symbol={symbol} compact />}
+                    {!isTestnet(symbol) && <PriceTicker symbol={symbol} />}
                 </ExchangeRateWrapper>
                 <ExchangeRateWrapper7Days $isLastRow={isLastRow}>
-                    {!isTestnet(symbol) && <TrendTicker symbol={symbol} compact />}
+                    {!isTestnet(symbol) && <TrendTicker symbol={symbol} />}
                 </ExchangeRateWrapper7Days>
                 <BuyButtonWrapper $isLastRow={isLastRow}>
                     {!isTestnet(symbol) && (

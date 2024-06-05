@@ -1,7 +1,7 @@
 import { test, expect, Page, devices } from '@playwright/test';
 import { ensureDirectoryExists } from '@trezor/node-utils';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { log, waitAndClick } from '../support/helpers';
+import { formatUrl, log, waitAndClick } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -21,6 +21,7 @@ const openPopup = async (page: Page) =>
             // It is important to call waitForEvent before click to set up waiting.
             page.waitForEvent('popup'),
             // Opens popup.
+            page.click("div[data-test='@api-playground/collapsible-box']"),
             page.click("button[data-test='@submit-button']"),
         ])
     )[0];
@@ -36,7 +37,8 @@ test('unsupported browser', async ({ browser }) => {
         ...safari,
     });
     const page = await context.newPage();
-    await page.goto(`${url}#/method/getPublicKey`);
+    await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
+    await waitAndClick(page, ['@api-playground/collapsible-box']);
     await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForSelector('text=Unsupported browser');
@@ -52,7 +54,8 @@ test('outdated-browser', async ({ browser }) => {
             'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:100.0) Gecko/20100101 Firefox/50.0',
     });
     const page = await context.newPage();
-    await page.goto(`${url}#/method/getPublicKey`);
+    await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
+    await waitAndClick(page, ['@api-playground/collapsible-box']);
     await page.waitForSelector("button[data-test='@submit-button']", { state: 'visible' });
     popup = await openPopup(page);
     await popup.waitForLoadState('load');
@@ -84,7 +87,7 @@ test.describe(() => {
                 ...f.device,
             });
             const page = await context.newPage();
-            await page.goto(`${url}#/method/getPublicKey`);
+            await page.goto(formatUrl(url, `methods/bitcoin/getPublicKey/`));
 
             popup = await openPopup(page);
             // unfortunately webusb now does not work for connect-popup, so mobile chrome won't run even if it technically could

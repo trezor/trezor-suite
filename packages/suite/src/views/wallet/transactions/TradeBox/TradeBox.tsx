@@ -1,18 +1,12 @@
 import styled from 'styled-components';
-import { differenceInMinutes } from 'date-fns';
-import { FormattedRelativeTime } from 'react-intl';
 
 import { getMainnets } from '@suite-common/wallet-config';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
 import { spacingsPx, typography } from '@trezor/theme';
-import { useSelector } from 'src/hooks/suite';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
 import { Card, CoinLogo, variables } from '@trezor/components';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
-import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const StyledCard = styled(Card)`
     flex-flow: row wrap;
@@ -47,29 +41,23 @@ const Right = styled.div`
 
 const CoinWrapper = styled.div`
     display: flex;
-    flex-direction: column;
-    gap: ${spacingsPx.xxxs};
+    gap: ${spacingsPx.xs};
 `;
 
 const Coin = styled.div`
     display: flex;
-    align-items: center;
+    flex-direction: column;
 `;
 
 const CoinName = styled.div`
     ${typography.highlight}
-    margin-left: 6px;
+    margin-left: ${spacingsPx.xxxs};
 `;
 
 const CoinSymbol = styled.div`
     ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
-    margin-left: 8px;
-`;
-
-const UpdatedAt = styled.div`
-    ${typography.hint}
-    color: ${({ theme }) => theme.textSubdued};
+    margin-left: ${spacingsPx.xxxs};
 `;
 
 interface TradeBoxProps {
@@ -78,51 +66,25 @@ interface TradeBoxProps {
 
 export const TradeBox = ({ account }: TradeBoxProps) => {
     const network = getMainnets().find(n => n.symbol === account.symbol);
-    const localCurrency = useSelector(selectLocalCurrency);
-    const fiatRateKey = getFiatRateKey(account.symbol, localCurrency);
-    const fiatRates = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
-    if (!network) {
-        return null;
-    }
-
-    const currentRateTimestamp = fiatRates?.lastTickerTimestamp;
-    const getRateAge = (timestamp: number) => differenceInMinutes(new Date(timestamp), new Date());
+    if (!network) return null;
 
     return (
         <div>
             <Title>
                 <Translation id="TR_NAV_TRADE" />
             </Title>
-
             <StyledCard>
                 <Left>
                     <CoinWrapper>
+                        <CoinLogo size={24} symbol={network.symbol} />
                         <Coin>
-                            <CoinLogo size={20} symbol={network.symbol} />
                             <CoinName>{network.name}</CoinName>
                             <CoinSymbol>{network.symbol.toUpperCase()}</CoinSymbol>
                         </Coin>
-
-                        <UpdatedAt>
-                            <Translation
-                                id="TR_LAST_UPDATE"
-                                values={{
-                                    value: (
-                                        <FormattedRelativeTime
-                                            value={getRateAge(currentRateTimestamp ?? 0) * 60}
-                                            numeric="auto"
-                                            updateIntervalInSeconds={10}
-                                        />
-                                    ),
-                                }}
-                            />
-                        </UpdatedAt>
                     </CoinWrapper>
-
                     <TradeBoxPrices account={account} />
                 </Left>
-
                 <Right>
                     <TradeBoxMenu account={account} />
                 </Right>

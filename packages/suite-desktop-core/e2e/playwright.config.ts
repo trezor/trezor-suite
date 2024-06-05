@@ -12,7 +12,7 @@ const config: PlaywrightTestConfig = {
         testIdAttribute: 'data-test',
     },
     reportSlowTests: null,
-    reporter: [['list']],
+    reporter: [['list'], ['@currents/playwright']],
     timeout: 1000 * 60 * 30,
     outputDir: path.join(__dirname, 'test-results'),
 };

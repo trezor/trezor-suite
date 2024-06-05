@@ -13,8 +13,8 @@ runs:
       # This step should fetch some reasonably small amount branches and commits that Nx affected needs
       # It's much faster than doing git fetch depth=1 of all commits
       run: |
-        git fetch origin ${{ steps.extract_branch.outputs.branch }} --deepen=150
-        git fetch origin develop --deepen=200
+        git fetch origin ${{ steps.extract_branch.outputs.branch }} --depth=150
+        git fetch origin develop --depth=200
 
     # For PRs from forks we need to fetch everything or it will fail
     - name: Fetch everything if it's PR from a fork

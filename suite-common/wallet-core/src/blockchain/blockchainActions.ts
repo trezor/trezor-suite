@@ -4,24 +4,24 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import type { CustomBackend, NetworksFees } from '@suite-common/wallet-types';
 import type { Timeout } from '@trezor/type-utils';
 
-export const blockchainActionsPrefix = '@common/wallet-core/blockchain';
+export const BLOCKCHAIN_MODULE_PREFIX = '@common/wallet-core/blockchain';
 
 const connected = createAction(
-    `${blockchainActionsPrefix}/connected`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/connected`,
     (payload: NetworkSymbol) => ({
         payload,
     }),
 );
 
 const updateFee = createAction(
-    `${blockchainActionsPrefix}/updateFee`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/updateFee`,
     (payload: Partial<NetworksFees>) => ({
         payload,
     }),
 );
 
 const synced = createAction(
-    `${blockchainActionsPrefix}/synced`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/synced`,
     (payload: { symbol: NetworkSymbol; timeout?: Timeout }) => ({
         payload,
     }),
@@ -31,7 +31,7 @@ export type SetBackendPayload =
     | CustomBackend
     | { coin: NetworkSymbol; type: 'default'; urls?: unknown };
 const setBackend = createAction(
-    `${blockchainActionsPrefix}/setBackend`,
+    `${BLOCKCHAIN_MODULE_PREFIX}/setBackend`,
     (payload: SetBackendPayload) => ({
         payload,
     }),

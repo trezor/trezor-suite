@@ -1,0 +1,73 @@
+import { EthereumSignMessage } from '@trezor/connect/src/types/api/ethereum';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import signMessage from '../../../data/methods/ethereum/signMessage.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Sign message', legacyConfig: signMessage[0] },
+        {
+            title: 'Advanced schema',
+            method: 'ethereumSignMessage',
+            schema: EthereumSignMessage,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `3`. [read more](/details/path)',
+    message: 'message to sign in plain text',
+    hex: 'convert message from hex',
+};
+
+## Ethereum: sign message
+
+Asks device to sign a message using the private key derived by given BIP32 path.
+
+```javascript
+const result = await TrezorConnect.ethereumSignMessage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### EthereumSignMessage
+
+<ParamsTable schema={EthereumSignMessage} descriptions={paramDescriptions} />
+
+### Example
+
+```javascript
+TrezorConnect.ethereumSignMessage({
+    path: "m/44'/60'/0'",
+    message: 'example message',
+});
+```
+
+### Result
+
+[MessageSignature type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        address: string,
+        signature: string,
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

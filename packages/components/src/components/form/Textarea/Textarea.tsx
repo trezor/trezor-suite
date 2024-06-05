@@ -35,7 +35,7 @@ const TextareaWrapper = styled(InputWrapper)<{
     padding: ${spacingsPx.xl} 0 ${spacingsPx.md};
 
     &:focus-within {
-        border-color: ${({ theme }) => theme.borderOnElevation0};
+        border-color: ${({ theme }) => theme.borderElevation1};
     }
 
     /* overwrites :read-only:not(:disabled) since it's always true for div */
@@ -72,7 +72,7 @@ const TextareaLabel = styled(Label)`
 export interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
     isDisabled?: boolean;
     label?: ReactNode;
-    labelHoverAddon?: ReactNode;
+    labelHoverRight?: ReactNode;
     labelRight?: ReactNode;
     innerRef?: Ref<HTMLTextAreaElement>;
     /**
@@ -90,7 +90,7 @@ export const Textarea = ({
     className,
     value,
     maxLength,
-    labelHoverAddon,
+    labelHoverRight,
     isDisabled,
     innerRef,
     label,
@@ -114,7 +114,11 @@ export const Textarea = ({
             onMouseLeave={() => setIsHovered(false)}
             $hasBottomPadding={hasBottomPadding === true && bottomText === null}
         >
-            <TopAddons isHovered={isHovered} hoverAddon={labelHoverAddon} addonRight={labelRight} />
+            <TopAddons
+                isHovered={isHovered}
+                hoverAddonRight={labelHoverRight}
+                addonRight={labelRight}
+            />
 
             <TextareaWrapper $inputState={inputState} disabled={isDisabled} $elevation={elevation}>
                 <StyledTextarea
@@ -129,6 +133,7 @@ export const Textarea = ({
                     data-test={dataTest}
                     placeholder={placeholder || ''} // needed for uncontrolled inputs
                     ref={innerRef}
+                    value={value}
                     {...rest}
                 />
 

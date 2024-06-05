@@ -9,6 +9,7 @@
 
 MAIN_BRANCH=develop
 FILEPATH=packages/suite/package.json
+ORIGIN='origin'
 
 if ! git diff --cached --quiet; then
   tput setaf 1
@@ -50,28 +51,28 @@ git switch -c release/"$RELEASE_MONTH" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*)/\1$RELEASE_VERSION\2/" $FILEPATH
 git add $FILEPATH
 git commit -m "chore(suite): bump Suite version to $RELEASE_VERSION [RELEASE ONLY]"
-git push
+git push --set-upstream $ORIGIN "$(git branch --show-current)"
 
 echo Creating testing branch "$TEST_UPGRADE_VERSION"...
 git switch -c release/test-"$TEST_UPGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_UPGRADE_VERSION\2/" $FILEPATH
 git add $FILEPATH
 git commit -m "chore(suite): set Suite version to $TEST_UPGRADE_VERSION for testing [RELEASE ONLY]"
-git push
+git push --set-upstream $ORIGIN "$(git branch --show-current)"
 
 echo Creating testing branch "$TEST_DOWNGRADE_VERSION"...
 git switch -c release/test-"$TEST_DOWNGRADE_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$TEST_DOWNGRADE_VERSION\2/" $FILEPATH
 git add $FILEPATH
 git commit -m "chore(suite): set Suite version to $TEST_DOWNGRADE_VERSION for testing [RELEASE ONLY]"
-git push
+git push --set-upstream $ORIGIN "$(git branch --show-current)"
 
 echo Bumping beta version to "$BETA_VERSION"...
 git switch -c chore/bump-suite-version-"$BETA_VERSION" $MAIN_BRANCH
 sed -i '' -E "s/(\"suiteVersion\": \")[^\"]*(\".*$)/\1$BETA_VERSION\2/" $FILEPATH
 git add $FILEPATH
 git commit -m "chore(suite): bump beta version to $BETA_VERSION"
-git push
+git push --set-upstream $ORIGIN "$(git branch --show-current)"
 
 echo Creating pull request...
 if ! OUTPUT=$(gh pr create --repo trezor/trezor-suite --base $MAIN_BRANCH --title "Bump beta version to $BETA_VERSION" --body "Automatically generated PR to bump beta Suite version" --label deployment --web 2>&1); then

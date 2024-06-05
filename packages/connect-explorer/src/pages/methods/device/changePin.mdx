@@ -1,0 +1,63 @@
+import { Callout } from 'nextra/components';
+
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import changePin from '../../../data/methods/management/changePin.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Change PIN', legacyConfig: changePin[0] },
+        { title: 'Advanced schema', method: 'changePin', schema: PROTO.ChangePin },
+    ]}
+/>
+
+export const paramDescriptions = {
+    remove: '',
+};
+
+## Change pin
+
+<Callout type="error">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
+
+This method initiates pin change sequence.
+
+```javascript
+const result = await TrezorConnect.changePin(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### PROTO.ChangePin
+
+<ParamsTable schema={PROTO.ChangePin} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "PIN enabled" | "PIN removed"
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

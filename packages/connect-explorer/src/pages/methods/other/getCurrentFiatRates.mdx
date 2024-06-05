@@ -1,0 +1,56 @@
+import { Type } from '@sinclair/typebox';
+
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import { ParamsTable } from '../../../components/ParamsTable';
+
+export const GetCurrentFiatRatesSchema = Type.Object({
+    currencies: Type.Array(Type.String(), { description: 'Currency symbols (eur, usd, czk, ...)' }),
+    coin: Type.String({ description: 'Coin symbol (btc, eth, bch, ...)', example: 'btc' }),
+});
+
+<ApiPlayground
+    options={[
+        {
+            title: 'GetCurrentFiatRates',
+            schema: GetCurrentFiatRatesSchema,
+            method: 'blockchainGetCurrentFiatRates',
+        },
+    ]}
+/>
+
+## Get current fiat rates
+
+Retrieves current selected exchange rates for selected coin.
+
+```javascript
+const result = await TrezorConnect.blockchainGetCurrentFiatRates(params);
+```
+
+### Params
+
+<ParamsTable schema={GetCurrentFiatRatesSchema} />
+
+### Example
+
+Return current EUR, USD, BTC exchange rates for ETH:
+
+```javascript
+const result = await TrezorConnect.blockchainGetCurrentFiatRates({
+    currencies: ['eur', 'czk', 'btc'],
+    coin: 'eth',
+});
+```
+
+### Result
+
+[GetCurrentFiatRates type](https://github.com/trezor/trezor-suite/blob/develop/packages/blockchain-link/src/types/responses.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        rates: {btc: 0.07461017, eur: 1768.36, usd: 1802.17},
+        ts: 1659962048
+    }
+}
+```

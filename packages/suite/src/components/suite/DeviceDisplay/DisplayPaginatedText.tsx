@@ -21,7 +21,6 @@ const Container = styled.div`
 
 type DisplayPaginatedTextProps = {
     isPixelType: boolean;
-    'data-test'?: string;
     text: string;
     deviceModel: DeviceModelInternal;
 };
@@ -77,7 +76,6 @@ const Row = ({
 
 export const DisplayPaginatedText = ({
     isPixelType,
-    'data-test': dataTest,
     text,
     deviceModel,
 }: DisplayPaginatedTextProps) => {
@@ -93,7 +91,10 @@ export const DisplayPaginatedText = ({
                 const isLastPage = pageIndex === pages.length - 1;
 
                 return (
-                    <Page key={`page-${pageIndex}`} data-test={isFirstPage ? dataTest : undefined}>
+                    <Page
+                        key={`page-${pageIndex}`}
+                        data-test={isFirstPage ? '@device-display/paginated-text' : undefined}
+                    >
                         {page.rows.map((row, index) => (
                             <Row
                                 isPrevPageIconOnDevice={isPrevPageIconOnDevice}

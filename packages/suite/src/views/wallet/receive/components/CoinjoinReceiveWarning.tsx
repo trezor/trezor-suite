@@ -1,14 +1,10 @@
 import styled, { useTheme } from 'styled-components';
 import { darken } from 'polished';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { Button, Icon, variables, Warning } from '@trezor/components';
 import { hideCoinjoinReceiveWarning } from 'src/actions/suite/suiteActions';
-import { formatAmount, getAccountDecimals } from '@suite-common/wallet-utils';
-import { UNECONOMICAL_COINJOIN_THRESHOLD } from 'src/services/coinjoin';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectIsAccountWithRatesByKey } from '@suite-common/wallet-core';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 const InnerContainer = styled.div`
     justify-content: space-between;
@@ -69,10 +65,6 @@ const StyledButton = styled(Button)`
 
 export const CoinjoinReceiveWarning = () => {
     const account = useSelector(selectSelectedAccount);
-    const localCurrency = useSelector(selectLocalCurrency);
-    const isAccountWithRate = useSelector(state =>
-        selectIsAccountWithRatesByKey(state, account?.key || '', localCurrency),
-    );
 
     const theme = useTheme();
     const dispatch = useDispatch();
@@ -80,9 +72,6 @@ export const CoinjoinReceiveWarning = () => {
     if (!account) {
         return null;
     }
-
-    const { symbol } = account;
-    const decimals = getAccountDecimals(symbol) || 8;
 
     return (
         <Container>
@@ -100,30 +89,7 @@ export const CoinjoinReceiveWarning = () => {
                             </li>
 
                             <li>
-                                <Translation
-                                    id="TR_UNECO_COINJOIN_RECEIVE_WARNING"
-                                    values={{
-                                        crypto: (
-                                            <FormattedCryptoAmount
-                                                value={formatAmount(
-                                                    UNECONOMICAL_COINJOIN_THRESHOLD,
-                                                    decimals,
-                                                )}
-                                                symbol={symbol}
-                                            />
-                                        ),
-                                        fiat: (
-                                            <FiatValue
-                                                amount={formatAmount(
-                                                    UNECONOMICAL_COINJOIN_THRESHOLD,
-                                                    decimals,
-                                                )}
-                                                symbol={symbol}
-                                            />
-                                        ),
-                                        isAccountWithRate,
-                                    }}
-                                />
+                                <Translation id="TR_UNECO_COINJOIN_RECEIVE_WARNING" />
                             </li>
                         </WarningList>
                     </Text>

@@ -1,0 +1,45 @@
+name: "[Test] transport e2e"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  push:
+    branches: [release/connect/**]
+  pull_request:
+    paths:
+      - "packages/transport/**"
+      - "packages/protobuf/**"
+      - "packages/protocol/**"
+      - "packages/trezor-user-env-link/**"
+      - "packages/utils/**"
+      - "docker/docker-transport-test.sh"
+      - "docker/docker-compose.transport-test.yml"
+      - ".github/workflows/connect-transport-e2e-test.yml"
+      - "yarn.lock"
+  workflow_dispatch:
+
+jobs:
+  transport-e2e:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    env:
+      COMPOSE_FILE: ./docker/docker-compose.transport-test.yml
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/transport
+
+      - name: Run E2E tests
+        run: ./docker/docker-transport-test.sh

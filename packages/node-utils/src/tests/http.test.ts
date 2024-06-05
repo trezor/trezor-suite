@@ -1,4 +1,4 @@
-import { HttpServer, parseBodyJSON, parseBodyText, allowOrigins } from '../http';
+import { HttpServer, parseBodyJSON, parseBodyText, allowReferers } from '../http';
 
 type Events = {
     foo: (arg: string) => void;
@@ -14,6 +14,7 @@ describe('HttpServer', () => {
     let server: HttpServer<Events>;
     beforeEach(() => {
         server = new HttpServer<Events>({
+            // @ts-expect-error
             logger: muteLogger,
         });
     });
@@ -45,6 +46,7 @@ describe('HttpServer', () => {
     });
 
     test('a port can be passed to the constructor', async () => {
+        // @ts-expect-error
         server = new HttpServer<Events>({ logger: muteLogger, port: 65526 });
         await server.start();
         expect(server.getServerAddress()).toMatchObject({
@@ -119,22 +121,19 @@ describe('HttpServer', () => {
         await new Promise(resolve => setTimeout(resolve, 500));
         controller.abort();
         await new Promise(resolve => setTimeout(resolve, 500));
-        expect(muteLogger.info).toHaveBeenLastCalledWith(
-            expect.any(String),
-            'Request /foo aborted',
-        );
+        expect(muteLogger.info).toHaveBeenLastCalledWith('Request GET /foo aborted');
     });
 
-    test('allowOrigin middleware lets request with allowed origin through', async () => {
+    test('allowReferer middleware lets request with allowed referer through', async () => {
         const handler = jest.fn((_request, response) => {
             response.end('ok');
         });
 
-        server.get('/foo', [allowOrigins(['*']), allowOrigins(['*.meow.com']), handler]);
+        server.get('/foo', [allowReferers(['*']), allowReferers(['*.meow.com']), handler]);
 
         server.get('/foo-bar', [
             // empty string is allowed origin when referer is not defined
-            allowOrigins(['']),
+            allowReferers(['']),
             handler,
         ]);
         await server.start();

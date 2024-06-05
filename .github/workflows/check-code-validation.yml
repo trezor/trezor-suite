@@ -1,0 +1,130 @@
+name: "[Check] Validation"
+
+on: [pull_request]
+
+env:
+  NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_GHACTIONS_TOKEN }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  setup-and-cache:
+    name: Setup and Cache Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+      - name: Get yarn cache directory path
+        id: yarn-cache-dir-path
+        run: echo "dir=$(yarn config get cacheFolder)" >> $GITHUB_OUTPUT
+      - name: Yarn Cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+          key: yarn-cache-folder-${{ hashFiles('**/yarn.lock', '.yarnrc.yml') }}
+          restore-keys: |
+            yarn-cache-folder-
+      # We can skip the build for all dependencies, even for those whitelisted, because this process is used only to validate the yarn.lock file and populate the cache.
+      - name: Install deps
+        run: |
+          yarn --immutable --mode=skip-build
+
+  type-check:
+    name: Type Checking
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Type Check
+        run: yarn nx:type-check
+
+  lint:
+    name: Linting and formatting
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+
+      - name: ESlint Cache
+        uses: actions/cache@v4
+        with:
+          path: |
+            **/.eslintcache
+            !**/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('**/.eslintrc.js') }}
+      - name: Lint JS
+        run: yarn lint:js --cache-strategy content
+      - name: Lint Styles
+        run: yarn nx:lint:styles
+
+  unit-tests:
+    name: Unit Tests
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Unit Tests
+        run: yarn nx:test-unit
+
+  build-libs-for-publishing:
+    name: "Build libs for publishing"
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Build Libs
+        run: yarn nx:build:libs
+
+  other-checks:
+    name: Other Checks
+    needs: setup-and-cache
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: "Checkout branches for Nx"
+        uses: ./.github/actions/nx-checkout
+      - name: "Minimal yarn install"
+        uses: ./.github/actions/minimal-yarn-install
+      - name: Check Files for Correct Formatting
+        run: yarn nx format:check
+      - name: Verify TS Project References
+        run: yarn verify-project-references
+      - name: Verify Workspace Resolutions
+        run: yarn check-workspace-resolutions
+      - name: Msg-system Config Validation
+        run: yarn workspace @suite-common/message-system validate-config
+      - name: Translation Duplicates
+        run: yarn workspace @trezor/suite translations:list-duplicates

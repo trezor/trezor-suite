@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react';
 
-import type { NotificationEntry } from '@suite-common/toast-notifications';
-import { deviceActions } from '@suite-common/wallet-core';
+import { AUTH_DEVICE, type NotificationEntry } from '@suite-common/toast-notifications';
 import { DEVICE } from '@trezor/connect';
 
 import { NotificationViewProps } from 'src/components/suite';
@@ -134,6 +133,8 @@ export const NotificationRenderer = ({
             return error(render, notification, 'METADATA_PROVIDER_AUTH_ERROR');
         case 'metadata-unexpected-error':
             return error(render, notification, 'METADATA_PROVIDER_UNEXPECTED_ERROR');
+        case 'estimated-fee-error':
+            return info(render, notification, 'TOAST_ESTIMATED_FEE_ERROR');
         case 'auto-updater-error':
             return error(render, notification, 'TOAST_AUTO_UPDATER_ERROR', {
                 state: notification.state,
@@ -216,7 +217,7 @@ export const NotificationRenderer = ({
         case 'coinjoin-interrupted':
             return error(render, notification, 'TR_COINJOIN_INTERRUPTED_ERROR');
         // Events:
-        case deviceActions.authDevice.type:
+        case AUTH_DEVICE:
             return info(render, notification, 'EVENT_WALLET_CREATED');
         case DEVICE.CONNECT:
             return (

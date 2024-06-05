@@ -15,7 +15,7 @@ export type AccountEntityKeys = {
 
 export type LabelableEntityKeysByVersion = DeviceEntityKeys | AccountEntityKeys;
 
-export type MetadataAddPayload =
+export type MetadataAddPayload = { skipSave?: boolean } & (
     | {
           type: 'outputLabel';
           entityKey: string;
@@ -41,7 +41,8 @@ export type MetadataAddPayload =
           entityKey: string;
           defaultValue: string;
           value?: string;
-      };
+      }
+);
 
 // TODO version 2.0.0
 // export interface MetadataItem {

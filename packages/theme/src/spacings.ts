@@ -1,4 +1,5 @@
 export const spacings = {
+    zero: 0,
     xxxs: 2,
     xxs: 4,
     xs: 8,
@@ -24,6 +25,7 @@ export const spacingsPx = (Object.keys(spacings) as Array<SpacingSize>).reduce(
 
 export type Spacings = typeof spacings;
 export type Spacing = keyof typeof spacings;
+export type SpacingValues = Spacings[Spacing];
 
 export const nativeSpacings = {
     extraSmall: 4,

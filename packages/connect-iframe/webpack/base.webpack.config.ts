@@ -13,7 +13,9 @@ const DIST = path.resolve(__dirname, '../build');
 // Because of Expo EAS, we need to use the commit hash from expo to avoid failing git command inside EAS
 // because we need to call `yarn build:libs during native build`
 const commitHash =
-    process.env.EAS_BUILD_GIT_COMMIT_HASH || execSync('git rev-parse HEAD').toString().trim();
+    process.env.EAS_BUILD_GIT_COMMIT_HASH ||
+    process.env.GITHUB_SHA ||
+    execSync('git rev-parse HEAD').toString().trim();
 
 export const config: webpack.Configuration = {
     target: 'web',
@@ -106,6 +108,9 @@ export const config: webpack.Configuration = {
         hints: false,
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env.IS_CODESIGN_BUILD': `"${process.env.IS_CODESIGN_BUILD === 'true'}"`, // to keep it as string "true"/"false" and not boolean
+        }),
         // provide fallback for global objects.
         // resolve.fallback will not work since those objects are not imported as modules.
         new webpack.ProvidePlugin({

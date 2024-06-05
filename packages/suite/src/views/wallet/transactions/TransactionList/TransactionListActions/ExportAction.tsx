@@ -6,7 +6,8 @@ import { useDispatch } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { exportTransactionsThunk, fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet';
 import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
@@ -115,19 +116,16 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
                     key: 'export',
                     options: [
                         {
-                            key: 'export-csv',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'CSV' }} />,
                             onClick: () => runExport('csv'),
                             'data-test': `${dataTest}/csv`,
                         },
                         {
-                            key: 'export-pdf',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'PDF' }} />,
                             onClick: () => runExport('pdf'),
                             'data-test': `${dataTest}/pdf`,
                         },
                         {
-                            key: 'export-json',
                             label: <Translation id="TR_EXPORT_AS" values={{ as: 'JSON' }} />,
                             onClick: () => runExport('json'),
                             'data-test': `${dataTest}/json`,

@@ -16,3 +16,7 @@ charset = utf-8
 end_of_line = unset
 insert_final_newline = unset
 trim_trailing_whitespace = unset
+
+# Use indentation of 2 spaces for all yaml files.
+[*.{yaml,yml}]
+indent_size = 2

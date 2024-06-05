@@ -45,8 +45,8 @@ describe('bridge', () => {
                 await TrezorUserEnvLink.send({ type: 'emulator-start', ...emulatorStartOpts });
                 await TrezorUserEnvLink.send({ type: 'emulator-setup', ...emulatorSetupOpts });
                 await TrezorUserEnvLink.send({ type: 'bridge-start', version: bridgeVersion });
-
-                bridge = new BridgeTransport({ messages });
+                const abortController = new AbortController();
+                bridge = new BridgeTransport({ messages, signal: abortController.signal });
                 await bridge.init().promise;
 
                 const enumerateResult = await bridge.enumerate().promise;

@@ -1,0 +1,147 @@
+name: "Connect Deploy Action"
+description: "Releases connect with connect explorer and popup"
+inputs:
+  awsRoleToAssume:
+    description: "AWS role to assume"
+    required: true
+    type: string
+  awsRegion:
+    description: "AWS region"
+    required: true
+    type: string
+  serverHostname:
+    description: "Server hostname (example: dev.suite.sldev.cz)"
+    type: string
+    required: true
+  serverPath:
+    description: "Server path (example: connect)"
+    type: string
+    required: true
+  buildArtifacts:
+    description: "Configures the build of artifacts"
+    type: string
+    required: false
+  uploadArtifacts:
+    description: "Configures if to upload built artifacts"
+    type: string
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        submodules: true
+
+    # Pull only files needed for connect to save LFS bandwidth
+    - name: "Pull LFS files for connect"
+      shell: bash
+      run: git lfs pull --include "packages/connect-common/files/**/*"
+
+    - name: Configure aws credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: ${{ inputs.awsRoleToAssume }}
+        aws-region: ${{ inputs.awsRegion }}
+
+    - name: Setup node
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        echo -e "\nenableScripts: false" >> .yarnrc.yml
+        yarn workspaces focus @trezor/connect-iframe @trezor/connect-web @trezor/connect-popup @trezor/connect-webextension @trezor/connect-explorer-theme @trezor/connect-explorer
+
+    - name: Build connect-web
+      shell: bash
+      run: |
+        yarn workspace @trezor/connect-web build
+
+    - name: Check connect-web build size
+      shell: bash
+      run: ./packages/connect-web/scripts/check-inline-build-size.sh
+
+    - name: Build connect-iframe
+      shell: bash
+      run: |
+        yarn workspace @trezor/connect-iframe build
+
+    - name: Build connect-popup
+      shell: bash
+      run: |
+        yarn workspace @trezor/connect-popup build
+
+    - name: Build connect-webextension
+      shell: bash
+      run: |
+        yarn workspace @trezor/connect-webextension build
+
+    - name: Build connect-explorer-theme
+      shell: bash
+      run: |
+        yarn workspace @trezor/connect-explorer-theme build:all
+
+    - name: Build connect-explorer
+      shell: bash
+      env:
+        NODE_ENV: "production"
+        __TREZOR_CONNECT_SRC: /${{ inputs.serverPath }}/
+        CONNECT_EXPLORER_ASSET_PREFIX: /${{ inputs.serverPath }}
+        CONNECT_EXPLORER_BASE_PATH: /${{ inputs.serverPath }}
+      run: |
+        yarn workspace @trezor/connect-explorer build
+
+    # this step should upload build result to s3 bucket DEV_SERVER_HOSTNAME using awscli
+    - name: Upload connect to ${{ inputs.serverHostname }}
+      shell: bash
+      env:
+        DEPLOY_PATH: s3://${{ inputs.serverHostname }}/${{ inputs.serverPath }}
+      run: |
+        echo "DEPLOY_PATH is set to ${DEPLOY_PATH}"
+        mkdir -p tmp_build_directory
+        cp -R ./packages/connect-iframe/build/* tmp_build_directory/
+        cp -R ./packages/connect-popup/build/* tmp_build_directory/
+        cp -R ./packages/connect-web/build/* tmp_build_directory/
+        cp -R ./packages/connect-explorer/build/* tmp_build_directory/
+        aws s3 sync --delete tmp_build_directory/ "${DEPLOY_PATH}"
+
+    - name: Build connect-examples webextension
+      if: inputs.buildArtifacts == 'true'
+      shell: bash
+      env:
+        FULL_URL: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
+      run: |
+        echo "FULL_URL is set to ${FULL_URL}"
+        node ./packages/connect-examples/update-webextensions.js --trezor-connect-src "${FULL_URL}"
+        node ./packages/connect-examples/update-webextensions-sw.js
+
+    - name: Build connect-explorer-webextension
+      if: inputs.buildArtifacts == 'true'
+      shell: bash
+      env:
+        NODE_ENV: "production"
+        __TREZOR_CONNECT_SRC: https://${{ inputs.serverHostname }}/${{ inputs.serverPath }}/
+      run: |
+        yarn workspace @trezor/connect-explorer build:webextension
+
+    - name: Upload connect-example webextension artifacts
+      if: inputs.uploadArtifacts == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: connect-example-webextension
+        path: |
+          packages/connect-examples/webextension-mv2/build
+          packages/connect-examples/webextension-mv3/build
+          packages/connect-examples/webextension-mv3-sw/build
+
+    - name: Upload connect-explorer webextension artifacts
+      if: inputs.uploadArtifacts == 'true'
+      uses: actions/upload-artifact@v4
+      with:
+        name: connect-explorer-webextension
+        path: |
+          packages/connect-explorer/build-webextension

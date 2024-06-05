@@ -1,0 +1,68 @@
+import { Callout } from 'nextra/components';
+
+import { ChangeLanguage } from '@trezor/connect/src/types/api/changeLanguage';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import changeLanguage from '../../../data/methods/management/changeLanguage.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Using select', legacyConfig: changeLanguage[0] },
+        { title: 'Using binary', legacyConfig: changeLanguage[1] },
+        { title: 'Advanced schema', method: 'changeLanguage', schema: ChangeLanguage },
+    ]}
+/>
+
+export const paramDescriptions = {
+    language:
+        '(cs-CZ, de-DE) whatever language variant is available for given model and firmware version',
+    baseUrl:
+        'where language blob should be downloaded from. Default value is https://data.trezor.io',
+    binary: 'directly provide language file',
+};
+
+## Change language
+
+<Callout type="error">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
+
+This method initiates language change.
+
+```javascript
+const result = await TrezorConnect.changeLanguage(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### ChangeLanguage
+
+<ParamsTable schema={ChangeLanguage} descriptions={paramDescriptions} />
+
+### Result
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: "Language changed"
+    }
+}
+
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

@@ -3,7 +3,7 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams } from './common/paramsValidator';
 import { ERRORS } from '../constants';
-import { findBackend, setCustomBackend, initBlockchain } from '../backend/BlockchainLink';
+import { setCustomBackend, reconnectAllBackends } from '../backend/BlockchainLink';
 import { getCoinInfo } from '../data/coinInfo';
 import type { CoinInfo } from '../types';
 
@@ -45,11 +45,7 @@ export default class BlockchainSetCustomBackend extends AbstractMethod<
     }
 
     async run() {
-        const current = findBackend(this.params.coinInfo.shortcut);
-        if (current) {
-            current.disconnect();
-            await initBlockchain(this.params.coinInfo, this.postMessage);
-        }
+        await reconnectAllBackends(this.params.coinInfo);
 
         return true;
     }

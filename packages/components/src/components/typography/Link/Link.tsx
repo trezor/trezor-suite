@@ -3,10 +3,12 @@ import styled, { css, useTheme } from 'styled-components';
 import { Icon, IconProps } from '../../assets/Icon/Icon';
 import { TypographyStyle, spacings, typography, typographyStylesBase } from '@trezor/theme';
 
-const A = styled.a<{
+type AProps = {
     $type?: TypographyStyle;
     $variant?: 'default' | 'nostyle' | 'underline';
-}>`
+};
+
+const A = styled.a<AProps>`
     ${({ $type }) => ($type ? typography[$type] : typography.body)}
     text-decoration: none;
     cursor: pointer;
@@ -51,7 +53,7 @@ interface LinkProps {
     onClick?: (event: MouseEvent<any>) => void;
     children?: ReactNode;
     className?: string;
-    variant?: 'default' | 'nostyle' | 'underline';
+    variant?: 'default' | 'nostyle' | 'underline'; // Todo: refactor, variant has different meaning in our design system
     icon?: IconProps['icon'];
     iconProps?: IconProps;
     'data-test'?: string;
@@ -73,6 +75,12 @@ const Link = ({
 
     const iconSize = typographyStylesBase[type || 'body'].fontSize;
 
+    const {
+        variant: iconVariant,
+        color: iconColor,
+        ...restIconVariant
+    } = iconProps ?? { variant: undefined };
+
     return (
         <A
             href={href}
@@ -89,7 +97,14 @@ const Link = ({
             {children}
             {icon && (
                 <IconWrapper>
-                    <Icon size={iconSize} icon={icon} color={theme.iconSubdued} {...iconProps} />
+                    <Icon
+                        size={iconSize}
+                        icon={icon}
+                        {...(variant !== undefined
+                            ? { variant: iconVariant }
+                            : { color: iconColor ?? theme.iconSubdued })}
+                        {...restIconVariant}
+                    />
                 </IconWrapper>
             )}
         </A>

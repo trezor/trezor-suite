@@ -57,7 +57,7 @@ export default [
                 data: select
                     .filter(c => c.affectedValue.indexOf('m/49') >= 0)
                     .map(v => {
-                        const example = examples[v.value];
+                        const example = examples[v.value as keyof typeof examples];
 
                         return {
                             ...v,

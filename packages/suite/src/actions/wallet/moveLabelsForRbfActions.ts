@@ -3,7 +3,11 @@ import { findChainedTransactions, findTransactions } from '@suite-common/wallet-
 import { Dispatch, GetState } from 'src/types/suite';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
-import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import {
+    AccountKey,
+    RbfLabelsToBeUpdated,
+    WalletAccountTransaction,
+} from '@suite-common/wallet-types';
 
 type DeleteAllOutputLabelsParams = {
     labels: AccountLabels['outputLabels']['labels'];
@@ -65,17 +69,9 @@ type FindLabelsToBeMovedOrDeletedParams = {
     prevTxid: string;
 };
 
-export type LabelsToBeMovedOrDeleted = Record<
-    AccountKey,
-    {
-        toBeMoved: WalletAccountTransaction;
-        toBeDeleted: WalletAccountTransaction[];
-    }
->;
-
 export const findLabelsToBeMovedOrDeleted =
     ({ prevTxid }: FindLabelsToBeMovedOrDeletedParams) =>
-    (_dispatch: Dispatch, getState: GetState): LabelsToBeMovedOrDeleted => {
+    (_dispatch: Dispatch, getState: GetState): RbfLabelsToBeUpdated => {
         const accountTransactions = findTransactions(
             prevTxid,
             getState().wallet.transactions.transactions,
@@ -100,12 +96,12 @@ export const findLabelsToBeMovedOrDeleted =
             };
 
             return result;
-        }, {} as LabelsToBeMovedOrDeleted);
+        }, {} as RbfLabelsToBeUpdated);
     };
 
 type MoveLabelsForRbfParams = {
     newTxid: string;
-    toBeMovedOrDeletedList: LabelsToBeMovedOrDeleted;
+    toBeMovedOrDeletedList: RbfLabelsToBeUpdated;
 };
 
 export const moveLabelsForRbfAction =

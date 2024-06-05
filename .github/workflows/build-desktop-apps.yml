@@ -1,0 +1,130 @@
+name: "[Build] suite-desktop apps"
+
+on:
+  push:
+    branches:
+      - develop
+    paths-ignore:
+      - "suite-native/**"
+      - "docs/**"
+      - "docker/**"
+      - "ci/**"
+      - ".vscode/**"
+      - ".maestro/**"
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+
+env:
+  DESKTOP_APP_NAME: "Trezor-Suite"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  suite-desktop:
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && github.repository == 'trezor/trezor-suite'
+    name: Build suite-desktop-${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-14]
+        include:
+          - os: ubuntu-latest
+            platform: linux
+          - os: macos-14
+            platform: mac
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install missing Python deps (to build bcrypto lib in Node)
+        if: matrix.os == 'macos-14'
+        run: brew install python-setuptools
+
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/transport-bridge build:lib
+
+      - name: Build ${{ matrix.platform }} suite-desktop
+        run: |
+          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
+          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
+          mv packages/suite-desktop/build-electron/* .
+
+      - name: Upload suite-desktop production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-desktop-${{ matrix.platform }}
+          path: |
+            Trezor-Suite*
+            latest*.yml
+          retention-days: 3
+
+      - name: Upload suite-desktop mac-arm artifact
+        if: matrix.os == 'macos-14'
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-desktop-mac-arm-dmg
+          path: |
+            Trezor-Suite-*-mac-arm64.dmg
+          retention-days: 3
+
+  suite-desktop-win:
+    if: (github.event_name == 'workflow_dispatch' || contains(github.event.pull_request.labels.*.name, 'build-desktop') || (github.event_name == 'push' && github.ref == 'refs/heads/develop')) && github.repository == 'trezor/trezor-suite'
+    name: Build suite-desktop-win
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      platform: win
+    container:
+      image: electronuserland/builder:18-wine
+      options: --user 1001
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: true
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+
+      - name: Build libs
+        run: |
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/transport-bridge build:lib
+
+      - name: Build ${{env.platform}} suite-desktop
+        run: |
+          yarn workspace @trezor/suite-desktop build:${{env.platform}}
+          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
+          mv packages/suite-desktop/build-electron/* .
+
+      - name: Upload suite-desktop production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-desktop-${{env.platform}}
+          path: |
+            Trezor-Suite*
+            latest*.yml
+          retention-days: 3

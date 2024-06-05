@@ -7,4 +7,4 @@ HEADLESS=false
 export LOCAL_USER_ID
 export HEADLESS
 
-docker-compose -f ./docker/docker-compose.connect-webextension-test.yml up --build --abort-on-container-exit
+docker compose -f ./docker/docker-compose.connect-webextension-test.yml up --build --abort-on-container-exit

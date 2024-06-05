@@ -1,22 +1,32 @@
 import styled, { useTheme } from 'styled-components';
 
-import { variables, Icon, Button, motionEasing, LottieAnimation } from '@trezor/components';
+import {
+    variables,
+    Icon,
+    Button,
+    motionEasing,
+    LottieAnimation,
+    useElevation,
+    ElevationUp,
+} from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import type { PrerequisiteType } from 'src/types/suite';
 import { motion } from 'framer-motion';
+import { Elevation, mapElevationToBackground, mapElevationToBorder } from '@trezor/theme';
 
-const Wrapper = styled(motion.div)`
+const Wrapper = styled(motion.div)<{ $elevation: Elevation }>`
     display: flex;
     height: 122px;
     min-height: 122px;
     width: 360px;
     border-radius: 61px;
     padding: 10px;
-    background: ${({ theme }) => theme.BG_WHITE};
+    background: ${mapElevationToBackground};
+    border: 1px solid ${mapElevationToBorder};
     align-items: center;
-    box-shadow: 0 2px 5px 0 ${({ theme }) => theme.BOX_SHADOW_BLACK_20};
+    box-shadow: ${({ theme }) => theme.boxShadowElevated};
     margin-bottom: 60px;
 `;
 
@@ -46,8 +56,8 @@ const Text = styled.div`
     }
 `;
 
-const StyledLottieAnimation = styled(LottieAnimation)`
-    background: ${({ theme }) => theme.BG_GREY};
+const StyledLottieAnimation = styled(LottieAnimation)<{ $elevation: Elevation }>`
+    background: ${mapElevationToBackground};
 `;
 
 const getMessageId = ({
@@ -81,6 +91,36 @@ interface ConnectDevicePromptProps {
     prerequisite?: PrerequisiteType;
 }
 
+const ConnectImage = ({
+    connected,
+    showWarning,
+}: Pick<ConnectDevicePromptProps, 'connected' | 'showWarning'>) => {
+    const theme = useTheme();
+    const { device } = useDevice();
+    const { elevation } = useElevation();
+
+    return (
+        <ImageWrapper>
+            <StyledLottieAnimation
+                $elevation={elevation}
+                type="CONNECT"
+                deviceModelInternal={device?.features?.internal_model}
+                loop={!connected}
+                shape="CIRCLE"
+                size={100}
+            />
+
+            <Checkmark>
+                {connected && !showWarning && (
+                    <Icon icon="CHECK_ACTIVE" size={24} color={theme.TYPE_GREEN} />
+                )}
+
+                {showWarning && <Icon icon="WARNING" size={24} color={theme.TYPE_ORANGE} />}
+            </Checkmark>
+        </ImageWrapper>
+    );
+};
+
 export const ConnectDevicePrompt = ({
     prerequisite,
     connected,
@@ -88,46 +128,33 @@ export const ConnectDevicePrompt = ({
     allowSwitchDevice,
 }: ConnectDevicePromptProps) => {
     const dispatch = useDispatch();
-    const theme = useTheme();
-    const { device } = useDevice();
+
+    const { elevation } = useElevation();
 
     const handleSwitchDeviceClick = () =>
         dispatch(goto('suite-switch-device', { params: { cancelable: true } }));
 
     return (
         <Wrapper
+            $elevation={elevation}
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: -0 }}
             transition={{ delay: 0.2, duration: 0.6, ease: motionEasing.enter }}
             data-test="@connect-device-prompt"
         >
-            <ImageWrapper>
-                <StyledLottieAnimation
-                    type="CONNECT"
-                    deviceModelInternal={device?.features?.internal_model}
-                    loop={!connected}
-                    shape="CIRCLE"
-                    size={100}
-                />
+            <ElevationUp>
+                <ConnectImage connected={connected} showWarning={showWarning} />
 
-                <Checkmark>
-                    {connected && !showWarning && (
-                        <Icon icon="CHECK_ACTIVE" size={24} color={theme.TYPE_GREEN} />
+                <Text>
+                    <Translation id={getMessageId({ connected, showWarning, prerequisite })} />
+
+                    {allowSwitchDevice && (
+                        <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
+                            <Translation id="TR_SWITCH_DEVICE" />
+                        </Button>
                     )}
-
-                    {showWarning && <Icon icon="WARNING" size={24} color={theme.TYPE_ORANGE} />}
-                </Checkmark>
-            </ImageWrapper>
-
-            <Text>
-                <Translation id={getMessageId({ connected, showWarning, prerequisite })} />
-
-                {allowSwitchDevice && (
-                    <Button variant="tertiary" onClick={handleSwitchDeviceClick}>
-                        <Translation id="TR_SWITCH_DEVICE" />
-                    </Button>
-                )}
-            </Text>
+                </Text>
+            </ElevationUp>
         </Wrapper>
     );
 };

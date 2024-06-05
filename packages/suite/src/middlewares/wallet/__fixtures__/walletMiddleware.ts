@@ -1,12 +1,11 @@
 import { PROTO } from '@trezor/connect';
 import { Account } from '@suite-common/wallet-types';
-import { FormState as SendFormState, Output } from 'src/types/wallet/sendForm';
+import { FormState as SendFormState, Output } from '@suite-common/wallet-types';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import { RouterState } from 'src/reducers/suite/routerReducer';
 import { State as SelectedAccountState } from 'src/reducers/wallet/selectedAccountReducer';
-import { accountsActions } from '@suite-common/wallet-core';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
-import { convertSendFormDraftsThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { accountsActions, sendFormActions } from '@suite-common/wallet-core';
+import { convertSendFormDraftsBtcAmountUnitsThunk } from '@suite-common/wallet-core';
 
 export const blockchainSubscription = [
     {
@@ -164,7 +163,7 @@ export const draftsFixtures = [
                 payload: PROTO.AmountUnit.SATOSHI,
             },
             {
-                type: convertSendFormDraftsThunk.pending.type,
+                type: convertSendFormDraftsBtcAmountUnitsThunk.pending.type,
             },
             {
                 type: sendFormActions.storeDraft.type,

@@ -28,20 +28,5 @@ export default {
         result: {
             address: result.expected_address,
         },
-        legacyResults: [
-            {
-                // before derivations were implemented
-                rules: ['<2.4.3', '1'],
-                payload: {
-                    address:
-                        'addr1q8g9th06vccxzl96nr905al0vgg2t0fqfxrxmv7ecye3x2e66sl9kvzd905ad5natzd5wghy2w3a9lm0y7u7c5sv0c2snql3c4',
-                },
-            },
-            {
-                // cardanoGetAddress not supported below this version
-                rules: ['<2.3.2', '1'],
-                success: false,
-            },
-        ],
     })),
 };

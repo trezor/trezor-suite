@@ -23,9 +23,9 @@ type Params = PROTO.CardanoGetAddress & {
 export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress', Params[]> {
     hasBundle?: boolean;
     progress = 0;
-    confirmed?: boolean;
 
     init() {
+        this.noBackupConfirmationMode = 'always';
         this.requiredPermissions = ['read'];
         this.firmwareRange = getFirmwareRange(
             this.name,
@@ -64,7 +64,6 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
             this.params.length === 1 &&
             typeof this.params[0].address === 'string' &&
             this.params[0].show_display;
-        this.confirmed = useEventListener;
         this.useUi = !useEventListener;
     }
 
@@ -90,46 +89,13 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         }
     }
 
-    async confirmation() {
-        if (this.confirmed) return true;
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-address',
-                label: this.info,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        this.confirmed = uiResp.payload;
-
-        return this.confirmed;
-    }
-
-    async noBackupConfirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'no-backup',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
+    get confirmation() {
+        return !this.useUi
+            ? undefined
+            : {
+                  view: 'export-address' as const,
+                  label: this.info,
+              };
     }
 
     async _call({
@@ -153,35 +119,13 @@ export default class CardanoGetAddress extends AbstractMethod<'cardanoGetAddress
         return response.message;
     }
 
-    _ensureFirmwareSupportsBatch(batch: Params) {
-        const SCRIPT_ADDRESSES_TYPES = [
-            PROTO.CardanoAddressType.BASE_SCRIPT_KEY,
-            PROTO.CardanoAddressType.BASE_KEY_SCRIPT,
-            PROTO.CardanoAddressType.BASE_SCRIPT_SCRIPT,
-            PROTO.CardanoAddressType.POINTER_SCRIPT,
-            PROTO.CardanoAddressType.ENTERPRISE_SCRIPT,
-            PROTO.CardanoAddressType.REWARD_SCRIPT,
-        ];
-
-        if (SCRIPT_ADDRESSES_TYPES.includes(batch.address_parameters.address_type)) {
-            if (!this.device.atLeast(['0', '2.4.3'])) {
-                throw ERRORS.TypedError(
-                    'Method_InvalidParameter',
-                    `Address type not supported by device firmware`,
-                );
-            }
-        }
-    }
-
     async run() {
         const responses: MethodReturnType<typeof this.name> = [];
 
         for (let i = 0; i < this.params.length; i++) {
             const batch = this.params[i];
 
-            this._ensureFirmwareSupportsBatch(batch);
             batch.address_parameters = modifyAddressParametersForBackwardsCompatibility(
-                this.device,
                 batch.address_parameters,
             );
 

@@ -2,7 +2,16 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 import { AnimatePresence, motion } from 'framer-motion';
 
-import { TrezorLogo, Button, variables, SVG_IMAGES } from '@trezor/components';
+import {
+    TrezorLogo,
+    Button,
+    variables,
+    SVG_IMAGES,
+    useElevation,
+    ElevationUp,
+    ElevationDown,
+    ElevationContext,
+} from '@trezor/components';
 import { useOnce } from '@trezor/react-utils';
 import { Translation } from 'src/components/suite';
 // importing directly, otherwise unit tests fail, seems to be a styled-components issue
@@ -17,6 +26,7 @@ import { GuideButton, GuideRouter } from 'src/components/guide';
 import { useGuide } from 'src/hooks/guide';
 import { MAX_ONBOARDING_WIDTH } from 'src/constants/suite/layout';
 import { NavSettings } from './NavSettings';
+import { Elevation, mapElevationToBackground } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -39,7 +49,9 @@ const Expander = styled.div`
     flex: 1;
 `;
 
-const WelcomeWrapper = styled.div`
+const WelcomeWrapper = styled.div<{ $elevation: Elevation }>`
+    background-color: ${mapElevationToBackground};
+
     @media (max-width: ${variables.SCREEN_SIZE.MD}) {
         display: none;
     }
@@ -49,7 +61,6 @@ const MotionWelcome = styled(motion.div)`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     display: flex;
     height: 100%;
     overflow: hidden;
@@ -64,13 +75,13 @@ const LinksContainer = styled.div`
     margin: 24px 0;
 `;
 
-const Content = styled.div`
+const Content = styled.div<{ $elevation: Elevation }>`
     display: flex;
     position: relative;
     flex-direction: column;
     flex: 3;
     padding: 20px;
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation1};
+    background-color: ${mapElevationToBackground};
     background-image: url(${resolveStaticPath(`images/svg/${SVG_IMAGES.ONBOARDING_WELCOME_BG}`)});
     background-repeat: no-repeat;
     background-position: center;
@@ -107,85 +118,104 @@ interface WelcomeLayoutProps {
     children: ReactNode;
 }
 
-// WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
-// used in Preloader and Onboarding
-export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
-    const bannerMessage = useSelector(selectBannerMessage);
+const Left = () => {
+    const { elevation } = useElevation();
+
     const { isGuideOpen, isGuideOnTop } = useGuide();
 
     // do not animate welcome bar on initial load
     const isFirstRender = useOnce(true, false);
 
     return (
-        <Wrapper>
-            {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+        <WelcomeWrapper $elevation={elevation}>
+            <AnimatePresence>
+                {(!isGuideOpen || isGuideOnTop) && (
+                    <MotionWelcome
+                        initial={{
+                            width: isFirstRender ? '40vw' : 0,
+                            minWidth: isFirstRender ? '380px' : 0,
+                        }}
+                        animate={{
+                            width: '40vw',
+                            minWidth: '380px',
+                            transition: { duration: 0.3, bounce: 0 },
+                        }}
+                        exit={{
+                            width: 0,
+                            minWidth: 0,
+                            transition: { duration: 0.3, bounce: 0 },
+                        }}
+                    >
+                        <Expander data-test="@welcome/title">
+                            <TrezorLogo type="symbol" width="57px" />
+                        </Expander>
 
-            <Body data-test="@welcome-layout/body">
-                <WelcomeWrapper>
-                    <AnimatePresence>
-                        {(!isGuideOpen || isGuideOnTop) && (
-                            <MotionWelcome
-                                initial={{
-                                    width: isFirstRender ? '40vw' : 0,
-                                    minWidth: isFirstRender ? '380px' : 0,
-                                }}
-                                animate={{
-                                    width: '40vw',
-                                    minWidth: '380px',
-                                    transition: { duration: 0.3, bounce: 0 },
-                                }}
-                                exit={{
-                                    width: 0,
-                                    minWidth: 0,
-                                    transition: { duration: 0.3, bounce: 0 },
-                                }}
-                            >
-                                <Expander data-test="@welcome/title">
-                                    <TrezorLogo type="symbol" width="57px" />
-                                </Expander>
+                        <LinksContainer>
+                            {isWeb() && (
+                                <StyledTrezorLink type="hint" variant="nostyle" href={SUITE_URL}>
+                                    <Button
+                                        variant="tertiary"
+                                        icon="EXTERNAL_LINK"
+                                        iconAlignment="right"
+                                    >
+                                        <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
+                                    </Button>
+                                </StyledTrezorLink>
+                            )}
+                            <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
+                                <Button
+                                    variant="tertiary"
+                                    icon="EXTERNAL_LINK"
+                                    iconAlignment="right"
+                                >
+                                    trezor.io
+                                </Button>
+                            </TrezorLink>
+                        </LinksContainer>
+                    </MotionWelcome>
+                )}
+            </AnimatePresence>
+        </WelcomeWrapper>
+    );
+};
 
-                                <LinksContainer>
-                                    {isWeb() && (
-                                        <StyledTrezorLink
-                                            type="hint"
-                                            variant="nostyle"
-                                            href={SUITE_URL}
-                                        >
-                                            <Button
-                                                variant="tertiary"
-                                                icon="EXTERNAL_LINK"
-                                                iconAlignment="right"
-                                            >
-                                                <Translation id="TR_ONBOARDING_DOWNLOAD_DESKTOP_APP" />
-                                            </Button>
-                                        </StyledTrezorLink>
-                                    )}
-                                    <TrezorLink type="hint" variant="nostyle" href={TREZOR_URL}>
-                                        <Button
-                                            variant="tertiary"
-                                            icon="EXTERNAL_LINK"
-                                            iconAlignment="right"
-                                        >
-                                            trezor.io
-                                        </Button>
-                                    </TrezorLink>
-                                </LinksContainer>
-                            </MotionWelcome>
-                        )}
-                    </AnimatePresence>
-                </WelcomeWrapper>
+const Right = ({ children }: { children: ReactNode }) => {
+    const { elevation } = useElevation();
 
-                <Content>
-                    <SettingsWrapper>
-                        <NavSettings />
-                    </SettingsWrapper>
+    return (
+        <Content $elevation={elevation}>
+            <SettingsWrapper>
+                <NavSettings />
+            </SettingsWrapper>
 
-                    <ChildrenWrapper>{children}</ChildrenWrapper>
-                </Content>
+            <ChildrenWrapper>
+                <ElevationUp>{children}</ElevationUp>
+            </ChildrenWrapper>
+        </Content>
+    );
+};
 
-                <GuideButton />
-                <GuideRouter />
-            </Body>
-        </Wrapper>
+// WelcomeLayout is a top-level wrapper similar to @suite-components/SuiteLayout
+// used in Preloader and Onboarding
+export const WelcomeLayout = ({ children }: WelcomeLayoutProps) => {
+    const bannerMessage = useSelector(selectBannerMessage);
+
+    return (
+        <ElevationContext baseElevation={-1}>
+            <Wrapper>
+                {bannerMessage && <MessageSystemBanner message={bannerMessage} />}
+
+                <Body data-test="@welcome-layout/body">
+                    <ElevationDown>
+                        <Left />
+                    </ElevationDown>
+
+                    <Right>{children}</Right>
+
+                    <GuideButton />
+                    <GuideRouter />
+                </Body>
+            </Wrapper>
+        </ElevationContext>
     );
 };

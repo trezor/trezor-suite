@@ -6,6 +6,7 @@ import TrezorConnect, {
 } from '@trezor/connect-web';
 
 import { TrezorConnectDevice, Dispatch, Field, GetState } from '../types';
+
 import * as ACTIONS from './index';
 
 type ConnectOptions = Parameters<(typeof TrezorConnect)['init']>[0];
@@ -36,6 +37,12 @@ export const onConnectOptionChange = (option: string, value: any) => ({
     },
 });
 
+const isRelativePath = (path: string) => {
+    // This regex checks if the path starts with a scheme (like http://, https://, file://, etc.)
+    // or an absolute path indicator (like //)
+    return !/^(?:[a-z]+:)?\/\//i.test(path);
+};
+
 export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>
     async (dispatch: Dispatch) => {
@@ -44,7 +51,8 @@ export const init =
         // The event `WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM` is coming from @trezor/connect-webextension/proxy
         // that is replacing @trezor/connect-web when connect-explorer is run in connect-explorer-webextension
         // so Typescript cannot recognize it.
-        (TrezorConnect.on as any)(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
+        // @ts-expect-error
+        TrezorConnect.on(WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM, event => {
             if (event.type === WEBEXTENSION.CHANNEL_HANDSHAKE_CONFIRM) {
                 dispatch({ type: ACTIONS.ON_HANDSHAKE_CONFIRMED });
             }
@@ -64,13 +72,22 @@ export const init =
         const { host } = window.location;
 
         if (process?.env?.__TREZOR_CONNECT_SRC && host !== 'connect.trezor.io') {
-            window.__TREZOR_CONNECT_SRC = process?.env?.__TREZOR_CONNECT_SRC;
+            let src = process?.env?.__TREZOR_CONNECT_SRC;
+            if (isRelativePath(src)) {
+                src = `${window.location.origin}${src}`;
+            }
+            window.__TREZOR_CONNECT_SRC = src;
         }
         // yarn workspace @trezor/connect-explorer dev starts @trezor/connect-web on localhost port
         // so we may use it
         if (!window.__TREZOR_CONNECT_SRC && host.startsWith('localhost')) {
             // use local connect for local development
             window.__TREZOR_CONNECT_SRC = `${window.location.origin}/`;
+        }
+
+        if (window.location.search.includes('trezor-connect-src')) {
+            const search = new URLSearchParams(window.location.search);
+            window.__TREZOR_CONNECT_SRC = search.get('trezor-connect-src')?.toString();
         }
 
         if (options.connectSrc) {
@@ -93,6 +110,7 @@ export const init =
                 appUrl: '@trezor/suite',
             },
             trustedHost: false,
+            connectSrc: window.__TREZOR_CONNECT_SRC,
             ...options,
         };
 

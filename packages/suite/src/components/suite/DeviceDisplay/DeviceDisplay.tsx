@@ -1,14 +1,13 @@
 import styled from 'styled-components';
+import { ReactNode } from 'react';
 
 import { useSelector } from 'src/hooks/suite/useSelector';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
-import {
-    selectDeviceInternalModel,
-    selectDeviceUnavailableCapabilities,
-} from '@suite-common/wallet-core';
+import { selectDeviceInternalModel } from '@suite-common/wallet-core';
 import { DeviceModelInternal } from '@trezor/connect';
 import { DisplayChunks } from './DisplayChunks';
 import { DisplayPaginatedText } from './DisplayPaginatedText';
+import { DisplaySinglePageWrapText } from './DisplaySinglePageWrapText';
+import { DisplayMode } from 'src/types/suite';
 
 const Display = styled.div`
     display: flex;
@@ -24,47 +23,29 @@ const Display = styled.div`
 
 export interface DeviceDisplayProps {
     address: string;
-    network?: string;
-    valueDataTest?: string;
+    displayMode: DisplayMode;
 }
 
-export const DeviceDisplay = ({ address, network, valueDataTest }: DeviceDisplayProps) => {
+export const DeviceDisplay = ({ address, displayMode }: DeviceDisplayProps) => {
     const deviceModel = useSelector(selectDeviceInternalModel);
-    const unavailableCapabilities = useSelector(selectDeviceUnavailableCapabilities);
-    const addressDisplayType = useSelector(selectAddressDisplayType);
 
     if (!deviceModel) return null;
 
-    // remove bitcoincash: prefix
-    const processedAddress = address.startsWith('bitcoincash:')
-        ? address.replace('bitcoincash:', '')
-        : address;
+    const isPixelType = [DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModel);
 
-    const areChunksUsed =
-        addressDisplayType === AddressDisplayOptions.CHUNKED &&
-        !unavailableCapabilities?.chunkify &&
-        valueDataTest !== '@xpub-modal/xpub-field' &&
-        network !== 'cardano' &&
-        (network !== 'solana' || valueDataTest === '@modal/confirm-address/address-field');
+    const displayModeMap: Record<DisplayMode, ReactNode> = {
+        [DisplayMode.CHUNKS]: <DisplayChunks address={address} isPixelType={isPixelType} />,
+        [DisplayMode.PAGINATED_TEXT]: (
+            <DisplayPaginatedText
+                deviceModel={deviceModel}
+                text={address.replace('bitcoincash:', '')}
+                isPixelType={isPixelType}
+            />
+        ),
+        [DisplayMode.SINGLE_WRAPPED_TEXT]: (
+            <DisplaySinglePageWrapText isPixelType={isPixelType} text={address} />
+        ),
+    };
 
-    const isPixelType = deviceModel !== DeviceModelInternal.T2T1;
-
-    return (
-        <Display>
-            {areChunksUsed ? (
-                <DisplayChunks
-                    address={address}
-                    data-test={valueDataTest}
-                    isPixelType={isPixelType}
-                />
-            ) : (
-                <DisplayPaginatedText
-                    deviceModel={deviceModel}
-                    text={processedAddress}
-                    isPixelType={isPixelType}
-                    data-test={valueDataTest}
-                />
-            )}
-        </Display>
-    );
+    return <Display>{displayModeMap[displayMode]}</Display>;
 };

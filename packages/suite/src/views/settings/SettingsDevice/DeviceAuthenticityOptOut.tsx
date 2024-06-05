@@ -25,7 +25,7 @@ export const DeviceAuthenticityOptOut = () => {
         );
 
     return (
-        <SectionItem data-test="@settings/device/device-authenticity-opt-out">
+        <SectionItem>
             <TextColumn
                 title={
                     <Translation

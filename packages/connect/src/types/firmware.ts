@@ -1,19 +1,13 @@
+import { DeviceModelInternal } from '@trezor/protobuf';
 import { Type } from '@trezor/schema-utils';
 
-export interface FirmwareRange {
-    T1B1: {
+export type FirmwareRange = Record<
+    DeviceModelInternal,
+    {
         min: string;
         max: string;
-    };
-    T2T1: {
-        min: string;
-        max: string;
-    };
-    T2B1: {
-        min: string;
-        max: string;
-    };
-}
+    }
+>;
 
 export type VersionArray = [number, number, number];
 
@@ -22,7 +16,6 @@ export type FirmwareRelease = {
     url: string;
     fingerprint: string;
     changelog: string;
-    min_bridge_version: VersionArray;
     version: VersionArray;
     min_firmware_version: VersionArray;
     min_bootloader_version: VersionArray;

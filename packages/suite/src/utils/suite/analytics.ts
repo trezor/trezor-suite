@@ -13,7 +13,10 @@ import {
 import { getCustomBackends } from '@suite-common/wallet-utils';
 import { UNIT_ABBREVIATIONS } from '@suite-common/suite-constants';
 import type { UpdateInfo } from '@trezor/suite-desktop-api';
-import { selectDevices } from '@suite-common/wallet-core';
+import {
+    selectRememberedStandardWalletsCount,
+    selectRememberedHiddenWalletsCount,
+} from '@suite-common/wallet-core';
 
 import { AccountTransactionBaseAnchor } from 'src/constants/suite/anchors';
 import { AppState } from 'src/types/suite';
@@ -50,10 +53,8 @@ export const getSuiteReadyPayload = (state: AppState) => ({
         ? state.metadata.providers.find(p => p.clientId === state.metadata.selectedProvider.labels)
               ?.type || 'missing-provider'
         : '',
-    rememberedStandardWallets: selectDevices(state).filter(d => d.remember && d.useEmptyPassphrase)
-        .length,
-    rememberedHiddenWallets: selectDevices(state).filter(d => d.remember && !d.useEmptyPassphrase)
-        .length,
+    rememberedStandardWallets: selectRememberedStandardWalletsCount(state),
+    rememberedHiddenWallets: selectRememberedHiddenWalletsCount(state),
     theme: state.suite.settings.theme.variant,
     suiteVersion: process.env.VERSION || '',
     earlyAccessProgram: state.desktopUpdate.allowPrerelease,

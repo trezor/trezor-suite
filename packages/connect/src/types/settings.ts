@@ -18,7 +18,7 @@ export interface ConnectSettings {
     popup?: boolean;
     transportReconnect?: boolean;
     webusb?: boolean; // deprecated
-    transports?: (Transport['name'] | Transport)[];
+    transports?: (Transport['name'] | Transport | (new (...args: any[]) => Transport))[];
     pendingTransportEvent?: boolean;
     lazyLoad?: boolean;
     interactionTimeout?: number;
@@ -37,4 +37,6 @@ export interface ConnectSettings {
     proxy?: Proxy;
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
+    /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
+    _extendWebextensionLifetime?: boolean;
 }

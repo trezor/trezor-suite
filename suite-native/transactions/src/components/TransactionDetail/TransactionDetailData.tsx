@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 
 import { AlertBox, Box, Card, Text, VStack } from '@suite-native/atoms';
-import { AccountKey } from '@suite-common/wallet-types';
+import { AccountKey, Timestamp } from '@suite-common/wallet-types';
 import { Icon } from '@suite-common/icons';
 import { useFormatters } from '@suite-common/formatters';
 import { CryptoAmountFormatter, CryptoToFiatAmountFormatter } from '@suite-native/formatters';
@@ -9,11 +9,15 @@ import {
     selectTransactionBlockTimeById,
     TransactionsRootState,
     selectIsPhishingTransaction,
+    FiatRatesRootState,
+    selectHistoricFiatRatesByTimestamp,
 } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { TokenDefinitionsRootState } from '@suite-common/wallet-core';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 import { TransactionDetailSummary } from './TransactionDetailSummary';
 import { TransactionDetailRow } from './TransactionDetailRow';
@@ -41,6 +45,12 @@ export const TransactionDetailData = ({
             selectIsPhishingTransaction(state, transaction.txid, accountKey),
     );
 
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(transaction.symbol, fiatCurrencyCode);
+    const historicRate = useSelector((state: FiatRatesRootState) =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
+    );
+
     const transactionTokensCount = transaction.tokens.length;
 
     const isTokenTransaction = !!tokenTransfer;
@@ -55,7 +65,6 @@ export const TransactionDetailData = ({
                 {isPhishingTransaction && (
                     <AlertBox
                         variant="error"
-                        isStandalone
                         title={
                             <Translation
                                 id="transactions.phishing.warning"
@@ -105,7 +114,7 @@ export const TransactionDetailData = ({
                                 variant="body"
                                 color="textDefault"
                             />
-                            {transaction.rates && (
+                            {historicRate !== undefined && historicRate !== 0 && (
                                 <Box flexDirection="row">
                                     <Text variant="hint" color="textSubdued">
                                         ≈{' '}
@@ -113,7 +122,8 @@ export const TransactionDetailData = ({
                                     <CryptoToFiatAmountFormatter
                                         value={transaction.fee}
                                         network={transaction.symbol}
-                                        customRates={transaction.rates}
+                                        historicRate={historicRate}
+                                        useHistoricRate
                                         variant="hint"
                                         color="textSubdued"
                                     />

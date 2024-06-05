@@ -12,7 +12,7 @@ import { BackendTypeSelect } from './BackendTypeSelect';
 import { TorModal, TorResult } from './TorModal';
 import type { Network } from 'src/types/wallet';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import { spacingsPx } from '@trezor/theme';
+import { spacings } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
@@ -48,7 +48,6 @@ const SaveButton = styled(Button)`
 `;
 
 const TransparentCollapsibleBox = styled(CollapsibleBox)`
-    margin-top: ${spacingsPx.md};
     background: ${({ theme }) => theme.backgroundSurfaceElevation2};
 
     /* to be removed when elevation context is added to the CollapsibleBox */
@@ -175,8 +174,9 @@ export const CustomBackends = ({ network, onCancel }: CustomBackendsProps) => {
                 )}
 
                 <TransparentCollapsibleBox
-                    variant="large"
+                    paddingType="large"
                     heading={<Translation id="SETTINGS_ADV_COIN_CONN_INFO_TITLE" />}
+                    margin={{ top: spacings.md }}
                 >
                     <ConnectionInfo coin={coin} />
                 </TransparentCollapsibleBox>

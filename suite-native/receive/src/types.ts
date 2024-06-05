@@ -11,5 +11,5 @@ export type DevicePaginationActivePage = 1 | 2;
 export function isPaginationCompatibleDeviceModel(
     value: any,
 ): value is PaginationCompatibleDeviceModel {
-    return value && (value === DeviceModelInternal.T2B1 || value === DeviceModelInternal.T2T1);
+    return value && value !== DeviceModelInternal.T1B1;
 }

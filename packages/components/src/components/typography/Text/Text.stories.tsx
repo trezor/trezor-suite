@@ -25,26 +25,26 @@ export const Text: StoryObj = {
                 <TextComponent>This is just a plain text</TextComponent>
             </Block>
             <Block>
-                <TextComponent variant={'primary'}>
+                <TextComponent variant="primary">
                     This is <strong>primary</strong> text
                 </TextComponent>
-                <TextComponent variant={'info'}>
+                <TextComponent variant="info">
                     This is <strong>info</strong> text
                 </TextComponent>
-                <TextComponent variant={'warning'}>
+                <TextComponent variant="warning">
                     This is <strong>warning</strong> text
                 </TextComponent>
-                <TextComponent variant={'destructive'}>
+                <TextComponent variant="destructive">
                     This is <strong>destructive</strong> text
                 </TextComponent>
             </Block>
             <Block>
-                <TextComponent color={'#9be887'}>
+                <TextComponent color="#9be887">
                     This is <strong>custom</strong> color text
                 </TextComponent>
             </Block>
             <Block>
-                <TextComponent variant={'info'} typographyStyle="titleMedium">
+                <TextComponent variant="info" typographyStyle="titleMedium">
                     This is just a plain Medium Title
                 </TextComponent>
             </Block>

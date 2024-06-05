@@ -3,15 +3,15 @@ import { connectInitThunk } from '@suite-common/connect-init';
 import {
     createImportedDeviceThunk,
     initBlockchainThunk,
-    periodicCheckTokenDefinitionsThunk,
+    initDevices,
     periodicFetchFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { initAnalyticsThunk } from '@suite-native/analytics';
-import { selectFiatCurrencyCode } from '@suite-native/module-settings';
-import { getJWSPublicKey } from '@suite-native/config';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 import { initMessageSystemThunk } from '@suite-common/message-system';
-import { wipeDisconnectedDevicesDataThunk } from '@suite-native/device';
 import { setIsAppReady, setIsConnectInitialized } from '@suite-native/state/src/appSlice';
+import { periodicCheckTokenDefinitionsThunk } from '@suite-common/token-definitions';
+import { TransactionCacheEngine } from '@suite-common/transaction-cache-engine';
 
 let isAlreadyInitialized = false;
 
@@ -25,9 +25,14 @@ export const applicationInit = createThunk(
         try {
             dispatch(initAnalyticsThunk());
 
-            dispatch(initMessageSystemThunk({ jwsPublicKey: getJWSPublicKey() }));
+            dispatch(initMessageSystemThunk());
+
+            // Select latest remembered device or Portfolio Tracker device.
+            dispatch(initDevices());
 
             await dispatch(connectInitThunk());
+
+            TransactionCacheEngine.init();
 
             dispatch(setIsConnectInitialized(true));
 
@@ -42,14 +47,8 @@ export const applicationInit = createThunk(
                 }),
             );
 
-            // We need to make sure to have imported device in state
-            // Since devices are not persisted,
-            // we need to create device instance on app start
+            // Create Portfolio Tracker device if it doesn't exist
             dispatch(createImportedDeviceThunk());
-
-            // In case that user closed the app while device was connected,
-            // remove its persistent data on app init if the device is not connected anymore.
-            dispatch(wipeDisconnectedDevicesDataThunk());
         } catch (error) {
             console.error(error);
         } finally {

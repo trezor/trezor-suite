@@ -9,17 +9,13 @@ import type {
     SolanaValidParsedTxWithMeta,
     ParsedTransactionWithMeta,
     SolanaTokenAccountInfo,
+    TokenDetailByMint,
 } from '@trezor/blockchain-link-types/src/solana';
 import type * as MessageTypes from '@trezor/blockchain-link-types/src/messages';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
-import {
-    BlockheightBasedTransactionConfirmationStrategy,
-    Connection,
-    Message,
-    PublicKey,
-} from '@solana/web3.js';
+import { Connection, Message, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
 
 import {
@@ -27,10 +23,14 @@ import {
     TOKEN_PROGRAM_PUBLIC_KEY,
 } from '@trezor/blockchain-link-utils/src/solana';
 import { TOKEN_ACCOUNT_LAYOUT } from './tokenUtils';
+import { getBaseFee, getPriorityFee } from './fee';
+import { confirmTransactionWithResubmit } from './transactionConfirmation';
 
 export type SolanaAPI = Connection;
 
-type Context = ContextType<SolanaAPI>;
+type Context = ContextType<SolanaAPI> & {
+    getTokenMetadata: () => Promise<TokenDetailByMint>;
+};
 type Request<T> = T & Context;
 
 type SignatureWithSlot = {
@@ -99,19 +99,20 @@ const isValidTransaction = (tx: ParsedTransactionWithMeta): tx is SolanaValidPar
 const pushTransaction = async (request: Request<MessageTypes.PushTransaction>) => {
     const rawTx = request.payload.startsWith('0x') ? request.payload.slice(2) : request.payload;
     const api = await request.connect();
-    const payload = await api.sendRawTransaction(Buffer.from(rawTx, 'hex'));
-    const { blockhash, lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
-    const confirmStrategy: BlockheightBasedTransactionConfirmationStrategy = {
-        blockhash,
-        lastValidBlockHeight,
-        signature: payload,
-    };
 
-    await api.confirmTransaction(confirmStrategy);
+    const { lastValidBlockHeight } = await api.getLatestBlockhash('finalized');
+
+    const txBuffer = Buffer.from(rawTx, 'hex');
+    const signature = await api.sendRawTransaction(txBuffer, {
+        skipPreflight: true,
+        maxRetries: 0,
+    });
+
+    await confirmTransactionWithResubmit(api, txBuffer, signature, lastValidBlockHeight);
 
     return {
         type: RESPONSES.PUSH_TRANSACTION,
-        payload,
+        payload: signature,
     } as const;
 };
 
@@ -130,19 +131,19 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     ) => {
         const transactionsPage = await fetchTransactionPage(api, txIds);
 
-        return (
-            await Promise.all(
-                transactionsPage
-                    .filter(isValidTransaction)
-                    .map(tx =>
-                        solanaUtils.transformTransaction(
-                            tx,
-                            payload.descriptor,
-                            tokenAccountsInfos,
-                        ),
-                    ),
+        const tokenMetadata = await request.getTokenMetadata();
+
+        return transactionsPage
+            .filter(isValidTransaction)
+            .map(tx =>
+                solanaUtils.transformTransaction(
+                    tx,
+                    payload.descriptor,
+                    tokenAccountsInfos,
+                    tokenMetadata,
+                ),
             )
-        ).filter((tx): tx is Transaction => !!tx);
+            .filter((tx): tx is Transaction => !!tx);
     };
 
     const tokenAccounts = await api.getParsedTokenAccountsByOwner(publicKey, {
@@ -181,7 +182,7 @@ const getAccountInfo = async (request: Request<MessageTypes.GetAccountInfo>) => 
     // Fetch token info only if the account owns tokens
     let tokens: TokenInfo[] = [];
     if (tokenAccounts.value.length > 0) {
-        const tokenMetadata = await solanaUtils.getTokenMetadata();
+        const tokenMetadata = await request.getTokenMetadata();
 
         tokens = transformTokenInfo(tokenAccounts.value, tokenMetadata);
     }
@@ -257,28 +258,26 @@ const getInfo = async (request: Request<MessageTypes.GetInfo>) => {
 const estimateFee = async (request: Request<MessageTypes.EstimateFee>) => {
     const api = await request.connect();
 
-    const message = request.payload.specific?.data;
+    const messageHex = request.payload.specific?.data;
     const isCreatingAccount = request.payload.specific?.isCreatingAccount;
 
-    if (message == null) {
+    if (messageHex == null) {
         throw new Error('Could not estimate fee for transaction.');
     }
 
-    const result = await api.getFeeForMessage(Message.from(Buffer.from(message, 'hex')));
+    const message = Message.from(Buffer.from(messageHex, 'hex'));
 
-    // The result can be null, for example if the transaction blockhash is invalid.
-    // In this case, we should fall back to the default fee.
-    if (result.value == null) {
-        throw new Error('Could not estimate fee for transaction.');
-    }
-
+    const baseFee = await getBaseFee(api, message);
+    const priorityFee = await getPriorityFee(api, message);
     const accountCreationFee = isCreatingAccount
         ? await api.getMinimumBalanceForRentExemption(TOKEN_ACCOUNT_LAYOUT.span)
         : 0;
 
     const payload = [
         {
-            feePerUnit: `${result.value + accountCreationFee}`,
+            feePerTx: `${baseFee + accountCreationFee + priorityFee.fee}`,
+            feePerUnit: `${priorityFee.computeUnitPrice}`,
+            feeLimit: `${priorityFee.computeUnitLimit}`,
         },
     ];
 
@@ -353,7 +352,7 @@ const findTokenAccountOwner = (
     );
 
 const subscribeAccounts = async (
-    { connect, state, post }: Context,
+    { connect, state, post, getTokenMetadata }: Context,
     accounts: SubscriptionAccountInfo[],
 ) => {
     const api = await connect();
@@ -389,7 +388,8 @@ const subscribeAccounts = async (
                 return;
             }
 
-            const tx = await solanaUtils.transformTransaction(lastTx, a.descriptor, []);
+            const tokenMetadata = await getTokenMetadata();
+            const tx = solanaUtils.transformTransaction(lastTx, a.descriptor, [], tokenMetadata);
 
             // For token accounts we need to emit an event with the owner account's descriptor
             // since we don't store token accounts in the user's accounts.
@@ -506,6 +506,26 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         return !!api;
     }
 
+    private tokenPromise?: Promise<TokenDetailByMint>;
+
+    getTokenMetadata(): Promise<TokenDetailByMint> {
+        if (!this.tokenPromise)
+            this.tokenPromise = solanaUtils
+                .getTokenMetadata()
+                .then(tokens => {
+                    this.tokenPromise = Promise.resolve(tokens);
+
+                    return tokens;
+                })
+                .catch(err => {
+                    this.tokenPromise = undefined;
+
+                    return Promise.reject(err);
+                });
+
+        return this.tokenPromise;
+    }
+
     tryConnect(url: string): Promise<SolanaAPI> {
         const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
         this.post({ id: -1, type: RESPONSES.CONNECTED });
@@ -523,6 +543,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
                 connect: () => this.connect(),
                 post: (data: Response) => this.post(data),
                 state: this.state,
+                getTokenMetadata: this.getTokenMetadata.bind(this),
             };
 
             const response = await onRequest(request);

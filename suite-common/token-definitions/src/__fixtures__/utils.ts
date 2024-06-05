@@ -80,12 +80,13 @@ export const getSupportedDefinitionTypesFixtures = [
         features: ['coin-definitions', 'nft-definitions'],
         result: [DefinitionType.COIN, DefinitionType.NFT],
     },
-    {
-        testName: 'Supports only token definitions',
-        networkSymbol: 'ada' as NetworkSymbol,
-        features: ['coin-definitions'],
-        result: [DefinitionType.COIN],
-    },
+    // Temporarily skipped while token definitions are disabled for Cardano.
+    // {
+    //     testName: 'Supports only token definitions',
+    //     networkSymbol: 'ada' as NetworkSymbol,
+    //     features: ['coin-definitions'],
+    //     result: [DefinitionType.COIN],
+    // },
     {
         testName: 'Supports neither token nor NFT definitions',
         networkSymbol: 'ltc' as NetworkSymbol,

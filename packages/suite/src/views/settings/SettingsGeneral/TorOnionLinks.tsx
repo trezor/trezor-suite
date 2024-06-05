@@ -3,8 +3,8 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { setOnionLinks } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { Switch } from '@trezor/components';
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 /* keep torOnionLinks value as it is but hide this section when tor is off.
@@ -12,7 +12,6 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 export const TorOnionLinks = () => {
     const torOnionLinks = useSelector(state => state.suite.settings.torOnionLinks);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.TorOnionLinks);
 
     const handleChange = () => {
         dispatch(setOnionLinks(!torOnionLinks));
@@ -25,11 +24,7 @@ export const TorOnionLinks = () => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/tor-onion-links"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.TorOnionLinks}>
             <TextColumn
                 title={<Translation id="TR_ONION_LINKS_TITLE" />}
                 description={<Translation id="TR_ONION_LINKS_DESCRIPTION" />}
@@ -41,6 +36,6 @@ export const TorOnionLinks = () => {
                     onChange={handleChange}
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { createHash } from 'crypto';
 import hoursToMilliseconds from 'date-fns/hoursToMilliseconds';
 
@@ -248,7 +248,7 @@ export const prepareCoinjoinTransaction = (
 
     const tx = {
         inputs: transaction.inputs.map((input, index) => {
-            const flags = affiliateRequest.coinjoin_flags_array[index];
+            const flags = affiliateRequest.coinjoin_flags_array?.[index];
             if (isInternalInput(input)) {
                 return {
                     script_type: inputScriptType,

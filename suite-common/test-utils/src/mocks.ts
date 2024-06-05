@@ -72,7 +72,6 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
         {
             required: false,
             version: [2, 0, 0],
-            min_bridge_version: [2, 0, 25],
             min_firmware_version: [2, 0, 0],
             min_bootloader_version: [2, 0, 0],
             url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
@@ -84,7 +83,6 @@ const getFirmwareRelease = (): NonNullable<Device['firmwareRelease']> => ({
     release: {
         required: false,
         version: [2, 0, 0],
-        min_bridge_version: [2, 0, 25],
         min_firmware_version: [2, 0, 0],
         min_bootloader_version: [2, 0, 0],
         url: 'data/firmware/t1b1/trezor-t1b1-1.8.1.bin',
@@ -115,7 +113,7 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     imported: null,
     unlocked: true,
     firmware_present: null,
-    needs_backup: false,
+    backup_availability: 'NotAvailable',
     flags: 0,
     model: 'T',
     internal_model: DeviceModelInternal.T2T1,
@@ -125,7 +123,7 @@ const getDeviceFeatures = (feat?: Partial<Features>): Features => ({
     fw_vendor: null,
     unfinished_backup: false,
     no_backup: false,
-    recovery_mode: false,
+    recovery_status: 'Nothing',
     capabilities: [],
     backup_type: 'Bip39',
     sd_card_present: false,

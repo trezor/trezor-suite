@@ -1,6 +1,10 @@
+import { useSelector } from 'react-redux';
+
 import { Box, DiscreetTextTrigger, Text } from '@suite-native/atoms';
 import { Icon, IconName } from '@suite-common/icons';
-import { TransactionType } from '@suite-common/wallet-types';
+import { FiatRatesRootState, selectHistoricFiatRatesByTimestamp } from '@suite-common/wallet-core';
+import { getFiatRateKey } from '@suite-common/wallet-utils';
+import { Timestamp, TransactionType } from '@suite-common/wallet-types';
 import {
     CryptoAmountFormatter,
     CryptoToFiatAmountFormatter,
@@ -10,6 +14,7 @@ import {
 } from '@suite-native/formatters';
 import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
 import { SignValue } from '@suite-common/suite-types';
+import { selectFiatCurrencyCode } from '@suite-native/settings';
 
 type TransactionDetailHeaderProps = {
     transaction: WalletAccountTransaction;
@@ -61,72 +66,86 @@ export const TransactionDetailHeader = ({
     transaction,
     tokenTransfer,
 }: TransactionDetailHeaderProps) => {
+    const fiatCurrencyCode = useSelector(selectFiatCurrencyCode);
+    const fiatRateKey = getFiatRateKey(
+        transaction.symbol,
+        fiatCurrencyCode,
+        tokenTransfer?.contract,
+    );
+    const historicRate = useSelector((state: FiatRatesRootState) =>
+        selectHistoricFiatRatesByTimestamp(state, fiatRateKey, transaction.blockTime as Timestamp),
+    );
+
     const { type } = transaction;
     const { text } = transactionTypeInfo[type];
 
     const hasTransactionSign = type === 'sent' || type === 'recv';
 
     return (
-        <Box alignItems="center">
-            <Box flexDirection="row" alignItems="center" marginBottom="small">
-                <Text variant="hint" color="textSubdued">
-                    {text}
-                </Text>
-                {hasTransactionSign && (
-                    <Icon
-                        name={transactionTypeInfo[type].iconName}
-                        color="iconSubdued"
-                        size="medium"
-                    />
-                )}
-            </Box>
-            <Text variant="titleMedium" numberOfLines={1} adjustsFontSizeToFit={true}>
-                <Box flexDirection={'row'} alignItems={'center'}>
+        <DiscreetTextTrigger>
+            <Box alignItems="center">
+                <Box flexDirection="row" alignItems="center" marginBottom="small">
+                    <Text variant="hint" color="textSubdued">
+                        {text}
+                    </Text>
+                    {hasTransactionSign && (
+                        <Icon
+                            name={transactionTypeInfo[type].iconName}
+                            color="iconSubdued"
+                            size="medium"
+                        />
+                    )}
+                </Box>
+                <Box flexDirection="row" paddingHorizontal="large">
                     <SignValueFormatter
                         value={signValueMap[tokenTransfer ? tokenTransfer.type : transaction.type]}
                         variant="titleMedium"
                     />
-                    <DiscreetTextTrigger>
-                        {tokenTransfer ? (
-                            <EthereumTokenAmountFormatter
-                                value={tokenTransfer.amount}
-                                symbol={tokenTransfer.symbol}
-                                decimals={tokenTransfer.decimals}
-                                variant="titleMedium"
-                                color="textDefault"
-                            />
-                        ) : (
-                            <CryptoAmountFormatter
-                                value={transaction.amount}
-                                network={transaction.symbol}
-                                isBalance={false}
-                                variant="titleMedium"
-                                color="textDefault"
-                            />
-                        )}
-                    </DiscreetTextTrigger>
+                    <Text> </Text>
+                    {tokenTransfer ? (
+                        <EthereumTokenAmountFormatter
+                            value={tokenTransfer.amount}
+                            symbol={tokenTransfer.symbol}
+                            decimals={tokenTransfer.decimals}
+                            variant="titleMedium"
+                            color="textDefault"
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                        />
+                    ) : (
+                        <CryptoAmountFormatter
+                            value={transaction.amount}
+                            network={transaction.symbol}
+                            isBalance={false}
+                            variant="titleMedium"
+                            color="textDefault"
+                            numberOfLines={1}
+                            adjustsFontSizeToFit
+                        />
+                    )}
                 </Box>
-            </Text>
-            {transaction.rates && (
-                <Box flexDirection="row">
-                    <Text>≈ </Text>
-                    <DiscreetTextTrigger>
+                {historicRate !== undefined && historicRate !== 0 && (
+                    <Box flexDirection="row">
+                        <Text>≈ </Text>
                         {tokenTransfer ? (
                             <EthereumTokenToFiatAmountFormatter
                                 contract={tokenTransfer.contract}
                                 value={tokenTransfer.amount}
                                 decimals={tokenTransfer.decimals}
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         ) : (
                             <CryptoToFiatAmountFormatter
                                 value={transaction.amount}
                                 network={transaction.symbol}
-                                customRates={transaction.rates}
+                                historicRate={historicRate}
+                                useHistoricRate
                             />
                         )}
-                    </DiscreetTextTrigger>
-                </Box>
-            )}
-        </Box>
+                    </Box>
+                )}
+            </Box>
+        </DiscreetTextTrigger>
     );
 };

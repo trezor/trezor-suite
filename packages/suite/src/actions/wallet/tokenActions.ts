@@ -25,7 +25,7 @@ export const addToken =
                 },
                 localCurrency,
                 rateType: 'current',
-                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                fetchAttemptTimestamp: Date.now() as Timestamp,
                 forceFetchToken: true,
             }),
         );

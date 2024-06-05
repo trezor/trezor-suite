@@ -4,21 +4,24 @@ import { borders } from '@trezor/theme';
 import { Button, ButtonProps } from '../Button/Button';
 import { ButtonSize, ButtonVariant } from '../buttonStyleUtils';
 import { IconButton, IconButtonProps } from '../IconButton/IconButton';
+import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 
 const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
     position: relative;
     display: flex;
     align-items: center;
 
-    > button {
+    button {
         border-radius: 0;
     }
 
-    > :first-child {
+    > :first-child,
+    > :first-child button {
         border-radius: ${borders.radii.full} 0 0 ${borders.radii.full};
     }
 
-    > :last-child {
+    > :last-child,
+    > :last-child button {
         border-radius: 0 ${borders.radii.full} ${borders.radii.full} 0;
     }
 
@@ -38,18 +41,31 @@ const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
     }
 `;
 
-const checkChildren = (children: Array<React.ReactNode>) =>
-    children.every(
-        child =>
-            React.isValidElement(child) && (child.type === Button || child.type === IconButton),
-    );
+const isValidChildrenElement = (children: Array<React.ReactNode>) =>
+    children.every(child => {
+        if (React.isValidElement(child)) {
+            if (child.type === Button || child.type === IconButton) {
+                return true;
+            }
+            if (child.type === Tooltip && React.isValidElement(child.props.children)) {
+                const tooltipChild = child.props.children;
+
+                return tooltipChild.type === Button || tooltipChild.type === IconButton;
+            }
+        }
+
+        return false;
+    });
+
+type AllowedChildrenPropsType = ButtonProps | IconButtonProps;
 
 interface ButtonGroupProps {
     variant?: Exclude<ButtonVariant, 'danger'>;
     size?: ButtonSize;
     isDisabled?: boolean;
     className?: string;
-    children: React.ReactElement<ButtonProps | IconButtonProps>[];
+    children: React.ReactElement<AllowedChildrenPropsType | TooltipProps>[];
+    withTooltips?: boolean;
 }
 
 export const ButtonGroup = ({
@@ -59,23 +75,45 @@ export const ButtonGroup = ({
     className,
     children,
 }: ButtonGroupProps) => {
-    const areChildrenValid = checkChildren(children);
+    const areChildrenValid = isValidChildrenElement(children);
 
     if (!areChildrenValid) {
         console.error(
-            'Invalid children passed to ButtonGroup. Only Button and IconButton are allowed.',
+            'Invalid children passed to ButtonGroup. Only Button, IconButton, and Tooltip (containing Button or IconButton) are allowed.',
         );
 
         return null;
     }
 
-    const childrenWithProps = children.map(child =>
-        React.cloneElement(child, {
-            variant: child.props.variant || variant,
-            size: child.props.size || size,
-            isDisabled: child.props.isDisabled || isDisabled,
-        }),
-    );
+    const childrenWithProps = React.Children.map(children, child => {
+        if (React.isValidElement(child)) {
+            if (
+                child.type === Tooltip &&
+                React.isValidElement((child.props as TooltipProps).children)
+            ) {
+                const tooltipProps = child.props as TooltipProps;
+                const tooltipChild = tooltipProps.children as React.ReactElement;
+                const tooltipChildProps: AllowedChildrenPropsType = tooltipChild?.props;
+                const childWithProps = React.cloneElement(tooltipChild, {
+                    variant: tooltipChildProps.variant || variant,
+                    size: tooltipChildProps.size || size,
+                    isDisabled: tooltipChildProps.isDisabled || isDisabled,
+                });
+
+                return React.cloneElement(child, {}, childWithProps);
+            }
+
+            const childProps = child.props as AllowedChildrenPropsType;
+
+            return React.cloneElement(child, {
+                variant: childProps.variant || variant,
+                size: childProps.size || size,
+                isDisabled: childProps.isDisabled || isDisabled,
+            });
+        }
+
+        return child;
+    });
 
     return (
         <Container $variant={variant} className={className}>

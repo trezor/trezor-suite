@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { toWei } from 'web3-utils';
 
 import TrezorConnect, { FeeLevel } from '@trezor/connect';
@@ -10,6 +10,7 @@ import {
     getExternalComposeOutput,
     formatAmount,
     isPending,
+    getAccountIdentity,
 } from '@suite-common/wallet-utils';
 import {
     StakeFormState,
@@ -22,7 +23,8 @@ import {
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { Dispatch, GetState } from 'src/types/suite';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 import {
     getStakeTxGasLimit,
@@ -52,7 +54,7 @@ const calculate = (
 
     if (output.type === 'send-max' || output.type === 'send-max-noaddress') {
         max = new BigNumber(calculateMax(availableBalance, feeInSatoshi))
-            .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString()))
+            .minus(toWei(MIN_ETH_FOR_WITHDRAWALS.toString(), 'ether'))
             .toString();
         amount = max;
     } else {
@@ -126,6 +128,7 @@ export const composeTransaction =
             from: account.descriptor,
             amount,
             symbol: account.symbol,
+            identity: getAccountIdentity(account),
         });
 
         if (!stakeTxGasLimit.success) return stakeTxGasLimit.error;
@@ -165,35 +168,35 @@ export const composeTransaction =
             wrappedResponse[feeLabel] = tx;
         });
 
-        // TODO: Implement adding custom fees.
-        // const hasAtLeastOneValid = response.find(r => r.type !== 'error');
+        // Implement adding custom fees.
+        const hasAtLeastOneValid = response.find(r => r.type !== 'error');
         // there is no valid tx in predefinedLevels and there is no custom level
-        // if (!hasAtLeastOneValid && !wrappedResponse.custom) {
-        //     const { minFee } = feeInfo;
-        //     const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
-        //     let maxFee = new BigNumber(lastKnownFee).minus(1);
-        //     // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in @trezor/connect)
-        //     const customLevels: FeeLevel[] = [];
-        //     while (maxFee.gte(minFee)) {
-        //         customLevels.push({
-        //             feePerUnit: maxFee.toString(),
-        //             feeLimit: predefinedLevels[0].feeLimit,
-        //             label: 'custom',
-        //             blocks: -1,
-        //         });
-        //         maxFee = maxFee.minus(1);
-        //     }
-        //
-        //     // check if any custom level is possible
-        //     const customLevelsResponse = customLevels.map(level =>
-        //         calculate(availableBalance, output, level, compareWithAmount),
-        //     );
-        //
-        //     const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
-        //     if (customValid >= 0) {
-        //         wrappedResponse.custom = customLevelsResponse[customValid];
-        //     }
-        // }
+        if (!hasAtLeastOneValid && !wrappedResponse.custom) {
+            const { minFee } = feeInfo;
+            const lastKnownFee = predefinedLevels[predefinedLevels.length - 1].feePerUnit;
+            let maxFee = new BigNumber(lastKnownFee).minus(1);
+            // generate custom levels in range from lastKnownFee - 1 to feeInfo.minFee (coinInfo in @trezor/connect)
+            const customLevels: FeeLevel[] = [];
+            while (maxFee.gte(minFee)) {
+                customLevels.push({
+                    feePerUnit: maxFee.toString(),
+                    feeLimit: predefinedLevels[0].feeLimit,
+                    label: 'custom',
+                    blocks: -1,
+                });
+                maxFee = maxFee.minus(1);
+            }
+
+            // check if any custom level is possible
+            const customLevelsResponse = customLevels.map(level =>
+                calculate(availableBalance, output, level, compareWithAmount, account.symbol),
+            );
+
+            const customValid = customLevelsResponse.findIndex(r => r.type !== 'error');
+            if (customValid >= 0) {
+                wrappedResponse.custom = customLevelsResponse[customValid];
+            }
+        }
 
         // format max (calculate sends it as satoshi)
         // update errorMessage values (symbol)
@@ -252,6 +255,8 @@ export const signTransaction =
             nonce = formValues.rbfParams.ethereumNonce.toString();
         }
 
+        const identity = getAccountIdentity(account);
+
         // transform to TrezorConnect.ethereumSignTransaction params
         const { ethereumStakeType } = formValues;
         let txData;
@@ -259,6 +264,7 @@ export const signTransaction =
             txData = await prepareStakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
+                identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
                 nonce,
@@ -269,6 +275,7 @@ export const signTransaction =
             txData = await prepareUnstakeEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
+                identity,
                 amount: formValues.outputs[0].amount,
                 gasPrice: transactionInfo.feePerByte,
                 nonce,
@@ -280,6 +287,7 @@ export const signTransaction =
             txData = await prepareClaimEthTx({
                 symbol: account.symbol,
                 from: account.descriptor,
+                identity,
                 gasPrice: transactionInfo.feePerByte,
                 nonce,
                 chainId: network.chainId,

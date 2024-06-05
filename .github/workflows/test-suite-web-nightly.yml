@@ -1,0 +1,300 @@
+name: "[Test] nightly suite-web, migrations and canary"
+
+# run all suite-web related tests every day at midnight
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  e2e-test-suite-web:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - TEST_GROUP: "@group_suite"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_device-management"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_settings"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_metadata"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_passphrase"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_other"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_wallet"
+            CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_firmware-update"
+            CONTAINERS: "trezor-user-env-unix"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Extract commit message
+        id: extract_commit_message
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin +refs/pull/${{ github.event.pull_request.number }}/merge:
+            echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+          else
+            echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run e2e tests
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+          ## Tells Cypress where is the index of application
+          CYPRESS_ASSET_PREFIX: /web
+          CYPRESS_baseUrl: https://dev.suite.sldev.cz/suite-web/
+          ## should tests do snapshot testing
+          # cypress open todo. temporarily turned off (messaging system)
+          CYPRESS_SNAPSHOT: false
+          ## reporter url
+          TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
+          ## when debugging or developing tests it does not make sense to have retries,
+          ## in other cases retries are useful to avoid occasional failures due to flaky tests
+          ALLOW_RETRY: true
+          TEST_GROUP: ${{ matrix.TEST_GROUP }}
+          CYPRESS_TEST_URLS: develop
+          CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: ${{ matrix.CYPRESS_USE_TREZOR_USER_ENV_BRIDGE }}
+          CYPRESS_updateSnapshots: false
+          CI_JOB_ID: ${{ github.run_id }}
+          CI_COMMIT_SHA: ${{ github.sha }}
+          CI_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          CI_COMMIT_MESSAGE: ${{steps.extract_commit_message.outputs.message }}
+        run: |
+          yarn install --immutable
+          docker compose pull
+          docker compose up -d ${{ matrix.CONTAINERS }}
+          docker compose run test-run
+
+      - name: Upload logs
+        run: |
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
+
+      - name: Upload artifacts
+        # this will run the upload artifacts even if the previous steps failed (e.g. tests failed). It wont run if the workflow was cancelled.
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-nightly-${{ matrix.TEST_GROUP }}
+          path: |
+            ./packages/suite-web/e2e/snapshots
+            ./packages/suite-web/e2e/screenshots
+            ./packages/suite-web/e2e/videos
+            download-snapshots.sh
+            trezor-user-env-debugging.log
+            tenv-emulator-bridge-debugging.log
+            trezor-user-env-version.txt
+
+  e2e-test-migration-tests:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - TEST_GROUP: "@group_migrations"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Extract commit message
+        id: extract_commit_message
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin +refs/pull/${{ github.event.pull_request.number }}/merge:
+            echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+          else
+            echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run e2e migration tests
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+          ## Tells Cypress where is the index of application
+          CYPRESS_ASSET_PREFIX: /web
+          CYPRESS_baseUrl: https://dev.suite.sldev.cz/suite-web/
+          ## should tests do snapshot testing
+          # cypress open todo. temporarily turned off (messaging system)
+          CYPRESS_SNAPSHOT: false
+          ## reporter url
+          TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
+          ## when debugging or developing tests it does not make sense to have retries,
+          ## in other cases retries are useful to avoid occasional failures due to flaky tests
+          ALLOW_RETRY: true
+          TEST_GROUP: ${{ matrix.TEST_GROUP }}
+          CYPRESS_TEST_URLS: release/22.5 develop
+          CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
+          CYPRESS_updateSnapshots: false
+          CI_JOB_ID: ${{ github.run_id }}
+          CI_COMMIT_SHA: ${{ github.sha }}
+          CI_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          CI_COMMIT_MESSAGE: ${{steps.extract_commit_message.outputs.message }}
+        run: |
+          yarn install --immutable
+          docker compose pull
+          docker compose up -d ${{ matrix.CONTAINERS }}
+          docker compose run test-run
+
+      - name: Upload logs
+        run: |
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
+
+      - name:
+          Upload artifacts
+          # this will run the upload artifacts even if the previous steps failed (e.g. tests failed). It wont run if the workflow was cancelled.
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-migration-${{ matrix.TEST_GROUP }}
+          path: |
+            ./packages/suite-web/e2e/snapshots
+            ./packages/suite-web/e2e/screenshots
+            ./packages/suite-web/e2e/videos
+            download-snapshots.sh
+            trezor-user-env-debugging.log
+            tenv-emulator-bridge-debugging.log
+            trezor-user-env-version.txt
+
+  e2e-test-canary-fws:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - TEST_GROUP: "@group_suite"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_device-management"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_metadata"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_passphrase"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_other"
+            CONTAINERS: "trezor-user-env-unix"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_wallet"
+            CONTAINERS: "trezor-user-env-unix bitcoin-regtest"
+            CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: "1"
+          - TEST_GROUP: "@group_firmware-update"
+            CONTAINERS: "trezor-user-env-unix"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+
+      - name: Extract commit message
+        id: extract_commit_message
+        run: |
+          if [ "${{ github.event_name }}" == "pull_request" ]; then
+            git fetch origin +refs/pull/${{ github.event.pull_request.number }}/merge:
+            echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+          else
+            echo "message=$(git log --no-merges -1 --pretty=format:"%s")" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run e2e canary fw tests
+        env:
+          COMPOSE_FILE: ./docker/docker-compose.suite-ci.yml
+          ## Tells Cypress where is the index of application
+          CYPRESS_ASSET_PREFIX: /web
+          CYPRESS_baseUrl: https://dev.suite.sldev.cz/suite-web/
+          ## should tests do snapshot testing
+          # cypress open todo. temporarily turned off (messaging system)
+          CYPRESS_SNAPSHOT: false
+          ## reporter url
+          TRACK_SUITE_URL: https://track-suite-ff9ad9f5b4f6.herokuapp.com
+          ## when debugging or developing tests it does not make sense to have retries,
+          ## in other cases retries are useful to avoid occasional failures due to flaky tests
+          ALLOW_RETRY: true
+          TEST_GROUP: ${{ matrix.TEST_GROUP }}
+          CYPRESS_TEST_URLS: develop
+          CYPRESS_USE_TREZOR_USER_ENV_BRIDGE: 1
+          CYPRESS_updateSnapshots: false
+          FIRMWARE: 2-main
+          CI_JOB_ID: ${{ github.run_id }}
+          CI_COMMIT_SHA: ${{ github.sha }}
+          CI_JOB_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          CI_COMMIT_BRANCH: ${{ steps.extract_branch.outputs.branch }}
+          CI_COMMIT_MESSAGE: ${{steps.extract_commit_message.outputs.message }}
+        run: |
+          yarn install --immutable
+          docker compose pull
+          docker compose up -d ${{ matrix.CONTAINERS }}
+          docker compose run test-run
+
+      - name: Upload logs
+        run: |
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/debugging.log trezor-user-env-debugging.log || true
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/logs/emulator_bridge.log tenv-emulator-bridge-debugging.log || true
+          docker cp docker_trezor-user-env-unix_1:/trezor-user-env/docker/version.txt trezor-user-env-version.txt || true
+
+      - name: Upload artifacts
+        # this will run the upload artifacts even if the previous steps failed (e.g. tests failed). It wont run if the workflow was cancelled.
+        if: ${{ ! cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts-canary-${{ matrix.TEST_GROUP }}
+          path: |
+            ./packages/suite-web/e2e/snapshots
+            ./packages/suite-web/e2e/screenshots
+            ./packages/suite-web/e2e/videos
+            download-snapshots.sh
+            trezor-user-env-debugging.log
+            tenv-emulator-bridge-debugging.log
+            trezor-user-env-version.txt

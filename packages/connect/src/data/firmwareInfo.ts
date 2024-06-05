@@ -17,11 +17,10 @@ import type {
 } from '../types';
 import { DeviceModelInternal } from '../types';
 
-const releases: Record<keyof typeof DeviceModelInternal, FirmwareRelease[]> = {
-    [DeviceModelInternal.T1B1]: [],
-    [DeviceModelInternal.T2T1]: [],
-    [DeviceModelInternal.T2B1]: [],
-};
+const releases = Object.values(DeviceModelInternal).reduce(
+    (acc, key) => ({ ...acc, [key]: [] }),
+    {} as Record<keyof typeof DeviceModelInternal, FirmwareRelease[]>,
+);
 
 export const parseFirmware = (json: any, deviceModel: DeviceModelInternal) => {
     Object.keys(json).forEach(key => {
@@ -239,7 +238,7 @@ export const getInfo = ({ features, releases }: GetInfoProps): ReleaseInfo | nul
         isNewer: isNewerResult,
         intermediaryVersion,
         // translations available to be installed
-        translations: isNewerResult ? prevRelease.translations : release.translations,
+        translations: isNewerResult ? prevRelease?.translations : release?.translations,
     };
 };
 

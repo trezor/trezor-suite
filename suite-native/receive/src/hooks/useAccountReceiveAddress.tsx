@@ -14,21 +14,23 @@ import {
     selectAccountNetworkSymbol,
     selectIsPortfolioTrackerDevice,
     confirmAddressOnDeviceThunk,
+    selectIsDeviceInViewOnlyMode,
 } from '@suite-common/wallet-core';
 import { AccountKey } from '@suite-common/wallet-types';
 import { getFirstFreshAddress } from '@suite-common/wallet-utils';
 import { analytics, EventType } from '@suite-native/analytics';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useToast } from '@suite-native/toasts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 export const useAccountReceiveAddress = (accountKey: AccountKey) => {
     const dispatch = useDispatch();
     const [isReceiveApproved, setIsReceiveApproved] = useState(false);
     const [isUnverifiedAddressRevealed, setIsUnverifiedAddressRevealed] = useState(false);
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
     const navigation = useNavigation();
-    const { translate } = useTranslate();
+
     const { showToast } = useToast();
 
     const { showAlert } = useAlert();
@@ -80,17 +82,24 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 showToast({
                     icon: 'warningCircle',
                     variant: 'default',
-                    message: translate('moduleReceive.deviceCancelError'),
+                    message: <Translation id="moduleReceive.deviceCancelError" />,
                 });
-                navigation.goBack();
+                if (navigation.canGoBack()) {
+                    navigation.goBack();
+                }
 
                 return false;
             }
 
             if (
                 !response.payload.success &&
-                // Method_Interrupted is returned when user cancels actions in connect and we want to ignore it here
-                response.payload.payload.code !== 'Method_Interrupted'
+                // Do not show alert for user cancelled actions
+                ![
+                    'Method_Interrupted',
+                    'Failure_PinInvalid',
+                    'Method_Cancel',
+                    'Failure_PinCancelled',
+                ].includes(response.payload.payload.code ?? '')
             ) {
                 showAlert({
                     title: response.payload.payload.code,
@@ -112,7 +121,7 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
         }
 
         return false;
-    }, [accountKey, freshAddress, dispatch, showToast, translate, navigation, showAlert]);
+    }, [accountKey, freshAddress, dispatch, showToast, navigation, showAlert]);
 
     const handleShowAddress = useCallback(async () => {
         if (isPortfolioTrackerDevice) {
@@ -123,6 +132,11 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 });
                 setIsReceiveApproved(true);
             }
+        } else if (isDeviceInViewOnlyMode) {
+            // If device is remembered,
+            // no verification should happen and we display the receive address straight away.
+            setIsUnverifiedAddressRevealed(true);
+            setIsReceiveApproved(true);
         } else {
             setIsUnverifiedAddressRevealed(true);
             const wasVerificationSuccessful = await verifyAddressOnDevice();
@@ -130,9 +144,11 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
             if (wasVerificationSuccessful) {
                 analytics.report({ type: EventType.ConfirmedReceiveAdress });
                 setIsReceiveApproved(true);
+            } else {
+                setIsUnverifiedAddressRevealed(false);
             }
         }
-    }, [isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
+    }, [isDeviceInViewOnlyMode, isPortfolioTrackerDevice, networkSymbol, verifyAddressOnDevice]);
 
     return {
         address: freshAddress?.address,

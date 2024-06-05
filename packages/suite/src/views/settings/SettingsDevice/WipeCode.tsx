@@ -3,16 +3,10 @@ import { useSelector } from 'react-redux';
 
 import { HELP_CENTER_WIPE_CODE_URL } from '@trezor/urls';
 import { changeWipeCode } from 'src/actions/settings/deviceSettingsActions';
-import {
-    ActionButton,
-    ActionColumn,
-    SectionItem,
-    TextColumn,
-    Translation,
-} from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { useDispatch } from 'src/hooks/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { selectIsDeviceProtectedByWipeCode } from '@suite-common/wallet-core';
 
 interface Props {
@@ -21,7 +15,6 @@ interface Props {
 
 export const WipeCode = ({ isDeviceLocked }: Props) => {
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.WipeCode);
     const isDeviceProtectedByWipeCode = useSelector(selectIsDeviceProtectedByWipeCode);
 
     const enableWipeCode = () => {
@@ -41,11 +34,7 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/device/change-wipe-code"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.WipeCode}>
             <TextColumn
                 title={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_TITLE" />}
                 description={<Translation id="TR_DEVICE_SETTINGS_WIPE_CODE_DESC" />}
@@ -77,6 +66,6 @@ export const WipeCode = ({ isDeviceLocked }: Props) => {
                     </ActionButton>
                 )}
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

@@ -4,8 +4,8 @@ import { FeeLevel } from '@trezor/connect';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { Network } from '@suite-common/wallet-config';
 
-import { Output, PrecomposedLevels, RbfTransactionParams } from './transaction';
-import { FormOptions } from './sendForm';
+import { FeeInfo, PrecomposedLevels } from './transaction';
+import { FormState } from './sendForm';
 import { Account } from './account';
 import { StakeType } from './stake';
 import { Rate } from './fiatRates';
@@ -18,23 +18,10 @@ export interface AmountLimitsString {
     maxFiat?: string;
 }
 
-export interface StakeFormState {
+export interface StakeFormState extends FormState {
     fiatInput?: string;
     cryptoInput?: string;
-    setMaxOutputId?: number;
-    outputs: Output[]; // output arrays, each element is corresponding with single Output item
-    estimatedFeeLimit?: string; // ethereum only (gasLimit)
-    feePerUnit: string; // bitcoin/ethereum/ripple custom fee field (satB/gasPrice/drops)
-    feeLimit: string; // ethereum only (gasLimit)
-    selectedFee?: FeeLevel['label'];
-    rbfParams?: RbfTransactionParams;
-    ethereumDataHex?: string;
-    ethereumNonce?: string; // TODO: ethereum RBF
-    ethereumDataAscii?: string;
-    ethereumAdjustGasLimit?: string; // if used, final gas limit = estimated limit * ethereumAdjustGasLimit
     ethereumStakeType: StakeType;
-    options: FormOptions[];
-    anonymityWarningChecked?: boolean;
 }
 
 export interface BaseStakeContextValues {
@@ -45,8 +32,9 @@ export interface BaseStakeContextValues {
     isComposing: boolean;
     clearForm: () => void;
     signTx: () => Promise<void>;
-    // TODO: Implement fee switcher
     selectedFee: FeeLevel['label'];
+    feeInfo: FeeInfo;
+    changeFeeLevel: (level: FeeLevel['label']) => void;
 }
 
 export type StakeContextValues = UseFormReturn<StakeFormState> &
@@ -65,4 +53,5 @@ export type StakeContextValues = UseFormReturn<StakeFormState> &
         closeConfirmModal: () => void;
         onSubmit: () => void;
         currentRate: Rate | undefined;
+        isLoading: boolean;
     };

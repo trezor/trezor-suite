@@ -6,7 +6,7 @@ import GlobalStyle from './styles/GlobalStyle';
 
 type ThemeProviderProps = {
     children: ReactNode;
-    themeVariant?: 'light' | 'dark';
+    themeVariant?: 'light' | 'dark' | 'debug';
 };
 
 export const ThemeProvider = ({ children, themeVariant }: ThemeProviderProps) => {

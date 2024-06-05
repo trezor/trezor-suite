@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable import/no-default-export */
 /* eslint-disable import/no-anonymous-default-export */
 import { ExpoConfig, ConfigContext } from 'expo/config';
@@ -5,6 +6,8 @@ import { ExpoConfig, ConfigContext } from 'expo/config';
 import { suiteNativeVersion } from './package.json';
 
 type BuildType = 'debug' | 'develop' | 'production';
+
+type ExpoPlugins = ExpoConfig['plugins'];
 
 const bundleIdentifiers = {
     debug: 'io.trezor.suite.debug',
@@ -31,9 +34,15 @@ const appIconsAndroid = {
 } as const;
 
 const appNames = {
-    debug: 'Trezor Suite Debug',
-    develop: 'Trezor Suite Develop',
-    production: 'Trezor Suite',
+    debug: 'Trezor Suite Lite Debug',
+    develop: 'Trezor Suite Lite Develop',
+    production: 'Trezor Suite Lite',
+} as const satisfies Record<BuildType, string>;
+
+const appSlugs = {
+    debug: 'trezor-suite-debug',
+    develop: 'trezor-suite-develop',
+    production: 'trezor-suite',
 } as const satisfies Record<BuildType, string>;
 
 const projectIds = {
@@ -42,30 +51,106 @@ const projectIds = {
     debug: '',
 } as const satisfies Record<BuildType, string>;
 
+const buildType = (process.env.EXPO_PUBLIC_ENVIRONMENT as BuildType) ?? 'debug';
+const isCI = process.env.CI == 'true' || process.env.CI == '1';
+
+if (isCI) {
+    if (!process.env.EXPO_PUBLIC_ENVIRONMENT) {
+        throw new Error('Missing EXPO_PUBLIC_ENVIRONMENT env variable');
+    }
+    if (!process.env.SENTRY_AUTH_TOKEN && buildType !== 'debug') {
+        throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
+    }
+}
+
+const getPlugins = (): ExpoPlugins => {
+    const plugins = [
+        [
+            'expo-font',
+            {
+                fonts: [
+                    '../../packages/theme/fonts/TTSatoshi-Medium.otf',
+                    '../../packages/theme/fonts/TTSatoshi-DemiBold.otf',
+                ],
+            },
+        ],
+        [
+            'expo-barcode-scanner',
+            {
+                cameraPermission: 'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
+            },
+        ],
+        [
+            'expo-build-properties',
+            {
+                android: {
+                    minSdkVersion: 28,
+                },
+                ios: {
+                    deploymentTarget: '14.0',
+                },
+            },
+        ],
+        '@trezor/react-native-usb/plugins/withUSBDevice.js',
+        [
+            './plugins/withAndroidMainActivityAttributes.js',
+            {
+                'android:allowBackup': false,
+            },
+        ],
+        './plugins/withGradleProperties.js',
+        [
+            '@config-plugins/detox',
+            {
+                subdomains: '*',
+            },
+        ],
+    ];
+
+    return [
+        ...plugins,
+        // EXPLAINER: plugins.push("@sentry...") does not work for some reason during `expo prebuild` and
+        // this plugin is never included in the final array. For this reason the spread operator is used instead.
+        ...(buildType === 'debug'
+            ? []
+            : [
+                  [
+                      '@sentry/react-native/expo',
+                      {
+                          url: 'https://sentry.io/',
+                          authToken: process.env.SENTRY_AUTH_TOKEN,
+                          project: 'suite-native',
+                          organization: 'satoshilabs',
+                      },
+                  ],
+              ]),
+        // These should come last
+        './plugins/withRemoveXcodeLocalEnv.js',
+        ['./plugins/withEnvFile.js', { buildType }],
+        './plugins/withRemoveiOSNotificationEntitlement.js',
+    ] as ExpoPlugins;
+};
+
 export default ({ config }: ConfigContext): ExpoConfig => {
-    const buildType = (process.env.ENVIRONMENT_EXPO as BuildType) ?? 'debug';
     const name = appNames[buildType];
-    const slug = appNames[buildType].toLowerCase().split(' ').join('-');
     const bundleIdentifier = bundleIdentifiers[buildType];
     const projectId = projectIds[buildType];
     const appIconIos = appIconsIos[buildType];
     const appIconAndroid = appIconsAndroid[buildType];
 
-    if (!process.env.SENTRY_AUTH_TOKEN && buildType !== 'debug') {
-        throw new Error('Missing SENTRY_AUTH_TOKEN env variable');
-    }
-
     return {
         ...config,
         name,
-        slug,
+        slug: appSlugs[buildType],
         owner: 'trezorcompany',
         version: suiteNativeVersion,
+        orientation: 'portrait',
         splash: {
             image: './assets/splash_icon.png',
             backgroundColor: '#25292E',
             resizeMode: 'contain',
         },
+        userInterfaceStyle: 'automatic',
         android: {
             package: bundleIdentifier,
             adaptiveIcon: {
@@ -85,10 +170,6 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                     '$(PRODUCT_NAME) needs Face ID and Touch ID to keep sensitive data about your portfolio private.',
                 NSMicrophoneUsageDescription: 'This app does not require access to the microphone.',
                 ITSAppUsesNonExemptEncryption: false,
-                UISupportedInterfaceOrientations: [
-                    'UIInterfaceOrientationPortrait',
-                    'UIInterfaceOrientationPortraitUpsideDown',
-                ],
                 NSAppTransportSecurity: {
                     NSAllowsArbitraryLoads: true,
                     NSExceptionDomains: {
@@ -104,56 +185,13 @@ export default ({ config }: ConfigContext): ExpoConfig => {
                 UIRequiredDeviceCapabilities: ['armv7'],
             },
         },
-        plugins: [
-            [
-                'expo-font',
-                {
-                    fonts: [
-                        '../../packages/theme/fonts/TTSatoshi-Medium.otf',
-                        '../../packages/theme/fonts/TTSatoshi-DemiBold.otf',
-                    ],
-                },
-            ],
-            [
-                '@sentry/react-native/expo',
-                {
-                    url: 'https://sentry.io/',
-                    project: 'suite-native',
-                    organization: 'satoshilabs',
-                },
-            ],
-            [
-                'expo-barcode-scanner',
-                {
-                    cameraPermission:
-                        'Allow $(PRODUCT_NAME) to access camera for QR code scanning.',
-                },
-            ],
-            [
-                'expo-build-properties',
-                {
-                    android: {
-                        minSdkVersion: 28,
-                    },
-                    ios: {
-                        deploymentTarget: '14.0',
-                        flipper: 'true',
-                    },
-                },
-            ],
-            '@trezor/react-native-usb/plugins/withUSBDevice.js',
-            // Define FLIPPER_VERSION
-            './plugins/withGradleProperties.js',
-            // These should come last
-            './plugins/withRemoveXcodeLocalEnv.js',
-            ['./plugins/withEnvFile.js', { buildType }],
-            './plugins/withRemoveiOSNotificationEntitlement.js',
-        ],
+        plugins: getPlugins(),
         extra: {
             commitHash: process.env.EAS_BUILD_GIT_COMMIT_HASH || '',
             eas: {
                 projectId,
             },
+            isDetoxTestBuild: !!process.env.IS_DETOX_BUILD,
         },
     };
 };

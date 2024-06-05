@@ -11,19 +11,19 @@ import {
     getAccountSpecific,
 } from '@suite-common/wallet-utils';
 
-import { accountsActionsPrefix } from './constants';
+import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 
-const disposeAccount = createAction(`${accountsActionsPrefix}/disposeAccount`);
+const disposeAccount = createAction(`${ACCOUNTS_MODULE_PREFIX}/disposeAccount`);
 
 const updateSelectedAccount = createAction(
-    `${accountsActionsPrefix}/updateSelectedAccount`,
+    `${ACCOUNTS_MODULE_PREFIX}/updateSelectedAccount`,
     (payload: SelectedAccountStatus): { payload: SelectedAccountStatus } => ({
         payload,
     }),
 );
 
 const removeAccount = createAction(
-    `${accountsActionsPrefix}/removeAccount`,
+    `${ACCOUNTS_MODULE_PREFIX}/removeAccount`,
     (payload: Account[]): { payload: Account[] } => ({
         payload,
     }),
@@ -35,6 +35,7 @@ type CreateAccountActionProps = {
     accountInfo: AccountInfo;
     imported?: boolean;
     accountLabel?: string;
+    visible: boolean;
 };
 
 type CreateIndexLabeledAccountActionProps = Omit<
@@ -48,6 +49,7 @@ const composeCreateAccountActionPayload = ({
     accountInfo,
     imported,
     accountLabel,
+    visible,
 }: CreateAccountActionProps): Account => ({
     deviceState,
     accountLabel,
@@ -69,10 +71,7 @@ const composeCreateAccountActionPayload = ({
         : {
               backendType: discoveryItem.backendType,
           }),
-    visible:
-        !accountInfo.empty ||
-        discoveryItem.accountType === 'coinjoin' ||
-        (discoveryItem.accountType === 'normal' && discoveryItem.index === 0),
+    visible,
     balance: accountInfo.balance,
     availableBalance: accountInfo.availableBalance,
     formattedBalance: formatNetworkAmount(
@@ -91,24 +90,31 @@ const composeCreateAccountActionPayload = ({
 });
 
 const createIndexLabeledAccount = createAction(
-    `${accountsActionsPrefix}/createIndexLabeledAccount`,
+    `${ACCOUNTS_MODULE_PREFIX}/createIndexLabeledAccount`,
     ({
         deviceState,
         discoveryItem,
         accountInfo,
+        visible,
     }: CreateIndexLabeledAccountActionProps): { payload: Account } => ({
-        payload: composeCreateAccountActionPayload({ deviceState, discoveryItem, accountInfo }),
+        payload: composeCreateAccountActionPayload({
+            deviceState,
+            discoveryItem,
+            accountInfo,
+            visible,
+        }),
     }),
 );
 
 const createAccount = createAction(
-    `${accountsActionsPrefix}/createAccount`,
+    `${ACCOUNTS_MODULE_PREFIX}/createAccount`,
     ({
         deviceState,
         discoveryItem,
         accountInfo,
         imported,
         accountLabel,
+        visible,
     }: CreateAccountActionProps): { payload: Account } => ({
         payload: composeCreateAccountActionPayload({
             deviceState,
@@ -116,12 +122,13 @@ const createAccount = createAction(
             accountInfo,
             imported,
             accountLabel,
+            visible,
         }),
     }),
 );
 
 const updateAccount = createAction(
-    `${accountsActionsPrefix}/updateAccount`,
+    `${ACCOUNTS_MODULE_PREFIX}/updateAccount`,
     (account: Account, accountInfo: AccountInfo | null = null): { payload: Account } => {
         if (accountInfo) {
             return {
@@ -153,7 +160,7 @@ const updateAccount = createAction(
 );
 
 const renameAccount = createAction(
-    `${accountsActionsPrefix}/renameAccount`,
+    `${ACCOUNTS_MODULE_PREFIX}/renameAccount`,
     (accountKey: string, accountLabel: string) => ({
         payload: {
             accountKey,
@@ -163,7 +170,7 @@ const renameAccount = createAction(
 );
 
 const startCoinjoinAccountSync = createAction(
-    `${accountsActionsPrefix}/startCoinjoinAccountSync`,
+    `${ACCOUNTS_MODULE_PREFIX}/startCoinjoinAccountSync`,
     (account: Extract<Account, { backendType: 'coinjoin' }>) => ({
         payload: {
             accountKey: account.key,
@@ -172,7 +179,7 @@ const startCoinjoinAccountSync = createAction(
 );
 
 const endCoinjoinAccountSync = createAction(
-    `${accountsActionsPrefix}/endCoinjoinAccountSync`,
+    `${ACCOUNTS_MODULE_PREFIX}/endCoinjoinAccountSync`,
     (
         account: Extract<Account, { backendType: 'coinjoin' }>,
         status: Extract<Account, { backendType: 'coinjoin' }>['status'],
@@ -185,7 +192,7 @@ const endCoinjoinAccountSync = createAction(
 );
 
 const changeAccountVisibility = createAction(
-    `${accountsActionsPrefix}/changeAccountVisibility`,
+    `${ACCOUNTS_MODULE_PREFIX}/changeAccountVisibility`,
     (account: Account, visible = true): { payload: Account } => ({
         payload: {
             ...account,

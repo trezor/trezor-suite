@@ -9,6 +9,7 @@ import { Assert } from '@trezor/schema-utils';
 
 type Params = {
     coinInfo: CoinInfo;
+    identity?: string;
 };
 
 export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisconnect', Params> {
@@ -31,6 +32,7 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
 
         this.params = {
             coinInfo,
+            identity: payload.identity,
         };
     }
 
@@ -39,10 +41,8 @@ export default class BlockchainDisconnect extends AbstractMethod<'blockchainDisc
     }
 
     run() {
-        const backend = findBackend(this.params.coinInfo.shortcut);
-        if (backend) {
-            backend.disconnect();
-        }
+        const backend = findBackend(this.params.coinInfo.shortcut, this.params.identity);
+        backend?.disconnect();
 
         return Promise.resolve({ disconnected: true });
     }

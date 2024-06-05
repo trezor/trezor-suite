@@ -41,6 +41,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
             // validate incoming parameters
             validateParams(batch, [
                 { name: 'coin', type: 'string', required: true },
+                { name: 'identity', type: 'string' },
                 { name: 'descriptor', type: 'string' },
                 { name: 'path', type: 'string' },
 
@@ -92,30 +93,26 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
 
         this.useDevice = willUseDevice;
         this.useUi = willUseDevice;
+
+        this.noBackupConfirmationMode = this.params.every(batch => batch.suppressBackupWarning)
+            ? 'popup-only'
+            : 'always';
     }
 
     get info() {
         return 'Export account info';
     }
 
-    async confirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
+    get confirmation() {
         if (this.params.length === 1 && !this.params[0].path && !this.params[0].descriptor) {
-            // request confirmation view
-            this.postMessage(
-                createUiMessage(UI.REQUEST_CONFIRMATION, {
-                    view: 'export-account-info',
-                    label: `Export info for ${this.params[0].coinInfo.label} account of your selection`,
-                    customConfirmButton: {
-                        label: 'Proceed to account selection',
-                        className: 'not-empty-css',
-                    },
-                }),
-            );
+            return {
+                view: 'export-account-info' as const,
+                label: `Export info for ${this.params[0].coinInfo.label} account of your selection`,
+                customConfirmButton: {
+                    label: 'Proceed to account selection',
+                    className: 'not-empty-css',
+                },
+            };
         } else {
             const keys: {
                 [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
@@ -149,49 +146,19 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 });
             });
 
-            this.postMessage(
-                createUiMessage(UI.REQUEST_CONFIRMATION, {
-                    view: 'export-account-info',
-                    label: `Export info for: ${str.join('')}`,
-                }),
-            );
+            return {
+                view: 'export-account-info' as const,
+                label: `Export info for: ${str.join('')}`,
+            };
         }
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
-    }
-
-    async noBackupConfirmation(allowSuppression?: boolean) {
-        if (allowSuppression && this.params.every(batch => batch.suppressBackupWarning)) {
-            return true;
-        }
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'no-backup',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
     }
 
     // override AbstractMethod function
     // this is a special case where we want to check firmwareRange in bundle
     // and return error with bundle indexes
-    async checkFirmwareRange(isUsingPopup: boolean) {
-        // for popup mode use it like it was before
-        if (isUsingPopup || this.params.length === 1) {
-            return super.checkFirmwareRange(isUsingPopup);
+    checkFirmwareRange() {
+        if (this.params.length === 1) {
+            return super.checkFirmwareRange();
         }
         // for trusted mode check each batch and return error with invalid bundle indexes
         // find invalid ranges
@@ -203,7 +170,7 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 this.params[i].coinInfo,
                 DEFAULT_FIRMWARE_RANGE,
             );
-            const exception = await super.checkFirmwareRange(false);
+            const exception = super.checkFirmwareRange();
             if (exception) {
                 invalid.push({
                     index: i,
@@ -284,7 +251,11 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
                 }
 
                 // initialize backend
-                const blockchain = await initBlockchain(request.coinInfo, this.postMessage);
+                const blockchain = await initBlockchain(
+                    request.coinInfo,
+                    this.postMessage,
+                    request.identity,
+                );
 
                 if (this.disposed) break;
 
@@ -344,8 +315,8 @@ export default class GetAccountInfo extends AbstractMethod<'getAccountInfo', Req
     }
 
     async discover(request: Request) {
-        const { coinInfo, defaultAccountType } = request;
-        const blockchain = await initBlockchain(coinInfo, this.postMessage);
+        const { coinInfo, identity, defaultAccountType } = request;
+        const blockchain = await initBlockchain(coinInfo, this.postMessage, identity);
         const dfd = this.createUiPromise(UI.RECEIVE_ACCOUNT);
 
         const discovery = new Discovery({

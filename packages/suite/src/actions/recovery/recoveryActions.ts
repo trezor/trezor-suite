@@ -1,5 +1,5 @@
 import { deviceActions, selectDevice } from '@suite-common/wallet-core';
-import TrezorConnect, { UI, RecoveryDevice, DeviceModelInternal } from '@trezor/connect';
+import TrezorConnect, { UI, RecoveryDevice, DeviceModelInternal, PROTO } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { RECOVERY } from 'src/actions/recovery/constants';
@@ -8,6 +8,7 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
+import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
 
 export type SeedInputStatus =
     | 'initial'
@@ -67,8 +68,10 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     const response = await TrezorConnect.recoveryDevice({
-        dry_run: true,
-        type: advancedRecovery ? 1 : 0,
+        type: device.features.recovery_type ?? 'DryRun', // For old firmware, we assume DryRun as it was the only option before
+        input_method: advancedRecovery
+            ? PROTO.RecoveryDeviceInputMethod.Matrix
+            : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
         word_count: wordsCount,
         enforce_wordlist: true,
         device: {
@@ -105,7 +108,10 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     }
 
     const params: RecoveryDevice = {
-        type: advancedRecovery ? 1 : 0,
+        type: device.features.recovery_type ?? 'NormalRecovery', // For old firmware, we assume NormalRecovery as it was the only option before
+        input_method: advancedRecovery
+            ? PROTO.RecoveryDeviceInputMethod.Matrix
+            : PROTO.RecoveryDeviceInputMethod.ScrambledWords,
         word_count: wordsCount,
         passphrase_protection: DEFAULT_PASSPHRASE_PROTECTION,
         enforce_wordlist: true,
@@ -167,7 +173,7 @@ const rerun = () => async (dispatch: Dispatch, getState: GetState) => {
 
     const features = response.payload;
 
-    if (!features.recovery_mode) {
+    if (!isRecoveryInProgress(features)) {
         return;
     }
 

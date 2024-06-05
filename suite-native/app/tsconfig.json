@@ -22,6 +22,12 @@
             "path": "../../suite-common/suite-constants"
         },
         {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
+            "path": "../../suite-common/transaction-cache-engine"
+        },
+        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../accounts" },
@@ -43,12 +49,14 @@
         { "path": "../module-dev-utils" },
         { "path": "../module-home" },
         { "path": "../module-onboarding" },
+        { "path": "../module-passphrase" },
         { "path": "../module-receive" },
+        { "path": "../module-send" },
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../notifications" },
-        { "path": "../passphrase" },
         { "path": "../receive" },
+        { "path": "../settings" },
         { "path": "../state" },
         { "path": "../storage" },
         { "path": "../theme" },

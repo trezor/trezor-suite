@@ -235,7 +235,11 @@ export const useCardanoStaking = (): CardanoStaking => {
                         }),
                     );
                     dispatch(
-                        addFakePendingCardanoTxThunk({ precomposedTx: txPlan, txid, account }),
+                        addFakePendingCardanoTxThunk({
+                            precomposedTransaction: txPlan,
+                            txid,
+                            account,
+                        }),
                     );
                     dispatch(setPendingStakeTx(account, txid));
                 } else {

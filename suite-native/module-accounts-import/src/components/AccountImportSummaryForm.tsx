@@ -7,7 +7,6 @@ import {
     AccountsRootState,
     selectAccountsByNetworkAndDeviceState,
     PORTFOLIO_TRACKER_DEVICE_STATE,
-    selectFilterKnownTokens,
     FiatRatesRootState,
 } from '@suite-common/wallet-core';
 import { Box, Button, Divider, VStack } from '@suite-native/atoms';
@@ -26,8 +25,11 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { analytics, EventType } from '@suite-native/analytics';
 import { TokenAddress, TokenInfoBranded, TokenSymbol } from '@suite-common/wallet-types';
 import { selectAnyOfTokensHasFiatRates } from '@suite-native/ethereum-tokens';
-import { SettingsSliceRootState } from '@suite-native/module-settings';
-import { TokenDefinitionsRootState } from '@suite-common/wallet-core/src/token-definitions/tokenDefinitionsTypes';
+import {
+    selectFilterKnownTokens,
+    TokenDefinitionsRootState,
+} from '@suite-common/token-definitions';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { importAccountThunk } from '../accountsImportThunks';
 import { AccountImportOverview } from './AccountImportOverview';
@@ -130,7 +132,7 @@ export const AccountImportSummaryForm = ({
                 <Divider marginHorizontal="extraLarge" />
                 <Box marginHorizontal="medium">
                     <Button
-                        data-testID="@account-import/coin-synced/confirm-button"
+                        testID="@account-import/coin-synced/confirm-button"
                         onPress={handleImportAccount}
                         size="large"
                         style={applyStyle(confirmButtonStyle)}

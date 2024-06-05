@@ -19,7 +19,7 @@ const tabBarStyle = prepareNativeStyle<{
 }>((utils, { insetLeft, insetRight, insetsBottom }) => ({
     width: '100%',
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
-    borderTopColor: utils.colors.borderOnElevation0,
+    borderTopColor: utils.colors.borderElevation1,
     borderTopWidth: utils.borders.widths.small,
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -64,6 +64,7 @@ export const TabBar = ({ state, navigation, tabItemOptions }: TabBarProps) => {
                         iconName={iconName}
                         title={label}
                         onPress={handleTabBarItemPress}
+                        testID={route.name}
                     />
                 );
             })}

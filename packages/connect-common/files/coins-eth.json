@@ -41,25 +41,6 @@
     {
         "blockchain_link": {
             "type": "blockbook",
-            "url": ["https://goerli1.trezor.io", "https://goerli2.trezor.io"]
-        },
-        "chain": "gor",
-        "chain_id": 5,
-        "name": "G\u00f6rli",
-        "shortcut": "tGOR",
-        "slip44": 1,
-        "support": {
-            "connect": true,
-            "suite": true,
-            "T1B1": "1.11.2",
-            "T2T1": "2.5.2",
-            "T2B1": "2.6.1"
-        },
-        "url": "https://goerli.net/#about"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
             "url": ["https://holesky1.trezor.io", "https://holesky2.trezor.io"]
         },
         "chain": "hol",

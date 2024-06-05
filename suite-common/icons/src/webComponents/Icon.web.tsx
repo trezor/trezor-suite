@@ -1,4 +1,5 @@
 import { ReactSVG } from 'react-svg';
+import { MouseEvent } from 'react';
 
 import styled, { css, useTheme } from 'styled-components';
 
@@ -74,9 +75,17 @@ export const Icon = ({
         svg.setAttribute('height', `${iconSize}px`);
     };
 
+    const handleClick = (e: MouseEvent<any>) => {
+        onClick?.();
+
+        // We need to stop default/propagation in case the icon is rendered in popup/modal so it won't close it.
+        e.preventDefault();
+        e.stopPropagation();
+    };
+
     return (
         <SVG
-            onClick={onClick}
+            onClick={handleClick}
             tabIndex={onClick ? 0 : undefined}
             onKeyDown={handleOnKeyDown}
             src={icons[name]}

@@ -24,6 +24,8 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../storage" },
+        { "path": "../toasts" },
+        { "path": "../../packages/connect" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }

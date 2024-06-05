@@ -89,7 +89,7 @@ const buttonRequest =
                 if (!action.payload) {
                     api.dispatch(
                         deviceActions.removeButtonRequests({
-                            device: selectDevice(api.getState()) ?? null,
+                            device: selectDevice(api.getState()),
                         }),
                     );
                 }
@@ -99,7 +99,7 @@ const buttonRequest =
                 // clear all device's button requests in each step of the onboarding and after device authenticity check
                 api.dispatch(
                     deviceActions.removeButtonRequests({
-                        device: selectDevice(api.getState()) ?? null,
+                        device: selectDevice(api.getState()),
                     }),
                 );
                 break;

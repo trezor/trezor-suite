@@ -1,0 +1,73 @@
+import { Callout } from 'nextra/components';
+
+import { PROTO } from '@trezor/connect/src/constants';
+
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'Advanced schema',
+            method: 'getFirmwareHash',
+            schema: PROTO.GetFirmwareHash,
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    challenge:
+        'a random 32-byte challenge which is return form successful [TrezorConnect.firmwareUpdate](./firmwareUpdate) call',
+};
+
+## getFirmwareHash
+
+<Callout type="error">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
+
+<Callout type="info">**Supported only by firmwares 1.11.1 and 2.5.1 or higher!**</Callout>
+
+### Params
+
+<CommonParamsLink />
+
+#### PROTO.GetFirmwareHash
+
+<ParamsTable schema={PROTO.GetFirmwareHash} descriptions={paramDescriptions} />
+
+### Example
+
+Get hash of firmware installed in trezor device. It can be used to verify authenticity of firmware binaries intended to be installed.
+
+```javascript
+TrezorConnect.getFirmwareHash({
+    challenge: '430d1ca5302edb40ac605e0ba61dc50928779336fdd02b688a833564c178307c',
+});
+```
+
+### Result
+
+[FirmwareHash type](https://github.com/trezor/trezor-suite/blob/develop/packages/protobuf/src/messages.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        hash: string,
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

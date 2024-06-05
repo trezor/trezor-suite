@@ -29,17 +29,20 @@ const ENTERING_ANIMATION_DURATION = 750;
 
 // FIXME: Color variants are wrongly defined, so we have to specify different outer colors individually for each color theme.
 // Color definitions should be redesigned to use the same color variant for all color themes.
-const variantToStylesMaps = {
-    standard: {
-        positive: {
-            innerColor: 'backgroundPrimaryDefault',
-            outerColor: 'backgroundPrimarySubtleOnElevation0',
-        },
-        negative: {
-            innerColor: 'backgroundAlertRedBold',
-            outerColor: 'backgroundAlertRedSubtleOnElevation0',
-        },
+
+const standard = {
+    positive: {
+        innerColor: 'backgroundPrimaryDefault',
+        outerColor: 'backgroundPrimarySubtleOnElevation0',
     },
+    negative: {
+        innerColor: 'backgroundAlertRedBold',
+        outerColor: 'backgroundAlertRedSubtleOnElevation0',
+    },
+} as const;
+
+const variantToStylesMaps = {
+    standard,
     dark: {
         positive: {
             innerColor: 'backgroundPrimaryDefault',
@@ -50,6 +53,7 @@ const variantToStylesMaps = {
             outerColor: 'backgroundAlertRedSubtleOnElevation1',
         },
     },
+    debug: standard,
 } as const satisfies Record<
     ThemeColorVariant,
     Record<EventVariant, { innerColor: Color; outerColor: Color }>

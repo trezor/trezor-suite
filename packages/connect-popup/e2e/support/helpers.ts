@@ -20,6 +20,20 @@ export const log = (...val: string[]) => {
     console.log(`[===]`, ...val);
 };
 
+// Next.js uses client side routing, so we use this to navigate without reloading the page
+export const nextJsGoto = async (page: Page, url: string) => {
+    await page.evaluate(url => {
+        (window as any).router.push(url);
+    }, url);
+};
+
+export const formatUrl = (baseUrl: string, path: string) => {
+    const [baseUrlWithoutParams, params] = baseUrl.split('?');
+    const [pathWithoutParams, pathParams] = path.split('?');
+
+    return `${baseUrlWithoutParams}${pathWithoutParams}?${params ? `${params}&` : ''}${pathParams ?? ''}`;
+};
+
 const getExtensionPage = async () => {
     const pathToExtension = path.join(
         __dirname,
@@ -29,13 +43,6 @@ const getExtensionPage = async () => {
         'connect-explorer',
         'build-webextension',
     );
-
-    const initialBrowserContext = await chromium.launchPersistentContext(
-        `/tmp/test-user-data-dir/${new Date().getTime()}`,
-    );
-    await initialBrowserContext.clearPermissions();
-    await initialBrowserContext.clearCookies();
-    await initialBrowserContext.close();
 
     const userDataDir = `/tmp/test-user-data-dir/${new Date().getTime()}`;
     const browserContext = await chromium.launchPersistentContext(userDataDir, {
@@ -66,7 +73,7 @@ const getExtensionPage = async () => {
 
     const extensionId = background.url().split('/')[2];
 
-    const url = `chrome-extension://${extensionId}/connect-explorer.html`;
+    const url = `chrome-extension://${extensionId}/`;
 
     return {
         page,
@@ -109,6 +116,7 @@ export const openPopup = (
     } else {
         triggerPopup.push(explorerPage.waitForEvent('popup'));
     }
+    triggerPopup.push(explorerPage.click("div[data-test='@api-playground/collapsible-box']"));
     triggerPopup.push(explorerPage.click("button[data-test='@submit-button']"));
 
     return Promise.all(triggerPopup) as Promise<Page[]>;
@@ -138,13 +146,13 @@ export const setConnectSettings = async (
     explorerPage: Page,
     explorerUrl: string,
     { trustedHost = false, connectSrc }: { trustedHost?: boolean; connectSrc?: string },
-    isWebExtension?: boolean,
+    _isWebExtension?: boolean,
 ) => {
-    await explorerPage.goto(`${explorerUrl}#/settings`);
-    if (isWebExtension) {
+    await explorerPage.goto(formatUrl(explorerUrl, `settings/index.html`));
+    /*if (isWebExtension) {
         // When webextension and using service-worker we need to wait for handshake is confirmed with proxy.
         await explorerPage.waitForSelector("div[data-test='@settings/handshake-confirmed']");
-    }
+    }*/
     if (trustedHost) {
         await waitAndClick(explorerPage, ['@checkbox/trustedHost']);
     }

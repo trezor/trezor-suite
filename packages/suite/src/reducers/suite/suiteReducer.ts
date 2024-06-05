@@ -4,7 +4,6 @@ import { discoveryActions, DeviceRootState, selectDevice } from '@suite-common/w
 import type { InvityServerEnvironment } from '@suite-common/invity';
 import { versionUtils } from '@trezor/utils';
 import { isWeb } from '@trezor/env-utils';
-import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
 import { TRANSPORT, TransportInfo, ConnectSettings } from '@trezor/connect';
 
 import { getIsTorEnabled, getIsTorLoading } from 'src/utils/suite/tor';
@@ -16,6 +15,8 @@ import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
+import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -33,11 +34,6 @@ export interface DebugModeOptions {
 export interface AutodetectSettings {
     language: boolean;
     theme: boolean;
-}
-
-export enum AddressDisplayOptions {
-    ORIGINAL = 'original',
-    CHUNKED = 'chunked',
 }
 
 export type SuiteLifecycle =
@@ -65,6 +61,10 @@ export interface Flags {
     showDashboardT2B1PromoBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
+    showDashboardStakingPromoBanner: boolean;
+    isViewOnlyModeVisible: boolean;
+    viewOnlyPromoClosed: boolean;
+    viewOnlyTooltipClosed: boolean;
 }
 
 export interface EvmSettings {
@@ -74,7 +74,7 @@ export interface EvmSettings {
 
 export interface SuiteSettings {
     theme: {
-        variant: Exclude<SuiteThemeVariant, 'system'>;
+        variant: Exclude<SuiteThemeVariant, 'system'> | 'debug';
     };
     language: Locale;
     torOnionLinks: boolean;
@@ -118,6 +118,10 @@ const initialState: SuiteState = {
         showDashboardT2B1PromoBanner: true,
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
+        showDashboardStakingPromoBanner: true,
+        isViewOnlyModeVisible: false,
+        viewOnlyPromoClosed: false,
+        viewOnlyTooltipClosed: false,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},
@@ -358,5 +362,7 @@ export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState
 
 export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
     state.suite.flags.initialRun || state.device?.selectedDevice?.mode !== 'normal';
+
+export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 
 export default suiteReducer;

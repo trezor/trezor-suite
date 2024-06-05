@@ -1,0 +1,231 @@
+import { Type } from '@sinclair/typebox';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import getAccountInfo from '../../../data/methods/bitcoin/getAccountInfo';
+import { ParamsTable } from '../../../components/ParamsTable';
+
+<ApiPlayground
+    options={[
+        {
+            title: 'GetAccountInfo',
+            legacyConfig: getAccountInfo[0],
+            title: 'GetAccountInfo (xpub)',
+            legacyConfig: getAccountInfo[1],
+        },
+    ]}
+/>
+
+export const UsingPathSchema = Type.Object({
+    path: Type.Union([Type.String(), Type.Array(Type.Number())], {
+        description: 'minimum length is `3`. [read more](/details/path)',
+    }),
+    coin: Type.String({
+        description:
+            'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
+    }),
+});
+
+export const UsingPubkeySchema = Type.Object({
+    descriptor: Type.String({
+        description: 'public key of account',
+    }),
+    coin: Type.String({
+        description:
+            'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
+    }),
+});
+
+export const UsingDiscoverySchema = Type.Object({
+    coin: Type.String({
+        description:
+            'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
+    }),
+});
+
+export const OtherParamsSchema = Type.Object({
+    details: Type.Optional(
+        Type.Union(
+            [
+                Type.Literal('basic'),
+                Type.Literal('tokens'),
+                Type.Literal('tokenBalances'),
+                Type.Literal('txs'),
+            ],
+            {
+                description:
+                    'specifies level of details returned by request\n' +
+                    '- `basic` (default) return only account balances, without any derived addresses or transaction history\n' +
+                    '- `tokens` - response with derived addresses (Bitcoin-like accounts) and ERC20 tokens (Ethereum-like accounts), subject of `tokens` param\n' +
+                    '- `tokenBalances` - same as `tokens` with balances, subject of `tokens` param\n' +
+                    '- `txs` - `tokenBalances` + complete account transaction history',
+            },
+        ),
+    ),
+    tokens: Type.Optional(
+        Type.Union([Type.Literal('nonzero'), Type.Literal('used'), Type.Literal('derived')], {
+            description:
+                'specifies which tokens (xpub addresses) are returned by the request (default nonzero)\n' +
+                '- `nonzero` - (Default) return only addresses with nonzero balance\n' +
+                '- `used` - return addresses with at least one transaction\n' +
+                '- `derived` - return all derived addresses',
+        }),
+    ),
+    page: Type.Optional(Type.Number()),
+    pageSize: Type.Optional(Type.Number()),
+    from: Type.Optional(Type.Number()),
+    to: Type.Optional(Type.Number()),
+    gap: Type.Optional(Type.Number()),
+    contractFilter: Type.Optional(Type.String()),
+    marker: Type.Optional(Type.Object({ ledger: Type.Number(), seq: Type.Number() })),
+    defaultAccountType: Type.Optional(
+        Type.Union([Type.Literal('normal'), Type.Literal('segwit'), Type.Literal('legacy')]),
+    ),
+    suppressBackupWarning: Type.Optional(Type.Boolean()),
+});
+
+export const GetAccountInfoSchema = Type.Intersect([
+    Type.Union([UsingPathSchema, UsingPubkeySchema, UsingDiscoverySchema]),
+    OtherParamsSchema,
+]);
+
+export const paramDescriptions = {
+    path: 'minimum length is `3`. [read more](/details/path)',
+    coin: 'determines network definition specified in [coins.json](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-common/files/coins.json) file. Coin `shortcut`, `name` or `label` can be used.',
+    descriptor: 'public key of account',
+    page: 'transaction history page index, subject of `details: txs`',
+    pageSize: 'transaction history page size, subject of `details: txs`',
+    from: 'transaction history from block filter, subject of `details: txs`',
+    to: 'transaction history to block filter, subject of `details: txs`',
+    gap: 'address derivation gap size, subject of `details: tokens`',
+    contractFilter: 'Ethereum-like accounts only: get ERC20 token info and balance',
+    marker: 'XRP accounts only, transaction history page marker',
+    defaultAccountType:
+        'Bitcoin-like accounts only: specify which account group is displayed as default in popup, subject of `Using discovery`',
+    suppressBackupWarning:
+        'By default, this method will emit an event to show a warning if the wallet does not have a backup. This option suppresses the message.',
+};
+
+## Get account info
+
+Gets an info of specified account.
+
+```javascript
+const result = await TrezorConnect.getAccountInfo(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### Using path
+
+<ParamsTable schema={UsingPathSchema} />
+
+#### Using public key
+
+<ParamsTable schema={UsingPubkeySchema} />
+
+#### Using discovery
+
+BIP-0044 account discovery is performed and user is presented with a list of accounts. Result is returned after account selection.
+
+<ParamsTable schema={UsingDiscoverySchema} />
+
+### Other optional params
+
+params are forwarded to [BlockBook backend](https://github.com/trezor/blockbook/blob/master/docs/api.md#api-v2) using `@trezor/blockchain-link` package
+
+<ParamsTable schema={OtherParamsSchema} descriptions={paramDescriptions} />
+
+### Example
+
+Get info about first bitcoin account
+
+```javascript
+TrezorConnect.getAccountInfo({
+    path: "m/49'/0'/0'",
+    coin: 'btc',
+});
+```
+
+Get info about account using public key (device is not used)
+
+```javascript
+TrezorConnect.getAccountInfo({
+    descriptor:
+        'xpub6CVKsQYXc9awxgV1tWbG4foDvdcnieK2JkbpPEBKB5WwAPKBZ1mstLbKVB4ov7QzxzjaxNK6EfmNY5Jsk2cG26EVcEkycGW4tchT2dyUhrx',
+    coin: 'btc',
+});
+```
+
+Get info about account using BIP-0044 account discovery
+
+```javascript
+TrezorConnect.getAccountInfo({
+    coin: 'btc',
+});
+```
+
+### Result
+
+[AccountInfo type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/account.ts)
+
+```javascript
+{
+    success: true,
+    payload: {
+        id: number,                           // account id
+        path: string,                         // serialized path
+        descriptor: string,                   // account public key
+        legacyXpub?: string,                  // (optional) account public key in legacy format (only for segwit and segwit native accounts)
+        balance: string,                      // account balance (confirmed transactions only)
+        availableBalance: string,             // account balance (including unconfirmed transactions)
+        addresses: {
+            // subject of details:tokens param
+            unused: Array<AccountAddress>, // unused addresses
+            used: Array<AccountAddress>,   // used addresses
+            change: Array<AccountAddress>, // change addresses (internal)
+        }, // list of derived addresses grouped by purpose (Bitcoin-like accounts)
+        history: Array<{
+            total: number,
+            unconfirmed: number,
+            transactions?: Array<AccountTransaction>, // subject of details:txs param
+        }> // account history object
+        utxo?: Array<AccountUtxo>, // account utxos (Bitcoin-like accounts), subject of details:tokens param
+        tokens?: Array<TokenInfo>, // account ERC20 tokens (Ethereum-like accounts), subject of details:tokens param
+        misc?: {
+            // Ethereum-like accounts only
+            nonce: string,
+            contractInfo?: TokenInfo, // subject of contractFilter param
+            // XRP accounts only
+            sequence?: number,
+            reserve?: string,
+        },
+        page?: {
+            // subject of details:txs param
+            index: number, // current page index
+            size: number,  // current page size
+            total: number, // total pages count
+        },
+        marker?: {
+            // XRP accounts only
+            // subject of details:txs param
+            ledger: number,
+            seq: number,
+        }
+
+    } //
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

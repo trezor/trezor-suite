@@ -49,7 +49,9 @@ import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
@@ -268,13 +270,7 @@ export const useCoinmarketSellForm = ({
             const currency: typeof defaultCurrency | undefined = getValues(FIAT_CURRENCY_SELECT);
             if (!fiatRate?.rate || !currency) return;
 
-            const cryptoValue = fromFiatCurrency(
-                amount,
-                currency.value.toLowerCase(),
-                fiatRate,
-                network.decimals,
-                false,
-            );
+            const cryptoValue = fromFiatCurrency(amount, network.decimals, fiatRate.rate);
             const cryptoInputValue =
                 cryptoValue && shouldSendInSats
                     ? amountToSatoshi(cryptoValue, network.decimals)

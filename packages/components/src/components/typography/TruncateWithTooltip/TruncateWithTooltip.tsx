@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { useEffect, useRef, useState } from 'react';
-import { TooltipDelay, Tooltip, Cursor } from '../../Tooltip/Tooltip';
+import { Tooltip, Cursor } from '../../Tooltip/Tooltip';
+import { TooltipDelay } from '../../Tooltip/TooltipDelay';
 
 const EllipsisContainer = styled.div`
     text-overflow: ellipsis;

@@ -1,3 +1,17 @@
+# 1.0.17-beta.2
+
+-   Chore/refactor fiat rates (#11592) (f40b8bf7d8)
+
+# 1.0.16
+
+-   chore(deps): bump @solana/web3.js from 1.90.0 to 1.90.2 (962e51f4ca)
+-   refactor(connect): optional token symbol (#10762) (47a7de17c6)
+
+# 1.0.15
+
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 1.0.14
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)

@@ -16,7 +16,7 @@ import {
     TokenSymbol,
 } from '@suite-common/wallet-types';
 import { TokenInfo, TokenTransfer } from '@trezor/blockchain-link';
-import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 import { getFiatRateKeyFromTicker, isEthereumAccountSymbol } from '@suite-common/wallet-utils';
 
 import { EthereumTokenTransfer, WalletAccountTransaction } from './types';

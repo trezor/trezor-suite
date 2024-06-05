@@ -1,0 +1,27 @@
+name: "[Release] connect v9 rollback"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  workflow_dispatch:
+
+jobs:
+  rollback-connect-production:
+    if: startsWith(github.ref, 'refs/heads/release/connect/')
+    environment: production-connect
+    name: "Create rollback copy of connect.trezor.io"
+    runs-on: ubuntu-latest
+    env:
+      LATEST_VERSION: 9
+    steps:
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_connect_prod_deploy
+          aws-region: eu-central-1
+
+      - name: Synching production bucket with rollback
+        run: |
+          aws s3 sync --delete s3://rollback-connect.trezor.io/9${{ env.LATEST_VERSION }}/ s3://connect.trezor.io/${{ env.LATEST_VERSION }}/

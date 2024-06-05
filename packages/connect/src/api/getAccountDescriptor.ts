@@ -53,18 +53,17 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 coinInfo,
             };
         });
+
+        this.noBackupConfirmationMode = this.params.every(batch => batch.suppressBackupWarning)
+            ? 'popup-only'
+            : 'always';
     }
 
     get info() {
         return 'Export account descriptor';
     }
 
-    async confirmation() {
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
+    get confirmation() {
         const keys: {
             [coin: string]: { coinInfo: CoinInfo; values: DerivationPath[] };
         } = {};
@@ -95,45 +94,16 @@ export default class GetAccountDescriptor extends AbstractMethod<
             });
         });
 
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'export-account-info',
-                label: `Export descriptor for: ${str.join('')}`,
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
-    }
-
-    async noBackupConfirmation(allowSuppression?: boolean) {
-        if (allowSuppression && this.params.every(batch => batch.suppressBackupWarning)) {
-            return true;
-        }
-        // wait for popup window
-        await this.getPopupPromise().promise;
-        // initialize user response promise
-        const uiPromise = this.createUiPromise(UI.RECEIVE_CONFIRMATION);
-
-        // request confirmation view
-        this.postMessage(
-            createUiMessage(UI.REQUEST_CONFIRMATION, {
-                view: 'no-backup',
-            }),
-        );
-
-        // wait for user action
-        const uiResp = await uiPromise.promise;
-
-        return uiResp.payload;
+        return {
+            view: 'export-account-info' as const,
+            label: `Export descriptor for: ${str.join('')}`,
+        };
     }
 
     // override AbstractMethod function
     // this is a special case where we want to check firmwareRange in bundle
     // and return error with bundle indexes
-    async checkFirmwareRange(_isUsingPopup: boolean) {
+    checkFirmwareRange() {
         // check each batch and return error with invalid bundle indexes
         // find invalid ranges
         const invalid = [];
@@ -144,7 +114,7 @@ export default class GetAccountDescriptor extends AbstractMethod<
                 this.params[i].coinInfo,
                 DEFAULT_FIRMWARE_RANGE,
             );
-            const exception = await super.checkFirmwareRange(false);
+            const exception = super.checkFirmwareRange();
             if (exception) {
                 invalid.push({
                     index: i,

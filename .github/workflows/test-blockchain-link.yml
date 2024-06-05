@@ -1,0 +1,45 @@
+name: "[Test] blockchain-link e2e"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - "packages/blockchain-link"
+      # dependencies of packages/blockchain-link
+      - "packages/utxo-lib"
+      - "packages/utils"
+      - "docker/docker-blockchain-link-test.sh"
+      - ".github/workflows/blockchain-link-test.yml"
+      - "yarn.lock"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install dependencies
+        run: yarn --immutable
+
+      - name: Build dependencies
+        run: yarn build:libs
+
+      - name: Build @trezor/blockchain-link workers
+        run: |
+          yarn workspace @trezor/blockchain-link build:workers
+
+      - name: Run E2E tests
+        run: ./docker/docker-blockchain-link-test.sh

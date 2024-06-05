@@ -1,0 +1,21 @@
+{
+    "__reason_for_this_file__": "pkg packs all the 'dependencies' but we wan't only some of them to be packed.",
+    "name": "@trezor/transport-bridge",
+    "version": "3.0.0",
+    "license": "See LICENSE.md in repo root",
+    "dependencies": {
+        "@trezor/transport": "workspace:*",
+        "@trezor/utils": "workspace:*",
+        "usb": "^2.11.0"
+    },
+    "pkg": {
+        "outputPath": "build",
+        "targets": [
+            "node18-macos-x64",
+            "node18-macos-arm64",
+            "node18-linux-x64",
+            "node18-linux-arm64"
+        ],
+        "assets": ["../../node_modules/usb/**/*", "./dist/ui/**/*"]
+    }
+}

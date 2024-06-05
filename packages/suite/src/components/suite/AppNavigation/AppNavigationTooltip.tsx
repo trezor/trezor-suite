@@ -20,7 +20,6 @@ export const AppNavigationTooltip = ({ children, isActiveTab }: AppNavigationToo
                 isAccountLoading &&
                 !isActiveTab && <Translation id="TR_UNAVAILABLE_WHILE_LOADING" />
             }
-            interactive={false}
             cursor="default"
         >
             <>{children}</>

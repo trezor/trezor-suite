@@ -2,7 +2,7 @@ import {
     selectDevices,
     selectDevice,
     deviceActions,
-    firmwareActionsPrefix,
+    FIRMWARE_MODULE_PREFIX,
 } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import TrezorConnect from '@trezor/connect';
@@ -183,7 +183,7 @@ export const resetDevice =
     };
 
 export const changeLanguage = createThunk(
-    `${firmwareActionsPrefix}/update-firmware-language`,
+    `${FIRMWARE_MODULE_PREFIX}/update-firmware-language`,
     async (params: Parameters<typeof TrezorConnect.changeLanguage>[0], { dispatch, getState }) => {
         const device = selectDevice(getState());
 

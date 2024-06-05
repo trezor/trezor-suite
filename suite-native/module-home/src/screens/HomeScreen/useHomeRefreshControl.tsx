@@ -5,14 +5,14 @@ import { useDispatch } from 'react-redux';
 import { syncAllAccountsWithBlockchainThunk } from '@suite-native/blockchain';
 import { useNativeStyles } from '@trezor/styles';
 
-import { PortfolioContentRef } from './components/PortfolioContent';
+import { PortfolioGraphRef } from './components/PortfolioGraph';
 
 export const useHomeRefreshControl = ({
-    isPortfolioEmpty,
+    isEmptyDevice,
     portfolioContentRef,
 }: {
-    isPortfolioEmpty: boolean;
-    portfolioContentRef: React.MutableRefObject<PortfolioContentRef | null>;
+    isEmptyDevice: boolean;
+    portfolioContentRef: React.MutableRefObject<PortfolioGraphRef | null>;
 }) => {
     const [isRefreshing, setIsRefreshing] = useState(false);
     const dispatch = useDispatch();
@@ -34,7 +34,7 @@ export const useHomeRefreshControl = ({
     }, [dispatch, portfolioContentRef]);
 
     const refreshControl = useMemo(() => {
-        if (isPortfolioEmpty) return undefined;
+        if (isEmptyDevice) return undefined;
 
         return (
             <RefreshControl
@@ -43,7 +43,7 @@ export const useHomeRefreshControl = ({
                 colors={[colors.backgroundPrimaryDefault]}
             />
         );
-    }, [isPortfolioEmpty, handleRefresh, colors, isRefreshing]);
+    }, [isEmptyDevice, handleRefresh, colors, isRefreshing]);
 
     return refreshControl;
 };

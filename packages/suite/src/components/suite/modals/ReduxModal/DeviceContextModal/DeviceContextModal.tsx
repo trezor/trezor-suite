@@ -9,6 +9,7 @@ import {
     PinModal,
     PinInvalidModal,
     PassphraseModal,
+    PassphraseModalLegacy,
     PassphraseSourceModal,
     PassphraseOnDeviceModal,
     ConfirmActionModal,
@@ -20,6 +21,7 @@ import {
     ConfirmXpubModal,
 } from 'src/components/suite/modals';
 import type { ReduxModalProps } from '../ReduxModal';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 /** Modals requested by Device from `trezor-connect` */
 export const DeviceContextModal = ({
@@ -28,6 +30,7 @@ export const DeviceContextModal = ({
     data,
 }: ReduxModalProps<typeof MODAL.CONTEXT_DEVICE>) => {
     const device = useSelector(selectDevice);
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const intl = useIntl();
 
     if (!device) return null;
@@ -44,7 +47,11 @@ export const DeviceContextModal = ({
 
         // Passphrase on host
         case UI.REQUEST_PASSPHRASE:
-            return <PassphraseModal device={device} />;
+            return isViewOnlyModeVisible ? (
+                <PassphraseModal device={device} />
+            ) : (
+                <PassphraseModalLegacy device={device} />
+            );
 
         case 'WordRequestType_Plain':
             return <WordModal renderer={renderer} />;

@@ -1,25 +1,18 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/DeviceCommands.js
 
 import { randomBytes } from 'crypto';
-import { Transport } from '@trezor/transport';
+import { Transport, Session } from '@trezor/transport';
 import { MessagesSchema as Messages } from '@trezor/protobuf';
 import { versionUtils } from '@trezor/utils';
-import { ERRORS, NETWORK } from '../constants';
+import { ERRORS } from '../constants';
 import { DEVICE } from '../events';
 import * as hdnodeUtils from '../utils/hdnodeUtils';
-import {
-    isSegwitPath,
-    isBech32Path,
-    isTaprootPath,
-    getSerializedPath,
-    getScriptType,
-    toHardened,
-} from '../utils/pathUtils';
+import { isTaprootPath, getSerializedPath, getScriptType, toHardened } from '../utils/pathUtils';
 import { getAccountAddressN } from '../utils/accountUtils';
 import { getSegwitNetwork, getBech32Network } from '../data/coinInfo';
 import { initLog } from '../utils/debug';
 
-import type { Device } from './Device';
+import { Device } from './Device';
 import type { CoinInfo, BitcoinNetworkInfo, Network } from '../types';
 import type { HDNodeResponse } from '../types/api/getPublicKey';
 import { Assert } from '@trezor/schema-utils';
@@ -98,7 +91,7 @@ export class DeviceCommands {
 
     transport: Transport;
 
-    sessionId: string;
+    sessionId: Session;
 
     disposed: boolean;
 
@@ -108,7 +101,7 @@ export class DeviceCommands {
     _cancelableRequest?: (error?: any) => void;
     _cancelableRequestBySend?: boolean;
 
-    constructor(device: Device, transport: Transport, sessionId: string) {
+    constructor(device: Device, transport: Transport, sessionId: Session) {
         this.device = device;
         this.transport = transport;
         this.sessionId = sessionId;
@@ -149,17 +142,14 @@ export class DeviceCommands {
     async getHDNode(
         params: Messages.GetPublicKey,
         options: {
-            coinInfo?: BitcoinNetworkInfo;
+            coinInfo: BitcoinNetworkInfo;
             validation?: boolean;
             unlockPath?: Messages.UnlockPath;
-        } = {},
+        },
     ) {
         const path = params.address_n;
         const { coinInfo, unlockPath } = options;
         const validation = typeof options.validation === 'boolean' ? options.validation : true;
-        if (!this.device.atLeast(['1.7.2', '2.0.10']) || !coinInfo) {
-            return this.getBitcoinHDNode(path, coinInfo);
-        }
 
         let network: Network | null = null;
 
@@ -224,51 +214,6 @@ export class DeviceCommands {
         return response;
     }
 
-    // deprecated
-    // legacy method (below FW 1.7.2 & 2.0.10), remove it after next "required" FW update.
-    // keys are exported in BTC format and converted to proper format in hdnodeUtils
-    // old firmware didn't return keys with proper prefix (ypub, Ltub.. and so on)
-    async getBitcoinHDNode(path: number[], coinInfo?: BitcoinNetworkInfo, validation = true) {
-        let publicKey: Messages.PublicKey;
-        if (!validation) {
-            publicKey = await this.getPublicKey({ address_n: path });
-        } else {
-            const suffix = 0;
-            const childPath = path.concat([suffix]);
-
-            const resKey = await this.getPublicKey({ address_n: path });
-            const childKey = await this.getPublicKey({ address_n: childPath });
-            publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix);
-        }
-
-        const response: HDNodeResponse = {
-            path,
-            serializedPath: getSerializedPath(path),
-            childNum: publicKey.node.child_num,
-            xpub: coinInfo
-                ? hdnodeUtils.convertBitcoinXpub(publicKey.xpub, coinInfo.network)
-                : publicKey.xpub,
-            chainCode: publicKey.node.chain_code,
-            publicKey: publicKey.node.public_key,
-            fingerprint: publicKey.node.fingerprint,
-            depth: publicKey.node.depth,
-        };
-
-        // if requested path is a segwit or bech32
-        // convert xpub to new format
-        if (coinInfo) {
-            const bech32Network = getBech32Network(coinInfo);
-            const segwitNetwork = getSegwitNetwork(coinInfo);
-            if (bech32Network && isBech32Path(path)) {
-                response.xpubSegwit = hdnodeUtils.convertBitcoinXpub(publicKey.xpub, bech32Network);
-            } else if (segwitNetwork && isSegwitPath(path)) {
-                response.xpubSegwit = hdnodeUtils.convertBitcoinXpub(publicKey.xpub, segwitNetwork);
-            }
-        }
-
-        return response;
-    }
-
     async getAddress(
         { address_n, show_display, multisig, script_type, chunkify }: Messages.GetAddress,
         coinInfo: BitcoinNetworkInfo,
@@ -327,10 +272,6 @@ export class DeviceCommands {
         address_n,
         show_display,
     }: Messages.EthereumGetPublicKey): Promise<HDNodeResponse> {
-        if (!this.device.atLeast(['1.8.1', '2.1.0'])) {
-            return this.getHDNode({ address_n });
-        }
-
         const suffix = 0;
         const childPath = address_n.concat([suffix]);
         const resKey = await this.typedCall('EthereumGetPublicKey', 'EthereumPublicKey', {
@@ -367,16 +308,8 @@ export class DeviceCommands {
         }
     }
 
-    getDeviceState(networkType?: string) {
-        // cardano backwards compatibility. we only need this for firmware before initialize.derive_cardano message was introduced
-        if (!this.device.atLeast('2.4.3')) {
-            return this._getAddressForNetworkType(networkType);
-        }
-
-        // skipping network type parameter intentionally
-        return this._getAddressForNetworkType();
-
-        // bitcoin.crypto.hash256(Buffer.from(secret, 'binary')).toString('hex');
+    getDeviceState() {
+        return this._getAddress();
     }
 
     // Sends an async message to the opened device.
@@ -392,7 +325,9 @@ export class DeviceCommands {
             data: msg,
             protocol: this.device.protocol,
         });
+
         const res = await this.callPromise.promise;
+
         this.callPromise = undefined;
         if (!res.success) {
             logger.warn('Received error', res.error);
@@ -589,34 +524,14 @@ export class DeviceCommands {
         return Promise.resolve(res);
     }
 
-    async _getAddressForNetworkType(networkType?: string) {
-        switch (networkType) {
-            case NETWORK.TYPES.cardano: {
-                const { message } = await this.typedCall('CardanoGetAddress', 'CardanoAddress', {
-                    address_parameters: {
-                        address_type: 8, // Byron
-                        address_n: [toHardened(44), toHardened(1815), toHardened(0), 0, 0],
-                        address_n_staking: [],
-                    },
-                    protocol_magic: 42,
-                    network_id: 0,
-                    // derivation type doesn't really matter as it is not recognized by older firmwares.
-                    // but it is a required field within protobuf definitions so we must provide something here
-                    derivation_type: 2, // icarus_trezor
-                });
+    private async _getAddress() {
+        const { message } = await this.typedCall('GetAddress', 'Address', {
+            address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
+            coin_name: 'Testnet',
+            script_type: 'SPENDADDRESS',
+        });
 
-                return message.address;
-            }
-            default: {
-                const { message } = await this.typedCall('GetAddress', 'Address', {
-                    address_n: [toHardened(44), toHardened(1), toHardened(0), 0, 0],
-                    coin_name: 'Testnet',
-                    script_type: 'SPENDADDRESS',
-                });
-
-                return message.address;
-            }
-        }
+        return message.address;
     }
 
     _promptPin(type?: Messages.PinMatrixRequestType) {
@@ -802,7 +717,7 @@ export class DeviceCommands {
                 await this.callPromise.promise;
             }
             // if my observations are correct, it is not necessary to transport.receive after send
-            // transport.call -> transport.send -> tranpsport call returns Failure meaning it won't be
+            // transport.call -> transport.send -> transport call returns Failure meaning it won't be
             // returned in subsequent calls
             // await this.transport.receive({ session: this.sessionId }).promise;
         }

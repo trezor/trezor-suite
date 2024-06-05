@@ -3,6 +3,7 @@ import { CSSProperties, MouseEventHandler, forwardRef } from 'react';
 import { DeviceModelInternal } from '@trezor/connect';
 import { AnimationWrapper, Shape } from './AnimationPrimitives';
 import { resolveStaticPath } from '../../utils/resolveStaticPath';
+import { DEFAULT_FLAGSHIP_MODEL } from '@suite-common/suite-constants';
 
 const StyledVideo = styled.video`
     width: 100%;
@@ -10,7 +11,7 @@ const StyledVideo = styled.video`
 `;
 
 export type AnimationDeviceType =
-    | 'BOOTLOADER'
+    | 'BOOTLOADER' // No longer available for T3T1
     | 'BOOTLOADER_TWO_BUTTONS' // Only available for T1B1 with old FW
     | 'NORMAL' // Only available for T1B1
     | 'SUCCESS'
@@ -37,8 +38,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
             type,
             loop = false,
             shape,
-            // if no Trezor available, show flagship model
-            deviceModelInternal = DeviceModelInternal.T2T1,
+            deviceModelInternal = DEFAULT_FLAGSHIP_MODEL,
             deviceUnitColor,
             onVideoMouseOver,
             ...props
@@ -47,8 +47,12 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
     ) => {
         const { THEME } = useTheme();
 
-        // T2B1 animations are transparent
-        const theme = deviceModelInternal === DeviceModelInternal.T2B1 ? '' : `_${THEME}`;
+        // T2B1, T3B1 animations are transparent
+        const theme = [DeviceModelInternal.T2B1, DeviceModelInternal.T3T1].includes(
+            deviceModelInternal,
+        )
+            ? ''
+            : `_${THEME}`;
 
         return (
             <AnimationWrapper height={height} width={width} shape={shape} {...props}>
@@ -117,7 +121,7 @@ export const DeviceAnimation = forwardRef<HTMLVideoElement, DeviceAnimationProps
                     >
                         <source
                             src={resolveStaticPath(
-                                `videos/device/trezor_${DeviceModelInternal.T2B1.toLowerCase()}_rotate_color_${
+                                `videos/device/trezor_${deviceModelInternal.toLowerCase()}_rotate_color_${
                                     // if device unit color is not set, use first color available
                                     deviceUnitColor ?? 1
                                 }.webm`,

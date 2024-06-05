@@ -64,7 +64,7 @@
         "update-submodules": "./scripts/update-submodules.sh",
         "update-coins": "./scripts/update-coins.sh",
         "update-models": "./scripts/update-models.sh",
-        "update-protobuf": "yarn workspace @trezor/protobuf update:protobuf && yarn workspace @trezor/protobuf update:schema",
+        "update-protobuf": "./scripts/update-protobuf.sh",
         "update-coinjoin-middleware": "yarn workspace @trezor/suite-data update-coinjoin-middleware",
         "prepare-release": "./scripts/prepare-release.sh",
         "native:android": "yarn workspace @suite-native/app android",
@@ -92,17 +92,18 @@
     },
     "resolutions": {
         "typescript": "5.3.3",
-        "react-native": "0.73.2",
+        "react-native": "0.74.1",
         "prettier": "3.2.5",
         "type-fest": "2.12.2",
         "bcrypto": "5.4.0",
         "react": "18.2.0",
-        "electron": "27.0.4",
+        "electron": "27.3.8",
         "webpack": "^5.90.1",
         "html-webpack-plugin": "^5.6.0",
         "@types/node": "18.17.15",
         "@types/react": "18.2.55",
-        "@sentry/types": "7.92.0"
+        "@sentry/types": "7.92.0",
+        "bn.js": "5.2.1"
     },
     "devDependencies": {
         "@babel/cli": "^7.23.9",
@@ -141,7 +142,7 @@
         "prettier-eslint": "^16.3.0",
         "rimraf": "^5.0.5",
         "semver": "^7.6.0",
-        "tar": "^6.2.0",
+        "tar": "^7.0.1",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
         "tslib": "^2.6.2",
@@ -160,5 +161,5 @@
             "built": true
         }
     },
-    "packageManager": "yarn@4.0.2"
+    "packageManager": "yarn@4.1.1"
 }

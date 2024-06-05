@@ -8,22 +8,26 @@ import { ModalAppParams } from 'src/utils/suite/router';
 const isForegroundApp = (route: Route): route is ForegroundAppRoute =>
     !route.isFullscreenApp && !!route.isForegroundApp;
 
-// Firmware, FirmwareCustom, Bridge, Udev, Version - always beats redux modals
-// Backup, SwitchDevice - always get beaten by redux modals
-// Recovery - beats redux modals with some exceptions (raw-rendered)
 const hasPriority = (route: ForegroundAppRoute) => {
-    switch (route.app) {
-        case 'bridge':
-        case 'firmware':
-        case 'firmware-type':
-        case 'firmware-custom':
-        case 'recovery':
-        case 'udev':
-        case 'version':
-            return true;
-        default:
-            return false;
-    }
+    const map: Record<ForegroundAppRoute['app'], boolean> = {
+        // Firmware, FirmwareCustom, Bridge, Udev, Version, Create New Multi-share Backup - always beats redux modals
+        firmware: true,
+        'firmware-type': true,
+        'firmware-custom': true,
+        bridge: true,
+        udev: true,
+        version: true,
+        'create-multi-share-backup': true,
+
+        // Recovery - beats redux modals with some exceptions (raw-rendered)
+        recovery: true,
+
+        // Backup, SwitchDevice - always get beaten by redux modals
+        'switch-device': false,
+        backup: false,
+    };
+
+    return map[route.app];
 };
 
 const getForegroundAppAction = (route: ForegroundAppRoute, params: Partial<ModalAppParams>) =>

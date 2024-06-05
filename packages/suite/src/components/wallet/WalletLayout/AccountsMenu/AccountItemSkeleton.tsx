@@ -1,8 +1,14 @@
 import styled from 'styled-components';
 import { useLoadingSkeleton } from 'src/hooks/suite';
 import { Left, Right } from './AccountItem';
-import { NavigationItemBase } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { SkeletonCircle, SkeletonStack, SkeletonRectangle } from '@trezor/components';
+
+const Wrapper = styled.div`
+    margin-left: 18px;
+    display: flex;
+    align-items: center;
+    flex: 1;
+`;
 
 const StyledSkeletonStack = styled(SkeletonStack)`
     > :last-child {
@@ -14,7 +20,7 @@ export const AccountItemSkeleton = () => {
     const { shouldAnimate } = useLoadingSkeleton();
 
     return (
-        <NavigationItemBase data-test="@account-menu/account-item-skeleton">
+        <Wrapper data-test="@account-menu/account-item-skeleton">
             <Left>
                 <SkeletonCircle size="24px" />
             </Left>
@@ -25,6 +31,6 @@ export const AccountItemSkeleton = () => {
                     <SkeletonRectangle animate={shouldAnimate} />
                 </StyledSkeletonStack>
             </Right>
-        </NavigationItemBase>
+        </Wrapper>
     );
 };

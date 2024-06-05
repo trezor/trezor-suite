@@ -1,3 +1,25 @@
+# 1.0.13-beta.1
+
+-   fix(protobuf): deterministic protobuf order in generated file (7bdc2ebecc)
+-   fix(scripts): probuf update separate repository + fix situation when someone force-pushes the FW branch (9bdad31d67)
+-   fix(protobuf): add git fetch to update script (be86c395ad)
+-   feat(connect): update protobuf messages (41bff13bc1)
+
+# 1.0.12
+
+-   chore(protobuf): ability to build protobuf messages from the specified branch (7a6babb818)
+-   feat(protobuf): add T3T1 internal_model patch (6a6aea725e)
+-   fix(protocol): encoding repeated enum (eaac0b12e8)
+-   feat(protocol): encode/decode messageType as string (ae3211ab6a)
+-   fix(protobuf): clean up type of `backup_type` in schema (19b7bb27c1)
+
+# 1.0.11
+
+-   chore(connect-explorer-nextra): code cleanup, yarn resolutions (a0e511f1fd)
+-   feat(connect-explorer-nextra): params table for viewing schemas (2ed3a5b366)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 1.0.10
 
 -   fix(protobuf): undefined in messageToJSON (5fa61491e)

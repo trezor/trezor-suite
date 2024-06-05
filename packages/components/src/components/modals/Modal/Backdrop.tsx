@@ -1,14 +1,23 @@
 import { ReactNode } from 'react';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { zIndices } from '@trezor/theme';
 
-const Wrapper = styled.div`
+export type ModalAlignment = { x: 'center' | 'left'; y: 'center' | 'top' };
+
+export type BackdropProps = {
+    onClick?: () => void;
+    children?: ReactNode;
+    className?: string;
+    alignment?: ModalAlignment;
+};
+
+const Wrapper = styled.div<{ $alignment: ModalAlignment }>`
     position: absolute;
     z-index: ${zIndices.modal};
     inset: 0;
     display: flex;
     flex-direction: column;
-    align-items: center;
+
     overflow: auto;
 
     /* backdrop-filter does not work in Firefox, use darker background instead */
@@ -19,23 +28,29 @@ const Wrapper = styled.div`
         background: rgb(0 0 0 / 60%);
     }
 
-    > :first-child {
-        margin-top: auto;
-    }
+    ${({ $alignment }) =>
+        $alignment.y === 'center'
+            ? css`
+                  align-items: center;
 
-    > :last-child {
-        margin-bottom: auto;
-    }
+                  > :first-child {
+                      margin-top: auto;
+                  }
+
+                  > :last-child {
+                      margin-bottom: auto;
+                  }
+              `
+            : ``}
 `;
 
-export type BackdropProps = {
-    onClick?: () => void;
-    children?: ReactNode;
-    className?: string;
-};
-
-export const Backdrop = ({ onClick, children, className }: BackdropProps) => (
-    <Wrapper onClick={onClick} className={className}>
+export const Backdrop = ({
+    onClick,
+    children,
+    className,
+    alignment = { x: 'center', y: 'center' },
+}: BackdropProps) => (
+    <Wrapper onClick={onClick} className={className} $alignment={alignment}>
         {children}
     </Wrapper>
 );

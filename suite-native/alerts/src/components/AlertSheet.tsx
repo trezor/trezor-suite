@@ -3,7 +3,15 @@ import { Modal, Pressable } from 'react-native';
 import Animated from 'react-native-reanimated';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Button, Card, VStack, useBottomSheetAnimation, Pictogram } from '@suite-native/atoms';
+import {
+    Button,
+    Card,
+    VStack,
+    useBottomSheetAnimation,
+    CenteredTitleHeader,
+    Pictogram,
+    Box,
+} from '@suite-native/atoms';
 
 import { useShakeAnimation } from '../useShakeAnimation';
 import { Alert } from '../alertsAtoms';
@@ -25,8 +33,9 @@ const alertSheetContainerStyle = prepareNativeStyle(utils => ({
     ...utils.boxShadows.small,
 }));
 
-const alertSheetContentStyle = prepareNativeStyle(_ => ({
+const alertSheetContentStyle = prepareNativeStyle(utils => ({
     width: '100%',
+    gap: utils.spacings.large,
 }));
 
 const shakeTriggerStyle = prepareNativeStyle(_ => ({
@@ -64,7 +73,9 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
         onPressSecondaryButton,
         secondaryButtonTitle,
         primaryButtonVariant = 'primary',
+        secondaryButtonVariant = 'tertiaryElevation1',
         appendix,
+        testID,
     } = alert;
 
     const handlePressPrimaryButton = async () => {
@@ -78,7 +89,7 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
     };
 
     return (
-        <Modal transparent visible={!!alert}>
+        <Modal transparent visible={!!alert} testID={testID}>
             <Animated.View style={[animatedSheetWithOverlayStyle, applyStyle(sheetOverlayStyle)]}>
                 <Pressable onPress={runShakeAnimation} style={applyStyle(shakeTriggerStyle)}>
                     <Animated.View
@@ -86,27 +97,29 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                         onStartShouldSetResponder={_ => true} // Stop the shake event trigger propagation.
                     >
                         <Card style={applyStyle(alertSheetContainerStyle)}>
-                            <VStack style={applyStyle(alertSheetContentStyle)} spacing="large">
-                                <Pictogram
-                                    title={title}
-                                    variant={pictogramVariant}
-                                    subtitle={description}
-                                    icon={icon}
-                                />
+                            <VStack style={applyStyle(alertSheetContentStyle)}>
+                                {icon && pictogramVariant && (
+                                    <Box alignItems="center">
+                                        <Pictogram variant={pictogramVariant} icon={icon} />
+                                    </Box>
+                                )}
+                                <CenteredTitleHeader title={title} subtitle={description} />
                                 {appendix}
                                 <VStack spacing="medium">
                                     <Button
-                                        size="large"
+                                        size="medium"
                                         colorScheme={primaryButtonVariant}
                                         onPress={handlePressPrimaryButton}
+                                        testID="@alert-sheet/primary-button"
                                     >
                                         {primaryButtonTitle}
                                     </Button>
                                     {secondaryButtonTitle && (
                                         <Button
-                                            size="large"
-                                            colorScheme="tertiaryElevation1"
+                                            size="medium"
+                                            colorScheme={secondaryButtonVariant}
                                             onPress={handlePressSecondaryButton}
+                                            testID="@alert-sheet/secondary-button"
                                         >
                                             {secondaryButtonTitle}
                                         </Button>

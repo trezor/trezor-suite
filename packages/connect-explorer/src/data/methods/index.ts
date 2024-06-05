@@ -9,7 +9,6 @@ import eos from './eos';
 import binance from './binance';
 import solana from './solana';
 import other from './other';
-
 import management from './management';
 import blockchain from './blockchain';
 

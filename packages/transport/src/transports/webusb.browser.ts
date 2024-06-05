@@ -13,8 +13,8 @@ import { initBackgroundInBrowser } from '../sessions/background-browser';
 export class WebUsbTransport extends AbstractApiTransport {
     public name = 'WebUsbTransport' as const;
 
-    constructor(params?: AbstractTransportParams) {
-        const { messages, logger } = params || {};
+    constructor(params: AbstractTransportParams) {
+        const { messages, logger, signal } = params;
         const { requestFn, registerBackgroundCallbacks } = initBackgroundInBrowser();
 
         super({
@@ -23,13 +23,14 @@ export class WebUsbTransport extends AbstractApiTransport {
                 usbInterface: navigator.usb,
                 logger,
             }),
-
+            logger,
             // sessions client with a request fn facilitating communication with a session backend (shared worker in case of webusb)
             sessionsClient: new SessionsClient({
                 // @ts-expect-error
                 requestFn,
                 registerBackgroundCallbacks,
             }),
+            signal,
         });
     }
 }

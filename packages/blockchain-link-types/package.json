@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link-types",
-    "version": "1.0.14",
+    "version": "1.0.17",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
@@ -19,7 +19,7 @@
         "prepublish": "yarn tsx ../../scripts/prepublish.js"
     },
     "dependencies": {
-        "@solana/web3.js": "^1.90.0",
+        "@solana/web3.js": "^1.91.6",
         "@trezor/type-utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "socks-proxy-agent": "6.1.1"

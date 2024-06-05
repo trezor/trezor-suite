@@ -22,7 +22,7 @@ import {
     getSessionDeadline,
     getEstimatedTimePerRound,
 } from 'src/utils/wallet/coinjoinUtils';
-import { CoinjoinService } from 'src/services/coinjoin';
+import { CoinjoinService, getCoinjoinConfig } from 'src/services/coinjoin';
 import { Dispatch, GetState } from 'src/types/suite';
 import { CoinjoinAccount, EndRoundState, CoinjoinDebugSettings } from 'src/types/wallet/coinjoin';
 import { onCancel as closeModal, openModal } from 'src/actions/suite/modalActions';
@@ -35,7 +35,10 @@ import {
 } from 'src/reducers/wallet/coinjoinReducer';
 
 import * as COINJOIN from './constants/coinjoinConstants';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { Feature, selectIsFeatureDisabled } from '@suite-common/message-system';
 
 const clientEnable = (symbol: Account['symbol']) =>
     ({
@@ -643,6 +646,7 @@ const signCoinjoinTx =
                             useEmptyPassphrase: device?.useEmptyPassphrase,
                             inputs: tx.inputs,
                             outputs: tx.outputs,
+                            // @ts-expect-error wait for fw protobuf update
                             coinjoinRequest: tx.coinjoinRequest,
                             coin: network,
                             preauthorized: true,
@@ -731,8 +735,20 @@ export const initCoinjoinService =
             return knownService;
         }
 
-        const environment =
-            debug?.coinjoinServerEnvironment && debug?.coinjoinServerEnvironment[symbol];
+        const isCoinjoinDisabledByFeatureFlag = selectIsFeatureDisabled(state, Feature.coinjoin);
+        // retry if client was not enabled properly until now
+        if (knownService && knownClient?.status === 'unavailable') {
+            if (!isCoinjoinDisabledByFeatureFlag) {
+                const status = await knownService.client.enable();
+                if (status.success) {
+                    dispatch(clientEnableSuccess(symbol, status));
+                }
+            }
+
+            return knownService;
+        }
+
+        const environment = debug?.coinjoinServerEnvironment?.[symbol];
 
         // or start new instance
         dispatch(clientEnable(symbol));
@@ -772,16 +788,19 @@ export const initCoinjoinService =
             });
 
         try {
+            const config = getCoinjoinConfig(symbol, environment);
             const service = await CoinjoinService.createInstance({
                 network: symbol,
                 prison,
-                environment,
+                settings: { ...config, ...debug?.coinjoinConfigOverride?.[symbol] },
             });
+            if (isCoinjoinDisabledByFeatureFlag) {
+                dispatch(clientEnableFailed(symbol));
+
+                return service;
+            }
             const { client } = service;
             const status = await client.enable();
-            if (!status.success) {
-                throw new Error(status.error);
-            }
             // handle status change
             client.on('status', status => dispatch(clientOnStatusEvent(symbol, status)));
             // handle prison event
@@ -795,12 +814,17 @@ export const initCoinjoinService =
             });
             // handle session phase change
             client.on('session-phase', event => dispatch(clientSessionPhase(event)));
-            dispatch(clientEnableSuccess(symbol, status));
+
+            if (!status.success) {
+                dispatch(clientEnableFailed(symbol));
+            } else {
+                dispatch(clientEnableSuccess(symbol, status));
+            }
 
             return service;
         } catch (error) {
             CoinjoinService.removeInstance(symbol);
-            dispatch(clientEnableFailed(symbol));
+            dispatch(clientDisable(symbol));
             dispatch(
                 notificationsActions.addToast({
                     type: 'error',

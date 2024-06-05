@@ -4,6 +4,7 @@ export enum DeviceModelInternal {
     T1B1 = 'T1B1',
     T2T1 = 'T2T1',
     T2B1 = 'T2B1',
+    T3T1 = 'T3T1',
 }
 
 export type EnumDeviceModelInternal = Static<typeof EnumDeviceModelInternal>;
@@ -890,10 +891,23 @@ export enum CardanoCertificateType {
     STAKE_DEREGISTRATION = 1,
     STAKE_DELEGATION = 2,
     STAKE_POOL_REGISTRATION = 3,
+    STAKE_REGISTRATION_CONWAY = 7,
+    STAKE_DEREGISTRATION_CONWAY = 8,
+    VOTE_DELEGATION = 9,
 }
 
 export type EnumCardanoCertificateType = Static<typeof EnumCardanoCertificateType>;
 export const EnumCardanoCertificateType = Type.Enum(CardanoCertificateType);
+
+export enum CardanoDRepType {
+    KEY_HASH = 0,
+    SCRIPT_HASH = 1,
+    ABSTAIN = 2,
+    NO_CONFIDENCE = 3,
+}
+
+export type EnumCardanoDRepType = Static<typeof EnumCardanoDRepType>;
+export const EnumCardanoDRepType = Type.Enum(CardanoDRepType);
 
 export enum CardanoPoolRelayType {
     SINGLE_HOST_IP = 0,
@@ -1064,6 +1078,7 @@ export const CardanoSignTxInit = Type.Object(
         total_collateral: Type.Optional(Type.Uint()),
         reference_inputs_count: Type.Optional(Type.Number()),
         chunkify: Type.Optional(Type.Boolean()),
+        tag_cbor_sets: Type.Optional(Type.Boolean()),
     },
     { $id: 'CardanoSignTxInit' },
 );
@@ -1174,6 +1189,16 @@ export const CardanoPoolParametersType = Type.Object(
     { $id: 'CardanoPoolParametersType' },
 );
 
+export type CardanoDRep = Static<typeof CardanoDRep>;
+export const CardanoDRep = Type.Object(
+    {
+        type: EnumCardanoDRepType,
+        key_hash: Type.Optional(Type.String()),
+        script_hash: Type.Optional(Type.String()),
+    },
+    { $id: 'CardanoDRep' },
+);
+
 export type CardanoTxCertificate = Static<typeof CardanoTxCertificate>;
 export const CardanoTxCertificate = Type.Object(
     {
@@ -1183,6 +1208,8 @@ export const CardanoTxCertificate = Type.Object(
         pool_parameters: Type.Optional(CardanoPoolParametersType),
         script_hash: Type.Optional(Type.String()),
         key_hash: Type.Optional(Type.String()),
+        deposit: Type.Optional(Type.Uint()),
+        drep: Type.Optional(CardanoDRep),
     },
     { $id: 'CardanoTxCertificate' },
 );
@@ -2125,6 +2152,9 @@ export enum Enum_BackupType {
     Bip39 = 0,
     Slip39_Basic = 1,
     Slip39_Advanced = 2,
+    Slip39_Single_Extendable = 3,
+    Slip39_Basic_Extendable = 4,
+    Slip39_Advanced_Extendable = 5,
 }
 
 export type EnumEnum_BackupType = Static<typeof EnumEnum_BackupType>;
@@ -2170,6 +2200,32 @@ export const Initialize = Type.Object(
 export type GetFeatures = Static<typeof GetFeatures>;
 export const GetFeatures = Type.Object({}, { $id: 'GetFeatures' });
 
+export enum Enum_BackupAvailability {
+    NotAvailable = 0,
+    Required = 1,
+    Available = 2,
+}
+
+export type EnumEnum_BackupAvailability = Static<typeof EnumEnum_BackupAvailability>;
+export const EnumEnum_BackupAvailability = Type.Enum(Enum_BackupAvailability);
+
+export type BackupAvailability = Static<typeof BackupAvailability>;
+export const BackupAvailability = Type.KeyOfEnum(Enum_BackupAvailability, {
+    $id: 'BackupAvailability',
+});
+
+export enum Enum_RecoveryStatus {
+    Nothing = 0,
+    Recovery = 1,
+    Backup = 2,
+}
+
+export type EnumEnum_RecoveryStatus = Static<typeof EnumEnum_RecoveryStatus>;
+export const EnumEnum_RecoveryStatus = Type.Enum(Enum_RecoveryStatus);
+
+export type RecoveryStatus = Static<typeof RecoveryStatus>;
+export const RecoveryStatus = Type.KeyOfEnum(Enum_RecoveryStatus, { $id: 'RecoveryStatus' });
+
 export enum Enum_Capability {
     Capability_Bitcoin = 1,
     Capability_Bitcoin_like = 2,
@@ -2190,6 +2246,8 @@ export enum Enum_Capability {
     Capability_PassphraseEntry = 17,
     Capability_Solana = 18,
     Capability_Translations = 19,
+    Capability_Brightness = 20,
+    Capability_Haptic = 21,
 }
 
 export type EnumEnum_Capability = Static<typeof EnumEnum_Capability>;
@@ -2197,6 +2255,42 @@ export const EnumEnum_Capability = Type.Enum(Enum_Capability);
 
 export type Capability = Static<typeof Capability>;
 export const Capability = Type.KeyOfEnum(Enum_Capability, { $id: 'Capability' });
+
+export enum RecoveryDeviceInputMethod {
+    ScrambledWords = 0,
+    Matrix = 1,
+}
+
+export type EnumRecoveryDeviceInputMethod = Static<typeof EnumRecoveryDeviceInputMethod>;
+export const EnumRecoveryDeviceInputMethod = Type.Enum(RecoveryDeviceInputMethod);
+
+export enum Enum_RecoveryType {
+    NormalRecovery = 0,
+    DryRun = 1,
+    UnlockRepeatedBackup = 2,
+}
+
+export type EnumEnum_RecoveryType = Static<typeof EnumEnum_RecoveryType>;
+export const EnumEnum_RecoveryType = Type.Enum(Enum_RecoveryType);
+
+export type RecoveryType = Static<typeof RecoveryType>;
+export const RecoveryType = Type.KeyOfEnum(Enum_RecoveryType, { $id: 'RecoveryType' });
+
+export type RecoveryDevice = Static<typeof RecoveryDevice>;
+export const RecoveryDevice = Type.Object(
+    {
+        word_count: Type.Optional(Type.Number()),
+        passphrase_protection: Type.Optional(Type.Boolean()),
+        pin_protection: Type.Optional(Type.Boolean()),
+        language: Type.Optional(Type.String()),
+        label: Type.Optional(Type.String()),
+        enforce_wordlist: Type.Optional(Type.Boolean()),
+        input_method: Type.Optional(EnumRecoveryDeviceInputMethod),
+        u2f_counter: Type.Optional(Type.Number()),
+        type: Type.Optional(RecoveryType),
+    },
+    { $id: 'RecoveryDevice' },
+);
 
 export type Features = Static<typeof Features>;
 export const Features = Type.Object(
@@ -2218,7 +2312,7 @@ export const Features = Type.Object(
         unlocked: Type.Union([Type.Boolean(), Type.Null()]),
         _passphrase_cached: Type.Optional(Type.Boolean()),
         firmware_present: Type.Union([Type.Boolean(), Type.Null()]),
-        needs_backup: Type.Union([Type.Boolean(), Type.Null()]),
+        backup_availability: Type.Union([BackupAvailability, Type.Null()]),
         flags: Type.Union([Type.Number(), Type.Null()]),
         model: Type.String(),
         fw_major: Type.Union([Type.Number(), Type.Null()]),
@@ -2227,7 +2321,7 @@ export const Features = Type.Object(
         fw_vendor: Type.Union([Type.String(), Type.Null()]),
         unfinished_backup: Type.Union([Type.Boolean(), Type.Null()]),
         no_backup: Type.Union([Type.Boolean(), Type.Null()]),
-        recovery_mode: Type.Union([Type.Boolean(), Type.Null()]),
+        recovery_status: Type.Union([RecoveryStatus, Type.Null()]),
         capabilities: Type.Array(Capability),
         backup_type: Type.Union([BackupType, Type.Null()]),
         sd_card_present: Type.Union([Type.Boolean(), Type.Null()]),
@@ -2249,6 +2343,9 @@ export const Features = Type.Object(
         homescreen_height: Type.Optional(Type.Number()),
         bootloader_locked: Type.Optional(Type.Boolean()),
         language_version_matches: Type.Optional(Type.Boolean()),
+        unit_packaging: Type.Optional(Type.Number()),
+        haptic_feedback: Type.Optional(Type.Boolean()),
+        recovery_type: Type.Optional(RecoveryType),
     },
     { $id: 'Features' },
 );
@@ -2281,6 +2378,7 @@ export const ApplySettings = Type.Object(
         safety_checks: Type.Optional(SafetyCheckLevel),
         experimental_features: Type.Optional(Type.Boolean()),
         hide_passphrase_from_host: Type.Optional(Type.Boolean()),
+        haptic_feedback: Type.Optional(Type.Boolean()),
     },
     { $id: 'ApplySettings' },
 );
@@ -2428,13 +2526,28 @@ export const ResetDevice = Type.Object(
         u2f_counter: Type.Optional(Type.Number()),
         skip_backup: Type.Optional(Type.Boolean()),
         no_backup: Type.Optional(Type.Boolean()),
-        backup_type: Type.Optional(Type.Union([Type.String(), Type.Number()])),
+        backup_type: Type.Optional(EnumEnum_BackupType),
     },
     { $id: 'ResetDevice' },
 );
 
+export type Slip39Group = Static<typeof Slip39Group>;
+export const Slip39Group = Type.Object(
+    {
+        member_threshold: Type.Number(),
+        member_count: Type.Number(),
+    },
+    { $id: 'Slip39Group' },
+);
+
 export type BackupDevice = Static<typeof BackupDevice>;
-export const BackupDevice = Type.Object({}, { $id: 'BackupDevice' });
+export const BackupDevice = Type.Object(
+    {
+        group_threshold: Type.Optional(Type.Number()),
+        groups: Type.Optional(Type.Array(Slip39Group)),
+    },
+    { $id: 'BackupDevice' },
+);
 
 export type EntropyRequest = Static<typeof EntropyRequest>;
 export const EntropyRequest = Type.Object({}, { $id: 'EntropyRequest' });
@@ -2445,30 +2558,6 @@ export const EntropyAck = Type.Object(
         entropy: Type.String(),
     },
     { $id: 'EntropyAck' },
-);
-
-export enum RecoveryDeviceType {
-    RecoveryDeviceType_ScrambledWords = 0,
-    RecoveryDeviceType_Matrix = 1,
-}
-
-export type EnumRecoveryDeviceType = Static<typeof EnumRecoveryDeviceType>;
-export const EnumRecoveryDeviceType = Type.Enum(RecoveryDeviceType);
-
-export type RecoveryDevice = Static<typeof RecoveryDevice>;
-export const RecoveryDevice = Type.Object(
-    {
-        word_count: Type.Optional(Type.Number()),
-        passphrase_protection: Type.Optional(Type.Boolean()),
-        pin_protection: Type.Optional(Type.Boolean()),
-        language: Type.Optional(Type.String()),
-        label: Type.Optional(Type.String()),
-        enforce_wordlist: Type.Optional(Type.Boolean()),
-        type: Type.Optional(EnumRecoveryDeviceType),
-        u2f_counter: Type.Optional(Type.Number()),
-        dry_run: Type.Optional(Type.Boolean()),
-    },
-    { $id: 'RecoveryDevice' },
 );
 
 export enum Enum_WordRequestType {
@@ -2578,6 +2667,14 @@ export const ShowDeviceTutorial = Type.Object({}, { $id: 'ShowDeviceTutorial' })
 
 export type UnlockBootloader = Static<typeof UnlockBootloader>;
 export const UnlockBootloader = Type.Object({}, { $id: 'UnlockBootloader' });
+
+export type SetBrightness = Static<typeof SetBrightness>;
+export const SetBrightness = Type.Object(
+    {
+        value: Type.Optional(Type.Number()),
+    },
+    { $id: 'SetBrightness' },
+);
 
 export enum MoneroNetworkType {
     MAINNET = 0,
@@ -3463,6 +3560,7 @@ export const MessageType = Type.Object(
         CardanoPoolRelayParameters,
         CardanoPoolMetadataType,
         CardanoPoolParametersType,
+        CardanoDRep,
         CardanoTxCertificate,
         CardanoTxWithdrawal,
         CardanoCVoteRegistrationDelegation,
@@ -3551,6 +3649,7 @@ export const MessageType = Type.Object(
         EthereumTypedDataSignature,
         Initialize,
         GetFeatures,
+        RecoveryDevice,
         Features,
         LockDevice,
         SetBusy,
@@ -3573,10 +3672,10 @@ export const MessageType = Type.Object(
         AuthenticityProof,
         WipeDevice,
         ResetDevice,
+        Slip39Group,
         BackupDevice,
         EntropyRequest,
         EntropyAck,
-        RecoveryDevice,
         WordRequest,
         WordAck,
         SetU2FCounter,
@@ -3592,6 +3691,7 @@ export const MessageType = Type.Object(
         UnlockedPathRequest,
         ShowDeviceTutorial,
         UnlockBootloader,
+        SetBrightness,
         NEMGetAddress,
         NEMAddress,
         NEMTransactionCommon,

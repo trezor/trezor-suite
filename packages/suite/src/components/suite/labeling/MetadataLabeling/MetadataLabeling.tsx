@@ -21,6 +21,8 @@ const LabelValue = styled.div`
 `;
 
 const LabelDefaultValue = styled(LabelValue)`
+    display: flex;
+
     /* do not shrink when the expanded label does not fit the container - shrink only the label value */
     flex-shrink: 0;
     max-width: 0;
@@ -300,8 +302,7 @@ export const MetadataLabeling = ({
         {
             onClick: () => activateEdit(),
             label: l10nLabelling.edit,
-            'data-test': '@metadata/edit-button',
-            key: 'edit-label',
+            'data-test': `edit-label`, // hack: This will be prefixed in the withDropdown()
         },
     ];
 

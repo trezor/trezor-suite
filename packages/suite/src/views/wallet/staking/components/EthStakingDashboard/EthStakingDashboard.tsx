@@ -1,4 +1,4 @@
-import { selectAccountStakeTransactions } from '@suite-common/wallet-core';
+import { selectAccountHasStaked } from '@suite-common/wallet-core';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { WalletLayout } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
@@ -11,10 +11,7 @@ interface EthStakingDashboardProps {
 }
 
 export const EthStakingDashboard = ({ selectedAccount }: EthStakingDashboardProps) => {
-    const stakeTxs = useSelector(state =>
-        selectAccountStakeTransactions(state, selectedAccount.account?.key || ''),
-    );
-    const hasStaked = stakeTxs.length > 0;
+    const hasStaked = useSelector(state => selectAccountHasStaked(state, selectedAccount.account));
 
     return (
         <WalletLayout title="TR_STAKE_ETH" account={selectedAccount}>

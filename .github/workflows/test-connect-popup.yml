@@ -1,0 +1,136 @@
+name: "[Build/Test] connect-popup e2e"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  push:
+    branches: [release/connect/**]
+  pull_request:
+    paths:
+      - "packages/connect/**"
+      - "packages/connect-common/**"
+      - "packages/connect-iframe/**"
+      - "packages/connect-explorer/**"
+      - "packages/connect-webextension/**"
+      - "packages/connect-web/**"
+      - "packages/connect-popup/**"
+      - "packages/connect-examples/webextension-mv2/**"
+      - "packages/connect-examples/webextension-mv3/**"
+      - "packages/connect-explorer-theme/**"
+      - "submodules/trezor-common/**"
+      - "yarn.lock"
+      - ".github/workflows/connect-dev-release-test.yml"
+      - ".github/workflows/template-connect-popup-test-params.yml"
+      - ".github/actions/release-connect/**"
+      - "docker/docker-connect-popup-ci.sh"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  extract-branch:
+    if: github.repository == 'trezor/trezor-suite'
+    runs-on: ubuntu-latest
+    outputs:
+      branch: ${{ steps.extract_branch.outputs.branch }}
+    steps:
+      - name: Extract branch name
+        id: extract_branch
+        run: |
+          BRANCH_NAME="${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}"
+          echo "branch=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
+  build-deploy:
+    needs: [extract-branch]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.extract-branch.outputs.branch }}
+
+      - name: Release connect to dev environment
+        uses: ./.github/actions/release-connect
+        with:
+          awsRoleToAssume: "arn:aws:iam::538326561891:role/gh_actions_trezor_suite_dev_deploy"
+          awsRegion: "eu-central-1"
+          serverHostname: "dev.suite.sldev.cz"
+          serverPath: "connect/${{ needs.extract-branch.outputs.branch }}"
+          uploadArtifacts: "true"
+          buildArtifacts: "true"
+
+  methods:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: methods.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: ${{ github.event_name == 'schedule' }}
+      build-overview: true
+
+  popup-close:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: popup-close.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  passphrase:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: passphrase.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+
+  popup-pages:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: popup-pages.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  browser-support:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: browser-support.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  permissions:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: permissions.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  transport:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: transport.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+
+  unchained:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: unchained.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-web: ${{ github.event_name == 'schedule' }}
+
+  webextension-examples:
+    needs: [build-deploy]
+    uses: ./.github/workflows/template-connect-popup-test-params.yml
+    with:
+      test-name: webextension-example.test
+      DEV_SERVER_HOSTNAME: dev.suite.sldev.cz
+      run-webextension: true
+      run-web: false

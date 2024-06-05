@@ -8,9 +8,10 @@ import { useSelector } from 'src/hooks/suite';
 import { NoRatesTooltip } from './NoRatesTooltip';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectLanguage } from 'src/reducers/suite/suiteReducer';
 
 const PercentageWrapper = styled.div<{ $isRateGoingUp: boolean }>`
-    ${typography.hint}
+    ${typography.callout}
     gap: ${spacingsPx.xxs};
     display: flex;
     align-items: center;
@@ -22,10 +23,9 @@ const calculatePercentageDifference = (a: number, b: number) => (a - b) / b;
 
 interface TickerProps {
     symbol: NetworkSymbol;
-    compact?: boolean;
 }
-export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
-    const locale = useSelector(state => state.suite.settings.language);
+export const TrendTicker = ({ symbol }: TickerProps) => {
+    const locale = useSelector(selectLanguage);
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(symbol, localCurrency);
     const lastWeekRate = useSelector(state =>
@@ -45,7 +45,7 @@ export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
         : 0;
 
     return (
-        <FiatValue amount="1" symbol={symbol}>
+        <FiatValue amount="1" symbol={symbol} showLoadingSkeleton isLoading={!percentageChange}>
             {({ rate, timestamp }) =>
                 rate && timestamp && percentageChange ? (
                     <PercentageWrapper $isRateGoingUp={isRateGoingUp}>
@@ -57,7 +57,7 @@ export const TrendTicker = ({ symbol, compact = false }: TickerProps) => {
                         {localizePercentage({ valueInFraction: percentageChange, locale })}
                     </PercentageWrapper>
                 ) : (
-                    <NoRatesTooltip iconOnly={compact} />
+                    <NoRatesTooltip />
                 )
             }
         </FiatValue>

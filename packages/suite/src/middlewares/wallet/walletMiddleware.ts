@@ -16,14 +16,15 @@ import { getTxsPerPage } from '@suite-common/suite-utils';
 import { ROUTER } from 'src/actions/suite/constants';
 import { WALLET_SETTINGS } from 'src/actions/settings/constants';
 import * as selectedAccountActions from 'src/actions/wallet/selectedAccountActions';
-import { sendFormActions } from 'src/actions/wallet/sendFormActions';
-import { convertSendFormDraftsThunk } from 'src/actions/wallet/send/sendFormThunks';
+import { sendFormActions } from '@suite-common/wallet-core';
+import { convertSendFormDraftsBtcAmountUnitsThunk } from '@suite-common/wallet-core';
 import * as modalActions from 'src/actions/suite/modalActions';
 import * as receiveActions from 'src/actions/wallet/receiveActions';
 import * as cardanoStakingActions from 'src/actions/wallet/cardanoStakingActions';
 import * as coinmarketCommonActions from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import type { AppState, Action, Dispatch } from 'src/types/suite';
+import { selectSelectedAccountKey } from 'src/reducers/wallet/selectedAccountReducer';
 
 const walletMiddleware =
     (api: MiddlewareAPI<Dispatch, AppState>) =>
@@ -116,7 +117,12 @@ const walletMiddleware =
         }
 
         if (action.type === WALLET_SETTINGS.SET_BITCOIN_AMOUNT_UNITS) {
-            api.dispatch(convertSendFormDraftsThunk());
+            const nextSelectedAccountKey = selectSelectedAccountKey(api.getState());
+            api.dispatch(
+                convertSendFormDraftsBtcAmountUnitsThunk({
+                    selectedAccountKey: nextSelectedAccountKey,
+                }),
+            );
             api.dispatch(coinmarketCommonActions.convertDrafts());
         }
 

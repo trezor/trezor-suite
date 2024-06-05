@@ -1,7 +1,11 @@
 import { Network, BackendType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountEntityKeys } from '@suite-common/metadata-types';
 import { AccountInfo, PROTO, TokenInfo } from '@trezor/connect';
-import { StakingPool } from '@trezor/blockchain-link-types';
+import {
+    AddressAlias,
+    ContractInfo,
+    StakingPool,
+} from '@trezor/blockchain-link-types/src/blockbook-api';
 
 export type MetadataItem = string;
 export type XpubAddress = string;
@@ -42,7 +46,12 @@ type AccountNetworkSpecific =
       }
     | {
           networkType: 'ethereum';
-          misc: { nonce: string };
+          misc: {
+              nonce: string;
+              contractInfo?: ContractInfo;
+              stakingPools?: StakingPool[];
+              addressAliases?: { [key: string]: AddressAlias };
+          };
           marker: undefined;
           page: AccountInfo['page'];
       }
@@ -93,7 +102,6 @@ export type Account = {
      * metadata/labeling feature which requires device for encryption. local accountLabel field was introduced.
      */
     accountLabel?: string;
-    stakingPools?: StakingPool[];
 } & AccountBackendSpecific &
     AccountNetworkSpecific;
 

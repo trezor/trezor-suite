@@ -75,7 +75,12 @@ export const DemoScreen = () => {
         'primary',
         'secondary',
         'tertiaryElevation0',
-        'dangerElevation0',
+        'redBold',
+        'redElevation0',
+        'yellowBold',
+        'yellowElevation0',
+        'blueBold',
+        'blueElevation0',
     ] satisfies ButtonColorScheme[];
 
     const textButtonVariants = ['primary', 'tertiary'] satisfies TextButtonVariant[];
@@ -129,7 +134,7 @@ export const DemoScreen = () => {
                                     <Button
                                         key={buttonSize}
                                         colorScheme={buttonScheme}
-                                        iconLeft="calendar"
+                                        viewLeft="calendar"
                                         size={buttonSize}
                                     >
                                         {buttonSize}
@@ -138,6 +143,27 @@ export const DemoScreen = () => {
                             </Box>
                         </VStack>
                     ))}
+                    <VStack>
+                        <Text>Disabled</Text>
+                        <Box
+                            flexDirection="row"
+                            justifyContent="space-around"
+                            alignItems="center"
+                            style={applyStyle(flexWrapStyle)}
+                        >
+                            {buttonSizes.map(buttonSize => (
+                                <Button
+                                    key={buttonSize}
+                                    colorScheme="primary"
+                                    viewLeft="calendar"
+                                    size={buttonSize}
+                                    isDisabled
+                                >
+                                    {buttonSize}
+                                </Button>
+                            ))}
+                        </Box>
+                    </VStack>
                 </VStack>
                 <Divider />
                 <VStack>
@@ -189,7 +215,7 @@ export const DemoScreen = () => {
                                 <TextButton
                                     variant={variant}
                                     key={buttonSize}
-                                    iconLeft="trezorT"
+                                    viewLeft="trezorT2B1"
                                     size={buttonSize}
                                 >
                                     {buttonSize}
@@ -217,7 +243,7 @@ export const DemoScreen = () => {
                                     value={input3Text}
                                     onChangeText={setInput3Text}
                                     label="From"
-                                    leftIcon={<CryptoIcon symbol="btc" size="extraSmall" />}
+                                    leftIcon={<CryptoIcon symbol="btc" size="large" />}
                                     hasWarning
                                 />
                             </InputWrapper>
@@ -322,11 +348,11 @@ export const DemoScreen = () => {
                     <Box marginTop="medium" marginBottom="medium">
                         <Text>AlertBox:</Text>
                         <VStack spacing="medium">
-                            <AlertBox variant="info" title="Info" isStandalone />
-                            <AlertBox variant="success" title="Success" isStandalone />
-                            <AlertBox variant="error" title="Error" isStandalone />
+                            <AlertBox variant="info" title="Info" />
+                            <AlertBox variant="success" title="Success" />
+                            <AlertBox variant="error" title="Error" />
                             <Box>
-                                <AlertBox variant="warning" title="Warning" isStandalone />
+                                <AlertBox variant="warning" title="Warning" />
                             </Box>
                             <AlertBox
                                 variant="info"
@@ -342,7 +368,6 @@ export const DemoScreen = () => {
                                         />
                                     </>
                                 }
-                                isStandalone
                             />
                         </VStack>
                     </Box>

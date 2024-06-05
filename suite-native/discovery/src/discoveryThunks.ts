@@ -1,10 +1,10 @@
-import { A } from '@mobily/ts-belt';
+import { A, G, pipe } from '@mobily/ts-belt';
 
+import { getWeakRandomId } from '@trezor/utils';
 import { createThunk } from '@suite-common/redux-utils';
 import {
     accountsActions,
     DISCOVERY_MODULE_PREFIX,
-    selectDeviceAccountsLengthPerNetwork,
     selectDeviceDiscovery,
     updateDiscovery,
     createDiscovery,
@@ -19,20 +19,20 @@ import {
 import { selectIsAccountAlreadyDiscovered } from '@suite-native/accounts';
 import TrezorConnect from '@trezor/connect';
 import { Account, DiscoveryItem } from '@suite-common/wallet-types';
-import { getDerivationType } from '@suite-common/wallet-utils';
+import { getDerivationType, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 import { AccountType, Network, NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
-import { isDebugEnv } from '@suite-native/config';
+import { isDevelopOrDebugEnv } from '@suite-native/config';
 
-import { fetchBundleDescriptors } from './utils';
 import {
     selectDisabledDiscoveryNetworkSymbolsForDevelopment,
     selectDiscoveryStartTimeStamp,
     selectDiscoverySupportedNetworks,
     setDiscoveryStartTimestamp,
 } from './discoveryConfigSlice';
+import { selectDiscoveryAccountsAnalytics } from './discoverySelectors';
 
 const DISCOVERY_DEFAULT_BATCH_SIZE = 2;
 
@@ -59,6 +59,30 @@ const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
 
 type DiscoveryDescriptorItem = DiscoveryItem & { descriptor: string };
 
+const fetchBundleDescriptorsThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/fetchBundleDescriptorsThunk`,
+    async (bundle: DiscoveryItem[], { getState }) => {
+        const device = selectDevice(getState());
+
+        const { success, payload } = await TrezorConnect.getAccountDescriptor({
+            bundle,
+            skipFinalReload: true,
+            device,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
+        });
+
+        if (success && payload)
+            return pipe(
+                payload,
+                A.filter(G.isNotNullable),
+                A.map(bundleItem => bundleItem.descriptor),
+                A.zipWith(bundle, (descriptor, bundleItem) => ({ ...bundleItem, descriptor })),
+            ) as DiscoveryDescriptorItem[];
+
+        return [];
+    },
+);
+
 const finishNetworkTypeDiscoveryThunk = createThunk(
     `${DISCOVERY_MODULE_PREFIX}/finishNetworkTypeDiscoveryThunk`,
     (_, { dispatch, getState }) => {
@@ -79,16 +103,37 @@ const finishNetworkTypeDiscoveryThunk = createThunk(
         if (finishedNetworksCount >= discovery.total) {
             dispatch(removeDiscovery(discovery.deviceState));
 
+            // Id used to group multiple analytic events of a single discovery run together.
+            const discoveryId = getWeakRandomId(10);
+
+            const discoveryAccountsAnalytics = selectDiscoveryAccountsAnalytics(
+                getState(),
+                discovery.deviceState,
+            );
+
+            // Keboola analytics data backend is unable to parse nested objects, so each network has to be reported separately.
+            Object.entries(discoveryAccountsAnalytics).forEach(
+                ([networkSymbol, networkAnalyticsPayload]) => {
+                    analytics.report({
+                        type: EventType.CoinDiscovery,
+                        payload: {
+                            discoveryId,
+                            symbol: networkSymbol as NetworkSymbol,
+                            ...networkAnalyticsPayload,
+                        },
+                    });
+                },
+            );
+
             const discoveryStartTime = selectDiscoveryStartTimeStamp(getState());
             // Discovery analytics duration tracking
             if (discoveryStartTime !== null) {
                 const endTime = performance.now();
                 const duration = endTime - discoveryStartTime;
-                const accountsMap = selectDeviceAccountsLengthPerNetwork(getState());
 
                 analytics.report({
-                    type: EventType.CoinDiscovery,
-                    payload: { ...accountsMap, loadDuration: duration },
+                    type: EventType.DiscoveryDuration,
+                    payload: { discoveryId, loadDuration: duration },
                 });
                 dispatch(setDiscoveryStartTimestamp(null));
             }
@@ -106,7 +151,7 @@ const getAccountInfoDetailsLevel = (coin: NetworkSymbol) => {
 };
 
 const getCardanoSupportedAccountTypesThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/addAccountsByDescriptorThunk`,
+    `${DISCOVERY_MODULE_PREFIX}/getCardanoSupportedAccountTypesThunk`,
     async (
         {
             deviceState,
@@ -115,7 +160,7 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
         },
         { dispatch, getState },
     ) => {
-        const device = selectDevice(getState());
+        const device = selectDeviceByState(getState(), deviceState);
         if (!device) {
             return undefined;
         }
@@ -129,22 +174,27 @@ const getCardanoSupportedAccountTypesThunk = createThunk(
     },
 );
 
-const addAccountsByDescriptorThunk = createThunk(
-    `${DISCOVERY_MODULE_PREFIX}/addAccountsByDescriptorThunk`,
+const addAccountByDescriptorThunk = createThunk(
+    `${DISCOVERY_MODULE_PREFIX}/addAccountByDescriptorThunk`,
     async (
         {
             deviceState,
             bundleItem,
+            identity,
         }: {
             deviceState: string;
             bundleItem: DiscoveryDescriptorItem;
+            identity?: string;
         },
-        { dispatch },
+        { dispatch, getState },
     ) => {
+        const device = selectDevice(getState());
         const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
             coin: bundleItem.coin,
+            identity,
+            device,
             descriptor: bundleItem.descriptor,
-            useEmptyPassphrase: true,
+            useEmptyPassphrase: device?.useEmptyPassphrase,
             skipFinalReload: true,
             ...getAccountInfoDetailsLevel(bundleItem.coin),
         });
@@ -155,6 +205,7 @@ const addAccountsByDescriptorThunk = createThunk(
                     discoveryItem: bundleItem,
                     deviceState,
                     accountInfo,
+                    visible: true,
                 }),
             );
 
@@ -176,11 +227,13 @@ const discoverAccountsByDescriptorThunk = createThunk(
         {
             descriptorsBundle,
             deviceState,
+            identity,
         }: {
             descriptorsBundle: DiscoveryDescriptorItem[];
             deviceState: string;
+            identity?: string;
         },
-        { dispatch },
+        { dispatch, getState },
     ) => {
         let isFinalRound = false;
 
@@ -188,11 +241,14 @@ const discoverAccountsByDescriptorThunk = createThunk(
             isFinalRound = true;
         }
 
+        const device = selectDevice(getState());
         for (const bundleItem of descriptorsBundle) {
             const { success, payload: accountInfo } = await TrezorConnect.getAccountInfo({
                 coin: bundleItem.coin,
+                identity,
                 descriptor: bundleItem.descriptor,
-                useEmptyPassphrase: true,
+                device,
+                useEmptyPassphrase: device?.useEmptyPassphrase,
                 skipFinalReload: true,
                 ...getAccountInfoDetailsLevel(bundleItem.coin),
             });
@@ -200,7 +256,6 @@ const discoverAccountsByDescriptorThunk = createThunk(
             if (success) {
                 if (accountInfo.empty) {
                     isFinalRound = true;
-                    break;
                 }
 
                 dispatch(
@@ -208,6 +263,7 @@ const discoverAccountsByDescriptorThunk = createThunk(
                         discoveryItem: bundleItem,
                         deviceState,
                         accountInfo,
+                        visible: !accountInfo.empty,
                     }),
                 );
             }
@@ -222,22 +278,22 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
     async (
         {
             network,
-            accountType,
             deviceState,
         }: {
             network: Network;
-            accountType: AccountType;
             deviceState: string;
         },
         { dispatch, getState },
     ): Promise<Account | undefined> => {
+        const accountType = network.accountType ?? NORMAL_ACCOUNT_TYPE;
+
         const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
             getState(),
             network.symbol,
             accountType,
         );
 
-        const index = accounts.length + 1;
+        const index = accounts.length;
 
         if (index > LIMIT) {
             return undefined;
@@ -245,19 +301,23 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
 
         const accountPath = network.bip43Path.replace('i', index.toString());
 
-        // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
-        const deviceAccessResponse = await requestDeviceAccess(fetchBundleDescriptors, [
-            {
-                path: accountPath,
-                coin: network.symbol,
-                index,
-                accountType,
-                networkType: network.networkType,
-                derivationType: getDerivationType(accountType),
-                suppressBackupWarning: true,
-                skipFinalReload: true,
-            },
-        ]);
+        // Take exclusive access to the device and hold it until fetching of the descriptors is done.
+        const deviceAccessResponse = await requestDeviceAccess(() =>
+            dispatch(
+                fetchBundleDescriptorsThunk([
+                    {
+                        path: accountPath,
+                        coin: network.symbol,
+                        index,
+                        accountType,
+                        networkType: network.networkType,
+                        derivationType: getDerivationType(accountType),
+                        suppressBackupWarning: true,
+                        skipFinalReload: true,
+                    },
+                ]),
+            ).unwrap(),
+        );
 
         if (!deviceAccessResponse.success) {
             return undefined;
@@ -268,11 +328,13 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
         }
 
         const descriptor = deviceAccessResponse.payload[0];
+        const identity = tryGetAccountIdentity({ deviceState, networkType: network.networkType });
 
         await dispatch(
-            addAccountsByDescriptorThunk({
+            addAccountByDescriptorThunk({
                 bundleItem: descriptor,
                 deviceState,
+                identity,
             }),
         ).unwrap();
 
@@ -363,16 +425,21 @@ const discoverNetworkBatchThunk = createThunk(
         }
 
         // Take exclusive access to the device and hold it until is the fetching of the descriptors done.
-        const deviceAccessResponse = await requestDeviceAccess(fetchBundleDescriptors, chunkBundle);
+        const deviceAccessResponse = await requestDeviceAccess(() =>
+            dispatch(fetchBundleDescriptorsThunk(chunkBundle)).unwrap(),
+        );
 
         if (!deviceAccessResponse.success) {
             return;
         }
 
+        const identity = tryGetAccountIdentity({ deviceState, networkType: network.networkType });
+
         const isFinished = await dispatch(
             discoverAccountsByDescriptorThunk({
                 descriptorsBundle: deviceAccessResponse.payload,
                 deviceState,
+                identity,
             }),
         ).unwrap();
 
@@ -461,7 +528,7 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         let supportedNetworks = selectDiscoverySupportedNetworks(getState(), areTestnetsEnabled);
 
         // For development purposes, you can disable some networks to have quicker discovery in dev utils
-        if (isDebugEnv()) {
+        if (isDevelopOrDebugEnv()) {
             const disabledNetworkSymbols =
                 selectDisabledDiscoveryNetworkSymbolsForDevelopment(getState());
             supportedNetworks = supportedNetworks.filter(

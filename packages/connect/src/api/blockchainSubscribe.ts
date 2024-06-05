@@ -9,7 +9,9 @@ import type { CoinInfo } from '../types';
 
 type Params = {
     accounts: Payload<'blockchainSubscribe'>['accounts'];
+    blocks: boolean;
     coinInfo: CoinInfo;
+    identity?: string;
 };
 
 export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubscribe', Params> {
@@ -22,7 +24,9 @@ export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubsc
         // validate incoming parameters
         validateParams(payload, [
             { name: 'accounts', type: 'array', allowEmpty: true },
+            { name: 'blocks', type: 'boolean' },
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
         ]);
 
         if (payload.accounts) {
@@ -40,13 +44,26 @@ export default class BlockchainSubscribe extends AbstractMethod<'blockchainSubsc
 
         this.params = {
             accounts: payload.accounts,
+            blocks: payload.blocks ?? true, // default is true because of backwards compatibility
             coinInfo,
+            identity: payload.identity,
         };
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
 
-        return backend.subscribe(this.params.accounts);
+        const { blocks, accounts } = this.params;
+
+        let result = { subscribed: false };
+
+        if (blocks) result = await backend.subscribeBlocks();
+        if (accounts) result = await backend.subscribeAccounts(accounts);
+
+        return result;
     }
 }

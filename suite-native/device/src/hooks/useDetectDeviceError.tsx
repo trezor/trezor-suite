@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
+import * as Sentry from '@sentry/react-native';
+import { useNavigation } from '@react-navigation/native';
+
 import { analytics, EventType } from '@suite-native/analytics';
 import {
     acquireDevice,
@@ -14,19 +17,35 @@ import {
     selectHasDeviceFirmwareInstalled,
 } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import { useOpenLink } from '@suite-native/link';
+import {
+    StackToStackCompositeNavigationProps,
+    HomeStackParamList,
+    HomeStackRoutes,
+    RootStackParamList,
+    RootStackRoutes,
+    ConnectDeviceStackRoutes,
+} from '@suite-native/navigation';
 
-import { selectIsDeviceFirmwareSupported } from '../selectors';
+import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
 import { IncompatibleDeviceModalAppendix } from '../components/IncompatibleDeviceModalAppendix';
 import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
 import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceModalAppendix';
+
+type NavigationProps = StackToStackCompositeNavigationProps<
+    HomeStackParamList,
+    HomeStackRoutes.Home,
+    RootStackParamList
+>;
 
 export const useDetectDeviceError = () => {
     const [wasDeviceEjectedByUser, setWasDeviceEjectedByUser] = useState(false);
 
     const dispatch = useDispatch();
     const { hideAlert, showAlert } = useAlert();
-    const { translate } = useTranslate();
+    const openLink = useOpenLink();
+    const navigation = useNavigation<NavigationProps>();
 
     const selectedDevice = useSelector(selectDevice);
     const isUnacquiredDevice = useSelector(selectIsUnacquiredDevice);
@@ -37,6 +56,7 @@ export const useDetectDeviceError = () => {
     const hasDeviceFirmwareInstalled = useSelector(selectHasDeviceFirmwareInstalled);
 
     const isDeviceFirmwareSupported = useSelector(selectIsDeviceFirmwareSupported);
+    const deviceError = useSelector(selectDeviceError);
 
     const handleDisconnect = useCallback(() => {
         if (selectedDevice) {
@@ -58,27 +78,28 @@ export const useDetectDeviceError = () => {
     useEffect(() => {
         if (isUnacquiredDevice) {
             showAlert({
-                title: translate('moduleDevice.unacquiredDeviceModal.title'),
-                description: translate('moduleDevice.unacquiredDeviceModal.description'),
-                icon: 'warningCircle',
+                title: <Translation id="moduleDevice.unacquiredDeviceModal.title" />,
+                description: <Translation id="moduleDevice.unacquiredDeviceModal.description" />,
+                icon: 'warningCircleLight',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleDevice.unacquiredDeviceModal.button'),
+                primaryButtonTitle: <Translation id="moduleDevice.unacquiredDeviceModal.button" />,
                 appendix: <UnacquiredDeviceModalAppendix />,
                 onPressPrimaryButton: () => dispatch(acquireDevice()),
+                testID: '@device/errors/alert/unacquired-device',
             });
         } else {
             hideAlert();
         }
-    }, [isUnacquiredDevice, translate, dispatch, hideAlert, showAlert]);
+    }, [isUnacquiredDevice, dispatch, hideAlert, showAlert]);
 
     useEffect(() => {
         if (!isDeviceFirmwareSupported && !isPortfolioTrackerDevice && !wasDeviceEjectedByUser) {
             showAlert({
-                title: translate('moduleDevice.unsupportedFirmwareModal.title'),
-                description: translate('moduleDevice.unsupportedFirmwareModal.description'),
-                icon: 'warningCircle',
+                title: <Translation id="moduleDevice.unsupportedFirmwareModal.title" />,
+                description: <Translation id="moduleDevice.unsupportedFirmwareModal.description" />,
+                icon: 'warningCircleLight',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('generic.buttons.eject'),
+                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 primaryButtonVariant: 'tertiaryElevation1',
                 appendix: <IncompatibleDeviceModalAppendix />,
                 onPressPrimaryButton: () => {
@@ -88,6 +109,7 @@ export const useDetectDeviceError = () => {
                         payload: { deviceState: 'unsupportedFirmware' },
                     });
                 },
+                testID: '@device/errors/alert/unsupported-firmware',
             });
         }
     }, [
@@ -96,19 +118,23 @@ export const useDetectDeviceError = () => {
         wasDeviceEjectedByUser,
         dispatch,
         showAlert,
-        translate,
         handleDisconnect,
     ]);
 
     useEffect(() => {
-        if (isConnectedDeviceUninitialized && !wasDeviceEjectedByUser && !isUnacquiredDevice) {
+        if (
+            isConnectedDeviceUninitialized &&
+            !wasDeviceEjectedByUser &&
+            !isUnacquiredDevice &&
+            !deviceError
+        ) {
             showAlert({
-                title: translate('moduleDevice.noSeedModal.title'),
-                description: translate('moduleDevice.noSeedModal.description'),
-                icon: 'warningCircle',
+                title: <Translation id="moduleDevice.noSeedModal.title" />,
+                description: <Translation id="moduleDevice.noSeedModal.description" />,
+                icon: 'warningCircleLight',
                 pictogramVariant: 'red',
                 primaryButtonVariant: 'tertiaryElevation1',
-                primaryButtonTitle: translate('generic.buttons.eject'),
+                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 appendix: <IncompatibleDeviceModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
@@ -117,6 +143,7 @@ export const useDetectDeviceError = () => {
                         payload: { deviceState: 'noSeed' },
                     });
                 },
+                testID: '@device/errors/alert/no-seed',
             });
         }
     }, [
@@ -124,19 +151,19 @@ export const useDetectDeviceError = () => {
         isUnacquiredDevice,
         wasDeviceEjectedByUser,
         showAlert,
-        translate,
         handleDisconnect,
+        deviceError,
     ]);
 
     useEffect(() => {
         if (isDeviceInBootloader && hasDeviceFirmwareInstalled && !wasDeviceEjectedByUser) {
             showAlert({
-                title: translate('moduleDevice.bootloaderModal.title'),
-                description: translate('moduleDevice.bootloaderModal.description'),
-                icon: 'warningCircle',
+                title: <Translation id="moduleDevice.bootloaderModal.title" />,
+                description: <Translation id="moduleDevice.bootloaderModal.description" />,
+                icon: 'warningCircleLight',
                 pictogramVariant: 'red',
                 primaryButtonVariant: 'tertiaryElevation1',
-                primaryButtonTitle: translate('generic.buttons.eject'),
+                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 appendix: <BootloaderModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
@@ -145,6 +172,7 @@ export const useDetectDeviceError = () => {
                         payload: { deviceState: 'bootloaderMode' },
                     });
                 },
+                testID: '@device/errors/alert/bootloader',
             });
         }
     }, [
@@ -152,12 +180,44 @@ export const useDetectDeviceError = () => {
         hasDeviceFirmwareInstalled,
         wasDeviceEjectedByUser,
         showAlert,
-        translate,
         handleDisconnect,
     ]);
 
     useEffect(() => {
-        // Hide the error alert on disconnect of the device
+        if (deviceError && !isUnacquiredDevice) {
+            Sentry.captureException(new Error(`device error - ${deviceError}`));
+
+            showAlert({
+                title: <Translation id="moduleDevice.genericErrorModal.title" />,
+                description: <Translation id="moduleDevice.genericErrorModal.description" />,
+                icon: 'warningCircleLight',
+                pictogramVariant: 'red',
+                primaryButtonVariant: 'redBold',
+                primaryButtonTitle: (
+                    <Translation id="moduleDevice.genericErrorModal.buttons.reconnect" />
+                ),
+                onPressPrimaryButton: () => {
+                    handleDisconnect();
+                    navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
+                        screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
+                    });
+                },
+                secondaryButtonTitle: (
+                    <Translation id="moduleDevice.genericErrorModal.buttons.help" />
+                ),
+                secondaryButtonVariant: 'redElevation0',
+                onPressSecondaryButton: () =>
+                    openLink('https://trezor.io/learn/c/trezor-suite-lite#open-chat'),
+                testID: '@device/errors/alert/error',
+            });
+        }
+    }, [deviceError, handleDisconnect, showAlert, openLink, navigation, isUnacquiredDevice]);
+
+    useEffect(() => {
+        // Hide the error alert when the device is disconnected.
+        // Device with error can't be view-only.
+        // Edge case: If user has connected two devices simultaneously,
+        // it will not hide the alert.
         if (isNoPhysicalDeviceConnected) {
             hideAlert();
         }

@@ -1,0 +1,55 @@
+---
+icon: LOG
+---
+
+import { useData } from 'nextra/data';
+import { serialize } from 'next-mdx-remote/serialize';
+import { MDXRemote } from 'next-mdx-remote';
+import rehypeSectionize from '@hbsnow/rehype-sectionize';
+import remarkGfm from 'remark-gfm';
+import remarkGemoji from 'remark-gemoji';
+
+export const getStaticProps = ({ params }) => {
+    return fetch(
+        `https://raw.githubusercontent.com/trezor/trezor-suite/${process.env.COMMIT_HASH}/packages/connect/CHANGELOG.md`,
+    )
+        .then(res => res.text())
+        .then(content => {
+            // Reduce headings by one level
+            content = content.replace(/^(#+)/gm, '$1#');
+            // Add links to commit hashes
+            content = content.replace(
+                /([a-f0-9]{7,10})([\),])/g,
+                `[\$1](https://github.com/trezor/trezor-suite/commit/\$1)$2`,
+            );
+            content = `## Version overview\n\n` + content;
+
+            return content;
+        })
+        .then(content => serialize(content, {
+            mdxOptions: {
+                remarkPlugins: [remarkGfm, remarkGemoji],
+                rehypePlugins: [[rehypeSectionize]],
+            },
+        }))
+        .then(changelog => ({
+            props: {
+                ssg: {
+                    changelog,
+                },
+            },
+        }));
+
+};
+
+export const Changelog = () => {
+    const data = useData();
+    const { changelog } = data;
+
+    return (
+        <MDXRemote {...changelog} />
+    );
+
+};
+
+<Changelog />

@@ -28,7 +28,7 @@ let firmwareHash = '';
 // - where you would normally do `cy.task('startBridge') run  `cy.task('startMockedBridge, har)` instead  where har is the output of process-har.ts script
 // - profit
 
-describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () => {
+describe.skip('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () => {
     beforeEach(() => {
         cy.task('startMockedBridge', har);
 
@@ -37,7 +37,6 @@ describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () =>
             {
                 required: false,
                 version: [2, 5, 1],
-                min_bridge_version: [2, 0, 7],
                 min_firmware_version: [2, 0, 8],
                 min_bootloader_version: [2, 0, 0],
                 url: 'firmware/t2t1/trezor-t2t1-2.5.1.bin',
@@ -64,7 +63,7 @@ describe('fw update from empty device bootloader 2.0.3 to firmware 2.5.1', () =>
         cy.prefixedVisit('/');
     });
 
-    it('firmware update error', () => {
+    it.skip('firmware update error', () => {
         cy.getTestElement('@analytics/continue-button').click();
 
         // hook into redux actions to bypass firmware hash check

@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-
+import { BigNumber, BigNumberValue } from '@trezor/utils/src/bigNumber';
 import {
     AccountInfo,
     AccountAddresses,
@@ -7,6 +6,7 @@ import {
     AccountTransaction,
     AccountUtxo,
     PrecomposedTransactionFinalCardano,
+    TokenTransfer,
 } from '@trezor/connect';
 import { arrayDistinct, bufferUtils } from '@trezor/utils';
 import {
@@ -22,8 +22,8 @@ import {
     PrecomposedTransactionFinal,
     ReceiveInfo,
     TokenAddress,
-    TxFinalCardano,
-    FiatRates,
+    GeneralPrecomposedTransactionFinal,
+    RatesByKey,
 } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { TrezorDevice } from '@suite-common/suite-types';
@@ -151,8 +151,6 @@ export const getTitleForNetwork = (symbol: NetworkSymbol) => {
             return 'TR_NETWORK_ETHEREUM';
         case 'tsep':
             return 'TR_NETWORK_ETHEREUM_SEPOLIA';
-        case 'tgor':
-            return 'TR_NETWORK_ETHEREUM_GOERLI';
         case 'thol':
             return 'TR_NETWORK_ETHEREUM_HOLESKY';
         case 'etc':
@@ -278,7 +276,7 @@ export const getAccountDecimals = (symbol: NetworkSymbol) => {
 export const stripNetworkAmount = (amount: string, decimals: number) =>
     new BigNumber(amount).toFixed(decimals, 1);
 
-export const formatAmount = (amount: BigNumber.Value, decimals: number) => {
+export const formatAmount = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -291,7 +289,7 @@ export const formatAmount = (amount: BigNumber.Value, decimals: number) => {
     }
 };
 
-export const amountToSatoshi = (amount: BigNumber.Value, decimals: number) => {
+export const amountToSatoshi = (amount: BigNumberValue, decimals: number) => {
     try {
         const bAmount = new BigNumber(amount);
         if (bAmount.isNaN()) {
@@ -305,7 +303,7 @@ export const amountToSatoshi = (amount: BigNumber.Value, decimals: number) => {
     }
 };
 
-export const satoshiAmountToBtc = (amount: BigNumber.Value) => {
+export const satoshiAmountToBtc = (amount: BigNumberValue) => {
     try {
         const satsAmount = new BigNumber(amount);
         if (satsAmount.isNaN()) {
@@ -353,6 +351,13 @@ export const formatNetworkAmount = (
     }
 
     return formattedAmount;
+};
+
+export const formatTokenAmount = (tokenTransfer: TokenTransfer) => {
+    const formattedAmount = formatAmount(tokenTransfer.amount, tokenTransfer.decimals);
+    const formattedTokenSymbol = tokenTransfer.symbol?.toUpperCase();
+
+    return formattedTokenSymbol ? `${formattedAmount} ${formattedTokenSymbol}` : formattedAmount;
 };
 
 export const sortByCoin = (accounts: Account[]) =>
@@ -555,10 +560,38 @@ export const enhanceHistory = ({
     addrTxCount,
 });
 
+export const getTokensFiatBalance = (
+    account: Account,
+    localCurrency: string,
+    rates?: RatesByKey,
+    tokens?: Account['tokens'],
+) => {
+    let totalBalance = new BigNumber(0);
+
+    // sum fiat value of all tokens
+    tokens?.forEach(t => {
+        const tokenFiatRateKey = getFiatRateKey(
+            account.symbol as NetworkSymbol,
+            localCurrency as FiatCurrencyCode,
+            t.contract as TokenAddress,
+        );
+
+        const tokenFiatRate = rates?.[tokenFiatRateKey];
+        if (tokenFiatRate?.rate && t.balance) {
+            const tokenBalance = toFiatCurrency(t.balance, tokenFiatRate.rate, 2);
+            if (tokenBalance) {
+                totalBalance = totalBalance.plus(tokenBalance);
+            }
+        }
+    });
+
+    return totalBalance.toFixed();
+};
+
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
-    rates: FiatRates | undefined,
+    rates?: RatesByKey,
 ) => {
     const coinFiatRateKey = getFiatRateKey(
         account.symbol as NetworkSymbol,
@@ -570,26 +603,13 @@ export const getAccountFiatBalance = (
     let totalBalance = new BigNumber(0);
 
     // account fiat balance
-    const balance = toFiatCurrency(account.formattedBalance, localCurrency, coinFiatRate, 2, false);
+    const accountBalance = toFiatCurrency(account.formattedBalance, coinFiatRate.rate, 2);
 
     // sum fiat value of all tokens
-    account.tokens?.forEach(t => {
-        const tokenFiatRateKey = getFiatRateKey(
-            account.symbol as NetworkSymbol,
-            localCurrency as FiatCurrencyCode,
-            t.contract as TokenAddress,
-        );
+    const tokensBalance = getTokensFiatBalance(account, localCurrency, rates, account.tokens);
 
-        const tokenFiatRate = rates?.[tokenFiatRateKey];
-        if (tokenFiatRate?.rate && t.balance) {
-            const tokenBalance = toFiatCurrency(t.balance, localCurrency, tokenFiatRate, 2, false);
-            if (tokenBalance) {
-                totalBalance = totalBalance.plus(tokenBalance);
-            }
-        }
-    });
-
-    totalBalance = totalBalance.plus(balance ?? 0);
+    totalBalance = totalBalance.plus(accountBalance ?? 0);
+    totalBalance = totalBalance.plus(tokensBalance ?? 0);
 
     return totalBalance.toFixed();
 };
@@ -597,7 +617,7 @@ export const getAccountFiatBalance = (
 export const getTotalFiatBalance = (
     deviceAccounts: Account[],
     localCurrency: string,
-    rates: FiatRates | undefined,
+    rates?: RatesByKey,
 ) => {
     let instanceBalance = new BigNumber(0);
     deviceAccounts.forEach(a => {
@@ -641,7 +661,8 @@ export const isAccountOutdated = (account: Account, freshInfo: AccountInfo) => {
             return (
                 freshInfo.misc!.nonce !== account.misc.nonce ||
                 freshInfo.balance !== account.balance || // balance can change because of beacon chain txs (staking) |
-                JSON.stringify(freshInfo?.stakingPools) !== JSON.stringify(account?.stakingPools)
+                JSON.stringify(freshInfo?.misc?.stakingPools) !==
+                    JSON.stringify(account?.misc?.stakingPools)
             );
         case 'cardano':
             return (
@@ -679,11 +700,11 @@ export const getAccountSpecific = (
         return {
             networkType,
             misc: {
+                ...misc,
                 nonce: misc && misc.nonce ? misc.nonce : '0',
             },
             marker: undefined,
             page: accountInfo.page,
-            stakingPools: accountInfo?.stakingPools,
         };
     }
 
@@ -815,7 +836,7 @@ export const getUtxoFromSignedTransaction = ({
 }: {
     account: Account;
     receivingAccount?: boolean;
-    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    tx: GeneralPrecomposedTransactionFinal;
     txid: string;
     prevTxid?: string;
 }) => {
@@ -899,7 +920,7 @@ export const getPendingAccount = ({
 }: {
     account: Account;
     receivingAccount?: boolean;
-    tx: PrecomposedTransactionFinal | TxFinalCardano;
+    tx: GeneralPrecomposedTransactionFinal;
     txid: string;
 }) => {
     // calculate availableBalance

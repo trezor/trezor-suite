@@ -2,9 +2,8 @@ import { CoinjoinBackend, CoinjoinClient, CoinjoinPrisonInmate } from '@trezor/c
 import { createIpcProxy } from '@trezor/ipc-proxy';
 import { PartialRecord } from '@trezor/type-utils';
 import { isDesktop } from '@trezor/env-utils';
-import { CoinjoinServerEnvironment } from 'src/types/wallet/coinjoin';
 import { NetworkSymbol } from 'src/types/wallet';
-import { getCoinjoinConfig } from './config';
+import { CoinjoinNetworksConfig, getCoinjoinConfig } from './config';
 
 const loadInstance = (settings: ReturnType<typeof getCoinjoinConfig>) => {
     if (isDesktop()) {
@@ -30,15 +29,15 @@ export class CoinjoinService {
     static async createInstance({
         network,
         prison,
-        environment,
+        settings,
     }: {
         network: NetworkSymbol;
         prison?: CoinjoinPrisonInmate[];
-        environment?: CoinjoinServerEnvironment;
+        settings?: CoinjoinNetworksConfig;
     }) {
         if (this.instances[network]) return this.instances[network] as CoinjoinServiceInstance;
-        const settings = getCoinjoinConfig(network, environment);
-        const [backend, client] = await loadInstance({ ...settings, prison });
+        const config = settings ?? getCoinjoinConfig(network);
+        const [backend, client] = await loadInstance({ ...config, prison });
         const instance = { backend, client };
         if (!isDesktop()) {
             // display client log directly in console

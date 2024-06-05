@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link",
-    "version": "2.1.27",
+    "version": "2.1.30",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/blockchain-link",
     "description": "High-level javascript interface for blockchain communication",
@@ -77,13 +77,12 @@
     },
     "dependencies": {
         "@solana/buffer-layout": "^4.0.1",
-        "@solana/web3.js": "^1.90.0",
+        "@solana/web3.js": "^1.90.2",
         "@trezor/blockchain-link-types": "workspace:*",
         "@trezor/blockchain-link-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "@types/web": "^0.0.138",
-        "bignumber.js": "^9.1.2",
         "events": "^3.3.0",
         "ripple-lib": "^1.10.1",
         "socks-proxy-agent": "6.1.1",

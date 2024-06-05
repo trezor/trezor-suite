@@ -17,7 +17,6 @@ const select = [
     { value: 'eth', label: 'Ethereum' },
     { value: 'etc', label: 'Ethereum Classic' },
     { value: 'tsep', label: 'Sepolia' },
-    { value: 'tgor', label: 'Goerli' },
     { value: 'thol', label: 'Holesky' },
     { value: 'sol', label: 'Solana' },
     { value: 'dsol', label: 'Solana devnet' },

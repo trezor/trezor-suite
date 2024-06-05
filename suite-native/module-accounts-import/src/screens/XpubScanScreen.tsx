@@ -4,7 +4,7 @@ import Animated, { FadeIn } from 'react-native-reanimated';
 
 import { useFocusEffect } from '@react-navigation/native';
 
-import { Box, Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
+import { Button, HeaderedCard, TextDivider, VStack } from '@suite-native/atoms';
 import { isDevelopOrDebugEnv } from '@suite-native/config';
 import { Form, TextInputField, useForm } from '@suite-native/forms';
 import {
@@ -17,7 +17,7 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { getNetworkType } from '@suite-common/wallet-config';
 import { isAddressValid, isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { Alert, useAlert } from '@suite-native/alerts';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import {
     XpubFormContext,
     xpubFormValidationSchema,
@@ -38,10 +38,9 @@ const FORM_BUTTON_FADE_IN_DURATION = 200;
 // Extra padding needed to make multiline xpub input form visible even with the sticky footer.
 const EXTRA_KEYBOARD_AVOIDING_VIEW_HEIGHT = 350;
 
-const cameraStyle = prepareNativeStyle(utils => ({
+const cameraStyle = prepareNativeStyle(_ => ({
     alignItems: 'center',
     marginTop: 20,
-    marginBottom: utils.spacings.medium,
 }));
 
 const isBtcTestnetXpub = (xpubAddress: string) => {
@@ -97,11 +96,15 @@ export const XpubScanScreen = ({
     const goToAccountImportScreen = ({ xpubAddress }: XpubFormValues) => {
         if (networkSymbol === 'btc' && isBtcTestnetXpub(xpubAddress)) {
             showDelayedAlert({
-                title: translate('moduleAccountImport.xpubScanScreen.alert.xpub.title'),
-                description: translate('moduleAccountImport.xpubScanScreen.alert.xpub.description'),
+                title: <Translation id="moduleAccountImport.xpubScanScreen.alert.xpub.title" />,
+                description: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.alert.xpub.description" />
+                ),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleAccountImport.xpubScanScreen.confirmButton'),
+                primaryButtonTitle: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
+                ),
                 onPressPrimaryButton: () => null,
             });
 
@@ -115,16 +118,18 @@ export const XpubScanScreen = ({
             isAddressValid(xpubAddress, networkSymbol)
         ) {
             showDelayedAlert({
-                title: translate('moduleAccountImport.xpubScanScreen.alert.address.title'),
-                description: translate(
-                    'moduleAccountImport.xpubScanScreen.alert.address.description',
+                title: <Translation id="moduleAccountImport.xpubScanScreen.alert.address.title" />,
+                description: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.alert.address.description" />
                 ),
                 icon: 'warningCircle',
                 pictogramVariant: 'red',
-                primaryButtonTitle: translate('moduleAccountImport.xpubScanScreen.confirmButton'),
+                primaryButtonTitle: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.confirmButton" />
+                ),
                 onPressPrimaryButton: () => null,
-                secondaryButtonTitle: translate(
-                    'moduleAccountImport.xpubScanScreen.alert.address.hintButton',
+                secondaryButtonTitle: (
+                    <Translation id="moduleAccountImport.xpubScanScreen.alert.address.hintButton" />
                 ),
                 onPressSecondaryButton: () => {
                     hideAlert();
@@ -185,7 +190,7 @@ export const XpubScanScreen = ({
             >
                 <SelectableNetworkItem symbol={networkSymbol} />
             </HeaderedCard>
-            <Box marginHorizontal="medium">
+            <VStack spacing="medium" marginHorizontal="medium">
                 <View style={applyStyle(cameraStyle)}>
                     <XpubImportSection
                         onRequestCamera={handleRequestCamera}
@@ -193,7 +198,11 @@ export const XpubScanScreen = ({
                     />
                 </View>
 
-                <TextDivider title="OR" />
+                <TextDivider
+                    title="generic.orSeparator"
+                    lineColor="borderElevation0"
+                    textColor="textSubdued"
+                />
                 <Form form={form}>
                     <VStack spacing="medium">
                         <TextInputField
@@ -219,7 +228,7 @@ export const XpubScanScreen = ({
                 {isDevelopOrDebugEnv() && (
                     <DevXpub symbol={networkSymbol} onSelect={goToAccountImportScreen} />
                 )}
-            </Box>
+            </VStack>
             <XpubHintBottomSheet
                 networkType={networkType}
                 isVisible={isHintSheetVisible}

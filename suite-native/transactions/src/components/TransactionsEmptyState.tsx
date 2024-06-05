@@ -1,13 +1,13 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Box, Button, Card, Pictogram } from '@suite-native/atoms';
+import { Box, Button, Card, PictogramTitleHeader } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 const wrapperStyle = prepareNativeStyle(() => ({
     paddingHorizontal: 0,
@@ -30,7 +30,6 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.ReceiveModal>>();
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
 
     const handleReceive = () => {
         navigation.navigate(RootStackRoutes.ReceiveModal, { accountKey, closeActionType: 'back' });
@@ -40,7 +39,7 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
         <Box style={applyStyle(wrapperStyle)}>
             <Card style={applyStyle(cardStyle)}>
                 <Box marginBottom="large" alignItems="center">
-                    <Pictogram
+                    <PictogramTitleHeader
                         variant="green"
                         icon="stack"
                         title={<Translation id="transactions.emptyState.title" />}
@@ -48,8 +47,8 @@ export const TransactionsEmptyState = ({ accountKey }: { accountKey: string }) =
                     />
                 </Box>
                 <Box style={applyStyle(receiveButtonStyle)}>
-                    <Button iconLeft="receive" onPress={handleReceive} size="large">
-                        {translate('transactions.emptyState.button')}
+                    <Button viewLeft="receive" onPress={handleReceive} size="large">
+                        <Translation id="transactions.emptyState.button" />
                     </Button>
                 </Box>
             </Card>

@@ -38,8 +38,6 @@ export const StakeAmountWrapper = ({ children }: StakeAmountWrapperProps) => {
             delayShow={TOOLTIP_DELAY_NORMAL}
             delayHide={TOOLTIP_DELAY_NONE}
             placement="bottom"
-            interactive={false}
-            hideOnClick={false}
             content={<Translation id="TR_STAKE_STAKED_AMOUNT" />}
         >
             <Container onClick={goToStakingTab}>{children}</Container>

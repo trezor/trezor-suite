@@ -10,14 +10,14 @@ import {
     deviceActions,
     acquireDevice,
     authConfirm,
-    authorizeDevice,
-    createDeviceInstance,
+    authorizeDeviceThunk,
     forgetDisconnectedDevices,
     handleDeviceConnect,
     observeSelectedDevice,
     switchDuplicatedDevice,
     selectDeviceThunk,
     handleDeviceDisconnect,
+    createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
@@ -154,12 +154,7 @@ describe('Suite Actions', () => {
 
     fixtures.handleDeviceConnect.forEach(f => {
         it(`handleDeviceConnect: ${f.description}`, async () => {
-            const state = getInitialState(
-                f.state.suite,
-                f.state.device,
-                undefined,
-                f.state.firmware as FirmwareState,
-            );
+            const state = getInitialState(f.state.suite, f.state.device, undefined);
             const store = initStore(state);
             await store.dispatch(handleDeviceConnect(f.device));
             if (!f.result) {
@@ -242,7 +237,7 @@ describe('Suite Actions', () => {
         });
     });
 
-    fixtures.authorizeDevice.forEach(f => {
+    fixtures.authorizeDeviceActions.forEach(f => {
         it(`authorizeDevice: ${f.description}`, async () => {
             setTrezorConnectFixtures(f.getDeviceState);
             const state = getInitialState(undefined, {
@@ -250,11 +245,11 @@ describe('Suite Actions', () => {
                 devices: f.devicesState ?? [],
             });
             const store = initStore(state);
-            await store.dispatch(authorizeDevice());
+            await store.dispatch(authorizeDeviceThunk());
             if (!f.result) {
                 expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
             } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
+                const action = store.getActions().pop();
                 expect(action?.type).toEqual(f.result);
                 if (f.deviceReducerResult) {
                     const devices = selectDevices(store.getState());
@@ -289,13 +284,11 @@ describe('Suite Actions', () => {
             setTrezorConnectFixtures(f.applySettings);
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
-            await store.dispatch(createDeviceInstance({ device: f.state.device.selectedDevice }));
-            if (!f.result) {
-                expect(filterThunkActionTypes(store.getActions()).length).toEqual(0);
-            } else {
-                const action = filterThunkActionTypes(store.getActions()).pop();
-                expect(action?.type).toEqual(f.result);
-            }
+            await store.dispatch(
+                createDeviceInstanceThunk({ device: f.state.device.selectedDevice }),
+            );
+            const action = store.getActions().pop();
+            expect(action?.type).toEqual(f.result);
         });
     });
 

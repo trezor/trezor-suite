@@ -1,21 +1,19 @@
 import { isDevEnv } from '@suite-common/suite-utils';
+import { Button } from '@trezor/components';
 import { desktopApi } from '@trezor/suite-desktop-api';
 
 import { installUpdate, setUpdateWindow } from 'src/actions/suite/desktopUpdateActions';
+import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
     ActionColumn,
-    SectionItem,
     TextColumn,
     Translation,
     TrezorLink,
 } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { UpdateState } from 'src/reducers/suite/desktopUpdateReducer';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
-
-import { Button } from '@trezor/components';
 import { getReleaseUrl } from 'src/services/github';
 
 const getUpdateStateMessage = (state: UpdateState) => {
@@ -33,7 +31,6 @@ const getUpdateStateMessage = (state: UpdateState) => {
 export const VersionWithUpdate = () => {
     const desktopUpdate = useSelector(state => state.desktopUpdate);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.VersionWithUpdate);
 
     const checkForUpdates = () => desktopApi.checkForUpdates(true);
     const maximizeUpdater = () => dispatch(setUpdateWindow('maximized'));
@@ -42,11 +39,7 @@ export const VersionWithUpdate = () => {
     const appVersion = process.env.VERSION || '';
 
     return (
-        <SectionItem
-            data-test="@settings/version"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.VersionWithUpdate}>
             <TextColumn
                 title={<Translation id="TR_SUITE_VERSION" />}
                 description={
@@ -135,6 +128,6 @@ export const VersionWithUpdate = () => {
                     )}
                 </ActionColumn>
             )}
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

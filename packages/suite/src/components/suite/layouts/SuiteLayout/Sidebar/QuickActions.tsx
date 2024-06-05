@@ -16,7 +16,7 @@ import { useEnabledBackends } from '../utils';
 
 const Container = styled.div`
     display: flex;
-    border-top: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-top: 1px solid ${({ theme }) => theme.borderElevation1};
 `;
 
 const DescreetContainer = styled(NavigationItemBase)`

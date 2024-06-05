@@ -36,6 +36,21 @@ export const config = {
             label: 'MetaMask',
             icon: '',
         },
+        {
+            origin: 'bpcdaglidgnlggelgbjfagekoapjmccp',
+            label: 'Rainbow DEV',
+            icon: '',
+        },
+        {
+            origin: 'opfgelmcmbiajamepnmloijbpoleiama',
+            label: 'Rainbow',
+            icon: '',
+        },
+        {
+            origin: 'acmacodkjbdgmoleebolmdjonilkdbch',
+            label: 'Rabby',
+            icon: '',
+        },
         { origin: 'file://', label: ' ', icon: '' },
     ],
     onionDomains: {
@@ -66,6 +81,10 @@ export const config = {
             name: 'firmware-t2b1',
             url: './data/firmware/t2b1/releases.json',
         },
+        {
+            name: 'firmware-t3t1',
+            url: './data/firmware/t3t1/releases.json',
+        },
     ],
     messages: './data/messages/messages.json',
     supportedBrowsers: {
@@ -89,6 +108,18 @@ export const config = {
             download: 'https://www.mozilla.org/en-US/firefox/new/',
             update: 'https://support.mozilla.org/en-US/kb/update-firefox-latest-version',
         },
+        brave: {
+            // Chromium based
+            version: 59,
+            download: 'https://brave.com/download/',
+            update: 'https://brave.com/download/',
+        },
+        edge: {
+            // Since version 79, Edge is based on Chromium
+            version: 79,
+            download: 'https://www.microsoft.com/en-us/edge',
+            update: 'https://www.microsoft.com/en-us/edge',
+        },
     },
     supportedFirmware: [
         {
@@ -108,7 +139,7 @@ export const config = {
             ],
         },
         {
-            coin: ['eth', 'tsep', 'tgor', 'thol'],
+            coin: ['eth', 'tsep', 'thol'],
             min: { T1B1: '1.8.0', T2T1: '2.1.0' },
             comment: ['There were protobuf backwards incompatible changes.'],
         },
@@ -126,18 +157,18 @@ export const config = {
         },
         {
             methods: ['cardanoGetAddress', 'cardanoGetPublicKey'],
-            min: { T1B1: '0', T2T1: '2.3.2' },
-            comment: ['Shelley fork support since firmware 2.3.2'],
+            min: { T1B1: '0', T2T1: '2.4.3' },
+            comment: ['Since 2.4.3 Cardano derivation behavior has changed'],
         },
         {
             methods: ['cardanoSignTransaction'],
-            min: { T1B1: '0', T2T1: '2.4.2' },
-            comment: ['Non-streamed signing no longer supported'],
+            min: { T1B1: '0', T2T1: '2.6.0' },
+            comment: ['Before 2.6.0 not all Cardano transactions were supported'],
         },
         {
             methods: ['cardanoGetNativeScriptHash'],
             min: { T1B1: '0', T2T1: '2.4.3' },
-            comment: ['Cardano GetNativeScriptHash call added in 2.4.3'],
+            comment: ['Since 2.4.3 Cardano derivation behavior has changed'],
         },
         {
             methods: ['tezosSignTransaction'],
@@ -230,7 +261,7 @@ export const config = {
         },
         {
             methods: ['changeLanguage'],
-            min: { T1B1: '0', T2T1: '2.7.0', T2B1: '2.7.0' },
+            min: { T1B1: '0', T2T1: '2.7.0', T2B1: '2.7.0', T3T1: '2.7.1' },
         },
     ],
 };

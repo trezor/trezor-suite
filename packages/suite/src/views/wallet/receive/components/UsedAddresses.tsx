@@ -77,7 +77,7 @@ const HeaderItem = styled(GridItem)`
     position: sticky;
     top: 0;
     color: ${({ theme }) => theme.textSubdued};
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
     padding: 0 0 ${spacingsPx.sm};
 `;
 
@@ -263,7 +263,7 @@ export const UsedAddresses = ({
                             icon="ARROW_DOWN"
                             iconAlignment="right"
                             onClick={() => setLimit(limit + 20)}
-                            data-test={`@wallet/receive/used-address/show-more`}
+                            data-test="@wallet/receive/used-address/show-more"
                         >
                             <Translation id="TR_SHOW_MORE" />
                         </Button>

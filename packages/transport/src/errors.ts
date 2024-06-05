@@ -41,6 +41,10 @@ export const SESSION_WRONG_PREVIOUS = 'wrong previous session' as const;
  */
 export const SESSION_NOT_FOUND = 'session not found' as const;
 /**
+ * from sessions background. it needs to know about descriptor before it can perform certain actions (acquire)
+ */
+export const DESCRIPTOR_NOT_FOUND = 'descriptor not found' as const;
+/**
  * sessions background did not respond in time
  *
  * transports: webusb

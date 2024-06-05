@@ -6,6 +6,9 @@ import { Modal, Translation, TrezorLink } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectValidatorsQueueData } from '@suite-common/wallet-core';
+import { HELP_CENTER_ETH_STAKING } from '@trezor/urls';
+import { getDaysToAddToPoolInitial } from 'src/utils/suite/stake';
 
 const StyledModal = styled(Modal)`
     width: 500px;
@@ -27,7 +30,7 @@ const Flex = styled.div`
 
 const DividerWrapper = styled.div`
     & > div {
-        background: ${({ theme }) => theme.borderOnElevation1};
+        background: ${({ theme }) => theme.borderElevation2};
         margin: ${spacingsPx.lg} 0 ${spacingsPx.md} auto;
         max-width: 428px;
         width: 100%;
@@ -55,15 +58,25 @@ const ButtonsWrapper = styled.div`
 `;
 
 interface ConfirmStakeEthModalProps {
+    isLoading: boolean;
     onConfirm: () => void;
     onCancel: () => void;
 }
 
-export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthModalProps) => {
+export const ConfirmStakeEthModal = ({
+    isLoading,
+    onConfirm,
+    onCancel,
+}: ConfirmStakeEthModalProps) => {
     const theme = useTheme();
     const dispatch = useDispatch();
     const [hasAgreed, setHasAgreed] = useState(false);
     const account = useSelector(selectSelectedAccount);
+    const validatorsQueue = useSelector(state => selectValidatorsQueueData(state, account?.symbol));
+
+    const daysToAddToPoolInitial = getDaysToAddToPoolInitial(validatorsQueue);
+
+    const isDisabled = !hasAgreed || isLoading;
 
     const handleOnCancel = () => {
         onCancel();
@@ -83,7 +96,15 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
             <VStack>
                 <Flex>
                     <Icon icon="CLOCK" size={24} color={theme.iconAlertYellow} />
-                    <Translation id="TR_STAKE_ENTERING_POOL_MAY_TAKE" values={{ days: 35 }} />
+                    <Translation
+                        id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
+                        values={{
+                            days:
+                                daysToAddToPoolInitial === undefined
+                                    ? '30+'
+                                    : daysToAddToPoolInitial,
+                        }}
+                    />
                 </Flex>
                 <Flex>
                     <Icon icon="HAND" size={24} color={theme.iconAlertYellow} />
@@ -91,12 +112,15 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
                         id="TR_STAKE_ETH_WILL_BE_BLOCKED"
                         values={{
                             a: chunks => (
-                                // TODO: Add the right href
-                                <TrezorLink target="_blank" variant="underline" href="#">
+                                <TrezorLink
+                                    target="_blank"
+                                    variant="underline"
+                                    href={HELP_CENTER_ETH_STAKING}
+                                >
                                     {chunks}
                                 </TrezorLink>
                             ),
-                            symbol: account?.symbol,
+                            symbol: account?.symbol.toUpperCase(),
                         }}
                     />
                 </Flex>
@@ -114,7 +138,7 @@ export const ConfirmStakeEthModal = ({ onConfirm, onCancel }: ConfirmStakeEthMod
                 <Button variant="tertiary" onClick={handleOnCancel}>
                     <Translation id="TR_CANCEL" />
                 </Button>
-                <Button isDisabled={!hasAgreed} onClick={onClick}>
+                <Button isDisabled={isDisabled} onClick={onClick}>
                     <Translation id="TR_STAKE_CONFIRM_AND_STAKE" />
                 </Button>
             </ButtonsWrapper>

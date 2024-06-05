@@ -69,7 +69,8 @@ export class Store {
 
     public getBridgeSettings() {
         return this.store.get('bridgeSettings', {
-            startOnStartup: true,
+            doNotStartOnStartup: false,
+            legacy: false,
         });
     }
 

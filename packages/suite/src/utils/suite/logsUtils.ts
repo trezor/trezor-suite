@@ -3,6 +3,7 @@ import {
     discoveryActions,
     accountsActions,
     selectDevices,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import {
     getEnvironment,
@@ -122,7 +123,7 @@ export const redactAction = (action: LogEntry) => {
         };
     }
 
-    if (deviceActions.authDevice.match(action)) {
+    if (authorizeDeviceThunk.fulfilled.match(action)) {
         payload = {
             state: REDACTED_REPLACEMENT,
             ...redactDevice(action.payload.device),

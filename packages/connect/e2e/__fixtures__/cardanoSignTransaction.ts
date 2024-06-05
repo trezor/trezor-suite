@@ -6,6 +6,7 @@ const {
     CardanoAddressType,
     CardanoCVoteRegistrationFormat,
     CardanoCertificateType,
+    CardanoDRepType,
     CardanoTxOutputSerializationFormat,
     CardanoTxSigningMode,
 } = MessagesSchema;
@@ -225,6 +226,11 @@ const SAMPLE_CERTIFICATES = {
         type: CardanoCertificateType.STAKE_REGISTRATION,
         path: "m/1852'/1815'/0'/2/0",
     },
+    stake_registration_conway: {
+        type: CardanoCertificateType.STAKE_REGISTRATION_CONWAY,
+        path: "m/1852'/1815'/0'/2/0",
+        deposit: '2000000',
+    },
     stake_registration_script: {
         type: CardanoCertificateType.STAKE_REGISTRATION,
         scriptHash: '29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd',
@@ -232,6 +238,11 @@ const SAMPLE_CERTIFICATES = {
     stake_deregistration: {
         type: CardanoCertificateType.STAKE_DEREGISTRATION,
         path: "m/1852'/1815'/0'/2/0",
+    },
+    stake_deregistration_conway: {
+        type: CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY,
+        path: "m/1852'/1815'/0'/2/0",
+        deposit: '2000000',
     },
     stake_deregistration_script: {
         type: CardanoCertificateType.STAKE_DEREGISTRATION,
@@ -327,6 +338,36 @@ const SAMPLE_CERTIFICATES = {
             metadata: null,
         },
     },
+    vote_delegation_key_hash: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.KEY_HASH,
+            keyHash: '3a7f09d3df4cf66a7399c2b05bfa234d5a29560c311fc5db4c490711',
+        },
+    },
+    vote_delegation_script: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.SCRIPT_HASH,
+            scriptHash: '29fb5fd4aa8cadd6705acc8263cee0fc62edca5ac38db593fec2f9fd',
+        },
+    },
+    vote_delegation_abstain: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.ABSTAIN,
+        },
+    },
+    vote_delegation_no_confidence: {
+        type: CardanoCertificateType.VOTE_DELEGATION,
+        path: "m/1852'/1815'/0'/2/0",
+        dRep: {
+            type: CardanoDRepType.NO_CONFIDENCE,
+        },
+    },
 };
 
 const SAMPLE_WITHDRAWALS = {
@@ -397,36 +438,10 @@ const SCRIPT_DATA_HASH = 'd593fd793c377ac50a3169bb8378ffc257c944da31aa8f355dfa5a
 const TOTAL_COLLATERAL = '1000';
 
 const legacyResults = {
-    beforeTransactionStreaming: {
-        // FW without transaction streaming is no longer supported by Connect
-        rules: ['<2.4.2', '1'],
-        success: false,
-    },
-    beforeMultisig: {
-        // older FW doesn't support multisig
-        rules: ['<2.4.3', '1'],
-        payload: false,
-    },
-    beforePlutus: {
-        // older FW doesn't support plutus-related features (OutputDatumHash, ScriptDataHash,
-        // Plutus, KeyHashStakeCredential)
-        rules: ['<2.4.4', '1'],
-        payload: false,
-    },
-    beforeBabbage: {
-        // older FW doesn't support babbage-related features (inlineDatum, referenceScript, collateralReturn,
-        // totalCollateral, referenceInputs)
-        rules: ['<2.5.2', '1'],
-        payload: false,
-    },
-    beforeCIP36Registration: {
-        // older FW doesn't support CIP36 registration format
-        rules: ['<2.5.3', '1'],
-        payload: false,
-    },
-    beforeCIP36RegistrationExternalPaymentAddress: {
-        // older FW doesn't support payment address given as a string in vote key registrations
-        rules: ['<2.5.4', '1'],
+    // FW <2.6.0 is not supported by Connect at all
+    beforeConway: {
+        // older FW doesn't support Conway certificates
+        rules: ['<2.7.1', '1'],
         payload: false,
     },
 };
@@ -462,7 +477,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -490,7 +504,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -520,7 +533,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -550,7 +562,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -580,7 +591,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -610,7 +620,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -638,7 +647,78 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
+        },
+
+        {
+            description: 'signStakeRegistrationConway',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.stake_registration_conway],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+                tagCborSets: false,
+            },
+            result: {
+                hash: 'e200b2c91f3493a1f3b9cfc8b6c141f70181741025e53941e9d57d22b1470c5c',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '79a357517a08c7256b0fab1e93a92a477386f4c2d72cea7bc68527c0133c32472305f010350665d72e8017bb6c2080b5742680ce7700bbddda561c917f294a07',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            'dca542910d0362fc22744e7a24732343db4e013495a7d9b47562886f09af8eb56ecaa105e20a9df3e4248fdab61dd91b6fb2a3bfc15d0d9a0442671c07e1ba02',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signStakeRegistrationConwayWith258TaggedSets',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.stake_registration_conway],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+                tagCborSets: true,
+            },
+            result: {
+                hash: '5e27f8fba938603411452a8cb373462fb64305539573b7a9edc9155be5cd6473',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '13c136487d8048ab7bbb081a324aa6b999e0b3237f956503b5446a4c409ec1062091b82e9e5459dee7ab0ba67ed874692d788872c8bbdb5ad4a3975c465fea09',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            'f0674db7194d8e04d7df416af8ad9dcf1b1203ca4b78f14c1e394d47418c8f7e95fd41a8f01c43eeeb39df6264359c865a41621fc1e6b540819b25c7c4df5803',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
         },
 
         {
@@ -666,7 +746,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -704,7 +783,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -739,7 +817,41 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
+        },
+
+        {
+            description: 'signStakeDeregistrationConway',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.stake_deregistration_conway],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '564ad55097101e1ca85629cffe839f43a19bf33aa1940c99a62eb8f14392eebb',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'a0fa6630498f57249b305824ad4d32157653820e7d651332a58af70a80364df882ee8b0471e76dd7a335eea84a18c52b12c02508779d46b193bc418c22e8a00f',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '5d282fcd2685ee47f3770f84b2badf4046e8e76bfdaa26f74e292ecd16bcf89fb330b99edff13bc9c81e8c6523864f69a3ac7cde29d5a648707724c5cb48730e',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
         },
 
         {
@@ -775,7 +887,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -839,7 +950,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -884,7 +994,6 @@ export default {
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -929,7 +1038,6 @@ export default {
                         'ed3335aead65c665ceee21f2549c0ef4c9137b94c13fa642bea4a2c24e44e7f1ee06b47e14151efcf8d5569a404260c01f277b3ba516b5826a15c8ba2c97f70c',
                 },
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -986,7 +1094,6 @@ export default {
                         '2671b8e668ffce235647ac89deda6cc222e7b31a3d44606c2723fcf711b29f9af1e30b0c6b4f87ba37ddf9f6adf0226c39c09e655255890644a3dc4e64c3a001',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
@@ -1039,7 +1146,6 @@ export default {
                         'ebc00c615f988c6fc2e132d4419a719f04bbec56fe2569a00746a9e9b0d6e5bdd0809515cb2522c773c991c5ae39834403654d36b37e70b14897c0e98c8c0a0c',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
@@ -1088,7 +1194,6 @@ export default {
                         'ba05ac525e5dcc74e5a6cdbb7fb111d8e21163d79fe76777a5b730fe93512f09415f6f7b4904b12c6f12fe33b6c553d9889beb024299fa1256a0d3e98c8ff203',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36RegistrationExternalPaymentAddress],
         },
 
         {
@@ -1115,7 +1220,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1143,7 +1247,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1175,7 +1278,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1203,7 +1305,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
         },
 
         {
@@ -1231,7 +1332,146 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeTransactionStreaming],
+        },
+
+        {
+            description: 'signVoteDelegationKeyHash',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_key_hash],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '154e0164e1d06e11a569054309b02a2926c5af1de7832473120a96465713bdc5',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '2bd248ab6172b1757bd28573a36839a08e189d032a34f0ecaafa421b31c76af2f1f48ecb9c12c4a225d52873f7390938ab442842c55f1196f6213e4e971e6903',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '4b4f43f599eb55b2a9489c6696d6d0812fd02bba1d0d4b2d68b2db8f1641e6cfdcfc1bc602428543a37abd981e0e3ba28516c2617396ec7675b361e3eb0bde0e',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signVoteDelegationScript',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_script],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: 'fccf753e4f96e20c880e5ea933041ed33509ec6c0dc1aee8b25a1fe3d562b7aa',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'bde0242fee0de5b862d2f02847d789ebe10e8f82bf15837370f115c89c1b413f1b0fa5a470210127af92059c4d3ebff297d39e93143667d3823476f12f0f6f07',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            'cd8a2fca634c1aa2c88609042de7e4fce232bf233b1271612b5edc7b806e11ff44e6b6b15feb5b6e76b7e16a8d703e7653d860c00981edf6fe3b1e4cbeaba406',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signVoteDelegationAbstain',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_abstain],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '01d0f76fadc899087c5352befac56cbfdc2e868ac715fbfe00230bab3f7fa751',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '52c57d9c0e06fc9883285db4eec1a1504e27726dc5afce943d6f54df22188f05c3eeee06d052375eceb55df83c314237b3718f07fccef6198bda8c20d794b102',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '6de4940ff99738aaf3659ffeb8e4f6f01ff88ddb65c24028d75a847ca684d07af000e32eaa4c915c8031f6d928b2bcbe8c6f57e389299d3eafe213bd0ab1190c',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
+        },
+
+        {
+            description: 'signVoteDelegationNoConfidence',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                certificates: [SAMPLE_CERTIFICATES.vote_delegation_no_confidence],
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.ORDINARY_TRANSACTION,
+            },
+            result: {
+                hash: '567e9bd00787190f1ab51879dcf834002b76007130c526b2e4d1bf9a996f5ad0',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            '20e3f9ecc3a1b97cbda08cf610b2e72b45d0e0916af2be2ad472d4c8d2be4b13818497818961c8d27379754f0057b00fa286bce0d59f177f24eeee4e2b24940f',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'bc65be1b0b9d7531778a1317c2aa6de936963c3f9ac7d5ee9e9eda25e0c97c5e',
+                        signature:
+                            '898fb2cef0c4b954f22c4218fc9a188a5da340ddb5c6d5bba01c67520bbf537f5743814b6d40dd7f299ece7e39d7efb16a1cb597e8d421649a9483f631371703',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
         },
 
         {
@@ -1258,13 +1498,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support validity interval start
-                    rules: ['<2.3.5', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1290,13 +1523,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support multiasset outputs
-                    rules: ['<2.3.5', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1333,13 +1559,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support token minting
-                    rules: ['<2.4.3', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1376,7 +1595,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1405,7 +1623,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1444,7 +1661,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1480,7 +1696,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1517,7 +1732,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeMultisig],
         },
 
         {
@@ -1579,7 +1793,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1609,13 +1822,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support a zero ttl
-                    rules: ['<2.4.2', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1646,13 +1852,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support a zero validityIntervalStart
-                    rules: ['<2.4.2', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1839,7 +2038,6 @@ export default {
                         '3064949c9f186138f95e228075d0119dd5cb50e1b7e75d24d569fa547e018a597615da7c79a39ca8e394ee1ba8acb83e70be80f37e69aef3b86e7c4a6bd44903',
                 },
             },
-            legacyResults: [legacyResults.beforeCIP36Registration],
         },
 
         {
@@ -1868,13 +2066,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [
-                {
-                    // older FW doesn't support network id in tx body
-                    rules: ['<2.4.4', '1'],
-                    payload: false,
-                },
-            ],
         },
 
         {
@@ -1906,7 +2097,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1952,7 +2142,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -1990,7 +2179,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2038,7 +2226,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2083,7 +2270,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2129,7 +2315,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2182,7 +2367,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2228,7 +2412,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2276,7 +2459,56 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
+        },
+
+        {
+            description: 'plutusWithRequiredSignersAndReferenceInputAnd258TaggedSets',
+            params: {
+                inputs: [SAMPLE_INPUTS.shelley_input],
+                outputs: [SAMPLE_OUTPUTS.simple_shelley_output],
+                fee: FEE,
+                ttl: TTL,
+                protocolMagic: PROTOCOL_MAGICS.mainnet,
+                networkId: NETWORK_IDS.mainnet,
+                signingMode: CardanoTxSigningMode.PLUTUS_TRANSACTION,
+                scriptDataHash: SCRIPT_DATA_HASH,
+                collateralInputs: [SAMPLE_INPUTS.shelley_input_2],
+                requiredSigners: [
+                    { keyPath: "m/1852'/1815'/0'/0/0" },
+                    { keyPath: "m/1854'/1815'/0'/0/0" },
+                    { keyHash: '3a7f09d3df4cf66a7399c2b05bfa234d5a29560c311fc5db4c490711' },
+                ],
+                referenceInput: [SAMPLE_INPUTS.plutus_input],
+                tagCborSets: true,
+            },
+            result: {
+                hash: 'eee852948723773f059bbbc9f4378473e339a62ec518ac3aeb8ecdf27abf8581',
+                witnesses: [
+                    {
+                        type: 1,
+                        pubKey: '5d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c1',
+                        signature:
+                            'ccf25b4926d4ea953f9330196f881ec6974b3979a05fd679e846eb0fd90f5e5d64cdba51fad9354a50343a29c09dfda8177fd1717ca8d105c9d923a31071b909',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: '36a8ef21d5b98fdf23a27325cf643deaac35e912c835e35037f23d1061ae5b16',
+                        signature:
+                            '39231ff0df125987c5a7583f307d74d3bdcb9702baafc8588aa16002d19d595725da64518603bb0617bfba851fe96f0cf75c19d75b0749443e09fdc8aebb4603',
+                        chainCode: null,
+                    },
+                    {
+                        type: 1,
+                        pubKey: 'b10be5c0d11ad8292bbe69e220ca0cfbe154610b3041a8e72f9d515c226ab3b1',
+                        signature:
+                            'e78e5a21c07ed5f613d01d20f9684a3b807b30ca211f69a2a0391ab3137d3b1260c51bdf08079e213e2487f3b8c36d6b42d7d15733113cf725ca3f162f030001',
+                        chainCode: null,
+                    },
+                ],
+                auxiliaryDataSupplement: undefined,
+            },
+            legacyResults: [legacyResults.beforeConway],
         },
 
         {
@@ -2355,7 +2587,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforePlutus],
         },
 
         {
@@ -2382,7 +2613,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2417,7 +2647,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2453,7 +2682,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2519,7 +2747,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2546,7 +2773,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2573,7 +2799,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2624,7 +2849,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
 
         {
@@ -2673,7 +2897,6 @@ export default {
                 ],
                 auxiliaryDataSupplement: undefined,
             },
-            legacyResults: [legacyResults.beforeBabbage],
         },
     ],
 };

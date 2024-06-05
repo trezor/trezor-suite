@@ -1,15 +1,13 @@
 import { useCallback } from 'react';
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
-import {
-    signSendFormTransactionThunk,
-    composeSendFormTransactionThunk,
-} from 'src/actions/wallet/send/sendFormThunks';
+import { signAndPushSendFormTransactionThunk } from 'src/actions/wallet/send/sendFormThunks';
 
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { DEFAULT_VALUES, DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { FormState, UseSendFormState } from 'src/types/wallet/sendForm';
+import { FormState, UseSendFormState } from '@suite-common/wallet-types';
 import { getFeeLevels } from '@suite-common/wallet-utils';
 import type { FormOptions, SelectedAccountLoaded } from '@suite-common/wallet-types';
+import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
 
 export const useCoinmarketRecomposeAndSign = () => {
     const { translationString } = useTranslation();
@@ -125,14 +123,14 @@ export const useCoinmarketRecomposeAndSign = () => {
 
                 return;
             }
-            const composedToSign = composedLevels[selectedFee];
+            const precomposedToSign = composedLevels[selectedFee];
 
-            if (!composedToSign || composedToSign.type !== 'final') {
+            if (!precomposedToSign || precomposedToSign.type !== 'final') {
                 let errorMessage: string | undefined;
-                if (composedToSign?.type === 'error' && composedToSign.errorMessage) {
+                if (precomposedToSign?.type === 'error' && precomposedToSign.errorMessage) {
                     errorMessage = translationString(
-                        composedToSign.errorMessage.id,
-                        composedToSign.errorMessage.values as { [key: string]: any },
+                        precomposedToSign.errorMessage.id,
+                        precomposedToSign.errorMessage.values as { [key: string]: any },
                     );
                 }
                 if (!errorMessage) {
@@ -149,7 +147,11 @@ export const useCoinmarketRecomposeAndSign = () => {
             }
 
             return dispatch(
-                signSendFormTransactionThunk({ formValues, transactionInfo: composedToSign }),
+                signAndPushSendFormTransactionThunk({
+                    formValues,
+                    precomposedTransaction: precomposedToSign,
+                    selectedAccount: account,
+                }),
             ).unwrap();
         },
         [composed, dispatch, fees, selectedFee, translationString],

@@ -46,6 +46,8 @@ export const UnexpectedDeviceState = ({
                                     default: 'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_BUTTON',
                                     [DeviceModelInternal.T2T1]:
                                         'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
+                                    [DeviceModelInternal.T3T1]:
+                                        'FIRMWARE_CONNECT_IN_NORMAL_MODEL_NO_TOUCH',
                                 })}
                             />
                         ),

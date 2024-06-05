@@ -40,9 +40,14 @@ export class DataManager {
         });
 
         // parse firmware definitions
-        parseFirmware(this.assets['firmware-t1b1'], DeviceModelInternal.T1B1);
-        parseFirmware(this.assets['firmware-t2t1'], DeviceModelInternal.T2T1);
-        parseFirmware(this.assets['firmware-t2b1'], DeviceModelInternal.T2B1);
+        for (const model in DeviceModelInternal) {
+            const firmwareKey = `firmware-${model.toLowerCase()}`;
+            const modelType = DeviceModelInternal[model as keyof typeof DeviceModelInternal];
+            // Check if the firmware data exists for this model
+            if (this.assets[firmwareKey]) {
+                parseFirmware(this.assets[firmwareKey], modelType);
+            }
+        }
     }
 
     static getProtobufMessages() {

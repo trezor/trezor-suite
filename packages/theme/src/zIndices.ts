@@ -18,5 +18,5 @@ export const zIndices = {
 } as const;
 
 export type ZIndex = keyof typeof zIndices;
-
 export type ZIndices = typeof zIndices;
+export type ZIndexValues = ZIndices[ZIndex];

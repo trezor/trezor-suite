@@ -1,0 +1,113 @@
+import { Callout } from 'nextra/components';
+
+import { GetOwnershipId } from '@trezor/connect/src/types/api/getOwnershipId';
+import { Bundle } from '@trezor/connect/src/types';
+
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground
+    options={[
+        { title: 'Advanced schema', method: 'getOwnershipId', schema: GetOwnershipId },
+        {
+            title: 'Advanced bundle',
+            method: 'getOwnershipId',
+            schema: Bundle(GetOwnershipId),
+        },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `5`. [read more](/details/path)',
+    coin: '',
+    scriptType: '',
+    multisig: '',
+    bundle: 'of Objects with fields listed above.',
+};
+
+## Bitcoin: get Ownership identifier
+
+Export SLIP-0019 ownership identifier. [Read more](https://github.com/satoshilabs/slips/blob/master/slip-0019.md#ownership-identifier)
+
+```javascript
+const result = await TrezorConnect.getOwnershipId(params);
+```
+
+<Callout type="info">**Supported only by T2T1 with Firmware 2.4.4 or higher!**</Callout>
+
+### Params
+
+<CommonParamsLink />
+
+#### GetOwnershipId
+
+<ParamsTable schema={GetOwnershipId} descriptions={paramDescriptions} />
+
+#### Bundle(GetOwnershipId)
+
+<Param name="bundle" type="`Array` of Objects with above schema" />
+
+### Example
+
+Display id of the first bitcoin address:
+
+```javascript
+TrezorConnect.getOwnershipId({
+    path: "m/86'/0'/0'/0/0",
+});
+```
+
+Return a bundle of ids:
+
+```javascript
+TrezorConnect.getOwnershipId({
+    bundle: [
+        { path: "m/86'/0'/0'/0/0" }, // taproot
+        { path: "m/84'/0'/0'/0/0" }, // bech32
+        { path: "m/49'/0'/0'/0/0" }, // segwit
+    ],
+});
+```
+
+### Result
+
+[OwnershipId type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/api/getOwnershipId.ts)
+
+Result with single id:
+
+```javascript
+{
+    success: true,
+    payload: {
+        ownership_id: string,
+        path: number[],
+        serializedPath: string
+    }
+}
+```
+
+Result with bundle of ids sorted by FIFO
+
+```javascript
+{
+    success: true,
+    payload: [
+        { ownership_id: string, path: number[], serializedPath: string }, // taproot
+        { ownership_id: string, path: number[], serializedPath: string }, // bech32
+        { ownership_id: string, path: number[], serializedPath: string }  // segwit
+    ]
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

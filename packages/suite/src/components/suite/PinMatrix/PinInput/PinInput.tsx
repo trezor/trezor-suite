@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
-import { Button, PinButton, KEYBOARD_CODE } from '@trezor/components';
-import { Translation } from 'src/components/suite';
 import { formInputsMaxLength } from '@suite-common/validators';
+import { Button, KEYBOARD_CODE, PinButton } from '@trezor/components';
+import { Translation } from 'src/components/suite';
+import { usePin } from 'src/hooks/suite/usePinModal';
 import { InputPin } from './InputPin';
 
 const Wrapper = styled.div`
@@ -51,6 +52,17 @@ interface PinInputProps {
 
 export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
     const [pin, setPin] = useState('');
+    const { isWipeCode } = usePin();
+    const getTranslationId = () => {
+        if (isSubmitting) {
+            return 'TR_VERIFYING_PIN';
+        }
+        if (isWipeCode) {
+            return 'TR_ENTER_WIPECODE';
+        }
+
+        return 'TR_ENTER_PIN';
+    };
 
     const onPinBackspace = useCallback(() => {
         setPin(prevPin => prevPin.substring(0, prevPin.length - 1));
@@ -206,11 +218,7 @@ export const PinInput = ({ isSubmitting, onPinSubmit }: PinInputProps) => {
                     onClick={submit}
                     data-test="@pin/submit-button"
                 >
-                    {isSubmitting ? (
-                        <Translation id="TR_VERIFYING_PIN" />
-                    ) : (
-                        <Translation id="TR_ENTER_PIN" />
-                    )}
+                    <Translation id={getTranslationId()} />
                 </Button>
             </PinFooter>
         </Wrapper>

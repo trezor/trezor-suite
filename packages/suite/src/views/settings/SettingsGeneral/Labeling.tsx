@@ -2,18 +2,17 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { LoadingContent, Switch, Tooltip } from '@trezor/components';
 import { HELP_CENTER_LABELING } from '@trezor/urls';
 
-import { ActionColumn, SectionItem, TextColumn, Translation } from 'src/components/suite';
+import { ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { useSelector, useDispatch, useDevice, useDiscovery } from 'src/hooks/suite';
 import * as metadataActions from 'src/actions/suite/metadataActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
+import { SettingsSectionItem } from 'src/components/settings';
 
 export const Labeling = () => {
     const metadata = useSelector(state => state.metadata);
 
     const { device, isLocked } = useDevice();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.Labeling);
     const dispatch = useDispatch();
     const { isDiscoveryRunning } = useDiscovery();
 
@@ -44,11 +43,7 @@ export const Labeling = () => {
     const isDisabled = isLocked() || device?.mode !== 'normal';
 
     return (
-        <SectionItem
-            data-test="@settings/metadata"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.Labeling}>
             <TextColumn
                 title={
                     <LoadingContent isLoading={metadata.initiating} isSuccessful={metadata.enabled}>
@@ -76,6 +71,6 @@ export const Labeling = () => {
                     />
                 </Tooltip>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

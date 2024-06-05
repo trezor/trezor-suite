@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 
 import { VStack, Text } from '@suite-native/atoms';
 
 type ReceiveAddressBottomSheetHeaderProps = {
-    title: string;
-    description: string;
+    title: ReactNode;
+    description: ReactNode;
 };
 
 export const ReceiveAddressBottomSheetHeader = ({

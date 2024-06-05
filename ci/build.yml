@@ -58,7 +58,10 @@ suite-web build stable codesign:
     - . /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh || true # loads nix-shell
     - nix-shell --option system x86_64-darwin --run "git lfs pull"
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
-    - nix-shell --option system x86_64-darwin --run "yarn build:libs"
+    - nix-shell --option system x86_64-darwin --run "yarn message-system-sign-config"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data build:lib"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/connect-iframe build:lib"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/connect-web build"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-web build"
   artifacts:
     expire_in: 7 days
@@ -74,6 +77,7 @@ suite-web build stable codesign:
   script:
     - apt-get update && apt-get install -y libudev-dev # required for rebuilding usb native module
     - yarn install --immutable
+    - yarn workspace @trezor/transport-bridge build:lib
     - yarn workspace @trezor/suite-desktop build:${platform}
     - ls -la packages/suite-desktop/build-electron
     - mv packages/suite-desktop/build-electron/* .
@@ -91,6 +95,7 @@ suite-web build stable codesign:
     - nix-shell --option system x86_64-darwin --run "yarn install --immutable"
     - nix-shell --option system x86_64-darwin --run "yarn message-system-sign-config"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-data build:lib"
+    - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/transport-bridge build:lib"
     - nix-shell --option system x86_64-darwin --run "yarn workspace @trezor/suite-desktop build:${platform}"
     - nix-shell --option system x86_64-darwin --run "bash packages/suite-desktop-core/scripts/gnupg-sign.sh"
     - ls -la packages/suite-desktop/build-electron
@@ -228,7 +233,11 @@ suite-desktop build windows codesign:
   interruptible: true
   script:
     - yarn install --immutable
-    - __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/ yarn workspace @trezor/connect-explorer build
+    - NODE_ENV=production
+      __TREZOR_CONNECT_SRC=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}/
+      CONNECT_EXPLORER_ASSET_PREFIX=https://suite.corp.sldev.cz/connect/${CI_COMMIT_REF_NAME}
+      CONNECT_EXPLORER_BASE_PATH=/connect/${CI_COMMIT_REF_NAME}
+      yarn workspace @trezor/connect-explorer build
   artifacts:
     expire_in: 7 days
     paths:
@@ -255,7 +264,7 @@ suite-desktop build windows codesign:
     - yarn workspace @trezor/connect-webextension build
     - node ./packages/connect-examples/update-webextensions-sw.js
     # build webextension inside package @trezor/connect-explorer package
-    - yarn workspace @trezor/connect-explorer build:webextension
+    - NODE_ENV=production yarn workspace @trezor/connect-explorer build:webextension
 
   artifacts:
     expire_in: 14 days

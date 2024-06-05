@@ -1,5 +1,4 @@
-import BigNumber from 'bignumber.js';
-
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountTransaction, AccountInfo } from '@trezor/connect';
 

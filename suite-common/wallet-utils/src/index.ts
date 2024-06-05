@@ -4,7 +4,6 @@ export * from './balanceUtils';
 export * from './cardanoUtils';
 export * from './csvParserUtils';
 export * from './ethUtils';
-export * from './exportTransactionsUtils';
 export * from './fiatConverterUtils';
 export * from './fiatRatesUtils';
 export * from './formDraftUtils';
@@ -13,8 +12,10 @@ export * from './localizePercentage';
 export * from './networkUtils';
 export * from './sendFormUtils';
 export * from './settingsUtils';
+export * from './solanaUtils';
 export * from './transactionUtils';
 export * from './validationUtils';
 export * from './antiFraud';
+export * from './stakingUtils';
 
 export { analyzeTransactions as analyzeTransactionsFixtures } from './__fixtures__/transactionUtils';

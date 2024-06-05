@@ -22,6 +22,8 @@ export type SuiteNativeAnalyticsEvent =
               theme: string;
               loadDuration: number;
               isBiometricsEnabled: boolean;
+              rememberedStandardWallets: number;
+              rememberedHiddenWallets: number;
           };
       }
     | {
@@ -172,11 +174,20 @@ export type SuiteNativeAnalyticsEvent =
           };
       }
     | {
+          type: EventType.DiscoveryDuration;
+          payload: {
+              discoveryId: string; // Used for grouping multiple events of a single discovery run together.
+              loadDuration: number;
+          };
+      }
+    | {
           type: EventType.CoinDiscovery;
           payload: {
-              loadDuration: number;
-          } & {
-              [key in NetworkSymbol]: number;
+              discoveryId: string;
+              symbol: NetworkSymbol;
+              numberOfAccounts: number;
+              tokenSymbols?: TokenSymbol[];
+              tokenAddresses?: TokenAddress[];
           };
       }
     | {
@@ -186,4 +197,12 @@ export type SuiteNativeAnalyticsEvent =
               path: string;
               type: AccountType;
           };
+      }
+    | {
+          type: EventType.ViewOnlyChange;
+          payload: { enabled: boolean; origin: 'bottomSheet' | 'settingsToggle' };
+      }
+    | {
+          type: EventType.ViewOnlySkipped;
+          payload: { action: 'button' | 'close' };
       };

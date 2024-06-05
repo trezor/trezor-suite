@@ -177,4 +177,7 @@ export type UserContextPayload =
       }
     | {
           type: 'claim';
+      }
+    | {
+          type: 'everstake';
       };

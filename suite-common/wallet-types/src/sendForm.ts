@@ -4,7 +4,7 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 import { Network, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountUtxo, FeeLevel, PROTO } from '@trezor/connect';
 
-import { Account } from './account';
+import { Account, AccountKey } from './account';
 import {
     CurrencyOption,
     FeeInfo,
@@ -12,6 +12,7 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     RbfTransactionParams,
+    WalletAccountTransaction,
 } from './transaction';
 import { Rate } from './fiatRates';
 
@@ -47,7 +48,7 @@ export interface FormState {
     selectedUtxos: AccountUtxo[];
 }
 
-export type FormSignedTx = { tx: string; coin: NetworkSymbol };
+export type SerializedTx = { tx: string; coin: NetworkSymbol };
 
 export type ExcludedUtxos = Record<string, 'low-anonymity' | 'dust' | undefined>;
 
@@ -128,3 +129,11 @@ export type SendContextValues<TFormValues extends FormState = FormState> =
             // UTXO selection
             utxoSelection: UtxoSelectionContext;
         };
+
+export type RbfLabelsToBeUpdated = Record<
+    AccountKey,
+    {
+        toBeMoved: WalletAccountTransaction;
+        toBeDeleted: WalletAccountTransaction[];
+    }
+>;

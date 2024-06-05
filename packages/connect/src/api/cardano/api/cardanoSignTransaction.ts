@@ -37,19 +37,9 @@ import type { AssetGroupWithTokens } from '../cardanoTokenBundle';
 import { tokenBundleToProto } from '../cardanoTokenBundle';
 import { AssertWeak, Type } from '@trezor/schema-utils';
 
-// todo: remove when listed firmwares become mandatory for cardanoSignTransaction
 const CardanoSignTransactionFeatures = Object.freeze({
-    TransactionStreaming: ['0', '2.4.2'],
-    TokenMinting: ['0', '2.4.3'],
-    Multisig: ['0', '2.4.3'],
-    NetworkIdInTxBody: ['0', '2.4.4'],
-    OutputDatumHash: ['0', '2.4.4'],
-    ScriptDataHash: ['0', '2.4.4'],
-    Plutus: ['0', '2.4.4'],
-    KeyHashStakeCredential: ['0', '2.4.4'],
-    Babbage: ['0', '2.5.2'],
-    CIP36Registration: ['0', '2.5.3'],
-    CIP36RegistrationExternalPaymentAddress: ['0', '2.5.4'],
+    // FW <2.6.0 is not supported by Connect at all
+    Conway: ['0', '2.7.1'],
 });
 
 export type CardanoSignTransactionParams = {
@@ -75,6 +65,7 @@ export type CardanoSignTransactionParams = {
     additionalWitnessRequests: Path[];
     derivationType: PROTO.CardanoDerivationType;
     includeNetworkId?: boolean;
+    tagCborSets?: boolean;
     unsignedTx?: { body: string; hash: string };
     testnet?: boolean;
     chunkify?: boolean;
@@ -233,6 +224,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
                     ? payload.derivationType
                     : PROTO.CardanoDerivationType.ICARUS_TREZOR,
             includeNetworkId: payload.includeNetworkId,
+            tagCborSets: payload.tagCborSets,
             unsignedTx: 'unsignedTx' in payload ? payload.unsignedTx : undefined,
             testnet: 'testnet' in payload ? payload.testnet : undefined,
             chunkify: typeof payload.chunkify === 'boolean' ? payload.chunkify : false,
@@ -259,90 +251,18 @@ export default class CardanoSignTransaction extends AbstractMethod<
     _ensureFirmwareSupportsParams() {
         const { params } = this;
 
-        // we no longer support non-streamed signing
-        this._ensureFeatureIsSupported('TransactionStreaming');
-
         params.certificatesWithPoolOwnersAndRelays.forEach(({ certificate }) => {
-            if (certificate.key_hash) {
-                this._ensureFeatureIsSupported('KeyHashStakeCredential');
-            }
-        });
-
-        params.outputsWithData.forEach(({ output }) => {
-            if (output.datum_hash) {
-                this._ensureFeatureIsSupported('OutputDatumHash');
-            }
-        });
-
-        params.withdrawals.forEach(withdrawal => {
-            if (withdrawal.key_hash) {
-                this._ensureFeatureIsSupported('KeyHashStakeCredential');
-            }
-        });
-
-        if (params.mint.length > 0) {
-            this._ensureFeatureIsSupported('TokenMinting');
-        }
-
-        if (
-            params.additionalWitnessRequests.length > 0 ||
-            params.signingMode === PROTO.CardanoTxSigningMode.MULTISIG_TRANSACTION
-        ) {
-            this._ensureFeatureIsSupported('Multisig');
-        }
-
-        if (params.includeNetworkId) {
-            this._ensureFeatureIsSupported('NetworkIdInTxBody');
-        }
-
-        if (params.scriptDataHash) {
-            this._ensureFeatureIsSupported('ScriptDataHash');
-        }
-
-        if (params.signingMode === PROTO.CardanoTxSigningMode.PLUTUS_TRANSACTION) {
-            this._ensureFeatureIsSupported('Plutus');
-        }
-
-        params.outputsWithData.forEach(({ output, inlineDatum, referenceScript }) => {
             if (
-                output.format === PROTO.CardanoTxOutputSerializationFormat.MAP_BABBAGE ||
-                inlineDatum ||
-                referenceScript
+                certificate.type === PROTO.CardanoCertificateType.STAKE_REGISTRATION_CONWAY ||
+                certificate.type === PROTO.CardanoCertificateType.STAKE_DEREGISTRATION_CONWAY ||
+                certificate.type === PROTO.CardanoCertificateType.VOTE_DELEGATION
             ) {
-                this._ensureFeatureIsSupported('Babbage');
+                this._ensureFeatureIsSupported('Conway');
             }
         });
 
-        if (
-            params.collateralReturnWithData ||
-            params.totalCollateral != null ||
-            params.referenceInputs.length > 0
-        ) {
-            this._ensureFeatureIsSupported('Babbage');
-        }
-
-        if (
-            params.requiredSigners.length > 0 &&
-            params.signingMode !== PROTO.CardanoTxSigningMode.PLUTUS_TRANSACTION
-        ) {
-            // Trezor Firmware allowed requiredSigners in non-Plutus txs with the Babbage update
-            this._ensureFeatureIsSupported('Babbage');
-        }
-
-        if (params.auxiliaryData?.cvote_registration_parameters) {
-            const { format, delegations, voting_purpose, payment_address } =
-                params.auxiliaryData.cvote_registration_parameters;
-            if (
-                format === PROTO.CardanoCVoteRegistrationFormat.CIP36 ||
-                delegations?.length ||
-                voting_purpose != null
-            ) {
-                this._ensureFeatureIsSupported('CIP36Registration');
-            }
-
-            if (payment_address) {
-                this._ensureFeatureIsSupported('CIP36RegistrationExternalPaymentAddress');
-            }
+        if (params.tagCborSets) {
+            this._ensureFeatureIsSupported('Conway');
         }
     }
 
@@ -374,6 +294,7 @@ export default class CardanoSignTransaction extends AbstractMethod<
             derivation_type: this.params.derivationType,
             include_network_id: this.params.includeNetworkId,
             chunkify: this.params.chunkify,
+            tag_cbor_sets: this.params.tagCborSets,
         };
 
         // init
@@ -407,7 +328,6 @@ export default class CardanoSignTransaction extends AbstractMethod<
             const { cvote_registration_parameters } = this.params.auxiliaryData;
             if (cvote_registration_parameters) {
                 this.params.auxiliaryData = modifyAuxiliaryDataForBackwardsCompatibility(
-                    this.device,
                     this.params.auxiliaryData,
                 );
             }

@@ -38,15 +38,17 @@ export type BlockchainOptions = {
     postMessage: (message: CoreEventMessage) => void;
     proxy?: Proxy;
     debug?: boolean;
+    identity?: string;
     onDisconnected?: (pendingSubscriptions?: boolean) => void;
 };
 
 export class Blockchain {
     link: BlockchainLink;
     serverInfo?: ServerInfo;
-    coinInfo: BlockchainOptions['coinInfo'];
 
-    postMessage: BlockchainOptions['postMessage'];
+    readonly identity?: string;
+    readonly coinInfo: BlockchainOptions['coinInfo'];
+    readonly postMessage: BlockchainOptions['postMessage'];
 
     feeForBlock: BlockchainLinkResponse<'estimateFee'> = [];
 
@@ -56,6 +58,7 @@ export class Blockchain {
     private initPromise?: Promise<ServerInfo>;
 
     constructor(options: BlockchainOptions) {
+        this.identity = options.identity;
         this.coinInfo = options.coinInfo;
         this.postMessage = options.postMessage;
         this.onDisconnected = options.onDisconnected;
@@ -95,6 +98,7 @@ export class Blockchain {
         this.postMessage(
             createBlockchainMessage(BLOCKCHAIN.ERROR, {
                 coin: this.coinInfo,
+                identity: this.identity,
                 error: error.message,
                 code: error.code,
             }),
@@ -121,13 +125,6 @@ export class Blockchain {
             throw ERRORS.TypedError('Backend_Invalid');
         }
 
-        this.postMessage(
-            createBlockchainMessage(BLOCKCHAIN.CONNECT, {
-                coin: this.coinInfo,
-                ...info,
-            }),
-        );
-
         this.link.on('disconnected', () => {
             this.onError(ERRORS.TypedError('Backend_Disconnected'));
         });
@@ -140,11 +137,26 @@ export class Blockchain {
         if (!this.initPromise) {
             this.initPromise = this.initLink()
                 .then(info => {
+                    this.postMessage(
+                        createBlockchainMessage(BLOCKCHAIN.CONNECT, {
+                            coin: this.coinInfo,
+                            identity: this.identity,
+                            ...info,
+                        }),
+                    );
                     this.initPromise = Promise.resolve(info);
 
                     return info;
                 })
                 .catch(error => {
+                    this.postMessage(
+                        createBlockchainMessage(BLOCKCHAIN.ERROR, {
+                            coin: this.coinInfo,
+                            identity: this.identity,
+                            error: error.message,
+                            code: error.code,
+                        }),
+                    );
                     this.initPromise = Promise.reject(error);
                     this.link.dispose();
 
@@ -222,7 +234,7 @@ export class Blockchain {
         return this.link.estimateFee(request);
     }
 
-    async subscribe(accounts?: SubscriptionAccountInfo[]) {
+    subscribeBlocks() {
         // set block listener if it wasn't set before
         if (this.link.listenerCount('block') === 0) {
             this.link.on('block', block => {
@@ -235,6 +247,10 @@ export class Blockchain {
             });
         }
 
+        return this.link.subscribe({ type: 'block' });
+    }
+
+    subscribeAccounts(accounts: SubscriptionAccountInfo[]) {
         // set notification listener if it wasn't set before
         if (this.link.listenerCount('notification') === 0) {
             this.link.on('notification', notification => {
@@ -245,11 +261,6 @@ export class Blockchain {
                     }),
                 );
             });
-        }
-
-        const blockSubscription = await this.link.subscribe({ type: 'block' });
-        if (!accounts) {
-            return blockSubscription;
         }
 
         return this.link.subscribe({
@@ -276,18 +287,13 @@ export class Blockchain {
         });
     }
 
-    async unsubscribe(accounts?: SubscriptionAccountInfo[]) {
-        if (!accounts) {
-            this.link.removeAllListeners('block');
-            this.link.removeAllListeners('fiatRates');
-            this.link.removeAllListeners('notification');
+    unsubscribeBlocks() {
+        this.link.removeAllListeners('block');
 
-            // remove all subscriptions
-            await this.link.unsubscribe({ type: 'fiatRates' });
+        return this.link.unsubscribe({ type: 'block' });
+    }
 
-            return this.link.unsubscribe({ type: 'block' });
-        }
-
+    unsubscribeAccounts(accounts: SubscriptionAccountInfo[]) {
         // unsubscribe only requested accounts
         return this.link.unsubscribe({ type: 'accounts', accounts });
     }
@@ -296,6 +302,13 @@ export class Blockchain {
         this.link.removeAllListeners('fiatRates');
 
         return this.link.unsubscribe({ type: 'fiatRates' });
+    }
+
+    async unsubscribeAll() {
+        this.link.removeAllListeners('notification');
+        await this.unsubscribeFiatRates();
+
+        return this.unsubscribeBlocks();
     }
 
     pushTransaction(tx: string) {

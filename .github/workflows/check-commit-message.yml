@@ -1,0 +1,24 @@
+name: "[Check]: Commit messages"
+
+on: [pull_request]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  commit-message-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch base and current branch
+        run: |
+          git fetch --no-tags origin ${{ github.base_ref }} --depth=150
+          git fetch --no-tags ${{github.event.pull_request.head.repo.clone_url}} ${{ github.head_ref }}:${{ github.head_ref }} --depth=150
+          git switch ${{ github.head_ref }}
+
+      - name: Check commit messages
+        run: ./scripts/check-commit-messages.sh
+        env:
+          BASE_BRANCH_NAME: ${{ github.base_ref }}

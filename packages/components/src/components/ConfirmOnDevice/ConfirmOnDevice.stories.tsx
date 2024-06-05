@@ -82,7 +82,7 @@ export const ConfirmOnDevice: StoryFn = () => (
                 steps={5}
                 activeStep={3}
                 onCancel={() => {}}
-                deviceModelInternal={DeviceModelInternal.T2T1}
+                deviceModelInternal={DeviceModelInternal.T2B1}
                 deviceUnitColor={5}
             />
         </StoryColumn>
@@ -94,6 +94,16 @@ export const ConfirmOnDevice: StoryFn = () => (
                 activeStep={5}
                 onCancel={() => {}}
                 deviceModelInternal={DeviceModelInternal.T2T1}
+            />
+        </StoryColumn>
+        <StoryColumn minWidth={300}>
+            <ConfirmOnDeviceComponent
+                successText="Confirmed"
+                title="Confirm on T3T1"
+                steps={5}
+                activeStep={5}
+                onCancel={() => {}}
+                deviceModelInternal={DeviceModelInternal.T3T1}
             />
         </StoryColumn>
     </>

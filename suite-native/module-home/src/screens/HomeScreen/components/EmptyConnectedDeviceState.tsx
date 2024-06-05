@@ -1,12 +1,10 @@
 import { useNavigation } from '@react-navigation/native';
 
-import { Button, Card, Pictogram, VStack } from '@suite-native/atoms';
+import { Button, Card, PictogramTitleHeader, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import {
     AddCoinAccountStackRoutes,
-    AppTabsRoutes,
-    ReceiveStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackNavigationProps,
@@ -26,37 +24,30 @@ const contentStyle = prepareNativeStyle(_ => ({
 
 export const EmptyConnectedDeviceState = () => {
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AppTabs>>();
 
-    const handleReceive = () => {
-        navigation.navigate(RootStackRoutes.AppTabs, {
-            screen: AppTabsRoutes.ReceiveStack,
-            params: {
-                screen: ReceiveStackRoutes.ReceiveAccounts,
-            },
-        });
+    const handleAddAccount = () => {
         navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
             screen: AddCoinAccountStackRoutes.AddCoinAccount,
             params: {
-                flowType: 'receive',
+                flowType: 'home',
             },
         });
     };
 
     return (
         <Card style={applyStyle(cardStyle)}>
-            <VStack spacing={'large'} style={applyStyle(contentStyle)}>
-                <Pictogram
+            <VStack spacing="large" style={applyStyle(contentStyle)}>
+                <PictogramTitleHeader
                     variant="green"
                     size="large"
                     icon="infoLight"
-                    title={translate('moduleHome.emptyState.device.title')}
-                    subtitle={translate('moduleHome.emptyState.device.subtitle')}
+                    title={<Translation id="moduleHome.emptyState.device.title" />}
+                    subtitle={<Translation id="moduleHome.emptyState.device.subtitle" />}
                 />
-                <Button size="large" onPress={handleReceive}>
-                    {translate('moduleHome.emptyState.device.button')}
+                <Button size="large" onPress={handleAddAccount}>
+                    <Translation id="moduleHome.emptyState.device.button" />
                 </Button>
             </VStack>
         </Card>

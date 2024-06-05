@@ -1,8 +1,9 @@
 import { memoize } from 'proxy-memoize';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import * as deviceUtils from '@suite-common/suite-utils';
-import { getStatus } from '@suite-common/suite-utils';
-import { Device, Features } from '@trezor/connect';
+import { getDeviceInstances, getStatus } from '@suite-common/suite-utils';
+import { Device, Features, UI } from '@trezor/connect';
 import { getFirmwareVersion, getFirmwareVersionArray } from '@trezor/device-utils';
 import { Network, networks } from '@suite-common/wallet-config';
 import { versionUtils } from '@trezor/utils';
@@ -12,9 +13,15 @@ import {
     deviceAuthenticityActions,
     StoredAuthenticateDeviceResult,
 } from '@suite-common/device-authenticity';
+import { isNative } from '@trezor/env-utils';
 
 import { deviceActions } from './deviceActions';
-import { PORTFOLIO_TRACKER_DEVICE_ID, PORTFOLIO_TRACKER_DEVICE_STATE } from './deviceConstants';
+import {
+    authorizeDeviceThunk,
+    createDeviceInstanceThunk,
+    createImportedDeviceThunk,
+} from './deviceThunks';
+import { PORTFOLIO_TRACKER_DEVICE_ID } from './deviceConstants';
 
 export type State = {
     devices: TrezorDevice[];
@@ -66,6 +73,16 @@ const merge = (device: AcquiredDevice, upcoming: Partial<AcquiredDevice>): Trezo
     },
 });
 
+const getShouldUseEmptyPassphrase = (device: Device, deviceInstance?: number): boolean => {
+    if (!device.features) return false;
+    if (isNative() && (!deviceInstance || deviceInstance === 1)) {
+        // On mobile, if device has instance === 1, we always want to use empty passphrase since we
+        // connect & authorize standard wallet by default. Other instances will have `usePassphraseProtection` set same way as web/desktop app.
+        return true;
+    } else {
+        return isUnlocked(device.features) && !device.features.passphrase_protection;
+    }
+};
 /**
  * Action handler: DEVICE.CONNECT + DEVICE.CONNECT_UNACQUIRED
  * @param {State} draft
@@ -114,17 +131,18 @@ const connectDevice = (draft: State, device: Device) => {
     // fill draft with not affected devices
     otherDevices.forEach(d => draft.devices.push(d));
 
-    // prepare new device
+    const deviceInstance = features.passphrase_protection
+        ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
+        : undefined;
+
     const newDevice: TrezorDevice = {
         ...device,
-        useEmptyPassphrase: isUnlocked(device.features) && !features.passphrase_protection,
+        useEmptyPassphrase: getShouldUseEmptyPassphrase(device, deviceInstance),
         remember: false,
         connected: true,
         available: true,
         authConfirm: false,
-        instance: features.passphrase_protection
-            ? deviceUtils.getNewInstanceNumber(draft.devices, device) || 1
-            : undefined,
+        instance: deviceInstance,
         buttonRequests: [],
         metadata: {},
         ts: new Date().getTime(),
@@ -211,7 +229,7 @@ const changeDevice = (
                 !isUnlocked(d.features) &&
                 isDeviceUnlocked
             ) {
-                // if device with passhprase disabled is not authorized (no state) and becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
+                // if device with passphrase disabled is not authorized (no state) and becomes unlocked update useEmptyPassphrase field (hidden/standard wallet)
                 return merge(d, {
                     ...device,
                     ...extended,
@@ -328,6 +346,21 @@ const authFailed = (draft: State, device: TrezorDevice) => {
 };
 
 /**
+ * Action handler: authorizeDeviceThunk.pending
+ * Reset authFailed flag
+ * @param {State} draft
+ * @returns
+ */
+const resetAuthFailed = (draft: State) => {
+    const device = draft.selectedDevice;
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
+    draft.devices[index].authFailed = false;
+};
+
+/**
  * Action handler: SUITE.RECEIVE_AUTH_CONFIRM
  * @param {State} draft
  * @param {TrezorDevice} device
@@ -359,7 +392,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
     const newDevice: TrezorDevice = {
         ...device,
         passphraseOnDevice: false,
-        remember: false,
+        remember: isPortfolioTrackerDevice,
         // In mobile app, we need to keep device state defined by the constant
         // to be able to filter device accounts for portfolio tracker
         state: isPortfolioTrackerDevice ? device.state : undefined,
@@ -425,27 +458,39 @@ const forget = (draft: State, device: TrezorDevice) => {
     }
 };
 
-const forgetAndDisconnect = (draft: State, device: TrezorDevice) => {
-    forget(draft, device);
-    disconnectDevice(draft, device);
-};
-
 const addButtonRequest = (
     draft: State,
     device: TrezorDevice | undefined,
-    buttonRequest?: ButtonRequest,
+    buttonRequest: ButtonRequest,
 ) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
     // update state
-    if (!buttonRequest) {
+
+    draft.devices[index].buttonRequests.push(buttonRequest);
+};
+
+const removeButtonRequests = (
+    draft: State,
+    device?: TrezorDevice,
+    buttonRequestCode?: ButtonRequest['code'],
+) => {
+    // only acquired devices
+    if (!device || !device.features) return;
+    const index = deviceUtils.findInstanceIndex(draft.devices, device);
+    if (!draft.devices[index]) return;
+    // update state
+    if (!buttonRequestCode) {
         draft.devices[index].buttonRequests = [];
 
         return;
     }
-    draft.devices[index].buttonRequests.push(buttonRequest);
+
+    draft.devices[index].buttonRequests = draft.devices[index].buttonRequests.filter(
+        ({ code }) => code !== buttonRequestCode,
+    );
 };
 
 export const setDeviceAuthenticity = (
@@ -476,14 +521,25 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.updatePassphraseMode, (state, { payload }) => {
             changePassphraseMode(state, payload.device, payload.hidden, payload.alwaysOnDevice);
         })
-        .addCase(deviceActions.authFailed, (state, { payload }) => {
-            authFailed(state, payload);
+        .addCase(authorizeDeviceThunk.pending, state => {
+            resetAuthFailed(state);
+        })
+        .addCase(authorizeDeviceThunk.fulfilled, (state, { payload }) => {
+            authDevice(state, payload.device, payload.state);
+        })
+        .addCase(authorizeDeviceThunk.rejected, (state, action) => {
+            if (action.payload && action.payload.error) {
+                const { error } = action.payload;
+                if (error === 'auth-failed' && action.payload.device) {
+                    authFailed(state, action.payload.device);
+                }
+            }
+        })
+        .addCase(UI.REQUEST_PIN, state => {
+            resetAuthFailed(state);
         })
         .addCase(deviceActions.receiveAuthConfirm, (state, { payload }) => {
             authConfirm(state, payload.device, payload.success);
-        })
-        .addCase(deviceActions.createDeviceInstance, (state, { payload }) => {
-            createInstance(state, payload);
         })
         .addCase(deviceActions.rememberDevice, (state, { payload }) => {
             remember(state, payload.device, payload.remember, payload.forceRemember);
@@ -491,11 +547,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
             forget(state, payload);
         })
-        .addCase(deviceActions.authDevice, (state, { payload }) => {
-            authDevice(state, payload.device, payload.state);
-        })
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
             addButtonRequest(state, payload.device, payload.buttonRequest);
+        })
+        .addCase(deviceActions.removeButtonRequests, (state, { payload }) => {
+            removeButtonRequests(state, payload.device, payload.buttonRequestCode);
         })
         .addCase(deviceActions.requestDeviceReconnect, state => {
             if (state.selectedDevice) {
@@ -514,9 +570,12 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
-        .addCase(deviceActions.forgetAndDisconnectDevice, (state, { payload }) => {
-            forgetAndDisconnect(state, payload);
-        });
+        .addMatcher(
+            isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),
+            (state, { payload }) => {
+                createInstance(state, payload.device);
+            },
+        );
 });
 
 export const selectDevices = (state: DeviceRootState) => state.device?.devices;
@@ -529,6 +588,9 @@ export const selectDevice = (state: DeviceRootState) => state.device.selectedDev
 export const selectIsDeviceUnlocked = (state: DeviceRootState) =>
     !!state.device.selectedDevice?.features?.unlocked;
 
+export const selectDeviceAuthFailed = (state: DeviceRootState) =>
+    !!state.device.selectedDevice?.authFailed;
+
 export const selectDeviceType = (state: DeviceRootState) => state.device.selectedDevice?.type;
 
 export const selectDeviceFeatures = (state: DeviceRootState) =>
@@ -538,6 +600,12 @@ export const selectIsDeviceProtectedByPin = (state: DeviceRootState) => {
     const features = selectDeviceFeatures(state);
 
     return !!features?.pin_protection;
+};
+
+export const selectIsDeviceProtectedByPassphrase = (state: DeviceRootState) => {
+    const features = selectDeviceFeatures(state);
+
+    return !!features?.passphrase_protection;
 };
 
 export const selectIsDeviceProtectedByWipeCode = (state: DeviceRootState) => {
@@ -563,7 +631,12 @@ export const selectDeviceRequestedPin = (state: DeviceRootState) => {
 
     if (!isDeviceProtectedByPin) return false;
 
-    return buttonRequestsCodes?.some(code => code?.startsWith('PinMatrixRequestType')) ?? false;
+    const pinEntryButtonRequestCodes: ButtonRequest['code'][] = [
+        'PinMatrixRequestType_Current', // T1 with PIN matrix in app
+        'ButtonRequest_PinEntry', // T2 with PIN entry on device
+    ];
+
+    return pinEntryButtonRequestCodes.includes(buttonRequestsCodes.at(-1));
 };
 
 export const selectIsUnacquiredDevice = (state: DeviceRootState) => {
@@ -724,14 +797,19 @@ export const selectDeviceFirmwareVersion = memoize((state: DeviceRootState) => {
 
     return getFirmwareVersionArray(device);
 });
-
-export const selectPersistedDeviceStates = (state: DeviceRootState) => {
+export const selectPhysicalDevices = memoize((state: DeviceRootState) => {
     const devices = selectDevices(state);
 
-    return [...devices.map(d => d.state), PORTFOLIO_TRACKER_DEVICE_STATE];
-};
+    return devices.filter(device => device.id !== PORTFOLIO_TRACKER_DEVICE_ID);
+});
 
 export const selectIsNoPhysicalDeviceConnected = (state: DeviceRootState) => {
+    const devices = selectPhysicalDevices(state);
+
+    return devices.every(device => !device.connected);
+};
+
+export const selectHasOnlyPortfolioDevice = (state: DeviceRootState) => {
     const devices = selectDevices(state);
 
     return devices.length === 1 && devices[0].id === PORTFOLIO_TRACKER_DEVICE_ID;
@@ -754,3 +832,79 @@ export const selectHasDeviceFirmwareInstalled = (state: DeviceRootState) => {
 
     return !!device && device.firmware !== 'none';
 };
+
+export const selectIsDeviceRemembered = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return !!device?.remember;
+};
+
+export const selectRememberedStandardWalletsCount = (state: DeviceRootState) => {
+    const devices = selectPhysicalDevices(state);
+
+    return devices.filter(device => device.remember && device.useEmptyPassphrase).length;
+};
+
+export const selectRememberedHiddenWalletsCount = (state: DeviceRootState) => {
+    const devices = selectPhysicalDevices(state);
+
+    return devices.filter(device => device.remember && !device.useEmptyPassphrase).length;
+};
+
+export const selectIsDeviceConnected = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return !!device?.connected;
+};
+
+export const selectIsDeviceInViewOnlyMode = (state: DeviceRootState) => {
+    const isDeviceConnected = selectIsDeviceConnected(state);
+    const isDeviceRemembered = selectIsDeviceRemembered(state);
+
+    return !isDeviceConnected && isDeviceRemembered;
+};
+
+export const selectIsDeviceUsingPassphrase = (state: DeviceRootState) => {
+    const isDeviceProtectedByPassphrase = selectIsDeviceProtectedByPassphrase(state);
+    const device = selectDevice(state);
+
+    // If device instance is higher than 1 (newly created device instance), connect returns
+    // `passphrase_protection: false` in features. But we still want to treat it as passphrase protected.
+    const shouldTreatAsPassphraseProtected = device?.instance ?? 1 > 1;
+
+    return (
+        (isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false) ||
+        shouldTreatAsPassphraseProtected
+    );
+};
+
+export const selectPhysicalDevicesGrouppedById = memoize((state: DeviceRootState) => {
+    const devices = selectPhysicalDevices(state);
+
+    return deviceUtils.getDeviceInstancesGroupedByDeviceId(devices);
+});
+
+export const selectDeviceState = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    return device?.state ?? null;
+};
+
+export const selectDeviceInstances = memoize((state: DeviceRootState) => {
+    const device = selectDevice(state);
+
+    if (!device) {
+        return [];
+    }
+
+    const allDevices = selectDevices(state);
+
+    return getDeviceInstances(device, allDevices);
+});
+
+export const selectInstacelessUnselectedDevices = memoize((state: DeviceRootState) => {
+    const device = selectDevice(state);
+    const allDevices = selectDevices(state);
+
+    return deviceUtils.getSortedDevicesWithoutInstances(allDevices, device?.id);
+});

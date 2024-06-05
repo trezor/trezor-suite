@@ -3,8 +3,6 @@ import path from 'path';
 
 const SCREENSHOTS_DIR = './e2e/screenshots';
 
-const CI_JOB_URL = process.env.CI_JOB_URL || '.';
-
 export const buildOverview = ({ emuScreenshots }: { emuScreenshots: Record<string, string> }) => {
     if (fs.existsSync('connect-popup-overview.html')) {
         fs.rmSync('connect-popup-overview.html');
@@ -40,14 +38,11 @@ export const buildOverview = ({ emuScreenshots }: { emuScreenshots: Record<strin
             </div>
         `;
         screenshots.forEach(screenshot => {
-            const screenshotPath = `${CI_JOB_URL}/${urlPath}/${screenshot}`;
+            const screenshotPath = `./${urlPath}/${screenshot}`;
             html += `
                 <div>
                     <div>${methodName}/${screenshot}</div>
-                    <img src="${screenshotPath.replace(
-                        '/e2e/screenshots',
-                        '/artifacts/raw/packages/connect-popup/e2e/screenshots',
-                    )}" />
+                    <img src="${screenshotPath.replace('./e2e/screenshots/', './')}" />
                     ${renderEmuScreenshot(`./${urlPath}/${screenshot}`)}
                 </div>
             `;

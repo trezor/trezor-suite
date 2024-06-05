@@ -1,0 +1,128 @@
+import { NEMGetAddress } from '@trezor/connect/src/types/api/nemGetAddress';
+import { Bundle } from '@trezor/connect/src/types';
+
+import { Param } from '../../../components/Param';
+import { ParamsTable } from '../../../components/ParamsTable';
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+import getAddress from '../../../data/methods/nem/getAddress.ts';
+
+<ApiPlayground
+    options={[
+        { title: 'Export address', legacyConfig: getAddress[0] },
+        { title: 'Export multiple addresses', legacyConfig: getAddress[1] },
+        { title: 'Advanced schema', method: 'nemGetAddress', schema: NEMGetAddress },
+        { title: 'Advanced bundle', method: 'nemGetAddress', schema: Bundle(NEMGetAddress) },
+    ]}
+/>
+
+export const paramDescriptions = {
+    path: 'minimum length is `3`. [read more](/details/path)',
+    address: 'address for validation (read `Handle button request` section below)',
+    network: '`0x68` - Mainnet, `0x96` - Testnet, `0x60` - Mijin. Default is set to `Mainnet`',
+    showOnTrezor: 'determines if address will be displayed on device. Default is set to `true`',
+    chunkify:
+        'determines if address will be displayed in chunks of 4 characters. Default is set to `false`',
+    bundle: 'of Objects with `path`, `network` and `showOnTrezor` fields',
+};
+
+## NEM: get address
+
+Display requested address on device and returns it to caller.
+User is presented with a description of the requested key and asked to confirm the export.
+
+```javascript
+const result = await TrezorConnect.nemGetAddress(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+#### NEMGetAddress
+
+<ParamsTable schema={NEMGetAddress} descriptions={paramDescriptions} />
+
+#### Bundle(NEMGetAddress)
+
+<Param name="bundle" type="`Array` of Objects with above schema" />
+
+### Example
+
+Display address of third nem account:
+
+```javascript
+TrezorConnect.nemGetAddress({
+    path: "m/44'/43'/2'",
+});
+```
+
+Return a bundle of NEM addresses without displaying them on device:
+
+```javascript
+TrezorConnect.nemGetAddress({
+    bundle: [
+        { path: "m/44'/43'/0'", showOnTrezor: false }, // account 1
+        { path: "m/44'/43'/1'", showOnTrezor: false }, // account 2
+        { path: "m/44'/43'/2'", showOnTrezor: false }, // account 3
+    ],
+});
+```
+
+Validate address using custom UI inside of your application:
+
+```javascript
+import TrezorConnect, { UI } from '@trezor/connect';
+
+TrezorConnect.on(UI.ADDRESS_VALIDATION, data => {
+    console.log('Handle button request', data.address, data.serializedPath);
+    // here you can display custom UI inside of your app
+});
+
+const result = await TrezorConnect.nemGetAddress({
+    path: "m/44'/43'/0'",
+    address: 'TDS7OQUHKNYMSC2WPJA6QUTLJIO22S27B4FMU2AJ',
+});
+// dont forget to hide your custom UI after you get the result!
+```
+
+### Result
+
+[Address type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/params.ts)
+
+Result with only one address
+
+```javascript
+{
+    success: true,
+    payload: {
+        address: string,
+        path: Array<number>,
+        serializedPath: string,
+    }
+}
+```
+
+Result with bundle of addresses
+
+```javascript
+{
+    success: true,
+    payload: [
+        { address: string, path: Array<number>, serializedPath: string }, // account 1
+        { address: string, path: Array<number>, serializedPath: string }, // account 2
+        { address: string, path: Array<number>, serializedPath: string }, // account 3
+    ]
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

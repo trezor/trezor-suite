@@ -238,4 +238,5 @@ export const colors = { ...oldColors, ...THEME.light } as const;
 export const intermediaryTheme = {
     light: { ...THEME.light, ...colorVariants.standard, ...boxShadows.standard },
     dark: { ...THEME.dark, ...colorVariants.dark, ...boxShadows.dark },
+    debug: { ...THEME.light, ...colorVariants.debug, ...boxShadows.standard },
 };

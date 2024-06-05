@@ -12,9 +12,10 @@ import {
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectCoinDefinitions, updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
+import { selectCoinDefinitions } from '@suite-common/token-definitions';
 
 const Option = styled.div`
     display: flex;
@@ -64,10 +65,16 @@ const SendCryptoSelect = () => {
                         setValue(FIAT_INPUT, '');
                         const token = selected.value;
                         const invitySymbol = invityApiSymbolToSymbol(token).toLowerCase();
-                        const tokenData = tokens?.find(t => t.symbol === invitySymbol);
+                        const tokenData = tokens?.find(
+                            t =>
+                                t.symbol === invitySymbol &&
+                                t.contract === selected.token?.contract,
+                        );
                         if (ethereumTypeNetworkSymbols.includes(token)) {
                             setValue(CRYPTO_TOKEN, null);
-                            // set own account for non ERC20 transaction
+                            setValue('outputs.0.address', account.descriptor);
+                        } else if (symbol === 'sol') {
+                            setValue(CRYPTO_TOKEN, tokenData?.contract ?? null);
                             setValue('outputs.0.address', account.descriptor);
                         } else {
                             // set the address of the token to the output
@@ -83,7 +90,7 @@ const SendCryptoSelect = () => {
                                 },
                                 localCurrency: currency?.value as FiatCurrencyCode,
                                 rateType: 'current',
-                                lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                                fetchAttemptTimestamp: Date.now() as Timestamp,
                             }),
                         );
                         composeRequest();

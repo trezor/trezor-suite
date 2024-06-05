@@ -1,3 +1,29 @@
+# 2.1.30
+
+-   chore: BigNumber wrapper (d18ba9a879)
+
+# 2.1.30-beta.2
+
+-   Chore/refactor fiat rates (#11592) (f40b8bf7d8)
+
+# 2.1.29
+
+-   chore(blockchain-link): skip failing tests (34833c4751)
+-   chore(blockhain-link): beta release 2.1.29-beta.0 (bf3589acc1)
+-   fix(blockchain-link): cache SOL token metadata (385010151a)
+-   chore(deps): bump @solana/web3.js from 1.90.0 to 1.90.2 (962e51f4ca)
+-   feat(blockchain-link): resubmit Solana transactions during confirmation (babb748eca)
+-   fix(blockchain-link): close blockchain link connection on error (3bf8732140)
+
+# 2.1.28
+
+-   fix(blockchain-link): fix Solana transaction confirmation (38cd7ccdb6)
+-   feat(blockchain-link): add support for Solana priority fees (a6c2aa8c7d)
+-   fix(blockchain-link): hanging connection issue (#11516) (6cb0d99c03)
+-   fix: wait on solana confirmed tx (#11515) (3cb139fbd3)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 2.1.26
 
 -   fix: from g:tsx to local tsx in prepublish script (d21d698b2)

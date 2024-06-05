@@ -1,0 +1,54 @@
+import { Callout } from 'nextra/components';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground options={[{ title: 'No payload', method: 'showDeviceTutorial' }]} />
+
+## Show device tutorial
+
+Start the on device tutorial.
+
+```javascript
+const result = await TrezorConnect.showDeviceTutorial(params);
+```
+
+<Callout type="info">**Supported only by T2B1 with Firmware 2.6.1 or higher!**</Callout>
+
+### Params
+
+<CommonParamsLink />
+
+No other parameters.
+
+### Example:
+
+```javascript
+TrezorConnect.showDeviceTutorial({
+    device,
+});
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Tutorial shown'
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

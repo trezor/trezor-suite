@@ -1,0 +1,57 @@
+import { Callout } from 'nextra/components';
+
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground options={[{ title: 'No payload', method: 'wipeDevice' }]} />
+
+## Wipe device
+
+<Callout type="error">
+    **Management command** - this method is restricted to Trezor.io and can't be used in 3rd party
+    applications.
+</Callout>
+
+Reset device to factory defaults and remove all private data.
+
+```javascript
+const result = await TrezorConnect.wipeDevice(params);
+```
+
+### Params
+
+<CommonParamsLink />
+
+No other parameters.
+
+Common parameter `useEmptyPassphrase` - is set to `true`, `allowSeedlessDevice` - is set to `true`
+
+### Example
+
+```javascript
+TrezorConnect.wipeDevice();
+```
+
+### Result
+
+Success type
+
+```javascript
+{
+    success: true,
+    payload: {
+        message: 'Device wiped'
+    }
+}
+```
+
+Error
+
+```javascript
+{
+    success: false,
+    payload: {
+        error: string // error message
+    }
+}
+```

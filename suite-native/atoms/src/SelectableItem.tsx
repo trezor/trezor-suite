@@ -1,7 +1,7 @@
 import { TouchableOpacity, View } from 'react-native';
 import { ReactNode } from 'react';
 
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 
 import { VStack } from './Stack';
@@ -48,8 +48,8 @@ const badgeWrapperStyle = prepareNativeStyle(utils => ({
 }));
 
 type SelectableItemProps = {
-    title: string;
-    subtitle?: string;
+    title: ReactNode;
+    subtitle?: ReactNode;
     content?: ReactNode;
     isSelected: boolean;
     isDefault: boolean;
@@ -65,7 +65,6 @@ export const SelectableItem = ({
     onSelected,
 }: SelectableItemProps) => {
     const { applyStyle, utils } = useNativeStyles();
-    const { translate } = useTranslate();
 
     return (
         <TouchableOpacity
@@ -83,7 +82,7 @@ export const SelectableItem = ({
                             <Badge
                                 key="defaultType"
                                 variant="green"
-                                label={translate('generic.default')}
+                                label={<Translation id="generic.default" />}
                                 icon="checkCircleSolid"
                             />
                         </View>

@@ -423,7 +423,7 @@ const StyledTimerange = styled.div`
     margin: -${spacingsPx.sm};
 
     ${mediaQueries.dark_theme} {
-        border: 1px solid ${({ theme }) => theme.borderOnElevation0};
+        border: 1px solid ${({ theme }) => theme.borderElevation1};
     }
 `;
 
@@ -441,7 +441,7 @@ const Buttons = styled.div`
 const Calendar = styled.div`
     width: 345px;
     padding: ${spacingsPx.sm} ${spacingsPx.sm} 0;
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
 
     ${datepickerStyle}
 
@@ -571,7 +571,7 @@ const Calendar = styled.div`
     .rdrDateDisplayWrapper {
         padding-bottom: ${spacingsPx.sm};
         background: ${({ theme }) => theme.backgroundSurfaceElevation3};
-        border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+        border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
         border-radius: ${borders.radii.xs};
     }
 

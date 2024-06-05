@@ -5,10 +5,9 @@ import { XpubQRCodeBottomSheet } from '@suite-native/qr-code';
 import { Button } from '@suite-native/atoms';
 import { isAddressBasedNetwork } from '@suite-common/wallet-utils';
 import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: string }) => {
-    const { translate } = useTranslate();
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
@@ -22,13 +21,15 @@ export const AccountSettingsShowXpubButton = ({ accountKey }: { accountKey: stri
     };
     const isAddressBased = isAddressBasedNetwork(account.networkType);
 
-    const buttonTitle = isAddressBased
-        ? translate(
-              'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton',
-          )
-        : translate(
-              'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton',
-          );
+    const buttonTitle = (
+        <Translation
+            id={
+                isAddressBased
+                    ? 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.address.showButton'
+                    : 'moduleAccountManagement.accountSettingsScreen.xpubBottomSheet.xpub.showButton'
+            }
+        />
+    );
 
     return (
         <>

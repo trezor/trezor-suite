@@ -6,9 +6,12 @@ import {
     getConfirmations,
     isPending,
     getIsPhishingTransaction,
+    getEverstakePool,
 } from '@suite-common/wallet-utils';
 import { isClaimTx, isStakeTx, isStakeTypeTx, isUnstakeTx } from '@suite-common/suite-utils';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
+import { selectNetworkTokenDefinitions } from '@suite-common/token-definitions/src/tokenDefinitionsSelectors';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { transactionsActions } from './transactionsActions';
@@ -16,8 +19,6 @@ import {
     selectBlockchainHeightBySymbol,
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
-import { selectNetworkTokenDefinitions } from '../token-definitions/tokenDefinitionsSelectors';
-import { TokenDefinitionsRootState } from '../token-definitions/tokenDefinitionsTypes';
 
 export interface TransactionsState {
     isLoading: boolean;
@@ -151,11 +152,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.removeAccount, (state, { payload }) => {
                 payload.forEach(a => {
                     delete state.transactions[a.key];
-                });
-            })
-            .addCase(transactionsActions.updateTransactionFiatRate, (state, { payload }) => {
-                payload.forEach(u => {
-                    updateTransaction(state, u.account, u.txid, u.updateObject);
                 });
             })
             .addMatcher(
@@ -310,7 +306,7 @@ export const selectAccountStakeTypeTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isStakeTypeTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isStakeTypeTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountStakeTransactions = (
@@ -319,7 +315,7 @@ export const selectAccountStakeTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isStakeTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isStakeTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountUnstakeTransactions = (
@@ -328,7 +324,7 @@ export const selectAccountUnstakeTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isUnstakeTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isUnstakeTx(tx?.ethereumSpecific?.parsedData?.methodId));
 };
 
 export const selectAccountClaimTransactions = (
@@ -337,5 +333,11 @@ export const selectAccountClaimTransactions = (
 ) => {
     const transactions = selectAccountTransactions(state, accountKey);
 
-    return transactions.filter(tx => isClaimTx(tx.ethereumSpecific?.parsedData?.methodId));
+    return transactions.filter(tx => isClaimTx(tx?.ethereumSpecific?.parsedData?.methodId));
+};
+
+export const selectAccountHasStaked = (state: TransactionsRootState, account: Account) => {
+    const stakeTxs = selectAccountStakeTransactions(state, account.key);
+
+    return stakeTxs.length > 0 || !!getEverstakePool(account);
 };

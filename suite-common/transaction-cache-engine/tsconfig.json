@@ -7,6 +7,7 @@
     },
     "references": [
         { "path": "../wallet-config" },
-        { "path": "../../packages/connect" }
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/utils" }
     ]
 }

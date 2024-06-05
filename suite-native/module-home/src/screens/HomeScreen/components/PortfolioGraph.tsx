@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { useSetAtom } from 'jotai';
 
 import { useGraphForAllDeviceAccounts, Graph, TimeSwitch } from '@suite-native/graph';
-import { selectFiatCurrency } from '@suite-native/module-settings';
+import { selectFiatCurrency } from '@suite-native/settings';
 import { VStack } from '@suite-native/atoms';
 import { useIsDiscoveryDurationTooLong } from '@suite-native/discovery';
 
@@ -15,7 +15,7 @@ import {
 } from './PortfolioGraphHeader';
 
 export type PortfolioGraphRef = {
-    refetch: () => Promise<void>;
+    refetchGraph: () => Promise<void>;
 };
 
 export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
@@ -45,7 +45,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     useImperativeHandle(
         ref,
         () => ({
-            refetch,
+            refetchGraph: refetch,
         }),
         [refetch],
     );

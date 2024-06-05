@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
-import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
-import BigNumber from 'bignumber.js';
+import { Timestamp, TokenAddress, FiatRatesResult } from '@suite-common/wallet-types';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
@@ -15,7 +15,7 @@ import {
     formatAmount,
     buildCurrencyOptions,
 } from '@suite-common/wallet-utils';
-import { CurrencyOption, Output } from 'src/types/wallet/sendForm';
+import { CurrencyOption, Output } from '@suite-common/wallet-types';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { NumberInput } from 'src/components/suite';
@@ -36,9 +36,11 @@ const Wrapper = styled.div`
 interface FiatProps {
     output: Partial<Output>;
     outputId: number;
+    labelHoverRight?: React.ReactNode;
+    labelRight?: React.ReactNode;
 }
 
-export const Fiat = ({ output, outputId }: FiatProps) => {
+export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProps) => {
     const {
         account,
         network,
@@ -122,15 +124,9 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                 return;
             }
 
-            // calculate new Amount, Fiat input times currency rate
-            // NOTE: get fresh values (currencyValue may be outdated)
-            const fiatCurrency = currencyValue.value;
-
             const decimals = token ? token.decimals : network.decimals;
 
-            const amount = fiatRate?.rate
-                ? fromFiatCurrency(value, fiatCurrency, fiatRate, decimals, false)
-                : null;
+            const amount = fiatRate?.rate ? fromFiatCurrency(value, decimals, fiatRate.rate) : null;
 
             const formattedAmount = shouldSendInSats
                 ? amountToSatoshi(amount || '0', decimals)
@@ -148,7 +144,6 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
         [
             isSetMaxActive,
             error,
-            currencyValue.value,
             token,
             network.decimals,
             fiatRate,
@@ -197,14 +192,16 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
                         },
                         localCurrency: selected.value as FiatCurrencyCode,
                         rateType: 'current',
-                        lastSuccessfulFetchTimestamp: Date.now() as Timestamp,
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
                     }),
                 );
 
                 if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
-                    const rate = updateFiatRatesResult.payload as number;
+                    const fiatRate = updateFiatRatesResult.payload as FiatRatesResult;
 
-                    recalculateFiat(rate);
+                    if (fiatRate?.rate) {
+                        recalculateFiat(fiatRate.rate);
+                    }
                 }
             }}
         />
@@ -213,6 +210,8 @@ export const Fiat = ({ output, outputId }: FiatProps) => {
     return (
         <Wrapper>
             <NumberInput
+                labelHoverRight={labelHoverRight}
+                labelRight={labelRight}
                 control={control}
                 inputState={inputState}
                 onChange={handleChange}

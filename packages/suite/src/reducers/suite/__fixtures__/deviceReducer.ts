@@ -1,5 +1,5 @@
 import { testMocks } from '@suite-common/test-utils';
-import { deviceActions } from '@suite-common/wallet-core';
+import { authorizeDeviceThunk, deviceActions } from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 
 const { getConnectDevice, getSuiteDevice } = testMocks;
@@ -850,7 +850,7 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: SUITE_DEVICE,
                     state: 'A',
@@ -875,7 +875,7 @@ const authDevice = [
         },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: SUITE_DEVICE,
                     state: 'A',
@@ -904,7 +904,7 @@ const authDevice = [
         },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: getSuiteDevice({ instance: 1 }),
                     state: 'A',
@@ -933,7 +933,7 @@ const authDevice = [
         initialState: { devices: [SUITE_DEVICE] },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: getConnectDevice({
                         type: 'unacquired',
@@ -953,7 +953,7 @@ const authDevice = [
         initialState: { devices: [] },
         actions: [
             {
-                type: deviceActions.authDevice.type,
+                type: authorizeDeviceThunk.fulfilled.type,
                 payload: {
                     device: SUITE_DEVICE,
                     state: 'A',
@@ -961,118 +961,6 @@ const authDevice = [
             },
         ],
         result: [],
-    },
-];
-
-const createInstance = [
-    {
-        description: `Create instance, 1 connected`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
-            },
-        ],
-        result: [
-            {
-                instance: undefined,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 1,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `Create instance, 2 connected, 1 affected`,
-        initialState: {
-            devices: [
-                getSuiteDevice(undefined, {
-                    device_id: 'ignored-device-id',
-                }),
-                SUITE_DEVICE,
-            ],
-        },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 1 }),
-            },
-        ],
-        result: [
-            {
-                features: {
-                    device_id: 'ignored-device-id',
-                },
-            },
-            {
-                instance: undefined,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 1,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `Create instance from instance`,
-        initialState: {
-            devices: [SUITE_DEVICE, getSuiteDevice({ instance: 1 })],
-        },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({ useEmptyPassphrase: false, instance: 2 }),
-            },
-        ],
-        result: [
-            {
-                instance: undefined,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 1,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-            {
-                instance: 2,
-                features: {
-                    device_id: 'device-id',
-                },
-            },
-        ],
-    },
-    {
-        description: `device is unacquired`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.createDeviceInstance.type,
-                payload: getSuiteDevice({
-                    type: 'unacquired',
-                }),
-            },
-        ],
-        result: [
-            {
-                state: undefined,
-            },
-        ],
     },
 ];
 
@@ -1377,7 +1265,6 @@ export default {
     updateTimestamp,
     changePassphraseMode,
     authDevice,
-    createInstance,
     forget,
     remember,
 };

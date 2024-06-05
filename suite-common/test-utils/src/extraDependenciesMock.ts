@@ -2,6 +2,8 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { createThunk, ExtraDependencies } from '@suite-common/redux-utils';
 import { PROTO } from '@trezor/connect';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { Route } from '@suite-common/suite-types';
 
 import { testMocks } from './mocks';
 
@@ -60,12 +62,16 @@ export const extraDependenciesMock: ExtraDependencies = {
         cardanoFetchTrezorPools: mockThunk('fetchTrezorPools'),
         fetchAndSaveMetadata: mockThunk('fetchAndSaveMetadata'),
         initMetadata: mockThunk('initMetadata'),
+        addAccountMetadata: mockThunk('addAccountMetadata'),
+        findLabelsToBeMovedOrDeleted: mockThunk('findLabelsToBeMovedOrDeleted'),
+        moveLabelsForRbfAction: mockThunk('moveLabelsForRbfAction'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>
             mockSelector('selectFeeInfo', testMocks.fee, { networkSymbol }),
         selectDevices: mockSelector('selectDevices', []),
         selectBitcoinAmountUnit: mockSelector('selectBitcoinAmountUnit', PROTO.AmountUnit.BITCOIN),
+        selectAreSatsAmountUnit: mockSelector('selectAreSatsAmountUnit', false),
         selectEnabledNetworks: mockSelector('selectEnabledNetworks', ['btc', 'test']),
         selectLocalCurrency: mockSelector('selectLocalCurrency', 'usd'),
         selectIsPendingTransportEvent: mockSelector('selectIsPendingTransportEvent', false),
@@ -73,16 +79,24 @@ export const extraDependenciesMock: ExtraDependencies = {
             checkFirmwareAuthenticity: false,
             coinjoinAllowNoTor: false,
             showDebugMenu: false,
+            isViewOnlyModeVisible: false,
             transports: [],
         }),
         selectDesktopBinDir: mockSelector('selectDesktopBinDir', '/bin'),
         selectRouterApp: mockSelector('selectRouterApp', ''),
+        selectRoute: mockSelector('selectRoute', {} as Route),
         selectMetadata: mockSelector('selectMetadata', {}),
         selectDevice: mockSelector('selectDevice', {
             ...testMocks.getSuiteDevice(),
         }),
+        selectLanguage: mockSelector('selectLanguage', 'en'),
         selectDeviceDiscovery: mockSelector('selectDeviceDiscovery', undefined),
         selectCheckFirmwareAuthenticity: mockSelector('selectCheckFirmwareAuthenticity', false),
+        selectAddressDisplayType: mockSelector(
+            'selectAddressDisplayType',
+            AddressDisplayOptions.CHUNKED,
+        ),
+        selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
@@ -97,13 +111,13 @@ export const extraDependenciesMock: ExtraDependencies = {
     },
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
-        addButtonRequest: mockActionType('addButtonRequest'),
         setDeviceMetadata: mockActionType('setDeviceMetadata'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
         storageLoadAccounts: mockReducer('storageLoadAccounts'),
         storageLoadTransactions: mockReducer('storageLoadTransactions'),
+        storageLoadHistoricRates: mockReducer('storageLoadHistoricRates'),
         storageLoadFirmware: mockReducer('storageLoadFirmware'),
         storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
         addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),

@@ -11,25 +11,32 @@ import {
     StackNavigationProps,
 } from '@suite-native/navigation';
 import { IconButton } from '@suite-native/atoms';
-import { selectDeviceDiscovery, selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
+import {
+    selectDeviceDiscovery,
+    selectIsDeviceInViewOnlyMode,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
-import { useIsAddCoinAccountEnabled } from '../useIsAddCoinAccountEnabled';
+import { useAccountAlerts } from '../hooks/useAccountAlerts';
 
 type AddAccountButtonProps = {
     flowType: AddCoinFlowType;
+    testID?: string;
 };
 
-export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
+export const AddAccountButton = ({ flowType, testID }: AddAccountButtonProps) => {
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountsImport>>();
 
     const isSelectedDevicePortfolioTracker = useSelector(selectIsPortfolioTrackerDevice);
     const discovery = useSelector(selectDeviceDiscovery);
-
-    const { isAddCoinAccountEnabled } = useIsAddCoinAccountEnabled();
+    const [isDeviceConnectEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const { showViewOnlyAddAccountAlert } = useAccountAlerts();
+    const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 
     const shouldShowAddAccountButton =
-        isSelectedDevicePortfolioTracker || (isAddCoinAccountEnabled && !discovery);
+        isSelectedDevicePortfolioTracker || (isDeviceConnectEnabled && !discovery);
 
     const navigateToImportScreen = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -38,14 +45,17 @@ export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
     };
 
     const navigateToAddCoinAccount = () => {
-        if (isAddCoinAccountEnabled) {
-            navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
-                screen: AddCoinAccountStackRoutes.AddCoinAccount,
-                params: {
-                    flowType,
-                },
-            });
+        if (isDeviceInViewOnlyMode) {
+            showViewOnlyAddAccountAlert();
+
+            return;
         }
+        navigation.navigate(RootStackRoutes.AddCoinAccountStack, {
+            screen: AddCoinAccountStackRoutes.AddCoinAccount,
+            params: {
+                flowType,
+            },
+        });
     };
 
     return shouldShowAddAccountButton ? (
@@ -56,6 +66,7 @@ export const AddAccountButton = ({ flowType }: AddAccountButtonProps) => {
             }
             colorScheme="tertiaryElevation0"
             size="medium"
+            testID={testID}
         />
     ) : null;
 };

@@ -4,7 +4,8 @@ import { FeatureFlag as FeatureFlagEnum, useFeatureFlag } from '@suite-native/fe
 const featureFlagsTitleMap = {
     [FeatureFlagEnum.IsDeviceConnectEnabled]: 'Connect device',
     [FeatureFlagEnum.IsPassphraseEnabled]: 'Passphrase',
-    [FeatureFlagEnum.IsAddCoinAccountEnabled]: 'Add account',
+    [FeatureFlagEnum.IsSendEnabled]: 'Send',
+    [FeatureFlagEnum.IsRegtestEnabled]: 'Regtest',
 } as const satisfies Record<FeatureFlagEnum, string>;
 
 const FeatureFlag = ({ featureFlag }: { featureFlag: FeatureFlagEnum }) => {

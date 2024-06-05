@@ -10,14 +10,16 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@suite-common/validators": "workspace:*",
-        "@suite-common/wallet-constants": "workspace:*",
-        "@suite-native/atoms": "workspace:*",
-        "@suite-native/forms": "workspace:*",
+        "@react-navigation/native": "6.1.17",
+        "@reduxjs/toolkit": "1.9.5",
+        "@suite-common/redux-utils": "workspace:*",
+        "@suite-common/suite-types": "workspace:*",
+        "@suite-common/wallet-core": "workspace:*",
+        "@suite-native/alerts": "workspace:*",
         "@suite-native/intl": "workspace:*",
-        "@trezor/styles": "workspace:*",
-        "jotai": "1.9.1",
+        "@suite-native/navigation": "workspace:*",
+        "@trezor/connect": "workspace:*",
         "react": "18.2.0",
-        "react-native": "0.73.2"
+        "react-redux": "8.0.7"
     }
 }

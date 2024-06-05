@@ -1,6 +1,6 @@
 # @trezor/components
 
-This repository contains components, images and hooks that do not depend on Suite-specific context, i.e. can be used in other Trezor-related projects as well. So far, they have only been used in Suite and @trezor/connect-ui.
+This repository contains components, images and hooks that do not depend on Suite-specific context, i.e. can be used in other Trezor-related projects as well (Suite, @trezor/connect-ui, @trezor/transport-bridge etc...)
 
 ## Storybook
 

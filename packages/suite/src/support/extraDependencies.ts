@@ -2,7 +2,7 @@ import { saveAs } from 'file-saver';
 import { PayloadAction } from '@reduxjs/toolkit';
 
 import { resolveStaticPath } from '@suite-common/suite-utils';
-import { getAccountKey } from '@suite-common/wallet-utils';
+import { getAccountKey, buildHistoricRatesFromStorage } from '@suite-common/wallet-utils';
 import {
     DeviceRootState,
     selectIsPendingTransportEvent,
@@ -11,9 +11,14 @@ import {
     DiscoveryRootState,
     selectDiscoveryByDeviceState,
     deviceActions,
+    FiatRatesState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtraDependencies } from '@suite-common/redux-utils';
+import {
+    findLabelsToBeMovedOrDeleted,
+    moveLabelsForRbfAction,
+} from 'src/actions/wallet/moveLabelsForRbfActions';
 
 import { StorageLoadAction } from 'src/actions/suite/storageActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
@@ -26,6 +31,7 @@ import * as modalActions from 'src/actions/suite/modalActions';
 import * as suiteActions from '../actions/suite/suiteActions';
 import { AppState, ButtonRequest, TrezorDevice } from '../types/suite';
 import { METADATA, STORAGE } from '../actions/suite/constants';
+import { PROTO } from '@trezor/connect';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -49,24 +55,33 @@ export const extraDependencies: ExtraDependencies = {
         cardanoFetchTrezorPools: cardanoStakingActions.fetchTrezorPools,
         initMetadata: metadataLabelingActions.init,
         fetchAndSaveMetadata: metadataLabelingActions.fetchAndSaveMetadata,
+        addAccountMetadata: metadataLabelingActions.addAccountMetadata,
+        findLabelsToBeMovedOrDeleted,
+        moveLabelsForRbfAction,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
             state.wallet.fees[networkSymbol],
         selectDevices: (state: AppState) => state.device.devices,
         selectBitcoinAmountUnit: (state: AppState) => state.wallet.settings.bitcoinAmountUnit,
+        selectAreSatsAmountUnit: (state: AppState) =>
+            state.wallet.settings.bitcoinAmountUnit === PROTO.AmountUnit.SATOSHI,
         selectEnabledNetworks: (state: AppState) => state.wallet.settings.enabledNetworks,
         selectLocalCurrency: (state: AppState) => state.wallet.settings.localCurrency,
         selectIsPendingTransportEvent,
         selectDebugSettings: (state: AppState) => state.suite.settings.debug,
         selectDesktopBinDir: (state: AppState) => state.desktop?.paths?.binDir,
         selectDevice: (state: AppState) => state.device.selectedDevice,
+        selectLanguage: (state: AppState) => state.suite.settings.language,
         selectMetadata: (state: AppState) => state.metadata,
         selectDeviceDiscovery: (state: DiscoveryRootState & DeviceRootState) =>
             selectDiscoveryByDeviceState(state, state.device.selectedDevice?.state),
         selectRouterApp: (state: AppState) => state.router.app,
+        selectRoute: (state: AppState) => state.router.route,
         selectCheckFirmwareAuthenticity: (state: AppState) =>
             state.suite.settings.debug.checkFirmwareAuthenticity,
+        selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
+        selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,
@@ -81,7 +96,6 @@ export const extraDependencies: ExtraDependencies = {
     },
     actionTypes: {
         storageLoad: STORAGE.LOAD,
-        addButtonRequest: deviceActions.addButtonRequest.type,
         setDeviceMetadata: METADATA.SET_DEVICE_METADATA,
     },
     reducers: {
@@ -102,6 +116,13 @@ export const extraDependencies: ExtraDependencies = {
                 }
                 state.transactions[k][item.order] = item.tx;
             });
+        },
+        storageLoadHistoricRates: (state: FiatRatesState, { payload }: StorageLoadAction) => {
+            if (payload.historicRates) {
+                const fiatRates = payload.historicRates.map(rate => rate.value);
+                const historicRates = buildHistoricRatesFromStorage(fiatRates);
+                state.historic = historicRates;
+            }
         },
         storageLoadAccounts: (_, { payload }: StorageLoadAction) =>
             payload.accounts.map(acc =>

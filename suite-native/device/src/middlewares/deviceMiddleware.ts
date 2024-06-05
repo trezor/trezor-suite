@@ -3,28 +3,29 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { DEVICE } from '@trezor/connect';
 import {
-    authorizeDevice,
+    accountsActions,
+    authorizeDeviceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceDisconnect,
     observeSelectedDevice,
-    selectDevice,
     selectDeviceThunk,
+    selectAccountsByDeviceState,
+    createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
-import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
-
-import { wipeDisconnectedDevicesDataThunk } from '../deviceThunks';
+import { clearAndUnlockDeviceAccessQueue } from '@suite-native/device-mutex';
 
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
-            deviceActions.authDevice,
-            deviceActions.authFailed,
+            authorizeDeviceThunk.fulfilled,
+            authorizeDeviceThunk.rejected,
             deviceActions.selectDevice,
             deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,
             deviceActions.addButtonRequest,
+            deviceActions.removeButtonRequests,
             deviceActions.rememberDevice,
             deviceActions.forgetDevice,
         )(action)
@@ -45,22 +46,18 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
          expect that the state was already changed by the action stored in the `action` variable. */
         next(action);
 
-        const device = selectDevice(getState());
-
-        if (deviceActions.createDeviceInstance.match(action)) {
-            dispatch(selectDeviceThunk(action.payload));
+        if (createDeviceInstanceThunk.fulfilled.match(action)) {
+            dispatch(selectDeviceThunk(action.payload.device));
         }
 
-        // Request authorization of a newly acquired device.
-        if (deviceActions.selectDevice.match(action) && !device?.state) {
-            requestPrioritizedDeviceAccess(() => dispatch(authorizeDevice()));
-        }
-
-        if (
-            deviceActions.forgetDevice.match(action) ||
-            deviceActions.forgetAndDisconnectDevice.match(action)
-        ) {
+        if (deviceActions.forgetDevice.match(action)) {
             dispatch(handleDeviceDisconnect(action.payload));
+
+            const deviceState = action.payload.state;
+            if (deviceState) {
+                const accounts = selectAccountsByDeviceState(getState(), deviceState);
+                dispatch(accountsActions.removeAccount(accounts));
+            }
         }
 
         const isUsbDeviceConnectFeatureEnabled = selectIsFeatureFlagEnabled(
@@ -77,7 +74,7 @@ export const prepareDeviceMiddleware = createMiddlewareWithExtraDeps(
                 break;
             case DEVICE.DISCONNECT:
                 dispatch(handleDeviceDisconnect(action.payload));
-                dispatch(wipeDisconnectedDevicesDataThunk());
+                clearAndUnlockDeviceAccessQueue();
                 break;
             default:
                 break;

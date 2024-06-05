@@ -2,13 +2,18 @@ import { WebUSB } from 'usb';
 
 import { v1 as protocolV1, bridge as protocolBridge } from '@trezor/protocol';
 import { receive as receiveUtil } from '@trezor/transport/src/utils/receive';
+import { createChunks } from '@trezor/transport/src/utils/send';
 import { SessionsBackground } from '@trezor/transport/src/sessions/background';
 import { SessionsClient } from '@trezor/transport/src/sessions/client';
 import { UsbApi } from '@trezor/transport/src/api/usb';
 import { UdpApi } from '@trezor/transport/src/api/udp';
 import { AcquireInput, ReleaseInput } from '@trezor/transport/src/transports/abstract';
+import { Session } from '@trezor/transport/src/types';
+import { Log } from '@trezor/utils';
+import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
-export const sessionsBackground = new SessionsBackground();
+const abortController = new AbortController();
+export const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
 
 export const sessionsClient = new SessionsClient({
     requestFn: args => sessionsBackground.handleMessage(args),
@@ -19,40 +24,55 @@ sessionsBackground.on('descriptors', descriptors => {
     sessionsClient.emit('descriptors', descriptors);
 });
 
-export const createApi = (apiStr: 'usb' | 'udp') => {
-    const api =
-        apiStr === 'udp'
-            ? new UdpApi({})
-            : new UsbApi({
-                  usbInterface: new WebUSB({
-                      allowAllDevices: true, // return all devices, not only authorized
-                  }),
-              });
+export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
+    let api: AbstractApi;
+
+    if (typeof apiArg === 'string') {
+        api =
+            apiArg === 'udp'
+                ? new UdpApi({ logger })
+                : new UsbApi({
+                      logger,
+                      usbInterface: new WebUSB({
+                          allowAllDevices: true, // return all devices, not only authorized
+                      }),
+                  });
+    } else {
+        api = apiArg;
+    }
 
     // whenever low-level api reports changes to descriptors, report them to sessions module
-    api.on('transport-interface-change', paths => {
-        sessionsClient.enumerateDone({ paths });
+    api.on('transport-interface-change', descriptors => {
+        sessionsClient.enumerateDone({ descriptors });
     });
 
     const writeUtil = async ({ path, data }: { path: string; data: string }) => {
-        const { typeId, buffer: restBuffer } = protocolBridge.decode(
+        const { messageType, payload } = protocolBridge.decode(
             new Uint8Array(Buffer.from(data, 'hex')),
         );
 
-        const buffers = protocolV1.encode(restBuffer, {
-            messageType: typeId,
-        });
+        const encodedMessage = protocolV1.encode(payload, { messageType });
+        const buffers = createChunks(
+            encodedMessage,
+            protocolV1.getChunkHeader(encodedMessage),
+            api.chunkSize,
+        );
 
         for (let i = 0; i < buffers.length; i++) {
             const bufferSegment = buffers[i];
 
-            await api.write(path, bufferSegment);
+            const result = await api.write(path, bufferSegment);
+            if (!result.success) {
+                return result;
+            }
         }
+
+        return { success: true as const };
     };
 
     const readUtil = async ({ path }: { path: string }) => {
         try {
-            const message = await receiveUtil(
+            const { messageType, payload } = await receiveUtil(
                 () =>
                     api.read(path).then(result => {
                         if (result.success) {
@@ -60,14 +80,15 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
                         }
                         throw new Error(result.error);
                     }),
-                protocolV1.decode,
+                protocolV1,
             );
 
-            return protocolBridge
-                .encode(message.buffer, { messageType: message.typeId })[0]
-                .toString('hex');
+            return {
+                success: true as const,
+                payload: protocolBridge.encode(payload, { messageType }).toString('hex'),
+            };
         } catch (err) {
-            return { success: false as const, error: err.message };
+            return { success: false as const, error: err.message as string };
         }
     };
 
@@ -79,16 +100,44 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
             return enumerateResult;
         }
 
-        return sessionsClient.enumerateDone({ paths: enumerateResult.payload });
+        const enumerateDoneResponse = await sessionsClient.enumerateDone({
+            descriptors: enumerateResult.payload,
+        });
+
+        return enumerateDoneResponse;
     };
 
-    const acquire = async (acquireInput: AcquireInput) => {
+    let listening = true;
+    let enumerateTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    if (api instanceof UdpApi) {
+        // same as UdpTransport listen, set timeout to ping udp devices
+        const enumerateRecursive = () => {
+            if (!listening) return;
+
+            enumerateTimeout = setTimeout(() => {
+                enumerate().finally(enumerateRecursive);
+            }, 500);
+        };
+
+        enumerateRecursive();
+    }
+
+    const acquire = async (
+        acquireInput: Omit<AcquireInput, 'previous'> & { previous: Session | 'null' },
+    ) => {
         const acquireIntentResult = await sessionsClient.acquireIntent({
             path: acquireInput.path,
             previous: acquireInput.previous === 'null' ? null : acquireInput.previous,
         });
         if (!acquireIntentResult.success) {
             return acquireIntentResult;
+        }
+
+        const openDeviceResult = await api.openDevice(acquireInput.path, true);
+
+        if (!openDeviceResult.success) {
+            return openDeviceResult;
         }
         await sessionsClient.acquireDone({ path: acquireInput.path });
 
@@ -109,7 +158,7 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
     };
 
-    const call = async ({ session, data }: { session: string; data: string }) => {
+    const call = async ({ session, data }: { session: Session; data: string }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -117,14 +166,21 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
             return sessionsResult;
         }
         const { path } = sessionsResult.payload;
-        await api.openDevice(path, false);
-        await writeUtil({ path, data });
-        const message = await readUtil({ path });
 
-        return { success: true as const, payload: message };
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
+
+        const writeResult = await writeUtil({ path, data });
+        if (!writeResult.success) {
+            return writeResult;
+        }
+
+        return readUtil({ path });
     };
 
-    const send = async ({ session, data }: { session: string; data: string }) => {
+    const send = async ({ session, data }: { session: Session; data: string }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -134,13 +190,15 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         }
         const { path } = sessionsResult.payload;
 
-        await api.openDevice(path, false);
-        await writeUtil({ path, data });
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
 
-        return { success: true as const };
+        return writeUtil({ path, data });
     };
 
-    const receive = async ({ session }: { session: string }) => {
+    const receive = async ({ session }: { session: Session }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -150,11 +208,21 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         }
         const { path } = sessionsResult.payload;
 
-        await api.openDevice(path, false);
+        const openResult = await api.openDevice(path, false);
+        if (!openResult.success) {
+            return openResult;
+        }
 
-        const message = await readUtil({ path });
+        return readUtil({ path });
+    };
 
-        return { success: true as const, payload: message };
+    const dispose = () => {
+        listening = false;
+        if (enumerateTimeout) {
+            clearTimeout(enumerateTimeout);
+            enumerateTimeout = undefined;
+        }
+        api.dispose();
     };
 
     return {
@@ -164,5 +232,6 @@ export const createApi = (apiStr: 'usb' | 'udp') => {
         call,
         send,
         receive,
+        dispose,
     };
 };

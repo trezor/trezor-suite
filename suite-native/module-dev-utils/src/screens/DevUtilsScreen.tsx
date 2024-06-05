@@ -2,7 +2,7 @@ import { Alert } from 'react-native';
 
 import * as Sentry from '@sentry/react-native';
 
-import { getEnv, isDebugEnv, isDevelopOrDebugEnv, isProduction } from '@suite-native/config';
+import { getEnv, isDebugEnv, isDevelopOrDebugEnv } from '@suite-native/config';
 import { Button, Card, ListItem, VStack } from '@suite-native/atoms';
 import {
     Screen,
@@ -18,6 +18,7 @@ import { RenderingUtils } from '../components/RenderingUtils';
 import { FeatureFlags } from '../components/FeatureFlags';
 import { TestnetsToggle } from '../components/TestnetsToggle';
 import { DiscoveryCoinsFilter } from '../components/DiscoveryCoinsFilter';
+import { DevicePassphraseSwitch } from '../components/DevicePassphraseSwitch';
 
 export const DevUtilsScreen = ({
     navigation,
@@ -37,10 +38,11 @@ export const DevUtilsScreen = ({
                             See Component Demo
                         </Button>
                     )}
-                    {!isProduction() && <RenderingUtils />}
+                    <FeatureFlags />
                     {isDevelopOrDebugEnv() && (
                         <>
-                            <FeatureFlags />
+                            <RenderingUtils />
+                            <DevicePassphraseSwitch />
                             <DiscoveryCoinsFilter />
                         </>
                     )}
@@ -53,7 +55,7 @@ export const DevUtilsScreen = ({
                     >
                         Throw Sentry error
                     </Button>
-                    <Button colorScheme="dangerElevation0" onPress={clearStorage}>
+                    <Button colorScheme="redElevation0" onPress={clearStorage}>
                         Wipe all data
                     </Button>
                 </VStack>

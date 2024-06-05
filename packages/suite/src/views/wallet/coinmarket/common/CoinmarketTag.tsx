@@ -7,7 +7,6 @@ const TagRow = styled.div`
 `;
 
 const Tag = styled.div`
-    margin: 0 16px 2px;
     padding: 3px 8px 0;
     border-radius: ${borders.radii.xs};
     background: ${({ theme }) => theme.TYPE_ORANGE};
@@ -19,8 +18,9 @@ const Tag = styled.div`
 
 interface CoinmarketTagProps {
     tag?: string;
+    className?: string;
 }
 
-export const CoinmarketTag = ({ tag }: CoinmarketTagProps) => (
-    <TagRow>{tag && <Tag>{tag}</Tag>}</TagRow>
+export const CoinmarketTag = ({ tag, className }: CoinmarketTagProps) => (
+    <TagRow className={className}>{tag && <Tag>{tag}</Tag>}</TagRow>
 );

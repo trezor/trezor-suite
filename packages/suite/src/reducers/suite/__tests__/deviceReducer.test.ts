@@ -125,21 +125,6 @@ describe('SUITE.AUTH_DEVICE', () => {
     });
 });
 
-describe('SUITE.CREATE_DEVICE_INSTANCE', () => {
-    fixtures.createInstance.forEach(f => {
-        it(f.description, () => {
-            let state: State = f.initialState;
-            f.actions.forEach(a => {
-                state = deviceReducer(state, a as Action);
-            });
-            expect(state.devices.length).toEqual(f.result.length);
-            state.devices.forEach((device, i) => {
-                expect(device).toMatchObject(f.result[i]);
-            });
-        });
-    });
-});
-
 describe('SUITE.FORGET_DEVICE', () => {
     fixtures.forget.forEach(f => {
         it(f.description, () => {

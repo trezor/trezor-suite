@@ -22,7 +22,6 @@ const getCoinFromTestnet = (symbol: Account['symbol']) => {
         case 'dsol':
             return 'sol';
         case 'tsep':
-        case 'tgor':
         case 'thol':
             return 'eth';
         default:

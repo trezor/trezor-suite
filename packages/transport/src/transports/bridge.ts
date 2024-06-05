@@ -2,7 +2,7 @@ import { versionUtils, createDeferred, Deferred, createTimeoutPromise } from '@t
 import { PROTOCOL_MALFORMED, bridge as bridgeProtocol } from '@trezor/protocol';
 import { bridgeApiCall } from '../utils/bridgeApiCall';
 import * as bridgeApiResult from '../utils/bridgeApiResult';
-import { buildBuffers } from '../utils/send';
+import { buildMessage } from '../utils/send';
 import { receiveAndParse } from '../utils/receive';
 import {
     AbstractTransport,
@@ -11,7 +11,7 @@ import {
 } from './abstract';
 
 import * as ERRORS from '../errors';
-import { AnyError, AsyncResultWithTypedError, Descriptor } from '../types';
+import { AnyError, AsyncResultWithTypedError, Descriptor, Session } from '../types';
 
 const DEFAULT_URL = 'http://127.0.0.1:21325';
 
@@ -72,7 +72,7 @@ export class BridgeTransport extends AbstractTransport {
 
     public name = 'BridgeTransport' as const;
 
-    constructor(params?: BridgeConstructorParameters) {
+    constructor(params: BridgeConstructorParameters) {
         const { url = DEFAULT_URL, latestVersion, ...args } = params || {};
         super(args);
         this.url = url;
@@ -94,6 +94,8 @@ export class BridgeTransport extends AbstractTransport {
             if (this.latestVersion) {
                 this.isOutdated = versionUtils.isNewer(this.latestVersion, this.version);
             }
+
+            this.stopped = false;
 
             return this.success(undefined);
         });
@@ -195,7 +197,7 @@ export class BridgeTransport extends AbstractTransport {
     public release({ path, session, onClose }: AbstractTransportMethodParams<'release'>) {
         return this.scheduleAction(signal => {
             if (this.listening && !onClose) {
-                this.releasingSession = session;
+                this.releaseUnconfirmed[path] = session;
                 this.listenPromise[path] = createDeferred();
             }
 
@@ -225,11 +227,21 @@ export class BridgeTransport extends AbstractTransport {
     }
 
     // https://github.dev/trezor/trezord-go/blob/f559ee5079679aeb5f897c65318d3310f78223ca/core/core.go#L534
-    public call({ session, name, data, protocol }: AbstractTransportMethodParams<'call'>) {
+    public call({
+        session,
+        name,
+        data,
+        protocol: customProtocol,
+    }: AbstractTransportMethodParams<'call'>) {
         return this.scheduleAction(
             async signal => {
-                const { encode, decode } = protocol || bridgeProtocol;
-                const [bytes] = buildBuffers(this.messages, name, data, encode);
+                const protocol = customProtocol || bridgeProtocol;
+                const bytes = buildMessage({
+                    messages: this.messages,
+                    name,
+                    data,
+                    encode: protocol.encode,
+                });
                 const response = await this.post(`/call`, {
                     params: session,
                     body: bytes.toString('hex'),
@@ -241,7 +253,7 @@ export class BridgeTransport extends AbstractTransport {
                 const message = await receiveAndParse(
                     this.messages,
                     () => Promise.resolve(Buffer.from(response.payload, 'hex')),
-                    decode,
+                    protocol,
                 );
 
                 return this.success(message);
@@ -253,7 +265,12 @@ export class BridgeTransport extends AbstractTransport {
     public send({ session, name, data, protocol }: AbstractTransportMethodParams<'send'>) {
         return this.scheduleAction(async signal => {
             const { encode } = protocol || bridgeProtocol;
-            const [bytes] = buildBuffers(this.messages, name, data, encode);
+            const bytes = buildMessage({
+                messages: this.messages,
+                name,
+                data,
+                encode,
+            });
             const response = await this.post('/post', {
                 params: session,
                 body: bytes.toString('hex'),
@@ -267,7 +284,10 @@ export class BridgeTransport extends AbstractTransport {
         });
     }
 
-    public receive({ session, protocol }: AbstractTransportMethodParams<'receive'>) {
+    public receive({
+        session,
+        protocol: customProtocol,
+    }: AbstractTransportMethodParams<'receive'>) {
         return this.scheduleAction(async signal => {
             const response = await this.post('/read', {
                 params: session,
@@ -277,11 +297,11 @@ export class BridgeTransport extends AbstractTransport {
             if (!response.success) {
                 return response;
             }
-            const { decode } = protocol || bridgeProtocol;
+            const protocol = customProtocol || bridgeProtocol;
             const message = await receiveAndParse(
                 this.messages,
                 () => Promise.resolve(Buffer.from(response.payload, 'hex')),
-                decode,
+                protocol,
             );
 
             return this.success(message);
@@ -306,7 +326,7 @@ export class BridgeTransport extends AbstractTransport {
         endpoint: '/acquire',
         options: IncompleteRequestOptions,
     ): AsyncResultWithTypedError<
-        string,
+        Session,
         | BridgeCommonErrors
         | typeof ERRORS.DEVICE_NOT_FOUND
         | typeof ERRORS.SESSION_WRONG_PREVIOUS

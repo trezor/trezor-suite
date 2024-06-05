@@ -21,8 +21,7 @@ export { useCountdownTimer } from './useCountdownTimer';
 export { useDispatch } from './useDispatch';
 export { usePasswords } from './usePasswords';
 export { useDebugLanguageShortcut } from './useDebugLanguageShortcut';
-export { useValidatorsQueue } from './useValidatorsQueue';
-export { useEverstakePoolStats } from './useEverstakePoolStats';
+export { useDisplayMode } from './useDisplayMode';
 
 // replaced in suite-native
 export { useLocales } from 'src/hooks/suite/useLocales';

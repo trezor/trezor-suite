@@ -44,9 +44,8 @@ export const RecoveryStep = () => {
 
     if (status === 'initial') {
         // 1. step where users chooses number of words in case of T1B1
-        // In case of T2T1 and T2B1 show CTA button to start the process
+        // In case of T2T1, T3T1, T2B1 show CTA button to start the process
         if (deviceModelInternal === DeviceModelInternal.T1B1) {
-            // T1B1
             return (
                 <RecoveryStepBox
                     key={status} // to properly rerender in translation mode
@@ -63,7 +62,6 @@ export const RecoveryStep = () => {
             );
         }
 
-        // T2T1 and T2B1
         return (
             <RecoveryStepBox
                 key={status} // to properly rerender in translation mode
@@ -72,7 +70,6 @@ export const RecoveryStep = () => {
                     <Translation
                         id={pickByDeviceModel(deviceModelInternal, {
                             default: 'TR_RECOVER_SUBHEADING_TOUCH',
-                            [DeviceModelInternal.T2T1]: 'TR_RECOVER_SUBHEADING_TOUCH',
                             [DeviceModelInternal.T2B1]: 'TR_RECOVER_SUBHEADING_BUTTONS',
                         })}
                     />
@@ -115,8 +112,7 @@ export const RecoveryStep = () => {
                 key={status} // to properly rerender in translation mode
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 description={pickByDeviceModel(deviceModelInternal, {
-                    default: undefined,
-                    [DeviceModelInternal.T2T1]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
+                    default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
                     [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 device={device}
@@ -148,9 +144,8 @@ export const RecoveryStep = () => {
                 $deviceModelInternal={deviceModelInternal}
                 device={device}
                 description={pickByDeviceModel(deviceModelInternal, {
-                    default: undefined,
+                    default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
                     [DeviceModelInternal.T1B1]: getModel1Description(),
-                    [DeviceModelInternal.T2T1]: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
                     [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 isActionAbortable

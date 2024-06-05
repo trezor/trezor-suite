@@ -1,6 +1,11 @@
 import type { PROTO } from '../constants';
 import type { ReleaseInfo } from './firmware';
 
+/**
+ * - `available`  no other application has an active session
+ * - `occupied`   other application has an active session
+ * - `used`       another has released the device and no other application has an active session
+ */
 export type DeviceStatus = 'available' | 'occupied' | 'used';
 
 export type DeviceMode = 'normal' | 'bootloader' | 'initialize' | 'seedless';

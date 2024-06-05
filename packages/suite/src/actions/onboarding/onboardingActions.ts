@@ -8,7 +8,7 @@ import { AnyStepId, AnyPath } from 'src/types/onboarding';
 import steps from 'src/config/onboarding/steps';
 import { findNextStep, findPrevStep, isStepUsed } from 'src/utils/onboarding/steps';
 import { GetState, Dispatch } from 'src/types/suite';
-import { DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
+import { BackupType, DeviceTutorialStatus } from 'src/reducers/onboarding/onboardingReducer';
 
 export type OnboardingAction =
     | {
@@ -37,6 +37,10 @@ export type OnboardingAction =
     | {
           type: typeof ONBOARDING.SET_TUTORIAL_STATUS;
           payload: DeviceTutorialStatus;
+      }
+    | {
+          type: typeof ONBOARDING.SELECT_BACKUP_TYPE;
+          payload: BackupType;
       };
 
 const goToStep = (stepId: AnyStepId): OnboardingAction => ({
@@ -113,6 +117,11 @@ const setDeviceTutorialStatus = (status: DeviceTutorialStatus): OnboardingAction
     payload: status,
 });
 
+const updateBackupType = (payload: BackupType): OnboardingAction => ({
+    type: ONBOARDING.SELECT_BACKUP_TYPE,
+    payload,
+});
+
 const beginOnboardingTutorial = () => async (dispatch: Dispatch, getState: GetState) => {
     const device = selectDevice(getState());
     if (!device) return;
@@ -139,4 +148,5 @@ export {
     updateAnalytics,
     setDeviceTutorialStatus,
     beginOnboardingTutorial,
+    updateBackupType,
 };

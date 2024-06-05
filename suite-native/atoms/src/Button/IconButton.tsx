@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { Pressable, PressableProps } from 'react-native';
 import Animated from 'react-native-reanimated';
 
@@ -27,7 +27,7 @@ type IconButtonProps = Omit<PressableProps, 'style' | 'onPressIn' | 'onPressOut'
     colorScheme?: ButtonColorScheme;
     size?: ButtonSize;
     style?: NativeStyleObject;
-    title?: string;
+    title?: ReactNode;
     isDisabled?: boolean;
 };
 
@@ -35,6 +35,7 @@ const iconButtonStyle = mergeNativeStyles([
     buttonStyle,
     prepareNativeStyle<ButtonStyleProps>((_, { size, hasTitle }) => {
         const sizeDimensions = {
+            extraSmall: 36,
             small: 40,
             medium: 48,
             large: 56,
@@ -59,8 +60,8 @@ export const IconButton = ({
 }: IconButtonProps) => {
     const [isPressed, setIsPressed] = useState(false);
     const { applyStyle } = useNativeStyles();
-    const { textColor, disabledTextColor, backgroundColor, onPressColor } =
-        buttonSchemeToColorsMap[colorScheme];
+    const { disabledColors, ...baseColors } = buttonSchemeToColorsMap[colorScheme];
+    const { backgroundColor, onPressColor, iconColor } = isDisabled ? disabledColors : baseColors;
 
     const animatedPressStyle = useButtonPressAnimatedStyle(
         isPressed,
@@ -68,8 +69,6 @@ export const IconButton = ({
         backgroundColor,
         onPressColor,
     );
-
-    const iconColor = isDisabled ? disabledTextColor : textColor;
 
     const handlePressIn = () => setIsPressed(true);
     const handlePressOut = () => setIsPressed(false);
@@ -94,7 +93,7 @@ export const IconButton = ({
                             style,
                         ]}
                     >
-                        <ButtonIcon iconName={iconName} color={iconColor} buttonSize={size} />
+                        <ButtonIcon iconName={iconName} color={iconColor} size={size} />
                     </Animated.View>
                     {title && (
                         <Text variant="label" color="textSubdued">

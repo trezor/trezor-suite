@@ -9,6 +9,7 @@ export type PushTransaction = Static<typeof PushTransaction>;
 export const PushTransaction = Type.Object({
     tx: Type.String(),
     coin: Type.String(),
+    identity: Type.Optional(Type.String()),
 });
 
 // push transaction response

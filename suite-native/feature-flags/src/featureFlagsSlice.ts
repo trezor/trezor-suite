@@ -1,11 +1,13 @@
-import { Platform } from 'react-native';
-
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+import { isAndroid } from '@trezor/env-utils';
+import { isDebugEnv, isDetoxTestBuild, isDevelopOrDebugEnv } from '@suite-native/config';
 
 export const FeatureFlag = {
     IsDeviceConnectEnabled: 'isDeviceConnectEnabled',
     IsPassphraseEnabled: 'isPassphraseEnabled',
-    IsAddCoinAccountEnabled: 'isAddCoinAccountEnabled',
+    IsSendEnabled: 'isSendEnabled',
+    IsRegtestEnabled: 'isRegtestEnabled',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -16,15 +18,17 @@ export type FeatureFlagsRootState = {
 };
 
 export const featureFlagsInitialState: FeatureFlagsState = {
-    [FeatureFlag.IsDeviceConnectEnabled]: Platform.OS === 'android',
-    [FeatureFlag.IsPassphraseEnabled]: false,
-    [FeatureFlag.IsAddCoinAccountEnabled]: Platform.OS === 'android',
+    [FeatureFlag.IsDeviceConnectEnabled]: isAndroid() || isDebugEnv(),
+    [FeatureFlag.IsPassphraseEnabled]: isDebugEnv(),
+    [FeatureFlag.IsSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
+    [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsDeviceConnectEnabled,
     FeatureFlag.IsPassphraseEnabled,
-    FeatureFlag.IsAddCoinAccountEnabled,
+    FeatureFlag.IsSendEnabled,
+    FeatureFlag.IsRegtestEnabled,
 ];
 
 export const featureFlagsSlice = createSlice({

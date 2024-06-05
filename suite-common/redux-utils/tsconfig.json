@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../metadata-types" },
         { "path": "../suite-config" },
         { "path": "../suite-types" },
         { "path": "../wallet-config" },

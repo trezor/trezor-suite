@@ -1,13 +1,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 const { withGradleProperties } = require('expo/config-plugins');
 
-const newGraddleProperties = [
-    {
-        type: 'property',
-        key: 'FLIPPER_VERSION',
-        value: '0.246.0',
-    },
-];
+const newGraddleProperties = [];
 
 module.exports = config =>
     withGradleProperties(config, config => {

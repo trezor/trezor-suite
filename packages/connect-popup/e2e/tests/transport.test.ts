@@ -1,6 +1,6 @@
 import { test, expect, firefox, chromium, Page } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
-import { waitAndClick, log } from '../support/helpers';
+import { waitAndClick, log, formatUrl } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
@@ -43,8 +43,9 @@ fixtures.forEach(f => {
         const page = await context.newPage();
 
         log(`going to: ${url}${f.queryString}#/method/verifyMessage`);
-        await page.goto(`${url}${f.queryString}#/method/verifyMessage`);
+        await page.goto(formatUrl(url, `methods/bitcoin/verifyMessage/${f.queryString}`));
         log('waiting for explorer to load');
+        await waitAndClick(page, ['@api-playground/collapsible-box']);
         await page.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });

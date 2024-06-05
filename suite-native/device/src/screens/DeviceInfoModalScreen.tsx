@@ -32,23 +32,18 @@ import {
     selectDeviceLabel,
 } from '@suite-common/wallet-core';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { useTranslate } from '@suite-native/intl';
+import { Translation, useTranslate } from '@suite-native/intl';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { useOpenLink } from '@suite-native/link';
 
 import { HowToUpdateBottomSheet } from '../components/HowToUpdateBottomSheet';
 
-const deviceImageMap = {
-    [DeviceModelInternal.T1B1]: require('../assets/t1.png'),
-    [DeviceModelInternal.T2T1]: require('../assets/tt.png'),
-    [DeviceModelInternal.T2B1]: require('../assets/ts3.png'),
-} as const satisfies Record<DeviceModelInternal, string>;
-
-const deviceModelNameMap = {
-    [DeviceModelInternal.T1B1]: 'Trezor Model One',
-    [DeviceModelInternal.T2T1]: 'Trezor Model T',
-    [DeviceModelInternal.T2B1]: 'Trezor Safe 3',
-} as const satisfies Record<DeviceModelInternal, string>;
+const deviceImageMap: Record<DeviceModelInternal, string> = {
+    [DeviceModelInternal.T1B1]: require('../assets/t1b1.png'),
+    [DeviceModelInternal.T2T1]: require('../assets/t2t1.png'),
+    [DeviceModelInternal.T2B1]: require('../assets/t2b1.png'),
+    [DeviceModelInternal.T3T1]: require('../assets/t3t1.png'),
+};
 
 const emptyBoxStyle = prepareNativeStyle(() => ({
     width: 48,
@@ -80,13 +75,13 @@ export const DeviceInfoModalScreen = () => {
         if (G.isNotNullable(deviceReleaseInfo)) {
             if (isUpgradable) {
                 return {
-                    alertTitle: translate('deviceInfo.outdatedFw'),
+                    alertTitle: <Translation id="deviceInfo.outdatedFw" />,
                     alertVariant: 'warning',
                 } as const;
             }
 
             return {
-                alertTitle: translate('deviceInfo.upToDateFw'),
+                alertTitle: <Translation id="deviceInfo.upToDateFw" />,
                 alertVariant: 'success',
             } as const;
         }
@@ -142,7 +137,7 @@ export const DeviceInfoModalScreen = () => {
                         <VStack spacing="extraSmall" justifyContent="center">
                             <Text variant="titleSmall">{deviceLabel}</Text>
                             <Text variant="label" color="textSubdued">
-                                {deviceModelNameMap[deviceModel]}
+                                {device?.name}
                             </Text>
                             <Text variant="hint">
                                 {translate('deviceInfo.installedFw', {
@@ -157,20 +152,20 @@ export const DeviceInfoModalScreen = () => {
                 <Button
                     colorScheme="tertiaryElevation0"
                     onPress={handleAccessoriesClick}
-                    iconRight="arrowUpRight"
+                    viewRight="arrowUpRight"
                 >
-                    {translate('deviceInfo.goToAccessories')}
+                    <Translation id="deviceInfo.goToAccessories" />
                 </Button>
                 {isUpgradable && (
                     <Button colorScheme="primary" onPress={handleUpdateClick}>
-                        {translate('deviceInfo.updateHowTo.title')}
+                        <Translation id="deviceInfo.updateHowTo.title" />
                     </Button>
                 )}
             </VStack>
             <HowToUpdateBottomSheet
                 isVisible={isUpdateSheetOpen}
                 onClose={setIsUpdateSheetOpen}
-                title={translate('deviceInfo.updateHowTo.title')}
+                title={<Translation id="deviceInfo.updateHowTo.title" />}
             />
         </Screen>
     );

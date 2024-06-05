@@ -1,7 +1,12 @@
 import type { SocksProxyAgentOptions } from 'socks-proxy-agent';
 
 import type { Transaction as BlockbookTransaction, VinVout } from './blockbook';
-import type { TokenTransfer as BlockbookTokenTransfer } from './blockbook-api';
+import type {
+    AddressAlias,
+    TokenTransfer as BlockbookTokenTransfer,
+    ContractInfo,
+    StakingPool,
+} from './blockbook-api';
 
 /* Common types used in both params and responses */
 
@@ -68,7 +73,7 @@ export type TransactionDetail = {
     totalOutput: string;
 };
 
-export interface FiatRatesLegacy {
+export interface FiatRatesBySymbol {
     [symbol: string]: number | undefined;
 }
 
@@ -78,7 +83,7 @@ export interface AccountBalanceHistory {
     received: string;
     sent: string;
     sentToSelf?: string; // should always be there for blockbook >= 0.3.3
-    rates: FiatRatesLegacy;
+    rates: FiatRatesBySymbol;
 }
 
 export interface Transaction {
@@ -164,18 +169,6 @@ export interface TokenInfo {
     // transfers: number, // total transactions?
 }
 
-export interface StakingPool {
-    autocompoundBalance: string;
-    claimableAmount: string;
-    contract: string;
-    depositedBalance: string;
-    name: string;
-    pendingBalance: string;
-    pendingDepositedBalance: string;
-    restakedReward: string;
-    withdrawTotalAmount: string;
-}
-
 export interface AccountInfo {
     descriptor: string;
     balance: string;
@@ -192,9 +185,11 @@ export interface AccountInfo {
         addrTxCount?: number; // number of confirmed address/transaction pairs, only for bitcoin-like
     };
     misc?: {
-        // ETH
+        // EVM
         nonce?: string;
-        erc20Contract?: TokenInfo;
+        contractInfo?: ContractInfo;
+        stakingPools?: StakingPool[];
+        addressAliases?: { [key: string]: AddressAlias };
         // XRP
         sequence?: number;
         reserve?: string;
@@ -221,7 +216,6 @@ export interface AccountInfo {
         ledger: number;
         seq: number;
     };
-    stakingPools?: StakingPool[];
 }
 
 export interface SubscriptionAccountInfo {

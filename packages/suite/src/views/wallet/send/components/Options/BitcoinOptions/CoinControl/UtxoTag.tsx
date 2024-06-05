@@ -8,7 +8,7 @@ interface UtxoTagProps {
 }
 
 export const UtxoTag = ({ icon, iconColor, tooltipMessage }: UtxoTagProps) => (
-    <Tooltip interactive={false} content={tooltipMessage}>
+    <Tooltip content={tooltipMessage}>
         <Icon icon={icon} color={iconColor} size={16} />
     </Tooltip>
 );

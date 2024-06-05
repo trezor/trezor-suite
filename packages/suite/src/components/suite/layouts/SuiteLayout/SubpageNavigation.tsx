@@ -19,7 +19,7 @@ const Container = styled.div<{ $isFullWidth: boolean }>`
     min-height: ${SUBPAGE_NAV_HEIGHT};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
     padding: ${spacingsPx.xs} 0 ${spacingsPx.sm};
-    border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation0};
+    border-bottom: 1px solid ${({ theme }) => theme.borderElevation1};
     overflow: auto hidden;
     z-index: ${zIndices.pageHeader};
     width: 100%;

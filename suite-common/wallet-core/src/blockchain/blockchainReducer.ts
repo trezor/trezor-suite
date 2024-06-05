@@ -3,7 +3,7 @@ import { memoizeWithArgs } from 'proxy-memoize';
 
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { networksCompatibility, NetworkSymbol } from '@suite-common/wallet-config';
-import { BackendType, BlockchainNetworks } from '@suite-common/wallet-types';
+import { BackendType, Blockchain, BlockchainNetworks } from '@suite-common/wallet-types';
 import { getNetwork } from '@suite-common/wallet-utils';
 import {
     BLOCKCHAIN as TREZOR_CONNECT_BLOCKCHAIN_ACTIONS,
@@ -56,9 +56,33 @@ export const blockchainInitialState: BlockchainNetworks = networksCompatibility.
     initialStatePredefined as BlockchainState,
 );
 
+const writeIdentityConnection = (
+    state: BlockchainState,
+    symbol: NetworkSymbol,
+    identity: string,
+    data: Partial<NonNullable<Blockchain['identityConnections']>[string]>,
+) => {
+    const blockchain = state[symbol];
+    const connections = blockchain.identityConnections ?? (blockchain.identityConnections = {});
+    connections[identity] = {
+        ...(connections[identity] ?? { connected: false }),
+        ...data,
+    };
+};
+
 const connect = (draft: BlockchainState, info: BlockchainInfo) => {
     const network = getNetwork(info.coin.shortcut.toLowerCase());
     if (!network) return;
+
+    if (info.identity) {
+        writeIdentityConnection(draft, network.symbol, info.identity, {
+            connected: true,
+            error: undefined,
+            reconnectionTime: undefined,
+        });
+
+        return;
+    }
 
     const isHttp = isHttpProtocol(info.url); // can use dynamic backend url settings
 
@@ -87,23 +111,30 @@ const connect = (draft: BlockchainState, info: BlockchainInfo) => {
         blockHeight: info.blockHeight,
         version: info.version,
         backends: draft[network.symbol].backends,
+        identityConnections: draft[network.symbol].identityConnections,
     };
-
-    delete draft[network.symbol].error;
-    delete draft[network.symbol].reconnection;
 };
 
-const error = (draft: BlockchainState, symbol: string, error: string) => {
+const error = (draft: BlockchainState, payload: BlockchainError) => {
+    const {
+        error,
+        identity,
+        coin: { shortcut: symbol },
+    } = payload;
     const network = getNetwork(symbol.toLowerCase());
     if (!network) return;
 
-    draft[network.symbol] = {
-        ...draft[network.symbol],
-        connected: false,
-        explorer: network.explorer,
-        error,
-    };
-    delete draft[network.symbol].url;
+    if (identity) {
+        writeIdentityConnection(draft, network.symbol, identity, { connected: false, error });
+    } else {
+        draft[network.symbol] = {
+            ...draft[network.symbol],
+            connected: false,
+            explorer: network.explorer,
+            error,
+        };
+        delete draft[network.symbol].url;
+    }
 };
 
 const update = (draft: BlockchainState, block: BlockchainBlock) => {
@@ -121,12 +152,16 @@ const reconnecting = (draft: BlockchainState, payload: BlockchainReconnecting) =
     const network = getNetwork(payload.coin.shortcut.toLowerCase());
     if (!network) return;
 
-    draft[network.symbol] = {
-        ...draft[network.symbol],
-        reconnection: {
-            time: payload.time,
-        },
-    };
+    if (payload.identity) {
+        writeIdentityConnection(draft, network.symbol, payload.identity, {
+            reconnectionTime: payload.time,
+        });
+    } else {
+        draft[network.symbol] = {
+            ...draft[network.symbol],
+            reconnectionTime: payload.time,
+        };
+    }
 };
 
 export const prepareBlockchainReducer = createReducerWithExtraDeps(
@@ -161,7 +196,7 @@ export const prepareBlockchainReducer = createReducerWithExtraDeps(
             .addMatcher(
                 action => action.type === TREZOR_CONNECT_BLOCKCHAIN_ACTIONS.ERROR,
                 (state, { payload }: PayloadAction<BlockchainError>) => {
-                    error(state, payload.coin.shortcut, payload.error);
+                    error(state, payload);
                 },
             )
             .addMatcher(

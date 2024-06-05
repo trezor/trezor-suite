@@ -7,11 +7,11 @@ import { createLogger } from 'redux-logger';
 import { prepareFirmwareReducer } from '@suite-common/wallet-core';
 import { addLog } from '@suite-common/logger';
 import { isCodesignBuild } from '@trezor/env-utils';
+import { mergeDeepObject } from '@trezor/utils';
 
 import suiteMiddlewares from 'src/middlewares/suite';
 import walletMiddlewares from 'src/middlewares/wallet';
 import onboardingMiddlewares from 'src/middlewares/onboarding';
-import firmwareMiddlewares from 'src/middlewares/firmware';
 import backupMiddlewares from 'src/middlewares/backup';
 import recoveryMiddlewares from 'src/middlewares/recovery';
 import suiteReducers from 'src/reducers/suite';
@@ -27,8 +27,10 @@ import type { PreloadStoreAction } from 'src/support/suite/preloadStore';
 
 import { desktopReducer } from './desktop';
 import { extraDependencies } from '../support/extraDependencies';
+import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 
 const firmwareReducer = prepareFirmwareReducer(extraDependencies);
+const tokenDefinitionsReducer = prepareTokenDefinitionsReducer(extraDependencies);
 
 const rootReducer = combineReducers({
     ...suiteReducers,
@@ -38,6 +40,7 @@ const rootReducer = combineReducers({
     firmware: firmwareReducer,
     backup: backupReducers,
     desktop: desktopReducer,
+    tokenDefinitions: tokenDefinitionsReducer,
 });
 
 export type AppState = ReturnType<typeof rootReducer>;
@@ -48,7 +51,6 @@ const middleware = [
     ...suiteMiddlewares,
     ...walletMiddlewares,
     ...onboardingMiddlewares,
-    ...firmwareMiddlewares,
     ...backupMiddlewares,
     ...recoveryMiddlewares,
 ];
@@ -78,16 +80,31 @@ const devTools =
           }
         : false;
 
-export const initStore = (preloadStoreAction?: PreloadStoreAction) => {
+const patchConfirm = (statePatch: any) =>
+    !isCodesignBuild() ||
+    confirm(
+        `Trezor Suite is starting with partially predefined state. Press OK only if you intended to do that!\n\n` +
+            JSON.stringify(statePatch, null, 4),
+    );
+
+export const initStore = (
+    preloadStoreAction?: PreloadStoreAction,
+    statePatch?: Record<string, any>,
+) => {
     // get initial state by calling STORAGE.LOAD action with optional payload
     // payload will be processed in each reducer explicitly
     const preloadedState = preloadStoreAction
         ? rootReducer(undefined, preloadStoreAction)
         : undefined;
 
+    const patchedState =
+        preloadedState && statePatch && patchConfirm(statePatch)
+            ? mergeDeepObject.withOptions({ dotNotation: true }, preloadedState, statePatch)
+            : preloadedState;
+
     return configureStore({
         reducer: rootReducer,
-        preloadedState,
+        preloadedState: patchedState,
         middleware,
         devTools,
     });

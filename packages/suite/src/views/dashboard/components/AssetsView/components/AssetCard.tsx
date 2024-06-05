@@ -25,10 +25,6 @@ import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { useFiatFromCryptoValue } from 'src/hooks/suite/useFiatFromCryptoValue';
 
 const StyledCard = styled(Card)`
-    &:hover {
-        box-shadow: ${({ theme }) => theme.boxShadowElevated};
-        cursor: pointer;
-    }
     transition: box-shadow 0.2s;
 
     ${styledHoverOnParentOfArrowIcon}
@@ -93,7 +89,7 @@ const FailedContainer = styled.div`
     ${typography.hint}
 
     ${variables.SCREEN_QUERY.MOBILE} {
-        border-bottom: 1px solid ${({ theme }) => theme.borderOnElevation1};
+        border-bottom: 1px solid ${({ theme }) => theme.borderElevation2};
     }
 `;
 

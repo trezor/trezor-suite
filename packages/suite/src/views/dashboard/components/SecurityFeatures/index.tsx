@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { selectDevice, createDeviceInstance } from '@suite-common/wallet-core';
+import { selectDevice, createDeviceInstanceThunk } from '@suite-common/wallet-core';
 import { Button, variables } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
@@ -15,6 +15,7 @@ import { SettingsAnchor } from 'src/constants/suite/anchors';
 import { selectIsDiscreteModeActive } from 'src/reducers/wallet/settingsReducer';
 
 import { SecurityCard, SecurityCardProps } from '../SecurityCard';
+import { selectSuiteFlags } from '../../../../reducers/suite/suiteReducer';
 
 const Content = styled.div`
     display: grid;
@@ -33,7 +34,7 @@ const Content = styled.div`
 const SecurityFeatures = () => {
     const discreetMode = useSelector(selectIsDiscreteModeActive);
     const device = useSelector(selectDevice);
-    const flags = useSelector(state => state.suite.flags);
+    const { discreetModeCompleted, securityStepsHidden } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     const { isLocked } = useDevice();
@@ -42,7 +43,6 @@ const SecurityFeatures = () => {
     const discoveryStatus = getDiscoveryStatus();
     const isDisabledGlobal = discoveryStatus && discoveryStatus.status === 'loading';
 
-    const { discreetModeCompleted, securityStepsHidden } = flags;
     let needsBackup;
     let pinEnabled;
     let hiddenWalletCreated;
@@ -51,7 +51,8 @@ const SecurityFeatures = () => {
     if (device && device.features) {
         // TODO: add "error - backup failed" instead of needsBackup
         // TODO: add "enable passphrase" instead of hiddenWalletCreated
-        needsBackup = device.features.needs_backup || device.features.unfinished_backup;
+        needsBackup =
+            device.features.backup_availability === 'Required' || device.features.unfinished_backup;
         pinEnabled = device.features.pin_protection;
         hiddenWalletCreated = device.features.passphrase_protection;
         backupFailed = device.features.unfinished_backup;
@@ -140,7 +141,7 @@ const SecurityFeatures = () => {
               cta: {
                   label: <Translation id="TR_CREATE_HIDDEN_WALLET" />,
                   action: () =>
-                      dispatch(createDeviceInstance({ device: device as AcquiredDevice })),
+                      dispatch(createDeviceInstanceThunk({ device: device as AcquiredDevice })),
                   dataTest: 'create-hidden-wallet',
                   isDisabled: isDeviceLocked,
               },

@@ -2,10 +2,16 @@ import { TrezorDevice } from 'src/types/suite/index';
 import { DeviceModelInternal } from '@trezor/connect';
 import { deflateRaw } from 'pako';
 
-export const deviceModelInformation = {
+// TODO: this is already part of features (since certain version) so I suggest forbidding screen changes
+// prior to that version and removing this definition from here
+export const deviceModelInformation: Record<
+    DeviceModelInternal,
+    { width: number; height: number; supports: Array<'png' | 'jpeg'> }
+> = {
     [DeviceModelInternal.T1B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
     [DeviceModelInternal.T2T1]: { width: 240, height: 240, supports: ['jpeg'] },
     [DeviceModelInternal.T2B1]: { width: 128, height: 64, supports: ['png', 'jpeg'] },
+    [DeviceModelInternal.T3T1]: { width: 240, height: 240, supports: ['jpeg'] },
 };
 
 export const enum ImageValidationError {
@@ -207,7 +213,7 @@ export const isValidImageHeight = (
 };
 
 export const isProgressiveJPG = (buffer: ArrayBuffer, deviceModelInternal: DeviceModelInternal) => {
-    if (deviceModelInternal !== DeviceModelInternal.T2T1) {
+    if ([DeviceModelInternal.T2B1, DeviceModelInternal.T1B1].includes(deviceModelInternal)) {
         return false;
     }
 
@@ -223,7 +229,7 @@ export const isProgressiveJPG = (buffer: ArrayBuffer, deviceModelInternal: Devic
 };
 
 export const isValidImageSize = (file: File, deviceModelInternal: DeviceModelInternal) => {
-    if (deviceModelInternal !== DeviceModelInternal.T2T1) {
+    if ([DeviceModelInternal.T2B1, DeviceModelInternal.T1B1].includes(deviceModelInternal)) {
         return true;
     }
 
@@ -301,7 +307,7 @@ export const imagePathToHex = async (
     const response = await fetch(imagePath);
 
     // image can be loaded to device without modifications -> it is in original quality
-    if (deviceModelInternal === DeviceModelInternal.T2T1) {
+    if (![DeviceModelInternal.T2B1, DeviceModelInternal.T1B1].includes(deviceModelInternal)) {
         const arrayBuffer = await response.arrayBuffer();
 
         return Buffer.from(arrayBuffer).toString('hex');

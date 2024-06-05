@@ -1,6 +1,7 @@
 import { ListenerMethod, SendMethod, InvokeMethod } from './methods';
 import {
     SuiteThemeVariant,
+    HandshakeInit,
     HandshakeClient,
     HandshakeElectron,
     HandshakeEvent,
@@ -12,6 +13,7 @@ import {
     HandshakeTorModule,
     TorStatusEvent,
     Status,
+    BridgeSettings,
 } from './messages';
 
 // Event messages from renderer to main process
@@ -58,6 +60,7 @@ export interface RendererChannels {
 
     // bridge
     'bridge/status': Status;
+    'bridge/settings': BridgeSettings;
 
     'handshake/event': HandshakeEvent;
 }
@@ -66,7 +69,7 @@ export interface RendererChannels {
 // Sent by DesktopApi.[method] via ipcRenderer.invoke (./main)
 // Handled by ipcMain.handle (see packages/suite-desktop/src/modules/*)
 export interface InvokeChannels {
-    'handshake/client': () => void;
+    'handshake/client': () => HandshakeInit;
     'handshake/load-modules': (payload: HandshakeClient) => InvokeResult<HandshakeElectron>;
     'handshake/load-tor-module': () => HandshakeTorModule;
     'metadata/read': (options: { file: string }) => InvokeResult<string>;
@@ -77,6 +80,8 @@ export interface InvokeChannels {
     'tor/toggle': (shouldEnableTor: boolean) => InvokeResult;
     'bridge/toggle': () => InvokeResult;
     'bridge/get-status': () => InvokeResult<Status>;
+    'bridge/change-settings': (payload: BridgeSettings) => InvokeResult;
+    'bridge/get-settings': () => InvokeResult<BridgeSettings>;
     'user-data/clear': () => InvokeResult;
     'user-data/open': (directory?: string) => InvokeResult;
     'udev/install': () => InvokeResult;
@@ -130,4 +135,6 @@ export interface DesktopApi {
     // Bridge
     getBridgeStatus: DesktopApiInvoke<'bridge/get-status'>;
     toggleBridge: DesktopApiInvoke<'bridge/toggle'>;
+    changeBridgeSettings: DesktopApiInvoke<'bridge/change-settings'>;
+    getBridgeSettings: DesktopApiInvoke<'bridge/get-settings'>;
 }

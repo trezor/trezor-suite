@@ -1,11 +1,12 @@
-import { AbstractApi, AbstractApiConstructorParams } from './abstract';
-import { AsyncResultWithTypedError } from '../types';
+import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
+import { AsyncResultWithTypedError, DescriptorApiLevel } from '../types';
 import {
     CONFIGURATION_ID,
     ENDPOINT_ID,
     INTERFACE_ID,
     T1_HID_VENDOR,
     TREZOR_USB_DESCRIPTORS,
+    WEBUSB_BOOTLOADER_PRODUCT,
 } from '../constants';
 import { createTimeoutPromise } from '@trezor/utils';
 
@@ -27,8 +28,10 @@ interface TransportInterfaceDevice {
 const INTERFACE_DEVICE_DISCONNECTED = 'The device was disconnected.' as const;
 
 export class UsbApi extends AbstractApi {
-    devices: TransportInterfaceDevice[] = [];
-    usbInterface: ConstructorParams['usbInterface'];
+    chunkSize = 64;
+
+    protected devices: TransportInterfaceDevice[] = [];
+    protected usbInterface: ConstructorParams['usbInterface'];
 
     constructor({ usbInterface, logger }: ConstructorParams) {
         super({ logger });
@@ -40,31 +43,22 @@ export class UsbApi extends AbstractApi {
         }
 
         this.usbInterface.onconnect = event => {
-            this.devices = [...this.devices, ...this.createDevices([event.device])];
-            this.emit(
-                'transport-interface-change',
-                this.devices.map(d => d.path),
-            );
+            const [_hidDevices, nonHidDevices] = this.filterDevices([event.device]);
+            this.devices = [...this.devices, ...this.createDevices(nonHidDevices)];
+            this.emit('transport-interface-change', this.devicesToDescriptors());
         };
 
         this.usbInterface.ondisconnect = event => {
             const { device } = event;
             if (!device.serialNumber) {
-                // this should never happen, if it does, it means, that there is something that passes
-                // filters (TREZOR_USB_DESCRIPTORS) but does not have serial number. this could indicate error in fw
-                this.emit('transport-interface-error', ERRORS.DEVICE_UNREADABLE);
-                this.logger.error('device does not have serial number');
-
+                // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
                 return;
             }
 
             const index = this.devices.findIndex(d => d.path === device.serialNumber);
             if (index > -1) {
                 this.devices.splice(index, 1);
-                this.emit(
-                    'transport-interface-change',
-                    this.devices.map(d => d.path),
-                );
+                this.emit('transport-interface-change', this.devicesToDescriptors());
             } else {
                 this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
                 this.logger.error('device that should be removed does not exist in state');
@@ -72,12 +66,35 @@ export class UsbApi extends AbstractApi {
         };
     }
 
+    private matchDeviceType(device: USBDevice) {
+        const isBootloader = device.productId === WEBUSB_BOOTLOADER_PRODUCT;
+        if (device.deviceVersionMajor === 2) {
+            if (isBootloader) {
+                return DEVICE_TYPE.TypeT2Boot;
+            } else {
+                return DEVICE_TYPE.TypeT2;
+            }
+        } else {
+            if (isBootloader) {
+                return DEVICE_TYPE.TypeT1WebusbBoot;
+            } else {
+                return DEVICE_TYPE.TypeT1Webusb;
+            }
+        }
+    }
+
+    private devicesToDescriptors(): DescriptorApiLevel[] {
+        return this.devices.map(d => ({
+            path: d.path,
+            type: this.matchDeviceType(d.device),
+            product: d.device.productId,
+        }));
+    }
+
     public async enumerate() {
         try {
             const devices = await this.usbInterface.getDevices();
-
             const [hidDevices, nonHidDevices] = this.filterDevices(devices);
-
             if (hidDevices.length) {
                 // hidDevices that do not support webusb. these are very very old. we used to emit unreadable
                 // device for these but I am not sure if it is still worth the effort.
@@ -85,7 +102,7 @@ export class UsbApi extends AbstractApi {
             }
             this.devices = this.createDevices(nonHidDevices);
 
-            return this.success(this.devices.map(d => d.path));
+            return this.success(this.devicesToDescriptors());
         } catch (err) {
             // this shouldn't throw
             return this.unknownError(err, []);
@@ -284,5 +301,12 @@ export class UsbApi extends AbstractApi {
         const nonHidDevices = trezorDevices.filter(dev => !this.deviceIsHid(dev));
 
         return [hidDevices, nonHidDevices];
+    }
+
+    public dispose() {
+        if (this.usbInterface) {
+            this.usbInterface.onconnect = null;
+            this.usbInterface.ondisconnect = null;
+        }
     }
 }

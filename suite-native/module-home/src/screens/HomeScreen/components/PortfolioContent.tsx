@@ -1,5 +1,5 @@
 import { useSelector } from 'react-redux';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -10,26 +10,30 @@ import {
     AccountsImportStackRoutes,
     RootStackParamList,
     RootStackRoutes,
+    SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
-import { useTranslate } from '@suite-native/intl';
+import {
+    AccountsRootState,
+    DeviceRootState,
+    selectDeviceAccountsByNetworkSymbol,
+    selectIsPortfolioTrackerDevice,
+} from '@suite-common/wallet-core';
+import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
 
-export type PortfolioContentRef = {
-    refetchGraph?: () => Promise<void>;
-};
-
-export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) => {
-    const { translate } = useTranslate();
-    const graphRef = useRef<PortfolioGraphRef>(null);
-
+export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
 
+    const testnetAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
+        selectDeviceAccountsByNetworkSymbol(state, 'test'),
+    );
+
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
+    const [isSendEnabled] = useFeatureFlag(FeatureFlag.IsSendEnabled);
 
     const handleImportAssets = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
@@ -41,17 +45,13 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
         navigation.navigate(RootStackRoutes.ReceiveModal, { closeActionType: 'back' });
     };
 
-    useImperativeHandle(
-        ref,
-        () => ({
-            refetchGraph: graphRef.current?.refetch,
-        }),
-        [],
-    );
+    const handleSend = () => {
+        navigation.navigate(RootStackRoutes.SendStack, { screen: SendStackRoutes.SendAccounts });
+    };
 
     return (
         <VStack spacing="large" marginTop="small">
-            <PortfolioGraph ref={graphRef} />
+            <PortfolioGraph ref={ref} />
             <VStack spacing="large" marginHorizontal="small">
                 <Box>
                     <Assets />
@@ -59,12 +59,12 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
                 {isPortfolioTrackerDevice && (
                     <Box>
                         <Button
-                            data-testID="@home/portfolio/sync-coins-button"
+                            testID="@home/portfolio/sync-coins-button"
                             colorScheme="tertiaryElevation0"
                             size="large"
                             onPress={handleImportAssets}
                         >
-                            {translate('moduleHome.buttons.syncMyCoins')}
+                            <Translation id="moduleHome.buttons.syncMyCoins" />
                         </Button>
                     </Box>
                 )}
@@ -76,12 +76,24 @@ export const PortfolioContent = forwardRef<PortfolioContentRef>((_props, ref) =>
                                 data-testID="@home/portolio/recieve-button"
                                 size="large"
                                 onPress={handleReceive}
-                                iconLeft="receive"
+                                viewLeft="receive"
                             >
-                                {translate('moduleHome.buttons.receive')}
+                                <Translation id="moduleHome.buttons.receive" />
                             </Button>
                         </Box>
                     </>
+                )}
+                {/* TODO: remove this button when there is a proper design of the send flow ready */}
+                {isSendEnabled && (
+                    <Box>
+                        <Button
+                            size="large"
+                            onPress={handleSend}
+                            disabled={testnetAccounts.length === 0}
+                        >
+                            Send crypto
+                        </Button>
+                    </Box>
                 )}
             </VStack>
         </VStack>

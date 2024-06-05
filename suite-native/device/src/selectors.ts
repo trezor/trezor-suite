@@ -2,11 +2,12 @@ import {
     AccountsRootState,
     DeviceRootState,
     DiscoveryRootState,
+    selectDevice,
     selectDeviceFirmwareVersion,
     selectDeviceModel,
     selectIsConnectedDeviceUninitialized,
     selectIsDeviceConnectedAndAuthorized,
-    selectIsDeviceDiscoveryEmpty,
+    selectIsEmptyDevice,
     selectIsUnacquiredDevice,
 } from '@suite-common/wallet-core';
 
@@ -34,7 +35,15 @@ export const selectIsDeviceReadyToUseAndAuthorized = (
 ) => {
     const isDeviceReadyToUse = selectIsDeviceReadyToUse(state);
     const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(state);
-    const isDeviceDiscoveryEmpty = selectIsDeviceDiscoveryEmpty(state);
+    const isEmptyDevice = selectIsEmptyDevice(state);
 
-    return isDeviceReadyToUse && isDeviceConnectedAndAuthorized && !isDeviceDiscoveryEmpty;
+    return isDeviceReadyToUse && isDeviceConnectedAndAuthorized && !isEmptyDevice;
+};
+
+export const selectDeviceError = (
+    state: DeviceRootState & AccountsRootState & DiscoveryRootState,
+) => {
+    const device = selectDevice(state);
+
+    return device?.error;
 };

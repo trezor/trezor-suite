@@ -1,5 +1,6 @@
 import produce from 'immer';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { memoizeWithArgs } from 'proxy-memoize';
 
 import { getInputSize, getOutputSize, RoundPhase } from '@trezor/coinjoin';
 import { PartialRecord } from '@trezor/type-utils';
@@ -546,8 +547,13 @@ export const coinjoinReducer = (
             case COINJOIN.CLIENT_ENABLE_SUCCESS:
                 createClient(draft, action.payload);
                 break;
-            case COINJOIN.CLIENT_DISABLE:
             case COINJOIN.CLIENT_ENABLE_FAILED:
+                draft.clients[action.payload.symbol] = {
+                    ...CLIENT_STATUS_FALLBACK,
+                    status: 'unavailable',
+                };
+                break;
+            case COINJOIN.CLIENT_DISABLE:
                 delete draft.clients[action.payload.symbol];
                 break;
             case COINJOIN.CLIENT_STATUS:
@@ -665,27 +671,26 @@ export const selectCurrentCoinjoinBalanceBreakdown = (state: CoinjoinRootState) 
     return balanceBreakdown;
 };
 
-export const selectRegisteredUtxosByAccountKey = (
-    state: CoinjoinRootState,
-    accountKey: AccountKey,
-) => {
-    const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
-    if (!coinjoinAccount?.prison) return;
-    const { prison, session, transactionCandidates } = coinjoinAccount;
+export const selectRegisteredUtxosByAccountKey = memoizeWithArgs(
+    (state: CoinjoinRootState, accountKey: AccountKey) => {
+        const coinjoinAccount = selectCoinjoinAccountByKey(state, accountKey);
+        if (!coinjoinAccount?.prison) return;
+        const { prison, session, transactionCandidates } = coinjoinAccount;
 
-    return Object.keys(prison).reduce<typeof prison>((result, key) => {
-        const inmate = prison[key];
-        // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
-        if (
-            inmate.roundId &&
-            (session || transactionCandidates?.some(tx => tx.roundId === inmate.roundId))
-        ) {
-            result[key] = inmate;
-        }
+        return Object.keys(prison).reduce<typeof prison>((result, key) => {
+            const inmate = prison[key];
+            // select **only** inmates with assigned roundId (signed in current round or promised to future blaming round)
+            if (
+                inmate.roundId &&
+                (session || transactionCandidates?.some(tx => tx.roundId === inmate.roundId))
+            ) {
+                result[key] = inmate;
+            }
 
-        return result;
-    }, {});
-};
+            return result;
+        }, {});
+    },
+);
 
 export const selectSessionProgressByAccountKey = (
     state: CoinjoinRootState,
@@ -925,6 +930,9 @@ export const selectCoinjoinSessionBlockerByAccountKey = (
     }
     if (selectIsFeatureDisabled(state, Feature.coinjoin)) {
         return 'FEATURE_DISABLED';
+    }
+    if (selectCoinjoinClient(state, accountKey)?.status === 'unavailable') {
+        return 'COORDINATOR_UNAVAILABLE';
     }
     if (!state.suite.online) {
         return 'OFFLINE';

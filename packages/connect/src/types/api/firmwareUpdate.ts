@@ -1,25 +1,30 @@
 import { Static, Type } from '@trezor/schema-utils';
-import { IntermediaryVersion } from '../firmware';
 import type { Params, Response } from '../params';
 
 export type FirmwareUpdate = Static<typeof FirmwareUpdate>;
 export const FirmwareUpdate = Type.Union([
     Type.Object({
         binary: Type.Optional(Type.Undefined()),
-        version: Type.Array(Type.Number(), { minItems: 3, maxItems: 3 }),
         btcOnly: Type.Optional(Type.Boolean()),
         baseUrl: Type.Optional(Type.String()),
-        intermediaryVersion: Type.Optional(IntermediaryVersion),
+        language: Type.Optional(Type.String()),
     }),
     Type.Object({
         binary: Type.ArrayBuffer(),
     }),
 ]);
 
-export interface FirmwareUpdateResponse {
-    hash: string;
-    challenge: string;
-}
+export type FirmwareUpdateResponse =
+    | {
+          check:
+              | 'mismatch' //  firmware is not legitimate
+              | 'valid' // ok
+              | 'omitted'; // custom fw binary, or maybe older fw
+      }
+    | {
+          check: 'other-error';
+          checkError: string; // unable to carry out the check due to a non-related error such as disconnected device
+      };
 
 export declare function firmwareUpdate(
     params: Params<FirmwareUpdate>,

@@ -22,10 +22,11 @@
         },
         { "path": "../atoms" },
         { "path": "../ethereum-tokens" },
-        { "path": "../module-settings" },
+        { "path": "../settings" },
         {
             "path": "../../packages/blockchain-link"
         },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/utils" }
     ]
 }

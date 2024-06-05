@@ -282,7 +282,7 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
-        features: ['tokens', 'staking', 'coin-definitions'],
+        features: ['tokens', 'staking' /* coin-definitions */],
         explorer: {
             tx: 'https://explorer.blockfrost.dev/transaction/',
             account: 'https://explorer.blockfrost.dev/account/',
@@ -292,6 +292,7 @@ export const networks = {
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
             [DeviceModelInternal.T2B1]: '2.6.1',
+            [DeviceModelInternal.T3T1]: '2.7.1',
         },
         label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockfrost'],
@@ -313,7 +314,7 @@ export const networks = {
         bip43Path: "m/44'/501'/i'/0'",
         decimals: 9,
         testnet: false,
-        features: ['tokens', 'coin-definitions' /* , 'staking' */],
+        features: ['tokens', 'coin-definitions' /*, 'staking' */],
         explorer: {
             tx: 'https://explorer.solana.com/tx/',
             account: 'https://explorer.solana.com/address/',
@@ -323,6 +324,7 @@ export const networks = {
         support: {
             [DeviceModelInternal.T2T1]: '2.6.4',
             [DeviceModelInternal.T2B1]: '2.6.4',
+            [DeviceModelInternal.T3T1]: '2.7.1',
         },
         label: 'TR_INCLUDING_TOKENS',
         customBackends: ['solana'],
@@ -439,26 +441,6 @@ export const networks = {
         accountTypes: {},
         coingeckoId: undefined,
     },
-    tgor: {
-        name: 'Ethereum Goerli',
-        networkType: 'ethereum',
-        bip43Path: "m/44'/1'/0'/0/i",
-        chainId: 5,
-        decimals: 18,
-        testnet: true,
-        label: 'TR_TESTNET_COINS_LABEL',
-        explorer: {
-            tx: 'https://goerli1.trezor.io/tx/',
-            account: 'https://goerli1.trezor.io/address/',
-            nft: 'https://goerli1.trezor.io/nft/',
-            address: 'https://goerli1.trezor.io/address/',
-            queryString: '',
-        },
-        features: ['rbf', 'sign-verify', 'tokens', 'staking'],
-        customBackends: ['blockbook'],
-        accountTypes: {},
-        coingeckoId: undefined,
-    },
     thol: {
         name: 'Ethereum Holesky',
         networkType: 'ethereum',
@@ -515,6 +497,7 @@ export const networks = {
         support: {
             [DeviceModelInternal.T2T1]: '2.4.3',
             [DeviceModelInternal.T2B1]: '2.6.1',
+            [DeviceModelInternal.T3T1]: '2.7.1',
         },
         customBackends: ['blockfrost'],
         accountTypes: {
@@ -546,6 +529,7 @@ export const networks = {
         support: {
             [DeviceModelInternal.T2T1]: '2.6.4',
             [DeviceModelInternal.T2B1]: '2.6.4',
+            [DeviceModelInternal.T3T1]: '2.7.1',
         },
         customBackends: ['solana'],
         accountTypes: {},
@@ -631,3 +615,5 @@ export const getNetworkType = (symbol: NetworkSymbol) => networks[symbol]?.netwo
 // takes into account just network features, not features for specific accountTypes
 export const getNetworkFeatures = (symbol: NetworkSymbol) =>
     networks[symbol]?.features as unknown as NetworkFeature;
+
+export const getCoingeckoId = (symbol: NetworkSymbol) => networks[symbol]?.coingeckoId;

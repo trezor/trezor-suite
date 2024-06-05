@@ -34,7 +34,7 @@
         "@stellar/stellar-sdk": "^11.2.2"
     },
     "dependencies": {
-        "bignumber.js": "^9.1.2"
+        "@trezor/utils": "workspace:*"
     },
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",

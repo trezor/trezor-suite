@@ -33,7 +33,7 @@ const checkIfTabExists = (tabId: number | undefined) =>
 // Event `POPUP_REQUEST_TIMEOUT` is used to close Popup window when there was no handshake from iframe.
 const POPUP_REQUEST_TIMEOUT = 850;
 const POPUP_CLOSE_INTERVAL = 500;
-const POPUP_OPEN_TIMEOUT = 3000;
+const POPUP_OPEN_TIMEOUT = 5000;
 
 export class PopupManager extends EventEmitter {
     popupWindow:
@@ -73,7 +73,7 @@ export class PopupManager extends EventEmitter {
         this.origin = getOrigin(settings.popupSrc);
         this.logger = logger;
 
-        if (this.settings.env === 'webextension') {
+        if (this.isWebExtensionWithTab()) {
             this.channel = new ServiceWorkerWindowChannel<CoreEventMessage>({
                 name: 'trezor-connect',
                 channel: {
@@ -121,7 +121,7 @@ export class PopupManager extends EventEmitter {
             // Core mode
             this.handshakePromise = createDeferred();
             this.channel.on('message', this.handleCoreMessage.bind(this));
-        } else if (this.settings.env === 'webextension') {
+        } else if (this.isWebExtensionWithTab()) {
             // Webextension iframe
             this.channel.on('message', this.handleExtensionMessage.bind(this));
         } else {
@@ -176,16 +176,13 @@ export class PopupManager extends EventEmitter {
 
     open() {
         const src = this.settings.popupSrc;
+        this.popupPromise = createDeferred(POPUP.LOADED);
+        this.openWrapper(src);
 
         if (this.settings.useCoreInPopup) {
             // Timeout not used in Core mode, we can't run showPopupRequest with no DOM
-            this.openWrapper(src);
-
             return;
         }
-
-        this.popupPromise = createDeferred(POPUP.LOADED);
-        this.openWrapper(src);
 
         this.closeInterval = setInterval(() => {
             if (!this.popupWindow) return;
@@ -213,7 +210,7 @@ export class PopupManager extends EventEmitter {
     }
 
     openWrapper(url: string) {
-        if (this.settings.env === 'webextension') {
+        if (this.isWebExtensionWithTab()) {
             chrome.windows.getCurrent(currentWindow => {
                 this.logger.debug('opening popup. currentWindow: ', currentWindow);
                 // Request coming from extension popup,
@@ -285,7 +282,9 @@ export class PopupManager extends EventEmitter {
     };
 
     handleCoreMessage(message: Message<CoreEventMessage>) {
-        if (message.type === POPUP.CORE_LOADED) {
+        if (message.type === POPUP.LOADED) {
+            this.handleMessage(message);
+        } else if (message.type === POPUP.CORE_LOADED) {
             this.channel.postMessage({
                 type: POPUP.HANDSHAKE,
                 // in this case, settings will be validated in popup
@@ -447,5 +446,15 @@ export class PopupManager extends EventEmitter {
         } else if (this.popupWindow?.mode === 'tab') {
             this.channel.postMessage(message);
         }
+    }
+
+    private isWebExtensionWithTab() {
+        // Check if webextension actually has access to chrome.tabs API
+        // This is not the case when used in offscreen context
+        return (
+            this.settings?.env === 'webextension' &&
+            typeof chrome !== 'undefined' &&
+            typeof chrome?.tabs !== 'undefined'
+        );
     }
 }

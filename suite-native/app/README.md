@@ -15,11 +15,8 @@ It's good to have some tools installed before you begin:
 
 1. Connect device or run emulator. For a physical device, it's recommended to use [adb over wifi](https://developer.android.com/studio/command-line/adb#connect-to-a-device-over-wi-fi-android-11+) because you will have free up a USB port to connect Trezor device.
 1. Run native build - `yarn android`
+1. Reverse android emulator ports to enable communication between the app and localhost services - `yarn reverse-ports`
 1. Run packager - `yarn start`
-
-### Optional:
-
-If you're using [Trezor User Env](https://github.com/trezor/trezor-user-env) while running the app, you might need to map the ports for data transport between Trezor emulator and Android device emulator by running `adb reverse tcp:21325 tcp:21325`. If you're running the app from device over Wi-Fi, you will instead need to call `adb reverse tcp:8081 tcp:8081`.
 
 ## Running app on iOS
 
@@ -29,12 +26,6 @@ Transport layer not working for iOS but it's possible to run app in watch-only m
 2. Run packager - `yarn start`
 3. Open `ios/TrezorSuite.xcworkspace` in Xcode
 4. Hit ▶️ `Run` button
-
-## Debugging with Flipper - deprecated
-
-Because of usage of new Fabric architecture, it is not possible to use Chrome debugger anymore. We are compiling our own version of Hermes core with added functions.
-
-Best way how to debug app is download [Flipper](https://fbflipper.com).
 
 ### Installation
 

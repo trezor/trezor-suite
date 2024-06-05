@@ -7,7 +7,7 @@ import { PROTO } from '@trezor/connect';
 import { testMocks } from '@suite-common/test-utils';
 import { extraDependencies } from 'src/support/extraDependencies';
 
-import { prepareSendFormReducer } from 'src/reducers/wallet/sendFormReducer';
+import { prepareSendFormReducer } from '@suite-common/wallet-core';
 
 const sendFormReducer = prepareSendFormReducer(extraDependencies);
 
@@ -166,11 +166,19 @@ const DEFAULT_FEES = {
         levels: [{ label: 'normal', feePerUnit: '12', blocks: -1 }],
     },
     sol: {
-        minFee: 5000,
-        maxFee: 5000,
-        blockHeight: 1,
-        blockTime: 1,
-        levels: [{ label: 'normal', feePerUnit: '5000', blocks: -1 }],
+        minFee: -1,
+        maxFee: -1,
+        blockHeight: -1,
+        blockTime: -1,
+        levels: [
+            {
+                label: 'normal',
+                feePerUnit: '100000',
+                feeLimit: '50000',
+                feePerTx: '10000',
+                blocks: -1,
+            },
+        ],
     },
 };
 
@@ -229,7 +237,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                             error: null,
                             isLoading: false,
                             lastTickerTimestamp: 1693235607743000,
-                            lastSuccessfulFetchTimestamp: 1693235607743,
+                            fetchFetchAttemptTimestamp: 1693235607743,
                             rate: 1,
                             ticker: {
                                 symbol: 'btc',
@@ -239,7 +247,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                             error: null,
                             isLoading: false,
                             lastTickerTimestamp: 169323560946000,
-                            lastSuccessfulFetchTimestamp: 1693235609465,
+                            fetchFetchAttemptTimestamp: 1693235609465,
                             rate: 1,
                             ticker: {
                                 symbol: 'eth',
@@ -249,7 +257,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                             error: null,
                             isLoading: false,
                             lastTickerTimestamp: 1693235609467000,
-                            lastSuccessfulFetchTimestamp: 1693235609467,
+                            fetchFetchAttemptTimestamp: 1693235609467,
                             rate: 1,
                             ticker: {
                                 symbol: 'xrp',
@@ -261,7 +269,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                             error: null,
                             isLoading: false,
                             lastTickerTimestamp: 1693235707743000,
-                            lastSuccessfulFetchTimestamp: 1693235707743,
+                            fetchFetchAttemptTimestamp: 1693235707743,
                             rate: 1,
                             ticker: {
                                 symbol: 'btc',
@@ -271,7 +279,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                             error: null,
                             isLoading: false,
                             lastTickerTimestamp: 1693235709465000,
-                            lastSuccessfulFetchTimestamp: 1693235709465,
+                            fetchFetchAttemptTimestamp: 1693235709465,
                             rate: 1,
                             ticker: {
                                 symbol: 'eth',
@@ -281,7 +289,7 @@ export const getRootReducer = (selectedAccount = BTC_ACCOUNT, fees = DEFAULT_FEE
                             error: null,
                             isLoading: false,
                             lastTickerTimestamp: 1693235709467000,
-                            lastSuccessfulFetchTimestamp: 1693235709467,
+                            fetchFetchAttemptTimestamp: 1693235709467,
                             rate: 1,
                             ticker: {
                                 symbol: 'xrp',
@@ -1213,13 +1221,13 @@ export const setMax = [
             composedLevels: {
                 normal: {
                     type: 'final',
-                    fee: '5000',
+                    fee: '10000',
                     totalSpent: '10000000000',
                 },
                 custom: undefined,
             },
             formValues: {
-                outputs: [{ amount: '9.999995' }],
+                outputs: [{ amount: '9.99999' }],
             },
         },
     },
@@ -1300,7 +1308,10 @@ export const signAndPush = [
                 payload: {
                     serializedTx: 'serializedABCD',
                 },
-            },
+            }, // ethereumSignTransaction
+            undefined, // pushTransaction
+            undefined, // getAccountInfo
+            undefined, // blockchainEstimateFee
         ],
         result: {
             formValues: {
@@ -1630,7 +1641,7 @@ export const feeChange = [
                     levels: [
                         { label: 'high', feePerUnit: '40', blocks: 1 },
                         { label: 'normal', feePerUnit: '4', blocks: 1 },
-                        { label: 'low', feePerUnit: '1', blocks: 1 },
+                        { label: 'economy', feePerUnit: '1', blocks: 1 },
                     ],
                 },
             },
@@ -1680,11 +1691,11 @@ export const feeChange = [
             },
             {
                 type: 'click',
-                element: 'select-bar/low',
+                element: 'select-bar/economy',
                 result: {
                     composeTransactionCalls: 1,
                     formValues: {
-                        selectedFee: 'low' as const,
+                        selectedFee: 'economy' as const,
                         feePerUnit: '40', // did not changed
                     },
                 },
@@ -1792,6 +1803,10 @@ export const feeChange = [
                     levels: [{ feeLimit: '21009' }],
                 },
             },
+            {
+                success: true,
+                payload: { levels: [{}] },
+            },
         ],
         actionSequence: [
             {
@@ -1803,7 +1818,7 @@ export const feeChange = [
                         selectedFee: 'custom' as const,
                         feePerUnit: '3',
                         feeLimit: '21000', // default
-                        estimatedFeeLimit: undefined,
+                        estimatedFeeLimit: '21000',
                     },
                 },
             },

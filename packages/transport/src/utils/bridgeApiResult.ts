@@ -1,6 +1,6 @@
 // input checks for high-level transports
 
-import type { Descriptor } from '../types';
+import type { Descriptor, Session } from '../types';
 
 import { success, error } from './result';
 import * as ERRORS from '../errors';
@@ -56,8 +56,8 @@ export function devices(res: UnknownPayload) {
             (o: any): Descriptor => ({
                 path: o.path,
                 session: o.session,
-                // @ts-expect-error - this is part of response too, might add it to type later
                 product: o.product,
+                // @ts-expect-error - this is part of response too, might add it to type later
                 vendor: o.vendor,
                 debug: o.debug,
                 debugSession: o.debugSession,
@@ -75,7 +75,7 @@ export function acquire(res: UnknownPayload) {
         return error({ error: ERRORS.WRONG_RESULT_TYPE });
     }
 
-    return success(session);
+    return success(session as Session);
 }
 
 export function call(res: UnknownPayload) {

@@ -456,17 +456,32 @@ export const onConnect = [
     {
         description: 'successful, blockchainEstimateFee failed',
         initialState: {
-            accounts: [{ symbol: 'eth', history: {} }],
+            accounts: [{ symbol: 'btc', history: {} }],
         },
         // order: subscribe > estimateFee
         connect: [undefined, { success: false }],
-        symbol: 'eth',
+        symbol: 'btc',
         actions: [
             { type: blockchainActions.synced.type },
             { type: blockchainActions.connected.type },
         ],
         blockchainEstimateFee: 1,
         blockchainSubscribe: 1,
+    },
+    {
+        description: 'successful, ETH blockchainEstimateFee failed',
+        initialState: {
+            accounts: [{ symbol: 'eth', history: {}, deviceState: 'abc' }],
+        },
+        // order: subscribe > subscribe > estimateFee
+        connect: [undefined, undefined, { success: false }],
+        symbol: 'eth',
+        actions: [
+            { type: blockchainActions.synced.type },
+            { type: blockchainActions.connected.type },
+        ],
+        blockchainEstimateFee: 1,
+        blockchainSubscribe: 2,
     },
 ];
 

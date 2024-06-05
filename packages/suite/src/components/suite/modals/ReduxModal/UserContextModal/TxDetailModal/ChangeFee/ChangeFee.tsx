@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import { Card, Icon, variables } from '@trezor/components';
+import { variables } from '@trezor/components';
 import { Translation, FiatValue, FormattedCryptoAmount } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite';
 import { useRbf, RbfContext, UseRbfProps } from 'src/hooks/wallet/useRbfForm';
@@ -79,31 +79,6 @@ const StyledFiatValue = styled.div`
     color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
 `;
 
-const FinalizeWarning = styled(Card)`
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    padding: 12px 0;
-    margin-top: 16px;
-    text-align: center;
-    align-items: center;
-    justify-content: center;
-    color: ${({ theme }) => theme.TYPE_DARK_GREY};
-    background: ${({ theme }) => theme.BG_GREY};
-    font-size: ${variables.FONT_SIZE.SMALL};
-    font-weight: ${variables.FONT_WEIGHT.MEDIUM};
-`;
-
-const InfoIcon = styled(Icon)`
-    margin-right: 8px;
-`;
-
-const Red = styled.span`
-    margin-left: 2px;
-    color: ${({ theme }) => theme.TYPE_RED};
-    font-weight: ${variables.FONT_WEIGHT.BOLD};
-`;
-
 /* children are only for test purposes, this prop is not available in regular build */
 interface ChangeFeeProps extends UseRbfProps {
     tx: WalletAccountTransaction;
@@ -113,7 +88,7 @@ interface ChangeFeeProps extends UseRbfProps {
 
 const ChangeFeeLoaded = (props: ChangeFeeProps) => {
     const contextValues = useRbf(props);
-    const { tx, showChained, finalize, children } = props;
+    const { tx, showChained, children } = props;
     const { networkType } = contextValues.account;
     const feeRate =
         networkType === 'bitcoin' ? `${tx.rbfParams?.feeRate} ${getFeeUnits(networkType)}` : null;
@@ -155,16 +130,7 @@ const ChangeFeeLoaded = (props: ChangeFeeProps) => {
                     <DecreasedOutputs />
                     <AffectedTransactions showChained={showChained} />
                 </Box>
-                {finalize && (
-                    <FinalizeWarning>
-                        <InfoIcon icon="INFO" size={16} />
-                        <Translation
-                            id="TR_FINALIZE_TS_RBF_OFF_WARN"
-                            values={{ strong: chunks => <Red>{chunks}</Red> }}
-                        />
-                    </FinalizeWarning>
-                )}
-                <ReplaceTxButton finalize={finalize} />
+                <ReplaceTxButton />
 
                 {children}
             </Wrapper>

@@ -37,7 +37,6 @@ describe('Coin Settings', () => {
             // 'sol', FIXME: disabled till available in trezor-user-env
             'test',
             'tsep',
-            'tgor',
             'thol',
             'txrp',
             'tada',

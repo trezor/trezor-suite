@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react-native';
 
 import { selectIsAnalyticsEnabled } from '@suite-common/analytics';
 import { getEnv, isDebugEnv, isDevelopEnv } from '@suite-native/config';
-import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 
 const initSentry = () => {
     if (!isDebugEnv()) {

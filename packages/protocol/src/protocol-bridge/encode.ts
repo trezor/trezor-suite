@@ -1,11 +1,17 @@
 import { HEADER_SIZE } from './constants';
 import { TransportProtocolEncode } from '../types';
 
+// for type compatibility, bridge doesn't send chunks
+export const getChunkHeader = (_data: Buffer) => Buffer.alloc(0);
+
 // this file is basically combination of "trezor v1 protocol" and "bridge protocol"
 // there is actually no officially described bridge protocol, but in fact there is one
 // it is because bridge does some parts of the protocol itself (like chunking)
 export const encode: TransportProtocolEncode = (data, options) => {
     const { messageType } = options;
+    if (typeof messageType === 'string') {
+        throw new Error(`Unsupported message type ${messageType}`);
+    }
 
     const encodedBuffer = Buffer.alloc(HEADER_SIZE + data.length);
 
@@ -18,5 +24,5 @@ export const encode: TransportProtocolEncode = (data, options) => {
     // then put in the actual message
     data.copy(encodedBuffer, HEADER_SIZE);
 
-    return [encodedBuffer];
+    return encodedBuffer;
 };

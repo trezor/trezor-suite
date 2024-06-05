@@ -1,3 +1,22 @@
+# 0.0.33-beta.1
+
+-   chore(connect): bump required fw to 1.8.1/2.1.0 (2f14ff6703)
+-   chore(connect-common): fix bootloader_version in the first t3t1 record (6ebae70094)
+
+# 0.0.32
+
+-   feat(connect): add T3T1 releases.json (a9840087c8)
+-   chore: remove min_bridge_version from releases.json (c384914903)
+-   chore(connect-common): add Czech to available FW translations (4a1aa824c6)
+
+# 0.0.31
+
+-   fix(connect): webextension save sessions (efed18e4ea)
+-   chore(suite): remove goerli (8eb6b271a5)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   chore(connect-common): add firmware binaries 2.7.0 (4c14b45bd6)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 0.0.30
 
 -   fix(connect): fix build of connect-web (50f35cb2a)

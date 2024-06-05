@@ -1,4 +1,6 @@
+import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
+
 import { Icon, IconType, variables } from '@trezor/components';
 
 const Items = styled.div`
@@ -23,7 +25,7 @@ const Text = styled.div`
 
 interface Item {
     icon: IconType;
-    content: React.ReactNode;
+    content: ReactNode;
 }
 
 interface SecurityChecklistProps {

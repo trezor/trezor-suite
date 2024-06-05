@@ -14,6 +14,7 @@ export const DEVICE = {
     ACQUIRED: 'device-acquired',
     RELEASED: 'device-released',
     USED_ELSEWHERE: 'device-used_elsewhere',
+    SAVE_STATE: 'device-save_state',
 
     LOADING: 'device-loading',
 

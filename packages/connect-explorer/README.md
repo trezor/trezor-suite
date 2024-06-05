@@ -1,20 +1,32 @@
-# @trezor/connect-explorer
+# connect-explorer
 
-This package serves as:
+Revamped version of `connect-explorer` with a new UI and more features.
 
--   an interactive documentation for [@trezor/connect](../connect) package
--   a referential implementation of [@trezor/connect-web](../connect-web) in "popup mode"
+Using [Nextra](https://nextra.site) docs framework.
 
-To run the explorer locally:
+## Running
 
-`yarn workspace @trezor/connect-explorer dev` - runs dev server on port 8088
+```bash
+yarn dev
+```
 
-## Examples
+## Building
 
--   [production](https://connect.trezor.io/9/). This build allows working with restricted methods (management) since it is hosted on a whitelisted domain.
--   [non-whitelisted domain](https://trezor.github.io/trezor-suite/connect-explorer), which is pointing to the latest stable version of [@trezor/connect](../connect). This build effectively simulates 3rd party integration.
--   [develop](https://suite.corp.sldev.cz/connect-explorer/develop) Branches builds available for here for internal use.
+```bash
+yarn build
+```
 
-## Webusb
+Static files will be generated in `build/` directory.
 
-When `connect-explorer` is run locally, WebUSB is disabled because [@trezor/connect-popup](../connect-popup) runs on a different domain and Chrome does not allow `navigator.usb.requestDevice` calls between cross-site elements since v72. Further investigation needed to see if we can fix that. Until then, run [Bridge](https://suite.trezor.io/web/bridge/) to connect to Trezor.
+## Building webextension
+
+We are building a webextension that uses `@trezor/connect-explorer` and `@trezor/connect-webextension`. This webextension aims to be used for testing TrezorConnect in the webextension environment using the same tests we use for web with connect-popup.
+
+You can build the web extension running the command bellow:
+
+```bash
+yarn && \
+yarn build:libs && \
+yarn workspace @trezor/connect-webextension build && \
+yarn workspace @trezor/connect-explorer build:webextension
+```

@@ -31,7 +31,7 @@ const Inputs = styled.div`
 
 const StyledTextarea = styled(Textarea)`
     > :nth-child(1) {
-        border-color: ${({ theme }) => theme.borderOnElevation1};
+        border-color: ${({ theme }) => theme.borderElevation2};
     }
 `;
 
@@ -93,12 +93,9 @@ export const OpReturn = ({ outputId }: { outputId: number }) => {
     return (
         <Container>
             <Tooltip
-                addon={instance => (
-                    <OpenGuideFromTooltip
-                        id="/3_send-and-receive/transactions-in-depth/op_return.md"
-                        instance={instance}
-                    />
-                )}
+                addon={
+                    <OpenGuideFromTooltip id="/3_send-and-receive/transactions-in-depth/op_return.md" />
+                }
                 content={<Translation id="OP_RETURN_TOOLTIP" />}
                 dashed
             >

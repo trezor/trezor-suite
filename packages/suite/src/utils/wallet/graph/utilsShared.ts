@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { AggregatedAccountHistory, AggregatedDashboardHistory } from 'src/types/wallet/graph';
 
 export type ObjectType<T> = T extends 'account'

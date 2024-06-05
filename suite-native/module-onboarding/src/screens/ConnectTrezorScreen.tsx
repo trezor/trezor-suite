@@ -7,24 +7,25 @@ import {
     OnboardingStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { ConnectDeviceAnimation } from '@suite-native/device';
 
 import { OnboardingFooter } from '../components/OnboardingFooter';
 import { OnboardingScreen } from '../components/OnboardingScreen';
 
-const ANIMATION_HEIGHT = Dimensions.get('screen').height * 0.35;
+const ANIMATION_SCALE = 0.35;
+const ANIMATION_HEIGHT = Dimensions.get('screen').height * ANIMATION_SCALE;
+const ANIMATION_WIDTH = Dimensions.get('screen').width * ANIMATION_SCALE;
 
 const animationStyle = prepareNativeStyle(() => ({
     // Both height and width has to be set https://github.com/lottie-react-native/lottie-react-native/blob/master/MIGRATION-5-TO-6.md#updating-the-style-props
     height: ANIMATION_HEIGHT,
-    width: '100%',
+    width: ANIMATION_WIDTH,
     borderColor: 'transparent',
 }));
 
 export const ConnectTrezorScreen = () => {
-    const { translate } = useTranslate();
     const { applyStyle } = useNativeStyles();
 
     const navigation =
@@ -38,13 +39,13 @@ export const ConnectTrezorScreen = () => {
 
     return (
         <OnboardingScreen
-            title={translate('moduleOnboarding.connectTrezorScreen.title')}
-            subtitle={translate('moduleOnboarding.connectTrezorScreen.subtitle')}
+            title={<Translation id="moduleOnboarding.connectTrezorScreen.title" />}
+            subtitle={<Translation id="moduleOnboarding.connectTrezorScreen.subtitle" />}
             activeStep={1}
             footer={
                 <OnboardingFooter
-                    backButtonTitle={translate('generic.buttons.back')}
-                    nextButtonTitle={translate('generic.buttons.next')}
+                    backButtonTitle={<Translation id="generic.buttons.back" />}
+                    nextButtonTitle={<Translation id="generic.buttons.next" />}
                     redirectTarget={handleRedirect}
                     onBack={navigation.goBack}
                 />

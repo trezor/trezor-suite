@@ -10,6 +10,12 @@
             "path": "../../suite-common/redux-utils"
         },
         {
+            "path": "../../suite-common/suite-config"
+        },
+        {
+            "path": "../../suite-common/token-definitions"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {
@@ -31,12 +37,13 @@
         { "path": "../config" },
         { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
+        { "path": "../feature-flags" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../intl" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
+        { "path": "../settings" },
         { "path": "../video-assets" },
         {
             "path": "../../packages/blockchain-link"

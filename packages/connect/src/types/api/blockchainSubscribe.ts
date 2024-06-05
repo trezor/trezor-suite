@@ -2,6 +2,7 @@ import type { SubscriptionAccountInfo, BlockchainLinkResponse } from '@trezor/bl
 import type { CommonParamsWithCoin, Response } from '../params';
 
 export type BlockchainSubscribe = CommonParamsWithCoin & {
+    blocks?: boolean;
     accounts?: SubscriptionAccountInfo[];
 };
 

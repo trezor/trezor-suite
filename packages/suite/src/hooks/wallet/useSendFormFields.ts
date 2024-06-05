@@ -6,7 +6,7 @@ import {
     FormOptions,
     UseSendFormState,
     SendContextValues,
-} from 'src/types/wallet/sendForm';
+} from '@suite-common/wallet-types';
 import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { Rate } from '@suite-common/wallet-types';
@@ -40,7 +40,7 @@ export const useSendFormFields = ({
             const { outputs } = getValues();
             const output = outputs ? outputs[outputIndex] : undefined;
             if (!output || output.type !== 'payment') return;
-            const { fiat, currency } = output;
+            const { fiat } = output;
             if (typeof fiat !== 'string') return; // fiat input not registered (testnet or fiat not available)
             const inputName = `outputs.${outputIndex}.fiat` as const;
             if (!amount) {
@@ -58,7 +58,7 @@ export const useSendFormFields = ({
                 ? formatNetworkAmount(amount, network.symbol)
                 : amount;
 
-            const fiatValue = toFiatCurrency(formattedAmount, currency.value, fiatRate, 2, false);
+            const fiatValue = toFiatCurrency(formattedAmount, fiatRate.rate, 2);
             if (fiatValue) {
                 setValue(inputName, fiatValue, { shouldValidate: true });
             }

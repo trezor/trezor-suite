@@ -45,6 +45,10 @@ export type HandshakeEvent =
 
 export type HandshakeClient = any;
 
+export type HandshakeInit = {
+    statePatch?: Record<string, any>;
+};
+
 export type HandshakeTorModule = {
     shouldRunTor: boolean;
 };
@@ -96,10 +100,17 @@ export type UpdateProgress = Partial<{
     verifying: boolean;
 }>;
 
-// todo: suite-desktop-api does not suite-desktop dependency but we could reuse lot of types from there I guess
+// todo: suite-desktop-api does not have suite-desktop dependency but we could reuse lot of types from there I guess
 export type Status = {
     service: boolean;
     process: boolean;
+};
+
+// todo: duplicate, see prev comment
+export type BridgeSettings = {
+    doNotStartOnStartup: boolean;
+    legacy?: boolean;
+    newBridgeRollout?: number;
 };
 
 export type InvokeResult<Payload = undefined> =

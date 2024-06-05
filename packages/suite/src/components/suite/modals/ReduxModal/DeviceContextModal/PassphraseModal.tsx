@@ -1,52 +1,24 @@
 import { useCallback, useState } from 'react';
-import { useIntl } from 'react-intl';
 
-import styled from 'styled-components';
-
-import { variables, PassphraseTypeCard } from '@trezor/components';
+import { PassphraseTypeCard } from '@trezor/components';
 import TrezorConnect from '@trezor/connect';
 import * as deviceUtils from '@suite-common/suite-utils';
 import {
     selectIsDiscoveryAuthConfirmationRequired,
     selectDevices,
     onPassphraseSubmit,
+    selectDeviceModel,
+    deviceActions,
 } from '@suite-common/wallet-core';
-
 import { useSelector, useDispatch } from 'src/hooks/suite';
-import { Translation, Modal } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import type { TrezorDevice } from 'src/types/suite';
 import { OpenGuideFromTooltip } from 'src/components/guide';
-import messages from 'src/support/messages';
-
-const Wrapper = styled.div<{ $authConfirmation?: boolean }>`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    @media screen and (max-width: ${variables.SCREEN_SIZE.MD}) {
-        width: 100%;
-    }
-`;
-
-const WalletsWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-`;
-
-const Divider = styled.div`
-    margin: 16px;
-    height: 1px;
-    background: ${({ theme }) => theme.STROKE_GREY};
-`;
-
-const TinyModal = styled(Modal)`
-    width: 450px;
-`;
-
-const SmallModal = styled(Modal)`
-    width: 600px;
-`;
+import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
+import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+import { PassphraseDescription } from './PassphraseDescription';
+import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
+import { PassphraseHeading } from './PassphraseHeading';
 
 interface PassphraseModalProps {
     device: TrezorDevice;
@@ -55,14 +27,16 @@ interface PassphraseModalProps {
 export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     const [submitted, setSubmitted] = useState(false);
     const devices = useSelector(selectDevices);
+
     const authConfirmation =
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
+    const deviceModel = useSelector(selectDeviceModel);
     const stateConfirmation = !!device.state;
-    const hasEmptyPassphraseWallet = deviceUtils
-        .getDeviceInstances(device, devices)
-        .find(d => d.useEmptyPassphrase);
-    const noPassphraseOffer = !hasEmptyPassphraseWallet && !stateConfirmation;
+
+    const instances = deviceUtils.getDeviceInstances(device, devices);
+    const hasEmptyPassphraseWallet = instances.find(d => d.useEmptyPassphrase);
+
     const onDeviceOffer = !!(
         device.features &&
         device.features.capabilities &&
@@ -71,9 +45,10 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const dispatch = useDispatch();
 
-    const intl = useIntl();
-
-    const onCancel = () => TrezorConnect.cancel(intl.formatMessage(messages.TR_CANCELLED));
+    const onCancel = () => {
+        TrezorConnect.cancel('auth-confirm-cancel'); // This auth-confirm-cancel' causes the proper cleaning of the state in deviceThunks.authConfirm()
+        dispatch(deviceActions.forgetDevice(device));
+    };
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
@@ -83,120 +58,58 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
         [setSubmitted, dispatch],
     );
 
-    const onRecreate = useCallback(() => {
-        // Cancel TrezorConnect request and pass error to suiteAction.authConfirm
-        TrezorConnect.cancel('auth-confirm-cancel');
-    }, []);
-
     if (submitted) {
         return null;
     }
 
-    if (authConfirmation || stateConfirmation) {
-        // show borderless one-column modal for confirming passphrase and state confirmation
+    const isPassphraseWalletConfirmationVisible = authConfirmation || stateConfirmation;
+    const isPassphraseWalletCreating = !hasEmptyPassphraseWallet && !stateConfirmation;
+
+    // show borderless one-column modal for confirming passphrase and state confirmation
+    if (isPassphraseWalletConfirmationVisible) {
         return (
-            <TinyModal
-                heading={
-                    !authConfirmation ? (
-                        <Translation id="TR_ENTER_PASSPHRASE" />
-                    ) : (
-                        <Translation id="TR_CONFIRM_EMPTY_HIDDEN_WALLET" />
-                    )
-                }
-                isCancelable
+            <PassphraseWalletConfirmation
                 onCancel={onCancel}
-                onBackClick={authConfirmation ? onRecreate : undefined}
-                description={
-                    !authConfirmation ? (
-                        <Translation id="TR_UNLOCK" />
-                    ) : (
-                        <Translation id="TR_THIS_HIDDEN_WALLET_IS_EMPTY" />
-                    )
-                }
-            >
-                <PassphraseTypeCard
-                    type="hidden"
-                    authConfirmation={authConfirmation}
-                    submitLabel={<Translation id="TR_CONFIRM_PASSPHRASE" />}
-                    offerPassphraseOnDevice={onDeviceOffer}
-                    onSubmit={onSubmit}
-                    singleColModal
-                    learnMoreTooltipOnClick={instance => (
-                        <OpenGuideFromTooltip
-                            dataTest="@tooltip/guideAnchor"
-                            id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                            instance={instance}
-                        />
-                    )}
-                />
-            </TinyModal>
+                onSubmit={onSubmit}
+                onDeviceOffer={onDeviceOffer}
+                device={device}
+            />
         );
     }
 
     // creating a hidden wallet
-    if (!noPassphraseOffer) {
+    if (isPassphraseWalletCreating) {
         return (
-            <TinyModal
-                heading={<Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />}
-                description={<Translation id="TR_HIDDEN_WALLET_MODAL_DESCRIPTION" />}
-                isCancelable
-                onCancel={onCancel}
-            >
-                <PassphraseTypeCard
-                    title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
-                    description={<Translation id="TR_HIDDEN_WALLET_DESCRIPTION" />}
-                    submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
-                    type="hidden"
-                    singleColModal
-                    offerPassphraseOnDevice={onDeviceOffer}
-                    onSubmit={onSubmit}
-                    learnMoreTooltipOnClick={instance => (
-                        <OpenGuideFromTooltip
-                            dataTest="@tooltip/guideAnchor"
-                            id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                            instance={instance}
-                        />
-                    )}
-                />
-            </TinyModal>
-        );
-    }
+            <SwitchDeviceRenderer isCancelable onCancel={onCancel}>
+                <CardWithDevice onCancel={onCancel} device={device}>
+                    <PassphraseHeading>
+                        <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />
+                    </PassphraseHeading>
 
-    // show 2-column modal for selecting between standard and hidden wallets
-    return (
-        <SmallModal
-            headingSize="large"
-            isCancelable
-            onCancel={onCancel}
-            heading={<Translation id="TR_SELECT_WALLET_TO_ACCESS" />}
-        >
-            <Wrapper>
-                <WalletsWrapper>
-                    <PassphraseTypeCard
-                        title={<Translation id="TR_NO_PASSPHRASE_WALLET" />}
-                        description={<Translation id="TR_STANDARD_WALLET_DESCRIPTION" />}
-                        submitLabel={<Translation id="TR_ACCESS_STANDARD_WALLET" />}
-                        type="standard"
-                        onSubmit={onSubmit}
-                    />
-                    <Divider />
+                    <PassphraseDescription />
                     <PassphraseTypeCard
                         title={<Translation id="TR_WALLET_SELECTION_HIDDEN_WALLET" />}
                         description={<Translation id="TR_HIDDEN_WALLET_DESCRIPTION" />}
-                        submitLabel={<Translation id="TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET" />}
+                        submitLabel={<Translation id="TR_ACCESS_HIDDEN_WALLET" />}
                         type="hidden"
+                        singleColModal
                         offerPassphraseOnDevice={onDeviceOffer}
                         onSubmit={onSubmit}
-                        learnMoreTooltipOnClick={instance => (
+                        deviceModel={deviceModel ?? undefined}
+                        learnMoreTooltipOnClick={
                             <OpenGuideFromTooltip
                                 dataTest="@tooltip/guideAnchor"
                                 id="/1_initialize-and-secure-your-trezor/6_passphrase.md"
-                                instance={instance}
                             />
-                        )}
+                        }
                     />
-                </WalletsWrapper>
-            </Wrapper>
-        </SmallModal>
-    );
+                </CardWithDevice>
+            </SwitchDeviceRenderer>
+        );
+    }
+
+    // creating standard wallet here instead of showing dialog
+    onSubmit('');
+
+    return null;
 };

@@ -4,11 +4,15 @@ import { variables, H3, Icon, Card } from '@trezor/components';
 import { DashboardSection } from 'src/components/dashboard';
 import { Translation, StakingFeature, Divider } from 'src/components/suite';
 import { Footer } from './components/Footer';
-import { useDiscovery, useEverstakePoolStats, useSelector } from 'src/hooks/suite';
+import { useDevice, useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { useAccounts } from 'src/hooks/wallet';
 import { MIN_ETH_BALANCE_FOR_STAKING } from 'src/constants/suite/ethStaking';
 import { spacingsPx, borders } from '@trezor/theme';
-import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
+import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { setFlag } from 'src/actions/suite/suiteActions';
+import { selectPoolStatsApyData } from '@suite-common/wallet-core';
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
 
 const Flex = styled.div`
     display: flex;
@@ -58,27 +62,40 @@ const FlexRowChild = styled.div`
     flex: 1 0 200px;
 `;
 
+const bannerSymbol = 'eth';
+
 export const StakeEthCard = () => {
     const theme = useTheme();
-    const { ethApy } = useEverstakePoolStats();
+    const dispatch = useDispatch();
+    const enabledNetworks = useSelector(selectEnabledNetworks);
+    const { showDashboardStakingPromoBanner } = useSelector(selectSuiteFlags);
+    const { device } = useDevice();
+    const isBitcoinOnlyDevice = hasBitcoinOnlyFirmware(device);
+
+    const closeBanner = () => {
+        dispatch(setFlag('showDashboardStakingPromoBanner', false));
+    };
+
+    const isBannerSymbolEnabled =
+        enabledNetworks.includes(bannerSymbol) &&
+        showDashboardStakingPromoBanner &&
+        !isBitcoinOnlyDevice;
+
+    const ethApy = useSelector(state => selectPoolStatsApyData(state, bannerSymbol));
 
     const { discovery } = useDiscovery();
-    const account = useSelector(selectSelectedAccount);
     const { accounts } = useAccounts(discovery);
     const ethAccountWithSufficientBalanceForStaking = accounts.find(
         ({ symbol, formattedBalance }) =>
-            symbol === 'eth' && MIN_ETH_BALANCE_FOR_STAKING.isLessThanOrEqualTo(formattedBalance),
-    );
-    const isSufficientEthForStaking = Boolean(
-        ethAccountWithSufficientBalanceForStaking?.formattedBalance,
+            symbol === bannerSymbol &&
+            MIN_ETH_BALANCE_FOR_STAKING.isLessThanOrEqualTo(formattedBalance),
     );
 
-    const [isShown, setIsShown] = useState(false);
-    const hideSection = () => setIsShown(false);
+    const [isShown, setIsShown] = useState(isBannerSymbolEnabled);
 
     useEffect(() => {
-        setIsShown(isSufficientEthForStaking);
-    }, [isSufficientEthForStaking]);
+        setIsShown(isBannerSymbolEnabled);
+    }, [isBannerSymbolEnabled]);
 
     const stakeEthFeatures = useMemo(
         () => [
@@ -133,7 +150,7 @@ export const StakeEthCard = () => {
                         <CardTitle>
                             <Translation
                                 id="TR_STAKE_ETH_CARD_TITLE"
-                                values={{ symbol: account?.symbol }}
+                                values={{ symbol: bannerSymbol.toUpperCase() }}
                             />
                             <br />
                             <Translation id="TR_STAKE_ETH_EARN_REPEAT" />
@@ -157,7 +174,7 @@ export const StakeEthCard = () => {
 
                     <Footer
                         accountIndex={ethAccountWithSufficientBalanceForStaking?.index}
-                        hideSection={hideSection}
+                        hideSection={closeBanner}
                     />
                 </StyledCard>
             </DashboardSection>

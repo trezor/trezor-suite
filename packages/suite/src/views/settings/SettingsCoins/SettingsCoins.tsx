@@ -4,10 +4,14 @@ import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-util
 import { selectDeviceSupportedNetworks, startDiscoveryThunk } from '@suite-common/wallet-core';
 import { Button, motionEasing } from '@trezor/components';
 
-import { DeviceBanner, SettingsLayout, SettingsSection } from 'src/components/settings';
-import { CoinGroup, SectionItem, TooltipSymbol, Translation } from 'src/components/suite';
+import {
+    DeviceBanner,
+    SettingsLayout,
+    SettingsSection,
+    SettingsSectionItem,
+} from 'src/components/settings';
+import { CoinGroup, TooltipSymbol, Translation } from 'src/components/suite';
 import { useEnabledNetworks } from 'src/hooks/settings/useEnabledNetworks';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 import {
     useDevice,
@@ -19,6 +23,7 @@ import {
 
 import { FirmwareTypeSuggestion } from './FirmwareTypeSuggestion';
 import { spacingsPx } from '@trezor/theme';
+import { selectSuiteFlags } from '../../../reducers/suite/suiteReducer';
 
 const StyledButton = styled(Button)`
     margin-top: ${spacingsPx.xl};
@@ -28,7 +33,7 @@ const StyledSettingsSection = styled(SettingsSection)`
     overflow: hidden;
 `;
 
-const StyledSectionItem = styled(SectionItem)`
+const StyledSectionItem = styled(SettingsSectionItem)`
     > div {
         flex-direction: column;
     }
@@ -75,7 +80,7 @@ const getDiscoveryButtonAnimationConfig = (isConfirmed: boolean): MotionProps =>
 });
 
 export const SettingsCoins = () => {
-    const { firmwareTypeBannerClosed } = useSelector(state => state.suite.flags);
+    const { firmwareTypeBannerClosed } = useSelector(selectSuiteFlags);
 
     const isDiscoveryButtonVisible = useRediscoveryNeeded();
     const { mainnets, testnets, enabledNetworks, setEnabled } = useEnabledNetworks();
@@ -83,12 +88,6 @@ export const SettingsCoins = () => {
     const supportedEnabledNetworks = enabledNetworks.filter(enabledNetwork =>
         deviceSupportedNetworks.includes(enabledNetwork),
     );
-
-    const { anchorRef: anchorRefCrypto, shouldHighlight: shouldHighlightCrypto } = useAnchor(
-        SettingsAnchor.Crypto,
-    );
-    const { anchorRef: anchorRefTestnetCrypto, shouldHighlight: shouldHighlightTestnetCrypto } =
-        useAnchor(SettingsAnchor.TestnetCrypto);
 
     const { device } = useDevice();
     const dispatch = useDispatch();
@@ -129,22 +128,12 @@ export const SettingsCoins = () => {
             {showFirmwareTypeBanner && <FirmwareTypeSuggestion />}
 
             <StyledSettingsSection title={<Translation id="TR_COINS" />} icon="COIN">
-                <StyledSectionItem ref={anchorRefCrypto} shouldHighlight={shouldHighlightCrypto}>
+                <StyledSectionItem anchorId={SettingsAnchor.Crypto}>
                     <CoinGroup
                         networks={mainnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
                     />
-
-                    <AnimatePresence>
-                        {isDiscoveryButtonVisible && (
-                            <motion.div {...animation} key="discover-button">
-                                <StyledButton onClick={startDiscovery}>
-                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
-                                </StyledButton>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
                 </StyledSectionItem>
             </StyledSettingsSection>
 
@@ -158,17 +147,25 @@ export const SettingsCoins = () => {
                     </>
                 }
                 icon="COIN"
+                bottomActions={
+                    <AnimatePresence>
+                        {isDiscoveryButtonVisible && (
+                            <motion.div {...animation} key="discover-button">
+                                <StyledButton onClick={startDiscovery}>
+                                    <Translation id="TR_DISCOVERY_NEW_COINS" />
+                                </StyledButton>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                }
             >
-                <SectionItem
-                    ref={anchorRefTestnetCrypto}
-                    shouldHighlight={shouldHighlightTestnetCrypto}
-                >
+                <SettingsSectionItem anchorId={SettingsAnchor.TestnetCrypto}>
                     <CoinGroup
                         networks={testnets}
                         onToggle={setEnabled}
                         selectedNetworks={enabledNetworks}
                     />
-                </SectionItem>
+                </SettingsSectionItem>
             </SettingsSection>
         </SettingsLayout>
     );

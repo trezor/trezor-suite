@@ -2,7 +2,7 @@ import { NavigatorScreenParams } from '@react-navigation/native';
 import { RequireAllOrNone } from 'type-fest';
 
 import { AccountKey, TokenAddress, XpubAddress } from '@suite-common/wallet-types';
-import { AccountType, Network, NetworkSymbol } from '@suite-common/wallet-config';
+import { AccountType, NetworkSymbol } from '@suite-common/wallet-config';
 import { AccountInfo, TokenTransfer } from '@trezor/connect';
 
 import {
@@ -17,6 +17,8 @@ import {
     OnboardingStackRoutes,
     ConnectDeviceStackRoutes,
     AddCoinAccountStackRoutes,
+    PassphraseStackRoutes,
+    SendStackRoutes,
 } from './routes';
 
 type AddCoinFlowParams = RequireAllOrNone<
@@ -50,12 +52,20 @@ export type SettingsStackParamList = {
     [SettingsStackRoutes.SettingsLocalization]: undefined;
     [SettingsStackRoutes.SettingsCustomization]: undefined;
     [SettingsStackRoutes.SettingsPrivacyAndSecurity]: undefined;
+    [SettingsStackRoutes.SettingsViewOnly]: undefined;
     [SettingsStackRoutes.SettingsAbout]: undefined;
     [SettingsStackRoutes.SettingsFAQ]: undefined;
 };
 
 export type ReceiveStackParamList = {
     [ReceiveStackRoutes.ReceiveAccounts]: undefined;
+};
+
+export type SendStackParamList = {
+    [SendStackRoutes.SendAccounts]: undefined;
+    [SendStackRoutes.SendForm]: {
+        accountKey: AccountKey;
+    };
 };
 
 export type AppTabsParamList = {
@@ -92,7 +102,7 @@ export type AccountsImportStackParamList = {
     };
 };
 
-export type AddCoinFlowType = 'receive' | 'accounts';
+export type AddCoinFlowType = 'home' | 'receive' | 'accounts';
 
 export type AddCoinAccountStackParamList = {
     [AddCoinAccountStackRoutes.AddCoinAccount]: {
@@ -100,7 +110,7 @@ export type AddCoinAccountStackParamList = {
     };
     [AddCoinAccountStackRoutes.SelectAccountType]: {
         accountType: AccountType;
-        network: Network;
+        networkSymbol: NetworkSymbol;
         flowType: AddCoinFlowType;
     };
 };
@@ -111,10 +121,20 @@ export type ConnectDeviceStackParamList = {
     [ConnectDeviceStackRoutes.ConnectingDevice]: undefined;
 };
 
+export type PassphraseStackParamList = {
+    [PassphraseStackRoutes.PassphraseForm]: undefined;
+    [PassphraseStackRoutes.PassphraseConfirmOnTrezor]: undefined;
+    [PassphraseStackRoutes.PassphraseLoading]: undefined;
+    [PassphraseStackRoutes.PassphraseEmptyWallet]: undefined;
+    [PassphraseStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
+    [PassphraseStackRoutes.PassphraseEnterOnTrezor]: undefined;
+    [PassphraseStackRoutes.PassphraseEnableOnDevice]: undefined;
+};
+
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
-    [RootStackRoutes.ConnectDevice]: NavigatorScreenParams<ConnectDeviceStackParamList>;
+    [RootStackRoutes.ConnectDeviceStack]: NavigatorScreenParams<ConnectDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.ReceiveModal]: AccountDetailParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };
@@ -127,4 +147,6 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.DeviceInfo]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
+    [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
+    [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
 };

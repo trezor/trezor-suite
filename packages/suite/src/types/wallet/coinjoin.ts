@@ -15,6 +15,7 @@ import {
     EndRoundState,
     WabiSabiProtocolErrorCode,
 } from '@trezor/coinjoin/src/enums';
+import type { CoinjoinNetworksConfig } from 'src/services/coinjoin';
 
 export { EndRoundState, WabiSabiProtocolErrorCode };
 export type { RoundPhase, SessionPhase };
@@ -40,7 +41,7 @@ export interface CoinjoinClientInstance
     > {
     rounds: { id: string; phase: RoundPhase }[]; // store only slice of Round in reducer. may be extended in the future
     version?: CoinjoinClientVersion;
-    status: 'loading' | 'loaded';
+    status: 'loading' | 'loaded' | 'unavailable';
 }
 
 export interface CoinjoinSession extends CoinjoinSessionParameters {
@@ -100,6 +101,7 @@ export type CoinjoinServerEnvironment = 'public' | 'staging' | 'localhost';
 export interface CoinjoinDebugSettings {
     coinjoinAllowNoTor?: boolean;
     coinjoinServerEnvironment?: PartialRecord<NetworkSymbol, CoinjoinServerEnvironment>;
+    coinjoinConfigOverride?: PartialRecord<NetworkSymbol, Partial<CoinjoinNetworksConfig>>;
 }
 
 export interface CoinjoinConfig {

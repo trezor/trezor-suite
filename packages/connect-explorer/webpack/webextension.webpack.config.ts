@@ -2,9 +2,6 @@ import path from 'path';
 import webpack from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import CopyPlugin from 'copy-webpack-plugin';
-import { execSync } from 'child_process';
-
-const commitHash = execSync('git rev-parse HEAD').toString().trim();
 
 const DIST = path.resolve(__dirname, '../build-webextension');
 const CONNECT_WEB_PATH = path.join(__dirname, '..', '..', 'connect-web');
@@ -29,14 +26,6 @@ const config: webpack.Configuration = {
             'src-webextension',
             'pages',
             'extension-popup',
-            'index.tsx',
-        ),
-        connectExplorer: path.join(
-            __dirname,
-            '..',
-            'src-webextension',
-            'pages',
-            'connect-explorer',
             'index.tsx',
         ),
         serviceWorker: path.join(
@@ -119,29 +108,11 @@ const config: webpack.Configuration = {
             inject: true,
             minify: false,
         }),
-        new HtmlWebpackPlugin({
-            chunks: ['connectExplorer'],
-            filename: 'connect-explorer.html',
-            template: path.join(
-                __dirname,
-                '..',
-                'src-webextension',
-                'pages',
-                'connect-explorer',
-                'index.html',
-            ),
-            inject: true,
-            minify: false,
-        }),
         new CopyPlugin({
             patterns: [
                 {
                     from: path.join(__dirname, '..', 'src-webextension', 'manifest.json'),
                     to: `${DIST}/`,
-                },
-                {
-                    from: path.join(__dirname, '..', 'src', 'fonts'),
-                    to: `${DIST}/fonts/`,
                 },
                 {
                     from: path.join(
@@ -159,22 +130,8 @@ const config: webpack.Configuration = {
                     from: path.join(CONNECT_WEB_EXTENSION_PATH, 'trezor-usb-permissions.html'),
                     to: `${DIST}`,
                 },
-                {
-                    from: path.resolve(__dirname, '../../../docs/packages/connect'),
-                    to: path.resolve(DIST, 'docs'),
-                },
             ],
         }),
-        new webpack.DefinePlugin({
-            'process.env.__TREZOR_CONNECT_SRC': JSON.stringify(process.env.__TREZOR_CONNECT_SRC),
-            'process.env.COMMIT_HASH': JSON.stringify(commitHash),
-        }),
-        // Imports from @trezor/connect-web in @trezor/connect-explorer package need to be replaced by imports from @trezor/connect-webextension/src/proxy
-        // in order to work properly with @trezor/connect-webextension service worker.
-        new webpack.NormalModuleReplacementPlugin(
-            /@trezor\/connect-web$/,
-            '@trezor/connect-webextension/src/proxy',
-        ),
     ],
 };
 

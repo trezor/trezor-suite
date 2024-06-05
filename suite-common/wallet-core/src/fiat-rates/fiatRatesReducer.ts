@@ -1,23 +1,28 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { Timestamp } from '@suite-common/wallet-types';
-import { getFiatRateKeyFromTicker } from '@suite-common/wallet-utils';
+import { getFiatRateKeyFromTicker, isTestnet } from '@suite-common/wallet-utils';
 
-import { updateFiatRatesThunk } from './fiatRatesThunks';
+import { updateFiatRatesThunk, updateTxsFiatRatesThunk } from './fiatRatesThunks';
 import { FiatRatesState } from './fiatRatesTypes';
 
 export const fiatRatesInitialState: FiatRatesState = {
     current: {},
     lastWeek: {},
+    historic: {},
 };
 
 export const prepareFiatRatesReducer = createReducerWithExtraDeps(
     fiatRatesInitialState,
-    builder => {
+    (builder, extra) => {
         builder
             .addCase(updateFiatRatesThunk.pending, (state, action) => {
                 const { ticker, localCurrency, rateType } = action.meta.arg;
                 const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
                 let currentRate = state[rateType]?.[fiatRateKey];
+
+                if (isTestnet(ticker.symbol)) {
+                    return;
+                }
 
                 if (currentRate) {
                     currentRate = {
@@ -39,8 +44,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
             .addCase(updateFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;
 
-                const { ticker, localCurrency, rateType, lastSuccessfulFetchTimestamp } =
-                    action.meta.arg;
+                const { ticker, localCurrency, rateType, fetchAttemptTimestamp } = action.meta.arg;
                 const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
 
                 const currentRate = state[rateType]?.[fiatRateKey];
@@ -54,7 +58,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     ...currentRate,
                     rate: action.payload.rate,
                     lastTickerTimestamp: (action.payload.lastTickerTimestamp * 1000) as Timestamp,
-                    lastSuccessfulFetchTimestamp,
+                    lastSuccessfulFetchTimestamp: fetchAttemptTimestamp,
                     isLoading: false,
                     error: null,
                 };
@@ -63,6 +67,10 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                 const { ticker, localCurrency, rateType } = action.meta.arg;
                 const fiatRateKey = getFiatRateKeyFromTicker(ticker, localCurrency);
                 const currentRate = state[rateType]?.[fiatRateKey];
+
+                if (isTestnet(ticker.symbol)) {
+                    return;
+                }
 
                 // To prevent race condition someone will remove rate from state while fetching for example (during currency change etc.)
                 if (!currentRate) {
@@ -74,6 +82,28 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
                     isLoading: false,
                     error: action.error.message || `Failed to update ${ticker.symbol} fiat rate.`,
                 };
-            });
+            })
+            .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
+                if (!action.payload) return;
+
+                action.payload.forEach(fiatRate => {
+                    const { tickerId, rates } = fiatRate;
+                    const { localCurrency } = action.meta.arg;
+                    const fiatRateKey = getFiatRateKeyFromTicker(tickerId, localCurrency);
+
+                    // combine new rates with existing historic rates
+                    state['historic'][fiatRateKey] = {
+                        ...state['historic'][fiatRateKey],
+                        ...rates.reduce(
+                            (acc, rate) => ({ ...acc, [rate.lastTickerTimestamp]: rate.rate }),
+                            {},
+                        ),
+                    };
+                });
+            })
+            .addMatcher(
+                action => action.type === extra.actionTypes.storageLoad,
+                extra.reducers.storageLoadHistoricRates,
+            );
     },
 );

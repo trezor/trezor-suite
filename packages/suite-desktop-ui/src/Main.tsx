@@ -1,5 +1,6 @@
 import { Provider as ReduxProvider } from 'react-redux';
 import { Router as RouterProvider } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 
 import { createRoot } from 'react-dom/client';
 import { init as initSentry } from '@sentry/electron/renderer';
@@ -41,30 +42,35 @@ const Main = () => {
     const formattersConfig = useFormattersConfig();
 
     return (
-        <ConnectedThemeProvider>
-            <RouterProvider history={history}>
-                <ModalContextProvider>
-                    <ErrorBoundary>
-                        <Autodetect />
-                        <Resize />
-                        <Protocol />
-                        <OnlineStatus />
-                        <RouterHandler />
-                        <ConnectedIntlProvider>
-                            <FormatterProvider config={formattersConfig}>
-                                <DesktopUpdater>
-                                    <Metadata />
-                                    <ToastContainer />
-                                    <Preloader>
-                                        <AppRouter />
-                                    </Preloader>
-                                </DesktopUpdater>
-                            </FormatterProvider>
-                        </ConnectedIntlProvider>
-                    </ErrorBoundary>
-                </ModalContextProvider>
-            </RouterProvider>
-        </ConnectedThemeProvider>
+        // Todo: Enable when issues are fixed (ReactTruncate & BumpFee)
+        // <StrictMode>
+        <HelmetProvider>
+            <ConnectedThemeProvider>
+                <RouterProvider history={history}>
+                    <ModalContextProvider>
+                        <ErrorBoundary>
+                            <Autodetect />
+                            <Resize />
+                            <Protocol />
+                            <OnlineStatus />
+                            <RouterHandler />
+                            <ConnectedIntlProvider>
+                                <FormatterProvider config={formattersConfig}>
+                                    <DesktopUpdater>
+                                        <Metadata />
+                                        <ToastContainer />
+                                        <Preloader>
+                                            <AppRouter />
+                                        </Preloader>
+                                    </DesktopUpdater>
+                                </FormatterProvider>
+                            </ConnectedIntlProvider>
+                        </ErrorBoundary>
+                    </ModalContextProvider>
+                </RouterProvider>
+            </ConnectedThemeProvider>
+        </HelmetProvider>
+        // </StrictMode>
     );
 };
 
@@ -76,9 +82,8 @@ export const init = async (container: HTMLElement) => {
     root.render(<LoadingScreen />);
 
     const preloadAction = await preloadStore();
-    const store = initStore(preloadAction);
-
-    await desktopApi.handshake();
+    const { statePatch } = await desktopApi.handshake();
+    const store = initStore(preloadAction, statePatch);
 
     // start logging to file if Debug menu is active
     if (

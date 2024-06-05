@@ -10,7 +10,7 @@ import {
     GroupedBalanceMovementEvent,
     GroupedBalanceMovementEventPayload,
 } from '@suite-common/graph';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 import { getExtremaFromGraphPoints } from '../utils';
 import { AxisLabel } from './AxisLabel';
@@ -72,7 +72,6 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
-    const { translate } = useTranslate();
     const [delayedLoading, setDelayedLoading] = useState(false);
 
     const arePointsEmpty = points.length <= 1;
@@ -149,11 +148,15 @@ export const Graph = <TGraphPoint extends FiatGraphPoint>({
             {loading && (
                 <Box style={applyStyle(graphMessageStyleContainer)}>
                     <Loader
-                        title={translate(
-                            loadingTakesLongerThanExpected
-                                ? 'graph.retrievengTakesLongerThanExpected'
-                                : 'graph.retrievingData',
-                        )}
+                        title={
+                            <Translation
+                                id={
+                                    loadingTakesLongerThanExpected
+                                        ? 'graph.retrievengTakesLongerThanExpected'
+                                        : 'graph.retrievingData'
+                                }
+                            />
+                        }
                     />
                 </Box>
             )}

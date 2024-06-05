@@ -18,13 +18,13 @@ import {
     selectIsPhishingTransaction,
     selectIsTransactionPending,
     selectTransactionBlockTimeById,
-    TokenDefinitionsRootState,
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { EthereumTokenTransfer } from '@suite-native/ethereum-tokens';
 import { Color } from '@trezor/theme';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
+import { TokenDefinitionsRootState } from '@suite-common/token-definitions';
 
 import { TransactionIcon } from './TransactionIcon';
 
@@ -140,7 +140,6 @@ export const TransactionListItemContainer = ({
     const { applyStyle } = useNativeStyles();
     const navigation =
         useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes.AccountDetail>>();
-    const { translate } = useTranslate();
 
     const handleNavigateToTransactionDetail = () => {
         navigation.navigate(RootStackRoutes.TransactionDetail, {
@@ -191,7 +190,7 @@ export const TransactionListItemContainer = ({
                             <Text variant="body">{transactionTitle}</Text>
                             {isPhishingTransaction && (
                                 <Badge
-                                    label={translate('transactions.phishing.badge')}
+                                    label={<Translation id="transactions.phishing.badge" />}
                                     size="small"
                                     icon="warningTriangle"
                                     variant="red"

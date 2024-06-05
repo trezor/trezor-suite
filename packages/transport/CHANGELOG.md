@@ -1,3 +1,42 @@
+# 1.1.29
+
+-   chore(transport): make Session type literal (72570f2219)
+-   chore(transport): specify apis fields more verbosely (public/protected) (786fa92fdc)
+
+# 1.1.29-beta.1
+
+-   feat(transport-bridge): introduce dispose method in transport-bridge (7fe9e7cd56)
+-   fix(transport): usb device filtering (d5ba4383c0)
+-   fix(connect): simultaneous read of connected devices (f181c988a4)
+-   test(transport): enable skipped unit tests (6516c718b7)
+-   fix(transport): AbstractApiTransport.acquire listenPromise condition (c37d12961a)
+-   fix(transport): Transport.stopped initial value (e9638f48ed)
+-   feat(transport): make signal required param in constructor (4b82f8d505)
+
+# 1.1.28
+
+-   chore(protobuf): ability to build protobuf messages from the specified branch (7a6babb818)
+-   fix(transport): remove accidental descriptors object mutation (3cd6b820f9)
+-   Revert feat(transport): add scheduleActionParams to call api (4de6cbed0c)
+-   feat(transport): add scheduleActionParams to call api (40a053013a)
+-   feat(protocol): separate chunking from encoding (2f445ba734)
+-   chore(transport): drop dead code (faba718c9f)
+-   chore(protocol): rename decode response fields (1db2916fed)
+-   test(transport): fix e2e triggering unit tests (9c117de07e)
+-   feat(transport): handle cases when bridge returns descriptor with same path but different product (e2abb91fc8)
+-   chore(transport): improve tests setup (5aa27a0fba)
+-   chore(transport): keep track of full descriptors in background (be400968bb)
+-   feat(transport): add field type to descriptor (74a7214adb)
+-   test(suite-native): detox e2e (#11821) (3e3f185ece)
+
+# 1.1.27
+
+-   chore(ci): faster transport E2E (5154075030)
+-   fix(transport): accept logger also for usb transports (3a5dee1318)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   fix(connect): fix connect for RN (#11489) (14814fd54b)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 1.1.26
 
 -   chore(transport, trezor-user-env-link): remove cross-fetch (e489dce33)

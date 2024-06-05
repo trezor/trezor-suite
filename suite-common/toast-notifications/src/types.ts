@@ -61,7 +61,19 @@ export type ToastPayload = (
               | 'sign-message-success'
               | 'verify-message-success'
               | 'firmware-check-authenticity-success'
-              | 'device-authenticity-success';
+              | 'device-authenticity-success'
+              | 'clear-storage'
+              | 'add-token-success'
+              | 'auto-updater-no-new'
+              | 'qr-incorrect-address'
+              | 'copy-to-clipboard'
+              | 'savings-kyc-failed'
+              | 'savings-kyc-success'
+              | 'tor-is-slow'
+              | 'coinjoin-interrupted'
+              | 'firmware-language-changed'
+              | 'firmware-language-fetch-error'
+              | 'estimated-fee-error';
       }
     | SentTransactionNotification
     | {
@@ -69,17 +81,8 @@ export type ToastPayload = (
           txid: string;
       }
     | {
-          type: 'copy-to-clipboard';
-      }
-    | {
-          type: 'clear-storage';
-      }
-    | {
           type: 'bridge-dev-restart';
           devMode: boolean;
-      }
-    | {
-          type: 'add-token-success';
       }
     | {
           type:
@@ -94,15 +97,14 @@ export type ToastPayload = (
               | 'metadata-auth-error'
               | 'metadata-not-found-error'
               | 'metadata-unexpected-error'
-              | 'device-authenticity-error';
+              | 'device-authenticity-error'
+              | 'cardano-delegate-error'
+              | 'cardano-withdrawal-error';
           error: string;
       }
     | {
           type: 'auto-updater-error';
           state: DesktopAppUpdateState;
-      }
-    | {
-          type: 'auto-updater-no-new';
       }
     | {
           type: 'auto-updater-new-version-first-run';
@@ -116,47 +118,18 @@ export type ToastPayload = (
           coin: string;
       }
     | {
-          type: 'qr-incorrect-address';
-      }
-    | {
           type: 'coin-scheme-protocol';
           scheme: PROTOCOL_SCHEME;
           address: string;
           amount?: number;
       }
     | {
-          type: 'cardano-delegate-error';
-          error: string;
-      }
-    | {
-          type: 'cardano-withdrawal-error';
-          error: string;
-      }
-    | {
-          type: 'savings-kyc-failed';
-      }
-    | {
-          type: 'savings-kyc-success';
-      }
-    | {
           type: 'tor-toggle-error';
           error: TranslationKey;
       }
     | {
-          type: 'tor-is-slow';
-      }
-    | {
-          type: 'coinjoin-interrupted';
-      }
-    | {
           type: 'successful-claim';
           symbol: string;
-      }
-    | {
-          type: 'firmware-language-changed';
-      }
-    | {
-          type: 'firmware-language-fetch-error';
       }
     | StakedTransactionNotification
     | UnstakedTransactionNotification
@@ -164,13 +137,10 @@ export type ToastPayload = (
 ) &
     NotificationOptions;
 
+export const AUTH_DEVICE = 'auth-device';
 export type NotificationEventPayload = (
     | {
-          // only temporary, must be same as AUTH_DEVICE value in packages/suite/src/actions/suite/constants/suiteConstants.ts
-          // once that will be migrated to @suite-common, this should be replaced directly by suiteActions.authDevice.type
-          // this should not break type safety, if someone will change value of AUTH_DEVICE, it will throw error in place
-          // where action is used and you will need to change it also here
-          type: '@suite/device/authDevice';
+          type: typeof AUTH_DEVICE;
       }
     | ReceivedTransactionNotification
     | {

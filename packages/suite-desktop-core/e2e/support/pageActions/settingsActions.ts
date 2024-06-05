@@ -25,7 +25,7 @@ class SettingsActions {
                 desiredLocationTestid = '@settings/debug/github';
                 break;
             case 'general':
-                desiredLocationTestid = '@settings/language';
+                desiredLocationTestid = '@general-settings/language';
                 break;
             case 'device':
                 desiredLocationTestid = '@settings/device/backup-recovery-seed';
@@ -39,7 +39,9 @@ class SettingsActions {
         }
         await window.getByTestId(`@settings/menu/${desiredLocation}`).click();
         await window
-            .getByTestId(desiredLocationTestid)
+            .locator(`[data-test="${desiredLocationTestid}"]`)
+            // TODO: fix data-testid selectors in the app
+            // .getByTestId(desiredLocationTestid)
             .waitFor({ state: 'visible', timeout: 10_000 });
     }
 

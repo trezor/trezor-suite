@@ -4,36 +4,28 @@ import { Network } from 'src/types/wallet';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-import { TimestampedRates } from 'src/types/wallet/fiatRates';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { TokenTransfer } from '@trezor/blockchain-link-types';
 
 interface CommonOwnProps {
     amount: string;
-    symbol: Network['symbol'] | string;
+    symbol: Network['symbol'] | TokenTransfer['symbol'];
     tokenAddress?: string;
     fiatCurrency?: string;
 }
 
-interface DefaultSourceProps extends CommonOwnProps {
-    source?: never;
-    useCustomSource?: never;
+export interface useFiatFromCryptoValueParams extends CommonOwnProps {
+    historicRate?: number;
+    useHistoricRate?: boolean;
 }
-
-interface CustomSourceProps extends CommonOwnProps {
-    source: TimestampedRates['rates'] | undefined | null;
-    useCustomSource?: boolean;
-}
-
-export type useFiatFromCryptoValueParams = DefaultSourceProps | CustomSourceProps;
 
 export const useFiatFromCryptoValue = ({
     amount,
     symbol,
     tokenAddress,
-    fiatCurrency,
-    useCustomSource,
-    source,
+    historicRate,
+    useHistoricRate,
 }: useFiatFromCryptoValueParams) => {
     const localCurrency = useSelector(selectLocalCurrency);
     const fiatRateKey = getFiatRateKey(
@@ -44,12 +36,8 @@ export const useFiatFromCryptoValue = ({
 
     const currentRate = useSelector(state => selectFiatRatesByFiatRateKey(state, fiatRateKey));
 
-    const targetCurrency = fiatCurrency ?? localCurrency;
+    const rate = useHistoricRate ? historicRate : currentRate?.rate;
+    const fiatAmount: string | null = rate ? toFiatCurrency(amount, rate) : null;
 
-    const ratesSource = useCustomSource ? source : { [localCurrency]: currentRate?.rate };
-    const fiatAmount: string | null = ratesSource
-        ? toFiatCurrency(amount, targetCurrency, ratesSource)
-        : null;
-
-    return { targetCurrency, fiatAmount, ratesSource, currentRate };
+    return { localCurrency, fiatAmount, rate, currentRate };
 };

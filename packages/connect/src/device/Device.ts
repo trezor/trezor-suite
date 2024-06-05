@@ -1,7 +1,6 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { TypedEmitter } from '@trezor/utils';
-import { createDeferred, Deferred } from '@trezor/utils';
-import { versionUtils } from '@trezor/utils';
+import { versionUtils, createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
+import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
 import { DeviceCommands, PassphrasePromptResponse } from './DeviceCommands';
 import { PROTO, ERRORS, NETWORK } from '../constants';
@@ -15,7 +14,7 @@ import {
     ensureInternalModelFeature,
 } from '../utils/deviceFeaturesUtils';
 import { initLog } from '../utils/debug';
-import type { Transport, Descriptor } from '@trezor/transport';
+import { type Transport, type Descriptor, TRANSPORT_ERROR } from '@trezor/transport';
 import {
     Device as DeviceTyped,
     DeviceFirmwareStatus,
@@ -27,6 +26,7 @@ import {
     VersionArray,
 } from '../types';
 import { models } from '../data/models';
+import { getLanguage } from '../data/getLanguage';
 
 // custom log
 const _log = initLog('Device');
@@ -50,6 +50,8 @@ export type RunOptions = {
     useEmptyPassphrase?: boolean;
     useCardanoDerivation?: boolean;
 };
+
+export const GET_FEATURES_TIMEOUT = 3000;
 
 const parseRunOptions = (options?: RunOptions): RunOptions => {
     if (!options) options = {};
@@ -75,6 +77,7 @@ export interface DeviceEvents {
     [DEVICE.PASSPHRASE_ON_DEVICE]: () => void;
     [DEVICE.BUTTON]: (device: Device, payload: DeviceButtonRequestPayload) => void;
     [DEVICE.ACQUIRED]: () => void;
+    [DEVICE.SAVE_STATE]: (state: string) => void;
 }
 
 /**
@@ -88,7 +91,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     originalDescriptor: Descriptor;
 
-    unreadableError?: string; // unreadable error like: HID device, LIBUSB_ERROR
+    /**
+     * descriptor was detected on transport layer but sending any messages (such as GetFeatures) to it failed either
+     * with some expected error, for example HID device, LIBUSB_ERROR, or it simply timeout out. such device can't be worked
+     * with and user needs to take some action. for example reconnect the device, update firmware or change transport type
+     */
+    unreadableError?: string;
 
     // @ts-expect-error: strictPropertyInitialization
     firmwareStatus: DeviceFirmwareStatus;
@@ -111,7 +119,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
     firstRunPromise: Deferred<boolean>;
 
-    activitySessionID?: string | null;
+    activitySessionID?: Session | null;
 
     commands?: DeviceCommands;
 
@@ -221,9 +229,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
                 }
             }
 
-            if (this.releasePromise) {
-                await this.releasePromise;
-            }
             this.releasePromise = this.transport.release({
                 session: this.activitySessionID,
                 path: this.originalDescriptor.path,
@@ -334,20 +339,21 @@ export class Device extends TypedEmitter<DeviceEvents> {
                     );
                 } else {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
-                    // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
-                    // transport response is pending endlessly, calling any other message will end up with "device call in progress"
-                    // set the timeout for this call so whenever it happens "unacquired device" will be created instead
-                    // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                     await Promise.race([
                         this.getFeatures(),
+                        // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
+                        // transport response is pending endlessly, calling any other message will end up with "device call in progress"
+                        // set the timeout for this call so whenever it happens "unacquired device" will be created instead
+                        // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
                         new Promise((_resolve, reject) =>
-                            setTimeout(() => reject(new Error('GetFeatures timeout')), 3000),
+                            setTimeout(
+                                () => reject(new Error('GetFeatures timeout')),
+                                GET_FEATURES_TIMEOUT,
+                            ),
                         ),
                     ]);
                 }
             } catch (error) {
-                // note: this happens on T1B1 with webusb if there was "select wallet dialog" and user reloads page.
-                // note this happens even before transport-refactor-2 branch
                 if (!this.inconsistent && error.message === 'GetFeatures timeout') {
                     // handling corner-case T1B1 + bootloader < 1.4.0 (above)
                     // if GetFeatures fails try again
@@ -356,6 +362,11 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
                     return this._runInner(() => Promise.resolve({}), options);
                 }
+
+                if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
+                    this.unreadableError = 'Connection timeout';
+                }
+
                 this.inconsistent = true;
                 delete this.runPromise;
 
@@ -445,8 +456,9 @@ export class Device extends TypedEmitter<DeviceEvents> {
     setInternalState(state?: string) {
         if (typeof state !== 'string') {
             delete this.internalState[this.instance];
-        } else {
+        } else if (state !== this.internalState[this.instance]) {
             this.internalState[this.instance] = state;
+            this.emit(DEVICE.SAVE_STATE, state);
         }
     }
 
@@ -467,7 +479,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return this.externalState[this.instance];
     }
 
-    async validateState(networkType?: NETWORK.NetworkType, preauthorized = false) {
+    async validateState(preauthorized = false) {
         if (!this.features) return;
 
         if (!this.features.unlocked && preauthorized) {
@@ -480,7 +492,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         }
 
         const expectedState = this.getExternalState();
-        const state = await this.getCommands().getDeviceState(networkType);
+        const state = await this.getCommands().getDeviceState();
         const uniqueState = `${state}@${this.features.device_id || 'device_id'}:${this.instance}`;
         if (!this.useLegacyPassphrase() && this.features.session_id) {
             this.setInternalState(this.features.session_id);
@@ -525,6 +537,81 @@ export class Device extends TypedEmitter<DeviceEvents> {
     async getFeatures() {
         const { message } = await this.getCommands().typedCall('GetFeatures', 'Features', {});
         this._updateFeatures(message);
+
+        if (
+            !this.features.language_version_matches &&
+            this.features.language &&
+            this.atLeast('2.7.0')
+        ) {
+            _log.info('language version mismatch. silently updating...');
+
+            try {
+                await this.changeLanguage({ language: this.features.language });
+            } catch (err) {
+                _log.error('change language failed silently', err);
+            }
+        }
+    }
+
+    async changeLanguage({
+        language,
+        binary,
+    }: { language?: undefined; binary: ArrayBuffer } | { language: string; binary?: undefined }) {
+        if (language === 'en-US') {
+            return this._uploadTranslationData(null);
+        }
+
+        if (binary) {
+            return this._uploadTranslationData(binary);
+        }
+
+        const downloadedBinary = await getLanguage({
+            language,
+            version: this.getVersion(),
+            internal_model: this.features.internal_model,
+        });
+
+        return this._uploadTranslationData(downloadedBinary);
+    }
+
+    private async _uploadTranslationData(payload: ArrayBuffer | null) {
+        if (!this.commands) {
+            throw ERRORS.TypedError('Runtime', 'uploadTranslationData: device.commands is not set');
+        }
+
+        if (payload === null) {
+            const response = await this.commands.typedCall(
+                'ChangeLanguage',
+                ['Success'],
+                { data_length: 0 }, // For en-US where we just send `ChangeLanguage(size=0)`
+            );
+
+            return response.message;
+        }
+
+        const length = payload.byteLength;
+
+        let response = await this.commands.typedCall(
+            'ChangeLanguage',
+            ['TranslationDataRequest', 'Success'],
+            { data_length: length },
+        );
+
+        while (response.type !== 'Success') {
+            const start = response.message.data_offset!;
+            const end = response.message.data_offset! + response.message.data_length!;
+            const chunk = payload.slice(start, end);
+
+            response = await this.commands.typedCall(
+                'TranslationDataAck',
+                ['TranslationDataRequest', 'Success'],
+                {
+                    data_chunk: Buffer.from(chunk).toString('hex'),
+                },
+            );
+        }
+
+        return response.message;
     }
 
     _updateFeatures(feat: Features) {
@@ -701,12 +788,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return null;
     }
 
-    dispose() {
+    async dispose() {
         this.removeAllListeners();
         if (this.isUsedHere() && this.activitySessionID) {
             try {
                 if (this.commands) {
-                    this.commands.cancel();
+                    await this.commands.cancel();
                 }
 
                 return this.transport.release({

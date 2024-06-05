@@ -3,14 +3,17 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
-            "path": "../../suite-common/validators"
+            "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/wallet-constants"
+            "path": "../../suite-common/suite-types"
         },
-        { "path": "../atoms" },
-        { "path": "../forms" },
+        {
+            "path": "../../suite-common/wallet-core"
+        },
+        { "path": "../alerts" },
         { "path": "../intl" },
-        { "path": "../../packages/styles" }
+        { "path": "../navigation" },
+        { "path": "../../packages/connect" }
     ]
 }

@@ -8,7 +8,7 @@ import {
     UseFormReturn,
     UseFormSetValue,
 } from 'react-hook-form';
-import { SelectBar } from '@trezor/components';
+import { Icon, Paragraph, SelectBar, Tooltip, motionEasing, variables } from '@trezor/components';
 import { FormState } from '@suite-common/wallet-types';
 import { spacingsPx, typography } from '@trezor/theme';
 import { FiatValue, FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -20,12 +20,14 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
     PrecomposedTransactionFinal,
-} from 'src/types/wallet/sendForm';
+} from '@suite-common/wallet-types';
 import { CustomFee } from './CustomFee';
 import { FeeDetails } from './FeeDetails';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const Container = styled.div`
+    overflow: hidden; /* prevent scrollbar when custom fee is opened */
     width: 100%;
 `;
 
@@ -38,7 +40,7 @@ const FeeInfoRow = styled.div`
     justify-content: space-between;
     align-items: start;
     width: 100%;
-    min-height: 50px; /* reserve space for fiat/crypto amounts */
+    min-height: 52px; /* reserve space for fiat/crypto amounts */
 `;
 
 const FeeAmount = styled.div`
@@ -62,6 +64,14 @@ const Label = styled.div`
     flex-direction: column;
     justify-content: space-between;
     gap: ${spacingsPx.xxs};
+`;
+
+const HeadingWrapper = styled.div`
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: ${spacingsPx.xxs};
     text-transform: capitalize;
 `;
 
@@ -69,11 +79,16 @@ const StyledSelectBar = styled(SelectBar<FeeLevel['label']>)`
     margin-top: ${spacingsPx.lg};
 `;
 
-const FEE_LEVELS_TRANSLATIONS = {
+const HelperTextWrapper = styled(Paragraph)`
+    color: ${({ theme }) => theme.textSubdued};
+    font-size: ${variables.FONT_SIZE.SMALL};
+`;
+
+const FEE_LEVELS_TRANSLATIONS: Record<FeeLevel['label'], TranslationKey> = {
     custom: 'FEE_LEVEL_CUSTOM',
     high: 'FEE_LEVEL_HIGH',
     normal: 'FEE_LEVEL_NORMAL',
-    economy: 'FEE_LEVEL_ECONOMY',
+    economy: 'FEE_LEVEL_LOW',
     low: 'FEE_LEVEL_LOW',
 } as const;
 
@@ -96,6 +111,8 @@ export interface FeesProps<TFieldValues extends FormState> {
     composedLevels?: PrecomposedLevels | PrecomposedLevelsCardano;
     label?: ExtendedMessageDescriptor['id'];
     rbfForm?: boolean;
+    helperText?: React.ReactNode;
+    showFeeWhilePending?: boolean;
 }
 
 export const Fees = <TFieldValues extends FormState>({
@@ -107,6 +124,8 @@ export const Fees = <TFieldValues extends FormState>({
     composedLevels,
     label,
     rbfForm,
+    helperText,
+    showFeeWhilePending = true,
     ...props
 }: FeesProps<TFieldValues>) => {
     // Type assertion allowing to make the component reusable, see https://stackoverflow.com/a/73624072.
@@ -126,14 +145,21 @@ export const Fees = <TFieldValues extends FormState>({
         <Container>
             <FeeInfoRow>
                 <Label>
-                    <Translation id={label || (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')} />
-
-                    <FeeDetails
-                        networkType={networkType}
-                        feeInfo={feeInfo}
-                        selectedLevel={selectedLevel}
-                        transactionInfo={transactionInfo}
-                    />
+                    <HeadingWrapper>
+                        <Translation
+                            id={label || (networkType === 'ethereum' ? 'MAX_FEE' : 'FEE')}
+                        />
+                        {networkType === 'ethereum' && (
+                            <Tooltip
+                                maxWidth={328}
+                                content={<Translation id="TR_STAKE_MAX_FEE_DESC" />}
+                            >
+                                {/* TODO: Add new info icon. Export from Figma isn't handled as is it should by the strokes to fills online converter */}
+                                <Icon icon="INFO" size={14} />
+                            </Tooltip>
+                        )}
+                    </HeadingWrapper>
+                    {helperText && <HelperTextWrapper>{helperText}</HelperTextWrapper>}
                 </Label>
 
                 {transactionInfo !== undefined && transactionInfo.type !== 'error' && (
@@ -162,6 +188,28 @@ export const Fees = <TFieldValues extends FormState>({
                 />
             )}
 
+            <AnimatePresence>
+                {!isCustomLevel && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
+                        animate={{ opacity: 1, height: 'auto', marginTop: 20 }}
+                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                        transition={{
+                            opacity: { duration: 0.15, ease: motionEasing.transition },
+                            height: { duration: 0.2, ease: motionEasing.transition },
+                            marginTop: { duration: 0.25, ease: motionEasing.transition },
+                        }}
+                    >
+                        <FeeDetails
+                            networkType={networkType}
+                            feeInfo={feeInfo}
+                            selectedLevel={selectedLevel}
+                            transactionInfo={transactionInfo}
+                            showFee={showFeeWhilePending || transactionInfo?.type === 'final'}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
             <AnimatePresence>
                 {isCustomLevel && (
                     <CustomFee

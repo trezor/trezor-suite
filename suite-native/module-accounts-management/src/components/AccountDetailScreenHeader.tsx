@@ -44,6 +44,7 @@ export const AccountDetailScreenHeader = ({
                     size="medium"
                     iconName="settings"
                     onPress={handleSettingsNavigation}
+                    testID="@account-detail/settings-button"
                 />
             }
             leftIcon={<GoBackIcon closeActionType={closeActionType} />}

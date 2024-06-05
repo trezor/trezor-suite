@@ -1,0 +1,76 @@
+name: "NPM Connect Deploy Action"
+description: "Releases to NPM any Connect package or Trezor dependency"
+inputs:
+  deploymentType:
+    description: "Specifies the deployment type for the npm package. Choose 'beta' for pre-release versions that are not ready for production use, and 'production' for stable versions intended for end-users."
+    required: true
+    type: choice
+    options:
+      - beta
+      - latest
+  packageName:
+    description: "The name of the package to be deployed. Select from the predefined list of packages."
+    required: true
+    type: choice
+    options:
+      - blockchain-link-types
+      - blockchain-link-utils
+      - blockchain-link
+      - connect-common
+      - transport
+      - utils
+      - utxo-lib
+      - connect-plugin-stellar
+      - connect-plugin-ethereum
+      - analytics
+      - connect-analytics
+      - type-utils
+      - env-utils
+      - protocol
+      - protobuf
+      - schema-utils
+      - connect
+      - connect-web
+      - connect-webextension
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Extract branch name
+      shell: bash
+      run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+      id: extract_branch
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version-file: ".nvmrc"
+        cache: yarn
+
+    - name: Install dependencies
+      shell: bash
+      run: yarn install --immutable
+
+    - name: Check version
+      shell: bash
+      run: node ./ci/scripts/check-version.js ${{ inputs.packageName }} ${{ inputs.deploymentType }}
+
+    - name: Set NPM token
+      shell: bash
+      run: yarn config set npmAuthToken ${{ env.NPM_TOKEN }}
+
+    - name: Publish to NPM
+      shell: bash
+      run: |
+        cd ./packages/${{ inputs.packageName }}
+        yarn build:lib
+        yarn npm publish --tag ${{ inputs.deploymentType }} --access public
+
+    - name: Cleanup
+      shell: bash
+      if: always()
+      run: yarn config unset npmAuthToken

@@ -486,7 +486,7 @@ const fixtures: {
         },
     },
     {
-        description: 'ETH (Ropsten) smart contract',
+        description: 'ETH staking pools',
         params: {
             descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
         },
@@ -495,13 +495,13 @@ const fixtures: {
                 method: 'getAccountInfo',
                 response: {
                     data: {
+                        nonce: '100',
                         address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
-                        erc20Contract: {
-                            contract: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
-                            name: 'Grzegorz Brzęczyszczykiewicz',
-                            symbol: 'GRZBRZ',
-                            decimals: 3,
-                        },
+                        stakingPools: [
+                            {
+                                name: 'Klimactivist Pool',
+                            },
+                        ],
                     },
                 },
             },
@@ -511,12 +511,118 @@ const fixtures: {
             empty: false,
             history: {},
             misc: {
-                erc20Contract: {
+                nonce: '100',
+                stakingPools: [
+                    {
+                        name: 'Klimactivist Pool',
+                    },
+                ],
+                addressAliases: undefined,
+                contractInfo: undefined,
+            },
+        },
+    },
+    {
+        description: 'ETH send receive tx',
+        params: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        nonce: '100',
+                        address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+                        balance: '100',
+                        unconfirmedBalance: '-1',
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+            empty: false,
+            balance: '100',
+            availableBalance: '99',
+            history: {},
+            misc: {
+                nonce: '100',
+                stakingPools: undefined,
+                addressAliases: undefined,
+                contractInfo: undefined,
+            },
+        },
+    },
+    {
+        description: 'ETH pending receive tx',
+        params: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        nonce: '100',
+                        address: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+                        balance: '100',
+                        unconfirmedBalance: '1',
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
+            empty: false,
+            balance: '100',
+            availableBalance: '100',
+            history: {},
+            misc: {
+                nonce: '100',
+                stakingPools: undefined,
+                addressAliases: undefined,
+                contractInfo: undefined,
+            },
+        },
+    },
+    {
+        description: 'ETH smart contract',
+        params: {
+            descriptor: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
+        },
+        serverFixtures: [
+            {
+                method: 'getAccountInfo',
+                response: {
+                    data: {
+                        nonce: '100',
+                        address: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
+                        contractInfo: {
+                            type: 'ERC20',
+                            contract: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
+                            name: 'PureFi Token',
+                            symbol: 'UFI',
+                            decimals: 18,
+                        },
+                    },
+                },
+            },
+        ],
+        response: {
+            descriptor: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
+            empty: false,
+            history: {},
+            misc: {
+                nonce: '100',
+                stakingPools: undefined,
+                addressAliases: undefined,
+                contractInfo: {
                     type: 'ERC20',
-                    contract: '0xFc6B5d6af8A13258f7CbD0D39E11b35e01a32F93',
-                    name: 'Grzegorz Brzęczyszczykiewicz',
-                    symbol: 'GRZBRZ',
-                    decimals: 3,
+                    contract: '0x3c205C8B3e02421Da82064646788c82f7bd753B9',
+                    name: 'PureFi Token',
+                    symbol: 'UFI',
+                    decimals: 18,
                 },
             },
         },

@@ -1,16 +1,10 @@
-import { Button, Card, CardProps, Icon, IconProps, variables } from '@trezor/components';
+import { Button, Card, Icon, IconProps, variables } from '@trezor/components';
 import { spacingsPx, typography } from '@trezor/theme';
 import { ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 const Wrapper = styled.div`
     display: flex;
-    flex-direction: column;
-`;
-
-const StyledCard = styled(Card)`
-    align-items: stretch;
-    flex: 1;
     position: relative;
 `;
 
@@ -54,7 +48,7 @@ const CheckIconContainer = styled.div<{ $isDone: boolean }>`
     overflow: hidden;
     border: 1px solid
         ${({ theme, $isDone }) =>
-            $isDone ? theme.backgroundPrimarySubtleOnElevation1 : theme.borderOnElevation1};
+            $isDone ? theme.backgroundPrimarySubtleOnElevation1 : theme.borderElevation2};
 `;
 
 const CheckIconBackground = styled.div`
@@ -71,10 +65,10 @@ const Line = styled.div`
     width: 100%;
     height: 1px;
     margin: ${spacingsPx.md} 0;
-    background: ${({ theme }) => theme.borderOnElevation1};
+    background: ${({ theme }) => theme.borderElevation2};
 `;
 
-export interface SecurityCardProps extends CardProps {
+export type SecurityCardProps = {
     variant: 'primary' | 'secondary';
     icon: IconProps['icon'];
     heading: ReactNode;
@@ -85,23 +79,16 @@ export interface SecurityCardProps extends CardProps {
         dataTest?: string;
         isDisabled?: boolean;
     };
-}
+};
 
-export const SecurityCard = ({
-    variant,
-    icon,
-    heading,
-    description,
-    cta,
-    ...rest
-}: SecurityCardProps) => {
+export const SecurityCard = ({ variant, icon, heading, description, cta }: SecurityCardProps) => {
     const theme = useTheme();
 
     const isDone = variant === 'secondary';
 
     return (
-        <Wrapper {...rest}>
-            <StyledCard>
+        <Wrapper>
+            <Card>
                 <Header>
                     <Icon icon={icon} size={32} color={theme.iconDefault} />
                     <CheckIconContainer $isDone={isDone}>
@@ -160,7 +147,7 @@ export const SecurityCard = ({
                         </>
                     )}
                 </Footer>
-            </StyledCard>
+            </Card>
         </Wrapper>
     );
 };

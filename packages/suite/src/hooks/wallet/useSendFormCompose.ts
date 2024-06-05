@@ -19,7 +19,7 @@ import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 
 import { TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch } from 'react-redux';
-import { composeSendFormTransactionThunk } from '../../actions/wallet/send/sendFormThunks';
+import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useTranslation } from '../suite';
 
 type Props = UseFormReturn<FormState> & {

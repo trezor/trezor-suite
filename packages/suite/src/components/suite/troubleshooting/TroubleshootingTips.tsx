@@ -1,14 +1,11 @@
 import { useMemo, ReactNode } from 'react';
 import styled from 'styled-components';
 import { Translation, TrezorLink } from 'src/components/suite';
-import { variables, Button, CollapsibleBox } from '@trezor/components';
-import { TREZOR_SUPPORT_URL } from '@trezor/urls';
+import { variables, Button, CollapsibleBox, useElevation } from '@trezor/components';
+import { TREZOR_SUPPORT_DEVICE_URL } from '@trezor/urls';
 import TrezorConnect from '@trezor/connect';
 import { isAndroid } from '@trezor/env-utils';
-
-const WhiteCollapsibleBox = styled(CollapsibleBox)`
-    background: ${({ theme }) => theme.BG_WHITE};
-`;
+import { Elevation, mapElevationToBorder } from '@trezor/theme';
 
 const ItemLabel = styled.span`
     color: ${({ theme }) => theme.TYPE_DARK_GREY};
@@ -56,12 +53,12 @@ const ItemAction = styled.div`
     padding-left: 24px;
 `;
 
-const ContactSupport = styled.div`
+const ContactSupport = styled.div<{ $elevation: Elevation }>`
     display: flex;
     justify-content: space-between;
     margin: 24px -16px 0;
     padding: 20px 20px 0;
-    border-top: 1px solid ${({ theme }) => theme.STROKE_GREY};
+    border-top: 1px solid ${mapElevationToBorder};
     align-items: center;
 `;
 
@@ -101,6 +98,8 @@ export const TroubleshootingTips = ({
     opened,
     'data-test': dataTest,
 }: TroubleshootingTipsProps) => {
+    const { elevation } = useElevation();
+
     const memoizedItems = useMemo(
         () =>
             items
@@ -121,11 +120,11 @@ export const TroubleshootingTips = ({
     );
 
     return (
-        <WhiteCollapsibleBox
-            variant="large"
+        <CollapsibleBox
+            paddingType="large"
             heading={cta}
             iconLabel={label}
-            isOpen={opened}
+            defaultIsOpen={opened}
             data-test={dataTest || '@onboarding/expand-troubleshooting-tips'}
         >
             {items.length > 0 && <Items>{memoizedItems}</Items>}
@@ -140,17 +139,17 @@ export const TroubleshootingTips = ({
                 </StyledButton>
             )}
 
-            <ContactSupport>
+            <ContactSupport $elevation={elevation}>
                 <FooterText>
                     <Translation id="TR_ONBOARDING_TROUBLESHOOTING_FAILED" />
                 </FooterText>
 
-                <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_URL}>
+                <TrezorLink variant="nostyle" href={TREZOR_SUPPORT_DEVICE_URL}>
                     <Button variant="tertiary" size="small">
                         <Translation id="TR_CONTACT_SUPPORT" />
                     </Button>
                 </TrezorLink>
             </ContactSupport>
-        </WhiteCollapsibleBox>
+        </CollapsibleBox>
     );
 };

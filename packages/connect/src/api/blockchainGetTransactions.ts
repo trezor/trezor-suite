@@ -10,6 +10,7 @@ import type { CoinInfo } from '../types';
 type Params = {
     txs: string[];
     coinInfo: CoinInfo;
+    identity?: string;
 };
 
 export default class BlockchainGetTransactions extends AbstractMethod<
@@ -26,6 +27,7 @@ export default class BlockchainGetTransactions extends AbstractMethod<
         validateParams(payload, [
             { name: 'txs', type: 'array', required: true },
             { name: 'coin', type: 'string', required: true },
+            { name: 'identity', type: 'string' },
         ]);
 
         const coinInfo = getCoinInfo(payload.coin);
@@ -38,11 +40,16 @@ export default class BlockchainGetTransactions extends AbstractMethod<
         this.params = {
             txs: payload.txs,
             coinInfo,
+            identity: payload.identity,
         };
     }
 
     async run() {
-        const backend = await initBlockchain(this.params.coinInfo, this.postMessage);
+        const backend = await initBlockchain(
+            this.params.coinInfo,
+            this.postMessage,
+            this.params.identity,
+        );
 
         return backend.getTransactions(this.params.txs);
     }

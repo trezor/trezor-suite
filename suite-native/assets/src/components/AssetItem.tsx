@@ -9,7 +9,7 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
-    selectDeviceAccountsByNetworkSymbol,
+    selectVisibleDeviceAccountsByNetworkSymbol,
 } from '@suite-common/wallet-core';
 import { Box, Text } from '@suite-native/atoms';
 import { CryptoAmountFormatter, FiatAmountFormatter } from '@suite-native/formatters';
@@ -73,7 +73,7 @@ export const AssetItem = memo(
         const navigation = useNavigation<NavigationType>();
 
         const accountsForNetworkSymbol = useSelector((state: AccountsRootState & DeviceRootState) =>
-            selectDeviceAccountsByNetworkSymbol(state, cryptoCurrencySymbol),
+            selectVisibleDeviceAccountsByNetworkSymbol(state, cryptoCurrencySymbol),
         );
         const accountsPerAsset = accountsForNetworkSymbol.length;
 

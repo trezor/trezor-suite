@@ -3,11 +3,7 @@ import { ActivityIndicator } from 'react-native';
 import { Text, VStack, Box } from '@suite-native/atoms';
 import { Icon } from '@suite-common/icons';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import {
-    useAuthorizeDevice,
-    useDetectDeviceError,
-    useReportDeviceConnectToAnalytics,
-} from '@suite-native/device';
+import { useDelayedNavigation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 
 import { ConnectDeviceSreenView } from '../components/ConnectDeviceSreenView';
@@ -19,13 +15,11 @@ const screenStyle = prepareNativeStyle(() => ({
 }));
 
 export const ConnectingDeviceScreen = () => {
-    useDetectDeviceError();
-    useAuthorizeDevice();
-    useReportDeviceConnectToAnalytics();
+    useDelayedNavigation();
     const { applyStyle } = useNativeStyles();
 
     return (
-        <ConnectDeviceSreenView style={applyStyle(screenStyle)}>
+        <ConnectDeviceSreenView style={applyStyle(screenStyle)} shouldDisplayCancelButton={false}>
             <VStack spacing="medium" alignItems="center">
                 <ActivityIndicator size="large" />
                 <Box flexDirection="row" alignItems="center">

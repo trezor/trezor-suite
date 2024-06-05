@@ -10,6 +10,7 @@ export enum DeviceModelInternal {
     T1B1 = 'T1B1',
     T2T1 = 'T2T1',
     T2B1 = 'T2B1',
+    T3T1 = 'T3T1',
 }
 
 // BinanceGetAddress
@@ -646,6 +647,16 @@ export enum CardanoCertificateType {
     STAKE_DEREGISTRATION = 1,
     STAKE_DELEGATION = 2,
     STAKE_POOL_REGISTRATION = 3,
+    STAKE_REGISTRATION_CONWAY = 7,
+    STAKE_DEREGISTRATION_CONWAY = 8,
+    VOTE_DELEGATION = 9,
+}
+
+export enum CardanoDRepType {
+    KEY_HASH = 0,
+    SCRIPT_HASH = 1,
+    ABSTAIN = 2,
+    NO_CONFIDENCE = 3,
 }
 
 export enum CardanoPoolRelayType {
@@ -769,6 +780,7 @@ export type CardanoSignTxInit = {
     total_collateral?: UintType;
     reference_inputs_count?: number;
     chunkify?: boolean;
+    tag_cbor_sets?: boolean;
 };
 
 // CardanoTxInput
@@ -847,6 +859,13 @@ export type CardanoPoolParametersType = {
     relays_count: number;
 };
 
+// CardanoDRep
+export type CardanoDRep = {
+    type: CardanoDRepType;
+    key_hash?: string;
+    script_hash?: string;
+};
+
 // CardanoTxCertificate
 export type CardanoTxCertificate = {
     type: CardanoCertificateType;
@@ -855,6 +874,8 @@ export type CardanoTxCertificate = {
     pool_parameters?: CardanoPoolParametersType;
     script_hash?: string;
     key_hash?: string;
+    deposit?: UintType;
+    drep?: CardanoDRep;
 };
 
 // CardanoTxWithdrawal
@@ -1500,6 +1521,9 @@ export enum Enum_BackupType {
     Bip39 = 0,
     Slip39_Basic = 1,
     Slip39_Advanced = 2,
+    Slip39_Single_Extendable = 3,
+    Slip39_Basic_Extendable = 4,
+    Slip39_Advanced_Extendable = 5,
 }
 
 export type BackupType = keyof typeof Enum_BackupType;
@@ -1530,6 +1554,22 @@ export type Initialize = {
 // GetFeatures
 export type GetFeatures = {};
 
+export enum Enum_BackupAvailability {
+    NotAvailable = 0,
+    Required = 1,
+    Available = 2,
+}
+
+export type BackupAvailability = keyof typeof Enum_BackupAvailability;
+
+export enum Enum_RecoveryStatus {
+    Nothing = 0,
+    Recovery = 1,
+    Backup = 2,
+}
+
+export type RecoveryStatus = keyof typeof Enum_RecoveryStatus;
+
 export enum Enum_Capability {
     Capability_Bitcoin = 1,
     Capability_Bitcoin_like = 2,
@@ -1550,9 +1590,37 @@ export enum Enum_Capability {
     Capability_PassphraseEntry = 17,
     Capability_Solana = 18,
     Capability_Translations = 19,
+    Capability_Brightness = 20,
+    Capability_Haptic = 21,
 }
 
 export type Capability = keyof typeof Enum_Capability;
+
+export enum RecoveryDeviceInputMethod {
+    ScrambledWords = 0,
+    Matrix = 1,
+}
+
+export enum Enum_RecoveryType {
+    NormalRecovery = 0,
+    DryRun = 1,
+    UnlockRepeatedBackup = 2,
+}
+
+export type RecoveryType = keyof typeof Enum_RecoveryType;
+
+// RecoveryDevice
+export type RecoveryDevice = {
+    word_count?: number;
+    passphrase_protection?: boolean;
+    pin_protection?: boolean;
+    language?: string;
+    label?: string;
+    enforce_wordlist?: boolean;
+    input_method?: RecoveryDeviceInputMethod;
+    u2f_counter?: number;
+    type?: RecoveryType;
+};
 
 // Features
 export type Features = {
@@ -1573,7 +1641,7 @@ export type Features = {
     unlocked: boolean | null;
     _passphrase_cached?: boolean;
     firmware_present: boolean | null;
-    needs_backup: boolean | null;
+    backup_availability: BackupAvailability | null;
     flags: number | null;
     model: string;
     fw_major: number | null;
@@ -1582,7 +1650,7 @@ export type Features = {
     fw_vendor: string | null;
     unfinished_backup: boolean | null;
     no_backup: boolean | null;
-    recovery_mode: boolean | null;
+    recovery_status: RecoveryStatus | null;
     capabilities: Capability[];
     backup_type: BackupType | null;
     sd_card_present: boolean | null;
@@ -1604,6 +1672,9 @@ export type Features = {
     homescreen_height?: number;
     bootloader_locked?: boolean;
     language_version_matches?: boolean;
+    unit_packaging?: number;
+    haptic_feedback?: boolean;
+    recovery_type?: RecoveryType;
 };
 
 // LockDevice
@@ -1630,6 +1701,7 @@ export type ApplySettings = {
     safety_checks?: SafetyCheckLevel;
     experimental_features?: boolean;
     hide_passphrase_from_host?: boolean;
+    haptic_feedback?: boolean;
 };
 
 // ChangeLanguage
@@ -1729,11 +1801,19 @@ export type ResetDevice = {
     u2f_counter?: number;
     skip_backup?: boolean;
     no_backup?: boolean;
-    backup_type?: string | number;
+    backup_type?: Enum_BackupType;
+};
+
+export type Slip39Group = {
+    member_threshold: number;
+    member_count: number;
 };
 
 // BackupDevice
-export type BackupDevice = {};
+export type BackupDevice = {
+    group_threshold?: number;
+    groups?: Slip39Group[];
+};
 
 // EntropyRequest
 export type EntropyRequest = {};
@@ -1741,24 +1821,6 @@ export type EntropyRequest = {};
 // EntropyAck
 export type EntropyAck = {
     entropy: string;
-};
-
-export enum RecoveryDeviceType {
-    RecoveryDeviceType_ScrambledWords = 0,
-    RecoveryDeviceType_Matrix = 1,
-}
-
-// RecoveryDevice
-export type RecoveryDevice = {
-    word_count?: number;
-    passphrase_protection?: boolean;
-    pin_protection?: boolean;
-    language?: string;
-    label?: string;
-    enforce_wordlist?: boolean;
-    type?: RecoveryDeviceType;
-    u2f_counter?: number;
-    dry_run?: boolean;
 };
 
 export enum Enum_WordRequestType {
@@ -1837,6 +1899,11 @@ export type ShowDeviceTutorial = {};
 
 // UnlockBootloader
 export type UnlockBootloader = {};
+
+// SetBrightness
+export type SetBrightness = {
+    value?: number;
+};
 
 export enum MoneroNetworkType {
     MAINNET = 0,
@@ -2475,6 +2542,7 @@ export type MessageType = {
     CardanoPoolRelayParameters: CardanoPoolRelayParameters;
     CardanoPoolMetadataType: CardanoPoolMetadataType;
     CardanoPoolParametersType: CardanoPoolParametersType;
+    CardanoDRep: CardanoDRep;
     CardanoTxCertificate: CardanoTxCertificate;
     CardanoTxWithdrawal: CardanoTxWithdrawal;
     CardanoCVoteRegistrationDelegation: CardanoCVoteRegistrationDelegation;
@@ -2563,6 +2631,7 @@ export type MessageType = {
     EthereumTypedDataSignature: EthereumTypedDataSignature;
     Initialize: Initialize;
     GetFeatures: GetFeatures;
+    RecoveryDevice: RecoveryDevice;
     Features: Features;
     LockDevice: LockDevice;
     SetBusy: SetBusy;
@@ -2585,10 +2654,10 @@ export type MessageType = {
     AuthenticityProof: AuthenticityProof;
     WipeDevice: WipeDevice;
     ResetDevice: ResetDevice;
+    Slip39Group: Slip39Group;
     BackupDevice: BackupDevice;
     EntropyRequest: EntropyRequest;
     EntropyAck: EntropyAck;
-    RecoveryDevice: RecoveryDevice;
     WordRequest: WordRequest;
     WordAck: WordAck;
     SetU2FCounter: SetU2FCounter;
@@ -2604,6 +2673,7 @@ export type MessageType = {
     UnlockedPathRequest: UnlockedPathRequest;
     ShowDeviceTutorial: ShowDeviceTutorial;
     UnlockBootloader: UnlockBootloader;
+    SetBrightness: SetBrightness;
     NEMGetAddress: NEMGetAddress;
     NEMAddress: NEMAddress;
     NEMTransactionCommon: NEMTransactionCommon;

@@ -47,12 +47,14 @@ import { CryptoAmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketExchangeFormDefaultValues } from './useCoinmarketExchangeFormDefaultValues';
 import { useCompose } from './form/useCompose';
 import { useFees } from './form/useFees';
-import { AddressDisplayOptions, selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { AddressDisplayOptions } from '@suite-common/wallet-types';
+
+import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TokenAddress } from '@suite-common/wallet-types';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
 ExchangeFormContext.displayName = 'CoinmarketExchangeContext';
@@ -242,7 +244,7 @@ export const useCoinmarketExchangeForm = ({
             if (!fiatRate?.rate || !currency) return;
             const cryptoAmount =
                 amount && shouldSendInSats ? formatAmount(amount, network.decimals) : amount;
-            const fiatValue = toFiatCurrency(cryptoAmount, currency.value, fiatRate, 2, false);
+            const fiatValue = toFiatCurrency(cryptoAmount, fiatRate.rate, 2);
             setValue(FIAT_INPUT, fiatValue || '', { shouldValidate: true });
         },
         [shouldSendInSats, fiatRate, getValues, network.decimals, setValue],
@@ -270,7 +272,7 @@ export const useCoinmarketExchangeForm = ({
     const updateSendCryptoValue = (amount: string, decimals: number) => {
         const currency: { value: string; label: string } | undefined = getValues(FIAT_CURRENCY);
         if (!fiatRate?.rate || !currency) return;
-        const cryptoValue = fromFiatCurrency(amount, currency.value, fiatRate, decimals, false);
+        const cryptoValue = fromFiatCurrency(amount, decimals, fiatRate.rate);
         const formattedCryptoValue =
             cryptoValue && shouldSendInSats
                 ? amountToSatoshi(cryptoValue, network.decimals)

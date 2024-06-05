@@ -4,11 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { A, G } from '@mobily/ts-belt';
 
 import { IconName } from '@suite-common/icons/src';
-import { Box, Button, Pictogram, PictogramVariant, VStack } from '@suite-native/atoms';
+import { Box, Button, PictogramTitleHeader, PictogramVariant, VStack } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Variant } from '@suite-common/suite-types';
 import { messageSystemActions, selectActiveFeatureMessages } from '@suite-common/message-system';
-import { useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 
 const screenStyle = prepareNativeStyle(utils => ({
     flexGrow: 1,
@@ -53,7 +53,6 @@ export const FeatureMessageScreen = () => {
     const firstFeatureMessage = A.head(activeFeatureMessages);
 
     const { applyStyle } = useNativeStyles();
-    const { translate } = useTranslate();
 
     if (!firstFeatureMessage) return null;
 
@@ -104,13 +103,17 @@ export const FeatureMessageScreen = () => {
         });
     };
 
-    const defaultTitle = isKillswitch ? translate('messageSystem.killswitch.title') : undefined;
-    const defaultContent = isKillswitch ? translate('messageSystem.killswitch.content') : undefined;
+    const defaultTitle = isKillswitch ? (
+        <Translation id="messageSystem.killswitch.title" />
+    ) : undefined;
+    const defaultContent = isKillswitch ? (
+        <Translation id="messageSystem.killswitch.content" />
+    ) : undefined;
 
     return (
         <Box style={applyStyle(screenStyle)}>
             <Box style={applyStyle(contentStyle)}>
-                <Pictogram
+                <PictogramTitleHeader
                     title={messageTitle ?? defaultTitle}
                     variant={variantMap[variant]}
                     subtitle={messageContent ?? defaultContent}
@@ -127,7 +130,7 @@ export const FeatureMessageScreen = () => {
                 )}
                 {isDismissable && (
                     <Button size="large" colorScheme="tertiaryElevation0" onPress={handleDismiss}>
-                        {translate('generic.buttons.dismiss')}
+                        <Translation id="generic.buttons.dismiss" />
                     </Button>
                 )}
             </VStack>

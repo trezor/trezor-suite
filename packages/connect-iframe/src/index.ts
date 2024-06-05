@@ -338,7 +338,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 };
 
 window.addEventListener('message', handleMessage, false);
-window.addEventListener('unload', () => {
+window.addEventListener('beforeunload', () => {
     if (_core) {
         _core.dispose();
     }

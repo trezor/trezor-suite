@@ -14,9 +14,11 @@ export const en = {
             next: 'Next',
             dismiss: 'Dismiss',
             eject: 'Eject',
+            cancel: 'Cancel',
         },
         unknownError: 'Something went wrong',
         default: 'Default',
+        orSeparator: 'OR',
     },
     messageSystem: {
         killswitch: {
@@ -45,9 +47,9 @@ export const en = {
             },
             connectOrImportCrossroads: {
                 gotMyTrezor: {
-                    title: 'Connect my Trezor',
+                    title: 'Connect & unlock my Trezor',
                     description: 'Manage your coins with your Trezor connected.',
-                    connectButton: 'Connect Trezor',
+                    connectButton: 'Connect & unlock',
                 },
                 syncCoins: {
                     title: 'Track my coins',
@@ -62,30 +64,8 @@ export const en = {
             receive: 'Receive',
         },
         biometricsModal: {
-            title: {
-                ios: {
-                    faceId: 'Enable FaceID',
-                    touchId: 'Enable TouchID',
-                },
-                android: {
-                    fingerprint: 'Enable fingerprint',
-                    facial: 'Enable facial recognition',
-                    combined: 'Enable biometrics',
-                },
-                unknown: 'Enable biometrics',
-            },
-            description: {
-                ios: {
-                    faceId: 'Use FaceID to unlock the app.',
-                    touchId: 'Use TouchID to unlock the app.',
-                },
-                android: {
-                    fingerprint: 'Use your fingerprint to unlock the app.',
-                    facial: 'Use facial recognition to unlock the app.',
-                    combined: 'Use facial recognition or fingerprint to unlock the app.',
-                },
-                unknown: 'Use biometrics to unlock the app.',
-            },
+            title: 'Enable biometrics protection',
+            description: 'You can always change this later.',
             button: {
                 later: 'I’ll do that later in Settings',
                 enable: 'Enable',
@@ -95,24 +75,21 @@ export const en = {
                 success: 'Biometrics enabled',
             },
         },
+        rememberModeModal: {
+            title: 'Enable view-only to check balances after you disconnect your Trezor',
+            description: 'To verify receive addresses, simply reconnect your device.',
+            button: {
+                skip: 'Skip',
+                enable: 'Enable',
+            },
+        },
     },
     assets: {
         dashboard: {
             discoveryProgress: { loading: 'Loading...', stillWorking: 'Retrieving balances' },
         },
     },
-    biometrics: {
-        ios: {
-            faceId: 'Use FaceID',
-            touchId: 'Use TouchID',
-        },
-        android: {
-            fingerprint: 'Use fingerprint',
-            facial: 'Use facial recognition',
-            combined: 'Use biometrics',
-        },
-        unknown: 'Use biometrics',
-    },
+    biometricsButton: 'Unlock with biometrics',
     moduleAccountImport: {
         title: 'Sync my coins',
         error: { unsupportedNetworkType: 'Unsupported account network type.' },
@@ -226,18 +203,20 @@ export const en = {
             title: 'Connect & unlock\nyour Trezor',
         },
         pinScreen: {
+            title: 'Enter PIN\non your Trezor',
             form: {
                 title: 'Enter PIN',
                 entered: 'Entered',
                 digits: 'digits',
                 keypadInfo: 'Follow the keypad layout on your Trezor',
-                enterPin: 'Enter pin',
+                enterPin: 'Unlock',
                 submitting: 'Verifying your PIN',
             },
             wrongPinAlert: {
                 title: 'Incorrect PIN',
-                description: 'Enter up to 50 digits.',
-                button: { tryAgain: 'Try again', help: 'Enter PIN Help' },
+                description:
+                    'You have 16 PIN entry attemps.\nFailing all of them will result in your device being erased.',
+                button: { tryAgain: 'Try again', help: 'Enter PIN help' },
             },
         },
         connectingDeviceScreen: {
@@ -261,6 +240,11 @@ export const en = {
                     'Follow the keypad layout on your Trezor device to enter your PIN on your mobile display. Your PIN will be hidden on your mobile display for your security. <link>Learn more here</link>.',
             },
         },
+        pinCanceledDuringDiscovery: {
+            title: 'Some of your balances have not been loaded.',
+            subtitle: 'You need to unlock your device in order to finish loading your balances',
+            button: 'Enter PIN again',
+        },
     },
     moduleDevice: {
         IncompatibleDeviceModalAppendix: {
@@ -275,6 +259,15 @@ export const en = {
             title: 'The connected Trezor device needs to be set up',
             description:
                 'To continue using your Trezor with this app, set it up with Trezor Suite for desktop or web.',
+        },
+        genericErrorModal: {
+            title: 'Please reconnect your Trezor device.',
+            description:
+                'Unfortunately, we’ve encountered an unexpected error. If the problem persists, please reach out to our support.',
+            buttons: {
+                reconnect: 'Reconnect device',
+                help: 'Contact support',
+            },
         },
         unacquiredDeviceModal: {
             title: 'Connected Trezor is used by another application.',
@@ -324,9 +317,22 @@ export const en = {
                 ethereumToken: 'Your receive address is your Ethereum address',
             },
             unverifiedWarning: {
-                title: 'receive address',
-                content:
-                    'For an extra layer of security, use Trezor Suite with your Trezor hardware wallet to verify the receive address',
+                portfolioTracker: {
+                    title: 'receive address',
+                    subtitle:
+                        'For an extra layer of security, use Trezor Suite with your Trezor hardware wallet to verify the receive address',
+                },
+                viewOnly: {
+                    title: 'Address can’t be verified without connected Trezor',
+                    subtitle:
+                        'For an extra layer of security, connect your Trezor to verify the receiving address',
+                },
+            },
+            viewOnlyWarning: {
+                title: 'Receive address can’t be verified',
+                description: 'To confirm address, connect your Trezor',
+                primaryButton: 'Continue without verifying',
+                secondaryButton: 'Back',
             },
             deviceHint: {
                 description: 'This receive address should match the one\non your Trezor device.',
@@ -383,7 +389,7 @@ export const en = {
                         0: 'Reconnect your Trezor',
                         1: 'Use a different USB data cable',
                         2: 'Use a different mobile device',
-                        3: 'Confirm connection via mobile device system message',
+                        3: 'Enable connection for Trezor Suite Lite via phone system message',
                     },
                 },
                 4: {
@@ -403,8 +409,8 @@ export const en = {
                     answer: 'The graph in Trezor Suite Lite displays the price history of your portfolio’s synced assets over specified time period. You can adjust the time period by selecting a different range on the bottom of the graph.',
                 },
                 7: {
-                    question: 'Are my data safe?',
-                    answer: 'Yes, the mobile app does not store any private keys or sensitive information on your mobile device. This means that even if your phone is lost or stolen, your cryptocurrency assets are still safe and protected.',
+                    question: 'What is View-only?',
+                    answer: 'Even when your Trezor device is disconnected, you can still keep track of your balances with the View-Only. This feature provides peace of mind by allowing you to monitor your funds without compromising security. Plus no more waiting for retrieving all the assets and balances while connecting your Trezor device.',
                 },
             },
             usbDisabled: {
@@ -433,10 +439,6 @@ export const en = {
                         'Why is the balance displayed in Trezor Suite different from the balance displayed in Trezor Suite Lite?',
                     answer: 'Balances may mismatch due to improper syncing of all assets and account types, or pending transactions. Ensure you have synced all your assets correctly and check for any pending transactions to resolve the discrepancy.',
                 },
-                6: {
-                    question: 'Are my data safe?',
-                    answer: 'Yes, the mobile app does not store any private keys or sensitive information on your mobile device. This means that even if your phone is lost or stolen, your cryptocurrency assets are still safe and protected.',
-                },
             },
         },
         localizations: {
@@ -450,6 +452,39 @@ export const en = {
         },
         privacyAndSecurity: {
             title: 'Privacy & Security',
+        },
+        viewOnly: {
+            title: 'View-only',
+            emptyTitle: 'Connect your device to enable view-only',
+            subtitle:
+                'Check balances without connecting your Trezor. <about>See how it works</about>',
+            button: { enable: 'Enable', disable: 'Disable' },
+            about: {
+                title: 'View-only',
+                subtitle: 'Stay on top of your balances without connecting your Trezor.',
+                contentTitle: 'How it works',
+                content:
+                    '<li>Enable view-only to keep balances visible when your Trezor device is disconnected.</li><li>Your funds remain secure.</li><li>Your data remains private.</li><li>Stay updated on all transactions.</li><li>Create a new receive address.</li><li>To verify your receive address, simply reconnect your device.</li><li>Save time when assets are loading.</li>',
+                button: 'Got it',
+            },
+            toast: {
+                disabled: 'View-only disabled',
+                enabled: 'View-only enabled',
+            },
+            disableDialog: {
+                title: 'Disable view-only access to {name}?',
+                subtitle: 'You can always enable view-only again when you reconnect {device}. ',
+                buttons: {
+                    primary: 'Disable',
+                    secondary: 'Back',
+                },
+            },
+            connected: 'Connected',
+            disconnected: 'Disconnected',
+            wallet: {
+                standard: 'Standard wallet',
+                defaultPassphrase: 'Passphrase wallet #{index}',
+            },
         },
     },
     moduleOnboarding: {
@@ -534,6 +569,12 @@ export const en = {
             receiveSubtitle: 'Connect your Trezor or sync coins to view and receive assets.',
             searchAgain: 'Search again',
         },
+        viewOnlyAddAccountAlert: {
+            title: 'To add new coin or account, reconnect your Trezor device.',
+            description:
+                'We’re unable to add any new coins or accounts to your device when it’s disconnected.',
+            actionPrimary: 'Got it',
+        },
     },
     transactions: {
         title: 'Transactions',
@@ -551,16 +592,13 @@ export const en = {
     },
     deviceManager: {
         deviceButtons: {
-            eject: 'Eject',
             deviceInfo: 'Device info',
-            addHiddenWallet: 'Add hidden wallet',
+            addHiddenWallet: 'Open passphrase',
+            devices: 'Change',
         },
-        deviceList: {
-            sectionTitle: 'Open',
-        },
-        connectDevice: {
-            sectionTitle: 'Connect Trezor device',
-            connectButton: 'Connect',
+        connectButton: {
+            another: 'Connect another device',
+            first: 'Connect your device',
         },
         portfolioTracker: {
             explore: 'Explore Trezor',
@@ -568,14 +606,20 @@ export const en = {
             exploreShop: 'Explore Trezor Shop',
         },
         status: {
-            portfolioTracker: 'Sync & track coins',
+            portfolioTracker: 'Track your coins without Trezor',
             connected: 'Connected',
+            disconnected: 'Disconnected',
         },
         syncCoinsButton: {
             syncMyCoins: 'Sync my coins',
             syncAnother: 'Sync another coin',
         },
         defaultHeader: 'Hi there!',
+        wallet: {
+            standard: 'Standard wallet',
+            portfolio: 'Portfolio tracker',
+            defaultPassphrase: 'Passphrase wallet #{index}',
+        },
     },
     deviceInfo: {
         installedFw: 'Installed firmware: {version}',
@@ -605,9 +649,83 @@ export const en = {
         retrievengTakesLongerThanExpected:
             'Retrieving balances takes longer than usual. \n It may be caused by unstable internet connection.',
     },
-    passphrase: {
-        modal: {
+    modulePassphrase: {
+        title: 'Passphrase',
+        subtitle:
+            'Entering a <bold>passphrase opens a distinct wallet</bold> secured by that specific phrase.',
+        alertCard: {
+            paragraphWarning1:
+                'It’s essential to understand how a passphrase works before using it.',
+            paragraphWarning2:
+                'Keep your passphrase elsewhere than your recovery seed & Trezor device.',
+            paragraphWarning3: 'No one can recover it, not even Trezor support.',
+            button: 'How passphrase works',
+        },
+        form: {
             enterWallet: 'Enter passphrase',
+            createWalletInputLabel: 'Enter your passphrase',
+            verifyPassphraseInputLabel: 'Re-enter your passphrase',
+            separatorTitle: 'OR',
+        },
+        enterPassphraseOnTrezor: {
+            button: 'Enter passphrase on Trezor',
+            title: 'Continue on Trezor',
+            subtitle: 'Enter your passphrase on your Trezor',
+        },
+        loadingTitle: 'Checking passphrase wallet for balances & transactions',
+        confirmOnDevice: {
+            title: 'Confirm passphrase\non your Trezor.',
+            description: 'Go to your device and confirm the passphrase you’ve entered.',
+            warningSheet: {
+                title: 'Are you sure you would like to cancel opening a passphrase wallet?',
+                primaryButton: 'Cancel',
+                secondaryButton: 'Continue opening',
+            },
+        },
+        emptyPassphraseWallet: {
+            title: 'This passphrase wallet is empty',
+            confirmCard: {
+                description:
+                    "This wallet is empty and hasn't been used before. Do you want to open it?",
+                button: 'Yes, open',
+            },
+            expectingPassphraseWallet: {
+                title: 'Expecting a passphrase wallet with funds?',
+                description: "It's possible there was a typo. Try again and enter your passphrase.",
+                button: 'Try again',
+            },
+            confirmEmptyWalletSheet: {
+                title: 'Passphrase best practises',
+                list: {
+                    backup: 'Write it down on paper & keep it away from anything digital (no cloud, USB, internet, phone).',
+                    store: 'Store it in a secure location, separate from both your wallet backup and Trezor device.',
+                    neverShare: 'Never share it with anyone, not even with Trezor Support.',
+                },
+                button: 'Got it',
+                alertTitle: 'No one can recover your passphrase, not even Trezor support',
+            },
+            verifyEmptyWallet: {
+                title: 'Confirm empty passphrase wallet',
+                description: 'Re-enter your passphrase to open this wallet.',
+                alertTitle:
+                    '<bold>Write down your passphrase on paper, nothing digital. It’s impossible to recover</bold>— not even Trezor Support can help.',
+                passphraseMismatchAlert: {
+                    title: 'Passphrase mismatch',
+                    description: 'Start over and enter your passphrase again.',
+                    primaryButton: 'Start over',
+                    secondaryButton: 'Cancel',
+                },
+            },
+        },
+        passphraseMismatch: {
+            title: 'Passphrase duplicate',
+            subtitle: 'You’re trying to enter a passphrase wallet that’s already been opened.',
+            button: 'Proceed to passphrase wallet ',
+        },
+        enablePassphrase: {
+            title: 'Enable passphrase on your Trezor.',
+            subtitle: 'Go to your device and confirm you’d like to enable passphase.',
+            cancelledError: 'Passphrase enabling cancelled.',
         },
     },
 };

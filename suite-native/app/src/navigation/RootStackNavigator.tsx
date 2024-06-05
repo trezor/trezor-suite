@@ -12,7 +12,7 @@ import {
     RootStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { selectIsOnboardingFinished } from '@suite-native/module-settings';
+import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
@@ -20,6 +20,8 @@ import { ReceiveModalScreen } from '@suite-native/receive';
 import { ConnectDeviceStackNavigator } from '@suite-native/module-connect-device';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceInfoModalScreen, useHandleDeviceConnection } from '@suite-native/device';
+import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
+import { SendStackNavigator } from '@suite-native/module-send';
 
 import { AppTabNavigator } from './AppTabNavigator';
 
@@ -53,11 +55,6 @@ export const RootStackNavigator = () => {
                 component={AccountsImportStackNavigator}
             />
             <RootStack.Screen
-                name={RootStackRoutes.ConnectDevice}
-                component={ConnectDeviceStackNavigator}
-                options={{ ...stackNavigationOptionsConfig, animation: 'slide_from_bottom' }}
-            />
-            <RootStack.Screen
                 options={{ title: RootStackRoutes.AccountSettings }}
                 name={RootStackRoutes.AccountSettings}
                 component={AccountSettingsScreen}
@@ -82,6 +79,23 @@ export const RootStackNavigator = () => {
             />
             <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModalScreen} />
             <RootStack.Screen name={RootStackRoutes.DeviceInfo} component={DeviceInfoModalScreen} />
+            <RootStack.Screen
+                name={RootStackRoutes.ConnectDeviceStack}
+                component={ConnectDeviceStackNavigator}
+                options={{
+                    ...stackNavigationOptionsConfig,
+                    animation: 'slide_from_bottom',
+                }}
+            />
+            <RootStack.Screen
+                name={RootStackRoutes.PassphraseStack}
+                component={PassphraseStackNavigator}
+                options={{
+                    ...stackNavigationOptionsConfig,
+                    animation: 'slide_from_bottom',
+                }}
+            />
+            <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
         </RootStack.Navigator>
     );
 };

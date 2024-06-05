@@ -3,6 +3,8 @@ import { AnyAction, isAnyOf } from '@reduxjs/toolkit';
 
 import {
     authConfirm,
+    authorizeDeviceThunk,
+    createDeviceInstanceThunk,
     deviceActions,
     forgetDisconnectedDevices,
     handleDeviceConnect,
@@ -21,12 +23,13 @@ import { appChanged, setFlag } from 'src/actions/suite/suiteActions';
 const isActionDeviceRelated = (action: AnyAction): boolean => {
     if (
         isAnyOf(
-            deviceActions.authDevice,
-            deviceActions.authFailed,
+            authorizeDeviceThunk.fulfilled,
+            authorizeDeviceThunk.rejected,
             deviceActions.selectDevice,
             deviceActions.receiveAuthConfirm,
             deviceActions.updatePassphraseMode,
             deviceActions.addButtonRequest,
+            deviceActions.removeButtonRequests,
             deviceActions.rememberDevice,
             deviceActions.forgetDevice,
         )(action)
@@ -58,8 +61,8 @@ const suite =
         // pass action to reducers
         next(action);
 
-        if (deviceActions.createDeviceInstance.match(action)) {
-            api.dispatch(selectDeviceThunk(action.payload));
+        if (createDeviceInstanceThunk.fulfilled.match(action)) {
+            api.dispatch(selectDeviceThunk(action.payload.device));
         }
 
         if (deviceActions.forgetDevice.match(action)) {

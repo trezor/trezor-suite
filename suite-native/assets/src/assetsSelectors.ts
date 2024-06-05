@@ -1,16 +1,16 @@
-import BigNumber from 'bignumber.js';
 import { memoize } from 'proxy-memoize';
 
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { networks, NetworkSymbol } from '@suite-common/wallet-config';
 import {
     AccountsRootState,
     DeviceRootState,
     FiatRatesRootState,
-    selectDeviceAccounts,
+    selectVisibleDeviceAccounts,
     selectFiatRatesByFiatRateKey,
 } from '@suite-common/wallet-core';
 import { getFiatRateKey, toFiatCurrency } from '@suite-common/wallet-utils';
-import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/module-settings';
+import { selectFiatCurrencyCode, SettingsSliceRootState } from '@suite-native/settings';
 
 type Assets = Partial<Record<NetworkSymbol, string[]>>;
 type FormattedAssets = Partial<Record<NetworkSymbol, BigNumber>>;
@@ -29,7 +29,7 @@ const sumBalance = (balances: string[]): BigNumber =>
 
 export const selectDeviceBalancesPerNetwork = memoize(
     (state: AssetsRootState & DeviceRootState): FormattedAssets => {
-        const accounts = selectDeviceAccounts(state);
+        const accounts = selectVisibleDeviceAccounts(state);
 
         const assets: Assets = {};
         accounts.forEach(account => {
@@ -67,8 +67,7 @@ export const selectDeviceAssetsWithBalances = memoize(
                 const fiatBalance =
                     toFiatCurrency(
                         deviceBalancesPerNetwork[networkSymbol]?.toString() ?? '0',
-                        fiatCurrencyCode,
-                        { [fiatCurrencyCode]: fiatRate?.rate },
+                        fiatRate?.rate,
                     ) ?? '0';
 
                 const network = networks[networkSymbol];

@@ -1,3 +1,168 @@
+| Package                          | Stable | Canary |
+| -------------------------------- | ------ | ------ |
+| npm @trezor/connect              | 9.2.4  | -      |
+| npm @trezor/connect-web          | 9.2.4  | -      |
+| npm @trezor/connect-webextension | 9.2.4  | -      |
+
+| Deployment          | Stable | Canary |
+| ------------------- | ------ | ------ |
+| connect.trezor.io/9 | 9.2.4  | -      |
+
+User the persistent link connect.trezor.io/9 to access the latest stable version of Connect Explorer.
+
+# 9.2.4
+
+-   chore: BigNumber wrapper (d18ba9a879)
+-   chore(connect): add Rabby to knownHosts (1ec4c5bfc5)
+-   chore(transport): make Session type literal (72570f2219)
+-   chore(connect): re-add feature support checking in cardanoSignTransaction (acf9ffc2cb)
+-   chore(connect): fw-update: add error message when binary is too small (b0c1173f8d)
+-   chore(connect): remove legacyresults from cardano fixtures (acd9e1e510)
+-   chore(connect): bump fw versions required for cardano (c3d96b3ca7)
+-   chore(connect): remove validation in cardanoSignTransaction, cardanoAddressParameters, cardanoGetAddress, device.validateState (33efb4b8bd,013047bdb1, 21fadd17a6, 29311b5d61)
+-   feat(connect): use full version in URL when beta (26c70f48f7)
+-   fix(connect): simultaneous read of connected devices (f181c988a4)
+-   chore(connect): DeviceList now has two params - full settings object and messages (b6167266c9)
+-   chore(connect): remove DataManager from DeviceList (afc8760213)
+-   chore(connect): remove DataManager dependency from DeviceList constructor (7971515d71)
+-   chore(connect): simplify reduce code duplication in DeviceList (0cf8a04ed0)
+-   feat(connect): BackupDevice now has params (4120912)
+-   chore(connect): update protobuf messages (41bff13)
+-   chore(connect): add new TS3 CA pubkeys and update timestamp (3ae06ac)
+-   chore(connect): remove deprecated code, bump required fw to 1.8.1/2.1.0, fix typo in log, rename firmwareUpdate_v2 to firmwareUpdate (8af325a, 2f14ff6 649a197, b39030c, b67170c)
+-   chore(connect): popupPromise improvement, pin retries, invalidDeviceState, flattened onCall/inner (320c5a9,6515f13, 7666994, 99ac0e5, 4aa2b46, fa0974d, 9188727, 08a093b, dd6437e, 27d5a44)
+-   fix(connect): intermediary reconnect improved, device authenticity, multi-apps synchronization, reading translations, bin_outputs in txcache (115c718, de1b969, 140ec9a a881142, 88d7608, 0bb13d3)
+-   fix(connect): bin_outputs in txcache (0bb13d3)
+
+## connect-examples
+
+-   Update building process to allow multiple lines replacing of url mv2 and mv3 (e88b6f6f47)
+
+## connect-explorer
+
+Connect-explorer has been completely revamped into a new design :tada:
+
+-   feat(connect-explorer): use relative paths for assets and connect (f6f7cdf32c)
+-   fix(connect-explorer): method testing tool scrollbars (f15f6487d8)
+-   fix(connect-explorer): support GitHub emoji (fda80e5aa3)
+
+## connect-popup
+
+In general measures to address popup closing unexpectedly were taken. Update of content-script.js will be needed to make these changes effective.
+
+-   fix(connect-popup): use PassphraseTypeCardLegacy (629d6f8671)
+-   fix(connect-popup): update text in selectAccount (21f4382)
+-   fix(connect-popup): add delay before popup bootstrap to allow contentscript load (00b2056)
+-   fix(connect-popup): webextension example e2e (b9cce02)
+-   fix(connect-popup): typo in a comment (8e21eeb)
+-   fix(connect-popup): queue messages sent before init (8850665)
+-   fix(connect-popup): delay popup.js loading to allow content script to init (92d15bc)
+-   fix(connect-popup): wait for POPUP.LOADED in webextension (cb18673)
+
+## transport
+
+-   feat(transport): make signal required param in constructor (4b82f8d505)
+
+## Dependencies update
+
+-   npm-release: @trezor/blockchain-link 2.1.30
+-   npm-release: @trezor/blockchain-link-utils 1.0.18
+-   npm-release: @trezor/blockchain-link-types 1.0.17
+-   npm-release: @trezor/connect-analytics 1.0.15
+-   npm-release: @trezor/analytics 1.0.17
+-   npm-release: @trezor/connect-common 0.0.33
+-   npm-release: @trezor/env-utils 1.0.17
+-   npm-release: @trezor/transport 1.1.29
+-   npm-release: @trezor/protobuf 1.0.13
+-   npm-release: @trezor/schema-utils 1.0.4
+-   npm-release: @trezor/protocol 1.0.9
+-   npm-release: @trezor/utxo-lib 2.0.10
+-   npm-release: @trezor/utils 9.0.24
+
+# 9.2.3
+
+-   fix(connect): worker-loader for solana and hanged calls over webusb (46c0e96, 172fa22)
+-   chore(connect): improve type for releases and pick model and coin support type (996e96d, 273591e)
+-   feat(connect): add T3T1 pubkeys and T3T1 releases.json (edca868, a984008, 1bc4569)
+-   feat(connect): add `_extendWebextensionLifetime` option (720b61b)
+-   feat(connect): allow separate accounts/blocks subscription (98e3b28)
+-   feat(connect): support identity in blockchain methods (2fbb57f)
+-   test(connect): fix BackendManager tests (0318aea)
+-   feat(connect): support identities in BackendManager (76767be)
+-   feat(connect): automatically update language blob when outdated and move changeLanguage logic to Device (425b52b, 04d4fb8)
+-   fix(connect): always show device selection when bridge and using core in popup (5f1191e)
+
+## connect-example
+
+-   Use `_extendWebextensionLifetime` for extending life time of service worker in example mv3-sw (fe537c0)
+
+## connect-webextension
+
+-   Reconnection when service worker goes inactive and option to extend life of service worker (39dcde0, 0377b28)
+
+## connect-explorer-nextra and connect-explorer-theme
+
+-   Improve schemas documentation and styling (367f458, a23fa02, ee7c4f6, 667c802, 05b68fa, 6c2e298, 9150147, 81591dc, bb84950, 8ca02e6, c8f144a, 003854c, 8951663, b284b25, d14c026, d69dee1, 1c82b8f)
+
+## mobile
+
+-   fix Connect firmware assets import #12090) (4abe34e)
+
+## trezor-user-env-link
+
+-   Type updates (68be4d2)
+
+## connect-popup
+
+-   test new webextension select device behavior and check remember device by default for mv3 webextension (1aab629, eb6cf5d)
+
+## protobuf
+
+-   clean up type of backup_type in schema (19b7bb2)
+
+## connect-common
+
+-   Add Czech to available FW translations (4a1aa82)
+
+## Dependencies update
+
+-   npm-release: @trezor/blockchain-link 2.1.29
+-   npm-release: @trezor/blockchain-link-utils 1.0.17
+-   npm-release: @trezor/blockchain-link-types 1.0.16
+-   npm-release: @trezor/connect-common 0.0.32
+-   npm-release: @trezor/env-utils 1.0.16
+-   npm-release: @trezor/transport 1.1.28
+-   npm-release: @trezor/protobuf 1.0.12
+-   npm-release: @trezor/protocol 1.0.8
+-   npm-release: @trezor/utxo-lib 2.0.9
+-   npm-release: @trezor/connect 9.2.3
+
+# 9.2.2
+
+Main focus of this release is to allow saving device sessions in webextension, so user's don't have to enter the passphrase repeatedly.
+
+-   fix(connect): webextension save sessions (efed18e4ea)
+-   feat(connect): set default Solana fees (d8cfa5123d)
+-   fix(connect): add missing isCreatingAccount param validation in blockchainEstimateFee (698ebf625d)
+-   chore(components): replace Tippy for FloatingUI (a6e3c86759)
+-   fix(connect): enable changeLanguage in initialize mode (0af5c35f3f)
+-   chore(suite): remove goerli (8eb6b271a5)
+-   chore(connect): Add Rainbow Browser Extension to knownHosts (6213f06a58, e648074ec8)
+-   chore: crowdin translation update (aa9a0d5bfe)
+-   chore(connect): move logs to @trezor/utils (28c2b9fe57)
+-   chore(connect): add new CA pubkeys and update timestamp (9b8f4eeb81)
+-   fix(connect): be more defensive in descriptor parsing (7cf1f02dc4)
+-   fix(connect): More robust conversion of e.g. 44h to 44' (1ea29b5d6c)
+-   docs(connect-examples): udpate README with webextensions (8ed2db3ecc)
+-   chore: upgrade styled-components to v6 (c4bd333501)
+-   chore(connect-web): add dev URL used for tests (487742a930)
+-   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
+-   fix(connect): no request device in suite (ad6d28e315)
+-   feat(connect): add translations for Trezor Firmware (a3ebb33571)
+-   chore(connect-common): add firmware binaries 2.7.0 (4c14b45bd6)
+-   fix(connect): fix connect for RN (#11489) (14814fd54b)
+-   chore(repo): mostly buildless monorepo (#11464) (637ad88dcf)
+
 # 9.2.1
 
 Main motivation for this release was [issue](https://github.com/trezor/trezor-suite/issues/11442) introduced in 9.2.0 release in @trezor/connect-web npm package.

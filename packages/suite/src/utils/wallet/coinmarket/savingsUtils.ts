@@ -3,7 +3,7 @@ import {
     CustomPaymentAmountKey,
     PaymentFrequencyAnnualCoefficient,
 } from 'src/constants/wallet/coinmarket/savings';
-import BigNumber from 'bignumber.js';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
 import type { PaymentFrequencyOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { isDesktop } from '@trezor/env-utils';
 import { desktopApi } from '@trezor/suite-desktop-api';

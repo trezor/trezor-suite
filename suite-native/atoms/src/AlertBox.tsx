@@ -1,5 +1,7 @@
+import { ReactNode } from 'react';
+
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import { Color } from '@trezor/theme';
+import { Color, nativeBorders } from '@trezor/theme';
 import { Icon, IconName } from '@suite-common/icons';
 
 import { Box } from './Box';
@@ -10,54 +12,54 @@ type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
 type AlertBoxStyle = {
     backgroundColor: Color;
     contentColor: Color;
+    borderColor: Color;
 };
 
 type AlertWrapperStyleType = {
-    isStandalone: boolean;
+    borderRadius: number;
     backgroundColor: Color;
+    borderColor: Color;
 };
 
 const alertWrapperStyle = prepareNativeStyle<AlertWrapperStyleType>(
-    (utils, { isStandalone, backgroundColor }) => ({
+    (utils, { borderColor, borderRadius, backgroundColor }) => ({
         flexDirection: 'row',
         alignItems: 'center',
-        borderRadius: utils.borders.radii.small,
+        borderRadius,
+        borderWidth: 1,
+        borderColor: utils.colors[borderColor],
         backgroundColor: utils.colors[backgroundColor],
         paddingVertical: utils.spacings.small,
         paddingHorizontal: utils.spacings.medium,
         gap: utils.spacings.small,
-
-        extend: {
-            condition: !isStandalone,
-            style: {
-                borderRadius: 0,
-                borderTopLeftRadius: utils.borders.radii.medium,
-                borderTopRightRadius: utils.borders.radii.medium,
-            },
-        },
     }),
 );
 
 const textStyle = prepareNativeStyle(_ => ({
     flex: 1,
+    paddingTop: 2,
 }));
 
 const variantToColorMap = {
     info: {
-        backgroundColor: 'backgroundAlertBlueSubtleOnElevation0',
+        backgroundColor: 'backgroundAlertBlueSubtleOnElevation1',
         contentColor: 'iconAlertBlue',
+        borderColor: 'backgroundAlertBlueSubtleOnElevationNegative',
     },
     success: {
-        backgroundColor: 'backgroundPrimarySubtleOnElevation0',
+        backgroundColor: 'backgroundPrimarySubtleOnElevation1',
         contentColor: 'textSecondaryHighlight',
+        borderColor: 'backgroundPrimarySubtleOnElevationNegative',
     },
     warning: {
-        backgroundColor: 'backgroundAlertYellowSubtleOnElevation0',
-        contentColor: 'textAlertYellow',
+        backgroundColor: 'backgroundAlertYellowSubtleOnElevation1',
+        contentColor: 'iconAlertYellow',
+        borderColor: 'backgroundAlertYellowSubtleOnElevationNegative',
     },
     error: {
-        backgroundColor: 'backgroundAlertRedSubtleOnElevation0',
+        backgroundColor: 'backgroundAlertRedSubtleOnElevation1',
         contentColor: 'textAlertRed',
+        borderColor: 'backgroundAlertRedSubtleOnElevationNegative',
     },
 } as const satisfies Record<AlertBoxVariant, AlertBoxStyle>;
 
@@ -65,23 +67,28 @@ const variantToIconName = {
     info: 'info',
     success: 'checkCircle',
     warning: 'warningTriangle',
-    error: 'warningTriangle',
+    error: 'warningCircle',
 } as const satisfies Record<AlertBoxVariant, IconName>;
 
 export type AlertBoxProps = {
     variant: AlertBoxVariant;
-    title?: React.ReactNode;
-    isStandalone?: boolean;
+    title: ReactNode;
+    borderRadius?: number;
 };
 
-export const AlertBox = ({ title, isStandalone = false, variant = 'info' }: AlertBoxProps) => {
+export const AlertBox = ({
+    title,
+    variant = 'info',
+    borderRadius = nativeBorders.radii.medium,
+}: AlertBoxProps) => {
     const { applyStyle } = useNativeStyles();
-    const { contentColor, backgroundColor } = variantToColorMap[variant];
+    const { contentColor, backgroundColor, borderColor } = variantToColorMap[variant];
 
     return (
         <Box
             style={applyStyle(alertWrapperStyle, {
-                isStandalone,
+                borderRadius,
+                borderColor,
                 backgroundColor,
             })}
         >

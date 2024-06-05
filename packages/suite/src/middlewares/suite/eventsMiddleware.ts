@@ -5,10 +5,15 @@ import {
     selectDevice,
     accountsActions,
     deviceActions,
+    authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { DEVICE } from '@trezor/connect';
-import { notificationsActions, removeAccountEventsThunk } from '@suite-common/toast-notifications';
+import {
+    AUTH_DEVICE,
+    notificationsActions,
+    removeAccountEventsThunk,
+} from '@suite-common/toast-notifications';
 
 import { SUITE } from 'src/actions/suite/constants';
 import { AppState, Action, Dispatch } from 'src/types/suite';
@@ -103,8 +108,8 @@ const eventsMiddleware =
             });
         }
 
-        if (deviceActions.authDevice.match(action)) {
-            api.dispatch(notificationsActions.addEvent({ type: action.type, seen: true }));
+        if (authorizeDeviceThunk.fulfilled.match(action)) {
+            api.dispatch(notificationsActions.addEvent({ type: AUTH_DEVICE, seen: true }));
         }
 
         return action;

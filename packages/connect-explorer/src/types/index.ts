@@ -1,21 +1,18 @@
 import type { ThunkDispatch } from 'redux-thunk';
-import type { AppState as AppState$ } from '../reducers';
 
 import type { KnownDevice, UnknownDevice, UnreadableDevice } from '@trezor/connect-web';
 
-import type { DocsAction } from '../actions/docsActions';
-import type { DOMAction } from '../actions/DOMActions';
+import type { AppState as AppState$ } from '../reducers';
 import type { MethodAction } from '../actions/methodActions';
-import type { RouterAction } from '../actions/routerActions';
 import type { TrezorConnectAction } from '../actions/trezorConnectActions';
 
-export type Action = DocsAction | DOMAction | MethodAction | RouterAction | TrezorConnectAction;
+export type Action = MethodAction | TrezorConnectAction;
 
 export type AppState = AppState$;
 export type GetState = () => AppState$;
 
 export interface Dispatch extends ThunkDispatch<AppState$, any, Action> {
-    <Action>(action: Action): Action extends (...args: any) => infer R ? R : Action;
+    <A>(action: A): A extends (...args: any) => infer R ? R : A;
 }
 
 export type TrezorConnectDevice = KnownDevice | UnknownDevice | UnreadableDevice;
@@ -26,15 +23,19 @@ export interface FieldData {
     affectedValue: string;
 }
 
-export interface Field<Value> {
+// Field path
+// - string: object name
+// - number: batch index
+export type FieldPath = (string | number)[];
+
+export interface FieldCommon {
+    path?: FieldPath;
     name: string;
-    batch?: any[];
-    items?: any[];
-    data?: FieldData[];
-    omit?: boolean;
     optional?: boolean;
-    key: string;
-    affect?: string;
+    omit?: boolean;
+}
+
+export interface FieldBasic<Value> extends FieldCommon {
     type:
         | 'input'
         | 'input-long'
@@ -48,6 +49,8 @@ export interface Field<Value> {
         | 'file';
     value: Value;
     defaultValue?: Value;
+    affect?: string;
+    data?: FieldData[];
 }
 
 interface Batch<Value> {
@@ -55,9 +58,23 @@ interface Batch<Value> {
     fields: Field<Value>[];
 }
 
-export interface FieldWithBundle<Value> {
-    name: 'bundle';
+export interface FieldWithBundle<Value> extends FieldCommon {
     type: 'array';
-    items: Field<Value>[][];
     batch: Batch<Value>[];
+    items: Field<Value>[][];
+    affect?: undefined;
 }
+
+export interface FieldWithUnion<Value> extends FieldCommon {
+    type: 'union';
+    labels: string[];
+    options: Field<Value>[][];
+    current: Field<Value>[];
+    affect?: undefined;
+}
+
+export type Field<Value> = FieldBasic<Value> | FieldWithBundle<Value> | FieldWithUnion<Value>;
+
+export const isFieldBasic = <T>(field: Field<T>): field is FieldBasic<T> => {
+    return field.type !== 'array' && field.type !== 'union';
+};

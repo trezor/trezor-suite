@@ -18,6 +18,7 @@ import {
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
+import { useFees } from './form/useFees';
 
 export const ClaimEthFormContext = createContext<ClaimContextValues | null>(null);
 ClaimEthFormContext.displayName = 'ClaimEthFormContext';
@@ -26,12 +27,10 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     const dispatch = useDispatch();
 
     const localCurrency = useSelector(selectLocalCurrency);
-    const fees = useSelector(state => state.wallet.fees);
 
     const { account, network } = selectedAccount;
+    const symbolFees = useSelector(state => state.wallet.fees[account.symbol]);
 
-    // TODO: Implement fee switcher
-    const selectedFee = 'normal';
     const defaultValues = useMemo(() => {
         const { address_accounting: accountingAddress } = Ethereum.selectNetwork(
             getEthNetworkForWalletSdk(account.symbol),
@@ -46,9 +45,8 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
     }, [account.symbol]);
 
     const state = useMemo(() => {
-        const coinFees = fees[account.symbol];
-        const levels = getFeeLevels(account.networkType, coinFees);
-        const feeInfo = { ...coinFees, levels };
+        const levels = getFeeLevels(account.networkType, symbolFees);
+        const feeInfo = { ...symbolFees, levels };
 
         return {
             account,
@@ -56,7 +54,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
             feeInfo,
             formValues: defaultValues,
         };
-    }, [account, defaultValues, fees, network]);
+    }, [account, defaultValues, symbolFees, network]);
 
     const methods = useForm<ClaimFormState>({
         mode: 'onChange',
@@ -75,6 +73,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
         isLoading: isComposing,
         composeRequest,
         composedLevels,
+        onFeeLevelChange,
     } = useStakeCompose({
         ...methods,
         state,
@@ -105,6 +104,20 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
         await composeRequest(CRYPTO_INPUT);
     }, [composeRequest, defaultValues, reset]);
 
+    // sub-hook, FeeLevels handler
+    const fees = useSelector(state => state.wallet.fees);
+    const coinFees = fees[account.symbol];
+    const levels = getFeeLevels(account.networkType, coinFees);
+    const feeInfo = { ...coinFees, levels };
+    const { changeFeeLevel, selectedFee: _selectedFee } = useFees({
+        defaultValue: 'normal',
+        feeInfo,
+        onChange: onFeeLevelChange,
+        composeRequest,
+        ...methods,
+    });
+    const selectedFee = _selectedFee ?? 'normal';
+
     // get response from TransactionReviewModal
     const signTx = useCallback(async () => {
         const values = getValues();
@@ -118,7 +131,7 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
                 clearForm();
             }
         }
-    }, [getValues, composedLevels, dispatch, clearForm]);
+    }, [getValues, composedLevels, dispatch, clearForm, selectedFee]);
 
     return {
         ...methods,
@@ -134,6 +147,8 @@ export const useClaimEthForm = ({ selectedAccount }: UseStakeFormsProps): ClaimC
         signTx,
         clearErrors,
         onClaimChange,
+        feeInfo,
+        changeFeeLevel,
     };
 };
 

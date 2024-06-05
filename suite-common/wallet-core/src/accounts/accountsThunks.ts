@@ -4,8 +4,9 @@ import { networksCompatibility as NETWORKS } from '@suite-common/wallet-config';
 import {
     analyzeTransactions,
     findAccountDevice,
-    formatAmount,
     formatNetworkAmount,
+    formatTokenAmount,
+    tryGetAccountIdentity,
     getAccountTransactions,
     getAreSatoshisUsed,
     isAccountOutdated,
@@ -20,11 +21,11 @@ import { transactionsActions } from '../transactions/transactionsActions';
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { accountsActions } from './accountsActions';
 import { selectAccountByKey, selectAccounts } from './accountsReducer';
-import { accountsActionsPrefix } from './constants';
+import { ACCOUNTS_MODULE_PREFIX } from './accountsConstants';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 
 export const disableAccountsThunk = createThunk(
-    `${accountsActionsPrefix}/disableAccountsThunk`,
+    `${ACCOUNTS_MODULE_PREFIX}/disableAccountsThunk`,
     (_, { dispatch, extra, getState }) => {
         const {
             selectors: { selectEnabledNetworks },
@@ -53,6 +54,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
     const promises = customTokens.map(t =>
         TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'tokenBalances',
             contractFilter: t.contract,
@@ -74,7 +76,7 @@ const fetchAccountTokens = async (account: Account, payloadTokens: AccountInfo['
 // Left here for clarity, but shouldn't be called anywhere but in blockchainActions.syncAccounts
 // as we usually want to update all accounts for a single coin at once
 export const fetchAndUpdateAccountThunk = createThunk(
-    `${accountsActionsPrefix}/fetchAndUpdateAccountThunk`,
+    `${ACCOUNTS_MODULE_PREFIX}/fetchAndUpdateAccountThunk`,
     async ({ accountKey }: { accountKey: AccountKey }, { dispatch, extra, getState }) => {
         const {
             selectors: { selectDevices, selectBitcoinAmountUnit },
@@ -87,6 +89,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
         // basic check returns only small amount of data without full transaction history
         const basic = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'basic',
             suppressBackupWarning: true,
@@ -107,6 +110,7 @@ export const fetchAndUpdateAccountThunk = createThunk(
 
         const response = await TrezorConnect.getAccountInfo({
             coin: account.symbol,
+            identity: tryGetAccountIdentity(account),
             descriptor: account.descriptor,
             details: 'txs',
             page: 1, // useful for every network except ripple
@@ -143,8 +147,9 @@ export const fetchAndUpdateAccountThunk = createThunk(
                 const areSatoshisUsed = getAreSatoshisUsed(bitcoinAmountUnit, account);
 
                 const formattedAmount = token
-                    ? `${formatAmount(token.amount, token.decimals)} ${token.symbol.toUpperCase()}`
+                    ? formatTokenAmount(token)
                     : formatNetworkAmount(tx.amount, account.symbol, true, areSatoshisUsed);
+
                 dispatch(
                     notificationsActions.addEvent({
                         type: 'tx-confirmed',

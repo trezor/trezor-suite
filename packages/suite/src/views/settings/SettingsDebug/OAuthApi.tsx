@@ -1,11 +1,11 @@
 import styled from 'styled-components';
 
-import { ActionColumn, ActionSelect, SectionItem, TextColumn } from 'src/components/suite';
+import { SettingsSectionItem } from 'src/components/settings';
+import { ActionColumn, ActionSelect, TextColumn } from 'src/components/suite';
 import GoogleClient from 'src/services/google';
 import { setDebugMode } from 'src/actions/suite/suiteActions';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const StyledActionSelect = styled(ActionSelect)`
@@ -15,7 +15,6 @@ const StyledActionSelect = styled(ActionSelect)`
 export const OAuthApi = () => {
     const debug = useSelector(state => state.suite.settings.debug);
     const dispatch = useDispatch();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.OAuthApi);
 
     const options = Object.entries(GoogleClient.servers).map(([environment, server]) => ({
         label: server,
@@ -30,11 +29,7 @@ export const OAuthApi = () => {
     };
 
     return (
-        <SectionItem
-            data-test="@settings/debug/oauth-api"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.OAuthApi}>
             <TextColumn
                 title="Google auth server"
                 description="Set the authorisation server url for labeling in Google Drive"
@@ -46,6 +41,6 @@ export const OAuthApi = () => {
                     options={options}
                 />
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

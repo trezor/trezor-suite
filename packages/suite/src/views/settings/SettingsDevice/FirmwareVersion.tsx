@@ -4,10 +4,10 @@ import { getChangelogUrl, getFwUpdateVersion } from '@suite-common/suite-utils';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { Button, Tooltip } from '@trezor/components';
 
+import { SettingsSectionItem } from 'src/components/settings';
 import {
     ActionButton,
     ActionColumn,
-    SectionItem,
     TextColumn,
     Translation,
     TrezorLink,
@@ -15,7 +15,6 @@ import {
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AcquiredDevice } from 'src/types/suite';
-import { useAnchor } from 'src/hooks/suite/useAnchor';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
 const Version = styled.div`
@@ -64,7 +63,6 @@ interface FirmwareVersionProps {
 export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const { anchorRef, shouldHighlight } = useAnchor(SettingsAnchor.FirmwareVersion);
 
     if (!device?.features) {
         return null;
@@ -91,11 +89,7 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
     );
 
     return (
-        <SectionItem
-            data-test="@settings/device/firmware-version"
-            ref={anchorRef}
-            shouldHighlight={shouldHighlight}
-        >
+        <SettingsSectionItem anchorId={SettingsAnchor.FirmwareVersion}>
             <TextColumn
                 title={<Translation id="TR_FIRMWARE_VERSION" />}
                 description={
@@ -136,6 +130,6 @@ export const FirmwareVersion = ({ isDeviceLocked }: FirmwareVersionProps) => {
                     />
                 </ActionButton>
             </ActionColumn>
-        </SectionItem>
+        </SettingsSectionItem>
     );
 };

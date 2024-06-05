@@ -2,30 +2,36 @@ import { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import { BottomSheet, IconButton, Text, VStack } from '@suite-native/atoms';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
 
 import { PIN_HELP_URL } from '../constants/pinFormConstants';
 
 export const ConnectingTrezorHelp = () => {
-    const { translate } = useTranslate();
-
     const [isHelperBottomSheetVisible, setIsHelperBottomSheetVisible] = useState(false);
 
     const toggleBottomSheet = () => setIsHelperBottomSheetVisible(!isHelperBottomSheetVisible);
 
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
-    const modalTitle = translate(
-        hasDeviceRequestedPin
-            ? 'moduleConnectDevice.helpModal.pinMatrix.title'
-            : 'moduleConnectDevice.helpModal.connect.title',
+    const modalTitle = (
+        <Translation
+            id={
+                hasDeviceRequestedPin
+                    ? 'moduleConnectDevice.helpModal.pinMatrix.title'
+                    : 'moduleConnectDevice.helpModal.connect.title'
+            }
+        />
     );
-    const modalSubtitle = translate(
-        hasDeviceRequestedPin
-            ? 'moduleConnectDevice.helpModal.pinMatrix.subtitle'
-            : 'moduleConnectDevice.helpModal.connect.subtitle',
+    const modalSubtitle = (
+        <Translation
+            id={
+                hasDeviceRequestedPin
+                    ? 'moduleConnectDevice.helpModal.pinMatrix.subtitle'
+                    : 'moduleConnectDevice.helpModal.connect.subtitle'
+            }
+        />
     );
 
     return (

@@ -14,15 +14,17 @@ import {
 } from '../buttonStyleUtils';
 import { focusStyleTransition, getFocusShadowStyle } from '../../../utils/utils';
 import { useElevation } from '../../ElevationContext/ElevationContext';
+import { makePropsTransient } from '../../../utils/transientProps';
+import { FrameProps, TransientFrameProps, withFrameProps } from '../../common/frameProps';
 
-interface ButtonContainerProps {
+type ButtonContainerProps = TransientFrameProps & {
     $variant: ButtonVariant;
     $size: ButtonSize;
     $iconAlignment?: IconAlignment;
     $hasIcon?: boolean;
     $isFullWidth?: boolean;
     $elevation: Elevation;
-}
+};
 
 export const ButtonContainer = styled.button<ButtonContainerProps>`
     display: flex;
@@ -49,6 +51,8 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
         pointer-events: none;
         cursor: default;
     }
+
+    ${withFrameProps}
 `;
 
 interface ContentProps {
@@ -80,20 +84,21 @@ type SelectedHTMLButtonProps = Pick<
     'onClick' | 'onMouseOver' | 'onMouseLeave' | 'type' | 'tabIndex'
 >;
 
-export interface ButtonProps extends SelectedHTMLButtonProps {
-    variant?: ButtonVariant;
-    size?: ButtonSize;
-    isDisabled?: boolean;
-    isLoading?: boolean;
-    isFullWidth?: boolean;
-    icon?: IconType;
-    iconSize?: number;
-    iconAlignment?: IconAlignment;
-    children: React.ReactNode;
-    title?: string;
-    className?: string;
-    'data-test'?: string;
-}
+export type ButtonProps = SelectedHTMLButtonProps &
+    FrameProps & {
+        variant?: ButtonVariant;
+        size?: ButtonSize;
+        isDisabled?: boolean;
+        isLoading?: boolean;
+        isFullWidth?: boolean;
+        icon?: IconType;
+        iconSize?: number;
+        iconAlignment?: IconAlignment;
+        children: React.ReactNode;
+        title?: string;
+        className?: string;
+        'data-test'?: string;
+    };
 
 export const Button = ({
     variant = 'primary',
@@ -106,8 +111,13 @@ export const Button = ({
     iconAlignment = 'left',
     type = 'button',
     children,
+    margin,
     ...rest
 }: ButtonProps) => {
+    const frameProps = {
+        margin,
+    };
+
     const theme = useTheme();
     const { elevation } = useElevation();
 
@@ -132,6 +142,7 @@ export const Button = ({
             $hasIcon={!!icon || isLoading}
             $elevation={elevation}
             {...rest}
+            {...makePropsTransient(frameProps)}
         >
             {!isLoading && icon && IconComponent}
             {isLoading && Loader}

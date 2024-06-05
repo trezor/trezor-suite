@@ -172,7 +172,7 @@ export const InstallBridge = () => {
                             data-test="@bridge/installers"
                         />
 
-                        <TrezorLink variant="nostyle" href={`${data.uri}${target.value}`}>
+                        <TrezorLink variant="nostyle" href={`${data.uri}${target?.value}`}>
                             <DownloadBridgeButton data-test="@bridge/download-button">
                                 <Translation
                                     id="TR_DOWNLOAD_LATEST_BRIDGE"

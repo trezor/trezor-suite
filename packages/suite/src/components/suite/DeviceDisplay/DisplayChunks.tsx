@@ -18,7 +18,6 @@ const ChunksContainer = styled.div`
 
 type DisplayChunksProps = {
     isPixelType: boolean;
-    'data-test'?: string;
     address: string;
 };
 
@@ -35,11 +34,7 @@ const groupByN = <T,>(arr: T[], n: number): T[][] =>
         return result;
     }, [] as T[][]);
 
-export const DisplayChunks = ({
-    isPixelType,
-    'data-test': dataTest,
-    address,
-}: DisplayChunksProps) => {
+export const DisplayChunks = ({ isPixelType, address }: DisplayChunksProps) => {
     const showChunksInRows = (chunks: string[][] | undefined, isNextAddress?: boolean) =>
         chunks?.map((row, rowIndex) => (
             <Row key={rowIndex} $isAlignedRight={rowIndex === 0 && isNextAddress}>
@@ -69,7 +64,7 @@ export const DisplayChunks = ({
     };
 
     return (
-        <ChunksContainer onCopy={handleOnCopy} data-test={dataTest}>
+        <ChunksContainer onCopy={handleOnCopy} data-test="@device-display/chunked-text">
             {showChunksInRows(groupedChunks)}
         </ChunksContainer>
     );

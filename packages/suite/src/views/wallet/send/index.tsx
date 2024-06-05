@@ -27,17 +27,20 @@ const SendLayout = styled(WalletLayout)`
 `;
 
 const FormGrid = styled.div`
-    display: grid;
-    grid-template-columns: minmax(500px, auto) minmax(340px, 420px);
     gap: ${spacingsPx.md};
 
-    > :not(:last-child) {
-        grid-column: 1;
-    }
+    ${breakpointMediaQueries.xl} {
+        display: grid;
+        grid-template-columns: minmax(500px, auto) minmax(340px, 420px);
 
-    > :last-child {
-        grid-column: 2;
-        grid-row: 1;
+        > :not(:last-child) {
+            grid-column: 1;
+        }
+
+        > :last-child {
+            grid-column: 2;
+            grid-row: 1;
+        }
     }
 
     ${breakpointMediaQueries.below_xl} {
@@ -75,7 +78,7 @@ const SendLoaded = ({ children, selectedAccount }: SendLoadedProps) => {
     if (props.sendRaw) {
         return (
             <WalletLayout title="TR_NAV_SEND" isSubpage account={selectedAccount}>
-                <Raw network={selectedAccount.network} />
+                <Raw account={selectedAccount.account} />
             </WalletLayout>
         );
     }

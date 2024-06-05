@@ -4,26 +4,41 @@ import { importSendFormRequestThunk } from 'src/actions/wallet/send/sendFormThun
 import { useDispatch } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { DEFAULT_PAYMENT } from '@suite-common/wallet-constants';
-import { fiatCurrencies } from '@suite-common/suite-config';
+import { FiatCurrencyCode, fiatCurrencies } from '@suite-common/suite-config';
 import {
-    fromFiatCurrency,
-    toFiatCurrency,
     amountToSatoshi,
     formatAmount,
+    fromFiatCurrency,
+    getFiatRateKey,
+    toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import { UseSendFormState, Output } from 'src/types/wallet/sendForm';
-import { Rate } from '@suite-common/wallet-types';
+import {
+    UseSendFormState,
+    Output,
+    Timestamp,
+    FiatRatesResult,
+    Rate,
+    FiatRates,
+} from '@suite-common/wallet-types';
+import { updateFiatRatesThunk } from '@suite-common/wallet-core';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
-type Props = {
+type useSendFormImportProps = {
     network: UseSendFormState['network'];
     tokens: UseSendFormState['account']['tokens'];
-    fiatRate?: Rate;
     localCurrencyOption: UseSendFormState['localCurrencyOption'];
+    fiatRate?: Rate;
+    currentRates?: FiatRates;
 };
 
 // This hook should be used only as a sub-hook of `useSendForm`
-
-export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRate }: Props) => {
+export const useSendFormImport = ({
+    network,
+    tokens,
+    localCurrencyOption,
+    fiatRate,
+    currentRates,
+}: useSendFormImportProps) => {
     const dispatch = useDispatch();
     const { shouldSendInSats } = useBitcoinAmountUnit(network.symbol);
 
@@ -31,6 +46,37 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
         // open ImportTransactionModal and get parsed csv
         const result = await dispatch(importSendFormRequestThunk()).unwrap();
         if (!result || result.length < 1) return; // cancelled
+
+        let rates: { currency: string; rate?: number }[] = [];
+        const currencies = result.map(it => it.currency.toLowerCase());
+        const uniqueCurrencies = [...new Set(currencies)];
+
+        for (const currency of uniqueCurrencies) {
+            const fiatRateKey = getFiatRateKey(network.symbol, currency as FiatCurrencyCode);
+            const fiatRate = currentRates?.[fiatRateKey];
+
+            if (fiatRate) {
+                rates.push({ currency, rate: fiatRate?.rate });
+            } else {
+                // fetch fiat rate for new currencies in the csv
+                const updateFiatRatesResult = await dispatch(
+                    updateFiatRatesThunk({
+                        ticker: {
+                            symbol: network.symbol as NetworkSymbol,
+                        },
+                        localCurrency: currency as FiatCurrencyCode,
+                        rateType: 'current',
+                        fetchAttemptTimestamp: Date.now() as Timestamp,
+                    }),
+                );
+
+                if (updateFiatRatesResult.meta.requestStatus === 'fulfilled') {
+                    const fiatRate = updateFiatRatesResult.payload as FiatRatesResult;
+
+                    rates.push({ currency, rate: fiatRate?.rate });
+                }
+            }
+        }
 
         const outputs = result.map(item => {
             // create default Output with address from csv
@@ -44,12 +90,14 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                 output.label = item.label;
             }
 
-            // currency is specified in csv
-            if (item.currency) {
-                // sanitize csv data
-                const currency = item.currency.toLowerCase();
+            // sanitize csv data
+            const itemCurrency = item.currency.toLowerCase();
 
-                if (currency === network.symbol) {
+            // currency is specified in csv
+            if (itemCurrency) {
+                const itemRate = rates.find(r => r.currency === itemCurrency)?.rate;
+
+                if (itemCurrency === network.symbol) {
                     // csv amount in crypto currency
                     const cryptoAmount = item.amount || '';
                     if (shouldSendInSats) {
@@ -64,30 +112,17 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                         const cryptoValue = shouldSendInSats
                             ? formatAmount(output.amount, network.decimals)
                             : output.amount;
-                        output.fiat =
-                            toFiatCurrency(
-                                cryptoValue,
-                                output.currency.value,
-                                fiatRate,
-                                2,
-                                false,
-                            ) || '';
+                        output.fiat = toFiatCurrency(cryptoValue, fiatRate.rate, 2) || '';
                     }
                 } else if (
-                    Object.keys(fiatCurrencies).find(c => c === currency) &&
-                    fiatRate?.rate
+                    Object.keys(fiatCurrencies).find(currency => currency === itemCurrency) &&
+                    itemRate
                 ) {
                     // csv amount in fiat currency
-                    output.currency = { value: currency, label: currency.toUpperCase() };
+                    output.currency = { value: itemCurrency, label: itemCurrency.toUpperCase() };
                     output.fiat = item.amount || '';
                     // calculate Amount from Fiat
-                    const cryptoValue = fromFiatCurrency(
-                        output.fiat,
-                        currency,
-                        fiatRate,
-                        network.decimals,
-                        false,
-                    );
+                    const cryptoValue = fromFiatCurrency(output.fiat, network.decimals, itemRate);
                     const cryptoAmount =
                         cryptoValue && shouldSendInSats
                             ? amountToSatoshi(cryptoValue, network.decimals)
@@ -96,7 +131,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                     output.amount = cryptoAmount;
                 } else if (tokens) {
                     // csv amount in ERC20 currency
-                    const token = tokens.find(t => t.symbol === currency);
+                    const token = tokens.find(t => t.symbol === itemCurrency);
                     if (token) {
                         output.token = token.contract;
                         output.amount = item.amount || '';
@@ -106,7 +141,7 @@ export const useSendFormImport = ({ network, tokens, localCurrencyOption, fiatRa
                 if (!output.amount || !output.fiat) {
                     // TODO: display Toast notification with invalid currency error?
                     // what if there will be multiple errors? Toast spamming...
-                    console.warn('import error', currency, output);
+                    console.warn('import error', itemCurrency, output);
                 }
             }
 

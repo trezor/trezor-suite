@@ -11,12 +11,10 @@ import {
 } from '@suite-native/navigation';
 import { VStack, Card, Button, Text, Box } from '@suite-native/atoms';
 import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
-import { Translation, useTranslate } from '@suite-native/intl';
+import { Translation } from '@suite-native/intl';
 import { analytics, EventType } from '@suite-native/analytics';
-import { useActiveColorScheme } from '@suite-native/theme';
 
 import { ConnectTrezorSvg } from '../../../assets/ConnectTrezorSvg';
-import { DarkConnectedTrezorSvg } from '../../../assets/DarkConnectedTrezorSvg';
 
 const cardStyle = prepareNativeStyle<{ flex: 1 | 2 }>((utils, { flex }) => ({
     flex,
@@ -35,10 +33,6 @@ export const EmptyPortfolioCrossroads = () => {
     const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProps>();
 
-    const { translate } = useTranslate();
-
-    const colorScheme = useActiveColorScheme();
-
     const handleSyncMyCoins = () => {
         navigation.navigate(RootStackRoutes.AccountsImport, {
             screen: AccountsImportStackRoutes.SelectNetwork,
@@ -47,7 +41,7 @@ export const EmptyPortfolioCrossroads = () => {
     };
 
     const handleConnectDevice = () => {
-        navigation.navigate(RootStackRoutes.ConnectDevice, {
+        navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
             screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
         });
         analytics.report({
@@ -61,7 +55,7 @@ export const EmptyPortfolioCrossroads = () => {
             <Card style={applyStyle(cardStyle, { flex: 2 })}>
                 <VStack spacing="large" justifyContent="center" alignItems="center">
                     <VStack alignItems="center" spacing="large">
-                        {colorScheme === 'dark' ? <DarkConnectedTrezorSvg /> : <ConnectTrezorSvg />}
+                        <ConnectTrezorSvg />
                         <VStack alignItems="center">
                             <Box>
                                 <Text variant="titleSmall" textAlign="center">
@@ -74,9 +68,7 @@ export const EmptyPortfolioCrossroads = () => {
                         </VStack>
                     </VStack>
                     <Button onPress={handleConnectDevice} size="large">
-                        {translate(
-                            'moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.connectButton',
-                        )}
+                        <Translation id="moduleHome.emptyState.connectOrImportCrossroads.gotMyTrezor.connectButton" />
                     </Button>
                 </VStack>
             </Card>
@@ -94,10 +86,9 @@ export const EmptyPortfolioCrossroads = () => {
                         onPress={handleSyncMyCoins}
                         colorScheme="tertiaryElevation1"
                         size="large"
+                        testID="@home/portfolio/sync-coins-button"
                     >
-                        {translate(
-                            'moduleHome.emptyState.connectOrImportCrossroads.syncCoins.syncButton',
-                        )}
+                        <Translation id="moduleHome.emptyState.connectOrImportCrossroads.syncCoins.syncButton" />
                     </Button>
                 </VStack>
             </Card>

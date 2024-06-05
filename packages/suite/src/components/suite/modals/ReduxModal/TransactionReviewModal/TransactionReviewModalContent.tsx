@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 import { Deferred } from '@trezor/utils';
 import { selectDevice, StakeState } from '@suite-common/wallet-core';
+import { FormState, StakeFormState } from '@suite-common/wallet-types';
 import { isCardanoTx } from '@suite-common/wallet-utils';
-import { SendState } from 'src/reducers/wallet/sendFormReducer';
+import { SendState } from '@suite-common/wallet-core';
 import { useSelector } from 'src/hooks/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { constructOutputs } from 'src/utils/wallet/reviewTransactionUtils';
@@ -14,6 +15,7 @@ import { TransactionReviewSummary } from './TransactionReviewSummary';
 import { TransactionReviewOutputList } from './TransactionReviewOutputList/TransactionReviewOutputList';
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 import { DeviceModelInternal } from '@trezor/connect';
+import { spacings } from '@trezor/theme';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -26,6 +28,14 @@ const StyledModal = styled(Modal)`
         }
     }
 `;
+
+const isStakeState = (state: SendState | StakeState): state is StakeState => {
+    return 'data' in state;
+};
+
+const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState => {
+    return 'ethereumStakeType' in form;
+};
 
 interface TransactionReviewModalContentProps {
     decision: Deferred<boolean, string | number | undefined> | undefined;
@@ -47,13 +57,21 @@ export const TransactionReviewModalContent = ({
 
     const deviceModelInternal = device?.features?.internal_model;
 
-    const { precomposedTx, precomposedForm, signedTx } = txInfoState;
+    const { account } = selectedAccount;
+    const { precomposedTx, serializedTx } = txInfoState;
+
+    if (!account) {
+        return null;
+    }
+
+    const precomposedForm: FormState | StakeFormState | undefined = isStakeState(txInfoState)
+        ? txInfoState.precomposedForm
+        : txInfoState.drafts[account.key];
 
     if (selectedAccount.status !== 'loaded' || !device || !precomposedTx || !precomposedForm) {
         return null;
     }
 
-    const { account } = selectedAccount;
     const { networkType } = account;
     const isCardano = isCardanoTx(account, precomposedTx);
     const isEthereum = networkType === 'ethereum';
@@ -70,8 +88,9 @@ export const TransactionReviewModalContent = ({
         precomposedTx,
     });
 
-    const ethereumStakeType =
-        'ethereumStakeType' in precomposedForm ? precomposedForm.ethereumStakeType : null;
+    const ethereumStakeType = isStakeForm(precomposedForm)
+        ? precomposedForm.ethereumStakeType
+        : null;
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(
@@ -94,19 +113,19 @@ export const TransactionReviewModalContent = ({
 
     // get estimate mining time
     let estimateTime;
-    const selected = fees[selectedAccount.account.symbol];
-    const matchedFeeLevel = selected.levels.find(
+    const symbolFees = fees[selectedAccount.account.symbol];
+    const matchedFeeLevel = symbolFees.levels.find(
         item => item.feePerUnit === precomposedTx.feePerByte,
     );
 
     if (networkType === 'bitcoin' && matchedFeeLevel) {
-        estimateTime = selected.blockTime * matchedFeeLevel.blocks * 60;
+        estimateTime = symbolFees.blockTime * matchedFeeLevel.blocks * 60;
     }
 
     const buttonRequestsCount = isCardano ? buttonRequests.length - 1 : buttonRequests.length;
 
     const onCancel =
-        isActionAbortable || signedTx
+        isActionAbortable || serializedTx
             ? () => {
                   cancelSignTx();
                   decision?.resolve(false);
@@ -119,7 +138,7 @@ export const TransactionReviewModalContent = ({
                 <ConfirmOnDevice
                     title={<Translation id="TR_CONFIRM_ON_TREZOR" />}
                     steps={outputs.length + 1}
-                    activeStep={signedTx ? outputs.length + 2 : buttonRequestsCount}
+                    activeStep={serializedTx ? outputs.length + 2 : buttonRequestsCount}
                     deviceModelInternal={deviceModelInternal}
                     deviceUnitColor={device?.features?.unit_color}
                     successText={<Translation id="TR_CONFIRMED_TX" />}
@@ -144,7 +163,7 @@ export const TransactionReviewModalContent = ({
                 account={selectedAccount.account}
                 precomposedForm={precomposedForm}
                 precomposedTx={precomposedTx}
-                signedTx={signedTx}
+                signedTx={serializedTx}
                 decision={decision}
                 detailsOpen={detailsOpen}
                 outputs={outputs}
@@ -157,8 +176,12 @@ export const TransactionReviewModalContent = ({
                 })}
                 isSending={isSending}
                 setIsSending={() => setIsSending(true)}
+                ethereumStakeType={ethereumStakeType || undefined}
             />
-            <TransactionReviewEvmExplanation account={selectedAccount.account} />
+            <TransactionReviewEvmExplanation
+                account={selectedAccount.account}
+                margin={{ top: spacings.sm }}
+            />
         </StyledModal>
     );
 };

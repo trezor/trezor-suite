@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Animated, {
     Easing,
     interpolateColor,
@@ -14,8 +14,8 @@ import { Box } from './Box';
 import { TITLE_MAX_FONT_MULTIPLIER } from './Text';
 
 type ToggleProps = {
-    leftLabel: string;
-    rightLabel: string;
+    leftLabel: ReactNode;
+    rightLabel: ReactNode;
     isToggled: boolean;
     onToggle: () => void;
 };

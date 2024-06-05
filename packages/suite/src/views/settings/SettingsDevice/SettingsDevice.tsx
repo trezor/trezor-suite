@@ -20,18 +20,23 @@ import { DisplayRotation } from './DisplayRotation';
 import { FirmwareTypeChange } from './FirmwareTypeChange';
 import { FirmwareVersion } from './FirmwareVersion';
 import { Homescreen } from './Homescreen';
+import { MultiShareBackup } from './MultiShareBackup';
 import { Passphrase } from './Passphrase';
 import { PinProtection } from './PinProtection';
 import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
+import { EnableViewOnly } from './EnableViewOnly';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
     const wrongDeviceType = device?.type && ['unacquired', 'unreadable'].includes(device.type);
     const wrongDeviceMode =
-        (device?.mode && ['seedless'].includes(device.mode)) || device?.features?.recovery_mode;
+        (device?.mode && ['seedless'].includes(device.mode)) ||
+        (device?.features !== undefined && isRecoveryInProgress(device?.features));
     const firmwareUpdateRequired = device?.firmware === 'required';
 
     return noTransportAvailable || wrongDeviceType || wrongDeviceMode || firmwareUpdateRequired;
@@ -40,16 +45,14 @@ const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<Tr
 export const SettingsDevice = () => {
     const { device, isLocked } = useDevice();
     const transport = useSelector(state => state.suite.transport);
-
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const deviceUnavailable = !device?.features;
     const isDeviceLocked = isLocked();
     const bootloaderMode = device?.mode === 'bootloader';
     const initializeMode = device?.mode === 'initialize';
+    const isNormalMode = !bootloaderMode && !initializeMode;
     const deviceRemembered = isDeviceRemembered(device) && !device?.connected;
-    const deviceModelInternal = device?.features?.internal_model;
     const bitcoinOnlyDevice = isBitcoinOnlyDevice(device);
-    const supportsDeviceAuthentication = deviceModelInternal === DeviceModelInternal.T2B1;
-    const supportsDisplayRotation = deviceModelInternal === DeviceModelInternal.T2T1;
 
     if (deviceSettingsUnavailable(device, transport)) {
         return (
@@ -80,6 +83,13 @@ export const SettingsDevice = () => {
         safety_checks: safetyChecks,
     } = device.features;
 
+    const deviceModelInternal = device.features.internal_model;
+
+    const supportsDeviceAuthentication = [
+        DeviceModelInternal.T2B1,
+        DeviceModelInternal.T3T1,
+    ].includes(deviceModelInternal);
+
     return (
         <SettingsLayout>
             {bootloaderMode && (
@@ -89,9 +99,11 @@ export const SettingsDevice = () => {
                         <Translation
                             id={pickByDeviceModel(deviceModelInternal, {
                                 default:
-                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
-                                [DeviceModelInternal.T2T1]:
                                     'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_TOUCH',
+                                [DeviceModelInternal.T1B1]:
+                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
+                                [DeviceModelInternal.T2B1]:
+                                    'TR_SETTINGS_DEVICE_BANNER_DESCRIPTION_BOOTLOADER_NO_BUTTONS',
                             })}
                         />
                     }
@@ -104,16 +116,23 @@ export const SettingsDevice = () => {
                 />
             )}
 
-            {!bootloaderMode && !initializeMode && (
+            {isNormalMode && (
                 <SettingsSection title={<Translation id="TR_BACKUP" />} icon="NEWSPAPER">
                     {unfinishedBackup ? (
                         <BackupFailed />
                     ) : (
                         <>
                             <BackupRecoverySeed isDeviceLocked={isDeviceLocked} />
+                            <MultiShareBackup />
                             <CheckRecoverySeed isDeviceLocked={isDeviceLocked} />
                         </>
                     )}
+                </SettingsSection>
+            )}
+
+            {isViewOnlyModeVisible && (
+                <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
+                    <EnableViewOnly />
                 </SettingsSection>
             )}
 
@@ -125,7 +144,7 @@ export const SettingsDevice = () => {
                 <ChangeLanguage isDeviceLocked={isDeviceLocked} />
             </SettingsSection>
 
-            {!bootloaderMode && !initializeMode && (
+            {isNormalMode && (
                 <>
                     <SettingsSection
                         title={<Translation id="TR_DEVICE_SECURITY" />}
@@ -141,9 +160,7 @@ export const SettingsDevice = () => {
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
-                        {supportsDisplayRotation && (
-                            <DisplayRotation isDeviceLocked={isDeviceLocked} />
-                        )}
+                        <DisplayRotation isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
                     </SettingsSection>
                 </>
@@ -151,7 +168,7 @@ export const SettingsDevice = () => {
 
             <SettingsSection title={<Translation id="TR_ADVANCED" />} icon="GHOST">
                 <WipeDevice isDeviceLocked={isDeviceLocked} />
-                <WipeCode isDeviceLocked={isDeviceLocked} />
+                {isNormalMode && <WipeCode isDeviceLocked={isDeviceLocked} />}
                 <CustomFirmware />
                 {supportsDeviceAuthentication && <DeviceAuthenticityOptOut />}
             </SettingsSection>
