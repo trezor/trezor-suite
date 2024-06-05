@@ -53,7 +53,6 @@ interface Buy extends CoinmarketTradeCommonProps {
         symbol?: Account['symbol'];
         shouldSubmit?: boolean;
     };
-    alternativeQuotes?: BuyTrade[];
     addressVerified?: string;
 }
 
@@ -68,7 +67,6 @@ interface Sell extends CoinmarketTradeCommonProps {
     sellInfo?: SellInfo;
     quotesRequest?: SellFiatTradeQuoteRequest;
     quotes: SellFiatTrade[] | undefined;
-    alternativeQuotes?: SellFiatTrade[];
     transactionId?: string;
     isFromRedirect: boolean;
 }
@@ -100,7 +98,6 @@ export const initialState: State = {
             shouldSubmit: false,
         },
         quotes: [],
-        alternativeQuotes: undefined,
         addressVerified: undefined,
     },
     exchange: {
@@ -114,7 +111,6 @@ export const initialState: State = {
         sellInfo: undefined,
         quotesRequest: undefined,
         quotes: [],
-        alternativeQuotes: [],
         transactionId: undefined,
         isFromRedirect: false,
     },
@@ -150,11 +146,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_BUY.SAVE_QUOTES:
                 draft.buy.quotes = action.quotes;
-                draft.buy.alternativeQuotes = action.alternativeQuotes;
                 break;
             case COINMARKET_BUY.CLEAR_QUOTES:
                 draft.buy.quotes = undefined;
-                draft.buy.alternativeQuotes = undefined;
                 break;
             case COINMARKET_BUY.VERIFY_ADDRESS:
                 draft.buy.addressVerified = action.addressVerified;
@@ -210,11 +204,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_SELL.SAVE_QUOTES:
                 draft.sell.quotes = action.quotes;
-                draft.sell.alternativeQuotes = action.alternativeQuotes;
                 break;
             case COINMARKET_SELL.CLEAR_QUOTES:
                 draft.sell.quotes = undefined;
-                draft.sell.alternativeQuotes = undefined;
                 break;
             case COINMARKET_SELL.SET_IS_FROM_REDIRECT:
                 draft.sell.isFromRedirect = action.isFromRedirect;
