@@ -59,10 +59,8 @@ interface Buy extends CoinmarketTradeCommonProps {
 
 interface Exchange extends CoinmarketTradeCommonProps {
     exchangeInfo?: ExchangeInfo;
-    quotesRequest?: ExchangeTradeQuoteRequest | undefined;
-    fixedQuotes: ExchangeTrade[] | undefined;
-    floatQuotes: ExchangeTrade[] | undefined;
-    dexQuotes: ExchangeTrade[] | undefined;
+    quotesRequest?: ExchangeTradeQuoteRequest;
+    quotes: ExchangeTrade[] | undefined;
     addressVerified?: string;
 }
 
@@ -109,9 +107,7 @@ export const initialState: State = {
         exchangeInfo: undefined,
         transactionId: undefined,
         quotesRequest: undefined,
-        fixedQuotes: [],
-        floatQuotes: [],
-        dexQuotes: [],
+        quotes: [],
         addressVerified: undefined,
     },
     sell: {
@@ -192,13 +188,10 @@ const coinmarketReducer = (
                 draft.exchange.quotesRequest = undefined;
                 break;
             case COINMARKET_EXCHANGE.SAVE_QUOTES:
-                draft.exchange.fixedQuotes = action.fixedQuotes;
-                draft.exchange.floatQuotes = action.floatQuotes;
-                draft.exchange.dexQuotes = action.dexQuotes;
+                draft.exchange.quotes = action.quotes;
                 break;
             case COINMARKET_EXCHANGE.CLEAR_QUOTES:
-                draft.exchange.fixedQuotes = undefined;
-                draft.exchange.floatQuotes = undefined;
+                draft.exchange.quotes = undefined;
                 break;
             case COINMARKET_EXCHANGE.VERIFY_ADDRESS:
                 draft.exchange.addressVerified = action.addressVerified;
