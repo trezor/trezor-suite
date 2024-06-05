@@ -10,9 +10,10 @@ const backends = new BackendManager();
 export const findBackend = (coin: string, identity?: string) => backends.get(coin, identity);
 
 export const setCustomBackend = (coinInfo: CoinInfo, blockchainLink: CoinInfo['blockchainLink']) =>
-    blockchainLink?.url.length
-        ? backends.setCustom(coinInfo.shortcut, blockchainLink)
-        : backends.removeCustom(coinInfo.shortcut);
+    backends.setCustom(
+        coinInfo.shortcut,
+        blockchainLink?.url.length ? blockchainLink : coinInfo.blockchainLink,
+    );
 
 export const isBackendSupported = (coinInfo: CoinInfo) => backends.isSupported(coinInfo);
 
