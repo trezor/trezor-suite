@@ -1,7 +1,7 @@
 import styled from 'styled-components';
-import { Button, Card } from '@trezor/components';
+import { Badge, Button, Card } from '@trezor/components';
 import { Translation } from 'src/components/suite';
-import { spacings, spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
@@ -11,6 +11,7 @@ import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const OfferWrap = styled(Card)`
     min-height: 100px;
@@ -81,7 +82,6 @@ const OfferBadgeWrap = styled.div`
     flex-wrap: wrap;
 `;
 
-/*
 const OfferBadge = styled(Badge)`
     margin-right: ${spacingsPx.xs};
     margin-bottom: ${spacingsPx.xs};
@@ -89,10 +89,10 @@ const OfferBadge = styled(Badge)`
 
 const OfferBadgeInfo = styled.div`
     ${typography.label};
+    margin-bottom: ${spacingsPx.xs};
     padding: ${spacingsPx.xxxs} 0;
     color: ${({ theme }) => theme.textSubdued};
 `;
-*/
 
 const StyledButton = styled(Button)`
     width: 180px;
@@ -108,12 +108,12 @@ export interface CoinmarketOffersItemProps {
 
 const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const context = useCoinmarketOffersContext();
-    const { selectQuote } = context;
+    const { callInProgress, selectQuote } = context;
     const { providers } = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
-    // const { tag } = getTagAndInfoNote(quote);
-    const tagsExist = false;
+    const { tag, infoNote } = getTagAndInfoNote(quote);
+    const tagsExist = tag !== '';
 
     if (!cryptoAmountProps) return null;
 
@@ -121,10 +121,12 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
         <OfferWrap margin={{ top: spacings.md }}>
             <Offer>
                 <OfferColumn1>
-                    <OfferBadgeWrap>
-                        {/*<OfferBadge variant="primary">No documents required</OfferBadge>
-                        <OfferBadgeInfo>0% fees on all buys</OfferBadgeInfo>*/}
-                    </OfferBadgeWrap>
+                    {tag && (
+                        <OfferBadgeWrap>
+                            <OfferBadge variant="tertiary">{tag}</OfferBadge>
+                            {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
+                        </OfferBadgeWrap>
+                    )}
                     <OfferProvider
                         exchange={exchange}
                         providers={providers}
@@ -141,6 +143,7 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                         </StyledButton>
                     ) : (
                         <StyledButton
+                            isLoading={callInProgress}
                             isDisabled={!!quote.error}
                             onClick={() => selectQuote(quote as any)}
                             data-test="@coinmarket/buy/offers/get-this-deal-button"

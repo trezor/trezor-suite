@@ -36,7 +36,10 @@ import {
     FIAT_CURRENCY,
 } from 'src/types/wallet/coinmarketExchangeForm';
 import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { getAmountLimits, splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import {
+    getAmountLimits,
+    getSuccessQuotesOrdered,
+} from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import type { AppState } from 'src/types/suite';
@@ -370,11 +373,8 @@ export const useCoinmarketExchangeForm = ({
                 if (limits) {
                     setAmountLimits(limits);
                 } else {
-                    const [fixedQuotes, floatQuotes, dexQuotes] = splitToQuoteCategories(
-                        allQuotes,
-                        exchangeInfo,
-                    );
-                    dispatch(saveQuotes(fixedQuotes, floatQuotes, dexQuotes));
+                    const successQuotes = getSuccessQuotesOrdered(allQuotes, exchangeInfo);
+                    dispatch(saveQuotes(successQuotes));
                     navigateToExchangeOffers();
                 }
             } else {

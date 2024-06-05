@@ -12,7 +12,7 @@ import {
     isCoinmarketBuyOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { getCryptoHeaderAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -78,9 +78,9 @@ interface CoinmarketHeaderProps {
 const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: CoinmarketHeaderProps) => {
     const context = useCoinmarketOffersContext();
     const { timer } = context;
-    const headerProps = getCryptoHeaderAmountProps(context);
+    const headerProps = getCryptoQuoteAmountProps(context.quotes?.[0], context);
 
-    if (!headerProps) return null;
+    if (!headerProps || !context.quotesRequest) return null;
 
     const Timer = () => (
         <CoinmarketRefreshTime

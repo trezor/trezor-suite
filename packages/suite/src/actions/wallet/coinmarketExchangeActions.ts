@@ -32,9 +32,7 @@ export type CoinmarketExchangeAction =
     | { type: typeof COINMARKET_EXCHANGE.VERIFY_ADDRESS; addressVerified: string }
     | {
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTES;
-          fixedQuotes: ExchangeTrade[];
-          floatQuotes: ExchangeTrade[];
-          dexQuotes: ExchangeTrade[];
+          quotes: ExchangeTrade[];
       }
     | { type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTES }
     | {
@@ -135,15 +133,9 @@ export const saveTransactionId = (transactionId: string): CoinmarketExchangeActi
     transactionId,
 });
 
-export const saveQuotes = (
-    fixedQuotes: ExchangeTrade[],
-    floatQuotes: ExchangeTrade[],
-    dexQuotes: ExchangeTrade[],
-): CoinmarketExchangeAction => ({
+export const saveQuotes = (quotes: ExchangeTrade[]): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SAVE_QUOTES,
-    fixedQuotes,
-    floatQuotes,
-    dexQuotes,
+    quotes,
 });
 
 export const clearQuotes = (): CoinmarketExchangeAction => ({
