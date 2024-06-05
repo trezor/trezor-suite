@@ -138,14 +138,14 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                 </OfferColumn2>
                 <OfferColumn3>
                     {quote.status === 'LOGIN_REQUEST' ? (
-                        <StyledButton onClick={() => selectQuote(quote as any)}>
+                        <StyledButton onClick={() => selectQuote(quote)}>
                             <Translation id="TR_LOGIN_PROCEED" />
                         </StyledButton>
                     ) : (
                         <StyledButton
                             isLoading={callInProgress}
                             isDisabled={!!quote.error}
-                            onClick={() => selectQuote(quote as any)}
+                            onClick={() => selectQuote(quote)}
                             data-test="@coinmarket/buy/offers/get-this-deal-button"
                         >
                             <Translation id="TR_BUY_GET_THIS_OFFER" />
