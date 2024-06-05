@@ -25,6 +25,7 @@ type CoinmarketOffersContextProps = {
     callInProgress: boolean;
     timer: Timer;
     getQuotes: () => Promise<void>;
+    selectQuote: (quote: BuyTrade | SellFiatTrade | ExchangeTrade) => void;
 };
 
 type CoinmarketBuyOffersContextProps = CoinmarketOffersContextProps & {
@@ -34,7 +35,6 @@ type CoinmarketBuyOffersContextProps = CoinmarketOffersContextProps & {
     verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
     addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
     providersInfo?: BuyInfo['providerInfos'];
-    selectQuote: (quote: BuyTrade) => void;
     goToPayment: (address: string) => void;
     innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps<CoinmarketTradeBuyType>;
 };
@@ -54,7 +54,6 @@ type CoinmarketSellOffersContextProps = CoinmarketOffersContextProps & {
     sellInfo?: SellInfo;
     sellStep: CoinmarketSellStepType;
     setSellStep: (step: CoinmarketSellStepType) => void;
-    selectQuote: (quote: SellFiatTrade) => void;
     addBankAccount: () => void;
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => void;
@@ -77,7 +76,6 @@ type CoinmarketExchangeOffersContextProps = CoinmarketOffersContextProps & {
     exchangeInfo?: ExchangeInfo;
     exchangeStep: CoinmarketExchangeStepType;
     setExchangeStep: (step: CoinmarketExchangeStepType) => void;
-    selectQuote: (quote: ExchangeTrade) => void;
     verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
     receiveSymbol?: string;
     receiveAccount?: Account;
@@ -93,7 +91,7 @@ export enum P2pStep {
 
 export type CoinmarketP2pOffersContextProps = Omit<
     CoinmarketOffersContextProps,
-    'getQuotes' | 'type'
+    'getQuotes' | 'type' | 'selectQuote'
 > & {
     providers?: { [name: string]: P2pProviderInfo };
     quotesRequest?: P2pQuotesRequest;
