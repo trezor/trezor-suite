@@ -41,6 +41,7 @@ import {
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
 import {
+    CoinmarketTradeDetailType,
     CoinmarketTradeType,
     CoinmarketWatchTradeResponseMapProps,
 } from 'src/types/coinmarket/coinmarket';
@@ -567,7 +568,7 @@ class InvityAPI {
     };
 
     watchTrade = async <T extends CoinmarketTradeType>(
-        tradeData: BuyTrade | SellFiatTrade | ExchangeTrade,
+        tradeData: CoinmarketTradeDetailType,
         tradeType: CoinmarketTradeType,
         counter: number,
     ): Promise<CoinmarketWatchTradeResponseMapProps[T]> => {

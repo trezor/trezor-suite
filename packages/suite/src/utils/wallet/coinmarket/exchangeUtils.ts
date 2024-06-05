@@ -52,52 +52,27 @@ export const isQuoteError = (quote: ExchangeTrade): boolean => {
     return false;
 };
 
-// return 3 arrays: quotes not in error, quotes with min/max error, quotes with general error
-const splitQuotes = (
-    quotes: ExchangeTrade[],
-): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] => [
-    quotes.filter(q => !isQuoteError(q)),
-    quotes.filter(q => isQuoteError(q) && !q.error),
-    quotes.filter(q => q.error),
-];
-
-export const splitToQuoteCategories = (
+export const getSuccessQuotesOrdered = (
     quotes: ExchangeTrade[],
     exchangeInfo: ExchangeInfo | undefined,
-): [ExchangeTrade[], ExchangeTrade[], ExchangeTrade[]] => {
-    const [fixedOK, fixedMinMax, fixedError] = splitQuotes(
+): ExchangeTrade[] => {
+    const fixed =
         quotes.filter(
-            q => exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate && !q.isDex,
-        ) || [],
-    );
-    const [floatOK, floatMinMax, floatError] = splitQuotes(
+            q =>
+                exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
+                !q.isDex &&
+                !isQuoteError(q),
+        ) || [];
+    const float =
         quotes.filter(
-            q => !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate && !q.isDex,
-        ) || [],
-    );
-    const [dexOK, dexMinMax, dexError] = splitQuotes(quotes.filter(q => q.isDex) || []);
+            q =>
+                !exchangeInfo?.providerInfos[q.exchange || '']?.isFixedRate &&
+                !q.isDex &&
+                !isQuoteError(q),
+        ) || [];
+    const dex = quotes.filter(q => q.isDex && !isQuoteError(q)) || [];
 
-    const okLength = fixedOK.length + floatOK.length + dexOK.length;
-    // if there are some OK quotes, do not show errors
-    const fixedQuotes =
-        // eslint-disable-next-line no-nested-ternary
-        fixedOK.length > 0
-            ? fixedOK.concat(fixedMinMax)
-            : okLength > 0
-              ? []
-              : fixedMinMax.concat(fixedError);
-    const floatQuotes =
-        // eslint-disable-next-line no-nested-ternary
-        floatOK.length > 0
-            ? floatOK.concat(floatMinMax)
-            : okLength > 0
-              ? []
-              : floatMinMax.concat(floatError);
-    const dexQuotes =
-        // eslint-disable-next-line no-nested-ternary
-        dexOK.length > 0 ? dexOK.concat(dexMinMax) : okLength > 0 ? [] : dexMinMax.concat(dexError);
-
-    return [fixedQuotes, floatQuotes, dexQuotes];
+    return [...dex, ...fixed, ...float];
 };
 
 export const getStatusMessage = (status: ExchangeTradeStatus) => {

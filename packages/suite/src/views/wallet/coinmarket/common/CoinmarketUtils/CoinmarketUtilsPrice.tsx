@@ -32,10 +32,10 @@ const PriceValue = styled.div`
 
 const CoinmarketUtilsPrice = ({
     wantCrypto,
-    fiatAmount,
-    fiatCurrency,
-    cryptoAmount,
-    cryptoCurrency,
+    sendAmount,
+    sendCurrency,
+    receiveAmount,
+    receiveCurrency,
 }: CoinmarketCryptoAmountProps) => {
     return (
         <PriceWrap>
@@ -45,12 +45,16 @@ const CoinmarketUtilsPrice = ({
             <PriceValueWrap>
                 <PriceValue>
                     {wantCrypto ? (
-                        <CoinmarketFiatAmount amount={fiatAmount} currency={fiatCurrency} />
+                        <CoinmarketFiatAmount amount={sendAmount} currency={sendCurrency} />
                     ) : (
-                        <CoinmarketCryptoAmount
-                            amount={cryptoAmount}
-                            symbol={cryptoToCoinSymbol(cryptoCurrency!)}
-                        />
+                        <>
+                            {receiveCurrency && (
+                                <CoinmarketCryptoAmount
+                                    amount={receiveAmount}
+                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
+                                />
+                            )}
+                        </>
                     )}
                 </PriceValue>
                 {/*<CoinmarketUtilsTooltip quote={quote} />*/}

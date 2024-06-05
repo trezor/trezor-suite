@@ -370,7 +370,7 @@ describe('settings reducer', () => {
             }),
         ).toEqual({
             ...initialState,
-            exchange: { ...initialState.exchange, fixedQuotes: undefined, floatQuotes: undefined },
+            exchange: { ...initialState.exchange, quotes: undefined },
         });
     });
 

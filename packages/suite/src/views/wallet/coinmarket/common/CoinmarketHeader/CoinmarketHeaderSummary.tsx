@@ -7,9 +7,11 @@ import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
 import {
     isCoinmarketBuyOffers,
+    isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { CryptoSymbol } from 'invity-api';
 
 const SummaryWrap = styled.div`
     ${SCREEN_QUERY.BELOW_TABLET} {
@@ -36,10 +38,10 @@ const TextWrap = styled(H2)`
 
 const CoinmarketHeaderSummary = ({
     className,
-    fiatAmount,
-    fiatCurrency,
-    cryptoCurrency,
-    cryptoAmount,
+    sendAmount,
+    sendCurrency,
+    receiveCurrency,
+    receiveAmount,
 }: CoinmarketCryptoAmountProps) => {
     const context = useCoinmarketOffersContext();
 
@@ -50,15 +52,15 @@ const CoinmarketHeaderSummary = ({
                     <>
                         <TextWrap>
                             <CoinmarketFiatAmount
-                                amount={fiatAmount ?? ''}
-                                currency={fiatCurrency}
+                                amount={sendAmount ?? ''}
+                                currency={sendCurrency}
                             />
                         </TextWrap>
                         <StyledIcon icon="ARROW_RIGHT_LONG" />
-                        {cryptoCurrency && (
+                        {receiveCurrency && (
                             <TextWrap>
                                 <CoinmarketCryptoAmount
-                                    symbol={cryptoToCoinSymbol(cryptoCurrency)}
+                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
                                     displayLogo
                                 />
                             </TextWrap>
@@ -68,19 +70,43 @@ const CoinmarketHeaderSummary = ({
 
                 {isCoinmarketSellOffers(context) && (
                     <>
-                        {cryptoCurrency && (
+                        {receiveCurrency && (
                             <TextWrap>
                                 <CoinmarketCryptoAmount
-                                    amount={cryptoAmount ?? ''}
-                                    symbol={cryptoToCoinSymbol(cryptoCurrency)}
+                                    amount={receiveAmount ?? ''}
+                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
                                     displayLogo
                                 />
                             </TextWrap>
                         )}
                         <StyledIcon icon="ARROW_RIGHT_LONG" />
                         <TextWrap>
-                            <CoinmarketFiatAmount currency={fiatCurrency} />
+                            <CoinmarketFiatAmount currency={sendCurrency} />
                         </TextWrap>
+                    </>
+                )}
+
+                {isCoinmarketExchangeOffers(context) && (
+                    <>
+                        {sendCurrency && (
+                            <TextWrap>
+                                <CoinmarketCryptoAmount
+                                    amount={sendAmount ?? ''}
+                                    symbol={cryptoToCoinSymbol(sendCurrency as CryptoSymbol)}
+                                    displayLogo
+                                />
+                            </TextWrap>
+                        )}
+                        <StyledIcon icon="ARROW_RIGHT_LONG" />
+                        {receiveCurrency && (
+                            <TextWrap>
+                                <CoinmarketCryptoAmount
+                                    amount=""
+                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
+                                    displayLogo
+                                />
+                            </TextWrap>
+                        )}
                     </>
                 )}
             </SummaryRow>

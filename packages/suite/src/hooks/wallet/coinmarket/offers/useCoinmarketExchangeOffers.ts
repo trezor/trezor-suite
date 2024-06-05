@@ -10,7 +10,6 @@ import invityAPI from 'src/services/suite/invityAPI';
 import { useActions, useSelector } from 'src/hooks/suite';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
-import { splitToQuoteCategories } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -24,6 +23,7 @@ import {
     CoinmarketExchangeStepType,
     CoinmarketOffersContextValues,
 } from 'src/types/coinmarket/coinmarketOffers';
+import { getSuccessQuotesOrdered } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
 export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketProps) => {
     const {
@@ -63,17 +63,15 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
     });
 
     const accounts = useSelector(state => state.wallet.accounts);
-    const { addressVerified, dexQuotes, exchangeInfo, fixedQuotes, floatQuotes, quotesRequest } =
-        useSelector(state => state.wallet.coinmarket.exchange);
+    const { addressVerified, exchangeInfo, quotes, quotesRequest } = useSelector(
+        state => state.wallet.coinmarket.exchange,
+    );
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const [innerFixedQuotes, setInnerFixedQuotes] = useState<ExchangeTrade[] | undefined>(
-        fixedQuotes,
+    const [innerQuotes, setInnerQuotes] = useState<ExchangeTrade[] | undefined>(
+        quotes ? getSuccessQuotesOrdered(quotes, exchangeInfo) : undefined,
     );
-    const [innerFloatQuotes, setInnerFloatQuotes] = useState<ExchangeTrade[] | undefined>(
-        floatQuotes,
-    );
-    const [innerDexQuotes, setInnerDexQuotes] = useState<ExchangeTrade[] | undefined>(dexQuotes);
+
     const { recomposeAndSign } = useCoinmarketRecomposeAndSign();
 
     const getQuotes = useCallback(async () => {
@@ -87,17 +85,10 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
 
                     return;
                 }
-                const [fixedQuotes, floatQuotes, dexQuotes] = splitToQuoteCategories(
-                    allQuotes,
-                    exchangeInfo,
-                );
-                setInnerFixedQuotes(fixedQuotes);
-                setInnerFloatQuotes(floatQuotes);
-                setInnerDexQuotes(dexQuotes);
+                const successQuotes = getSuccessQuotesOrdered(allQuotes, exchangeInfo);
+                setInnerQuotes(successQuotes);
             } else {
-                setInnerFixedQuotes(undefined);
-                setInnerFloatQuotes(undefined);
-                setInnerDexQuotes(undefined);
+                setInnerQuotes(undefined);
             }
             timer.reset();
         }
@@ -322,9 +313,7 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
         setExchangeStep,
         quotesRequest,
         addressVerified,
-        fixedQuotes: innerFixedQuotes,
-        floatQuotes: innerFloatQuotes,
-        dexQuotes: innerDexQuotes,
+        quotes: innerQuotes,
         selectQuote,
         account,
         receiveSymbol: receiveNetwork,
