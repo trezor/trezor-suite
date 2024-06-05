@@ -42,7 +42,7 @@ const steps: Step[] = [
     {
         id: STEP.ID_TUTORIAL_STEP,
         stepGroup: 0,
-        supportedModels: [DeviceModelInternal.T2B1, DeviceModelInternal.T3T1],
+        supportedModels: [DeviceModelInternal.T2B1],
         prerequisites: [...commonPrerequisites, 'device-recovery-mode', 'device-different'],
     },
     {
