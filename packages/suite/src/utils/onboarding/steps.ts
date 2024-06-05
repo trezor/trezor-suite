@@ -4,7 +4,7 @@ import { AnyStepId, AnyPath, Step } from 'src/types/onboarding';
 import { GetState } from 'src/types/suite';
 import { ID_AUTHENTICATE_DEVICE_STEP } from 'src/constants/onboarding/steps';
 
-export const isStepUsed = (step: Step, getState: GetState) => {
+export const isStepUsed = (step: Step, getState: GetState): boolean => {
     const state = getState();
     const device = selectDevice(state);
 
@@ -19,11 +19,13 @@ export const isStepUsed = (step: Step, getState: GetState) => {
     ) {
         return false;
     }
+
     if (step.id === ID_AUTHENTICATE_DEVICE_STEP) {
         const {
             isDeviceAuthenticityCheckDisabled,
             debug: { isUnlockedBootloaderAllowed },
         } = state.suite.settings;
+
         const isBootloaderUnlocked = device?.features?.bootloader_locked === false;
 
         return (
@@ -31,9 +33,11 @@ export const isStepUsed = (step: Step, getState: GetState) => {
             (!isUnlockedBootloaderAllowed || !isBootloaderUnlocked)
         );
     }
+
     if (!step.path) {
         return true;
     }
+
     if (path.length === 0) {
         return true;
     }
