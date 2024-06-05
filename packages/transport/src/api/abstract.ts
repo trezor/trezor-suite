@@ -73,6 +73,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.ABORTED_BY_TIMEOUT
+        | typeof ERRORS.ABORTED_BY_SIGNAL
     >;
 
     /**
@@ -88,6 +89,7 @@ export abstract class AbstractApi extends TypedEmitter<{
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
         | typeof ERRORS.INTERFACE_DATA_TRANSFER
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
+        | typeof ERRORS.ABORTED_BY_SIGNAL
         | typeof ERRORS.UNEXPECTED_ERROR
     >;
 
