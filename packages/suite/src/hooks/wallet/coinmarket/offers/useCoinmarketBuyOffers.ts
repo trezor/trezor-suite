@@ -52,7 +52,7 @@ export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) 
         state => state.wallet.coinmarket.buy,
     );
 
-    const innerQuotesFilterReducer = useCoinmarketFilterReducer(quotes);
+    const innerQuotesFilterReducer = useCoinmarketFilterReducer<CoinmarketTradeBuyType>(quotes);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
         getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotes),
     );

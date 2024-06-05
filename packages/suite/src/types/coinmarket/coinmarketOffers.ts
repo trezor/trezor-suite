@@ -16,7 +16,7 @@ import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { UseCoinmarketFilterReducerOutputProps } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 import { TradeSell } from '../wallet/coinmarketCommonTypes';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import { CoinmarketTradeType } from './coinmarket';
+import { CoinmarketTradeBuyType, CoinmarketTradeSellType, CoinmarketTradeType } from './coinmarket';
 
 type CoinmarketOffersContextProps = {
     type: CoinmarketTradeType;
@@ -36,7 +36,7 @@ type CoinmarketBuyOffersContextProps = CoinmarketOffersContextProps & {
     providersInfo?: BuyInfo['providerInfos'];
     selectQuote: (quote: BuyTrade) => void;
     goToPayment: (address: string) => void;
-    innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
+    innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps<CoinmarketTradeBuyType>;
 };
 
 export type CoinmarketBuyAddressOptionsType = {
@@ -59,6 +59,7 @@ type CoinmarketSellOffersContextProps = CoinmarketOffersContextProps & {
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => void;
     needToRegisterOrVerifyBankAccount: (quote: SellFiatTrade) => boolean;
+    innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps<CoinmarketTradeSellType>;
 };
 
 export type CoinmarketExchangeStepType =

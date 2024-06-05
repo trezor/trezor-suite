@@ -35,6 +35,7 @@ import {
     UseCoinmarketProps,
 } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
+import { useCoinmarketFilterReducer } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 
 export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps) => {
     const {
@@ -61,6 +62,7 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
 
     dispatch(loadInvityData());
 
+    const innerQuotesFilterReducer = useCoinmarketFilterReducer<CoinmarketTradeSellType>(quotes);
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
         getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes),
     );
@@ -79,13 +81,18 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
                     return;
                 }
                 const quotes = processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes);
+                const successQuotes = getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes);
                 setInnerQuotes(getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes));
+                innerQuotesFilterReducer.dispatch({
+                    type: 'FILTER_SET_PAYMENT_METHODS',
+                    payload: successQuotes ?? [],
+                });
             } else {
                 setInnerQuotes(undefined);
             }
             timer.reset();
         }
-    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
+    }, [account.descriptor, innerQuotesFilterReducer, quotesRequest, selectedQuote, timer]);
 
     const trade = trades.find(
         trade => trade.tradeType === 'sell' && trade.key === transactionId,
@@ -316,7 +323,8 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
         confirmTrade,
         addBankAccount,
         quotesRequest,
-        quotes: innerQuotes,
+        quotes: innerQuotesFilterReducer.actions.handleFilterQuotes(innerQuotes),
+        innerQuotesFilterReducer,
         sellStep,
         setSellStep,
         selectQuote,
