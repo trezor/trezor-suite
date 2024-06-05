@@ -52,7 +52,15 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         sessionsClient.enumerateDone({ descriptors });
     });
 
-    const writeUtil = async ({ path, data }: { path: string; data: string }) => {
+    const writeUtil = async ({
+        path,
+        data,
+        signal,
+    }: {
+        path: string;
+        data: string;
+        signal: AbortSignal;
+    }) => {
         const { messageType, payload } = protocolBridge.decode(
             new Uint8Array(Buffer.from(data, 'hex')),
         );
@@ -67,7 +75,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         for (let i = 0; i < buffers.length; i++) {
             const bufferSegment = buffers[i];
 
-            const result = await api.write(path, bufferSegment);
+            const result = await api.write(path, bufferSegment, signal);
             if (!result.success) {
                 return result;
             }
@@ -76,12 +84,12 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return { success: true as const };
     };
 
-    const readUtil = async ({ path }: { path: string }) => {
+    const readUtil = async ({ path, signal }: { path: string; signal: AbortSignal }) => {
         try {
             const { messageType, payload } = await receiveUtil(() => {
                 logger?.debug(`core: readUtil: api.read: reading next chunk`);
 
-                return api.read(path).then(result => {
+                return api.read(path, signal).then(result => {
                     if (result.success) {
                         logger?.debug(
                             `core: readUtil partial result: byteLength: ${result.payload.byteLength}`,
@@ -109,8 +117,9 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         }
     };
 
-    const enumerate = async () => {
-        const enumerateResult = await api.enumerate();
+    const enumerate = async ({ signal }: { signal: AbortSignal }) => {
+        const enumerateResult = await api.enumerate(signal);
+
         if (!enumerateResult.success) {
             return enumerateResult;
         }
@@ -123,7 +132,10 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
     };
 
     const acquire = async (
-        acquireInput: Omit<AcquireInput, 'previous'> & { previous: Session | 'null' },
+        acquireInput: Omit<AcquireInput, 'previous'> & {
+            previous: Session | 'null';
+            signal: AbortSignal;
+        },
     ) => {
         const acquireIntentResult = await sessionsClient.acquireIntent({
             path: acquireInput.path,
@@ -133,7 +145,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
             return acquireIntentResult;
         }
 
-        const openDeviceResult = await api.openDevice(acquireInput.path, true);
+        const openDeviceResult = await api.openDevice(acquireInput.path, true, acquireInput.signal);
         logger?.debug(`core: openDevice: result: ${JSON.stringify(openDeviceResult)}`);
 
         if (!openDeviceResult.success) {
@@ -158,7 +170,15 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         return sessionsClient.releaseDone({ path: sessionsResult.payload.path });
     };
 
-    const call = async ({ session, data }: { session: Session; data: string }) => {
+    const call = async ({
+        session,
+        data,
+        signal,
+    }: {
+        session: Session;
+        data: string;
+        signal: AbortSignal;
+    }) => {
         logger?.debug(`core: call: session: ${session}`);
 
         const sessionsResult = await sessionsClient.getPathBySession({
@@ -172,7 +192,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         const { path } = sessionsResult.payload;
         logger?.debug(`core: call: retrieved path ${path} for session ${session}`);
 
-        const openResult = await api.openDevice(path, false);
+        const openResult = await api.openDevice(path, false, signal);
 
         if (!openResult.success) {
             logger?.error(`core: call: api.openDevice error: ${openResult.error}`);
@@ -182,7 +202,7 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         logger?.debug(`core: call: api.openDevice done`);
 
         logger?.debug('core: call: writeUtil');
-        const writeResult = await writeUtil({ path, data });
+        const writeResult = await writeUtil({ path, data, signal });
         if (!writeResult.success) {
             logger?.error(`core: call: writeUtil ${writeResult.error}`);
 
@@ -190,10 +210,18 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         }
         logger?.debug('core: call: readUtil');
 
-        return readUtil({ path });
+        return readUtil({ path, signal });
     };
 
-    const send = async ({ session, data }: { session: Session; data: string }) => {
+    const send = async ({
+        session,
+        data,
+        signal,
+    }: {
+        session: Session;
+        data: string;
+        signal: AbortSignal;
+    }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -203,15 +231,15 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         }
         const { path } = sessionsResult.payload;
 
-        const openResult = await api.openDevice(path, false);
+        const openResult = await api.openDevice(path, false, signal);
         if (!openResult.success) {
             return openResult;
         }
 
-        return writeUtil({ path, data });
+        return writeUtil({ path, data, signal });
     };
 
-    const receive = async ({ session }: { session: Session }) => {
+    const receive = async ({ session, signal }: { session: Session; signal: AbortSignal }) => {
         const sessionsResult = await sessionsClient.getPathBySession({
             session,
         });
@@ -221,12 +249,12 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         }
         const { path } = sessionsResult.payload;
 
-        const openResult = await api.openDevice(path, false);
+        const openResult = await api.openDevice(path, false, signal);
         if (!openResult.success) {
             return openResult;
         }
 
-        return readUtil({ path });
+        return readUtil({ path, signal });
     };
 
     const dispose = () => {

@@ -67,10 +67,10 @@ const createTrezordNode = (
     apiOverride?: any,
 ) => {
     return new TrezordNode({
-        ...constructorParams,
         api: createTransportApi(apiOverride),
         // @ts-expect-error
         logger: muteLogger,
+        ...constructorParams,
     });
 };
 
@@ -139,12 +139,7 @@ describe('http', () => {
         });
 
         it('POST /', async () => {
-            const trezordNode = new TrezordNode({
-                port,
-                api: createTransportApi(),
-                // @ts-expect-error
-                logger: muteLogger,
-            });
+            const trezordNode = createTrezordNode({ port });
             await trezordNode.start();
 
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -162,12 +157,7 @@ describe('http', () => {
         });
 
         it('enumerate', async () => {
-            const trezordNode = new TrezordNode({
-                port,
-                api: createTransportApi(),
-                // @ts-expect-error
-                logger: muteLogger,
-            });
+            const trezordNode = createTrezordNode({ port });
             await trezordNode.start();
 
             await new Promise(resolve => setTimeout(resolve, 1000));
@@ -181,6 +171,119 @@ describe('http', () => {
                 throw new Error(response.error);
             }
             expect(response.payload).toEqual([{ path: '1', session: null }]);
+            await trezordNode.stop();
+        });
+
+        it('/enumerate aborted', async () => {
+            const enumerateSpy = jest.fn(
+                (signal: AbortSignal) =>
+                    new Promise(resolve => {
+                        // simulate some api work
+                        setTimeout(() => {
+                            // and when done check if it was not aborted
+                            if (signal.aborted) {
+                                resolve({ success: false, error: 'Aborted' });
+                            } else {
+                                resolve({ success: true, payload: [] });
+                            }
+                        }, 200);
+                    }),
+            );
+            const trezordNode = createTrezordNode(
+                { port: await getFreePort() },
+                { enumerate: enumerateSpy },
+            );
+            await trezordNode.start();
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const abortController = new AbortController();
+            const url = trezordNode.server!.getRouteAddress('/enumerate')!;
+            const enumeratePromise = bridgeApiCall({
+                url,
+                method: 'POST',
+                signal: abortController.signal,
+            });
+
+            // give fetch api some time to make request
+            await new Promise(resolve => setTimeout(resolve, 100));
+            abortController.abort();
+
+            // error is thrown immediately by fetch api ...
+            const result = await enumeratePromise;
+            expect(result.success).toBe(false);
+            // ... but api.enumerate is still processing
+            expect(enumerateSpy).toHaveBeenCalledTimes(1);
+            // wait for api.enumerate result and check if it was resolved with failure
+            const enumerateResult = await enumerateSpy.mock.results[0].value;
+            expect(enumerateResult.success).toBe(false);
+            expect(enumerateResult.error).toContain('Aborted');
+
+            await trezordNode.stop();
+        });
+
+        it('/call aborted', async () => {
+            const writeSpy = jest.fn(
+                (_p: any, _d: any, signal: AbortSignal) =>
+                    new Promise(resolve => {
+                        // simulate some api work
+                        setTimeout(() => {
+                            // and when done check if it was not aborted
+                            if (signal.aborted) {
+                                resolve({ success: false, error: 'Aborted' });
+                            } else {
+                                resolve({ success: true, payload: [] });
+                            }
+                        }, 100);
+                    }),
+            );
+            const readSpy = jest.fn();
+            const trezordNode = createTrezordNode(
+                { port: await getFreePort() },
+                { write: writeSpy, read: readSpy },
+            );
+            await trezordNode.start();
+
+            await new Promise(resolve => setTimeout(resolve, 100));
+
+            const abortController = new AbortController();
+            const url = trezordNode.server!.getRouteAddress('/')!;
+            await bridgeApiCall({
+                url: url + 'enumerate',
+                method: 'POST',
+                body: {},
+                signal: abortController.signal,
+            });
+            await bridgeApiCall({
+                url: url + 'acquire/1/null',
+                method: 'POST',
+                body: {},
+                signal: abortController.signal,
+            });
+
+            const callPromise = bridgeApiCall({
+                url: url + 'call/1',
+                method: 'POST',
+                body: '000000000000',
+                signal: abortController.signal,
+            });
+
+            // give fetch api some time to make request
+            await new Promise(resolve => setTimeout(resolve, 50));
+            abortController.abort();
+
+            // error is thrown immediately by fetch api ...
+            const result = await callPromise;
+            expect(result.success).toBe(false);
+
+            // ... but api.write is still processing
+            expect(writeSpy).toHaveBeenCalledTimes(1);
+            // wait for api.write result and check if it was resolved with failure
+            const enumerateResult = await writeSpy.mock.results[0].value;
+            expect(enumerateResult.success).toBe(false);
+            expect(enumerateResult.error).toContain('Aborted');
+            // api.read was never called since read was aborted
+            expect(readSpy).toHaveBeenCalledTimes(0);
+
             await trezordNode.stop();
         });
 
@@ -225,8 +328,20 @@ describe('http', () => {
             const createServerAndListeningClient = async () => {
                 let changeDescriptorsOnApi = (..._args: any[]) => {};
 
+                const onDebugLogSpy = jest.fn();
+
                 const server = createTrezordNode(
-                    { port: await getFreePort() },
+                    {
+                        port: await getFreePort(),
+                        // @ts-expect-error
+                        logger: {
+                            ...muteLogger,
+                            debug: (..._args: string[]) => {
+                                onDebugLogSpy(..._args);
+                            },
+                            info: (..._args: string[]) => onDebugLogSpy,
+                        },
+                    },
                     {
                         enumerate: () => {
                             return { success: true, payload: [] };
@@ -251,7 +366,13 @@ describe('http', () => {
                 // todo: solve later
                 await createTimeoutPromise(1000);
 
-                return { server, client, changeDescriptorsOnApi, onListenResolvedSpy };
+                return {
+                    server,
+                    client,
+                    changeDescriptorsOnApi,
+                    onListenResolvedSpy,
+                    onDebugLogSpy,
+                };
             };
 
             it('api emitting events and listen correctly reporting', async () => {
@@ -273,6 +394,7 @@ describe('http', () => {
                     { path: '2', session: null },
                 ]);
 
+                client.dispose();
                 await server.stop();
             });
 
@@ -301,6 +423,23 @@ describe('http', () => {
 
                 client.dispose();
                 await server.stop();
+            });
+
+            test('listen aborted using client.dispose', async () => {
+                const { server, client, onListenResolvedSpy, onDebugLogSpy } =
+                    await createServerAndListeningClient();
+
+                client.dispose();
+                await new Promise(resolve => setTimeout(resolve, 2000));
+
+                expect(onListenResolvedSpy).not.toHaveBeenCalled();
+                await server.stop();
+
+                // this test assertion is little fragile, in case somebody adds more debug logs, we might start getting different results
+                expect(onDebugLogSpy).toHaveBeenNthCalledWith(
+                    1,
+                    'http: resolving listen subscriptions. n of aborted subscriptions: 1',
+                );
             });
         });
     });
