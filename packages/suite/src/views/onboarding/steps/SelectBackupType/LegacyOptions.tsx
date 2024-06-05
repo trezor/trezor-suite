@@ -1,6 +1,6 @@
 import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { Translation } from 'src/components/suite';
-import { Text } from '@trezor/components';
+import { Text, Tooltip } from '@trezor/components';
 import { OptionWithContent } from './OptionWithContent';
 import { DefaultTag } from './DefaultTag';
 
@@ -17,7 +17,17 @@ export const LegacyOptions = ({ defaultType, onSelect, selected }: LegacyOptions
                 onSelect={onSelect}
                 selected={selected}
                 value="12-words"
-                tags={defaultType === '12-words' && <DefaultTag />}
+                tags={
+                    defaultType === '12-words' && (
+                        <Tooltip
+                            content={
+                                <Translation id="TR_ONBOARDING_BACKUP_TYPE_12_DEFAULT_TOOLTIP" />
+                            }
+                        >
+                            <DefaultTag />
+                        </Tooltip>
+                    )
+                }
             >
                 {defaultType === '12-words' && (
                     <Text typographyStyle="hint">

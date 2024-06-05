@@ -5300,11 +5300,11 @@ export default defineMessages({
     },
     TR_ONBOARDING_SEED_TYPE_12_WORDS: {
         id: 'TR_ONBOARDING_SEED_TYPE_12_WORDS',
-        defaultMessage: '12 words',
+        defaultMessage: '12 words Backup',
     },
     TR_ONBOARDING_SEED_TYPE_24_WORDS: {
         id: 'TR_ONBOARDING_SEED_TYPE_24_WORDS',
-        defaultMessage: '24 words',
+        defaultMessage: '24 words Backup',
     },
     TR_ONBOARDING_BACKUP_TYPE_DEFAULT: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_DEFAULT',
@@ -5325,16 +5325,15 @@ export default defineMessages({
     TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_12_WORDS_DEFAULT_NOTE',
         defaultMessage:
-            "We've selected this backup type that fits your device's wallet backup card, making it easy to write down accurately.",
+            "Generates a single set of 12 words that fits on your device's wallet backup card (or recovery seed card), making it easy to write down accurately.",
     },
-    TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES: {
-        id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES',
-        defaultMessage:
-            "Backup types <br></br> These options don't support upgrading to Multi-share Backup.",
+    TR_ONBOARDING_BACKUP_TYPE_12_DEFAULT_TOOLTIP: {
+        id: 'TR_ONBOARDING_BACKUP_TYPE_12_DEFAULT_TOOLTIP',
+        defaultMessage: "If you're unsure, choose the default option for simplicity.",
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
-        defaultMessage: 'Secure options, not easily upgradable',
+        defaultMessage: 'Secure and reliable, not easily upgradable to Multi-share Backup',
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
