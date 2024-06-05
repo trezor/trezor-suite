@@ -5341,6 +5341,11 @@ export default defineMessages({
         defaultMessage:
             'Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can’t be easily upgraded to a Multi-share Backup without risking your privacy and costing fees. <a>Read more</a>',
     },
+    TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
+        id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
+        defaultMessage:
+            'Please update your device firmware to enable the new Single-share Backup feature.',
+    },
     TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP',
         defaultMessage:

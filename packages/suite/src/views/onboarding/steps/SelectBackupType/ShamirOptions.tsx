@@ -2,10 +2,13 @@ import { Badge, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import styled from 'styled-components';
 import { Translation } from '../../../../components/suite';
-import { useLayoutSize } from '../../../../hooks/suite';
+import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { DefaultTag } from './DefaultTag';
 import { OptionWithContent } from './OptionWithContent';
+import { selectDevice } from '@suite-common/wallet-core';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { satisfies } from 'semver';
 
 const Nowrap = styled.span`
     white-space: nowrap;
@@ -47,48 +50,64 @@ type ShamirOptionsProps = {
     defaultType: BackupType;
 };
 
-export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptionsProps) => (
-    <>
-        <OptionWithContent
-            onSelect={onSelect}
-            selected={selected}
-            value="shamir-single"
-            tags={
-                defaultType === 'shamir-single' ? (
-                    <Tooltip
-                        content={
-                            <Translation
-                                id="TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP"
-                                values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}
-                            />
-                        }
-                    >
-                        <DefaultTag />
-                    </Tooltip>
-                ) : (
-                    <UpgradableToMultiTag />
-                )
-            }
-        >
-            <Text typographyStyle="hint">
-                <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
-            </Text>
-        </OptionWithContent>
+export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptionsProps) => {
+    const device = useSelector(selectDevice);
+    const firmwareVersion = getFirmwareVersion(device);
 
-        <OptionWithContent
-            onSelect={onSelect}
-            selected={selected}
-            value="shamir-advanced"
-            tags={
-                <>
-                    {defaultType === 'shamir-advanced' && <DefaultTag />}
-                    <AdvancedTag />
-                </>
-            }
-        >
-            <Text typographyStyle="hint">
-                <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
-            </Text>
-        </OptionWithContent>
-    </>
-);
+    const is1of1shamirSupportedByFirmware = satisfies(firmwareVersion, '>=2.7.1');
+
+    return (
+        <>
+            <OptionWithContent
+                onSelect={onSelect}
+                selected={selected}
+                value="shamir-single"
+                disabled={!is1of1shamirSupportedByFirmware}
+                tooltip={
+                    is1of1shamirSupportedByFirmware ? undefined : (
+                        <Translation id="TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP" />
+                    )
+                }
+                tags={
+                    defaultType === 'shamir-single' ? (
+                        <Tooltip
+                            content={
+                                <Translation
+                                    id="TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP"
+                                    values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}
+                                />
+                            }
+                        >
+                            <DefaultTag />
+                        </Tooltip>
+                    ) : (
+                        <UpgradableToMultiTag />
+                    )
+                }
+            >
+                <Text
+                    typographyStyle="hint"
+                    variant={is1of1shamirSupportedByFirmware ? undefined : 'tertiary'}
+                >
+                    <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
+                </Text>
+            </OptionWithContent>
+
+            <OptionWithContent
+                onSelect={onSelect}
+                selected={selected}
+                value="shamir-advanced"
+                tags={
+                    <>
+                        {defaultType === 'shamir-advanced' && <DefaultTag />}
+                        <AdvancedTag />
+                    </>
+                }
+            >
+                <Text typographyStyle="hint">
+                    <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
+                </Text>
+            </OptionWithContent>
+        </>
+    );
+};
