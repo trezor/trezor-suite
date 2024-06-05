@@ -451,7 +451,7 @@
   "TR_CHECK_ORIGIN": "Vérifier le dispositif",
   "TR_CHECK_PGP_SIGNATURE": "Vérifier la signature PGP",
   "TR_CHECK_RECOVERY_SEED": "Vérifier la sauvegarde",
-  "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Effectuez une simulation de récupération pour vérifier votre seed de récupération.",
+  "TR_CHECK_RECOVERY_SEED_DESCRIPTION": "Effectuez une simulation de récupération pour vérifier votre seed\n          de récupération.",
   "TR_CHECK_RECOVERY_SEED_DESC_T1B1": "Saisissez les mots de votre seed de récupération dans l’ordre affiché sur votre dispositif. Il se peut qu’on vous demande de saisir certains mots qui ne font pas partie de votre seed de récupération, à titre de mesure de sécurité supplémentaire.",
   "TR_CHECK_RECOVERY_SEED_DESC_T2B1": "Utilisez le pavé à 2 boutons pour saisir votre seed de récupération (sauvegarde du portefeuille). Ce faisant, vous conservez toutes vos informations sensibles en toute sécurité, à l’écart de tout ordinateur ou navigateur Web louche ou non sécurisé.",
   "TR_CHECK_RECOVERY_SEED_DESC_T2T1": "La saisie de votre seed de récupération (sauvegarde du portefeuille) s’effectue à l’aide de l’écran tactile. Vous évitez ainsi d’exposer vos informations sensibles à un ordinateur ou à un navigateur Web potentiellement non sécurisé.",
