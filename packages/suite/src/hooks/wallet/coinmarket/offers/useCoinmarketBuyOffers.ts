@@ -12,7 +12,7 @@ import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useCoinmarketFilterReducer } from '../../../../reducers/wallet/useCoinmarketFilterReducer';
-import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import { getFilteredSuccessQuotes, useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
 import { CoinmarketTradeBuyType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 
 export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) => {
@@ -52,7 +52,7 @@ export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) 
 
     const innerQuotesFilterReducer = useCoinmarketFilterReducer(quotes);
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
-        quotes?.filter(q => q.error === undefined),
+        getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotes),
     );
 
     const getQuotes = useCallback(async () => {
@@ -67,11 +67,11 @@ export const useCoinmarketBuyOffers = ({ selectedAccount }: UseCoinmarketProps) 
                     return;
                 }
                 const [quotes] = processQuotes(allQuotes);
-                const successQuotes = quotes.filter(q => q.error === undefined);
+                const successQuotes = getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotes);
                 setInnerQuotes(successQuotes);
                 innerQuotesFilterReducer.dispatch({
                     type: 'FILTER_SET_PAYMENT_METHODS',
-                    payload: successQuotes,
+                    payload: successQuotes ?? [],
                 });
             } else {
                 setInnerQuotes(undefined);

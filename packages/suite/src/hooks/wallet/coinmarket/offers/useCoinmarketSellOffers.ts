@@ -25,7 +25,7 @@ import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './../../useCoinmarketRecomposeAndSign';
-import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import { getFilteredSuccessQuotes, useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
 import {
     CoinmarketTradeSellType,
     CoinmarketTradeType,
@@ -57,7 +57,9 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
 
     dispatch(loadInvityData());
 
-    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(quotes);
+    const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
+        getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes),
+    );
     const [innerAlternativeQuotes, setInnerAlternativeQuotes] = useState<
         SellFiatTrade[] | undefined
     >(alternativeQuotes);
@@ -76,7 +78,7 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
                     return;
                 }
                 const [quotes, alternativeQuotes] = processQuotes(allQuotes);
-                setInnerQuotes(quotes);
+                setInnerQuotes(getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes));
                 setInnerAlternativeQuotes(alternativeQuotes);
             } else {
                 setInnerQuotes(undefined);

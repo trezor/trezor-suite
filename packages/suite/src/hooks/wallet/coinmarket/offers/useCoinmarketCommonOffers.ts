@@ -31,6 +31,10 @@ export const isCoinmarketExchangeOffers = (
 ): offersContext is CoinmarketOffersMapProps[CoinmarketTradeExchangeType] =>
     offersContext.type === 'exchange';
 
+export const getFilteredSuccessQuotes = <T extends CoinmarketTradeType>(
+    quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+) => (quotes ? quotes.filter(q => q.error === undefined) : undefined);
+
 export const useCoinmarketCommonOffers = <T extends CoinmarketTradeType>({
     selectedAccount,
 }: UseCoinmarketProps) => {
