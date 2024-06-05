@@ -25,7 +25,7 @@ const Option = styled.div`
 `;
 
 interface CoinmarketHeaderFilterProps {
-    quotesFilterReducer: UseCoinmarketFilterReducerOutputProps;
+    quotesFilterReducer: UseCoinmarketFilterReducerOutputProps<any>;
 }
 
 const CoinmarketHeaderFilter = ({ quotesFilterReducer }: CoinmarketHeaderFilterProps) => {

@@ -10,6 +10,7 @@ import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
     isCoinmarketBuyOffers,
+    isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
@@ -100,7 +101,7 @@ const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: Coinmarke
                 {showTimerNextToTitle && <Timer />}
             </HeaderTop>
             <HeaderBottom>
-                {isCoinmarketBuyOffers(context) && (
+                {(isCoinmarketBuyOffers(context) || isCoinmarketSellOffers(context)) && (
                     <CoinmarketHeaderFilter
                         quotesFilterReducer={context.innerQuotesFilterReducer}
                     />
