@@ -41,6 +41,7 @@ export type CoinmarketTradeMapProps = {
     exchange: TradeExchange;
 };
 
+export type CoinmarketTradeDetailType = BuyTrade | SellFiatTrade | ExchangeTrade;
 export type CoinmarketTradeDetailMapProps = {
     buy: BuyTrade;
     sell: SellFiatTrade;

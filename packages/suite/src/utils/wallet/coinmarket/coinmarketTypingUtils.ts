@@ -3,11 +3,11 @@ import {
     isCoinmarketBuyOffers,
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOffersContextValues } from 'src/types/coinmarket/coinmarketOffers';
 
 export const getCryptoQuoteAmountProps = (
-    quoteInput: BuyTrade | SellFiatTrade | ExchangeTrade | undefined,
+    quoteInput: CoinmarketTradeDetailType | undefined,
     context: CoinmarketOffersContextValues<CoinmarketTradeType>,
 ) => {
     if (!quoteInput) return null;
@@ -20,12 +20,14 @@ export const getCryptoQuoteAmountProps = (
 
         return {
             wantCrypto,
-            fiatAmount: quote?.fiatStringAmount ?? '',
-            fiatCurrency: quote?.fiatCurrency,
-            cryptoAmount: quote?.receiveStringAmount ?? '',
-            cryptoCurrency: quote?.receiveCurrency,
+            sendAmount: quote?.fiatStringAmount ?? '',
+            sendCurrency: quote?.fiatCurrency,
+            receiveAmount: quote?.receiveStringAmount ?? '',
+            receiveCurrency: quote?.receiveCurrency,
         };
-    } else if (isCoinmarketSellOffers(context)) {
+    }
+
+    if (isCoinmarketSellOffers(context)) {
         const amountInCrypto = context.quotesRequest?.amountInCrypto;
         const quote = quoteInput as SellFiatTrade;
 
@@ -33,34 +35,22 @@ export const getCryptoQuoteAmountProps = (
 
         return {
             wantCrypto: amountInCrypto,
-            fiatAmount: quote?.fiatStringAmount ?? '',
-            fiatCurrency: quote?.fiatCurrency,
-            cryptoAmount: quote?.cryptoStringAmount ?? '',
-            cryptoCurrency: quote?.cryptoCurrency,
+            sendAmount: quote?.fiatStringAmount ?? '',
+            sendCurrency: quote?.fiatCurrency,
+            receiveAmount: quote?.cryptoStringAmount ?? '',
+            receiveCurrency: quote?.cryptoCurrency,
         };
     }
 
-    return null;
-};
+    const quote = quoteInput as ExchangeTrade;
 
-export const getCryptoHeaderAmountProps = (
-    context: CoinmarketOffersContextValues<CoinmarketTradeType>,
-) => {
-    if (isCoinmarketBuyOffers(context)) {
-        const quote = getCryptoQuoteAmountProps(context.quotes?.[0], context);
-
-        if (!quote || !context.quotesRequest) return null;
-
-        return quote;
-    } else if (isCoinmarketSellOffers(context)) {
-        const quote = getCryptoQuoteAmountProps(context.quotes?.[0], context);
-
-        if (!quote || !context.quotesRequest) return null;
-
-        return quote;
-    }
-
-    return null;
+    return {
+        wantCrypto: false,
+        sendAmount: quote?.sendStringAmount ?? '',
+        sendCurrency: quote?.send,
+        receiveAmount: quote?.receiveStringAmount ?? '',
+        receiveCurrency: quote?.receive,
+    };
 };
 
 export const getProvidersInfoProps = (

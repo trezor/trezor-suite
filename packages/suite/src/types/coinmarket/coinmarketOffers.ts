@@ -69,9 +69,7 @@ export type CoinmarketExchangeStepType =
     | 'SEND_APPROVAL_TRANSACTION';
 
 type CoinmarketExchangeOffersContextProps = CoinmarketOffersContextProps & {
-    fixedQuotes: AppState['wallet']['coinmarket']['exchange']['fixedQuotes'];
-    floatQuotes: AppState['wallet']['coinmarket']['exchange']['floatQuotes'];
-    dexQuotes: AppState['wallet']['coinmarket']['exchange']['dexQuotes'];
+    quotes: AppState['wallet']['coinmarket']['exchange']['quotes'];
     quotesRequest: AppState['wallet']['coinmarket']['exchange']['quotesRequest'];
     selectedQuote?: ExchangeTrade;
     setSelectedQuote: (quote?: ExchangeTrade) => void;
@@ -120,9 +118,9 @@ export type CoinmarketOffersContextValues<T extends CoinmarketTradeType> =
 
 export interface CoinmarketCryptoAmountProps {
     wantCrypto: boolean | undefined;
-    fiatAmount: string | number | undefined;
-    fiatCurrency: string | undefined;
-    cryptoAmount: string | number | undefined;
-    cryptoCurrency: CryptoSymbol | undefined;
+    sendAmount: string | number | undefined;
+    sendCurrency: string | undefined;
+    receiveAmount: string | number | undefined;
+    receiveCurrency: CryptoSymbol | undefined;
     className?: string;
 }
