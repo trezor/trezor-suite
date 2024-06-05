@@ -76,6 +76,26 @@ const DividerWrapper = styled.div`
     }
 `;
 
+const LegacyWarning = () => (
+    <Warning variant="info" withIcon>
+        <Column alignItems="start">
+            <Text typographyStyle="highlight" variant="info">
+                <Translation id="TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER" />
+            </Text>
+            <Translation
+                id="TR_THESE_WONT_ALLOW_YOU_UPGRADE"
+                values={{
+                    a: chunks => (
+                        <TrezorLink type="callout" href={HELP_CENTER_MULTI_SHARE_BACKUP_URL}>
+                            {chunks}
+                        </TrezorLink>
+                    ),
+                }}
+            />
+        </Column>
+    </Warning>
+);
+
 export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsProps>(
     ({ selected, onSelect, style, defaultType }, ref) => {
         const { elevation } = useElevation();
@@ -120,26 +140,7 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                             }}
                         >
                             <Column gap={spacings.md} flex="1" alignItems="stretch">
-                                <Warning variant="info" withIcon>
-                                    <Column alignItems="start">
-                                        <Text typographyStyle="highlight" variant="info">
-                                            <Translation id="TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER" />
-                                        </Text>
-                                        <Translation
-                                            id="TR_THESE_WONT_ALLOW_YOU_UPGRADE"
-                                            values={{
-                                                a: chunks => (
-                                                    <TrezorLink
-                                                        type="callout"
-                                                        href={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
-                                                    >
-                                                        {chunks}
-                                                    </TrezorLink>
-                                                ),
-                                            }}
-                                        />
-                                    </Column>
-                                </Warning>
+                                <LegacyWarning />
                                 <div>
                                     <LegacyOptions
                                         defaultType={defaultType}
@@ -154,12 +155,10 @@ export const FloatingSelections = forwardRef<HTMLDivElement, FloatingSelectionsP
                     <LegacyOptionsMargin>
                         <OptionGroupHeading>
                             <Text typographyStyle="hint" variant="tertiary">
-                                <Translation
-                                    id="TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES"
-                                    values={{ br: () => <br /> }}
-                                />
+                                <Translation id="TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT" />
                             </Text>
                         </OptionGroupHeading>
+                        <LegacyWarning />
                         <LegacyOptions
                             defaultType={defaultType}
                             onSelect={onSelect}
