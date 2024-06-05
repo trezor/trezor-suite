@@ -80,14 +80,13 @@ export class BackendManager {
         }
     }
 
-    setCustom(shortcut: CoinShortcut, blockchainLink: BlockchainLink) {
+    setCustom(shortcut: CoinShortcut, blockchainLink?: BlockchainLink) {
         this.setPreferred(shortcut, undefined);
-        this.custom[shortcut] = blockchainLink;
-    }
-
-    removeCustom(shortcut: CoinShortcut) {
-        this.setPreferred(shortcut, undefined);
-        delete this.custom[shortcut];
+        if (blockchainLink) {
+            this.custom[shortcut] = blockchainLink;
+        } else {
+            delete this.custom[shortcut];
+        }
     }
 
     private setInstance(coinIdentity: CoinShortcutIdentity, instance: Blockchain | undefined) {
