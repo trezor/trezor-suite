@@ -23,6 +23,12 @@ jobs:
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.TREZOR_BOT_TOKEN }}
+          # Fetch all commit history because Script connect-bump-versions.ts needs them to produce CHANGELOG for packages.
+          fetch-depth: 0
+          # `ref` makes sure that we checkout the branch we are running workflow on.
+          ref: ${{ github.head_ref }}
+          # `submodules` are required to run `yarn build:libs`.
+          submodules: true
 
       - name: Setup node
         uses: actions/setup-node@v4
@@ -31,6 +37,10 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+
+      # The script connect-bump-versions.ts needs to build packages so dependencies are required.
+      - name: Build dependencies
+        run: yarn build:libs
 
       - name: Setup Git config
         run: |
