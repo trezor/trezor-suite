@@ -87,6 +87,10 @@ const components: Record<PageName, LazyExoticComponent<ComponentType<any>>> = {
     'wallet-coinmarket-redirect': lazy(
         () => import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/redirect'),
     ),
+    'wallet-coinmarket-transactions': lazy(
+        () =>
+            import(/* webpackChunkName: "coinmarket" */ 'src/views/wallet/coinmarket/transactions'),
+    ),
 
     // password-manager
     'password-manager-index': lazy(
