@@ -88,7 +88,13 @@ const getTransactionData = (
         outputs,
         affiliateRequest: {
             ...getRoundParams(round.roundParameters),
-            ...(options.affiliationId ? getAffiliateRequest(round.affiliateRequest) : {}),
+            ...(options.affiliationId
+                ? getAffiliateRequest(round.affiliateRequest)
+                : {
+                      mask_public_key: '',
+                      signature: '',
+                      coinjoin_flags_array: [],
+                  }),
         },
     };
 };
