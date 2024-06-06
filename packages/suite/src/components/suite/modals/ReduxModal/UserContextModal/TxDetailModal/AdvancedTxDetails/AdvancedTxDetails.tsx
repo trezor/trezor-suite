@@ -9,6 +9,7 @@ import { AmountDetails } from './AmountDetails';
 import { IODetails } from './IODetails/IODetails';
 import { ChainedTxs } from '../ChainedTxs';
 import { Elevation, mapElevationToBorder, spacingsPx } from '@trezor/theme';
+import { Data } from './Data';
 
 const Wrapper = styled.div`
     padding: 0 ${spacingsPx.xl} ${spacingsPx.sm};
@@ -46,7 +47,7 @@ const TabButton = styled.button<{ $selected: boolean; $elevation: Elevation }>`
     }
 `;
 
-export type TabID = 'amount' | 'io' | 'chained';
+export type TabID = 'amount' | 'io' | 'chained' | 'data';
 
 interface AdvancedTxDetailsProps {
     defaultTab?: TabID;
@@ -80,10 +81,12 @@ export const AdvancedTxDetails = ({
             <ChainedTxs
                 txs={chainedTxs}
                 explorerUrl={explorerUrl}
-                network={network}
                 accountType={accountType}
+                network={network}
             />
         );
+    } else if (selectedTab === 'data') {
+        content = <Data tx={tx} />;
     }
     const { elevation } = useElevation();
 
@@ -115,6 +118,16 @@ export const AdvancedTxDetails = ({
                         onClick={() => setSelectedTab('chained')}
                     >
                         <Translation id="TR_CHAINED_TXS" />
+                    </TabButton>
+                )}
+
+                {network.networkType === 'ethereum' && tx.ethereumSpecific && (
+                    <TabButton
+                        $elevation={elevation}
+                        $selected={selectedTab === 'data'}
+                        onClick={() => setSelectedTab('data')}
+                    >
+                        <Translation id="TR_DATA" />
                     </TabButton>
                 )}
             </TabSelector>
