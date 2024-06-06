@@ -8,6 +8,7 @@ const Title = styled(H3)`
     font-size: 19px;
     color: #333;
     font-weight: ${variables.FONT_WEIGHT.DEMI_BOLD};
+    text-align: center;
 `;
 
 const StyledP = styled(Paragraph)`
