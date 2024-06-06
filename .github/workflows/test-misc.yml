@@ -1,0 +1,97 @@
+name: "[Test] misc"
+
+on:
+  schedule:
+    # Runs at midnight UTC every day at 01:00 AM CET
+    - cron: "0 0 * * *"
+  pull_request:
+    paths:
+      - ".github/workflows/test-misc.yml"
+
+jobs:
+  urls-health:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: yarn workspace @trezor/urls test:e2e
+
+  translations-unused:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: yarn workspace @trezor/suite translations:list-unused
+
+  media-duplicates:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    strategy:
+      fail-fast: false
+      matrix:
+        extension: [".png", ".jpg", ".mp4", ".webm", ".svg"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - run: ./ci/scripts/find_duplicates.sh ./packages/suite-data/files ${{ matrix.extension }}
+
+  install-connect:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - run: ./packages/connect/e2e/test-npm-install.sh
+      - run: ./packages/connect/e2e/test-yarn-install.sh
+
+  test-unit:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: yarn message-system-sign-config
+      - run: yarn test:unit
+
+  test-protobuf:
+    runs-on: ubuntu-latest
+    if: github.repository == 'trezor/trezor-suite'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - run: yarn install --immutable
+      - run: yarn workspace @trezor/protobuf update:protobuf
+      - run: yarn workspace @trezor/protobuf update:schema

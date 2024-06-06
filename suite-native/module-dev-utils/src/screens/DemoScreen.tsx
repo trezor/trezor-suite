@@ -206,7 +206,7 @@ export const DemoScreen = () => {
                     <Text variant="titleSmall">TextButton:</Text>
                     {textButtonVariants.map(variant => (
                         <HStack
-                            key="variant"
+                            key={variant}
                             flexDirection="row"
                             justifyContent="space-around"
                             alignItems="center"
@@ -214,7 +214,7 @@ export const DemoScreen = () => {
                             {buttonSizes.map(buttonSize => (
                                 <TextButton
                                     variant={variant}
-                                    key={buttonSize}
+                                    key={variant + buttonSize}
                                     viewLeft="trezorT2B1"
                                     size={buttonSize}
                                 >
@@ -243,7 +243,7 @@ export const DemoScreen = () => {
                                     value={input3Text}
                                     onChangeText={setInput3Text}
                                     label="From"
-                                    leftIcon={<CryptoIcon symbol="btc" size="large" />}
+                                    leftIcon={<CryptoIcon symbol="btc" size="small" />}
                                     hasWarning
                                 />
                             </InputWrapper>

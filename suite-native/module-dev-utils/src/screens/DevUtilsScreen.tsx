@@ -33,7 +33,7 @@ export const DevUtilsScreen = ({
                             title="Build version"
                         />
                     )}
-                    {isDebugEnv() && (
+                    {isDevelopOrDebugEnv() && (
                         <Button onPress={() => navigation.navigate(DevUtilsStackRoutes.Demo)}>
                             See Component Demo
                         </Button>

@@ -50,7 +50,7 @@ type ConnectVersionMatrix = {
 
 const tableToMarkdown = (table: ConnectVersionMatrix[], type: 'Package' | 'Deployment') => {
     let markdown = `| ${type} | Stable | Canary |\n`;
-    markdown += '| ------- | ------ | ------ |\n';
+    markdown += '| :----: | :----: | :----:|\n';
 
     table.forEach(row => {
         markdown += `| ${row.package} | ${row.stable} | ${row.canary} |\n`;

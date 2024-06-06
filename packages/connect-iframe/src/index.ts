@@ -93,6 +93,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             }
             // reassign to current MessagePort
             [_popupMessagePort] = event.ports;
+            _popupMessagePort.onmessage = message => handleMessage(message);
         }
 
         if (!_core) {
@@ -100,6 +101,9 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
 
             return;
         }
+
+        // Handle immediately, before other logic
+        _core?.handleMessage({ type: POPUP.HANDSHAKE });
 
         const transport = _core.getTransportInfo();
         const settings = DataManager.getSettings();
@@ -143,6 +147,8 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
                 transportVersion: transport?.version,
             },
         });
+
+        return;
     }
 
     // clear reference to popup MessagePort
@@ -308,7 +314,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
             _popupMessagePort = new BroadcastChannel(broadcastID);
             _popupMessagePort.onmessage = message => handleMessage(message);
         } catch (error) {
-            // tell the popup to use MessageChannel fallback communication (thru IFRAME.LOADED > POPUP.INIT)
+            // popup will use MessageChannel fallback communication
         }
     }
 

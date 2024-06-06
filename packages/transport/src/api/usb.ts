@@ -43,6 +43,7 @@ export class UsbApi extends AbstractApi {
         }
 
         this.usbInterface.onconnect = event => {
+            this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
             const [_hidDevices, nonHidDevices] = this.filterDevices([event.device]);
             this.devices = [...this.devices, ...this.createDevices(nonHidDevices)];
             this.emit('transport-interface-change', this.devicesToDescriptors());
@@ -51,6 +52,10 @@ export class UsbApi extends AbstractApi {
         this.usbInterface.ondisconnect = event => {
             const { device } = event;
             if (!device.serialNumber) {
+                this.logger?.debug(
+                    `usb: ondisconnect: device without serial number:, ${device.productName}, ${device.manufacturerName}`,
+                );
+
                 // trezor devices have serial number 468E58AE386B5D2EA8C572A2 or 000000000000000000000000 (for bootloader devices)
                 return;
             }
@@ -60,10 +65,23 @@ export class UsbApi extends AbstractApi {
                 this.devices.splice(index, 1);
                 this.emit('transport-interface-change', this.devicesToDescriptors());
             } else {
+                // todo: this doesn't make sense. this error is fired for disconnected dongles, keyboards etc. we are not consuming transport-interface-error anywhere so it doesn't matter, it is just useless
                 this.emit('transport-interface-error', ERRORS.DEVICE_NOT_FOUND);
-                this.logger.error('device that should be removed does not exist in state');
+                this.logger?.error('usb: device that should be removed does not exist in state');
             }
         };
+    }
+
+    private formatDeviceForLog(device: USBDevice) {
+        return JSON.stringify({
+            productName: device.productName,
+            manufacturerName: device.manufacturerName,
+            serialNumber: device.serialNumber,
+            vendorId: device.vendorId,
+            productId: device.productId,
+            deviceVersionMajor: device.deviceVersionMajor,
+            deviceVersionMinor: device.deviceVersionMinor,
+        });
     }
 
     private matchDeviceType(device: USBDevice) {
@@ -93,13 +111,22 @@ export class UsbApi extends AbstractApi {
 
     public async enumerate() {
         try {
+            this.logger?.debug('usb: enumerate');
             const devices = await this.usbInterface.getDevices();
+
             const [hidDevices, nonHidDevices] = this.filterDevices(devices);
-            if (hidDevices.length) {
+            this.logger?.debug(
+                `usb: enumerate done. connected devices.length: ${devices.length}. trezor old (hid) devices: ${hidDevices.length}. trezor devices: ${nonHidDevices.length}`,
+            );
+
+            hidDevices.forEach(d => {
                 // hidDevices that do not support webusb. these are very very old. we used to emit unreadable
                 // device for these but I am not sure if it is still worth the effort.
-                this.logger.error('unreadable hid device connected');
-            }
+                this.logger?.error(
+                    `usb: unreadable hid device connected. device: ${this.formatDeviceForLog(d)}`,
+                );
+            });
+
             this.devices = this.createDevices(nonHidDevices);
 
             return this.success(this.devicesToDescriptors());
@@ -125,7 +152,11 @@ export class UsbApi extends AbstractApi {
         }
 
         try {
+            this.logger?.debug('usb: device.transferIn');
             const res = await device.transferIn(ENDPOINT_ID, 64);
+            this.logger?.debug(
+                `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}`,
+            );
 
             if (!res.data) {
                 return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER });
@@ -133,6 +164,7 @@ export class UsbApi extends AbstractApi {
 
             return this.success(res.data.buffer);
         } catch (err) {
+            this.logger?.error(`usb: device.transferIn error ${err}`);
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
@@ -152,21 +184,18 @@ export class UsbApi extends AbstractApi {
 
         try {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
+            this.logger?.debug('usb: device.transferOut');
             const result = await device.transferOut(ENDPOINT_ID, newArray);
+            this.logger?.debug('usb: device.transferOut done');
+
             if (result.status !== 'ok') {
-                // should not happen, but could be source of troubles so lets observe it
-                this.logger.error(
-                    'transport',
-                    'usbInterface',
-                    'write',
-                    'result.status',
-                    result.status,
-                );
+                this.logger?.error(`usb: device.transferOut status not ok: ${result.status}`);
                 throw new Error('transfer out status not ok');
             }
 
             return this.success(undefined);
         } catch (err) {
+            this.logger?.error(`usb: device.transferOut error ${err}`);
             if (err.message === INTERFACE_DEVICE_DISCONNECTED) {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
@@ -201,8 +230,12 @@ export class UsbApi extends AbstractApi {
         }
 
         try {
+            this.logger?.debug(`usb: device.open`);
             await device.open();
+            this.logger?.debug(`usb: device.open done`);
         } catch (err) {
+            this.logger?.error(`usb: device.open error ${err}`);
+
             return this.error({
                 error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                 message: err.message,
@@ -211,17 +244,36 @@ export class UsbApi extends AbstractApi {
 
         if (first) {
             try {
+                this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
                 await device.selectConfiguration(CONFIGURATION_ID);
-                // reset fails on ChromeOS and windows
-                await device.reset();
+                this.logger?.debug(`usb: device.selectConfiguration done: ${CONFIGURATION_ID}`);
             } catch (err) {
+                this.logger?.error(
+                    `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                );
+            }
+            try {
+                // reset fails on ChromeOS and windows
+                this.logger?.debug('usb: device.reset');
+                await device.reset();
+                this.logger?.debug('usb: device.reset done');
+            } catch (err) {
+                this.logger?.error(
+                    `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                );
                 // empty
             }
         }
         try {
+            this.logger?.debug(`usb: device.claimInterface: ${INTERFACE_ID}`);
             // claim device for exclusive access by this app
             await device.claimInterface(INTERFACE_ID);
+            this.logger?.debug(`usb: device.claimInterface done: ${INTERFACE_ID}`);
         } catch (err) {
+            this.logger?.error(
+                `usb: device.claimInterface error ${err}. device: ${this.formatDeviceForLog(device)}`,
+            );
+
             return this.error({
                 error: ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE,
                 message: err.message,
@@ -237,18 +289,31 @@ export class UsbApi extends AbstractApi {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
 
+        this.logger?.debug(`usb: closeDevice. device.opened: ${device.opened}`);
+
         if (device.opened) {
             try {
                 const interfaceId = INTERFACE_ID;
+                this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
                 await device.releaseInterface(interfaceId);
+                this.logger?.debug(`usb: device.releaseInterface done: ${interfaceId}`);
             } catch (err) {
+                this.logger?.error(
+                    `usb: releaseInterface error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                );
                 // ignore
             }
         }
         if (device.opened) {
             try {
+                this.logger?.debug(`usb: device.close`);
                 await device.close();
+                this.logger?.debug(`usb: device.close done`);
             } catch (err) {
+                this.logger?.debug(
+                    `usb: device.close error ${err}. device: ${this.formatDeviceForLog(device)}`,
+                );
+
                 return this.error({
                     error: ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE,
                     message: err.message,
