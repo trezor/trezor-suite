@@ -34,6 +34,7 @@ export class UsbApi extends AbstractApi {
     protected devices: TransportInterfaceDevice[] = [];
     protected usbInterface: ConstructorParams['usbInterface'];
     private forceReadSerialOnConnect?: boolean;
+    private abortController = new AbortController();
 
     constructor({ usbInterface, logger, forceReadSerialOnConnect }: ConstructorParams) {
         super({ logger });
@@ -55,8 +56,15 @@ export class UsbApi extends AbstractApi {
                 );
             });
             if (nonHidDevices.length) {
-                this.devices = [...this.devices, ...(await this.createDevices(nonHidDevices))];
-                this.emit('transport-interface-change', this.devicesToDescriptors());
+                await this.createDevices(nonHidDevices, this.abortController.signal)
+                    .then(newDevices => {
+                        this.devices = [...this.devices, ...newDevices];
+                        this.emit('transport-interface-change', this.devicesToDescriptors());
+                    })
+                    .catch(err => {
+                        // empty
+                        this.logger?.error(`usb: createDevices error: ${err.message}`);
+                    });
             }
         };
 
@@ -127,10 +135,32 @@ export class UsbApi extends AbstractApi {
         }));
     }
 
-    public async enumerate() {
+    private abortableMethod<R>(method: () => R, signal?: AbortSignal) {
+        if (!signal) {
+            return method();
+        }
+        if (signal.aborted) {
+            return Promise.reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
+        }
+
+        return Promise.race([
+            // todo: maybe we need to pass signal down the chain?
+            method(),
+            new Promise<R>((_, reject) => {
+                signal?.addEventListener('abort', () => {
+                    reject(new Error(ERRORS.ABORTED_BY_SIGNAL));
+                });
+            }),
+        ]);
+    }
+
+    public async enumerate(signal?: AbortSignal) {
         try {
             this.logger?.debug('usb: enumerate');
-            const devices = await this.usbInterface.getDevices();
+            const devices = await this.abortableMethod(
+                () => this.usbInterface.getDevices(),
+                signal,
+            );
 
             const [hidDevices, nonHidDevices] = this.filterDevices(devices);
             this.logger?.debug(
@@ -145,7 +175,7 @@ export class UsbApi extends AbstractApi {
                 );
             });
 
-            this.devices = await this.createDevices(nonHidDevices);
+            this.devices = await this.createDevices(nonHidDevices, signal);
 
             return this.success(this.devicesToDescriptors());
         } catch (err) {
@@ -156,12 +186,14 @@ export class UsbApi extends AbstractApi {
 
     public async read(
         path: string,
+        signal?: AbortSignal,
     ): AsyncResultWithTypedError<
         ArrayBuffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
         | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
         | typeof ERRORS.INTERFACE_DATA_TRANSFER
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
+        | typeof ERRORS.ABORTED_BY_SIGNAL
         | typeof ERRORS.UNEXPECTED_ERROR
     > {
         const device = this.findDevice(path);
@@ -171,7 +203,10 @@ export class UsbApi extends AbstractApi {
 
         try {
             this.logger?.debug('usb: device.transferIn');
-            const res = await device.transferIn(ENDPOINT_ID, 64);
+            const res = await this.abortableMethod(
+                () => device.transferIn(ENDPOINT_ID, this.chunkSize),
+                signal,
+            );
             this.logger?.debug(
                 `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}. device: ${this.formatDeviceForLog(device)}`,
             );
@@ -187,27 +222,31 @@ export class UsbApi extends AbstractApi {
                 return this.error({ error: ERRORS.DEVICE_DISCONNECTED_DURING_ACTION });
             }
 
-            return this.error({ error: ERRORS.INTERFACE_DATA_TRANSFER, message: err.message });
+            return this.unknownError(err, [
+                ERRORS.ABORTED_BY_SIGNAL,
+                ERRORS.INTERFACE_DATA_TRANSFER,
+            ]);
         }
     }
 
-    public async write(path: string, buffer: Buffer) {
+    public async write(path: string, buffer: Buffer, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
         }
-
-        const newArray = new Uint8Array(64);
+        const newArray = new Uint8Array(this.chunkSize);
         newArray.set(new Uint8Array(buffer));
 
         try {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
             this.logger?.debug('usb: device.transferOut');
-            const result = await device.transferOut(ENDPOINT_ID, newArray);
+            const result = await this.abortableMethod(
+                () => device.transferOut(ENDPOINT_ID, newArray),
+                signal,
+            );
             this.logger?.debug(
                 `usb: device.transferOut done. device: ${this.formatDeviceForLog(device)}`,
             );
-
             if (result.status !== 'ok') {
                 this.logger?.error(`usb: device.transferOut status not ok: ${result.status}`);
                 throw new Error('transfer out status not ok');
@@ -224,7 +263,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async openDevice(path: string, first: boolean) {
+    public async openDevice(path: string, first: boolean, signal?: AbortSignal) {
         // note: multiple retries to open device. reason:  when another window acquires device, changed session
         // is broadcasted to other clients. they are responsible for releasing interface, which takes some time.
         // if there is only one client working with device, this will succeed using only one attempt.
@@ -233,18 +272,18 @@ export class UsbApi extends AbstractApi {
         // I would need to throw artificially which is not nice.
         for (let i = 0; i < 5; i++) {
             this.logger?.debug(`usb: openDevice attempt ${i}`);
-            const res = await this.openInternal(path, first);
-            if (res.success) {
+            const res = await this.openInternal(path, first, signal);
+            if (res.success || signal?.aborted) {
                 return res;
             }
 
             await createTimeoutPromise(100 * i);
         }
 
-        return this.openInternal(path, first);
+        return this.openInternal(path, first, signal);
     }
 
-    private async openInternal(path: string, first: boolean) {
+    private async openInternal(path: string, first: boolean, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
@@ -252,7 +291,7 @@ export class UsbApi extends AbstractApi {
 
         try {
             this.logger?.debug(`usb: device.open`);
-            await device.open();
+            await this.abortableMethod(() => device.open(), signal);
             this.logger?.debug(`usb: device.open done. device: ${this.formatDeviceForLog(device)}`);
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
@@ -266,7 +305,10 @@ export class UsbApi extends AbstractApi {
         if (first) {
             try {
                 this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
-                await device.selectConfiguration(CONFIGURATION_ID);
+                await this.abortableMethod(
+                    () => device.selectConfiguration(CONFIGURATION_ID),
+                    signal,
+                );
                 this.logger?.debug(
                     `usb: device.selectConfiguration done: ${CONFIGURATION_ID}. device: ${this.formatDeviceForLog(device)}`,
                 );
@@ -278,7 +320,7 @@ export class UsbApi extends AbstractApi {
             try {
                 // reset fails on ChromeOS and windows
                 this.logger?.debug('usb: device.reset');
-                await device.reset();
+                await this.abortableMethod(() => device.reset(), signal);
                 this.logger?.debug(
                     `usb: device.reset done. device: ${this.formatDeviceForLog(device)}`,
                 );
@@ -292,7 +334,7 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug(`usb: device.claimInterface: ${INTERFACE_ID}`);
             // claim device for exclusive access by this app
-            await device.claimInterface(INTERFACE_ID);
+            await this.abortableMethod(() => device.claimInterface(INTERFACE_ID), signal);
             this.logger?.debug(
                 `usb: device.claimInterface done: ${INTERFACE_ID}. device: ${this.formatDeviceForLog(device)}`,
             );
@@ -364,7 +406,7 @@ export class UsbApi extends AbstractApi {
         return device.device;
     }
 
-    private createDevices(nonHidDevices: USBDevice[]) {
+    private createDevices(nonHidDevices: USBDevice[], signal?: AbortSignal) {
         let bootloaderId = 0;
 
         return Promise.all(
@@ -374,7 +416,7 @@ export class UsbApi extends AbstractApi {
                 if (this.forceReadSerialOnConnect) {
                     // try to load serialNumber. if this doesn't succeed, we can still continue normally. the only problem is that multiple devices
                     // connected at the same time will not be properly distinguished.
-                    await this.loadSerialNumber(device);
+                    await this.loadSerialNumber(device, signal);
                 }
 
                 // path is just serial number
@@ -397,20 +439,24 @@ export class UsbApi extends AbstractApi {
      * depending on OS (and specific usb drivers), it might be required to open device in order to read serial number.
      * https://github.com/node-usb/node-usb/issues/546
      */
-    private async loadSerialNumber(device: USBDevice) {
+    private async loadSerialNumber(device: USBDevice, signal?: AbortSignal) {
         try {
             this.logger?.debug(`usb: loadSerialNumber`);
-            await device.open();
 
+            await this.abortableMethod(device.open, signal);
             // load serial number.
-            await device
-                // @ts-expect-error: this is not part of common types between webusb and usb.
-                .getStringDescriptor(device.device.deviceDescriptor.iSerialNumber);
-
+            await this.abortableMethod(
+                () =>
+                    device
+                        // @ts-expect-error: this is not part of common types between webusb and usb.
+                        .getStringDescriptor(device.device.deviceDescriptor.iSerialNumber),
+                signal,
+            );
             this.logger?.debug(`usb: loadSerialNumber done, serialNumber: ${device.serialNumber}`);
-            await device.close();
+            await this.abortableMethod(device.close, signal);
         } catch (err) {
-            this.logger?.error(`usb: loadSerialNumber error ${err}`);
+            this.logger?.error(`usb: loadSerialNumber error: ${err.message}`);
+            throw err;
         }
     }
 
@@ -437,5 +483,6 @@ export class UsbApi extends AbstractApi {
             this.usbInterface.onconnect = null;
             this.usbInterface.ondisconnect = null;
         }
+        this.abortController.abort();
     }
 }
