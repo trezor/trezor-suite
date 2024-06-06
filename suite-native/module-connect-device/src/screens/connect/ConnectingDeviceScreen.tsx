@@ -6,7 +6,7 @@ import { useNativeStyles, prepareNativeStyle } from '@trezor/styles';
 import { useDelayedNavigation } from '@suite-native/device';
 import { Translation } from '@suite-native/intl';
 
-import { ConnectDeviceSreenView } from '../components/ConnectDeviceSreenView';
+import { ConnectDeviceSreenView } from '../../components/connect/ConnectDeviceSreenView';
 
 const screenStyle = prepareNativeStyle(() => ({
     justifyContent: 'center',

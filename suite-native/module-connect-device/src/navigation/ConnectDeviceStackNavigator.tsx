@@ -10,9 +10,9 @@ import {
 import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
 import { useDetectDeviceError, useReportDeviceConnectToAnalytics } from '@suite-native/device';
 
-import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';
-import { PinScreen } from '../screens/PinScreen';
-import { ConnectingDeviceScreen } from '../screens/ConnectingDeviceScreen';
+import { ConnectAndUnlockDeviceScreen } from '../screens/connect/ConnectAndUnlockDeviceScreen';
+import { PinScreen } from '../screens/connect/PinScreen';
+import { ConnectingDeviceScreen } from '../screens/connect/ConnectingDeviceScreen';
 
 export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackParamList>();
 

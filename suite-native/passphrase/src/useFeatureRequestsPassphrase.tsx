@@ -1,14 +1,12 @@
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import TrezorConnect from '@trezor/connect';
 import {
     PassphraseStackParamList,
     PassphraseStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
 import {
