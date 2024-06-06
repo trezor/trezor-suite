@@ -1,3 +1,7 @@
+# 1.0.10-beta.1
+
+-   chore(protocol): add a logging message in case of empty buffer (c5dd5749a7)
+
 # 1.0.8
 
 -   feat(protocol): separate chunking from encoding (2f445ba734)
