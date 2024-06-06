@@ -8,10 +8,23 @@ import {
     getSendCryptoOptions,
     getTagAndInfoNote,
     buildCryptoOption,
-    processSellAndBuyQuotes,
+    getBestRatedQuote,
+    coinmarketBuildCryptoOptions,
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
 } from '../coinmarketUtils';
 import { accountBtc, accountEth, coinDefinitions } from '../__fixtures__/coinmarketUtils';
-import { ALTERNATIVE_QUOTES, MIN_MAX_QUOTES_OK } from '../__fixtures__/buyUtils';
+import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
+import * as SELL_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
+import * as EXCHANGE_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
+import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
+import {
+    CryptoCategoryA,
+    CryptoCategoryB,
+    CryptoCategoryC,
+    CryptoCategoryD,
+    CryptoCategoryE,
+} from 'src/constants/wallet/coinmarket/cryptoCategories';
 
 describe('coinmarket utils', () => {
     it('buildFiatOption', () => {
@@ -19,15 +32,20 @@ describe('coinmarket utils', () => {
     });
 
     it('buildCryptoOption', () => {
-        expect(buildCryptoOption('btc')).toStrictEqual({
+        expect(buildCryptoOption('BTC')).toStrictEqual({
             value: 'BTC',
             label: 'BTC',
-            cryptoSymbol: 'BTC',
+            cryptoName: 'Bitcoin',
         });
-        expect(buildCryptoOption('eth')).toStrictEqual({
+        expect(buildCryptoOption('ETH')).toStrictEqual({
             value: 'ETH',
             label: 'ETH',
-            cryptoSymbol: 'ETH',
+            cryptoName: 'Ethereum',
+        });
+        expect(buildCryptoOption('USDT@ETH')).toStrictEqual({
+            value: 'USDT@ETH',
+            label: 'USDT',
+            cryptoName: 'Ethereum',
         });
     });
 
@@ -167,17 +185,142 @@ describe('coinmarket utils', () => {
         });
     });
 
-    it('processSellAndBuyQuotes', () => {
-        const quotes = [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES];
+    it('filterQuotesAccordingTags', () => {
+        const quotes = [
+            ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
+            ...BUY_FIXTURE.ALTERNATIVE_QUOTES,
+            ...SELL_FIXTURE.MIN_MAX_QUOTES_HIGH,
+        ];
 
-        expect(processSellAndBuyQuotes([])).toStrictEqual([]);
-        expect(processSellAndBuyQuotes(quotes).length).toStrictEqual(
-            quotes.filter(
-                q =>
-                    (!q.tags || !q.tags.includes('alternativeCurrency')) &&
-                    q.orderId &&
-                    q.paymentId,
-            ).length,
+        expect(filterQuotesAccordingTags([])).toStrictEqual([]);
+        expect(filterQuotesAccordingTags(quotes).length).toStrictEqual(
+            quotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency')).length,
         );
+    });
+
+    it('addIdsToQuotes', () => {
+        const quotes = [...BUY_FIXTURE.MIN_MAX_QUOTES_OK];
+        const quotesExchange = [...EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK];
+
+        expect(addIdsToQuotes([], 'buy')).toStrictEqual([]);
+        expect(addIdsToQuotes(quotes, 'buy').length).toStrictEqual(
+            quotes.filter(q => q.orderId && q.paymentId).length,
+        );
+        expect(addIdsToQuotes(quotesExchange, 'exchange').length).toStrictEqual(
+            quotesExchange.filter(q => q.orderId).length,
+        );
+    });
+
+    describe('getBestRatedQuote', () => {
+        it('buy trades (shuffled with error)', () => {
+            expect(getBestRatedQuote(BUY_FIXTURE.MIN_MAX_QUOTES_OK, 'buy')).toStrictEqual(
+                BUY_FIXTURE.MIN_MAX_QUOTES_OK[1],
+            );
+        });
+        it('sell trades', () => {
+            expect(getBestRatedQuote(SELL_FIXTURE.MIN_MAX_QUOTES_OK, 'sell')).toStrictEqual(
+                SELL_FIXTURE.MIN_MAX_QUOTES_OK[0],
+            );
+        });
+        it('exchange trades (shuffled)', () => {
+            expect(getBestRatedQuote(EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK, 'exchange')).toStrictEqual(
+                EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK[EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK.length - 1],
+            );
+        });
+    });
+
+    it('function coinmarketBuildCryptoOptions', () => {
+        const symbolsInfo: CryptoSymbolInfo[] = [
+            {
+                symbol: 'BTC',
+                name: 'Bitcoin',
+                category: 'Popular currencies',
+            },
+            {
+                symbol: 'ETH',
+                name: 'Ethereum',
+                category: 'Popular currencies',
+            },
+            {
+                symbol: 'USDT@ETH',
+                name: 'Tether',
+                category: 'Ethereum ERC20 tokens',
+            },
+            {
+                symbol: 'USDT@MATIC',
+                name: 'Tether',
+                category: 'Polygon ERC20 tokens',
+            },
+        ];
+        const cryptoCurrencies: Set<CryptoSymbol> = new Set([
+            'BTC',
+            'ETH',
+            'USDT@ETH',
+            'USDT@MATIC',
+            'VEN',
+            'STEEM',
+        ]);
+
+        expect(
+            coinmarketBuildCryptoOptions({
+                symbolsInfo,
+                cryptoCurrencies,
+            }),
+        ).toStrictEqual([
+            {
+                label: CryptoCategoryA,
+                options: [
+                    {
+                        value: 'BTC',
+                        label: 'BTC',
+                        cryptoName: 'Bitcoin',
+                    },
+                    {
+                        value: 'ETH',
+                        label: 'ETH',
+                        cryptoName: 'Ethereum',
+                    },
+                ],
+            },
+            {
+                label: CryptoCategoryB,
+                options: [
+                    {
+                        value: 'USDT@ETH',
+                        label: 'USDT',
+                        cryptoName: 'Tether',
+                    },
+                ],
+            },
+            {
+                label: CryptoCategoryC,
+                options: [],
+            },
+            {
+                label: CryptoCategoryD,
+                options: [
+                    {
+                        value: 'USDT@MATIC',
+                        label: 'USDT',
+                        cryptoName: 'Tether',
+                    },
+                ],
+            },
+            {
+                label: CryptoCategoryE,
+                options: [
+                    {
+                        value: 'VEN',
+                        label: 'VEN',
+                        cryptoName: null,
+                    },
+                    {
+                        value: 'STEEM',
+                        label: 'STEEM',
+                        cryptoName: null,
+                    },
+                ],
+            },
+        ]);
     });
 });

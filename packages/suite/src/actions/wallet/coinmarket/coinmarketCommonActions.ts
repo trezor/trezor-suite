@@ -14,7 +14,6 @@ import {
     selectDevice,
     toggleRememberDevice,
 } from '@suite-common/wallet-core';
-
 import { GetState, Dispatch } from 'src/types/suite';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -22,11 +21,10 @@ import { Account } from 'src/types/wallet';
 import { ComposedTransactionInfo } from 'src/reducers/wallet/coinmarketReducer';
 import { submitRequestForm as envSubmitRequestForm } from 'src/utils/suite/env';
 import * as formDraftActions from 'src/actions/wallet/formDraftActions';
-
 import { COINMARKET_BUY, COINMARKET_EXCHANGE, COINMARKET_COMMON } from '../constants';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
+import { CryptoSymbol } from 'invity-api';
 
 export type CoinmarketCommonAction =
     | {
@@ -40,6 +38,10 @@ export type CoinmarketCommonAction =
       }
     | {
           type: typeof COINMARKET_COMMON.LOAD_DATA;
+      }
+    | {
+          type: typeof COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY;
+          modalCryptoSymbol: CryptoSymbol | undefined;
       };
 
 type FormState = {

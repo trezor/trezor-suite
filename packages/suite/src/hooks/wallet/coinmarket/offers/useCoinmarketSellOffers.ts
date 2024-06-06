@@ -21,23 +21,25 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import {
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
     getUnusedAddressFromAccount,
-    processSellAndBuyQuotes,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './../../useCoinmarketRecomposeAndSign';
 import { getFilteredSuccessQuotes, useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import { CoinmarketTradeSellType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import {
-    CoinmarketTradeSellType,
-    CoinmarketTradeType,
-    UseCoinmarketProps,
-} from 'src/types/coinmarket/coinmarket';
-import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
-import { useCoinmarketFilterReducer } from 'src/reducers/wallet/useCoinmarketFilterReducer';
+    CoinmarketSellOffersContextProps,
+    CoinmarketSellStepType,
+} from 'src/types/coinmarket/coinmarketOffers';
 
-export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+export const useCoinmarketSellOffers = ({
+    selectedAccount,
+}: UseCoinmarketProps): CoinmarketSellOffersContextProps => {
+    const type = 'sell';
     const {
         callInProgress,
         account,
@@ -47,7 +49,7 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
         setCallInProgress,
         setSelectedQuote,
         checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeSellType>({ selectedAccount });
+    } = useCoinmarketCommonOffers<CoinmarketTradeSellType>({ selectedAccount, type });
     const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
@@ -62,7 +64,6 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
 
     dispatch(loadInvityData());
 
-    const innerQuotesFilterReducer = useCoinmarketFilterReducer<CoinmarketTradeSellType>(quotes);
     const [innerQuotes, setInnerQuotes] = useState<SellFiatTrade[] | undefined>(
         getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes),
     );
@@ -80,19 +81,20 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
 
                     return;
                 }
-                const quotes = processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes);
-                const successQuotes = getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes);
-                setInnerQuotes(getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes));
-                innerQuotesFilterReducer.dispatch({
-                    type: 'FILTER_SET_PAYMENT_METHODS',
-                    payload: successQuotes ?? [],
-                });
+
+                const quoteWithIds = addIdsToQuotes<CoinmarketTradeSellType>(allQuotes, 'sell');
+                const filteredQuotes =
+                    filterQuotesAccordingTags<CoinmarketTradeSellType>(quoteWithIds);
+                const successQuotes =
+                    getFilteredSuccessQuotes<CoinmarketTradeSellType>(filteredQuotes);
+
+                setInnerQuotes(successQuotes);
             } else {
                 setInnerQuotes(undefined);
             }
             timer.reset();
         }
-    }, [account.descriptor, innerQuotesFilterReducer, quotesRequest, selectedQuote, timer]);
+    }, [account.descriptor, quotesRequest, selectedQuote, timer]);
 
     const trade = trades.find(
         trade => trade.tradeType === 'sell' && trade.key === transactionId,
@@ -170,8 +172,8 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
                 (response.trade.status === 'SUBMITTED' && provider.flow === 'PAYMENT_GATE')
             ) {
                 if (provider.flow === 'PAYMENT_GATE') {
-                    await dispatch(saveTrade(response.trade, account, new Date().toISOString()));
-                    await dispatch(saveTransactionId(response.trade.orderId));
+                    dispatch(saveTrade(response.trade, account, new Date().toISOString()));
+                    dispatch(saveTransactionId(response.trade.orderId));
                     setSelectedQuote(response.trade);
                     setSellStep('SEND_TRANSACTION');
                 }
@@ -291,8 +293,8 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
                     );
                 }
 
-                await dispatch(saveTrade(response, account, new Date().toISOString()));
-                await dispatch(saveTransactionId(selectedQuote.orderId));
+                dispatch(saveTrade(response, account, new Date().toISOString()));
+                dispatch(saveTransactionId(selectedQuote.orderId));
 
                 dispatch(
                     goto('wallet-coinmarket-sell-detail', {
@@ -315,6 +317,7 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
     };
 
     return {
+        type,
         sendTransaction,
         callInProgress,
         selectedQuote,
@@ -323,8 +326,7 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
         confirmTrade,
         addBankAccount,
         quotesRequest,
-        quotes: innerQuotesFilterReducer.actions.handleFilterQuotes(innerQuotes),
-        innerQuotesFilterReducer,
+        quotes: innerQuotes,
         sellStep,
         setSellStep,
         selectQuote,
@@ -333,6 +335,5 @@ export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps)
         sellInfo,
         needToRegisterOrVerifyBankAccount,
         getQuotes,
-        type: 'sell' as CoinmarketTradeType,
     };
 };

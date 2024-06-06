@@ -24,6 +24,9 @@ import {
     SellFiatTradeRequest,
     SellFiatTradeResponse,
     CryptoSymbolsResponse,
+    SavingsPaymentMethod,
+    SellCryptoPaymentMethod,
+    BuyCryptoPaymentMethod,
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
@@ -43,6 +46,8 @@ type BodyType =
     | SellVoucherTradeQuoteRequest
     | SellVoucherTradeRequest
     | SellFiatTradeRequest;
+
+type SignalType = AbortSignal | null | undefined;
 
 class InvityAPI {
     unknownCountry = 'unknown';
@@ -122,7 +127,12 @@ class InvityAPI {
         }
     }
 
-    private options(body: BodyType = {}, method = 'POST', apiHeaderValue?: string): any {
+    private options(
+        body: BodyType = {},
+        method = 'POST',
+        apiHeaderValue?: string,
+        signal?: SignalType,
+    ): any {
         const apiHeader = isDesktop() ? 'X-SuiteA-Api' : 'X-SuiteW-Api';
 
         return {
@@ -139,19 +149,21 @@ class InvityAPI {
             ...(method === 'POST' && {
                 body: JSON.stringify(body),
             }),
+            signal,
         };
     }
 
-    private request(
+    private async request(
         url: string,
         body: BodyType = {},
         method = 'POST',
         apiHeaderValue?: string,
+        signal?: SignalType,
     ): Promise<any> {
         const finalUrl = `${this.getApiServerUrl()}${url}`;
-        const opts = this.options(body, method, apiHeaderValue);
+        const opts = this.options(body, method, apiHeaderValue, signal);
 
-        return fetch(finalUrl, opts).then(response => {
+        return await fetch(finalUrl, opts).then(response => {
             if (response.ok) {
                 return response.json();
             }
@@ -253,12 +265,17 @@ class InvityAPI {
         }
     };
 
-    getBuyQuotes = async (params: BuyTradeQuoteRequest): Promise<BuyTrade[] | undefined> => {
+    getBuyQuotes = async (
+        params: BuyTradeQuoteRequest,
+        signal?: SignalType,
+    ): Promise<BuyTrade[] | undefined> => {
         try {
             const response: BuyTradeQuoteResponse = await this.request(
                 this.BUY_QUOTES,
                 params,
                 'POST',
+                undefined,
+                signal,
             );
 
             return response;
@@ -409,6 +426,16 @@ class InvityAPI {
 
     getCoinLogoUrl(coin: string): string {
         return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
+    }
+
+    getProviderLogoUrl(logo: string): string {
+        return `${this.getApiServerUrl()}/images/exchange/${logo}`;
+    }
+
+    getPaymentMethodUrl(
+        paymentMethod: BuyCryptoPaymentMethod | SellCryptoPaymentMethod | SavingsPaymentMethod,
+    ): string {
+        return `${this.getApiServerUrl()}/images/paymentMethods/suite/${paymentMethod}.svg`;
     }
 
     private getWatchTradeData = (tradeType: CoinmarketTradeType) => {

@@ -5,13 +5,17 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import {
+    isCoinmarketSellOffers,
+    useCoinmarketOffersContext,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { SellFiatTrade } from 'invity-api';
 
 const OfferWrap = styled(Card)`
     min-height: 100px;
@@ -104,16 +108,21 @@ const StyledButton = styled(Button)`
 
 export interface CoinmarketOffersItemProps {
     quote: CoinmarketTradeDetailMapProps[keyof CoinmarketTradeDetailMapProps];
+    isBestRate: boolean;
 }
 
-const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
+const CoinmarketOffersItem = ({ quote, isBestRate }: CoinmarketOffersItemProps) => {
     const context = useCoinmarketOffersContext();
-    const { callInProgress, selectQuote } = context;
+    const { callInProgress, type } = context;
     const { providers } = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
     const { tag, infoNote } = getTagAndInfoNote(quote);
-    const tagsExist = tag !== '';
+    const tagsExist = tag !== '' || isBestRate;
+
+    const selectQuote = context.selectQuote as (
+        quote: CoinmarketTradeDetailMapProps[typeof type],
+    ) => void;
 
     if (!cryptoAmountProps) return null;
 
@@ -121,9 +130,14 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
         <OfferWrap margin={{ top: spacings.md }}>
             <Offer>
                 <OfferColumn1>
-                    {tag && (
+                    {tagsExist && (
                         <OfferBadgeWrap>
-                            <OfferBadge variant="tertiary">{tag}</OfferBadge>
+                            {isBestRate && (
+                                <OfferBadge variant="primary">
+                                    <Translation id="TR_COINMARKET_BEST_RATE" />
+                                </OfferBadge>
+                            )}
+                            {tag && <OfferBadge variant="tertiary">{tag}</OfferBadge>}
                             {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
                         </OfferBadgeWrap>
                     )}
@@ -144,11 +158,20 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                     ) : (
                         <StyledButton
                             isLoading={callInProgress}
-                            isDisabled={!!quote.error}
+                            isDisabled={!!quote.error || callInProgress}
                             onClick={() => selectQuote(quote)}
                             data-test="@coinmarket/buy/offers/get-this-deal-button"
                         >
-                            <Translation id="TR_BUY_GET_THIS_OFFER" />
+                            <Translation
+                                id={
+                                    isCoinmarketSellOffers(context) &&
+                                    context.needToRegisterOrVerifyBankAccount(
+                                        quote as SellFiatTrade,
+                                    )
+                                        ? 'TR_SELL_REGISTER'
+                                        : 'TR_COINMARKET_OFFERS_SELECT'
+                                }
+                            />
                         </StyledButton>
                     )}
                 </OfferColumn3>
