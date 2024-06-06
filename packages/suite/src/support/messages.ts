@@ -5043,7 +5043,7 @@ export default defineMessages({
     TR_SWITCH_FIRMWARE_NO_BACKUP: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP',
         defaultMessage:
-            'You may lose access to your coins on this wallet without a wallet backup. If you’re confident that this wallet is empty, you can proceed, but do so at your own risk.',
+            'You may lose access to your coins on this wallet without a recovery seed. If you’re confident that this wallet is empty, you can proceed, but do so at your own risk.',
     },
     TR_SWITCH_FIRMWARE_NO_BACKUP_2: {
         id: 'TR_SWITCH_FIRMWARE_NO_BACKUP_2',
@@ -5314,7 +5314,7 @@ export default defineMessages({
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
-        defaultMessage: 'Secure and reliable, not easily upgradable to Multi-share Backup',
+        defaultMessage: "Secure and reliable, not easily upgradable to Multi-share Backup'",
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',

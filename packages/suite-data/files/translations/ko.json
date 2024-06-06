@@ -40,7 +40,6 @@
   "EVENT_WALLET_CREATED": "새 지갑이 생성되었습니다",
   "FEE": "수수료",
   "FEE_LEVEL_CUSTOM": "수수료 맞춤 조정",
-  "FEE_LEVEL_ECONOMY": "이코노미 수수료",
   "FEE_LEVEL_HIGH": "높음",
   "FEE_LEVEL_LOW": "낮음",
   "FEE_LEVEL_NORMAL": "중간",
