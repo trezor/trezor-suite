@@ -3,7 +3,7 @@ auto_sections: false
 icon: LIGHTNING
 ---
 
-import { Cards, Card } from 'nextra/components';
+import { Cards, Card, Steps } from 'nextra/components';
 import styled from 'styled-components';
 
 import { spacings, spacingsPx } from '@trezor/theme';
@@ -99,7 +99,7 @@ export const ExampleHeading = styled.h3`
 <SectionCard>
     ### Quick start
 
-    #### Choose your environment
+    ####  Choose your environment
 
     Depending on your environment you need to chose the right package and follow the particular guide:
 
@@ -150,61 +150,6 @@ export const ExampleHeading = styled.h3`
     <SdkContainer>
         <SdkDescription>
             In Node.js the core SDK is loaded as a JavaScript module without any specificities.
-            <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
-        <div>
-            <ol>
-                <li>
-                    <strong>Installation of the package</strong> // should be numbered list
-                    ```javascript
-                    npm install @trezor/connect;
-                    // or
-                 yarn add @trezor/connect;
-                    ```
-                </li>
-                <li>
-                    <strong>Import from the package</strong>
-                    ```javascript
-                    import TrezorConnect from '@trezor/connect';
-                    ```
-                </li>
-                <li>
-                    <strong>Initialization of the project</strong>
-                    ```javascript
-                        TrezorConnect.init({
-                            lazyLoad: true, // this param prevents iframe injection until
-                            // TrezorConnect.method is called
-                            manifest: {
-                                email: 'developer@xyz.com',
-                                appUrl: 'http://your.application.com',
-                            },
-                        });
-                    ```
-                    <p>Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your email and application URL with us. This provides us with the ability to reach you in case of any required maintenance. This subscription is mandatory.</p>
-                    <p>It can be set either as a param in `init` method (above) or via `manifest`</p>
-                    ```javascript
-                    TrezorConnect.manifest({
-                        email: 'developer@xyz.com',
-                        appUrl: 'http://your.application.com',
-                    });
-                    ```
-                    If you need more customization, refer to [init method documentation](./methods/other/init)
-                </li>
-            </ol>
-            <Paragraph typographyStyle="titleSmall">How to use?</Paragraph>
-            <ol start="5">
-                <li>
-                    <p>Here is an example of how to get the device's public key:</p>
-                    ```javascript
-                    TrezorConnect.getPublicKey({
-                        "path": "m/49'/0'/0'",
-                         "showOnTrezor": true
-                    });
-                    ```
-                    More methods with detailed explanation can be found on the left under the 'COINS METHODS' section. You can also try the Method Testing Tool (LINK TO opened MTT), where you can try interacting with the device by yourself.
-                </li>
-            </ol>
-        </div>
-        </CollapsibleBox>
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
@@ -212,10 +157,55 @@ export const ExampleHeading = styled.h3`
             - [electron in main layer](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/electron-main-process)
             - [Trezor Suite (desktop) electron app](https://github.com/trezor/trezor-suite/blob/develop/packages/suite-desktop/README.md)
         </ExamplesAside>
-
-
-
     </SdkContainer>
+
+    <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+        <Steps>
+            ### Installation of the package
+
+            ```bash
+            npm install @trezor/connect
+            # or
+            yarn add @trezor/connect
+            ```
+
+            ### Import from the package
+
+            ```javascript
+            import TrezorConnect from '@trezor/connect';
+            ```
+
+            ### Initialization of the project
+
+            ```javascript
+                TrezorConnect.init({
+                    lazyLoad: true, // this param prevents iframe injection until
+                    // TrezorConnect.method is called
+                    manifest: {
+                        email: 'developer@xyz.com',
+                        appUrl: 'http://your.application.com',
+                    },
+                });
+            ```
+
+            Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your email and application URL with us. This provides us with the ability to reach you in case of any required maintenance. This subscription is mandatory.
+
+            If you need more customization, refer to [init method documentation](./methods/other/init)
+
+            ### How to use?
+
+            Here is an example of how to get the device's public key:
+
+            ```javascript
+            TrezorConnect.getPublicKey({
+                "path": "m/49'/0'/0'",
+                    "showOnTrezor": true
+            });
+            ```
+
+            More methods with detailed explanation can be found on the left under the 'Coin methods' section. You can also try the Method Testing Tool, where you can try interacting with the device by yourself.
+        </Steps>
+    </CollapsibleBox>
 
 </SectionCard>
 
@@ -246,72 +236,6 @@ export const ExampleHeading = styled.h3`
         <SdkDescription>
             `@trezor/connect-web` imports only a thin layer with API description into your 3rd party application. When initiated, it injects iframe containing core SDK logic from trezor.io
             into your app. User input, if needed, is served by popup.html page opened on trezor.io on behalf of your application. This way users input such as pin or passphrase is isolated from you and persistent connection between your app and core SDK is kept so events such as device connected/disconnected or blockchain subscriptions are available.
-
-        <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
-        <div>
-            <ol>
-                <li>
-                    <strong>Installation of the package</strong>
-                    ```javascript
-                    npm install @trezor/connect-web;
-                    // or
-                    yarn add @trezor/connect-web;
-                    ```
-                    <p>or include the library as inline script:</p>
-                    ```html
-                    <script src="https://connect.trezor.io/9/trezor-connect.js"></script>
-                    ```
-                </li>
-                <li>
-                    <strong>Import from the package</strong>
-                    ```javascript
-                    import TrezorConnect from '@trezor/connect-web';
-                    ```
-                    <p>or use inline:</p>
-                    ```html
-                    var TrezorConnect = window.TrezorConnect;
-                    ```
-                </li>
-                <li>
-                    <strong>Initialization of the project</strong>
-                    ```javascript
-                    TrezorConnect.init({
-                        lazyLoad: true, // this param prevents iframe injection until
-                        // TrezorConnect.method is called
-                        manifest: {
-                            email: 'developer@xyz.com',
-                            appUrl: 'http://your.application.com',
-                        },
-                    });
-                    ```
-                    <p>Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your email and application URL with us. This provides us with the ability to reach you in case of any required maintenance. This subscription is mandatory.</p>
-                    <p>It can be set either as a param in `init` method (above) or via `manifest`</p>
-                    ```javascript
-                    TrezorConnect.manifest({
-                        email: 'developer@xyz.com',
-                        appUrl: 'http://your.application.com',
-                    });
-                    ```
-                    If you need more customization, refer to [init method documentation](./methods/other/init)
-
-                </li>
-            </ol>
-            <Paragraph typographyStyle="titleSmall">How to use?</Paragraph>
-            <ol start="5">
-                <li>
-                    <p>Here is an example of how to get the device's public key:</p>
-                    ```javascript
-                    TrezorConnect.getPublicKey({
-                        path: "m/44'/0'/0'/0/0",
-                        showOnTrezor: true,
-                    });
-                    ```
-                    <p>More methods with detailed explanation can be found on the left under the 'COINS METHODS' section. You can also try the Method Testing Tool, where you can try interacting with the device by yourself.</p>
-                </li>
-            </ol>
-        </div>
-        </CollapsibleBox>
-
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
@@ -321,6 +245,64 @@ export const ExampleHeading = styled.h3`
             -   [electron in renderer layer with popup](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/electron-renderer-with-popup)
         </ExamplesAside>
     </SdkContainer>
+    <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+            <Steps>
+                ### Installation of the package
+
+                ```javascript
+                npm install @trezor/connect-web
+                # or
+                yarn add @trezor/connect-web
+                ```
+
+                or include the library as inline script:
+
+                ```html
+                <script src="https://connect.trezor.io/9/trezor-connect.js"></script>
+                ```
+
+                ### Import from the package
+
+                ```javascript
+                import TrezorConnect from '@trezor/connect-web';
+                ```
+
+                or use inline:
+
+                ```javascript
+                var TrezorConnect = window.TrezorConnect;
+                ```
+
+                ### Initialization of the project
+
+                ```javascript
+                TrezorConnect.init({
+                    lazyLoad: true, // this param prevents iframe injection until
+                    // TrezorConnect.method is called
+                    manifest: {
+                        email: 'developer@xyz.com',
+                        appUrl: 'http://your.application.com',
+                    },
+                });
+                ```
+
+                Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your email and application URL with us. This provides us with the ability to reach you in case of any required maintenance. This subscription is mandatory.
+
+                If you need more customization, refer to [init method documentation](./methods/other/init)
+
+                ### How to use?
+                Here is an example of how to get the device's public key:
+
+                ```javascript
+                TrezorConnect.getPublicKey({
+                    path: "m/44'/0'/0'/0/0",
+                    showOnTrezor: true,
+                });
+                ```
+
+                More methods with detailed explanation can be found on the left under the 'Coin methods' section. You can also try the Method Testing Tool, where you can try interacting with the device by yourself.
+            </Steps>
+        </CollapsibleBox>
 
 </SectionCard>
 
@@ -354,76 +336,71 @@ export const ExampleHeading = styled.h3`
             `@trezor/connect-web` we open popup.html and load core SDK logic into it. This however does not
             build persistent connection between SDK and 3rd party application meaning that events cannot be
             used.
-
-             <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
-        <div>
-            <ol>
-                <li>
-                    <strong>Installation of the package</strong>
-                    ```javascript
-                    npm install @trezor/connect-webextension;
-                    // or
-                    yarn add @trezor/connect-webextension;
-                    ```
-                </li>
-                <li>
-                    <strong>Import from the package</strong>
-                    ```javascript
-                    import TrezorConnect from '@trezor/connect-webextension';
-                    ```
-                </li>
-                <li>
-                    <strong>Initialization of the project</strong>
-                    ```javascript
-                    TrezorConnect.init({
-                        lazyLoad: true, // this param prevents iframe injection until
-                        // TrezorConnect.method is called
-                        manifest: {
-                            email: 'developer@xyz.com',
-                            appUrl: 'http://your.application.com',
-                        },
-                    });
-                    ```
-                    <p>Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your email and application URL with us. This provides us with the ability to reach you in case of any required maintenance. This subscription is mandatory.</p>
-                    <p>It can be set either as a param in `init` method (above) or via `manifest`</p>
-                    ```javascript
-                    TrezorConnect.manifest({
-                        email: 'developer@xyz.com',
-                        appUrl: 'http://your.application.com',
-                    });
-                    ```
-                    If you need more customization, refer to [init method documentation](./methods/other/init)
-                </li>
-            </ol>
-            <Paragraph typographyStyle="titleSmall">How to use?</Paragraph>
-            <ol start="5">
-                <li>
-                    <p>Here is an example of how to get the device's public key:</p>
-                    ```javascript
-                    TrezorConnect.getPublicKey({
-                        path: "m/44'/0'/0'/0/0",
-                        showOnTrezor: true,
-                    });
-                    ```
-                    <p>More methods with detailed explanation can be found on the left under the 'COINS METHODS' section. You can also try the Method Testing Tool, where you can try interacting with the device by yourself.</p>
-                </li>
-            </ol>
-        </div>
-        </CollapsibleBox>
         </SdkDescription>
         <ExamplesAside>
             <ExampleHeading>Examples:</ExampleHeading>
             - [web extension mv3 (background)](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)
         </ExamplesAside>
+    </SdkContainer>
+
+        <CollapsibleBox heading="Quick start manual" margin={{ top: spacings.md }}>
+            <Steps>
+                ### Installation of the package
+
+                ```javascript
+                npm install @trezor/connect-webextension;
+                # or
+                yarn add @trezor/connect-webextension;
+                ```
+
+                ### Import from the package
+
+                ```javascript
+                import TrezorConnect from '@trezor/connect-webextension';
+                ```
+
+                ### Initialization of the project
+
+                ```javascript
+                TrezorConnect.init({
+                    lazyLoad: true, // this param prevents iframe injection until
+                    // TrezorConnect.method is called
+                    manifest: {
+                        email: 'developer@xyz.com',
+                        appUrl: 'http://your.application.com',
+                    },
+                });
+                ```
+
+                Trezor Connect Manifest requires that you, as a Trezor Connect integrator, share your email and application URL with us. This provides us with the ability to reach you in case of any required maintenance. This subscription is mandatory.
+
+                If you need more customization, refer to [init method documentation](./methods/other/init)
+
+                ### How to use?
+
+                Here is an example of how to get the device's public key:
+
+                ```javascript
+                TrezorConnect.getPublicKey({
+                    path: "m/44'/0'/0'/0/0",
+                    showOnTrezor: true,
+                });
+                ```
+
+                More methods with detailed explanation can be found on the left under the 'Coin methods' section. You can also try the Method Testing Tool, where you can try interacting with the device by yourself.
+            </Steps>
+        </CollapsibleBox>
 
         <div>
-            <Paragraph typographyStyle="titleSmall">Using the library</Paragraph>
+            ### Using the library
 
-            <p>At the moment only bundles `build/trezor-connect-webextension.js` and `build/trezor-connect-webextension.min.js` are published.</p>
+            At the moment only bundles `build/trezor-connect-webextension.js` and `build/trezor-connect-webextension.min.js` are published.
 
-            <Paragraph typographyStyle="titleSmall">Option 1: Using Scripting Permissions</Paragraph>
-            <p>For a seamless integration, especially with background processes, modify your extension's `manifest.json` to include scripting permissions, specify `host_permissions`, and define your service worker script as shown below:</p>
-            ```javascript
+            ### Option 1: Using Scripting Permissions
+
+            For a seamless integration, especially with background processes, modify your extension's `manifest.json` to include scripting permissions, specify `host_permissions`, and define your service worker script as shown below:
+
+            ```json
             {
                 "permissions": ["scripting"],
                 "host_permissions": ["*://connect.trezor.io/9/*"],
@@ -432,18 +409,25 @@ export const ExampleHeading = styled.h3`
                 }
             }
             ```
-            <Paragraph typographyStyle="highlight">Service Worker Import</Paragraph>
-            <p>In your `serviceWorker.js`, use `importScripts` to import the library. Ensure you replace with the actual path to the library file:</p>
+
+            #### Service Worker Import
+
+            In your `serviceWorker.js`, use `importScripts` to import the library. Ensure you replace with the actual path to the library file:
+
             ```javascript
             importScripts('<path>/trezor-connect-webextension.js');
             ```
 
-            <Paragraph typographyStyle="titleSmall">Option 2: Manual Content Script Injection</Paragraph>
-            <Paragraph typographyStyle="highlight">Bundle the Library:</Paragraph>
-            <p>Manually include `build/content-script.js` from this package into your project's bundle.</p>
-            <Paragraph typographyStyle="highlight">manifest.json Update:</Paragraph>
+            ### Option 2: Manual Content Script Injection
 
-            <p>Amend your `manifest.json` to include the script as a content script. Replace with the real path to the library file:</p>
+            #### Bundle the Library:
+
+            Manually include `build/content-script.js` from this package into your project's bundle.
+
+            #### manifest.json Update:
+
+            Amend your `manifest.json` to include the script as a content script. Replace with the real path to the library file:
+
             ```javascript
             {
                 "content_scripts": [
@@ -454,10 +438,10 @@ export const ExampleHeading = styled.h3`
                 ]
             }
             ```
-            <Paragraph typographyStyle="highlight">Adding your webextension to knownHosts</Paragraph>
-            <p>To ensure your extension is displayed with its name rather than its ID, you need to open a Pull Request to include it in the knownHosts section of the file located at <a href="https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/data/config.ts#L17" target="_blank">this link</a>.</p>
-        </div>
 
-    </SdkContainer>
+            #### Adding your webextension to knownHosts
+
+            To ensure your extension is displayed with its name rather than its ID, you need to open a Pull Request to include it in the knownHosts section of the file located at <a href="https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/data/config.ts#L17" target="_blank">this link</a>.
+        </div>
 
 </SectionCard>
