@@ -1,3 +1,4 @@
+import { FC } from 'react';
 import { FormattedDate } from 'react-intl';
 import styled from 'styled-components';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
@@ -53,11 +54,9 @@ const ColFiat = styled(Col)`
     text-align: right;
 `;
 
-interface PendingHeaderProps {
-    txsCount?: number;
-}
+type PendingGroupHeaderProps = { txsCount: number };
 
-export const PendingHeader = ({ txsCount }: PendingHeaderProps) => {
+export const PendingGroupHeader: FC<PendingGroupHeaderProps> = ({ txsCount }) => {
     return (
         <Wrapper>
             <ColPending data-test="@transaction-group/pending/count">

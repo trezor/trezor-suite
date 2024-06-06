@@ -4,10 +4,12 @@ import useDebounce from 'react-use/lib/useDebounce';
 
 import { fetchTransactionsThunk } from '@suite-common/wallet-core';
 import {
-    groupTransactionsByDate,
     advancedSearchTransactions,
-    groupJointTransactions,
     getAccountNetwork,
+    GroupedTransactionsByDate,
+    groupJointTransactions,
+    groupTransactionsByDate,
+    isPending,
 } from '@suite-common/wallet-utils';
 import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { Translation } from 'src/components/suite';
@@ -26,6 +28,7 @@ import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { SkeletonStack } from '@trezor/components';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { PendingGroupHeader } from './TransactionsGroup/DayHeader';
 
 const StyledSection = styled(DashboardSection)`
     margin-bottom: 20px;
@@ -123,50 +126,75 @@ export const TransactionList = ({
         [searchedTransactions, startIndex, stopIndex],
     );
 
-    const transactionsByDate = useMemo(
-        () => groupTransactionsByDate(slicedTransactions),
+    // TODO use one fn call to split pending & confirmed instead of two filters (use lib fn such as ramda partition)
+    const pendingTxs = useMemo(
+        () => slicedTransactions.filter(item => isPending(item)),
+        [slicedTransactions],
+    );
+    const confirmedTxs = useMemo(
+        () => slicedTransactions.filter(item => !isPending(item)),
         [slicedTransactions],
     );
 
-    const listItems = useMemo(
-        () =>
-            Object.entries(transactionsByDate).map(([dateKey, value], groupIndex) => {
-                const isPending = dateKey === 'pending';
-
-                return (
-                    <TransactionsGroup
-                        key={dateKey}
-                        dateKey={dateKey}
-                        symbol={symbol}
-                        transactions={value}
-                        localCurrency={localCurrency}
-                        index={groupIndex}
-                    >
-                        {groupJointTransactions(value).map((item, index) =>
-                            item.type === 'joint-batch' ? (
-                                <CoinjoinBatchItem
-                                    key={item.rounds[0].txid}
-                                    transactions={item.rounds}
-                                    isPending={isPending}
-                                    localCurrency={localCurrency}
-                                />
-                            ) : (
-                                <TransactionItem
-                                    key={item.tx.txid}
-                                    transaction={item.tx}
-                                    isPending={isPending}
-                                    accountMetadata={accountMetadata}
-                                    accountKey={account.key}
-                                    network={network!}
-                                    index={index}
-                                />
-                            ),
-                        )}
-                    </TransactionsGroup>
-                );
-            }),
-        [transactionsByDate, account.key, localCurrency, symbol, network, accountMetadata],
+    const pendingTxsByDate = useMemo(
+        () => groupTransactionsByDate(pendingTxs, 'day', true),
+        [pendingTxs],
     );
+    const confirmedTxsByDate = useMemo(
+        () => groupTransactionsByDate(confirmedTxs, 'day', true),
+        [confirmedTxs],
+    );
+
+    const listItems = useMemo(() => {
+        const getListItems = (
+            transactionGroups: GroupedTransactionsByDate,
+            isPendingGroup: boolean,
+        ) =>
+            Object.entries(transactionGroups).map(([dateKey, value], groupIndex) => (
+                <TransactionsGroup
+                    key={dateKey}
+                    dateKey={dateKey}
+                    symbol={symbol}
+                    transactions={value}
+                    localCurrency={localCurrency}
+                    index={groupIndex}
+                >
+                    {groupJointTransactions(value).map((item, index) =>
+                        item.type === 'joint-batch' ? (
+                            <CoinjoinBatchItem
+                                key={item.rounds[0].txid}
+                                transactions={item.rounds}
+                                isPending={isPendingGroup}
+                                localCurrency={localCurrency}
+                            />
+                        ) : (
+                            <TransactionItem
+                                key={item.tx.txid}
+                                transaction={item.tx}
+                                isPending={isPendingGroup}
+                                accountMetadata={accountMetadata}
+                                accountKey={account.key}
+                                network={network!}
+                                index={index}
+                            />
+                        ),
+                    )}
+                </TransactionsGroup>
+            ));
+
+        return [
+            ...getListItems(pendingTxsByDate, true),
+            ...getListItems(confirmedTxsByDate, false),
+        ];
+    }, [
+        pendingTxsByDate,
+        confirmedTxsByDate,
+        account.key,
+        localCurrency,
+        symbol,
+        network,
+        accountMetadata,
+    ]);
 
     // if total pages cannot be determined check current page and number of txs (XRP)
     // Edge case: if there is exactly 25 Ripple txs, pagination will be displayed
@@ -204,7 +232,16 @@ export const TransactionList = ({
                     <SkeletonTransactionItem />
                 </SkeletonStack>
             ) : (
-                <>{areTransactionsAvailable ? <NoSearchResults /> : listItems}</>
+                <>
+                    {areTransactionsAvailable ? (
+                        <NoSearchResults />
+                    ) : (
+                        <>
+                            <PendingGroupHeader txsCount={pendingTxs.length} />
+                            {listItems}
+                        </>
+                    )}
+                </>
             )}
 
             {showPagination && (
