@@ -1,7 +1,7 @@
 import { exec } from 'child_process';
 
 export class NetworkAnalyzer {
-    interval?: string | number | NodeJS.Timer;
+    interval?: string | number | ReturnType<typeof setInterval>;
     tcp: string[];
 
     constructor() {
