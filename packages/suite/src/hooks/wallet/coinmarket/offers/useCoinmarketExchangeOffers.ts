@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-
 import { ExchangeTrade } from 'invity-api';
-
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networksCompatibility as networks } from '@suite-common/wallet-config';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
@@ -10,12 +8,14 @@ import invityAPI from 'src/services/suite/invityAPI';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    addIdsToQuotes,
+    getUnusedAddressFromAccount,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-
-import { useCoinmarketRecomposeAndSign } from '../../useCoinmarketRecomposeAndSign';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import {
     selectHasExperimentalFeature,
     selectIsDebugModeActive,
@@ -23,13 +23,18 @@ import {
 import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { getSuccessQuotesOrdered } from 'src/utils/wallet/coinmarket/exchangeUtils';
 import {
+    CoinmarketExchangeOffersContextProps,
     CoinmarketExchangeStepType,
     CoinmarketOffersContextValues,
 } from 'src/types/coinmarket/coinmarketOffers';
-import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
+import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
+import { useCoinmarketCommonOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
 
-export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+export const useCoinmarketExchangeOffers = ({
+    selectedAccount,
+}: UseCoinmarketProps): CoinmarketExchangeOffersContextProps => {
+    const type = 'exchange';
     const dispatch = useDispatch();
     const {
         callInProgress,
@@ -40,7 +45,7 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
         setCallInProgress,
         setSelectedQuote,
         checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount });
+    } = useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount, type });
     const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
@@ -58,9 +63,7 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
         saveTransactionId,
         addNotification,
         verifyAddress,
-        clearQuoteRequest,
     } = useActions({
-        clearQuoteRequest: coinmarketExchangeActions.clearQuoteRequest,
         saveTrade: coinmarketExchangeActions.saveTrade,
         openCoinmarketExchangeConfirmModal:
             coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
@@ -96,7 +99,10 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
 
                     return;
                 }
-                const successQuotes = getSuccessQuotesOrdered(allQuotes, exchangeInfo);
+                const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
+                    getSuccessQuotesOrdered(allQuotes, exchangeInfo),
+                    'exchange',
+                );
                 setInnerQuotes(successQuotes);
             } else {
                 setInnerQuotes(undefined);
@@ -129,6 +135,10 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
             );
             if (result) {
                 setSelectedQuote(quote);
+                dispatch({
+                    type: SET_MODAL_CRYPTO_CURRENCY,
+                    modalCryptoSymbol: quote.receive,
+                });
                 timer.stop();
             }
         }
@@ -227,8 +237,8 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
             ok = true;
         } else {
             // CONFIRMING, SUCCESS
-            await saveTrade(response, account, new Date().toISOString());
-            await saveTransactionId(response.orderId);
+            saveTrade(response, account, new Date().toISOString());
+            saveTransactionId(response.orderId);
             ok = true;
             navigateToExchangeDetail();
         }
@@ -263,7 +273,7 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
                 if (selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO') {
                     quote.receiveTxHash = txid;
                     quote.status = 'CONFIRMING';
-                    await saveTrade(quote, account, new Date().toISOString());
+                    saveTrade(quote, account, new Date().toISOString());
                     confirmTrade(quote.receiveAddress || '', undefined, quote);
                 } else {
                     quote.approvalSendTxHash = txid;
@@ -306,8 +316,8 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
             );
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
-                await saveTrade(selectedQuote, account, new Date().toISOString());
-                await saveTransactionId(selectedQuote.orderId);
+                saveTrade(selectedQuote, account, new Date().toISOString());
+                saveTransactionId(selectedQuote.orderId);
                 navigateToExchangeDetail();
             }
         } else {
@@ -318,13 +328,8 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
         }
     };
 
-    useEffect(() => {
-        return () => {
-            dispatch(clearQuoteRequest());
-        };
-    }, [clearQuoteRequest, dispatch]);
-
     return {
+        type,
         callInProgress,
         confirmTrade,
         sendTransaction,
@@ -346,6 +351,5 @@ export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketPr
         receiveAccount,
         setReceiveAccount,
         getQuotes,
-        type: 'exchange' as const,
     };
 };

@@ -224,10 +224,6 @@ export default defineMessages({
         defaultMessage: 'Provider',
         id: 'TR_EXCHANGE_PROVIDER',
     },
-    TR_EXCHANGE_GET_THIS_OFFER: {
-        id: 'TR_EXCHANGE_GET_THIS_OFFER',
-        defaultMessage: 'Get this deal',
-    },
     TR_EXCHANGE_KYC: {
         id: 'TR_EXCHANGE_KYC',
         defaultMessage: 'KYC',
@@ -296,10 +292,6 @@ export default defineMessages({
     TR_EXCHANGE_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
         id: 'TR_EXCHANGE_SHOW_OFFERS',
-    },
-    TR_EXCHANGE_OFFERS_REFRESH: {
-        defaultMessage: 'Offers refresh in',
-        id: 'TR_EXCHANGE_OFFERS_REFRESH',
     },
     TR_EXCHANGE_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Exchange {fromCrypto} to {toCrypto} with {provider}',
@@ -873,14 +865,6 @@ export default defineMessages({
         defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
         id: 'TR_SELL_NO_OFFERS',
     },
-    TR_SELL_OFFERS_REFRESH: {
-        defaultMessage: 'Refresh in',
-        id: 'TR_SELL_OFFERS_REFRESH',
-    },
-    TR_SELL_GET_THIS_OFFER: {
-        id: 'TR_SELL_GET_THIS_OFFER',
-        defaultMessage: 'Get this offer',
-    },
     TR_SELL_REGISTER: {
         id: 'TR_SELL_REGISTER',
         defaultMessage: 'Register',
@@ -1060,10 +1044,6 @@ export default defineMessages({
     TR_P2P_SHOW_OFFERS: {
         defaultMessage: 'Show offers',
         id: 'TR_P2P_SHOW_OFFERS',
-    },
-    TR_P2P_OFFERS_REFRESH: {
-        defaultMessage: 'Offers refresh in',
-        id: 'TR_P2P_OFFERS_REFRESH',
     },
     TR_P2P_NO_OFFERS: {
         defaultMessage:
@@ -1361,10 +1341,6 @@ export default defineMessages({
         defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
         id: 'TR_BUY_NO_OFFERS',
     },
-    TR_BUY_OFFERS_REFRESH: {
-        defaultMessage: 'Offers refresh in',
-        id: 'TR_BUY_OFFERS_REFRESH',
-    },
     TR_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum}',
         id: 'TR_BUY_VALIDATION_ERROR_MINIMUM_CRYPTO',
@@ -1412,10 +1388,6 @@ export default defineMessages({
     TR_BUY_NO_PROVIDERS: {
         defaultMessage: 'No providers',
         id: 'TR_BUY_NO_PROVIDERS',
-    },
-    TR_BUY_GET_THIS_OFFER: {
-        id: 'TR_BUY_GET_THIS_OFFER',
-        defaultMessage: 'Get this deal',
     },
     TR_LOGIN_PROCEED: {
         id: 'TR_LOGIN_PROCEED',
@@ -1602,13 +1574,122 @@ export default defineMessages({
         defaultMessage: 'Unknown provider',
         id: 'TR_UNKNOWN_PROVIDER',
     },
-    TR_COINMARKET_YOU_GET: {
+    TR_COINMARKET_YOU_WILL_GET: {
         defaultMessage: 'You will get',
-        id: 'TR_COINMARKET_YOU_GET',
+        id: 'TR_COINMARKET_YOU_WILL_GET',
+    },
+    TR_COINMARKET_YOU_WILL_PAY: {
+        defaultMessage: 'You will pay',
+        id: 'TR_COINMARKET_YOU_WILL_PAY',
     },
     TR_COINMARKET_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
         id: 'TR_COINMARKET_SHOW_OFFERS',
+    },
+    TR_COINMARKET_LAST_TRANSACTIONS: {
+        defaultMessage: 'Last transactions',
+        id: 'TR_COINMARKET_LAST_TRANSACTIONS',
+    },
+    TR_COINMARKET_PAYMENT_METHOD: {
+        defaultMessage: 'Payment method',
+        id: 'TR_COINMARKET_PAYMENT_METHOD',
+    },
+    TR_COINMARKET_YOU_BUY: {
+        defaultMessage: 'You buy',
+        id: 'TR_COINMARKET_YOU_BUY',
+    },
+    TR_COINMARKET_YOU_PAY: {
+        defaultMessage: 'You pay',
+        id: 'TR_COINMARKET_YOU_PAY',
+    },
+    TR_COINMARKET_YOU_GET: {
+        defaultMessage: 'You get',
+        id: 'TR_COINMARKET_YOU_GET',
+    },
+    TR_COINMARKET_COUNTRY: {
+        defaultMessage: 'Country of residence',
+        id: 'TR_COINMARKET_COUNTRY',
+    },
+    TR_COINMARKET_YOUR_BEST_OFFER: {
+        defaultMessage: 'Your best offer',
+        id: 'TR_COINMARKET_YOUR_BEST_OFFER',
+    },
+    TR_COINMARKET_COMPARE_OFFERS: {
+        defaultMessage: 'Compare all offers',
+        id: 'TR_COINMARKET_COMPARE_OFFERS',
+    },
+    TR_COINMARKET_OFFER_LOOKING: {
+        defaultMessage: 'Looking for your best offer',
+        id: 'TR_COINMARKET_OFFER_LOOKING',
+    },
+    TR_COINMARKET_OFFER_NO_FOUND: {
+        defaultMessage: 'No offers found for your request. Try a different amount or currency.',
+        id: 'TR_COINMARKET_OFFER_NO_FOUND',
+    },
+    TR_COINMARKET_BEST_RATE: {
+        defaultMessage: 'Best rate',
+        id: 'TR_COINMARKET_BEST_RATE',
+    },
+    TR_COINMARKET_FEES_INCLUDED: {
+        defaultMessage: 'Fees included',
+        id: 'TR_COINMARKET_FEES_INCLUDED',
+    },
+    TR_COINMARKET_FEES_NOT_INCLUDED: {
+        defaultMessage: 'Fees not included',
+        id: 'TR_COINMARKET_FEES_NOT_INCLUDED',
+    },
+    TR_COINMARKET_FEES_ON_WEBSITE: {
+        defaultMessage:
+            "Certain fees are not included in the displayed price. You will review the final price on the provider's website.",
+        id: 'TR_COINMARKET_FEES_ON_WEBSITE',
+    },
+    TR_COINMARKET_NETWORK_FEE: {
+        defaultMessage: 'Network fee',
+        id: 'TR_COINMARKET_NETWORK_FEE',
+    },
+    TR_COINMARKET_TRADE_FEE: {
+        defaultMessage: 'Trade fee',
+        id: 'TR_COINMARKET_TRADE_FEE',
+    },
+    TR_COINMARKET_OFFERS_REFRESH: {
+        defaultMessage: 'Offers refresh in',
+        id: 'TR_COINMARKET_OFFERS_REFRESH',
+    },
+    TR_COINMARKET_OFFERS_SELECT: {
+        defaultMessage: 'Select',
+        id: 'TR_COINMARKET_OFFERS_SELECT',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_A: {
+        defaultMessage: 'Popular currencies',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_A',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_B: {
+        defaultMessage: 'Ethereum ERC20 tokens',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_B',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_C: {
+        defaultMessage: 'Solana tokens',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_C',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_D: {
+        defaultMessage: 'Polygon ERC20 tokens',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_D',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_E: {
+        defaultMessage: 'Other currencies',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_E',
+    },
+    TR_COINMARKET_TOKEN_NETWORK: {
+        defaultMessage: '{tokenName} on {networkName} network',
+        id: 'TR_COINMARKET_TOKEN_NETWORK',
+    },
+    TR_COINMARKET_ENTER_AMOUNT_IN: {
+        defaultMessage: 'Enter amount in {currency}',
+        id: 'TR_COINMARKET_ENTER_AMOUNT_IN',
+    },
+    TR_COINMARKET_FIAT: {
+        defaultMessage: 'fiat',
+        id: 'TR_COINMARKET_FIAT',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

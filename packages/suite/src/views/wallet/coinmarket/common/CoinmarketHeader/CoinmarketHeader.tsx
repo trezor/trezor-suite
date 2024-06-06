@@ -1,19 +1,18 @@
 import { H2 } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
-import CoinmarketHeaderFilter from './CoinmarketHeaderFilter';
-import { CoinmarketRefreshTime } from '..';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import CoinmarketHeaderSummary from './CoinmarketHeaderSummary';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
     isCoinmarketBuyOffers,
-    isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import CoinmarketHeaderSummary from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderSummary';
+import { CoinmarketRefreshTime } from 'src/views/wallet/coinmarket/common';
+import CoinmarketHeaderFilter from 'src/views/wallet/coinmarket/common/CoinmarketHeader/CoinmarketHeaderFilter';
 
 const Header = styled.div`
     padding-top: ${spacingsPx.sm};
@@ -78,10 +77,8 @@ interface CoinmarketHeaderProps {
 
 const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: CoinmarketHeaderProps) => {
     const context = useCoinmarketOffersContext();
-    const { timer } = context;
-    const headerProps = getCryptoQuoteAmountProps(context.quotes?.[0], context);
-
-    if (!headerProps || !context.quotesRequest) return null;
+    const { timer, quotes } = context;
+    const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
 
     const Timer = () => (
         <CoinmarketRefreshTime
@@ -101,12 +98,10 @@ const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: Coinmarke
                 {showTimerNextToTitle && <Timer />}
             </HeaderTop>
             <HeaderBottom>
-                {(isCoinmarketBuyOffers(context) || isCoinmarketSellOffers(context)) && (
-                    <CoinmarketHeaderFilter
-                        quotesFilterReducer={context.innerQuotesFilterReducer}
-                    />
+                {isCoinmarketBuyOffers(context) && <CoinmarketHeaderFilter />}
+                {headerProps && !isCoinmarketBuyOffers(context) && (
+                    <CoinmarketHeaderSummaryWrap {...headerProps} />
                 )}
-                <CoinmarketHeaderSummaryWrap {...headerProps} />
                 {!showTimerNextToTitle && (
                     <HeaderCoinmarketRefreshTime>
                         <Timer />

@@ -27,7 +27,10 @@ import { CoinmarketTransactionStatus } from './CoinmarketTransactionStatus';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketWatchTrade } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
-import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Wrapper = styled.div`
     display: flex;
@@ -167,7 +170,9 @@ export const BuyTransaction = ({ trade, providers, account }: BuyTransactionProp
         dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         const allQuotes = await invityAPI.getBuyQuotes(request);
         if (allQuotes) {
-            const quotes = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
+            const quotes = filterQuotesAccordingTags<CoinmarketTradeBuyType>(
+                addIdsToQuotes<CoinmarketTradeBuyType>(allQuotes, 'buy'),
+            );
             dispatch(saveQuotes(quotes));
         } else {
             dispatch(clearQuotes());

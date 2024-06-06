@@ -11,7 +11,7 @@ import PaymentConverting from '../components/PaymentConverting';
 import PaymentSending from '../components/PaymentSending';
 import { CoinmarketExchangeOfferInfo } from '../../components/ExchangeForm/CoinmarketExchangeOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import { getTradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+import { tradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { CoinmarketTradeExchangeType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
@@ -51,7 +51,7 @@ const CoinmarketDetail = () => {
     }
 
     const tradeStatus = trade?.data?.status || 'CONFIRMING';
-    const exchangeTradeFinalStatuses = getTradeFinalStatuses('exchange');
+    const exchangeTradeFinalStatuses = tradeFinalStatuses['exchange'];
     const showSending =
         !exchangeTradeFinalStatuses.includes(tradeStatus) && tradeStatus !== 'CONVERTING';
 

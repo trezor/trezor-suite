@@ -1,10 +1,14 @@
-import { Account, Network, NetworkSymbol } from 'src/types/wallet';
+import { Account, Network } from 'src/types/wallet';
 import { NETWORKS } from 'src/config/wallet';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
-import { CryptoSymbol } from 'invity-api';
+import { BuyTrade, CryptoSymbol, SellFiatTrade } from 'invity-api';
 import {
+    cryptoToCoinSymbol,
+    cryptoToNetworkSymbol,
+    getNetworkName,
+    isCryptoSymbolToken,
     networkToCryptoSymbol,
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
@@ -15,10 +19,25 @@ import {
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
+    CoinmarketBuildOptionsProps,
+    CoinmarketCryptoListProps,
+    CoinmarketOptionsGroupProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
+    CoinmarketTradeDetailMapProps,
+    CoinmarketTradeDetailType,
+    CoinmarketTradeType,
+    CryptoCategoryType,
 } from 'src/types/coinmarket/coinmarket';
 import { v4 as uuidv4 } from 'uuid';
+import { BigNumber } from '@trezor/utils';
+import CryptoCategories, {
+    CryptoCategoryA,
+    CryptoCategoryB,
+    CryptoCategoryC,
+    CryptoCategoryD,
+    CryptoCategoryE,
+} from 'src/constants/wallet/coinmarket/cryptoCategories';
 
 /** @deprecated */
 const suiteToInvitySymbols: {
@@ -31,11 +50,15 @@ export const buildFiatOption = (currency: string) => ({
     label: currency.toUpperCase(),
 });
 
-export const buildCryptoOption = (networkSymbol: NetworkSymbol) => ({
-    value: networkSymbol.toUpperCase(),
-    label: networkSymbol.toUpperCase(),
-    cryptoSymbol: networkToCryptoSymbol(networkSymbol),
-});
+export const buildCryptoOption = (cryptoSymbol: CryptoSymbol): CoinmarketCryptoListProps => {
+    const networkSymbol = cryptoToNetworkSymbol(cryptoSymbol);
+
+    return {
+        value: cryptoSymbol,
+        label: cryptoToCoinSymbol(cryptoSymbol),
+        cryptoName: networkSymbol ? getNetworkName(networkSymbol) : null,
+    };
+};
 
 /** @deprecated */
 export const invityApiSymbolToSymbol = (symbol?: string) => {
@@ -254,19 +277,110 @@ export const getDefaultCountry = (country: string = regional.unknownCountry) => 
     };
 };
 
-// fill ids and remove alternative quotes
-export function processSellAndBuyQuotes<T extends CoinmarketTradeBuySellType>(
-    allQuotes: CoinmarketTradeBuySellDetailMapProps[T][] | undefined,
-): CoinmarketTradeBuySellDetailMapProps[T][] {
+export const filterQuotesAccordingTags = <T extends CoinmarketTradeBuySellType>(
+    allQuotes: CoinmarketTradeBuySellDetailMapProps[T][],
+) => {
+    return allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
+};
+
+// fill orderId for all and paymentId for sell and buy
+export const addIdsToQuotes = <T extends CoinmarketTradeType>(
+    allQuotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+    type: CoinmarketTradeType,
+): CoinmarketTradeDetailMapProps[T][] => {
     if (!allQuotes) allQuotes = [];
+
     allQuotes.forEach(q => {
-        q.orderId = uuidv4();
+        const sellBuyQuote = ['buy', 'sell'].includes(type)
+            ? (q as BuyTrade | SellFiatTrade)
+            : null;
 
-        if (!q.paymentId) {
-            q.paymentId = uuidv4();
+        if (sellBuyQuote && !sellBuyQuote.paymentId) {
+            sellBuyQuote.paymentId = uuidv4();
         }
-    });
-    const quotes = allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
 
-    return quotes;
-}
+        q.orderId = uuidv4();
+    });
+
+    return allQuotes;
+};
+
+export const getBestRatedQuote = (
+    quotes: CoinmarketTradeDetailType[] | undefined,
+    type: CoinmarketTradeType,
+): CoinmarketTradeDetailType | undefined => {
+    const quotesFiltered = quotes?.filter(item => item.rate && item.rate !== 0);
+    const bestRatedQuotes = quotesFiltered
+        ? [...quotesFiltered].sort((a, b) => {
+              // ascending to rate for buy - lower rate more crypto client receives
+              if (type === 'buy') {
+                  return new BigNumber(a.rate ?? 0).minus(new BigNumber(b.rate ?? 0)).toNumber();
+              }
+
+              // descending to rate for sell/exchange - higher rate more crypto/fiat client receives
+              return new BigNumber(b.rate ?? 0).minus(new BigNumber(a.rate ?? 0)).toNumber();
+          })
+        : null;
+    const bestRatedQuote = bestRatedQuotes?.[0];
+
+    return bestRatedQuote;
+};
+
+export const coinmarketBuildCryptoOptions = ({
+    symbolsInfo,
+    cryptoCurrencies,
+}: CoinmarketBuildOptionsProps) => {
+    const groups: CoinmarketOptionsGroupProps[] = Object.keys(CryptoCategories).map(category => ({
+        label: category as CryptoCategoryType,
+        options: [],
+    }));
+
+    cryptoCurrencies.forEach(symbol => {
+        const coinSymbol = cryptoToCoinSymbol(symbol);
+        const symbolInfo = symbolsInfo?.find(symbolInfoItem => symbolInfoItem.symbol === symbol);
+        const cryptoSymbol = cryptoToNetworkSymbol(symbol);
+
+        const option = {
+            value: symbol,
+            label: coinSymbol.toUpperCase(),
+            cryptoName: symbolInfo?.name ?? null,
+        };
+
+        const pushOption = (category: CryptoCategoryType) => {
+            const group = groups.find(g => g.label === category);
+
+            group?.options.push(option);
+        };
+
+        // popular
+        if (symbolInfo?.category === CryptoCategoryA) {
+            pushOption(CryptoCategoryA);
+
+            return;
+        }
+
+        // tokens
+        if (isCryptoSymbolToken(symbol)) {
+            const networksWithCategoryName: CryptoCategoryType[] = [
+                CryptoCategoryB,
+                CryptoCategoryC,
+                CryptoCategoryD,
+            ];
+
+            networksWithCategoryName.forEach(network => {
+                if (CryptoCategories[network]?.network === cryptoSymbol) {
+                    pushOption(network);
+
+                    return;
+                }
+            });
+
+            return;
+        }
+
+        // default
+        pushOption(CryptoCategoryE);
+    });
+
+    return groups;
+};

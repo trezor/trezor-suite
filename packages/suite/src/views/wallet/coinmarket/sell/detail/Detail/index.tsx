@@ -9,7 +9,7 @@ import PaymentSuccessful from '../components/PaymentSuccessful';
 import PaymentFailed from '../components/PaymentFailed';
 import { CoinmarketSellOfferInfo } from '../../components/CoinmarketSellOfferInfo';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
-import { getTradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
+import { tradeFinalStatuses } from 'src/hooks/wallet/coinmarket/useCoinmarketWatchTrade';
 import { CoinmarketTradeSellType } from 'src/types/coinmarket/coinmarket';
 
 const Wrapper = styled.div`
@@ -49,7 +49,7 @@ const CoinmarketDetail = () => {
     }
 
     const tradeStatus = trade?.data?.status || 'PENDING';
-    const sellFiatTradeFinalStatuses = getTradeFinalStatuses('sell');
+    const sellFiatTradeFinalStatuses = tradeFinalStatuses['sell'];
     const showPending = !sellFiatTradeFinalStatuses.includes(tradeStatus);
 
     const exchange = trade?.data?.exchange;

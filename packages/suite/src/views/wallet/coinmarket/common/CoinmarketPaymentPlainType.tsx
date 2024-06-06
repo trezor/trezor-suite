@@ -8,7 +8,6 @@ const Text = styled.div`
     display: flex;
     align-items: center;
     ${typography.body};
-    color: ${({ theme }) => theme.textDefault};
 `;
 
 interface CoinmarketPaymentTypeProps {

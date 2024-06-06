@@ -1,20 +1,23 @@
 import { useTimer } from '@trezor/react-utils';
-import { useServerEnvironment } from '../useServerEnviroment';
 import { useDevice } from 'src/hooks/suite';
 import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import {
     CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeExchangeType,
     CoinmarketTradeSellType,
     CoinmarketTradeType,
-    UseCoinmarketProps,
+    UseCoinmarketCommonProps,
+    UseCoinmarketCommonReturnProps,
 } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketOffersContextValues,
     CoinmarketOffersMapProps,
 } from 'src/types/coinmarket/coinmarketOffers';
+import { useDispatch } from 'react-redux';
+import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
+import { useServerEnvironment } from 'src/hooks/wallet/coinmarket/useServerEnviroment';
 
 export const isCoinmarketBuyOffers = (
     offersContext: CoinmarketOffersMapProps[keyof CoinmarketOffersMapProps],
@@ -36,13 +39,19 @@ export const getFilteredSuccessQuotes = <T extends CoinmarketTradeType>(
 ) => (quotes ? quotes.filter(q => q.error === undefined) : undefined);
 
 export const useCoinmarketCommonOffers = <T extends CoinmarketTradeType>({
+    type,
     selectedAccount,
-}: UseCoinmarketProps) => {
+}: UseCoinmarketCommonProps): UseCoinmarketCommonReturnProps<T> => {
+    const dispatch = useDispatch();
     const timer = useTimer();
     const { account } = selectedAccount;
     const { isLocked, device } = useDevice();
-    const [callInProgress, setCallInProgress] = useState<boolean>(isLocked() ?? false);
-    const [selectedQuote, setSelectedQuote] = useState<CoinmarketTradeDetailMapProps[T]>();
+    const [callInProgress, setCallInProgress] = useState<boolean>(
+        type !== 'buy' ? isLocked() : false,
+    );
+    const [selectedQuote, setSelectedQuote] = useState<
+        CoinmarketTradeDetailMapProps[T] | undefined
+    >();
 
     const checkQuotesTimer = (callback: () => Promise<void>) => {
         if (!timer.isLoading && !timer.isStopped) {
@@ -58,6 +67,16 @@ export const useCoinmarketCommonOffers = <T extends CoinmarketTradeType>({
 
     useServerEnvironment();
 
+    // after unmount set off CryptoSymbol for modals
+    useEffect(() => {
+        return () => {
+            dispatch({
+                type: SET_MODAL_CRYPTO_CURRENCY,
+                modalCryptoSymbol: undefined,
+            });
+        };
+    }, [dispatch]);
+
     return {
         callInProgress,
         account,
@@ -70,14 +89,14 @@ export const useCoinmarketCommonOffers = <T extends CoinmarketTradeType>({
     };
 };
 
-export const CoinmarketOffersContext = createContext<CoinmarketOffersContextValues<any> | null>(
-    null,
-);
+export const CoinmarketOffersContext =
+    createContext<CoinmarketOffersContextValues<CoinmarketTradeType> | null>(null);
+
 CoinmarketOffersContext.displayName = 'CoinmarketOffersContext';
 
 export const useCoinmarketOffersContext = <T extends CoinmarketTradeType>() => {
-    const context = useContext<CoinmarketOffersContextValues<T> | null>(CoinmarketOffersContext);
+    const context = useContext(CoinmarketOffersContext);
     if (context === null) throw Error('CoinmarketOffersContext used without Context');
 
-    return context;
+    return context as CoinmarketOffersContextValues<T>;
 };
