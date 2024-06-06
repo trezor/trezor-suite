@@ -1945,6 +1945,10 @@ export default defineMessages({
         defaultMessage: 'Compare offers',
         id: 'TR_COINMARKET_SHOW_OFFERS',
     },
+    TR_COINMARKET_LAST_TRANSACTIONS: {
+        defaultMessage: 'Last transactions',
+        id: 'TR_COINMARKET_LAST_TRANSACTIONS',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
