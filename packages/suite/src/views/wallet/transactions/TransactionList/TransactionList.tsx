@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { FC, useMemo, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -38,6 +38,56 @@ const PaginationWrapper = styled.div`
     margin-top: 20px;
 `;
 
+interface TransactionGroupedListProps {
+    transactionGroups: GroupedTransactionsByDate;
+    symbol: WalletAccountTransaction['symbol'];
+    account: Account;
+    isPending: boolean;
+}
+
+const TransactionGroupedList: FC<TransactionGroupedListProps> = ({
+    transactionGroups,
+    symbol,
+    account,
+    isPending,
+}) => {
+    const localCurrency = useSelector(selectLocalCurrency);
+    const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
+    const network = getAccountNetwork(account);
+
+    return Object.entries(transactionGroups).map(([dateKey, value], groupIndex) => (
+        <TransactionsGroup
+            key={dateKey}
+            dateKey={dateKey}
+            symbol={symbol}
+            transactions={value}
+            localCurrency={localCurrency}
+            index={groupIndex}
+        >
+            {groupJointTransactions(value).map((item, index) =>
+                item.type === 'joint-batch' ? (
+                    <CoinjoinBatchItem
+                        key={item.rounds[0].txid}
+                        transactions={item.rounds}
+                        isPending={isPending}
+                        localCurrency={localCurrency}
+                    />
+                ) : (
+                    <TransactionItem
+                        key={item.tx.txid}
+                        transaction={item.tx}
+                        isPending={isPending}
+                        accountMetadata={accountMetadata}
+                        accountKey={account.key}
+                        network={network!}
+                        index={index}
+                    />
+                ),
+            )}
+        </TransactionsGroup>
+    ));
+};
+
 interface TransactionListProps {
     transactions: WalletAccountTransaction[];
     symbol: WalletAccountTransaction['symbol'];
@@ -55,11 +105,9 @@ export const TransactionList = ({
     customTotalItems,
     isExportable = true,
 }: TransactionListProps) => {
-    const localCurrency = useSelector(selectLocalCurrency);
     const anchor = useSelector(state => state.router.anchor);
     const dispatch = useDispatch();
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
-    const network = getAccountNetwork(account);
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');
@@ -145,57 +193,6 @@ export const TransactionList = ({
         [confirmedTxs],
     );
 
-    const listItems = useMemo(() => {
-        const getListItems = (
-            transactionGroups: GroupedTransactionsByDate,
-            isPendingGroup: boolean,
-        ) =>
-            Object.entries(transactionGroups).map(([dateKey, value], groupIndex) => (
-                <TransactionsGroup
-                    key={dateKey}
-                    dateKey={dateKey}
-                    symbol={symbol}
-                    transactions={value}
-                    localCurrency={localCurrency}
-                    index={groupIndex}
-                >
-                    {groupJointTransactions(value).map((item, index) =>
-                        item.type === 'joint-batch' ? (
-                            <CoinjoinBatchItem
-                                key={item.rounds[0].txid}
-                                transactions={item.rounds}
-                                isPending={isPendingGroup}
-                                localCurrency={localCurrency}
-                            />
-                        ) : (
-                            <TransactionItem
-                                key={item.tx.txid}
-                                transaction={item.tx}
-                                isPending={isPendingGroup}
-                                accountMetadata={accountMetadata}
-                                accountKey={account.key}
-                                network={network!}
-                                index={index}
-                            />
-                        ),
-                    )}
-                </TransactionsGroup>
-            ));
-
-        return [
-            ...getListItems(pendingTxsByDate, true),
-            ...getListItems(confirmedTxsByDate, false),
-        ];
-    }, [
-        pendingTxsByDate,
-        confirmedTxsByDate,
-        account.key,
-        localCurrency,
-        symbol,
-        network,
-        accountMetadata,
-    ]);
-
     // if total pages cannot be determined check current page and number of txs (XRP)
     // Edge case: if there is exactly 25 Ripple txs, pagination will be displayed
     const isRipple = account.networkType === 'ripple';
@@ -237,8 +234,21 @@ export const TransactionList = ({
                         <NoSearchResults />
                     ) : (
                         <>
-                            <PendingGroupHeader txsCount={pendingTxs.length} />
-                            {listItems}
+                            {pendingTxs.length > 0 && (
+                                <PendingGroupHeader txsCount={pendingTxs.length} />
+                            )}
+                            <TransactionGroupedList
+                                transactionGroups={pendingTxsByDate}
+                                symbol={symbol}
+                                account={account}
+                                isPending={true}
+                            />
+                            <TransactionGroupedList
+                                transactionGroups={confirmedTxsByDate}
+                                symbol={symbol}
+                                account={account}
+                                isPending={false}
+                            />
                         </>
                     )}
                 </>
