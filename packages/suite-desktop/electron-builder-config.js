@@ -129,6 +129,7 @@ module.exports = {
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
         signDlls: true,
+        sign: '../suite-desktop-core/scripts/sign-windows.ts',
     },
     linux: {
         extraResources: [
