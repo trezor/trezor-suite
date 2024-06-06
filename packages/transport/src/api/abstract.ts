@@ -45,7 +45,9 @@ export abstract class AbstractApi extends TypedEmitter<{
     /**
      * enumerate connected devices
      */
-    abstract enumerate(): AsyncResultWithTypedError<
+    abstract enumerate(
+        signal?: AbortSignal,
+    ): AsyncResultWithTypedError<
         DescriptorApiLevel[],
         | typeof ERRORS.ABORTED_BY_TIMEOUT
         | typeof ERRORS.ABORTED_BY_SIGNAL
@@ -62,6 +64,7 @@ export abstract class AbstractApi extends TypedEmitter<{
      */
     abstract read(
         path: string,
+        signal?: AbortSignal,
     ): AsyncResultWithTypedError<
         ArrayBuffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -78,6 +81,7 @@ export abstract class AbstractApi extends TypedEmitter<{
     abstract write(
         path: string,
         buffers: Buffer,
+        signal?: AbortSignal,
     ): AsyncResultWithTypedError<
         undefined,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -93,6 +97,7 @@ export abstract class AbstractApi extends TypedEmitter<{
     abstract openDevice(
         path: string,
         first: boolean,
+        signal?: AbortSignal,
     ): AsyncResultWithTypedError<
         undefined,
         | typeof ERRORS.DEVICE_NOT_FOUND

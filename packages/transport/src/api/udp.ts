@@ -13,6 +13,7 @@ export class UdpApi extends AbstractApi {
     protected communicating = false;
 
     private enumerationTimeout: ReturnType<typeof setTimeout> | undefined;
+    private enumerateAbortController = new AbortController();
 
     constructor({ logger }: AbstractApiConstructorParams) {
         super({ logger });
@@ -22,32 +23,45 @@ export class UdpApi extends AbstractApi {
         if (this.listening) return;
         this.listening = true;
 
-        // same as UdpTransport listen, set timeout to ping udp devices
         const enumerateRecursive = () => {
             if (!this.listening) return;
 
             this.enumerationTimeout = setTimeout(() => {
-                this.enumerate().finally(enumerateRecursive);
+                this.enumerate(this.enumerateAbortController.signal).finally(enumerateRecursive);
             }, 500);
         };
 
         enumerateRecursive();
     }
 
-    public write(path: string, buffer: Buffer) {
+    public write(path: string, buffer: Buffer, signal?: AbortSignal) {
         const [hostname, port] = path.split(':');
 
         return new Promise<
             ResultWithTypedError<
                 undefined,
-                typeof ERRORS.INTERFACE_DATA_TRANSFER | typeof ERRORS.UNEXPECTED_ERROR
+                | typeof ERRORS.INTERFACE_DATA_TRANSFER
+                | typeof ERRORS.UNEXPECTED_ERROR
+                | typeof ERRORS.ABORTED_BY_SIGNAL
             >
         >(resolve => {
+            signal?.addEventListener('abort', () => {
+                resolve(
+                    this.error({
+                        error: ERRORS.ABORTED_BY_SIGNAL,
+                    }),
+                );
+            });
+
             this.interface.send(buffer, Number.parseInt(port, 10), hostname, err => {
+                if (signal?.aborted) {
+                    return;
+                }
+
                 if (err) {
                     this.logger?.error(err.message);
 
-                    return resolve(
+                    resolve(
                         this.error({
                             error: ERRORS.INTERFACE_DATA_TRANSFER,
                             message: err.message,
@@ -55,13 +69,14 @@ export class UdpApi extends AbstractApi {
                     );
                 }
 
-                return resolve(this.success(undefined));
+                resolve(this.success(undefined));
             });
         });
     }
 
     public read(
         _path: string,
+        signal?: AbortSignal,
     ): AsyncResultWithTypedError<
         ArrayBuffer,
         | typeof ERRORS.DEVICE_NOT_FOUND
@@ -70,15 +85,25 @@ export class UdpApi extends AbstractApi {
         | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
         | typeof ERRORS.UNEXPECTED_ERROR
         | typeof ERRORS.ABORTED_BY_TIMEOUT
+        | typeof ERRORS.ABORTED_BY_SIGNAL
     > {
         this.communicating = true;
 
         return new Promise<
             ResultWithTypedError<
                 ArrayBuffer,
-                typeof ERRORS.INTERFACE_DATA_TRANSFER | typeof ERRORS.ABORTED_BY_TIMEOUT
+                | typeof ERRORS.INTERFACE_DATA_TRANSFER
+                | typeof ERRORS.ABORTED_BY_TIMEOUT
+                | typeof ERRORS.ABORTED_BY_SIGNAL
             >
         >(resolve => {
+            const onClear = () => {
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                this.interface.removeListener('error', onError);
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                this.interface.removeListener('message', onMessage);
+            };
+
             const onError = (err: Error) => {
                 this.logger?.error(err.message);
 
@@ -88,18 +113,27 @@ export class UdpApi extends AbstractApi {
                         message: err.message,
                     }),
                 );
-                this.interface.removeListener('error', onError);
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                this.interface.removeListener('message', onMessage);
+                onClear();
             };
             const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
                 if (message.toString() === 'PONGPONG') {
                     return;
                 }
-                this.interface.removeListener('error', onError);
-                this.interface.removeListener('message', onMessage);
+                onClear();
+
                 resolve(this.success(message));
             };
+            const onAbort = () => {
+                onClear();
+
+                return resolve(
+                    this.error({
+                        error: ERRORS.ABORTED_BY_SIGNAL,
+                    }),
+                );
+            };
+
+            signal?.addEventListener('abort', onAbort);
             this.interface.addListener('error', onError);
             this.interface.addListener('message', onMessage);
         }).finally(() => {
@@ -107,48 +141,61 @@ export class UdpApi extends AbstractApi {
         });
     }
 
-    private async ping(path: string) {
-        await this.write(path, Buffer.from('PINGPING'));
+    private async ping(path: string, signal?: AbortSignal) {
+        await this.write(path, Buffer.from('PINGPING'), signal);
+        if (signal?.aborted) {
+            throw new Error(ERRORS.ABORTED_BY_SIGNAL);
+        }
 
         const pinged = new Promise<boolean>(resolve => {
+            const onError = () => {
+                resolve(false);
+                this.interface.removeListener('error', onError);
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                this.interface.removeListener('message', onMessage);
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                clearTimeout(timeout);
+            };
             const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
                 if (message.toString() === 'PONGPONG') {
                     resolve(true);
+                    this.interface.removeListener('error', onError);
                     this.interface.removeListener('message', onMessage);
                     // eslint-disable-next-line @typescript-eslint/no-use-before-define
                     clearTimeout(timeout);
                 }
             };
+
+            signal?.addEventListener('abort', onError);
+            this.interface.addListener('error', onError);
             this.interface.addListener('message', onMessage);
 
-            const timeout = setTimeout(
-                () => {
-                    this.interface.removeListener('message', onMessage);
-                    resolve(false);
-                },
-                this.communicating ? 10000 : 500,
-            );
+            const timeout = setTimeout(onError, this.communicating ? 10000 : 500);
         });
 
         return pinged;
     }
 
-    public async enumerate() {
+    public async enumerate(signal?: AbortSignal) {
         // in theory we could support multiple devices, but we don't yet
         const paths = ['127.0.0.1:21324'];
 
-        const enumerateResult = await Promise.all(
-            paths.map(path =>
-                this.ping(path).then(pinged =>
-                    pinged ? { path, type: DEVICE_TYPE.TypeEmulator } : undefined,
+        try {
+            const enumerateResult = await Promise.all(
+                paths.map(path =>
+                    this.ping(path, signal).then(pinged =>
+                        pinged ? { path, type: DEVICE_TYPE.TypeEmulator } : undefined,
+                    ),
                 ),
-            ),
-        ).then(res => res.filter(isNotUndefined));
+            ).then(res => res.filter(isNotUndefined));
 
-        return this.success(enumerateResult);
+            return this.success(enumerateResult);
+        } catch (e) {
+            return this.error({ error: ERRORS.ABORTED_BY_SIGNAL });
+        }
     }
 
-    public openDevice(_path: string, _first: boolean) {
+    public openDevice(_path: string, _first: boolean, _signal?: AbortSignal) {
         // todo: maybe ping?
         return Promise.resolve(this.success(undefined));
     }
@@ -162,5 +209,6 @@ export class UdpApi extends AbstractApi {
         this.interface.close();
         this.listening = false;
         clearTimeout(this.enumerationTimeout);
+        this.enumerateAbortController.abort();
     }
 }
