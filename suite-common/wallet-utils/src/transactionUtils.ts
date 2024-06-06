@@ -76,6 +76,7 @@ export const generateTransactionMonthKey = (d: Date): MonthKey =>
 
 export const parseTransactionMonthKey = (key: MonthKey): Date => new Date(key);
 
+export type GroupedTransactionsByDate = Record<string, WalletAccountTransaction[]>;
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
  * Pending txs are assigned to key 'pending'.
@@ -85,7 +86,10 @@ export const parseTransactionMonthKey = (key: MonthKey): Date => new Date(key);
 export const groupTransactionsByDate = (
     transactions: WalletAccountTransaction[],
     groupBy: 'day' | 'month' = 'day',
-) => {
+    // TODO remove this when grouping pending transactions is implemented also in suite-native.
+    // TODO update tests afterwards
+    groupPendingAlsoByDate = false,
+): GroupedTransactionsByDate => {
     // Note: We should use ts-belt for sorting this array but currently, there can be undefined inside
     // Built-in sort doesn't include undefined elements but ts-belt does so there will be some refactoring involved.
     const keyFormatter =
@@ -96,10 +100,11 @@ export const groupTransactionsByDate = (
             // There could be some undefined/null in array, not sure how it happens. Maybe related to pagination?
             .filter(transaction => !!transaction)
             .sort(sortByBlockHeight)
-            .reduce<{ [key: string]: WalletAccountTransaction[] }>((r, item) => {
+            .reduce<GroupedTransactionsByDate>((r, item) => {
                 const isTxPending = isPending(item);
+                const doGroupAsPending = isTxPending && !groupPendingAlsoByDate;
                 const key =
-                    !isTxPending && item.blockTime && item.blockTime > 0
+                    !doGroupAsPending && item.blockTime && item.blockTime > 0
                         ? keyFormatter(new Date(item.blockTime * 1000))
                         : 'pending';
                 const prev = r[key] ?? [];
