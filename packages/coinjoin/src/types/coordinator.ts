@@ -172,7 +172,7 @@ interface CoinjoinAffiliateFields {
     signature: string;
 }
 
-export interface CoinjoinAffiliateRequest extends Partial<CoinjoinAffiliateFields> {
+export interface CoinjoinAffiliateRequest extends CoinjoinAffiliateFields {
     fee_rate: number;
     no_fee_threshold: number;
     min_registrable_amount: number;
