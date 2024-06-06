@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
@@ -6,21 +6,18 @@ import {
     fetchAllTransactionsForAccountThunk,
     fetchTransactionsPageThunk,
 } from '@suite-common/wallet-core';
+import { arrayPartition } from '@trezor/utils';
 import {
-    groupTransactionsByDate,
     advancedSearchTransactions,
-    groupJointTransactions,
-    getAccountNetwork,
+    groupTransactionsByDate,
+    isPending,
 } from '@suite-common/wallet-utils';
-import { CoinjoinBatchItem } from 'src/components/wallet/TransactionItem/CoinjoinBatchItem';
 import { Translation } from 'src/components/suite';
 import { DashboardSection } from 'src/components/dashboard';
 import { useDispatch, useSelector } from 'src/hooks/suite';
-import { WalletAccountTransaction, Account } from 'src/types/wallet';
+import { Account, WalletAccountTransaction } from 'src/types/wallet';
 import { TransactionListActions } from './TransactionListActions/TransactionListActions';
-import { TransactionItem } from 'src/components/wallet/TransactionItem/TransactionItem';
 import { Pagination } from 'src/components/wallet';
-import { TransactionsGroup } from './TransactionsGroup/TransactionsGroup';
 import { SkeletonTransactionItem } from './SkeletonTransactionItem';
 import { NoSearchResults } from './NoSearchResults';
 import { findAnchorTransactionPage } from 'src/utils/suite/anchor';
@@ -28,7 +25,8 @@ import { TransactionCandidates } from './TransactionCandidates';
 import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { SkeletonStack } from '@trezor/components';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { PendingGroupHeader } from './TransactionsGroup/PendingGroupHeader';
+import { TransactionGroupedList } from './TransactionGroupedList';
 
 const StyledSection = styled(DashboardSection)`
     margin-bottom: 20px;
@@ -55,11 +53,9 @@ export const TransactionList = ({
     customTotalItems,
     isExportable = true,
 }: TransactionListProps) => {
-    const localCurrency = useSelector(selectLocalCurrency);
     const anchor = useSelector(state => state.router.anchor);
     const dispatch = useDispatch();
     const accountMetadata = useSelector(state => selectLabelingDataForAccount(state, account.key));
-    const network = getAccountNetwork(account);
 
     // Search
     const [searchQuery, setSearchQuery] = useState('');
@@ -123,49 +119,18 @@ export const TransactionList = ({
         [searchedTransactions, startIndex, stopIndex],
     );
 
-    const transactionsByDate = useMemo(
-        () => groupTransactionsByDate(slicedTransactions),
+    const [pendingTxs, confirmedTxs] = useMemo(
+        () => arrayPartition(slicedTransactions, isPending),
         [slicedTransactions],
     );
 
-    const listItems = useMemo(
-        () =>
-            Object.entries(transactionsByDate).map(([dateKey, value], groupIndex) => {
-                const isPending = dateKey === 'pending';
-
-                return (
-                    <TransactionsGroup
-                        key={dateKey}
-                        dateKey={dateKey}
-                        symbol={symbol}
-                        transactions={value}
-                        localCurrency={localCurrency}
-                        index={groupIndex}
-                    >
-                        {groupJointTransactions(value).map((item, index) =>
-                            item.type === 'joint-batch' ? (
-                                <CoinjoinBatchItem
-                                    key={item.rounds[0].txid}
-                                    transactions={item.rounds}
-                                    isPending={isPending}
-                                    localCurrency={localCurrency}
-                                />
-                            ) : (
-                                <TransactionItem
-                                    key={item.tx.txid}
-                                    transaction={item.tx}
-                                    isPending={isPending}
-                                    accountMetadata={accountMetadata}
-                                    accountKey={account.key}
-                                    network={network!}
-                                    index={index}
-                                />
-                            ),
-                        )}
-                    </TransactionsGroup>
-                );
-            }),
-        [transactionsByDate, account.key, localCurrency, symbol, network, accountMetadata],
+    const pendingTxsByDate = useMemo(
+        () => groupTransactionsByDate(pendingTxs, 'day'),
+        [pendingTxs],
+    );
+    const confirmedTxsByDate = useMemo(
+        () => groupTransactionsByDate(confirmedTxs, 'day'),
+        [confirmedTxs],
     );
 
     // if total pages cannot be determined check current page and number of txs (XRP)
@@ -204,7 +169,29 @@ export const TransactionList = ({
                     <SkeletonTransactionItem />
                 </SkeletonStack>
             ) : (
-                <>{areTransactionsAvailable ? <NoSearchResults /> : listItems}</>
+                <>
+                    {areTransactionsAvailable ? (
+                        <NoSearchResults />
+                    ) : (
+                        <>
+                            {pendingTxs.length > 0 && (
+                                <PendingGroupHeader txsCount={pendingTxs.length} />
+                            )}
+                            <TransactionGroupedList
+                                transactionGroups={pendingTxsByDate}
+                                symbol={symbol}
+                                account={account}
+                                isPending={true}
+                            />
+                            <TransactionGroupedList
+                                transactionGroups={confirmedTxsByDate}
+                                symbol={symbol}
+                                account={account}
+                                isPending={false}
+                            />
+                        </>
+                    )}
+                </>
             )}
 
             {showPagination && (

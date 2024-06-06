@@ -98,7 +98,6 @@ export const TransactionsGroup = ({
                 isHovered={isHovered}
                 totalAmount={totalAmountPerDay}
                 totalFiatAmountPerDay={totalFiatAmountPerDay}
-                txsCount={transactions.length}
                 localCurrency={localCurrency}
                 isMissingFiatRates={isMissingFiatRates}
             />

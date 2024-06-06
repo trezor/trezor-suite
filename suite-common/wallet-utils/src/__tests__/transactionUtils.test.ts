@@ -43,21 +43,23 @@ describe('transaction utils', () => {
 
     it('groupTransactionsByDate - groupBy day', () => {
         const groupedTxs = groupTransactionsByDate([
+            getWalletTransaction({ blockTime: 1565792979, blockHeight: undefined }),
             getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
             getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
-            getWalletTransaction({ blockHeight: 0 }),
+            getWalletTransaction({ blockHeight: 0, blockTime: 0 }),
             getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
             getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
-            getWalletTransaction({ blockHeight: undefined }),
+            getWalletTransaction({ blockHeight: 0, blockTime: undefined }),
         ]);
         expect(groupedTxs).toEqual({
             pending: [
-                getWalletTransaction({ blockHeight: 0 }),
-                getWalletTransaction({ blockHeight: undefined }),
+                getWalletTransaction({ blockHeight: 0, blockTime: 0 }),
+                getWalletTransaction({ blockHeight: 0, blockTime: undefined }),
             ],
             '2019-10-4': [getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 })],
             '2019-10-3': [getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 })],
             '2019-8-14': [
+                getWalletTransaction({ blockTime: 1565792979, blockHeight: undefined }),
                 getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
                 getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
@@ -67,12 +69,13 @@ describe('transaction utils', () => {
     it('groupTransactionsByDate - groupBy month', () => {
         const groupedTxs = groupTransactionsByDate(
             [
+                getWalletTransaction({ blockTime: 1565792979, blockHeight: undefined }),
                 getWalletTransaction({ blockTime: 1565792979, blockHeight: 5 }),
                 getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
-                getWalletTransaction({ blockHeight: 0 }),
+                getWalletTransaction({ blockHeight: 0, blockTime: 0 }),
                 getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
                 getWalletTransaction({ blockTime: 1570127200, blockHeight: 3 }),
-                getWalletTransaction({ blockHeight: undefined }),
+                getWalletTransaction({ blockHeight: 0, blockTime: undefined }),
             ],
             'month',
         );
@@ -83,14 +86,15 @@ describe('transaction utils', () => {
         const secondMonth = generateTransactionMonthKey(new Date(secondBlocktime * 1000));
         expect(groupedTxs).toEqual({
             pending: [
-                getWalletTransaction({ blockHeight: 0 }),
-                getWalletTransaction({ blockHeight: undefined }),
+                getWalletTransaction({ blockHeight: 0, blockTime: 0 }),
+                getWalletTransaction({ blockHeight: 0, blockTime: undefined }),
             ],
             [firstMonth]: [
                 getWalletTransaction({ blockTime: firstBlocktime, blockHeight: 3 }),
                 getWalletTransaction({ blockTime: 1570147200, blockHeight: 2 }),
             ],
             [secondMonth]: [
+                getWalletTransaction({ blockTime: secondBlocktime, blockHeight: undefined }),
                 getWalletTransaction({ blockTime: secondBlocktime, blockHeight: 5 }),
                 getWalletTransaction({ blockTime: 1565792379, blockHeight: 4 }),
             ],
