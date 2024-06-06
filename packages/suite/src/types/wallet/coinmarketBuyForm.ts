@@ -12,6 +12,7 @@ export type FormState = {
         cryptoSymbol: CryptoSymbol;
     };
     countrySelect: Option;
+    paymentMethod?: Option;
 };
 
 export type BuyFormContextValues = UseFormReturn<FormState> & {

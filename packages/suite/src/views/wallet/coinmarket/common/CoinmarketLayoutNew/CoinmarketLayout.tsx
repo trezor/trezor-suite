@@ -2,14 +2,16 @@ import { ReactNode } from 'react';
 import styled from 'styled-components';
 
 import { WalletLayout, WalletSubpageHeading } from 'src/components/wallet';
-import { Card } from '@trezor/components';
 import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { spacingsPx } from '@trezor/theme';
 import CoinmarketLayoutNavigation from './CoinmarketLayoutNavigation/CoinmarketLayoutNavigation';
 
-const CardWrapper = styled(Card)`
-    padding: ${spacingsPx.lg} ${spacingsPx.lg} ${spacingsPx.xxxl};
+const CoinmarketWrapper = styled.div`
+    padding: 0 ${spacingsPx.lg};
+`;
+
+const CoinmarketFormWrapper = styled.div`
     margin-top: ${spacingsPx.xl};
 `;
 
@@ -20,10 +22,12 @@ interface CoinmarketLayoutProps {
 
 const CoinmarketLayout = ({ children, selectedAccount }: CoinmarketLayoutProps) => (
     <WalletLayout title="TR_NAV_TRADE" isSubpage account={selectedAccount}>
-        <WalletSubpageHeading title="TR_NAV_TRADE" />
-        <CoinmarketLayoutNavigation />
-        <CardWrapper>{children}</CardWrapper>
-        <CoinmarketFooter />
+        <CoinmarketWrapper>
+            <WalletSubpageHeading title="TR_NAV_TRADE" />
+            <CoinmarketLayoutNavigation />
+            <CoinmarketFormWrapper>{children}</CoinmarketFormWrapper>
+            <CoinmarketFooter />
+        </CoinmarketWrapper>
     </WalletLayout>
 );
 

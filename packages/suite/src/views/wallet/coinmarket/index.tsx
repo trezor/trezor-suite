@@ -1,5 +1,6 @@
 import styled from 'styled-components';
-import { Icon, variables, SelectBar } from '@trezor/components';
+import { Icon, variables, SelectBar, Paragraph } from '@trezor/components';
+import { spacingsPx, typography } from '@trezor/theme';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -78,4 +79,46 @@ export const StyledSelectBar = styled(SelectBar)`
     & div div {
         justify-content: center;
     }
+`;
+
+export const CoinmarketParagraph = styled(Paragraph)`
+    text-align: center;
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+`;
+
+export const CoinmarketFormInput = styled.div`
+    padding-bottom: ${spacingsPx.xl};
+
+    input {
+        color: ${({ theme }) => theme.textSubdued};
+    }
+`;
+
+export const CoinmarketFormInputLabel = styled.label`
+    display: block;
+    padding-bottom: ${spacingsPx.xs};
+    ${typography.body}
+`;
+
+export const CoinmarketFormOption = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+export const CoinmarketFormOptionLabel = styled.div`
+    padding-left: ${spacingsPx.xs};
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
+export const CoinmarketFormOptionLabelLong = styled.div`
+    padding-left: ${spacingsPx.sm};
+    padding-top: ${spacingsPx.xxs};
+    ${typography.label}
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
+export const CoinmarketFormOptionTokenLogo = styled.img`
+    display: flex;
+    align-items: center;
+    height: 18px;
 `;
