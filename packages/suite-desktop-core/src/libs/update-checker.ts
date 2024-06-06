@@ -2,8 +2,6 @@ import fs from 'fs';
 import path from 'path';
 import { createMessage, readKey, readSignature, verify } from 'openpgp';
 
-import { getSignatureFileURL } from './github';
-
 const signingKey = process.env.APP_PUBKEY;
 
 // This will prevent the auto-updater from loading if the pubkey is not defined
@@ -11,34 +9,26 @@ if (signingKey === undefined) {
     throw new Error('APP_PUBKEY is undefined.');
 }
 
-type GetSignatureFileProps = { feedURL?: string; version: string; filename: string };
+type GetSignatureFileProps = { feedURL: string; filename: string };
 
-const getSignatureFile = async ({ version, filename, feedURL }: GetSignatureFileProps) => {
+const getSignatureFile = async ({ filename, feedURL }: GetSignatureFileProps) => {
     /**
-     * Signature files should be available at the URL of the custom feed beside installation files.
-     * But Github provides download URLs for each asset related to release.
+     * Signature files are available next to installation files.
      */
-    const signatureFileURL = feedURL
-        ? `${feedURL.replace(/\/+$/, '')}/${filename}.asc`
-        : getSignatureFileURL(filename, version);
+    const signatureFileURL = `${feedURL.replace(/\/+$/, '')}/${filename}.asc`;
 
     const signatureFile = await fetch(signatureFileURL);
 
     return signatureFile.text();
 };
 
-type VerifySignatureProps = { feedURL?: string; version: string; downloadedFile: string };
+type VerifySignatureProps = { feedURL: string; downloadedFile: string };
 
-export const verifySignature = async ({
-    version,
-    downloadedFile,
-    feedURL,
-}: VerifySignatureProps) => {
+export const verifySignature = async ({ downloadedFile, feedURL }: VerifySignatureProps) => {
     // Find the right signature for the downloaded file
     const filename = path.basename(downloadedFile);
 
     const signatureFile = await getSignatureFile({
-        version,
         filename,
         feedURL,
     });
