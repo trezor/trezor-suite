@@ -2,10 +2,12 @@ import { IconName } from '@suite-common/icons';
 import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
+import { Button } from '@trezor/components';
 import { typography, borders, spacingsPx } from '@trezor/theme';
+import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
 import { NavigationItem } from 'src/components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import styled, { css } from 'styled-components';
 
@@ -27,10 +29,14 @@ const NavListItemWrapper = styled(NavigationItem)`
     }
 `;
 
+const ButtonWrapper = styled(Button)`
+    margin-left: auto;
+`;
+
 interface CoinmarketLayoutNavigationItemProps {
     route: Route['name'];
     title: TranslationKey;
-    icon: IconName;
+    icon?: IconName;
 }
 
 const CoinmarketLayoutNavigationItem = ({
@@ -40,6 +46,25 @@ const CoinmarketLayoutNavigationItem = ({
 }: CoinmarketLayoutNavigationItemProps) => {
     const account = useSelector(selectSelectedAccount);
     const routeName = useSelector(state => state.router.route?.name);
+    const dispatch = useDispatch();
+    const transactionsRoute = 'wallet-coinmarket-transactions';
+
+    const handleTransactionRoute = () =>
+        dispatch(goto(transactionsRoute, { preserveParams: true }));
+
+    if (route === transactionsRoute) {
+        return (
+            <ButtonWrapper
+                size="small"
+                data-test={transactionsRoute}
+                variant="tertiary"
+                title={title}
+                onClick={handleTransactionRoute}
+            >
+                <Translation id={title} />
+            </ButtonWrapper>
+        );
+    }
 
     if (route === 'wallet-coinmarket-savings-setup' && account) {
         return (
@@ -63,7 +88,7 @@ const CoinmarketLayoutNavigationItem = ({
             data-test={`@coinmarket/menu/${route}`}
             nameId={title}
             isActive={routeName === route}
-            icon={icon}
+            icon={icon ?? 'receive'}
             goToRoute={route}
             preserveParams
         />
