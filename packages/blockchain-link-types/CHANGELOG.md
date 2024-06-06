@@ -1,3 +1,7 @@
+# 1.0.18-beta.1
+
+-   refactor(suite): signed transaction data stored in redux send form state (2ea31ab5d6)
+
 # 1.0.17-beta.2
 
 -   Chore/refactor fiat rates (#11592) (f40b8bf7d8)
