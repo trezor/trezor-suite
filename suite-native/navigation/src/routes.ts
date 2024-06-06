@@ -41,9 +41,7 @@ export enum ConnectDeviceStackRoutes {
     ConnectAndUnlockDevice = 'ConnectAndUnlockDevice',
     PinMatrix = 'PinMatrix',
     ConnectingDevice = 'ConnectingDevice',
-}
 
-export enum PassphraseStackRoutes {
     PassphraseForm = 'PassphraseForm',
     PassphraseConfirmOnTrezor = 'PassphraseConfirmOnTrezor',
     PassphraseLoading = 'PassphraseLoading',

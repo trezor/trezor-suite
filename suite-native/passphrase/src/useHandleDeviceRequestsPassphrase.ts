@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import TrezorConnect, { UI } from '@trezor/connect';
 import {
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -16,8 +16,8 @@ import { selectDeviceState } from '@suite-common/wallet-core';
 import { selectIsVerifyingPassphraseOnEmptyWallet } from './passphraseSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes.PassphraseForm,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -33,12 +33,12 @@ export const useHandleDeviceRequestsPassphrase = () => {
     const handleNavigateToPassphraseForm = useCallback(() => {
         if (!isVefifyingPassphraseOnEmptyWallet) {
             if (deviceState) {
-                navigation.navigate(RootStackRoutes.PassphraseStack, {
-                    screen: PassphraseStackRoutes.PassphraseFeatureUnlockScreen,
+                navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
+                    screen: ConnectDeviceStackRoutes.PassphraseFeatureUnlockScreen,
                 });
             } else {
-                navigation.navigate(RootStackRoutes.PassphraseStack, {
-                    screen: PassphraseStackRoutes.PassphraseForm,
+                navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
+                    screen: ConnectDeviceStackRoutes.PassphraseForm,
                 });
             }
         }

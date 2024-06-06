@@ -1,7 +1,7 @@
 import { useTranslate } from '@suite-native/intl';
 
-import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
-import { PassphraseForm } from '../components/PassphraseForm';
+import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
+import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 export const PassphraseFeatureUnlockScreen = () => {
     const { translate } = useTranslate();

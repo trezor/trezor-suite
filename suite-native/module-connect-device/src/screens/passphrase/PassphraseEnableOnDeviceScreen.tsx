@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AppTabsRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     HomeStackRoutes,
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     Screen,
@@ -16,14 +16,14 @@ import {
 import { CenteredTitleHeader, IconButton, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
 import { selectPassphraseError } from '@suite-native/passphrase';
-import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
+import { useToast } from '@suite-native/toasts';
 
-import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
+import { DeviceT2B1Svg } from '../../assets/DeviceT2B1Svg';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes.PassphraseForm,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 

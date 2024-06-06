@@ -15,8 +15,8 @@ import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { deviceActions, onPassphraseSubmit, selectDevice } from '@suite-common/wallet-core';
 import {
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackRoutes,
+    ConnectDeviceStackParamList,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -41,8 +41,8 @@ const cardStyle = prepareNativeStyle(_ => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes.PassphraseForm,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -78,7 +78,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
             }),
         );
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
-        navigation.push(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
+        navigation.push(ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor);
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
         reset();
     });

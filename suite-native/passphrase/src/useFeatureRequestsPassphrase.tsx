@@ -4,8 +4,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -16,8 +16,8 @@ import {
 } from '@suite-common/wallet-core';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 

@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { Button } from '@suite-native/atoms';
 import { onPassphraseSubmit, selectDeviceInternalModel } from '@suite-common/wallet-core';
 import {
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -16,8 +16,8 @@ import { Translation } from '@suite-native/intl';
 import { DeviceModelIcon } from '@suite-common/icons';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes.PassphraseForm,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -29,7 +29,7 @@ export const EnterPassphraseOnTrezorButton = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const handleRequestPassphraseOnDevice = useCallback(() => {
-        navigation.navigate(PassphraseStackRoutes.PassphraseEnterOnTrezor);
+        navigation.navigate(ConnectDeviceStackRoutes.PassphraseEnterOnTrezor);
     }, [navigation]);
 
     useEffect(() => {

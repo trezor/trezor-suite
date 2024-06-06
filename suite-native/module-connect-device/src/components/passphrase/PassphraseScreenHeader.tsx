@@ -13,9 +13,9 @@ import {
 } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     HomeStackRoutes,
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToTabCompositeProps,
@@ -30,8 +30,8 @@ type PassphraseScreenHeaderProps = {
 };
 
 type NavigationProp = StackToTabCompositeProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -69,7 +69,7 @@ export const PassphraseScreenHeader = ({ isWalletRemovedOnClose }: PassphraseScr
     };
 
     const handlePress = () => {
-        if (route.name === PassphraseStackRoutes.PassphraseConfirmOnTrezor) {
+        if (route.name === ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor) {
             setShouldShowWarningBottomSheet(true);
         } else {
             handleClose();
