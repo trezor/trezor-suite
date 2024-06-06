@@ -1,3 +1,7 @@
+# 2.1.31-beta.1
+
+-   chore(utils): move Throttler util from blockchain-link to utils (78673bd14c)
+
 # 2.1.30
 
 -   chore: BigNumber wrapper (d18ba9a879)
