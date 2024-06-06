@@ -39,6 +39,7 @@ import {
 } from './view/common';
 import { isPhishingDomain } from './utils/isPhishingDomain';
 import { initLog, setLogWriter, LogWriter } from '@trezor/connect/src/utils/debug';
+import { DEFAULT_DOMAIN } from '@trezor/connect/src/data/version';
 
 const INTERVAL_CHECK_PARENT_ALIVE_MS = 1000;
 const INTERVAL_HANDSHAKE_TIMEOUT_MS = 90 * 1000;
@@ -425,7 +426,7 @@ const initCoreInPopup = async (
     // dynamically load core module
     reactEventBus.dispatch({ type: 'loading', message: 'loading core' });
 
-    const { connectSrc } = payload.settings;
+    const connectSrc = payload.settings.connectSrc ?? DEFAULT_DOMAIN;
     // core is built in a separate build step.
     const { initCoreState, initTransport } = await import(
         /* webpackIgnore: true */ `${connectSrc}js/core.js`
