@@ -1,3 +1,8 @@
+# 1.1.30-beta.1
+
+-   chore(transport): add more logs (4eeed40ad6)
+-   fix(transport): UdpTransport use `listen` and `stop` to control enumeration (4356826bc4)
+
 # 1.1.29
 
 -   chore(transport): make Session type literal (72570f2219)
