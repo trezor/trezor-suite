@@ -14,7 +14,6 @@ const Container = styled.div<{ $isFullWidth: boolean }>`
     top: 64px;
     display: flex;
     justify-content: flex-start;
-    align-items: center;
     gap: ${spacingsPx.sm};
     min-height: ${SUBPAGE_NAV_HEIGHT};
     background: ${({ theme }) => theme.backgroundSurfaceElevation0};
