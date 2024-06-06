@@ -111,6 +111,7 @@ module.exports = {
         target: ['dmg', 'zip'],
     },
     win: {
+        publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
         extraResources: [
             {
                 from: 'build/static/bin/bridge/win-${arch}',
