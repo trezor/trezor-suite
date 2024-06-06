@@ -53,13 +53,26 @@ const ColFiat = styled(Col)`
     text-align: right;
 `;
 
+interface PendingHeaderProps {
+    txsCount?: number;
+}
+
+export const PendingHeader = ({ txsCount }: PendingHeaderProps) => {
+    return (
+        <Wrapper>
+            <ColPending data-test="@transaction-group/pending/count">
+                <Translation id="TR_PENDING_TX_HEADING" values={{ count: txsCount }} /> • {txsCount}
+            </ColPending>
+        </Wrapper>
+    );
+};
+
 interface DayHeaderProps {
     dateKey: string;
     symbol: Network['symbol'];
     totalAmount: BigNumber;
     totalFiatAmountPerDay: BigNumber;
     localCurrency: string;
-    txsCount?: number;
     isMissingFiatRates?: boolean;
     isHovered?: boolean;
 }
@@ -71,7 +84,6 @@ export const DayHeader = ({
     totalAmount,
     totalFiatAmountPerDay,
     localCurrency,
-    txsCount,
     isMissingFiatRates,
     isHovered,
 }: DayHeaderProps) => {
@@ -82,37 +94,28 @@ export const DayHeader = ({
 
     return (
         <Wrapper>
-            {dateKey === 'pending' ? (
-                <ColPending data-test="@transaction-group/pending/count">
-                    <Translation id="TR_PENDING_TX_HEADING" values={{ count: txsCount }} /> •{' '}
-                    {txsCount}
-                </ColPending>
-            ) : (
-                <>
-                    <ColDate>
-                        <FormattedDate
-                            value={parsedDate ?? undefined}
-                            day="numeric"
-                            month="long"
-                            year="numeric"
+            <ColDate>
+                <FormattedDate
+                    value={parsedDate ?? undefined}
+                    day="numeric"
+                    month="long"
+                    year="numeric"
+                />
+            </ColDate>
+            <ColAmount $isVisible={isHovered}>
+                {totalAmount.gt(0) && <span>+</span>}
+                <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
+            </ColAmount>
+            {showFiatValue && !isMissingFiatRates && (
+                <ColFiat>
+                    <HiddenPlaceholder>
+                        {totalFiatAmountPerDay.gt(0) && <span>+</span>}
+                        <FiatAmountFormatter
+                            currency={localCurrency}
+                            value={totalFiatAmountPerDay.toFixed()}
                         />
-                    </ColDate>
-                    <ColAmount $isVisible={isHovered}>
-                        {totalAmount.gt(0) && <span>+</span>}
-                        <FormattedCryptoAmount value={totalAmount.toFixed()} symbol={symbol} />
-                    </ColAmount>
-                    {showFiatValue && !isMissingFiatRates && (
-                        <ColFiat>
-                            <HiddenPlaceholder>
-                                {totalFiatAmountPerDay.gt(0) && <span>+</span>}
-                                <FiatAmountFormatter
-                                    currency={localCurrency}
-                                    value={totalFiatAmountPerDay.toFixed()}
-                                />
-                            </HiddenPlaceholder>
-                        </ColFiat>
-                    )}
-                </>
+                    </HiddenPlaceholder>
+                </ColFiat>
             )}
         </Wrapper>
     );
