@@ -13,15 +13,20 @@ import { isFeatureFlagEnabled, isDevEnv } from '@suite-common/suite-utils';
 import { app, ipcMain } from '../typed-electron';
 import { b2t } from '../libs/utils';
 import { verifySignature } from '../libs/update-checker';
-import { getReleaseNotes } from '../libs/github';
 
 import type { Module } from './index';
+
+const defaultFeedURL = {
+    // This should correspond with the value in electron-builder-config.js file.
+    latest: 'https://data.trezor.io/suite/releases/desktop/latest',
+    preRelease: 'https://data.trezor.io/suite/releases/desktop/canary',
+};
 
 // Runtime flags
 const enableUpdater = app.commandLine.hasSwitch('enable-updater');
 const disableUpdater = app.commandLine.hasSwitch('disable-updater');
 const preReleaseFlag = app.commandLine.hasSwitch('pre-release');
-const feedURL = app.commandLine.getSwitchValue('updater-url');
+const updaterURL = app.commandLine.getSwitchValue('updater-url');
 
 export const SERVICE_NAME = 'auto-updater';
 
@@ -53,55 +58,43 @@ export const init: Module = ({ mainWindow, store }) => {
     autoUpdater.autoDownload = false;
 
     const updateSettings = store.getUpdateSettings();
-    autoUpdater.allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
+    let allowPrerelease = preReleaseFlag || updateSettings.allowPrerelease;
+    let feedURL = updaterURL || defaultFeedURL[allowPrerelease ? 'preRelease' : 'latest'];
 
     autoUpdater.logger = null;
 
-    if (feedURL) {
-        autoUpdater.setFeedURL(feedURL);
-        logger.warn(SERVICE_NAME, [`Feed url: ${feedURL}`]);
-    }
+    autoUpdater.setFeedURL(feedURL);
+    logger.warn(SERVICE_NAME, [`Feed url: ${feedURL}`]);
 
-    logger.info(SERVICE_NAME, `Is looking for pre-releases? (${b2t(autoUpdater.allowPrerelease)})`);
+    logger.info(SERVICE_NAME, `Is looking for pre-releases? (${b2t(allowPrerelease)})`);
 
     autoUpdater.on('checking-for-update', () => {
         logger.info(SERVICE_NAME, 'Checking for update');
         mainWindow.webContents.send('update/checking');
     });
 
-    autoUpdater.on(
-        'update-available',
-        async ({ version, releaseDate, releaseNotes }: UpdateInfo) => {
-            let release;
-            try {
-                release = feedURL
-                    ? { prerelease: false, body: releaseNotes?.toString() }
-                    : await getReleaseNotes(version);
-            } catch (error) {
-                logger.error(SERVICE_NAME, 'Fetching release notes failed!');
-            } finally {
-                logger.warn(SERVICE_NAME, [
-                    'Update is available:',
-                    `- Update version: ${version}`,
-                    `- Prerelease: ${release?.prerelease}`,
-                    `- Changelog: ${release?.body ? 'available' : 'unavailable'}`,
-                    `- Release date: ${releaseDate}`,
-                    `- Manual check: ${b2t(isManualCheck)}`,
-                ]);
+    autoUpdater.on('update-available', ({ version, releaseDate, releaseNotes }: UpdateInfo) => {
+        logger.warn(SERVICE_NAME, [
+            'Update is available:',
+            `- Update version: ${version}`,
+            `- Changelog: ${releaseNotes ? 'available' : 'unavailable'}`,
+            `- Release date: ${releaseDate}`,
+            `- Manual check: ${b2t(isManualCheck)}`,
+        ]);
 
-                mainWindow.webContents.send('update/available', {
-                    version,
-                    releaseDate,
-                    isManualCheck,
-                    prerelease: release?.prerelease,
-                    changelog: release?.body,
-                });
+        mainWindow.webContents.send('update/available', {
+            version,
+            releaseDate,
+            isManualCheck,
+            // 'prerelease' is only available on github, this is used for analytics and to display -beta suffix for version number in FE.
+            // It means that EAP users will always see YY.MM.V-beta version number in update modal.
+            prerelease: allowPrerelease,
+            changelog: releaseNotes?.toString(),
+        });
 
-                // Reset manual check flag
-                isManualCheck = false;
-            }
-        },
-    );
+        // Reset manual check flag
+        isManualCheck = false;
+    });
 
     autoUpdater.on('update-not-available', ({ version, releaseDate }: UpdateInfo) => {
         logger.info(SERVICE_NAME, [
@@ -152,7 +145,6 @@ export const init: Module = ({ mainWindow, store }) => {
         try {
             // check downloaded file
             await verifySignature({
-                version,
                 downloadedFile,
                 feedURL,
             });
@@ -237,8 +229,11 @@ export const init: Module = ({ mainWindow, store }) => {
         mainWindow.webContents.send('update/allow-prerelease', value);
         const settings = store.getUpdateSettings();
         store.setUpdateSettings({ ...settings, allowPrerelease: value });
+        allowPrerelease = value;
 
-        autoUpdater.allowPrerelease = value;
+        feedURL = value ? defaultFeedURL.preRelease : defaultFeedURL.latest;
+        autoUpdater.setFeedURL(feedURL);
+        logger.info(SERVICE_NAME, `New feed url: ${feedURL}`);
     });
 
     // Enable feature on FE once it's ready
@@ -261,7 +256,7 @@ export const init: Module = ({ mainWindow, store }) => {
         });
 
         return {
-            allowPrerelease: autoUpdater.allowPrerelease,
+            allowPrerelease,
             firstRun:
                 savedCurrentVersion && savedCurrentVersion !== currentVersion
                     ? currentVersion
