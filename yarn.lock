@@ -11399,8 +11399,10 @@ __metadata:
     "@trezor/theme": "workspace:*"
     "@trezor/transport": "workspace:*"
     "@trezor/utils": "workspace:*"
+    "@types/json-stable-stringify": "npm:^1"
     esbuild: "npm:^0.20.0"
     html-webpack-plugin: "npm:^5.6.0"
+    json-stable-stringify: "npm:^1.1.1"
     pkg: "npm:^5.8.1"
     react: "npm:18.2.0"
     react-dom: "npm:18.2.0"
@@ -12299,6 +12301,13 @@ __metadata:
   version: 7.0.14
   resolution: "@types/json-schema@npm:7.0.14"
   checksum: 10/84b5efed51984c077f9cb7c5a3dcb8d8288ce1ae8825952b173c3506a0cfc90bc961d7f2a8847c440310d02bbd570cf918ac463d8310b0c9dce2252baa1ba4e0
+  languageName: node
+  linkType: hard
+
+"@types/json-stable-stringify@npm:^1":
+  version: 1.0.36
+  resolution: "@types/json-stable-stringify@npm:1.0.36"
+  checksum: 10/765b07589e11a3896c3d06bb9e3a9be681e7edd95adf27370df0647a91bd2bfcfaf0e091fd4a13729343b388973f73f7e789d6cc62ab988240518a2d27c4a4e2
   languageName: node
   linkType: hard
 
