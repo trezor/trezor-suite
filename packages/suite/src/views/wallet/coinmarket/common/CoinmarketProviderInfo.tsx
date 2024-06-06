@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { variables } from '@trezor/components';
-import invityApi from 'src/services/suite/invityAPI';
+import invityAPI from 'src/services/suite/invityAPI';
 
 const Wrapper = styled.div`
     display: flex;
@@ -58,9 +58,8 @@ export const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProvid
                             <Bg>
                                 <Icon
                                     width="16px"
-                                    src={`${invityApi.getApiServerUrl()}/images/exchange/${
-                                        provider.logo
-                                    }`}
+                                    src={invityAPI.getProviderLogoUrl(provider.logo)}
+                                    alt=""
                                 />
                             </Bg>
                         </IconWrapper>

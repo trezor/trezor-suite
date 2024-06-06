@@ -13,9 +13,9 @@ import {
     Translation,
 } from 'src/components/suite';
 import { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
-import invityAPI from 'src/services/suite/invityAPI';
 import { typography } from '@trezor/theme';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import CoinmarketCoinImage from '../../../common/CoinmarketCoinImage';
 
 const Wrapper = styled.div`
     margin: 0 0 0 30px;
@@ -112,7 +112,7 @@ const StyledQuestionTooltip = styled(QuestionTooltip)`
     padding-left: 3px;
 `;
 
-const InvityCoinLogo = styled.img`
+const InvityCoinLogo = styled(CoinmarketCoinImage)`
     height: 16px;
 `;
 
@@ -152,9 +152,7 @@ export const CoinmarketExchangeOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <InvityCoinLogo
-                                src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(send!))}
-                            />
+                            <InvityCoinLogo symbol={cryptoToCoinSymbol(send!)} />
                             <Amount>
                                 <FormattedCryptoAmount
                                     value={sendStringAmount}
@@ -180,9 +178,7 @@ export const CoinmarketExchangeOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <InvityCoinLogo
-                                src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(receive!))}
-                            />
+                            <InvityCoinLogo symbol={cryptoToCoinSymbol(receive!)} />
                             <Amount>
                                 {(!provider.isFixedRate || selectedQuote.isDex) && '≈ '}
                                 <FormattedCryptoAmount

@@ -2,6 +2,7 @@ import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type {
+    Option,
     Trade,
     TradeBuy,
     TradeExchange,
@@ -9,10 +10,14 @@ import type {
     TradeType,
 } from 'src/types/wallet/coinmarketCommonTypes';
 import {
+    BuyCryptoPaymentMethod,
     BuyTrade,
     BuyTradeStatus,
+    CryptoSymbol,
+    CryptoSymbolInfo,
     ExchangeTrade,
     ExchangeTradeStatus,
+    FiatCurrencyCode,
     SavingsTradeItemStatus,
     SellFiatTrade,
     SellTradeStatus,
@@ -24,8 +29,34 @@ import { Account } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import {
+    CryptoCategoryA,
+    CryptoCategoryB,
+    CryptoCategoryC,
+    CryptoCategoryD,
+    CryptoCategoryE,
+} from 'src/constants/wallet/coinmarket/cryptoCategories';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { ExtendedMessageDescriptor, TrezorDevice } from 'src/types/suite';
+import { Timer } from '@trezor/react-utils';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
+export type UseCoinmarketCommonProps = UseCoinmarketProps & {
+    type: CoinmarketTradeType;
+};
+export interface UseCoinmarketCommonReturnProps<T extends CoinmarketTradeType> {
+    callInProgress: boolean;
+    account: Account;
+    selectedQuote: CoinmarketTradeDetailMapProps[T] | undefined;
+    timer: Timer;
+    device: TrezorDevice | undefined;
+    setCallInProgress: (state: boolean) => void;
+    setSelectedQuote: (quote: CoinmarketTradeDetailMapProps[T] | undefined) => void;
+    checkQuotesTimer: (callback: () => Promise<void>) => void;
+}
+export type UseCoinmarketFormProps = UseCoinmarketProps & {
+    offFirstRequest?: boolean;
+};
 
 export type CoinmarketTradeBuyType = 'buy';
 export type CoinmarketTradeSellType = 'sell';
@@ -96,3 +127,53 @@ export interface CoinmarketWatchTradeProps<T extends CoinmarketTradeType> {
     dispatch: Dispatch<AnyAction>;
     removeDraft: (key: string) => void;
 }
+
+export type CoinmarketPaymentMethodProps = BuyCryptoPaymentMethod | '';
+
+export interface CoinmarketPaymentMethodListProps extends Option {
+    value: CoinmarketPaymentMethodProps;
+    label: string;
+}
+
+export type CryptoCategoryType =
+    | typeof CryptoCategoryA
+    | typeof CryptoCategoryB
+    | typeof CryptoCategoryC
+    | typeof CryptoCategoryD
+    | typeof CryptoCategoryE;
+
+export type CryptoCategoriesProps = {
+    [key in CryptoCategoryType]?: {
+        translationId: Extract<
+            ExtendedMessageDescriptor['id'],
+            `TR_COINMARKET_CRYPTO_CATEGORY_${string}`
+        >;
+        network?: NetworkSymbol;
+    };
+};
+
+export interface CoinmarketCryptoListProps {
+    value: CryptoSymbol;
+    label: string; // token shortcut
+    cryptoName: string | null; // full name
+}
+
+export type CoinmarketUtilsProvidersProps = {
+    [name: string]: {
+        logo: string;
+        companyName: string;
+        brandName?: string;
+    };
+};
+
+export interface CoinmarketBuildOptionsProps {
+    symbolsInfo: CryptoSymbolInfo[] | undefined;
+    cryptoCurrencies: Set<CryptoSymbol>;
+}
+
+export interface CoinmarketOptionsGroupProps {
+    label: CryptoCategoryType;
+    options: CoinmarketCryptoListProps[];
+}
+
+export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;

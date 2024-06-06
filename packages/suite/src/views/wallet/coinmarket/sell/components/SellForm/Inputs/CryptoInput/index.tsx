@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import invityAPI from 'src/services/suite/invityAPI';
 import { NumberInput } from 'src/components/suite';
 import { Select, CoinLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
@@ -29,6 +28,7 @@ import {
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Option = styled.div`
     display: flex;
@@ -39,7 +39,7 @@ const Label = styled.div`
     padding-left: 10px;
 `;
 
-const TokenLogo = styled.img`
+const TokenLogo = styled(CoinmarketCoinImage)`
     display: flex;
     align-items: center;
     height: 18px;
@@ -69,7 +69,7 @@ const CryptoInput = () => {
     const cryptoOption = {
         value: cryptoSymbol,
         label: cryptoSymbol,
-        cryptoSymbol,
+        cryptoName: cryptoSymbol,
     };
 
     const { symbol, tokens } = account;
@@ -150,7 +150,7 @@ const CryptoInput = () => {
                                     {account.symbol === option.value.toLowerCase() ? (
                                         <CoinLogo size={18} symbol={account.symbol} />
                                     ) : (
-                                        <TokenLogo src={invityAPI.getCoinLogoUrl(option.value)} />
+                                        <TokenLogo symbol={option.value} />
                                     )}
                                     <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                                 </Option>

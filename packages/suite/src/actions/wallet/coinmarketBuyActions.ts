@@ -5,6 +5,7 @@ import {
     BuyTradeQuoteRequest,
     BuyTrade,
     CryptoSymbol,
+    FiatCurrencyCode,
 } from 'invity-api';
 import invityAPI from 'src/services/suite/invityAPI';
 import { COINMARKET_BUY, COINMARKET_COMMON } from './constants';
@@ -12,9 +13,12 @@ import { Dispatch } from 'src/types/suite';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import * as modalActions from 'src/actions/suite/modalActions';
 import { verifyAddress as verifyBuyAddress } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
+import { CoinmarketFiatCurrenciesProps } from 'src/types/coinmarket/coinmarket';
 
 export interface BuyInfo {
-    buyInfo?: BuyListResponse;
+    buyInfo: Omit<BuyListResponse, 'defaultAmountsOfFiatCurrencies'> & {
+        defaultAmountsOfFiatCurrencies: CoinmarketFiatCurrenciesProps;
+    };
     providerInfos: { [name: string]: BuyProviderInfo };
     supportedFiatCurrencies: Set<string>;
     supportedCryptoCurrencies: Set<CryptoSymbol>;
@@ -54,14 +58,20 @@ export type CoinmarketBuyAction =
       };
 
 export const loadBuyInfo = async (): Promise<BuyInfo> => {
-    let buyInfo = await invityAPI.getBuyList();
+    const buyInfo = await invityAPI.getBuyList();
+    const defaultAmountsOfFiatCurrencies: CoinmarketFiatCurrenciesProps = new Map();
 
-    if (!buyInfo) {
-        buyInfo = { country: regional.unknownCountry, providers: [] };
-    }
-
-    if (!buyInfo.providers) {
-        buyInfo.providers = [];
+    if (!buyInfo || !buyInfo.providers) {
+        return {
+            buyInfo: {
+                country: regional.unknownCountry,
+                providers: [],
+                defaultAmountsOfFiatCurrencies,
+            },
+            providerInfos: {},
+            supportedFiatCurrencies: new Set(),
+            supportedCryptoCurrencies: new Set(),
+        };
     }
 
     const providerInfos: { [name: string]: BuyProviderInfo } = {};
@@ -77,8 +87,17 @@ export const loadBuyInfo = async (): Promise<BuyInfo> => {
     const supportedFiatCurrencies = new Set(tradedFiatCurrencies);
     const supportedCryptoCurrencies = new Set(tradedCoins);
 
+    if (buyInfo.defaultAmountsOfFiatCurrencies) {
+        Object.entries(buyInfo.defaultAmountsOfFiatCurrencies).forEach(([key, value]) => {
+            defaultAmountsOfFiatCurrencies.set(key as FiatCurrencyCode, value.toString());
+        });
+    }
+
     return {
-        buyInfo,
+        buyInfo: {
+            ...buyInfo,
+            defaultAmountsOfFiatCurrencies,
+        },
         providerInfos,
         supportedFiatCurrencies,
         supportedCryptoCurrencies,
@@ -100,7 +119,7 @@ export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketBuyAction 
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-// used in useCoinmarketBuyOffers
+// used in useCoinmarketBuyForm
 export const openCoinmarketBuyConfirmModal =
     (provider?: string, cryptoCurrency?: string) => (dispatch: Dispatch) =>
         dispatch(

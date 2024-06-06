@@ -1,10 +1,12 @@
 import { useCallback } from 'react';
-
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { Translation } from 'src/components/suite';
+import {
+    ConfirmValueModal,
+    ConfirmValueModalProps,
+} from 'src/components/suite/modals/ReduxModal/ConfirmValueModal/ConfirmValueModal';
 import { useDisplayMode, useSelector } from 'src/hooks/suite';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { ConfirmValueModal, ConfirmValueModalProps } from './ConfirmValueModal/ConfirmValueModal';
 import {
     cryptoToCoinSymbol,
     cryptoToNetworkSymbol,
@@ -17,9 +19,7 @@ interface ConfirmAddressModalProps
 
 export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAddressModalProps) => {
     const account = useSelector(selectSelectedAccount);
-    const receiveSymbol = useSelector(
-        state => state.wallet.coinmarket.exchange.quotesRequest?.receive,
-    );
+    const { modalCryptoSymbol } = useSelector(state => state.wallet.coinmarket);
     const displayMode = useDisplayMode({ type: 'address' });
 
     const validateAddress = useCallback(
@@ -30,9 +30,9 @@ export const ConfirmAddressModal = ({ addressPath, value, ...props }: ConfirmAdd
     if (!account) return null;
 
     const getHeading = () => {
-        if (receiveSymbol) {
-            const coinSymbol = cryptoToCoinSymbol(receiveSymbol).toUpperCase();
-            const networkSymbol = cryptoToNetworkSymbol(receiveSymbol)?.toUpperCase();
+        if (modalCryptoSymbol) {
+            const coinSymbol = cryptoToCoinSymbol(modalCryptoSymbol).toUpperCase();
+            const networkSymbol = cryptoToNetworkSymbol(modalCryptoSymbol)?.toUpperCase();
 
             if (networkSymbol && coinSymbol !== networkSymbol) {
                 return (

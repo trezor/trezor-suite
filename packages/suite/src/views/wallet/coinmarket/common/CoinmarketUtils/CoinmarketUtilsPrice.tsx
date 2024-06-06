@@ -40,7 +40,9 @@ const CoinmarketUtilsPrice = ({
     return (
         <PriceWrap>
             <PriceTitle>
-                <Translation id="TR_COINMARKET_YOU_GET" />
+                <Translation
+                    id={wantCrypto ? 'TR_COINMARKET_YOU_WILL_PAY' : 'TR_COINMARKET_YOU_WILL_GET'}
+                />
             </PriceTitle>
             <PriceValueWrap>
                 <PriceValue>
@@ -52,6 +54,7 @@ const CoinmarketUtilsPrice = ({
                                 <CoinmarketCryptoAmount
                                     amount={receiveAmount}
                                     symbol={cryptoToCoinSymbol(receiveCurrency)}
+                                    displayLogo
                                 />
                             )}
                         </>

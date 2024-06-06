@@ -1,17 +1,20 @@
 import styled from 'styled-components';
 import { BuyTrade, BuyProviderInfo } from 'invity-api';
-import { variables, CoinLogo } from '@trezor/components';
+import { variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
     CoinmarketTransactionId,
 } from 'src/views/wallet/coinmarket/common';
-import { Account } from 'src/types/wallet';
-import { Translation, AccountLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import invityAPI from 'src/services/suite/invityAPI';
+import {
+    cryptoToCoinSymbol,
+    cryptoToNetworkSymbol,
+    isCryptoSymbolToken,
+} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Wrapper = styled.div`
     display: flex;
@@ -30,6 +33,10 @@ const Header = styled.div`
     margin-bottom: 5px;
     padding: 15px 24px;
     max-width: 340px;
+`;
+
+const HeaderLogo = styled(CoinmarketCoinImage)`
+    width: 24px;
 `;
 
 const AccountText = styled.div`
@@ -94,7 +101,7 @@ const Amount = styled.span`
     padding-left: 5px;
 `;
 
-const InvityCoinLogo = styled.img`
+const InvityCoinLogo = styled(CoinmarketCoinImage)`
     height: 16px;
 `;
 
@@ -103,21 +110,19 @@ const TransactionIdWrapper = styled.div`
     max-width: 350px;
 `;
 
-interface CoinmarketBuyOfferInfoProps {
+interface CoinmarketSelectedOfferInfoProps {
     selectedQuote: BuyTrade;
     transactionId?: string;
     providers?: {
         [name: string]: BuyProviderInfo;
     };
-    account: Account;
 }
 
-export const CoinmarketBuyOfferInfo = ({
+export const CoinmarketSelectedOfferInfo = ({
     selectedQuote,
     transactionId,
     providers,
-    account,
-}: CoinmarketBuyOfferInfoProps) => {
+}: CoinmarketSelectedOfferInfoProps) => {
     const {
         receiveStringAmount,
         receiveCurrency,
@@ -128,13 +133,29 @@ export const CoinmarketBuyOfferInfo = ({
         fiatStringAmount,
     } = selectedQuote;
 
+    const currency = receiveCurrency ? cryptoToCoinSymbol(receiveCurrency) : receiveCurrency;
+    const network =
+        receiveCurrency && isCryptoSymbolToken(receiveCurrency)
+            ? cryptoToNetworkSymbol(receiveCurrency)?.toUpperCase()
+            : null;
+
     return (
-        <Wrapper>
+        <Wrapper data-test="@coinmarket/offer/info">
             <Info>
                 <Header>
-                    <CoinLogo symbol={account.symbol} size={16} />
+                    <HeaderLogo symbol={currency} />
                     <AccountText>
-                        <AccountLabeling account={account} />
+                        {network ? (
+                            <Translation
+                                id="TR_COINMARKET_TOKEN_NETWORK"
+                                values={{
+                                    tokenName: currency,
+                                    networkName: network,
+                                }}
+                            />
+                        ) : (
+                            currency
+                        )}
                     </AccountText>
                 </Header>
                 <Row>
@@ -156,13 +177,11 @@ export const CoinmarketBuyOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <InvityCoinLogo
-                                src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(receiveCurrency!))}
-                            />
+                            <InvityCoinLogo symbol={currency} />
                             <Amount>
                                 <CoinmarketCryptoAmount
                                     amount={receiveStringAmount}
-                                    symbol={cryptoToCoinSymbol(receiveCurrency!)}
+                                    symbol={currency}
                                 />
                             </Amount>
                         </Dark>

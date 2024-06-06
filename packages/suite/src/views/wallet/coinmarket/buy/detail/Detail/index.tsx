@@ -3,13 +3,13 @@ import { Card, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { CoinmarketBuyOfferInfo } from '../../components/CoinmarketBuyOfferInfo';
-import PaymentFailed from '../components/PaymentFailed';
-import PaymentProcessing from '../components/PaymentProcessing';
-import PaymentSuccessful from '../components/PaymentSuccessful';
-import WaitingForUser from '../components/WaitingForUser';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
+import PaymentSuccessful from 'src/views/wallet/coinmarket/buy/detail/components/PaymentSuccessful';
+import WaitingForUser from 'src/views/wallet/coinmarket/buy/detail/components/WaitingForUser';
+import PaymentProcessing from 'src/views/wallet/coinmarket/buy/detail/components/PaymentProcessing';
+import PaymentFailed from 'src/views/wallet/coinmarket/buy/detail/components/PaymentFailed';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,8 +28,7 @@ const StyledCard = styled(Card)`
 const CoinmarketDetail = () => {
     useLayout('Trezor Suite | Trade', () => <PageHeader backRoute="wallet-coinmarket-buy" />);
 
-    const coinmarketDetailContext = useCoinmarketDetailContext<CoinmarketTradeBuyType>();
-    const { trade, info, account } = coinmarketDetailContext;
+    const { trade, info, account } = useCoinmarketDetailContext<CoinmarketTradeBuyType>();
     const dispatch = useDispatch();
     // if trade not found, it is because user refreshed the page and stored transactionId got removed
     // go to the default coinmarket page, the trade is shown there in the previous trades
@@ -73,8 +72,7 @@ const CoinmarketDetail = () => {
                 )}
                 {showSuccess && <PaymentSuccessful account={account} />}
             </StyledCard>
-            <CoinmarketBuyOfferInfo
-                account={account}
+            <CoinmarketSelectedOfferInfo
                 selectedQuote={trade.data}
                 transactionId={trade.key}
                 providers={info?.providerInfos}

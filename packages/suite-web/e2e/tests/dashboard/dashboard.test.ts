@@ -16,22 +16,25 @@ describe('Dashboard', () => {
         cy.passThroughInitialRun();
     });
 
+    const testCoinmarketInputs = () => {
+        cy.getTestElement('@coinmarket/form/account-select/input').should('exist');
+        cy.getTestElement('@coinmarket/form/fiat-input').should('exist');
+        cy.getTestElement('@coinmarket/form/country-select/input').should('exist');
+        cy.getTestElement('@coinmarket/form/payment-method-select/input').should('exist');
+    };
+
     it('Assets table buy button', () => {
         cy.getTestElement('@dashboard/assets/table-icon').click();
         cy.getTestElement('@dashboard/assets/table/btc/buy-button').click();
-        cy.getTestElement('@coinmarket/buy/crypto-currency-select/input').should(
-            'contain.text',
-            'BTC',
-        );
+
+        testCoinmarketInputs();
     });
 
     it('Assets grid buy button', () => {
         cy.getTestElement('@dashboard/assets/grid-icon').click();
         cy.getTestElement('@dashboard/assets/grid/btc/buy-button').click();
-        cy.getTestElement('@coinmarket/buy/crypto-currency-select/input').should(
-            'contain.text',
-            'BTC',
-        );
+
+        testCoinmarketInputs();
     });
 
     // QA todo: test for graph
