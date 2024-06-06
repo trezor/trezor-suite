@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import url from 'url';
+import stringify from 'json-stable-stringify';
 
 import {
     HttpServer,
@@ -73,7 +74,7 @@ export class TrezordNode {
         }
 
         const [affected, unaffected] = arrayPartition(this.listenSubscriptions, subscription => {
-            return JSON.stringify(subscription.descriptors) !== JSON.stringify(this.descriptors);
+            return stringify(subscription.descriptors) !== stringify(this.descriptors);
         });
 
         this.logger?.debug(

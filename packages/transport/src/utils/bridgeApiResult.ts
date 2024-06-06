@@ -57,6 +57,7 @@ export function devices(res: UnknownPayload) {
                 path: o.path,
                 session: o.session,
                 product: o.product,
+                type: o.type,
                 // @ts-expect-error - this is part of response too, might add it to type later
                 vendor: o.vendor,
                 debug: o.debug,
