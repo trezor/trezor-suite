@@ -1,3 +1,9 @@
+# 1.0.14-beta.1
+
+-   feat(suite): Add adding a new shamir group into an existing setup (e9a0425183)
+-   feat(connect): Conway certificates (ab003ce04f)
+-   fix(suite): make default 1:1 for adding backup from settings + sync protobuffs (b08d5602fb)
+
 # 1.0.13-beta.1
 
 -   fix(protobuf): deterministic protobuf order in generated file (7bdc2ebecc)
