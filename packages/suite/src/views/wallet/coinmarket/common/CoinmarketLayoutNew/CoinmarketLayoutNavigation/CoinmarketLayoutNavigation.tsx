@@ -72,6 +72,10 @@ const CoinmarketLayoutNavigation = () => {
                 title="TR_NAV_SPEND"
                 icon="label"
             />
+            <CoinmarketLayoutNavigationItem
+                route="wallet-coinmarket-transactions"
+                title="TR_COINMARKET_LAST_TRANSACTIONS"
+            />
         </List>
     );
 };

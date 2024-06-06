@@ -269,6 +269,12 @@ export const routes = [
         params: walletParams,
     },
     {
+        name: 'wallet-coinmarket-transactions',
+        pattern: '/accounts/coinmarket/transactions',
+        app: 'wallet',
+        params: walletParams,
+    },
+    {
         name: 'wallet-details',
         pattern: '/accounts/details',
         app: 'wallet',

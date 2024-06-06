@@ -33,6 +33,7 @@ import WalletCoinmarketSavingsSetupWaiting from 'src/views/wallet/coinmarket/sav
 import WalletCoinmarketSavingsPaymentInfo from 'src/views/wallet/coinmarket/savings/payment-info';
 import WalletCoinmarketSavingsOverview from 'src/views/wallet/coinmarket/savings/overview';
 import WalletCoinmarketRedirect from 'src/views/wallet/coinmarket/redirect';
+import WalletCoinmarketTransactions from 'src/views/wallet/coinmarket/transactions';
 import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGeneral';
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
@@ -70,6 +71,7 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-coinmarket-savings-payment-info': WalletCoinmarketSavingsPaymentInfo,
     'wallet-coinmarket-savings-overview': WalletCoinmarketSavingsOverview,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
+    'wallet-coinmarket-transactions': WalletCoinmarketTransactions,
 
     'settings-index': SettingsGeneral,
     'settings-coins': SettingsCoins,
