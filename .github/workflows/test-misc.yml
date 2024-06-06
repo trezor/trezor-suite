@@ -1,4 +1,4 @@
-name: "[test] misc"
+name: "[Test] misc"
 
 on:
   schedule:
