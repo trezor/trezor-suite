@@ -12,7 +12,7 @@ import {
     TransactionsRootState,
 } from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
-import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
+import { groupTransactionsByDate, isPending, MonthKey } from '@suite-common/wallet-utils';
 import { Box, Loader } from '@suite-native/atoms';
 import {
     EthereumTokenTransfer,
@@ -21,6 +21,7 @@ import {
 } from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { SettingsSliceRootState } from '@suite-native/settings';
+import { arrayPartition } from '@trezor/utils';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -162,7 +163,15 @@ export const TransactionList = ({
     }, [dispatch, accountKey, fetchTransactions]);
 
     const data = useMemo((): TransactionListItem[] => {
-        const accountTransactionsByMonth = groupTransactionsByDate(transactions, 'month');
+        // groupTransactionsByDate now sorts also pending transactions, if they have blockTime set
+        // this is a temporary solution to emulate the original behavior here in suite-native
+        // TODO: display pending transactions in the correct order
+        const [pendingTxs, confirmedTxs] = arrayPartition(transactions, isPending);
+        const accountTransactionsByMonth = groupTransactionsByDate(confirmedTxs, 'month');
+        accountTransactionsByMonth['pending'] = [
+            ...accountTransactionsByMonth['pending'],
+            ...pendingTxs,
+        ];
         const transactionMonthKeys = Object.keys(accountTransactionsByMonth) as MonthKey[];
 
         if (tokenContract) {
