@@ -52,9 +52,8 @@ module.exports = {
         schemes,
     },
     publish: {
-        provider: 'github',
-        repo: 'trezor-suite',
-        owner: 'trezor',
+        provider: 'generic',
+        url: 'https://data.trezor.io/suite/releases/desktop/latest',
     },
     dmg: {
         sign: false,
