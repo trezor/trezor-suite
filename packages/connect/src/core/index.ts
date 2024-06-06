@@ -2,7 +2,7 @@
 import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createDeferred } from '@trezor/utils';
+import { Deferred, createDeferred } from '@trezor/utils';
 import { getSynchronize } from '@trezor/utils';
 import { storage } from '@trezor/connect-common';
 
@@ -1211,4 +1211,71 @@ const disableWebUSBTransport = async () => {
  */
 export const initCoreState = () => {
     return initCoreManager(new Core());
+};
+
+const initCore = async (
+    settings: ConnectSettings,
+    onCoreEvent: (message: CoreEventMessage) => void,
+) => {
+    const core = new Core();
+    let promise: Promise<void>;
+
+    // do not send any event until Core is fully loaded
+    // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
+    const eventThrottle = (...args: Parameters<typeof onCoreEvent>) =>
+        promise.then(() => onCoreEvent(...args)).catch(() => {});
+
+    promise = core.init(settings, eventThrottle);
+    await promise;
+    // Core initialized successfully, disable throttle
+    core.on(CORE_EVENT, onCoreEvent);
+    core.off(CORE_EVENT, eventThrottle);
+
+    return core;
+};
+
+const disposeCore = (core: Core) => {
+    core.dispose();
+};
+
+const createLazy = <T, TArgs extends Array<any>>(
+    initLazy: (...args: TArgs) => Promise<T>,
+    disposeLazy?: (t: T) => void,
+) => {
+    let value: T | undefined;
+    let valuePromise: Deferred<T> | undefined;
+
+    const get = () => value;
+
+    const dispose = () => {
+        if (valuePromise) {
+            valuePromise.reject(new Error('Disposed'));
+            valuePromise = undefined;
+        }
+        if (value !== undefined) {
+            disposeLazy?.(value);
+            value = undefined;
+        }
+    };
+
+    const getOrInit = (...args: TArgs) => {
+        if (value !== undefined) return Promise.resolve(value);
+        if (!valuePromise) {
+            const deferred = createDeferred<T>();
+            valuePromise = deferred;
+            initLazy(...args)
+                .then(val => {
+                    value = val;
+                    deferred.resolve(val);
+                })
+                .catch(deferred.reject)
+                .finally(() => {
+                    valuePromise = undefined;
+                });
+        }
+
+        return valuePromise.promise;
+    };
+
+    return { get, getOrInit, dispose };
 };

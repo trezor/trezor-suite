@@ -93,10 +93,7 @@ const onCoreEvent = (message: CoreEventMessage) => {
     }
 };
 
-const init = async (settings: Partial<ConnectSettings> = {}) => {
-    if (coreManager.getCore() || coreManager.getInitPromise()) {
-        throw ERRORS.TypedError('Init_AlreadyInitialized');
-    }
+const initSettings = (settings: Partial<ConnectSettings> = {}) => {
     _settings = parseConnectSettings({ ..._settings, ...settings, popup: false });
 
     if (!_settings.manifest) {
@@ -107,24 +104,30 @@ const init = async (settings: Partial<ConnectSettings> = {}) => {
         // default fallback for node
         _settings.transports = ['BridgeTransport'];
     }
+};
 
-    if (_settings.lazyLoad) {
-        // reset "lazyLoad" after first use
-        _settings.lazyLoad = false;
-
-        return;
+const init = async (settings: Partial<ConnectSettings> = {}) => {
+    if (coreManager.getCore() || coreManager.getInitPromise()) {
+        throw ERRORS.TypedError('Init_AlreadyInitialized');
     }
 
-    await coreManager.getOrInitCore(_settings, onCoreEvent);
+    initSettings(settings);
+
+    if (!_settings.lazyLoad) {
+        await coreManager.getOrInitCore(_settings, onCoreEvent);
+    }
+};
+
+const initCall = () => {
+    initSettings({ lazyLoad: false });
+
+    return coreManager.getOrInitCore(_settings, onCoreEvent);
 };
 
 const call: CallMethod = async params => {
     let core;
     try {
-        if (!coreManager.getCore() && !coreManager.getInitPromise()) {
-            await init();
-        }
-        core = await coreManager.getOrInitCore(_settings, onCoreEvent);
+        core = coreManager.getCore() ?? (await coreManager.getInitPromise()) ?? (await initCall());
     } catch (error) {
         return createErrorMessage(error);
     }
