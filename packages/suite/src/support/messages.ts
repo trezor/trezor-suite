@@ -6113,6 +6113,10 @@ export default defineMessages({
         id: 'TR_CHAINED_TXS',
         defaultMessage: 'Chained transactions',
     },
+    TR_DATA: {
+        id: 'TR_DATA',
+        defaultMessage: 'Data',
+    },
     TR_AFFECTED_TXS: {
         id: 'TR_AFFECTED_TXS',
         defaultMessage: 'This operation will remove the following transactions from the mempool',
@@ -8412,6 +8416,26 @@ export default defineMessages({
         id: 'TR_EVM_EXPLANATION_SEND_MODAL_DESCRIPTION',
         defaultMessage:
             'You can only send {network} tokens to a <b>receive address on the {network} network</b>, otherwise your tokens <b>may be lost</b>.',
+    },
+    TR_TX_DATA_METHOD_NAME: {
+        id: 'TR_TX_DATA_METHOD_NAME',
+        defaultMessage: 'Method name',
+    },
+    TR_TX_DATA_METHOD: {
+        id: 'TR_TX_DATA_METHOD',
+        defaultMessage: 'Method',
+    },
+    TR_TX_DATA_FUNCTION: {
+        id: 'TR_TX_DATA_FUNCTION',
+        defaultMessage: 'Function',
+    },
+    TR_TX_DATA_PARAMS: {
+        id: 'TR_TX_DATA_PARAMS',
+        defaultMessage: 'Params',
+    },
+    TR_TX_DATA_INPUT_DATA: {
+        id: 'TR_TX_DATA_INPUT_DATA',
+        defaultMessage: 'Input data',
     },
     TR_FROM: {
         id: 'TR_FROM',
