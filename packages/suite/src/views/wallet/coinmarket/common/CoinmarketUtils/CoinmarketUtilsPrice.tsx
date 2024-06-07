@@ -52,6 +52,7 @@ const CoinmarketUtilsPrice = ({
                                 <CoinmarketCryptoAmount
                                     amount={receiveAmount}
                                     symbol={cryptoToCoinSymbol(receiveCurrency)}
+                                    displayLogo
                                 />
                             )}
                         </>
