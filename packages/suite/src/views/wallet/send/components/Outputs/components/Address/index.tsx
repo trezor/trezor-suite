@@ -107,8 +107,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const inputState = () => {
         if (addressError) {
             return getInputState(addressError);
-        } else if (addressInfoContent) {
-            return 'info';
         }
 
         return undefined;
@@ -372,16 +370,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         />
                     ) : undefined
                 }
-                bottomText={
-                    addressError ? (
-                        <InputError
-                            message={addressError.message}
-                            button={getValidationButtonProps()}
-                        />
-                    ) : (
-                        addressBottomText
-                    )
-                }
+                bottomText={getBottomText()}
                 data-test={inputName}
                 defaultValue={addressValue}
                 maxLength={formInputsMaxLength.address}
