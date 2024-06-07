@@ -26,9 +26,7 @@ type MultiShareBackupModalProps = {
     onCancel: () => void;
 };
 
-export const MultiShareBackupModal = ({
-    onCancel: onCancelFromProps,
-}: MultiShareBackupModalProps) => {
+export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
     const device = useSelector(selectDevice);
 
     const isInBackupMode =
@@ -55,7 +53,7 @@ export const MultiShareBackupModal = ({
             });
         }
 
-        onCancelFromProps();
+        onCancel();
     };
 
     const closeWithCancelOnDevice = () => {
