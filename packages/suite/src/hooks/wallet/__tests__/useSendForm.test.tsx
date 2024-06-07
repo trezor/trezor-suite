@@ -27,6 +27,9 @@ global.ResizeObserver = class MockedResizeObserver {
     disconnect = jest.fn();
 };
 
+// used by `framer-motion` module
+global.scrollTo = jest.fn();
+
 // sendFormActions.signTransaction fetch ethereum definitions
 jest.mock('cross-fetch', () => ({
     __esModule: true,
