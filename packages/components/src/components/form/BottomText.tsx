@@ -35,9 +35,9 @@ export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: bo
 interface BottomTextProps {
     inputState?: InputState;
     isDisabled?: boolean;
-    children: ReactNode;
     icon?: IconName;
     withIcon?: boolean;
+    children: ReactNode;
 }
 //TODO: refactor as in Warning component
 export const BottomText = ({
@@ -45,13 +45,12 @@ export const BottomText = ({
     isDisabled,
     children,
     icon,
-    withIcon = true,
+    withIcon,
 }: BottomTextProps) => {
     const theme = useTheme();
     const iconMap = {
         error: 'warningCircle',
         warning: 'warningCircle',
-        info: 'doubleCheck',
     } as const satisfies Record<InputState, IconName>;
 
     const iconColor: Color | CSSColor = isDisabled
