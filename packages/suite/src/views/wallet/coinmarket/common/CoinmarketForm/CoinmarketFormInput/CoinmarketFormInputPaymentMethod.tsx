@@ -6,10 +6,11 @@ import {
     CoinmarketFormOptionLabel,
 } from '../../..';
 import { Select } from '@trezor/components';
-import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const CoinmarketFormInputPaymentMethod = () => {
-    const { control } = useCoinmarketBuyFormContext();
+    const { control } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const options = [
         {
             value: 'All payment methods',

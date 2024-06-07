@@ -7,13 +7,14 @@ import {
 } from '../../..';
 import { Controller } from 'react-hook-form';
 import { Select } from '@trezor/components';
-import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import { NumberInput } from 'src/components/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { getInputState } from '@suite-common/wallet-utils';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { fiatCurrencies } from '@suite-common/suite-config';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 
 const CoinmarketFormInputFiat = () => {
     const { translationString } = useTranslation();
@@ -27,7 +28,7 @@ const CoinmarketFormInputFiat = () => {
         setAmountLimits,
         setValue,
         clearErrors,
-    } = useCoinmarketBuyFormContext();
+    } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const fiatInput = 'fiatInput';
     const cryptoInput = 'cryptoInput';
     const currencySelect = 'currencySelect';

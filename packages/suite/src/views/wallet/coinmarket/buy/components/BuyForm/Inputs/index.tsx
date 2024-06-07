@@ -7,7 +7,6 @@ import { NumberInput } from 'src/components/suite';
 import { getCryptoOptions } from 'src/utils/wallet/coinmarket/buyUtils';
 import { Select, CoinLogo } from '@trezor/components';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import { getInputState } from '@suite-common/wallet-utils';
 import { formInputsMaxLength } from '@suite-common/validators';
 import { Wrapper, Left, Middle, Right, StyledIcon } from 'src/views/wallet/coinmarket';
@@ -22,6 +21,8 @@ import {
 } from 'src/utils/suite/validation';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { hasNetworkTypeTradableTokens } from 'src/utils/wallet/coinmarket/commonUtils';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Option = styled.div`
     display: flex;
@@ -52,7 +53,7 @@ const Inputs = () => {
         buyInfo,
         setAmountLimits,
         defaultCurrency,
-    } = useCoinmarketBuyFormContext();
+    } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const { CryptoAmountFormatter } = useFormatters();
 

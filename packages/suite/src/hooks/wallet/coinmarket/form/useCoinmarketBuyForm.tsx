@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
 
 import useDebounce from 'react-use/lib/useDebounce';
@@ -18,24 +18,24 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import invityAPI from 'src/services/suite/invityAPI';
 import { getAmountLimits } from 'src/utils/wallet/coinmarket/buyUtils';
-import type { FormState, BuyFormContextValues } from 'src/types/wallet/coinmarketBuyForm';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
-import { useBitcoinAmountUnit } from './useBitcoinAmountUnit';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CoinmarketTradeBuyType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { useBitcoinAmountUnit } from '../../useBitcoinAmountUnit';
+import {
+    CoinmarketFormBuyFormContextProps,
+    CoinmarketFormBuyFormProps,
+} from 'src/types/coinmarket/coinmarketForm';
 
-export const BuyFormContext = createContext<BuyFormContextValues | null>(null);
-BuyFormContext.displayName = 'CoinmarketBuyContext';
-
-export const useCoinmarketBuyForm = ({
+const useCoinmarketBuyForm = ({
     selectedAccount,
-}: UseCoinmarketProps): BuyFormContextValues => {
+}: UseCoinmarketProps): CoinmarketFormBuyFormContextProps => {
     const buyInfo = useSelector(state => state.wallet.coinmarket.buy.buyInfo);
     const dispatch = useDispatch();
 
@@ -46,7 +46,8 @@ export const useCoinmarketBuyForm = ({
     const { account, network } = selectedAccount;
     const { navigateToBuyOffers } = useCoinmarketNavigation(account);
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
-    const { saveDraft, getDraft, removeDraft } = useFormDraft<FormState>('coinmarket-buy');
+    const { saveDraft, getDraft, removeDraft } =
+        useFormDraft<CoinmarketFormBuyFormProps>('coinmarket-buy');
     const draft = getDraft(account.key);
     const isDraft = !!draft;
 
@@ -55,13 +56,13 @@ export const useCoinmarketBuyForm = ({
         account.symbol,
         buyInfo,
     );
-    const methods = useForm<FormState>({
+    const methods = useForm<CoinmarketFormBuyFormProps>({
         mode: 'onChange',
         defaultValues: isDraft ? draft : defaultValues,
     });
 
     const { register, control, formState, reset, setValue, getValues } = methods;
-    const values = useWatch<FormState>({ control });
+    const values = useWatch<CoinmarketFormBuyFormProps>({ control });
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
@@ -94,7 +95,7 @@ export const useCoinmarketBuyForm = ({
                 !formState.isValidating &&
                 Object.keys(formState.errors).length === 0
             ) {
-                saveDraft(account.key, values as FormState);
+                saveDraft(account.key, values as CoinmarketFormBuyFormProps);
             }
         },
         200,
@@ -184,9 +185,4 @@ export const useCoinmarketBuyForm = ({
     };
 };
 
-export const useCoinmarketBuyFormContext = () => {
-    const context = useContext(BuyFormContext);
-    if (context === null) throw Error('BuyFormContext used without Context');
-
-    return context;
-};
+export default useCoinmarketBuyForm;

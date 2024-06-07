@@ -4,7 +4,8 @@ import { CoinmarketFormInputLabel } from '../..';
 import styled from 'styled-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
-import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 
 const CoinmarketFormOfferAmount = styled(H2)`
     margin-top: ${spacingsPx.md};
@@ -49,7 +50,7 @@ const CoinmarketFormOfferItem = styled.div`
 `;
 
 const CoinmarketFormOffer = () => {
-    const { watch, formState } = useCoinmarketBuyFormContext();
+    const { watch, formState } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;
