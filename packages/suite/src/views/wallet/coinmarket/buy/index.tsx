@@ -1,17 +1,18 @@
-import { useCoinmarketBuyForm, BuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import { withSelectedAccountLoaded } from 'src/components/wallet';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import CoinmarketLayout from '../common/CoinmarketLayoutNew/CoinmarketLayout';
 import CoinmarketFormLayout from '../common/CoinmarketForm/CoinmarketFormLayout';
+import useCoinmarketBuyForm from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyForm';
+import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const CoinmarketBuy = (props: UseCoinmarketProps) => {
     const coinmarketBuyContextValues = useCoinmarketBuyForm(props);
 
     return (
         <CoinmarketLayout selectedAccount={props.selectedAccount}>
-            <BuyFormContext.Provider value={coinmarketBuyContextValues}>
+            <CoinmarketFormContext.Provider value={coinmarketBuyContextValues}>
                 <CoinmarketFormLayout />
-            </BuyFormContext.Provider>
+            </CoinmarketFormContext.Provider>
         </CoinmarketLayout>
     );
 };

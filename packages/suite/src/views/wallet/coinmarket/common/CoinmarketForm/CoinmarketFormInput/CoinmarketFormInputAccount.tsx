@@ -12,12 +12,13 @@ import {
 import { Controller } from 'react-hook-form';
 import { CoinLogo, Select } from '@trezor/components';
 import invityAPI from 'src/services/suite/invityAPI';
-import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 
 const CoinmarketFormInputAccount = () => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
     const { shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
-    const { control } = useCoinmarketBuyFormContext();
+    const { control } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
 
     if (!account) return null;
 
