@@ -1,10 +1,12 @@
+import { CoinmarketTradeType } from './coinmarket';
+
 import type { Account, Network } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
-import type { AmountLimits, DefaultCountryOption, Option } from './coinmarketCommonTypes';
 import type { CryptoSymbol } from 'invity-api';
+import { AmountLimits, DefaultCountryOption, Option } from '../wallet/coinmarketCommonTypes';
 
-export type FormState = {
+export type CoinmarketFormBuyFormProps = {
     fiatInput?: string;
     cryptoInput?: string;
     currencySelect: Option;
@@ -15,7 +17,7 @@ export type FormState = {
     paymentMethod?: Option;
 };
 
-export type BuyFormContextValues = UseFormReturn<FormState> & {
+export type CoinmarketFormBuyFormContextProps = UseFormReturn<CoinmarketFormBuyFormProps> & {
     onSubmit: () => void;
     account: Account;
     defaultCountry: DefaultCountryOption;
@@ -28,7 +30,15 @@ export type BuyFormContextValues = UseFormReturn<FormState> & {
     network: Network;
     cryptoInputValue?: string;
     removeDraft: (key: string) => void;
-    formState: ReactHookFormState<FormState>;
+    formState: ReactHookFormState<CoinmarketFormBuyFormProps>;
     isDraft: boolean;
     handleClearFormButtonClick: () => void;
 };
+
+export type CoinmarketFormMapProps = {
+    buy: CoinmarketFormBuyFormContextProps;
+    sell: any; // TODO:
+    exchange: any; // TODO:
+};
+
+export type CoinmarketFormContextValues<T extends CoinmarketTradeType> = CoinmarketFormMapProps[T];

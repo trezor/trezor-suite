@@ -6,11 +6,12 @@ import {
     CoinmarketFormOptionLabel,
 } from '../../..';
 import { Flag, Select } from '@trezor/components';
-import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import styled from 'styled-components';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const FlagContainer = styled.div`
     position: relative;
@@ -30,7 +31,8 @@ const FlagWrapper = styled(Flag)`
 `;
 
 const CoinmarketFormInputCountry = () => {
-    const { control, setAmountLimits, defaultCountry } = useCoinmarketBuyFormContext();
+    const { control, setAmountLimits, defaultCountry } =
+        useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const countrySelect = 'countrySelect';
 
     return (
