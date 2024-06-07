@@ -9041,8 +9041,8 @@ __metadata:
     "@suite-native/module-accounts-import": "workspace:*"
     "@suite-native/module-accounts-management": "workspace:*"
     "@suite-native/module-add-accounts": "workspace:*"
-    "@suite-native/module-connect-device": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
+    "@suite-native/module-device-authentication": "workspace:*"
     "@suite-native/module-home": "workspace:*"
     "@suite-native/module-onboarding": "workspace:*"
     "@suite-native/module-receive": "workspace:*"
@@ -9598,38 +9598,6 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-connect-device@workspace:*, @suite-native/module-connect-device@workspace:suite-native/module-connect-device":
-  version: 0.0.0-use.local
-  resolution: "@suite-native/module-connect-device@workspace:suite-native/module-connect-device"
-  dependencies:
-    "@react-navigation/core": "npm:^6.4.10"
-    "@react-navigation/native": "npm:6.1.17"
-    "@react-navigation/native-stack": "npm:6.9.26"
-    "@reduxjs/toolkit": "npm:1.9.5"
-    "@suite-common/icons": "workspace:*"
-    "@suite-common/validators": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@suite-native/alerts": "workspace:*"
-    "@suite-native/atoms": "workspace:*"
-    "@suite-native/device": "workspace:*"
-    "@suite-native/device-mutex": "workspace:*"
-    "@suite-native/forms": "workspace:*"
-    "@suite-native/intl": "workspace:*"
-    "@suite-native/link": "workspace:*"
-    "@suite-native/navigation": "workspace:*"
-    "@suite-native/passphrase": "workspace:*"
-    "@suite-native/theme": "workspace:*"
-    "@suite-native/toasts": "workspace:*"
-    "@trezor/connect": "workspace:*"
-    "@trezor/styles": "workspace:*"
-    react: "npm:18.2.0"
-    react-native: "npm:0.74.1"
-    react-native-reanimated: "npm:3.11.0"
-    react-native-svg: "npm:15.3.0"
-    react-redux: "npm:8.0.7"
-  languageName: unknown
-  linkType: soft
-
 "@suite-native/module-dev-utils@workspace:*, @suite-native/module-dev-utils@workspace:suite-native/module-dev-utils":
   version: 0.0.0-use.local
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
@@ -9660,6 +9628,38 @@ __metadata:
     "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
+    react-redux: "npm:8.0.7"
+  languageName: unknown
+  linkType: soft
+
+"@suite-native/module-device-authentication@workspace:*, @suite-native/module-device-authentication@workspace:suite-native/module-device-authentication":
+  version: 0.0.0-use.local
+  resolution: "@suite-native/module-device-authentication@workspace:suite-native/module-device-authentication"
+  dependencies:
+    "@react-navigation/core": "npm:^6.4.10"
+    "@react-navigation/native": "npm:6.1.17"
+    "@react-navigation/native-stack": "npm:6.9.26"
+    "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-common/icons": "workspace:*"
+    "@suite-common/validators": "workspace:*"
+    "@suite-common/wallet-core": "workspace:*"
+    "@suite-native/alerts": "workspace:*"
+    "@suite-native/atoms": "workspace:*"
+    "@suite-native/device": "workspace:*"
+    "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/forms": "workspace:*"
+    "@suite-native/intl": "workspace:*"
+    "@suite-native/link": "workspace:*"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
+    "@suite-native/theme": "workspace:*"
+    "@suite-native/toasts": "workspace:*"
+    "@trezor/connect": "workspace:*"
+    "@trezor/styles": "workspace:*"
+    react: "npm:18.2.0"
+    react-native: "npm:0.74.1"
+    react-native-reanimated: "npm:3.11.0"
+    react-native-svg: "npm:15.3.0"
     react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft

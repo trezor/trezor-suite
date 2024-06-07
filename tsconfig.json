@@ -77,10 +77,10 @@
             "path": "suite-native/module-add-accounts"
         },
         {
-            "path": "suite-native/module-connect-device"
+            "path": "suite-native/module-dev-utils"
         },
         {
-            "path": "suite-native/module-dev-utils"
+            "path": "suite-native/module-device-authentication"
         },
         { "path": "suite-native/module-home" },
         {
