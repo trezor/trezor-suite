@@ -13,10 +13,28 @@ const TokenLogo = styled.img`
     margin-right: ${spacingsPx.sm};
 `;
 
+const TokenLogoBig = styled.img`
+    height: 32px;
+    margin: 0 ${spacingsPx.xxxs} 0 ${spacingsPx.xs};
+`;
+
+// using formatted symbol from FormattedCryptoAmount
+const FormattedCryptoAmountWithoutSymbol = styled(FormattedCryptoAmount)`
+    position: relative;
+
+    span:nth-child(2) {
+        position: absolute;
+        top: 0;
+        left: 100%;
+        margin-left: 40px;
+        white-space: nowrap;
+    }
+`;
+
 interface CoinmarketCryptoAmountProps {
     amount?: string | number;
     symbol?: string;
-    displayLogo?: boolean;
+    displayLogo?: boolean | 'center'; // center - show logo between amount and symbol
 }
 
 export const CoinmarketCryptoAmount = ({
@@ -24,14 +42,29 @@ export const CoinmarketCryptoAmount = ({
     symbol,
     displayLogo,
 }: CoinmarketCryptoAmountProps) => {
-    const Logo = () =>
-        displayLogo && symbol && <TokenLogo src={invityAPI.getCoinLogoUrl(symbol)} />;
+    const logoSrc = symbol ? invityAPI.getCoinLogoUrl(symbol) : null;
+    const symbolUpper = symbol?.toUpperCase();
+
+    const Logo = () => displayLogo && logoSrc && <TokenLogo src={logoSrc} />;
 
     if (!amount || amount === '') {
         return (
             <Wrapper>
                 <Logo />
-                {symbol?.toUpperCase()}
+                {symbolUpper}
+            </Wrapper>
+        );
+    }
+
+    if (displayLogo === 'center' && logoSrc) {
+        return (
+            <Wrapper>
+                <FormattedCryptoAmountWithoutSymbol
+                    value={amount}
+                    symbol={symbol}
+                    disableHiddenPlaceholder
+                />
+                <TokenLogoBig src={logoSrc} />
             </Wrapper>
         );
     }
