@@ -2,11 +2,12 @@ import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { Button, Select, variables, Flag } from '@trezor/components';
 import regional from 'src/constants/wallet/coinmarket/regional';
-import { useCoinmarketBuyFormContext } from 'src/hooks/wallet/useCoinmarketBuyForm';
 import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
 import { Translation } from 'src/components/suite';
 import { FooterWrapper, Left, Right } from 'src/views/wallet/coinmarket';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const OptionLabel = styled.div`
     display: flex;
@@ -55,7 +56,7 @@ const StyledSelect = styled(Select)`
 
 const Footer = () => {
     const { control, formState, watch, setAmountLimits, defaultCountry } =
-        useCoinmarketBuyFormContext();
+        useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const countrySelect = 'countrySelect';
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;
