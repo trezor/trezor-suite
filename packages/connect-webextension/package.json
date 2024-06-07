@@ -26,7 +26,8 @@
         "build/trezor-connect-webextension.js",
         "build/trezor-connect-webextension.min.js",
         "build/content-script.js",
-        "lib/"
+        "lib/",
+        "!lib/proxy"
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
