@@ -35,7 +35,10 @@ export const MultiShareBackup = () => {
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
-    if (!doesSupportMultiShare(device)) {
+    // "NotAvailable" means, that backup has been already done and thus is not available.
+    const isBackupDone = device?.features?.backup_availability === 'NotAvailable';
+
+    if (!doesSupportMultiShare(device) || !isBackupDone) {
         return;
     }
 
