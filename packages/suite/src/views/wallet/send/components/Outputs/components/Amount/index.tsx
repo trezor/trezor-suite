@@ -45,7 +45,7 @@ const Row = styled.div`
     }
 `;
 
-const Heading = styled.p`
+const Heading = styled.div`
     display: flex;
     flex-direction: column;
     white-space: nowrap;
