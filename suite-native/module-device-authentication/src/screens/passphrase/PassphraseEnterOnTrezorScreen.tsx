@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -30,8 +30,8 @@ const cardStyle = prepareNativeStyle(_ => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList
 >;
 
@@ -46,7 +46,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     useEffect(() => {
         if (isDiscoveryActive) {
-            navigation.navigate(ConnectDeviceStackRoutes.PassphraseLoading);
+            navigation.navigate(DeviceAuthenticationStackRoutes.PassphraseLoading);
         }
     }, [isDiscoveryActive, navigation]);
 

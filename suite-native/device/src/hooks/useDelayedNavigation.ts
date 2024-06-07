@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { selectIsNoPhysicalDeviceConnected } from '@suite-common/wallet-core';
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -19,8 +19,8 @@ import { selectIsDeviceReadyToUseAndAuthorized } from '../selectors';
 const LOADING_TIMEOUT = 2500;
 
 type NavigationProp = StackToTabCompositeProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.PinMatrix,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes.PinMatrix,
     RootStackParamList
 >;
 

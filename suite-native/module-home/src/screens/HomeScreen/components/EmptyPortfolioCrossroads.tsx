@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AccountsImportStackRoutes,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackRoutes,
     HomeStackParamList,
     HomeStackRoutes,
     RootStackParamList,
@@ -41,8 +41,8 @@ export const EmptyPortfolioCrossroads = () => {
     };
 
     const handleConnectDevice = () => {
-        navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-            screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
+        navigation.navigate(RootStackRoutes.DeviceAuthenticationStack, {
+            screen: DeviceAuthenticationStackRoutes.ConnectAndUnlockDevice,
         });
         analytics.report({
             type: EventType.EmptyDashboardClick,

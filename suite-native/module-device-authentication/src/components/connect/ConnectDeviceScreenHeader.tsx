@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
@@ -28,8 +28,8 @@ type ConnectDeviceScreenHeaderProps = {
 };
 
 type NavigationProp = StackToTabCompositeProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.ConnectingDevice,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes.ConnectingDevice,
     RootStackParamList
 >;
 

@@ -17,8 +17,8 @@ import { useFormContext } from '@suite-native/forms';
 import { Translation } from '@suite-native/intl';
 import TrezorConnect, { UI, DEVICE } from '@trezor/connect';
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -35,8 +35,8 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { PIN_HELP_URL } from '../../constants/pinFormConstants';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.PinMatrix,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes.PinMatrix,
     RootStackParamList
 >;
 

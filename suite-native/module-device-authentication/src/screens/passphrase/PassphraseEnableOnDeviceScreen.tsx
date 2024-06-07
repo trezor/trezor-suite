@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -22,8 +22,8 @@ import { useToast } from '@suite-native/toasts';
 import { DeviceT2B1Svg } from '../../assets/DeviceT2B1Svg';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList
 >;
 

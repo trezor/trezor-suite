@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -26,8 +26,8 @@ import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList | RootStackParamList,
-    ConnectDeviceStackRoutes.PinMatrix | RootStackRoutes.Onboarding,
+    DeviceAuthenticationStackParamList | RootStackParamList,
+    DeviceAuthenticationStackRoutes.PinMatrix | RootStackRoutes.Onboarding,
     RootStackParamList
 >;
 
@@ -58,8 +58,8 @@ export const useHandleDeviceConnection = () => {
             // Note: Passphrase protected device (excluding empty passphrase, e. g. standard wallet with passphrase protection on device),
             // post auth navigation is handled in passphrase logic for custom UX flow.
             if (!isDeviceUsingPassphrase) {
-                navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                    screen: ConnectDeviceStackRoutes.ConnectingDevice,
+                navigation.navigate(RootStackRoutes.DeviceAuthenticationStack, {
+                    screen: DeviceAuthenticationStackRoutes.ConnectingDevice,
                 });
             }
         }
@@ -99,8 +99,8 @@ export const useHandleDeviceConnection = () => {
     // and then continue with the interaction. For T2, PIN is entered on device, but the screen is still displayed.
     useEffect(() => {
         if (isOnboardingFinished && hasDeviceRequestedPin) {
-            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                screen: ConnectDeviceStackRoutes.PinMatrix,
+            navigation.navigate(RootStackRoutes.DeviceAuthenticationStack, {
+                screen: DeviceAuthenticationStackRoutes.PinMatrix,
             });
         }
     }, [hasDeviceRequestedPin, isOnboardingFinished, navigation]);

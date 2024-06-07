@@ -7,8 +7,8 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useAlert } from '@suite-native/alerts';
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -26,8 +26,8 @@ import { PassphraseContentScreenWrapper } from '../../components/passphrase/Pass
 import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
 
 type NavigationProp = StackToTabCompositeProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList
 >;
 
@@ -62,7 +62,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.primaryButton" />
                 ),
                 onPressPrimaryButton: () => {
-                    navigation.navigate(ConnectDeviceStackRoutes.PassphraseForm);
+                    navigation.navigate(DeviceAuthenticationStackRoutes.PassphraseForm);
                     dispatch(retryPassphraseAuthenticationThunk());
                 },
                 primaryButtonVariant: 'redBold',

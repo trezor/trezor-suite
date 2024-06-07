@@ -25,7 +25,7 @@ import {
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackRoutes,
 } from '@suite-native/navigation';
 
 import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
@@ -198,8 +198,8 @@ export const useDetectDeviceError = () => {
                 ),
                 onPressPrimaryButton: () => {
                     handleDisconnect();
-                    navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                        screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
+                    navigation.navigate(RootStackRoutes.DeviceAuthenticationStack, {
+                        screen: DeviceAuthenticationStackRoutes.ConnectAndUnlockDevice,
                     });
                 },
                 secondaryButtonTitle: (

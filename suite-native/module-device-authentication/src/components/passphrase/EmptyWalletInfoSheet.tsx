@@ -15,8 +15,8 @@ import {
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -54,8 +54,8 @@ const ListItem = ({
 };
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList
 >;
 
@@ -65,7 +65,7 @@ export const EmptyWalletInfoSheet = ({ onClose, isVisible }: EmptyWalletInfoShee
     const { applyStyle } = useNativeStyles();
 
     const handleOpenEmptyWallet = () => {
-        navigation.navigate(ConnectDeviceStackRoutes.PassphraseVerifyEmptyWallet);
+        navigation.navigate(DeviceAuthenticationStackRoutes.PassphraseVerifyEmptyWallet);
         onClose();
     };
 

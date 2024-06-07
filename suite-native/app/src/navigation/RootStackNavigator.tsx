@@ -17,7 +17,7 @@ import { DevUtilsStackNavigator } from '@suite-native/module-dev-utils';
 import { TransactionDetailScreen } from '@suite-native/transactions';
 import { OnboardingStackNavigator } from '@suite-native/module-onboarding';
 import { ReceiveModalScreen } from '@suite-native/receive';
-import { ConnectDeviceStackNavigator } from '@suite-native/module-device-authentication';
+import { DeviceAuthenticationStackNavigator } from '@suite-native/module-device-authentication';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceInfoModalScreen, useHandleDeviceConnection } from '@suite-native/device';
 import { SendStackNavigator } from '@suite-native/module-send';
@@ -79,8 +79,8 @@ export const RootStackNavigator = () => {
             <RootStack.Screen name={RootStackRoutes.ReceiveModal} component={ReceiveModalScreen} />
             <RootStack.Screen name={RootStackRoutes.DeviceInfo} component={DeviceInfoModalScreen} />
             <RootStack.Screen
-                name={RootStackRoutes.ConnectDeviceStack}
-                component={ConnectDeviceStackNavigator}
+                name={RootStackRoutes.DeviceAuthenticationStack}
+                component={DeviceAuthenticationStackNavigator}
                 options={{
                     ...stackNavigationOptionsConfig,
                     animation: 'slide_from_bottom',

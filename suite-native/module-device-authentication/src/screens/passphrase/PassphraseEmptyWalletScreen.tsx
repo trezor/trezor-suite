@@ -5,8 +5,8 @@ import { useDispatch } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
@@ -42,8 +42,8 @@ const textStyle = prepareNativeStyle<{ widthPercentage: number }>((_, { widthPer
 }));
 
 type NavigationProp = StackToTabCompositeProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackParamList,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList
 >;
 
@@ -61,7 +61,7 @@ export const PassphraseEmptyWalletScreen = () => {
     };
 
     const handleTryAgain = () => {
-        navigation.navigate(ConnectDeviceStackRoutes.PassphraseForm);
+        navigation.navigate(DeviceAuthenticationStackRoutes.PassphraseForm);
         dispatch(retryPassphraseAuthenticationThunk());
     };
 

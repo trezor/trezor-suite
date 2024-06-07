@@ -1,1 +1,1 @@
-export * from './navigation/ConnectDeviceStackNavigator';
+export * from './navigation/DeviceAuthenticationStackNavigator';

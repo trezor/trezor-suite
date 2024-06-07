@@ -11,7 +11,7 @@ import { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    ConnectDeviceStackRoutes,
+    DeviceAuthenticationStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -113,8 +113,8 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
             onSelectDevice(device);
         }
         setIsDeviceManagerVisible(false);
-        navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-            screen: ConnectDeviceStackRoutes.ConnectAndUnlockDevice,
+        navigation.navigate(RootStackRoutes.DeviceAuthenticationStack, {
+            screen: DeviceAuthenticationStackRoutes.ConnectAndUnlockDevice,
         });
         analytics.report({
             type: EventType.DeviceManagerClick,
