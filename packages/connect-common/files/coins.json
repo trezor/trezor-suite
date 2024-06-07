@@ -48,6 +48,7 @@
                 "T1B1": "1.5.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             },
@@ -96,6 +97,7 @@
                 "T1B1": "1.8.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             },
@@ -147,6 +149,7 @@
                 "T1B1": "1.5.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             },
@@ -195,6 +198,7 @@
                 "T1B1": "1.7.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.10",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -243,6 +247,7 @@
                 "T1B1": "1.7.3",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -300,6 +305,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             },
@@ -348,6 +354,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -405,6 +412,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": false,
                 "T2T1": "2.0.7",
+                "T3T1": false,
                 "connect": true,
                 "suite": true
             },
@@ -456,6 +464,7 @@
                 "T1B1": "1.7.1",
                 "T2B1": false,
                 "T2T1": "2.0.8",
+                "T3T1": false,
                 "connect": true,
                 "suite": false
             },
@@ -504,6 +513,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -552,6 +562,7 @@
                 "T1B1": "1.7.1",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -609,6 +620,7 @@
                 "T1B1": "1.5.2",
                 "T2B1": false,
                 "T2T1": "2.0.5",
+                "T3T1": false,
                 "connect": true,
                 "suite": true
             },
@@ -657,6 +669,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": false,
                 "T2T1": "2.0.8",
+                "T3T1": false,
                 "connect": true,
                 "suite": false
             },
@@ -705,6 +718,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": false,
                 "T2T1": "2.0.8",
+                "T3T1": false,
                 "connect": true,
                 "suite": false
             },
@@ -753,6 +767,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": false,
                 "T2T1": "2.0.8",
+                "T3T1": false,
                 "connect": true,
                 "suite": false
             },
@@ -804,6 +819,7 @@
                 "T1B1": "1.6.3",
                 "T2B1": false,
                 "T2T1": "2.0.7",
+                "T3T1": false,
                 "connect": true,
                 "suite": true
             },
@@ -861,6 +877,7 @@
                 "T1B1": "1.5.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             },
@@ -909,6 +926,7 @@
                 "T1B1": "1.7.1",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -960,6 +978,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1011,6 +1030,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1059,6 +1079,7 @@
                 "T1B1": "1.7.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1113,6 +1134,7 @@
                 "T1B1": "1.6.1",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1161,6 +1183,7 @@
                 "T1B1": "1.8.0",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1209,6 +1232,7 @@
                 "T1B1": "1.7.1",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1266,6 +1290,7 @@
                 "T1B1": "1.5.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             },
@@ -1314,6 +1339,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1365,6 +1391,7 @@
                 "T1B1": "1.6.0",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.5",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1416,6 +1443,7 @@
                 "T1B1": "1.5.2",
                 "T2B1": false,
                 "T2T1": "2.0.5",
+                "T3T1": false,
                 "connect": true,
                 "suite": true
             },
@@ -1467,6 +1495,7 @@
                 "T1B1": "1.8.4",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.9",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1518,6 +1547,7 @@
                 "T1B1": "1.8.4",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.9",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1566,6 +1596,7 @@
                 "T1B1": "1.8.0",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1617,6 +1648,7 @@
                 "T1B1": "1.7.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.10",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1668,6 +1700,7 @@
                 "T1B1": "1.8.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1719,6 +1752,7 @@
                 "T1B1": "1.8.0",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.11",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1737,7 +1771,7 @@
             "bech32_prefix": "sys",
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://blockbook.elint.services"]
+                "url": ["https://blockbook.syscoin.org"]
             },
             "blocktime_seconds": 60,
             "cashaddr_prefix": null,
@@ -1773,6 +1807,7 @@
                 "T1B1": "1.8.4",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1824,6 +1859,7 @@
                 "T1B1": "1.8.4",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.6",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1872,6 +1908,7 @@
                 "T1B1": "1.9.3",
                 "T2B1": "2.6.1",
                 "T2T1": "2.3.3",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -1929,6 +1966,7 @@
                 "T1B1": "1.6.1",
                 "T2B1": false,
                 "T2T1": "2.0.5",
+                "T3T1": false,
                 "connect": true,
                 "suite": true
             },
@@ -1980,6 +2018,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2028,6 +2067,7 @@
                 "T1B1": "1.8.4",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2085,6 +2125,7 @@
                 "T1B1": "1.8.1",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             },
@@ -2133,6 +2174,7 @@
                 "T1B1": "1.8.1",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2184,6 +2226,7 @@
                 "T1B1": "1.8.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.1.1",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2198,6 +2241,80 @@
         }
     ],
     "misc": [
+        {
+            "blockchain_link": {
+                "type": "blockfrost",
+                "url": ["wss://trezor-cardano-mainnet.blockfrost.io"]
+            },
+            "curve": "ed25519",
+            "decimals": 6,
+            "is_testnet": false,
+            "name": "Cardano",
+            "shortcut": "ADA",
+            "slip44": 1815,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
+        },
+        {
+            "blockchain_link": null,
+            "curve": "secp256k1",
+            "decimals": 8,
+            "is_testnet": false,
+            "name": "Binance Chain",
+            "shortcut": "BNB",
+            "slip44": 714,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.6.1",
+                "T2T1": "2.1.5",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": false
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "solana",
+                "url": ["https://solana-dev.trezor.io"]
+            },
+            "curve": "ed25519",
+            "decimals": 9,
+            "is_testnet": false,
+            "name": "Solana Devnet",
+            "shortcut": "DSOL",
+            "slip44": 501,
+            "support": {
+                "T1B1": false,
+                "T2B1": "2.6.4",
+                "T2T1": "2.6.4",
+                "T3T1": "2.6.4",
+                "connect": true,
+                "suite": true
+            }
+        },
+        {
+            "blockchain_link": null,
+            "curve": "secp256k1",
+            "decimals": 4,
+            "is_testnet": false,
+            "name": "EOS",
+            "shortcut": "EOS",
+            "slip44": 194,
+            "support": {
+                "T1B1": false,
+                "T2B1": false,
+                "T2T1": "2.1.1",
+                "T3T1": false,
+                "connect": true,
+                "suite": false
+            }
+        },
         {
             "blockchain_link": {
                 "type": "solana",
@@ -2216,61 +2333,11 @@
             "slip44": 501,
             "support": {
                 "T1B1": false,
-                "T2B1": "2.6.1",
-                "T2T1": "2.6.1",
+                "T2B1": "2.6.4",
+                "T2T1": "2.6.4",
+                "T3T1": "2.6.4",
                 "connect": true,
                 "suite": true
-            }
-        },
-        {
-            "blockchain_link": {
-                "type": "blockfrost",
-                "url": ["wss://trezor-cardano-mainnet.blockfrost.io"]
-            },
-            "curve": "ed25519",
-            "decimals": 6,
-            "is_testnet": false,
-            "name": "Cardano",
-            "shortcut": "ADA",
-            "slip44": 1815,
-            "support": {
-                "T1B1": false,
-                "T2B1": "2.6.1",
-                "T2T1": "2.0.8",
-                "connect": true,
-                "suite": false
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 8,
-            "is_testnet": false,
-            "name": "Binance Chain",
-            "shortcut": "BNB",
-            "slip44": 714,
-            "support": {
-                "T1B1": false,
-                "T2B1": "2.6.1",
-                "T2T1": "2.1.5",
-                "connect": true,
-                "suite": false
-            }
-        },
-        {
-            "blockchain_link": null,
-            "curve": "secp256k1",
-            "decimals": 4,
-            "is_testnet": false,
-            "name": "EOS",
-            "shortcut": "EOS",
-            "slip44": 194,
-            "support": {
-                "T1B1": false,
-                "T2B1": false,
-                "T2T1": "2.1.1",
-                "connect": true,
-                "suite": false
             }
         },
         {
@@ -2288,8 +2355,9 @@
                 "T1B1": false,
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
-                "suite": false
+                "suite": true
             }
         },
         {
@@ -2307,6 +2375,7 @@
                 "T1B1": false,
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             }
@@ -2323,6 +2392,7 @@
                 "T1B1": "1.7.1",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             }
@@ -2342,6 +2412,7 @@
                 "T1B1": false,
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
             }
@@ -2358,27 +2429,9 @@
                 "T1B1": false,
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.8",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
-            }
-        },
-        {
-            "blockchain_link": {
-                "type": "solana",
-                "url": ["https://solana-dev.trezor.io"]
-            },
-            "curve": "ed25519",
-            "decimals": 9,
-            "is_testnet": true,
-            "name": "Solana Devnet",
-            "shortcut": "DSOL",
-            "slip44": 501,
-            "support": {
-                "T1B1": false,
-                "T2B1": "2.6.1",
-                "T2T1": "2.6.1",
-                "connect": true,
-                "suite": true
             }
         }
     ],
@@ -2395,6 +2448,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": false,
                 "T2T1": "2.0.7",
+                "T3T1": false,
                 "connect": true,
                 "suite": false
             },
@@ -2417,6 +2471,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2435,6 +2490,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2453,6 +2509,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2471,6 +2528,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
@@ -2493,6 +2551,7 @@
                 "T1B1": "1.6.2",
                 "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
                 "connect": true,
                 "suite": false
             },
