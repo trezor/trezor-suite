@@ -198,7 +198,11 @@ const Input = ({
             </InputWrapper>
 
             {bottomText && (
-                <BottomText inputState={inputState} isDisabled={isDisabled}>
+                <BottomText
+                    withIcon={inputState === 'error' || inputState === 'warning'}
+                    inputState={inputState}
+                    isDisabled={isDisabled}
+                >
                     {bottomText}
                 </BottomText>
             )}
