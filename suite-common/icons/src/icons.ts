@@ -37,6 +37,7 @@ export const icons = {
     database: require('../assets/icons/database.svg'),
     detective: require('../assets/icons/detective.svg'),
     discover: require('../assets/icons/discover.svg'),
+    doubleCheck: require('../assets/icons/doubleCheck.svg'),
     eject: require('../assets/icons/eject.svg'),
     externalLink: require('../assets/icons/externalLink.svg'),
     eye: require('../assets/icons/eye.svg'),
