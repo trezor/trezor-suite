@@ -66,6 +66,12 @@ const config: webpack.Configuration = {
                         from: path.join(__dirname, '../../', 'transport-bridge/dist/ui'),
                         to: path.join(baseDir, 'build/node-bridge/ui'),
                     },
+                ])
+                .concat([
+                    {
+                        from: path.join(__dirname, '../../', 'suite-desktop/releaseNotes'),
+                        to: path.join(baseDir, 'build'),
+                    },
                 ]),
             options: {
                 concurrency: 100,
