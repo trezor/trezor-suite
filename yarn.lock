@@ -8799,6 +8799,7 @@ __metadata:
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
+    "@trezor/blockchain-link-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
