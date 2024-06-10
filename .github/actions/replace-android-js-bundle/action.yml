@@ -1,0 +1,29 @@
+name: "Replace Android JS Bundle"
+description: "Replaces js bundle of existing android apk build."
+runs:
+  using: "composite"
+  steps:
+    - name: Download build from aws bucket
+      run: aws s3 cp s3://satoshilabstest/${{ steps.expo-fingerprint.outputs.HASH }}/* suite-native/app/android/app/build/outputs/* --recursive
+
+    - name: decompile .apk build
+      working-directory: ./suite-native/app/build/outputs/apk/release
+      run: apktool d app-release.apk -o modified
+
+    - name: replace JS bundle
+      working-directory: ".suite-native/app"
+      run: |
+        npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/build/outputs/apk/release/modified/assets/index.android.bundle --assets-dest android/app/build/outputs/apk/release/modified/res/
+
+    - name: fix native library bundling (extractNativeLibs=true)
+      working-directory: "./suite-native/app/build/outputs/apk/release/modified"
+      run: sed -i '' 's/android:extractNativeLibs=\"false\"/android:extractNativeLibs=\"true\"/g' AndroidManifest.xml
+
+    - name: compile .apk back
+      working-directory: ./suite-native/app/build/outputs/apk/release
+      run: apktool b modified -o app-release.apk
+
+    - name: sign re-bundled .apk
+      run: apksigner sign --ks ../../../../debug.keystore --ks-pass pass:android --out app-release.apk app-release.apk
+
+      # shell: bash

@@ -29,7 +29,7 @@ module.exports = {
         'android.release': {
             type: 'android.apk',
             binaryPath: 'android/app/build/outputs/apk/release/app-release.apk',
-            build: 'cd android && IS_DETOX_BUILD=true ./gradlew :app:assembleRelease :app:assembleAndroidTest -PreactNativeArchitectures=x86_64 -DtestBuildType=release',
+            build: 'cd android && IS_DETOX_BUILD=true ./gradlew :app:assembleRelease :app:assembleAndroidTest -DtestBuildType=release',
             reversePorts: [21325, 19121],
         },
     },

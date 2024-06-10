@@ -43,17 +43,74 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Sign message system config
-        working-directory: ./suite-common/message-system
-        run: yarn sign-config
-
       - name: Prebuild native expo project
         working-directory: ./suite-native/app
         run: yarn prebuild --platform android --clean
 
-      - name: Build Detox test .apk
-        run: yarn build:e2e android.emu.release
+      - name: Sign message system config
+        working-directory: ./suite-common/message-system
+        run: yarn sign-config
+
+      - name: get Expo app fingerprint
+        id: expo-fingerprint
         working-directory: ./suite-native/app
+        run: npx @expo/fingerprint ./ > expo-fingerprint.json && node -e "console.log('HASH=' + require('./expo-fingerprint.json').hash)" >> $GITHUB_OUTPUT
+
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-north-1
+
+      - name: Check if native build exists in AWS bucket
+        id: s3_build_cache
+        run: |
+          if aws s3 ls s3://satoshilabstest/${{ steps.expo-fingerprint.outputs.HASH }} --summarize;
+           then
+             echo "hit=true"  >> $GITHUB_OUTPUT
+           else
+             echo "hit=false"  >> $GITHUB_OUTPUT
+          fi
+
+      # - name: Update JS bundle in cached Android build
+      #   if: ${{ steps.s3_build_cache.outputs.hit}} == 'true'
+      #   uses: ./.github/actions/replace-android-js-bundle/
+      #########################
+      - name: Download build from aws bucket
+        if: ${{ steps.s3_build_cache.outputs.hit}} == 'true'
+        working-directory: ./suite-native/app/android/app/build/outputs
+        run: aws s3 cp s3://satoshilabstest/${{ steps.expo-fingerprint.outputs.HASH }}/ . --recursive
+
+      - name: decompile .apk build
+        if: ${{ steps.s3_build_cache.outputs.hit}} == 'true'
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        run: apktool d app-release.apk -o modified
+
+      - name: replace JS bundle
+        if: ${{ steps.s3_build_cache.outputs.hit}} == 'true'
+        working-directory: ".suite-native/app"
+        run: |
+          npx react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/build/outputs/apk/release/modified/assets/index.android.bundle --assets-dest android/app/build/outputs/apk/release/modified/res/
+
+      - name: fix native library bundling (extractNativeLibs=true)
+        if: ${{ steps.s3_build_cache.outputs.hit}} == 'true'
+        working-directory: "./suite-native/app/android/app/build/outputs/apk/release/modified"
+        run: sed -i '' 's/android:extractNativeLibs=\"false\"/android:extractNativeLibs=\"true\"/g' AndroidManifest.xml
+
+      - name: compile .apk back
+        if: ${{ steps.s3_build_cache.outputs.hit}} == 'true'
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        run: apktool b modified -o app-release.apk
+
+      - name: sign re-bundled .apk
+        if: ${{ steps.s3_build_cache.outputs.hit}} == 'true'
+        working-directory: ./suite-native/app/android/app/build/outputs/apk/release
+        run: apksigner sign --ks ../../../../debug.keystore --ks-pass pass:android --out app-release.apk app-release.apk
+      #############
+
+      - name: Build a new Detox test .apk
+        if: ${{ steps.s3_build_cache.outputs.hit}} == 'false'
+        working-directory: ./suite-native/app
+        run: yarn build:e2e android.emu.release -PreactNativeArchitectures=x86_64
 
       - name: Save build to cache
         uses: actions/cache/save@v4
