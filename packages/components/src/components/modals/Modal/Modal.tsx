@@ -193,6 +193,7 @@ interface ModalProps {
     currentProgressBarStep?: number;
     headerComponent?: ReactNode;
     className?: string;
+    hasBackdropCancel?: boolean;
     'data-test'?: string;
 }
 
