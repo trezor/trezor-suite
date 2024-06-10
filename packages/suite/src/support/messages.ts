@@ -5330,16 +5330,16 @@ export default defineMessages({
     },
     TR_ONBOARDING_BACKUP_TYPE_12_DEFAULT_TOOLTIP: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_12_DEFAULT_TOOLTIP',
-        defaultMessage: "If you're unsure, choose the default option for simplicity.",
+        defaultMessage: "Default is the recommended option for your Trezor device.",
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
-        defaultMessage: "Secure and reliable, not easily upgradable to Multi-share Backup'",
+        defaultMessage: "Secure & reliable, not easily upgradable to Multi-share Backup'",
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            'Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can’t be easily upgraded to a Multi-share Backup without risking your privacy and costing fees. <a>Read more</a>',
+            'Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can’t be easily upgraded to a Multi-share Backup. <a>Read more</a>',
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
@@ -5349,7 +5349,7 @@ export default defineMessages({
     TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP',
         defaultMessage:
-            "If you're unsure, choose the Default option for simplicity <nowrap>and flexibility.</nowrap>",
+            "Recommended option for a simple, flexible setup.",
     },
     TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT: {
         id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT',

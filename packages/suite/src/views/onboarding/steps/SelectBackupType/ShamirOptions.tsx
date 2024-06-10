@@ -71,12 +71,7 @@ export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptions
                 tags={
                     defaultType === 'shamir-single' ? (
                         <Tooltip
-                            content={
-                                <Translation
-                                    id="TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP"
-                                    values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}
-                                />
-                            }
+                            content={<Translation id="TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP" />}
                         >
                             <DefaultTag />
                         </Tooltip>
