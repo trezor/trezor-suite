@@ -14,6 +14,7 @@ import {
     deviceActions,
     selectDeviceByState,
     selectHistoricFiatRates,
+    updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -89,12 +90,25 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 const { account } = action.payload;
                 const device = findAccountDevice(account, selectDevices(api.getState()));
-                const historicRates = selectHistoricFiatRates(api.getState());
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
-                    storageActions.removeAccountHistoricRates(account.key);
                     storageActions.removeAccountTransactions(account);
                     api.dispatch(storageActions.saveAccountTransactions(account));
+                }
+            }
+
+            if (
+                isAnyOf(
+                    transactionsActions.removeTransaction,
+                    updateTxsFiatRatesThunk.fulfilled,
+                )(action)
+            ) {
+                const { account } = action.payload;
+                const device = findAccountDevice(account, selectDevices(api.getState()));
+                const historicRates = selectHistoricFiatRates(api.getState());
+                // update only historic rates for remembered device
+                if (isDeviceRemembered(device)) {
+                    storageActions.removeAccountHistoricRates(account.key);
                     if (historicRates) {
                         api.dispatch(
                             storageActions.saveAccountHistoricRates(account.key, historicRates),
