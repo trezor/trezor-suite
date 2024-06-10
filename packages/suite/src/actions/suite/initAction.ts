@@ -5,6 +5,7 @@ import {
     initDevices,
     periodicFetchFiatRatesThunk,
     periodicCheckStakeDataThunk,
+    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
 
 import * as routerActions from 'src/actions/suite/routerActions';
@@ -12,7 +13,6 @@ import * as analyticsActions from 'src/actions/suite/analyticsActions';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as languageActions from 'src/actions/settings/languageActions';
 import type { Dispatch, GetState } from 'src/types/suite';
-import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { SUITE } from './constants';
 import { onSuiteReady } from './suiteActions';
@@ -23,6 +23,9 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
         suite: {
             settings: { language },
             lifecycle: { status },
+        },
+        wallet: {
+            settings: { localCurrency },
         },
     } = getState();
 
@@ -69,27 +72,30 @@ export const init = () => async (dispatch: Dispatch, getState: GetState) => {
     await dispatch(
         periodicFetchFiatRatesThunk({
             rateType: 'current',
-            localCurrency: selectLocalCurrency(getState()),
+            localCurrency,
         }),
     );
     await dispatch(
         periodicFetchFiatRatesThunk({
             rateType: 'lastWeek',
-            localCurrency: selectLocalCurrency(getState()),
+            localCurrency,
         }),
     );
 
-    // 9. dispatch initial location change
+    // 9. fetch rates for transactions with missing rates
+    await dispatch(updateMissingTxFiatRatesThunk({ localCurrency }));
+
+    // 10. dispatch initial location change
     dispatch(routerActions.init());
 
-    // 10. fetch metadata. metadata is not saved together with other data in storage.
+    // 11. fetch metadata. metadata is not saved together with other data in storage.
     // historically it was saved in indexedDB together with devices and accounts and we did not need to load them
     // immediately after suite start.
     dispatch(metadataLabelingActions.fetchAndSaveMetadataForAllDevices());
 
-    // 11. start fetching staking data if needed, does need to be waited
+    // 12. start fetching staking data if needed, does need to be waited
     dispatch(periodicCheckStakeDataThunk());
 
-    // 12. backend connected, suite is ready to use
+    // 13. backend connected, suite is ready to use
     dispatch(onSuiteReady());
 };
