@@ -73,7 +73,7 @@ export const HELP_CENTER_ETH_STAKING =
     'https://trezor.io/learn/a/stake-ethereum-eth-in-trezor-suite';
 export const HELP_CENTER_SEED_CARD_URL = 'https://trezor.io/learn/a/recovery-seed-card';
 export const HELP_CENTER_MULTI_SHARE_BACKUP_URL =
-    'https://trezor.io/learn/a/multi-share-backup-on-trezor';
+    'https://trezor.io/learn/a/upgrading-to-multi-share-backup';
 export const HELP_CENTER_KEEPING_SEED_SAFE_URL =
     'https://trezor.io/learn/a/keeping-your-recovery-seed-safe';
 
