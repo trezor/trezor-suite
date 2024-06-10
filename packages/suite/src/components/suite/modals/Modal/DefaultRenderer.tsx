@@ -10,6 +10,7 @@ export const DefaultRenderer = ({
     headerComponent,
     isCancelable,
     onCancel,
+    hasBackdropCancel,
     ...rest
 }: ModalProps): ReactPortal | null => {
     const { openGuide } = useGuide();
@@ -19,7 +20,9 @@ export const DefaultRenderer = ({
     if (!modalTarget) return null;
 
     const modal = (
-        <ModalEnvironment onClickBackdrop={isCancelable ? onCancel : undefined}>
+        <ModalEnvironment
+            onClickBackdrop={isCancelable && hasBackdropCancel ? onCancel : undefined}
+        >
             <Modal
                 isCancelable={isCancelable}
                 onCancel={onCancel}
