@@ -1,7 +1,22 @@
 /* eslint-disable no-console */
+import { blockfrostUtils } from '@trezor/blockchain-link-utils';
+
 import { COIN_LIST_URL } from '../constants';
 import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/types';
 import { CoinData } from '../types';
+
+const getContractAddress = (assetPlatformId: string, platforms: CoinData['platforms']) => {
+    const address = platforms[assetPlatformId];
+    if (address) {
+        if (assetPlatformId === 'cardano') {
+            return blockfrostUtils.parseAsset(address).policyId;
+        }
+
+        return address;
+    }
+
+    return undefined;
+};
 
 export const fetchCoinData = async (assetPlatformId: string, structure: string) => {
     console.log('Start fetching coin data for:', assetPlatformId, 'platform');
@@ -33,7 +48,7 @@ export const fetchCoinData = async (assetPlatformId: string, structure: string) 
 
     if (structure === 'advanced') {
         return data.reduce<AdvancedTokenStructure>((acc, { platforms, symbol, name }) => {
-            const contractAddress = platforms[assetPlatformId];
+            const contractAddress = getContractAddress(assetPlatformId, platforms);
             if (contractAddress) {
                 acc[contractAddress] = { symbol, name };
             }
@@ -42,7 +57,11 @@ export const fetchCoinData = async (assetPlatformId: string, structure: string) 
         }, {});
     } else {
         return [
-            ...new Set(data.map(item => item.platforms[assetPlatformId]).filter(item => item)),
+            ...new Set(
+                data
+                    .map(item => getContractAddress(assetPlatformId, item.platforms))
+                    .filter(item => item),
+            ),
         ] as SimpleTokenStructure;
     }
 };
