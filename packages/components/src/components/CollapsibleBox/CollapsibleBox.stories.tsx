@@ -39,7 +39,7 @@ export const CollapsibleBox: StoryObj = {
             control: {
                 type: 'select',
             },
-            options: ['none', 'small', 'normal'],
+            options: ['none', 'normal', 'large'],
         },
 
         subHeading: {
