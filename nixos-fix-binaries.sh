@@ -7,9 +7,9 @@ if [ -f /etc/NIXOS ] ; then
     exit 1
   fi
 
-  # replace bundled binaries in node_modules with symlinks
-
-  ln -sf "$(which 7za)" "$CURDIR"/node_modules/7zip-bin/linux/x64/7za || :
+  # replace bundled binaries in node_modules
+  # electron-builder is trying to call chmod on the 7za binary
+  cp -rf "$(which 7za)" "$CURDIR"/node_modules/7zip-bin/linux/x64/7za || :
 
   # replace bundled binaries in .cache/electron-builder with symlinks
 
