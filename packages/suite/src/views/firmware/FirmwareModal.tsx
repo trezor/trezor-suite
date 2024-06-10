@@ -5,12 +5,7 @@ import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
 import { ConfirmOnDevice, variables } from '@trezor/components';
 
 import { closeModalApp } from 'src/actions/suite/routerActions';
-import {
-    CheckSeedStep,
-    FirmwareCloseButton,
-    FirmwareInstallation,
-    ReconnectDevicePrompt,
-} from 'src/components/firmware';
+import { CheckSeedStep, FirmwareCloseButton, FirmwareInstallation } from 'src/components/firmware';
 import { Translation, Modal } from 'src/components/suite';
 import { ConnectDevicePromptManager, OnboardingStepBox } from 'src/components/onboarding';
 import { useDispatch, useFirmware, useSelector } from 'src/hooks/suite';
@@ -57,7 +52,6 @@ export const FirmwareModal = ({
         firmwareHashInvalid,
         uiEvent,
         confirmOnDevice,
-        showReconnectPrompt,
         showConfirmationPill,
     } = useFirmware();
     const device = useSelector(selectDevice);
@@ -121,7 +115,9 @@ export const FirmwareModal = ({
                 return (
                     <FirmwareInstallation
                         standaloneFwUpdate
+                        install={install}
                         onSuccess={onClose}
+                        onPromptClose={onClose}
                         customFirmware={isCustom}
                     />
                 );
@@ -145,7 +141,6 @@ export const FirmwareModal = ({
             data-test="@firmware-modal"
             heading={<Translation id={heading} />}
         >
-            {showReconnectPrompt && <ReconnectDevicePrompt onClose={onClose} onSuccess={install} />}
             <Wrapper $isWithTopPadding={!isCancelable}>{getComponent()}</Wrapper>
         </StyledModal>
     );
