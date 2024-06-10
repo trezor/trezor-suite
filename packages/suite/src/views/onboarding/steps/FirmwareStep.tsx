@@ -30,6 +30,7 @@ export const FirmwareStep = () => {
         targetType,
     } = useFirmware();
 
+    const install = () => firmwareUpdate({ firmwareType: targetType });
     const goToNextStepAndResetReducer = () => {
         goToNextStep();
         resetReducer();
@@ -66,11 +67,7 @@ export const FirmwareStep = () => {
                 image="FIRMWARE"
                 heading={<Translation id="TR_FW_INSTALLATION_FAILED" />}
                 description={<Translation id="TOAST_GENERIC_ERROR" values={{ error }} />}
-                innerActions={
-                    <FirmwareRetryButton
-                        onClick={() => firmwareUpdate({ firmwareType: targetType })}
-                    />
-                }
+                innerActions={<FirmwareRetryButton onClick={install} />}
                 outerActions={<OnboardingButtonBack onClick={() => resetReducer()} />}
             />
         );
@@ -125,7 +122,9 @@ export const FirmwareStep = () => {
             return <FirmwareInitial />;
         case 'started': // called from firmwareUpdate()
         case 'done':
-            return <FirmwareInstallation onSuccess={goToNextStepAndResetReducer} />;
+            return (
+                <FirmwareInstallation install={install} onSuccess={goToNextStepAndResetReducer} />
+            );
         default:
             // 'ensure' type completeness
             throw new Error(`state "${status}" is not handled here`);

@@ -3,7 +3,7 @@ import { UI } from '@trezor/connect';
 
 import { Translation, WebUsbButton } from 'src/components/suite';
 import { useFirmware } from 'src/hooks/suite';
-import { FirmwareOffer, FirmwareProgressBar } from 'src/components/firmware';
+import { FirmwareOffer, FirmwareProgressBar, ReconnectDevicePrompt } from 'src/components/firmware';
 import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
@@ -16,15 +16,19 @@ interface FirmwareInstallationProps {
     standaloneFwUpdate?: boolean;
     // If true, information about new version is not shown, because we don't know anything about it
     customFirmware?: boolean;
+    install: () => void;
+    onPromptClose?: () => void;
     onSuccess: () => void;
 }
 
 export const FirmwareInstallation = ({
     standaloneFwUpdate,
     customFirmware,
+    install,
+    onPromptClose,
     onSuccess,
 }: FirmwareInstallationProps) => {
-    const { status, isWebUSB, uiEvent } = useFirmware();
+    const { status, isWebUSB, showReconnectPrompt, uiEvent } = useFirmware();
     const isActionAbortable = useSelector(selectIsActionAbortable);
 
     const getInnerActionComponent = () => {
@@ -52,6 +56,9 @@ export const FirmwareInstallation = ({
 
     return (
         <>
+            {showReconnectPrompt && (
+                <ReconnectDevicePrompt onClose={onPromptClose} onSuccess={install} />
+            )}
             <OnboardingStepBox
                 image="FIRMWARE"
                 heading={<Translation id="TR_INSTALL_FIRMWARE" />}

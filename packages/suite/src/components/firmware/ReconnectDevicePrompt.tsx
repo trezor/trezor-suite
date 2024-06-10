@@ -161,7 +161,7 @@ const RebootDeviceGraphics = ({
 };
 
 interface ReconnectDevicePromptProps {
-    onClose: () => void;
+    onClose?: () => void;
     onSuccess: () => void;
 }
 
@@ -195,7 +195,8 @@ export const ReconnectDevicePrompt = ({ onClose, onSuccess }: ReconnectDevicePro
     const rebootPhase = getRebootPhase();
     const isRebootDone = rebootPhase === 'done';
     const deviceModelInternal = device?.features?.internal_model;
-    const isAbortable = isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
+    const isAbortable =
+        onClose !== undefined && isManualRebootRequired && rebootPhase == 'waiting-for-reboot';
     const showWebUsbButton = rebootPhase === 'disconnected' && isWebUSB;
 
     const toNormal =
