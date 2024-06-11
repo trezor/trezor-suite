@@ -1,4 +1,3 @@
-    SettingsMultiShareBackup = 'settings/device/multi-share-backup',
 export enum AppUpdateEventStatus {
     Available = 'available',
     Download = 'download',
@@ -89,7 +88,6 @@ export enum EventType {
     SettingsAnalytics = 'settings/analytics',
 
     GetDesktopApp = 'promo/desktop',
-    GetMobileApp = 'promo/mobile',
     GetMobileApp = 'promo/mobile',
     
     T3T1DashboardPromo = 'promo/t3t1-dashboard',
