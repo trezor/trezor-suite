@@ -101,7 +101,7 @@ jobs:
   deploy-npm-connect:
     name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
     # We only deploy connect NPM once dependencies have been deployed successfully.
-    needs: [deploy-npm-connect-dependencies]
+    needs: [identify-release-packages, deploy-npm-connect-dependencies]
     environment: production-connect
     runs-on: ubuntu-latest
     strategy:
