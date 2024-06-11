@@ -123,15 +123,6 @@ class ReactNativeUsbModule : Module() {
 
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(onDeviceConnect)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(onDeviceDisconnect)
-
-            context.registerReceiver(
-                usbAttachedReceiver,
-                IntentFilter(UsbManager.ACTION_USB_DEVICE_ATTACHED)
-            )
-            context.registerReceiver(
-                usbDetachedReceiver,
-                IntentFilter(UsbManager.ACTION_USB_DEVICE_DETACHED)
-            )
         }
 
         OnActivityEntersForeground {
@@ -156,9 +147,6 @@ class ReactNativeUsbModule : Module() {
         }
 
         OnDestroy {
-            context.unregisterReceiver(usbAttachedReceiver)
-            context.unregisterReceiver(usbDetachedReceiver)
-
             ReactNativeUsbAttachedReceiver.setOnDeviceConnectCallback(null)
             ReactNativeUsbDetachedReceiver.setOnDeviceDisconnectCallback(null)
 
@@ -172,10 +160,6 @@ class ReactNativeUsbModule : Module() {
         }
 
     }
-
-    private val usbAttachedReceiver = ReactNativeUsbAttachedReceiver()
-    private val usbDetachedReceiver = ReactNativeUsbDetachedReceiver()
-
 
     private inline fun withModuleScope(promise: Promise, crossinline block: () -> Unit) =
         moduleCoroutineScope.launch {
