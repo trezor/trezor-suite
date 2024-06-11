@@ -18,6 +18,7 @@
     "scripts": {
         "lint:js": "eslint '**/*.{ts,tsx,js}'",
         "test:unit": "jest -c ./jest.config.js",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     }
 }

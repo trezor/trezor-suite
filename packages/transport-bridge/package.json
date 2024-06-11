@@ -7,6 +7,7 @@
     "sideEffects": false,
     "scripts": {
         "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
