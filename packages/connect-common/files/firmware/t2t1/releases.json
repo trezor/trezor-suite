@@ -10,7 +10,7 @@
         "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.7.2-bitcoinonly.bin",
         "fingerprint": "d64fcf47a8ead6edf0329583e312136d1548d30990c29cfaa2ce7c67197babcc",
         "fingerprint_bitcoinonly": "cba515383705ec6420c54dd1ffdb33ea7ce4bb04bc6d992c2923880daa53d3e1",
-        "changelog": "* Add display brightness setting. \n* Multi-share backups can now have any number of shares. \n* Add support for repeated backups. \n* Add support for Cardano Conway certificates [Universal fw only]."
+        "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
     },
     {
         "required": false,
