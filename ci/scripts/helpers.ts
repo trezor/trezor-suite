@@ -18,7 +18,6 @@ const errors: string[] = [];
 
 export const gettingNpmDistributionTags = async (packageName: string) => {
     const npmRegistryUrl = `https://registry.npmjs.org/${packageName}`;
-    console.log(`fetching npm registry info from: ${npmRegistryUrl}`);
     const response = await fetch(npmRegistryUrl);
     const data = await response.json();
     if (data.error) {
