@@ -1,4 +1,4 @@
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { CryptoSymbol } from 'invity-api';
 
 const networkToCryptoSymbols: Partial<Record<NetworkSymbol, CryptoSymbol>> = {
@@ -54,3 +54,7 @@ export function tokenToCryptoSymbol(
         ? (`${tokenSymbol.toUpperCase()}@${networkCryptoSymbol}` as CryptoSymbol)
         : undefined;
 }
+
+export const getNetworkName = (networkSymbol: NetworkSymbol) => {
+    return networks[networkSymbol].name;
+};

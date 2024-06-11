@@ -1,11 +1,14 @@
 import { Badge, Button, H2 } from '@trezor/components';
-import { CoinmarketCryptoAmount } from '..';
+import { CoinmarketCryptoAmount, CoinmarketRefreshTime } from '..';
 import { CoinmarketFormInputLabel } from '../..';
 import styled from 'styled-components';
 import { borders, spacings, spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
+import { Loading } from 'src/components/suite';
+import { InvityAPIReloadQuotesAfterSeconds } from 'src/constants/wallet/coinmarket/metadata';
 
 const CoinmarketFormOfferAmount = styled(H2)`
     margin-top: ${spacingsPx.md};
@@ -50,57 +53,76 @@ const CoinmarketFormOfferItem = styled.div`
 `;
 
 const CoinmarketFormOffer = () => {
-    const { watch, formState } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const context = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const { formState, watch, quotes, account, isLoading, timer, goToOffers, selectQuote } =
+        context;
+    const { providers } = getProvidersInfoProps(context);
     const formIsValid = Object.keys(formState.errors).length === 0;
     const hasValues =
         (watch('fiatInput') || watch('cryptoInput')) && !!watch('currencySelect').value;
 
-    const providers = {
-        '1inch': {
-            companyName: '1inch',
-            logo: '1inch-icon.png',
-            brandName: '1inch',
-        },
-    } as {
-        [name: string]: {
-            logo: string;
-            companyName: string;
-            brandName?: string;
-        };
-    };
-    const exchange = '1inch'; // quote.exchange
-    // TODO: loading, noProviders
+    const bestQuote = quotes?.[0];
+    const isQuoteLoading = isLoading || typeof bestQuote === undefined;
 
     return (
         <>
+            <CoinmarketRefreshTime
+                isLoading={timer.isLoading}
+                refetchInterval={InvityAPIReloadQuotesAfterSeconds}
+                seconds={timer.timeSpend.seconds}
+                label={<>TEST</>}
+            />
             <CoinmarketFormInputLabel>You get</CoinmarketFormInputLabel>
             <CoinmarketFormOfferAmount>
-                <CoinmarketCryptoAmount amount="0.0001" symbol="BTC" displayLogo="center" />
+                <CoinmarketCryptoAmount
+                    amount={!isQuoteLoading ? bestQuote?.receiveStringAmount : '0'}
+                    symbol={
+                        !isQuoteLoading ? bestQuote?.receiveCurrency : account.symbol.toUpperCase()
+                    }
+                    displayLogo="center"
+                />
             </CoinmarketFormOfferAmount>
             <CoinmarketFormOfferHeader>
                 <CoinmarketFormOfferHeaderText>Your best offer</CoinmarketFormOfferHeaderText>
                 <CoinmarketFormOfferHeaderButton
-                    type="submit"
-                    isDisabled={!(formIsValid && hasValues) || formState.isSubmitting}
-                    isLoading={formState.isSubmitting}
+                    onClick={goToOffers}
+                    isDisabled={
+                        isQuoteLoading || !(formIsValid && hasValues) || formState.isSubmitting
+                    }
+                    isLoading={isQuoteLoading || formState.isSubmitting}
                 >
                     Compare all offers
                 </CoinmarketFormOfferHeaderButton>
             </CoinmarketFormOfferHeader>
             <CoinmarketFormOfferItem>
-                <CoinmarketUtilsProvider providers={providers} exchange={exchange} />
-                <Badge variant="primary" size="small">
-                    Best rate
-                </Badge>
+                {!isQuoteLoading ? (
+                    <>
+                        <CoinmarketUtilsProvider
+                            providers={providers}
+                            exchange={bestQuote?.exchange}
+                        />
+                        <Badge variant="primary" size="small">
+                            Best rate
+                        </Badge>
+                    </>
+                ) : (
+                    <Loading />
+                )}
             </CoinmarketFormOfferItem>
 
             <Button
+                onClick={() => {
+                    if (bestQuote) {
+                        selectQuote(bestQuote);
+                    }
+                }}
                 type="button"
                 variant="primary"
                 margin={{
                     top: spacings.xxl,
                 }}
                 isFullWidth
+                isDisabled={isQuoteLoading || !(formIsValid && hasValues) || formState.isSubmitting}
             >
                 Buy
             </Button>

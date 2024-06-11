@@ -169,6 +169,7 @@ const Inputs = () => {
                                 value: cryptoSymbol,
                                 label: cryptoSymbol,
                                 cryptoSymbol,
+                                cryptoName: network.name,
                             }}
                             render={({ field: { onChange, value } }) => (
                                 <Select
