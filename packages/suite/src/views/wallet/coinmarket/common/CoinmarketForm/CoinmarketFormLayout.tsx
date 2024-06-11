@@ -3,8 +3,8 @@ import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
 import CoinmarketFormInputs from './CoinmarketFormInputs';
 import CoinmarketFormOffer from './CoinmarketFormOffer';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import SelectedOffer from '../../buy/offers/Offers/SelectedOffer';
 
 const CoinmarketFormLayoutWrapper = styled.form`
     display: flex;
@@ -24,10 +24,14 @@ const CoinmarketFormOfferWrapper = styled(Card)`
 `;
 
 const CoinmarketFormLayout = () => {
-    const { onSubmit, handleSubmit } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const { selectedQuote } = useCoinmarketFormContext();
+
+    if (selectedQuote) {
+        return <SelectedOffer />;
+    }
 
     return (
-        <CoinmarketFormLayoutWrapper onSubmit={handleSubmit(onSubmit)}>
+        <CoinmarketFormLayoutWrapper>
             <CoinmarketFormInputsWrapper>
                 <CoinmarketFormInputs />
             </CoinmarketFormInputsWrapper>
