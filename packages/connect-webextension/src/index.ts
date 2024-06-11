@@ -239,8 +239,8 @@ const initProxyChannel = () => {
             () => {
                 (TrezorConnect as any)[method](payload).then((response: any) => {
                     channel.postMessage({
+                        ...response,
                         id,
-                        payload: response.payload,
                     });
                 });
             },
