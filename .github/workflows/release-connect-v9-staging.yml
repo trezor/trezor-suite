@@ -66,6 +66,8 @@ jobs:
           awsRegion: "eu-central-1"
           serverHostname: "staging-connect.trezor.io"
           serverPath: ${{ needs.extract-version.outputs.version }}
+          buildArtifacts: "true"
+          uploadArtifacts: "true"
 
   # This job deploys to staging-connect.trezor.io/9
   deploy-staging-v9:
@@ -92,3 +94,5 @@ jobs:
           awsRegion: "eu-central-1"
           serverHostname: "staging-connect.trezor.io"
           serverPath: "9"
+          buildArtifacts: "true"
+          uploadArtifacts: "true"
