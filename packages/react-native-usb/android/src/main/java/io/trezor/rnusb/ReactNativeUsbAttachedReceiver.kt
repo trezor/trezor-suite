@@ -26,7 +26,7 @@ class ReactNativeUsbAttachedReceiver() : BroadcastReceiver() {
                 intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
             }
             device?.let {
-                Log.d("ReactNativeUSB", "USB device attached: $device")
+                Log.d(LOG_TAG, "USB device attached: $device")
 
                 onDeviceConnectCallback?.invoke(device)
 

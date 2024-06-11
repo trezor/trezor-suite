@@ -27,7 +27,7 @@ class ReactNativeUsbDetachedReceiver() : BroadcastReceiver() {
                 intent.getParcelableExtra(UsbManager.EXTRA_DEVICE)
             }
             device?.apply {
-                Log.d("ReactNativeUSB", "USB device disconnected: $device")
+                Log.d(LOG_TAG, "USB device disconnected: $device")
 
                 onDeviceDisconnectCallback?.invoke(device.deviceName)
             }
