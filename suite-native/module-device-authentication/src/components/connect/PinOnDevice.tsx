@@ -6,14 +6,10 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Image, Box, Text } from '@suite-native/atoms';
 import { DeviceModelInternal } from '@trezor/connect';
-import {
-    removeButtonRequests,
-    selectDevice,
-    selectDeviceRequestedPin,
-} from '@suite-common/wallet-core';
+import { removeButtonRequests, selectDevice } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
+import { selectIsDeviceAuthenticationFlowActive } from '@suite-native/device-authentication';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
@@ -30,6 +26,7 @@ const wrapperStyle = prepareNativeStyle(utils => ({
     alignItems: 'center',
     paddingTop: utils.spacings.large,
 }));
+
 const imageStyle = prepareNativeStyle(_ => ({
     maxHeight: SCREEN_HEIGHT * 0.6,
     width: 243,
@@ -47,7 +44,7 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
     const navigation = useNavigation();
 
     const device = useSelector(selectDevice);
-    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const isDeviceAuthenticationFlowActive = useSelector(selectIsDeviceAuthenticationFlowActive);
     const { applyStyle } = useNativeStyles();
 
     const handleSuccess = useCallback(() => {
@@ -58,19 +55,13 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
     }, [navigation, dispatch, device]);
 
     useEffect(() => {
-        // hasDeviceRequestedPin is false when the user unlocks the device again
+        // isDeviceAuthenticationFlowActive is false when the user unlocks the device again
         // after it was already unlocked and then became locked.
-        // (e.g., when attempting to verify the receive address with locked device).
-        if (!hasDeviceRequestedPin) {
+        // (e.g., when attempting to verify the receive address with locked device or using other features that communicate with device in locked state).
+        if (!isDeviceAuthenticationFlowActive) {
             handleSuccess();
         }
-    }, [hasDeviceRequestedPin, handleSuccess]);
-
-    useEffect(() => {
-        TrezorConnect.on(UI_REQUEST.CLOSE_UI_WINDOW, handleSuccess);
-
-        return () => TrezorConnect.off(UI_REQUEST.CLOSE_UI_WINDOW, handleSuccess);
-    }, [handleSuccess]);
+    }, [handleSuccess, isDeviceAuthenticationFlowActive]);
 
     return (
         <Box style={applyStyle(wrapperStyle)}>

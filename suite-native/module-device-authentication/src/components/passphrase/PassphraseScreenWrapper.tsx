@@ -7,21 +7,15 @@ import { PassphraseScreenHeader } from './PassphraseScreenHeader';
 
 type PassphraseScreenWrapperProps = {
     children: ReactNode;
-    isWalletRemovedOnClose?: boolean;
 };
 
-export const PassphraseScreenWrapper = ({
-    children,
-    isWalletRemovedOnClose = true,
-}: PassphraseScreenWrapperProps) => {
+export const PassphraseScreenWrapper = ({ children }: PassphraseScreenWrapperProps) => {
     const { utils } = useNativeStyles();
 
     return (
         <Screen
             customHorizontalPadding={utils.spacings.medium}
-            screenHeader={
-                <PassphraseScreenHeader isWalletRemovedOnClose={isWalletRemovedOnClose} />
-            }
+            screenHeader={<PassphraseScreenHeader />}
         >
             {children}
         </Screen>

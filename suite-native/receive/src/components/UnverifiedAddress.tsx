@@ -5,7 +5,6 @@ import {
     selectIsPortfolioTrackerDevice,
 } from '@suite-common/wallet-core';
 import { VStack } from '@suite-native/atoms';
-import { useFeatureRequestsPassphrase } from '@suite-native/passphrase';
 
 import { ShowAddressButtons } from './ShowAddressButtons';
 import { UnverifiedAddressDevice } from './UnverifiedAddressDevice';
@@ -24,8 +23,6 @@ export const UnverifiedAddress = ({
     isCardanoAddress,
     onShowAddress,
 }: UnverifiedAddressSectionProps) => {
-    useFeatureRequestsPassphrase();
-
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
     const isDeviceInViewOnlyMode = useSelector(selectIsDeviceInViewOnlyMode);
 

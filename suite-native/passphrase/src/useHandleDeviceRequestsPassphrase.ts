@@ -49,4 +49,15 @@ export const useHandleDeviceRequestsPassphrase = () => {
 
         return () => TrezorConnect.off(UI.REQUEST_PASSPHRASE, handleNavigateToPassphraseForm);
     }, [handleNavigateToPassphraseForm]);
+
+    const handleRequestPassphraseOnDevice = useCallback(() => {
+        navigation.navigate(DeviceAuthenticationStackRoutes.PassphraseEnterOnTrezor);
+    }, [navigation]);
+
+    useEffect(() => {
+        TrezorConnect.on(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRequestPassphraseOnDevice);
+
+        return () =>
+            TrezorConnect.off(UI.REQUEST_PASSPHRASE_ON_DEVICE, handleRequestPassphraseOnDevice);
+    }, [handleRequestPassphraseOnDevice]);
 };

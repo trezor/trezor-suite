@@ -15,6 +15,7 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
+import { selectIsDeviceAuthenticationFlowActive } from '@suite-native/device-authentication';
 
 import { DeviceT2B1Svg } from '../../assets/DeviceT2B1Svg';
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
@@ -26,10 +27,17 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseConfirmOnTrezorScreen = () => {
+    const navigation = useNavigation<NavigationProp>();
+
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const isDeviceAuthenticationFlowActive = useSelector(selectIsDeviceAuthenticationFlowActive);
 
-    const navigation = useNavigation<NavigationProp>();
+    useEffect(() => {
+        if (!isDeviceAuthenticationFlowActive && navigation.canGoBack()) {
+            navigation.goBack();
+        }
+    }, [isDeviceAuthenticationFlowActive, navigation]);
 
     useEffect(() => {
         if (isDeviceConnectedAndAuthorized && isDiscoveryActive) {

@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 
 import { useNavigation, useRoute } from '@react-navigation/native';
@@ -12,22 +12,15 @@ import {
     VStack,
 } from '@suite-native/atoms';
 import {
-    AppTabsRoutes,
     DeviceAuthenticationStackParamList,
     DeviceAuthenticationStackRoutes,
-    HomeStackRoutes,
     RootStackParamList,
-    RootStackRoutes,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
-
-type PassphraseScreenHeaderProps = {
-    isWalletRemovedOnClose: boolean;
-};
+import { deviceActions, selectDevice, selectDeviceState } from '@suite-common/wallet-core';
 
 type NavigationProp = StackToTabCompositeProps<
     DeviceAuthenticationStackParamList,
@@ -40,8 +33,11 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
     gap: 12,
 }));
 
-export const PassphraseScreenHeader = ({ isWalletRemovedOnClose }: PassphraseScreenHeaderProps) => {
+export const PassphraseScreenHeader = () => {
     const route = useRoute();
+
+    const device = useSelector(selectDevice);
+    const deviceState = useSelector(selectDeviceState);
 
     const { applyStyle } = useNativeStyles();
 
@@ -52,24 +48,18 @@ export const PassphraseScreenHeader = ({ isWalletRemovedOnClose }: PassphraseScr
     const [shouldShowWarningBottomSheet, setShouldShowWarningBottomSheet] = useState(false);
 
     const handleClose = () => {
-        if (isWalletRemovedOnClose) {
-            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
-        } else {
-            // If cancel happens on screen where passphrase was requested by some feature (receive, add account, send, etc),
-            // only cancel the TrezorConnect call and go back to previous screen. We want to keep the passphrase wallet.
-            TrezorConnect.cancel();
-            if (navigation.canGoBack()) navigation.goBack();
-        }
+        // If cancel happens on screen where passphrase was requested by some feature (receive, add account, send, etc),
+        // only cancel the TrezorConnect call and go back to previous screen. We want to keep the passphrase wallet.
+        TrezorConnect.cancel();
+        dispatch(deviceActions.removeButtonRequests({ device }));
+        if (navigation.canGoBack()) navigation.goBack();
     };
 
     const handlePress = () => {
-        if (route.name === DeviceAuthenticationStackRoutes.PassphraseConfirmOnTrezor) {
+        if (
+            route.name === DeviceAuthenticationStackRoutes.PassphraseConfirmOnTrezor &&
+            !deviceState
+        ) {
             setShouldShowWarningBottomSheet(true);
         } else {
             handleClose();

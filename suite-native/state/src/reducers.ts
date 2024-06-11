@@ -30,6 +30,7 @@ import { discoveryConfigPersistWhitelist, discoveryConfigReducer } from '@suite-
 import { featureFlagsPersistedKeys, featureFlagsReducer } from '@suite-native/feature-flags';
 import { prepareTokenDefinitionsReducer } from '@suite-common/token-definitions';
 import { passphraseReducer } from '@suite-native/passphrase';
+import { deviceAuthenticationReducer } from '@suite-native/device-authentication';
 
 import { extraDependencies } from './extraDependencies';
 import { appReducer } from './appSlice';
@@ -139,6 +140,7 @@ export const prepareRootReducers = async () => {
             featureFlags: featureFlagsPersistedReducer,
             graph: graphReducer,
             device: devicePersistedReducer,
+            deviceAuthentication: deviceAuthenticationReducer,
             logs: logsSlice.reducer,
             notifications: notificationsReducer,
             discoveryConfig: discoveryConfigPersistedReducer,

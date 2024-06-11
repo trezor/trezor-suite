@@ -170,6 +170,12 @@ export const useAccountReceiveAddress = (accountKey: AccountKey) => {
                 setIsUnverifiedAddressRevealed(false);
             }
         }
+        dispatch(
+            deviceActions.removeButtonRequests({
+                device,
+                buttonRequestCode: 'ButtonRequest_Address',
+            }),
+        );
     };
 
     return {

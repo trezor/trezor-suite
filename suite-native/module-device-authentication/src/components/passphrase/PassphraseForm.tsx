@@ -13,7 +13,12 @@ import {
 import { Button, Card, VStack, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import { deviceActions, onPassphraseSubmit, selectDevice } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    onPassphraseSubmit,
+    selectDevice,
+    selectDeviceButtonRequestsCodes,
+} from '@suite-common/wallet-core';
 import {
     DeviceAuthenticationStackRoutes,
     DeviceAuthenticationStackParamList,
@@ -56,6 +61,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
     const device = useSelector(selectDevice);
 
     const navigation = useNavigation<NavigationProp>();
+    const buttonRequestCodes = useSelector(selectDeviceButtonRequestsCodes);
 
     const form = useForm<PassphraseFormValues>({
         validation: passphraseFormSchema,
@@ -71,12 +77,14 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
     } = form;
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
-        dispatch(
-            deviceActions.removeButtonRequests({
-                device,
-                buttonRequestCode: 'ButtonRequest_Other',
-            }),
-        );
+        if (buttonRequestCodes.includes('ButtonRequest_Other')) {
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    device,
+                    buttonRequestCode: 'ButtonRequest_Other',
+                }),
+            );
+        }
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
         navigation.push(DeviceAuthenticationStackRoutes.PassphraseConfirmOnTrezor);
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)

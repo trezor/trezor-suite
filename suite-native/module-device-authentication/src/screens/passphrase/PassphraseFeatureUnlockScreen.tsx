@@ -9,7 +9,6 @@ export const PassphraseFeatureUnlockScreen = () => {
     return (
         <PassphraseContentScreenWrapper
             title={translate('modulePassphrase.passphraseFeatureUnlock.title')}
-            isWalletRemovedOnClose={false}
         >
             <PassphraseForm
                 inputLabel={translate('modulePassphrase.passphraseFeatureUnlock.label')}
