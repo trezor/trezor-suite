@@ -100,7 +100,7 @@ export const setIsFromRedirect = (isFromRedirect: boolean): CoinmarketBuyAction 
 });
 
 // this is only a wrapper for `openDeferredModal` since it doesn't work with `bindActionCreators`
-// used in useCoinmarketBuyOffers
+// used in useCoinmarketBuyForm
 export const openCoinmarketBuyConfirmModal =
     (provider?: string, cryptoCurrency?: string) => (dispatch: Dispatch) =>
         dispatch(

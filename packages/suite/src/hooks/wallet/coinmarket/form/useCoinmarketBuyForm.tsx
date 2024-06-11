@@ -15,11 +15,11 @@ import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { CoinmarketTradeBuyType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useBitcoinAmountUnit } from '../../useBitcoinAmountUnit';
 import {
-    CoinmarketFormBuyFormContextProps,
+    CoinmarketBuyFormContextProps,
     CoinmarketFormBuyFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
 import { useCoinmarketNavigation } from '../../useCoinmarketNavigation';
@@ -36,7 +36,8 @@ import { isDesktop } from '@trezor/env-utils';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
-}: UseCoinmarketProps): CoinmarketFormBuyFormContextProps<CoinmarketTradeBuyType> => {
+    offFirstRequest, // if true, use draft as initial values
+}: UseCoinmarketFormProps): CoinmarketBuyFormContextProps<CoinmarketTradeBuyType> => {
     const dispatch = useDispatch();
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest } = useSelector(
         state => state.wallet.coinmarket.buy,
@@ -53,6 +54,7 @@ const useCoinmarketBuyForm = ({
     } = useCoinmarketCommonOffers<CoinmarketTradeBuyType>({ selectedAccount });
     const {
         saveTrade,
+        saveQuotes,
         setIsFromRedirect,
         openCoinmarketBuyConfirmModal,
         addNotification,
@@ -62,6 +64,7 @@ const useCoinmarketBuyForm = ({
         goto,
     } = useActions({
         saveTrade: coinmarketBuyActions.saveTrade,
+        saveQuotes: coinmarketBuyActions.saveQuotes,
         setIsFromRedirect: coinmarketBuyActions.setIsFromRedirect,
         openCoinmarketBuyConfirmModal: coinmarketBuyActions.openCoinmarketBuyConfirmModal,
         addNotification: notificationsActions.addToast,
@@ -75,7 +78,9 @@ const useCoinmarketBuyForm = ({
     // states
     const [amountLimits, setAmountLimits] = useState<AmountLimits | undefined>(undefined);
     const innerQuotesFilterReducer = useCoinmarketFilterReducer<CoinmarketTradeBuyType>(quotes);
-    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(undefined);
+    const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
+        offFirstRequest ? quotes : undefined,
+    );
 
     // parameters
     const { network } = selectedAccount;
@@ -93,7 +98,7 @@ const useCoinmarketBuyForm = ({
     const { saveDraft, getDraft, removeDraft } =
         useFormDraft<CoinmarketFormBuyFormProps>('coinmarket-buy');
     const draft = getDraft(account.key);
-    const isDraft = !!draft;
+    const isDraft = !!draft || !!offFirstRequest;
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
         useCoinmarketBuyFormDefaultValues(account.symbol, buyInfo);
     const methods = useForm<CoinmarketFormBuyFormProps>({
@@ -106,7 +111,9 @@ const useCoinmarketBuyForm = ({
         reset({});
         removeDraft(account.key);
     }, [account.key, removeDraft, reset]);
-    const previousValues = useRef<CoinmarketFormBuyFormProps | null>(null);
+    const previousValues = useRef<CoinmarketFormBuyFormProps | null>(
+        offFirstRequest ? (draft as CoinmarketFormBuyFormProps) : null,
+    );
 
     // functions
     const getQuotesRequest = useCallback(
@@ -130,24 +137,27 @@ const useCoinmarketBuyForm = ({
     );
 
     const getQuoteRequest = useCallback((): BuyTradeQuoteRequest => {
-        const formValues = methods.getValues();
-        const fiatStringAmount = formValues.fiatInput;
+        const { fiatInput, cryptoInput, currencySelect, cryptoSelect, countrySelect } =
+            methods.getValues();
         const cryptoStringAmount =
-            formValues.cryptoInput && shouldSendInSats
-                ? formatAmount(formValues.cryptoInput, network.decimals)
-                : formValues.cryptoInput;
-        const wantCrypto = !fiatStringAmount;
+            cryptoInput && shouldSendInSats
+                ? formatAmount(cryptoInput, network.decimals)
+                : cryptoInput;
+        const wantCrypto = !fiatInput;
+
         const request = {
-            wantCrypto,
-            fiatCurrency: formValues.currencySelect.value.toUpperCase(),
-            receiveCurrency: formValues.cryptoSelect.cryptoSymbol,
-            country: formValues.countrySelect.value,
-            fiatStringAmount,
-            cryptoStringAmount,
+            wantCrypto: fiatInput ? wantCrypto : !!quotesRequest?.wantCrypto,
+            fiatCurrency: currencySelect
+                ? currencySelect?.value.toUpperCase()
+                : quotesRequest?.fiatCurrency ?? '',
+            receiveCurrency: cryptoSelect?.cryptoSymbol ?? quotesRequest?.receiveCurrency,
+            country: countrySelect?.value ?? quotesRequest?.country,
+            fiatStringAmount: fiatInput ?? quotesRequest?.fiatStringAmount,
+            cryptoStringAmount: cryptoStringAmount ?? quotesRequest?.cryptoStringAmount,
         };
 
         return request;
-    }, [methods, network.decimals, shouldSendInSats]);
+    }, [methods, network.decimals, shouldSendInSats, quotesRequest]);
 
     const handleChange = useCallback(async () => {
         timer.loading();
@@ -167,6 +177,7 @@ const useCoinmarketBuyForm = ({
             );
 
             setInnerQuotes(quotes);
+            dispatch(saveQuotes(quotes ?? []));
             dispatch(saveQuoteRequest(quoteRequest));
 
             innerQuotesFilterReducer.dispatch({
@@ -178,7 +189,7 @@ const useCoinmarketBuyForm = ({
         }
 
         timer.reset();
-    }, [timer, getQuoteRequest, getQuotesRequest, dispatch, innerQuotesFilterReducer]);
+    }, [timer, getQuoteRequest, getQuotesRequest, dispatch, saveQuotes, innerQuotesFilterReducer]);
 
     const goToOffers = async () => {
         await handleChange();
@@ -288,7 +299,7 @@ const useCoinmarketBuyForm = ({
 
             previousValues.current = values;
         }
-    }, [previousValues, values, handleChange, handleSubmit]);
+    }, [previousValues, values, handleChange, handleSubmit, offFirstRequest]);
 
     useEffect(() => {
         // when draft doesn't exist, we need to bind actual default values - that happens when we've got buyInfo from Invity API server
@@ -358,6 +369,7 @@ const useCoinmarketBuyForm = ({
     );
 
     return {
+        type: 'buy',
         ...methods,
         register,
         account,
@@ -380,7 +392,7 @@ const useCoinmarketBuyForm = ({
         quotesRequest,
         innerQuotesFilterReducer,
         providersInfo: buyInfo?.providerInfos,
-        type: 'buy' as const,
+        selectedQuote,
         selectQuote,
         goToPayment,
         goToOffers,

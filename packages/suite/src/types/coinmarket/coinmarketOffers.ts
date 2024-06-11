@@ -12,11 +12,11 @@ import {
     SellFiatTrade,
 } from 'invity-api';
 import { Timer } from '@trezor/react-utils';
-import { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import { UseCoinmarketFilterReducerOutputProps } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 import { TradeSell } from '../wallet/coinmarketCommonTypes';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import { CoinmarketTradeBuyType, CoinmarketTradeSellType, CoinmarketTradeType } from './coinmarket';
+import { CoinmarketBuyFormContextProps } from './coinmarketForm';
 
 type CoinmarketOffersContextProps = {
     type: CoinmarketTradeType;
@@ -26,17 +26,6 @@ type CoinmarketOffersContextProps = {
     timer: Timer;
     getQuotes: () => Promise<void>;
     selectQuote: (quote: BuyTrade | SellFiatTrade | ExchangeTrade) => void;
-};
-
-type CoinmarketBuyOffersContextProps = CoinmarketOffersContextProps & {
-    quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
-    quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
-    selectedQuote?: BuyTrade;
-    verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
-    addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
-    providersInfo?: BuyInfo['providerInfos'];
-    goToPayment: (address: string) => void;
-    innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps<CoinmarketTradeBuyType>;
 };
 
 export type CoinmarketBuyAddressOptionsType = {
@@ -105,7 +94,7 @@ export type CoinmarketP2pOffersContextProps = Omit<
 };
 
 export type CoinmarketOffersMapProps = {
-    buy: CoinmarketBuyOffersContextProps;
+    buy: CoinmarketBuyFormContextProps<CoinmarketTradeBuyType>; // temporary
     sell: CoinmarketSellOffersContextProps;
     exchange: CoinmarketExchangeOffersContextProps;
 };

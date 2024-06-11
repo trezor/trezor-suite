@@ -3,8 +3,8 @@ import { Card, variables } from '@trezor/components';
 import VerifyAddress from './components/VerifyAddress';
 import { CoinmarketBuyOfferInfo } from '../../../components/CoinmarketBuyOfferInfo';
 import { spacingsPx } from '@trezor/theme';
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -22,7 +22,8 @@ const StyledCard = styled(Card)`
 
 const SelectedOffer = () => {
     const { account, selectedQuote, providersInfo } =
-        useCoinmarketOffersContext<CoinmarketTradeBuyType>();
+        useCoinmarketFormContext<CoinmarketTradeBuyType>();
+
     if (!selectedQuote) return null;
 
     return (

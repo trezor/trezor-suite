@@ -23,7 +23,7 @@ import { Elevation } from '@trezor/theme';
 import { HTMLAttributes } from 'react';
 import { CoinmarketBuyAddressOptionsType } from 'src/types/coinmarket/coinmarketOffers';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const Wrapper = styled.div`
     display: flex;
@@ -118,7 +118,7 @@ const VerifyAddressComponent = () => {
         selectedQuote,
         goToPayment,
         addressVerified,
-    } = useCoinmarketOffersContext<CoinmarketTradeBuyType>();
+    } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const { symbol, formattedBalance } = account;
     const { path, address: unusedAddress } = getUnusedAddressFromAccount(account);
 
