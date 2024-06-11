@@ -35,7 +35,7 @@ type CoinmarketOffersBuyProps<T extends CoinmarketTradeType> = {
     selectQuote: (quote: CoinmarketTradeDetailMapProps[T]) => Promise<void>;
 };
 
-export type CoinmarketFormBuyFormContextProps<T extends CoinmarketTradeType> =
+export type CoinmarketBuyFormContextProps<T extends CoinmarketTradeType> =
     UseFormReturn<CoinmarketFormBuyFormProps> &
         CoinmarketOffersBuyProps<T> & {
             account: Account;
@@ -52,9 +52,9 @@ export type CoinmarketFormBuyFormContextProps<T extends CoinmarketTradeType> =
             isDraft: boolean;
             quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
             quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
-            selectedQuote?: BuyTrade;
+            selectedQuote: BuyTrade | undefined;
             addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
-            providersInfo?: BuyInfo['providerInfos'];
+            providersInfo: BuyInfo['providerInfos'] | undefined;
             innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps<CoinmarketTradeBuyType>;
             goToPayment: (address: string) => void;
             goToOffers: () => void;
@@ -65,7 +65,7 @@ export type CoinmarketFormBuyFormContextProps<T extends CoinmarketTradeType> =
         };
 
 export type CoinmarketFormMapProps = {
-    buy: CoinmarketFormBuyFormContextProps<CoinmarketTradeBuyType>;
+    buy: CoinmarketBuyFormContextProps<CoinmarketTradeBuyType>;
     sell: any; // TODO:
     exchange: any; // TODO:
 };

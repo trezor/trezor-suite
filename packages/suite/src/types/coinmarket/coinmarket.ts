@@ -26,6 +26,9 @@ import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
+export type UseCoinmarketFormProps = UseCoinmarketProps & {
+    offFirstRequest?: boolean;
+};
 
 export type CoinmarketTradeBuyType = 'buy';
 export type CoinmarketTradeSellType = 'sell';
