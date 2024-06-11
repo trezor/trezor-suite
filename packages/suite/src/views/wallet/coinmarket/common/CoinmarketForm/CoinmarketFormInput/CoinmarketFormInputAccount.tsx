@@ -1,6 +1,9 @@
 import { useSelector } from 'src/hooks/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import {
+    getNetworkName,
+    networkToCryptoSymbol,
+} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import {
     CoinmarketFormInput,
     CoinmarketFormInputLabel,
@@ -21,14 +24,13 @@ const CoinmarketFormInputAccount = () => {
     const { control } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
 
     if (!account) return null;
-
     const cryptoSymbol = networkToCryptoSymbol(account.symbol)!;
     const cryptoList = [
         {
             value: cryptoSymbol,
             label: cryptoSymbol,
             cryptoSymbol,
-            cryptoName: 'Bitcoin',
+            cryptoName: getNetworkName(account.symbol),
         },
     ];
 
@@ -67,6 +69,7 @@ const CoinmarketFormInputAccount = () => {
                         data-test="@coinmarket/form/account-select"
                         isClearable={false}
                         isSearchable
+                        isDisabled
                     />
                 )}
             />

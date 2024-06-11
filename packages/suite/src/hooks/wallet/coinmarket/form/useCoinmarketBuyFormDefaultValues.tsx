@@ -13,6 +13,8 @@ export const useCoinmarketBuyFormDefaultValues = (
 ) => {
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
+    const defaultCrypto = useMemo(() => buildCryptoOption(accountSymbol), [accountSymbol]);
+    const defaultPaymentMethod = useMemo(() => ({ value: '', label: '' }), []);
     const defaultCurrencyInfo = buyInfo?.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = useMemo(
         () =>
@@ -21,20 +23,20 @@ export const useCoinmarketBuyFormDefaultValues = (
                 : { label: 'USD', value: 'usd' },
         [defaultCurrencyInfo],
     );
-    const defaultCrypto = useMemo(() => buildCryptoOption(accountSymbol), [accountSymbol]);
     const defaultValues = useMemo(
         () =>
             buyInfo
                 ? {
-                      fiatInput: '',
-                      cryptoInput: '',
+                      fiatInput: '3000',
+                      cryptoInput: undefined,
                       currencySelect: defaultCurrency,
                       cryptoSelect: defaultCrypto,
                       countrySelect: defaultCountry,
+                      paymentMethod: defaultPaymentMethod,
                   }
                 : undefined,
-        [buyInfo, defaultCountry, defaultCrypto, defaultCurrency],
+        [buyInfo, defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod],
     );
 
-    return { defaultValues, defaultCountry, defaultCurrency };
+    return { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod };
 };

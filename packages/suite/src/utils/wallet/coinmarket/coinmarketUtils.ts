@@ -5,6 +5,7 @@ import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
 import { CryptoSymbol } from 'invity-api';
 import {
+    getNetworkName,
     networkToCryptoSymbol,
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
@@ -35,6 +36,7 @@ export const buildCryptoOption = (networkSymbol: NetworkSymbol) => ({
     value: networkSymbol.toUpperCase(),
     label: networkSymbol.toUpperCase(),
     cryptoSymbol: networkToCryptoSymbol(networkSymbol),
+    cryptoName: getNetworkName(networkSymbol),
 });
 
 /** @deprecated */

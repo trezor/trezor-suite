@@ -4,6 +4,7 @@ import {
     isCoinmarketSellOffers,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeDetailType, CoinmarketTradeType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketFormContextValues } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketOffersContextValues } from 'src/types/coinmarket/coinmarketOffers';
 
 export const getCryptoQuoteAmountProps = (
@@ -54,7 +55,9 @@ export const getCryptoQuoteAmountProps = (
 };
 
 export const getProvidersInfoProps = (
-    context: CoinmarketOffersContextValues<CoinmarketTradeType>,
+    context:
+        | CoinmarketOffersContextValues<CoinmarketTradeType>
+        | CoinmarketFormContextValues<CoinmarketTradeType>,
 ) => {
     if (isCoinmarketBuyOffers(context)) {
         return {

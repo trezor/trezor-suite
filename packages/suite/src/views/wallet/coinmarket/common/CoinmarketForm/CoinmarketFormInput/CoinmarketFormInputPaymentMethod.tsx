@@ -10,20 +10,15 @@ import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const CoinmarketFormInputPaymentMethod = () => {
-    const { control } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
-    const options = [
-        {
-            value: 'All payment methods',
-            label: 'All payment methods',
-        },
-    ];
+    const { control, defaultPaymentMethod } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const options = [defaultPaymentMethod];
 
     return (
         <CoinmarketFormInput>
             <CoinmarketFormInputLabel>Payment method</CoinmarketFormInputLabel>
             <Controller
                 name="paymentMethod"
-                defaultValue={options[0]}
+                defaultValue={defaultPaymentMethod}
                 control={control}
                 render={({ field: { onChange, value } }) => (
                     <Select
