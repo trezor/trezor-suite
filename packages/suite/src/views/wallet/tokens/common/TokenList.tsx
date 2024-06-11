@@ -154,7 +154,7 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                     <Translation id="TR_TOKEN" />
                 </ColName>
                 <ColName>
-                    <Translation id="AMOUNT" />
+                    <Translation id="TR_VALUES" />
                 </ColName>
                 {!hideRates && (
                     <>
