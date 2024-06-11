@@ -2119,7 +2119,7 @@ export default defineMessages({
         id: 'TR_BASIC_RECOVERY',
     },
     TR_BASIC_RECOVERY_OPTION: {
-        defaultMessage: 'Enter your wallet backup word by word on your computer.',
+        defaultMessage: 'Enter your wallet backup word by word on your computer or mobile device.',
         description: 'Enter words on your computer, recovery takes about 2 minutes.',
         id: 'TR_BASIC_RECOVERY_OPTION',
     },
@@ -2129,58 +2129,58 @@ export default defineMessages({
     },
     TR_MULTI_SHARE_BACKUP_DESCRIPTION: {
         defaultMessage:
-            'Generate multiple shares, each containing 20 words. These shares are used collectively to recover your funds.',
+            'Generates multiple 20-word shares (wordlists) to recover your wallet. A minimum number of shares, set by you, are needed to regain access to your wallet.',
         id: 'TR_MULTI_SHARE_BACKUP_DESCRIPTION',
     },
     TR_MULTI_SHARE_BACKUP_IN_PROGRESS: {
-        defaultMessage: 'Multi-share Backup creation in progress',
+        defaultMessage: 'Multi-share Backup generation in progress',
         id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS',
     },
     TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING: {
-        defaultMessage: 'Please continue creating shares on your Trezor',
+        defaultMessage: 'Welcome back! Let’s pick up where you left off.',
         id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_HEADING',
     },
     TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION: {
         defaultMessage:
-            'After successfully creating a Multi-share Backup, you will be able to continue using your device with Trezor Suite.',
+            'It’s necessary to finish generating your Multi-share Backup shares before continuing. Follow the instructions on your Trezor’s screen. ',
         id: 'TR_MULTI_SHARE_BACKUP_IN_PROGRESS_DESCRIPTION',
     },
     TR_CREATE_MULTI_SHARE_BACKUP: {
-        defaultMessage: 'Create multi-share backup',
+        defaultMessage: 'Create Multi-share Backup',
         id: 'TR_CREATE_MULTI_SHARE_BACKUP',
     },
     TR_MULTI_SHARE_BACKUP_CALLOUT_1: {
-        defaultMessage: 'What does it do?',
+        defaultMessage: 'How does it work?',
         id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_1',
     },
     TR_MULTI_SHARE_BACKUP_CALLOUT_2: {
-        defaultMessage: 'What about my current backup?',
+        defaultMessage: 'What about my current wallet backup?',
         id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_2',
     },
     TR_MULTI_SHARE_BACKUP_CALLOUT_3: {
-        defaultMessage: 'Please note',
+        defaultMessage: 'Take note',
         id: 'TR_MULTI_SHARE_BACKUP_CALLOUT_3',
     },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_1: {
         defaultMessage:
-            'Multi backup creates multiple 20 word shares that will be needed for recovering your Trezor. You can distribute these among your family, friends, or hide them in different places. If the time comes to recover your Trezor, multiple shares must be used collectively to regain access to your funds.',
+            'Multi-share Backup generates multiple 20-word shares (wordlists) to recover your wallet. Set a minimum recovery number then distribute shares to trusted individuals or store them securely. When needed, collect the required number of shares to regain access to your wallet.',
         id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_1',
     },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_2: {
         defaultMessage:
-            'You existing backup will still allow you to recover your funds. You should hide it well, ideally away from the new backup shares.',
+            'Your current backup still allows you to recover your funds. Store it in a safe and secure location, separate from your Multi-share Backup shares.',
         id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_2',
     },
     TR_MULTI_SHARE_BACKUP_CHECKBOX_1: {
-        defaultMessage: 'This is an advanced feature, and I understand the extra responsibility',
+        defaultMessage: 'This is an advanced feature, and I accept the increased responsibility',
         id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_1',
     },
     TR_MULTI_SHARE_BACKUP_CHECKBOX_2: {
-        defaultMessage: 'My current backup will still be able to recover my wallet',
+        defaultMessage: 'My current wallet backup is still be able to recover my wallet',
         id: 'TR_MULTI_SHARE_BACKUP_CHECKBOX_2',
     },
     TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP: {
-        defaultMessage: 'Tips on storing backup',
+        defaultMessage: 'Tips for storing your wallet backup',
         id: 'TR_MULTI_SHARE_TIPS_ON_STORING_BACKUP',
     },
     TR_CREATE_MULTI_SHARE_BACKUP_CREATED: {
@@ -2193,11 +2193,11 @@ export default defineMessages({
     },
     TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT: {
         defaultMessage:
-            'You’ve done a huge step for improving your security. Don’t forget to hide and distribute your backup well.',
+            "You've taken a major step in enhancing your security. Now, choose trusted individuals or secure locations for storing your shares.",
         id: 'TR_CREATE_MULTI_SHARE_BACKUP_CREATED_INFO_TEXT',
     },
     TR_MULTI_SHARE_BACKUP_BACKUPS: {
-        defaultMessage: 'Backups',
+        defaultMessage: 'My backups',
         id: 'TR_MULTI_SHARE_BACKUP_BACKUPS',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_HEADER: {
@@ -2205,11 +2205,11 @@ export default defineMessages({
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE1: {
-        defaultMessage: 'Still recovers you funds',
+        defaultMessage: 'Still recovers your wallet',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE1',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2: {
-        defaultMessage: 'Hide it well',
+        defaultMessage: 'Store securely, separate from your new wallet backup',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_LEFT_LINE2',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_HEADER: {
@@ -2217,15 +2217,15 @@ export default defineMessages({
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE1: {
-        defaultMessage: 'Collect the number of shares set as the threshold to recover your funds',
+        defaultMessage: 'Recover your wallet with your set minimum number of shares',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE1',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE2: {
-        defaultMessage: 'Hide them well. Can be different places, different people',
+        defaultMessage: 'Share with trusted individuals or store in secure, separate locations',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_RIGHT_LINE2',
     },
     TR_MULTI_SHARE_BACKUP_SUCCESS_WHY_IS_BACKUP_IMPORTANT: {
-        defaultMessage: 'Why is backup important',
+        defaultMessage: 'Why is your wallet backup important?',
         id: 'TR_MULTI_SHARE_BACKUP_SUCCESS_WHY_IS_BACKUP_IMPORTANT',
     },
     TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR: {
@@ -2233,20 +2233,19 @@ export default defineMessages({
         id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR',
     },
     TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR_INFO_TEXT: {
-        defaultMessage: 'Not a problem, recover your coins with Backup!',
+        defaultMessage: 'Use your wallet backup to recover access to your wallet.',
         id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR_INFO_TEXT',
     },
     TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP: {
-        defaultMessage: 'Lost your Backup?',
+        defaultMessage: 'Lost your wallet backup?',
         id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP',
     },
     TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT: {
-        defaultMessage:
-            'That could be very bad if you also lost your Trezor. Contact support if that happens.',
+        defaultMessage: 'There may be no options to recover your wallet. Contact Trezor Support.',
         id: 'TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP_INFO_TEXT',
     },
     TR_NEXT_UP: {
-        defaultMessage: 'Next up',
+        defaultMessage: 'Next',
         id: 'TR_NEXT_UP',
     },
     TR_N_MIN: {
@@ -2254,20 +2253,20 @@ export default defineMessages({
         id: 'TR_N_MIN',
     },
     TR_VERIFY_TREZOR_OWNERSHIP: {
-        defaultMessage: 'Verify Trezor ownership',
+        defaultMessage: 'Verify you own this Trezor',
         id: 'TR_VERIFY_TREZOR_OWNERSHIP',
     },
     TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION: {
         defaultMessage:
-            'We need you to prove you own this wallet by entering your existing wallet backup.',
+            'Confirm you own this wallet by entering your current wallet backup on your Trezor.',
         id: 'TR_VERIFY_TREZOR_OWNERSHIP_EXPLANATION',
     },
     TR_VERIFY_TREZOR_OWNERSHIP_CARD_1: {
-        defaultMessage: 'Grab your existing wallet backup',
+        defaultMessage: 'Get your current wallet backup',
         id: 'TR_VERIFY_TREZOR_OWNERSHIP_CARD_1',
     },
     TR_VERIFY_TREZOR_OWNERSHIP_CARD_2: {
-        defaultMessage: "Don't take photos, or digital copies of backup",
+        defaultMessage: 'No pictures or digital copies of your wallet backup',
         id: 'TR_VERIFY_TREZOR_OWNERSHIP_CARD_2',
     },
     TR_CREATE_SHARES: {
@@ -2276,20 +2275,20 @@ export default defineMessages({
     },
     TR_CREATE_SHARES_EXPLANATION: {
         defaultMessage:
-            "Now, you'll be selecting amount of shares, and minimum of shares required to recover your Trezor.",
+            'Select the total number of shares, then choose the minimum number required to recover your Trezor.',
         id: 'TR_CREATE_SHARES_EXPLANATION',
     },
     TR_CREATE_SHARES_EXAMPLE: {
-        defaultMessage: 'e.g. 5 shares total, at least any 3 for recovery',
+        defaultMessage: 'Example: 5 total shares, any 3 required to recover your wallet',
         id: 'TR_CREATE_SHARES_EXAMPLE',
     },
     TR_CREATE_SHARES_CARD_1: {
         defaultMessage:
-            'Grab pen and paper. Or print <cardsLink>Trezor cards</cardsLink>, or use <keepLink>Trezor Keep</keepLink>',
+            'Grab a pen & paper, print <cardsLink>backup cards</cardsLink>, or use <keepLink>Trezor Keep Metal</keepLink>',
         id: 'TR_CREATE_SHARES_CARD_1',
     },
     TR_CREATE_SHARES_CARD_2: {
-        defaultMessage: "Don't take photos, or digital copies of backup",
+        defaultMessage: 'Don’t take pictures or make digital copies of your wallet backup',
         id: 'TR_CREATE_SHARES_CARD_2',
     },
     TR_CREATE_SHARES_CARD_3: {
@@ -2297,11 +2296,11 @@ export default defineMessages({
         id: 'TR_CREATE_SHARES_CARD_3',
     },
     TR_ENTER_EXISTING_BACKUP: {
-        defaultMessage: 'Enter existing backup on Trezor',
+        defaultMessage: 'Enter current wallet backup on Trezor',
         id: 'TR_ENTER_EXISTING_BACKUP',
     },
     TR_DONT_HAVE_BACKUP: {
-        defaultMessage: "I don't have a backup",
+        defaultMessage: "I don't have a wallet backup",
         id: 'TR_DONT_HAVE_BACKUP',
     },
     TR_BCH_ADDRESS_INFO: {
@@ -2343,7 +2342,7 @@ export default defineMessages({
         id: 'TR_CHECK_SEED',
     },
     TR_CHECK_YOUR_DEVICE: {
-        defaultMessage: 'Check your Trezor screen',
+        defaultMessage: "Check your Trezor's screen",
         description: 'Placeholder in seed input asking user to pay attention to his device',
         id: 'TR_CHECK_YOUR_DEVICE',
     },
@@ -2373,7 +2372,7 @@ export default defineMessages({
         id: 'TR_CONFIRM',
     },
     TR_CONFIRM_ACTION_ON_YOUR: {
-        defaultMessage: 'Follow the instructions on your Trezor screen',
+        defaultMessage: "Follow the instructions on your Trezor's screen",
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET: {
@@ -2662,7 +2661,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_CHANGE_PIN_TITLE',
     },
     TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC: {
-        defaultMessage: 'Turn on on haptic feedback for device interactions',
+        defaultMessage: 'Turn on haptic feedback for device interactions',
         id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_DESC',
     },
     TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE: {
@@ -2670,15 +2669,15 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_HAPTIC_FEEDBACK_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_DESC: {
-        defaultMessage: 'Enable brightness customization for the display on the device',
+        defaultMessage: 'Enable brightness customization for display on device',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_DESC',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE: {
-        defaultMessage: 'Display Brightness',
+        defaultMessage: 'Display brightness',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_TITLE',
     },
     TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON: {
-        defaultMessage: 'Change Brightness',
+        defaultMessage: 'Change brightness',
         id: 'TR_DEVICE_SETTINGS_BRIGHTNESS_BUTTON',
     },
     TR_DEVICE_SETTINGS_WIPE_CODE_TITLE: {
@@ -3394,7 +3393,7 @@ export default defineMessages({
     },
     TR_RANDOM_SEED_WORDS_DISCLAIMER: {
         defaultMessage:
-            'You may be asked to type some words that are not part of your wallet backup',
+            "You may be asked to type some words that aren't part of your wallet backup",
         description:
             'User is instructed to enter words from seed (backup) into the form in browser',
         id: 'TR_RANDOM_SEED_WORDS_DISCLAIMER',
@@ -3459,7 +3458,7 @@ export default defineMessages({
     },
     TR_RECOVERY_TYPES_DESCRIPTION: {
         defaultMessage:
-            'Both methods are secure; advanced recovery allows you to input your wallet backup using your Trezor screen and takes longer.',
+            "Both methods are secure; advanced recovery allows you to input your wallet backup using your Trezor's screen and takes longer.",
         description:
             'There are two methods of recovery for T1B1. This is a short explanation text.',
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
@@ -3839,8 +3838,7 @@ export default defineMessages({
         id: 'TR_WALLET_DUPLICATE_TITLE',
     },
     TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION: {
-        defaultMessage:
-            'Create a new wallet or recover one from a backup using your wallet backup.',
+        defaultMessage: 'Create a new wallet or recover one using your wallet backup.',
         id: 'TR_WELCOME_TO_TREZOR_TEXT_WALLET_CREATION',
     },
     TR_WEST: {
@@ -3853,7 +3851,7 @@ export default defineMessages({
     },
     TR_WIPING_YOUR_DEVICE: {
         defaultMessage:
-            'Factory reset wipes the device memory, erasing all information including the wallet backup and PIN. Only perform a factory reset if you have a safe offline backup of your wallet backup, which allows you to restore your funds.',
+            'Factory reset wipes the device memory, erasing all information including the wallet backup and PIN. Only perform a factory reset if you have your wallet backup, which can restore access to your funds.',
         id: 'TR_WIPING_YOUR_DEVICE',
     },
     TR_WORDS: {
@@ -4423,7 +4421,7 @@ export default defineMessages({
     TR_WIPE_DEVICE_TEXT: {
         id: 'TR_WIPE_DEVICE_TEXT',
         defaultMessage:
-            'Resetting the device removes all its data. Reset your device only if you have a safe offline backup of your wallet backup, which allows you to restore your funds.',
+            'Resetting the device removes all its data. Reset your device only if you have your wallet backup, which can restore access to your funds.',
     },
     TR_WIPE_DEVICE_CHECKBOX_1_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_TITLE',
@@ -4432,17 +4430,17 @@ export default defineMessages({
     TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_1_DESCRIPTION',
         defaultMessage:
-            'All data associated with the pre-existing accounts will be deleted. You will need a wallet backup to recover your wallet.',
+            "All data associated with existing accounts will be deleted. You'll need a wallet backup to recover your wallet.",
     },
     TR_WIPE_DEVICE_CHECKBOX_2_TITLE: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_TITLE',
         defaultMessage:
-            'I understand I must have a backup of my wallet backup in order to retain access to my funds',
+            'I understand I must have a backup of my wallet backup in order to regain access to my funds',
     },
     TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION: {
         id: 'TR_WIPE_DEVICE_CHECKBOX_2_DESCRIPTION',
         defaultMessage:
-            "Your wallet backup is absolutely essential for regaining access to your funds in case of device loss, theft, or damage. Without it, there's nothing anybody can do, not even Trezor Support. Write it down on paper or your wallet backup card and store it somewhere safe and secure. Just remember where you stashed it.",
+            "Your wallet backup is absolutely essential for regaining access to your funds in case of device loss, theft, or damage. Without it, there's nothing anybody can do, not even Trezor Support. Write it down on paper or your wallet backup card and store it somewhere safe and secure. Just remember where you have it.",
     },
     TR_CANCEL: {
         id: 'TR_CANCEL',
@@ -4454,12 +4452,12 @@ export default defineMessages({
     },
     TR_FOLLOW_INSTRUCTIONS_ON_DEVICE: {
         id: 'TR_FOLLOW_INSTRUCTIONS_ON_DEVICE',
-        defaultMessage: 'Check your Trezor screen',
+        defaultMessage: "Check your Trezor's screen",
     },
     TR_ADVANCED_RECOVERY_TEXT: {
         id: 'TR_ADVANCED_RECOVERY_TEXT',
         defaultMessage:
-            'Spell each word of your wallet backup using the keypad below, according to where the letters are shown on your Trezor screen.',
+            "Spell each word of your wallet backup using the keypad below, according to where the letters are located on your Trezor's screen.",
     },
     TR_ADVANCED_RECOVERY_NOT_SURE: {
         id: 'TR_ADVANCED_RECOVERY_NOT_SURE',
@@ -4468,7 +4466,7 @@ export default defineMessages({
     TR_CHECK_RECOVERY_SEED_DESC_T1B1: {
         id: 'TR_CHECK_RECOVERY_SEED_DESC_T1B1',
         defaultMessage:
-            'Enter the words from your wallet backup here in the order displayed on your device. You may be asked to type some words that are not part of your wallet backup as an additional security measure.',
+            "Enter the words from your wallet backup here in the order displayed on your device. You may be asked to type some words that aren't part of your wallet backup as an additional security measure.",
         dynamic: true,
     },
     TR_CHECK_RECOVERY_SEED_DESC_T2T1: {
@@ -4539,7 +4537,7 @@ export default defineMessages({
     TR_SEED_CHECK_SUCCESS_DESC: {
         id: 'TR_SEED_CHECK_SUCCESS_DESC',
         defaultMessage:
-            'Your wallet backup is valid and has just been successfully verified. Look after it and store it in a safe, secure location.',
+            'Your wallet backup is valid and has been successfully verified. Look after it and store it in a safe, secure location.',
     },
     TR_SEED_CHECK_FAIL_TITLE: {
         id: 'TR_SEED_CHECK_FAIL_TITLE',
@@ -4547,7 +4545,7 @@ export default defineMessages({
     },
     TR_WORD_DOES_NOT_EXIST: {
         id: 'TR_WORD_DOES_NOT_EXIST',
-        defaultMessage: 'Word "{word}" does not exist in bip39 word list.',
+        defaultMessage: 'Word "{word}" does not exist in BIP39 wordlist.',
         description:
             'In recovery or dry run, appears when user types a string that is not a substring of any word included in bip39 word list.',
     },
@@ -4563,7 +4561,7 @@ export default defineMessages({
     TR_DRY_RUN_CHECK_ITEM_DESCRIPTION: {
         id: 'TR_DRY_RUN_CHECK_ITEM_DESCRIPTION',
         defaultMessage:
-            'Note that this test is precisely the same as the normal recovery process. You should only trust the information and instructions displayed on your Trezor screen.',
+            "Note that this test is precisely the same as the normal recovery process. You should only trust the information and instructions displayed on your Trezor's screen.",
     },
     TR_ACCOUNT_TYPE: {
         id: 'TR_ACCOUNT_TYPE',
@@ -5053,7 +5051,7 @@ export default defineMessages({
     TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION: {
         id: 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION',
         defaultMessage:
-            "If you don't have your wallet backup, not even Trezor Support can help you recover your funds if your device is reset. If you have multiple wallet backups, please make sure that you have the correct one ready and easily accessible to recover this specific Trezor device.",
+            "If you don't have your wallet backup, not even Trezor Support can help you recover your funds if your device is reset. If you have multiple wallet backups, make sure that you have the correct one ready and easily accessible to recover this specific Trezor device.",
     },
     TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2: {
         id: 'TR_CONTINUE_ONLY_WITH_SEED_DESCRIPTION_2',
@@ -5226,7 +5224,7 @@ export default defineMessages({
     TR_MAKE_SURE_NO_ONE_CAN_PEEK: {
         id: 'TR_MAKE_SURE_NO_ONE_CAN_PEEK',
         defaultMessage:
-            'Make sure no one can peek over your shoulder and no cameras can see your screen. No one should ever see your wallet backup except you.',
+            'Ensure that nobody can see your screen over your shoulder, and no cameras can capture it. Your wallet backup should remain confidential and seen only by you.',
     },
     TR_I_UNDERSTAND_SEED_IS_IMPORTANT: {
         id: 'TR_I_UNDERSTAND_SEED_IS_IMPORTANT',
@@ -5235,12 +5233,12 @@ export default defineMessages({
     TR_BACKUP_SEED_IS_ULTIMATE: {
         id: 'TR_BACKUP_SEED_IS_ULTIMATE',
         defaultMessage:
-            "If you ever need to restore your wallet to access your funds, it's necessary to have your wallet backup by your side. Don’t lose or misplace it. Once it's gone, it's gone. No one can help you recover it, not even Trezor Support. So, be responsible and make sure you keep your recovery seed tucked away like your life depends on it.",
+            "If you ever need to restore your wallet to access your funds, it's necessary to have your wallet backup with you. Don’t lose or misplace it. Once it's gone, it's gone. No one can help you recover it, not even Trezor Support. Be responsible and ensure that you store your wallet backup securely, treating it as if your life depends on it.",
     },
     TR_FIRMWARE_IS_POTENTIALLY_RISKY: {
         id: 'TR_FIRMWARE_IS_POTENTIALLY_RISKY',
         defaultMessage:
-            'Updating firmware is a potentially risky operation. If anything goes wrong (broken cable etc.) the device might end up in a wiped state, which means you will have to recover the wallet using your wallet backup.',
+            "Updating firmware poses potential risks. If anything goes wrong (such as a compromised cable), the device could be wiped, which means you'll have to recover your wallet using your wallet backup.",
     },
     ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING: {
         id: 'ONBOARDING_UNEXPECTED_DEVICE_DIFFERENT_HEADING',
@@ -5297,15 +5295,15 @@ export default defineMessages({
     TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION: {
         id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION',
         defaultMessage:
-            'Generates multiple 20-word lists (shares) to recover your wallet. Set a minimum recovery number then distribute shares to trusted individuals or hide them securely. When needed, collect the required number of shares to regain access to your wallet.',
+            'Generates multiple 20-word shares (wordlists) to recover your wallet. Set a minimum recovery number then distribute shares to trusted individuals or hide them securely. When needed, collect the required number of shares to regain access to your wallet.',
     },
     TR_ONBOARDING_SEED_TYPE_12_WORDS: {
         id: 'TR_ONBOARDING_SEED_TYPE_12_WORDS',
-        defaultMessage: '12-word',
+        defaultMessage: '12-word Backup',
     },
     TR_ONBOARDING_SEED_TYPE_24_WORDS: {
         id: 'TR_ONBOARDING_SEED_TYPE_24_WORDS',
-        defaultMessage: '24-word',
+        defaultMessage: '24-word Backup',
     },
     TR_ONBOARDING_BACKUP_TYPE_DEFAULT: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_DEFAULT',
@@ -5330,26 +5328,25 @@ export default defineMessages({
     },
     TR_ONBOARDING_BACKUP_TYPE_12_DEFAULT_TOOLTIP: {
         id: 'TR_ONBOARDING_BACKUP_TYPE_12_DEFAULT_TOOLTIP',
-        defaultMessage: "If you're unsure, choose the default option for simplicity.",
+        defaultMessage: 'Default is the recommended option for your Trezor device.',
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER',
-        defaultMessage: "Secure and reliable, not easily upgradable to Multi-share Backup'",
+        defaultMessage: 'Secure & reliable, not easily upgradable to Multi-share Backup',
     },
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            'Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can’t be easily upgraded to a Multi-share Backup without risking your privacy and costing fees. <a>Read more</a>',
+            'Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can’t be easily upgraded to Multi-share Backup. <a>Read more</a>',
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
-        defaultMessage:
-            'Please update your device firmware to enable the new Single-share Backup feature.',
+        defaultMessage: 'Update your device firmware to enable the Single-share Backup feature.',
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP',
         defaultMessage:
-            "If you're unsure, choose the Default option for simplicity <nowrap>and flexibility.</nowrap>",
+            "If you're unsure, choose the default option for simplicity <nowrap>and flexibility.</nowrap>",
     },
     TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT: {
         id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT',
@@ -5363,7 +5360,7 @@ export default defineMessages({
     TR_ONBOARDING_BACKUP_SHAMIR_WARNING: {
         id: 'TR_ONBOARDING_BACKUP_SHAMIR_WARNING',
         defaultMessage:
-            "This 20-word wallet backup supports <strong>upgrades</strong> but <strong>doesn't fit</strong> on the 12-word <strong>backup card included with your Trezor</strong>. Write your wallet backup in <strong>numbered order</strong> on paper and <strong>don't store it anywhere digital</strong>.",
+            "This backup type allows for <strong>future upgrades</strong> but includes 20 words, which <strong>won't fit</strong> on the 12-word paper card packaged with your device. <strong>Write them in numbered order on durable paper and don’t store them digitally.</strong>",
     },
     TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE: {
         id: 'TR_ONBOARDING_CANNOT_SELECT_SEED_TYPE',
@@ -6699,7 +6696,7 @@ export default defineMessages({
     TR_BACKUP_CHECKBOX_1_DESCRIPTION: {
         id: 'TR_BACKUP_CHECKBOX_1_DESCRIPTION',
         defaultMessage:
-            "Make sure you recorded each word in the exact order it was given to you. Don't let your wallet backup card become wet or smudged.",
+            'Make sure you wrote down each word in the exact order it was given to you. Keep your wallet backup card dry and free from smudges.',
     },
     TR_BACKUP_CHECKBOX_2_TITLE: {
         id: 'TR_BACKUP_CHECKBOX_2_TITLE',
@@ -8955,7 +8952,7 @@ export default defineMessages({
     },
     TR_STAKE_DAYS: {
         id: 'TR_STAKE_DAYS',
-        defaultMessage: '{days} days',
+        defaultMessage: '{count, plural, one {# day} other {# days}}',
     },
     TR_STAKE_MAX_REWARD_DAYS: {
         id: 'TR_STAKE_MAX_REWARD_DAYS',
