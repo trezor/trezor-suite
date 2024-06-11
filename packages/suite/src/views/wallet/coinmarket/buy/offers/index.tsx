@@ -1,16 +1,23 @@
 import { withSelectedAccountLoaded } from 'src/components/wallet';
-import { useCoinmarketBuyOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketBuyOffers';
 import Offers from './Offers';
 import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { CoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import useCoinmarketBuyForm from 'src/hooks/wallet/coinmarket/form/useCoinmarketBuyForm';
+import { CoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 
 const OffersIndex = (props: UseCoinmarketProps) => {
-    const coinmarketBuyOffers = useCoinmarketBuyOffers(props);
+    const coinmarketBuyFormContextValues = useCoinmarketBuyForm({
+        ...props,
+        offFirstRequest: true,
+    });
 
+    // CoinmarketOffersContext.Provider is temporary FIX
     return (
-        <CoinmarketOffersContext.Provider value={coinmarketBuyOffers}>
-            <Offers />
-        </CoinmarketOffersContext.Provider>
+        <CoinmarketFormContext.Provider value={coinmarketBuyFormContextValues}>
+            <CoinmarketOffersContext.Provider value={coinmarketBuyFormContextValues}>
+                <Offers />
+            </CoinmarketOffersContext.Provider>
+        </CoinmarketFormContext.Provider>
     );
 };
 
