@@ -1,0 +1,203 @@
+name: "[Release] suite-desktop and suite-web staging"
+
+on:
+  workflow_dispatch:
+    inputs:
+      createTestRelease:
+        description: "Create a test release."
+        required: false
+        type: boolean
+        default: false
+
+env:
+  IS_CODESIGN_BUILD: "true"
+  DESKTOP_APP_NAME: "Trezor-Suite"
+  APPLEID: ${{ secrets.APPLEID }}
+  APPLEIDPASS: ${{ secrets.APPLEIDPASS }}
+  APPLETEAMID: ${{ secrets.APPLETEAMID }}
+  CSC_KEY_PASSWORD: ${{ secrets.CSC_KEY_PASSWORD }}
+  CSC_LINK: ${{ secrets.CSC_LINK }}
+  GPG_CSC_KEY_PASSWORD: ${{ secrets.GPG_CSC_KEY_PASSWORD }}
+  GPG_CSC_LINK: ${{ secrets.GPG_CSC_LINK }}
+  GPG_CSC_USERID: ${{ secrets.GPG_CSC_USERID }}
+  JWS_PRIVATE_KEY_ENV: ${{ secrets.JWS_PRIVATE_KEY_ENV }}
+  WIN_CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+  WIN_CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+  WINDOWS_SIGN_TOKEN_PASSWORD: ${{ secrets.WINDOWS_SIGN_TOKEN_PASSWORD }}
+  WINDOWS_SIGN_CERTIFICATE_NAME: ${{ secrets.WINDOWS_SIGN_CERTIFICATE_NAME }}
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+concurrency:
+  group: ${{ github.workflow }}-$${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  suite-desktop:
+    environment: suite-production
+    if: github.repository == 'trezor/trezor-suite-release'
+    name: Build suite-desktop-${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-sign
+            platform: linux
+          - os: macos-sign
+            platform: mac
+          - os: macos-sign-win-token
+            platform: win
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: recursive
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/transport-bridge build:lib
+      - name: Build ${{ matrix.platform }} suite-desktop
+        run: |
+          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
+          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
+          mv packages/suite-desktop/build-electron/* .
+      - name: Upload suite-desktop production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: suite-desktop-${{ matrix.platform }}
+          path: |
+            Trezor-Suite*
+            latest*.yml
+          retention-days: 7
+
+  suite-desktop-github-release:
+    if: github.repository == 'trezor/trezor-suite-release'
+    name: Create GitHub draft release
+    environment: suite-production
+    runs-on: ubuntu-latest
+    needs: suite-desktop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        # checkout is only needed for the version number for draft release
+      - name: Download suite-desktop apps
+        uses: actions/download-artifact@v4
+        with:
+          pattern: suite-desktop-*
+          merge-multiple: true
+          path: ./
+
+      - name: Create GitHub draft release
+        env:
+          GITHUB_TOKEN: ${{ secrets.TREZOR_BOT_TOKEN }}
+        run: |
+          gh config set prompt disabled
+          VERSION=$(jq -r .suiteVersion packages/suite/package.json)
+          gh release create --repo trezor/trezor-suite --draft v${VERSION}  --title "v${VERSION}" ./Trezor-Suite* latest*
+
+
+  suite-desktop-autoupdate-release:
+    if: github.repository == 'trezor/trezor-suite-release'
+    name: Release suite-desktop auto-update to staging data.trezor.io
+    environment: suite-production
+    runs-on: ubuntu-latest
+    needs: suite-desktop
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
+          aws-region: eu-central-1
+      - name: Download suite-desktop apps
+        uses: actions/download-artifact@v4
+        with:
+          pattern: suite-desktop-*
+          merge-multiple: true
+          path: ./trezor-suite-files
+
+      - name: Upload suite-desktop to staging-data.trezor.io
+        run: |
+          # uploads the files to the staging bucket canary  folder (canary does not have staging percentage set)
+          aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/canary
+          # configures the default staging percentage to 20% for production
+          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest.yml
+          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest-mac.yml
+          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest-linux.yml
+          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest-linux-arm64.yml
+          VERSION=$(jq -r .suiteVersion packages/suite/package.json)
+          aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/latest
+          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://staging-data.trezor.io/suite/releases/desktop/v${VERSION}/
+
+  build-web:
+    if: github.repository == 'trezor/trezor-suite-release'
+    name: Build suite-web and deploy to staging-suite.trezor.io
+    environment: suite-production
+    runs-on: ubuntu-latest
+    needs: suite-desktop
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
+          aws-region: eu-central-1
+      - name: Setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: yarn
+      - name: Install dependencies
+        run: |
+          echo -e "\nenableScripts: false" >> .yarnrc.yml
+          echo -e "\nenableHardenedMode: false" >> .yarnrc.yml
+          yarn workspaces focus @trezor/suite-web @trezor/connect-iframe @trezor/connect-web @trezor/suite-data @trezor/suite-build
+
+      - name: Build suite-web
+        env:
+          ASSET_PREFIX: /web
+          STAGING_SUITE_SERVER_URL: https://staging-suite.trezor.io
+        run: |
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/connect-iframe build:lib
+          yarn workspace @trezor/connect-web build
+          yarn workspace @trezor/suite-web build
+
+      - name: Download suite-desktop apps
+        uses: actions/download-artifact@v4
+        with:
+          pattern: suite-desktop-*
+          merge-multiple: true
+          path: packages/suite-web/build/static/desktop
+
+      # this step should upload build result to s3 bucket staging-suite.trezor.io using awscli
+      - name: Upload suite-web to staging-suite.trezor.io
+        run: |
+          cd packages/suite-web
+          ./scripts/s3sync.sh staging-suite
+
+  create-test-release:
+    if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == true
+    name: Create test release
+    environment: suite-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      #TODO! finis the action to update version build app ad deploy it for testing autoupdate. This will only run if the input createTestRelease is set to true.
+      - run: echo "Creating test release"
