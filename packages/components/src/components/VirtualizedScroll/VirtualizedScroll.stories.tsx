@@ -1,6 +1,7 @@
 import { Meta, StoryFn } from '@storybook/react';
 import styled from 'styled-components';
 import { VirtualizedScroll } from './VirtualizedScroll';
+import { useEffect, useState } from 'react';
 
 const meta: Meta = {
     title: 'Misc/VirtualizedScroll',
@@ -8,11 +9,6 @@ const meta: Meta = {
 export default meta;
 
 const Container = styled.div`
-    /* width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center; */
     display: initial;
     width: 100%;
 `;
@@ -23,14 +19,33 @@ const Item = styled.div`
 `;
 
 const heights = [20, 40, 60];
-const data = Array.from({ length: 1000000 }, (_, i) => ({
-    id: i,
-    content: <Item>content {i}</Item>,
-    height: heights[Math.floor(Math.random() * heights.length)],
-}));
 
-export const All: StoryFn = () => (
-    <Container>
-        <VirtualizedScroll items={data} />
-    </Container>
-);
+const getData = (end: number) =>
+    Array.from({ length: end }, (_, i) => ({
+        id: i,
+        content: <Item>content {i}</Item>,
+        height: heights[Math.floor(Math.random() * heights.length)],
+    }));
+
+export const All: StoryFn = () => {
+    const [end, setEnd] = useState(100000);
+    const [data, setData] = useState(getData(end));
+
+    useEffect(() => {
+        console.log('___end', end);
+        setTimeout(() => {
+            setData(getData(end));
+        }, 100);
+    }, [end]);
+
+    return (
+        <Container>
+            <VirtualizedScroll
+                initialItems={data}
+                onScrollEnd={() => {
+                    setEnd(end + 1000);
+                }}
+            />
+        </Container>
+    );
+};
