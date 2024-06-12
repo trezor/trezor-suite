@@ -1614,6 +1614,10 @@ export default defineMessages({
         defaultMessage: 'Last transactions',
         id: 'TR_COINMARKET_LAST_TRANSACTIONS',
     },
+    TR_COINMARKET_PAYMENT_METHOD: {
+        defaultMessage: 'Payment method',
+        id: 'TR_COINMARKET_PAYMENT_METHOD',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',

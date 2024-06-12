@@ -2,6 +2,7 @@ import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type {
+    Option,
     Trade,
     TradeBuy,
     TradeExchange,
@@ -9,8 +10,10 @@ import type {
     TradeType,
 } from 'src/types/wallet/coinmarketCommonTypes';
 import {
+    BuyCryptoPaymentMethod,
     BuyTrade,
     BuyTradeStatus,
+    CryptoSymbol,
     ExchangeTrade,
     ExchangeTradeStatus,
     SavingsTradeItemStatus,
@@ -24,6 +27,7 @@ import { Account } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import { networks } from '@suite-common/wallet-config';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
@@ -98,4 +102,16 @@ export interface CoinmarketWatchTradeProps<T extends CoinmarketTradeType> {
     refreshCount: number;
     dispatch: Dispatch<AnyAction>;
     removeDraft: (key: string) => void;
+}
+
+export type CoinmarketPaymentMethodProps = BuyCryptoPaymentMethod | '';
+
+export interface CoinmarketPaymentMethodListProps extends Option {
+    value: CoinmarketPaymentMethodProps;
+    label: string;
+}
+
+export interface CoinmarketCryptoListProps extends Option {
+    cryptoSymbol: CryptoSymbol | undefined;
+    cryptoName: (typeof networks)[keyof typeof networks]['name'];
 }

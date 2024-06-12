@@ -12,10 +12,9 @@ import {
     SellFiatTrade,
 } from 'invity-api';
 import { Timer } from '@trezor/react-utils';
-import { UseCoinmarketFilterReducerOutputProps } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 import { TradeSell } from '../wallet/coinmarketCommonTypes';
 import { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
-import { CoinmarketTradeBuyType, CoinmarketTradeSellType, CoinmarketTradeType } from './coinmarket';
+import { CoinmarketTradeBuyType, CoinmarketTradeType } from './coinmarket';
 import { CoinmarketBuyFormContextProps } from './coinmarketForm';
 
 type CoinmarketOffersContextProps = {
@@ -47,7 +46,6 @@ type CoinmarketSellOffersContextProps = CoinmarketOffersContextProps & {
     confirmTrade: (bankAccount: BankAccount) => void;
     sendTransaction: () => void;
     needToRegisterOrVerifyBankAccount: (quote: SellFiatTrade) => boolean;
-    innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps<CoinmarketTradeSellType>;
 };
 
 export type CoinmarketExchangeStepType =

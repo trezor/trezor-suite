@@ -25,6 +25,7 @@ import type { Action as SuiteAction } from 'src/types/suite';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type { FeeLevel } from '@trezor/connect';
 import type { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
 
 export interface ComposedTransactionInfo {
     composed?: Pick<
@@ -40,6 +41,7 @@ export interface CoinmarketTradeCommonProps {
 
 interface Info {
     symbolsInfo?: CryptoSymbolInfo[];
+    paymentMethods: CoinmarketPaymentMethodListProps[];
 }
 
 interface Buy extends CoinmarketTradeCommonProps {
@@ -85,6 +87,7 @@ export interface State {
 export const initialState: State = {
     info: {
         symbolsInfo: [],
+        paymentMethods: [],
     },
     buy: {
         transactionId: undefined,
@@ -131,6 +134,9 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_INFO.SAVE_SYMBOLS_INFO:
                 draft.info.symbolsInfo = action.symbolsInfo;
+                break;
+            case COINMARKET_INFO.SAVE_PAYMENT_METHODS:
+                draft.info.paymentMethods = action.paymentMethods;
                 break;
             case COINMARKET_BUY.SAVE_BUY_INFO:
                 draft.buy.buyInfo = action.buyInfo;

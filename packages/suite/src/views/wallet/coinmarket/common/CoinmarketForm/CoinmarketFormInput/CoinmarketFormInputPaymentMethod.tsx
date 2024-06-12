@@ -6,16 +6,34 @@ import {
     CoinmarketFormOptionLabel,
 } from '../../..';
 import { Select } from '@trezor/components';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import {
+    CoinmarketPaymentMethodListProps,
+    CoinmarketTradeBuyType,
+} from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { CoinmarketPaymentPlainType } from '../../CoinmarketPaymentPlainType';
+import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
+import { Translation } from 'src/components/suite';
 
-const CoinmarketFormInputPaymentMethod = () => {
-    const { control, defaultPaymentMethod } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
-    const options = [defaultPaymentMethod];
+interface CoinmarketFormInputPaymentMethodProps {
+    className?: string;
+    label?: ExtendedMessageDescriptor['id'];
+}
+
+const CoinmarketFormInputPaymentMethod = ({
+    className,
+    label,
+}: CoinmarketFormInputPaymentMethodProps) => {
+    const { control, paymentMethods, defaultPaymentMethod } =
+        useCoinmarketFormContext<CoinmarketTradeBuyType>();
 
     return (
-        <CoinmarketFormInput>
-            <CoinmarketFormInputLabel>Payment method</CoinmarketFormInputLabel>
+        <CoinmarketFormInput className={className}>
+            {label && (
+                <CoinmarketFormInputLabel>
+                    <Translation id={label} />
+                </CoinmarketFormInputLabel>
+            )}
             <Controller
                 name="paymentMethod"
                 defaultValue={defaultPaymentMethod}
@@ -23,23 +41,29 @@ const CoinmarketFormInputPaymentMethod = () => {
                 render={({ field: { onChange, value } }) => (
                     <Select
                         value={value}
-                        onChange={(selected: any) => {
+                        onChange={(selected: CoinmarketPaymentMethodListProps) => {
                             onChange(selected);
                         }}
-                        options={options}
-                        formatOptionLabel={option => {
+                        options={paymentMethods}
+                        formatOptionLabel={(option: CoinmarketPaymentMethodListProps) => {
                             return (
                                 <CoinmarketFormOption>
                                     <CoinmarketFormOptionLabel>
-                                        {option.label}
+                                        {option.value !== '' ? (
+                                            <CoinmarketPaymentPlainType
+                                                method={option.value}
+                                                methodName={option.label}
+                                            />
+                                        ) : (
+                                            <div>{option.label}</div>
+                                        )}
                                     </CoinmarketFormOptionLabel>
                                 </CoinmarketFormOption>
                             );
                         }}
-                        data-test="@coinmarket/form/fiat-payment-method-select"
+                        data-test="@coinmarket/form/payment-method-select"
                         isClearable={false}
                         isSearchable
-                        isDisabled
                     />
                 )}
             />

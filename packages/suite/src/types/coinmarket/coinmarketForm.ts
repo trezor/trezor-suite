@@ -1,4 +1,7 @@
 import {
+    CoinmarketCryptoListProps,
+    CoinmarketPaymentMethodListProps,
+    CoinmarketPaymentMethodProps,
     CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeType,
@@ -7,23 +10,25 @@ import {
 import type { Account, Network } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
-import type { BuyTrade, CryptoSymbol } from 'invity-api';
+import type { BuyTrade } from 'invity-api';
 import { AmountLimits, DefaultCountryOption, Option } from '../wallet/coinmarketCommonTypes';
-import { networks } from '@suite-common/wallet-config';
 import { AppState } from '../suite';
 import { Timer } from '@trezor/react-utils';
-import { UseCoinmarketFilterReducerOutputProps } from 'src/reducers/wallet/useCoinmarketFilterReducer';
 
-export type CoinmarketFormBuyFormProps = {
+export type CoinmarketBuyFormProps = {
     fiatInput?: string;
     cryptoInput?: string;
     currencySelect: Option;
-    cryptoSelect: Option & {
-        cryptoSymbol: CryptoSymbol;
-        cryptoName: (typeof networks)[keyof typeof networks]['name'];
-    };
+    cryptoSelect: CoinmarketCryptoListProps;
     countrySelect: Option;
-    paymentMethod?: Option;
+    paymentMethod?: CoinmarketPaymentMethodListProps;
+};
+
+export type CoinmarketBuyFormDefaultValuesProps = {
+    defaultValues: CoinmarketBuyFormProps | undefined;
+    defaultCountry: Option;
+    defaultCurrency: Option;
+    defaultPaymentMethod: CoinmarketPaymentMethodListProps;
 };
 
 type CoinmarketOffersBuyProps<T extends CoinmarketTradeType> = {
@@ -36,26 +41,26 @@ type CoinmarketOffersBuyProps<T extends CoinmarketTradeType> = {
 };
 
 export type CoinmarketBuyFormContextProps<T extends CoinmarketTradeType> =
-    UseFormReturn<CoinmarketFormBuyFormProps> &
+    UseFormReturn<CoinmarketBuyFormProps> &
         CoinmarketOffersBuyProps<T> & {
             account: Account;
             defaultCountry: DefaultCountryOption;
             defaultCurrency: Option;
-            defaultPaymentMethod: Option;
+            defaultPaymentMethod: CoinmarketPaymentMethodListProps;
+            paymentMethods: CoinmarketPaymentMethodListProps[];
             buyInfo?: BuyInfo;
             amountLimits?: AmountLimits;
             isLoading: boolean;
             noProviders: boolean;
             network: Network;
             cryptoInputValue?: string;
-            formState: ReactHookFormState<CoinmarketFormBuyFormProps>;
+            formState: ReactHookFormState<CoinmarketBuyFormProps>;
             isDraft: boolean;
             quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
             quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
             selectedQuote: BuyTrade | undefined;
             addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
             providersInfo: BuyInfo['providerInfos'] | undefined;
-            innerQuotesFilterReducer: UseCoinmarketFilterReducerOutputProps<CoinmarketTradeBuyType>;
             goToPayment: (address: string) => void;
             goToOffers: () => void;
             verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
@@ -71,3 +76,14 @@ export type CoinmarketFormMapProps = {
 };
 
 export type CoinmarketFormContextValues<T extends CoinmarketTradeType> = CoinmarketFormMapProps[T];
+
+export type CoinmarketPaymentMethodHookProps<T extends CoinmarketTradeType> = {
+    paymentMethods: CoinmarketPaymentMethodListProps[];
+    getPaymentMethods: (
+        quotes: CoinmarketTradeDetailMapProps[T][],
+    ) => CoinmarketPaymentMethodListProps[];
+    getQuotesByPaymentMethod: (
+        quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+        currentPaymentMethod: CoinmarketPaymentMethodProps,
+    ) => CoinmarketTradeDetailMapProps[T][] | undefined;
+};

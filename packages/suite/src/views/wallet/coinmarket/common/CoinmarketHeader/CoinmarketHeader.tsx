@@ -10,7 +10,6 @@ import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import {
     isCoinmarketBuyOffers,
-    isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { getCryptoQuoteAmountProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
@@ -78,10 +77,10 @@ interface CoinmarketHeaderProps {
 
 const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: CoinmarketHeaderProps) => {
     const context = useCoinmarketOffersContext();
-    const { timer } = context;
-    const headerProps = getCryptoQuoteAmountProps(context.quotes?.[0], context);
+    const { timer, quotes, quotesRequest } = context;
+    const headerProps = getCryptoQuoteAmountProps(quotes?.[0], context);
 
-    if (!headerProps || !context.quotesRequest) return null;
+    if (!headerProps || !quotesRequest) return null;
 
     const Timer = () => (
         <CoinmarketRefreshTime
@@ -101,11 +100,7 @@ const CoinmarketHeader = ({ title, titleTimer, showTimerNextToTitle }: Coinmarke
                 {showTimerNextToTitle && <Timer />}
             </HeaderTop>
             <HeaderBottom>
-                {(isCoinmarketBuyOffers(context) || isCoinmarketSellOffers(context)) && (
-                    <CoinmarketHeaderFilter
-                        quotesFilterReducer={context.innerQuotesFilterReducer}
-                    />
-                )}
+                {isCoinmarketBuyOffers(context) && <CoinmarketHeaderFilter />}
                 <CoinmarketHeaderSummaryWrap {...headerProps} />
                 {!showTimerNextToTitle && (
                     <HeaderCoinmarketRefreshTime>
