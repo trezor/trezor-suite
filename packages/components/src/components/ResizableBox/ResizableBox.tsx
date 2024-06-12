@@ -1,9 +1,12 @@
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { createCooldown } from '@trezor/utils';
+
+type Directions = 'top' | 'left' | 'right' | 'bottom';
 
 export type ResizableBoxProps = {
     children: React.ReactNode;
-    directions: Array<"top" | "left" | "right" | "bottom">; 
+    directions: Array<Directions>;
     isLocked?: boolean; // if true, it's not possible to resize the component
     width?: number;
     minWidth?: number;
@@ -22,77 +25,88 @@ type ResizersProps = {
     $height?: number;
     $minHeight?: number;
     $maxHeight?: number;
-    x?: number;
-    y?: number;
+
+    $highlightDirection?: Directions;
+    $isResizing?: boolean;
 };
 
-const Resizers = styled.div<ResizersProps>(({ $width, $minWidth, $maxWidth, $height, $minHeight, $maxHeight, x, y }) => `
+const Resizers = styled.div<ResizersProps>(
+    ({
+        $width,
+        $minWidth,
+        $maxWidth,
+        $height,
+        $minHeight,
+        $maxHeight,
+        $highlightDirection,
+        $isResizing,
+        theme,
+    }) => `
         ${$width ? `width: ${$width}px;` : 'width: auto;'};
         ${$minWidth && `min-width: ${$minWidth}px;`};
         ${$maxWidth && `max-width: ${$maxWidth}px;`};
         ${$height ? `height: ${$height}px;` : 'height: auto;'};
         ${$minHeight && `min-height: ${$minHeight}px;`};
         ${$maxHeight && `max-height: ${$maxHeight}px;`};
-        // ${x && `left: ${x}px;`};
-        // ${y && `top: ${y}px;`};
-        box-sizing: border-box;
+        //box-sizing: border-box;
         position: relative;
 
-        #top-div, #left-div, #right-div, #bottom-div {
-          position: absolute;
-        }
-
-        #top-div, #bottom-div {
-          width: 100%;
-          height: ${reactiveAreaWidth}px;
-          cursor: ns-resize;
-        }
-
-        #left-div, #right-div {
-          width: ${reactiveAreaWidth}px;
-          height: 100%;
-          bottom: 0;
-          cursor: ew-resize;
-        }
-
-        #top-div {
-          top: ${`-${reactiveAreaWidth/2}px`};
-        }
-
-        #left-div {
-          left: ${`-${reactiveAreaWidth/2}px`};
-        }
-
-        #right-div {
-          right: ${`-${reactiveAreaWidth/2}px`};
-        }
-
-        #bottom-div {
-          bottom: ${`-${reactiveAreaWidth/2}px`};
-        }
-    `
+        box-sizing: content-box;
+        ${$highlightDirection !== undefined && `border-${$highlightDirection}: 3px solid ${theme.backgroundNeutralSubdued};`};
+        ${$isResizing && `user-select: none;`};
+    `,
 );
+
+const TopDiv = styled.div`
+    position: absolute;
+    width: 100%;
+    height: ${reactiveAreaWidth}px;
+    cursor: ns-resize;
+    top: ${`-${reactiveAreaWidth / 2}px`};
+`;
+
+const BottomDiv = styled.div`
+    position: absolute;
+    width: 100%;
+    height: ${reactiveAreaWidth}px;
+    cursor: ns-resize;
+    bottom: ${`-${reactiveAreaWidth / 2}px`};
+`;
+
+const LeftDiv = styled.div`
+    position: absolute;
+    width: ${reactiveAreaWidth}px;
+    height: 100%;
+    bottom: 0;
+    cursor: ew-resize;
+    left: ${`-${reactiveAreaWidth / 2}px`};
+`;
+
+const RightDiv = styled.div`
+    position: absolute;
+    width: ${reactiveAreaWidth}px;
+    height: 100%;
+    bottom: 0;
+    cursor: ew-resize;
+    right: ${`-${reactiveAreaWidth / 2}px`};
+`;
 
 const Child = styled(Resizers)`
     position: relative;
     width: 100%;
     height: 100%;
     overflow: auto;
-`
-
-// TODO maybe move the following helper functions to a separate file
+`;
 
 // make sure the final width or height will be at least 1px while resizing, to make sure the box doesn't disappear
-const ensureMinimalSize = (size: number): number =>
-    size < 1 ? 1 : size;
+const ensureMinimalSize = (size: number): number => (size < 1 ? 1 : size);
 
 // get the final width/height when resizing according to the minWidth/minHeight
-const getMinResult = (min: number, result: number) =>
-    result > min ? result : min;
+const getMinResult = (min: number, result: number) => (result > min ? result : min);
 
 // get the final width/height when resizing according to the maxWidth/maxHeight
 const getMaxResult = (max: number | undefined, result: number) =>
-    (max === undefined || result < max) ? result : max;
+    max === undefined || result < max ? result : max;
 
 export const ResizableBox = ({
     children,
@@ -111,104 +125,112 @@ export const ResizableBox = ({
     const [newY, setNewY] = useState<number>(0);
     const [newWidth, setNewWidth] = useState<number>(width || minWidth);
     const [newHeight, setNewHeight] = useState<number>(height || minHeight);
+    const [isResizing, setIsResizing] = useState<boolean>(false);
+    const [direction, setDirection] = useState<Directions>();
 
-    const resize = (resizer: string, e: MouseEvent) => {
-        const mouseX = e.clientX;
-        const mouseY = e.clientY;
+    const [isHovering, setIsHovering] = useState(false);
 
-        const difX = mouseX - (newX) - newWidth;
-        const difY = mouseY - (newY) - newHeight;
+    const resizeCooldown = createCooldown(150);
 
-        let result = 0;
+    const resize = useCallback(
+        (e: MouseEvent) => {
+            e.preventDefault();
 
-        // TODO fix the computations, it's all kinda moved more than expected/before!
-        if (resizer === 'top') { // TODO find a way to display box to resize from top in storybook nicely
-            result = ensureMinimalSize(-difY);
+            const mouseX = e.pageX;
+            const mouseY = e.pageY;
 
-            if (difY < 0) {
-                setNewHeight(getMaxResult(maxHeight, result));
-            } else if (difX > 0) {
-                setNewHeight(getMinResult(minHeight, result));
+            const difX = mouseX - newX - newWidth;
+            const difY = mouseY - newY - newHeight;
+
+            let result = 0;
+
+            if (direction === 'top') {
+                result = ensureMinimalSize(-difY);
+
+                if (difY < 0) {
+                    setNewHeight(getMaxResult(maxHeight, result));
+                } else if (difX > 0) {
+                    setNewHeight(getMinResult(minHeight, result));
+                }
+            } else if (direction === 'bottom') {
+                result = ensureMinimalSize(newHeight + difY);
+
+                if (difY > 0) {
+                    setNewHeight(getMaxResult(maxHeight, result));
+                } else if (difX < 0) {
+                    setNewHeight(getMinResult(minHeight, result));
+                }
+            } else if (direction === 'left') {
+                result = ensureMinimalSize(-difX);
+
+                if (difX < 0) {
+                    setNewWidth(getMaxResult(maxWidth, result));
+                } else if (difX > 0) {
+                    setNewWidth(getMinResult(minWidth, result));
+                }
+            } else if (direction === 'right') {
+                result = ensureMinimalSize(newWidth + difX);
+
+                if (difX > 0) {
+                    setNewWidth(getMaxResult(maxWidth, result));
+                } else if (difX < 0) {
+                    setNewWidth(getMinResult(minWidth, result));
+                }
             }
-        } else if (resizer === 'bottom') {
-            result = ensureMinimalSize(newHeight + difY);
+        },
+        [direction, maxHeight, maxWidth, minHeight, minWidth, newHeight, newWidth, newX, newY],
+    );
 
-            if (difY > 0) {
-                setNewHeight(getMaxResult(maxHeight, result));
-            } else if (difX < 0) {
-                setNewHeight(getMinResult(minHeight, result));
-            }
-        } else if (resizer === 'left') {
-            result = ensureMinimalSize(-difX);
-
-            if (difX < 0) {
-                setNewWidth(getMaxResult(maxWidth, result));
-            } else if (difX > 0) {
-                setNewWidth(getMinResult(minWidth, result));
-            }
-        } else if (resizer === 'right') {
-            result = ensureMinimalSize(newWidth + difX);
-
-            if (difX > 0) {
-                setNewWidth(getMaxResult(maxWidth, result));
-            } else if (difX < 0) {
-                setNewWidth(getMinResult(minWidth, result));
-            }
-        }
-    };
-
-    const handleMouseDown = (resizerID: string) => {
-        const resizeCallback = (e: MouseEvent) => resize(resizerID.split('-')[0], e);
-        const stopResize = () => {
-            window.removeEventListener('mousemove', resizeCallback);
-        };
-
-        window.addEventListener('mousemove', resizeCallback);
-        window.addEventListener('mouseup', stopResize); // TODO make sure you remove also this listener!
+    const startResizing = (direction: Directions) => {
+        setIsResizing(true);
+        setIsHovering(false);
+        setDirection(direction);
     };
 
     useEffect(() => {
-        if (directions.includes('top')) {
-            document.querySelector('#top-div')?.addEventListener('mousedown', () => handleMouseDown('top-div'));
-        }
-        if (directions.includes('bottom')) {
-            document.querySelector('#bottom-div')?.addEventListener('mousedown', () => handleMouseDown('bottom-div'));
-        }
-        if (directions.includes('left')) {
-            document.querySelector('#left-div')?.addEventListener('mousedown', () => handleMouseDown('left-div'));
-        }
-        if (directions.includes('right')) {
-            document.querySelector('#right-div')?.addEventListener('mousedown', () => handleMouseDown('right-div'));
-        }
-
         if (resizableBoxRef.current) {
             const rect = resizableBoxRef.current.getBoundingClientRect();
             setNewX(rect.x);
             setNewY(rect.y);
 
-            if(newWidth === 0) {
+            if (newWidth === 0) {
                 setNewWidth(rect.width);
             }
-            if(newHeight === 0) {
+            if (newHeight === 0) {
                 setNewHeight(rect.height);
             }
         }
 
-        return () => {
-            if (directions.includes('top')) {
-                document.querySelector('#top-div')?.removeEventListener('mousedown', () => handleMouseDown('top-div'));
-            }
-            if (directions.includes('bottom')) {
-                document.querySelector('#bottom-div')?.removeEventListener('mousedown', () => handleMouseDown('bottom-div'));
-            }
-            if (directions.includes('left')) {
-                document.querySelector('#left-div')?.removeEventListener('mousedown', () => handleMouseDown('left-div'));
-            }
-            if (directions.includes('right')) {
-                document.querySelector('#right-div')?.removeEventListener('mousedown', () => handleMouseDown('right-div'));
+        document.onmousemove = event => {
+            if (resizeCooldown() === true && isResizing === true && direction !== undefined) {
+                resize(event);
             }
         };
-    }, [directions, resizableBoxRef]); // TODO maybe update dependencies array
+
+        document.onmouseup = () => setIsResizing(false);
+    }, [direction, isResizing, newHeight, newWidth, resizableBoxRef, resize, resizeCooldown]);
+
+    const handleMouseOver = (direction: Directions) => {
+        if (isResizing === false) {
+            setIsHovering(true);
+            setDirection(direction);
+        }
+    };
+
+    const handleMouseOut = () => {
+        if (isHovering === true) {
+            setIsHovering(false);
+        }
+
+        if (direction !== undefined) {
+            setDirection(undefined);
+        }
+    };
+
+    const highlightDirection = useMemo(
+        () => (isHovering === true ? direction : undefined),
+        [direction, isHovering],
+    );
 
     return (
         <Resizers
@@ -218,14 +240,35 @@ export const ResizableBox = ({
             $height={newHeight}
             $minHeight={minHeight}
             $maxHeight={maxHeight}
-            x={newX} // TODO are we gonna need this?
-            y={newY} // TODO are we gonna need this?
             ref={resizableBoxRef}
+            $highlightDirection={highlightDirection}
+            $isResizing={isResizing}
         >
             <Child>{children}</Child>
-            {!isLocked && directions.map((direction) => (
-                <div id={`${direction}-div`} key={direction} />
-            ))}
+            {!isLocked && (
+                <>
+                    {directions.includes('top') && (
+                        <TopDiv
+                            onMouseDown={() => startResizing('top')}
+                            onMouseOver={() => handleMouseOver('top')}
+                            onMouseOut={handleMouseOut}
+                        />
+                    )}
+                    {directions.includes('left') && (
+                        <LeftDiv
+                            onMouseDown={() => startResizing('left')}
+                            onMouseOver={() => handleMouseOver('left')}
+                            onMouseOut={handleMouseOut}
+                        />
+                    )}
+                    {directions.includes('bottom') && (
+                        <BottomDiv onMouseDown={() => startResizing('bottom')} />
+                    )}
+                    {directions.includes('right') && (
+                        <RightDiv onMouseDown={() => startResizing('right')} />
+                    )}
+                </>
+            )}
         </Resizers>
     );
 };

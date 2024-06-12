@@ -1,43 +1,48 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
-import { ResizableBoxProps, ResizableBox as BoxComponent } from './ResizableBox';
+import { ResizableBoxProps, ResizableBox as ResizableBoxComponent } from './ResizableBox';
 
-const Wrapper1 = styled.div`
-    position: absolute;
-    right: 0;
+const Container = styled.div`
+    position: relative;
+    width: 100%;
+    display: flex;
 `;
 
 const Content = styled.div`
-    border: 1px solid black;
+    border: 1px solid green;
     width: 100%;
     height: 100%;
 `;
 
 const meta: Meta = {
     title: 'Misc/ResizableBox',
-    component: props => ( // TODO finish adding multiple boxes!
-        <>
-            <BoxComponent {...props} />
-            {/* <Wrapper1>
-                <BoxComponent {...props} />
-            </Wrapper1> */}
-        </>
-    ),
+    component: ResizableBoxComponent,
 } as Meta;
 export default meta;
 
-// TODO make sure it works also for dark mode!!!
-// TODO make sure it's possible to use multiple instances on the same page and independently!!!
 export const ResizableBox: StoryObj<ResizableBoxProps> = {
+    render: props => (
+        <Container>
+            <ResizableBoxComponent {...props} />
+        </Container>
+    ),
     args: {
-        children: <Content>Some content for the resizable box</Content>,
+        children: <Content>Resize me from any side!</Content>,
         directions: ['top', 'left', 'right', 'bottom'],
         isLocked: false,
         width: 100,
-        minWidth: 100,
-        maxWidth: 500,
-        height: 60,
-        minHeight: 60,
-        maxHeight: 200,
+        minWidth: 50,
+        maxWidth: 300,
+        height: 100,
+        minHeight: 50,
+        maxHeight: 300,
+    },
+    argTypes: {
+        directions: {
+            control: {
+                type: 'check',
+            },
+            options: ['top', 'left', 'right', 'bottom'],
+        },
     },
 };
