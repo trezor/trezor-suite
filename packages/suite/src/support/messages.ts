@@ -2163,7 +2163,7 @@ export default defineMessages({
     },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_1: {
         defaultMessage:
-            'Generates multiple 20-word shares (wordlists) to recover your wallet. A minimum number of shares, set by you, are needed to regain access to your wallet.',
+            'Generates multiple 20-word lists (shares) to recover your wallet. A minimum number of shares, set by you, are needed to regain access to your wallet.',
         id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_1',
     },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_2: {
@@ -5290,7 +5290,8 @@ export default defineMessages({
     },
     TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION: {
         id: 'TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION',
-        defaultMessage: 'Default supports upgrade to Multi-share Backup.',
+        defaultMessage:
+            'Generates a single set of 20 words that recovers your wallet. This backup type is upgradable to Multi-share Backup whenever you’re ready.',
     },
     TR_ONBOARDING_SEED_TYPE_ADVANCED: {
         id: 'TR_ONBOARDING_SEED_TYPE_ADVANCED',
@@ -5341,7 +5342,7 @@ export default defineMessages({
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can't be easily upgraded to Multi-share Backup. <a>Read more</a>",
+            "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can't be easily upgraded to a Multi-share Backup. <a>Read more</a>",
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
