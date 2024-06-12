@@ -55,7 +55,15 @@ jobs:
 
       - name: Get packages that need release
         id: set-packages-need-release
-        run: echo "packagesNeedRelease=$(yarn tsx ./ci/scripts/get-connect-dependencies-to-release.ts)" >> $GITHUB_OUTPUT
+        # We want this job to be successfully complete when "no-packages-to-release" since it means that
+        # there are no dependencies to release so we can continue with "deploy-npm-connect"
+        run: |
+          packages=$(yarn tsx ./ci/scripts/get-connect-dependencies-to-release.ts)
+          if [ "$packages" == "[]" ]; then
+            echo "packagesNeedRelease=[\"no-packages-to-release\"]" >> $GITHUB_OUTPUT
+          else
+            echo "packagesNeedRelease=$packages" >> $GITHUB_OUTPUT
+          fi
 
       - name: Determine Deployment Type from version in branch
         id: determine-deployment-type
@@ -79,10 +87,12 @@ jobs:
         package: ${{ fromJson(needs.identify-release-packages.outputs.packagesNeedRelease) }}
     steps:
       - uses: actions/checkout@v4
+        if: matrix.package != 'no-packages-to-release'
         with:
           ref: develop
 
       - name: Set deployment type
+        if: matrix.package != 'no-packages-to-release'
         id: set_deployment_type
         run: |
           if [ "${{ needs.identify-release-packages.outputs.deploymentType }}" == "canary" ]; then
@@ -90,7 +100,9 @@ jobs:
           else
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
           fi
+
       - name: Deploy to NPM ${{ matrix.package }}
+        if: matrix.package != 'no-packages-to-release'
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
         uses: ./.github/actions/release-connect-npm
@@ -112,6 +124,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: develop
+
       - name: Set deployment type
         id: set_deployment_type
         run: |
@@ -120,6 +133,7 @@ jobs:
           else
             echo "DEPLOYMENT_TYPE=latest" >> $GITHUB_ENV
           fi
+
       - name: Deploy to NPM ${{ matrix.package }}
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
