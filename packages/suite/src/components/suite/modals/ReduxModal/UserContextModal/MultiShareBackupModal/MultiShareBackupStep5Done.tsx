@@ -121,7 +121,7 @@ export const MultiShareBackupStep5Done = () => (
                         </IconQuestionMarkWrapper>
 
                         <TextDiv variant="warning">
-                            <Translation id="TR_MULTI_SHARE_BACKUP_LOST_YOUR_TREZOR" />
+                            <Translation id="TR_MULTI_SHARE_BACKUP_LOST_YOUR_BACKUP" />
                         </TextDiv>
 
                         <TextDiv color="subdued">
