@@ -2,8 +2,6 @@ export const TREZOR_URL = 'https://trezor.io';
 export const TREZOR_FORUM_URL = 'https://forum.trezor.io/';
 export const TREZOR_START_URL = 'https://trezor.io/start';
 export const TREZOR_SUPPORT_URL = 'https://trezor.io/support';
-export const TREZOR_SUPPORT_DEVICE_URL =
-    'https://trezor.io/support/a/trezor-suite-doesn-t-see-my-device';
 export const TREZOR_RESELLERS_URL = 'https://trezor.io/resellers/';
 
 export const DATA_URL = 'https://data.trezor.io/';
@@ -21,6 +19,11 @@ export const SUITE_UDEV_URL = 'https://suite.trezor.io/web/udev/';
 export const SUITE_MOBILE_APP_STORE = 'https://apps.apple.com/app/id1631884497';
 export const SUITE_MOBILE_PLAY_STORE =
     'https://play.google.com/store/apps/details?id=io.trezor.suite';
+
+export const TREZOR_SUPPORT_DEVICE_URL =
+    'https://trezor.io/support/a/trezor-suite-doesn-t-see-my-device';
+export const TREZOR_SUPPORT_RECOVERY_ISSUES_URL =
+    'https://trezor.io/support/a/trezor-recovery-issues';
 
 export const HELP_CENTER_PIN_URL = 'https://trezor.io/learn/a/pin-protection-on-trezor-devices';
 export const HELP_CENTER_DRY_RUN_T1B1_URL =
@@ -73,6 +76,8 @@ export const HELP_CENTER_ETH_STAKING =
     'https://trezor.io/learn/a/stake-ethereum-eth-in-trezor-suite';
 export const HELP_CENTER_SEED_CARD_URL = 'https://trezor.io/learn/a/recovery-seed-card';
 export const HELP_CENTER_MULTI_SHARE_BACKUP_URL =
+    'https://trezor.io/learn/a/multi-share-backup-on-trezor';
+export const HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL =
     'https://trezor.io/learn/a/upgrading-to-multi-share-backup';
 export const HELP_CENTER_KEEPING_SEED_SAFE_URL =
     'https://trezor.io/learn/a/keeping-your-recovery-seed-safe';
