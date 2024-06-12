@@ -1,4 +1,4 @@
-import { HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
+import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 import {
     ActionButton,
     ActionColumn,
@@ -56,7 +56,7 @@ export const MultiShareBackup = () => {
             <TextColumn
                 title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
                 description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
-                buttonLink={HELP_CENTER_SEED_CARD_URL}
+                buttonLink={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
             />
             <ActionColumn>
                 <ActionButton
