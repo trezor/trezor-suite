@@ -30,5 +30,9 @@
         { "path": "../../packages/device-utils" },
         { "path": "../../packages/styles" }
     ],
-    "include": [".", "**/*.json"]
+    "include": [
+        ".",
+        "**/*.json",
+        "../passphrase/src/useHandleDeviceRequestsPassphrase.ts"
+    ]
 }

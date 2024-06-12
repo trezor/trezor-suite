@@ -55,6 +55,7 @@
         { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../notifications" },
+        { "path": "../passphrase" },
         { "path": "../receive" },
         { "path": "../settings" },
         { "path": "../state" },
