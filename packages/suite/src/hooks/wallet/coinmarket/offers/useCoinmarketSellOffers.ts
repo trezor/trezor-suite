@@ -34,9 +34,14 @@ import {
     CoinmarketTradeType,
     UseCoinmarketProps,
 } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketSellStepType } from 'src/types/coinmarket/coinmarketOffers';
+import {
+    CoinmarketSellOffersContextProps,
+    CoinmarketSellStepType,
+} from 'src/types/coinmarket/coinmarketOffers';
 
-export const useCoinmarketSellOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+export const useCoinmarketSellOffers = ({
+    selectedAccount,
+}: UseCoinmarketProps): CoinmarketSellOffersContextProps => {
     const {
         callInProgress,
         account,

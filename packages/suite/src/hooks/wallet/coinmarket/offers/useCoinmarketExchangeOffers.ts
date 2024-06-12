@@ -20,12 +20,15 @@ import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import {
+    CoinmarketExchangeOffersContextProps,
     CoinmarketExchangeStepType,
     CoinmarketOffersContextValues,
 } from 'src/types/coinmarket/coinmarketOffers';
 import { getSuccessQuotesOrdered } from 'src/utils/wallet/coinmarket/exchangeUtils';
 
-export const useCoinmarketExchangeOffers = ({ selectedAccount }: UseCoinmarketProps) => {
+export const useCoinmarketExchangeOffers = ({
+    selectedAccount,
+}: UseCoinmarketProps): CoinmarketExchangeOffersContextProps => {
     const {
         callInProgress,
         account,
