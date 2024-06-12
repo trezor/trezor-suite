@@ -87,11 +87,16 @@ export const CoinmarketParagraph = styled(Paragraph)`
 `;
 
 export const CoinmarketFormInput = styled.div`
+    position: relative;
     padding-bottom: ${spacingsPx.xl};
 
     input {
         color: ${({ theme }) => theme.textSubdued};
     }
+`;
+
+export const CoinmarketFormInputInner = styled.div`
+    position: relative;
 `;
 
 export const CoinmarketFormInputLabel = styled.label`
