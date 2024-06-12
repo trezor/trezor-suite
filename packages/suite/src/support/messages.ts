@@ -5337,7 +5337,7 @@ export default defineMessages({
     TR_THESE_WONT_ALLOW_YOU_UPGRADE: {
         id: 'TR_THESE_WONT_ALLOW_YOU_UPGRADE',
         defaultMessage:
-            "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can't be easily upgraded to a Multi-share Backup. <a>Read more</a>",
+            "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can't be easily upgraded to Multi-share Backup. <a>Read more</a>",
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_DISABLED_TOOLTIP',
