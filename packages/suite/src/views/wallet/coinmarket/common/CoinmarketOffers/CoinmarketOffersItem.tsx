@@ -108,12 +108,16 @@ export interface CoinmarketOffersItemProps {
 
 const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
     const context = useCoinmarketOffersContext();
-    const { callInProgress, selectQuote } = context;
+    const { callInProgress, type } = context;
     const { providers } = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
     const { tag, infoNote } = getTagAndInfoNote(quote);
     const tagsExist = tag !== '';
+
+    const selectQuote = context.selectQuote as (
+        quote: CoinmarketTradeDetailMapProps[typeof type],
+    ) => void;
 
     if (!cryptoAmountProps) return null;
 
@@ -145,7 +149,7 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                         <StyledButton
                             isLoading={callInProgress}
                             isDisabled={!!quote.error}
-                            onClick={() => selectQuote(quote)}
+                            onClick={() => selectQuote(quote as any)}
                             data-test="@coinmarket/buy/offers/get-this-deal-button"
                         >
                             <Translation id="TR_BUY_GET_THIS_OFFER" />

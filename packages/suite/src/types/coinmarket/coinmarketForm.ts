@@ -2,7 +2,6 @@ import {
     CoinmarketCryptoListProps,
     CoinmarketPaymentMethodListProps,
     CoinmarketPaymentMethodProps,
-    CoinmarketTradeBuyType,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeType,
 } from './coinmarket';
@@ -31,46 +30,45 @@ export type CoinmarketBuyFormDefaultValuesProps = {
     defaultPaymentMethod: CoinmarketPaymentMethodListProps;
 };
 
-type CoinmarketOffersBuyProps<T extends CoinmarketTradeType> = {
+type CoinmarketOffersBuyProps = {
     type: CoinmarketTradeType;
     device: AppState['device']['selectedDevice'];
     account: Account;
     callInProgress: boolean;
     timer: Timer;
-    selectQuote: (quote: CoinmarketTradeDetailMapProps[T]) => Promise<void>;
+    selectQuote: (quote: BuyTrade) => Promise<void>;
 };
 
-export type CoinmarketBuyFormContextProps<T extends CoinmarketTradeType> =
-    UseFormReturn<CoinmarketBuyFormProps> &
-        CoinmarketOffersBuyProps<T> & {
-            account: Account;
-            defaultCountry: DefaultCountryOption;
-            defaultCurrency: Option;
-            defaultPaymentMethod: CoinmarketPaymentMethodListProps;
-            paymentMethods: CoinmarketPaymentMethodListProps[];
-            buyInfo?: BuyInfo;
-            amountLimits?: AmountLimits;
-            isLoading: boolean;
-            noProviders: boolean;
-            network: Network;
-            cryptoInputValue?: string;
-            formState: ReactHookFormState<CoinmarketBuyFormProps>;
-            isDraft: boolean;
-            quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
-            quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
-            selectedQuote: BuyTrade | undefined;
-            addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
-            providersInfo: BuyInfo['providerInfos'] | undefined;
-            goToPayment: (address: string) => void;
-            goToOffers: () => void;
-            verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
-            removeDraft: (key: string) => void;
-            setAmountLimits: (limits?: AmountLimits) => void;
-            handleClearFormButtonClick: () => void;
-        };
+export type CoinmarketBuyFormContextProps = UseFormReturn<CoinmarketBuyFormProps> &
+    CoinmarketOffersBuyProps & {
+        account: Account;
+        defaultCountry: DefaultCountryOption;
+        defaultCurrency: Option;
+        defaultPaymentMethod: CoinmarketPaymentMethodListProps;
+        paymentMethods: CoinmarketPaymentMethodListProps[];
+        buyInfo?: BuyInfo;
+        amountLimits?: AmountLimits;
+        isLoading: boolean;
+        noProviders: boolean;
+        network: Network;
+        cryptoInputValue?: string;
+        formState: ReactHookFormState<CoinmarketBuyFormProps>;
+        isDraft: boolean;
+        quotesRequest: AppState['wallet']['coinmarket']['buy']['quotesRequest'];
+        quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
+        selectedQuote: BuyTrade | undefined;
+        addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
+        providersInfo: BuyInfo['providerInfos'] | undefined;
+        goToPayment: (address: string) => void;
+        goToOffers: () => void;
+        verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
+        removeDraft: (key: string) => void;
+        setAmountLimits: (limits?: AmountLimits) => void;
+        handleClearFormButtonClick: () => void;
+    };
 
 export type CoinmarketFormMapProps = {
-    buy: CoinmarketBuyFormContextProps<CoinmarketTradeBuyType>;
+    buy: CoinmarketBuyFormContextProps;
     sell: any; // TODO:
     exchange: any; // TODO:
 };

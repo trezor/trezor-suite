@@ -38,7 +38,7 @@ import useCoinmarketPaymentMethod from './useCoinmarketPaymentMethod';
 const useCoinmarketBuyForm = ({
     selectedAccount,
     offFirstRequest, // if true, use draft as initial values
-}: UseCoinmarketFormProps): CoinmarketBuyFormContextProps<CoinmarketTradeBuyType> => {
+}: UseCoinmarketFormProps): CoinmarketBuyFormContextProps => {
     const dispatch = useDispatch();
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest } = useSelector(
         state => state.wallet.coinmarket.buy,
