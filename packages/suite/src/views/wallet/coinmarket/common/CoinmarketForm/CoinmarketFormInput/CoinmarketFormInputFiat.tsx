@@ -15,6 +15,7 @@ import { formInputsMaxLength } from '@suite-common/validators';
 import { fiatCurrencies } from '@suite-common/suite-config';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { useDidUpdate } from '@trezor/react-utils';
 
 const CoinmarketFormInputFiat = () => {
     const { translationString } = useTranslation();
@@ -25,6 +26,7 @@ const CoinmarketFormInputFiat = () => {
         amountLimits,
         defaultCurrency,
         buyInfo,
+        trigger,
         setAmountLimits,
         setValue,
         clearErrors,
@@ -55,6 +57,10 @@ const CoinmarketFormInputFiat = () => {
             },
         },
     };
+
+    useDidUpdate(() => {
+        trigger('fiatInput');
+    }, [amountLimits?.maxFiat, amountLimits?.minFiat, trigger]);
 
     if (!account) return null;
 
