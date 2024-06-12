@@ -70,6 +70,8 @@ jobs:
         run: echo "deploymentType=$(yarn tsx ./ci/scripts/determine-deployment-type.ts ${{ needs.extract-version.outputs.version }})" >> $GITHUB_OUTPUT
 
       - name: Sanity Check - All Packages Same Deployment Type
+        # We do not run this sanity check when no-packages-to-release.
+        if: ${{ steps.set-packages-need-release.outputs.packagesNeedRelease != '["no-packages-to-release"]' }}
         env:
           PACKAGES: ${{ steps.set-packages-need-release.outputs.packagesNeedRelease }}
           DEPLOYMENT_TYPE: ${{ steps.determine-deployment-type.outputs.deploymentType }}
