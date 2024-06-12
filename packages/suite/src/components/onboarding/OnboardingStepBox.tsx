@@ -12,10 +12,13 @@ import {
 import { TrezorDevice } from '@suite-common/suite-types';
 import { spacingsPx, zIndices } from '@trezor/theme';
 
+const WrapperWrapper = styled.div`
+    z-index: ${zIndices.onboardingForeground};
+`;
+
 const ConfirmWrapper = styled.div`
     margin-bottom: 20px;
     height: 62px;
-    z-index: ${zIndices.onboardingForeground};
 `;
 
 const InnerActions = styled.div`
@@ -80,7 +83,7 @@ export const OnboardingStepBox = ({
         <>
             <StyledBackdrop $show={isBackDropVisible} />
             {!disableConfirmWrapper && (
-                <div data-test="@onboarding/confirm-on-device">
+                <WrapperWrapper data-test="@onboarding/confirm-on-device">
                     {deviceModelInternal && (
                         <ConfirmWrapper>
                             <ConfirmOnDevice
@@ -100,7 +103,7 @@ export const OnboardingStepBox = ({
                             />
                         </ConfirmWrapper>
                     )}
-                </div>
+                </WrapperWrapper>
             )}
 
             <StyledCollapsibleCard
