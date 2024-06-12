@@ -2,18 +2,11 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-types"
-        },
-        {
             "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
         },
         { "path": "../alerts" },
         { "path": "../analytics" },
@@ -21,7 +14,6 @@
         { "path": "../biometrics" },
         { "path": "../device-mutex" },
         { "path": "../feature-flags" },
-        { "path": "../helpers" },
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },

@@ -1,8 +1,5 @@
 {
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
-    "references": [
-        { "path": "../wallet-config" },
-        { "path": "../../packages/utils" }
-    ]
+    "references": []
 }

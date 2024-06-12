@@ -1,7 +1,5 @@
 {
-    "ignore-patterns": [
-        "libDev"
-    ],
+    "ignore-patterns": ["libDev"],
     "ignores": [
         "babel*",
         "karma*",

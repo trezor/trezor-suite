@@ -4,20 +4,13 @@
     "references": [
         { "path": "../../suite-common/icons" },
         {
-            "path": "../../suite-common/redux-utils"
-        },
-        {
             "path": "../../suite-common/validators"
-        },
-        {
-            "path": "../../suite-common/wallet-constants"
         },
         {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
         { "path": "../atoms" },
-        { "path": "../device" },
         { "path": "../forms" },
         { "path": "../intl" },
         { "path": "../link" },

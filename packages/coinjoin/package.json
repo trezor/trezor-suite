@@ -31,7 +31,6 @@
         "@trezor/utils": "workspace:*",
         "@trezor/utxo-lib": "workspace:*",
         "cross-fetch": "^4.0.0",
-        "events": "^3.3.0",
         "golomb": "1.2.0",
         "n64": "^0.2.10"
     }

@@ -12,14 +12,12 @@
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
-        "@reduxjs/toolkit": "1.9.5",
         "@suite-common/icons": "workspace:*",
         "@suite-native/atoms": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
         "jotai": "1.9.1",
         "react": "18.2.0",
-        "react-native-gesture-handler": "2.16.2",
         "react-native-reanimated": "3.11.0",
         "react-native-safe-area-context": "4.10.3"
     }

@@ -2,7 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        { "path": "../intl-types" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/type-utils" }
     ]
