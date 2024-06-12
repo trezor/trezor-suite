@@ -9,7 +9,11 @@ import { saveCachedAccountInfo, saveQuoteRequest } from 'src/actions/wallet/coin
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import { loadInvityData } from 'src/actions/wallet/coinmarket/coinmarketCommonActions';
 import invityAPI from 'src/services/suite/invityAPI';
-import { createQuoteLink, createTxLink } from 'src/utils/wallet/coinmarket/buyUtils';
+import {
+    createQuoteLink,
+    createTxLink,
+    getAmountLimits,
+} from 'src/utils/wallet/coinmarket/buyUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
@@ -85,6 +89,7 @@ const useCoinmarketBuyForm = ({
     const [innerQuotes, setInnerQuotes] = useState<BuyTrade[] | undefined>(
         offFirstRequest ? quotes : undefined,
     );
+    const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
 
     // parameters
     const { network } = selectedAccount;
@@ -118,6 +123,15 @@ const useCoinmarketBuyForm = ({
     const previousValues = useRef<CoinmarketBuyFormProps | null>(
         offFirstRequest ? (draft as CoinmarketBuyFormProps) : null,
     );
+
+    // form states
+    const formIsValid = Object.keys(formState.errors).length === 0;
+    const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect.value;
+    const isFirstRequest = innerQuotes === undefined;
+    const isFormLoading =
+        isLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
+    const isFormInvalid = !(formIsValid && hasValues);
+    const isLoadingOrInvalid = noProviders || isFormLoading || isFormInvalid;
 
     const getQuotesRequest = useCallback(
         async (request: BuyTradeQuoteRequest) => {
@@ -163,6 +177,7 @@ const useCoinmarketBuyForm = ({
     }, [methods, network.decimals, shouldSendInSats, quotesRequest]);
 
     const handleChange = useCallback(async () => {
+        setIsSubmittingHelper(true);
         timer.loading();
 
         const quoteRequest = getQuoteRequestData();
@@ -203,10 +218,11 @@ const useCoinmarketBuyForm = ({
                 });
             }
         } else {
-            setInnerQuotes(undefined);
+            setInnerQuotes([]);
         }
 
         timer.reset();
+        setIsSubmittingHelper(false);
     }, [
         timer,
         values.paymentMethod?.value,
@@ -215,8 +231,8 @@ const useCoinmarketBuyForm = ({
         getPaymentMethods,
         dispatch,
         saveQuotes,
-        setValue,
         savePaymentMethods,
+        setValue,
     ]);
 
     const goToOffers = async () => {
@@ -398,6 +414,13 @@ const useCoinmarketBuyForm = ({
 
     return {
         type: 'buy',
+        form: {
+            state: {
+                isFormLoading,
+                isFormInvalid,
+                isLoadingOrInvalid,
+            },
+        },
         ...methods,
         register,
         account,
@@ -407,8 +430,6 @@ const useCoinmarketBuyForm = ({
         paymentMethods,
         buyInfo,
         amountLimits,
-        isLoading,
-        noProviders,
         network,
         cryptoInputValue: values.cryptoInput,
         formState,

@@ -48,8 +48,6 @@ export type CoinmarketBuyFormContextProps = UseFormReturn<CoinmarketBuyFormProps
         paymentMethods: CoinmarketPaymentMethodListProps[];
         buyInfo?: BuyInfo;
         amountLimits?: AmountLimits;
-        isLoading: boolean;
-        noProviders: boolean;
         network: Network;
         cryptoInputValue?: string;
         formState: ReactHookFormState<CoinmarketBuyFormProps>;
@@ -59,8 +57,15 @@ export type CoinmarketBuyFormContextProps = UseFormReturn<CoinmarketBuyFormProps
         selectedQuote: BuyTrade | undefined;
         addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
         providersInfo: BuyInfo['providerInfos'] | undefined;
+        form: {
+            state: {
+                isFormLoading: boolean;
+                isFormInvalid: boolean;
+                isLoadingOrInvalid: boolean;
+            };
+        };
         goToPayment: (address: string) => void;
-        goToOffers: () => void;
+        goToOffers: () => Promise<void>;
         verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
         removeDraft: (key: string) => void;
         setAmountLimits: (limits?: AmountLimits) => void;
