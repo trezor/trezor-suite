@@ -8,7 +8,7 @@ const CoinmarketFormInputs = () => {
         <>
             <CoinmarketFormInputAccount />
             <CoinmarketFormInputFiat />
-            <CoinmarketFormInputPaymentMethod />
+            <CoinmarketFormInputPaymentMethod label="TR_COINMARKET_PAYMENT_METHOD" />
             <CoinmarketFormInputCountry />
         </>
     );
