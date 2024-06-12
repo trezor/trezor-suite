@@ -5345,8 +5345,7 @@ export default defineMessages({
     },
     TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP: {
         id: 'TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP',
-        defaultMessage:
-            "If you're unsure, choose the default option for simplicity <nowrap>and flexibility.</nowrap>",
+        defaultMessage: 'Recommended option for a simple, flexible setup.',
     },
     TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT: {
         id: 'TR_ONBOARDING_BACKUP_OLDER_BACKUP_TYPES_SHORT',
