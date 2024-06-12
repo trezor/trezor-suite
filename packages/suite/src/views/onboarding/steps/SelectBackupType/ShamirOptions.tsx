@@ -1,6 +1,5 @@
 import { Badge, Text, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
-import styled from 'styled-components';
 import { Translation } from '../../../../components/suite';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
 import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
@@ -9,10 +8,6 @@ import { OptionWithContent } from './OptionWithContent';
 import { selectDevice } from '@suite-common/wallet-core';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { satisfies } from 'semver';
-
-const Nowrap = styled.span`
-    white-space: nowrap;
-`;
 
 const UpgradableToMultiTag = () => {
     const { isMobileLayout } = useLayoutSize();
@@ -71,12 +66,7 @@ export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptions
                 tags={
                     defaultType === 'shamir-single' ? (
                         <Tooltip
-                            content={
-                                <Translation
-                                    id="TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP"
-                                    values={{ nowrap: chunks => <Nowrap>{chunks}</Nowrap> }}
-                                />
-                            }
+                            content={<Translation id="TR_CREATE_WALLET_DEFAULT_OPTION_TOOLTIP" />}
                         >
                             <DefaultTag />
                         </Tooltip>
