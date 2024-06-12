@@ -6,9 +6,6 @@
     },
     "references": [
         {
-            "path": "../../suite-common/suite-types"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -24,7 +21,6 @@
         { "path": "../intl" },
         { "path": "../link" },
         { "path": "../navigation" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/styles" }
     ]
 }

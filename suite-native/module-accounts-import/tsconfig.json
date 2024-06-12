@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/formatters"
-        },
         { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/redux-utils"
@@ -35,7 +32,6 @@
         { "path": "../analytics" },
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
         { "path": "../feature-flags" },
         { "path": "../formatters" },
@@ -45,9 +41,6 @@
         { "path": "../qr-code" },
         { "path": "../settings" },
         { "path": "../video-assets" },
-        {
-            "path": "../../packages/blockchain-link"
-        },
         {
             "path": "../../packages/blockchain-link-types"
         },

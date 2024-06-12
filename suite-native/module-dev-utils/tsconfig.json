@@ -3,7 +3,6 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/icons" },
-        { "path": "../../suite-common/logger" },
         {
             "path": "../../suite-common/wallet-config"
         },
@@ -15,13 +14,9 @@
         },
         { "path": "../atoms" },
         { "path": "../config" },
-        { "path": "../device-manager" },
         { "path": "../discovery" },
         { "path": "../feature-flags" },
-        { "path": "../helpers" },
-        { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-settings" },
         { "path": "../navigation" },
         { "path": "../storage" },
         { "path": "../toasts" },

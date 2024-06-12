@@ -6,7 +6,6 @@
         { "path": "../fiat-services" },
         { "path": "../metadata-types" },
         { "path": "../suite-config" },
-        { "path": "../suite-constants" },
         { "path": "../suite-types" },
         { "path": "../suite-utils" },
         { "path": "../test-utils" },

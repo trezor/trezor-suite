@@ -499,7 +499,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.13.16, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.18.5, @babel/parser@npm:^7.20.0, @babel/parser@npm:^7.20.15, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.0":
+"@babel/parser@npm:^7.1.0, @babel/parser@npm:^7.13.16, @babel/parser@npm:^7.14.7, @babel/parser@npm:^7.18.5, @babel/parser@npm:^7.20.0, @babel/parser@npm:^7.20.7, @babel/parser@npm:^7.23.0, @babel/parser@npm:^7.24.0":
   version: 7.24.0
   resolution: "@babel/parser@npm:7.24.0"
   bin:
@@ -4776,15 +4776,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@jsdoc/salty@npm:^0.2.1":
-  version: 0.2.5
-  resolution: "@jsdoc/salty@npm:0.2.5"
-  dependencies:
-    lodash: "npm:^4.17.21"
-  checksum: 10/b3f868457af175852403bc668422d8e5e83794e750717ddf91a9470f591c48a1079a48796a0deaedad8eda7b448b6f3a02700c05aff4aba299d2d578ee58fdf5
-  languageName: node
-  linkType: hard
-
 "@juggle/resize-observer@npm:^3.3.1":
   version: 3.4.0
   resolution: "@juggle/resize-observer@npm:3.4.0"
@@ -6793,7 +6784,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@react-native/normalize-color@npm:*, @react-native/normalize-color@npm:^2.0.0":
+"@react-native/normalize-color@npm:^2.0.0":
   version: 2.1.0
   resolution: "@react-native/normalize-color@npm:2.1.0"
   checksum: 10/a72b98538e6b7e265fb0669b8767d5f788777fb1a0ac1df7b0c82d8b3a804c8122aa7b819688c5e36fcf90b5ba93050b0070e29d3f0d70ab9530c2abd2bb9f9e
@@ -8674,9 +8665,6 @@ __metadata:
 "@suite-common/assets@workspace:*, @suite-common/assets@workspace:suite-common/assets":
   version: 0.0.0-use.local
   resolution: "@suite-common/assets@workspace:suite-common/assets"
-  dependencies:
-    "@suite-common/wallet-config": "workspace:*"
-    "@trezor/utils": "workspace:*"
   languageName: unknown
   linkType: soft
 
@@ -8716,7 +8704,6 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/env-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
   languageName: unknown
@@ -8732,15 +8719,12 @@ __metadata:
     "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
     react: "npm:18.2.0"
     react-intl: "npm:^6.6.2"
-    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 
@@ -8752,11 +8736,9 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
-    "@suite-common/test-utils": "workspace:*"
     "@suite-common/transaction-cache-engine": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@trezor/blockchain-link": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -8777,6 +8759,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    prettier: "npm:3.2.5"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-native-reanimated: "npm:3.11.0"
@@ -8809,7 +8792,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
   languageName: unknown
   linkType: soft
@@ -8821,7 +8803,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@trezor/connect": "workspace:*"
@@ -8895,7 +8876,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
@@ -8910,12 +8890,9 @@ __metadata:
   dependencies:
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@trezor/blockchain-link": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/urls": "workspace:*"
-    "@trezor/utils": "workspace:*"
     date-fns: "npm:^2.30.0"
   languageName: unknown
   linkType: soft
@@ -8931,9 +8908,7 @@ __metadata:
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
-    dropbox: "npm:^10.34.0"
     fake-indexeddb: "npm:^4.0.2"
     redux: "npm:^4.2.1"
     redux-thunk: "npm:^2.4.2"
@@ -8970,10 +8945,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/type-utils": "workspace:*"
-    "@types/fs-extra": "npm:^11.0.4"
     ajv: "npm:^8.12.0"
-    fs-extra: "npm:^11.2.0"
-    json-schema-to-typescript: "npm:^13.1.2"
     jws: "npm:^4.0.0"
   languageName: unknown
   linkType: soft
@@ -9005,7 +8977,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-common/wallet-config@workspace:suite-common/wallet-config"
   dependencies:
-    "@suite-common/intl-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/type-utils": "workspace:*"
   languageName: unknown
@@ -9025,7 +8996,6 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/device-authenticity": "workspace:*"
     "@suite-common/fiat-services": "workspace:*"
-    "@suite-common/metadata-types": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
@@ -9079,7 +9049,6 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/metadata-types": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
-    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/test-utils": "workspace:*"
@@ -9093,9 +9062,7 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/urls": "workspace:*"
     "@trezor/utils": "workspace:*"
-    "@types/pdfmake": "npm:^0.2.9"
     date-fns: "npm:^2.30.0"
-    pdfmake: "npm:^0.2.9"
     react: "npm:18.2.0"
     react-hook-form: "npm:^7.50.1"
     trezor-address-validator: "npm:^0.4.4"
@@ -9129,7 +9096,6 @@ __metadata:
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/theme": "workspace:*"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
@@ -9277,25 +9243,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/assets@workspace:suite-native/assets"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.17"
     "@suite-common/assets": "workspace:*"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
-    jotai: "npm:1.9.1"
     proxy-memoize: "npm:2.0.2"
     react: "npm:^18.2.0"
     react-native: "npm:0.74.1"
@@ -9311,14 +9273,11 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@shopify/react-native-skia": "npm:1.3.2"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-native/intl": "workspace:^"
     "@suite-native/storage": "workspace:*"
     "@trezor/env-utils": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    "@trezor/utils": "workspace:*"
     expo-image: "npm:1.12.9"
     jotai: "npm:1.9.1"
     lottie-react-native: "npm:6.7.2"
@@ -9326,9 +9285,7 @@ __metadata:
     react-native: "npm:0.74.1"
     react-native-gesture-handler: "npm:2.16.2"
     react-native-reanimated: "npm:3.11.0"
-    react-native-root-toast: "npm:^3.5.1"
     react-native-safe-area-context: "npm:4.10.3"
-    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 
@@ -9336,7 +9293,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/biometrics@workspace:suite-native/biometrics"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-common/icons": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
@@ -9380,22 +9336,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-manager@workspace:suite-native/device-manager"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.17"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/icons": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
-    "@suite-native/module-passphrase": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/theme": "workspace:*"
-    "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
@@ -9423,18 +9374,14 @@ __metadata:
     "@react-navigation/native": "npm:6.1.17"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/react-native": "npm:5.22.3"
-    "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/helpers": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
@@ -9457,7 +9404,6 @@ __metadata:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/redux-utils": "workspace:*"
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-constants": "workspace:*"
@@ -9470,7 +9416,6 @@ __metadata:
     "@suite-native/device": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@trezor/connect": "workspace:*"
-    "@trezor/device-utils": "workspace:*"
     "@trezor/utils": "workspace:*"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
@@ -9483,8 +9428,6 @@ __metadata:
   resolution: "@suite-native/ethereum-tokens@workspace:suite-native/ethereum-tokens"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@suite-common/icons": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
@@ -9519,9 +9462,7 @@ __metadata:
     "@suite-common/wallet-types": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/settings": "workspace:*"
-    "@trezor/blockchain-link": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:18.2.0"
@@ -9571,11 +9512,9 @@ __metadata:
     "@suite-native/theme": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    date-fns: "npm:^2.30.0"
     expo-haptics: "npm:13.0.1"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-intl: "npm:^6.6.2"
     react-native: "npm:0.74.1"
     react-native-reanimated: "npm:3.11.0"
     react-redux: "npm:8.0.7"
@@ -9589,10 +9528,8 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@suite-native/toasts": "workspace:*"
-    "@trezor/connect": "workspace:*"
     expo-clipboard: "npm:6.0.3"
     react: "npm:18.2.0"
-    react-native: "npm:0.74.1"
   languageName: unknown
   linkType: soft
 
@@ -9602,7 +9539,6 @@ __metadata:
   dependencies:
     react: "npm:18.2.0"
     react-intl: "npm:^6.6.2"
-    react-native: "npm:0.74.1"
   languageName: unknown
   linkType: soft
 
@@ -9634,10 +9570,8 @@ __metadata:
     "@suite-native/atoms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
-    "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-native-reanimated: "npm:3.11.0"
@@ -9656,7 +9590,6 @@ __metadata:
     "@react-navigation/native-stack": "npm:6.9.26"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@shopify/react-native-skia": "npm:1.3.2"
-    "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-common/redux-utils": "workspace:*"
     "@suite-common/suite-config": "workspace:*"
@@ -9671,7 +9604,6 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
-    "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/formatters": "workspace:*"
@@ -9681,7 +9613,6 @@ __metadata:
     "@suite-native/qr-code": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/video-assets": "workspace:*"
-    "@trezor/blockchain-link": "workspace:*"
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
@@ -9704,7 +9635,6 @@ __metadata:
     "@suite-common/fiat-services": "workspace:*"
     "@suite-common/graph": "workspace:*"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/validators": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -9721,11 +9651,9 @@ __metadata:
     "@suite-native/intl": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/qr-code": "workspace:*"
-    "@suite-native/receive": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/theme": "workspace:*"
     date-fns: "npm:^2.30.0"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
@@ -9744,7 +9672,6 @@ __metadata:
     "@react-navigation/native": "npm:6.1.17"
     "@react-navigation/native-stack": "npm:6.9.26"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@suite-common/suite-types": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
@@ -9756,13 +9683,11 @@ __metadata:
     "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/theme": "workspace:*"
     expo-linear-gradient: "npm:13.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-native-safe-area-context: "npm:4.10.3"
     react-redux: "npm:8.0.7"
-    typescript: "npm:5.3.2"
   languageName: unknown
   linkType: soft
 
@@ -9770,7 +9695,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-connect-device@workspace:suite-native/module-connect-device"
   dependencies:
-    "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native": "npm:6.1.17"
     "@react-navigation/native-stack": "npm:6.9.26"
     "@reduxjs/toolkit": "npm:1.9.5"
@@ -9798,23 +9722,17 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/module-dev-utils@workspace:suite-native/module-dev-utils"
   dependencies:
-    "@react-navigation/core": "npm:^6.4.10"
     "@react-navigation/native-stack": "npm:6.9.26"
     "@sentry/react-native": "npm:5.22.3"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/logger": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/config": "workspace:*"
-    "@suite-native/device-manager": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
-    "@suite-native/helpers": "workspace:*"
-    "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
-    "@suite-native/module-settings": "workspace:*"
     "@suite-native/navigation": "workspace:*"
     "@suite-native/storage": "workspace:*"
     "@suite-native/toasts": "workspace:*"
@@ -9835,9 +9753,7 @@ __metadata:
     "@react-navigation/native": "npm:6.1.17"
     "@react-navigation/native-stack": "npm:6.9.26"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@suite-common/formatters": "workspace:*"
     "@suite-common/graph": "workspace:*"
-    "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/assets": "workspace:*"
@@ -9851,14 +9767,11 @@ __metadata:
     "@suite-native/formatters": "workspace:*"
     "@suite-native/graph": "workspace:*"
     "@suite-native/intl": "workspace:*"
-    "@suite-native/module-accounts-management": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/receive": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@suite-native/toasts": "workspace:*"
     "@trezor/styles": "workspace:*"
-    expo-local-authentication: "npm:14.0.1"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
@@ -9875,7 +9788,6 @@ __metadata:
     "@react-navigation/native": "npm:6.1.17"
     "@react-navigation/native-stack": "npm:6.9.26"
     "@reduxjs/toolkit": "npm:1.9.5"
-    "@suite-common/analytics": "workspace:*"
     "@suite-common/icons": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -9887,7 +9799,6 @@ __metadata:
     "@suite-native/settings": "workspace:*"
     "@suite-native/theme": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/theme": "workspace:*"
     expo-linear-gradient: "npm:13.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
@@ -9904,13 +9815,10 @@ __metadata:
     "@react-navigation/native-stack": "npm:6.9.26"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/redux-utils": "workspace:*"
     "@suite-common/validators": "workspace:*"
-    "@suite-common/wallet-constants": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/device": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
     "@suite-native/link": "workspace:*"
@@ -9934,25 +9842,12 @@ __metadata:
   dependencies:
     "@react-navigation/native": "npm:6.1.17"
     "@react-navigation/native-stack": "npm:6.9.26"
-    "@suite-common/icons": "workspace:*"
-    "@suite-common/wallet-core": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
-    "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/accounts": "workspace:*"
-    "@suite-native/analytics": "workspace:*"
-    "@suite-native/atoms": "workspace:*"
     "@suite-native/device-manager": "workspace:*"
-    "@suite-native/ethereum-tokens": "workspace:*"
-    "@suite-native/formatters": "workspace:*"
-    "@suite-native/intl": "workspace:*"
-    "@suite-native/link": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@suite-native/qr-code": "workspace:*"
-    "@suite-native/receive": "workspace:*"
-    "@trezor/styles": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
-    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 
@@ -9975,7 +9870,6 @@ __metadata:
     "@suite-native/formatters": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/navigation": "workspace:*"
-    "@trezor/styles": "workspace:*"
     "@trezor/utils": "workspace:*"
     react: "npm:18.2.0"
     react-redux: "npm:8.0.7"
@@ -10033,12 +9927,10 @@ __metadata:
     "@sentry/react-native": "npm:5.22.3"
     "@suite-common/icons": "workspace:*"
     "@suite-common/message-system": "workspace:*"
-    "@suite-common/suite-constants": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-types": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/feature-flags": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
@@ -10068,7 +9960,6 @@ __metadata:
     "@suite-native/theme": "workspace:*"
     "@suite-native/transactions": "workspace:*"
     "@trezor/styles": "workspace:*"
-    "@trezor/theme": "workspace:*"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-native-gesture-handler: "npm:2.16.2"
@@ -10100,9 +9991,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/qr-code@workspace:suite-native/qr-code"
   dependencies:
-    "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/core": "npm:^6.4.10"
-    "@suite-common/icons": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/atoms": "workspace:*"
@@ -10136,7 +10025,6 @@ __metadata:
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
     "@react-navigation/native": "npm:6.1.17"
-    "@react-navigation/native-stack": "npm:6.9.26"
     "@reduxjs/toolkit": "npm:1.9.5"
     "@shopify/react-native-skia": "npm:1.3.2"
     "@suite-common/icons": "workspace:*"
@@ -10148,7 +10036,6 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/device-manager": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
@@ -10161,7 +10048,6 @@ __metadata:
     "@trezor/connect": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    jotai: "npm:1.9.1"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-native-gesture-handler: "npm:2.16.2"
@@ -10204,7 +10090,6 @@ __metadata:
     "@suite-native/passphrase": "workspace:*"
     "@suite-native/settings": "workspace:*"
     "@suite-native/storage": "workspace:*"
-    "@suite-native/toasts": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/transport-native": "workspace:*"
     "@trezor/utils": "workspace:*"
@@ -10225,10 +10110,7 @@ __metadata:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@sentry/react-native": "npm:5.22.3"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
-    "@suite-common/wallet-types": "workspace:*"
-    "@trezor/utxo-lib": "workspace:*"
     bs58: "npm:^5.0.0"
     expo-crypto: "npm:13.0.2"
     expo-secure-store: "npm:13.0.1"
@@ -10253,7 +10135,6 @@ __metadata:
     react-native-gesture-handler: "npm:2.16.2"
     react-native-reanimated: "npm:3.11.0"
     react-native-safe-area-context: "npm:4.10.3"
-    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 
@@ -10276,14 +10157,12 @@ __metadata:
   resolution: "@suite-native/toasts@workspace:suite-native/toasts"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@reduxjs/toolkit": "npm:1.9.5"
     "@suite-common/icons": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
     jotai: "npm:1.9.1"
     react: "npm:18.2.0"
-    react-native-gesture-handler: "npm:2.16.2"
     react-native-reanimated: "npm:3.11.0"
     react-native-safe-area-context: "npm:4.10.3"
   languageName: unknown
@@ -10300,9 +10179,7 @@ __metadata:
     "@shopify/react-native-skia": "npm:1.3.2"
     "@suite-common/formatters": "workspace:*"
     "@suite-common/icons": "workspace:*"
-    "@suite-common/suite-config": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
-    "@suite-common/suite-utils": "workspace:*"
     "@suite-common/token-definitions": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
     "@suite-common/wallet-core": "workspace:*"
@@ -10310,7 +10187,6 @@ __metadata:
     "@suite-common/wallet-utils": "workspace:*"
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
-    "@suite-native/device-manager": "workspace:*"
     "@suite-native/ethereum-tokens": "workspace:*"
     "@suite-native/formatters": "workspace:*"
     "@suite-native/helpers": "workspace:*"
@@ -10321,14 +10197,12 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
-    jotai: "npm:1.9.1"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
     react-native-gesture-handler: "npm:2.16.2"
     react-native-reanimated: "npm:3.11.0"
     react-redux: "npm:8.0.7"
-    web3-utils: "npm:^4.2.3"
   languageName: unknown
   linkType: soft
 
@@ -10336,7 +10210,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/video-assets@workspace:suite-native/video-assets"
   dependencies:
-    "@suite-native/atoms": "workspace:*"
     "@trezor/styles": "workspace:*"
     expo-av: "npm:14.0.5"
     prettier: "npm:3.2.5"
@@ -10658,7 +10531,6 @@ __metadata:
     "@solana/web3.js": "npm:^1.91.6"
     "@trezor/type-utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
-    ripple-lib: "npm:^1.10.1"
     socks-proxy-agent: "npm:6.1.1"
     tsx: "npm:^4.7.0"
   peerDependencies:
@@ -10722,7 +10594,6 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     cross-fetch: "npm:^4.0.0"
-    events: "npm:^3.3.0"
     golomb: "npm:1.2.0"
     n64: "npm:^0.2.10"
   languageName: unknown
@@ -11019,7 +10890,6 @@ __metadata:
     "@types/chrome": "npm:^0.0.260"
     "@types/w3c-web-usb": "npm:^1.0.10"
     babel-loader: "npm:^9.1.3"
-    events: "npm:^3.3.0"
     html-webpack-plugin: "npm:^5.6.0"
     rimraf: "npm:^5.0.5"
     selfsigned: "npm:^2.4.1"
@@ -11084,14 +10954,12 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@trezor/utxo-lib": "workspace:*"
     "@types/karma": "npm:^6.3.8"
-    "@types/parse-uri": "npm:^1.0.2"
     babel-loader: "npm:^9.1.3"
     blakejs: "npm:^1.2.1"
     bs58: "npm:^5.0.0"
     bs58check: "npm:^3.0.1"
     cross-fetch: "npm:^4.0.0"
     ethereum-cryptography: "npm:^2.1.3"
-    events: "npm:^3.3.0"
     jest: "npm:29.7.0"
     karma: "npm:^6.4.2"
     karma-babel-preprocessor: "npm:^8.0.2"
@@ -11134,7 +11002,6 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@trezor/e2e-utils@workspace:packages/e2e-utils"
   dependencies:
-    events: "npm:^3.3.0"
     express: "npm:^4.19.2"
     uuid: "npm:^9.0.1"
     ws: "npm:^8.16.0"
@@ -11182,9 +11049,7 @@ __metadata:
   resolution: "@trezor/protobuf@workspace:packages/protobuf"
   dependencies:
     "@trezor/schema-utils": "workspace:*"
-    long: "npm:^4.0.0"
     protobufjs: "npm:7.2.6"
-    protobufjs-cli: "npm:^1.1.2"
     tsx: "npm:^4.7.0"
   peerDependencies:
     tslib: ^2.6.2
@@ -11252,7 +11117,6 @@ __metadata:
   resolution: "@trezor/scripts@workspace:scripts"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    "@types/fs-extra": "npm:^11.0.4"
     "@types/prettier": "npm:^3.0.0"
     chalk: "npm:^4.1.2"
     dotenv: "npm:^16.4.1"
@@ -11282,7 +11146,6 @@ __metadata:
     fela-plugin-placeholder-prefixer: "npm:^12.2.1"
     fela-plugin-unit: "npm:^12.2.1"
     fela-sort-media-query-mobile-first: "npm:^12.2.1"
-    fela-utils: "npm:^12.2.1"
     polished: "npm:^4.3.1"
     react: "npm:18.2.0"
     react-fela: "npm:^12.2.1"
@@ -11655,7 +11518,6 @@ __metadata:
   resolution: "@trezor/theme@workspace:packages/theme"
   dependencies:
     "@mobily/ts-belt": "npm:^3.13.1"
-    csstype: "npm:^3.1.2"
   languageName: unknown
   linkType: soft
 
@@ -12693,13 +12555,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/linkify-it@npm:*":
-  version: 3.0.2
-  resolution: "@types/linkify-it@npm:3.0.2"
-  checksum: 10/dff8f10fafb885422474e456596f12d518ec4cdd6c33cca7a08e7c86b912d301ed91cf5a7613e148c45a12600dc9ab3d85ad16d5b48dc1aaeda151a68f16b536
-  languageName: node
-  linkType: hard
-
 "@types/lodash@npm:^4.14.136, @types/lodash@npm:^4.14.167, @types/lodash@npm:^4.14.182":
   version: 4.14.186
   resolution: "@types/lodash@npm:4.14.186"
@@ -12721,16 +12576,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/markdown-it@npm:^12.2.3":
-  version: 12.2.3
-  resolution: "@types/markdown-it@npm:12.2.3"
-  dependencies:
-    "@types/linkify-it": "npm:*"
-    "@types/mdurl": "npm:*"
-  checksum: 10/8838017dd0a0a9bd596114b959d287135393a18e3ddc6a46e9770bdd35c824b88d8ba4b60540ee75ae6c79dc0ccc72ff5d7745083c27900c98925c9b5ae058e6
-  languageName: node
-  linkType: hard
-
 "@types/mdast@npm:^3.0.0":
   version: 3.0.15
   resolution: "@types/mdast@npm:3.0.15"
@@ -12746,13 +12591,6 @@ __metadata:
   dependencies:
     "@types/unist": "npm:*"
   checksum: 10/cb2915c71eb94319880a0185459cac89b73f14f903998e1b088055cc51b71de91d7c76bda46c584e5d9c2d21d817680a3b2de56ebb737c14c641f81ad30028ed
-  languageName: node
-  linkType: hard
-
-"@types/mdurl@npm:*":
-  version: 1.0.2
-  resolution: "@types/mdurl@npm:1.0.2"
-  checksum: 10/6a6fba0f8177a76d58f8f91eb1478061c9a0a87a4177ff69b5c316898e74086c1f6572fa5e748e3b976a6e50dfc179fab24fa8d3f57e29aa6ee18cec01358c45
   languageName: node
   linkType: hard
 
@@ -12851,13 +12689,6 @@ __metadata:
   version: 4.0.0
   resolution: "@types/parse-json@npm:4.0.0"
   checksum: 10/4df9de98150d2978afc2161482a3a8e6617883effba3223324f079de97ba7eabd7d84b90ced11c3f82b0c08d4a8383f678c9f73e9c41258f769b3fa234a2bb4f
-  languageName: node
-  linkType: hard
-
-"@types/parse-uri@npm:^1.0.2":
-  version: 1.0.2
-  resolution: "@types/parse-uri@npm:1.0.2"
-  checksum: 10/630b97846b0db6b81437c8b56343e43fdc2ae8bc4ccf31335d38ef4c0925aef07b654110790d4177a27ed98ed978eb527b01e5a895eee732a5c3ed7e04879f94
   languageName: node
   linkType: hard
 
@@ -16508,15 +16339,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"catharsis@npm:^0.9.0":
-  version: 0.9.0
-  resolution: "catharsis@npm:0.9.0"
-  dependencies:
-    lodash: "npm:^4.17.15"
-  checksum: 10/a4f54d5982c0bc4342b1b27b89aa7fb359994ecd1d41431d8bd30432171188179fce1d11a0240863adb05edd157d5af1ded4c72b4972b0098f266e28f9c67164
-  languageName: node
-  linkType: hard
-
 "cbor-js@npm:^0.1.0":
   version: 0.1.0
   resolution: "cbor-js@npm:0.1.0"
@@ -19195,17 +19017,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deprecated-react-native-prop-types@npm:^2.3.0":
-  version: 2.3.0
-  resolution: "deprecated-react-native-prop-types@npm:2.3.0"
-  dependencies:
-    "@react-native/normalize-color": "npm:*"
-    invariant: "npm:*"
-    prop-types: "npm:*"
-  checksum: 10/5abbad5b6d6830ca92151167f42611256ada1e8991b5066ed3659f3bbe909ae87949f3e7f075f1b685256138cad81423222220f4c6d5740376db19cb9f793312
-  languageName: node
-  linkType: hard
-
 "deprecation@npm:^2.0.0, deprecation@npm:^2.3.1":
   version: 2.3.1
   resolution: "deprecation@npm:2.3.1"
@@ -20141,13 +19952,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"entities@npm:~2.1.0":
-  version: 2.1.0
-  resolution: "entities@npm:2.1.0"
-  checksum: 10/fe71642e42e108540b0324dea03e00f3dbad93617c601bfcf292c3f852c236af3e58469219c4653f6f05df781a446f3b82105b8d26b936d0fa246b0103f2f951
-  languageName: node
-  linkType: hard
-
 "env-editor@npm:^0.4.1":
   version: 0.4.2
   resolution: "env-editor@npm:0.4.2"
@@ -20720,7 +20524,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"escodegen@npm:^1.11.1, escodegen@npm:^1.13.0":
+"escodegen@npm:^1.11.1":
   version: 1.14.3
   resolution: "escodegen@npm:1.14.3"
   dependencies:
@@ -21071,7 +20875,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"espree@npm:^9.0.0, espree@npm:^9.3.1, espree@npm:^9.6.0, espree@npm:^9.6.1":
+"espree@npm:^9.3.1, espree@npm:^9.6.0, espree@npm:^9.6.1":
   version: 9.6.1
   resolution: "espree@npm:9.6.1"
   dependencies:
@@ -23503,7 +23307,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"glob@npm:^8.0.0, glob@npm:^8.0.1, glob@npm:^8.0.3":
+"glob@npm:^8.0.1, glob@npm:^8.0.3":
   version: 8.1.0
   resolution: "glob@npm:8.1.0"
   dependencies:
@@ -23750,7 +23554,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.3, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.1.9, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.10, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
+"graceful-fs@npm:^4.1.11, graceful-fs@npm:^4.1.2, graceful-fs@npm:^4.1.3, graceful-fs@npm:^4.1.6, graceful-fs@npm:^4.2.0, graceful-fs@npm:^4.2.10, graceful-fs@npm:^4.2.11, graceful-fs@npm:^4.2.4, graceful-fs@npm:^4.2.6, graceful-fs@npm:^4.2.9":
   version: 4.2.11
   resolution: "graceful-fs@npm:4.2.11"
   checksum: 10/bf152d0ed1dc159239db1ba1f74fdbc40cb02f626770dcd5815c427ce0688c2635a06ed69af364396da4636d0408fcf7d4afdf7881724c3307e46aff30ca49e2
@@ -25143,7 +24947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"invariant@npm:*, invariant@npm:^2.2.4":
+"invariant@npm:^2.2.4":
   version: 2.2.4
   resolution: "invariant@npm:2.2.4"
   dependencies:
@@ -26039,9 +25843,9 @@ __metadata:
   linkType: hard
 
 "jasmine-core@npm:^4.1.0":
-  version: 4.5.0
-  resolution: "jasmine-core@npm:4.5.0"
-  checksum: 10/63afd0dcb9ccd371c5497536cf11a403dacac8504279701f494a0b9afafd18c5f8f14740b7131a532aa0fea2c706629b942c2a3069c939417a5d0a17541ffb86
+  version: 4.6.1
+  resolution: "jasmine-core@npm:4.6.1"
+  checksum: 10/c54592a14070fe6e684e6d7d2c37aacb880f82941e28f41e9f997f87ead489b6fd55b240f2c65ea4c0e63296a2bfbe0b995ed5943242db095834916471f3f2a7
   languageName: node
   linkType: hard
 
@@ -26804,15 +26608,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js2xmlparser@npm:^4.0.2":
-  version: 4.0.2
-  resolution: "js2xmlparser@npm:4.0.2"
-  dependencies:
-    xmlcreate: "npm:^2.0.4"
-  checksum: 10/42ccb1372844b6e1d9166254b01fe31d485a0e398fba4f2b095bcca081a2c2f4414b0bd4a32263cd20e01cee681684608255778034fec050e3f5929fd776936c
-  languageName: node
-  linkType: hard
-
 "jsan@npm:^3.1.14":
   version: 3.1.14
   resolution: "jsan@npm:3.1.14"
@@ -26904,31 +26699,6 @@ __metadata:
   bin:
     jscodeshift: bin/jscodeshift.js
   checksum: 10/7cece7b99fe57de7d65bdd962c93b93f0080605cf7d7f1aad42da7c3beb824107067726ede681b703fd012293b7797b7f2fefbb1420b0e44a0fca669bb48e34c
-  languageName: node
-  linkType: hard
-
-"jsdoc@npm:^4.0.0":
-  version: 4.0.2
-  resolution: "jsdoc@npm:4.0.2"
-  dependencies:
-    "@babel/parser": "npm:^7.20.15"
-    "@jsdoc/salty": "npm:^0.2.1"
-    "@types/markdown-it": "npm:^12.2.3"
-    bluebird: "npm:^3.7.2"
-    catharsis: "npm:^0.9.0"
-    escape-string-regexp: "npm:^2.0.0"
-    js2xmlparser: "npm:^4.0.2"
-    klaw: "npm:^3.0.0"
-    markdown-it: "npm:^12.3.2"
-    markdown-it-anchor: "npm:^8.4.1"
-    marked: "npm:^4.0.10"
-    mkdirp: "npm:^1.0.4"
-    requizzle: "npm:^0.2.3"
-    strip-json-comments: "npm:^3.1.0"
-    underscore: "npm:~1.13.2"
-  bin:
-    jsdoc: jsdoc.js
-  checksum: 10/1cd7e871f1d9c2af5dd8d3bb1d01b9905807fcb7df7d59e0e4d2ab424224963a145944b975f70947909dd9e246ad52d5e685cd1e7b0381a2195d44d7b7c43163
   languageName: node
   linkType: hard
 
@@ -27536,15 +27306,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"klaw@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "klaw@npm:3.0.0"
-  dependencies:
-    graceful-fs: "npm:^4.1.9"
-  checksum: 10/b55bb6c5dad4f5f2431914fd4b2d0312cdd3581fc1ef75ca0b83899c76dfc4c78b6a22508a33cb8c1ebe0bbdc13aa028a05eda23ef11625a935c30687fd8be14
-  languageName: node
-  linkType: hard
-
 "kleur@npm:^3.0.3":
   version: 3.0.3
   resolution: "kleur@npm:3.0.3"
@@ -28024,15 +27785,6 @@ __metadata:
   version: 2.0.4
   resolution: "lines-and-columns@npm:2.0.4"
   checksum: 10/81ac2f943f5428a46bd4ea2561c74ba674a107d8e6cc70cd317d16892a36ff3ba0dc6e599aca8b6f8668d26c85288394c6edf7a40e985ca843acab3701b80d4c
-  languageName: node
-  linkType: hard
-
-"linkify-it@npm:^3.0.1":
-  version: 3.0.3
-  resolution: "linkify-it@npm:3.0.3"
-  dependencies:
-    uc.micro: "npm:^1.0.1"
-  checksum: 10/1ed466b02ad361bb5e5b94a81232fc126890751038bf3e61f648f4ccb01e5e096bba66c3eff3d21ed5e3da738de0dc29783afedf0255733669889aa09d49e47e
   languageName: node
   linkType: hard
 
@@ -28647,31 +28399,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"markdown-it-anchor@npm:^8.4.1":
-  version: 8.6.7
-  resolution: "markdown-it-anchor@npm:8.6.7"
-  peerDependencies:
-    "@types/markdown-it": "*"
-    markdown-it: "*"
-  checksum: 10/1b061e9c8fb093dab6040725f9f3cedae7da1160a14ee8f29d144534be7ee5c788f02a4de4019f55eb8514cae5f12d350baaa7d08732c26a62abc60e5e66c7f7
-  languageName: node
-  linkType: hard
-
-"markdown-it@npm:^12.3.2":
-  version: 12.3.2
-  resolution: "markdown-it@npm:12.3.2"
-  dependencies:
-    argparse: "npm:^2.0.1"
-    entities: "npm:~2.1.0"
-    linkify-it: "npm:^3.0.1"
-    mdurl: "npm:^1.0.1"
-    uc.micro: "npm:^1.0.5"
-  bin:
-    markdown-it: bin/markdown-it.js
-  checksum: 10/d83d794bfb9f5e05750b25db401d9c1f9b97c6bbabb6cfd78988bb98652c62c24417435487238e2b91fd4e495547ae8c9429fb4c69e9f5bf49bd0dd292d53f24
-  languageName: node
-  linkType: hard
-
 "markdown-it@npm:^14.0.0":
   version: 14.0.0
   resolution: "markdown-it@npm:14.0.0"
@@ -28701,15 +28428,6 @@ __metadata:
   peerDependencies:
     react: ">= 0.14.0"
   checksum: 10/5a7ca9d04dfe180ea32baac94b471678053843da0be941a84ff7570a26f3afd8876d3bcc8fec8ee8aa68d157615f293f87b93c1d0f64945181bc218d61ee4494
-  languageName: node
-  linkType: hard
-
-"marked@npm:^4.0.10":
-  version: 4.3.0
-  resolution: "marked@npm:4.3.0"
-  bin:
-    marked: bin/marked.js
-  checksum: 10/c830bb4cb3705b754ca342b656e8a582d7428706b2678c898b856f6030c134ce2d1e19136efa3e6a1841f7330efbd24963d6bdeddc57d2938e906250f99895d0
   languageName: node
   linkType: hard
 
@@ -29214,13 +28932,6 @@ __metadata:
   version: 2.0.30
   resolution: "mdn-data@npm:2.0.30"
   checksum: 10/e4944322bf3e0461a2daa2aee7e14e208960a036289531e4ef009e53d32bd41528350c070c4a33be867980443fe4c0523518d99318423cffa7c825fe7b1154e2
-  languageName: node
-  linkType: hard
-
-"mdurl@npm:^1.0.1":
-  version: 1.0.1
-  resolution: "mdurl@npm:1.0.1"
-  checksum: 10/ada367d01c9e81d07328101f187d5bd8641b71f33eab075df4caed935a24fa679e625f07108801d8250a5e4a99e5cd4be7679957a11424a3aa3e740d2bb2d5cb
   languageName: node
   linkType: hard
 
@@ -33846,7 +33557,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:*, prop-types@npm:15, prop-types@npm:15.8.1, prop-types@npm:^15.5.10, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
+"prop-types@npm:15, prop-types@npm:15.8.1, prop-types@npm:^15.5.8, prop-types@npm:^15.6.0, prop-types@npm:^15.6.2, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -33879,29 +33590,6 @@ __metadata:
   version: 6.1.1
   resolution: "property-information@npm:6.1.1"
   checksum: 10/1959ae7250cf9d42207a133d849b361b61d8942635985ed37c28748a40e41d5d28faf9c3c97e63b0bddc9252a5994501523fac83cf187a71e336726cd386b6dc
-  languageName: node
-  linkType: hard
-
-"protobufjs-cli@npm:^1.1.2":
-  version: 1.1.2
-  resolution: "protobufjs-cli@npm:1.1.2"
-  dependencies:
-    chalk: "npm:^4.0.0"
-    escodegen: "npm:^1.13.0"
-    espree: "npm:^9.0.0"
-    estraverse: "npm:^5.1.0"
-    glob: "npm:^8.0.0"
-    jsdoc: "npm:^4.0.0"
-    minimist: "npm:^1.2.0"
-    semver: "npm:^7.1.2"
-    tmp: "npm:^0.2.1"
-    uglify-js: "npm:^3.7.7"
-  peerDependencies:
-    protobufjs: ^7.0.0
-  bin:
-    pbjs: bin/pbjs
-    pbts: bin/pbts
-  checksum: 10/41e23c7d411250cdac042a5091320417ffb3fd6eb404d4512ddacefbb41a92457229b05caa29bdda36a71980b502bcc3850dab16016c66b7d43123a0f5d527d4
   languageName: node
   linkType: hard
 
@@ -34727,26 +34415,6 @@ __metadata:
     react: "*"
     react-native: "*"
   checksum: 10/5226571a8c0e5bb7acebb77c58155740b09a158621ee4c7896b12f95720fb10742d4bb273ad9f01a1c8e76dd3bb6f77308f2384511e3b56274a017b4396b3ff8
-  languageName: node
-  linkType: hard
-
-"react-native-root-siblings@npm:^4.0.0":
-  version: 4.1.1
-  resolution: "react-native-root-siblings@npm:4.1.1"
-  checksum: 10/d57ad41e0f45feee0d2efe7db0938835e0e6bd1bc6d24ccf2e401cbb61fdfafed5c2cb475c6d14f47451ec70efe3e1e766ae5c61aa4e1f93adf64bf8c8eeed99
-  languageName: node
-  linkType: hard
-
-"react-native-root-toast@npm:^3.5.1":
-  version: 3.5.1
-  resolution: "react-native-root-toast@npm:3.5.1"
-  dependencies:
-    deprecated-react-native-prop-types: "npm:^2.3.0"
-    prop-types: "npm:^15.5.10"
-    react-native-root-siblings: "npm:^4.0.0"
-  peerDependencies:
-    react-native: ">=0.47.0"
-  checksum: 10/248746df31a5ede2a042e6a04104599e259bfdefff48cc505492f201f591315f6f0aecfc637788d085b0e97090971e2b7f8a11590da200384135ac72ca3147ab
   languageName: node
   linkType: hard
 
@@ -35910,15 +35578,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"requizzle@npm:^0.2.3":
-  version: 0.2.4
-  resolution: "requizzle@npm:0.2.4"
-  dependencies:
-    lodash: "npm:^4.17.21"
-  checksum: 10/b13ce6d2a45d46be84ab274422b08a3233119e41ea5e1c8cef814abced2e25d15b7d4b995ef5d419f3dc6537314e6b1ba4a5c84d998d4143cf9938a67fc63587
-  languageName: node
-  linkType: hard
-
 "reselect@npm:^4.1.8":
   version: 4.1.8
   resolution: "reselect@npm:4.1.8"
@@ -36746,7 +36405,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.1.2, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
+"semver@npm:^7.0.0, semver@npm:^7.3.2, semver@npm:^7.3.5, semver@npm:^7.3.6, semver@npm:^7.3.7, semver@npm:^7.3.8, semver@npm:^7.5.2, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0":
   version: 7.6.0
   resolution: "semver@npm:7.6.0"
   dependencies:
@@ -38078,7 +37737,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"strip-json-comments@npm:^3.0.1, strip-json-comments@npm:^3.1.0, strip-json-comments@npm:^3.1.1":
+"strip-json-comments@npm:^3.0.1, strip-json-comments@npm:^3.1.1":
   version: 3.1.1
   resolution: "strip-json-comments@npm:3.1.1"
   checksum: 10/492f73e27268f9b1c122733f28ecb0e7e8d8a531a6662efbd08e22cccb3f9475e90a1b82cab06a392f6afae6d2de636f977e231296400d0ec5304ba70f166443
@@ -39793,13 +39452,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uc.micro@npm:^1.0.1, uc.micro@npm:^1.0.5":
-  version: 1.0.6
-  resolution: "uc.micro@npm:1.0.6"
-  checksum: 10/6898bb556319a38e9cf175e3628689347bd26fec15fc6b29fa38e0045af63075ff3fea4cf1fdba9db46c9f0cbf07f2348cd8844889dd31ebd288c29fe0d27e7a
-  languageName: node
-  linkType: hard
-
 "uc.micro@npm:^2.0.0":
   version: 2.0.0
   resolution: "uc.micro@npm:2.0.0"
@@ -39814,7 +39466,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"uglify-js@npm:^3.1.4, uglify-js@npm:^3.7.7":
+"uglify-js@npm:^3.1.4":
   version: 3.17.4
   resolution: "uglify-js@npm:3.17.4"
   bin:
@@ -39839,13 +39491,6 @@ __metadata:
     has-symbols: "npm:^1.0.3"
     which-boxed-primitive: "npm:^1.0.2"
   checksum: 10/06e1ee41c1095e37281cb71a975cb3350f7cb470a0665d2576f02cc9564f623bd90cfc0183693b8a7fdf2d242963dcc3010b509fa3ac683f540c765c0f3e7e43
-  languageName: node
-  linkType: hard
-
-"underscore@npm:~1.13.2":
-  version: 1.13.6
-  resolution: "underscore@npm:1.13.6"
-  checksum: 10/58cf5dc42cb0ac99c146ae4064792c0a2cc84f3a3c4ad88f5082e79057dfdff3371d896d1ec20379e9ece2450d94fa78f2ef5bfefc199ba320653e32c009bd66
   languageName: node
   linkType: hard
 
@@ -42346,13 +41991,6 @@ __metadata:
   version: 2.2.0
   resolution: "xmlchars@npm:2.2.0"
   checksum: 10/4ad5924974efd004a47cce6acf5c0269aee0e62f9a805a426db3337af7bcbd331099df174b024ace4fb18971b8a56de386d2e73a1c4b020e3abd63a4a9b917f1
-  languageName: node
-  linkType: hard
-
-"xmlcreate@npm:^2.0.4":
-  version: 2.0.4
-  resolution: "xmlcreate@npm:2.0.4"
-  checksum: 10/4b508f92848fcc05d98b5c0bee40242de327410dda3d16659bb9d3c88faeba26f4af793111ad443be673a60f300b9fd51a6349875c63f34bcbe61a321b94c7ef
   languageName: node
   linkType: hard
 

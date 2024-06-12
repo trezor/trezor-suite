@@ -11,7 +11,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
         "@suite-common/icons": "workspace:*",
         "@suite-native/alerts": "workspace:*",
         "@suite-native/analytics": "workspace:*",

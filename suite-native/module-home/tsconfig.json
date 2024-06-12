@@ -2,11 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/formatters"
-        },
         { "path": "../../suite-common/graph" },
-        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/wallet-core"
         },
@@ -22,11 +18,7 @@
         { "path": "../formatters" },
         { "path": "../graph" },
         { "path": "../intl" },
-        {
-            "path": "../module-accounts-management"
-        },
         { "path": "../navigation" },
-        { "path": "../receive" },
         { "path": "../settings" },
         { "path": "../theme" },
         { "path": "../toasts" },

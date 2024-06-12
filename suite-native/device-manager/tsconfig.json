@@ -7,9 +7,6 @@
             "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/suite-utils"
-        },
-        {
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../analytics" },
@@ -17,10 +14,7 @@
         { "path": "../feature-flags" },
         { "path": "../intl" },
         { "path": "../link" },
-        { "path": "../module-passphrase" },
         { "path": "../navigation" },
-        { "path": "../theme" },
-        { "path": "../../packages/connect" },
         { "path": "../../packages/styles" },
         { "path": "../../packages/theme" }
     ]
