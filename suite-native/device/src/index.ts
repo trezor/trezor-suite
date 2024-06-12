@@ -3,7 +3,6 @@ export * from './middlewares/buttonRequestMiddleware';
 export * from './hooks/useHandleDeviceConnection';
 export * from './hooks/useDetectDeviceError';
 export * from './hooks/useDelayedNavigation';
-export * from './hooks/useHandleDeviceRequestsPassphrase';
 export * from './hooks/useReportDeviceConnectToAnalytics';
 export * from './screens/DeviceInfoModalScreen';
 export * from './components/ConnectDeviceAnimation';
