@@ -8,9 +8,6 @@
         { "path": "../../suite-common/graph" },
         { "path": "../../suite-common/icons" },
         {
-            "path": "../../suite-common/validators"
-        },
-        {
             "path": "../../suite-common/wallet-config"
         },
         {
@@ -34,10 +31,8 @@
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../qr-code" },
-        { "path": "../receive" },
         { "path": "../settings" },
         { "path": "../transactions" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/styles" }
     ]
 }

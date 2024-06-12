@@ -13,7 +13,6 @@
         "generate-videos": "yarn g:tsx ./scripts/generateVideos.ts"
     },
     "dependencies": {
-        "@suite-native/atoms": "workspace:*",
         "@trezor/styles": "workspace:*",
         "expo-av": "14.0.5",
         "prettier": "3.2.5",

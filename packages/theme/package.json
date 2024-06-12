@@ -11,7 +11,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
-        "csstype": "^3.1.2"
+        "@mobily/ts-belt": "^3.13.1"
     }
 }

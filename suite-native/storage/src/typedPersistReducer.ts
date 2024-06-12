@@ -31,7 +31,7 @@ export const preparePersistReducer = async <TReducerInitialState>({
         version,
         migrate,
         transforms,
-        stateReconciler: <any>(mergeLevel === 2 ? autoMergeLevel2 : autoMergeLevel1),
+        stateReconciler: (mergeLevel === 2 ? autoMergeLevel2 : autoMergeLevel1) as any,
     };
 
     return persistReducer(persistConfig, reducer);

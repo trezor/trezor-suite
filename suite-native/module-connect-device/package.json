@@ -11,7 +11,6 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@react-navigation/core": "^6.4.10",
         "@react-navigation/native": "6.1.17",
         "@react-navigation/native-stack": "6.9.26",
         "@reduxjs/toolkit": "1.9.5",

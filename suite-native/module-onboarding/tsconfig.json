@@ -2,9 +2,6 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
-        {
-            "path": "../../suite-common/analytics"
-        },
         { "path": "../../suite-common/icons" },
         { "path": "../analytics" },
         { "path": "../atoms" },
@@ -15,7 +12,6 @@
         { "path": "../navigation" },
         { "path": "../settings" },
         { "path": "../theme" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/styles" }
     ]
 }
