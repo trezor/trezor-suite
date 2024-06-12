@@ -16,6 +16,7 @@ import {
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
+    CoinmarketCryptoListProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
 } from 'src/types/coinmarket/coinmarket';
@@ -32,7 +33,7 @@ export const buildFiatOption = (currency: string) => ({
     label: currency.toUpperCase(),
 });
 
-export const buildCryptoOption = (networkSymbol: NetworkSymbol) => ({
+export const buildCryptoOption = (networkSymbol: NetworkSymbol): CoinmarketCryptoListProps => ({
     value: networkSymbol.toUpperCase(),
     label: networkSymbol.toUpperCase(),
     cryptoSymbol: networkToCryptoSymbol(networkSymbol),

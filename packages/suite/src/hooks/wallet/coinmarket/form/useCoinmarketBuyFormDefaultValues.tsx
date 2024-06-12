@@ -6,15 +6,20 @@ import {
     buildFiatOption,
     getDefaultCountry,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { CoinmarketBuyFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
+import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
     buyInfo?: BuyInfo,
-) => {
+): CoinmarketBuyFormDefaultValuesProps => {
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultCrypto = useMemo(() => buildCryptoOption(accountSymbol), [accountSymbol]);
-    const defaultPaymentMethod = useMemo(() => ({ value: '', label: '' }), []);
+    const defaultPaymentMethod = useMemo(
+        () => ({ value: '', label: '' }) as CoinmarketPaymentMethodListProps,
+        [],
+    );
     const defaultCurrencyInfo = buyInfo?.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = useMemo(
         () =>
