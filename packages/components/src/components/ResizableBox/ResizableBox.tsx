@@ -52,8 +52,25 @@ const Resizers = styled.div<ResizersProps>(
         position: relative;
 
         box-sizing: content-box;
-        ${$highlightDirection !== undefined && `border-${$highlightDirection}: 3px solid ${theme.backgroundNeutralSubdued};`};
+
         ${$isResizing && `user-select: none;`};
+
+        &::after {
+            content:'';
+            position: absolute;
+            top: 0;
+            left: 0;
+            display:block;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            ${
+                $highlightDirection !== undefined
+                    ? `border-${$highlightDirection}: 5px solid blue;`
+                    : ''
+            };
+        }
+
     `,
 );
 
@@ -227,10 +244,11 @@ export const ResizableBox = ({
         }
     };
 
-    const highlightDirection = useMemo(
-        () => (isHovering === true ? direction : undefined),
-        [direction, isHovering],
-    );
+    const highlightDirection = () => {
+        console.log('____', isHovering, direction);
+
+        return isHovering === true || isResizing === true ? direction : undefined;
+    };
 
     return (
         <Resizers
@@ -241,8 +259,9 @@ export const ResizableBox = ({
             $minHeight={minHeight}
             $maxHeight={maxHeight}
             ref={resizableBoxRef}
-            $highlightDirection={highlightDirection}
+            $highlightDirection={highlightDirection()}
             $isResizing={isResizing}
+            data-test="abc"
         >
             <Child>{children}</Child>
             {!isLocked && (
@@ -251,21 +270,30 @@ export const ResizableBox = ({
                         <TopDiv
                             onMouseDown={() => startResizing('top')}
                             onMouseOver={() => handleMouseOver('top')}
-                            onMouseOut={handleMouseOut}
+                            // onMouseOut={handleMouseOut}
                         />
                     )}
                     {directions.includes('left') && (
                         <LeftDiv
                             onMouseDown={() => startResizing('left')}
+                            onMouseUp={() => startResizing('left')}
                             onMouseOver={() => handleMouseOver('left')}
-                            onMouseOut={handleMouseOut}
+                            // onMouseOut={handleMouseOut}
                         />
                     )}
                     {directions.includes('bottom') && (
-                        <BottomDiv onMouseDown={() => startResizing('bottom')} />
+                        <BottomDiv
+                            onMouseDown={() => startResizing('bottom')}
+                            onMouseOver={() => handleMouseOver('bottom')}
+                            // onMouseOut={handleMouseOut}
+                        />
                     )}
                     {directions.includes('right') && (
-                        <RightDiv onMouseDown={() => startResizing('right')} />
+                        <RightDiv
+                            onMouseDown={() => startResizing('right')}
+                            onMouseOver={() => handleMouseOver('right')}
+                            // onMouseOut={handleMouseOut}
+                        />
                     )}
                 </>
             )}

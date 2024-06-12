@@ -32,7 +32,7 @@ export const ResizableBox: StoryObj<ResizableBoxProps> = {
         isLocked: false,
         width: 100,
         minWidth: 50,
-        maxWidth: 300,
+        // maxWidth: 300,
         height: 100,
         minHeight: 50,
         maxHeight: 300,

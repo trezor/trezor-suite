@@ -13,7 +13,7 @@ const Button = styled.button`
 
     border-radius: 5px;
     border: 1px solid ${({ theme }) => theme.BG_GREY};
-    background: ${({ theme }) => theme.BG_GREY};
+    background: red;
 
     &:first-child {
         margin-left: 0;
@@ -24,7 +24,7 @@ const Button = styled.button`
     }
 
     &:hover {
-        background: ${({ theme }) => theme.BG_LIGHT_GREEN};
+        background: ${({ theme }) => theme.backgroundSecondaryPressed};
     }
 
     &::before {
