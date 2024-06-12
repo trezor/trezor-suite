@@ -4,8 +4,8 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { Button, ModalProps } from '@trezor/components';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,
-    HELP_CENTER_MULTI_SHARE_BACKUP_URL,
-    HELP_CENTER_SEED_CARD_URL,
+    TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
+    HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL,
 } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
@@ -95,7 +95,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                                 <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
                             </Button>
                             <LearnMoreButton
-                                url={HELP_CENTER_SEED_CARD_URL}
+                                url={HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL}
                                 size="medium"
                                 onClick={learnMoreClicked}
                             />
@@ -145,7 +145,7 @@ export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) 
                             <Button onClick={enterBackup}>
                                 <Translation id="TR_ENTER_EXISTING_BACKUP" />
                             </Button>
-                            <LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} size="medium">
+                            <LearnMoreButton url={TREZOR_SUPPORT_RECOVERY_ISSUES_URL} size="medium">
                                 <Translation id="TR_DONT_HAVE_BACKUP" />
                             </LearnMoreButton>
                         </>
