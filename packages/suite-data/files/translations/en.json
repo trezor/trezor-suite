@@ -1901,7 +1901,7 @@
   "TR_TESTNET_COINS": "Testnet coins",
   "TR_TESTNET_COINS_DESCRIPTION": "These coins are used only for testing and hold no value.",
   "TR_TESTNET_COINS_LABEL": "TEST COIN",
-  "TR_THESE_WONT_ALLOW_YOU_UPGRADE": "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can't be easily upgraded to a Multi-share Backup. <a>Read more</a>",
+  "TR_THESE_WONT_ALLOW_YOU_UPGRADE": "Generates a single set of 12 or 24 words that can be used to recover your wallet. Legacy backups can't be easily upgraded to Multi-share Backup. <a>Read more</a>",
   "TR_THESE_WONT_ALLOW_YOU_UPGRADE_HEADER": "Secure & reliable, not easily upgradable to Multi-share Backup",
   "TR_THE_PIN_LAYOUT_IS_DISPLAYED": "Check <b>{deviceLabel}</b> screen for the keypad layout.",
   "TR_THIS_HIDDEN_WALLET_IS_EMPTY": "This hidden wallet is empty. To make sure you are in the correct hidden wallet, please type the passphrase again.",
