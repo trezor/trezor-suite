@@ -10,10 +10,12 @@ import {
     removeButtonRequests,
     selectDevice,
     selectDeviceRequestedPin,
+    selectIsUnauthorizedPassphraseDevice,
 } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
+import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
@@ -48,14 +50,21 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
 
     const device = useSelector(selectDevice);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const isUnauthorizedPassphraseDevice = useSelector(selectIsUnauthorizedPassphraseDevice);
+
     const { applyStyle } = useNativeStyles();
 
     const handleSuccess = useCallback(() => {
+        // If pin screen was triggered from opening passphrase wallet (which creates new instance) and is closed, we need to select standard wallet
+        if (isUnauthorizedPassphraseDevice) {
+            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+        }
+
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
         dispatch(removeButtonRequests({ device, buttonRequestCode: 'ButtonRequest_PinEntry' }));
-    }, [navigation, dispatch, device]);
+    }, [isUnauthorizedPassphraseDevice, navigation, dispatch, device]);
 
     useEffect(() => {
         // hasDeviceRequestedPin is false when the user unlocks the device again

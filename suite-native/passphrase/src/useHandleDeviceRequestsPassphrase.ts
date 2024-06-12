@@ -25,18 +25,18 @@ export const useHandleDeviceRequestsPassphrase = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const deviceState = useSelector(selectDeviceState);
-    const isVefifyingPassphraseOnEmptyWallet = useSelector(
+    const isVerifyingPassphraseOnEmptyWallet = useSelector(
         selectIsVerifyingPassphraseOnEmptyWallet,
     );
 
     const handleRequestPassphrase = useCallback(() => {
         // If the passphrase request was while verifying empty passphrase wallet, we handle it separately in the screen
-        if (!isVefifyingPassphraseOnEmptyWallet && !deviceState) {
+        if (!isVerifyingPassphraseOnEmptyWallet && !deviceState) {
             navigation.navigate(RootStackRoutes.PassphraseStack, {
                 screen: PassphraseStackRoutes.PassphraseForm,
             });
         }
-    }, [deviceState, isVefifyingPassphraseOnEmptyWallet, navigation]);
+    }, [deviceState, isVerifyingPassphraseOnEmptyWallet, navigation]);
 
     useEffect(() => {
         TrezorConnect.on(UI.REQUEST_PASSPHRASE, handleRequestPassphrase);
