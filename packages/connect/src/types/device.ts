@@ -29,6 +29,11 @@ export enum FirmwareType {
     Regular = 'regular',
 }
 
+export type DeviceState = {
+    sessionId?: string; // dynamic value: Features.session_id
+    staticSessionId?: string; // constant value: 1st testnet address
+};
+
 // NOTE: unavailableCapabilities is an object with information what is NOT supported by this device.
 // in ideal/expected setup this object should be empty but given setup might have exceptions.
 // key = coin shortcut lowercase (ex: btc, eth, xrp) OR field declared in coins.json "supportedFirmware.capability"
@@ -58,6 +63,7 @@ export type KnownDevice = {
     color?: string;
     status: DeviceStatus;
     mode: DeviceMode;
+    _state?: DeviceState; // TODO: breaking change in next major release
     state?: string;
     features: PROTO.Features;
     unavailableCapabilities: UnavailableCapabilities;
@@ -83,6 +89,7 @@ export type UnknownDevice = {
     color?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
+    _state?: typeof undefined;
     state?: typeof undefined;
     unavailableCapabilities?: typeof undefined;
     availableTranslations?: typeof undefined;
@@ -102,6 +109,7 @@ export type UnreadableDevice = {
     color?: typeof undefined;
     status?: typeof undefined;
     mode?: typeof undefined;
+    _state?: typeof undefined;
     state?: typeof undefined;
     unavailableCapabilities?: typeof undefined;
     availableTranslations?: typeof undefined;

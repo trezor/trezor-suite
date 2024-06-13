@@ -1,11 +1,12 @@
 // API params
 
 import { Type, TSchema, Static } from '@trezor/schema-utils';
+import { DeviceState } from './device';
 
 export interface CommonParams {
     device?: {
         path?: string;
-        state?: string;
+        state?: string | DeviceState;
         instance?: number;
     };
     useEmptyPassphrase?: boolean;

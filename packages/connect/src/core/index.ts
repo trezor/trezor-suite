@@ -381,8 +381,8 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
                     // wait for user response
                     const uiResp = await uiPromise.promise;
                     if (uiResp.payload) {
-                        // reset internal device state and try again
-                        device.setInternalState(undefined);
+                        // reset sessionId and try again
+                        device.setState({ sessionId: undefined });
                         await device.initialize(method.useCardanoDerivation);
 
                         invalidDeviceState = await getInvalidDeviceState(
@@ -392,7 +392,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
                         );
                     } else {
                         // set new state as requested
-                        device.setExternalState(invalidDeviceState);
+                        device.setState({ staticSessionId: invalidDeviceState });
                         break;
                     }
                 }
@@ -404,7 +404,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
             // sendCoreMessage(ResponseMessage(method.responseID, false, { error }));
             // closePopup();
             // clear cached passphrase. it's not valid
-            device.setInternalState(undefined);
+            device.setState({ sessionId: undefined });
 
             // interrupt process and go to "final" block
             return Promise.reject(error);
@@ -601,7 +601,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
     device.setInstance(message.payload.device?.instance);
 
     if (method.hasExpectedDeviceState) {
-        device.setExternalState(method.deviceState);
+        device.setState(method.deviceState);
     }
 
     // device is available
@@ -619,7 +619,7 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         );
     });
     device.on(DEVICE.SAVE_STATE, (state: string) => {
-        // Persist internal state only in case of core in popup
+        // Persist sessionId only in case of core in popup
         // Currently also only for webextension until we asses security implications
         if (useCoreInPopup && env === 'webextension') {
             storage.saveForOrigin(store => {
@@ -637,15 +637,15 @@ const onCall = async (context: CoreContext, message: IFrameCallMessage) => {
         }
     });
 
-    if (!device.getInternalState() && useCoreInPopup && env === 'webextension') {
-        // Restore internal state if available
+    if (!device.getState()?.sessionId && useCoreInPopup && env === 'webextension') {
+        // Restore sessionId if available
         const { preferredDevice } = storage.loadForOrigin(origin) || {};
         if (
             preferredDevice?.internalState &&
             preferredDevice?.internalStateExpiration &&
             preferredDevice.internalStateExpiration > new Date().getTime()
         ) {
-            device.setInternalState(preferredDevice.internalState);
+            device.setState({ sessionId: preferredDevice.internalState });
         }
     }
 
