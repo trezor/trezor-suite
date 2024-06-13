@@ -1,98 +1,149 @@
-[
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://eth1.trezor.io", "https://eth2.trezor.io"]
+{
+    "eth": [
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://eth1.trezor.io", "https://eth2.trezor.io"]
+            },
+            "chain": "eth",
+            "chain_id": 1,
+            "coingecko_id": "ethereum",
+            "is_testnet": false,
+            "name": "Ethereum",
+            "shortcut": "ETH",
+            "slip44": 60,
+            "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
-        "chain": "eth",
-        "chain_id": 1,
-        "name": "Ethereum",
-        "shortcut": "ETH",
-        "slip44": 60,
-        "support": {
-            "connect": true,
-            "suite": true,
-            "T1B1": "1.6.2",
-            "T2T1": "2.0.7",
-            "T2B1": "2.6.1"
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": []
+            },
+            "chain": "op",
+            "chain_id": 10,
+            "coingecko_id": "optimistic-ethereum",
+            "is_testnet": false,
+            "name": "Optimism",
+            "shortcut": "OP",
+            "slip44": 614,
+            "support": {
+                "T1B1": "1.11.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.5.3",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
-        "url": "https://ethereum.org"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://sepolia1.trezor.io"]
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://blockbook-dev2.corp.sldev.cz:9165"]
+            },
+            "chain": "bnb",
+            "chain_id": 56,
+            "coingecko_id": "binance-smart-chain",
+            "is_testnet": false,
+            "name": "Binance Smart Chain",
+            "shortcut": "BNB",
+            "slip44": 714,
+            "support": {
+                "T1B1": "1.11.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.5.3",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
-        "chain": "sep",
-        "chain_id": 11155111,
-        "name": "Sepolia",
-        "rskip60": false,
-        "shortcut": "tSEP",
-        "slip44": 1,
-        "support": {
-            "connect": true,
-            "suite": true,
-            "T1B1": "1.11.2",
-            "T2T1": "2.5.2",
-            "T2B1": "2.6.1"
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://etc1.trezor.io", "https://etc2.trezor.io"]
+            },
+            "chain": "etc",
+            "chain_id": 61,
+            "coingecko_id": "ethereum-classic",
+            "is_testnet": false,
+            "name": "Ethereum Classic",
+            "shortcut": "ETC",
+            "slip44": 61,
+            "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
-        "url": "https://sepolia.otterscan.io"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://holesky1.trezor.io", "https://holesky2.trezor.io"]
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://matic1.trezor.io", "https://matic2.trezor.io"]
+            },
+            "chain": "matic",
+            "chain_id": 137,
+            "coingecko_id": "polygon-pos",
+            "is_testnet": false,
+            "name": "Polygon",
+            "shortcut": "MATIC",
+            "slip44": 966,
+            "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
-        "chain": "hol",
-        "chain_id": 17000,
-        "name": "Holesky",
-        "shortcut": "tHOL",
-        "slip44": 1,
-        "support": {
-            "connect": true,
-            "suite": true,
-            "T1B1": "1.11.2",
-            "T2T1": "2.5.2",
-            "T2B1": "2.6.1"
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://holesky1.trezor.io", "https://holesky2.trezor.io"]
+            },
+            "chain": "hol",
+            "chain_id": 17000,
+            "is_testnet": true,
+            "name": "Holesky",
+            "shortcut": "tHOL",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.11.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.5.3",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
-        "url": "https://holesky.ethpandaops.io/"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://etc1.trezor.io", "https://etc2.trezor.io"]
-        },
-        "chain": "etc",
-        "chain_id": 61,
-        "name": "Ethereum Classic",
-        "shortcut": "ETC",
-        "slip44": 61,
-        "support": {
-            "connect": true,
-            "suite": true,
-            "T1B1": "1.6.2",
-            "T2T1": "2.0.7",
-            "T2B1": "2.6.1"
-        },
-        "url": "https://ethereumclassic.org"
-    },
-    {
-        "blockchain_link": {
-            "type": "blockbook",
-            "url": ["https://matic1.trezor.io", "https://matic2.trezor.io"]
-        },
-        "chain": "matic",
-        "chain_id": 6193,
-        "name": "Polygon PoS",
-        "shortcut": "MATIC",
-        "slip44": 1,
-        "support": {
-            "connect": true,
-            "suite": true,
-            "T1B1": "1.6.2",
-            "T2T1": "2.0.7",
-            "T2B1": "2.6.1"
-        },
-        "url": "https://polygon.technology"
-    }
-]
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://sepolia1.trezor.io"]
+            },
+            "chain": "sep",
+            "chain_id": 11155111,
+            "is_testnet": true,
+            "name": "Sepolia",
+            "shortcut": "tSEP",
+            "slip44": 1,
+            "support": {
+                "T1B1": "1.11.3",
+                "T2B1": "2.6.1",
+                "T2T1": "2.5.3",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
+        }
+    ]
+}

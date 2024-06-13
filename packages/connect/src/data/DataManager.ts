@@ -36,7 +36,7 @@ export class DataManager {
         // parse coins definitions
         parseCoinsJson({
             ...this.assets.coins,
-            eth: this.assets.coinsEth,
+            ...this.assets.coinsEth,
         });
 
         // parse firmware definitions

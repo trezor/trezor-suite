@@ -1,5 +1,5 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
-import ethereumCoinsJSON from '@trezor/connect-common/files/coins-eth.json';
+import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
 import BlockchainLink from '@trezor/blockchain-link';
 import { parseCoinsJson, getBitcoinNetwork } from '../../../data/coinInfo';
 import { initBlockchain } from '../../../backend/BlockchainLink';
@@ -7,7 +7,7 @@ import { FeeLevels } from '../Fees';
 
 describe('api/bitcoin/Fees', () => {
     // load coin definitions
-    parseCoinsJson({ ...coinsJSON, eth: ethereumCoinsJSON });
+    parseCoinsJson({ ...coinsJSON, ...coinsJSONEth });
 
     it('Bitcoin smart FeeLevels exact match', async () => {
         const coinInfo = getBitcoinNetwork('Bitcoin');
