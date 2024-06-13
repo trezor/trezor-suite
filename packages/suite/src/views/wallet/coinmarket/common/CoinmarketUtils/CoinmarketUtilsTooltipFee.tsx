@@ -1,6 +1,7 @@
 import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersItem';
 import styled from 'styled-components';
 import { typography } from '@trezor/theme';
+import { Translation } from 'src/components/suite';
 
 const TooltipRow = styled.div`
     display: flex;
@@ -23,11 +24,15 @@ const CoinmarketUtilsTooltipFee = (_props: Pick<CoinmarketOffersItemProps, 'quot
     return (
         <>
             <TooltipRow>
-                <TooltipProperty>Network fee:</TooltipProperty>
+                <TooltipProperty>
+                    <Translation id="TR_COINMARKET_NETWORK_FEE" />:
+                </TooltipProperty>
                 <TooltipValue>$2.0</TooltipValue>
             </TooltipRow>
             <TooltipRow>
-                <TooltipProperty>Trade fee:</TooltipProperty>
+                <TooltipProperty>
+                    <Translation id="TR_COINMARKET_TRADE_FEE" />:
+                </TooltipProperty>
                 <TooltipValue>$1.5</TooltipValue>
             </TooltipRow>
         </>
