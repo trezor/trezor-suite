@@ -134,10 +134,7 @@ jobs:
           # uploads the files to the staging bucket canary  folder (canary does not have staging percentage set)
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/canary
           # configures the default staging percentage to 20% for production
-          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest.yml
-          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest-mac.yml
-          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest-linux.yml
-          yq '.stagingPercentage = 20' -i ./trezor-suite-files/latest-linux-arm64.yml
+          ./ci/scripts/update-staging-percentage.sh 20
           VERSION=$(jq -r .suiteVersion packages/suite/package.json)
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/latest
           aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://staging-data.trezor.io/suite/releases/desktop/v${VERSION}/
