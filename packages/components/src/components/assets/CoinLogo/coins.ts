@@ -13,6 +13,7 @@ export const COINS = {
     eos: require('../../../images/coins/eos.svg'),
     etc: require('../../../images/coins/etc.svg'),
     eth: require('../../../images/coins/eth.svg'),
+    op: require('../../../images/coins/bnb.svg'),
     ltc: require('../../../images/coins/ltc.svg'),
     nmc: require('../../../images/coins/nmc.svg'),
     tada: require('../../../images/coins/tada.svg'),

@@ -24,7 +24,7 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": []
+                "url": ["https://blockbook-dev.corp.sldev.cz:9302"]
             },
             "chain": "op",
             "chain_id": 10,
