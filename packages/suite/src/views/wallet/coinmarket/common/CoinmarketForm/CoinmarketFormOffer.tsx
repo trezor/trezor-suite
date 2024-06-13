@@ -1,5 +1,4 @@
 import { Button, H2 } from '@trezor/components';
-import { CoinmarketCryptoAmount } from '..';
 import { CoinmarketFormInputLabel } from '../..';
 import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -8,6 +7,7 @@ import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import CoinmarketFormOfferItem from './CoinmarketFormOfferItem';
 import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useState } from 'react';
+import CoinmarketFormOfferCryptoAmount from './CoinmarketFormOfferCryptoAmount';
 
 const CoinmarketFormOfferAmount = styled(H2)`
     margin-top: ${spacingsPx.md};
@@ -75,7 +75,6 @@ const CoinmarketFormOffer = () => {
                             ? bestQuote?.receiveCurrency
                             : account.symbol.toUpperCase()
                     }
-                    displayLogo="center"
                 />
             </CoinmarketFormOfferAmount>
             <CoinmarketFormOfferHeader>
