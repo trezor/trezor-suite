@@ -1,5 +1,6 @@
 // @group_coinmarket
 
+// TODO: rewrite
 describe.skip('Coinmarket exchange', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });

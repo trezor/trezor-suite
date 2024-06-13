@@ -190,67 +190,70 @@ const useCoinmarketBuyForm = ({
         return request;
     }, [methods, network.decimals, shouldSendInSats, quotesRequest]);
 
-    const handleChange = useCallback(async () => {
-        setIsSubmittingHelper(true);
-        timer.loading();
+    const handleChange = useCallback(
+        async (offLoading?: boolean) => {
+            setIsSubmittingHelper(!offLoading);
+            timer.loading();
 
-        const quoteRequest = getQuoteRequestData();
-        const allQuotes = await getQuotesRequest(quoteRequest);
+            const quoteRequest = getQuoteRequestData();
+            const allQuotes = await getQuotesRequest(quoteRequest);
 
-        if (Array.isArray(allQuotes)) {
-            if (allQuotes.length === 0) {
-                timer.stop();
+            if (Array.isArray(allQuotes)) {
+                if (allQuotes.length === 0) {
+                    timer.stop();
 
-                return;
+                    return;
+                }
+
+                // processed quotes and without alternative quotes
+                const quotesDefault = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
+                // without errors
+                const quotesSuccess =
+                    getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotesDefault) ?? [];
+
+                const bestQuote = quotesSuccess?.[0];
+                const bestQuotePaymentMethod = bestQuote?.paymentMethod;
+                const paymentMethodSelected = values.paymentMethod?.value;
+                const paymentMethodsFromQuotes = getPaymentMethods(quotesSuccess);
+                const isSelectedPaymentMethodAvailable =
+                    paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
+                    undefined;
+                const limits = getAmountLimits(quoteRequest, quotesDefault); // from all quotes except alternative
+
+                setInnerQuotes(quotesSuccess);
+                dispatch(saveQuotes(quotesSuccess));
+                dispatch(saveQuoteRequest(quoteRequest));
+                dispatch(savePaymentMethods(paymentMethodsFromQuotes));
+                setAmountLimits(limits);
+
+                if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
+                    setValue('paymentMethod', {
+                        value: bestQuotePaymentMethod ?? '',
+                        label: bestQuotePaymentMethod ?? '',
+                    });
+                }
+            } else {
+                setInnerQuotes([]);
             }
 
-            // processed quotes and without alternative quotes
-            const quotesDefault = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
-            // without errors
-            const quotesSuccess =
-                getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotesDefault) ?? [];
-
-            const bestQuote = quotesSuccess?.[0];
-            const bestQuotePaymentMethod = bestQuote?.paymentMethod;
-            const paymentMethodSelected = values.paymentMethod?.value;
-            const paymentMethodsFromQuotes = getPaymentMethods(quotesSuccess);
-            const isSelectedPaymentMethodAvailable =
-                paymentMethodsFromQuotes.find(item => item.value === paymentMethodSelected) !==
-                undefined;
-            const limits = getAmountLimits(quoteRequest, quotesDefault); // from all quotes except alternative
-
-            setInnerQuotes(quotesSuccess);
-            dispatch(saveQuotes(quotesSuccess));
-            dispatch(saveQuoteRequest(quoteRequest));
-            dispatch(savePaymentMethods(paymentMethodsFromQuotes));
-            setAmountLimits(limits);
-
-            if (!paymentMethodSelected || !isSelectedPaymentMethodAvailable) {
-                setValue('paymentMethod', {
-                    value: bestQuotePaymentMethod ?? '',
-                    label: bestQuotePaymentMethod ?? '',
-                });
-            }
-        } else {
-            setInnerQuotes([]);
-        }
-
-        timer.reset();
-        setIsSubmittingHelper(false);
-    }, [
-        timer,
-        values.paymentMethod?.value,
-        getQuoteRequestData,
-        getQuotesRequest,
-        getPaymentMethods,
-        dispatch,
-        saveQuotes,
-        savePaymentMethods,
-        setValue,
-    ]);
+            timer.reset();
+            setIsSubmittingHelper(false);
+        },
+        [
+            timer,
+            values.paymentMethod?.value,
+            getQuoteRequestData,
+            getQuotesRequest,
+            getPaymentMethods,
+            dispatch,
+            saveQuotes,
+            savePaymentMethods,
+            setValue,
+        ],
+    );
 
     const goToOffers = async () => {
-        await handleChange();
+        await handleChange(true);
 
         dispatch(saveCachedAccountInfo(account.symbol, account.index, account.accountType));
         navigateToBuyOffers();
@@ -337,7 +340,9 @@ const useCoinmarketBuyForm = ({
                 isChanged(previousValues.current?.fiatInput, values.fiatInput) ||
                 isChanged(previousValues.current?.cryptoInput, values.cryptoInput)
             ) {
-                handleSubmit(handleChange)();
+                handleSubmit(() => {
+                    handleChange();
+                })();
 
                 previousValues.current = values;
             }
@@ -353,7 +358,9 @@ const useCoinmarketBuyForm = ({
             isChanged(previousValues.current?.currencySelect, values.currencySelect) ||
             isChanged(previousValues.current?.cryptoSelect, values.cryptoSelect)
         ) {
-            handleSubmit(handleChange)();
+            handleSubmit(() => {
+                handleChange();
+            })();
 
             previousValues.current = values;
         }
@@ -406,18 +413,13 @@ const useCoinmarketBuyForm = ({
 
     useDebounce(
         () => {
-            if (
-                formState.isDirty &&
-                !formState.isValidating &&
-                Object.keys(formState.errors).length === 0
-            ) {
+            if (!formState.isValidating && Object.keys(formState.errors).length === 0) {
                 saveDraft(account.key, values as CoinmarketBuyFormProps);
             }
         },
         200,
         [
             formState.errors,
-            formState.isDirty,
             formState.isValidating,
             saveDraft,
             account.key,
