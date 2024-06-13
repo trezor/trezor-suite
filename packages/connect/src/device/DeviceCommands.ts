@@ -90,8 +90,7 @@ export class DeviceCommands {
     device: Device;
 
     transport: Transport;
-
-    sessionId: Session;
+    transportSession: Session;
 
     disposed: boolean;
 
@@ -101,10 +100,10 @@ export class DeviceCommands {
     _cancelableRequest?: (error?: any) => void;
     _cancelableRequestBySend?: boolean;
 
-    constructor(device: Device, transport: Transport, sessionId: Session) {
+    constructor(device: Device, transport: Transport, transportSession: Session) {
         this.device = device;
         this.transport = transport;
-        this.sessionId = sessionId;
+        this.transportSession = transportSession;
         this.disposed = false;
     }
 
@@ -320,7 +319,7 @@ export class DeviceCommands {
         logger.debug('Sending', type, filterForLog(type, msg));
 
         this.callPromise = this.transport.call({
-            session: this.sessionId,
+            session: this.transportSession,
             name: type,
             data: msg,
             protocol: this.device.protocol,
@@ -373,7 +372,7 @@ export class DeviceCommands {
             // handle possible race condition
             // Bridge may have some unread message in buffer, read it
             await this.transport.receive({
-                session: this.sessionId,
+                session: this.transportSession,
                 protocol: this.device.protocol,
             }).promise;
             // throw error anyway, next call should be resolved properly
@@ -669,7 +668,7 @@ export class DeviceCommands {
         } else {
             await this.transport.send({
                 protocol: this.device.protocol,
-                session: this.sessionId,
+                session: this.transportSession,
                 name: 'Cancel',
                 data: {},
             }).promise;
@@ -680,7 +679,7 @@ export class DeviceCommands {
             // if my observations are correct, it is not necessary to transport.receive after send
             // transport.call -> transport.send -> transport call returns Failure meaning it won't be
             // returned in subsequent calls
-            // await this.transport.receive({ session: this.sessionId }).promise;
+            // await this.transport.receive({ session: this.transportSession }).promise;
         }
     }
 }

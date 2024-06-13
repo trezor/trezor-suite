@@ -229,10 +229,10 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
         diff.released.forEach(descriptor => {
             const path = descriptor.path.toString();
             const device = this.devices[path];
-            const methodStillRunning = !device?.commands?.isDisposed();
+            const methodStillRunning = !device?.getCommands()?.isDisposed();
 
             if (device && methodStillRunning) {
-                device.keepSession = false;
+                device.keepTransportSession = false;
             }
         });
 
@@ -506,7 +506,8 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> implements IDevic
                     product: d.product,
                     type: d.type,
                 };
-                this.devices[d.path].activitySessionID = d.session;
+                // TODO: is this ok? transportSession should be set only as result of acquire/release
+                // this.devices[d.path].transportSession = d.session;
             }
         });
     }

@@ -248,7 +248,7 @@ const inner = async (context: CoreContext, method: AbstractMethod<any>, device: 
         method.requireDeviceMode,
     );
     if (unexpectedMode) {
-        device.keepSession = false;
+        device.keepTransportSession = false;
         if (isUsingPopup) {
             // wait for popup handshake
             await waitForPopup(context);
@@ -905,7 +905,7 @@ const onPopupClosed = (context: CoreContext, customErrorMessage?: string) => {
     // Device was already acquired. Try to interrupt running action which will throw error from onCall try/catch block
     if (deviceList.isConnected() && deviceList.asArray().length > 0) {
         deviceList.allDevices().forEach(d => {
-            d.keepSession = false; // clear session on release
+            d.keepTransportSession = false; // clear transportSession on release
             if (d.isUsedHere()) {
                 setOverridePromise(d.interruptionFromUser(error));
             } else {
