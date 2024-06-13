@@ -90,6 +90,7 @@ const useCoinmarketBuyForm = ({
         offFirstRequest ? quotes : undefined,
     );
     const [isSubmittingHelper, setIsSubmittingHelper] = useState(false);
+    const abortControllerRef = useRef<AbortController | null>(null);
 
     // parameters
     const { network } = selectedAccount;
@@ -135,6 +136,10 @@ const useCoinmarketBuyForm = ({
 
     const getQuotesRequest = useCallback(
         async (request: BuyTradeQuoteRequest) => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+
             // no need to fetch quotes if amount is not set
             if (
                 (!request.fiatStringAmount && !request.cryptoStringAmount) ||
@@ -145,10 +150,19 @@ const useCoinmarketBuyForm = ({
                 return;
             }
 
+            abortControllerRef.current = new AbortController();
             invityAPI.createInvityAPIKey(account.descriptor);
-            const allQuotes = await invityAPI.getBuyQuotes(request);
 
-            return allQuotes;
+            try {
+                const allQuotes = await invityAPI.getBuyQuotes(
+                    request,
+                    abortControllerRef.current.signal,
+                );
+
+                return allQuotes;
+            } catch (error) {
+                console.log('Abort', error);
+            }
         },
         [account.descriptor, timer],
     );
@@ -411,6 +425,14 @@ const useCoinmarketBuyForm = ({
             shouldSendInSats,
         ],
     );
+
+    useEffect(() => {
+        return () => {
+            if (abortControllerRef.current) {
+                abortControllerRef.current.abort();
+            }
+        };
+    }, []);
 
     return {
         type: 'buy',
