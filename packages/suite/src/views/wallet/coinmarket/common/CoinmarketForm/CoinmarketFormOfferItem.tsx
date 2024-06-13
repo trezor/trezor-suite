@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 
 import { BuyTrade } from 'invity-api';
+import { Translation } from 'src/components/suite';
 
 const CoinmarketFormOfferItemWrapper = styled.div`
     display: flex;
@@ -50,7 +51,7 @@ const CoinmarketFormOfferItem = ({
                 <CoinmarketFormOfferSpinnerWrapper>
                     <CoinmarketSpinnerWrapper size={32} isGrey={false} />
                     <CoinmarketFormOfferSpinnerText>
-                        Looking for your best offer
+                        <Translation id="TR_COINMARKET_OFFER_LOOKING" />
                     </CoinmarketFormOfferSpinnerText>
                 </CoinmarketFormOfferSpinnerWrapper>
             </CoinmarketFormOfferItemWrapper>
@@ -62,7 +63,7 @@ const CoinmarketFormOfferItem = ({
             <CoinmarketFormOfferItemWrapper>
                 <CoinmarketFormOfferSpinnerWrapper>
                     <CoinmarketFormOfferSpinnerText $notSpinner>
-                        No offers found for your request. Try a different amount or currency.
+                        <Translation id="TR_COINMARKET_OFFER_NO_FOUND" />
                     </CoinmarketFormOfferSpinnerText>
                 </CoinmarketFormOfferSpinnerWrapper>
             </CoinmarketFormOfferItemWrapper>
@@ -73,7 +74,7 @@ const CoinmarketFormOfferItem = ({
         <CoinmarketFormOfferItemWrapper>
             <CoinmarketUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
             <Badge variant="primary" size="small">
-                Best rate
+                <Translation id="TR_COINMARKET_BEST_RATE" />
             </Badge>
         </CoinmarketFormOfferItemWrapper>
     );

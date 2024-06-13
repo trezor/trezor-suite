@@ -9,6 +9,7 @@ import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTyp
 import { useState } from 'react';
 import CoinmarketFormOfferCryptoAmount from './CoinmarketFormOfferCryptoAmount';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { Translation } from 'src/components/suite';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
@@ -63,7 +64,9 @@ const CoinmarketFormOffer = () => {
 
     return (
         <>
-            <CoinmarketFormInputLabel>You get</CoinmarketFormInputLabel>
+            <CoinmarketFormInputLabel>
+                <Translation id="TR_COINMARKET_YOU_GET" />
+            </CoinmarketFormInputLabel>
             <CoinmarketFormOfferCryptoAmount
                 amount={
                     !state.isLoadingOrInvalid && bestQuote?.receiveStringAmount
@@ -77,7 +80,9 @@ const CoinmarketFormOffer = () => {
                 }
             />
             <CoinmarketFormOfferHeader>
-                <CoinmarketFormOfferHeaderText>Your best offer</CoinmarketFormOfferHeaderText>
+                <CoinmarketFormOfferHeaderText>
+                    <Translation id="TR_COINMARKET_YOUR_BEST_OFFER" />
+                </CoinmarketFormOfferHeaderText>
                 <CoinmarketFormOfferHeaderButton
                     onClick={async () => {
                         setIsCompareLoading(true);
@@ -86,7 +91,7 @@ const CoinmarketFormOffer = () => {
                     isDisabled={state.isLoadingOrInvalid}
                     isLoading={isCompareLoading}
                 >
-                    Compare all offers
+                    <Translation id="TR_COINMARKET_COMPARE_OFFERS" />
                 </CoinmarketFormOfferHeaderButton>
             </CoinmarketFormOfferHeader>
             <CoinmarketFormOfferItem

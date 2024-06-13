@@ -12,6 +12,7 @@ import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtil
 import styled from 'styled-components';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { Translation } from 'src/components/suite';
 
 const FlagContainer = styled.div`
     position: relative;
@@ -37,7 +38,9 @@ const CoinmarketFormInputCountry = () => {
 
     return (
         <CoinmarketFormInput>
-            <CoinmarketFormInputLabel>Country of residence</CoinmarketFormInputLabel>
+            <CoinmarketFormInputLabel>
+                <Translation id="TR_COINMARKET_COUNTRY" />
+            </CoinmarketFormInputLabel>
             <Controller
                 name={countrySelect}
                 defaultValue={defaultCountry}

@@ -3,6 +3,8 @@ import { CoinmarketOffersItemProps } from '../CoinmarketOffers/CoinmarketOffersI
 import styled, { useTheme } from 'styled-components';
 import { spacingsPx, typography } from '@trezor/theme';
 import CoinmarketUtilsTooltipFee from './CoinmarketUtilsTooltipFee';
+import { Translation } from 'src/components/suite';
+import { useTranslation } from 'src/hooks/suite';
 
 const TooltipWrap = styled.div`
     display: flex;
@@ -35,16 +37,18 @@ const TooltipText = styled.div<{ $isYellow?: boolean }>`
 // IN TESTING MODE
 const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quote'>) => {
     const theme = useTheme();
+    const { translationString } = useTranslation();
     const isFeesIncluded = false;
-    const notIncludedContent =
-        "Certain fees are not included in the displayed price. You will review the final price on the provider's website.";
+    const notIncludedContent = translationString('TR_COINMARKET_FEES_ON_WEBSITE');
 
     if (isFeesIncluded) {
         return (
             <Tooltip content={<CoinmarketUtilsTooltipFee quote={quote} />} placement="bottom">
                 <TooltipWrap>
                     <TooltipIcon icon="INFO" size={16} color={theme.textSubdued} />
-                    <TooltipText>Fees included</TooltipText>
+                    <TooltipText>
+                        <Translation id="TR_COINMARKET_FEES_INCLUDED" />
+                    </TooltipText>
                 </TooltipWrap>
             </Tooltip>
         );
@@ -54,7 +58,9 @@ const CoinmarketUtilsTooltip = ({ quote }: Pick<CoinmarketOffersItemProps, 'quot
         <Tooltip content={notIncludedContent} placement="bottom">
             <TooltipWrap>
                 <TooltipIcon icon="INFO" size={16} color={theme.textAlertYellow} />
-                <TooltipText $isYellow>Fees not included</TooltipText>
+                <TooltipText $isYellow>
+                    <Translation id="TR_COINMARKET_FEES_NOT_INCLUDED" />
+                </TooltipText>
             </TooltipWrap>
         </Tooltip>
     );

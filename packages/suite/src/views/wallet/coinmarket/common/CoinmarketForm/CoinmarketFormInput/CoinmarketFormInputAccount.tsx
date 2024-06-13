@@ -17,6 +17,7 @@ import { CoinLogo, Select } from '@trezor/components';
 import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { Translation } from 'src/components/suite';
 
 const CoinmarketFormInputAccount = () => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
@@ -36,7 +37,9 @@ const CoinmarketFormInputAccount = () => {
 
     return (
         <CoinmarketFormInput>
-            <CoinmarketFormInputLabel>You buy</CoinmarketFormInputLabel>
+            <CoinmarketFormInputLabel>
+                <Translation id="TR_COINMARKET_YOU_BUY" />
+            </CoinmarketFormInputLabel>
             <Controller
                 name="cryptoSelect"
                 defaultValue={cryptoList[0]}
