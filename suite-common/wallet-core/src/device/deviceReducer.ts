@@ -908,25 +908,3 @@ export const selectInstacelessUnselectedDevices = memoize((state: DeviceRootStat
 
     return deviceUtils.getSortedDevicesWithoutInstances(allDevices, device?.id);
 });
-
-export const selectDeviceInstance = (state: DeviceRootState) => {
-    const device = selectDevice(state);
-
-    return device?.instance ?? null;
-};
-
-export const selectIsPassphraseDevice = (state: DeviceRootState) => {
-    const deviceFeatures = selectDeviceFeatures(state);
-    const deviceInstance = selectDeviceInstance(state);
-
-    if (!deviceInstance) return false;
-
-    return deviceInstance > 1 && deviceFeatures?.passphrase_protection;
-};
-
-export const selectIsUnauthorizedPassphraseDevice = (state: DeviceRootState) => {
-    const isDeviceConnectedAndAuthorized = selectIsDeviceConnectedAndAuthorized(state);
-    const isPassphraseDevice = selectIsPassphraseDevice(state);
-
-    return !isDeviceConnectedAndAuthorized && isPassphraseDevice;
-};
