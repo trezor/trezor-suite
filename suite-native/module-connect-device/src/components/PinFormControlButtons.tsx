@@ -22,12 +22,7 @@ import {
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
-import {
-    selectDevice,
-    selectDeviceAuthFailed,
-    removeButtonRequests,
-    authorizeDeviceThunk,
-} from '@suite-common/wallet-core';
+import { selectDeviceAuthFailed, authorizeDeviceThunk } from '@suite-common/wallet-core';
 import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
@@ -59,7 +54,6 @@ export const PinFormControlButtons = () => {
     const navigation = useNavigation<NavigationProp>();
     const { showAlert } = useAlert();
     const { handleSubmit, getValues, watch, setValue, reset } = useFormContext();
-    const device = useSelector(selectDevice);
     const hasDeviceAuthFailed = useSelector(selectDeviceAuthFailed);
 
     const handleSuccess = useCallback(() => {
@@ -67,13 +61,7 @@ export const PinFormControlButtons = () => {
             navigation.goBack();
         }
         reset();
-        dispatch(
-            removeButtonRequests({
-                device,
-                buttonRequestCode: 'PinMatrixRequestType_Current',
-            }),
-        );
-    }, [device, dispatch, navigation, reset]);
+    }, [navigation, reset]);
 
     const handleDeviceChange = useCallback(() => {
         if (hasDeviceAuthFailed) {
