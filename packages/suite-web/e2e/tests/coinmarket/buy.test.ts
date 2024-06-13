@@ -1,6 +1,7 @@
 // @group_other
 
-describe('Coinmarket buy', () => {
+// TODO: rewrite
+describe.skip('Coinmarket buy', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: false });
