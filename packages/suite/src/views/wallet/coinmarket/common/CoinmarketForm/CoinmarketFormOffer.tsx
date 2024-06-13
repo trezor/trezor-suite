@@ -1,4 +1,4 @@
-import { Button, H2 } from '@trezor/components';
+import { Button } from '@trezor/components';
 import { CoinmarketFormInputLabel } from '../..';
 import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
@@ -8,10 +8,7 @@ import CoinmarketFormOfferItem from './CoinmarketFormOfferItem';
 import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useState } from 'react';
 import CoinmarketFormOfferCryptoAmount from './CoinmarketFormOfferCryptoAmount';
-
-const CoinmarketFormOfferAmount = styled(H2)`
-    margin-top: ${spacingsPx.md};
-`;
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
@@ -19,6 +16,10 @@ const CoinmarketFormOfferHeader = styled.div`
     justify-content: space-between;
     padding-bottom: ${spacingsPx.xs};
     margin-top: ${spacingsPx.xxl};
+
+    ${SCREEN_QUERY.MOBILE} {
+        margin-top: ${spacingsPx.sm};
+    }
 `;
 const CoinmarketFormOfferHeaderText = styled.div``;
 const CoinmarketFormOfferHeaderButton = styled(Button)`
@@ -63,20 +64,18 @@ const CoinmarketFormOffer = () => {
     return (
         <>
             <CoinmarketFormInputLabel>You get</CoinmarketFormInputLabel>
-            <CoinmarketFormOfferAmount>
-                <CoinmarketFormOfferCryptoAmount
-                    amount={
-                        !state.isLoadingOrInvalid && bestQuote?.receiveStringAmount
-                            ? bestQuote?.receiveStringAmount
-                            : '0'
-                    }
-                    symbol={
-                        !state.isLoadingOrInvalid && bestQuote?.receiveCurrency
-                            ? bestQuote?.receiveCurrency
-                            : account.symbol.toUpperCase()
-                    }
-                />
-            </CoinmarketFormOfferAmount>
+            <CoinmarketFormOfferCryptoAmount
+                amount={
+                    !state.isLoadingOrInvalid && bestQuote?.receiveStringAmount
+                        ? bestQuote?.receiveStringAmount
+                        : '0'
+                }
+                symbol={
+                    !state.isLoadingOrInvalid && bestQuote?.receiveCurrency
+                        ? bestQuote?.receiveCurrency
+                        : account.symbol.toUpperCase()
+                }
+            />
             <CoinmarketFormOfferHeader>
                 <CoinmarketFormOfferHeaderText>Your best offer</CoinmarketFormOfferHeaderText>
                 <CoinmarketFormOfferHeaderButton
