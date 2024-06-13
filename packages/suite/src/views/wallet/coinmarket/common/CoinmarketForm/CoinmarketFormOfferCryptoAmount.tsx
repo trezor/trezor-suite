@@ -1,4 +1,4 @@
-import { spacingsPx } from '@trezor/theme';
+import { nativeTypography, spacingsPx } from '@trezor/theme';
 import { useSelector } from 'react-redux';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { selectLanguage } from 'src/reducers/suite/suiteReducer';
@@ -7,11 +7,27 @@ import { NETWORKS } from 'src/config/wallet';
 import { localizeNumber, networkAmountToSatoshi } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from 'src/types/wallet';
 import invityAPI from 'src/services/suite/invityAPI';
+import { H2 } from '@trezor/components';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
-const Wrapper = styled.div`
+const Wrapper = styled(H2)`
     display: flex;
     align-items: center;
     flex-wrap: wrap;
+    margin-top: ${spacingsPx.md};
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        font-size: 28px;
+    }
+
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
+        font-size: ${nativeTypography.titleMedium.fontSize}px;
+    }
+
+    ${SCREEN_QUERY.MOBILE} {
+        font-size: ${nativeTypography.titleSmall.fontSize}px;
+        margin-top: ${spacingsPx.xs};
+    }
 `;
 
 const TokenWrapper = styled.div`

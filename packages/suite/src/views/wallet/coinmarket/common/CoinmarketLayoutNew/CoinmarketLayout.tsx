@@ -6,9 +6,14 @@ import type { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { CoinmarketFooter } from 'src/views/wallet/coinmarket/common';
 import { spacingsPx } from '@trezor/theme';
 import CoinmarketLayoutNavigation from './CoinmarketLayoutNavigation/CoinmarketLayoutNavigation';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 
 const CoinmarketWrapper = styled.div`
     padding: 0 ${spacingsPx.lg};
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        padding: 0;
+    }
 `;
 
 const CoinmarketFormWrapper = styled.div`

@@ -6,7 +6,8 @@ import CoinmarketLayoutNavigationItem from './CoinmarketLayoutNavigationItem';
 
 const List = styled.div`
     display: flex;
-    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
 `;
 
 const CoinmarketLayoutNavigation = () => {
