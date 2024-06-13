@@ -3,6 +3,7 @@ import { TranslationKey } from '@suite-common/intl-types';
 import { Route } from '@suite-common/suite-types';
 import { getTitleForNetwork } from '@suite-common/wallet-utils';
 import { Button } from '@trezor/components';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { typography, borders, spacingsPx } from '@trezor/theme';
 import { goto } from 'src/actions/suite/routerActions';
 import { Translation } from 'src/components/suite';
@@ -27,10 +28,30 @@ const NavListItemWrapper = styled(NavigationItem)`
     svg {
         width: 16px;
     }
+
+    div:first-child {
+        ${SCREEN_QUERY.BELOW_DESKTOP} {
+            display: none;
+        }
+    }
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        margin: ${spacingsPx.xs} 0;
+    }
+
+    ${SCREEN_QUERY.MOBILE} {
+        padding: ${spacingsPx.xxs} ${spacingsPx.xs};
+        gap: ${spacingsPx.xxs};
+        margin: ${spacingsPx.xxs} 0;
+    }
 `;
 
 const ButtonWrapper = styled(Button)`
     margin-left: auto;
+
+    ${SCREEN_QUERY.BELOW_DESKTOP} {
+        margin-left: 0;
+    }
 `;
 
 interface CoinmarketLayoutNavigationItemProps {
