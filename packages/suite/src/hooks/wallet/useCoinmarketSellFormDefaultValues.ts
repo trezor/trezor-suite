@@ -33,6 +33,7 @@ export const useCoinmarketSellFormDefaultValues = (
                               address: defaultAddress,
                           },
                       ],
+                      selectedUtxos: [],
                       // TODO: remove type casting (options string[])
                   } as SellFormState)
                 : undefined,

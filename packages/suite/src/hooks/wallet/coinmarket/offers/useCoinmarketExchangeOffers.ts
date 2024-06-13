@@ -7,7 +7,7 @@ import { networksCompatibility as networks } from '@suite-common/wallet-config';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
 
 import invityAPI from 'src/services/suite/invityAPI';
-import { useActions, useSelector } from 'src/hooks/suite';
+import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -29,6 +29,7 @@ import { getSuccessQuotesOrdered } from 'src/utils/wallet/coinmarket/exchangeUti
 export const useCoinmarketExchangeOffers = ({
     selectedAccount,
 }: UseCoinmarketProps): CoinmarketExchangeOffersContextProps => {
+    const dispatch = useDispatch();
     const {
         callInProgress,
         account,
