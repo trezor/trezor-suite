@@ -1602,9 +1602,9 @@ export default defineMessages({
         defaultMessage: 'Unknown provider',
         id: 'TR_UNKNOWN_PROVIDER',
     },
-    TR_COINMARKET_YOU_GET: {
+    TR_COINMARKET_YOU_WILL_GET: {
         defaultMessage: 'You will get',
-        id: 'TR_COINMARKET_YOU_GET',
+        id: 'TR_COINMARKET_YOU_WILL_GET',
     },
     TR_COINMARKET_SHOW_OFFERS: {
         defaultMessage: 'Compare offers',
@@ -1617,6 +1617,63 @@ export default defineMessages({
     TR_COINMARKET_PAYMENT_METHOD: {
         defaultMessage: 'Payment method',
         id: 'TR_COINMARKET_PAYMENT_METHOD',
+    },
+    TR_COINMARKET_YOU_BUY: {
+        defaultMessage: 'You buy',
+        id: 'TR_COINMARKET_YOU_BUY',
+    },
+    TR_COINMARKET_YOU_PAY: {
+        defaultMessage: 'You pay',
+        id: 'TR_COINMARKET_YOU_PAY',
+    },
+    TR_COINMARKET_YOU_GET: {
+        defaultMessage: 'You get',
+        id: 'TR_COINMARKET_YOU_GET',
+    },
+    TR_COINMARKET_COUNTRY: {
+        defaultMessage: 'Country of residence',
+        id: 'TR_COINMARKET_COUNTRY',
+    },
+    TR_COINMARKET_YOUR_BEST_OFFER: {
+        defaultMessage: 'Your best offer',
+        id: 'TR_COINMARKET_YOUR_BEST_OFFER',
+    },
+    TR_COINMARKET_COMPARE_OFFERS: {
+        defaultMessage: 'Compare all offers',
+        id: 'TR_COINMARKET_COMPARE_OFFERS',
+    },
+    TR_COINMARKET_OFFER_LOOKING: {
+        defaultMessage: 'Looking for your best offer',
+        id: 'TR_COINMARKET_OFFER_LOOKING',
+    },
+    TR_COINMARKET_OFFER_NO_FOUND: {
+        defaultMessage: 'No offers found for your request. Try a different amount or currency.',
+        id: 'TR_COINMARKET_OFFER_NO_FOUND',
+    },
+    TR_COINMARKET_BEST_RATE: {
+        defaultMessage: 'Best rate',
+        id: 'TR_COINMARKET_BEST_RATE',
+    },
+    TR_COINMARKET_FEES_INCLUDED: {
+        defaultMessage: 'Fees included',
+        id: 'TR_COINMARKET_FEES_INCLUDED',
+    },
+    TR_COINMARKET_FEES_NOT_INCLUDED: {
+        defaultMessage: 'Fees not included',
+        id: 'TR_COINMARKET_FEES_NOT_INCLUDED',
+    },
+    TR_COINMARKET_FEES_ON_WEBSITE: {
+        defaultMessage:
+            "Certain fees are not included in the displayed price. You will review the final price on the provider's website.",
+        id: 'TR_COINMARKET_FEES_ON_WEBSITE',
+    },
+    TR_COINMARKET_NETWORK_FEE: {
+        defaultMessage: 'Network fee',
+        id: 'TR_COINMARKET_NETWORK_FEE',
+    },
+    TR_COINMARKET_TRADE_FEE: {
+        defaultMessage: 'Trade fee',
+        id: 'TR_COINMARKET_TRADE_FEE',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',

@@ -7,7 +7,7 @@ import {
 } from '../../..';
 import { Controller } from 'react-hook-form';
 import { Select } from '@trezor/components';
-import { NumberInput } from 'src/components/suite';
+import { NumberInput, Translation } from 'src/components/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { getInputState } from '@suite-common/wallet-utils';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -66,7 +66,9 @@ const CoinmarketFormInputFiat = () => {
 
     return (
         <CoinmarketFormInput>
-            <CoinmarketFormInputLabel>You pay</CoinmarketFormInputLabel>
+            <CoinmarketFormInputLabel>
+                <Translation id="TR_COINMARKET_YOU_PAY" />
+            </CoinmarketFormInputLabel>
             <NumberInput
                 name={fiatInput}
                 onChange={() => {

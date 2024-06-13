@@ -40,7 +40,7 @@ const CoinmarketUtilsPrice = ({
     return (
         <PriceWrap>
             <PriceTitle>
-                <Translation id="TR_COINMARKET_YOU_GET" />
+                <Translation id="TR_COINMARKET_YOU_WILL_GET" />
             </PriceTitle>
             <PriceValueWrap>
                 <PriceValue>
