@@ -19,7 +19,9 @@ import {
     selectDeviceModel,
     removeButtonRequests,
     selectIsDeviceDiscoveryActive,
+    selectIsUnauthorizedPassphraseDevice,
 } from '@suite-common/wallet-core';
+import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 
@@ -41,6 +43,7 @@ export const ConnectDeviceScreenHeader = ({
     const { showAlert, hideAlert } = useAlert();
 
     const device = useSelector(selectDevice);
+    const isUnauthorizedPassphraseDevice = useSelector(selectIsUnauthorizedPassphraseDevice);
     const deviceModel = useSelector(selectDeviceModel);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
@@ -71,11 +74,26 @@ export const ConnectDeviceScreenHeader = ({
                             : 'ButtonRequest_PinEntry',
                 }),
             );
+
+            // If pin screen was triggered from opening passphrase wallet (which creates new instance) and is cancelled, we need to select standard wallet
+            if (isUnauthorizedPassphraseDevice) {
+                dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+            }
+
             if (navigation.canGoBack()) {
                 navigation.goBack();
             }
         }
-    }, [device, deviceModel, dispatch, isDiscoveryActive, navigation, showAlert, hideAlert]);
+    }, [
+        device,
+        deviceModel,
+        dispatch,
+        hideAlert,
+        isDiscoveryActive,
+        isUnauthorizedPassphraseDevice,
+        navigation,
+        showAlert,
+    ]);
 
     // Handle hardware back button press same as cancel button
     useEffect(() => {
