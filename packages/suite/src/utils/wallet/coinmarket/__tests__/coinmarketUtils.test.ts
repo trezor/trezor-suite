@@ -23,11 +23,13 @@ describe('coinmarket utils', () => {
             value: 'BTC',
             label: 'BTC',
             cryptoSymbol: 'BTC',
+            cryptoName: 'Bitcoin',
         });
         expect(buildCryptoOption('eth')).toStrictEqual({
             value: 'ETH',
             label: 'ETH',
             cryptoSymbol: 'ETH',
+            cryptoName: 'Ethereum',
         });
     });
 
