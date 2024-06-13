@@ -54,32 +54,35 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
 
     const { applyStyle } = useNativeStyles();
 
-    const handleSuccess = useCallback(() => {
-        // If pin screen was triggered from opening passphrase wallet (which creates new instance) and is closed, we need to select standard wallet
-        if (isUnauthorizedPassphraseDevice) {
-            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
-        }
-
+    const handleClose = useCallback(() => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
         dispatch(removeButtonRequests({ device, buttonRequestCode: 'ButtonRequest_PinEntry' }));
-    }, [isUnauthorizedPassphraseDevice, navigation, dispatch, device]);
+    }, [navigation, dispatch, device]);
+
+    const handleCloseAndRemovePassphraseWallet = useCallback(() => {
+        handleClose();
+        if (isUnauthorizedPassphraseDevice) {
+            dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
+        }
+    }, [handleClose, isUnauthorizedPassphraseDevice, dispatch]);
 
     useEffect(() => {
         // hasDeviceRequestedPin is false when the user unlocks the device again
         // after it was already unlocked and then became locked.
         // (e.g., when attempting to verify the receive address with locked device).
         if (!hasDeviceRequestedPin) {
-            handleSuccess();
+            handleCloseAndRemovePassphraseWallet();
         }
-    }, [hasDeviceRequestedPin, handleSuccess]);
+    }, [handleCloseAndRemovePassphraseWallet, hasDeviceRequestedPin]);
 
     useEffect(() => {
-        TrezorConnect.on(UI_REQUEST.CLOSE_UI_WINDOW, handleSuccess);
+        TrezorConnect.on(UI_REQUEST.CLOSE_UI_WINDOW, handleCloseAndRemovePassphraseWallet);
 
-        return () => TrezorConnect.off(UI_REQUEST.CLOSE_UI_WINDOW, handleSuccess);
-    }, [handleSuccess]);
+        return () =>
+            TrezorConnect.off(UI_REQUEST.CLOSE_UI_WINDOW, handleCloseAndRemovePassphraseWallet);
+    }, [handleClose, handleCloseAndRemovePassphraseWallet]);
 
     return (
         <Box style={applyStyle(wrapperStyle)}>
