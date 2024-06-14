@@ -3,7 +3,6 @@ import CoinmarketHeader from '../CoinmarketHeader/CoinmarketHeader';
 import CoinmarketOffersItem from './CoinmarketOffersItem';
 import {
     isCoinmarketExchangeOffers,
-    isCoinmarketSellOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { BuyTrade, SellFiatTrade } from 'invity-api';
@@ -14,19 +13,11 @@ const CoinmarketOffers = () => {
     const hasLoadingFailed = !quotes;
     const noOffers = hasLoadingFailed || quotes.length === 0;
 
-    const getTitleTimer = () => {
-        if (isCoinmarketExchangeOffers(context)) {
-            return 'TR_EXCHANGE_OFFERS_REFRESH';
-        }
-
-        return isCoinmarketSellOffers(context) ? 'TR_SELL_OFFERS_REFRESH' : 'TR_BUY_OFFERS_REFRESH';
-    };
-
     return (
         <>
             <CoinmarketHeader
                 title="TR_COINMARKET_SHOW_OFFERS"
-                titleTimer={getTitleTimer()}
+                titleTimer="TR_COINMARKET_OFFERS_REFRESH"
                 showTimerNextToTitle={isCoinmarketExchangeOffers(context)}
             />
             {noOffers ? (

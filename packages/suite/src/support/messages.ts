@@ -297,10 +297,6 @@ export default defineMessages({
         defaultMessage: 'Compare offers',
         id: 'TR_EXCHANGE_SHOW_OFFERS',
     },
-    TR_EXCHANGE_OFFERS_REFRESH: {
-        defaultMessage: 'Offers refresh in',
-        id: 'TR_EXCHANGE_OFFERS_REFRESH',
-    },
     TR_EXCHANGE_MODAL_FOR_YOUR_SAFETY: {
         defaultMessage: 'Exchange {fromCrypto} to {toCrypto} with {provider}',
         id: 'TR_EXCHANGE_MODAL_FOR_YOUR_SAFETY',
@@ -873,10 +869,6 @@ export default defineMessages({
         defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
         id: 'TR_SELL_NO_OFFERS',
     },
-    TR_SELL_OFFERS_REFRESH: {
-        defaultMessage: 'Refresh in',
-        id: 'TR_SELL_OFFERS_REFRESH',
-    },
     TR_SELL_GET_THIS_OFFER: {
         id: 'TR_SELL_GET_THIS_OFFER',
         defaultMessage: 'Get this offer',
@@ -1060,10 +1052,6 @@ export default defineMessages({
     TR_P2P_SHOW_OFFERS: {
         defaultMessage: 'Show offers',
         id: 'TR_P2P_SHOW_OFFERS',
-    },
-    TR_P2P_OFFERS_REFRESH: {
-        defaultMessage: 'Offers refresh in',
-        id: 'TR_P2P_OFFERS_REFRESH',
     },
     TR_P2P_NO_OFFERS: {
         defaultMessage:
@@ -1360,10 +1348,6 @@ export default defineMessages({
     TR_BUY_NO_OFFERS: {
         defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
         id: 'TR_BUY_NO_OFFERS',
-    },
-    TR_BUY_OFFERS_REFRESH: {
-        defaultMessage: 'Offers refresh in',
-        id: 'TR_BUY_OFFERS_REFRESH',
     },
     TR_VALIDATION_ERROR_MINIMUM_CRYPTO: {
         defaultMessage: 'Minimum is {minimum}',
@@ -1674,6 +1658,10 @@ export default defineMessages({
     TR_COINMARKET_TRADE_FEE: {
         defaultMessage: 'Trade fee',
         id: 'TR_COINMARKET_TRADE_FEE',
+    },
+    TR_COINMARKET_OFFERS_REFRESH: {
+        defaultMessage: 'Offers refresh in',
+        id: 'TR_COINMARKET_OFFERS_REFRESH',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
