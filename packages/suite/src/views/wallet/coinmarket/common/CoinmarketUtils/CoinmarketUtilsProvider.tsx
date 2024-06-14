@@ -45,7 +45,9 @@ export const CoinmarketUtilsProvider = ({
         <IconWrap className={className}>
             {provider ? (
                 <>
-                    {provider.logo && <Icon src={invityAPI.getProviderLogoUrl(provider.logo)} />}
+                    {provider.logo && (
+                        <Icon src={invityAPI.getProviderLogoUrl(provider.logo)} alt="" />
+                    )}
                     <IconText>{provider.brandName ?? provider.companyName}</IconText>
                 </>
             ) : (
