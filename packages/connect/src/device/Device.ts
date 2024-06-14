@@ -1,5 +1,11 @@
 // original file https://github.com/trezor/connect/blob/develop/src/js/device/Device.js
-import { versionUtils, createDeferred, Deferred, TypedEmitter } from '@trezor/utils';
+import {
+    versionUtils,
+    createDeferred,
+    Deferred,
+    TypedEmitter,
+    createTimeoutPromise,
+} from '@trezor/utils';
 import { Session } from '@trezor/transport';
 import { TransportProtocol, v1 as v1Protocol, bridge as bridgeProtocol } from '@trezor/protocol';
 import { DeviceCommands, PassphrasePromptResponse } from './DeviceCommands';
@@ -53,12 +59,6 @@ export type RunOptions = {
 
 export const GET_FEATURES_TIMEOUT = 3000;
 
-const parseRunOptions = (options?: RunOptions): RunOptions => {
-    if (!options) options = {};
-
-    return options;
-};
-
 export interface DeviceEvents {
     [DEVICE.PIN]: (
         device: Device,
@@ -86,7 +86,7 @@ export interface DeviceEvents {
  * @extends {EventEmitter}
  */
 export class Device extends TypedEmitter<DeviceEvents> {
-    transport: Transport;
+    readonly transport: Transport;
     protocol: TransportProtocol;
 
     originalDescriptor: Descriptor;
@@ -183,7 +183,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         return device;
     }
 
-    async acquire() {
+    private async acquire() {
         this.acquirePromise = this.transport.acquire({
             input: {
                 path: this.originalDescriptor.path,
@@ -215,7 +215,7 @@ export class Device extends TypedEmitter<DeviceEvents> {
         this.commands = new DeviceCommands(this, this.transport, sessionID);
     }
 
-    async release() {
+    private async release() {
         if (
             this.isUsedHere() &&
             !this.keepSession &&
@@ -254,20 +254,30 @@ export class Device extends TypedEmitter<DeviceEvents> {
         acquiredListeners.forEach(l => this.once(DEVICE.ACQUIRED, l));
     }
 
-    run(fn?: () => Promise<void>, options?: RunOptions) {
+    run(fn?: () => Promise<void>, options: RunOptions = {}) {
         if (this.runPromise) {
             _log.warn('Previous call is still running');
             throw ERRORS.TypedError('Device_CallInProgress');
         }
 
-        options = parseRunOptions(options);
-
         const runPromise = createDeferred();
         this.runPromise = runPromise;
 
-        this._runInner(fn, options).catch(err => {
-            runPromise.reject(err);
-        });
+        this._runInner(fn, options)
+            .then(() => {
+                runPromise.resolve();
+
+                if (!this.loaded) {
+                    this.loaded = true;
+                    this.firstRunPromise.resolve(true);
+                }
+            })
+            .catch(err => {
+                runPromise.reject(err);
+            })
+            .finally(() => {
+                delete this.runPromise;
+            });
 
         return runPromise.promise;
     }
@@ -336,37 +346,51 @@ export class Device extends TypedEmitter<DeviceEvents> {
 
             // update features
             try {
-                if (fn) {
-                    await this.initialize(
-                        !!options.useEmptyPassphrase,
-                        !!options.useCardanoDerivation,
-                    );
-                } else {
+                if (!fn) {
                     // do not initialize while firstRunPromise otherwise `features.session_id` could be affected
-                    await Promise.race([
-                        this.getFeatures(),
+                    const timeouted = await Promise.race([
+                        this.getFeatures().then(() => false),
                         // Edge-case: T1B1 + bootloader < 1.4.0 doesn't know the "GetFeatures" message yet and it will send no response to it
                         // transport response is pending endlessly, calling any other message will end up with "device call in progress"
                         // set the timeout for this call so whenever it happens "unacquired device" will be created instead
                         // next time device should be called together with "Initialize" (calling "acquireDevice" from the UI)
-                        new Promise((_resolve, reject) =>
-                            setTimeout(
-                                () => reject(new Error('GetFeatures timeout')),
-                                GET_FEATURES_TIMEOUT,
-                            ),
-                        ),
+                        createTimeoutPromise(GET_FEATURES_TIMEOUT).then(() => true),
                     ]);
+                    if (timeouted) {
+                        if (this.inconsistent) throw new Error('GetFeatures timeout');
+                        // handling corner-case T1B1 + bootloader < 1.4.0 (above)
+                        // if GetFeatures fails try again
+                        // this time add empty "fn" param to force Initialize message
+                        this.inconsistent = true;
+
+                        /*
+                         * This block is an exact copy of the beginning of this function for defined `fn`,
+                         * to avoid recursion; can be polished in the future
+                         */
+                        {
+                            await this.releasePromise?.promise;
+
+                            if (
+                                !this.isUsedHere() ||
+                                this.commands?.disposed ||
+                                !this.getExternalState()
+                            ) {
+                                await this.acquire();
+
+                                await this.initialize(
+                                    !!options.useEmptyPassphrase,
+                                    !!options.useCardanoDerivation,
+                                );
+                            }
+                        }
+                    }
+                } else {
+                    await this.initialize(
+                        !!options.useEmptyPassphrase,
+                        !!options.useCardanoDerivation,
+                    );
                 }
             } catch (error) {
-                if (!this.inconsistent && error.message === 'GetFeatures timeout') {
-                    // handling corner-case T1B1 + bootloader < 1.4.0 (above)
-                    // if GetFeatures fails try again
-                    // this time add empty "fn" param to force Initialize message
-                    this.inconsistent = true;
-
-                    return this._runInner(() => Promise.resolve({}), options);
-                }
-
                 if (TRANSPORT_ERROR.ABORTED_BY_TIMEOUT === error.message) {
                     this.unreadableError = 'Connection timeout';
                 }
@@ -413,17 +437,6 @@ export class Device extends TypedEmitter<DeviceEvents> {
         ) {
             this.keepSession = false;
             await this.release();
-        }
-
-        if (this.runPromise) {
-            this.runPromise.resolve();
-        }
-
-        delete this.runPromise;
-
-        if (!this.loaded) {
-            this.loaded = true;
-            this.firstRunPromise.resolve(true);
         }
     }
 
