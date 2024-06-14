@@ -29,11 +29,7 @@ import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 
 import { useCoinmarketRecomposeAndSign } from './../../useCoinmarketRecomposeAndSign';
 import { getFilteredSuccessQuotes, useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
-import {
-    CoinmarketTradeSellType,
-    CoinmarketTradeType,
-    UseCoinmarketProps,
-} from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTradeSellType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketSellOffersContextProps,
     CoinmarketSellStepType,
@@ -334,6 +330,6 @@ export const useCoinmarketSellOffers = ({
         sellInfo,
         needToRegisterOrVerifyBankAccount,
         getQuotes,
-        type: 'sell' as CoinmarketTradeType,
+        type: 'sell',
     };
 };
