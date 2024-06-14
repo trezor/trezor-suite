@@ -59,6 +59,7 @@ const CoinmarketFormInputAccount = () => {
                                 ) : (
                                     <CoinmarketFormOptionTokenLogo
                                         src={invityAPI.getCoinLogoUrl(option.value)}
+                                        alt=""
                                     />
                                 )}
                                 <CoinmarketFormOptionLabel>

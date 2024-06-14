@@ -132,7 +132,7 @@ export const CoinmarketBuyOfferInfo = ({
         <Wrapper>
             <Info>
                 <Header>
-                    <CoinLogo symbol={account.symbol} size={16} />
+                    <CoinLogo symbol={account.symbol} size={16} alt="" />
                     <AccountText>
                         <AccountLabeling account={account} />
                     </AccountText>

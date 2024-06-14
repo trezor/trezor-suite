@@ -154,6 +154,7 @@ export const CoinmarketExchangeOfferInfo = ({
                         <Dark>
                             <InvityCoinLogo
                                 src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(send!))}
+                                alt=""
                             />
                             <Amount>
                                 <FormattedCryptoAmount
