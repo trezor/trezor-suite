@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useTimeoutFn, useUnmount } from 'react-use';
-import { Trade } from 'src/types/wallet/coinmarketCommonTypes';
+import { Trade, TradeType } from 'src/types/wallet/coinmarketCommonTypes';
 import { useFormDraft } from '../useFormDraft';
 import invityAPI from 'src/services/suite/invityAPI';
 import { saveTrade as saveBuyTrade } from 'src/actions/wallet/coinmarketBuyActions';
 import { saveTrade as saveExchangeTrade } from 'src/actions/wallet/coinmarketExchangeActions';
 import { saveTrade as saveSellTrade } from 'src/actions/wallet/coinmarketSellActions';
 import {
+    BuyTradeFinalStatus,
+    ExchangeTradeFinalStatus,
+    SellTradeFinalStatus,
     WatchBuyTradeResponse,
     WatchExchangeTradeResponse,
     WatchSellTradeResponse,
@@ -19,26 +22,16 @@ import {
     CoinmarketWatchTradeProps,
 } from 'src/types/coinmarket/coinmarket';
 
-export const getTradeFinalStatuses = (tradeType: string): Partial<CoinmarketTradeStatusType>[] => {
-    if (tradeType === 'buy') {
-        return ['SUCCESS', 'ERROR', 'BLOCKED'];
-    }
-
-    if (tradeType === 'sell') {
-        return ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'];
-    }
-
-    if (tradeType === 'exchange') {
-        return ['SUCCESS', 'ERROR', 'KYC'];
-    }
-
-    return [];
+export const tradeFinalStatuses: Record<TradeType, CoinmarketTradeStatusType[]> = {
+    buy: ['SUCCESS', 'ERROR', 'BLOCKED'] satisfies BuyTradeFinalStatus[],
+    sell: ['SUCCESS', 'ERROR', 'BLOCKED', 'CANCELLED', 'REFUNDED'] satisfies SellTradeFinalStatus[],
+    exchange: ['SUCCESS', 'ERROR', 'KYC'] satisfies ExchangeTradeFinalStatus[],
+    savings: [],
+    spend: [],
 };
 
 const shouldRefreshTrade = (trade: Trade | undefined) =>
-    trade &&
-    trade.data.status &&
-    !getTradeFinalStatuses(trade.tradeType).includes(trade.data.status);
+    trade && trade.data.status && !tradeFinalStatuses[trade.tradeType].includes(trade.data.status);
 
 const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
     trade,
@@ -91,7 +84,7 @@ const coinmarketWatchTrade = async <T extends CoinmarketTradeType>({
         }
     }
 
-    if (response.status && getTradeFinalStatuses(trade.tradeType).includes(response.status)) {
+    if (response.status && tradeFinalStatuses[trade.tradeType].includes(response.status)) {
         removeDraft(account.key);
     }
 };
