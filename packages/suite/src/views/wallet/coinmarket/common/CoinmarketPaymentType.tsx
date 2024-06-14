@@ -40,7 +40,7 @@ export const CoinmarketPaymentType = ({
             {method && (
                 <IconWrapper>
                     <Bg>
-                        <Icon width="24px" src={invityAPI.getPaymentMethodUrl(method)} />
+                        <Icon width="24px" src={invityAPI.getPaymentMethodUrl(method)} alt="" />
                     </Bg>
                 </IconWrapper>
             )}

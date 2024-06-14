@@ -150,7 +150,10 @@ const CryptoInput = () => {
                                     {account.symbol === option.value.toLowerCase() ? (
                                         <CoinLogo size={18} symbol={account.symbol} />
                                     ) : (
-                                        <TokenLogo src={invityAPI.getCoinLogoUrl(option.value)} />
+                                        <TokenLogo
+                                            src={invityAPI.getCoinLogoUrl(option.value)}
+                                            alt=""
+                                        />
                                     )}
                                     <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                                 </Option>

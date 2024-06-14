@@ -59,6 +59,7 @@ export const CoinmarketProviderInfo = ({ exchange, providers }: CoinmarketProvid
                                 <Icon
                                     width="16px"
                                     src={invityAPI.getProviderLogoUrl(provider.logo)}
+                                    alt=""
                                 />
                             </Bg>
                         </IconWrapper>

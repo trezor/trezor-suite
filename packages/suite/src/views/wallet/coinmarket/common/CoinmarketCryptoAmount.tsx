@@ -27,7 +27,7 @@ export const CoinmarketCryptoAmount = ({
     const logoSrc = symbol ? invityAPI.getCoinLogoUrl(symbol) : null;
     const symbolUpper = symbol?.toUpperCase();
 
-    const Logo = () => displayLogo && logoSrc && <TokenLogo src={logoSrc} />;
+    const Logo = () => displayLogo && logoSrc && <TokenLogo src={logoSrc} alt="" />;
 
     if (!amount || amount === '') {
         return (
