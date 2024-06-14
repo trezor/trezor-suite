@@ -56,7 +56,6 @@ export type CoinmarketBuyFormContextProps = UseFormReturn<CoinmarketBuyFormProps
         quotes: AppState['wallet']['coinmarket']['buy']['quotes'];
         selectedQuote: BuyTrade | undefined;
         addressVerified: AppState['wallet']['coinmarket']['buy']['addressVerified'];
-        providersInfo: BuyInfo['providerInfos'] | undefined;
         form: {
             state: {
                 isFormLoading: boolean;

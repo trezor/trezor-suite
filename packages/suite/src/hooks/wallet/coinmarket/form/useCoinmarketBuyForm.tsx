@@ -464,7 +464,6 @@ const useCoinmarketBuyForm = ({
         timer,
         quotes: getQuotesByPaymentMethod(innerQuotes, values.paymentMethod?.value ?? ''),
         quotesRequest,
-        providersInfo: buyInfo?.providerInfos,
         selectedQuote,
         selectQuote,
         goToPayment,

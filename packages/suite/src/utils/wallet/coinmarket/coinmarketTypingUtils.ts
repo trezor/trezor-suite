@@ -61,7 +61,7 @@ export const getProvidersInfoProps = (
 ) => {
     if (isCoinmarketBuyOffers(context)) {
         return {
-            providers: context.providersInfo,
+            providers: context.buyInfo?.providerInfos,
         };
     } else if (isCoinmarketSellOffers(context)) {
         return {
