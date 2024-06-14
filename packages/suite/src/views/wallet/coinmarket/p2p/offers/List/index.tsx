@@ -134,7 +134,7 @@ export const List = ({ quotes }: ListProps) => {
                             isLoading={timer.isLoading}
                             refetchInterval={InvityAPIReloadQuotesAfterSeconds}
                             seconds={timer.timeSpend.seconds}
-                            label={<Translation id="TR_P2P_OFFERS_REFRESH" />}
+                            label={<Translation id="TR_COINMARKET_OFFERS_REFRESH" />}
                         />
                     </Right>
                 )}
