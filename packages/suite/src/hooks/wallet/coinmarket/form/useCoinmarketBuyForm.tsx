@@ -117,10 +117,6 @@ const useCoinmarketBuyForm = ({
     });
     const { register, control, formState, reset, setValue, getValues, handleSubmit } = methods;
     const values = useWatch<CoinmarketBuyFormProps>({ control }) as CoinmarketBuyFormProps;
-    const resetForm = useCallback(() => {
-        reset({});
-        removeDraft(account.key);
-    }, [account.key, removeDraft, reset]);
     const previousValues = useRef<CoinmarketBuyFormProps | null>(
         offFirstRequest ? (draft as CoinmarketBuyFormProps) : null,
     );
@@ -471,7 +467,6 @@ const useCoinmarketBuyForm = ({
         verifyAddress,
         removeDraft,
         setAmountLimits,
-        handleClearFormButtonClick: resetForm,
     };
 };
 

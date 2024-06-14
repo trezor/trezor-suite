@@ -68,7 +68,6 @@ export type CoinmarketBuyFormContextProps = UseFormReturn<CoinmarketBuyFormProps
         verifyAddress: (account: Account, address?: string, path?: string) => Promise<void>;
         removeDraft: (key: string) => void;
         setAmountLimits: (limits?: AmountLimits) => void;
-        handleClearFormButtonClick: () => void;
     };
 
 export type CoinmarketFormMapProps = {
