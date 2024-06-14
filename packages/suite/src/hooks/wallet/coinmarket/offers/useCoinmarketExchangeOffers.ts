@@ -213,8 +213,8 @@ export const useCoinmarketExchangeOffers = ({
             ok = true;
         } else {
             // CONFIRMING, SUCCESS
-            await saveTrade(response, account, new Date().toISOString());
-            await saveTransactionId(response.orderId);
+            saveTrade(response, account, new Date().toISOString());
+            saveTransactionId(response.orderId);
             ok = true;
             navigateToExchangeDetail();
         }
@@ -249,7 +249,7 @@ export const useCoinmarketExchangeOffers = ({
                 if (selectedQuote.status === 'CONFIRM' && selectedQuote.approvalType !== 'ZERO') {
                     quote.receiveTxHash = txid;
                     quote.status = 'CONFIRMING';
-                    await saveTrade(quote, account, new Date().toISOString());
+                    saveTrade(quote, account, new Date().toISOString());
                     confirmTrade(quote.receiveAddress || '', undefined, quote);
                 } else {
                     quote.approvalSendTxHash = txid;
@@ -292,8 +292,8 @@ export const useCoinmarketExchangeOffers = ({
             );
             // in case of not success, recomposeAndSign shows notification
             if (result?.success) {
-                await saveTrade(selectedQuote, account, new Date().toISOString());
-                await saveTransactionId(selectedQuote.orderId);
+                saveTrade(selectedQuote, account, new Date().toISOString());
+                saveTransactionId(selectedQuote.orderId);
                 navigateToExchangeDetail();
             }
         } else {

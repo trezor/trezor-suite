@@ -168,8 +168,8 @@ export const useCoinmarketSellOffers = ({
                 (response.trade.status === 'SUBMITTED' && provider.flow === 'PAYMENT_GATE')
             ) {
                 if (provider.flow === 'PAYMENT_GATE') {
-                    await dispatch(saveTrade(response.trade, account, new Date().toISOString()));
-                    await dispatch(saveTransactionId(response.trade.orderId));
+                    dispatch(saveTrade(response.trade, account, new Date().toISOString()));
+                    dispatch(saveTransactionId(response.trade.orderId));
                     setSelectedQuote(response.trade);
                     setSellStep('SEND_TRANSACTION');
                 }
@@ -289,8 +289,8 @@ export const useCoinmarketSellOffers = ({
                     );
                 }
 
-                await dispatch(saveTrade(response, account, new Date().toISOString()));
-                await dispatch(saveTransactionId(selectedQuote.orderId));
+                dispatch(saveTrade(response, account, new Date().toISOString()));
+                dispatch(saveTransactionId(selectedQuote.orderId));
 
                 dispatch(
                     goto('wallet-coinmarket-sell-detail', {
