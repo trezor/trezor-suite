@@ -70,14 +70,14 @@ export const useCoinmarketCommonOffers = <T extends CoinmarketTradeType>({
     };
 };
 
-export const CoinmarketOffersContext = createContext<CoinmarketOffersContextValues<any> | null>(
-    null,
-);
+export const CoinmarketOffersContext =
+    createContext<CoinmarketOffersContextValues<CoinmarketTradeType> | null>(null);
+
 CoinmarketOffersContext.displayName = 'CoinmarketOffersContext';
 
 export const useCoinmarketOffersContext = <T extends CoinmarketTradeType>() => {
-    const context = useContext<CoinmarketOffersContextValues<T> | null>(CoinmarketOffersContext);
+    const context = useContext(CoinmarketOffersContext);
     if (context === null) throw Error('CoinmarketOffersContext used without Context');
 
-    return context;
+    return context as CoinmarketOffersContextValues<T>;
 };
