@@ -71,7 +71,7 @@ export const DeviceManagerContent = () => {
             customSwitchRightView={
                 !isPortfolioTrackerDevice && (
                     <DevicesToggleButton
-                        deviceButtonState={isChangeDeviceRequested ? 'open' : 'closed'}
+                        isOpened={isChangeDeviceRequested}
                         onDeviceButtonTap={toggleIsChangeDeviceRequested}
                     />
                 )
