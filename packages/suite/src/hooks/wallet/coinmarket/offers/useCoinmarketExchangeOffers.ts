@@ -332,6 +332,6 @@ export const useCoinmarketExchangeOffers = ({
         receiveAccount,
         setReceiveAccount,
         getQuotes,
-        type: 'exchange' as const,
+        type: 'exchange',
     };
 };
