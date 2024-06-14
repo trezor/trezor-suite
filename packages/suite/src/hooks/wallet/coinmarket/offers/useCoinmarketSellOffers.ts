@@ -83,9 +83,12 @@ export const useCoinmarketSellOffers = ({
 
                     return;
                 }
-                const quotes = processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes);
-                const successQuotes = getFilteredSuccessQuotes<CoinmarketTradeSellType>(quotes);
-                setInnerQuotes(successQuotes);
+
+                setInnerQuotes(
+                    getFilteredSuccessQuotes<CoinmarketTradeSellType>(
+                        processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes),
+                    ),
+                );
             } else {
                 setInnerQuotes(undefined);
             }
