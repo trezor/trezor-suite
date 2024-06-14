@@ -140,6 +140,7 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                 <OfferColumn2>
                     <CoinmarketUtilsPrice {...cryptoAmountProps} />
                 </OfferColumn2>
+                s
                 <OfferColumn3>
                     {quote.status === 'LOGIN_REQUEST' ? (
                         <StyledButton onClick={() => selectQuote(quote)}>
