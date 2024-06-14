@@ -24,6 +24,9 @@ import {
     SellFiatTradeRequest,
     SellFiatTradeResponse,
     CryptoSymbolsResponse,
+    SavingsPaymentMethod,
+    SellCryptoPaymentMethod,
+    BuyCryptoPaymentMethod,
 } from 'invity-api';
 import { getSuiteVersion, isDesktop } from '@trezor/env-utils';
 import type { InvityServerEnvironment, InvityServers } from '@suite-common/invity';
@@ -423,6 +426,16 @@ class InvityAPI {
 
     getCoinLogoUrl(coin: string): string {
         return `${this.getApiServerUrl()}/images/coins/suite/${coin}.svg`;
+    }
+
+    getProviderLogoUrl(logo: string): string {
+        return `${this.getApiServerUrl()}/images/exchange/${logo}`;
+    }
+
+    getPaymentMethodUrl(
+        paymentMethod: BuyCryptoPaymentMethod | SellCryptoPaymentMethod | SavingsPaymentMethod,
+    ): string {
+        return `${this.getApiServerUrl()}/images/paymentMethods/suite/${paymentMethod}.svg`;
     }
 
     private getWatchTradeData = (tradeType: CoinmarketTradeType) => {

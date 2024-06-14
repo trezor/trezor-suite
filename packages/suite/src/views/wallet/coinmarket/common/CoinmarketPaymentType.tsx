@@ -1,8 +1,8 @@
 import { ReactNode } from 'react';
 import styled from 'styled-components';
-import invityApi from 'src/services/suite/invityAPI';
 import { BuyCryptoPaymentMethod, SellCryptoPaymentMethod } from 'invity-api';
 import { CoinmarketPaymentPlainType } from './CoinmarketPaymentPlainType';
+import invityAPI from 'src/services/suite/invityAPI';
 
 const Wrapper = styled.div`
     display: flex;
@@ -37,14 +37,13 @@ export const CoinmarketPaymentType = ({
 }: CoinmarketPaymentTypeProps) => (
     <Wrapper>
         <>
-            <IconWrapper>
-                <Bg>
-                    <Icon
-                        width="24px"
-                        src={`${invityApi.getApiServerUrl()}/images/paymentMethods/suite/${method}.svg`}
-                    />
-                </Bg>
-            </IconWrapper>
+            {method && (
+                <IconWrapper>
+                    <Bg>
+                        <Icon width="24px" src={invityAPI.getPaymentMethodUrl(method)} />
+                    </Bg>
+                </IconWrapper>
+            )}
             <CoinmarketPaymentPlainType method={method} methodName={methodName}>
                 {children}
             </CoinmarketPaymentPlainType>
