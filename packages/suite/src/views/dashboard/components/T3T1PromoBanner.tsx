@@ -98,9 +98,7 @@ const NextGenerationTextBlockHighlight = styled(NextGenerationTextBlock)`
     background-size: 100%;
 `;
 
-const NextGenerationTextBlockSecurity = styled(NextGenerationTextBlock)`
-    # white-space: nowrap;
-`;
+const NextGenerationTextBlockSecurity = styled(NextGenerationTextBlock)``;
 
 const ProductsImageWrapper = styled.div`
     grid-column: 2;

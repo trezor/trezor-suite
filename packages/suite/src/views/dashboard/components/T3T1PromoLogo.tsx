@@ -23,7 +23,7 @@ const Square = styled.div`
     justify-content: center;
     width: 14px;
     height: 16px;
-    background-color: #ffffff;
+    background-color: #fff;
     color: ${colorVariants.standard.backgroundPrimaryDefault};
     border-radius: ${borders.radii.xxs};
     text-align: center;
