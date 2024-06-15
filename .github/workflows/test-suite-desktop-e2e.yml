@@ -19,6 +19,7 @@ on:
 
 jobs:
   run-desktop-tests:
+    if: github.repository == 'trezor/trezor-suite'
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
