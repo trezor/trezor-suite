@@ -43,6 +43,8 @@ Run a dev build:
 -   `yarn suite:dev` (web app)
 -   `yarn suite:dev:desktop` (electron app)
 
+Development is also possible on WSL, [more info here](./docs/misc/WSL.md).
+
 ## **Trezor Suite Lite** @suite-native/app
 
 > To set up your dev environment for a native platform (iOS/Android) follow [these additional steps](https://github.com/trezor/trezor-suite/tree/develop/suite-native/app#prerequisites).
