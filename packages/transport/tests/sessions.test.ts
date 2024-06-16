@@ -86,7 +86,7 @@ describe('sessions', () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
 
-        await client1.enumerateDone({ descriptors: [{ path: '1' }] });
+        await client1.enumerateDone({ descriptors: [{ path: '1', type: 1 }] });
 
         const acquireIntent = await client1.acquireIntent({ path: '1', previous: null });
 
@@ -99,6 +99,7 @@ describe('sessions', () => {
                     {
                         path: '1',
                         session: '1',
+                        type: 1,
                     },
                 ],
             },
@@ -112,6 +113,7 @@ describe('sessions', () => {
                     {
                         path: '1',
                         session: '1',
+                        type: 1,
                     },
                 ],
             },
@@ -124,7 +126,7 @@ describe('sessions', () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
 
-        await client1.enumerateDone({ descriptors: [{ path: '1' }] });
+        await client1.enumerateDone({ descriptors: [{ path: '1', type: 1 }] });
 
         const acquire1 = await client1.acquireIntent({
             path: '1',
@@ -181,7 +183,7 @@ describe('sessions', () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
 
-        await client1.enumerateDone({ descriptors: [{ path: '1' }] });
+        await client1.enumerateDone({ descriptors: [{ path: '1', type: 1 }] });
 
         const acquire1Intent = await client1.acquireIntent({ path: '1', previous: null });
         expect(acquire1Intent).toMatchObject({
