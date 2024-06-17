@@ -2,6 +2,7 @@ import { useArgs } from '@storybook/client-api';
 import { Meta, StoryObj } from '@storybook/react';
 
 import { Checkbox as CheckboxComponent, CheckboxProps } from './Checkbox';
+import { framePropsStory } from '../../common/frameProps';
 
 const meta: Meta = {
     title: 'Form/Checkbox',
@@ -28,14 +29,8 @@ export const Checkbox: StoryObj<CheckboxProps> = {
     },
     args: {
         children: 'Checkbox',
-        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+        ...framePropsStory.args,
     },
 
-    argTypes: {
-        margin: {
-            table: {
-                category: 'Frame props',
-            },
-        },
-    },
+    argTypes: framePropsStory.argTypes,
 };

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
 import { H1, H2, H3 } from '../../../index';
+import { framePropsStory } from '../../common/frameProps';
 
 const Wrapper = styled.div`
     display: flex;
@@ -20,14 +21,6 @@ export const Heading: StoryObj = {
             <H3>This is heading 3</H3>
         </Wrapper>
     ),
-    args: {
-        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
-    },
-    argTypes: {
-        margin: {
-            table: {
-                category: 'Frame props',
-            },
-        },
-    },
+    args: framePropsStory.args,
+    argTypes: framePropsStory.argTypes,
 };

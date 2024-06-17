@@ -32,3 +32,16 @@ export const withFrameProps = ({ $margin, $maxWidth }: TransientFrameProps) => {
         `};
     `;
 };
+
+export const framePropsStory = {
+    args: {
+        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+    },
+    argTypes: {
+        margin: {
+            table: {
+                category: 'Frame props',
+            },
+        },
+    },
+};
