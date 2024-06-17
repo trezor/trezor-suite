@@ -1,6 +1,6 @@
 import { DimensionValue } from 'react-native';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -14,6 +14,7 @@ import { VStack, Card, Text, Image, Button, Box, TextDivider } from '@suite-nati
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
 import { retryPassphraseAuthenticationThunk } from '@suite-native/passphrase';
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 
 import { EmptyWalletInfoSheet } from '../components/EmptyWalletInfoSheet';
 import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
@@ -52,6 +53,8 @@ export const PassphraseEmptyWalletScreen = () => {
 
     const dispatch = useDispatch();
 
+    const device = useSelector(selectDevice);
+
     const navigation = useNavigation<NavigationProp>();
 
     const [isSheetVisible, setIsSheetVisible] = useState(false);
@@ -62,6 +65,12 @@ export const PassphraseEmptyWalletScreen = () => {
 
     const handleTryAgain = () => {
         navigation.navigate(PassphraseStackRoutes.PassphraseForm);
+        dispatch(
+            deviceActions.removeButtonRequests({
+                device,
+                buttonRequestCode: 'ButtonRequest_Other',
+            }),
+        );
         dispatch(retryPassphraseAuthenticationThunk());
     };
 

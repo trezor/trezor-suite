@@ -6,6 +6,7 @@ import { isPinButtonRequestCode } from './utils';
 
 type DeviceAuthorizationState = {
     hasDeviceRequestedPin: boolean;
+    hasDeviceRequestedPassphrase: boolean;
 };
 
 type DeviceAuthorizationRootState = {
@@ -14,6 +15,7 @@ type DeviceAuthorizationRootState = {
 
 const deviceAuthorizationInitialState: DeviceAuthorizationState = {
     hasDeviceRequestedPin: false,
+    hasDeviceRequestedPassphrase: false,
 };
 
 export const deviceAuthorizationSlice = createSlice({
@@ -25,20 +27,32 @@ export const deviceAuthorizationSlice = createSlice({
             .addCase(UI.REQUEST_PIN, state => {
                 state.hasDeviceRequestedPin = true;
             })
+            .addCase(UI.REQUEST_PASSPHRASE, state => {
+                state.hasDeviceRequestedPin = false;
+                state.hasDeviceRequestedPassphrase = true;
+            })
             .addCase(UI.REQUEST_BUTTON, (state, action) => {
                 if (isPinButtonRequestCode(action)) {
                     state.hasDeviceRequestedPin = true;
                 } else {
                     state.hasDeviceRequestedPin = false;
                 }
+
+                if (action.payload.code !== 'ButtonRequest_Other') {
+                    state.hasDeviceRequestedPassphrase = false;
+                }
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.hasDeviceRequestedPin = false;
+                state.hasDeviceRequestedPassphrase = false;
             });
     },
 });
 
 export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.hasDeviceRequestedPin;
+
+export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
+    state.deviceAuthorization.hasDeviceRequestedPassphrase;
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;

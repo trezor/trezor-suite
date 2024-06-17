@@ -45,6 +45,7 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
 
     const handleSuccess = useCallback(() => {
         if (navigation.canGoBack()) {
+            console.log('pin on device go back');
             navigation.goBack();
         }
     }, [navigation]);

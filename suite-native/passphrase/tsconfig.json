@@ -12,6 +12,7 @@
             "path": "../../suite-common/wallet-core"
         },
         { "path": "../alerts" },
+        { "path": "../device-authorization" },
         { "path": "../intl" },
         { "path": "../navigation" },
         { "path": "../../packages/connect" }
