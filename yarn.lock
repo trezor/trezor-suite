@@ -9937,6 +9937,7 @@ __metadata:
   resolution: "@suite-native/state@workspace:suite-native/state"
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
+    "@sentry/react-native": "npm:5.22.3"
     "@suite-common/analytics": "workspace:*"
     "@suite-common/logger": "workspace:*"
     "@suite-common/message-system": "workspace:*"
