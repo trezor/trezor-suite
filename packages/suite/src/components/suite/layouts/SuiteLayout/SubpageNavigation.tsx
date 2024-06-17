@@ -64,7 +64,7 @@ export type NavigationItem = {
     title: JSX.Element;
     'data-test'?: string;
     isHidden?: boolean;
-    isTabActive?: TabRoute[];
+    activeRoutes?: TabRoute[];
 };
 
 interface SubpageNavigationProps {
@@ -85,10 +85,10 @@ export const SubpageNavigation = ({ items, className }: SubpageNavigationProps) 
         <Container $isFullWidth={isLoggedOut} className={className}>
             <LayoutGroup id={items[0].id}>
                 {visibleItems.map(item => {
-                    const { id, title, isTabActive } = item;
+                    const { id, title, activeRoutes } = item;
 
-                    const isActive = isTabActive
-                        ? isTabActive.includes(routeName)
+                    const isActive = activeRoutes
+                        ? activeRoutes.includes(routeName)
                         : routeName === id;
                     const isHoverable = !isActive && !isAccountLoading;
                     const onClick = isAccountLoading ? undefined : item.callback;
