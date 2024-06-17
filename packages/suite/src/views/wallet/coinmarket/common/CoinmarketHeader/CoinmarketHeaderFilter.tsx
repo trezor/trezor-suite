@@ -15,7 +15,7 @@ const SelectWrapper = styled(CoinmarketFormInputPaymentMethod)`
 
 const CoinmarketHeaderFilter = () => {
     return (
-        <Wrapper data-test="@coinmarket/buy/filter">
+        <Wrapper data-test="@coinmarket/filter">
             <SelectWrapper />
         </Wrapper>
     );
