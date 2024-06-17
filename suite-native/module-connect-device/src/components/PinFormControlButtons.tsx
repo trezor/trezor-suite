@@ -58,6 +58,7 @@ export const PinFormControlButtons = () => {
 
     const handleSuccess = useCallback(() => {
         if (navigation.canGoBack()) {
+            console.log('pin form control buttons go back');
             navigation.goBack();
         }
         reset();

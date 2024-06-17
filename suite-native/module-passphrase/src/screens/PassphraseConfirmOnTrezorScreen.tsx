@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -12,6 +12,8 @@ import {
 import { CenteredTitleHeader, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    deviceActions,
+    selectDevice,
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
@@ -26,16 +28,25 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 >;
 
 export const PassphraseConfirmOnTrezorScreen = () => {
-    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
-    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const dispatch = useDispatch();
 
     const navigation = useNavigation<NavigationProp>();
+
+    const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
+    const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+    const device = useSelector(selectDevice);
 
     useEffect(() => {
         if (isDeviceConnectedAndAuthorized && isDiscoveryActive) {
             navigation.navigate(PassphraseStackRoutes.PassphraseLoading);
+            dispatch(
+                deviceActions.removeButtonRequests({
+                    device,
+                    buttonRequestCode: 'ButtonRequest_Other',
+                }),
+            );
         }
-    }, [isDeviceConnectedAndAuthorized, isDiscoveryActive, navigation]);
+    }, [device, dispatch, isDeviceConnectedAndAuthorized, isDiscoveryActive, navigation]);
 
     return (
         <PassphraseScreenWrapper>

@@ -12,6 +12,7 @@ import {
     PassphraseStackRoutes,
 } from '@suite-native/navigation';
 import { selectDeviceState } from '@suite-common/wallet-core';
+import { selectDeviceRequestedPassphrase } from '@suite-native/device-authorization';
 
 import { selectIsVerifyingPassphraseOnEmptyWallet } from './passphraseSlice';
 
@@ -25,6 +26,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
     const navigation = useNavigation<NavigationProp>();
 
     const deviceState = useSelector(selectDeviceState);
+    const deviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
     const isVefifyingPassphraseOnEmptyWallet = useSelector(
         selectIsVerifyingPassphraseOnEmptyWallet,
     );
@@ -36,13 +38,19 @@ export const useHandleDeviceRequestsPassphrase = () => {
                 screen: PassphraseStackRoutes.PassphraseForm,
             });
         }
+        // Feature requests passphrase
+        if (!isVefifyingPassphraseOnEmptyWallet && deviceState) {
+            navigation.navigate(RootStackRoutes.PassphraseStack, {
+                screen: PassphraseStackRoutes.PassphraseForm,
+            });
+        }
     }, [deviceState, isVefifyingPassphraseOnEmptyWallet, navigation]);
 
     useEffect(() => {
-        TrezorConnect.on(UI.REQUEST_PASSPHRASE, handleRequestPassphrase);
-
-        return () => TrezorConnect.off(UI.REQUEST_PASSPHRASE, handleRequestPassphrase);
-    }, [handleRequestPassphrase]);
+        if (deviceRequestedPassphrase) {
+            handleRequestPassphrase();
+        }
+    }, [deviceRequestedPassphrase, handleRequestPassphrase]);
 
     const handleRequestPassphraseOnDevice = useCallback(() => {
         navigation.navigate(PassphraseStackRoutes.PassphraseEnterOnTrezor);

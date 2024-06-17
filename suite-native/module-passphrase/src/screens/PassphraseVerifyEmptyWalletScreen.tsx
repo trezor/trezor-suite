@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useCallback, useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -21,6 +21,7 @@ import {
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
 } from '@suite-native/passphrase';
+import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 
 import { PassphraseForm } from '../components/PassphraseForm';
 import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
