@@ -38,8 +38,6 @@ const useCoinmarketPaymentMethod = <
             if (!quotes) return;
 
             return quotes.filter(quote => {
-                if (currentPaymentMethod === '') return true; // all
-
                 return (
                     quote.paymentMethod === currentPaymentMethod &&
                     typeof quote.error === 'undefined'
