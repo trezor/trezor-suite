@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Meta, StoryObj } from '@storybook/react';
 import { Box as BoxComponent } from './Box';
 import { FONT_WEIGHT } from '../../config/variables';
+import { framePropsStory } from '../common/frameProps';
 
 const Text = styled.div`
     font-weight: ${FONT_WEIGHT.DEMI_BOLD};
@@ -41,14 +42,6 @@ export const Box: StoryObj = {
             </Wrapper>
         </>
     ),
-    args: {
-        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
-    },
-    argTypes: {
-        margin: {
-            table: {
-                category: 'Frame props',
-            },
-        },
-    },
+    args: framePropsStory.args,
+    argTypes: framePropsStory.argTypes,
 };

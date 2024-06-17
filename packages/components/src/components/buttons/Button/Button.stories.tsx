@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Button as ButtonComponent, ButtonProps } from './Button';
+import { framePropsStory } from '../../common/frameProps';
 
 const meta: Meta = {
     title: 'Buttons/Button',
@@ -10,13 +11,7 @@ export default meta;
 export const Button: StoryObj<ButtonProps> = {
     args: {
         children: 'Button label',
-        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+        ...framePropsStory.args,
     },
-    argTypes: {
-        margin: {
-            table: {
-                category: 'Frame props',
-            },
-        },
-    },
+    argTypes: framePropsStory.argTypes,
 };
