@@ -12,6 +12,7 @@ import { Button, Card as TrezorCard, variables } from '@trezor/components';
 import IconNode from '../components/icons/IconNode';
 import IconWeb from '../components/icons/IconWeb';
 import IconExtension from '../components/icons/IconExtension';
+import ZoomableIllustration from '../components/ZoomableIllustration';
 
 export const SectionCard = styled(TrezorCard)`
     margin-bottom: ${spacingsPx.xl};
@@ -160,7 +161,7 @@ export const ExampleHeading = styled.h3`
         </Button>
     </SdkHeading>
 
-    ![connect schema when used in node](../../public/images/schema-connect.svg)
+    <ZoomableIllustration src="/images/schema-connect.svg" darkMode alt="connect schema when used in node" />
 
     <SdkContainer>
         <SdkDescription>
@@ -197,7 +198,7 @@ export const ExampleHeading = styled.h3`
         </Button>
     </SdkHeading>
 
-    ![connect schema when used on web](../../public/images/schema-connect-web.svg)
+    <ZoomableIllustration src="/images/schema-connect-web.svg" darkMode alt="connect schema when used on web" />
 
     <SdkContainer>
         <SdkDescription>
@@ -236,7 +237,7 @@ export const ExampleHeading = styled.h3`
         </Button>
     </SdkHeading>
 
-    ![connect schema when used in webextension](../../public/images/schema-connect-webextension.svg)
+    <ZoomableIllustration src="/images/schema-connect-webextension.svg" darkMode alt="connect schema when used in webextension" />
 
     <SdkContainer>
         <SdkDescription>
