@@ -6,11 +6,10 @@ import {
     PriceTicker,
     Translation,
     TrendTicker,
-    TrezorLink,
 } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useTranslation } from 'src/hooks/suite';
 import { spacingsPx, typography } from '@trezor/theme';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { goto } from 'src/actions/suite/routerActions';
 import { Network } from '@suite-common/wallet-config';
@@ -23,9 +22,10 @@ import {
 import { BlurUrls } from './UrlBlur';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { showAddress } from 'src/actions/wallet/receiveActions';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Table = styled(Card)`
-    padding-bottom: ${spacingsPx.md};
     word-break: break-all;
 `;
 
@@ -96,10 +96,6 @@ const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
     color: ${({ theme }) => theme.textSubdued};
 `;
 
-const StyledTrezorLink = styled(TrezorLink)`
-    ${typography.hint}
-`;
-
 const ContractAddress = styled.div`
     ${typography.hint};
     color: ${({ theme }) => theme.textDefault};
@@ -115,16 +111,26 @@ const StyledIcon = styled(Icon)`
 `;
 
 interface TokenListProps {
+    account: Account;
     tokens: EnhancedTokenInfo[];
     network: Network;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
 }
 
-export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: TokenListProps) => {
+export const TokenList = ({
+    account,
+    tokens,
+    network,
+    tokenStatusType,
+    hideRates,
+}: TokenListProps) => {
     const dispatch = useDispatch();
     const { isMobileLayout } = useLayoutSize();
     const { translationString } = useTranslation();
+    const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
+
+    if (!unusedAddress) return null;
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (network.networkType) {
@@ -140,6 +146,16 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
         const result = copyToClipboard(contractAddress);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+        }
+    };
+
+    const onReceive = () => {
+        if (network.networkType === 'cardano') {
+            goToWithAnalytics('wallet-receive', {
+                preserveParams: true,
+            });
+        } else {
+            dispatch(showAddress(path, unusedAddress));
         }
     };
 
@@ -229,11 +245,7 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                         },
                                         {
                                             label: <Translation id="TR_NAV_RECEIVE" />,
-                                            onClick: () => {
-                                                goToWithAnalytics('wallet-receive', {
-                                                    preserveParams: true,
-                                                });
-                                            },
+                                            onClick: onReceive,
                                             isHidden:
                                                 tokenStatusType === TokenManagementAction.HIDE
                                                     ? !isMobileLayout
@@ -264,14 +276,13 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                                 !isMobileLayout,
                                         },
                                         {
-                                            label: (
-                                                <StyledTrezorLink
-                                                    variant="nostyle"
-                                                    href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
-                                                >
-                                                    <Translation id="TR_VIEW_IN_EXPLORER" />
-                                                </StyledTrezorLink>
-                                            ),
+                                            label: <Translation id="TR_VIEW_IN_EXPLORER" />,
+                                            onClick: () => {
+                                                window.open(
+                                                    `${explorerUrl}${t.contract}${explorerUrlQueryString}`,
+                                                    '_blank',
+                                                );
+                                            },
                                         },
                                     ],
                                 },
@@ -330,11 +341,7 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                         key="token-receive"
                                         variant="tertiary"
                                         icon="RECEIVE"
-                                        onClick={() => {
-                                            goToWithAnalytics('wallet-receive', {
-                                                preserveParams: true,
-                                            });
-                                        }}
+                                        onClick={onReceive}
                                     />
                                 </ButtonGroup>
                             ))}

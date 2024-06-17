@@ -8,6 +8,7 @@ import { TokenList } from '../../common/TokenList';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const Wrapper = styled.div`
     display: flex;
@@ -29,6 +30,7 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
     const { account, network } = selectedAccount;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const sortedTokens = account.tokens
         ? [...account.tokens].sort(
@@ -36,8 +38,20 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
           )
         : [];
 
-    const hiddenTokens = getTokens(sortedTokens, account.symbol, 'hidden', coinDefinitions);
-    const unverifiedTokens = getTokens(sortedTokens, account.symbol, 'unverified', coinDefinitions);
+    const hiddenTokens = getTokens(
+        sortedTokens,
+        account.symbol,
+        'hidden',
+        isDebug,
+        coinDefinitions,
+    );
+    const unverifiedTokens = getTokens(
+        sortedTokens,
+        account.symbol,
+        'unverified',
+        isDebug,
+        coinDefinitions,
+    );
 
     const hiddenTokensCount = hiddenTokens.length;
     const unverifiedTokensCount = unverifiedTokens.length;
@@ -49,7 +63,7 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
             )}
             {hiddenTokensCount > 0 && (
                 <TokenList
-                    hideRates
+                    account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
                     tokens={hiddenTokens}
                     network={network}
@@ -62,6 +76,7 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
                         tooltip="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP"
                     />
                     <TokenList
+                        account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}
                         tokens={unverifiedTokens}

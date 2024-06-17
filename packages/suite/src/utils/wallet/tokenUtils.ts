@@ -70,11 +70,14 @@ export const getTokens = (
     tokens: EnhancedTokenInfo[] | TokenInfo[],
     symbol: NetworkSymbol,
     filterType: 'shown' | 'hidden' | 'unverified',
+    isDebug: boolean,
     coinDefinitions?: TokenDefinition,
 ): EnhancedTokenInfo[] => {
     const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 
     const filteredTokens = tokens.filter(token => {
+        if (token.balance === '0' && !isDebug) return false;
+
         const isKnown = isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract);
         const isHidden = coinDefinitions?.hide.includes(token.contract);
         const isShown = coinDefinitions?.show.includes(token.contract);
