@@ -13,6 +13,7 @@ import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
 import { TokenList } from '../../common/TokenList';
 import { Translation } from 'src/components/suite';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 interface CoinsTableProps {
     selectedAccount: SelectedAccountLoaded;
@@ -25,6 +26,7 @@ export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
     const { account, network } = selectedAccount;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const tokensWithRates = enhanceTokensWithRates(
         account.tokens,
@@ -34,9 +36,21 @@ export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
     );
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
-    const shownTokens = getTokens(sortedTokens, account.symbol, 'shown', coinDefinitions);
-    const unverifiedTokens = getTokens(sortedTokens, account.symbol, 'unverified', coinDefinitions);
-    const hiddenTokens = getTokens(sortedTokens, account.symbol, 'hidden', coinDefinitions);
+    const shownTokens = getTokens(sortedTokens, account.symbol, 'shown', isDebug, coinDefinitions);
+    const unverifiedTokens = getTokens(
+        sortedTokens,
+        account.symbol,
+        'unverified',
+        isDebug,
+        coinDefinitions,
+    );
+    const hiddenTokens = getTokens(
+        sortedTokens,
+        account.symbol,
+        'hidden',
+        isDebug,
+        coinDefinitions,
+    );
 
     return shownTokens.length > 0 ? (
         <TokenList

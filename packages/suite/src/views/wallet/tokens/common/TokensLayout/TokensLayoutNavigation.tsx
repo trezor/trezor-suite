@@ -11,6 +11,7 @@ import { useElevation, variables } from '@trezor/components';
 import { useSelector } from 'src/hooks/suite';
 import { NavigationItem } from '../../../../../components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
+import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const List = styled.div`
     display: flex;
@@ -57,23 +58,27 @@ export const TokensLayoutNavigation = ({ selectedAccount }: TokensLayoutNavigati
     const coinDefinitions = useSelector(state =>
         selectCoinDefinitions(state, selectedAccount.account.symbol),
     );
+    const isDebug = useSelector(selectIsDebugModeActive);
 
     const shownTokens = getTokens(
         selectedAccount.account.tokens || [],
         selectedAccount.account.symbol,
         'shown',
+        isDebug,
         coinDefinitions,
     );
     const unverifiedTokens = getTokens(
         selectedAccount.account.tokens || [],
         selectedAccount.account.symbol,
         'unverified',
+        isDebug,
         coinDefinitions,
     );
     const hiddenTokens = getTokens(
         selectedAccount.account.tokens || [],
         selectedAccount.account.symbol,
         'hidden',
+        isDebug,
         coinDefinitions,
     );
 

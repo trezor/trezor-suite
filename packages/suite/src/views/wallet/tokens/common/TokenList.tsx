@@ -10,7 +10,7 @@ import {
 } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useTranslation } from 'src/hooks/suite';
 import { spacingsPx, typography } from '@trezor/theme';
-import { TokenAddress } from '@suite-common/wallet-types';
+import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
 import { goto } from 'src/actions/suite/routerActions';
 import { Network } from '@suite-common/wallet-config';
@@ -114,13 +114,20 @@ const StyledIcon = styled(Icon)`
 `;
 
 interface TokenListProps {
+    account: Account;
     tokens: EnhancedTokenInfo[];
     network: Network;
     tokenStatusType: TokenManagementAction;
     hideRates?: boolean;
 }
 
-export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: TokenListProps) => {
+export const TokenList = ({
+    account,
+    tokens,
+    network,
+    tokenStatusType,
+    hideRates,
+}: TokenListProps) => {
     const dispatch = useDispatch();
     const { isMobileLayout } = useLayoutSize();
     const { translationString } = useTranslation();
@@ -139,6 +146,16 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
         const result = copyToClipboard(contractAddress);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
+        }
+    };
+
+    const onReceive = () => {
+        if (network.networkType === 'cardano') {
+            goToWithAnalytics('wallet-receive', {
+                preserveParams: true,
+            });
+        } else {
+            dispatch(showAddress(path, unusedAddress));
         }
     };
 
@@ -263,14 +280,13 @@ export const TokenList = ({ tokens, network, tokenStatusType, hideRates }: Token
                                                 !isMobileLayout,
                                         },
                                         {
-                                            label: (
-                                                <StyledTrezorLink
-                                                    variant="nostyle"
-                                                    href={`${explorerUrl}${t.contract}${explorerUrlQueryString}`}
-                                                >
-                                                    <Translation id="TR_VIEW_IN_EXPLORER" />
-                                                </StyledTrezorLink>
-                                            ),
+                                            label: <Translation id="TR_VIEW_IN_EXPLORER" />,
+                                            onClick: () => {
+                                                window.open(
+                                                    `${explorerUrl}${t.contract}${explorerUrlQueryString}`,
+                                                    '_blank',
+                                                );
+                                            },
                                         },
                                     ],
                                 },
