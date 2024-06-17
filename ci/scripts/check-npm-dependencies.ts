@@ -1,8 +1,8 @@
 /**
- * node check-npm-dependencies.js <package_name> <semver>
+ * yarn tsx check-npm-dependencies.ts <package_name> <semver>
  *
  * This script checks the dependencies for the specified package to ensure they match expected criteria.
- * It is used to verify the output of ci/scripts/connect-release-init-npm.js. */
+ * It is used to verify the output of ci/scripts/connect-bump-versions.ts. */
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
@@ -16,7 +16,7 @@ const packagesPath = path.join(rootPath, 'packages');
 const args = process.argv.slice(2);
 
 if (args.length < 2)
-    throw new Error('Usage: node check-npm-dependencies.js <package_name> <semver>');
+    throw new Error('Usage: yarn tsx check-npm-dependencies.ts <package_name> <semver>');
 
 const [packageName, semver] = args;
 const allowedSemvers = ['patch', 'minor', 'prerelease'];
