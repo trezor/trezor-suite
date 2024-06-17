@@ -38,23 +38,10 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
           )
         : [];
 
-    const hiddenTokens = getTokens(
-        sortedTokens,
-        account.symbol,
-        'hidden',
-        isDebug,
-        coinDefinitions,
-    );
-    const unverifiedTokens = getTokens(
-        sortedTokens,
-        account.symbol,
-        'unverified',
-        isDebug,
-        coinDefinitions,
-    );
+    const tokens = getTokens(sortedTokens, account.symbol, isDebug, coinDefinitions);
 
-    const hiddenTokensCount = hiddenTokens.length;
-    const unverifiedTokensCount = unverifiedTokens.length;
+    const hiddenTokensCount = tokens.hidden.length;
+    const unverifiedTokensCount = tokens.unverified.length;
 
     return (
         <Wrapper>
@@ -65,7 +52,7 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
                 <TokenList
                     account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
-                    tokens={hiddenTokens}
+                    tokens={tokens.hidden}
                     network={network}
                 />
             )}
@@ -79,7 +66,7 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
                         account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}
-                        tokens={unverifiedTokens}
+                        tokens={tokens.unverified}
                         network={network}
                     />
                 </UnverifiedTokens>
