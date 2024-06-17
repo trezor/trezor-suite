@@ -1,6 +1,7 @@
 import { Formatter } from '@suite-common/formatters';
 import { NetworkSymbol } from '@suite-common/wallet-config';
-import { Account, AmountLimitsString } from '@suite-common/wallet-types';
+import { AmountLimitsString } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
 import {
     findToken,
     formatNetworkAmount,

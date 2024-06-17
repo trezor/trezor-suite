@@ -17,5 +17,6 @@ export * from './transactionUtils';
 export * from './validationUtils';
 export * from './antiFraud';
 export * from './stakingUtils';
+export * from './reviewTransactionUtils';
 
 export { analyzeTransactions as analyzeTransactionsFixtures } from './__fixtures__/transactionUtils';

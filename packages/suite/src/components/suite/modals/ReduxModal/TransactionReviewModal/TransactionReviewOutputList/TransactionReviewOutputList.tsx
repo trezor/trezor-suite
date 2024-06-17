@@ -12,9 +12,9 @@ import { TransactionReviewDetails } from './TransactionReviewDetails';
 import { TransactionReviewOutput } from './TransactionReviewOutput';
 import type { Account } from 'src/types/wallet';
 import type { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
-import { getOutputState } from 'src/utils/wallet/reviewTransactionUtils';
+import { getTransactionReviewOutputState } from '@suite-common/wallet-utils';
 import { TransactionReviewTotalOutput } from './TransactionReviewTotalOutput';
-import { ReviewOutput } from 'src/types/wallet/transaction';
+import { ReviewOutput } from '@suite-common/wallet-types';
 import { spacingsPx } from '@trezor/theme';
 import { StakeFormState, StakeType } from '@suite-common/wallet-types';
 
@@ -184,13 +184,15 @@ export const TransactionReviewOutputList = ({
     const totalRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        const isLastStep = getOutputState(outputs.length, buttonRequestsCount) === 'active';
+        const isLastStep =
+            getTransactionReviewOutputState(outputs.length, buttonRequestsCount) === 'active';
 
         if (isLastStep) {
             totalRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
         } else {
             const activeIndex = outputs.findIndex(
-                (_, index) => getOutputState(index, buttonRequestsCount) === 'active',
+                (_, index) =>
+                    getTransactionReviewOutputState(index, buttonRequestsCount) === 'active',
             );
 
             outputRefs.current[activeIndex]?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -208,7 +210,7 @@ export const TransactionReviewOutputList = ({
                         {outputs.map((output, index) => {
                             const state = signedTx
                                 ? 'success'
-                                : getOutputState(index, buttonRequestsCount);
+                                : getTransactionReviewOutputState(index, buttonRequestsCount);
 
                             return (
                                 <TransactionReviewOutput

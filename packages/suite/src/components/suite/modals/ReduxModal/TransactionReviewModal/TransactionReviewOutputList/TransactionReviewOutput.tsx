@@ -4,7 +4,7 @@ import { Translation } from 'src/components/suite';
 import { formatNetworkAmount, formatAmount, isTestnet } from '@suite-common/wallet-utils';
 import { BTC_LOCKTIME_VALUE } from '@suite-common/wallet-constants';
 import { Network, NetworkSymbol } from 'src/types/wallet';
-import { ReviewOutput } from 'src/types/wallet/transaction';
+import { ReviewOutput } from '@suite-common/wallet-types';
 import {
     TransactionReviewStepIndicator,
     TransactionReviewStepIndicatorProps,

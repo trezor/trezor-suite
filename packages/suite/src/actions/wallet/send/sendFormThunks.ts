@@ -7,7 +7,6 @@ import {
     FormState,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
-    RbfLabelsToBeUpdated,
 } from '@suite-common/wallet-types';
 import {
     enhancePrecomposedTransactionThunk,
@@ -32,6 +31,7 @@ import { findLabelsToBeMovedOrDeleted, moveLabelsForRbfAction } from '../moveLab
 import { selectMetadata } from 'src/reducers/suite/metadataReducer';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 export const MODULE_PREFIX = '@send';
 

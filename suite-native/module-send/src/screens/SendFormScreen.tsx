@@ -1,4 +1,5 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 import {
     GoBackIcon,
@@ -9,23 +10,31 @@ import {
     StackProps,
 } from '@suite-native/navigation';
 import { HStack, Text, VStack } from '@suite-native/atoms';
-import { AccountsRootState, selectAccountByKey } from '@suite-common/wallet-core';
+import {
+    AccountsRootState,
+    selectAccountByKey,
+    updateFeeInfoThunk,
+} from '@suite-common/wallet-core';
 import { CryptoAmountFormatter } from '@suite-native/formatters';
 
-import { SendForm } from '../components/SendForm';
+import { SendOutputsForm } from '../components/SendOutputsForm';
 
 export const SendFormScreen = ({
     route: { params },
 }: StackProps<SendStackParamList, SendStackRoutes.SendForm>) => {
     const { accountKey } = params;
+    const dispatch = useDispatch();
 
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
     );
 
+    useEffect(() => {
+        if (account?.symbol) dispatch(updateFeeInfoThunk(account.symbol));
+    }, []);
+
     if (!account) return;
 
-    // TODO: move text content to @suite-native/intl package when is copy ready
     return (
         <Screen
             subheader={<ScreenSubHeader content="Send form screen" leftIcon={<GoBackIcon />} />}

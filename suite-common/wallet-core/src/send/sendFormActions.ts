@@ -2,13 +2,13 @@ import { createAction } from '@reduxjs/toolkit';
 
 import {
     FormState,
-    SerializedTx,
     AccountKey,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
 
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import { SerializedTx } from './sendFormTypes';
 
 const storeDraft = createAction(
     `${SEND_MODULE_PREFIX}/store-draft`,

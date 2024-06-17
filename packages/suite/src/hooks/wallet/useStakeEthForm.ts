@@ -31,14 +31,13 @@ import {
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import {
-    PrecomposedTransactionFinal,
-    StakeFormState,
-    StakeContextValues,
-    AmountLimitsString,
-} from '@suite-common/wallet-types';
+import { PrecomposedTransactionFinal, StakeFormState } from '@suite-common/wallet-types';
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
-import { selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
+import {
+    AmountLimitsString,
+    StakeContextValues,
+    selectFiatRatesByFiatRateKey,
+} from '@suite-common/wallet-core';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
 import { useFees } from './form/useFees';

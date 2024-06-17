@@ -12,16 +12,10 @@ import {
     getFiatRateKey,
     toFiatCurrency,
 } from '@suite-common/wallet-utils';
-import {
-    UseSendFormState,
-    Output,
-    Timestamp,
-    FiatRatesResult,
-    Rate,
-    FiatRates,
-} from '@suite-common/wallet-types';
+import { Output, Timestamp, FiatRatesResult, Rate, FiatRates } from '@suite-common/wallet-types';
 import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { UseSendFormState } from 'src/types/wallet/sendForm';
 
 type useSendFormImportProps = {
     network: UseSendFormState['network'];

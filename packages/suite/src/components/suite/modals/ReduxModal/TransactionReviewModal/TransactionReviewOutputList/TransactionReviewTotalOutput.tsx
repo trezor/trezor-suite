@@ -7,10 +7,10 @@ import { TrezorDevice } from 'src/types/suite';
 import { Translation } from 'src/components/suite/Translation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import {
-    getOutputState,
+    getTransactionReviewOutputState,
     getIsUpdatedSendFlow,
     getIsUpdatedEthereumSendFlow,
-} from 'src/utils/wallet/reviewTransactionUtils';
+} from '@suite-common/wallet-utils';
 import { TransactionReviewStepIndicator } from './TransactionReviewStepIndicator';
 import {
     TransactionReviewOutputElement,
@@ -24,7 +24,9 @@ type StepIndicatorProps = Pick<
 >;
 
 const StepIndicator = ({ signedTx, outputs, buttonRequestsCount }: StepIndicatorProps) => {
-    const state = signedTx ? 'success' : getOutputState(outputs.length, buttonRequestsCount);
+    const state = signedTx
+        ? 'success'
+        : getTransactionReviewOutputState(outputs.length, buttonRequestsCount);
 
     return <TransactionReviewStepIndicator state={state} size={16} />;
 };

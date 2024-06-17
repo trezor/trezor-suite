@@ -5,7 +5,6 @@ import { createThunk } from '@suite-common/redux-utils';
 import {
     Account,
     AccountKey,
-    ComposeActionContext,
     FormState,
     GeneralPrecomposedTransactionFinal,
     PrecomposedTransactionFinal,
@@ -64,6 +63,7 @@ import {
     composeSolanaSendFormTransactionThunk,
 } from './sendFormSolanaThunks';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import { ComposeActionContext } from './sendFormTypes';
 
 export const convertSendFormDraftsBtcAmountUnitsThunk = createThunk(
     `${SEND_MODULE_PREFIX}/convertSendFormDraftsBtcAmountUnitsThunk`,
