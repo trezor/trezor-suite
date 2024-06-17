@@ -25,7 +25,6 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 const Table = styled(Card)`
-    padding-bottom: ${spacingsPx.md};
     word-break: break-all;
 `;
 
