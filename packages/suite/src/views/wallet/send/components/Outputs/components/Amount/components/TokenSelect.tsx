@@ -7,22 +7,18 @@ import { Account } from 'src/types/wallet';
 import { Output } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { TooltipSymbol, Translation } from 'src/components/suite';
-import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 import {
     enhanceTokensWithRates,
     formatTokenSymbol,
+    getTokens,
     sortTokensWithRates,
 } from 'src/utils/wallet/tokenUtils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
-import {
-    TokenDefinitions,
-    isTokenDefinitionKnown,
-    selectCoinDefinitions,
-} from '@suite-common/token-definitions';
+import { TokenDefinitions, selectCoinDefinitions } from '@suite-common/token-definitions';
 
 const UnrecognizedTokensHeading = styled.div`
     display: flex;
@@ -38,7 +34,7 @@ interface Option {
 }
 
 export const buildTokenOptions = (
-    tokens: Account['tokens'],
+    accountTokens: Account['tokens'],
     symbol: Account['symbol'],
     coinDefinitions: TokenDefinitions['coin'],
 ) => {
@@ -49,35 +45,31 @@ export const buildTokenOptions = (
         },
     ];
 
-    if (tokens) {
-        const unknownTokens: Option['options'] = [];
-        const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
+    if (accountTokens) {
+        const tokens = getTokens(accountTokens, symbol, false, coinDefinitions);
 
-        tokens.forEach(token => {
-            if (new BigNumber(token?.balance || '').eq('0')) {
-                return;
-            }
-
-            // if symbol is missing, use start of contract address
-            const tokenSymbol = formatTokenSymbol(token.symbol || token.contract);
-
-            if (
-                !hasCoinDefinitions ||
-                isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract)
-            ) {
-                result[0].options.push({
-                    value: token.contract,
-                    label: tokenSymbol,
-                });
-            } else {
-                unknownTokens.push({
-                    value: token.contract,
-                    label: tokenSymbol,
-                });
-            }
+        tokens.shown.forEach(token => {
+            result[0].options.push({
+                value: token.contract,
+                label: formatTokenSymbol(token.symbol || token.contract),
+            });
         });
 
-        if (unknownTokens.length) {
+        if (tokens.hidden.length) {
+            result.push({
+                label: (
+                    <UnrecognizedTokensHeading>
+                        <Translation id="TR_HIDDEN_TOKENS" />
+                    </UnrecognizedTokensHeading>
+                ),
+                options: tokens.hidden.map(token => ({
+                    value: token.contract,
+                    label: formatTokenSymbol(token.symbol || token.contract),
+                })),
+            });
+        }
+
+        if (tokens.unverified.length) {
             result.push({
                 label: (
                     <UnrecognizedTokensHeading>
@@ -87,7 +79,10 @@ export const buildTokenOptions = (
                         />
                     </UnrecognizedTokensHeading>
                 ),
-                options: unknownTokens,
+                options: tokens.unverified.map(token => ({
+                    value: token.contract,
+                    label: formatTokenSymbol(token.symbol || token.contract),
+                })),
             });
         }
     }
