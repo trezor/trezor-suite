@@ -49,7 +49,6 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
             )}
             {hiddenTokensCount > 0 && (
                 <TokenList
-                    hideRates
                     tokenStatusType={TokenManagementAction.SHOW}
                     tokens={hiddenTokens}
                     network={network}
