@@ -14,6 +14,7 @@ import {
 } from '@trezor/theme';
 import { UIVariant } from '../../config/types';
 import { useElevation } from '../..';
+import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
 
 export type WarningVariant = Extract<
     UIVariant,
@@ -27,6 +28,7 @@ export interface WarningProps {
     withIcon?: boolean;
     icon?: IconType;
     filled?: boolean;
+    margin?: FrameProps['margin'];
 }
 
 type MapArgs = {
@@ -82,7 +84,7 @@ const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconType => 
     return iconMap[$variant];
 };
 
-type WrapperParams = {
+type WrapperParams = TransientFrameProps & {
     $variant: WarningVariant;
     $withIcon?: boolean;
     $elevation: Elevation;
@@ -106,6 +108,8 @@ const Wrapper = styled.div<WrapperParams>`
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
     width: 100%;
 
+    ${withFrameProps}
+
     ${variables.SCREEN_QUERY.MOBILE} {
         align-items: stretch;
         flex-direction: column;
@@ -120,6 +124,7 @@ export const Warning = ({
     withIcon,
     icon,
     filled = true,
+    margin,
 }: WarningProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
@@ -131,6 +136,7 @@ export const Warning = ({
             className={className}
             $elevation={elevation}
             $filled={filled}
+            $margin={margin}
         >
             {withIcon && (
                 <Icon
