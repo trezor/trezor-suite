@@ -7,7 +7,7 @@ import { Icon, IconName } from '@suite-common/icons';
 import { Box } from './Box';
 import { Text } from './Text';
 
-type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
+export type AlertBoxVariant = 'info' | 'success' | 'warning' | 'error';
 
 type AlertBoxStyle = {
     backgroundColor: Color;

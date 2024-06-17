@@ -63,7 +63,10 @@ export type ReceiveStackParamList = {
 
 export type SendStackParamList = {
     [SendStackRoutes.SendAccounts]: undefined;
-    [SendStackRoutes.SendForm]: {
+    [SendStackRoutes.SendOutputs]: {
+        accountKey: AccountKey;
+    };
+    [SendStackRoutes.SendReview]: {
         accountKey: AccountKey;
     };
 };

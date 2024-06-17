@@ -10,15 +10,15 @@ import {
 } from '@suite-native/navigation';
 import { AccountKey } from '@suite-common/wallet-types';
 
-// TODO: So far we do not want enable send form for any other network than Bitcoin Testnet.
+// TODO: So far we do not want enable send form for any other network than Bitcoin Testnet and Regtest.
 // This filter will be removed in a follow up PR.
-const TESTNET_FILTER = 'Bitcoin Testnet';
+const TESTNET_FILTER = 'TEST';
 
 export const SendAccountsScreen = ({
     navigation,
 }: StackProps<SendStackParamList, SendStackRoutes.SendAccounts>) => {
     const navigateToSendFormScreen = (accountKey: AccountKey) =>
-        navigation.navigate(SendStackRoutes.SendForm, {
+        navigation.navigate(SendStackRoutes.SendOutputs, {
             accountKey,
         });
 

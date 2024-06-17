@@ -13,12 +13,7 @@ import {
     SendStackRoutes,
     StackNavigationProps,
 } from '@suite-native/navigation';
-import {
-    AccountsRootState,
-    DeviceRootState,
-    selectDeviceAccountsByNetworkSymbol,
-    selectIsPortfolioTrackerDevice,
-} from '@suite-common/wallet-core';
+import { selectIsPortfolioTrackerDevice } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 
 import { PortfolioGraph, PortfolioGraphRef } from './PortfolioGraph';
@@ -27,10 +22,6 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
     const navigation = useNavigation<StackNavigationProps<RootStackParamList, RootStackRoutes>>();
 
     const isPortfolioTrackerDevice = useSelector(selectIsPortfolioTrackerDevice);
-
-    const testnetAccounts = useSelector((state: AccountsRootState & DeviceRootState) =>
-        selectDeviceAccountsByNetworkSymbol(state, 'test'),
-    );
 
     const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
     const [isSendEnabled] = useFeatureFlag(FeatureFlag.IsSendEnabled);
@@ -85,15 +76,9 @@ export const PortfolioContent = forwardRef<PortfolioGraphRef>((_props, ref) => {
                 )}
                 {/* TODO: remove this button when there is a proper design of the send flow ready */}
                 {isSendEnabled && (
-                    <Box>
-                        <Button
-                            size="large"
-                            onPress={handleSend}
-                            disabled={testnetAccounts.length === 0}
-                        >
-                            Send crypto
-                        </Button>
-                    </Box>
+                    <Button size="large" onPress={handleSend}>
+                        Send crypto
+                    </Button>
                 )}
             </VStack>
         </VStack>

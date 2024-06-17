@@ -1,7 +1,7 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { FieldPath, UseFormReturn } from 'react-hook-form';
 
-import { useAsyncDebounce } from '@trezor/react-utils';
+import { useDebounce } from '@trezor/react-utils';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { composeTransaction } from 'src/actions/wallet/stakeActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
@@ -40,7 +40,7 @@ export const useStakeCompose = <TFieldValues extends StakeFormState>({
     const dispatch = useDispatch();
 
     // actions
-    const debounce = useAsyncDebounce();
+    const debounce = useDebounce();
 
     // Type assertion allowing to make the hook reusable, see https://stackoverflow.com/a/73624072
     // This allows the hook to set values and errors for fields shared among multiple forms without passing them as arguments.

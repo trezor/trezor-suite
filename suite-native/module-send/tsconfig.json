@@ -3,6 +3,9 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         {
+            "path": "../../suite-common/redux-utils"
+        },
+        {
             "path": "../../suite-common/validators"
         },
         {
@@ -20,9 +23,16 @@
         { "path": "../accounts" },
         { "path": "../atoms" },
         { "path": "../device-manager" },
+        { "path": "../device-mutex" },
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../navigation" },
+        { "path": "../toasts" },
+        {
+            "path": "../../packages/blockchain-link-types"
+        },
+        { "path": "../../packages/connect" },
+        { "path": "../../packages/react-utils" },
         { "path": "../../packages/utils" }
     ]
 }

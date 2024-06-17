@@ -9,7 +9,7 @@ import {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
-import { useAsyncDebounce } from '@trezor/react-utils';
+import { useDebounce } from '@trezor/react-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import { FeeLevel } from '@trezor/connect';
@@ -58,7 +58,7 @@ export const useSendFormCompose = ({
 
     const composeRequestID = useRef(0); // compose ID, incremented with every compose request
 
-    const debounce = useAsyncDebounce();
+    const debounce = useDebounce();
 
     const composeDraft = useCallback(
         async (formValues: FormState) => {

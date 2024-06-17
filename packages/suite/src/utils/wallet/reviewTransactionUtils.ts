@@ -4,10 +4,13 @@ import { CardanoOutput } from '@trezor/connect';
 import { getFirmwareVersion } from '@trezor/device-utils';
 import { versionUtils } from '@trezor/utils';
 import { TrezorDevice } from 'src/types/suite/index';
-import { FormState, GeneralPrecomposedTransactionFinal } from '@suite-common/wallet-types';
+import {
+    FormState,
+    GeneralPrecomposedTransactionFinal,
+    ReviewOutput,
+} from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet/index';
 import { getShortFingerprint, isCardanoTx } from '@suite-common/wallet-utils';
-import { ReviewOutput } from 'src/types/wallet/transaction';
 import { StakeFormState } from '@suite-common/wallet-types';
 import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
