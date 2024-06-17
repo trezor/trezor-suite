@@ -63,6 +63,7 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
             )}
             {hiddenTokensCount > 0 && (
                 <TokenList
+                    account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
                     tokens={hiddenTokens}
                     network={network}
@@ -75,6 +76,7 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
                         tooltip="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP"
                     />
                     <TokenList
+                        account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}
                         tokens={unverifiedTokens}

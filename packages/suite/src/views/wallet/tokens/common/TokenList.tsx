@@ -22,6 +22,8 @@ import {
 import { BlurUrls } from './UrlBlur';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
+import { showAddress } from 'src/actions/wallet/receiveActions';
+import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const Table = styled(Card)`
     word-break: break-all;
@@ -126,6 +128,9 @@ export const TokenList = ({
     const dispatch = useDispatch();
     const { isMobileLayout } = useLayoutSize();
     const { translationString } = useTranslation();
+    const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
+
+    if (!unusedAddress) return null;
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (network.networkType) {
@@ -240,11 +245,7 @@ export const TokenList = ({
                                         },
                                         {
                                             label: <Translation id="TR_NAV_RECEIVE" />,
-                                            onClick: () => {
-                                                goToWithAnalytics('wallet-receive', {
-                                                    preserveParams: true,
-                                                });
-                                            },
+                                            onClick: onReceive,
                                             isHidden:
                                                 tokenStatusType === TokenManagementAction.HIDE
                                                     ? !isMobileLayout
@@ -340,11 +341,7 @@ export const TokenList = ({
                                         key="token-receive"
                                         variant="tertiary"
                                         icon="RECEIVE"
-                                        onClick={() => {
-                                            goToWithAnalytics('wallet-receive', {
-                                                preserveParams: true,
-                                            });
-                                        }}
+                                        onClick={onReceive}
                                     />
                                 </ButtonGroup>
                             ))}

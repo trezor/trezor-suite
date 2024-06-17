@@ -54,6 +54,7 @@ export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
 
     return shownTokens.length > 0 ? (
         <TokenList
+            account={account}
             hideRates={isTestnet(account.symbol)}
             tokenStatusType={TokenManagementAction.HIDE}
             tokens={shownTokens}
