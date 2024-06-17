@@ -5,13 +5,17 @@ import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
 import CoinmarketUtilsPrice from '../CoinmarketUtils/CoinmarketUtilsPrice';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { useCoinmarketOffersContext } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import {
+    isCoinmarketSellOffers,
+    useCoinmarketOffersContext,
+} from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
 import { CoinmarketTradeDetailMapProps } from 'src/types/coinmarket/coinmarket';
 import {
     getCryptoQuoteAmountProps,
     getProvidersInfoProps,
 } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { getTagAndInfoNote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { SellFiatTrade } from 'invity-api';
 
 const OfferWrap = styled(Card)`
     min-height: 100px;
@@ -148,11 +152,20 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
                     ) : (
                         <StyledButton
                             isLoading={callInProgress}
-                            isDisabled={!!quote.error}
+                            isDisabled={!!quote.error || callInProgress}
                             onClick={() => selectQuote(quote)}
                             data-test="@coinmarket/buy/offers/get-this-deal-button"
                         >
-                            <Translation id="TR_BUY_GET_THIS_OFFER" />
+                            <Translation
+                                id={
+                                    isCoinmarketSellOffers(context) &&
+                                    context.needToRegisterOrVerifyBankAccount(
+                                        quote as SellFiatTrade,
+                                    )
+                                        ? 'TR_SELL_REGISTER'
+                                        : 'TR_COINMARKET_OFFERS_SELECT'
+                                }
+                            />
                         </StyledButton>
                     )}
                 </OfferColumn3>
