@@ -36,10 +36,14 @@ const config: webpack.Configuration = {
             'serviceWorker.ts',
         ),
     },
+    experiments: {
+        outputModule: true,
+    },
     output: {
         filename: '[name].bundle.js',
         path: DIST,
         publicPath: './',
+        module: true,
     },
     module: {
         rules: [
@@ -60,7 +64,6 @@ const config: webpack.Configuration = {
                             '@babel/preset-typescript',
                         ],
                         plugins: [
-                            '@babel/plugin-proposal-class-properties',
                             [
                                 'babel-plugin-styled-components',
                                 {
@@ -133,6 +136,10 @@ const config: webpack.Configuration = {
             ],
         }),
     ],
+    optimization: {
+        minimize: false,
+        minimizer: [],
+    },
 };
 
 export default config;

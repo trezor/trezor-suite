@@ -12,7 +12,9 @@ const config: webpack.Configuration = {
     mode: 'production',
     entry: {
         'trezor-connect-webextension': path.resolve(__dirname, '../src/index.ts'),
+        // minified version doesn't include the inline content script
         'trezor-connect-webextension.min': path.resolve(__dirname, '../src/index.ts'),
+        // proxy is not published on npm
         'trezor-connect-webextension-proxy': path.resolve(__dirname, '../src/proxy/index.ts'),
         'trezor-connect-webextension-proxy.min': path.resolve(__dirname, '../src/proxy/index.ts'),
     },
