@@ -1,13 +1,10 @@
-import { selectLabelingDataForAccount } from '../../reducers/suite/metadataReducer';
+import { selectLabelingDataForAccount } from 'src/reducers/suite/metadataReducer';
 import { findChainedTransactions, findTransactions } from '@suite-common/wallet-utils';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as metadataLabelingActions from 'src/actions/suite/metadataLabelingActions';
 import { AccountLabels, AccountOutputLabels } from '@suite-common/metadata-types';
-import {
-    AccountKey,
-    RbfLabelsToBeUpdated,
-    WalletAccountTransaction,
-} from '@suite-common/wallet-types';
+import { AccountKey, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { RbfLabelsToBeUpdated } from 'src/types/wallet/sendForm';
 
 type DeleteAllOutputLabelsParams = {
     labels: AccountLabels['outputLabels']['labels'];

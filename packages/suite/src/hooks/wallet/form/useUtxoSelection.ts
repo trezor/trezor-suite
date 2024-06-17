@@ -1,16 +1,15 @@
 import { useEffect, useMemo } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 
-import {
-    UseSendFormState,
-    ExcludedUtxos,
-    UtxoSelectionContext,
-    SendContextValues,
-    FormState,
-} from '@suite-common/wallet-types';
+import { ExcludedUtxos, FormState } from '@suite-common/wallet-types';
 import type { AccountUtxo, PROTO } from '@trezor/connect';
 import { getUtxoOutpoint, isSameUtxo } from '@suite-common/wallet-utils';
 import { useCoinjoinRegisteredUtxos } from './useCoinjoinRegisteredUtxos';
+import {
+    SendContextValues,
+    UseSendFormState,
+    UtxoSelectionContext,
+} from '../../../types/wallet/sendForm';
 
 interface UtxoSelectionContextProps
     extends UseFormReturn<FormState>,

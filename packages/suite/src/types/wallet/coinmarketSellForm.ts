@@ -12,7 +12,8 @@ import type {
 } from '@suite-common/wallet-types';
 import type { Option, DefaultCountryOption, AmountLimits } from './coinmarketCommonTypes';
 import type { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { Rate, SendContextValues } from '@suite-common/wallet-types';
+import { Rate } from '@suite-common/wallet-types';
+import { SendContextValues } from './sendForm';
 
 export const OUTPUT_AMOUNT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';

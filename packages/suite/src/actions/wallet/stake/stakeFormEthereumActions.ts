@@ -14,7 +14,6 @@ import {
 } from '@suite-common/wallet-utils';
 import {
     StakeFormState,
-    ComposeActionContext,
     PrecomposedLevels,
     PrecomposedTransaction,
     PrecomposedTransactionFinal,
@@ -36,6 +35,7 @@ import {
 import { Ethereum } from '@everstake/wallet-sdk';
 import { MIN_ETH_FOR_WITHDRAWALS } from 'src/constants/suite/ethStaking';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { ComposeActionContext } from '@suite-common/wallet-core';
 
 const calculate = (
     availableBalance: string,

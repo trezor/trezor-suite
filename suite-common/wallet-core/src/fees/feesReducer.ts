@@ -1,7 +1,7 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { FeeInfo } from '@suite-common/wallet-types';
 import { NetworkSymbol, networksCompatibility } from '@suite-common/wallet-config';
+import { FeeInfo } from '@suite-common/wallet-types';
 
 import { blockchainActions } from '../blockchain/blockchainActions';
 

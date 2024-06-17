@@ -10,15 +10,12 @@ import { useStakeCompose } from './form/useStakeCompose';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 
 import { signTransaction } from 'src/actions/wallet/stakeActions';
-import {
-    ClaimContextValues,
-    ClaimFormState,
-    PrecomposedTransactionFinal,
-} from '@suite-common/wallet-types';
+import { PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { getEthNetworkForWalletSdk, getStakeFormsDefaultValues } from 'src/utils/suite/stake';
 // @ts-expect-error
 import { Ethereum } from '@everstake/wallet-sdk';
 import { useFees } from './form/useFees';
+import { ClaimContextValues, ClaimFormState } from 'src/types/wallet/claimForm';
 
 export const ClaimEthFormContext = createContext<ClaimContextValues | null>(null);
 ClaimEthFormContext.displayName = 'ClaimEthFormContext';

@@ -12,12 +12,13 @@ import {
     UserAction,
     actionSequence,
 } from 'src/support/tests/hooksHelper';
-import { FormState, SendContextValues } from '@suite-common/wallet-types';
+import { FormState } from '@suite-common/wallet-types';
 import SendIndex from 'src/views/wallet/send';
 
 import * as fixtures from '../__fixtures__/useSendForm';
 import { useSendFormContext } from '../useSendForm';
 import { act, waitFor } from '@testing-library/react';
+import { SendContextValues } from 'src/types/wallet/sendForm';
 
 const TEST_TIMEOUT = 30000;
 

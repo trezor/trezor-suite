@@ -3,8 +3,6 @@ import { FieldPath, UseFormReturn } from 'react-hook-form';
 
 import {
     FormState,
-    UseSendFormState,
-    SendContextValues,
     ExcludedUtxos,
     PrecomposedTransaction,
     PrecomposedTransactionCardano,
@@ -21,6 +19,7 @@ import { TranslationKey } from 'src/components/suite/Translation';
 import { useDispatch } from 'react-redux';
 import { composeSendFormTransactionThunk } from '@suite-common/wallet-core';
 import { useTranslation } from '../suite';
+import { SendContextValues, UseSendFormState } from 'src/types/wallet/sendForm';
 
 type Props = UseFormReturn<FormState> & {
     state: UseSendFormState;

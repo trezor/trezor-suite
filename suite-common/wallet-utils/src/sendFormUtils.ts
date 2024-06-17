@@ -26,7 +26,6 @@ import type {
     EthTransactionData,
     ExternalOutput,
     Output,
-    UseSendFormState,
     RbfTransactionParams,
     Account,
     CurrencyOption,
@@ -405,10 +404,7 @@ export const restoreOrigOutputsOrder = (
         });
 };
 
-export const getDefaultValues = (
-    currency: Output['currency'],
-    network: UseSendFormState['network'],
-): FormState => ({
+export const getDefaultValues = (currency: Output['currency'], network: Network): FormState => ({
     ...DEFAULT_VALUES,
     options:
         isFeatureFlagEnabled('RBF') && network.features?.includes('rbf')

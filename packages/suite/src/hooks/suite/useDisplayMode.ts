@@ -4,9 +4,8 @@ import { AddressDisplayOptions } from '@suite-common/wallet-types';
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { useSelector } from './useSelector';
-import { StakeType } from '@suite-common/wallet-types';
+import { StakeType, ReviewOutput } from '@suite-common/wallet-types';
 import { DisplayMode } from 'src/types/suite';
-import { ReviewOutput } from '../../types/wallet/transaction';
 
 type UseDisplayModeProps = {
     type: ReviewOutput['type'];

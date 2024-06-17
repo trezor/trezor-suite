@@ -1,16 +1,12 @@
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
-import {
-    StakeFormState,
-    PrecomposedTransactionFinal,
-    Timestamp,
-    SerializedTx,
-} from '@suite-common/wallet-types';
+import { Timestamp, StakeFormState, PrecomposedTransactionFinal } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
 import { stakeActions } from './stakeActions';
-import { StakeRootState, ValidatorsQueue } from './stakeTypes';
+import { ValidatorsQueue } from './stakeTypes';
 import { fetchEverstakeData } from './stakeThunks';
+import { SerializedTx } from '../send/sendFormTypes';
 
 export interface StakeState {
     precomposedTx?: PrecomposedTransactionFinal;
@@ -37,6 +33,8 @@ export interface StakeState {
         };
     };
 }
+
+export type StakeRootState = { wallet: { stake: StakeState } };
 
 export const stakeInitialState: StakeState = {
     precomposedTx: undefined,
@@ -122,3 +120,6 @@ export const prepareStakeReducer = createReducerWithExtraDeps(stakeInitialState,
 });
 
 export const selectStake = (state: StakeRootState) => state.wallet.stake;
+
+export const selectStakePrecomposedForm = (state: StakeRootState) =>
+    state.wallet.stake.precomposedForm;

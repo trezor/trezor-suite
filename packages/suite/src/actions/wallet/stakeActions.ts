@@ -6,16 +6,12 @@ import {
     replaceTransactionThunk,
     syncAccountsWithBlockchainThunk,
     stakeActions,
+    ComposeActionContext,
 } from '@suite-common/wallet-core';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { formatNetworkAmount, tryGetAccountIdentity } from '@suite-common/wallet-utils';
 
-import {
-    StakeFormState,
-    PrecomposedTransactionFinal,
-    ComposeActionContext,
-    StakeType,
-} from '@suite-common/wallet-types';
+import { StakeFormState, PrecomposedTransactionFinal, StakeType } from '@suite-common/wallet-types';
 
 import * as modalActions from '../suite/modalActions';
 import { Dispatch, GetState } from 'src/types/suite';

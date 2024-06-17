@@ -1,15 +1,24 @@
+import { G } from '@mobily/ts-belt';
+
 import {
     AccountKey,
     FormState,
     GeneralPrecomposedTransactionFinal,
 } from '@suite-common/wallet-types';
 import { cloneObject } from '@trezor/utils';
-import { SerializedTx } from '@suite-common/wallet-types';
 import { createReducerWithExtraDeps } from '@suite-common/redux-utils';
 import { BlockbookTransaction } from '@trezor/blockchain-link-types';
+import { NetworkSymbol, networks } from '@suite-common/wallet-config';
+import { DeviceModelInternal } from '@trezor/connect';
 
 import { sendFormActions } from './sendFormActions';
 import { accountsActions } from '../accounts/accountsActions';
+import {
+    DeviceRootState,
+    selectDeviceButtonRequestsCodes,
+    selectDeviceModel,
+} from '../device/deviceReducer';
+import { SerializedTx } from './sendFormTypes';
 
 export type SendState = {
     drafts: {
@@ -90,5 +99,46 @@ export const selectSendPrecomposedTx = (state: SendRootState) => state.wallet.se
 export const selectSendSerializedTx = (state: SendRootState) => state.wallet.send.serializedTx;
 export const selectSendSignedTx = (state: SendRootState) => state.wallet.send.signedTx;
 export const selectSendFormDrafts = (state: SendRootState) => state.wallet.send.drafts;
-export const selectSendFormDraftByAccountKey = (state: SendRootState, accountKey: AccountKey) =>
-    state.wallet.send.drafts[accountKey];
+
+export const selectSendFormDraftByAccountKey = (
+    state: SendRootState,
+    accountKey?: AccountKey,
+): FormState | null => {
+    if (G.isUndefined(accountKey)) return null;
+
+    return state.wallet.send.drafts[accountKey] ?? null;
+};
+
+export const selectSendFormReviewButtonRequestsCount = (
+    state: DeviceRootState,
+    networkSymbol?: NetworkSymbol,
+    decreaseOutputId?: number,
+) => {
+    const buttonRequestCodes = selectDeviceButtonRequestsCodes(state);
+    const deviceModel = selectDeviceModel(state);
+    const { networkType } = networks[networkSymbol ?? 'btc'];
+
+    const isCardano = networkType === 'cardano';
+    const isEthereum = networkType === 'ethereum';
+
+    const sendFormReviewRequest = buttonRequestCodes.filter(
+        code =>
+            code === 'ButtonRequest_ConfirmOutput' ||
+            code === 'ButtonRequest_SignTx' ||
+            isCardano ||
+            (isEthereum && code === 'ButtonRequest_Other'),
+    );
+
+    // NOTE: T1B1 edge-case
+    // while confirming decrease amount 'ButtonRequest_ConfirmOutput' is called twice (confirm decrease address, confirm decrease amount)
+    // remove 1 additional element to keep it consistent with T2T1 where this step is swipeable with one button request
+    if (
+        G.isNumber(decreaseOutputId) &&
+        deviceModel === DeviceModelInternal.T1B1 &&
+        sendFormReviewRequest.filter(code => code === 'ButtonRequest_ConfirmOutput').length > 1
+    ) {
+        sendFormReviewRequest.splice(-1, 1);
+    }
+
+    return isCardano ? sendFormReviewRequest.length - 1 : sendFormReviewRequest.length;
+};

@@ -7,13 +7,12 @@ import { composeTransaction } from 'src/actions/wallet/stakeActions';
 import { findComposeErrors } from '@suite-common/wallet-utils';
 import {
     StakeFormState,
-    StakeContextValues,
-    ComposeActionContext,
     PrecomposedTransaction,
     PrecomposedLevels,
 } from '@suite-common/wallet-types';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
 import { FeeLevel } from '@trezor/connect';
+import { ComposeActionContext, StakeContextValues } from '@suite-common/wallet-core';
 
 const DEFAULT_FIELD = 'outputs.0.amount';
 
