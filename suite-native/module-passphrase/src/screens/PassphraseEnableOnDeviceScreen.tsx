@@ -19,7 +19,7 @@ import { selectPassphraseError } from '@suite-native/passphrase';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
 
-import { DeviceT2B1Svg } from '../assets/DeviceT2B1Svg';
+import { DeviceT3T1Svg } from '../assets/DeviceT3T1Svg';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     PassphraseStackParamList,
@@ -74,7 +74,7 @@ export const PassphraseEnableOnDeviceScreen = () => {
             }
         >
             <VStack flex={1} justifyContent="center" alignItems="center" spacing="medium">
-                <DeviceT2B1Svg />
+                <DeviceT3T1Svg />
                 <CenteredTitleHeader
                     title={<Translation id="modulePassphrase.enablePassphrase.title" />}
                     subtitle={<Translation id="modulePassphrase.enablePassphrase.subtitle" />}
