@@ -19,7 +19,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { BlurUrls } from './UrlBlur';
+import { BlurUrls } from './BlurUrls';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { showAddress } from 'src/actions/wallet/receiveActions';
