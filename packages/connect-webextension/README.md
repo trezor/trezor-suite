@@ -13,11 +13,11 @@ The @trezor/connect-webextension package provides an implementation of @trezor/c
 
 ## Using the Library
 
-At the moment only bundles `build/trezor-connect-webextension.js` and `build/trezor-connect-webextension.min.js` are published.
+We support two methods for integrating the library into your extension:
 
 ### Option 1: Using Scripting Permissions
 
-For a seamless integration, especially with background processes, modify your extension's manifest.json to include scripting permissions, specify host_permissions, and define your service worker script as shown below:
+For a seamless integration, especially with background processes, modify your extension's `manifest.json` to include scripting permissions, specify `host_permissions`, and define your service worker script as shown below:
 
 ```json
     "permissions": ["scripting"],
@@ -27,23 +27,37 @@ For a seamless integration, especially with background processes, modify your ex
     },
 ```
 
+The content script will be injected automatically by the library using the scripting permission.
+
 #### Service Worker Import:
 
-In your serviceWorker.js, use importScripts to import the library. Ensure you replace <path> with the actual path to the library file:
+In your `serviceWorker.js`, use importScripts to import the library. Ensure you replace `<path>` with the actual path to the library file:
 
 ```javascript
 importScripts('<path>/trezor-connect-webextension.js');
 ```
 
+Or if you're using ES modules:
+
+```javascript
+import TrezorConnect from '@trezor/connect-webextension';
+```
+
+The library is only available in the service worker context, so to use it in your extension's UI, you need to communicate with the service worker. This mechanism is not provided by the library, this depends on your extension's architecture.
+Also it should be noted that the service worker may be idle when the extension is not in use, so you should implement a mechanism to keep it alive or wake it up when needed.
+
 ### Option 2: Manual Content Script Injection
+
+In cases where you cannot use scripting permissions, you can configure your extension to include the content script directly.
 
 #### Bundle the Library:
 
-Manually include build/content-script.js from this package into your project's bundle.
+Manually include `build/content-script.js` from this package into your project's bundle.
+Ideally, you should do this with a build tool like Webpack, so it can be easily maintained.
 
 #### manifest.json Update:
 
-Amend your manifest.json to include the script as a content script. Replace <path> with the real path to the library file:
+Amend your manifest.json to include the script as a content script. Replace `<path>` with the real path to the library file:
 
 ```json
   "content_scripts": [
@@ -53,6 +67,8 @@ Amend your manifest.json to include the script as a content script. Replace <pat
     }
   ],
 ```
+
+After completing these steps, you can use the module in your Service Worker in the same way as described in the previous section.
 
 ## Adding your webextension to `knownHosts`
 

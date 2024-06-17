@@ -6,7 +6,8 @@
         "default_popup": "extension-popup.html"
     },
     "background": {
-        "service_worker": "serviceWorker.bundle.js"
+        "service_worker": "serviceWorker.bundle.js",
+        "type": "module"
     },
     "permissions": ["scripting"],
     "host_permissions": ["http://*/*", "https://*/*"]

@@ -20,10 +20,8 @@
         "serviceworker",
         "webextension"
     ],
-    "main": "src/index.ts",
-    "publishConfig": {
-        "main": "lib/index.js"
-    },
+    "main": "build/trezor-connect-webextension.js",
+    "types": "src/index.ts",
     "files": [
         "build/trezor-connect-webextension.js",
         "build/trezor-connect-webextension.min.js",
@@ -35,8 +33,7 @@
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "build:content-script": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/content-script.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
-        "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/prod.webpack.config.ts",
-        "build": "yarn g:rimraf build && yarn build:content-script &&  yarn build:webextension && yarn build:inline && node ./webpack/inline-content-script.js",
+        "build": "yarn g:rimraf build && yarn build:content-script && yarn build:inline && node ./webpack/inline-content-script.js",
         "prepublish": "yarn build"
     },
     "dependencies": {
