@@ -6,7 +6,6 @@ import {
     PriceTicker,
     Translation,
     TrendTicker,
-    TrezorLink,
 } from 'src/components/suite';
 import { useDispatch, useLayoutSize, useTranslation } from 'src/hooks/suite';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -93,10 +92,6 @@ const PriceTickerWrapper = styled.div`
 const StyledFormattedCryptoAmount = styled(FormattedCryptoAmount)`
     ${typography.hint}
     color: ${({ theme }) => theme.textSubdued};
-`;
-
-const StyledTrezorLink = styled(TrezorLink)`
-    ${typography.hint}
 `;
 
 const ContractAddress = styled.div`
