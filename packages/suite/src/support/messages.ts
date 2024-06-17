@@ -224,10 +224,6 @@ export default defineMessages({
         defaultMessage: 'Provider',
         id: 'TR_EXCHANGE_PROVIDER',
     },
-    TR_EXCHANGE_GET_THIS_OFFER: {
-        id: 'TR_EXCHANGE_GET_THIS_OFFER',
-        defaultMessage: 'Get this deal',
-    },
     TR_EXCHANGE_KYC: {
         id: 'TR_EXCHANGE_KYC',
         defaultMessage: 'KYC',
@@ -869,10 +865,6 @@ export default defineMessages({
         defaultMessage: 'Sorry, none of our partners can provide an offer at this time.',
         id: 'TR_SELL_NO_OFFERS',
     },
-    TR_SELL_GET_THIS_OFFER: {
-        id: 'TR_SELL_GET_THIS_OFFER',
-        defaultMessage: 'Get this offer',
-    },
     TR_SELL_REGISTER: {
         id: 'TR_SELL_REGISTER',
         defaultMessage: 'Register',
@@ -1397,10 +1389,6 @@ export default defineMessages({
         defaultMessage: 'No providers',
         id: 'TR_BUY_NO_PROVIDERS',
     },
-    TR_BUY_GET_THIS_OFFER: {
-        id: 'TR_BUY_GET_THIS_OFFER',
-        defaultMessage: 'Get this deal',
-    },
     TR_LOGIN_PROCEED: {
         id: 'TR_LOGIN_PROCEED',
         defaultMessage: 'Proceed',
@@ -1662,6 +1650,10 @@ export default defineMessages({
     TR_COINMARKET_OFFERS_REFRESH: {
         defaultMessage: 'Offers refresh in',
         id: 'TR_COINMARKET_OFFERS_REFRESH',
+    },
+    TR_COINMARKET_OFFERS_SELECT: {
+        defaultMessage: 'Select',
+        id: 'TR_COINMARKET_OFFERS_SELECT',
     },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
