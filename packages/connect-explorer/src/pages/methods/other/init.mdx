@@ -17,7 +17,6 @@ export const InitSchema = Type.Object({
     transports: Type.Optional(
         Type.Array(Type.Literal('BridgeTransport', 'WebUsbTransport', 'NodeUsbTransport')),
     ),
-    webusb: Type.Optional(Type.Boolean()),
 });
 
 export const paramDescriptions = {
@@ -34,7 +33,6 @@ export const paramDescriptions = {
     popup: 'default `true`. Projects running on trusted domains (trezor.io) are not required to use popup. For other domains this option is ignored.',
     transports:
         'Array of transports that should be use. If not provided, TrezorConnect will chose a reasonable default based on your environment.',
-    webusb: 'default `true`. Allow webusb. Deprecated, you should use `transports` instead.',
 };
 
 ## Init
