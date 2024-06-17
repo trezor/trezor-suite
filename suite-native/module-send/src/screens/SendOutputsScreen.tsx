@@ -19,9 +19,9 @@ import { CryptoAmountFormatter } from '@suite-native/formatters';
 
 import { SendOutputsForm } from '../components/SendOutputsForm';
 
-export const SendFormScreen = ({
+export const SendOutputsScreen = ({
     route: { params },
-}: StackProps<SendStackParamList, SendStackRoutes.SendForm>) => {
+}: StackProps<SendStackParamList, SendStackRoutes.SendOutputs>) => {
     const { accountKey } = params;
     const dispatch = useDispatch();
 
@@ -31,7 +31,7 @@ export const SendFormScreen = ({
 
     useEffect(() => {
         if (account?.symbol) dispatch(updateFeeInfoThunk(account.symbol));
-    }, []);
+    }, [account?.symbol, dispatch]);
 
     if (!account) return;
 
@@ -54,7 +54,7 @@ export const SendFormScreen = ({
                         />
                     </HStack>
                 </VStack>
-                <SendForm accountKey={accountKey} />
+                <SendOutputsForm accountKey={accountKey} />
             </VStack>
         </Screen>
     );

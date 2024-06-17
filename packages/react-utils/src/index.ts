@@ -1,4 +1,4 @@
-export { useAsyncDebounce } from './hooks/useAsyncDebounce';
+export { useDebounce } from './hooks/useDebounce';
 export { useDidUpdate } from './hooks/useDidUpdate';
 export { useKeyPress } from './hooks/useKeyPress';
 export { useOnce } from './hooks/useOnce';

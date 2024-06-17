@@ -72,7 +72,8 @@ export enum ReceiveStackRoutes {
 
 export enum SendStackRoutes {
     SendAccounts = 'SendAccounts',
-    SendForm = 'SendForm',
+    SendOutputs = 'SendOutputs',
+    SendReview = 'SendReview',
 }
 
 export enum AddCoinAccountStackRoutes {
