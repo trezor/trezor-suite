@@ -1,4 +1,4 @@
-import { Badge, Text, Tooltip } from '@trezor/components';
+import { Badge, Tooltip } from '@trezor/components';
 import { spacings } from '@trezor/theme';
 import { Translation } from '../../../../components/suite';
 import { useLayoutSize, useSelector } from '../../../../hooks/suite';
@@ -75,12 +75,7 @@ export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptions
                     )
                 }
             >
-                <Text
-                    typographyStyle="hint"
-                    variant={is1of1shamirSupportedByFirmware ? undefined : 'tertiary'}
-                >
-                    <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
-                </Text>
+                <Translation id="TR_ONBOARDING_SEED_TYPE_SINGLE_SEED_DESCRIPTION" />
             </OptionWithContent>
 
             <OptionWithContent
@@ -94,9 +89,7 @@ export const ShamirOptions = ({ defaultType, onSelect, selected }: ShamirOptions
                     </>
                 }
             >
-                <Text typographyStyle="hint">
-                    <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
-                </Text>
+                <Translation id="TR_ONBOARDING_SEED_TYPE_ADVANCED_DESCRIPTION" />
             </OptionWithContent>
         </>
     );
