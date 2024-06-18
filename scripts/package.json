@@ -2,6 +2,7 @@
     "name": "@trezor/scripts",
     "version": "1.0.0",
     "private": true,
+    "type": "module",
     "scripts": {
         "type-check": "yarn g:tsc --build",
         "run:analytics": "tsx githubAnalytics.ts"
@@ -19,6 +20,7 @@
     },
     "devDependencies": {
         "@types/fs-extra": "^11.0.4",
-        "@types/prettier": "^3.0.0"
+        "@types/prettier": "^3.0.0",
+        "tsx": "^4.7.1"
     }
 }

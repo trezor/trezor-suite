@@ -19,7 +19,7 @@ const GH_TOKEN = process.env.GH_TOKEN!;
 const VALIDATION_WORKFLOW_ID = 'validation.yml';
 
 // Number of workflow runs to analyze, should be a multiple of 100
-const NUMBER_OF_WORFLOW_RUNS_TO_ANALYZE = 500;
+const NUMBER_OF_WORFLOW_RUNS_TO_ANALYZE = 1000;
 
 // Create a personal access token at https://github.com/settings/tokens/new?scopes=repo
 const octokit = new Octokit({ auth: GH_TOKEN });
@@ -94,7 +94,7 @@ const sortedTimes = validationCheckRuns.map(run => run.time).sort((a: number, b:
 const p100Time = sortedTimes[sortedTimes.length - 1];
 console.log('Slowest time: %d minutes (%d seconds total)', (p100Time / 60).toFixed(2), p100Time);
 
-const P = [0.99, 0.98, 0.95, 0.9];
+const P = [0.99, 0.98, 0.95, 0.9, 0.5, 0.25, 0.1];
 
 P.forEach(p => {
     const index = Math.floor(sortedTimes.length * p);

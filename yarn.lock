@@ -11254,6 +11254,7 @@ __metadata:
     octokit: "npm:3.1.2"
     prettier: "npm:3.2.5"
     sort-package-json: "npm:^1.57.0"
+    tsx: "npm:^4.7.1"
     yargs: "npm:17.7.2"
   languageName: unknown
   linkType: soft
