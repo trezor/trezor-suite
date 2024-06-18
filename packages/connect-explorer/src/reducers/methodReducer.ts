@@ -52,7 +52,7 @@ const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
     const field = findField(newState, _field);
     if (!field || !isFieldBasic(field)) return state;
     field.value = value;
-    if (field.affect) {
+    if (field.affect && !state.manualMode) {
         setAffectedValues(newState, field);
     }
 
