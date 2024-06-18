@@ -10444,7 +10444,7 @@ __metadata:
     webpack-cli: "npm:^5.1.4"
     webpack-dev-server: "npm:^4.15.1"
     worker-loader: "npm:^3.0.8"
-    ws: "npm:^8.16.0"
+    ws: "npm:^8.17.1"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -10839,7 +10839,7 @@ __metadata:
     ts-node: "npm:^10.9.1"
     tsx: "npm:^4.7.0"
     webpack: "npm:^5.90.1"
-    ws: "npm:^8.16.0"
+    ws: "npm:^8.17.1"
   peerDependencies:
     tslib: ^2.6.2
   languageName: unknown
@@ -10871,7 +10871,7 @@ __metadata:
   dependencies:
     express: "npm:^4.19.2"
     uuid: "npm:^9.0.1"
-    ws: "npm:^8.16.0"
+    ws: "npm:^8.17.1"
   languageName: unknown
   linkType: soft
 
@@ -10962,7 +10962,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     socks-proxy-agent: "npm:6.1.1"
     ts-node: "npm:^10.9.1"
-    ws: "npm:^8.16.0"
+    ws: "npm:^8.17.1"
   languageName: unknown
   linkType: soft
 
@@ -11243,7 +11243,7 @@ __metadata:
     tsx: "npm:^4.7.0"
     webpack: "npm:^5.90.1"
     worker-loader: "npm:^3.0.8"
-    ws: "npm:^8.16.0"
+    ws: "npm:^8.17.1"
     yargs: "npm:17.7.2"
   languageName: unknown
   linkType: soft
@@ -11455,7 +11455,7 @@ __metadata:
     "@trezor/utils": "workspace:*"
     "@types/ws": "npm:^8.5.5"
     cross-fetch: "npm:^4.0.0"
-    ws: "npm:^8.16.0"
+    ws: "npm:^8.17.1"
   languageName: unknown
   linkType: soft
 
@@ -41858,6 +41858,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/7c511c59e979bd37b63c3aea4a8e4d4163204f00bd5633c053b05ed67835481995f61a523b0ad2b603566f9a89b34cb4965cb9fab9649fbfebd8f740cea57f17
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.17.1":
+  version: 8.17.1
+  resolution: "ws@npm:8.17.1"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/4264ae92c0b3e59c7e309001e93079b26937aab181835fb7af79f906b22cd33b6196d96556dafb4e985742dd401e99139572242e9847661fdbc96556b9e6902d
   languageName: node
   linkType: hard
 
