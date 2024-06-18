@@ -1,35 +1,36 @@
-const DEFAULT_SRC = 'https://connect.trezor.io/9/';
+// This JavaScript code is running in the connect-manager.html tab of the webextension
+// and it communicates with the service worker when it needs something from Trezor device.
+// There are different ways to achieve message passing from the tab with the service-worker,
+// for more info: https://developer.chrome.com/docs/extensions/develop/concepts/messaging
 
-window.TrezorConnect.init({
-    lazyLoad: true,
-    manifest: {
-        email: 'developer@xyz.com',
-        appUrl: 'http://your.application.com',
-    },
-    connectSrc: DEFAULT_SRC,
-});
-
-const getAddressButton = document.getElementById('get-address');
-getAddressButton.addEventListener('click', () => {
-    window.TrezorConnect.getAddress({
-        showOnTrezor: true,
-        path: "m/49'/0'/0'/0/0",
-        coin: 'btc',
-    }).then(res => {
-        console.info(res);
-        document.getElementById('result').innerText = JSON.stringify(res);
+document.getElementById('get-address').addEventListener('click', () => {
+    // Send a message to the background script (service worker) with the action 'getAddress'
+    chrome.runtime.sendMessage({ action: 'getAddress' }, response => {
+        // Check if the response indicates success
+        if (response.success) {
+            console.info(response); // Log the successful response to the console
+            // Display the response in the 'result' element on the page
+            document.getElementById('result').innerText = JSON.stringify(response);
+        } else {
+            console.error(response); // Log the error response to the console
+            // Display an error message in the 'result' element on the page
+            document.getElementById('result').innerText = 'Error: ' + response.error;
+        }
     });
 });
 
-const getFeaturesButton = document.getElementById('get-features');
-getFeaturesButton.addEventListener('click', () => {
-    window.TrezorConnect.getFeatures().then(res => {
-        console.info(res);
-        document.getElementById('result').innerText = JSON.stringify(res);
+document.getElementById('get-features').addEventListener('click', () => {
+    // Send a message to the background script (service worker) with the action 'getFeatures'
+    chrome.runtime.sendMessage({ action: 'getFeatures' }, response => {
+        // Check if the response indicates success
+        if (response.success) {
+            console.info(response); // Log the successful response to the console
+            // Display the response in the 'result' element on the page
+            document.getElementById('result').innerText = JSON.stringify(response);
+        } else {
+            console.error(response); // Log the error response to the console
+            // Display an error message in the 'result' element on the page
+            document.getElementById('result').innerText = 'Error: ' + response.error;
+        }
     });
-});
-
-const newTabButton = document.getElementById('tab');
-newTabButton.addEventListener('click', () => {
-    chrome.tabs.create({ url: 'connect-manager.html' });
 });
