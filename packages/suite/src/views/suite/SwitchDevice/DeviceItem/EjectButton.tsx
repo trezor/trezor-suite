@@ -33,7 +33,7 @@ export const EjectButton = ({ setContentType, dataTest }: EjectButtonProps) => {
         <EjectContainer $elevation={elevation}>
             <Tooltip cursor="pointer" content={<Translation id="TR_EJECT_HEADING" />}>
                 <Icon
-                    data-test={`${dataTest}/eject-button`}
+                    data-test={dataTest}
                     icon="EJECT"
                     size={22}
                     color={theme.TYPE_LIGHT_GREY}

@@ -138,10 +138,12 @@ export const WalletInstance = ({
     };
 
     return (
-        <RelativeContainer>
-            <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
+        <RelativeContainer data-test={dataTestBase}>
+            <EjectButton
+                setContentType={setContentType}
+                dataTest={`${dataTestBase}/eject-button`}
+            />
             <Card
-                data-test={dataTestBase}
                 key={`${instance.label}${instance.instance}${instance.state}`}
                 paddingType="small"
                 onClick={handleClick}
