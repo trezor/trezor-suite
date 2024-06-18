@@ -92,6 +92,9 @@ export const SettingsDevice = () => {
         DeviceModelInternal.T2B1,
         DeviceModelInternal.T3T1,
     ].includes(deviceModelInternal);
+    const supportsDisplayRotation = [DeviceModelInternal.T2T1, DeviceModelInternal.T3T1].includes(
+        deviceModelInternal,
+    );
 
     return (
         <SettingsLayout>
@@ -172,7 +175,9 @@ export const SettingsDevice = () => {
                     <SettingsSection title={<Translation id="TR_PERSONALIZATION" />} icon="PALETTE">
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
-                        <DisplayRotation isDeviceLocked={isDeviceLocked} />
+                        {supportsDisplayRotation && (
+                            <DisplayRotation isDeviceLocked={isDeviceLocked} />
+                        )}
                         <Brightness isDeviceLocked={isDeviceLocked} />
                         <HapticFeedback isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
