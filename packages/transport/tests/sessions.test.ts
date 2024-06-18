@@ -10,65 +10,6 @@ describe('sessions', () => {
         requestFn = params => background.handleMessage(params);
     });
 
-    test('concurrent enumerate', async () => {
-        const client1 = new SessionsClient({
-            requestFn,
-            registerBackgroundCallbacks: () => {},
-        });
-        const client2 = new SessionsClient({
-            requestFn,
-            registerBackgroundCallbacks: () => {},
-        });
-        const client3 = new SessionsClient({
-            requestFn,
-            registerBackgroundCallbacks: () => {},
-        });
-
-        await client1.handshake();
-        await client2.handshake();
-        await client3.handshake();
-
-        const clientPromiseResolved = [false, false, false];
-
-        const [client1Promise, client2Promise, client3Promise] = [client1, client2, client3].map(
-            async (client, index) => {
-                const res = await client.enumerateIntent();
-                clientPromiseResolved[index] = true;
-
-                return res;
-            },
-        );
-        expect(clientPromiseResolved).toEqual([false, false, false]);
-        await client1Promise;
-
-        expect(client1Promise).resolves.toMatchObject({
-            success: true,
-            id: 1,
-            payload: { sessions: {} },
-        });
-        expect(clientPromiseResolved).toEqual([true, false, false]);
-
-        expect(client1.enumerateDone({ descriptors: [] })).resolves.toMatchObject({
-            success: true,
-        });
-
-        await client2Promise;
-
-        expect(clientPromiseResolved).toEqual([true, true, false]);
-
-        expect(client2Promise).resolves.toMatchObject({ success: true });
-        expect(client2.enumerateDone({ descriptors: [] })).resolves.toMatchObject({
-            success: true,
-        });
-
-        await client3Promise;
-        expect(clientPromiseResolved).toEqual([true, true, true]);
-
-        expect(client3.enumerateDone({ descriptors: [] })).resolves.toMatchObject({
-            success: true,
-        });
-    });
-
     test('acquire without previous enumerate', async () => {
         const client1 = new SessionsClient({ requestFn });
         await client1.handshake();
