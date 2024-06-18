@@ -32,7 +32,7 @@ jobs:
 
       - name: Run and store git values for Currents
         run: |
-          echo "COMMIT_MESSAGE=$(git show -s --pretty=%B)" >> $GITHUB_ENV
+          echo "COMMIT_MESSAGE=$(git show -s --pretty=%s)" >> $GITHUB_ENV
           echo "COMMIT_EMAIL=$(git show -s --pretty=%ae)" >> $GITHUB_ENV
           echo "COMMIT_AUTHOR=$(git show -s --pretty=%an)" >> $GITHUB_ENV
           echo "COMMIT_SHA=$(git show -s --pretty=%H)" >> $GITHUB_ENV
