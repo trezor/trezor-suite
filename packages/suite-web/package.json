@@ -55,7 +55,7 @@
         "stylelint-config-standard": "^36.0.0",
         "tsx": "^4.7.0",
         "webpack": "^5.90.1",
-        "ws": "^8.16.0",
+        "ws": "^8.17.1",
         "yargs": "17.7.2"
     }
 }
