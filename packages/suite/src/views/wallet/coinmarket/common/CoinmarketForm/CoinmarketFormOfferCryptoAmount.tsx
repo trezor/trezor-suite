@@ -6,9 +6,9 @@ import styled from 'styled-components';
 import { NETWORKS } from 'src/config/wallet';
 import { localizeNumber, networkAmountToSatoshi } from '@suite-common/wallet-utils';
 import { NetworkSymbol } from 'src/types/wallet';
-import invityAPI from 'src/services/suite/invityAPI';
 import { H2 } from '@trezor/components';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import CoinmarketCoinImage from '../CoinmarketCoinImage';
 
 const Wrapper = styled(H2)`
     display: flex;
@@ -35,7 +35,7 @@ const TokenWrapper = styled.div`
     align-items: center;
 `;
 
-const TokenLogoBig = styled.img`
+const TokenLogoBig = styled(CoinmarketCoinImage)`
     height: 32px;
     margin: 0 ${spacingsPx.xxs} 0 0;
 `;
@@ -53,7 +53,6 @@ export interface CoinmarketCryptoAmountProps {
 }
 
 const CoinmarketFormOfferCryptoAmount = ({ amount, symbol }: CoinmarketCryptoAmountProps) => {
-    const logoSrc = symbol ? invityAPI.getCoinLogoUrl(symbol) : null;
     const { areSatsDisplayed } = useBitcoinAmountUnit();
     const locale = useSelector(selectLanguage);
 
@@ -80,7 +79,7 @@ const CoinmarketFormOfferCryptoAmount = ({ amount, symbol }: CoinmarketCryptoAmo
                 {formattedValue}
             </FormattedCryptoAmountWrapper>
             <TokenWrapper>
-                {logoSrc && <TokenLogoBig src={logoSrc} alt="" />}
+                <TokenLogoBig symbol={symbol} />
                 {formattedSymbol}
             </TokenWrapper>
         </Wrapper>

@@ -11,7 +11,7 @@ import { Translation, AccountLabeling } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import invityAPI from 'src/services/suite/invityAPI';
+import CoinmarketCoinImage from '../../common/CoinmarketCoinImage';
 
 const Wrapper = styled.div`
     display: flex;
@@ -94,7 +94,7 @@ const Amount = styled.span`
     padding-left: 5px;
 `;
 
-const InvityCoinLogo = styled.img`
+const InvityCoinLogo = styled(CoinmarketCoinImage)`
     height: 16px;
 `;
 
@@ -157,7 +157,11 @@ export const CoinmarketBuyOfferInfo = ({
                     <RightColumn>
                         <Dark>
                             <InvityCoinLogo
-                                src={invityAPI.getCoinLogoUrl(cryptoToCoinSymbol(receiveCurrency!))}
+                                symbol={
+                                    receiveCurrency
+                                        ? cryptoToCoinSymbol(receiveCurrency)
+                                        : receiveCurrency
+                                }
                             />
                             <Amount>
                                 <CoinmarketCryptoAmount
