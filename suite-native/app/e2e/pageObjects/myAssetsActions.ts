@@ -8,10 +8,17 @@ class MyAssetsActions {
         await detoxExpect(element(by.id('@screen/SelectNetwork'))).toBeVisible();
     }
 
-    async openAccountDetail({ accountName }: { accountName: string }) {
+    async openAccountDetail({
+        accountName,
+        accDetail = 'detail',
+    }: {
+        accountName: string;
+        accDetail?: 'detail' | 'receive';
+    }) {
+        const newScreenElement =
+            accDetail === 'detail' ? '@screen/AccountDetail' : '@screen/Receive';
         await element(by.text(accountName)).tap();
-
-        await detoxExpect(element(by.id('@screen/AccountDetail'))).toBeVisible();
+        await detoxExpect(element(by.id(newScreenElement))).toBeVisible();
     }
 }
 

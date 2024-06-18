@@ -10,7 +10,7 @@ type AccountsListGroupProps = {
 
 export const AccountsListGroup = ({ accounts, onSelectAccount }: AccountsListGroupProps) => (
     <Card>
-        <VStack spacing="medium">
+        <VStack spacing="medium" testID="@screen/accountsList">
             {accounts.map(account => (
                 <AccountListItemInteractive
                     key={account.key}

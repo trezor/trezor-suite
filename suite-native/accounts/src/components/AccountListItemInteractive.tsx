@@ -25,7 +25,10 @@ export const AccountListItemInteractive = ({
 
     return (
         <Box>
-            <TouchableOpacity onPress={() => onSelectAccount(account.key)}>
+            <TouchableOpacity
+                onPress={() => onSelectAccount(account.key)}
+                testID={`@account/${account.networkType}`}
+            >
                 <AccountListItem
                     key={account.key}
                     account={account}
