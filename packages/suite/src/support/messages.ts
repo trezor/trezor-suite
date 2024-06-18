@@ -8961,7 +8961,10 @@ export default defineMessages({
     },
     TR_STAKE_ENTERING_POOL_MAY_TAKE: {
         id: 'TR_STAKE_ENTERING_POOL_MAY_TAKE',
-        defaultMessage: 'Entering the staking pool may take up to {days} days',
+        defaultMessage: `{count, select,
+            over30Days {Entering the staking pool may take up to 30+ days}
+            other {Entering the staking pool may take up to {count, plural, one {# day} few {# days} other {# days}}}
+        }`,
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',

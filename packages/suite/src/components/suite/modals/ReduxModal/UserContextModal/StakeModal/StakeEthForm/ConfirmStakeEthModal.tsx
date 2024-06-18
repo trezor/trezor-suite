@@ -99,9 +99,9 @@ export const ConfirmStakeEthModal = ({
                     <Translation
                         id="TR_STAKE_ENTERING_POOL_MAY_TAKE"
                         values={{
-                            days:
+                            count:
                                 daysToAddToPoolInitial === undefined
-                                    ? '30+'
+                                    ? 'over30Days'
                                     : daysToAddToPoolInitial,
                         }}
                     />
