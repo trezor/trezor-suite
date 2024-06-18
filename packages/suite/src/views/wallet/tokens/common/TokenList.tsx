@@ -106,7 +106,7 @@ const ContractAddress = styled.div`
     ${typography.hint};
     color: ${({ theme }) => theme.textDefault};
     display: inline-block;
-    max-width: 185px;
+    max-width: 200px;
     word-break: break-all;
     white-space: wrap;
 `;
