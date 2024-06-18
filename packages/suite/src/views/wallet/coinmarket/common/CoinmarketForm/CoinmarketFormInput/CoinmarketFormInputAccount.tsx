@@ -10,14 +10,20 @@ import {
     CoinmarketFormOption,
     CoinmarketFormOptionLabel,
     CoinmarketFormOptionLabelLong,
-    CoinmarketFormOptionTokenLogo,
 } from '../../..';
 import { Controller } from 'react-hook-form';
 import { CoinLogo, Select } from '@trezor/components';
-import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { Translation } from 'src/components/suite';
+import CoinmarketCoinImage from '../../CoinmarketCoinImage';
+import styled from 'styled-components';
+
+const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
+    display: flex;
+    align-items: center;
+    height: 18px;
+`;
 
 const CoinmarketFormInputAccount = () => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
@@ -57,10 +63,7 @@ const CoinmarketFormInputAccount = () => {
                                 {account.symbol.toUpperCase() === option.value ? (
                                     <CoinLogo size={18} symbol={account.symbol} />
                                 ) : (
-                                    <CoinmarketFormOptionTokenLogo
-                                        src={invityAPI.getCoinLogoUrl(option.value)}
-                                        alt=""
-                                    />
+                                    <CoinmarketFormOptionTokenLogo symbol={option.value} />
                                 )}
                                 <CoinmarketFormOptionLabel>
                                     {shouldSendInSats ? 'sats' : option.label}
