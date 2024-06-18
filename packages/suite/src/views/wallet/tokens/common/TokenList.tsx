@@ -26,10 +26,9 @@ import {
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
 import { BlurUrls } from './BlurUrls';
-import { copyToClipboard } from '@trezor/dom-utils';
-import { notificationsActions } from '@suite-common/toast-notifications';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { openModal } from 'src/actions/suite/modalActions';
 import { selectDevice } from '@suite-common/wallet-core';
 
 const Table = styled(Card)`
@@ -151,13 +150,6 @@ export const TokenList = ({
             });
         }
         dispatch(goto(routeName, options));
-    };
-
-    const onCopyContractAddress = (contractAddress: string) => {
-        const result = copyToClipboard(contractAddress);
-        if (typeof result !== 'string') {
-            dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
-        }
     };
 
     const onReceive = () => {
@@ -314,7 +306,13 @@ export const TokenList = ({
                                                     <StyledIcon icon="COPY" size={14} />
                                                 </ContractAddress>
                                             ),
-                                            onClick: () => onCopyContractAddress(token.contract),
+                                            onClick: () =>
+                                                dispatch(
+                                                    openModal({
+                                                        type: 'copy-contract-address',
+                                                        contract: token.contract,
+                                                    }),
+                                                ),
                                         },
                                     ],
                                 },
