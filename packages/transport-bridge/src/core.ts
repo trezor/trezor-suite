@@ -105,8 +105,6 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
     };
 
     const enumerate = async () => {
-        await sessionsClient.enumerateIntent();
-
         const enumerateResult = await api.enumerate();
         if (!enumerateResult.success) {
             return enumerateResult;

@@ -70,8 +70,6 @@ export abstract class AbstractApiTransport extends AbstractTransport {
 
     public enumerate() {
         return this.scheduleAction(async () => {
-            // notify sessions background that a client is going to access usb
-            await this.sessionsClient.enumerateIntent();
             // enumerate usb api
             const enumerateResult = await this.api.enumerate();
 
