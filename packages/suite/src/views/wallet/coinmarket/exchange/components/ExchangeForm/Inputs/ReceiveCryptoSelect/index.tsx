@@ -6,7 +6,6 @@ import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { Translation } from 'src/components/suite';
 import { Account } from 'src/types/wallet';
-import invityAPI from 'src/services/suite/invityAPI';
 import { Elevation, nextElevation, mapElevationToBackground } from '@trezor/theme';
 import { getInputState } from '@suite-common/wallet-utils';
 import {
@@ -17,6 +16,7 @@ import {
     networkToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { networks } from '@suite-common/wallet-config';
+import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Wrapper = styled.div`
     display: flex;
@@ -28,7 +28,7 @@ const Wrapper = styled.div`
     }
 `;
 
-const CoinLogo = styled.img`
+const CoinLogo = styled(CoinmarketCoinImage)`
     display: flex;
     align-items: center;
     padding-right: 6px;
@@ -163,7 +163,7 @@ const ReceiveCryptoSelect = () => {
                             option: ReturnType<typeof buildOptions>[number]['options'][number],
                         ) => (
                             <Option>
-                                <CoinLogo src={invityAPI.getCoinLogoUrl(option.value)} alt="" />
+                                <CoinLogo symbol={option.value} />
                                 <OptionLabel>{option.label}</OptionLabel>
                                 <OptionName>{option.name}</OptionName>
                                 {option.cryptoSymbol &&

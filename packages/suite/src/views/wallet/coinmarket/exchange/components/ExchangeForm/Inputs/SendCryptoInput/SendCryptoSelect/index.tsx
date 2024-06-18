@@ -2,7 +2,6 @@ import { Select, CoinLogo } from '@trezor/components';
 import { Controller } from 'react-hook-form';
 import styled from 'styled-components';
 import { NetworkSymbol, getEthereumTypeNetworkSymbols } from '@suite-common/wallet-config';
-import invityAPI from 'src/services/suite/invityAPI';
 import { useCoinmarketExchangeFormContext } from 'src/hooks/wallet/useCoinmarketExchangeForm';
 import { CRYPTO_INPUT, FIAT_INPUT, CRYPTO_TOKEN } from 'src/types/wallet/coinmarketExchangeForm';
 import {
@@ -16,6 +15,7 @@ import { updateFiatRatesThunk } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
+import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Option = styled.div`
     display: flex;
@@ -26,7 +26,7 @@ const Label = styled.div`
     padding-left: 10px;
 `;
 
-const TokenLogo = styled.img`
+const TokenLogo = styled(CoinmarketCoinImage)`
     display: flex;
     align-items: center;
     height: 18px;
@@ -100,7 +100,7 @@ const SendCryptoSelect = () => {
                             {account.symbol === option.value.toLowerCase() ? (
                                 <CoinLogo size={18} symbol={account.symbol} />
                             ) : (
-                                <TokenLogo src={invityAPI.getCoinLogoUrl(option.value)} alt="" />
+                                <TokenLogo symbol={option.value} />
                             )}
                             <Label>{shouldSendInSats ? 'sat' : option.label}</Label>
                         </Option>

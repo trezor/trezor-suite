@@ -121,9 +121,3 @@ export const CoinmarketFormOptionLabelLong = styled.div`
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
 `;
-
-export const CoinmarketFormOptionTokenLogo = styled.img`
-    display: flex;
-    align-items: center;
-    height: 18px;
-`;
