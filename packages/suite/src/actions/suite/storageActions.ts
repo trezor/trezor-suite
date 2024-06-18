@@ -27,6 +27,7 @@ import { STORAGE } from './constants';
 import { MetadataState } from '@suite-common/metadata-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
+import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -452,10 +453,12 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     if (!(await db.isAccessible())) return;
 
     const devices = selectDevices(getState());
+    const settings = selectSuiteSettings(getState());
+
     const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
-        dispatch(deviceActions.forgetDevice({ device: d }));
+        dispatch(deviceActions.forgetDevice({ device: d, settings }));
     });
     await db.removeDatabase();
     dispatch(

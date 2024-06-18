@@ -45,7 +45,7 @@ const rememberDevice = createAction(
     }),
 );
 
-export type ForgetDeviceActionPayload = { device: TrezorDevice };
+export type ForgetDeviceActionPayload = { device: TrezorDevice; settings: ConnectDeviceSettings };
 
 const forgetDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,

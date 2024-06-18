@@ -1,6 +1,10 @@
 import { testMocks } from '@suite-common/test-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { deviceActions, prepareDeviceReducer } from '@suite-common/wallet-core';
+import {
+    ConnectDeviceSettings,
+    deviceActions,
+    prepareDeviceReducer,
+} from '@suite-common/wallet-core';
 import suiteReducer from 'src/reducers/suite/suiteReducer';
 
 import { extraDependencies } from 'src/support/extraDependencies';
@@ -33,6 +37,11 @@ type Feature = {
     };
 };
 
+const SUITE_SETTINGS: ConnectDeviceSettings = {
+    defaultWalletLoading: 'standard',
+    isViewOnlyModeVisible: false,
+};
+
 const fixture: Feature[] = [
     {
         description: 'Wipe device',
@@ -59,6 +68,7 @@ const fixture: Feature[] = [
                             available: false,
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -71,6 +81,7 @@ const fixture: Feature[] = [
                             available: true,
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -132,6 +143,7 @@ const fixture: Feature[] = [
                             available: false,
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -146,6 +158,7 @@ const fixture: Feature[] = [
                             state: '1',
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -160,6 +173,7 @@ const fixture: Feature[] = [
                             state: '2',
                             features: { ...deviceChange.features, device_id: 'device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -172,6 +186,7 @@ const fixture: Feature[] = [
                             available: true,
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -186,6 +201,7 @@ const fixture: Feature[] = [
                             state: '1',
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {
@@ -200,6 +216,7 @@ const fixture: Feature[] = [
                             state: '2',
                             features: { ...deviceChange.features, device_id: 'new-device-id' },
                         },
+                        settings: SUITE_SETTINGS,
                     },
                 } satisfies ReturnType<typeof deviceActions.forgetDevice>,
                 {

@@ -371,4 +371,9 @@ export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
 
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
 
+export const selectSuiteSettings = (state: SuiteRootState) => ({
+    defaultWalletLoading: state.suite.settings.defaultWalletLoading,
+    isViewOnlyModeVisible: state.suite.flags.isViewOnlyModeVisible,
+});
+
 export default suiteReducer;
