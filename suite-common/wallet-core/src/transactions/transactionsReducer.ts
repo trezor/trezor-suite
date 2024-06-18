@@ -107,9 +107,11 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addCase(transactionsActions.removeTransaction, (state, { payload }) => {
                 const { account, txs } = payload;
                 const transactions = state.transactions[account.key];
-                state.transactions[account.key] = transactions?.filter(
-                    tx => !txs.some(t => t.txid === tx?.txid),
-                );
+                if (transactions) {
+                    state.transactions[account.key] = transactions.filter(
+                        tx => !txs.some(t => t.txid === tx?.txid),
+                    );
+                }
             })
             .addCase(transactionsActions.addTransaction, (state, { payload }) => {
                 const { transactions, account, page, perPage } = payload;
@@ -263,7 +265,7 @@ export const selectAllPendingTransactions = (state: TransactionsRootState) => {
 
     return Object.keys(transactions).reduce(
         (response, accountKey) => {
-            response[accountKey] = transactions[accountKey].filter(isPending);
+            response[accountKey] = (transactions[accountKey] ?? []).filter(isPending);
 
             return response;
         },
