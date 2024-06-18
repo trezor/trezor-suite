@@ -75,6 +75,7 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.DeviceUpdateFirmware;
           payload: {
+              model: string;
               fromBlVersion: string;
               fromFwVersion: string;
               toFwVersion?: string;
