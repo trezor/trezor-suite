@@ -33,7 +33,7 @@
         "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib && cp ./src/webextension/trezor-usb-permissions.html ./lib/webextension/trezor-usb-permissions.html",
         "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/prod.webpack.config.ts",
