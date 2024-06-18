@@ -1,5 +1,7 @@
+/// <reference lib="webworker" />
+
 // import connect
-importScripts('vendor/trezor-connect-webextension.js');
+import TrezorConnect, { DEVICE_EVENT } from '@trezor/connect-webextension';
 
 const connectSrc = 'https://connect.trezor.io/9/';
 
@@ -16,7 +18,7 @@ chrome.runtime.onInstalled.addListener(details => {
         _extendWebextensionLifetime: true,
     });
 
-    TrezorConnect.on('DEVICE_EVENT', event => {
+    TrezorConnect.on(DEVICE_EVENT, (event: any) => {
         console.log('EVENT in service worker', event);
     });
 
@@ -27,13 +29,13 @@ chrome.runtime.onInstalled.addListener(details => {
                 showOnTrezor: true,
                 path: "m/49'/0'/0'/0/0",
                 coin: 'btc',
-            }).then(res => {
+            }).then((res: any) => {
                 sendResponse(res);
             });
             // Return true to indicate you want to send a response asynchronously
             return true;
         } else if (message.action === 'getFeatures') {
-            TrezorConnect.getFeatures().then(res => {
+            TrezorConnect.getFeatures().then((res: any) => {
                 sendResponse(res);
             });
             // Return true to indicate you want to send a response asynchronously

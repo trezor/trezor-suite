@@ -1,35 +1,23 @@
-const DEFAULT_SRC = 'https://connect.trezor.io/9/';
-
-window.TrezorConnect.init({
-    lazyLoad: true,
-    manifest: {
-        email: 'developer@xyz.com',
-        appUrl: 'http://your.application.com',
-    },
-    connectSrc: DEFAULT_SRC,
-});
-
-const getAddressButton = document.getElementById('get-address');
-getAddressButton.addEventListener('click', () => {
-    window.TrezorConnect.getAddress({
-        showOnTrezor: true,
-        path: "m/49'/0'/0'/0/0",
-        coin: 'btc',
-    }).then(res => {
-        console.info(res);
-        document.getElementById('result').innerText = JSON.stringify(res);
+document.getElementById('get-address').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ action: 'getAddress' }, response => {
+        if (response.success) {
+            console.info(response);
+            document.getElementById('result').innerText = JSON.stringify(response);
+        } else {
+            console.error(response);
+            document.getElementById('result').innerText = 'Error: ' + response.error;
+        }
     });
 });
 
-const getFeaturesButton = document.getElementById('get-features');
-getFeaturesButton.addEventListener('click', () => {
-    window.TrezorConnect.getFeatures().then(res => {
-        console.info(res);
-        document.getElementById('result').innerText = JSON.stringify(res);
+document.getElementById('get-features').addEventListener('click', () => {
+    chrome.runtime.sendMessage({ action: 'getFeatures' }, response => {
+        if (response.success) {
+            console.info(response);
+            document.getElementById('result').innerText = JSON.stringify(response);
+        } else {
+            console.error(response);
+            document.getElementById('result').innerText = 'Error: ' + response.error;
+        }
     });
-});
-
-const newTabButton = document.getElementById('tab');
-newTabButton.addEventListener('click', () => {
-    chrome.tabs.create({ url: 'connect-manager.html' });
 });
