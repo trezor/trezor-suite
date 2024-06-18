@@ -9198,9 +9198,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/device-authentication@workspace:*, @suite-native/device-authentication@workspace:suite-native/device-authentication":
+"@suite-native/device-authorization@workspace:*, @suite-native/device-authorization@workspace:suite-native/device-authorization":
   version: 0.0.0-use.local
-  resolution: "@suite-native/device-authentication@workspace:suite-native/device-authentication"
+  resolution: "@suite-native/device-authorization@workspace:suite-native/device-authorization"
   dependencies:
     "@reduxjs/toolkit": "npm:1.9.5"
     "@trezor/connect": "workspace:*"
@@ -9255,7 +9255,7 @@ __metadata:
     "@suite-native/analytics": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/biometrics": "workspace:*"
-    "@suite-native/device-authentication": "workspace:*"
+    "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -9580,7 +9580,7 @@ __metadata:
     "@suite-native/alerts": "workspace:*"
     "@suite-native/atoms": "workspace:*"
     "@suite-native/device": "workspace:*"
-    "@suite-native/device-authentication": "workspace:*"
+    "@suite-native/device-authorization": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
     "@suite-native/forms": "workspace:*"
     "@suite-native/intl": "workspace:*"
@@ -9961,7 +9961,7 @@ __metadata:
     "@suite-native/blockchain": "workspace:*"
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
-    "@suite-native/device-authentication": "workspace:*"
+    "@suite-native/device-authorization": "workspace:*"
     "@suite-native/discovery": "workspace:*"
     "@suite-native/feature-flags": "workspace:*"
     "@suite-native/graph": "workspace:*"
