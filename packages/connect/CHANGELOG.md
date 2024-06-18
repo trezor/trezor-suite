@@ -4,11 +4,11 @@
 |     npm @trezor/connect-web      | 9.2.4  | 9.2.5-beta.1 |
 | npm @trezor/connect-webextension | 9.2.4  | 9.2.5-beta.1 |
 
-|     Deployment      | Stable |    Canary    |
-| :-----------------: | :----: | :----------: |
-| connect.trezor.io/9 | 9.2.4  | 9.2.5-beta.1 |
+|     Deployment     | Stable |    Canary    |
+| :----------------: | :----: | :----------: |
+| connect.trezor.io/ | 9.2.4  | 9.2.5-beta.1 |
 
-Use the persistent link connect.trezor.io/9 to access the latest stable version of Connect Explorer.
+Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
 # 9.2.5-beta.1
 
