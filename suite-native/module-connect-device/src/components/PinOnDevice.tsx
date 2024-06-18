@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Image, Box, Text } from '@suite-native/atoms';
 import { DeviceModelInternal } from '@trezor/connect';
-import { selectDeviceRequestedPin } from '@suite-native/device-authentication';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
