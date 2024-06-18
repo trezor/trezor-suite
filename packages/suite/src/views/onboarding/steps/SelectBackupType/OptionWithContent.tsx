@@ -145,7 +145,7 @@ type OptionWithContentProps = {
     value: BackupType;
     selected: BackupType;
     onSelect: (value: BackupType) => void;
-    children: ReactNode;
+    children?: ReactNode;
     tags: ReactNode;
     disabled?: boolean;
     tooltip?: ReactNode;
@@ -171,15 +171,12 @@ export const OptionWithContent = ({
         >
             <OptionText>
                 <Row alignItems="center">
-                    <Text
-                        variant={selected === value && !disabled ? undefined : 'tertiary'}
-                        typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                    >
+                    <Text typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}>
                         <Translation id={typesToLabelMap[value]} />
                     </Text>
                     {tags}
                 </Row>
-                {children}
+                <Text variant="tertiary">{children}</Text>
             </OptionText>
         </Option>
     );
