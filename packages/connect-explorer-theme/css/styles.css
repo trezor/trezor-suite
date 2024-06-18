@@ -169,3 +169,13 @@ input[type='search'] {
         opacity: 1;
     }
 }
+
+div#__next .nextra-steps {
+    @apply dark:nx-border-neutral-700;
+
+    & h3 {
+        &:before {
+            @apply nx-bg-white dark:nx-bg-neutral-700 dark:nx-border-neutral-700;
+        }
+    }
+}
