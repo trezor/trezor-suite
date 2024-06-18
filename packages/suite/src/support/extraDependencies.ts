@@ -36,6 +36,7 @@ import {
     TokenDefinitionsState,
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
+import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -86,10 +87,7 @@ export const extraDependencies: ExtraDependencies = {
             state.suite.settings.debug.checkFirmwareAuthenticity,
         selectAddressDisplayType: (state: AppState) => state.suite.settings.addressDisplayType,
         selectSelectedAccountStatus: (state: AppState) => state.wallet.selectedAccount.status,
-        selectSuiteSettings: (state: AppState) => ({
-            defaultWalletLoading: state.suite.settings.defaultWalletLoading,
-            isViewOnlyModeVisible: state.suite.flags.isViewOnlyModeVisible,
-        }),
+        selectSuiteSettings,
     },
     actions: {
         setAccountAddMetadata: metadataActions.setAccountAdd,

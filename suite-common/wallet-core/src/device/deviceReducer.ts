@@ -451,7 +451,7 @@ const remember = (
  * @param {TrezorDevice} device
  * @returns
  */
-const forget = (draft: State, device: TrezorDevice) => {
+const forget = (draft: State, device: TrezorDevice, settings: ConnectDeviceSettings) => {
     // only acquired devices
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
@@ -463,7 +463,13 @@ const forget = (draft: State, device: TrezorDevice) => {
         delete draft.devices[index].authFailed;
         draft.devices[index].state = undefined;
         draft.devices[index].walletNumber = undefined;
-        // draft.devices[index].useEmptyPassphrase = !device.features.passphrase_protection;
+
+        draft.devices[index].useEmptyPassphrase = getShouldUseEmptyPassphrase(
+            device,
+            undefined,
+            settings,
+        );
+
         draft.devices[index].passphraseOnDevice = false;
         // set remember to false to make it disappear after device is disconnected
         draft.devices[index].remember = false;
@@ -554,7 +560,7 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             remember(state, payload.device, payload.remember, payload.forceRemember);
         })
         .addCase(deviceActions.forgetDevice, (state, { payload }) => {
-            forget(state, payload.device);
+            forget(state, payload.device, payload.settings);
         })
         .addCase(deviceActions.addButtonRequest, (state, { payload }) => {
             addButtonRequest(state, payload.device, payload.buttonRequest);

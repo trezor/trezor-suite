@@ -1,6 +1,10 @@
 import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import { authorizeDeviceThunk, deviceActions } from '@suite-common/wallet-core';
+import {
+    ConnectDeviceSettings,
+    authorizeDeviceThunk,
+    deviceActions,
+} from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
 import { DeepPartial } from '@trezor/type-utils';
 
@@ -15,6 +19,11 @@ type Fixture<TAction> = {
     actions: TAction[];
     initialState: any;
     result: DeepPartial<TrezorDevice>[];
+};
+
+const SUITE_SETTINGS: ConnectDeviceSettings = {
+    defaultWalletLoading: 'standard',
+    isViewOnlyModeVisible: false,
 };
 
 const connect: Fixture<
@@ -1068,16 +1077,18 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
                 type: deviceActions.forgetDevice.type,
                 payload: {
                     device: getSuiteDevice({ instance: 1 }),
+                    settings: SUITE_SETTINGS,
                 },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: { device: SUITE_DEVICE },
+                payload: { device: SUITE_DEVICE, settings: SUITE_SETTINGS },
             },
             {
                 type: deviceActions.forgetDevice.type,
                 payload: {
                     device: getSuiteDevice({ connected: true, instance: 3 }),
+                    settings: SUITE_SETTINGS,
                 },
             },
         ],
@@ -1122,7 +1133,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: { device: getSuiteDevice({ instance: 3 }) },
+                payload: { device: getSuiteDevice({ instance: 3 }), settings: SUITE_SETTINGS },
             },
             {
                 type: deviceActions.forgetDevice.type,
@@ -1130,11 +1141,12 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
                     device: getSuiteDevice(undefined, {
                         device_id: 'ignored-device-id',
                     }),
+                    settings: SUITE_SETTINGS,
                 },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: { device: SUITE_DEVICE },
+                payload: { device: SUITE_DEVICE, settings: SUITE_SETTINGS },
             },
         ],
         result: [
@@ -1162,6 +1174,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
                     device: getSuiteDevice({
                         type: 'unacquired',
                     }),
+                    settings: SUITE_SETTINGS,
                 },
             },
         ],
@@ -1177,7 +1190,7 @@ const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: { device: SUITE_DEVICE },
+                payload: { device: SUITE_DEVICE, settings: SUITE_SETTINGS },
             },
         ],
         result: [],

@@ -18,6 +18,7 @@ import {
     selectDeviceThunk,
     handleDeviceDisconnect,
     createDeviceInstanceThunk,
+    ConnectDeviceSettings,
 } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
@@ -115,6 +116,11 @@ const initStore = (state: State) => {
     });
 
     return store;
+};
+
+const SUITE_SETTINGS: ConnectDeviceSettings = {
+    defaultWalletLoading: 'standard',
+    isViewOnlyModeVisible: false,
 };
 
 describe('Suite Actions', () => {
@@ -312,7 +318,9 @@ describe('Suite Actions', () => {
     // just for coverage
     it('misc', () => {
         const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-        expect(deviceActions.forgetDevice({ device: SUITE_DEVICE })).toMatchObject({
+        expect(
+            deviceActions.forgetDevice({ device: SUITE_DEVICE, settings: SUITE_SETTINGS }),
+        ).toMatchObject({
             type: deviceActions.forgetDevice.type,
         });
         expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({

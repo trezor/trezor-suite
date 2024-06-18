@@ -12,7 +12,7 @@ const PASSPHRASE_MODULE_PREFIX = '@suite-native/device';
 
 export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
     `${PASSPHRASE_MODULE_PREFIX}/cancelPassphraseFlow`,
-    (_, { getState, dispatch }) => {
+    (_, { getState, dispatch, extra }) => {
         const devices = selectDevices(getState());
         const device = selectDevice(getState());
 
@@ -26,8 +26,10 @@ export const cancelPassphraseAndSelectStandardDeviceThunk = createThunk(
         TrezorConnect.cancel();
         dispatch(selectDeviceThunk({ device: devices[standardWalletDeviceIndex] }));
 
+        const settings = extra.selectors.selectSuiteSettings(getState());
+
         // Remove device on which the passphrase flow was canceled
-        dispatch(deviceActions.forgetDevice({ device }));
+        dispatch(deviceActions.forgetDevice({ device, settings }));
     },
 );
 

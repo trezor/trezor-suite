@@ -14,7 +14,8 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
 import { createThunk } from '@suite-common/redux-utils';
-import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
+import { selectSuiteFlags, selectSuiteSettings } from '../../reducers/suite/suiteReducer';
+import { useSelector } from 'react-redux';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -119,9 +120,11 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         const state = getState();
         const newDevice = selectDevice(getState());
         const newDevices = selectDevices(getState());
+        const settings = useSelector(selectSuiteSettings);
+
         deviceInstances.push(...deviceUtils.getDeviceInstances(newDevice!, newDevices));
         deviceInstances.forEach(d => {
-            dispatch(deviceActions.forgetDevice({ device: d }));
+            dispatch(deviceActions.forgetDevice({ device: d, settings }));
         });
         dispatch(notificationsActions.addToast({ type: 'device-wiped' }));
         analytics.report({

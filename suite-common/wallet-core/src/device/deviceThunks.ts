@@ -217,12 +217,15 @@ export const handleDeviceDisconnect = createThunk(
  */
 export const forgetDisconnectedDevices = createThunk(
     `${DEVICE_MODULE_PREFIX}/forgetDisconnectedDevices`,
-    (device: Device, { dispatch, getState }) => {
+    (device: Device, { dispatch, getState, extra }) => {
         const devices = selectDevices(getState());
         const deviceInstances = devices.filter(d => d.id === device.id);
+
+        const settings = extra.selectors.selectSuiteSettings(getState());
+
         deviceInstances.forEach(d => {
             if (d.features && !d.remember) {
-                dispatch(deviceActions.forgetDevice({ device: d }));
+                dispatch(deviceActions.forgetDevice({ device: d, settings }));
             }
         });
     },
@@ -328,7 +331,7 @@ export const authorizeDeviceThunk = createThunk<
             await dispatch(checkFirmwareAuthenticity());
         }
 
-        const response = await TrezorConnect.getDeviceState({
+        const deviceParams: Parameters<typeof TrezorConnect.getDeviceState>[0] = {
             device: {
                 path: device.path,
                 instance: device.instance,
@@ -336,7 +339,9 @@ export const authorizeDeviceThunk = createThunk<
             },
             keepSession: true,
             useEmptyPassphrase: device.useEmptyPassphrase,
-        });
+        };
+
+        const response = await TrezorConnect.getDeviceState(deviceParams);
 
         if (response.success) {
             const { state } = response.payload;
@@ -392,7 +397,7 @@ export const authorizeDeviceThunk = createThunk<
  */
 export const authConfirm = createThunk(
     `${DEVICE_MODULE_PREFIX}/authConfirm`,
-    async (_, { dispatch, getState }) => {
+    async (_, { dispatch, getState, extra }) => {
         const device = selectDeviceSelector(getState());
         if (!device) return false;
 
@@ -410,8 +415,10 @@ export const authConfirm = createThunk(
             if (response.payload.error === 'auth-confirm-cancel') {
                 // needs await to propagate all actions
                 await dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
+
                 // forget previous empty wallet
-                dispatch(deviceActions.forgetDevice({ device }));
+                const settings = extra.selectors.selectSuiteSettings(getState());
+                dispatch(deviceActions.forgetDevice({ device, settings }));
 
                 return;
             }
@@ -441,7 +448,7 @@ export const switchDuplicatedDevice = createThunk(
     `${DEVICE_MODULE_PREFIX}/switchDuplicatedDevice`,
     async (
         { device, duplicate }: { device: TrezorDevice; duplicate: TrezorDevice },
-        { dispatch, extra },
+        { dispatch, getState, extra },
     ) => {
         const {
             actions: { onModalCancel },
@@ -458,8 +465,10 @@ export const switchDuplicatedDevice = createThunk(
         // NOTE: await is important. otherwise `forgetDevice` action will be resolved first leading to race condition:
         // forgetDevice > suiteMiddleware > handleDeviceDisconnect > selectDevice (first available)
         await dispatch(selectDeviceThunk({ device: duplicate }));
+
         // remove stateless instance
-        dispatch(deviceActions.forgetDevice({ device }));
+        const settings = extra.selectors.selectSuiteSettings(getState());
+        dispatch(deviceActions.forgetDevice({ device, settings }));
     },
 );
 
