@@ -48,26 +48,6 @@ interface AddressProps {
     output: Partial<Output>;
 }
 
-const useLastTwoValues = () => {
-    const [lastTwoValues, setLastTwoValues] = useState<string[]>([]);
-
-    const addValue = (value: string) => {
-        let newValues;
-        setLastTwoValues(prevValues => {
-            newValues = [...prevValues, value];
-            if (newValues.length > 2) {
-                newValues.shift();
-            }
-
-            return newValues;
-        });
-
-        return newValues;
-    };
-
-    return { lastTwoValues, addValue };
-};
-
 export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] = useState<
         AddressDeprecatedUrl | undefined
@@ -88,7 +68,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         setDraftSaveRequest,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-    const { addValue } = useLastTwoValues();
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -169,10 +148,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 break;
             case 'checksum':
                 return {
-                    onClick: () =>
+                    onClick: () => {
                         setValue(inputName, toChecksumAddress(address), {
                             shouldValidate: true,
-                        }),
+                        });
+                        setHasAddressChecksummed(true);
+                    },
                     text: translationString('TR_CONVERT_TO_CHECKSUM_ADDRESS'),
                 };
 
@@ -190,7 +171,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     };
 
     const { ref: inputRef, ...inputField } = register(inputName, {
-        onChange: () => composeTransaction(amountInputName),
+        onChange: () => {
+            composeTransaction(amountInputName);
+            setHasAddressChecksummed(false);
+        },
         required: translationString('RECIPIENT_IS_NOT_SET'),
         validate: {
             deprecated: (value: string) => {
@@ -227,42 +211,27 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
             // eth addresses are valid without checksum but Trezor displays them as checksummed
             checksum: async (address: string) => {
                 if (networkType === 'ethereum') {
-                    const updatedValues = addValue(address); // Get updated values immediately
+                    // const updatedValues = addValue(address); // Get updated values immediately
                     const params = {
                         descriptor: address,
                         coin: symbol,
                     };
 
-                    //they are not the same but the second one is checksum of the first one, in this case show the info that the address was automatically checksummed
-                    if (
-                        updatedValues &&
-                        updatedValues[0] &&
-                        updatedValues[1] &&
-                        updatedValues[0] !== updatedValues[1] &&
-                        toChecksumAddress(updatedValues[0]) === updatedValues[1]
-                    ) {
-                        setHasAddressChecksummed(true);
-                    } else {
-                        setHasAddressChecksummed(false);
-                    }
-
                     //1.If the address is used but unchecksummed, then Suite will automatically convert the address to the correct checksummed form and inform the user as described in the OP.
                     const result = await TrezorConnect.getAccountInfo(params); //TODO handle error
-                    if (result.success && result.payload.history.total !== 0) {
-                        if (!checkAddressCheckSum(address)) {
+                    if (result.success) {
+                        if (result.payload.history.total !== 0 && !checkAddressCheckSum(address)) {
                             setValue(inputName, toChecksumAddress(address), {
                                 shouldValidate: true,
                             });
-                            console.log('CASE 1');
+                            setHasAddressChecksummed(true);
                         }
-                    }
-                    //2. if the address is not checksummed at all and not found in blockbook
-                    //offer to checksum it with a button
-                    if (result.success && result.payload.history.total == 0) {
-                        if (address == address.toLowerCase()) {
-                            console.log('CASE 2');
-
-                            return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
+                        //2. if the address is not checksummed at all and not found in blockbook
+                        //offer to checksum it with a button
+                        if (result.payload.history.total == 0) {
+                            if (address === address.toLowerCase()) {
+                                return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
+                            }
                         }
                     }
                 }
