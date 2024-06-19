@@ -199,7 +199,7 @@ const Input = ({
 
             {bottomText && (
                 <BottomText
-                    withIcon={inputState === 'error' || inputState === 'warning'}
+                    withIcon={inputState && ['error', 'warning'].includes(inputState)}
                     inputState={inputState}
                     isDisabled={isDisabled}
                 >

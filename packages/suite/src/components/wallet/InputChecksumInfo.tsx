@@ -1,8 +1,9 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useTheme } from 'styled-components';
 import { TooltipSymbol } from '../suite';
 import { spacingsPx, borders } from '@trezor/theme';
 import { TranslationKey, Translation } from '../suite/Translation';
+import { useTranslation } from 'src/hooks/suite';
 import { Icon } from '@suite-common/icons/src/webComponents';
 
 const Wrapper = styled.div`
@@ -16,8 +17,7 @@ const Wrapper = styled.div`
     position: relative;
     margin: ${spacingsPx.xxs} 0 ${spacingsPx.sm} 0;
     padding: ${spacingsPx.xs} ${spacingsPx.sm};
-    ${({ theme }) =>
-        `
+    ${({ theme }) => css`
         ::before {
             content: '';
             position: absolute;
@@ -30,7 +30,7 @@ const Wrapper = styled.div`
             border-right: 8px solid transparent;
             border-bottom: 8px solid ${theme.backgroundAlertBlueSubtleOnElevation1};
         }
-        `};
+    `};
 `;
 
 const Container = styled.div`
@@ -50,9 +50,10 @@ export const Divider = styled.div`
 
 interface InputChecksumInfoProps {
     message?: TranslationKey;
-    tooltipContent?: string;
+    tooltipContent?: TranslationKey;
 }
 export const InputChecksumInfo = ({ message, tooltipContent }: InputChecksumInfoProps) => {
+    const { translationString } = useTranslation();
     const theme = useTheme();
 
     return (
@@ -64,7 +65,7 @@ export const InputChecksumInfo = ({ message, tooltipContent }: InputChecksumInfo
             </Container>
             {tooltipContent && (
                 <TooltipSymbol
-                    content={tooltipContent}
+                    content={translationString(tooltipContent)}
                     iconColor={theme.textAlertBlue}
                     icon="QUESTION_FILLED"
                 />
