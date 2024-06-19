@@ -8,6 +8,7 @@ import {
     cryptoToCoinSymbol,
     cryptoToNetworkSymbol,
     getNetworkName,
+    isCryptoSymbolToken,
     networkToCryptoSymbol,
     tokenToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
@@ -18,9 +19,12 @@ import {
     isTokenDefinitionKnown,
 } from '@suite-common/token-definitions';
 import {
+    CoinmarketBuildOptionsProps,
     CoinmarketCryptoListProps,
+    CoinmarketOptionsGroupProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
+    CryptoCategoryType,
 } from 'src/types/coinmarket/coinmarket';
 import { v4 as uuidv4 } from 'uuid';
 import CryptoCategories, {
@@ -290,8 +294,8 @@ export const coinmarketBuildCryptoOptions = ({
     symbolsInfo,
     cryptoCurrencies,
 }: CoinmarketBuildOptionsProps) => {
-    const groups: CoinmarketOptionsGroupProps[] = CryptoCategories.map(category => ({
-        label: category,
+    const groups: CoinmarketOptionsGroupProps[] = Object.keys(CryptoCategories).map(category => ({
+        label: category as CryptoCategoryType,
         options: [],
     }));
 
@@ -306,36 +310,39 @@ export const coinmarketBuildCryptoOptions = ({
             cryptoName: symbolInfo?.name ?? null,
         };
 
-        const pushOption = (category: (typeof CryptoCategories)[number]) => {
+        const pushOption = (category: CryptoCategoryType) => {
             const group = groups.find(g => g.label === category);
 
             group?.options.push(option);
         };
 
+        // popular
         if (symbolInfo?.category === CryptoCategoryA) {
             pushOption(CryptoCategoryA);
 
             return;
         }
 
-        if (isCryptoSymbolToken(symbol) && cryptoSymbol === 'eth') {
-            pushOption(CryptoCategoryB);
+        // tokens
+        if (isCryptoSymbolToken(symbol)) {
+            const networksWithCategoryName: CryptoCategoryType[] = [
+                CryptoCategoryB,
+                CryptoCategoryC,
+                CryptoCategoryD,
+            ];
+
+            networksWithCategoryName.forEach(network => {
+                if (CryptoCategories[network]?.network === cryptoSymbol) {
+                    pushOption(network);
+
+                    return;
+                }
+            });
 
             return;
         }
 
-        if (isCryptoSymbolToken(symbol) && cryptoSymbol === 'sol') {
-            pushOption(CryptoCategoryC);
-
-            return;
-        }
-
-        if (isCryptoSymbolToken(symbol) && cryptoSymbol === 'matic') {
-            pushOption(CryptoCategoryD);
-
-            return;
-        }
-
+        // default
         pushOption(CryptoCategoryE);
     });
 

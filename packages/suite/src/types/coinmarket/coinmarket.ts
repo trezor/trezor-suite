@@ -14,6 +14,7 @@ import {
     BuyTrade,
     BuyTradeStatus,
     CryptoSymbol,
+    CryptoSymbolInfo,
     ExchangeTrade,
     ExchangeTradeStatus,
     FiatCurrencyCode,
@@ -28,6 +29,15 @@ import { Account } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
+import {
+    CryptoCategoryA,
+    CryptoCategoryB,
+    CryptoCategoryC,
+    CryptoCategoryD,
+    CryptoCategoryE,
+} from 'src/constants/wallet/coinmarket/cryptoCategories';
+import { ExtendedMessageDescriptor } from '../suite';
+import { NetworkSymbol } from '@suite-common/wallet-config';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
@@ -111,10 +121,37 @@ export interface CoinmarketPaymentMethodListProps extends Option {
     label: string;
 }
 
+export type CryptoCategoryType =
+    | typeof CryptoCategoryA
+    | typeof CryptoCategoryB
+    | typeof CryptoCategoryC
+    | typeof CryptoCategoryD
+    | typeof CryptoCategoryE;
+
+export type CryptoCategoriesProps = {
+    [key in CryptoCategoryType]?: {
+        translationId: Extract<
+            ExtendedMessageDescriptor['id'],
+            `TR_COINMARKET_CRYPTO_CATEGORY_${string}`
+        >;
+        network?: NetworkSymbol;
+    };
+};
+
 export interface CoinmarketCryptoListProps {
     value: CryptoSymbol;
     label: string; // token shortcut
     cryptoName: string | null; // full name
+}
+
+export interface CoinmarketBuildOptionsProps {
+    symbolsInfo: CryptoSymbolInfo[] | undefined;
+    cryptoCurrencies: Set<CryptoSymbol>;
+}
+
+export interface CoinmarketOptionsGroupProps {
+    label: CryptoCategoryType;
+    options: CoinmarketCryptoListProps[];
 }
 
 export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;

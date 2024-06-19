@@ -1655,6 +1655,26 @@ export default defineMessages({
         defaultMessage: 'Select',
         id: 'TR_COINMARKET_OFFERS_SELECT',
     },
+    TR_COINMARKET_CRYPTO_CATEGORY_A: {
+        defaultMessage: 'Popular currencies',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_A',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_B: {
+        defaultMessage: 'Ethereum ERC20 tokens',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_B',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_C: {
+        defaultMessage: 'Solana tokens',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_C',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_D: {
+        defaultMessage: 'Polygon ERC20 tokens',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_D',
+    },
+    TR_COINMARKET_CRYPTO_CATEGORY_E: {
+        defaultMessage: 'Other currencies',
+        id: 'TR_COINMARKET_CRYPTO_CATEGORY_E',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',
