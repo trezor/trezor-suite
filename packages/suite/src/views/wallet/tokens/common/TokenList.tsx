@@ -7,7 +7,13 @@ import {
     Translation,
     TrendTicker,
 } from 'src/components/suite';
-import { useDispatch, useLayoutSize, useTranslation } from 'src/hooks/suite';
+import {
+    useDevice,
+    useDispatch,
+    useLayoutSize,
+    useSelector,
+    useTranslation,
+} from 'src/hooks/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import { Account, TokenAddress } from '@suite-common/wallet-types';
 import { EventType, analytics } from '@trezor/suite-analytics';
@@ -24,6 +30,7 @@ import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { selectDevice } from '@suite-common/wallet-core';
 
 const Table = styled(Card)`
     word-break: break-all;
@@ -129,8 +136,12 @@ export const TokenList = ({
     const { isMobileLayout } = useLayoutSize();
     const { translationString } = useTranslation();
     const { address: unusedAddress, path } = getUnusedAddressFromAccount(account);
+    const device = useSelector(selectDevice);
+    const { isLocked } = useDevice();
 
-    if (!unusedAddress) return null;
+    const isDeviceLocked = isLocked(true);
+
+    if (!unusedAddress || !device) return null;
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
         if (network.networkType) {
@@ -158,6 +169,8 @@ export const TokenList = ({
             dispatch(showAddress(path, unusedAddress));
         }
     };
+
+    const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
 
     const explorerUrl =
         network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
@@ -246,6 +259,7 @@ export const TokenList = ({
                                         {
                                             label: <Translation id="TR_NAV_RECEIVE" />,
                                             onClick: onReceive,
+                                            isDisabled: isReceiveButtonDisabled,
                                             isHidden:
                                                 tokenStatusType === TokenManagementAction.HIDE
                                                     ? !isMobileLayout
@@ -341,6 +355,7 @@ export const TokenList = ({
                                         key="token-receive"
                                         variant="tertiary"
                                         icon="RECEIVE"
+                                        isDisabled={isReceiveButtonDisabled}
                                         onClick={onReceive}
                                     />
                                 </ButtonGroup>
