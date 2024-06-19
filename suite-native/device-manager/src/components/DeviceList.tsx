@@ -1,12 +1,6 @@
 import { useSelector } from 'react-redux';
-import Animated, {
-    runOnJS,
-    useAnimatedStyle,
-    useSharedValue,
-    withDelay,
-    withTiming,
-} from 'react-native-reanimated';
-import { useEffect, useState } from 'react';
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import { View } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -47,6 +41,9 @@ type ConnectButtonProps = {
     onPress: () => void;
 };
 
+const ANIMATION_DURATION = 300;
+
+const DEVICE_LIST_TOP_MARGIN = 300; // This is so the bg is consistent even if the device list is dragged down while scrolling
 const ITEM_HEIGHT = 66;
 const BUTTON_HEIGHT = 48;
 const BUTTON_PADDING_TOP = 8;
@@ -87,16 +84,42 @@ const listStaticStyle = prepareNativeStyle(utils => ({
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderWidth: utils.borders.widths.small,
     borderColor: utils.colors.borderElevation0,
-    marginTop: -MANAGER_MODAL_BOTTOM_RADIUS,
     marginBottom: -MANAGER_MODAL_BOTTOM_RADIUS,
-    paddingTop: MANAGER_MODAL_BOTTOM_RADIUS + PADDING_TOP,
+    marginTop: -MANAGER_MODAL_BOTTOM_RADIUS - DEVICE_LIST_TOP_MARGIN,
+    paddingTop: MANAGER_MODAL_BOTTOM_RADIUS + PADDING_TOP + DEVICE_LIST_TOP_MARGIN,
     paddingBottom: PADDING_BOTTOM,
+    overflow: 'hidden',
+    flexGrow: 0,
     zIndex: 10,
     ...utils.boxShadows.small,
 }));
 
+const calculateHeight = (deviceCount: number, isDiscoveryActive: boolean) => {
+    'worklet';
+
+    const otherDevicesHeight = deviceCount * ITEM_HEIGHT;
+
+    const separatorHeight =
+        deviceCount > 0 && !isDiscoveryActive
+            ? 2 * SEPARATOR_VERTICAL_PADDING + SEPARATOR_HEIGHT
+            : 0;
+
+    const buttonHeight = isDiscoveryActive ? 0 : BUTTON_PADDING_TOP + BUTTON_HEIGHT;
+
+    const h =
+        MANAGER_MODAL_BOTTOM_RADIUS + //top margin for radius
+        PADDING_TOP +
+        otherDevicesHeight + // all other device
+        separatorHeight + // separator if there is one
+        buttonHeight +
+        PADDING_BOTTOM -
+        MANAGER_MODAL_BOTTOM_RADIUS;
+
+    return h;
+};
+
 export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
-    const { applyStyle, utils } = useNativeStyles();
+    const { applyStyle } = useNativeStyles();
     const navigation = useNavigation<NavigationProp>();
     const { setIsDeviceManagerVisible } = useDeviceManager();
     const device = useSelector(selectDevice);
@@ -104,7 +127,6 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const opacity = useSharedValue(0);
     const height = useSharedValue(0);
-    const [isShown, setIsShown] = useState(false);
 
     const hasUnselectedDevices = notSelectedInstancelessDevices.length > 0;
 
@@ -122,81 +144,40 @@ export const DeviceList = ({ isVisible, onSelectDevice }: DeviceListProps) => {
         });
     };
 
-    //to hide/show the list with animation
-    useEffect(() => {
-        if (isVisible) {
-            const otherDevicesHeight = notSelectedInstancelessDevices.length * ITEM_HEIGHT;
+    const listAnimatedStyle = useAnimatedStyle(() => {
+        const h = calculateHeight(notSelectedInstancelessDevices.length, isDiscoveryActive);
 
-            const separatorHeight =
-                hasUnselectedDevices && !isDiscoveryActive
-                    ? 2 * SEPARATOR_VERTICAL_PADDING + SEPARATOR_HEIGHT
-                    : 0;
+        height.value = isVisible ? h : 0;
+        opacity.value = isVisible ? 1 : 0;
 
-            const buttonHeight = isDiscoveryActive ? 0 : BUTTON_PADDING_TOP + BUTTON_HEIGHT;
-
-            const h =
-                MANAGER_MODAL_BOTTOM_RADIUS + //top margin for radius
-                PADDING_TOP +
-                otherDevicesHeight + // all other device
-                separatorHeight + // separator if there is one
-                buttonHeight +
-                PADDING_BOTTOM;
-
-            opacity.value = withDelay(100, withTiming(1, { duration: 200 }));
-            height.value = withTiming(h, { duration: 300 });
-
-            setIsShown(true);
-        } else {
-            opacity.value = withTiming(0, { duration: 300 });
-            height.value = withDelay(
-                100,
-                withTiming(0, { duration: 200 }, () => {
-                    runOnJS(setIsShown)(false);
-                }),
-            );
-        }
-    }, [
-        height,
-        isVisible,
-        opacity,
-        notSelectedInstancelessDevices.length,
-        utils.spacings.small,
-        hasUnselectedDevices,
-        isDiscoveryActive,
-    ]);
-
-    const listAnimatedStyle = useAnimatedStyle(
-        () => ({
-            opacity: opacity.value,
-            height: height.value,
-        }),
-        [],
-    );
-
-    if (!isShown) {
-        return null;
-    }
+        return {
+            opacity: withTiming(opacity.value, { duration: ANIMATION_DURATION }),
+            height: withTiming(height.value, { duration: ANIMATION_DURATION }),
+        };
+    }, [isVisible]);
 
     return (
-        <Animated.View style={[listAnimatedStyle, applyStyle(listStaticStyle)]}>
-            <Box>
-                {notSelectedInstancelessDevices.map(
-                    d =>
-                        d.state && (
-                            <DeviceItem
-                                key={d.state}
-                                deviceState={d.state}
-                                onPress={() => onSelectDevice(d)}
-                            />
-                        ),
+        <Animated.View style={listAnimatedStyle}>
+            <View style={applyStyle(listStaticStyle)}>
+                <Box>
+                    {notSelectedInstancelessDevices.map(
+                        d =>
+                            d.state && (
+                                <DeviceItem
+                                    key={d.state}
+                                    deviceState={d.state}
+                                    onPress={() => onSelectDevice(d)}
+                                />
+                            ),
+                    )}
+                </Box>
+                {!isDiscoveryActive && (
+                    <ConnectButton
+                        isDividerVisible={hasUnselectedDevices}
+                        onPress={handleConnectDevice}
+                    />
                 )}
-            </Box>
-            {!isDiscoveryActive && (
-                <ConnectButton
-                    isDividerVisible={hasUnselectedDevices}
-                    onPress={handleConnectDevice}
-                />
-            )}
+            </View>
         </Animated.View>
     );
 };

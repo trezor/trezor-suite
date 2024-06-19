@@ -28,6 +28,7 @@ const deviceManagerModalWrapperStyle = prepareNativeStyle(utils => ({
     backgroundColor: utils.colors.backgroundSurfaceElevation0,
     borderBottomLeftRadius: MANAGER_MODAL_BOTTOM_RADIUS,
     borderBottomRightRadius: MANAGER_MODAL_BOTTOM_RADIUS,
+    maxHeight: '80%', // based on the design
 }));
 
 const deviceSwitchWrapperStyle = prepareNativeStyle<{ insets: EdgeInsets }>(
