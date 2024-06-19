@@ -21,7 +21,7 @@ export const DefaultRenderer = ({
 
     const modal = (
         <ModalEnvironment
-            onClickBackdrop={isCancelable && hasBackdropCancel ? onCancel : undefined}
+            onClickBackdrop={isCancelable && hasBackdropCancel !== false ? onCancel : undefined}
         >
             <Modal
                 isCancelable={isCancelable}
