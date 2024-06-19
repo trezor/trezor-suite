@@ -9,11 +9,14 @@ import { T3T1PromoBanner } from './components/T3T1PromoBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { StakeEthCard } from './components/StakeEthCard/StakeEthCard';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { DashboardPassphraseBanner } from './components/DashboardPassphraseBanner';
+import { Column } from '@trezor/components';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 64px;
+    gap: ${spacingsPx.xxxxl};
 
     ${breakpointMediaQueries.below_sm} {
         /* for the promo banner */
@@ -28,7 +31,10 @@ export const Dashboard = () => {
     return (
         <Wrapper data-test="@dashboard/index">
             <PortfolioCard />
-            <T3T1PromoBanner />
+            <Column gap={8}>
+                <T3T1PromoBanner />
+                <DashboardPassphraseBanner />
+            </Column>
             <AssetsView />
             {!isViewOnlyModeVisible && <SecurityFeatures />}
             <StakeEthCard />

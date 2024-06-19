@@ -81,7 +81,7 @@ const Flex = ({
     children,
     direction = 'row',
     margin,
-    flex = 'auto',
+    flex = 'initial',
     flexWrap = 'nowrap',
     isReversed = false,
     className,
