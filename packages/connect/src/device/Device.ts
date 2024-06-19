@@ -462,6 +462,12 @@ export class Device extends TypedEmitter<DeviceEvents> {
             delete this.internalState[this.instance];
         } else if (state !== this.internalState[this.instance]) {
             this.internalState[this.instance] = state;
+
+            if (this.useLegacyPassphrase() && this.isT1()) {
+                // T1B1 fw lower than 1.9.0, passphrase is in plain text, don't save it
+                return;
+            }
+
             this.emit(DEVICE.SAVE_STATE, state);
         }
     }
