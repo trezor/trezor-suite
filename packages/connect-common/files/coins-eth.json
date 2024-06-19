@@ -34,9 +34,9 @@
             "shortcut": "BSC",
             "slip44": 714,
             "support": {
-                "T1B1": "1.6.2",
+                "T1B1": "1.9.4",
                 "T2B1": "2.6.1",
-                "T2T1": "2.0.7",
+                "T2T1": "2.4.0",
                 "T3T1": "2.6.1",
                 "connect": true,
                 "suite": true
