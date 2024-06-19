@@ -112,6 +112,7 @@ export type WalletParams =
           symbol: NetworkSymbol;
           accountIndex: number;
           accountType: AccountType | 'normal';
+          contractAddress?: string;
       }>
     | undefined;
 

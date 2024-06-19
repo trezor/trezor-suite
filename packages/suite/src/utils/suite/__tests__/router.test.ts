@@ -77,7 +77,7 @@ describe('router', () => {
                     symbol: 'btc',
                     accountIndex: 0,
                 }),
-            ).toEqual('/accounts#/btc/0');
+            ).toEqual('/accounts#/btc/0/normal');
             expect(
                 // @ts-expect-error: invalid params
                 getRoute('wallet-index', {
@@ -113,7 +113,6 @@ describe('router', () => {
                 },
                 route: findRouteByName('wallet-index'),
             };
-            expect(getAppWithParams('/accounts/#/btc/0')).toEqual(resp);
             expect(getAppWithParams('/accounts/#/btc/0/normal')).toEqual(resp);
             expect(getAppWithParams('/accounts/#/btc/1/segwit')).toEqual({
                 ...resp,

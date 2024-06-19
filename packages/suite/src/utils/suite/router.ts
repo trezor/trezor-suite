@@ -49,7 +49,7 @@ export const getApp = (url: string) => {
 const validateWalletParams = (url: string): CommonWalletParams => {
     const [, hash] = stripPrefixedURL(url).split('#');
     if (!hash) return;
-    const [symbol, index, type] = hash.split('/').filter(p => p.length > 0);
+    const [symbol, index, type, contractAddress] = hash.split('/').filter(p => p.length > 0);
     if (!symbol || !index) return;
     const network = NETWORKS.find(
         n => n.symbol === symbol && (n.accountType || 'normal') === (type || 'normal'),
@@ -63,6 +63,7 @@ const validateWalletParams = (url: string): CommonWalletParams => {
         symbol: network.symbol,
         accountIndex,
         accountType: network.accountType || 'normal',
+        contractAddress,
     };
 };
 
@@ -132,8 +133,6 @@ export const getRoute = (name: Route['name'], params?: RouteParams) => {
             .reduce((val, curr) => {
                 const exists = order.findIndex((o: string) => o === curr[0]);
                 if (exists < 0) return val;
-                // exclude accountType="normal" (most of accounts are normal)
-                if (curr[0] === 'accountType' && curr[1] === 'normal') return val;
 
                 return `${val}/${curr[1]}`;
             }, '');

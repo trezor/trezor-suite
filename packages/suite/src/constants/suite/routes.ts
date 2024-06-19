@@ -15,6 +15,7 @@ type RouteParamsTypes = {
     accountIndex: number;
     accountType: NonNullable<Network['accountType']>;
     cancelable: boolean;
+    contractAddress?: string;
 };
 
 type ExtractType<T extends keyof RouteParamsTypes> = {
