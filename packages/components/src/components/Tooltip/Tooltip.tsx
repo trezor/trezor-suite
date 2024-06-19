@@ -78,7 +78,7 @@ export const Tooltip = ({
     className,
     isFullWidth = false,
     isOpen,
-    hasArrow = true,
+    hasArrow,
     appendTo,
     shift,
     zIndex = zIndices.tooltip,

@@ -184,11 +184,5 @@ export const OptionWithContent = ({
         </Option>
     );
 
-    return tooltip !== undefined ? (
-        <Tooltip hasArrow content={tooltip}>
-            {inner}
-        </Tooltip>
-    ) : (
-        inner
-    );
+    return tooltip !== undefined ? <Tooltip content={tooltip}>{inner}</Tooltip> : inner;
 };
