@@ -1,7 +1,7 @@
 import { DeviceModelInternal } from '@trezor/connect';
 
 // original trezor images has to be first as they are send to device as '0' and the default image from fw is used
-export const homescreens = {
+export const getHomescreens = (isBitcoinOnlyFirmware: boolean) => ({
     [DeviceModelInternal.T1B1]: [
         'original_t1b1', // note - has to be first
         'blank',
@@ -64,11 +64,10 @@ export const homescreens = {
         'smile-2',
     ],
     [DeviceModelInternal.T3T1]: [
-        'original_t3t1', // note - has to be first
+        isBitcoinOnlyFirmware ? 'orange' : 'green',
         'gradient',
-        'green',
-        'orange',
+        isBitcoinOnlyFirmware ? 'green' : 'orange',
         'solid',
         'smile-2',
     ],
-} as const;
+});

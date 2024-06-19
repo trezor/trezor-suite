@@ -1,13 +1,16 @@
 import styled from 'styled-components';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 
-import { homescreens } from 'src/constants/suite/homescreens';
+import { getHomescreens } from 'src/constants/suite/homescreens';
 import { applySettings } from 'src/actions/settings/deviceSettingsActions';
 import { imagePathToHex } from 'src/utils/suite/homescreen';
 import { useDevice, useDispatch } from 'src/hooks/suite';
 import { DeviceModelInternal } from '@trezor/connect';
 
-type AnyImageName = (typeof homescreens)[keyof typeof homescreens][number];
+import { hasBitcoinOnlyFirmware } from '@trezor/device-utils';
+
+type HomescreensType = ReturnType<typeof getHomescreens>;
+type AnyImageName = HomescreensType[keyof HomescreensType][number];
 
 const Wrapper = styled.div`
     display: flex;
@@ -44,7 +47,6 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
     const deviceModelInternal = device?.features?.internal_model;
 
     if (!deviceModelInternal) return null;
-
     const setHomescreen = async (imagePath: string, image: AnyImageName) => {
         if (isLocked()) return;
 
@@ -59,6 +61,10 @@ export const HomescreenGallery = ({ onConfirm }: HomescreenGalleryProps) => {
             onConfirm();
         }
     };
+
+    const isBitcoinOnlyFirmware =
+        deviceModelInternal === DeviceModelInternal.T3T1 && hasBitcoinOnlyFirmware(device);
+    const homescreens = getHomescreens(isBitcoinOnlyFirmware); // Get the homescreens based on the firmware type
 
     return (
         <Wrapper>
