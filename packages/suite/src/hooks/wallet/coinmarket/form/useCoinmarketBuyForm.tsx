@@ -137,10 +137,7 @@ const useCoinmarketBuyForm = ({
             }
 
             // no need to fetch quotes if amount is not set
-            if (
-                (!request.fiatStringAmount && !request.cryptoStringAmount) ||
-                request.country === 'unknown'
-            ) {
+            if (!request.fiatStringAmount && !request.cryptoStringAmount) {
                 timer.stop();
 
                 return;
