@@ -18,7 +18,11 @@ export const useCoinmarketBuyFormDefaultValues = (
 ): CoinmarketBuyFormDefaultValuesProps => {
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
-    const defaultCrypto = useMemo(() => buildCryptoOption(accountSymbol), [accountSymbol]);
+    // set defaultCryptoCurrency (BTC), when accountSymbol is not in the list of supported currencies (e.g. VTC)
+    const defaultCrypto = useMemo(
+        () => buildCryptoOption(networkToCryptoSymbol(accountSymbol) ?? defaultCryptoCurrency),
+        [accountSymbol],
+    );
     const defaultPaymentMethod: CoinmarketPaymentMethodListProps = useMemo(
         () =>
             paymentMethods.find(paymentMethod => paymentMethod.value === 'creditCard') ?? {
@@ -26,6 +30,9 @@ export const useCoinmarketBuyFormDefaultValues = (
                 label: '',
             },
         [paymentMethods],
+    const defaultCrypto = useMemo(
+        () => buildCryptoOption(networkToCryptoSymbol(accountSymbol)!),
+        [accountSymbol],
     );
     const suggestedFiatCurrency = (buyInfo?.buyInfo?.suggestedFiatCurrency?.toLowerCase() ??
         formDefaultCurrency) as FiatCurrencyCode;

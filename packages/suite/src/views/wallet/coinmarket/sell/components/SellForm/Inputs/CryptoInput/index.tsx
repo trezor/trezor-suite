@@ -69,7 +69,7 @@ const CryptoInput = () => {
     const cryptoOption = {
         value: cryptoSymbol,
         label: cryptoSymbol,
-        cryptoSymbol,
+        cryptoName: cryptoSymbol,
     };
 
     const { symbol, tokens } = account;

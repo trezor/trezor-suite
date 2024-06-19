@@ -2,7 +2,6 @@ import type { AppState } from 'src/types/suite';
 import type { FormState as ReactHookFormState, UseFormReturn } from 'react-hook-form';
 import type { Account, Network } from 'src/types/wallet';
 import type { FeeLevel } from '@trezor/connect';
-import type { CryptoSymbol } from 'invity-api';
 import type { SellInfo } from 'src/actions/wallet/coinmarketSellActions';
 import type {
     FeeInfo,
@@ -12,6 +11,7 @@ import type {
 } from '@suite-common/wallet-types';
 import type { Option, DefaultCountryOption, AmountLimits } from './coinmarketCommonTypes';
 import { Rate } from '@suite-common/wallet-types';
+import { CoinmarketCryptoListProps } from '../coinmarket/coinmarket';
 import { SendContextValues } from 'src/types/wallet/sendForm';
 
 export const OUTPUT_AMOUNT = 'outputs.0.amount';
@@ -25,9 +25,7 @@ export interface SellFormState extends FormState {
     fiatInput?: string;
     fiatCurrencySelect: Option;
     cryptoInput?: string;
-    cryptoCurrencySelect: Option & {
-        cryptoSymbol: CryptoSymbol;
-    };
+    cryptoCurrencySelect: CoinmarketCryptoListProps;
     countrySelect: Option;
 }
 

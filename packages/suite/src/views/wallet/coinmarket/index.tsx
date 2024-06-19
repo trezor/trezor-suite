@@ -1,6 +1,13 @@
 import styled from 'styled-components';
 import { Icon, variables, SelectBar, Paragraph } from '@trezor/components';
-import { spacingsPx, typography } from '@trezor/theme';
+import {
+    Elevation,
+    mapElevationToBackground,
+    nativeTypography,
+    nextElevation,
+    spacingsPx,
+    typography,
+} from '@trezor/theme';
 
 interface ResponsiveSize {
     $responsiveSize: keyof typeof variables.SCREEN_SIZE;
@@ -119,4 +126,13 @@ export const CoinmarketFormOptionLabelLong = styled.div`
     padding-top: ${spacingsPx.xxs};
     ${typography.label}
     color: ${({ theme }) => theme.textSubdued};
+`;
+
+export const CoinmarketFormOptionNetwork = styled.div<{ $elevation: Elevation }>`
+    padding: 2px 6px;
+    margin-left: 10px;
+    font-size: ${nativeTypography.label.fontSize};
+    background: ${({ theme, $elevation }) =>
+        mapElevationToBackground({ theme, $elevation: nextElevation[$elevation] })};
+    border-radius: 4px;
 `;
