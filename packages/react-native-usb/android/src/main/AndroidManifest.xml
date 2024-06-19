@@ -17,5 +17,10 @@
                 <action android:name="android.hardware.usb.action.USB_DEVICE_DETACHED" />
             </intent-filter>
         </receiver>
+        <receiver android:name=".ReactNativeUsbPermissionReceiver" android:exported="false">
+            <intent-filter>
+                <action android:name="io.trezor.rnusb.USB_PERMISSION" />
+            </intent-filter>
+        </receiver>
     </application>
 </manifest>
