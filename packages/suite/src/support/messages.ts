@@ -3363,6 +3363,18 @@ export default defineMessages({
         defaultMessage: 'Hidden wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
+    TR_PASSPHRASE_MISMATCH: {
+        defaultMessage: 'Passphrase mismatch',
+        id: 'TR_PASSPHRASE_MISMATCH',
+    },
+    TR_PASSPHRASE_MISMATCH_DESCRIPTION: {
+        defaultMessage: 'The passphrases didn’t match. For security, start from the beginning and re-enter them carefully.',
+        id: 'TR_PASSPHRASE_MISMATCH_DESCRIPTION',
+    },
+    TR_PASSPHRASE_MISMATCH_START_OVER: {
+        defaultMessage: 'Start over',
+        id: 'TR_PASSPHRASE_MISMATCH_START_OVER',
+    },
     TR_PENDING_TX_HEADING: {
         defaultMessage: 'Pending {count, plural, one {transaction} other {transactions}}',
         description: 'Heading for the list of pending transactions',

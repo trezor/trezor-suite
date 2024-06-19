@@ -420,6 +420,11 @@ export const authConfirm = createThunk(
                 const settings = extra.selectors.selectSuiteSettings(getState());
                 dispatch(deviceActions.forgetDevice({ device, settings }));
 
+                if (settings.isViewOnlyModeVisible) {
+                    const newDevice = selectDeviceSelector(getState());
+                    dispatch(deviceActions.selectDevice(newDevice));
+                }
+
                 return;
             }
             dispatch(
@@ -428,14 +433,24 @@ export const authConfirm = createThunk(
                     error: response.payload.error,
                 }),
             );
+
             dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
 
             return;
         }
 
         if (response.payload.state !== device.state) {
-            dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
+            const settings = extra.selectors.selectSuiteSettings(getState());
+
+            if (!settings.isViewOnlyModeVisible) {
+                dispatch(notificationsActions.addToast({ type: 'auth-confirm-error' }));
+            }
+
             dispatch(deviceActions.receiveAuthConfirm({ device, success: false }));
+
+            if (settings.isViewOnlyModeVisible) {
+                dispatch(extra.actions.openModal({ type: 'passphrase-mismatch-warning' }));
+            }
 
             return;
         }
