@@ -16,6 +16,7 @@ import { PassphraseDescription } from './PassphraseDescription';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 import { PassphraseHeading } from './PassphraseHeading';
 import TrezorConnect from '@trezor/connect';
+import { goto } from 'src/actions/suite/routerActions';
 
 interface PassphraseModalProps {
     device: TrezorDevice;
@@ -55,6 +56,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
         return null;
     }
 
+    console.log('____authConfirmation', authConfirmation, stateConfirmation, device.state);
     const isPassphraseWalletConfirmationVisible = authConfirmation || stateConfirmation;
 
     // show borderless one-column modal for confirming passphrase and state confirmation
@@ -69,9 +71,23 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
         );
     }
 
+    const handleBackButtonClick = () => {
+        onCancel();
+
+        goto('suite-switch-device', {
+            params: {
+                cancelable: true,
+            },
+        });
+    };
+
     return (
         <SwitchDeviceRenderer>
-            <CardWithDevice onCancel={onCancel} device={device}>
+            <CardWithDevice
+                onCancel={onCancel}
+                device={device}
+                onBackButtonClick={handleBackButtonClick}
+            >
                 <PassphraseHeading>
                     <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />
                 </PassphraseHeading>
