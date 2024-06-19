@@ -10,6 +10,8 @@ Welcome to the Trezor Suite repository! This repository contains the source code
 
 # Development
 
+Development is not possible on Windows. This can be circumvented by tools such as [WSL](https://learn.microsoft.com/en-us/windows/wsl/install), see our [guide](https://docs.trezor.io/trezor-suite/misc/WSL.html).
+
 ### Prerequisities
 
 -   [NVM](https://github.com/nvm-sh/nvm)
@@ -42,8 +44,6 @@ Run a dev build:
 
 -   `yarn suite:dev` (web app)
 -   `yarn suite:dev:desktop` (electron app)
-
-Development is also possible on WSL, [more info here](./docs/misc/WSL.md).
 
 ## **Trezor Suite Lite** @suite-native/app
 

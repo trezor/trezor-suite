@@ -85,6 +85,7 @@
     -   [regtest](./tests/regtest.md)
 -   [Miscellaneous](./misc/index.md)
     -   [build](./misc/build.md)
+    -   [development on Windows](./misc/development-on-windows.md)
     -   [device naming](./misc/device-naming.md)
     -   [review](./misc/review.md)
     -   [videos](./misc/videos.md)
