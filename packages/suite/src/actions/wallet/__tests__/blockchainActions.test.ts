@@ -40,8 +40,7 @@ export const getInitialState = (
         transactions: transactionsReducer(
             {
                 transactions: transactions || {},
-                isLoading: false,
-                error: null,
+                fetchStatusDetail: {},
             },
             action,
         ),

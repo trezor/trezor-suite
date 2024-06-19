@@ -1,27 +1,20 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-import { Screen } from '@suite-native/navigation';
 import {
     AccountsRootState,
-    fetchTransactionsThunk,
-    selectAccountLabel,
     selectAccountByKey,
-    TransactionsRootState,
-    FiatRatesRootState,
+    selectAccountLabel,
 } from '@suite-common/wallet-core';
-import { TransactionList } from '@suite-native/transactions';
-import {
-    selectAccountOrTokenAccountTransactions,
-    selectEthereumAccountTokenInfo,
-} from '@suite-native/ethereum-tokens';
-import { analytics, EventType } from '@suite-native/analytics';
-import { SettingsSliceRootState } from '@suite-native/settings';
 import { TokenAddress } from '@suite-common/wallet-types';
+import { EventType, analytics } from '@suite-native/analytics';
+import { selectEthereumAccountTokenInfo } from '@suite-native/ethereum-tokens';
+import { Screen } from '@suite-native/navigation';
+import { TransactionList } from '@suite-native/transactions';
 
-import { TransactionListHeader } from '../components/TransactionListHeader';
 import { AccountDetailScreenHeader } from '../components/AccountDetailScreenHeader';
 import { TokenAccountDetailScreenSubHeader } from '../components/TokenAccountDetailScreenSubHeader';
+import { TransactionListHeader } from '../components/TransactionListHeader';
 
 type AccountDetailContentScreenProps = {
     accountKey: string;
@@ -32,8 +25,6 @@ export const AccountDetailContentScreen = ({
     accountKey,
     tokenContract,
 }: AccountDetailContentScreenProps) => {
-    const dispatch = useDispatch();
-
     const [areTokensIncluded, setAreTokensIncluded] = useState(false);
     const account = useSelector((state: AccountsRootState) =>
         selectAccountByKey(state, accountKey),
@@ -42,35 +33,8 @@ export const AccountDetailContentScreen = ({
         selectAccountLabel(state, accountKey),
     );
 
-    const accountTransactions = useSelector(
-        (state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState) =>
-            accountKey
-                ? selectAccountOrTokenAccountTransactions(
-                      state,
-                      accountKey,
-                      tokenContract ?? null,
-                      areTokensIncluded,
-                  )
-                : [],
-    );
     const token = useSelector((state: AccountsRootState) =>
         selectEthereumAccountTokenInfo(state, accountKey, tokenContract),
-    );
-
-    const fetchMoreTransactions = useCallback(
-        (pageToFetch: number, perPage: number) => {
-            if (!accountKey) {
-                return;
-            }
-            dispatch(
-                fetchTransactionsThunk({
-                    accountKey,
-                    page: pageToFetch,
-                    perPage,
-                }),
-            ).unwrap();
-        },
-        [accountKey, dispatch],
     );
 
     useEffect(() => {
@@ -126,8 +90,6 @@ export const AccountDetailContentScreen = ({
                 areTokensIncluded={areTokensIncluded}
                 accountKey={accountKey}
                 tokenContract={tokenContract}
-                transactions={accountTransactions}
-                fetchMoreTransactions={fetchMoreTransactions}
                 listHeaderComponent={listHeaderComponent}
             />
         </Screen>

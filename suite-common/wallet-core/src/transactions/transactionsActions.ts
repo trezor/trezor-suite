@@ -6,13 +6,6 @@ import { enhanceTransaction } from '@suite-common/wallet-utils';
 
 export const TRANSACTIONS_MODULE_PREFIX = '@common/wallet-core/transactions';
 
-const fetchError = createAction(
-    `${TRANSACTIONS_MODULE_PREFIX}/fetchError`,
-    (payload: { error: string | null }) => ({ payload }),
-);
-const fetchSuccess = createAction(`${TRANSACTIONS_MODULE_PREFIX}/fetchSuccess`);
-const fetchInit = createAction(`${TRANSACTIONS_MODULE_PREFIX}/fetchInit`);
-
 const resetTransaction = createAction(
     `${TRANSACTIONS_MODULE_PREFIX}/resetTransaction`,
     (payload: { account: Account }) => ({ payload }),
@@ -59,9 +52,6 @@ const addTransaction = createAction(
 
 export const transactionsActions = {
     addTransaction,
-    fetchError,
-    fetchInit,
-    fetchSuccess,
     replaceTransaction,
     removeTransaction,
     resetTransaction,

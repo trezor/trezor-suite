@@ -136,3 +136,8 @@ export type ExtraDependencies = {
 export type ExtraDependenciesPartial = {
     [K in keyof ExtraDependencies]?: Partial<ExtraDependencies[K]>;
 };
+
+export type CustomThunkAPI = {
+    state: any;
+    extra: ExtraDependencies;
+};

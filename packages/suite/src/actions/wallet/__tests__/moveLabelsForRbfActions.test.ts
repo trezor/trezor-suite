@@ -57,8 +57,7 @@ describe(moveLabelsForRbfAction.name, () => {
             wallet: {
                 accounts: moveLabelsForRbfAccountsFixture,
                 transactions: {
-                    isLoading: false,
-                    error: null,
+                    fetchStatusDetail: {},
                     transactions: moveLabelsForRbfTransactionsFixture,
                 },
             },

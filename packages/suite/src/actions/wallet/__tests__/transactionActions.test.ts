@@ -47,8 +47,7 @@ describe('Transaction Actions', () => {
                 [account1.key]: [getWalletTransaction()],
                 [account2.key]: [getWalletTransaction()],
             },
-            isLoading: false,
-            error: null,
+            fetchStatusDetail: {},
         });
 
         store.dispatch(transactionsActions.resetTransaction({ account: account1 }));
