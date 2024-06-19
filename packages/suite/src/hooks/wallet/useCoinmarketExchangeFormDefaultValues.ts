@@ -4,6 +4,8 @@ import { DEFAULT_PAYMENT, DEFAULT_VALUES } from '@suite-common/wallet-constants'
 import { buildCryptoOption, buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { Account } from 'src/types/wallet';
 import { ExchangeFormState } from 'src/types/wallet/coinmarketExchangeForm';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
 
 export const useCoinmarketExchangeFormDefaultValues = (
     symbol: Account['symbol'],
@@ -23,7 +25,9 @@ export const useCoinmarketExchangeFormDefaultValues = (
                       fiatInput: '',
                       cryptoInput: '',
                       receiveCryptoSelect: null,
-                      sendCryptoSelect: buildCryptoOption(symbol),
+                      sendCryptoSelect: buildCryptoOption(
+                          networkToCryptoSymbol(symbol) ?? defaultCryptoCurrency,
+                      ),
                       options: ['broadcast'],
                       outputs: [
                           {
