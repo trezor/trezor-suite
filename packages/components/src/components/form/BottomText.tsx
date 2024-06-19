@@ -9,23 +9,15 @@ import { InputState } from './inputTypes';
 
 export const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding
 
-interface BottomTextProps {
-    inputState?: InputState;
-    isDisabled?: boolean;
-    icon?: IconName;
-    withIcon?: boolean;
-    children: ReactNode;
-}
-
 const slideDown = keyframes`
-    from {
-        opacity: 0;
-        transform: translateY(-2px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+from {
+    opacity: 0;
+    transform: translateY(-2px);
+}
+to {
+    opacity: 1;
+    transform: translateY(0);
+}
 `;
 
 export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: boolean }>`
@@ -40,6 +32,13 @@ export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: bo
     animation: ${slideDown} 0.18s ease-in-out forwards;
 `;
 
+interface BottomTextProps {
+    inputState?: InputState;
+    isDisabled?: boolean;
+    icon?: IconName;
+    withIcon?: boolean;
+    children: ReactNode;
+}
 //TODO: refactor as in Warning component
 export const BottomText = ({
     inputState,
@@ -58,13 +57,7 @@ export const BottomText = ({
         ? 'iconDisabled'
         : getInputStateTextColor(inputState, theme);
 
-    let iconName;
-
-    if (icon) {
-        iconName = icon;
-    } else if (inputState && iconMap[inputState]) {
-        iconName = iconMap[inputState];
-    }
+    const iconName = icon || (inputState && iconMap[inputState]);
 
     return (
         <Container $inputState={inputState} $isDisabled={isDisabled}>

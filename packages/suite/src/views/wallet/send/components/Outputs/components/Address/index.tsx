@@ -72,8 +72,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] = useState<
         AddressDeprecatedUrl | undefined
     >(undefined);
-    type AddressChecksumInfo = { text: string } | undefined;
-    const [addressChecksumInfo, setAddressChecksumInfo] = useState<AddressChecksumInfo>(undefined);
+    const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -242,11 +241,9 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         updatedValues[0] !== updatedValues[1] &&
                         toChecksumAddress(updatedValues[0]) === updatedValues[1]
                     ) {
-                        setAddressChecksumInfo({
-                            text: 'Address converted to checksum format.',
-                        });
+                        setHasAddressChecksummed(true);
                     } else {
-                        setAddressChecksumInfo(undefined);
+                        setHasAddressChecksummed(false);
                     }
 
                     //1.If the address is used but unchecksummed, then Suite will automatically convert the address to the correct checksummed form and inform the user as described in the OP.
@@ -256,13 +253,16 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                             setValue(inputName, toChecksumAddress(address), {
                                 shouldValidate: true,
                             });
+                            console.log('CASE 1');
                         }
                     }
-                    //2. if address is not checksummed at all and not found in blockbook
-                    //offer to checksum width a button
+                    //2. if the address is not checksummed at all and not found in blockbook
+                    //offer to checksum it with a button
                     if (result.success && result.payload.history.total == 0) {
                         if (address == address.toLowerCase()) {
-                            return 'Not used and not checksummed at all';
+                            console.log('CASE 2');
+
+                            return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
                         }
                     }
                 }
@@ -292,12 +292,11 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 <InputError message={addressError.message} button={getValidationButtonProps()} />
             );
         }
-
-        if (addressChecksumInfo) {
+        if (hasAddressChecksummed) {
             return (
                 <InputChecksumInfo
                     message="TR_CHECKSUM_CONVERSION_INFO"
-                    tooltipContent="Info about checksummed address"
+                    tooltipContent="TR_ETH_ADDRESS_CHECKSUMMED_INFO"
                 />
             );
         }

@@ -2191,6 +2191,18 @@ export default defineMessages({
         defaultMessage: 'Edit',
         id: 'TR_EDIT',
     },
+    TR_ETH_ADDRESS_CHECKSUMMED_INFO: {
+        defaultMessage: 'Your address was automatically checksummed. Learn more...',
+        id: 'TR_ETH_ADDRESS_CHECKSUMMED_INFO',
+    },
+    TR_ETH_ADDRESS_CONVERTED_CHECKSUM: {
+        defaultMessage: 'Address converted to checksum format.',
+        id: 'TR_ETH_ADDRESS_CONVERTED_CHECKSUM',
+    },
+    TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
+        defaultMessage: 'Your address was not used and is not checksummed, please double-check.',
+        id: 'TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED',
+    },
     TR_NEEDS_ATTENTION_BOOTLOADER: {
         defaultMessage: 'Trezor is in Bootloader mode.',
         id: 'TR_NEEDS_ATTENTION_BOOTLOADER',
