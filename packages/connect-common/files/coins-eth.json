@@ -22,45 +22,6 @@
         {
             "blockchain_link": {
                 "type": "blockbook",
-                "url": ["https://sepolia1.trezor.io"]
-            },
-            "chain": "sep",
-            "chain_id": 11155111,
-            "name": "Sepolia",
-            "rskip60": false,
-            "shortcut": "tSEP",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "suite": true,
-                "T1B1": "1.11.2",
-                "T2T1": "2.5.2",
-                "T2B1": "2.6.1"
-            },
-            "url": "https://sepolia.otterscan.io"
-        },
-        {
-            "blockchain_link": {
-                "type": "blockbook",
-                "url": ["https://holesky1.trezor.io", "https://holesky2.trezor.io"]
-            },
-            "chain": "hol",
-            "chain_id": 17000,
-            "name": "Holesky",
-            "shortcut": "tHOL",
-            "slip44": 1,
-            "support": {
-                "connect": true,
-                "suite": true,
-                "T1B1": "1.11.2",
-                "T2T1": "2.5.2",
-                "T2B1": "2.6.1"
-            },
-            "url": "https://holesky.ethpandaops.io/"
-        },
-        {
-            "blockchain_link": {
-                "type": "blockbook",
                 "url": ["https://etc1.trezor.io", "https://etc2.trezor.io"]
             },
             "chain": "etc",
@@ -95,6 +56,46 @@
                 "T2B1": "2.6.1"
             },
             "url": "https://polygon.technology"
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://holesky1.trezor.io", "https://holesky2.trezor.io"]
+            },
+            "chain": "hol",
+            "chain_id": 17000,
+            "name": "Holesky",
+            "shortcut": "tHOL",
+            "slip44": 1,
+            "support": {
+                "connect": true,
+                "suite": true,
+                "T1B1": "1.11.2",
+                "T2T1": "2.5.2",
+                "T2B1": "2.6.1"
+            },
+            "url": "https://holesky.ethpandaops.io/"
+        },
+
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://sepolia1.trezor.io"]
+            },
+            "chain": "sep",
+            "chain_id": 11155111,
+            "name": "Sepolia",
+            "rskip60": false,
+            "shortcut": "tSEP",
+            "slip44": 1,
+            "support": {
+                "connect": true,
+                "suite": true,
+                "T1B1": "1.11.2",
+                "T2T1": "2.5.2",
+                "T2B1": "2.6.1"
+            },
+            "url": "https://sepolia.otterscan.io"
         }
     ]
 }
