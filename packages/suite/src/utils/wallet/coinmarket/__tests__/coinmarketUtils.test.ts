@@ -12,6 +12,14 @@ import {
 } from '../coinmarketUtils';
 import { accountBtc, accountEth, coinDefinitions } from '../__fixtures__/coinmarketUtils';
 import { ALTERNATIVE_QUOTES, MIN_MAX_QUOTES_OK } from '../__fixtures__/buyUtils';
+import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
+import {
+    CryptoCategoryA,
+    CryptoCategoryB,
+    CryptoCategoryC,
+    CryptoCategoryD,
+    CryptoCategoryE,
+} from 'src/constants/wallet/coinmarket/cryptoCategories';
 
 describe('coinmarket utils', () => {
     it('buildFiatOption', () => {
@@ -19,16 +27,19 @@ describe('coinmarket utils', () => {
     });
 
     it('buildCryptoOption', () => {
-        expect(buildCryptoOption('btc')).toStrictEqual({
+        expect(buildCryptoOption('BTC')).toStrictEqual({
             value: 'BTC',
             label: 'BTC',
-            cryptoSymbol: 'BTC',
             cryptoName: 'Bitcoin',
         });
-        expect(buildCryptoOption('eth')).toStrictEqual({
+        expect(buildCryptoOption('ETH')).toStrictEqual({
             value: 'ETH',
             label: 'ETH',
-            cryptoSymbol: 'ETH',
+            cryptoName: 'Ethereum',
+        });
+        expect(buildCryptoOption('USDT@ETH')).toStrictEqual({
+            value: 'USDT@ETH',
+            label: 'USDT',
             cryptoName: 'Ethereum',
         });
     });
@@ -181,5 +192,100 @@ describe('coinmarket utils', () => {
                     q.paymentId,
             ).length,
         );
+    });
+
+    it('function coinmarketBuildCryptoOptions', () => {
+        const symbolsInfo: CryptoSymbolInfo[] = [
+            {
+                symbol: 'BTC',
+                name: 'Bitcoin',
+                category: 'Popular currencies',
+            },
+            {
+                symbol: 'ETH',
+                name: 'Ethereum',
+                category: 'Popular currencies',
+            },
+            {
+                symbol: 'USDT@ETH',
+                name: 'Tether',
+                category: 'Ethereum ERC20 tokens',
+            },
+            {
+                symbol: 'USDT@MATIC',
+                name: 'Tether',
+                category: 'Polygon ERC20 tokens',
+            },
+        ];
+        const cryptoCurrencies: Set<CryptoSymbol> = new Set([
+            'BTC',
+            'ETH',
+            'USDT@ETH',
+            'USDT@MATIC',
+            'VEN',
+            'STEEM',
+        ]);
+
+        expect(
+            coinmarketBuildCryptoOptions({
+                symbolsInfo,
+                cryptoCurrencies,
+            }),
+        ).toStrictEqual([
+            {
+                label: CryptoCategoryA,
+                options: [
+                    {
+                        value: 'BTC',
+                        label: 'BTC',
+                        cryptoName: 'Bitcoin',
+                    },
+                    {
+                        value: 'ETH',
+                        label: 'ETH',
+                        cryptoName: 'Ethereum',
+                    },
+                ],
+            },
+            {
+                label: CryptoCategoryB,
+                options: [
+                    {
+                        value: 'USDT@ETH',
+                        label: 'USDT',
+                        cryptoName: 'Tether',
+                    },
+                ],
+            },
+            {
+                label: CryptoCategoryC,
+                options: [],
+            },
+            {
+                label: CryptoCategoryD,
+                options: [
+                    {
+                        value: 'USDT@MATIC',
+                        label: 'USDT',
+                        cryptoName: 'Tether',
+                    },
+                ],
+            },
+            {
+                label: CryptoCategoryE,
+                options: [
+                    {
+                        value: 'VEN',
+                        label: 'VEN',
+                        cryptoName: null,
+                    },
+                    {
+                        value: 'STEEM',
+                        label: 'STEEM',
+                        cryptoName: null,
+                    },
+                ],
+            },
+        ]);
     });
 });

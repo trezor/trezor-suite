@@ -54,13 +54,18 @@ const CoinmarketFormOffer = () => {
     const context = useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const {
         quotes,
-        account,
         goToOffers,
         selectQuote,
         form: { state },
+        getValues,
     } = context;
     const { providers } = getProvidersInfoProps(context);
     const bestQuote = quotes?.[0];
+    const selectedCrypto = getValues('cryptoSelect');
+
+    const receiveCurrency = bestQuote?.receiveCurrency
+        ? cryptoToCoinSymbol(bestQuote?.receiveCurrency)
+        : null;
 
     return (
         <>
@@ -74,9 +79,9 @@ const CoinmarketFormOffer = () => {
                         : '0'
                 }
                 symbol={
-                    !state.isLoadingOrInvalid && bestQuote?.receiveCurrency
-                        ? bestQuote?.receiveCurrency
-                        : account.symbol.toUpperCase()
+                    !state.isLoadingOrInvalid && receiveCurrency
+                        ? receiveCurrency
+                        : selectedCrypto?.label ?? ''
                 }
             />
             <CoinmarketFormOfferHeader>

@@ -179,7 +179,7 @@ export const useCoinmarketSellForm = ({
             return;
         }
 
-        if (values.cryptoCurrencySelect && !values.cryptoCurrencySelect?.cryptoSymbol) {
+        if (values.cryptoCurrencySelect && !values.cryptoCurrencySelect?.value) {
             removeDraft(account.key);
         }
     }, [defaultValues, values, removeDraft, account.key]);
@@ -344,7 +344,7 @@ export const useCoinmarketSellForm = ({
         const amountInCrypto = !fiatStringAmount;
         const request: SellFiatTradeQuoteRequest = {
             amountInCrypto,
-            cryptoCurrency: formValues.cryptoCurrencySelect.cryptoSymbol,
+            cryptoCurrency: formValues.cryptoCurrencySelect?.value,
             fiatCurrency: formValues.fiatCurrencySelect.value.toUpperCase(),
             country: formValues.countrySelect.value,
             cryptoStringAmount,

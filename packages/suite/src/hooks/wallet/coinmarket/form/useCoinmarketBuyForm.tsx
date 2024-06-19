@@ -130,14 +130,12 @@ const useCoinmarketBuyForm = ({
         defaultValues: isDraft && draftUpdated ? draftUpdated : defaultValues,
     });
     const { register, control, formState, reset, setValue, getValues, handleSubmit } = methods;
-    const values = useWatch<CoinmarketBuyFormProps>({ control }) as CoinmarketBuyFormProps;
-    const previousValues = useRef<CoinmarketBuyFormProps | null>(
-        offFirstRequest ? draftUpdated : null,
-    );
+    const values = useWatch<CoinmarketBuyFormProps>({ control });
+    const previousValues = useRef<typeof values | null>(offFirstRequest ? draftUpdated : null);
 
     // form states
     const formIsValid = Object.keys(formState.errors).length === 0;
-    const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect.value;
+    const hasValues = (values.fiatInput || values.cryptoInput) && !!values.currencySelect?.value;
     const isFirstRequest = innerQuotes === undefined;
     const isFormLoading =
         isLoading || formState.isSubmitting || isSubmittingHelper || isFirstRequest;
@@ -151,7 +149,10 @@ const useCoinmarketBuyForm = ({
             }
 
             // no need to fetch quotes if amount is not set
-            if (!request.fiatStringAmount && !request.cryptoStringAmount) {
+            if (
+                (!request.fiatStringAmount && !request.cryptoStringAmount) ||
+                !request.receiveCurrency
+            ) {
                 timer.stop();
 
                 return;
@@ -188,7 +189,7 @@ const useCoinmarketBuyForm = ({
             fiatCurrency: currencySelect
                 ? currencySelect?.value.toUpperCase()
                 : quotesRequest?.fiatCurrency ?? '',
-            receiveCurrency: cryptoSelect?.cryptoSymbol ?? quotesRequest?.receiveCurrency ?? 'BTC',
+            receiveCurrency: cryptoSelect?.value ?? quotesRequest?.receiveCurrency,
             country: countrySelect?.value ?? quotesRequest?.country,
             fiatStringAmount: fiatInput ?? quotesRequest?.fiatStringAmount,
             cryptoStringAmount: cryptoStringAmount ?? quotesRequest?.cryptoStringAmount,
@@ -387,7 +388,7 @@ const useCoinmarketBuyForm = ({
             return;
         }
 
-        if (values.cryptoSelect && !values.cryptoSelect?.cryptoSymbol) {
+        if (values.cryptoSelect && !values.cryptoSelect?.value) {
             removeDraft(account.key);
         }
     }, [defaultValues, values, removeDraft, account.key]);

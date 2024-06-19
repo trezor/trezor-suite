@@ -28,7 +28,6 @@ import { Account } from '@suite-common/wallet-types';
 import { AnyAction, Dispatch } from 'redux';
 import { State } from 'src/reducers/wallet/coinmarketReducer';
 import { WithSelectedAccountLoadedProps } from 'src/components/wallet';
-import { networks } from '@suite-common/wallet-config';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
@@ -112,9 +111,10 @@ export interface CoinmarketPaymentMethodListProps extends Option {
     label: string;
 }
 
-export interface CoinmarketCryptoListProps extends Option {
-    cryptoSymbol: CryptoSymbol | undefined;
-    cryptoName: (typeof networks)[keyof typeof networks]['name'];
+export interface CoinmarketCryptoListProps {
+    value: CryptoSymbol;
+    label: string; // token shortcut
+    cryptoName: string | null; // full name
 }
 
 export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
