@@ -114,7 +114,7 @@ const CoinmarketFormOffer = () => {
                 isFullWidth
                 isDisabled={state.isLoadingOrInvalid || !bestQuote}
             >
-                Buy
+                <Translation id="TR_BUY" />
             </Button>
         </>
     );
