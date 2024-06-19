@@ -7,20 +7,41 @@ import * as fixtures from '../__fixtures__/transactionsReducer';
 const transactionsReducer = prepareTransactionsReducer(extraDependenciesMock);
 
 describe('transactionsReducer', () => {
-    fixtures.addTransaction.forEach(f => {
-        it(f.description, () => {
-            const result = transactionsReducer(
-                {
-                    ...transactionsInitialState,
-                    ...f.initialState,
-                },
-                {
-                    type: transactionsActions.addTransaction.type,
-                    payload: f.actionPayload,
-                },
-            );
+    describe('addTransaction', () => {
+        fixtures.addTransaction.forEach(f => {
+            it(f.description, () => {
+                const result = transactionsReducer(
+                    {
+                        ...transactionsInitialState,
+                        ...f.initialState,
+                    },
+                    {
+                        type: transactionsActions.addTransaction.type,
+                        payload: f.actionPayload,
+                    },
+                );
 
-            expect(result.transactions).toEqual(f.result);
+                expect(result.transactions).toStrictEqual(f.result);
+            });
+        });
+    });
+
+    describe('removeTransaction', () => {
+        fixtures.removeTransaction.forEach(f => {
+            it(f.description, () => {
+                const result = transactionsReducer(
+                    {
+                        ...transactionsInitialState,
+                        ...f.initialState,
+                    },
+                    {
+                        type: transactionsActions.removeTransaction.type,
+                        payload: f.actionPayload,
+                    },
+                );
+
+                expect(result.transactions).toStrictEqual(f.result);
+            });
         });
     });
 });
