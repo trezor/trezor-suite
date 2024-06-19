@@ -10065,6 +10065,7 @@ __metadata:
     "@trezor/blockchain-link-types": "workspace:*"
     "@trezor/styles": "workspace:*"
     "@trezor/theme": "workspace:*"
+    "@trezor/utils": "workspace:*"
     proxy-memoize: "npm:2.0.2"
     react: "npm:18.2.0"
     react-native: "npm:0.74.1"
