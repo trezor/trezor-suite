@@ -32,6 +32,36 @@ describe(parseTextToPagesAndLines.name, () => {
             },
         },
         {
+            it: 'Trezor One: Legacy Address',
+            input: {
+                deviceModel: DeviceModelInternal.T1B1,
+                text: '1PmVvr5DNVYJygtDT7J312qmxpa5pceu9E',
+            },
+            expected: {
+                pages: [
+                    {
+                        rows: [{ text: '1PmVvr5DNVYJygtDT' }, { text: '7J312qmxpa5pceu9E' }], // line breaks after 17 characters
+                    },
+                ],
+                hasNextIcon: false,
+            },
+        },
+        {
+            it: 'Trezor One: Legacy SegWit testnet Address',
+            input: {
+                deviceModel: DeviceModelInternal.T1B1,
+                text: '2NEPdNcUiLHLT7brh6AJaMV3AE5XG36HtsP',
+            },
+            expected: {
+                pages: [
+                    {
+                        rows: [{ text: '2NEPdNcUiLHLT7brh6' }, { text: 'AJaMV3AE5XG36HtsP' }], // line breaks after 18 characters
+                    },
+                ],
+                hasNextIcon: false,
+            },
+        },
+        {
             it: 'Trezor One: XPUB',
             input: {
                 deviceModel: DeviceModelInternal.T1B1,
@@ -91,7 +121,7 @@ describe(parseTextToPagesAndLines.name, () => {
             },
         },
 
-        // --------------- Trezor Safe3 ---------------
+        // --------------- Trezor Safe 3 ---------------
 
         // No case for 'Trezor Safe 3: Address', it is handled by different logic, as chunks are used
         {
@@ -121,10 +151,6 @@ describe(parseTextToPagesAndLines.name, () => {
                 hasNextIcon: true,
             },
         },
-
-        // --------------- Trezor Safe3 ---------------
-
-        // No case for 'Trezor Safe 3: Address', it is handled by different logic, as chunks are used
         {
             it: 'Trezor Safe 3 XPUB Taproot',
             input: {
@@ -152,6 +178,62 @@ describe(parseTextToPagesAndLines.name, () => {
                     {
                         rows: [
                             { text: '1>/*)' }, // space for continue-arrow
+                        ],
+                    },
+                ],
+                hasNextIcon: true,
+            },
+        },
+
+        // --------------- Trezor Safe 5 ---------------
+
+        // No case for 'Trezor Safe 5: Address', it is handled by different logic, as chunks are used
+        {
+            it: 'Trezor Safe 5 XPUB',
+            input: {
+                deviceModel: DeviceModelInternal.T3T1,
+                text: 'zpub6rCCBgYm34WmcmW49pUvY5NmtG2oMwfCaDteT8xh8pEkKugU61KNjoYCAauoUgsDpufKTtnc8qYQaTbcawyBtbTvtFZEKjT5w12GNJr3xrB',
+            },
+            expected: {
+                pages: [
+                    {
+                        rows: [
+                            { text: 'zpub6rCCBgYm34Wmcm' },
+                            { text: 'W49pUvY5NmtG2oMwfC' },
+                            { text: 'aDteT8xh8pEkKugU61' },
+                            { text: 'KNjoYCAauoUgsDpufK' },
+                            { text: 'Ttnc8qYQaTbcawyBtb' },
+                            { text: 'TvtFZEKjT5w12GNJr3' },
+                            { text: 'xrB' },
+                        ],
+                    },
+                ],
+                hasNextIcon: true,
+            },
+        },
+        {
+            it: 'Trezor Safe 5 XPUB Taproot',
+            input: {
+                deviceModel: DeviceModelInternal.T3T1,
+                text: "tr([592078a3/86'/0'/0']xpub6CRY1LAXPqbPAjnDxpX5n5P2MDAkzx67rNywJTNRqpLP28R9vpBEURzQCuymMcWstdDJvb7ajK1Cz4Pz4qyWtfgRZWw547a3NSRGnPxu6zU/<0;1>/*)",
+            },
+            expected: {
+                pages: [
+                    {
+                        rows: [
+                            { text: "tr([592078a3/86'/0" },
+                            { text: "'/0']xpub6CRY1LAXP" },
+                            { text: 'qbPAjnDxpX5n5P2MDA' },
+                            { text: 'kzx67rNywJTNRqpLP2' },
+                            { text: '8R9vpBEURzQCuymMcW' },
+                            { text: 'stdDJvb7ajK1Cz4Pz4' },
+                            { text: 'qyWtfgRZWw547a' }, // space for next-arrow
+                        ],
+                    },
+                    {
+                        rows: [
+                            { text: '3NSRGnPxu6zU/<' }, // space for continue-arrow
+                            { text: '0;1>/*)' },
                         ],
                     },
                 ],
