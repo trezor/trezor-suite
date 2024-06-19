@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
+        "@sentry/react-native": "5.22.3",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",

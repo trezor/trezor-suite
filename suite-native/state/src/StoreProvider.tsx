@@ -1,6 +1,7 @@
 import { useEffect, useState, ReactNode } from 'react';
 import { Provider } from 'react-redux';
 
+import * as Sentry from '@sentry/react-native';
 import { EnhancedStore } from '@reduxjs/toolkit';
 import { Persistor, persistStore } from 'redux-persist';
 
@@ -18,10 +19,15 @@ export const StoreProvider = ({ children }: StoreProviderProps) => {
 
     useEffect(() => {
         const initStoreAsync = async () => {
-            const freshStore = await initStore();
-            const freshPersistor = persistStore(freshStore);
-            setStore(freshStore);
-            setStorePersistor(freshPersistor);
+            try {
+                const freshStore = await initStore();
+                const freshPersistor = persistStore(freshStore);
+                setStore(freshStore);
+                setStorePersistor(freshPersistor);
+            } catch (error) {
+                console.error('Init store error:', error);
+                Sentry.captureException(error);
+            }
         };
 
         initStoreAsync();
