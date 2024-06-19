@@ -6,15 +6,7 @@ import { TREZOR_SAFE_5_URL } from '@trezor/urls';
 
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDashboardT3T1PromoBannerShown } from 'src/reducers/suite/suiteReducer';
-import {
-    Button,
-    IconButton,
-    Image,
-    SVG_IMAGES,
-    SVG_PATH,
-    motionEasing,
-    variables,
-} from '@trezor/components';
+import { Button, IconButton, Image, SVG_IMAGES, SVG_PATH, variables } from '@trezor/components';
 import { setFlag } from 'src/actions/suite/suiteActions';
 import { Translation, TrezorLink } from 'src/components/suite';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -22,6 +14,7 @@ import { resolveStaticPath } from '@suite-common/suite-utils';
 import { colorVariants } from '@trezor/theme';
 import { rgba } from 'polished';
 import { T3T1PromoLogo } from './T3T1PromoLogo';
+import { bannerAnimationConfig } from './banner-animations';
 
 const BannerWrapper = styled(motion.div)`
     display: grid;
@@ -234,23 +227,6 @@ export const T3T1PromoBanner = () => {
             },
         });
 
-    const promoBannerAnimationConfig = {
-        initial: { opacity: 1, transform: 'scale(1)' },
-        exit: { opacity: 0, transform: 'scale(0.7)', marginBottom: -184 },
-        transition: {
-            duration: 0.33,
-            ease: motionEasing.transition,
-            height: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-            opacity: {
-                duration: 0.23,
-                ease: motionEasing.transition,
-            },
-        },
-    };
-
     if (!shouldShowDashboardT3T1PromoBanner) return null;
 
     return (
@@ -258,7 +234,7 @@ export const T3T1PromoBanner = () => {
             {isVisible && (
                 <BannerWrapper
                     key="container"
-                    {...promoBannerAnimationConfig}
+                    {...bannerAnimationConfig}
                     onAnimationComplete={() =>
                         dispatch(setFlag('showDashboardT3T1PromoBanner', false))
                     }
