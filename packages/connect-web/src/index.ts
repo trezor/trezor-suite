@@ -156,8 +156,8 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
         return this.getTarget().requestWebUSBDevice();
     }
 
-    public cancel() {
-        return this.getTarget().cancel();
+    public cancel(error?: string) {
+        return this.getTarget().cancel(error);
     }
 
     public dispose() {

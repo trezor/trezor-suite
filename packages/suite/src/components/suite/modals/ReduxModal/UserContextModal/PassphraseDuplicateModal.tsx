@@ -7,6 +7,7 @@ import { useDevice, useDispatch } from 'src/hooks/suite';
 import { TrezorDevice } from 'src/types/suite';
 import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
+
 type PassphraseDuplicateModalProps = {
     device: TrezorDevice;
     duplicate: TrezorDevice;

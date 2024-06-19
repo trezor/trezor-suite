@@ -1,12 +1,11 @@
 import { useCallback, useState } from 'react';
 
 import { PassphraseTypeCard } from '@trezor/components';
-import TrezorConnect from '@trezor/connect';
 import {
     selectIsDiscoveryAuthConfirmationRequired,
     onPassphraseSubmit,
     selectDeviceModel,
-    deviceActions,
+    cancelPassphraseSelectionThunk,
 } from '@suite-common/wallet-core';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -17,7 +16,7 @@ import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { PassphraseDescription } from './PassphraseDescription';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 import { PassphraseHeading } from './PassphraseHeading';
-import { selectSuiteSettings } from '../../../../../reducers/suite/suiteReducer';
+import TrezorConnect from '@trezor/connect';
 
 interface PassphraseModalProps {
     device: TrezorDevice;
@@ -30,7 +29,6 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
         useSelector(selectIsDiscoveryAuthConfirmationRequired) || device.authConfirm;
 
     const deviceModel = useSelector(selectDeviceModel);
-    const settings = useSelector(selectSuiteSettings);
 
     const stateConfirmation = !!device.state;
 
@@ -43,8 +41,7 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     const dispatch = useDispatch();
 
     const onCancel = () => {
-        TrezorConnect.cancel('auth-confirm-cancel'); // This auth-confirm-cancel' causes the proper cleaning of the state in deviceThunks.authConfirm()
-        dispatch(deviceActions.forgetDevice({ device, settings }));
+        TrezorConnect.cancel('auth-confirm-cancel');
     };
 
     const onSubmit = useCallback(

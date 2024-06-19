@@ -407,13 +407,12 @@ export const startDiscoveryThunk = createThunk(
                 await dispatch(initMetadata(false));
             }
 
-            dispatch({
-                type: startDiscovery.type,
-                payload: {
+            dispatch(
+                startDiscovery({
                     ...discovery,
                     status: DiscoveryStatus.RUNNING,
-                },
-            });
+                }),
+            );
         }
 
         let { availableCardanoDerivations } = discovery;
@@ -643,9 +642,8 @@ export const createDiscoveryThunk = createThunk(
         const enabledNetworks = selectEnabledNetworks(getState());
         const networks = filterUnavailableNetworks(enabledNetworks, device).map(n => n.symbol);
 
-        dispatch({
-            type: createDiscovery.type,
-            payload: {
+        dispatch(
+            createDiscovery({
                 deviceState,
                 authConfirm: !device.useEmptyPassphrase,
                 index: 0,
@@ -655,8 +653,8 @@ export const createDiscoveryThunk = createThunk(
                 loaded: 0,
                 failed: [],
                 networks,
-            },
-        });
+            }),
+        );
     },
 );
 

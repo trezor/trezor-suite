@@ -184,4 +184,7 @@ export type UserContextPayload =
     | {
           type: 'copy-contract-address';
           contract: string;
+      }
+    | {
+          type: 'passphrase-mismatch-warning';
       };
