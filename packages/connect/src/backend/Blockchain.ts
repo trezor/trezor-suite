@@ -33,6 +33,23 @@ const getWorker = (type: string) => {
     }
 };
 
+const getNormalizedShortcut = (shortcut: string) => {
+    // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
+    // see: https://xrpl.org/parallel-networks.html
+    if (shortcut === 'tXRP') {
+        return 'XRP';
+    }
+
+    // Right now Blockbook reports shortcut as main currency of specific network
+    // However, in this case, BSC is network, BNB is native currency
+    // TODO: wait for new Blockbook param
+    if (shortcut.toLowerCase() === 'bsc') {
+        return 'bnb';
+    }
+
+    return shortcut;
+};
+
 export type BlockchainOptions = {
     coinInfo: CoinInfo;
     postMessage: (message: CoreEventMessage) => void;
@@ -118,9 +135,8 @@ export class Blockchain {
 
         this.serverInfo = info;
 
-        // There is no `rippled` setting that defines which network it uses neither mainnet or testnet
-        // see: https://xrpl.org/parallel-networks.html
-        const shortcut = this.coinInfo.shortcut === 'tXRP' ? 'XRP' : this.coinInfo.shortcut;
+        const shortcut = getNormalizedShortcut(this.coinInfo.shortcut);
+
         if (info.shortcut.toLowerCase() !== shortcut.toLowerCase()) {
             throw ERRORS.TypedError('Backend_Invalid');
         }

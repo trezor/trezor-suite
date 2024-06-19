@@ -351,6 +351,27 @@ export const networks = {
         accountTypes: {},
         coingeckoId: 'polygon-pos',
     },
+    bsc: {
+        name: 'BNB Smart Chain',
+        networkType: 'ethereum',
+        chainId: 56,
+        bip43Path: "m/44'/60'/0'/0/i",
+        decimals: 18,
+        testnet: false,
+        explorer: {
+            tx: 'https://bsc1.trezor.io/tx/',
+            account: 'https://bsc1.trezor.io/address/',
+            nft: 'https://bsc1.trezor.io/nft/',
+            address: 'https://bsc1.trezor.io/address/',
+            queryString: '',
+        },
+        features: ['rbf', 'sign-verify', 'tokens', 'coin-definitions', 'nft-definitions'],
+        label: 'TR_INCLUDING_TOKENS',
+        customBackends: ['blockbook'],
+        accountTypes: {},
+        coingeckoId: 'binance-smart-chain',
+        isDebugOnly: true,
+    },
     // testnets
     test: {
         name: 'Bitcoin Testnet',
