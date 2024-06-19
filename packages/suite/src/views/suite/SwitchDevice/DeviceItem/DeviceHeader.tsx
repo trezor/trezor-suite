@@ -1,16 +1,13 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon } from '@trezor/components';
+import { Icon, IconButton, Row } from '@trezor/components';
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { isWebUsb } from 'src/utils/suite/transport';
 import { WebUsbButton } from 'src/components/suite';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
 import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
 
-const Flex = styled.div`
-    flex: 1;
-`;
 const Container = styled.div<{ $isCloseButtonVisible: boolean }>`
     display: flex;
     align-items: center;
@@ -29,9 +26,15 @@ interface DeviceHeaderProps {
     device: TrezorDevice;
     onCancel?: ForegroundAppProps['onCancel'];
     isCloseButtonVisible: boolean;
+    onBackButtonClick?: () => void;
 }
 
-export const DeviceHeader = ({ onCancel, device, isCloseButtonVisible }: DeviceHeaderProps) => {
+export const DeviceHeader = ({
+    onCancel,
+    device,
+    isCloseButtonVisible,
+    onBackButtonClick,
+}: DeviceHeaderProps) => {
     const transport = useSelector(state => state.suite.transport);
     const isWebUsbTransport = isWebUsb(transport);
     const theme = useTheme();
@@ -45,11 +48,20 @@ export const DeviceHeader = ({ onCancel, device, isCloseButtonVisible }: DeviceH
 
     return (
         <Container onClick={onHeaderClick} $isCloseButtonVisible={isCloseButtonVisible}>
-            <Flex>
+            <Row gap={spacings.xs} flex={1}>
+                {onBackButtonClick && (
+                    <IconButton
+                        icon="ARROW_LEFT"
+                        onClick={onBackButtonClick}
+                        variant="tertiary"
+                        size="small"
+                    />
+                )}
+
                 {deviceModelInternal && (
                     <DeviceStatus deviceModel={deviceModelInternal} device={device} />
                 )}
-            </Flex>
+            </Row>
 
             <DeviceActions>
                 {isWebUsbTransport && <WebUsbButton variant="tertiary" size="small" />}
