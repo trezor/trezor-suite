@@ -9,34 +9,42 @@ const meta: Meta = {
     args: {
         value: 'Input',
         label: 'Label',
-        bottomText: '',
         isDisabled: false,
+        size: 'large',
         inputState: null,
-        variant: null,
+        innerAddonAlign: 'right',
+        hasBottomPadding: true,
     },
     argTypes: {
-        labelRight: {
-            type: 'string',
-        },
-        placeholder: {
-            type: 'string',
-        },
-        state: {
+        bottomText: { control: 'text' },
+        labelHoverRight: { control: 'text' },
+        labelLeft: { control: 'text' },
+        labelRight: { control: 'text' },
+        innerAddon: { control: 'text' },
+        placeholder: { control: 'text' },
+        size: {
             control: {
-                options: {
-                    'None (default)': null,
-                    Success: 'success',
-                    Warning: 'warning',
-                    Error: 'error',
-                },
                 type: 'radio',
             },
+            options: ['large', 'small'],
         },
-        variant: {
+        inputState: {
             control: {
-                options: { 'Large (default)': null, Small: 'small' },
                 type: 'radio',
             },
+            options: [null, 'warning', 'error'],
+        },
+        innerAddonAlign: {
+            control: {
+                type: 'radio',
+            },
+            options: ['right', 'left'],
+        },
+        showClearButton: {
+            control: {
+                type: 'radio',
+            },
+            options: [null, 'hover', 'always'],
         },
     },
 } as Meta;

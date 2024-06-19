@@ -32,7 +32,26 @@ export const RadioButton: StoryObj<RadioProps> = {
             </RadioComponent>
         );
     },
-    args: { children: 'RadioButton' },
+    args: {
+        children: 'RadioButton',
+        variant: 'primary',
+        isChecked: false,
+        isDisabled: false,
+    },
+    argTypes: {
+        variant: {
+            control: {
+                type: 'radio',
+            },
+            options: ['primary', 'warning', 'destructive'],
+        },
+        labelAlignment: {
+            control: {
+                type: 'radio',
+            },
+            options: [null, 'left', 'right'],
+        },
+    },
 };
 
 export const RadioButtonGroup: StoryObj = {

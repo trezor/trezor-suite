@@ -43,6 +43,11 @@ const StyledInput = styled.input<StyledInputProps & { $isWithLabel: boolean }>`
     height: ${({ $size }) => `${INPUT_HEIGHTS[$size as InputSize]}px`};
     ${baseInputStyle}
     ${({ $size }) => $size === 'small' && typography.hint};
+
+    &:disabled {
+        pointer-events: auto;
+        cursor: not-allowed;
+    }
 `;
 
 const InputWrapper = styled.div`

@@ -48,8 +48,7 @@ export const ButtonContainer = styled.button<ButtonContainerProps>`
     &:disabled {
         background: ${({ theme }) => theme.BG_GREY};
         color: ${({ theme }) => theme.textDisabled};
-        pointer-events: none;
-        cursor: default;
+        cursor: not-allowed;
     }
 
     ${withFrameProps}
@@ -142,6 +141,7 @@ export const Button = ({
             $hasIcon={!!icon || isLoading}
             $elevation={elevation}
             {...rest}
+            onClick={isDisabled ? undefined : rest?.onClick}
             {...makePropsTransient(frameProps)}
         >
             {!isLoading && icon && IconComponent}

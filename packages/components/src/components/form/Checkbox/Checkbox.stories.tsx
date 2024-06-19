@@ -29,8 +29,26 @@ export const Checkbox: StoryObj<CheckboxProps> = {
     },
     args: {
         children: 'Checkbox',
+        variant: 'primary',
+        isChecked: false,
+        isDisabled: false,
+        labelAlignment: 'right',
         ...framePropsStory.args,
     },
 
-    argTypes: framePropsStory.argTypes,
+    argTypes: {
+        variant: {
+            control: {
+                type: 'radio',
+            },
+            options: ['primary', 'warning', 'destructive'],
+        },
+        labelAlignment: {
+            control: {
+                type: 'radio',
+            },
+            options: ['left', 'right'],
+        },
+        ...framePropsStory.argTypes,
+    },
 };
