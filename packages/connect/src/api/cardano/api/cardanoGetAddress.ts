@@ -10,7 +10,8 @@ import {
     modifyAddressParametersForBackwardsCompatibility,
     validateAddressParameters,
 } from '../cardanoAddressParameters';
-import { PROTO, ERRORS } from '../../../constants';
+import { ERRORS } from '../../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { UI, createUiMessage } from '../../../events';
 import { Assert } from '@trezor/schema-utils';
 import { Bundle } from '../../../types';

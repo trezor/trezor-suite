@@ -5,7 +5,8 @@ import { getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
 import { messageToHex } from '../utils/formatUtils';
-import { PROTO, ERRORS } from '../constants';
+import { ERRORS } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { VerifyMessage as VerifyMessageSchema } from '../types';
 import { Assert } from '@trezor/schema-utils';
 

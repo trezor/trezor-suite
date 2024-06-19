@@ -1,7 +1,8 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/core/methods/helpers/tezosSignTx.js
 
 import * as bs58check from 'bs58check';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { TezosOperation } from '../../types/api/tezos';
 import { Assert } from '@trezor/schema-utils';
 

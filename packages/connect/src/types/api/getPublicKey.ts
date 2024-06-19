@@ -1,4 +1,4 @@
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { GetPublicKey as GetPublicKeyShared, Params, BundledParams, Response } from '../params';
 import { Type, Static } from '@trezor/schema-utils';
 

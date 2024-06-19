@@ -1,6 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/utils/pathUtils.js
 
-import { PROTO, ERRORS } from '../constants';
+import { ERRORS } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type {
     CoinInfo,
     DerivationPath,

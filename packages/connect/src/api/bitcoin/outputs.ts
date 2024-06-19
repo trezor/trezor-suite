@@ -5,7 +5,8 @@ import { getOutputScriptType, fixPath, getHDPath } from '../../utils/pathUtils';
 import { isValidAddress } from '../../utils/addressUtils';
 import { convertMultisigPubKey } from '../../utils/hdnodeUtils';
 import { validateParams } from '../common/paramsValidator';
-import { PROTO, ERRORS } from '../../constants';
+import { ERRORS } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { BitcoinNetworkInfo, ProtoWithDerivationPath } from '../../types';
 import type { ComposeOutput, ComposeResultFinal } from '../../types/api/composeTransaction';
 

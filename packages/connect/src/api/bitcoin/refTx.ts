@@ -20,7 +20,7 @@ import type {
     BitcoinNetworkInfo,
 } from '../../types';
 import type { RefTransaction, TransactionOptions } from '../../types/api/bitcoin';
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { Assert, Type } from '@trezor/schema-utils';
 
 // Referenced transactions are not required if:

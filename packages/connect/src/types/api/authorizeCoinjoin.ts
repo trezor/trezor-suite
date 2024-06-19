@@ -2,7 +2,7 @@ import type { Params, Response } from '../params';
 
 import { Static, Type } from '@trezor/schema-utils';
 import { DerivationPath } from '../params';
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 export type AuthorizeCoinjoin = Static<typeof AuthorizeCoinjoin>;
 export const AuthorizeCoinjoin = Type.Object({

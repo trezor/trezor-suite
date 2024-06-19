@@ -2,7 +2,7 @@
 
 import { AbstractMethod } from '../core/AbstractMethod';
 import { Assert } from '@trezor/schema-utils';
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 
 export default class ChangePin extends AbstractMethod<'changePin', PROTO.ChangePin> {
     init() {

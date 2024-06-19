@@ -66,7 +66,7 @@ export const management = async (api: TrezorConnect) => {
         pin_protection: true,
         label: 'My Trezor',
         input_method: PROTO.RecoveryDeviceInputMethod.Matrix,
-        type: PROTO.RecoveryType.DryRun,
+        type: 'DryRun',
         word_count: 24,
     });
     if (recovery.success) recovery.payload.message.toLowerCase();

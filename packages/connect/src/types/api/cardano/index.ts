@@ -1,5 +1,5 @@
 import { Type, Static } from '@trezor/schema-utils';
-import { PROTO } from '../../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { GetPublicKey, PublicKey, DerivationPath } from '../../params';
 
 // cardanoGetAddress

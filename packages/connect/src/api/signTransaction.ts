@@ -6,7 +6,8 @@ import { AbstractMethod } from '../core/AbstractMethod';
 import { validateParams, getFirmwareRange } from './common/paramsValidator';
 import { getBitcoinNetwork } from '../data/coinInfo';
 import { getLabel } from '../utils/pathUtils';
-import { PROTO, ERRORS } from '../constants';
+import { ERRORS } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { isBackendSupported, initBlockchain, Blockchain } from '../backend/BlockchainLink';
 import {
     requireReferencedTransactions,

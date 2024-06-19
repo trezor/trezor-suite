@@ -15,7 +15,8 @@ import {
 } from '../api/firmware';
 import { getReleases } from '../data/firmwareInfo';
 import { CommonParams, IntermediaryVersion } from '../types';
-import { PROTO, ERRORS } from '../constants';
+import { ERRORS } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Log } from '../utils/debug';
 import type { Device } from '../device/Device';
 import { isNewer } from '@trezor/utils/src/versionUtils';

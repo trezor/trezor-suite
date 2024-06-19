@@ -3,7 +3,8 @@ import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getSerializedPath } from '../utils/pathUtils';
 import { getAccountLabel } from '../utils/accountUtils';
 import { getCoinInfo } from '../data/coinInfo';
-import { PROTO, ERRORS } from '../constants';
+import { ERRORS } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { UI, createUiMessage } from '../events';
 import { Bundle, type CoinInfo, type DerivationPath } from '../types';
 import {

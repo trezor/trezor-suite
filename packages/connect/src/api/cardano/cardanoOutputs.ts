@@ -4,7 +4,7 @@
 
 import { addressParametersToProto, validateAddressParameters } from './cardanoAddressParameters';
 import { tokenBundleToProto, AssetGroupWithTokens } from './cardanoTokenBundle';
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { hexStringByteLength, sendChunkedHexString } from './cardanoUtils';
 import { CardanoAssetGroup, CardanoAddressParameters } from '../../types/api/cardano';
 import { Assert, Type } from '@trezor/schema-utils';

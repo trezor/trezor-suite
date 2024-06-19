@@ -1,4 +1,5 @@
-import { PROTO, NEM } from '../../../constants';
+import { NEM } from '../../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { DerivationPath } from '../../params';
 import { Type, Static } from '@trezor/schema-utils';
 
@@ -59,7 +60,7 @@ export const Message = Type.Object({
 
 export type TransactionCommon = Static<typeof TransactionCommon>;
 export const TransactionCommon = Type.Object({
-    version: Type.Union([NEM.EnumTxVersion, Type.Number()]), // users may potentially want to use any arbitrary chain
+    version: Type.Union([Type.Enum(NEM.TxVersion), Type.Number()]), // users may potentially want to use any arbitrary chain
     timeStamp: Type.Number(),
     fee: Type.Number(),
     deadline: Type.Number(),

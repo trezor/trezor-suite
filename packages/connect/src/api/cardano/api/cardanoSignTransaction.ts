@@ -24,7 +24,8 @@ import {
 } from '../cardanoInputs';
 import { sendOutput, transformOutput } from '../cardanoOutputs';
 import type { OutputWithData } from '../cardanoOutputs';
-import { PROTO, ERRORS } from '../../../constants';
+import { ERRORS } from '../../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import {
     CardanoSignTransaction as CardanoSignTransactionSchema,
     CardanoSignTransactionExtended,

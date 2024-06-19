@@ -1,4 +1,4 @@
-import { PROTO } from '../../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { DerivationPath } from '../../params';
 import { Type, Static } from '@trezor/schema-utils';
 

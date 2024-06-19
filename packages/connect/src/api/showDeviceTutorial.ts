@@ -1,6 +1,6 @@
 import { AbstractMethod } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { UI } from '../events';
 
 export default class ShowDeviceTutorial extends AbstractMethod<

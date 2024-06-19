@@ -1,5 +1,5 @@
 import { Type, Static } from '@trezor/schema-utils';
-import { PROTO } from '../../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import type { Params, Response } from '../params';
 
 export type ApplySettings = Static<typeof ApplySettings>;

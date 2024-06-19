@@ -2,10 +2,10 @@ import { AbstractMethod, MethodReturnType } from '../core/AbstractMethod';
 import { getFirmwareRange } from './common/paramsValidator';
 import { validatePath, getScriptType, getSerializedPath } from '../utils/pathUtils';
 import { getBitcoinNetwork } from '../data/coinInfo';
-import { PROTO } from '../constants';
+import { MessagesSchema as PROTO } from '@trezor/protobuf';
 import { UI, createUiMessage } from '../events';
 import { Assert } from '@trezor/schema-utils';
-import { Bundle } from '../exports';
+import { Bundle } from '../types/params';
 import { GetOwnershipId as GetOwnershipIdSchema } from '../types/api/getOwnershipId';
 
 export default class GetOwnershipId extends AbstractMethod<
