@@ -7,17 +7,40 @@
             },
             "chain": "eth",
             "chain_id": 1,
+            "coingecko_id": "ethereum",
+            "is_testnet": false,
             "name": "Ethereum",
             "shortcut": "ETH",
             "slip44": 60,
             "support": {
-                "connect": true,
-                "suite": true,
                 "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
-                "T2B1": "2.6.1"
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
+        },
+        {
+            "blockchain_link": {
+                "type": "blockbook",
+                "url": ["https://bsc1.trezor.io"]
             },
-            "url": "https://ethereum.org"
+            "chain": "bsc",
+            "chain_id": 56,
+            "coingecko_id": "binance-smart-chain",
+            "is_testnet": false,
+            "name": "BNB Smart Chain",
+            "shortcut": "BSC",
+            "slip44": 714,
+            "support": {
+                "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
+                "T2T1": "2.0.7",
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
         {
             "blockchain_link": {
@@ -26,17 +49,19 @@
             },
             "chain": "etc",
             "chain_id": 61,
+            "coingecko_id": "ethereum-classic",
+            "is_testnet": false,
             "name": "Ethereum Classic",
             "shortcut": "ETC",
             "slip44": 61,
             "support": {
-                "connect": true,
-                "suite": true,
                 "T1B1": "1.6.2",
+                "T2B1": "2.6.1",
                 "T2T1": "2.0.7",
-                "T2B1": "2.6.1"
-            },
-            "url": "https://ethereumclassic.org"
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
         {
             "blockchain_link": {
@@ -45,17 +70,19 @@
             },
             "chain": "matic",
             "chain_id": 6193,
-            "name": "Polygon PoS",
+            "coingecko_id": "polygon-pos",
+            "is_testnet": false,
+            "name": "Polygon",
             "shortcut": "MATIC",
             "slip44": 1,
             "support": {
+                "T1B1": "1.9.4",
+                "T2B1": "2.6.1",
+                "T2T1": "2.4.0",
+                "T3T1": "2.6.1",
                 "connect": true,
-                "suite": true,
-                "T1B1": "1.6.2",
-                "T2T1": "2.0.7",
-                "T2B1": "2.6.1"
-            },
-            "url": "https://polygon.technology"
+                "suite": true
+            }
         },
         {
             "blockchain_link": {
@@ -64,19 +91,19 @@
             },
             "chain": "hol",
             "chain_id": 17000,
+            "is_testnet": true,
             "name": "Holesky",
             "shortcut": "tHOL",
             "slip44": 1,
             "support": {
-                "connect": true,
-                "suite": true,
                 "T1B1": "1.11.2",
+                "T2B1": "2.6.1",
                 "T2T1": "2.5.2",
-                "T2B1": "2.6.1"
-            },
-            "url": "https://holesky.ethpandaops.io/"
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         },
-
         {
             "blockchain_link": {
                 "type": "blockbook",
@@ -84,18 +111,18 @@
             },
             "chain": "sep",
             "chain_id": 11155111,
+            "is_testnet": true,
             "name": "Sepolia",
-            "rskip60": false,
             "shortcut": "tSEP",
             "slip44": 1,
             "support": {
-                "connect": true,
-                "suite": true,
                 "T1B1": "1.11.2",
+                "T2B1": "2.6.1",
                 "T2T1": "2.5.2",
-                "T2B1": "2.6.1"
-            },
-            "url": "https://sepolia.otterscan.io"
+                "T3T1": "2.6.1",
+                "connect": true,
+                "suite": true
+            }
         }
     ]
 }
