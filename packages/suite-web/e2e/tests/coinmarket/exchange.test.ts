@@ -123,11 +123,11 @@ describe.skip('Coinmarket exchange', () => {
                     .invoke('text')
                     .should('be.equal', testData.ethValue);
                 cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Symbol"]')
+                    .find('[class*="FormattedCryptoAmount__Container"]')
                     .first()
                     .should('contain.text', 'REGTEST');
                 cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Symbol"]')
+                    .find('[class*="FormattedCryptoAmount__Container"]')
                     .last()
                     .should('contain.text', testData.targetCrypto);
                 cy.wrap(wrapper)

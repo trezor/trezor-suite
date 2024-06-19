@@ -122,7 +122,7 @@ describe('Coinmarket buy', () => {
                     .invoke('text')
                     .should('be.equal', testData.quoteBtcValue);
                 cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Symbol"]')
+                    .find('[class*="FormattedCryptoAmount__Container"]')
                     .should('contain.text', 'BTC');
                 cy.wrap(wrapper)
                     .find('[class*="CoinmarketProviderInfo__Wrapper"]')
@@ -171,7 +171,7 @@ describe('Coinmarket buy', () => {
                     .invoke('text')
                     .should('be.equal', testData.tradeBtcValue);
                 cy.wrap(wrapper)
-                    .find('[class*="FormattedCryptoAmount__Symbol"]')
+                    .find('[class*="FormattedCryptoAmount__Container"]')
                     .should('contain.text', 'BTC');
                 cy.wrap(wrapper)
                     .find('[class*="CoinmarketProviderInfo__Wrapper"]')
