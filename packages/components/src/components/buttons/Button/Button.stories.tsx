@@ -11,7 +11,37 @@ export default meta;
 export const Button: StoryObj<ButtonProps> = {
     args: {
         children: 'Button label',
+        variant: 'primary',
+        size: 'medium',
+        isDisabled: false,
+        isLoading: false,
+        isFullWidth: false,
+        iconAlignment: 'left',
+        title: 'Button title',
         ...framePropsStory.args,
     },
-    argTypes: framePropsStory.argTypes,
+    argTypes: {
+        variant: {
+            control: {
+                type: 'radio',
+            },
+            options: ['primary', 'secondary', 'tertiary', 'info', 'warning', 'destructive'],
+        },
+        size: {
+            control: {
+                type: 'radio',
+            },
+            options: ['large', 'medium', 'small', 'tiny'],
+        },
+        icon: { control: 'text' },
+        iconSize: { control: 'number' },
+        iconAlignment: {
+            control: {
+                type: 'radio',
+            },
+            options: ['left', 'right'],
+        },
+        title: { control: 'text' },
+        ...framePropsStory.argTypes,
+    },
 };

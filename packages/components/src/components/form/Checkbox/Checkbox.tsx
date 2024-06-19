@@ -92,17 +92,22 @@ export const CheckContainer = styled.div<{ $variant: CheckboxVariant }>`
         background 0.1s,
         box-shadow 0.1s ease-out;
 
-    input:checked + && {
+    input:checked + & {
         background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundChecked]};
         border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderChecked]};
     }
 
-    input:disabled:not(:checked) + && {
+    input:disabled + & {
+        cursor: not-allowed;
+        pointer-events: auto;
+    }
+
+    input:disabled:not(:checked) + & {
         background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundDisabled]};
         border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderDisabled]};
     }
 
-    input:disabled:checked + && {
+    input:disabled:checked + & {
         background: ${({ theme, $variant }) =>
             theme[variantStyles[$variant].backgroundDisabledChecked]};
         border-color: ${({ theme, $variant }) =>
@@ -160,7 +165,7 @@ export type CheckboxProps = {
 export const Checkbox = ({
     variant = 'primary',
     isChecked,
-    isDisabled,
+    isDisabled = false,
     labelAlignment = 'right',
     onClick,
     'data-test': dataTest,
@@ -171,7 +176,10 @@ export const Checkbox = ({
     const theme = useTheme();
 
     const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
-        if (event.code === KEYBOARD_CODE.SPACE || event.code === KEYBOARD_CODE.ENTER) {
+        if (
+            !isDisabled &&
+            (event.code === KEYBOARD_CODE.SPACE || event.code === KEYBOARD_CODE.ENTER)
+        ) {
             onClick(event);
         }
     };
@@ -184,7 +192,7 @@ export const Checkbox = ({
         <Container
             $isDisabled={isDisabled}
             $labelAlignment={labelAlignment}
-            onClick={onClick}
+            onClick={isDisabled ? undefined : onClick}
             onKeyUp={handleKeyUp}
             data-test={dataTest}
             className={className}

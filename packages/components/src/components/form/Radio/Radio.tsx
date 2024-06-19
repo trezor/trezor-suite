@@ -54,7 +54,7 @@ const RadioIcon = styled(CheckContainer)`
         transition: background 0.1s;
     }
 
-    input:checked + && {
+    input:checked + & {
         background: ${({ theme }) => theme.backgroundSurfaceElevation0};
         border-color: ${({ theme, $variant }) => theme[radioVariantStyles[$variant].borderChecked]};
 
@@ -64,7 +64,11 @@ const RadioIcon = styled(CheckContainer)`
         }
     }
 
-    input:disabled:not(:checked) + && {
+    input:disabled + & {
+        cursor: not-allowed;
+    }
+
+    input:disabled:not(:checked) + & {
         background: ${({ theme }) => theme.backgroundSurfaceElevation0};
         border-color: ${({ theme, $variant }) => theme[variantStyles[$variant].borderDisabled]};
 
@@ -73,7 +77,7 @@ const RadioIcon = styled(CheckContainer)`
         }
     }
 
-    input:disabled:checked + && {
+    input:disabled:checked + & {
         background: transparent;
         border-color: ${({ theme, $variant }) =>
             theme[radioVariantStyles[$variant].borderDisabledChecked]};
@@ -84,15 +88,13 @@ const RadioIcon = styled(CheckContainer)`
         }
     }
 
-    ${/* sc-selector */ Container}:hover input:not(:disabled):not(:checked) + && {
+    ${/* sc-selector */ Container}:hover input:not(:disabled):not(:checked) + & {
         &::after {
             background: ${({ theme, $variant }) => theme[variantStyles[$variant].backgroundHover]};
         }
     }
 
-    &&& {
-        ${getFocusShadowStyle()}
-    }
+    ${getFocusShadowStyle()}
 `;
 
 export interface RadioProps {
@@ -109,20 +111,23 @@ export const Radio = ({
     variant = 'primary',
     isChecked,
     labelAlignment,
-    isDisabled,
+    isDisabled = false,
     onClick,
     'data-test': dataTest,
     children,
 }: RadioProps) => {
     const handleKeyUp = (event: KeyboardEvent<HTMLElement>) => {
-        if (event.code === KEYBOARD_CODE.SPACE || event.code === KEYBOARD_CODE.ENTER) {
+        if (
+            !isDisabled &&
+            (event.code === KEYBOARD_CODE.SPACE || event.code === KEYBOARD_CODE.ENTER)
+        ) {
             onClick(event);
         }
     };
 
     return (
         <Container
-            onClick={onClick}
+            onClick={isDisabled ? undefined : onClick}
             onKeyUp={handleKeyUp}
             $isDisabled={isDisabled}
             $labelAlignment={labelAlignment}
