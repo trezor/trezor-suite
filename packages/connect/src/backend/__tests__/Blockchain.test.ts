@@ -1,12 +1,12 @@
 import coinsJSON from '@trezor/connect-common/files/coins.json';
-import ethereumCoinsJSON from '@trezor/connect-common/files/coins-eth.json';
+import coinsJSONEth from '@trezor/connect-common/files/coins-eth.json';
 import BlockchainLink from '@trezor/blockchain-link';
 import { parseCoinsJson, getBitcoinNetwork, getEthereumNetwork } from '../../data/coinInfo';
 import { initBlockchain } from '../BlockchainLink';
 
 describe('backend/Blockchain', () => {
     // load coin definitions
-    parseCoinsJson({ ...coinsJSON, eth: ethereumCoinsJSON });
+    parseCoinsJson({ ...coinsJSON, ...coinsJSONEth });
 
     it('cache estimated fees (bitcoin-like)', async () => {
         jest.useFakeTimers();

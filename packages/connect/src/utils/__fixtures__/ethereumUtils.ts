@@ -7,7 +7,7 @@ import { parseCoinsJson, getEthereumNetwork } from '../../data/coinInfo';
 
 parseCoinsJson({
     ...coinsJSON,
-    eth: coinsJSONEth,
+    ...coinsJSONEth,
 });
 
 export const getNetworkLabelFixtures: TestFixtures<typeof getNetworkLabel> = [
