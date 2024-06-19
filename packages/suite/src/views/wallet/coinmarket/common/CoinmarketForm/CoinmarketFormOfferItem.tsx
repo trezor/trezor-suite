@@ -45,20 +45,20 @@ const CoinmarketFormOfferItem = ({
     isFormInvalid,
     providers,
 }: CoinmarketFormOfferItemProps) => {
-    if (isFormLoading || (!bestQuote && !isFormInvalid)) {
-        return (
-            <CoinmarketFormOfferItemWrapper>
-                <CoinmarketFormOfferSpinnerWrapper>
-                    <CoinmarketSpinnerWrapper size={32} isGrey={false} />
-                    <CoinmarketFormOfferSpinnerText>
-                        <Translation id="TR_COINMARKET_OFFER_LOOKING" />
-                    </CoinmarketFormOfferSpinnerText>
-                </CoinmarketFormOfferSpinnerWrapper>
-            </CoinmarketFormOfferItemWrapper>
-        );
-    }
+    if (!bestQuote || isFormLoading) {
+        if (isFormLoading && !isFormInvalid) {
+            return (
+                <CoinmarketFormOfferItemWrapper>
+                    <CoinmarketFormOfferSpinnerWrapper>
+                        <CoinmarketSpinnerWrapper size={32} isGrey={false} />
+                        <CoinmarketFormOfferSpinnerText>
+                            <Translation id="TR_COINMARKET_OFFER_LOOKING" />
+                        </CoinmarketFormOfferSpinnerText>
+                    </CoinmarketFormOfferSpinnerWrapper>
+                </CoinmarketFormOfferItemWrapper>
+            );
+        }
 
-    if (isFormInvalid) {
         return (
             <CoinmarketFormOfferItemWrapper>
                 <CoinmarketFormOfferSpinnerWrapper>
