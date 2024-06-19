@@ -9,6 +9,7 @@ import {
     getTagAndInfoNote,
     buildCryptoOption,
     processSellAndBuyQuotes,
+    coinmarketBuildCryptoOptions,
 } from '../coinmarketUtils';
 import { accountBtc, accountEth, coinDefinitions } from '../__fixtures__/coinmarketUtils';
 import { ALTERNATIVE_QUOTES, MIN_MAX_QUOTES_OK } from '../__fixtures__/buyUtils';
