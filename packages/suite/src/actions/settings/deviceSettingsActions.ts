@@ -15,7 +15,6 @@ import { Dispatch, GetState } from 'src/types/suite';
 import * as DEVICE from 'src/constants/suite/device';
 import { createThunk } from '@suite-common/redux-utils';
 import { selectSuiteFlags, selectSuiteSettings } from '../../reducers/suite/suiteReducer';
-import { useSelector } from 'react-redux';
 
 export const applySettings =
     (params: Parameters<typeof TrezorConnect.applySettings>[0]) =>
@@ -120,7 +119,7 @@ export const wipeDevice = () => async (dispatch: Dispatch, getState: GetState) =
         const state = getState();
         const newDevice = selectDevice(getState());
         const newDevices = selectDevices(getState());
-        const settings = useSelector(selectSuiteSettings);
+        const settings = selectSuiteSettings(getState());
 
         deviceInstances.push(...deviceUtils.getDeviceInstances(newDevice!, newDevices));
         deviceInstances.forEach(d => {
