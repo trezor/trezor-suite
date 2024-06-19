@@ -12,7 +12,7 @@ import {
 
 parseCoinsJson({
     ...coinsJSON,
-    eth: coinsJSONEth,
+    ...coinsJSONEth,
 });
 
 export const getAccountLabelFixtures: TestFixtures<typeof getAccountLabel> = [

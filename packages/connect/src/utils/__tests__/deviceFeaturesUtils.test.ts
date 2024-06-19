@@ -17,7 +17,7 @@ describe('utils/deviceFeaturesUtils', () => {
     beforeAll(() => {
         parseCoinsJson({
             ...coinsJSON,
-            eth: coinsJSONEth,
+            ...coinsJSONEth,
         });
     });
 
@@ -131,6 +131,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 ada: 'no-support',
                 tada: 'no-support',
                 bnb: 'no-support',
+                bsc: 'update-required',
                 eos: 'no-support',
                 ppc: 'update-required',
                 sol: 'no-support',
@@ -148,6 +149,7 @@ describe('utils/deviceFeaturesUtils', () => {
                 decreaseOutput: 'update-required',
                 eip1559: 'update-required',
                 'eip712-domain-only': 'update-required',
+                matic: 'update-required',
                 taproot: 'update-required',
                 tsep: 'update-required',
                 thol: 'update-required',
@@ -163,9 +165,11 @@ describe('utils/deviceFeaturesUtils', () => {
             expect(getUnavailableCapabilities(featT2T1, coins)).toEqual({
                 replaceTransaction: 'update-required',
                 amountUnit: 'update-required',
+                bsc: 'update-required',
                 decreaseOutput: 'update-required',
                 eip1559: 'update-required',
                 'eip712-domain-only': 'update-required',
+                matic: 'update-required',
                 taproot: 'update-required',
                 tsep: 'update-required',
                 thol: 'update-required',
