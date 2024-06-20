@@ -18,11 +18,16 @@ import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { Translation } from 'src/components/suite';
 import CoinmarketCoinImage from '../../CoinmarketCoinImage';
 import styled from 'styled-components';
+import { spacingsPx } from '@trezor/theme';
 
 const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
+    height: 18px;
+`;
+
+const CoinmarketFormOptionIcon = styled.div`
     display: flex;
     align-items: center;
-    height: 18px;
+    margin-right: ${spacingsPx.xs};
 `;
 
 const CoinmarketFormInputAccount = () => {
@@ -60,11 +65,13 @@ const CoinmarketFormInputAccount = () => {
                         }}
                         formatOptionLabel={(option: (typeof cryptoList)[number]) => (
                             <CoinmarketFormOption>
-                                {account.symbol.toUpperCase() === option.value ? (
-                                    <CoinLogo size={18} symbol={account.symbol} />
-                                ) : (
-                                    <CoinmarketFormOptionTokenLogo symbol={option.value} />
-                                )}
+                                <CoinmarketFormOptionIcon>
+                                    {account.symbol.toUpperCase() === option.value ? (
+                                        <CoinLogo size={18} symbol={account.symbol} />
+                                    ) : (
+                                        <CoinmarketFormOptionTokenLogo symbol={option.value} />
+                                    )}
+                                </CoinmarketFormOptionIcon>
                                 <CoinmarketFormOptionLabel>
                                     {shouldSendInSats ? 'sats' : option.label}
                                 </CoinmarketFormOptionLabel>
