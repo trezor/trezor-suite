@@ -25,7 +25,7 @@ const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
     height: 18px;
 `;
 
-const CoinmarketFormOptionIcon = styled.div`
+const CoinmarketFormOptionIcon = styled(CoinmarketFormOptionTokenLogo)`
     display: flex;
     align-items: center;
     margin-right: ${spacingsPx.xs};

@@ -3,13 +3,13 @@ import { Card, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
 import { useDispatch, useLayout } from 'src/hooks/suite';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
-import { CoinmarketBuyOfferInfo } from '../../components/CoinmarketBuyOfferInfo';
 import PaymentFailed from '../components/PaymentFailed';
 import PaymentProcessing from '../components/PaymentProcessing';
 import PaymentSuccessful from '../components/PaymentSuccessful';
 import WaitingForUser from '../components/WaitingForUser';
 import { useCoinmarketDetailContext } from 'src/hooks/wallet/coinmarket/useCoinmarketDetail';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketSelectedOfferInfo } from '../../../common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 
 const Wrapper = styled.div`
     display: flex;
@@ -72,7 +72,7 @@ const CoinmarketDetail = () => {
                 )}
                 {showSuccess && <PaymentSuccessful account={account} />}
             </StyledCard>
-            <CoinmarketBuyOfferInfo
+            <CoinmarketSelectedOfferInfo
                 account={account}
                 selectedQuote={trade.data}
                 transactionId={trade.key}
