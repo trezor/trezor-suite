@@ -4,8 +4,8 @@ import styled from 'styled-components';
 import CoinmarketFormInputs from './CoinmarketFormInputs';
 import CoinmarketFormOffer from './CoinmarketFormOffer';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import SelectedOffer from '../../buy/offers/Offers/SelectedOffer';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { CoinmarketSelectedOffer } from '../CoinmarketSelectedOffer/CoinmarketSelectedOffer';
 
 const CoinmarketFormLayoutWrapper = styled.form`
     display: flex;
@@ -50,7 +50,7 @@ const CoinmarketFormLayout = () => {
     const { selectedQuote } = useCoinmarketFormContext();
 
     if (selectedQuote) {
-        return <SelectedOffer />;
+        return <CoinmarketSelectedOffer />;
     }
 
     return (

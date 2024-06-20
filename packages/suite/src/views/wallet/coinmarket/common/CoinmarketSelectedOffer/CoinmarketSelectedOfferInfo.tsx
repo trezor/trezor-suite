@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { BuyTrade, BuyProviderInfo } from 'invity-api';
-import { variables, CoinLogo } from '@trezor/components';
+import { variables } from '@trezor/components';
 import {
     CoinmarketPaymentType,
     CoinmarketProviderInfo,
@@ -103,7 +103,7 @@ const TransactionIdWrapper = styled.div`
     max-width: 350px;
 `;
 
-interface CoinmarketBuyOfferInfoProps {
+interface CoinmarketSelectedOfferInfoProps {
     selectedQuote: BuyTrade;
     transactionId?: string;
     providers?: {
@@ -112,12 +112,12 @@ interface CoinmarketBuyOfferInfoProps {
     account: Account;
 }
 
-export const CoinmarketBuyOfferInfo = ({
+export const CoinmarketSelectedOfferInfo = ({
     selectedQuote,
     transactionId,
     providers,
     account,
-}: CoinmarketBuyOfferInfoProps) => {
+}: CoinmarketSelectedOfferInfoProps) => {
     const {
         receiveStringAmount,
         receiveCurrency,
@@ -129,10 +129,10 @@ export const CoinmarketBuyOfferInfo = ({
     } = selectedQuote;
 
     return (
-        <Wrapper>
+        <Wrapper data-test="@coinmarket/offer/info">
             <Info>
                 <Header>
-                    <CoinLogo symbol={account.symbol} size={16} alt="" />
+                    <CoinmarketCoinImage symbol={selectedQuote.receiveCurrency} />
                     <AccountText>
                         <AccountLabeling account={account} />
                     </AccountText>

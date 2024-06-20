@@ -30,9 +30,6 @@ export const useCoinmarketBuyFormDefaultValues = (
                 label: '',
             },
         [paymentMethods],
-    const defaultCrypto = useMemo(
-        () => buildCryptoOption(networkToCryptoSymbol(accountSymbol)!),
-        [accountSymbol],
     );
     const suggestedFiatCurrency = (buyInfo?.buyInfo?.suggestedFiatCurrency?.toLowerCase() ??
         formDefaultCurrency) as FiatCurrencyCode;
