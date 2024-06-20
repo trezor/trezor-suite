@@ -38,6 +38,7 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
 import useCoinmarketPaymentMethod from './useCoinmarketPaymentMethod';
+import defaultFiatCurrencies from 'src/constants/wallet/coinmarket/fiatCurrencies';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -108,17 +109,26 @@ const useCoinmarketBuyForm = ({
     const { saveDraft, getDraft, removeDraft } =
         useFormDraft<CoinmarketBuyFormProps>('coinmarket-buy');
     const draft = getDraft(account.key);
-    const isDraft = !!draft || !!offFirstRequest;
+    const draftUpdated: CoinmarketBuyFormProps | null = draft
+        ? {
+              ...draft,
+              fiatInput:
+                  draft.fiatInput && draft.fiatInput !== ''
+                      ? draft.fiatInput
+                      : defaultFiatCurrencies.get('czk'),
+          }
+        : null;
+    const isDraft = !!draftUpdated || !!offFirstRequest;
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
         useCoinmarketBuyFormDefaultValues(account.symbol, buyInfo, paymentMethods);
     const methods = useForm<CoinmarketBuyFormProps>({
         mode: 'onChange',
-        defaultValues: isDraft ? draft : defaultValues,
+        defaultValues: isDraft && draftUpdated ? draftUpdated : defaultValues,
     });
     const { register, control, formState, reset, setValue, getValues, handleSubmit } = methods;
     const values = useWatch<CoinmarketBuyFormProps>({ control }) as CoinmarketBuyFormProps;
     const previousValues = useRef<CoinmarketBuyFormProps | null>(
-        offFirstRequest ? (draft as CoinmarketBuyFormProps) : null,
+        offFirstRequest ? draftUpdated : null,
     );
 
     // form states
@@ -407,7 +417,13 @@ const useCoinmarketBuyForm = ({
     useDebounce(
         () => {
             if (!formState.isValidating && Object.keys(formState.errors).length === 0) {
-                saveDraft(account.key, values as CoinmarketBuyFormProps);
+                saveDraft(account.key, {
+                    ...values,
+                    fiatInput:
+                        values.fiatInput !== ''
+                            ? values.fiatInput
+                            : defaultFiatCurrencies.get('czk'),
+                });
             }
         },
         200,

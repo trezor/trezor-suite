@@ -8,6 +8,7 @@ import {
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { CoinmarketBuyFormDefaultValuesProps } from 'src/types/coinmarket/coinmarketForm';
 import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
+import defaultFiatCurrencies from 'src/constants/wallet/coinmarket/fiatCurrencies';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
@@ -37,7 +38,7 @@ export const useCoinmarketBuyFormDefaultValues = (
         () =>
             buyInfo
                 ? {
-                      fiatInput: '3000',
+                      fiatInput: defaultFiatCurrencies.get('czk'),
                       cryptoInput: undefined,
                       currencySelect: defaultCurrency,
                       cryptoSelect: defaultCrypto,
