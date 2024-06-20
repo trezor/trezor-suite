@@ -4,12 +4,7 @@ import {
     createAsyncThunk as createAsyncThunkReduxToolkit,
 } from '@reduxjs/toolkit';
 
-import { ExtraDependencies } from './extraDependenciesType';
-
-type CustomThunkAPI = {
-    state: any;
-    extra: ExtraDependencies;
-};
+import { CustomThunkAPI } from './extraDependenciesType';
 
 export const createThunk = <TParams = void, TPayload = void, TThunkAPI = void>(
     typePrefix: string,

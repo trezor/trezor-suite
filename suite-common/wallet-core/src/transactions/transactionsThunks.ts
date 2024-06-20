@@ -1,4 +1,4 @@
-import { createThunk } from '@suite-common/redux-utils';
+import { createSingleInstanceThunk, createThunk } from '@suite-common/redux-utils';
 import {
     Account,
     AccountKey,
@@ -10,7 +10,6 @@ import {
     enhanceTransaction,
     findAccountsByAddress,
     findTransactions,
-    getAccountTransactions,
     getPendingAccount,
     getRbfParams,
     isTrezorConnectBackendType,
@@ -18,14 +17,19 @@ import {
     tryGetAccountIdentity,
 } from '@suite-common/wallet-utils';
 import { blockbookUtils } from '@trezor/blockchain-link-utils';
-import TrezorConnect from '@trezor/connect';
+import TrezorConnect, { AccountInfo } from '@trezor/connect';
+import { getTxsPerPage } from '@suite-common/suite-utils';
 
 import { accountsActions } from '../accounts/accountsActions';
 import { selectAccountByKey, selectAccounts } from '../accounts/accountsReducer';
 import { selectBlockchainHeightBySymbol } from '../blockchain/blockchainReducer';
 import { selectSendSignedTx } from '../send/sendFormReducer';
 import { TRANSACTIONS_MODULE_PREFIX, transactionsActions } from './transactionsActions';
-import { selectTransactions } from './transactionsReducer';
+import {
+    selectAccountTransactionsWithNulls,
+    selectAreAllAccountTransactionsLoaded,
+    selectTransactions,
+} from './transactionsReducer';
 
 /**
  * Replace existing transaction in the reducer (RBF)
@@ -226,60 +230,43 @@ export const addFakePendingCardanoTxThunk = createThunk(
     },
 );
 
-export const fetchTransactionsThunk = createThunk(
-    `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsThunk`,
+/**
+ * @param noLoading - disable loading indicator
+ * @param forceRefetch - force refetch of transactions even if this page is already fetched
+ */
+type FetchTransactionsPageThunkParams = {
+    accountKey: AccountKey;
+    page: number;
+    perPage: number;
+    noLoading?: boolean;
+    forceRefetch?: boolean;
+};
+
+export const fetchTransactionsPageThunk = createThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchTransactionsPageThunk`,
     async (
-        {
-            accountKey,
-            page,
-            perPage,
-            noLoading = false,
-            recursive = false,
-        }: {
-            accountKey: AccountKey;
-            page: number;
-            perPage: number;
-            noLoading?: boolean;
-            recursive?: boolean;
-        },
-        { dispatch, getState, signal },
+        { accountKey, page, perPage, forceRefetch }: FetchTransactionsPageThunkParams,
+        { dispatch, getState },
     ) => {
+        // console.log('fetchTransactionsPageThunk', accountKey, page, perPage, forceRefetch);
         const account = selectAccountByKey(getState(), accountKey);
-        if (!account) return;
-        if (!isTrezorConnectBackendType(account.backendType)) return; // skip unsupported backend type
-        const transactions = selectTransactions(getState());
-        const reducerTxs = getAccountTransactions(account.key, transactions);
-
-        const startIndex = (page - 1) * perPage;
-        const stopIndex = startIndex + perPage;
-        const txsForPage = reducerTxs.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
-
-        // we already got txs for the page in reducer
-        if (
-            (page > 1 && txsForPage.length === perPage) ||
-            txsForPage.length === account.history.total
-        ) {
-            if (recursive && !signal.aborted && account.history.total) {
-                const promise = dispatch(
-                    fetchTransactionsThunk({
-                        accountKey,
-                        page: page + 1,
-                        perPage,
-                        noLoading,
-                        recursive: true,
-                    }),
-                );
-                signal.addEventListener('abort', () => {
-                    promise.abort();
-                });
-                await promise;
-            }
-
-            return;
+        if (!account) {
+            throw new Error(`Account not found: ${accountKey}`);
+        }
+        if (!isTrezorConnectBackendType(account.backendType)) {
+            throw new Error(`Unsupported backend type: ${account.backendType}`);
         }
 
-        if (!noLoading && !signal.aborted) {
-            dispatch(transactionsActions.fetchInit);
+        const transactions = selectAccountTransactionsWithNulls(getState(), account.key); // get all transactions including "null" values because of pagination
+        const startIndex = (page - 1) * perPage;
+        const stopIndex = startIndex + perPage;
+        const txsForPage = transactions.slice(startIndex, stopIndex).filter(tx => !!tx.txid); // filter out "empty" values
+        // always fetch first page because there might be new transactions
+        const isFirstPage = page === 1;
+        const isPageAlreadyFetched = txsForPage.length === perPage;
+
+        if (isPageAlreadyFetched && !isFirstPage && !forceRefetch) {
+            return 'ALREADY_FETCHED' as const;
         }
 
         const { marker } = account;
@@ -294,16 +281,11 @@ export const fetchTransactionsThunk = createThunk(
             suppressBackupWarning: true,
         });
 
-        if (signal.aborted) return;
-
         if (result && result.success) {
-            // TODO why is this only accepting account now?
             const updateAction = accountsActions.updateAccount(account, result.payload);
-            const updatedAccount = updateAction.payload as Account;
+            const updatedAccount = updateAction.payload;
             const updatedTransactions = result.payload.history.transactions || [];
-            const totalPages = result.payload.page?.total || 0;
 
-            dispatch(transactionsActions.fetchSuccess);
             dispatch(
                 transactionsActions.addTransaction({
                     transactions: updatedTransactions,
@@ -315,32 +297,90 @@ export const fetchTransactionsThunk = createThunk(
             // updates the marker/page object for the account
             dispatch(updateAction);
 
-            // totalPages (blockbook + blockfrost), marker (ripple) if is undefined, no more pages are available
-            if (
-                recursive &&
-                (page < totalPages || (marker && updatedAccount.marker)) &&
-                !signal.aborted
-            ) {
-                const promise = dispatch(
-                    fetchTransactionsThunk({
-                        accountKey: updatedAccount.key,
-                        page: page + 1,
-                        perPage,
-                        noLoading,
-                        recursive: true,
-                    }),
-                );
-                signal.addEventListener('abort', () => {
-                    promise.abort();
-                });
-                await promise;
-            }
+            return result.payload;
         } else {
-            dispatch(
-                transactionsActions.fetchError({
-                    error: result ? result.payload.error : 'unknown error',
+            const error = result ? result.payload.error : 'unknown error';
+
+            throw new Error(error);
+        }
+    },
+);
+
+/**
+ * @param noLoading - disable loading indicator, it's not used directly in this thunk, but it's used in reducer
+ */
+type FetchAllTransactionsForAccountThunkParams = {
+    accountKey: AccountKey;
+    noLoading?: boolean;
+};
+export const fetchAllTransactionsForAccountThunk = createSingleInstanceThunk(
+    `${TRANSACTIONS_MODULE_PREFIX}/fetchAllTransactionsForAccount`,
+    async (
+        { accountKey }: FetchAllTransactionsForAccountThunkParams,
+        { dispatch, getState, signal },
+    ) => {
+        const account = selectAccountByKey(getState(), accountKey);
+        if (!account) {
+            throw new Error(`Account not found: ${accountKey}`);
+        }
+
+        // If all transactions are already loaded, it means we can do some optimization (fetch only first few pages, less transactions per page etc.)
+        // to just check for that few new transactions.
+        const areAllTransactionsAlreadyFetched = selectAreAllAccountTransactionsLoaded(
+            getState(),
+            accountKey,
+        );
+
+        let page = 1;
+        // marker is used instead of page for ripple (cursor based pagination)
+        let marker: AccountInfo['marker'] | undefined;
+        let totalPages = 0;
+        let forceRefetch = false;
+        const perPage = areAllTransactionsAlreadyFetched ? 5 : getTxsPerPage(account.networkType);
+
+        while (true) {
+            const result = await dispatch(
+                fetchTransactionsPageThunk({
+                    accountKey,
+                    page,
+                    perPage,
+                    // Loading here MUST be always disabled, because loading is handled by this thunk a not by fetchTransactionsPageThunk
+                    noLoading: true,
+                    forceRefetch,
+                    ...(marker ? { marker } : {}), // set marker only if it is not undefined (ripple), otherwise it fails on marker validation
                 }),
-            );
+            ).unwrap();
+
+            if (signal.aborted) {
+                throw new Error('Aborted');
+            }
+
+            if (result === 'ALREADY_FETCHED') {
+                if (areAllTransactionsAlreadyFetched) {
+                    // If we previously fetched all transactions, we are now quite sure that we have all new transactions fetched.
+                    break;
+                } else if (account.backendType === 'ripple') {
+                    // This is special edge case for ripple that could only happen when there was some random interruption during fetching of XRP transactions
+                    // In that we need to fetch all transactions again, because we don't know if we fetched all transactions and can't skip to the next page because of the marker.
+                    forceRefetch = true;
+                    continue;
+                } else {
+                    // We still need to check remaining pages because we never fetched all transactions before,
+                    // so it is possible that someone fetched just some random pages before.
+                    page += 1;
+                    continue;
+                }
+            }
+
+            totalPages = result.page?.total || totalPages;
+            const areThereMorePages = page < totalPages || !!result.marker;
+
+            if (!areThereMorePages) {
+                break;
+            }
+
+            marker = result.marker;
+            page += 1;
         }
     },
 );

@@ -15,8 +15,8 @@ import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { Account } from 'src/types/wallet';
 import { TooltipSymbol, Translation } from 'src/components/suite';
-import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { borders, spacingsPx } from '@trezor/theme';
 
 const Container = styled.div`
@@ -107,12 +107,9 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
 
                 try {
                     await dispatch(
-                        fetchTransactionsThunk({
+                        fetchAllTransactionsForAccountThunk({
                             accountKey: account.key,
-                            page: 2,
-                            perPage: getTxsPerPage(account.networkType),
                             noLoading: true,
-                            recursive: true,
                         }),
                     );
                 } catch (err) {

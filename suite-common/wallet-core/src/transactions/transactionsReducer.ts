@@ -1,4 +1,5 @@
 import { memoizeWithArgs } from 'proxy-memoize';
+import { isAnyOf } from '@reduxjs/toolkit';
 
 import { Account, WalletAccountTransaction, AccountKey } from '@suite-common/wallet-types';
 import {
@@ -19,18 +20,36 @@ import {
     selectBlockchainHeightBySymbol,
     BlockchainRootState,
 } from '../blockchain/blockchainReducer';
+import {
+    fetchTransactionsPageThunk,
+    fetchAllTransactionsForAccountThunk,
+} from './transactionsThunks';
+
+export type AccountTransactionsFetchStatusDetail =
+    | {
+          status: 'loading' | 'idle';
+          error: null;
+      }
+    | {
+          status: 'error';
+          error: string;
+      };
+
+export type AccountTransactionsFetchAllStatus = {
+    areAllTransactionsLoaded: boolean;
+};
 
 export interface TransactionsState {
-    isLoading: boolean;
-    error: string | null;
-    // Key is accountKey and value is sparse array of fetched txs
     transactions: { [key: AccountKey]: WalletAccountTransaction[] };
+    fetchStatusDetail: {
+        [key: AccountKey]: AccountTransactionsFetchStatusDetail &
+            Partial<AccountTransactionsFetchAllStatus>;
+    };
 }
 
 export const transactionsInitialState: TransactionsState = {
-    isLoading: false,
-    error: null,
     transactions: {},
+    fetchStatusDetail: {},
 };
 
 export type TransactionsRootState = {
@@ -75,17 +94,6 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
     transactionsInitialState,
     (builder, extra) => {
         builder
-            .addCase(transactionsActions.fetchError, (state, { payload }) => {
-                const { error } = payload;
-                state.error = error;
-                state.isLoading = false;
-            })
-            .addCase(transactionsActions.fetchInit, state => {
-                state.isLoading = true;
-            })
-            .addCase(transactionsActions.fetchSuccess, state => {
-                state.isLoading = false;
-            })
             .addCase(transactionsActions.resetTransaction, (state, { payload }) => {
                 const { account } = payload;
                 delete state.transactions[account.key];
@@ -152,8 +160,51 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
             .addCase(accountsActions.removeAccount, (state, { payload }) => {
                 payload.forEach(a => {
                     delete state.transactions[a.key];
+                    delete state.fetchStatusDetail[a.key];
                 });
             })
+
+            .addCase(fetchTransactionsPageThunk.fulfilled, (state, { meta }) => {
+                state.fetchStatusDetail[meta.arg.accountKey] = {
+                    ...state.fetchStatusDetail[meta.arg.accountKey],
+                    status: 'idle',
+                    error: null,
+                };
+            })
+            .addCase(fetchAllTransactionsForAccountThunk.fulfilled, (state, { meta }) => {
+                state.fetchStatusDetail[meta.arg.accountKey] = {
+                    ...state.fetchStatusDetail[meta.arg.accountKey],
+                    areAllTransactionsLoaded: true,
+                };
+            })
+            .addMatcher(
+                isAnyOf(
+                    fetchTransactionsPageThunk.rejected,
+                    fetchAllTransactionsForAccountThunk.rejected,
+                ),
+                (state, { meta, error }) => {
+                    state.fetchStatusDetail[meta.arg.accountKey] = {
+                        ...state.fetchStatusDetail[meta.arg.accountKey],
+                        status: 'error',
+                        error: error.toString(),
+                    };
+                },
+            )
+            .addMatcher(
+                isAnyOf(
+                    fetchTransactionsPageThunk.pending,
+                    fetchAllTransactionsForAccountThunk.pending,
+                ),
+                (state, { meta }) => {
+                    if (!meta.arg.noLoading) {
+                        state.fetchStatusDetail[meta.arg.accountKey] = {
+                            ...state.fetchStatusDetail[meta.arg.accountKey],
+                            status: 'loading',
+                            error: null,
+                        };
+                    }
+                },
+            )
             .addMatcher(
                 action => action.type === extra.actionTypes.storageLoad,
                 extra.reducers.storageLoadTransactions,
@@ -164,8 +215,11 @@ export const prepareTransactionsReducer = createReducerWithExtraDeps(
 // Used to define selector cache size
 const EXPECTED_MAX_NUMBER_OF_ACCOUNTS = 50;
 
-export const selectIsLoadingTransactions = (state: TransactionsRootState) =>
-    state.wallet.transactions.isLoading;
+export const selectIsLoadingAccountTransactions = (
+    state: TransactionsRootState,
+    accountKey: AccountKey | null,
+) => state.wallet.transactions.fetchStatusDetail?.[accountKey ?? '']?.status === 'loading';
+
 export const selectTransactions = (state: TransactionsRootState) =>
     state.wallet.transactions.transactions;
 
@@ -341,3 +395,13 @@ export const selectAccountHasStaked = (state: TransactionsRootState, account: Ac
 
     return stakeTxs.length > 0 || !!getEverstakePool(account);
 };
+
+export const selectAccountTransactionsFetchStatus = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => state.wallet.transactions.fetchStatusDetail?.[accountKey];
+
+export const selectAreAllAccountTransactionsLoaded = (
+    state: TransactionsRootState,
+    accountKey: AccountKey,
+) => !!state.wallet.transactions.fetchStatusDetail?.[accountKey]?.areAllTransactionsLoaded;

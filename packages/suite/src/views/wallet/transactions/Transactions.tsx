@@ -3,7 +3,10 @@ import { ReactNode } from 'react';
 import { WalletLayout, CoinjoinAccountDiscoveryProgress } from 'src/components/wallet';
 import { useSelector } from 'src/hooks/suite';
 import { AppState } from 'src/types/suite';
-import { selectAccountTransactions, selectIsLoadingTransactions } from '@suite-common/wallet-core';
+import {
+    selectAccountTransactions,
+    selectIsLoadingAccountTransactions,
+} from '@suite-common/wallet-core';
 import { NoTransactions } from './components/NoTransactions';
 import { AccountEmpty } from './components/AccountEmpty';
 import { TransactionList } from './TransactionList/TransactionList';
@@ -37,8 +40,10 @@ const Layout = ({ selectedAccount, showEmptyHeaderPlaceholder = false, children 
 );
 
 export const Transactions = () => {
-    const transactionsIsLoading = useSelector(selectIsLoadingTransactions);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const transactionsIsLoading = useSelector(state =>
+        selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
+    );
     const accountTransactions = useSelector(state =>
         selectAccountTransactions(state, selectedAccount.account?.key || ''),
     );

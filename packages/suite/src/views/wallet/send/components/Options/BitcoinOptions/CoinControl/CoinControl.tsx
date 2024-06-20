@@ -3,7 +3,7 @@ import styled, { useTheme } from 'styled-components';
 
 import { typography } from '@trezor/theme';
 import { COMPOSE_ERROR_TYPES } from '@suite-common/wallet-constants';
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { getTxsPerPage } from '@suite-common/suite-utils';
 import { amountToSatoshi, formatNetworkAmount } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
@@ -151,12 +151,9 @@ export const CoinControl = ({ close }: CoinControlProps) => {
     // fetch all transactions so that we can show a transaction timestamp for each UTXO
     useEffect(() => {
         const promise = dispatch(
-            fetchTransactionsThunk({
+            fetchAllTransactionsForAccountThunk({
                 accountKey: account.key,
-                page: 2,
-                perPage: getTxsPerPage(account.networkType),
                 noLoading: true,
-                recursive: true,
             }),
         );
 

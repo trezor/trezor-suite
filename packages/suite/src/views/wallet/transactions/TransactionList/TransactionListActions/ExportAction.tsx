@@ -6,11 +6,11 @@ import { useDispatch } from 'src/hooks/suite';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { notificationsActions } from '@suite-common/toast-notifications';
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet';
-import { isFeatureFlagEnabled, getTxsPerPage } from '@suite-common/suite-utils';
+import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from '@suite-common/metadata-types';
@@ -56,12 +56,9 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
             setIsExportRunning(true);
             try {
                 await dispatch(
-                    fetchTransactionsThunk({
+                    fetchAllTransactionsForAccountThunk({
                         accountKey: account.key,
-                        page: 2,
-                        perPage: getTxsPerPage(account.networkType),
                         noLoading: true,
-                        recursive: true,
                     }),
                 );
                 const accountName = accountLabel || getAccountTitle();
