@@ -178,6 +178,9 @@
         { "path": "packages/utils" },
         { "path": "packages/utxo-lib" },
         {
+            "path": "packages/connect-examples/webextension-mv3-sw-ts"
+        },
+        {
             "path": "packages/connect-examples/electron-main-process"
         },
         {

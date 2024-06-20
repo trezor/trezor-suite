@@ -1,0 +1,20 @@
+{
+    "name": "@trezor/webextension-mv3-sw-ts",
+    "version": "1.0.0",
+    "private": true,
+    "license": "See LICENSE.md in repo root",
+    "sideEffects": false,
+    "main": "src/index",
+    "scripts": {
+        "depcheck": "yarn g:depcheck",
+        "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "type-check": "yarn g:tsc --build",
+        "build": "webpack --mode production"
+    },
+    "dependencies": {
+        "@trezor/connect-webextension": "workspace:^",
+        "copy-webpack-plugin": "^12.0.2",
+        "html-webpack-plugin": "^5.6.0",
+        "webpack": "^5.90.1"
+    }
+}

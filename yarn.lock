@@ -11516,6 +11516,17 @@ __metadata:
   languageName: unknown
   linkType: soft
 
+"@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension-mv3-sw-ts":
+  version: 0.0.0-use.local
+  resolution: "@trezor/webextension-mv3-sw-ts@workspace:packages/connect-examples/webextension-mv3-sw-ts"
+  dependencies:
+    "@trezor/connect-webextension": "workspace:^"
+    copy-webpack-plugin: "npm:^12.0.2"
+    html-webpack-plugin: "npm:^5.6.0"
+    webpack: "npm:^5.90.1"
+  languageName: unknown
+  linkType: soft
+
 "@trysound/sax@npm:0.2.0":
   version: 0.2.0
   resolution: "@trysound/sax@npm:0.2.0"

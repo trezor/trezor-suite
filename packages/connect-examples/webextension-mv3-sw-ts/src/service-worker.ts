@@ -1,11 +1,13 @@
-// Dynamic script loading to import the Trezor Connect script, making its functions available in this service worker.
-// This is designed to work within the service-worker context, which does not support ES6 modules natively.
-importScripts('vendor/trezor-connect-webextension.js');
+/// <reference lib="webworker" />
+// Reference the Web Worker library, allowing TypeScript to recognize service worker globals
+
+// Import using ES6 module TrezorConnect and the DEVICE_EVENT constant from the Trezor Connect WebExtension package
+import TrezorConnect, { DEVICE_EVENT, DeviceEventMessage } from '@trezor/connect-webextension';
 
 // URL of the Trezor Connect
 const connectSrc = 'https://connect.trezor.io/9/';
 
-chrome.runtime.onInstalled.addListener(details => {
+chrome.runtime.onInstalled.addListener((details: chrome.runtime.InstalledDetails) => {
     console.log('details', details);
 
     // Initialize Trezor Connect with the provided manifest and settings
@@ -20,13 +22,13 @@ chrome.runtime.onInstalled.addListener(details => {
     });
 
     // Event listener for Trezor device events
-    TrezorConnect.on('DEVICE_EVENT', event => {
+    TrezorConnect.on(DEVICE_EVENT, (event: DeviceEventMessage) => {
         console.log('EVENT in service worker', event);
     });
 
     // Event listener for messages from other parts of the extension
     // This code will depend on how you handle the communication between different parts of your webextension.
-    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         if (message.action === 'getAddress') {
             TrezorConnect.getAddress({
                 showOnTrezor: true,
