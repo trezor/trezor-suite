@@ -52,6 +52,24 @@ const instructions = {
         },
         program: 'spl-token',
     },
+    ownReceivedTokenTransfer: {
+        parsed: {
+            info: {
+                authority: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                destination: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                mint: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                source: '2Bwv9hYm3isiJtUJoWSiy46Na612c4xzNszp5NckWofu',
+                tokenAmount: {
+                    amount: '2',
+                    decimals: 1,
+                    uiAmount: 2,
+                    uiAmountString: '2',
+                },
+            },
+            type: 'transferChecked',
+        },
+        program: 'spl-token',
+    },
     // without mint and tokenAmount
     tokenTransferToAssociated: {
         parsed: {
@@ -216,6 +234,10 @@ const effects = {
     },
     positive: {
         address: 'address2',
+        amount: new BigNumber(10),
+    },
+    positiveForeign: {
+        address: 'foreignAddress',
         amount: new BigNumber(10),
     },
 };
@@ -577,6 +599,23 @@ export const fixtures = {
             ],
         },
         {
+            description: 'should not return foreign address target for "recv" transaction type',
+            input: {
+                effects: [effects.positive, effects.positiveForeign],
+                txType: 'recv',
+                accountAddress: effects.positive.address,
+            },
+            expectedOutput: [
+                {
+                    n: 0,
+                    addresses: [effects.positive.address],
+                    isAddress: true,
+                    amount: effects.positive.amount.abs().toString(),
+                    isAccountTarget: true,
+                },
+            ],
+        },
+        {
             description: 'should return an empty array for "unknown" transaction type',
             input: {
                 effects: [effects.positive, effects.negative],
@@ -615,11 +654,12 @@ export const fixtures = {
     ],
     getDetails: [
         {
-            description: 'should return transaction details with valid inputs',
+            description: 'should return transaction details with valid inputs for sent',
             input: {
                 transaction: parsedTransactions.basic.transaction,
                 effects: [effects.positive, effects.negative],
                 accountAddress: effects.negative.address,
+                txType: 'sent' as const,
             },
             expectedOutput: {
                 size: parsedTransactions.basic.transaction.meta.computeUnitsConsumed,
@@ -642,6 +682,68 @@ export const fixtures = {
                         version: 'legacy',
                         isAddress: true,
                         isAccountOwned: false,
+                        n: 0,
+                        value: effects.positive.amount.abs().toString(),
+                        addresses: [effects.positive.address],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'should return transaction details with valid inputs for recv',
+            input: {
+                transaction: parsedTransactions.basic.transaction,
+                effects: [effects.positive, effects.negative],
+                accountAddress: effects.positive.address,
+                txType: 'recv' as const,
+            },
+            expectedOutput: {
+                size: parsedTransactions.basic.transaction.meta.computeUnitsConsumed,
+                totalInput: effects.negative.amount.abs().toString(),
+                totalOutput: effects.positive.amount.abs().toString(),
+                vin: [
+                    {
+                        txid: 'txid1',
+                        version: 'legacy',
+                        isAddress: true,
+                        isAccountOwned: false,
+                        n: 0,
+                        value: effects.negative.amount.abs().toString(),
+                        addresses: [effects.negative.address],
+                    },
+                ],
+                vout: [
+                    {
+                        txid: 'txid1',
+                        version: 'legacy',
+                        isAddress: true,
+                        isAccountOwned: true,
+                        n: 0,
+                        value: effects.positive.amount.abs().toString(),
+                        addresses: [effects.positive.address],
+                    },
+                ],
+            },
+        },
+        {
+            description: 'should return transaction details with only account owned outputs',
+            input: {
+                transaction: parsedTransactions.basic.transaction,
+                effects: [effects.positive, effects.positiveForeign],
+                accountAddress: effects.positive.address,
+                txType: 'recv' as const,
+            },
+            expectedOutput: {
+                size: parsedTransactions.basic.transaction.meta.computeUnitsConsumed,
+                totalInput: new BigNumber(0).toString(),
+                totalOutput: effects.positive.amount.abs().toString(),
+                vin: [],
+                vout: [
+                    {
+                        txid: 'txid1',
+                        version: 'legacy',
+                        isAddress: true,
+                        isAccountOwned: true,
                         n: 0,
                         value: effects.positive.amount.abs().toString(),
                         addresses: [effects.positive.address],
@@ -686,6 +788,29 @@ export const fixtures = {
                     name: 'So11111111111111111111111111111111111115555',
                     symbol: 'SO11111...',
                     amount: '1534951700',
+                },
+            ],
+        },
+        {
+            description:
+                'parses a multi token receiver transfer and omit foreign address token effect',
+            input: {
+                transaction: parsedTransactions.multiTokenTransfer.transaction,
+                accountAddress: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                map: sampleMintToDetailMap,
+                tokenAccountsInfos: [],
+            },
+            expectedOutput: [
+                {
+                    type: 'recv',
+                    standard: 'SPL',
+                    from: 'ETxHeBBcuw9Yu4dGuP3oXrD12V5RECvmi8ogQ9PkjyVF',
+                    to: 'H8TGGw7Z85w1wDxcH3aTBAyCoCYsDQZrKUim7fwtKAMs',
+                    contract: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    decimals: 1,
+                    name: 'DH1nKg3QZStnVh4bjm8kyWfsRJkiweXcnL4j7Ug3PfYA',
+                    symbol: 'DH1NKG3...',
+                    amount: '2',
                 },
             ],
         },

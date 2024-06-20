@@ -251,6 +251,12 @@ export const getTargets = (
                 return false;
             }
 
+            // Exclude effects on foreign addresses for tx types other than sent, otherwise it
+            // leads to the foreign address being displayed next to user's own address which might lead to confusion.
+            if (txType !== 'sent' && effect.address !== accountAddress) {
+                return false;
+            }
+
             // count in only positive effects, for `sent` tx they gonna be represented as negative, for `recv` as positive
             return effect.amount.isGreaterThan(0);
         })
@@ -356,7 +362,13 @@ export const getDetails = (
     txType: Transaction['type'],
 ): Transaction['details'] => {
     const senders = effects.filter(({ amount }) => amount.isNegative());
-    const receivers = effects.filter(({ amount }) => amount.isPositive());
+
+    // include positive effects only on accountAddress for tx types other then sent, otherwise it
+    // leads to foreign address being displayed next to users own address which might lead to confusion
+    const receivers = effects.filter(
+        ({ amount, address }) =>
+            amount.isPositive() && (txType !== 'sent' ? address === accountAddress : true),
+    );
 
     const getVin = ({ address, amount }: { address: string; amount?: BigNumber }, i: number) => ({
         txid: transaction.transaction.signatures[0].toString(),
@@ -527,7 +539,9 @@ export const getTokens = (
                 ...getTokenNameAndSymbol(mint, tokenDetailByMint),
                 amount,
             };
-        });
+            // consider only effects on users address
+        })
+        .filter(effect => effect.to === accountAddress || effect.from === accountAddress);
 
     return effects;
 };
