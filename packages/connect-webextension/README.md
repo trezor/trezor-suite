@@ -77,7 +77,7 @@ To ensure your extension is displayed with its name rather than its ID, you need
 ## Examples
 
 -   [Simple example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw)
--   [Connect Explorer example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-explorer/src-webextension)
+-   [ES6 and TypeScript example](https://github.com/trezor/trezor-suite/tree/develop/packages/connect-examples/webextension-mv3-sw-ts)
 
 ## Development
 
