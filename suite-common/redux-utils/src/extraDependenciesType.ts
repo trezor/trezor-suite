@@ -115,6 +115,7 @@ export type ExtraDependencies = {
     actionTypes: {
         storageLoad: ActionType;
         setDeviceMetadata: ActionType;
+        setDeviceMetadataPasswords: ActionType;
     };
     reducers: {
         storageLoadBlockchain: StorageLoadReducer;
@@ -125,6 +126,7 @@ export type ExtraDependencies = {
         storageLoadDiscovery: StorageLoadReducer;
         addButtonRequestFirmware: AddButtonRequestReducer;
         setDeviceMetadataReducer: BaseReducer;
+        setDeviceMetadataPasswordsReducer: BaseReducer;
         storageLoadDevices: StorageLoadReducer;
         storageLoadFormDrafts: StorageLoadReducer;
         storageLoadTokenManagement: StorageLoadReducer;

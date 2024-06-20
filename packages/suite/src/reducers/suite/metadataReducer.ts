@@ -11,7 +11,12 @@ import {
     deviceActions,
 } from '@suite-common/wallet-core';
 
-import { STORAGE, METADATA, METADATA_LABELING } from 'src/actions/suite/constants';
+import {
+    STORAGE,
+    METADATA,
+    METADATA_LABELING,
+    METADATA_PASSWORDS,
+} from 'src/actions/suite/constants';
 import { Action, TrezorDevice } from 'src/types/suite';
 import {
     MetadataState,
@@ -308,10 +313,11 @@ export const selectPasswordManagerState = (
     const provider = selectSelectedProviderForPasswords(state);
 
     if (!fileName || !provider || !provider?.data?.[fileName]) {
-        return;
+        return METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE;
     }
 
-    return provider.data[fileName] as PasswordManagerState;
+    return (provider.data[fileName] ||
+        METADATA_PASSWORDS.DEFAULT_PASSWORD_MANAGER_STATE) as PasswordManagerState;
 };
 
 export default metadataReducer;

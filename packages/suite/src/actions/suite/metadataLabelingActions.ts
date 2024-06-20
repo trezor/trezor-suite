@@ -25,8 +25,6 @@ import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as metadataProviderActions from './metadataProviderActions';
 
-import type { FetchIntervalTrackingId } from './metadataProviderActions';
-
 export const getLabelableEntities =
     (deviceState: string) => (_dispatch: Dispatch, getState: GetState) =>
         selectLabelableEntities(getState(), deviceState);
@@ -166,7 +164,11 @@ export const fetchAndSaveMetadata =
 
         if (!device?.state || !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) return;
 
-        const fetchIntervalTrackingId: FetchIntervalTrackingId = `labels-${provider.clientId}-${device.state}`;
+        const fetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
+            'labels',
+            provider.clientId,
+            device.state,
+        );
 
         const providerInstance = dispatch(
             metadataProviderActions.getProviderInstance({
@@ -625,7 +627,11 @@ export const init =
             return true;
         }
 
-        const fetchIntervalTrackingId: FetchIntervalTrackingId = `labels-${selectedProvider.clientId}-${device.state}`;
+        const fetchIntervalTrackingId = metadataUtils.getFetchTrackingId(
+            'labels',
+            selectedProvider.clientId,
+            device.state,
+        );
 
         // 7. if interval for watching provider is not set, create it
         if (device.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
@@ -637,7 +643,7 @@ export const init =
                     return;
                 }
                 dispatch(fetchAndSaveMetadata(device.state));
-            }, METADATA_LABELING.FETCH_INTERVAL);
+            }, 10000);
         }
 
         return true;

@@ -9,7 +9,12 @@ interface TagProps {
 }
 
 export const Tag = ({ isSelected, onClick, title }: TagProps) => (
-    <Button variant="tertiary" icon={isSelected ? 'CHECK_ACTIVE' : undefined} onClick={onClick}>
+    <Button
+        variant="tertiary"
+        size="tiny"
+        icon={isSelected ? 'CHECK_ACTIVE' : undefined}
+        onClick={onClick}
+    >
         {title}
     </Button>
 );

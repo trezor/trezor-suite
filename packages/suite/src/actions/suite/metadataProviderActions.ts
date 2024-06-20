@@ -108,14 +108,15 @@ export const disconnectProvider =
         removeMetadata?: boolean;
     }) =>
     async (dispatch: Dispatch) => {
-        // @ts-expect-error: stupid forEach type
-        Object.keys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
-            const [trackedDataType, trackedClientId] = id.split('-');
-            if (trackedDataType === dataType && trackedClientId === clientId) {
-                clearInterval(fetchIntervals[id]);
-                delete fetchIntervals[id];
-            }
-        });
+        (Object.keys(fetchIntervals) as FetchIntervalTrackingId[]).forEach(
+            (id: FetchIntervalTrackingId) => {
+                const [trackedDataType, trackedClientId] = id.split('-');
+                if (trackedDataType === dataType && trackedClientId === clientId) {
+                    clearInterval(fetchIntervals[id]);
+                    delete fetchIntervals[id];
+                }
+            },
+        );
 
         // dispose metadata values (not keys)
         if (removeMetadata) {
