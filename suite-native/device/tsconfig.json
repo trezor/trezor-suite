@@ -2,6 +2,7 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../../suite-common/icons" },
         {
             "path": "../../suite-common/redux-utils"
         },
@@ -21,7 +22,8 @@
         { "path": "../settings" },
         { "path": "../../packages/connect" },
         { "path": "../../packages/device-utils" },
-        { "path": "../../packages/styles" }
+        { "path": "../../packages/styles" },
+        { "path": "../../packages/theme" }
     ],
     "include": [".", "**/*.json"]
 }

@@ -244,18 +244,27 @@ export const en = {
         },
     },
     moduleDevice: {
-        IncompatibleDeviceModalAppendix: {
+        incompatibleFirmwareModalAppendix: {
             title: 'Follow these steps',
             lines: {
                 1: '1. Connect Trezor to Desktop Suite',
                 2: '2. Navigate to Settings menu',
-                3: { update: '3. Install update', setUp: '3. Set up your Trezor' },
+                3: '3. Install update',
             },
         },
         noSeedModal: {
-            title: 'The connected Trezor device needs to be set up',
+            title: 'Your Trezor needs to be set up.',
             description:
-                'To continue using your Trezor with this app, set it up with Trezor Suite for desktop or web.',
+                'Unfortunately, we currently don’t support device setup in the mobile app.',
+            primaryButton: 'Continue to Trezor Suite Web',
+            appendix: {
+                title: 'What to do now?',
+                lines: {
+                    1: 'Go to Trezor Suite for Web using the button below.',
+                    2: 'Complete the device setup in your browser.',
+                    3: 'Start using your Trezor with Trezor Suite Lite.',
+                },
+            },
         },
         genericErrorModal: {
             title: 'Please reconnect your Trezor device.',

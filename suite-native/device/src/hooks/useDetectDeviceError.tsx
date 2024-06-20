@@ -29,9 +29,13 @@ import {
 } from '@suite-native/navigation';
 
 import { selectDeviceError, selectIsDeviceFirmwareSupported } from '../selectors';
-import { IncompatibleDeviceModalAppendix } from '../components/IncompatibleDeviceModalAppendix';
+import { IncompatibleFirmwareModalAppendix } from '../components/IncompatibleFirmwareModalAppendix';
+import { UninitializedDeviceModalAppendix } from '../components/UninitializedDeviceModalAppendix';
 import { BootloaderModalAppendix } from '../components/BootloaderModalAppendix';
 import { UnacquiredDeviceModalAppendix } from '../components/UnacquiredDeviceModalAppendix';
+
+export const SUITE_WEB_URL = 'https://suite.trezor.io/web/';
+export const SUITE_LITE_SUPPORT_URL = 'https://trezor.io/learn/c/trezor-suite-lite#open-chat';
 
 type NavigationProps = StackToStackCompositeNavigationProps<
     HomeStackParamList,
@@ -101,7 +105,7 @@ export const useDetectDeviceError = () => {
                 pictogramVariant: 'red',
                 primaryButtonTitle: <Translation id="generic.buttons.eject" />,
                 primaryButtonVariant: 'tertiaryElevation1',
-                appendix: <IncompatibleDeviceModalAppendix />,
+                appendix: <IncompatibleFirmwareModalAppendix />,
                 onPressPrimaryButton: () => {
                     handleDisconnect();
                     analytics.report({
@@ -130,19 +134,21 @@ export const useDetectDeviceError = () => {
         ) {
             showAlert({
                 title: <Translation id="moduleDevice.noSeedModal.title" />,
+                textAlign: 'left',
                 description: <Translation id="moduleDevice.noSeedModal.description" />,
-                icon: 'warningCircleLight',
-                pictogramVariant: 'red',
-                primaryButtonVariant: 'tertiaryElevation1',
-                primaryButtonTitle: <Translation id="generic.buttons.eject" />,
-                appendix: <IncompatibleDeviceModalAppendix />,
+                primaryButtonTitle: <Translation id="moduleDevice.noSeedModal.primaryButton" />,
+                primaryButtonViewLeft: 'arrowLineUpRight',
+                appendix: <UninitializedDeviceModalAppendix />,
                 onPressPrimaryButton: () => {
-                    handleDisconnect();
+                    openLink(SUITE_WEB_URL);
+
                     analytics.report({
                         type: EventType.UnsupportedDevice,
                         payload: { deviceState: 'noSeed' },
                     });
                 },
+                secondaryButtonTitle: <Translation id="generic.buttons.cancel" />,
+                onPressSecondaryButton: handleDisconnect,
                 testID: '@device/errors/alert/no-seed',
             });
         }
@@ -151,8 +157,9 @@ export const useDetectDeviceError = () => {
         isUnacquiredDevice,
         wasDeviceEjectedByUser,
         showAlert,
-        handleDisconnect,
+        openLink,
         deviceError,
+        handleDisconnect,
     ]);
 
     useEffect(() => {
@@ -206,8 +213,7 @@ export const useDetectDeviceError = () => {
                     <Translation id="moduleDevice.genericErrorModal.buttons.help" />
                 ),
                 secondaryButtonVariant: 'redElevation0',
-                onPressSecondaryButton: () =>
-                    openLink('https://trezor.io/learn/c/trezor-suite-lite#open-chat'),
+                onPressSecondaryButton: () => openLink(SUITE_LITE_SUPPORT_URL),
                 testID: '@device/errors/alert/error',
             });
         }
