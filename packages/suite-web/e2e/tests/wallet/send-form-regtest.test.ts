@@ -94,7 +94,7 @@ describe('Send form for bitcoin', () => {
         cy.task('pressYes');
 
         cy.getTestElement('@modal/send').click();
-        cy.getTestElement('@wallet/accounts/transaction-list/group/0').should(
+        cy.getTestElement('@wallet/accounts/transaction-list/pending/group/0').should(
             'contain',
             'OP_RETURN (meow)',
         );

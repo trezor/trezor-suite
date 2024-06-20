@@ -35,6 +35,7 @@ interface TransactionsGroupProps {
     symbol: Network['symbol'];
     localCurrency: FiatCurrencyCode;
     index: number;
+    isPending: boolean;
 }
 
 export const TransactionsGroup = ({
@@ -42,6 +43,7 @@ export const TransactionsGroup = ({
     symbol,
     transactions,
     localCurrency,
+    isPending,
     children,
     index,
     ...rest
@@ -88,7 +90,7 @@ export const TransactionsGroup = ({
         <TransactionsGroupWrapper
             key={dateKey}
             onMouseEnter={() => setIsHovered(true)}
-            data-test={`@wallet/accounts/transaction-list/group/${index}`}
+            data-test={`@wallet/accounts/transaction-list/${isPending ? 'pending' : 'confirmed'}/group/${index}`}
             onMouseLeave={() => setIsHovered(false)}
             {...rest}
         >
