@@ -14,6 +14,7 @@ export * from './countBytesInString';
 export * from './createCooldown';
 export * from './createDeferred';
 export * from './createDeferredManager';
+export * from './createLazy';
 export * from './createTimeoutPromise';
 export * from './getLocaleSeparators';
 export * from './getNumberFromPixelString';
