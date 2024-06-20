@@ -52,7 +52,7 @@ describe('transaction utils', () => {
             getWalletTransaction({ blockHeight: 0, blockTime: undefined }),
         ]);
         expect(groupedTxs).toEqual({
-            pending: [
+            'no-blocktime': [
                 getWalletTransaction({ blockHeight: 0, blockTime: 0 }),
                 getWalletTransaction({ blockHeight: 0, blockTime: undefined }),
             ],
@@ -85,7 +85,7 @@ describe('transaction utils', () => {
         const firstMonth = generateTransactionMonthKey(new Date(firstBlocktime * 1000));
         const secondMonth = generateTransactionMonthKey(new Date(secondBlocktime * 1000));
         expect(groupedTxs).toEqual({
-            pending: [
+            'no-blocktime': [
                 getWalletTransaction({ blockHeight: 0, blockTime: 0 }),
                 getWalletTransaction({ blockHeight: 0, blockTime: undefined }),
             ],

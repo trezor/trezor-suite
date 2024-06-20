@@ -169,7 +169,7 @@ export const TransactionList = ({
         const [pendingTxs, confirmedTxs] = arrayPartition(transactions, isPending);
         const accountTransactionsByMonth = groupTransactionsByDate(confirmedTxs, 'month');
         accountTransactionsByMonth['pending'] = [
-            ...accountTransactionsByMonth['pending'],
+            ...accountTransactionsByMonth['no-blocktime'],
             ...pendingTxs,
         ];
         const transactionMonthKeys = Object.keys(accountTransactionsByMonth) as MonthKey[];
