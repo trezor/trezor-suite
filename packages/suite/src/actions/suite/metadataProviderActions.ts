@@ -20,6 +20,7 @@ import FileSystemProvider from 'src/services/suite/metadata/FileSystemProvider';
 import { InMemoryTestProvider } from '../../services/suite/metadata/InMemoryTestProvider';
 
 import * as metadataActions from './metadataActions';
+import { Device } from '@trezor/connect';
 
 export type MetadataAction = {
     type: typeof METADATA.SET_SELECTED_PROVIDER;
@@ -41,7 +42,9 @@ export const providerInstance: Record<DataType, ProviderInstance | undefined> = 
     passwords: undefined,
 };
 
-export const fetchIntervals: { [deviceState: string]: any } = {}; // any because of native at the moment, otherwise number | undefined
+export type FetchIntervalTrackingId =
+    `${DataType}-${MetadataProvider['clientId']}-${Required<Device>['state']}`;
+export const fetchIntervals: { [id: FetchIntervalTrackingId]: any } = {}; // any because of native at the moment, otherwise number | undefined
 
 const createProviderInstance = (
     type: MetadataProvider['type'],
@@ -105,9 +108,13 @@ export const disconnectProvider =
         removeMetadata?: boolean;
     }) =>
     async (dispatch: Dispatch) => {
-        Object.values(fetchIntervals).forEach((deviceState, num) => {
-            clearInterval(num);
-            delete fetchIntervals[deviceState];
+        // @ts-expect-error: stupid forEach type
+        Object.keys(fetchIntervals).forEach((id: FetchIntervalTrackingId) => {
+            const [trackedDataType, trackedClientId] = id.split('-');
+            if (trackedDataType === dataType && trackedClientId === clientId) {
+                clearInterval(fetchIntervals[id]);
+                delete fetchIntervals[id];
+            }
         });
 
         // dispose metadata values (not keys)

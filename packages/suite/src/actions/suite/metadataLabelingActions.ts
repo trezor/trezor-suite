@@ -25,6 +25,8 @@ import type { MetadataAction } from './metadataActions';
 import * as metadataActions from './metadataActions';
 import * as metadataProviderActions from './metadataProviderActions';
 
+import type { FetchIntervalTrackingId } from './metadataProviderActions';
+
 export const getLabelableEntities =
     (deviceState: string) => (_dispatch: Dispatch, getState: GetState) =>
         selectLabelableEntities(getState(), deviceState);
@@ -164,6 +166,8 @@ export const fetchAndSaveMetadata =
 
         if (!device?.state || !device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) return;
 
+        const fetchIntervalTrackingId: FetchIntervalTrackingId = `labels-${provider.clientId}-${device.state}`;
+
         const providerInstance = dispatch(
             metadataProviderActions.getProviderInstance({
                 clientId: provider.clientId,
@@ -200,9 +204,9 @@ export const fetchAndSaveMetadata =
 
             // device is disconnected or something is wrong with it
             if (!device?.metadata?.[METADATA_LABELING.ENCRYPTION_VERSION]) {
-                if (metadataProviderActions.fetchIntervals[device.state]) {
-                    clearInterval(metadataProviderActions.fetchIntervals[device.state]);
-                    delete metadataProviderActions.fetchIntervals[device.state];
+                if (metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
+                    clearInterval(metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]);
+                    delete metadataProviderActions.fetchIntervals[fetchIntervalTrackingId];
                 }
 
                 return;
@@ -223,7 +227,7 @@ export const fetchAndSaveMetadata =
             // it expires, we want them to silently disconnect provider, keep metadata in place.
             // So that users will not notice that token expired until they will try to add or edit
             // already existing label
-            if (device?.state && metadataProviderActions.fetchIntervals[device.state]) {
+            if (device?.state && metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
                 return dispatch(
                     metadataProviderActions.disconnectProvider({
                         removeMetadata: false,
@@ -612,11 +616,22 @@ export const init =
             dispatch({ type: METADATA.SET_INITIATING, payload: false });
         }
 
+        const selectedProvider = selectSelectedProviderForLabels(getState());
+        device = deviceState
+            ? selectDeviceByState(getState(), deviceState)
+            : selectDevice(getState());
+
+        if (!device?.state || !selectedProvider) {
+            return true;
+        }
+
+        const fetchIntervalTrackingId: FetchIntervalTrackingId = `labels-${selectedProvider.clientId}-${device.state}`;
+
         // 7. if interval for watching provider is not set, create it
-        if (device.state && !metadataProviderActions.fetchIntervals[device.state]) {
+        if (device.state && !metadataProviderActions.fetchIntervals[fetchIntervalTrackingId]) {
             // todo: possible race condition that has been around since always
             // user is editing label and at that very moment update arrives. updates to specific entities should be probably discarded in such case?
-            metadataProviderActions.fetchIntervals[device.state] = setInterval(() => {
+            metadataProviderActions.fetchIntervals[fetchIntervalTrackingId] = setInterval(() => {
                 const device = selectDevice(getState());
                 if (!getState().suite.online || !device?.state) {
                     return;
