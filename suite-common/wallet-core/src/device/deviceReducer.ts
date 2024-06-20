@@ -891,7 +891,7 @@ export const selectIsDeviceUsingPassphrase = (state: DeviceRootState) => {
 
     // If device instance is higher than 1 (newly created device instance), connect returns
     // `passphrase_protection: false` in features. But we still want to treat it as passphrase protected.
-    const shouldTreatAsPassphraseProtected = device?.instance ?? 1 > 1;
+    const shouldTreatAsPassphraseProtected = (device?.instance ?? 1) > 1;
 
     return (
         (isDeviceProtectedByPassphrase && device?.useEmptyPassphrase === false) ||
