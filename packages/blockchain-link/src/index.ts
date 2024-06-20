@@ -1,4 +1,10 @@
-import { createDeferred, createDeferredManager, TypedEmitter, Throttler } from '@trezor/utils';
+import {
+    createDeferred,
+    createDeferredManager,
+    createLazy,
+    TypedEmitter,
+    Throttler,
+} from '@trezor/utils';
 import { CustomError } from '@trezor/blockchain-link-types/src/constants/errors';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import type { BlockchainSettings } from '@trezor/blockchain-link-types';
@@ -60,14 +66,11 @@ const initWorker = async (settings: BlockchainSettings) => {
 class BlockchainLink extends TypedEmitter<Events> {
     settings: BlockchainSettings;
 
-    worker: Worker | undefined;
+    private lazyWorker = createLazy(this.initWorker.bind(this), this.disposeWorker.bind(this));
 
     private deferred = createDeferredManager();
 
     private throttler: Throttler;
-
-    // worker promise is used to prevent multiple workers initialization when multiple methods are called at called parallel before worker is initialized
-    private workerPromise: Promise<Worker> | undefined;
 
     constructor(settings: BlockchainSettings) {
         super();
@@ -77,26 +80,21 @@ class BlockchainLink extends TypedEmitter<Events> {
         this.throttler = new Throttler(throttleBlockEventTimeout);
     }
 
-    async getWorker(): Promise<Worker> {
-        if (this.workerPromise) {
-            // Worker is being initialized, return that instance instead of creating new one
-            return this.workerPromise;
-        }
-        if (!this.worker) {
-            this.workerPromise = initWorker(this.settings);
-            this.worker = await this.workerPromise;
-            delete this.workerPromise;
+    private async initWorker() {
+        const worker = await initWorker(this.settings);
+        worker.onmessage = this.onMessage.bind(this);
+        worker.onerror = this.onError.bind(this);
 
-            this.worker.onmessage = this.onMessage.bind(this);
-            this.worker.onerror = this.onError.bind(this);
-        }
+        return worker;
+    }
 
-        return this.worker;
+    private disposeWorker(worker: Worker) {
+        worker.terminate();
     }
 
     // Sending messages to worker
     async sendMessage<R>(message: any): Promise<R> {
-        const worker = await this.getWorker();
+        const worker = await this.lazyWorker.getOrInit();
         const { promiseId, promise } = this.deferred.create();
         worker.postMessage({ id: promiseId, ...message });
 
@@ -271,7 +269,7 @@ class BlockchainLink extends TypedEmitter<Events> {
 
     // eslint-disable-next-line require-await
     async disconnect(): Promise<boolean> {
-        if (!this.worker) return true;
+        if (!this.lazyWorker.get()) return true;
 
         return this.sendMessage({
             type: MESSAGES.DISCONNECT,
@@ -332,11 +330,7 @@ class BlockchainLink extends TypedEmitter<Events> {
     dispose() {
         this.removeAllListeners();
         this.throttler.dispose();
-        const { worker } = this;
-        if (worker) {
-            worker.terminate();
-            delete this.worker;
-        }
+        this.lazyWorker.dispose();
     }
 }
 

@@ -17,6 +17,7 @@ import { BaseWorker, ContextType, CONTEXT } from '../baseWorker';
 import { MESSAGES, RESPONSES } from '@trezor/blockchain-link-types/src/constants';
 import { Connection, Message, PublicKey } from '@solana/web3.js';
 import { solanaUtils } from '@trezor/blockchain-link-utils';
+import { createLazy } from '@trezor/utils';
 
 import {
     transformTokenInfo,
@@ -506,25 +507,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
         return !!api;
     }
 
-    private tokenPromise?: Promise<TokenDetailByMint>;
-
-    getTokenMetadata(): Promise<TokenDetailByMint> {
-        if (!this.tokenPromise)
-            this.tokenPromise = solanaUtils
-                .getTokenMetadata()
-                .then(tokens => {
-                    this.tokenPromise = Promise.resolve(tokens);
-
-                    return tokens;
-                })
-                .catch(err => {
-                    this.tokenPromise = undefined;
-
-                    return Promise.reject(err);
-                });
-
-        return this.tokenPromise;
-    }
+    private lazyTokens = createLazy(() => solanaUtils.getTokenMetadata());
 
     tryConnect(url: string): Promise<SolanaAPI> {
         const api = new Connection(url, { wsEndpoint: url.replace('https', 'wss') });
@@ -543,7 +526,7 @@ class SolanaWorker extends BaseWorker<SolanaAPI> {
                 connect: () => this.connect(),
                 post: (data: Response) => this.post(data),
                 state: this.state,
-                getTokenMetadata: this.getTokenMetadata.bind(this),
+                getTokenMetadata: this.lazyTokens.getOrInit,
             };
 
             const response = await onRequest(request);
