@@ -35,6 +35,7 @@ export const TransactionGroupedList = ({
             symbol={symbol}
             transactions={value}
             localCurrency={localCurrency}
+            isPending={isPending}
             index={groupIndex}
         >
             {groupJointTransactions(value).map((item, index) =>

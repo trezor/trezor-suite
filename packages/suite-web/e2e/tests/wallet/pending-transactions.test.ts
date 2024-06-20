@@ -55,16 +55,16 @@ describe('Use regtest to test pending transactions', () => {
             cy.task('pressYes');
             cy.getTestElement('@modal/send').click();
 
-            cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+            cy.getTestElement('@wallet/accounts/transaction-list/pending/group/0').within(() => {
                 // pre-pending is immediately created and placed in "pending transactions group"
                 cy.getTestElement('@transaction-item/0/prepending/heading');
                 // however, after a while it is replaced by a standard pending transaction
                 cy.getTestElement(`@transaction-item/0/heading`, { timeout: 60000 }).click({
                     scrollBehavior: 'bottom',
                 });
-                // count has not changed
-                cy.getTestElement('@transaction-group/pending/count').contains(index + 1);
             });
+            // count has not changed
+            cy.getTestElement('@transaction-group/pending/count').contains(index + 1);
             cy.getTestElement('@tx-detail/txid-value').then($el => {
                 cy.task('set', { key: address, value: $el.attr('id') });
             });
@@ -73,20 +73,20 @@ describe('Use regtest to test pending transactions', () => {
         });
 
         // account 1 has 2 pending transactions (self and sent)
-        cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+        cy.getTestElement('@wallet/accounts/transaction-list/pending/group/0').within(() => {
             cy.getTestElement('@transaction-item/0/heading').contains('Sending REGTEST');
             cy.getTestElement('@transaction-item/1/heading').contains('Sending REGTEST to myself');
         });
 
         // account 2 has 1 pending transaction (receive)
         cy.getTestElement('@account-menu/regtest/normal/1').click();
-        cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+        cy.getTestElement('@wallet/accounts/transaction-list/pending/group/0').within(() => {
             cy.getTestElement('@transaction-item/0/heading').contains('Receiving REGTEST');
         });
 
         // while observing account 1, sent transaction is mined
         cy.getTestElement('@account-menu/regtest/normal/0').click();
-        cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+        cy.getTestElement('@wallet/accounts/transaction-list/pending/group/0').within(() => {
             cy.getTestElement('@transaction-item/0/heading').contains('Sending REGTEST');
             cy.getTestElement('@transaction-item/1/heading').contains('Sending REGTEST to myself');
         });
@@ -98,7 +98,7 @@ describe('Use regtest to test pending transactions', () => {
         });
         cy.wait(2000); // wait for potential notification about mined txs
         // nothing has changed
-        cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+        cy.getTestElement('@wallet/accounts/transaction-list/pending/group/0').within(() => {
             cy.getTestElement('@transaction-item/0/heading').contains('Sending REGTEST');
             cy.getTestElement('@transaction-item/1/heading').contains('Sending REGTEST to myself');
         });
@@ -114,18 +114,18 @@ describe('Use regtest to test pending transactions', () => {
             });
         });
         // which causes sent transaction to disappear, self transaction stays
-        cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+        cy.getTestElement('@wallet/accounts/transaction-list/pending/group/0').within(() => {
             cy.getTestElement('@transaction-item/0/heading').contains('Sending REGTEST to myself');
-            cy.getTestElement('@transaction-group/pending/count').contains(1);
         });
+        cy.getTestElement('@transaction-group/pending/count').contains(1);
         // and new group of transactions appears with the previously pending transaction now confirmed
-        cy.getTestElement('@wallet/accounts/transaction-list/group/1').within(() => {
+        cy.getTestElement('@wallet/accounts/transaction-list/confirmed/group/0').within(() => {
             cy.getTestElement('@transaction-item/0/heading').contains('Sent REGTEST');
         });
 
         // receive pending transaction on account2 is now mined as well
         cy.getTestElement('@account-menu/regtest/normal/1').click();
-        cy.getTestElement('@wallet/accounts/transaction-list/group/0').within(() => {
+        cy.getTestElement('@wallet/accounts/transaction-list/confirmed/group/0').within(() => {
             cy.getTestElement(`@transaction-item/0/heading`).contains('Received REGTEST');
         });
     });
