@@ -2449,6 +2449,14 @@ export default defineMessages({
         defaultMessage: 'Copy',
         id: 'TR_COPY_TO_CLIPBOARD',
     },
+    TR_NOT_YOUR_RECEIVE_ADDRRESS: {
+        defaultMessage: "This isn't your receive address.",
+        id: 'TR_NOT_YOUR_RECEIVE_ADDRRESS',
+    },
+    TR_COPY_CONTRACT_ADDRESS: {
+        defaultMessage: 'Never send funds to a contract address.',
+        id: 'TR_COPY_CONTRACT_ADDRESS',
+    },
     TR_CREATE_BACKUP: {
         defaultMessage: 'Create backup',
         id: 'TR_CREATE_BACKUP',

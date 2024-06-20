@@ -38,6 +38,7 @@ import {
     StakeModal,
     UnstakeModal,
     ClaimModal,
+    CopyContractAddressModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -218,6 +219,8 @@ export const UserContextModal = ({
             return <ClaimModal onCancel={onCancel} />;
         case 'everstake':
             return <EverstakeModal onCancel={onCancel} />;
+        case 'copy-contract-address':
+            return <CopyContractAddressModal onCancel={onCancel} contract={payload.contract} />;
         default:
             return null;
     }

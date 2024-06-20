@@ -85,7 +85,7 @@ export const Icon = ({
 
     return (
         <SVG
-            onClick={handleClick}
+            onClick={onClick ? handleClick : undefined}
             tabIndex={onClick ? 0 : undefined}
             onKeyDown={handleOnKeyDown}
             src={icons[name]}
