@@ -64,6 +64,7 @@ export const portfolioTrackerDevice: TrezorDevice = {
     ts: 0,
     buttonRequests: [],
     metadata: {},
+    passwords: {},
     unavailableCapabilities: {},
     availableTranslations: [],
     remember: true,

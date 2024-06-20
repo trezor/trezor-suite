@@ -118,6 +118,7 @@ export const extraDependenciesMock: ExtraDependencies = {
     actionTypes: {
         storageLoad: mockActionType('storageLoad'),
         setDeviceMetadata: mockActionType('setDeviceMetadata'),
+        setDeviceMetadataPasswords: mockActionType('setDeviceMetadataPasswords'),
     },
     reducers: {
         storageLoadBlockchain: mockReducer('storageLoadBlockchain'),
@@ -128,6 +129,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         storageLoadDiscovery: mockReducer('storageLoadDiscovery'),
         addButtonRequestFirmware: mockReducer('addButtonRequestFirmware'),
         setDeviceMetadataReducer: mockReducer('setDeviceMetadataReducer'),
+        setDeviceMetadataPasswordsReducer: mockReducer('setDeviceMetadataPasswordsReducer'),
         storageLoadDevices: mockReducer('storageLoadDevices'),
         storageLoadFormDrafts: mockReducer('storageLoadFormDrafts'),
         storageLoadTokenManagement: mockReducer('storageLoadTokenManagement'),

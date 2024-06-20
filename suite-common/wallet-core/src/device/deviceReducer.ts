@@ -118,6 +118,7 @@ const connectDevice = (draft: State, device: Device, settings: ConnectDeviceSett
             useEmptyPassphrase: true,
             buttonRequests: [],
             metadata: {},
+            passwords: {},
             ts: new Date().getTime(),
         });
 
@@ -160,6 +161,7 @@ const connectDevice = (draft: State, device: Device, settings: ConnectDeviceSett
         instance: deviceInstance,
         buttonRequests: [],
         metadata: {},
+        passwords: {},
         ts: new Date().getTime(),
     };
 
@@ -416,6 +418,7 @@ const createInstance = (draft: State, device: TrezorDevice) => {
         ts: new Date().getTime(),
         buttonRequests: [],
         metadata: {},
+        passwords: {},
     };
     draft.devices.push(newDevice);
 };
@@ -474,6 +477,7 @@ const forget = (draft: State, device: TrezorDevice, settings: ConnectDeviceSetti
         // set remember to false to make it disappear after device is disconnected
         draft.devices[index].remember = false;
         draft.devices[index].metadata = {};
+        draft.devices[index].passwords = {};
     } else {
         draft.devices.splice(index, 1);
     }
@@ -584,6 +588,11 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             setDeviceAuthenticity(state, payload.device, payload.result);
         })
         .addCase(extra.actionTypes.setDeviceMetadata, extra.reducers.setDeviceMetadataReducer)
+        .addCase(
+            extra.actionTypes.setDeviceMetadataPasswords,
+            extra.reducers.setDeviceMetadataPasswordsReducer,
+        )
+
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
         .addMatcher(
             isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),

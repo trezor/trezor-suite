@@ -245,21 +245,30 @@ export interface MetadataState {
 export type OAuthServerEnvironment = 'production' | 'staging' | 'localhost';
 export type MetadataEncryptionVersion = 1 | 2;
 
-type Password = {
-    type: 'Buffer';
-    data: Buffer;
-};
+type Password = Buffer;
 
 export type PasswordEntry = {
-    export: boolean;
-    key_value: string;
     nonce: string;
     note?: string;
     password: Password;
     safe_note?: Password;
-    success: boolean;
     title: string;
     username: string;
+    tags: number[];
+    // legacy (old TPM) value, not used
+    export?: boolean;
+    // legacy (old TPM) value, not used
+    key_value?: string;
+    // legacy (old TPM) value, not used
+    success?: boolean;
+};
+
+export type PasswordEntryDecoded = {
+    title: string;
+    username: string;
+    password: string;
+    note: string;
+    safe_note: string;
     tags: number[];
 };
 
@@ -270,6 +279,8 @@ export type PasswordManagerState = {
         orderType: string;
     };
     entries: Record<number, PasswordEntry>;
-    extVersion: string;
+    version: string;
+    // legacy value, not used
+    extVersion?: string;
     tags: Record<number, PasswordTag>;
 };

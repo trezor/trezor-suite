@@ -106,6 +106,7 @@ export const extraDependencies: ExtraDependencies = {
     actionTypes: {
         storageLoad: STORAGE.LOAD,
         setDeviceMetadata: METADATA.SET_DEVICE_METADATA,
+        setDeviceMetadataPasswords: METADATA.SET_DEVICE_METADATA_PASSWORDS,
     },
     reducers: {
         storageLoadBlockchain: (state: BlockchainState, { payload }: StorageLoadAction) => {
@@ -177,6 +178,18 @@ export const extraDependencies: ExtraDependencies = {
             const device = state.devices[index];
             if (!device) return;
             device.metadata = metadata;
+        },
+        setDeviceMetadataPasswordsReducer: (
+            state,
+            {
+                payload,
+            }: PayloadAction<{ deviceState: string; metadata: TrezorDevice['passwords'] }>,
+        ) => {
+            const { deviceState, metadata } = payload;
+            const index = state.devices.findIndex((d: TrezorDevice) => d.state === deviceState);
+            const device = state.devices[index];
+            if (!device) return;
+            device.passwords = metadata;
         },
         storageLoadDevices: (state, { payload }: StorageLoadAction) => {
             state.devices = payload.devices;

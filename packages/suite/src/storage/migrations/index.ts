@@ -832,4 +832,12 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
     if (oldVersion < 46) {
         db.createObjectStore('tokenManagement');
     }
+
+    if (oldVersion < 47) {
+        await updateAll(transaction, 'devices', device => {
+            device.passwords = {};
+
+            return device;
+        });
+    }
 };

@@ -1,5 +1,9 @@
 # Storage changelog
 
+## 47
+
+-   added `device.passwords`
+
 ## 46
 
 -   added `tokenManagement`

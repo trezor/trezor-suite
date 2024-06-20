@@ -905,6 +905,7 @@ const changePassphraseMode: Fixture<ReturnType<typeof deviceActions.updatePassph
                         ts: 1,
                         buttonRequests: [],
                         metadata: {},
+                        passwords: {},
                     },
                     hidden: false,
                 },

@@ -1,5 +1,9 @@
 import * as crypto from 'crypto';
 import * as base58check from 'bs58check';
+import { FetchIntervalTrackingId } from 'src/actions/suite/metadataProviderActions';
+import { DataType, MetadataProvider } from '@suite-common/metadata-types';
+import { TrezorDevice } from '@suite-common/suite-types';
+
 // note we only need base58 conversion fn from base58check, other functions from there might
 // be supplemented from crypto module
 
@@ -78,7 +82,7 @@ export const arrayBufferToBuffer = (ab: ArrayBuffer) => {
     return buffer;
 };
 
-export const encrypt = async (input: Record<string, any>, aesKey: string | Buffer) => {
+export const encrypt = async (input: Record<string, any> | string, aesKey: string | Buffer) => {
     if (typeof aesKey === 'string') {
         aesKey = Buffer.from(aesKey, 'hex');
     }
@@ -143,4 +147,12 @@ export const urlSearchParams = (search: string) => {
     }
 
     return urlHashParams(search);
+};
+
+export const getFetchTrackingId = (
+    dataType: DataType,
+    clientId: MetadataProvider['clientId'],
+    deviceState: Required<TrezorDevice>['state'],
+): FetchIntervalTrackingId => {
+    return `${dataType}-${clientId}-${deviceState}`;
 };
