@@ -66,7 +66,7 @@ export const AccountNavigation = () => {
             },
             title: <Translation id="TR_NAV_TOKENS" />,
             isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
-            isTabActive: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
+            activeRoutes: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
         },
     ];
 

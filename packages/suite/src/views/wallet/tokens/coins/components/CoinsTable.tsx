@@ -36,28 +36,14 @@ export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
     );
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
-    const shownTokens = getTokens(sortedTokens, account.symbol, 'shown', isDebug, coinDefinitions);
-    const unverifiedTokens = getTokens(
-        sortedTokens,
-        account.symbol,
-        'unverified',
-        isDebug,
-        coinDefinitions,
-    );
-    const hiddenTokens = getTokens(
-        sortedTokens,
-        account.symbol,
-        'hidden',
-        isDebug,
-        coinDefinitions,
-    );
+    const tokens = getTokens(sortedTokens, account.symbol, isDebug, coinDefinitions);
 
-    return shownTokens.length > 0 ? (
+    return tokens.shown.length > 0 ? (
         <TokenList
             account={account}
             hideRates={isTestnet(account.symbol)}
             tokenStatusType={TokenManagementAction.HIDE}
-            tokens={shownTokens}
+            tokens={tokens.shown}
             network={network}
         />
     ) : (
@@ -65,7 +51,7 @@ export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
             title={
                 <Translation
                     id={
-                        unverifiedTokens.length + hiddenTokens.length > 0
+                        tokens.unverified.length + tokens.hidden.length > 0
                             ? 'TR_TOKENS_EMPTY_CHECK_HIDDEN'
                             : 'TR_TOKENS_EMPTY'
                     }

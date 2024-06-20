@@ -69,29 +69,30 @@ export const formatTokenSymbol = (symbol: string) => {
 export const getTokens = (
     tokens: EnhancedTokenInfo[] | TokenInfo[],
     symbol: NetworkSymbol,
-    filterType: 'shown' | 'hidden' | 'unverified',
     isDebug: boolean,
     coinDefinitions?: TokenDefinition,
-): EnhancedTokenInfo[] => {
+) => {
     const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 
-    const filteredTokens = tokens.filter(token => {
+    const shown: EnhancedTokenInfo[] = [];
+    const hidden: EnhancedTokenInfo[] = [];
+    const unverified: EnhancedTokenInfo[] = [];
+
+    tokens.forEach(token => {
         if (token.balance === '0' && !isDebug) return false;
 
         const isKnown = isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract);
         const isHidden = coinDefinitions?.hide.includes(token.contract);
         const isShown = coinDefinitions?.show.includes(token.contract);
 
-        if (filterType === 'shown') {
-            return !hasCoinDefinitions || (isKnown && !isHidden) || isShown;
-        } else if (filterType === 'unverified') {
-            return hasCoinDefinitions && !isKnown && !isShown;
-        } else if (filterType === 'hidden') {
-            return isKnown && isHidden;
+        if (!hasCoinDefinitions || (isKnown && !isHidden) || isShown) {
+            shown.push(token);
+        } else if (hasCoinDefinitions && !isKnown && !isShown) {
+            unverified.push(token);
+        } else if (isKnown && isHidden) {
+            hidden.push(token);
         }
-
-        return false;
     });
 
-    return filteredTokens;
+    return { shown, hidden, unverified };
 };

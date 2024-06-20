@@ -2376,6 +2376,10 @@ export default defineMessages({
         defaultMessage: 'Hidden',
         id: 'TR_HIDDEN',
     },
+    TR_HIDDEN_TOKENS: {
+        defaultMessage: 'Hidden tokens',
+        id: 'TR_HIDDEN_TOKENS',
+    },
     TR_CONFIRM: {
         defaultMessage: 'Confirm',
         id: 'TR_CONFIRM',

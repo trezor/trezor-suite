@@ -25,7 +25,7 @@ import {
     TokenManagementAction,
     tokenDefinitionsActions,
 } from '@suite-common/token-definitions';
-import { BlurUrls } from './UrlBlur';
+import { BlurUrls } from './BlurUrls';
 import { copyToClipboard } from '@trezor/dom-utils';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { showAddress } from 'src/actions/wallet/receiveActions';
@@ -196,24 +196,27 @@ export const TokenList = ({
                     </>
                 )}
             </Columns>
-            {tokens.map(t => (
-                <Token key={t.contract}>
+            {tokens.map(token => (
+                <Token key={token.contract}>
                     <Cell>
                         <TokenName>
-                            <BlurUrls text={t.name} />
+                            <BlurUrls text={token.name} />
                         </TokenName>
                     </Cell>
                     <Cell $isBigger={hideRates}>
                         <Amount>
                             {!hideRates && (
                                 <StyledFiatValue
-                                    amount={t.balance || '1'}
+                                    amount={token.balance || '1'}
                                     symbol={network.symbol}
-                                    tokenAddress={t.contract as TokenAddress}
+                                    tokenAddress={token.contract as TokenAddress}
                                     showLoadingSkeleton
                                 />
                             )}
-                            <StyledFormattedCryptoAmount value={t.balance} symbol={t.symbol} />
+                            <StyledFormattedCryptoAmount
+                                value={token.balance}
+                                symbol={token.symbol}
+                            />
                         </Amount>
                     </Cell>
                     {!hideRates && (
@@ -222,7 +225,7 @@ export const TokenList = ({
                                 <PriceTickerWrapper>
                                     <PriceTicker
                                         symbol={network.symbol}
-                                        contractAddress={t.contract as TokenAddress}
+                                        contractAddress={token.contract as TokenAddress}
                                         noEmptyStateTooltip
                                     />
                                 </PriceTickerWrapper>
@@ -230,7 +233,7 @@ export const TokenList = ({
                             <Cell>
                                 <TrendTicker
                                     symbol={network.symbol}
-                                    contractAddress={t.contract as TokenAddress}
+                                    contractAddress={token.contract as TokenAddress}
                                     noEmptyStateTooltip
                                 />
                             </Cell>
@@ -250,7 +253,7 @@ export const TokenList = ({
                                                     preserveParams: true,
                                                 });
                                             },
-                                            isDisabled: t.balance === '0',
+                                            isDisabled: token.balance === '0',
                                             isHidden:
                                                 tokenStatusType === TokenManagementAction.HIDE
                                                     ? !isMobileLayout
@@ -280,7 +283,7 @@ export const TokenList = ({
                                                 dispatch(
                                                     tokenDefinitionsActions.setTokenStatus({
                                                         networkSymbol: network.symbol,
-                                                        contractAddress: t.contract,
+                                                        contractAddress: token.contract,
                                                         status: tokenStatusType,
                                                         type: DefinitionType.COIN,
                                                     }),
@@ -293,7 +296,7 @@ export const TokenList = ({
                                             label: <Translation id="TR_VIEW_IN_EXPLORER" />,
                                             onClick: () => {
                                                 window.open(
-                                                    `${explorerUrl}${t.contract}${explorerUrlQueryString}`,
+                                                    `${explorerUrl}${token.contract}${explorerUrlQueryString}`,
                                                     '_blank',
                                                 );
                                             },
@@ -307,11 +310,11 @@ export const TokenList = ({
                                         {
                                             label: (
                                                 <ContractAddress>
-                                                    {t.contract}
+                                                    {token.contract}
                                                     <StyledIcon icon="COPY" size={14} />
                                                 </ContractAddress>
                                             ),
-                                            onClick: () => onCopyContractAddress(t.contract),
+                                            onClick: () => onCopyContractAddress(token.contract),
                                         },
                                     ],
                                 },
@@ -325,7 +328,7 @@ export const TokenList = ({
                                         dispatch(
                                             tokenDefinitionsActions.setTokenStatus({
                                                 networkSymbol: network.symbol,
-                                                contractAddress: t.contract,
+                                                contractAddress: token.contract,
                                                 status: TokenManagementAction.SHOW,
                                                 type: DefinitionType.COIN,
                                             }),
@@ -340,7 +343,7 @@ export const TokenList = ({
                                 <ButtonGroup size="small" variant="tertiary">
                                     <IconButton
                                         label={<Translation id="TR_NAV_SEND" />}
-                                        isDisabled={t.balance === '0'}
+                                        isDisabled={token.balance === '0'}
                                         key="token-send"
                                         variant="tertiary"
                                         icon="SEND"

@@ -41,18 +41,18 @@ export const AccountSection = ({
 
     const showGroup = ['ethereum', 'solana', 'cardano'].includes(networkType);
 
-    const tokens = getTokens(accountTokens, account.symbol, 'shown', isDebug, coinDefinitions);
+    const tokens = getTokens(accountTokens, account.symbol, isDebug, coinDefinitions);
 
     const dataTestKey = `@account-menu/${symbol}/${accountType}/${index}`;
 
-    return showGroup && (isStakeShown || tokens.length) ? (
+    return showGroup && (isStakeShown || tokens.shown.length) ? (
         <AccountItemsGroup
             key={`${descriptor}-${symbol}`}
             account={account}
             accountLabel={accountLabel}
             selected={selected}
             showStaking={isStakeShown}
-            tokens={tokens}
+            tokens={tokens.shown}
             dataTestKey={dataTestKey}
         />
     ) : (
@@ -64,7 +64,7 @@ export const AccountSection = ({
             onClick={onItemClick}
             accountLabel={accountLabel}
             formattedBalance={formattedBalance}
-            tokens={tokens}
+            tokens={tokens.shown}
             dataTestKey={dataTestKey}
         />
     );

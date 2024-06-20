@@ -60,24 +60,9 @@ export const TokensLayoutNavigation = ({ selectedAccount }: TokensLayoutNavigati
     );
     const isDebug = useSelector(selectIsDebugModeActive);
 
-    const shownTokens = getTokens(
+    const tokens = getTokens(
         selectedAccount.account.tokens || [],
         selectedAccount.account.symbol,
-        'shown',
-        isDebug,
-        coinDefinitions,
-    );
-    const unverifiedTokens = getTokens(
-        selectedAccount.account.tokens || [],
-        selectedAccount.account.symbol,
-        'unverified',
-        isDebug,
-        coinDefinitions,
-    );
-    const hiddenTokens = getTokens(
-        selectedAccount.account.tokens || [],
-        selectedAccount.account.symbol,
-        'hidden',
         isDebug,
         coinDefinitions,
     );
@@ -110,14 +95,14 @@ export const TokensLayoutNavigation = ({ selectedAccount }: TokensLayoutNavigati
                 route="wallet-tokens-coins"
                 title="TR_COINS"
                 icon="tokens"
-                count={shownTokens.length}
+                count={tokens.shown.length}
             />
             <Divider />
             <Item
                 route="wallet-tokens-hidden"
                 title="TR_HIDDEN"
                 icon="eyeClosed"
-                count={unverifiedTokens.length + hiddenTokens.length}
+                count={tokens.unverified.length + tokens.hidden.length}
             />
         </List>
     );
