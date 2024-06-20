@@ -11,14 +11,19 @@ import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarke
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
-    buyInfo?: BuyInfo,
+    buyInfo: BuyInfo | undefined,
+    paymentMethods: CoinmarketPaymentMethodListProps[],
 ): CoinmarketBuyFormDefaultValuesProps => {
     const country = buyInfo?.buyInfo?.country;
     const defaultCountry = useMemo(() => getDefaultCountry(country), [country]);
     const defaultCrypto = useMemo(() => buildCryptoOption(accountSymbol), [accountSymbol]);
-    const defaultPaymentMethod = useMemo(
-        () => ({ value: '', label: '' }) as CoinmarketPaymentMethodListProps,
-        [],
+    const defaultPaymentMethod: CoinmarketPaymentMethodListProps = useMemo(
+        () =>
+            paymentMethods.find(paymentMethod => paymentMethod.value === 'creditCard') ?? {
+                value: '',
+                label: '',
+            },
+        [paymentMethods],
     );
     const defaultCurrencyInfo = buyInfo?.buyInfo?.suggestedFiatCurrency;
     const defaultCurrency = useMemo(
