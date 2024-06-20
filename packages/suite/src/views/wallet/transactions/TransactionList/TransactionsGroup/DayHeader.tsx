@@ -16,7 +16,7 @@ interface DayHeaderProps {
     isHovered?: boolean;
 }
 
-// TODO: Do not show FEE for sent but not mine transactions
+// TODO: Do not show FEE for sent but not mined transactions
 export const DayHeader = ({
     dateKey,
     symbol,
@@ -31,15 +31,20 @@ export const DayHeader = ({
     const parsedDate = parseTransactionDateKey(dateKey);
     const showFiatValue = !isTestnet(symbol);
 
+    // blockTime can be undefined according to types, although I don't know when that happens.
+    const isDateValid = !isNaN(parsedDate.getTime());
+
     return (
         <HeaderWrapper>
             <ColDate>
-                <FormattedDate
-                    value={parsedDate ?? undefined}
-                    day="numeric"
-                    month="long"
-                    year="numeric"
-                />
+                {isDateValid && (
+                    <FormattedDate
+                        value={parsedDate ?? undefined}
+                        day="numeric"
+                        month="long"
+                        year="numeric"
+                    />
+                )}
             </ColDate>
             <ColAmount $isVisible={isHovered}>
                 {totalAmount.gt(0) && <span>+</span>}

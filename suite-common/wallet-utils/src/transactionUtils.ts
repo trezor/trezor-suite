@@ -79,7 +79,6 @@ export const parseTransactionMonthKey = (key: MonthKey): Date => new Date(key);
 export type GroupedTransactionsByDate = Record<string, WalletAccountTransaction[]>;
 /**
  * Returns object with transactions grouped by a date. Key is a string in YYYY-MM-DD format.
- * Pending txs are assigned to key 'pending'.
  *
  * @param {WalletAccountTransaction[]} transactions
  */
@@ -98,11 +97,11 @@ export const groupTransactionsByDate = (
             .filter(transaction => !!transaction)
             .sort(sortByBlockHeight)
             .reduce<GroupedTransactionsByDate>((r, item) => {
-                // pending txs are grouped as 'pending' only if blockTime is unavailable (otherwise sorted by blockTime)
+                // pending txs are grouped as 'no-blocktime' only if blockTime is unavailable (otherwise sorted by blockTime)
                 const key =
                     item.blockTime && item.blockTime > 0
                         ? keyFormatter(new Date(item.blockTime * 1000))
-                        : 'pending';
+                        : 'no-blocktime';
                 const prev = r[key] ?? [];
 
                 return {
