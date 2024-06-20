@@ -110,7 +110,7 @@ const useCoinmarketBuyForm = ({
     const draft = getDraft(account.key);
     const isDraft = !!draft || !!offFirstRequest;
     const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useCoinmarketBuyFormDefaultValues(account.symbol, buyInfo);
+        useCoinmarketBuyFormDefaultValues(account.symbol, buyInfo, paymentMethods);
     const methods = useForm<CoinmarketBuyFormProps>({
         mode: 'onChange',
         defaultValues: isDraft ? draft : defaultValues,
