@@ -12,6 +12,7 @@ import {
 } from 'idb';
 import { BroadcastChannel } from 'broadcast-channel';
 import { isFirefox } from '@trezor/env-utils';
+import { createLazy } from '@trezor/utils';
 
 import { StorageMessageEvent } from './types';
 
@@ -26,7 +27,6 @@ class CommonDB<TDBStructure> {
     private static instance: CommonDB<any>;
     dbName!: string;
     version!: number;
-    db!: IDBPDatabase<TDBStructure> | null;
     broadcastChannel!: BroadcastChannel;
     supported: boolean | undefined;
     blocking = false;
@@ -35,11 +35,12 @@ class CommonDB<TDBStructure> {
     onDowngrade!: () => any;
     onBlocked?: () => void;
     onBlocking?: () => void;
+
     /**
      * when db is opened for the first time, postpone all other calls to getDB until the first call is resolved.
      * this ensures that migration/db setup is completed
      */
-    dbPromise?: Promise<IDBPDatabase<TDBStructure>>;
+    private lazyDb = createLazy(this.initDb.bind(this), db => db.close());
 
     constructor(
         dbName: string,
@@ -60,7 +61,6 @@ class CommonDB<TDBStructure> {
         this.onDowngrade = onDowngrade.bind(this);
         this.onBlocked = onBlocked;
         this.onBlocking = onBlocking;
-        this.db = null;
         this.blocking = false;
         this.blocked = false;
 
@@ -128,64 +128,52 @@ class CommonDB<TDBStructure> {
 
     closeAfterTimeout = (timeout = 1000) => {
         setTimeout(() => {
-            this.db?.close();
+            this.lazyDb.dispose();
         }, timeout);
     };
 
-    getDB = () => {
-        if (this.db) return Promise.resolve(this.db);
-        if (!this.dbPromise) {
-            this.dbPromise = openDB<TDBStructure>(this.dbName, this.version, {
-                upgrade: (db, oldVersion, newVersion, transaction) => {
-                    // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
-                    this.onUpgrade(db, oldVersion, newVersion, transaction);
-                },
-                blocked: () => {
-                    this.blocked = true;
-                    // Called if there are older versions of the database open on the origin, so this version cannot open.
-                    if (this.onBlocked) {
-                        this.onBlocked();
-                    }
-                    // wait 1 sec before closing the db to let app enough time to finish all requests
-                    this.closeAfterTimeout();
-                },
-                blocking: () => {
-                    // Called if this connection is blocking a future version of the database from opening.
-                    this.blocking = true;
-                    if (this.onBlocking) {
-                        this.onBlocking();
-                    }
-                    // wait 1 sec before closing the db to let app enough time to finish all requests
-                    this.closeAfterTimeout();
-                },
-                terminated: () => {
-                    // browser killed idb / user cleared history so let's open DB again on next operation
-                    this.db = null;
-                    console.warn('Unexpected IDB close');
-                },
-            })
-                .then(db => {
-                    this.db = db;
+    private initDb() {
+        return openDB<TDBStructure>(this.dbName, this.version, {
+            upgrade: (db, oldVersion, newVersion, transaction) => {
+                // Called if this version of the database has never been opened before. Use it to specify the schema for the database.
+                this.onUpgrade(db, oldVersion, newVersion, transaction);
+            },
+            blocked: () => {
+                this.blocked = true;
+                // Called if there are older versions of the database open on the origin, so this version cannot open.
+                if (this.onBlocked) {
+                    this.onBlocked();
+                }
+                // wait 1 sec before closing the db to let app enough time to finish all requests
+                this.closeAfterTimeout();
+            },
+            blocking: () => {
+                // Called if this connection is blocking a future version of the database from opening.
+                this.blocking = true;
+                if (this.onBlocking) {
+                    this.onBlocking();
+                }
+                // wait 1 sec before closing the db to let app enough time to finish all requests
+                this.closeAfterTimeout();
+            },
+            terminated: () => {
+                // browser killed idb / user cleared history so let's open DB again on next operation
+                this.lazyDb.dispose();
+                console.warn('Unexpected IDB close');
+            },
+        }).catch(error => {
+            if (error?.name === 'VersionError') {
+                indexedDB.deleteDatabase(this.dbName);
+                console.warn(
+                    'IndexedDB was deleted because your version is higher than it should be (downgrade)',
+                );
+                this.onDowngrade();
+            }
+            throw error;
+        });
+    }
 
-                    return db;
-                })
-                .catch(error => {
-                    if (error && error.name === 'VersionError') {
-                        indexedDB.deleteDatabase(this.dbName);
-                        console.warn(
-                            'IndexedDB was deleted because your version is higher than it should be (downgrade)',
-                        );
-                        this.onDowngrade();
-                        throw error;
-                    } else {
-                        throw error;
-                    }
-                })
-                .finally(() => (this.dbPromise = undefined));
-        }
-
-        return this.dbPromise;
-    };
+    getDB = this.lazyDb.getOrInit;
 
     addItem = async <
         TStoreName extends StoreNames<TDBStructure>,
@@ -465,9 +453,7 @@ class CommonDB<TDBStructure> {
     };
 
     removeDatabase = () => {
-        if (this.db) {
-            this.db.close();
-        }
+        this.lazyDb.dispose();
 
         return deleteDB(this.dbName);
     };

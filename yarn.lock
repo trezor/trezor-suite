@@ -11197,6 +11197,7 @@ __metadata:
   resolution: "@trezor/suite-storage@workspace:packages/suite-storage"
   dependencies:
     "@trezor/env-utils": "workspace:*"
+    "@trezor/utils": "workspace:*"
     broadcast-channel: "npm:^7.0.0"
     idb: "npm:^8.0.0"
   languageName: unknown
