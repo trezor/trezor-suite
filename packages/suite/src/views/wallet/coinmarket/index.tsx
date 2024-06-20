@@ -111,7 +111,6 @@ export const CoinmarketFormOption = styled.div`
 `;
 
 export const CoinmarketFormOptionLabel = styled.div`
-    padding-left: ${spacingsPx.xs};
     color: ${({ theme }) => theme.textSubdued};
 `;
 
