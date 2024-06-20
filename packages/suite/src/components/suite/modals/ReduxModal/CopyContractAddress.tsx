@@ -39,7 +39,7 @@ export const CopyContractAddressModal = ({ contract, onCancel }: CopyContractAdd
                     <Button variant="destructive" onClick={onCopyContractAddress}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                     </Button>
-                    <Button variant="secondary" onClick={onCancel}>
+                    <Button variant="primary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Button>
                 </>
