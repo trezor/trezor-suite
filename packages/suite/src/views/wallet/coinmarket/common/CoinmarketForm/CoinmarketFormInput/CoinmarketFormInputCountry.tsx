@@ -13,6 +13,7 @@ import styled from 'styled-components';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { Translation } from 'src/components/suite';
+import { spacingsPx } from '@trezor/theme';
 
 const FlagContainer = styled.div`
     position: relative;
@@ -20,6 +21,7 @@ const FlagContainer = styled.div`
     height: 20px;
     border-radius: 50%;
     overflow: hidden;
+    margin-right: ${spacingsPx.xs};
 `;
 const FlagWrapper = styled(Flag)`
     position: absolute;
