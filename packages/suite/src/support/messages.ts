@@ -2168,7 +2168,7 @@ export default defineMessages({
     },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_1: {
         defaultMessage:
-            'Generates multiple 20-word lists (shares) to recover your wallet. A minimum number of shares, set by you, are needed to regain access to your wallet.',
+            'Generates multiple 20-word shares (wordlists) to recover your wallet. A minimum number of shares, set by you, are needed to regain access to your wallet.',
         id: 'TR_MULTI_SHARE_BACKUP_EXPLANATION_1',
     },
     TR_MULTI_SHARE_BACKUP_EXPLANATION_2: {
@@ -2946,7 +2946,7 @@ export default defineMessages({
             'All data collected is anonymous and is used to improve product performance and development. More in <analytics>technical documentation</analytics> and <tos>Terms & Conditions</tos>.',
     },
     TR_EJECT_WALLET_EXPLANATION: {
-        defaultMessage: 'Instantly removes all wallet data from Suite.',
+        defaultMessage: 'Removes all wallet data from Trezor Suite.',
         id: 'TR_EJECT_WALLET_EXPLANATION',
     },
     TR_HOLOGRAM_STEP_HEADING: {
@@ -3473,8 +3473,7 @@ export default defineMessages({
         id: 'TR_RECOVERY_TYPES_DESCRIPTION',
     },
     TR_REMEMBER_ALLOWS_YOU_TO: {
-        defaultMessage:
-            'Stores wallet for watch-only mode. You will see your wallet even if your Trezor is disconnected.',
+        defaultMessage: 'Keeps your wallet visible even if your Trezor is disconnected.',
         id: 'TR_REMEMBER_ALLOWS_YOU_TO',
     },
     TR_RETRY: {
@@ -4203,7 +4202,7 @@ export default defineMessages({
     },
     TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN: {
         id: 'TOAST_AUTO_UPDATER_NEW_VERSION_FIRST_RUN',
-        defaultMessage: 'New version ({version}) installed successfully.',
+        defaultMessage: 'New version ({version}) installed successfully',
     },
     TOAST_GENERIC_ERROR: {
         id: 'TOAST_GENERIC_ERROR',
@@ -4787,7 +4786,7 @@ export default defineMessages({
     },
     TR_BACKUP_SEED_CREATED_SUCCESSFULLY: {
         id: 'TR_BACKUP_SEED_CREATED_SUCCESSFULLY',
-        defaultMessage: 'Backup created',
+        defaultMessage: 'Wallet backup created',
     },
     TR_CHECK_SEED_IN_SETTINGS: {
         id: 'TR_CHECK_SEED_IN_SETTINGS',
@@ -5542,7 +5541,7 @@ export default defineMessages({
     LOG_DESCRIPTION: {
         id: 'LOG_DESCRIPTION',
         defaultMessage:
-            'In case of communication with our support team, the log contains all necessary technical info',
+            'In case of communication with our support team, the log contains all necessary technical info.',
     },
     TR_RESTORE_EXISTING_WALLET: {
         id: 'TR_RESTORE_EXISTING_WALLET',
@@ -6643,15 +6642,15 @@ export default defineMessages({
     },
     TR_UPDATE_MODAL_START_DOWNLOAD: {
         id: 'TR_UPDATE_MODAL_START_DOWNLOAD',
-        defaultMessage: 'Start update',
+        defaultMessage: 'Download',
     },
     TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER: {
         id: 'TR_UPDATE_MODAL_INSTALL_NOW_OR_LATER',
-        defaultMessage: 'Would you like to install the update now?',
+        defaultMessage: 'Install update now?',
     },
     TR_UPDATE_MODAL_INSTALL_AND_RESTART: {
         id: 'TR_UPDATE_MODAL_INSTALL_AND_RESTART',
-        defaultMessage: 'Restart & update',
+        defaultMessage: 'Update & restart',
     },
     TR_UPDATE_MODAL_UPDATE_ON_QUIT: {
         id: 'TR_UPDATE_MODAL_UPDATE_ON_QUIT',
@@ -6659,7 +6658,7 @@ export default defineMessages({
     },
     TR_BACKGROUND_DOWNLOAD: {
         id: 'TR_BACKGROUND_DOWNLOAD',
-        defaultMessage: 'Download in the background',
+        defaultMessage: 'Download in background',
     },
     TR_MANAGE: {
         id: 'TR_MANAGE',
@@ -9254,7 +9253,7 @@ export default defineMessages({
     },
     TR_URL_IN_TOKEN: {
         id: 'TR_URL_IN_TOKEN',
-        defaultMessage: 'Never visit URLs in token names or symbols. They are usually scams.',
+        defaultMessage: "Never visit URLs in token names or symbols; they're usually scams.",
     },
     TR_DEVICE_SETTINGS_APPLICATION: {
         id: 'TR_DEVICE_SETTINGS_APPLICATION',
