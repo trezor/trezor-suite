@@ -8,7 +8,7 @@ import {
     Card,
     VStack,
     useBottomSheetAnimation,
-    CenteredTitleHeader,
+    TitleHeader,
     Pictogram,
     Box,
 } from '@suite-native/atoms';
@@ -65,11 +65,13 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
 
     const {
         title,
+        textAlign = 'center',
         description,
         icon,
         pictogramVariant,
         onPressPrimaryButton,
         primaryButtonTitle,
+        primaryButtonViewLeft,
         onPressSecondaryButton,
         secondaryButtonTitle,
         primaryButtonVariant = 'primary',
@@ -103,13 +105,18 @@ export const AlertSheet = ({ alert }: AlertSheetProps) => {
                                         <Pictogram variant={pictogramVariant} icon={icon} />
                                     </Box>
                                 )}
-                                <CenteredTitleHeader title={title} subtitle={description} />
+                                <TitleHeader
+                                    title={title}
+                                    subtitle={description}
+                                    textAlign={textAlign}
+                                />
                                 {appendix}
                                 <VStack spacing="medium">
                                     <Button
                                         size="medium"
                                         colorScheme={primaryButtonVariant}
                                         onPress={handlePressPrimaryButton}
+                                        viewLeft={primaryButtonViewLeft}
                                         testID="@alert-sheet/primary-button"
                                     >
                                         {primaryButtonTitle}

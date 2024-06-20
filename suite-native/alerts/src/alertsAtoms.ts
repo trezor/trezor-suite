@@ -3,14 +3,16 @@ import { ReactNode } from 'react';
 import { atom } from 'jotai';
 
 import { IconName } from '@suite-common/icons';
-import { ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
+import { ButtonAccessory, ButtonColorScheme, PictogramVariant } from '@suite-native/atoms';
 
 export type Alert = {
     title: ReactNode;
+    textAlign?: 'left' | 'center';
     description: ReactNode;
     icon?: IconName;
     pictogramVariant?: PictogramVariant;
     primaryButtonTitle: ReactNode;
+    primaryButtonViewLeft?: ButtonAccessory;
     primaryButtonVariant?: ButtonColorScheme;
     onPressPrimaryButton?: () => void;
     secondaryButtonTitle?: ReactNode;
