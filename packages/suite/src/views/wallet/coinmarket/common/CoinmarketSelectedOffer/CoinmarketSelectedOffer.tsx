@@ -1,16 +1,17 @@
 import styled from 'styled-components';
-import { Card, variables } from '@trezor/components';
-import VerifyAddress from './components/VerifyAddress';
-import { CoinmarketBuyOfferInfo } from '../../../components/CoinmarketBuyOfferInfo';
-import { spacingsPx } from '@trezor/theme';
-import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { Card } from '@trezor/components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
+import { spacingsPx } from '@trezor/theme';
+import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
+import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketSelectedOfferInfo } from './CoinmarketSelectedOfferInfo';
+import CoinmarketSelectedOfferVerify from './CoinmarketSelectedOfferVerify';
 
 const Wrapper = styled.div`
     display: flex;
     margin: ${spacingsPx.lg} 0;
 
-    @media screen and (max-width: ${variables.SCREEN_SIZE.LG}) {
+    ${SCREEN_QUERY.BELOW_LAPTOP} {
         flex-direction: column;
     }
 `;
@@ -20,7 +21,7 @@ const StyledCard = styled(Card)`
     padding: 0;
 `;
 
-const SelectedOffer = () => {
+export const CoinmarketSelectedOffer = () => {
     const { account, selectedQuote, buyInfo } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
 
     if (!selectedQuote) return null;
@@ -28,16 +29,13 @@ const SelectedOffer = () => {
     return (
         <Wrapper>
             <StyledCard>
-                <VerifyAddress />
+                <CoinmarketSelectedOfferVerify />
             </StyledCard>
-            <CoinmarketBuyOfferInfo
+            <CoinmarketSelectedOfferInfo
                 selectedQuote={selectedQuote}
                 account={account}
                 providers={buyInfo?.providerInfos}
-                data-test="@CoinmarketBuyOfferInfo"
             />
         </Wrapper>
     );
 };
-
-export default SelectedOffer;
