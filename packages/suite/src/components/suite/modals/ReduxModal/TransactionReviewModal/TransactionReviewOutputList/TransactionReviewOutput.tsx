@@ -17,6 +17,7 @@ import type { Account } from 'src/types/wallet';
 import { StakeType } from '@suite-common/wallet-types';
 import { useDisplayMode, useTranslation } from 'src/hooks/suite';
 import { TranslationKey } from '@suite-common/intl-types';
+import { selectTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 const getFeeLabel = (networkType: Account['networkType']) => {
     switch (networkType) {
@@ -109,6 +110,8 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
 
         let outputLines: OutputElementLine[];
 
+        const replaceTxStakeType = selectTxStakeNameByDataHex(outputValue);
+
         if (type === 'fee-replace') {
             outputLines = [
                 {
@@ -151,6 +154,19 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     id: 'txid',
                     label: <Translation id={props.isRbf ? 'TR_TXID_RBF' : 'TR_TXID'} />,
                     value: outputValue,
+                    plainValue: true,
+                },
+            ];
+        } else if (type === 'data' && replaceTxStakeType) {
+            const displayModeStringsMap = getDisplayModeStringsMap();
+
+            outputLines = [
+                {
+                    id: 'data',
+                    label: <Translation id="DATA_ETH" />,
+                    value: translationString(displayModeStringsMap[replaceTxStakeType].value, {
+                        symbol: symbol.toUpperCase(),
+                    }),
                     plainValue: true,
                 },
             ];
