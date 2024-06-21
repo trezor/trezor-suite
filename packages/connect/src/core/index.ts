@@ -2,7 +2,7 @@
 import EventEmitter from 'events';
 
 import { TRANSPORT, TRANSPORT_ERROR } from '@trezor/transport';
-import { createDeferred } from '@trezor/utils';
+import { createLazy, createDeferred } from '@trezor/utils';
 import { getSynchronize } from '@trezor/utils';
 import { storage } from '@trezor/connect-common';
 
@@ -38,7 +38,6 @@ import { InteractionTimeout } from '../utils/interactionTimeout';
 import type { DeviceEvents, Device } from '../device/Device';
 import type { ConnectSettings, Device as DeviceTyped } from '../types';
 import { onCallFirmwareUpdate } from './onCallFirmwareUpdate';
-import { initCoreManager } from './coreManager';
 
 // Public variables
 let _core: Core; // Class with event emitter
@@ -1220,9 +1219,47 @@ const disableWebUSBTransport = async () => {
     }
 };
 
+const initCore = async (
+    settings: ConnectSettings,
+    onCoreEvent: (message: CoreEventMessage) => void,
+    logWriterFactory?: () => LogWriter,
+) => {
+    const core = new Core();
+    let promise: Promise<void>;
+
+    // do not send any event until Core is fully loaded
+    // DeviceList emits TRANSPORT and DEVICE events if pendingTransportEvent is set
+    const eventThrottle = (...args: Parameters<typeof onCoreEvent>) =>
+        promise
+            .then(() => {
+                setTimeout(() => onCoreEvent(...args), 0);
+            })
+            .catch(() => {});
+
+    promise = core.init(settings, eventThrottle, logWriterFactory);
+    await promise;
+
+    // Core initialized successfully, disable throttle
+    core.on(CORE_EVENT, onCoreEvent);
+    core.off(CORE_EVENT, eventThrottle);
+
+    return core;
+};
+
+const disposeCore = (core: Core) => {
+    core.dispose();
+};
+
 /**
  * State initialization
  */
 export const initCoreState = () => {
-    return initCoreManager(new Core());
+    const { get, getPending, getOrInit, dispose } = createLazy(initCore, disposeCore);
+
+    return {
+        getCore: get,
+        getInitPromise: getPending,
+        getOrInitCore: getOrInit,
+        dispose,
+    };
 };
