@@ -168,10 +168,14 @@ export const TransactionList = ({
         // TODO: display pending transactions in the correct order
         const [pendingTxs, confirmedTxs] = arrayPartition(transactions, isPending);
         const accountTransactionsByMonth = groupTransactionsByDate(confirmedTxs, 'month');
-        accountTransactionsByMonth['pending'] = [
-            ...accountTransactionsByMonth['no-blocktime'],
-            ...pendingTxs,
-        ];
+        if (pendingTxs.length || accountTransactionsByMonth['no-blocktime']) {
+            accountTransactionsByMonth['pending'] = [
+                ...(accountTransactionsByMonth['no-blocktime'] ?? []),
+                ...pendingTxs,
+            ];
+            delete accountTransactionsByMonth['no-blocktime'];
+        }
+
         const transactionMonthKeys = Object.keys(accountTransactionsByMonth) as MonthKey[];
 
         if (tokenContract) {
