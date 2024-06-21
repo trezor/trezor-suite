@@ -112,7 +112,7 @@ export const UnstakeEthForm = () => {
                 <Translation
                     id="TR_UP_TO_DAYS"
                     values={{
-                        days: unstakingPeriod,
+                        count: unstakingPeriod,
                     }}
                 />
             </UpToDaysWrapper>
