@@ -129,12 +129,17 @@ jobs:
           merge-multiple: true
           path: ./trezor-suite-files
 
-      - name: Upload suite-desktop to staging-data.trezor.io
+      - name: Upload suite-desktop to staging-data.trezor.io canary
+      # uploads the files to the staging bucket canary  folder (canary does not have staging percentage set)
         run: |
-          # uploads the files to the staging bucket canary  folder (canary does not have staging percentage set)
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/canary
-          # configures the default staging percentage to 20% for production
-          ./ci/scripts/set-staging-percentage.sh 20
+
+      - name: Set staging percentage
+        working-directory:
+        run: cd ./trezor-suite-files && ../ci/scripts/set-staging-percentage.sh 20
+
+      - name: Upload suite-desktop to staging-data.trezor.io latest
+        run: |
           VERSION=$(jq -r .suiteVersion packages/suite/package.json)
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/latest
           aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://staging-data.trezor.io/suite/releases/desktop/v${VERSION}/
