@@ -14,12 +14,14 @@ import { WalletType } from '@suite-common/wallet-types';
 export const DashboardPassphraseBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
     const dispatch = useDispatch();
-    const { isDashboardPassphraseBannerVisible } = useSelector(selectSuiteFlags);
+    const { isDashboardPassphraseBannerVisible, isViewOnlyModeVisible } =
+        useSelector(selectSuiteFlags);
     const selectedAddressDisplay = useSelector(state => state.suite.settings.defaultWalletLoading);
     const device = useSelector(selectDevice);
     const { isDiscoveryRunning } = useDiscovery();
 
     if (
+        !isViewOnlyModeVisible ||
         isDashboardPassphraseBannerVisible === false ||
         device?.useEmptyPassphrase === true ||
         isDiscoveryRunning === true ||
