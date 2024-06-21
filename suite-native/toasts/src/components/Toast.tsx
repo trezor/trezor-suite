@@ -97,7 +97,7 @@ export const Toast = ({ toast }: ToastProps) => {
             exiting={FadeOut.duration(TOAST_ANIMATION_DURATION)}
             style={applyStyle(ToastContainerStyle, { backgroundColor })}
         >
-            <HStack spacing={12} alignItems="center">
+            <HStack spacing={12} alignItems="center" testID="@toast">
                 <Box
                     style={applyStyle(IconContainerStyle, {
                         backgroundColor: iconBackgroundColor,

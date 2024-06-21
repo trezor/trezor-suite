@@ -38,7 +38,11 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
     return (
         <VStack spacing="large">
             <QRCode data={address} />
-            <Pressable onLongPress={handleCopyAddress} style={applyStyle(addressContainer)}>
+            <Pressable
+                onLongPress={handleCopyAddress}
+                style={applyStyle(addressContainer)}
+                testID="@receiveAddress/addressValue"
+            >
                 <Text variant="titleSmall" textAlign="center">
                     {address}
                 </Text>
@@ -49,6 +53,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     viewLeft="copy"
                     onPress={handleCopyAddress}
                     colorScheme="tertiaryElevation1"
+                    testID="@receiveAddress/copy"
                 >
                     <Translation id="qrCode.copyButton" />
                 </Button>
@@ -57,6 +62,7 @@ export const AddressQRCode = ({ address }: AddressQRCodeProps) => {
                     viewLeft="shareAlt"
                     colorScheme="tertiaryElevation1"
                     onPress={handleShareData}
+                    testID="@receiveAddress/share"
                 >
                     <Translation id="qrCode.shareButton" />
                 </Button>

@@ -9,6 +9,7 @@ import { onAccountDetail } from '../pageObjects/accountDetailActions';
 import { onAccountDetailSettings } from '../pageObjects/accountDetailSettingsActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
+import { onReceiveScreen } from '../pageObjects/receiveActions';
 
 describe('Account management', () => {
     beforeAll(async () => {
@@ -59,5 +60,19 @@ describe('Account management', () => {
         await onTabBar.navigateToMyAssets();
 
         await detoxExpect(element(by.text(accountName))).not.toExist();
+    });
+
+    it.only('Generate btc address and copy it to clipboard', async () => {
+        const accountName = 'BTC SegWit';
+        await onHome.tapSyncCoinsButton();
+        await onAccountImport.importAccount({
+            networkSymbol: 'btc',
+            xpub: xpubs.btc.segwit,
+            accountName,
+        });
+
+        await onTabBar.navigateToReceive();
+        await onMyAssets.openAccountDetail({ accountName, accDetail: 'receive' });
+        await onReceiveScreen.showAddress();
     });
 });

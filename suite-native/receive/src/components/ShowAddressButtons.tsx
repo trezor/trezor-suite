@@ -37,7 +37,12 @@ export const ShowAddressButtons = ({ onShowAddress }: ShowAddressButtonsProps) =
 
     return (
         <VStack spacing="large">
-            <Button viewLeft="eye" size="large" onPress={handleShowAddress}>
+            <Button
+                viewLeft="eye"
+                size="large"
+                onPress={handleShowAddress}
+                testID="@receive/showAddress"
+            >
                 <Translation
                     id={
                         isPortfolioTrackerDevice
