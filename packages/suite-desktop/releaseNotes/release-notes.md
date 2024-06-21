@@ -11,3 +11,4 @@
 -   Historical fiat rates for ERC20 tokens are no longer missing.
 -   Suite no longer redundantly prompts for a passphrase when sending SOL transaction.
 -   Multiple smaller fixes and improvements.
+-   Tweaked Solana transaction address poisoning prevention.
