@@ -1,19 +1,15 @@
-import { useState } from 'react';
 import styled from 'styled-components';
-import { useForm } from 'react-hook-form';
 import addressValidator from 'trezor-address-validator';
 import { QuestionTooltip, Translation } from 'src/components/suite';
 import { Input, variables, Button } from '@trezor/components';
 import { AddressOptions } from 'src/views/wallet/coinmarket/common';
-import { useAccountAddressDictionary } from 'src/hooks/wallet/useAccounts';
 import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import CoinmarketSelectedOfferVerifyOptions, {
-    AccountSelectOption,
-} from './CoinmarketSelectedOfferVerifyOptions';
+import CoinmarketSelectedOfferVerifyOptions from './CoinmarketSelectedOfferVerifyOptions';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
+import useCoinmarketVerifyAccount from 'src/hooks/wallet/coinmarket/form/useCoinmarketVerifyAccount';
 
 const Wrapper = styled.div`
     display: flex;
@@ -61,57 +57,38 @@ const Row = styled.div`
     margin: 12px 0;
 `;
 
-type FormState = {
-    address?: string;
-    extraField?: string;
-};
-
-const getTranslationIds = (type: AccountSelectOption['type'] | undefined) => {
-    if (type === 'NON_SUITE') {
-        return {
-            accountTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ACCOUNT_QUESTION_TOOLTIP',
-            addressTooltipTranslationId: 'TR_EXCHANGE_RECEIVE_NON_SUITE_ADDRESS_QUESTION_TOOLTIP',
-        } as const;
-    }
-
-    return {
-        accountTooltipTranslationId: 'TR_BUY_RECEIVE_ACCOUNT_QUESTION_TOOLTIP',
-        addressTooltipTranslationId: 'TR_BUY_RECEIVE_ADDRESS_QUESTION_TOOLTIP',
-    } as const;
-};
-
 const CoinmarketSelectedOfferVerify = () => {
+    const { translationString } = useTranslation();
     const { callInProgress, device, verifyAddress, selectedQuote, addressVerified, goToPayment } =
         useCoinmarketFormContext<CoinmarketTradeBuyType>();
-    const [selectedAccountOption, setSelectedAccountOption] = useState<AccountSelectOption>();
-
+    const currency = selectedQuote?.receiveCurrency;
     const {
-        register,
-        watch,
-        formState: { errors, isValid },
-        setValue,
-        control,
-    } = useForm<FormState>({
-        mode: 'onChange',
-    });
+        form,
+        selectedAccountOption,
+        accountAddress,
+        receiveNetwork,
+        selectAccountOptions,
+        getTranslationIds,
+        onChangeAccount,
+    } = useCoinmarketVerifyAccount({ currency });
 
     const address = form.watch('address');
     const { accountTooltipTranslationId, addressTooltipTranslationId } = getTranslationIds(
         selectedAccountOption?.type,
     );
 
-    const { ref: networkRef, ...networkField } = register('address', {
+    const { ref: networkRef, ...networkField } = form.register('address', {
         required: translationString('TR_EXCHANGE_RECEIVING_ADDRESS_REQUIRED'),
         validate: value => {
-            if (selectedAccountOption?.type === 'NON_SUITE' && selectedQuote?.receiveCurrency) {
-                if (value && !addressValidator.validate(value, selectedQuote.receiveCurrency)) {
+            if (selectedAccountOption?.type === 'NON_SUITE' && currency) {
+                if (value && !addressValidator.validate(value, currency)) {
                     return translationString('TR_EXCHANGE_RECEIVING_ADDRESS_INVALID');
                 }
             }
         },
     });
 
-    if (!selectedQuote?.receiveCurrency) {
+    if (!currency) {
         return null;
     }
 
@@ -120,7 +97,7 @@ const CoinmarketSelectedOfferVerify = () => {
             <Heading>
                 <Translation
                     id="TR_EXCHANGE_RECEIVING_ADDRESS_INFO"
-                    values={{ symbol: cryptoToCoinSymbol(selectedQuote.receiveCurrency) }}
+                    values={{ symbol: cryptoToCoinSymbol(currency) }}
                 />
             </Heading>
             <CardContent>
@@ -132,9 +109,10 @@ const CoinmarketSelectedOfferVerify = () => {
                         />
                     </CustomLabel>
                     <CoinmarketSelectedOfferVerifyOptions
+                        receiveNetwork={receiveNetwork}
                         selectedAccountOption={selectedAccountOption}
-                        setSelectedAccountOption={setSelectedAccountOption}
-                        setValue={setValue}
+                        selectAccountOptions={selectAccountOptions}
+                        onChangeAccount={onChangeAccount}
                     />
                 </Row>
                 <Row>
@@ -150,9 +128,9 @@ const CoinmarketSelectedOfferVerify = () => {
                                 <AddressOptions
                                     account={selectedAccountOption?.account}
                                     address={address}
-                                    control={control}
+                                    control={form.control}
                                     receiveSymbol={selectedQuote.receiveCurrency}
-                                    setValue={setValue}
+                                    setValue={form.setValue}
                                 />
                             </>
                         )}
@@ -168,8 +146,8 @@ const CoinmarketSelectedOfferVerify = () => {
                             }
                             size="small"
                             readOnly={selectedAccountOption?.type !== 'NON_SUITE'}
-                            inputState={errors.address ? 'error' : undefined}
-                            bottomText={errors.address?.message || null}
+                            inputState={form.formState.errors.address ? 'error' : undefined}
+                            bottomText={form.formState.errors.address?.message || null}
                             innerRef={networkRef}
                             {...networkField}
                         />
@@ -212,7 +190,7 @@ const CoinmarketSelectedOfferVerify = () => {
                                     // confirmTrade(address, extraField);
                                 }
                             }}
-                            isDisabled={!isValid || callInProgress}
+                            isDisabled={!form.formState.isValid || callInProgress}
                         >
                             <Translation id="TR_BUY_GO_TO_PAYMENT" />
                         </Button>
