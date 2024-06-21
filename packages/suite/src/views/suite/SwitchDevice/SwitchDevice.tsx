@@ -1,7 +1,6 @@
 import * as deviceUtils from '@suite-common/suite-utils';
 import { selectDevice, selectDevices } from '@suite-common/wallet-core';
 
-import { getBackgroundRoute } from 'src/utils/suite/router';
 import { ForegroundAppProps } from 'src/types/suite';
 import { useSelector } from 'src/hooks/suite';
 
@@ -31,17 +30,14 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
         sortedDevices.unshift(selectedDevice);
     }
 
-    const backgroundRoute = getBackgroundRoute();
-
     return (
-        <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel}>
+        <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel} isAnimationEnabled>
             <Flex>
                 {sortedDevices.map((device, index) => (
                     <DeviceItem
                         key={`${device.id}-${device.instance}`}
                         device={device}
                         instances={deviceUtils.getDeviceInstances(device, devices)}
-                        backgroundRoute={backgroundRoute}
                         onCancel={onCancel}
                         isCloseButtonVisible={index === 0}
                     />

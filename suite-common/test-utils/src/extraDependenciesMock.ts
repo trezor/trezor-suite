@@ -65,6 +65,8 @@ export const extraDependenciesMock: ExtraDependencies = {
         addAccountMetadata: mockThunk('addAccountMetadata'),
         findLabelsToBeMovedOrDeleted: mockThunk('findLabelsToBeMovedOrDeleted'),
         moveLabelsForRbfAction: mockThunk('moveLabelsForRbfAction'),
+        addWalletThunk: mockThunk('addWalletThunk'),
+        openSwitchDeviceDialog: mockThunk('openSwitchDeviceDialog'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>

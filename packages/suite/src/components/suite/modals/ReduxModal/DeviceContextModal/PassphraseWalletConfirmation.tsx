@@ -1,5 +1,5 @@
 import { TrezorDevice } from '@suite-common/suite-types';
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
 import { PassphraseWalletConfirmationStep1 } from './PassphraseWalletConfirmationStep1';
@@ -10,25 +10,24 @@ import { ContentType } from './types';
 type PassphraseWalletConfirmationContentProps = {
     onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
     onDeviceOffer: boolean;
-    onCancel: () => void;
-};
-
-type PassphraseWalletConfirmationProps = PassphraseWalletConfirmationContentProps & {
-    device: TrezorDevice;
+    onRetry: () => void;
+    contentType: ContentType;
+    setContentType: Dispatch<SetStateAction<ContentType>>;
 };
 
 const PassphraseWalletConfirmationContent = ({
     onSubmit,
     onDeviceOffer,
-    onCancel,
+    onRetry,
+    contentType,
+    setContentType,
 }: PassphraseWalletConfirmationContentProps): React.JSX.Element => {
-    const [contentType, setContentType] = useState<ContentType>('step1');
     switch (contentType) {
         case 'step1':
             return (
                 <PassphraseWalletConfirmationStep1
                     setContentType={setContentType}
-                    onCancel={onCancel}
+                    onRetry={onRetry}
                 />
             );
         case 'step2':
@@ -43,19 +42,49 @@ const PassphraseWalletConfirmationContent = ({
     }
 };
 
+type PassphraseWalletConfirmationProps = {
+    onSubmit: (value: string, passphraseOnDevice?: boolean) => void;
+    onDeviceOffer: boolean;
+    onCancel: () => void;
+    onRetry: () => void;
+    device: TrezorDevice;
+};
+
 export const PassphraseWalletConfirmation = ({
     onCancel,
+    onRetry,
     onSubmit,
     onDeviceOffer,
     device,
-}: PassphraseWalletConfirmationProps) => (
-    <SwitchDeviceRenderer isCancelable onCancel={onCancel}>
-        <CardWithDevice onCancel={onCancel} device={device}>
-            <PassphraseWalletConfirmationContent
-                onSubmit={onSubmit}
-                onDeviceOffer={onDeviceOffer}
+}: PassphraseWalletConfirmationProps) => {
+    const [contentType, setContentType] = useState<ContentType>('step1');
+
+    const handleBackButtonClick = () => {
+        const map: Record<ContentType, () => void> = {
+            step1: onRetry,
+            step2: () => setContentType('step1'),
+            step3: () => setContentType('step2'),
+        };
+
+        map[contentType]();
+    };
+
+    return (
+        <SwitchDeviceRenderer isCancelable onCancel={onCancel}>
+            <CardWithDevice
                 onCancel={onCancel}
-            />
-        </CardWithDevice>
-    </SwitchDeviceRenderer>
-);
+                device={device}
+                onBackButtonClick={handleBackButtonClick}
+                isCloseButtonVisible
+            >
+                <PassphraseWalletConfirmationContent
+                    onSubmit={onSubmit}
+                    onDeviceOffer={onDeviceOffer}
+                    contentType={contentType}
+                    setContentType={setContentType}
+                    onRetry={onRetry}
+                />
+            </CardWithDevice>
+        </SwitchDeviceRenderer>
+    );
+};

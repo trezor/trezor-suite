@@ -1,13 +1,14 @@
 import styled from 'styled-components';
 
-import { Button, Column, Tooltip } from '@trezor/components';
+import { Button, Column, HotkeyBadge, Row, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
-import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
-import { useSelector } from 'src/hooks/suite';
+import { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { SUITE } from 'src/actions/suite/constants';
 import { spacings } from '@trezor/theme';
 import { WalletType } from '@suite-common/wallet-types';
+import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 
 const AddWallet = styled.div`
     display: flex;
@@ -22,17 +23,11 @@ const StyledTooltip = styled(Tooltip)`
 interface AddWalletButtonProps {
     device: TrezorDevice;
     instances: AcquiredDevice[];
-    addDeviceInstance: (params: { device: TrezorDevice; walletType: WalletType }) => Promise<void>;
-    selectDeviceInstance: (params: { device: TrezorDevice; walletType: WalletType }) => void;
+    onCancel: ForegroundAppProps['onCancel'];
 }
 
-export const AddWalletButton = ({
-    device,
-    instances,
-    addDeviceInstance,
-    selectDeviceInstance,
-}: AddWalletButtonProps) => {
-    const hasAtLeastOneWallet = instances.find(d => d.state);
+export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButtonProps) => {
+    const dispatch = useDispatch();
     // Find a "standard wallet" among user's wallet instances. If no such wallet is found, the variable is undefined.
     const emptyPassphraseWalletExists = instances.find(d => d.useEmptyPassphrase && d.state);
     const locks = useSelector(state => state.suite.locks);
@@ -48,11 +43,8 @@ export const AddWalletButton = ({
         locks.includes(SUITE.LOCK_TYPE.UI);
 
     const onAddWallet = ({ walletType }: { walletType: WalletType }) => {
-        if (hasAtLeastOneWallet) {
-            addDeviceInstance({ device, walletType });
-        } else {
-            selectDeviceInstance({ device: instances[0], walletType });
-        }
+        dispatch(addWalletThunk({ walletType }));
+        onCancel(false);
     };
 
     return (
@@ -85,7 +77,10 @@ export const AddWalletButton = ({
                             isDisabled={isLocked}
                             onClick={() => onAddWallet({ walletType: WalletType.PASSPHRASE })}
                         >
-                            <Translation id="TR_ADD_HIDDEN_WALLET" />
+                            <Row gap={spacings.xs}>
+                                <Translation id="TR_ADD_HIDDEN_WALLET" />{' '}
+                                <HotkeyBadge hotkey={['CTRL', 'KEY_P']} />
+                            </Row>
                         </Button>
                     )}
                 </Column>

@@ -39,8 +39,19 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const dispatch = useDispatch();
 
-    const onCancel = () => {
+    const onConfirmPassphraseDialogCancel = () => {
         TrezorConnect.cancel('auth-confirm-cancel');
+    };
+
+    const onConfirmPassphraseDialogRetry = () => {
+        TrezorConnect.cancel('auth-confirm-retry');
+    };
+
+    const onEnterPassphraseDialogCancel = () => {
+        TrezorConnect.cancel('enter-passphrase-cancel');
+    };
+    const onEnterPassphraseDialogBack = () => {
+        TrezorConnect.cancel('enter-passphrase-back');
     };
 
     const onSubmit = useCallback(
@@ -61,17 +72,23 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
     if (isPassphraseWalletConfirmationVisible) {
         return (
             <PassphraseWalletConfirmation
-                onCancel={onCancel}
+                onCancel={onConfirmPassphraseDialogCancel}
                 onSubmit={onSubmit}
                 onDeviceOffer={onDeviceOffer}
                 device={device}
+                onRetry={onConfirmPassphraseDialogRetry}
             />
         );
     }
 
     return (
-        <SwitchDeviceRenderer>
-            <CardWithDevice onCancel={onCancel} device={device}>
+        <SwitchDeviceRenderer isCancelable onCancel={onEnterPassphraseDialogCancel}>
+            <CardWithDevice
+                onCancel={onEnterPassphraseDialogCancel}
+                device={device}
+                onBackButtonClick={onEnterPassphraseDialogBack}
+                isCloseButtonVisible
+            >
                 <PassphraseHeading>
                     <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />
                 </PassphraseHeading>

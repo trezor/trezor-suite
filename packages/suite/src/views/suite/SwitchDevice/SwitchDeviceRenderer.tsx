@@ -9,8 +9,9 @@ export const SwitchDeviceRenderer = ({
     headerComponent,
     isCancelable,
     onCancel,
+    isAnimationEnabled = false,
     ...rest
-}: ModalProps): ReactPortal | null => {
+}: ModalProps & { isAnimationEnabled?: boolean }): ReactPortal | null => {
     const modalTarget = useModalTarget();
 
     if (!modalTarget) return null;
@@ -20,7 +21,11 @@ export const SwitchDeviceRenderer = ({
             onClickBackdrop={isCancelable ? onCancel : undefined}
             alignment={{ x: 'left', y: 'top' }}
         >
-            <SwitchDeviceModal onCancel={onCancel} {...rest} />
+            <SwitchDeviceModal
+                isAnimationEnabled={isAnimationEnabled}
+                onCancel={onCancel}
+                {...rest}
+            />
         </ModalEnvironment>
     );
 
