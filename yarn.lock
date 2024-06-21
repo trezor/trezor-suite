@@ -38923,7 +38923,7 @@ __metadata:
     metro-react-native-babel-preset: "npm:0.77.0"
     nx: "npm:^18.0.3"
     patch-package: "npm:8.0.0"
-    prettier: "npm:3.2.5"
+    prettier: "npm:^3.3.2"
     prettier-eslint: "npm:^16.3.0"
     rimraf: "npm:^5.0.5"
     semver: "npm:^7.6.0"
