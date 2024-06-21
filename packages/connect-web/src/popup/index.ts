@@ -376,6 +376,7 @@ export class PopupManager extends EventEmitter {
                 });
             });
         } else if (data.type === POPUP.CANCEL_POPUP_REQUEST) {
+            clearTimeout(this.requestTimeout);
             if (this.popupPromise) {
                 this.close();
             }
