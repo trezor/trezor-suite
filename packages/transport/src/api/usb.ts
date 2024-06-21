@@ -14,6 +14,7 @@ import * as ERRORS from '../errors';
 
 interface ConstructorParams extends AbstractApiConstructorParams {
     usbInterface: USB;
+    forceReadSerialOnConnect?: boolean;
 }
 
 interface TransportInterfaceDevice {
@@ -32,14 +33,17 @@ export class UsbApi extends AbstractApi {
 
     protected devices: TransportInterfaceDevice[] = [];
     protected usbInterface: ConstructorParams['usbInterface'];
+    private forceReadSerialOnConnect?: boolean;
 
-    constructor({ usbInterface, logger }: ConstructorParams) {
+    constructor({ usbInterface, logger, forceReadSerialOnConnect }: ConstructorParams) {
         super({ logger });
 
         this.usbInterface = usbInterface;
+        this.forceReadSerialOnConnect = forceReadSerialOnConnect;
+    }
 
     public listen() {
-        this.usbInterface.onconnect = event => {
+        this.usbInterface.onconnect = async event => {
             this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
             const [_hidDevices, nonHidDevices] = this.filterDevices([event.device]);
 
@@ -51,7 +55,7 @@ export class UsbApi extends AbstractApi {
                 );
             });
             if (nonHidDevices.length) {
-                this.devices = [...this.devices, ...this.createDevices(nonHidDevices)];
+                this.devices = [...this.devices, ...(await this.createDevices(nonHidDevices))];
                 this.emit('transport-interface-change', this.devicesToDescriptors());
             }
         };
@@ -141,7 +145,7 @@ export class UsbApi extends AbstractApi {
                 );
             });
 
-            this.devices = this.createDevices(nonHidDevices);
+            this.devices = await this.createDevices(nonHidDevices);
 
             return this.success(this.devicesToDescriptors());
         } catch (err) {
@@ -363,18 +367,51 @@ export class UsbApi extends AbstractApi {
     private createDevices(nonHidDevices: USBDevice[]) {
         let bootloaderId = 0;
 
-        return nonHidDevices.map(device => {
-            // path is just serial number
-            // more bootloaders => number them, hope for the best
-            const { serialNumber } = device;
-            let path = serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
-            if (path === 'bootloader') {
-                bootloaderId++;
-                path += bootloaderId;
-            }
+        return Promise.all(
+            nonHidDevices.map(async device => {
+                this.logger?.debug(`usb: creating device ${this.formatDeviceForLog(device)}`);
 
-            return { path, device };
-        });
+                if (this.forceReadSerialOnConnect) {
+                    // try to load serialNumber. if this doesn't succeed, we can still continue normally. the only problem is that multiple devices
+                    // connected at the same time will not be properly distinguished.
+                    await this.loadSerialNumber(device);
+                }
+
+                // path is just serial number
+                // more bootloaders => number them, hope for the best
+                const { serialNumber } = device;
+                let path =
+                    serialNumber == null || serialNumber === '' ? 'bootloader' : serialNumber;
+                if (path === 'bootloader') {
+                    this.logger?.debug('usb: device without serial number!');
+                    bootloaderId++;
+                    path += bootloaderId;
+                }
+
+                return { path, device };
+            }),
+        );
+    }
+
+    /*
+     * depending on OS (and specific usb drivers), it might be required to open device in order to read serial number.
+     * https://github.com/node-usb/node-usb/issues/546
+     */
+    private async loadSerialNumber(device: USBDevice) {
+        try {
+            this.logger?.debug(`usb: loadSerialNumber`);
+            await device.open();
+
+            // load serial number.
+            await device
+                // @ts-expect-error: this is not part of common types between webusb and usb.
+                .getStringDescriptor(device.device.deviceDescriptor.iSerialNumber);
+
+            this.logger?.debug(`usb: loadSerialNumber done, serialNumber: ${device.serialNumber}`);
+            await device.close();
+        } catch (err) {
+            this.logger?.error(`usb: loadSerialNumber error ${err}`);
+        }
     }
 
     private deviceIsHid(device: USBDevice) {

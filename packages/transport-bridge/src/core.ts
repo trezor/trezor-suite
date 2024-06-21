@@ -36,6 +36,9 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
                       usbInterface: new WebUSB({
                           allowAllDevices: true, // return all devices, not only authorized
                       }),
+
+                      // todo: possibly only for windows
+                      forceReadSerialOnConnect: true,
                   });
     } else {
         api = apiArg;
