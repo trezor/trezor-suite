@@ -73,3 +73,16 @@ export const addWalletThunk = createThunk<void, { walletType: WalletType }, void
         }
     },
 );
+
+export const openSwitchDeviceDialog = createThunk<void, void, void>(
+    `${DEVICE_MODULE_PREFIX}/openSwitchDeviceDialog`,
+    (_, { dispatch }) => {
+        dispatch(
+            goto('suite-switch-device', {
+                params: {
+                    cancelable: true,
+                },
+            }),
+        );
+    },
+);

@@ -1,8 +1,8 @@
 import styled, { useTheme } from 'styled-components';
-import { Icon, IconButton, Row } from '@trezor/components';
+import { Icon, IconButton, Row, TOOLTIP_DELAY_LONG, Tooltip } from '@trezor/components';
 import { DeviceStatus } from 'src/components/suite/layouts/SuiteLayout/DeviceSelector/DeviceStatus';
 import { isWebUsb } from 'src/utils/suite/transport';
-import { WebUsbButton } from 'src/components/suite';
+import { Translation, WebUsbButton } from 'src/components/suite';
 import { spacings, spacingsPx } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
@@ -66,22 +66,24 @@ export const DeviceHeader = ({
             <DeviceActions>
                 {isWebUsbTransport && <WebUsbButton variant="tertiary" size="small" />}
                 {isCloseButtonVisible && (
-                    <motion.div
-                        exit={{ rotate: 0 }}
-                        animate={{
-                            rotate: 180,
-                        }}
-                        style={{ originX: '50%', originY: '50%' }}
-                    >
-                        <Icon
-                            useCursorPointer
-                            size={20}
-                            icon="CARET_CIRCLE_DOWN"
-                            color={theme.TYPE_LIGHT_GREY}
-                            hoverColor={theme.TYPE_LIGHTER_GREY}
-                            onClick={() => onCancel?.()}
-                        />
-                    </motion.div>
+                    <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
+                        <motion.div
+                            exit={{ rotate: 0 }}
+                            animate={{
+                                rotate: 180,
+                            }}
+                            style={{ originX: '50%', originY: '50%' }}
+                        >
+                            <Icon
+                                useCursorPointer
+                                size={20}
+                                icon="CARET_CIRCLE_DOWN"
+                                color={theme.TYPE_LIGHT_GREY}
+                                hoverColor={theme.TYPE_LIGHTER_GREY}
+                                onClick={() => onCancel?.()}
+                            />
+                        </motion.div>
+                    </Tooltip>
                 )}
             </DeviceActions>
         </Container>

@@ -10,6 +10,11 @@ import { useDiscovery, useDispatch, useSelector } from 'src/hooks/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { bannerAnimationConfig } from './banner-animations';
 import { WalletType } from '@suite-common/wallet-types';
+import styled from 'styled-components';
+
+const Container = styled(motion.div)`
+    width: 100%;
+`;
 
 export const DashboardPassphraseBanner = () => {
     const [isVisible, setIsVisible] = useState(true);
@@ -47,7 +52,7 @@ export const DashboardPassphraseBanner = () => {
     return (
         <AnimatePresence>
             {isVisible && (
-                <motion.div
+                <Container
                     key="container"
                     {...bannerAnimationConfig}
                     onAnimationComplete={handleClose}
@@ -77,7 +82,7 @@ export const DashboardPassphraseBanner = () => {
                             </Row>
                         </Row>
                     </Warning>
-                </motion.div>
+                </Container>
             )}
         </AnimatePresence>
     );

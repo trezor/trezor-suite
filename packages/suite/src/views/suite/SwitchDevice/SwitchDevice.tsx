@@ -31,7 +31,7 @@ export const SwitchDevice = ({ cancelable, onCancel }: ForegroundAppProps) => {
     }
 
     return (
-        <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel}>
+        <SwitchDeviceRenderer isCancelable={cancelable} onCancel={onCancel} isAnimationEnabled>
             <Flex>
                 {sortedDevices.map((device, index) => (
                     <DeviceItem

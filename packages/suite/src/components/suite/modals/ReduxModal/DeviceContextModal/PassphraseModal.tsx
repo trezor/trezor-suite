@@ -16,7 +16,6 @@ import { PassphraseDescription } from './PassphraseDescription';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 import { PassphraseHeading } from './PassphraseHeading';
 import TrezorConnect from '@trezor/connect';
-import { goto } from 'src/actions/suite/routerActions';
 
 interface PassphraseModalProps {
     device: TrezorDevice;
@@ -40,8 +39,19 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const dispatch = useDispatch();
 
-    const onCancel = () => {
+    const onConfirmPassphraseDialogCancel = () => {
         TrezorConnect.cancel('auth-confirm-cancel');
+    };
+
+    const onConfirmPassphraseDialogRetry = () => {
+        TrezorConnect.cancel('auth-confirm-retry');
+    };
+
+    const onEnterPassphraseDialogCancel = () => {
+        TrezorConnect.cancel('enter-passphrase-cancel');
+    };
+    const onEnterPassphraseDialogBack = () => {
+        TrezorConnect.cancel('enter-passphrase-back');
     };
 
     const onSubmit = useCallback(
@@ -56,37 +66,28 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
         return null;
     }
 
-    console.log('____authConfirmation', authConfirmation, stateConfirmation, device.state);
     const isPassphraseWalletConfirmationVisible = authConfirmation || stateConfirmation;
 
     // show borderless one-column modal for confirming passphrase and state confirmation
     if (isPassphraseWalletConfirmationVisible) {
         return (
             <PassphraseWalletConfirmation
-                onCancel={onCancel}
+                onCancel={onConfirmPassphraseDialogCancel}
                 onSubmit={onSubmit}
                 onDeviceOffer={onDeviceOffer}
                 device={device}
+                onRetry={onConfirmPassphraseDialogRetry}
             />
         );
     }
 
-    const handleBackButtonClick = () => {
-        onCancel();
-
-        goto('suite-switch-device', {
-            params: {
-                cancelable: true,
-            },
-        });
-    };
-
     return (
-        <SwitchDeviceRenderer>
+        <SwitchDeviceRenderer isCancelable onCancel={onEnterPassphraseDialogCancel}>
             <CardWithDevice
-                onCancel={onCancel}
+                onCancel={onEnterPassphraseDialogCancel}
                 device={device}
-                onBackButtonClick={handleBackButtonClick}
+                onBackButtonClick={onEnterPassphraseDialogBack}
+                isCloseButtonVisible
             >
                 <PassphraseHeading>
                     <Translation id="TR_PASSPHRASE_HIDDEN_WALLET" />

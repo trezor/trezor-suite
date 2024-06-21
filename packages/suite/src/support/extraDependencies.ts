@@ -37,6 +37,7 @@ import {
     buildTokenDefinitionsFromStorage,
 } from '@suite-common/token-definitions';
 import { selectSuiteSettings } from '../reducers/suite/suiteReducer';
+import { addWalletThunk, openSwitchDeviceDialog } from 'src/actions/wallet/addWalletThunk';
 
 const connectSrc = resolveStaticPath('connect/');
 // 'https://localhost:8088/';
@@ -63,6 +64,8 @@ export const extraDependencies: ExtraDependencies = {
         addAccountMetadata: metadataLabelingActions.addAccountMetadata,
         findLabelsToBeMovedOrDeleted,
         moveLabelsForRbfAction,
+        openSwitchDeviceDialog,
+        addWalletThunk,
     },
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => (state: AppState) =>
