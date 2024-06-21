@@ -27,8 +27,8 @@ const Container = styled.div<{
         border-radius: 0 ${borders.radii.full} ${borders.radii.full} 0;
     }
 
-    > button:not(:last-child),
-    > div:not(:last-child) button {
+    > button:not(:last-child, :is([disabled])),
+    > div:not(:last-child) button:not(:is([disabled])) {
         position: relative;
 
         &::after {
