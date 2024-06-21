@@ -662,3 +662,15 @@ export const deviceConnectThunks = createThunk<void, DeviceConnectThunksParams, 
         dispatch(deviceConnectThunksMap[type]({ device, settings }));
     },
 );
+
+export const passwordMismatchResetThunk = createThunk<void, { device: TrezorDevice }, void>(
+    `${DEVICE_MODULE_PREFIX}/passwordMismatchResetThunk`,
+    ({ device }, { dispatch, getState, extra }) => {
+        const settings = extra.selectors.selectSuiteSettings(getState());
+
+        dispatch(deviceActions.forgetDevice({ device, settings }));
+
+        const newDevice = selectDeviceSelector(getState());
+        dispatch(deviceActions.selectDevice(newDevice));
+    },
+);
