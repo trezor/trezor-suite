@@ -81,6 +81,13 @@ export class UsbApi extends AbstractApi {
             productId: device.productId,
             deviceVersionMajor: device.deviceVersionMajor,
             deviceVersionMinor: device.deviceVersionMinor,
+            opened: device.opened,
+            deviceProtocol: device.deviceProtocol,
+            deviceClass: device.deviceClass,
+            deviceSubclass: device.deviceSubclass,
+            usbVersionMajor: device.usbVersionMajor,
+            usbVersionMinor: device.usbVersionMinor,
+            usbVersionSubminor: device.usbVersionSubminor,
         });
     }
 
@@ -155,7 +162,7 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug('usb: device.transferIn');
             const res = await device.transferIn(ENDPOINT_ID, 64);
             this.logger?.debug(
-                `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}`,
+                `usb: device.transferIn done. status: ${res.status}, byteLength: ${res.data?.byteLength}. device: ${this.formatDeviceForLog(device)}`,
             );
 
             if (!res.data) {
@@ -186,7 +193,9 @@ export class UsbApi extends AbstractApi {
             // https://wicg.github.io/webusb/#ref-for-dom-usbdevice-transferout
             this.logger?.debug('usb: device.transferOut');
             const result = await device.transferOut(ENDPOINT_ID, newArray);
-            this.logger?.debug('usb: device.transferOut done');
+            this.logger?.debug(
+                `usb: device.transferOut done. device: ${this.formatDeviceForLog(device)}`,
+            );
 
             if (result.status !== 'ok') {
                 this.logger?.error(`usb: device.transferOut status not ok: ${result.status}`);
@@ -212,6 +221,7 @@ export class UsbApi extends AbstractApi {
         // note: why for instead of scheduleAction from @trezor/utils with attempts param. this.openInternal does not throw
         // I would need to throw artificially which is not nice.
         for (let i = 0; i < 5; i++) {
+            this.logger?.debug(`usb: openDevice attempt ${i}`);
             const res = await this.openInternal(path, first);
             if (res.success) {
                 return res;
@@ -232,7 +242,7 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug(`usb: device.open`);
             await device.open();
-            this.logger?.debug(`usb: device.open done`);
+            this.logger?.debug(`usb: device.open done. device: ${this.formatDeviceForLog(device)}`);
         } catch (err) {
             this.logger?.error(`usb: device.open error ${err}`);
 
@@ -246,7 +256,9 @@ export class UsbApi extends AbstractApi {
             try {
                 this.logger?.debug(`usb: device.selectConfiguration ${CONFIGURATION_ID}`);
                 await device.selectConfiguration(CONFIGURATION_ID);
-                this.logger?.debug(`usb: device.selectConfiguration done: ${CONFIGURATION_ID}`);
+                this.logger?.debug(
+                    `usb: device.selectConfiguration done: ${CONFIGURATION_ID}. device: ${this.formatDeviceForLog(device)}`,
+                );
             } catch (err) {
                 this.logger?.error(
                     `usb: device.selectConfiguration error ${err}. device: ${this.formatDeviceForLog(device)}`,
@@ -256,7 +268,9 @@ export class UsbApi extends AbstractApi {
                 // reset fails on ChromeOS and windows
                 this.logger?.debug('usb: device.reset');
                 await device.reset();
-                this.logger?.debug('usb: device.reset done');
+                this.logger?.debug(
+                    `usb: device.reset done. device: ${this.formatDeviceForLog(device)}`,
+                );
             } catch (err) {
                 this.logger?.error(
                     `usb: device.reset error ${err}. device: ${this.formatDeviceForLog(device)}`,
@@ -268,7 +282,9 @@ export class UsbApi extends AbstractApi {
             this.logger?.debug(`usb: device.claimInterface: ${INTERFACE_ID}`);
             // claim device for exclusive access by this app
             await device.claimInterface(INTERFACE_ID);
-            this.logger?.debug(`usb: device.claimInterface done: ${INTERFACE_ID}`);
+            this.logger?.debug(
+                `usb: device.claimInterface done: ${INTERFACE_ID}. device: ${this.formatDeviceForLog(device)}`,
+            );
         } catch (err) {
             this.logger?.error(
                 `usb: device.claimInterface error ${err}. device: ${this.formatDeviceForLog(device)}`,
@@ -296,7 +312,9 @@ export class UsbApi extends AbstractApi {
                 const interfaceId = INTERFACE_ID;
                 this.logger?.debug(`usb: device.releaseInterface: ${interfaceId}`);
                 await device.releaseInterface(interfaceId);
-                this.logger?.debug(`usb: device.releaseInterface done: ${interfaceId}`);
+                this.logger?.debug(
+                    `usb: device.releaseInterface done: ${interfaceId}. device: ${this.formatDeviceForLog(device)}`,
+                );
             } catch (err) {
                 this.logger?.error(
                     `usb: releaseInterface error ${err}. device: ${this.formatDeviceForLog(device)}`,
@@ -308,7 +326,9 @@ export class UsbApi extends AbstractApi {
             try {
                 this.logger?.debug(`usb: device.close`);
                 await device.close();
-                this.logger?.debug(`usb: device.close done`);
+                this.logger?.debug(
+                    `usb: device.close done. device: ${this.formatDeviceForLog(device)}`,
+                );
             } catch (err) {
                 this.logger?.debug(
                     `usb: device.close error ${err}. device: ${this.formatDeviceForLog(device)}`,
