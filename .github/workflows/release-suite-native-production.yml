@@ -19,13 +19,13 @@ concurrency:
 
 jobs:
   ios:
+    if: ${{ (github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'All') && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build and release iOS
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    if: ${{ github.event.inputs.PLATFORM == 'iOS' || github.event.inputs.PLATFORM == 'All' && startsWith(github.repository, 'trezor/trezor-suite') }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -48,13 +48,13 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native/app
   android:
+    if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'All' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build and release Android
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    if: ${{ github.event.inputs.PLATFORM == 'Android' || github.event.inputs.PLATFORM == 'All' && github.repository == 'trezor/trezor-suite' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -77,13 +77,13 @@ jobs:
           --message ${{ github.sha }}
         working-directory: suite-native/app
   androidAPK:
+    if: ${{ github.event.inputs.PLATFORM == 'Android APK' || github.event.inputs.PLATFORM == 'All' && (github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private') }}
     name: Build Android APK to GH releases
     environment: production-suite-native
     runs-on: ubuntu-latest
     env:
       EXPO_PUBLIC_ENVIRONMENT: production
       SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-    if: ${{ github.event.inputs.PLATFORM == 'Android APK' || github.event.inputs.PLATFORM == 'All' }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
