@@ -16,6 +16,7 @@ import type {
     SavingsTrade,
     SavingsTradePlannedPayment,
     CryptoSymbolInfo,
+    CryptoSymbol,
 } from 'invity-api';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { ExchangeInfo } from 'src/actions/wallet/coinmarketExchangeActions';
@@ -109,6 +110,7 @@ export interface State {
     savings: Savings;
     composedTransactionInfo: ComposedTransactionInfo;
     trades: Trade[];
+    modalCryptoSymbol: CryptoSymbol | undefined;
     isLoading: boolean;
     lastLoadedTimestamp: number;
 }
@@ -164,6 +166,7 @@ export const initialState: State = {
     composedTransactionInfo: {},
     trades: [],
     isLoading: false,
+    modalCryptoSymbol: undefined,
     lastLoadedTimestamp: 0,
 };
 
@@ -227,9 +230,6 @@ const coinmarketReducer = (
                 break;
             case COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST:
                 draft.exchange.quotesRequest = action.request;
-                break;
-            case COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST:
-                draft.exchange.quotesRequest = undefined;
                 break;
             case COINMARKET_EXCHANGE.SAVE_QUOTES:
                 draft.exchange.quotes = action.quotes;
@@ -304,6 +304,9 @@ const coinmarketReducer = (
             case COINMARKET_COMMON.SET_LOADING:
                 draft.isLoading = action.isLoading;
                 draft.lastLoadedTimestamp = action.lastLoadedTimestamp;
+                break;
+            case COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY:
+                draft.modalCryptoSymbol = action.modalCryptoSymbol;
                 break;
             case COINMARKET_SAVINGS.START_WATCHING_KYC_STATUS:
                 draft.savings.isWatchingKYCStatus = true;

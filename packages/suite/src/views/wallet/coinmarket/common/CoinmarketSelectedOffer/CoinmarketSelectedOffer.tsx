@@ -4,8 +4,8 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
-import { CoinmarketSelectedOfferInfo } from './CoinmarketSelectedOfferInfo';
-import CoinmarketSelectedOfferVerify from './CoinmarketSelectedOfferVerify';
+import CoinmarketSelectedOfferVerify from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerify';
+import { CoinmarketSelectedOfferInfo } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferInfo';
 
 const Wrapper = styled.div`
     display: flex;

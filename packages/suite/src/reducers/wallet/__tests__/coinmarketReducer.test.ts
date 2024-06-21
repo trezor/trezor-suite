@@ -39,6 +39,28 @@ describe('settings reducer', () => {
         ).toEqual(initialState);
     });
 
+    it('COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY', () => {
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
+                modalCryptoSymbol: 'ANKR@ETH',
+            }),
+        ).toEqual({
+            ...initialState,
+            modalCryptoSymbol: 'ANKR@ETH',
+        });
+
+        expect(
+            reducer(undefined, {
+                type: COINMARKET_COMMON.SET_MODAL_CRYPTO_CURRENCY,
+                modalCryptoSymbol: undefined,
+            }),
+        ).toEqual({
+            ...initialState,
+            modalCryptoSymbol: undefined,
+        });
+    });
+
     it('COINMARKET_INFO.SAVE_SYMBOLS_INFO', () => {
         const symbolsInfo: CryptoSymbolInfo[] = [
             {
@@ -222,17 +244,6 @@ describe('settings reducer', () => {
         ).toEqual({
             ...initialState,
             exchange: { ...initialState.exchange, quotesRequest: request },
-        });
-    });
-
-    it('COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST', () => {
-        expect(
-            reducer(undefined, {
-                type: COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST,
-            }),
-        ).toEqual({
-            ...initialState,
-            exchange: { ...initialState.exchange, quotesRequest: undefined },
         });
     });
 

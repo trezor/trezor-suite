@@ -22,9 +22,6 @@ export interface ExchangeInfo {
 export type CoinmarketExchangeAction =
     | { type: typeof COINMARKET_EXCHANGE.SAVE_EXCHANGE_INFO; exchangeInfo: ExchangeInfo }
     | {
-          type: typeof COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST;
-      }
-    | {
           type: typeof COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST;
           request: ExchangeTradeQuoteRequest;
       }
@@ -122,10 +119,6 @@ export const saveTrade = (
 export const saveQuoteRequest = (request: ExchangeTradeQuoteRequest): CoinmarketExchangeAction => ({
     type: COINMARKET_EXCHANGE.SAVE_QUOTE_REQUEST,
     request,
-});
-
-export const clearQuoteRequest = (): CoinmarketExchangeAction => ({
-    type: COINMARKET_EXCHANGE.CLEAR_QUOTE_REQUEST,
 });
 
 export const saveTransactionId = (transactionId: string): CoinmarketExchangeAction => ({
