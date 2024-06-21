@@ -21,12 +21,10 @@ import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefault
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
-import { useBitcoinAmountUnit } from '../../useBitcoinAmountUnit';
 import {
     CoinmarketBuyFormContextProps,
     CoinmarketBuyFormProps,
 } from 'src/types/coinmarket/coinmarketForm';
-import { useCoinmarketNavigation } from '../../useCoinmarketNavigation';
 import {
     getFilteredSuccessQuotes,
     useCoinmarketCommonOffers,
@@ -37,7 +35,11 @@ import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
-import useCoinmarketPaymentMethod from './useCoinmarketPaymentMethod';
+import defaultFiatCurrencies from 'src/constants/wallet/coinmarket/fiatCurrencies';
+import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
+import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoinmarketPaymentMethod';
+import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
+import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -296,6 +298,10 @@ const useCoinmarketBuyForm = ({
                     }
                 } else {
                     setSelectedQuote(quote);
+                    dispatch({
+                        type: SET_MODAL_CRYPTO_CURRENCY,
+                        modalCryptoSymbol: quote.receiveCurrency,
+                    });
                     timer.stop();
                 }
             }

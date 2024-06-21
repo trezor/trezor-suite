@@ -1,7 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-
 import { ExchangeTrade } from 'invity-api';
-
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { networksCompatibility as networks } from '@suite-common/wallet-config';
 import { amountToSatoshi } from '@suite-common/wallet-utils';
@@ -13,11 +11,8 @@ import { Account } from 'src/types/wallet';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
-
-import { useCoinmarketRecomposeAndSign } from '../../useCoinmarketRecomposeAndSign';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { useCoinmarketCommonOffers } from './useCoinmarketCommonOffers';
 import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import {
     CoinmarketExchangeOffersContextProps,
@@ -25,6 +20,9 @@ import {
     CoinmarketOffersContextValues,
 } from 'src/types/coinmarket/coinmarketOffers';
 import { getSuccessQuotesOrdered } from 'src/utils/wallet/coinmarket/exchangeUtils';
+import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
+import { useCoinmarketCommonOffers } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
+import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRecomposeAndSign';
 
 export const useCoinmarketExchangeOffers = ({
     selectedAccount,
@@ -57,9 +55,7 @@ export const useCoinmarketExchangeOffers = ({
         saveTransactionId,
         addNotification,
         verifyAddress,
-        clearQuoteRequest,
     } = useActions({
-        clearQuoteRequest: coinmarketExchangeActions.clearQuoteRequest,
         saveTrade: coinmarketExchangeActions.saveTrade,
         openCoinmarketExchangeConfirmModal:
             coinmarketExchangeActions.openCoinmarketExchangeConfirmModal,
@@ -124,6 +120,10 @@ export const useCoinmarketExchangeOffers = ({
             );
             if (result) {
                 setSelectedQuote(quote);
+                dispatch({
+                    type: SET_MODAL_CRYPTO_CURRENCY,
+                    modalCryptoSymbol: quote.receive,
+                });
                 timer.stop();
             }
         }
@@ -303,12 +303,6 @@ export const useCoinmarketExchangeOffers = ({
             });
         }
     };
-
-    useEffect(() => {
-        return () => {
-            dispatch(clearQuoteRequest());
-        };
-    }, [clearQuoteRequest, dispatch]);
 
     return {
         callInProgress,

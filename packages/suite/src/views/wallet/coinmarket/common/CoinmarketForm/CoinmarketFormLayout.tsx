@@ -1,11 +1,11 @@
 import { Card } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 import styled from 'styled-components';
-import CoinmarketFormInputs from './CoinmarketFormInputs';
-import CoinmarketFormOffer from './CoinmarketFormOffer';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
-import { CoinmarketSelectedOffer } from '../CoinmarketSelectedOffer/CoinmarketSelectedOffer';
+import { CoinmarketSelectedOffer } from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOffer';
+import CoinmarketFormInputs from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInputs';
+import CoinmarketFormOffer from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOffer';
 
 const CoinmarketFormLayoutWrapper = styled.form`
     display: flex;

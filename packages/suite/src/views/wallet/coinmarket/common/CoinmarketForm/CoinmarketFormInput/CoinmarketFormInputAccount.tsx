@@ -20,6 +20,14 @@ import { useMemo } from 'react';
 import { coinmarketBuildCryptoOptions } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import CryptoCategories from 'src/constants/wallet/coinmarket/cryptoCategories';
 import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import {
+    CoinmarketFormInput,
+    CoinmarketFormInputLabel,
+    CoinmarketFormOption,
+    CoinmarketFormOptionLabel,
+    CoinmarketFormOptionLabelLong,
+    CoinmarketFormOptionNetwork,
+} from 'src/views/wallet/coinmarket';
 
 const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
     height: 18px;

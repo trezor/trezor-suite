@@ -11,7 +11,7 @@ import { Translation, AccountLabeling } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import CoinmarketCoinImage from '../../common/CoinmarketCoinImage';
+import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Wrapper = styled.div`
     display: flex;

@@ -7,9 +7,9 @@ import { useTranslation } from 'src/hooks/suite/useTranslation';
 import { ConfirmedOnTrezor } from 'src/views/wallet/coinmarket/common/ConfirmedOnTrezor';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import CoinmarketSelectedOfferVerifyOptions from './CoinmarketSelectedOfferVerifyOptions';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import useCoinmarketVerifyAccount from 'src/hooks/wallet/coinmarket/form/useCoinmarketVerifyAccount';
+import CoinmarketSelectedOfferVerifyOptions from 'src/views/wallet/coinmarket/common/CoinmarketSelectedOffer/CoinmarketSelectedOfferVerifyOptions';
 
 const Wrapper = styled.div`
     display: flex;
