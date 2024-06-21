@@ -12,8 +12,26 @@ export class UdpApi extends AbstractApi {
     protected interface = UDP.createSocket('udp4');
     protected communicating = false;
 
+    private enumerationTimeout: ReturnType<typeof setTimeout> | undefined;
+
     constructor({ logger }: AbstractApiConstructorParams) {
         super({ logger });
+    }
+
+    listen() {
+        if (this.listening) return;
+        this.listening = true;
+
+        // same as UdpTransport listen, set timeout to ping udp devices
+        const enumerateRecursive = () => {
+            if (!this.listening) return;
+
+            this.enumerationTimeout = setTimeout(() => {
+                this.enumerate().finally(enumerateRecursive);
+            }, 500);
+        };
+
+        enumerateRecursive();
     }
 
     public write(path: string, buffer: Buffer) {
@@ -142,5 +160,7 @@ export class UdpApi extends AbstractApi {
     public dispose() {
         this.interface.removeAllListeners();
         this.interface.close();
+        this.listening = false;
+        clearTimeout(this.enumerationTimeout);
     }
 }

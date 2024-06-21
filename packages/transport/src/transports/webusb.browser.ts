@@ -33,4 +33,10 @@ export class WebUsbTransport extends AbstractApiTransport {
             signal,
         });
     }
+
+    public listen() {
+        this.api.listen();
+
+        return super.listen();
+    }
 }

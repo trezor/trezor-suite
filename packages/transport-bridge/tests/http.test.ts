@@ -58,6 +58,7 @@ const createTransportApi = (override = {}) =>
             });
         },
         dispose: () => {},
+        listen: () => {},
         ...override,
     }) as unknown as AbstractApi;
 

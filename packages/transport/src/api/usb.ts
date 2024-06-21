@@ -38,10 +38,7 @@ export class UsbApi extends AbstractApi {
 
         this.usbInterface = usbInterface;
 
-        if (!this.usbInterface) {
-            return;
-        }
-
+    public listen() {
         this.usbInterface.onconnect = event => {
             this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
             const [_hidDevices, nonHidDevices] = this.filterDevices([event.device]);

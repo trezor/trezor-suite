@@ -35,6 +35,7 @@ export abstract class AbstractApi extends TypedEmitter<{
     'transport-interface-error': typeof ERRORS.DEVICE_NOT_FOUND | typeof ERRORS.DEVICE_UNREADABLE;
 }> {
     protected logger?: Logger;
+    protected listening: boolean = false;
 
     constructor({ logger }: AbstractApiConstructorParams) {
         super();
@@ -50,6 +51,11 @@ export abstract class AbstractApi extends TypedEmitter<{
         | typeof ERRORS.ABORTED_BY_SIGNAL
         | typeof ERRORS.UNEXPECTED_ERROR
     >;
+
+    /**
+     * start emitting `transport-interface-change` events
+     */
+    abstract listen(): void;
 
     /**
      * read from device on path
