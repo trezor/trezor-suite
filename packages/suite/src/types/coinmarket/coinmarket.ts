@@ -36,8 +36,8 @@ import {
     CryptoCategoryD,
     CryptoCategoryE,
 } from 'src/constants/wallet/coinmarket/cryptoCategories';
-import { ExtendedMessageDescriptor } from '../suite';
 import { NetworkSymbol } from '@suite-common/wallet-config';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
 export type UseCoinmarketFormProps = UseCoinmarketProps & {

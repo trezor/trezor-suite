@@ -1,9 +1,7 @@
 import { createContext, useContext, useCallback, useState, useEffect } from 'react';
 import { useForm, useWatch } from 'react-hook-form';
-
 import type { SellFiatTradeQuoteRequest } from 'invity-api';
 import useDebounce from 'react-use/lib/useDebounce';
-
 import {
     fromFiatCurrency,
     getFeeLevels,
@@ -14,7 +12,6 @@ import {
 import { useDidUpdate } from '@trezor/react-utils';
 import { isChanged } from '@suite-common/suite-utils';
 import { selectDevice, selectFiatRatesByFiatRateKey } from '@suite-common/wallet-core';
-
 import { useDispatch, useSelector, useTranslation } from 'src/hooks/suite';
 import invityAPI from 'src/services/suite/invityAPI';
 import {
@@ -45,17 +42,15 @@ import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigatio
 import type { AppState } from 'src/types/suite';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
-
-import { useCoinmarketSellFormDefaultValues } from './useCoinmarketSellFormDefaultValues';
-import { useCompose } from './form/useCompose';
-import { useFees } from './form/useFees';
 import { AddressDisplayOptions } from '@suite-common/wallet-types';
-
 import { selectAddressDisplayType } from 'src/reducers/suite/suiteReducer';
 import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { CoinmarketTradeSellType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { useCoinmarketSellFormDefaultValues } from 'src/hooks/wallet/useCoinmarketSellFormDefaultValues';
+import { useFees } from 'src/hooks/wallet/form/useFees';
+import { useCompose } from 'src/hooks/wallet/form/useCompose';
 
 export const SellFormContext = createContext<SellFormContextValues | null>(null);
 SellFormContext.displayName = 'CoinmarketSellContext';

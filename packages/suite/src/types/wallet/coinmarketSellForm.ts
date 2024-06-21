@@ -9,10 +9,14 @@ import type {
     PrecomposedLevels,
     PrecomposedLevelsCardano,
 } from '@suite-common/wallet-types';
-import type { Option, DefaultCountryOption, AmountLimits } from './coinmarketCommonTypes';
 import { Rate } from '@suite-common/wallet-types';
-import { CoinmarketCryptoListProps } from '../coinmarket/coinmarket';
 import { SendContextValues } from 'src/types/wallet/sendForm';
+import type {
+    Option,
+    DefaultCountryOption,
+    AmountLimits,
+} from 'src/types/wallet/coinmarketCommonTypes';
+import { CoinmarketCryptoListProps } from 'src/types/coinmarket/coinmarket';
 
 export const OUTPUT_AMOUNT = 'outputs.0.amount';
 export const CRYPTO_TOKEN = 'outputs.0.token';
