@@ -1,6 +1,10 @@
 import styled, { css } from 'styled-components';
 
-import { selectDiscoveryByDeviceState, selectCurrentFiatRates } from '@suite-common/wallet-core';
+import {
+    selectDiscoveryByDeviceState,
+    selectCurrentFiatRates,
+    selectDeviceThunk,
+} from '@suite-common/wallet-core';
 import { variables, Card, Divider, Icon, Tooltip } from '@trezor/components';
 import { getAllAccounts, getTotalFiatBalance } from '@suite-common/wallet-utils';
 import { spacingsPx, typography } from '@trezor/theme';
@@ -11,8 +15,8 @@ import {
     MetadataLabeling,
     HiddenPlaceholder,
 } from 'src/components/suite';
-import { useSelector } from 'src/hooks/suite';
-import { TrezorDevice, AcquiredDevice } from 'src/types/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
+import { AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
 import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
@@ -23,6 +27,7 @@ import { EjectConfirmation, EjectConfirmationDisableViewOnly } from './EjectConf
 import { ContentType } from '../types';
 import { ViewOnly } from './ViewOnly';
 import { EjectButton } from './EjectButton';
+import { redirectAfterWalletSelectedThunk } from 'src/actions/wallet/addWalletThunk';
 
 const RelativeContainer = styled.div`
     position: relative;
@@ -83,16 +88,16 @@ interface WalletInstanceProps {
     instance: AcquiredDevice;
     enabled: boolean;
     selected: boolean;
-    selectDeviceInstance: (params: { device: TrezorDevice }) => void;
     index: number; // used only in data-test
+    onCancel: ForegroundAppProps['onCancel'];
 }
 
 export const WalletInstance = ({
     instance,
     enabled,
     selected,
-    selectDeviceInstance,
     index,
+    onCancel,
     ...rest
 }: WalletInstanceProps) => {
     const [contentType, setContentType] = useState<null | ContentType>('default');
@@ -100,7 +105,7 @@ export const WalletInstance = ({
     const currentFiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
-
+    const dispatch = useDispatch();
     const discoveryProcess = useSelector(state =>
         selectDiscoveryByDeviceState(state, instance.state),
     );
@@ -124,6 +129,14 @@ export const WalletInstance = ({
         e.stopPropagation();
     };
 
+    const handleClick = () => {
+        if (!editing) {
+            dispatch(selectDeviceThunk({ device: instance }));
+            dispatch(redirectAfterWalletSelectedThunk());
+            onCancel(false);
+        }
+    };
+
     return (
         <RelativeContainer>
             <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
@@ -131,7 +144,7 @@ export const WalletInstance = ({
                 data-test={dataTestBase}
                 key={`${instance.label}${instance.instance}${instance.state}`}
                 paddingType="small"
-                onClick={() => !editing && selectDeviceInstance({ device: instance })}
+                onClick={handleClick}
                 tabIndex={0}
                 {...rest}
             >
@@ -142,7 +155,7 @@ export const WalletInstance = ({
                         <InstanceType $isSelected={isSelected}>
                             {!instance.useEmptyPassphrase && (
                                 <Tooltip content={<Translation id="TR_WALLET_PASSPHRASE_WALLET" />}>
-                                    <Icon icon="ASTERISK" color="textDefault" size={12} />
+                                    <Icon icon="ASTERISK" size={12} />
                                 </Tooltip>
                             )}
                             {instance.state ? (
