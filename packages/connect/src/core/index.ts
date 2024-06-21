@@ -1053,6 +1053,7 @@ export class Core extends EventEmitter {
                 popupPromise.resolve();
                 break;
             case POPUP.CLOSED:
+                popupPromise.clear();
                 onPopupClosed(message.payload ? message.payload.error : null);
                 break;
 
