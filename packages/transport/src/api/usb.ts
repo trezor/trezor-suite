@@ -42,6 +42,14 @@ export class UsbApi extends AbstractApi {
         this.usbInterface.onconnect = event => {
             this.logger?.debug(`usb: onconnect: ${this.formatDeviceForLog(event.device)}`);
             const [_hidDevices, nonHidDevices] = this.filterDevices([event.device]);
+
+            _hidDevices.forEach(() => {
+                // hidDevices that do not support webusb. these are very very old. we used to emit unreadable
+                // device for these but I am not sure if it is still worth the effort.
+                this.logger?.error(
+                    `usb: unreadable hid device connected. device: ${this.formatDeviceForLog(event.device)}`,
+                );
+            });
             if (nonHidDevices.length) {
                 this.devices = [...this.devices, ...this.createDevices(nonHidDevices)];
                 this.emit('transport-interface-change', this.devicesToDescriptors());
