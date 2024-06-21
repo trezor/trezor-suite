@@ -34,14 +34,7 @@ export class UdpTransport extends AbstractApiTransport {
     }
 
     public listen() {
-        const enumerateRecursive = () => {
-            if (!this.listening) return;
-
-            this.enumerateTimeout = setTimeout(() => {
-                this.enumerate().promise.finally(enumerateRecursive);
-            }, 500);
-        };
-        enumerateRecursive();
+        this.api.listen();
 
         return super.listen();
     }
