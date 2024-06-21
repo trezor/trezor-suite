@@ -5,6 +5,11 @@ import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceR
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { Translation } from '../../../Translation';
 import { passwordMismatchResetThunk } from '@suite-common/wallet-core';
+import {
+    addWalletThunk,
+    redirectAfterWalletSelectedThunk,
+} from 'src/actions/wallet/addWalletThunk';
+import { WalletType } from '@suite-common/wallet-types';
 
 export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) => {
     const { isLocked, device } = useDevice();
@@ -18,6 +23,8 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
 
     const onStartOver = () => {
         dispatch(passwordMismatchResetThunk({ device }));
+        dispatch(addWalletThunk({ walletType: WalletType.PASSPHRASE }));
+        dispatch(redirectAfterWalletSelectedThunk());
         onCancel();
     };
 
