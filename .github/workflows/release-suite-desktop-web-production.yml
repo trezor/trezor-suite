@@ -17,7 +17,7 @@ on:
         required: false
         type: boolean
         default: false
-      destkopReleaseChannel:
+      desktopReleaseChannel:
         description: "Release channel for Suite desktop auto-update"
         required: false
         type: choice
@@ -36,7 +36,7 @@ on:
 
 jobs:
   sync-canary-suite-desktop:
-    if: ${{ github.event.inputs.publishDesktopProduction == 'true' }} && ${{ github.event.inputs.destkopReleaseChannel == 'canary' }} && github.repository == 'trezor/trezor-suite-release'
+    if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'canary' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-desktop canary"
     environment: suite-production
     runs-on: ubuntu-latest
@@ -53,7 +53,7 @@ jobs:
           aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/canary/*"
 
   sync-latest-suite-desktop:
-    if: ${{ github.event.inputs.publishDesktopProduction == 'true' }} && ${{ github.event.inputs.destkopReleaseChannel == 'latest' }} && github.repository == 'trezor/trezor-suite-release'
+    if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'latest' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Syncing suite-desktop latest"
     environment: suite-production
     runs-on: ubuntu-latest
@@ -72,8 +72,8 @@ jobs:
           aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/latest/*"
 
   sync-staging-website:
-    if: ${{ github.event.inputs.publishWebProduction == true }} && github.repository == 'trezor/trezor-suite-release'
-    name: "Syncing suite-desktop canary"
+    if: ${{ github.event.inputs.publishWebProduction == 'true' && github.repository == 'trezor/trezor-suite-release' }}
+    name: "Syncing suite-web staging to production"
     environment: suite-production
     runs-on: ubuntu-latest
     steps:
@@ -89,7 +89,7 @@ jobs:
           aws cloudfront create-invalidation --distribution-id E4TDVEWU4P4CY --paths "/*"
 
   update-prod-staging-percentage:
-    if: ${{ github.event.inputs.updateStagingPercentage == true }} && github.repository == 'trezor/trezor-suite-release'
+    if: ${{ github.event.inputs.updateStagingPercentage == 'true' && github.repository == 'trezor/trezor-suite-release' }}
     name: "Update staging percentage"
     environment: suite-production
     runs-on: ubuntu-latest
