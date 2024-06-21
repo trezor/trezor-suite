@@ -49,7 +49,7 @@ jobs:
 
       - name: Sync suite-desktop canary
         run: |
-          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://data.trezor.io/suite/releases/desktop/canary/
+          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/canary/ s3://data.trezor.io/suite/releases/desktop/canary/
           aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/canary/*"
 
   sync-latest-suite-desktop:
