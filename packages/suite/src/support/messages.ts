@@ -8946,7 +8946,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes {count, plural, one {# day} few {# days} other {# days}}. Once completed, you can trade or send it.',
+            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send it.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
@@ -8986,7 +8986,7 @@ export default defineMessages({
     TR_STAKE_ENTERING_POOL_MAY_TAKE: {
         id: 'TR_STAKE_ENTERING_POOL_MAY_TAKE',
         defaultMessage:
-            'Entering the staking pool may take up to {count, plural, one {# day} few {# days} other {# days}}',
+            'Entering the staking pool may take up to {count, plural, one {# day} other {# days}}',
     },
     TR_STAKE_ETH_WILL_BE_BLOCKED: {
         id: 'TR_STAKE_ETH_WILL_BE_BLOCKED',
