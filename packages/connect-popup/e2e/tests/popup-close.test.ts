@@ -404,3 +404,48 @@ test('popup should close when third party is closed', async ({ page, context }) 
     log('Wait for popup to close to consider the test successful.');
     await popupClosedPromise;
 });
+
+test('popup should behave properly with subsequent calls', async ({ page, context }) => {
+    test.skip(skipCheck);
+
+    log(`test: ${test.info().title}`);
+    await setup({ page, context });
+
+    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.api.pressYes();
+    await TrezorUserEnvLink.api.pressYes();
+
+    popupClosedPromise = new Promise(resolve => {
+        popup.on('close', () => resolve(undefined));
+    });
+    await popupClosedPromise;
+
+    await explorerPage.goto(formatUrl(explorerUrl, `test/index.html`));
+    await waitAndClick(explorerPage, ['@testpage/init']);
+    await waitAndClick(explorerPage, ['@testpage/subsequentCalls']);
+    log('waiting for popup open');
+
+    [popup] = await waitForPopup(browserContext, explorerPage, isWebExtension);
+
+    popupClosedPromise = new Promise(resolve => {
+        popup.on('close', () => resolve(undefined));
+    });
+    await popupClosedPromise;
+
+    log('waiting for second popup open');
+    [popup] = await waitForPopup(browserContext, explorerPage, isWebExtension);
+
+    popupClosedPromise = new Promise(resolve => {
+        popup.on('close', () => resolve(undefined));
+    });
+
+    log('waiting for permissions button');
+    await waitAndClick(popup, ['@permissions/confirm-button']);
+
+    log('waiting for confirm button');
+    await popup.waitForSelector('button.confirm', { state: 'visible' });
+    await popup.click('button.confirm');
+
+    log('Wait for popup to close to consider the test successful.');
+    await popupClosedPromise;
+});

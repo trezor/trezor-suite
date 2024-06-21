@@ -5,5 +5,9 @@
     "settings": {
         "title": "Settings",
         "display": "hidden"
+    },
+    "test": {
+        "title": "Test",
+        "display": "hidden"
     }
 }
