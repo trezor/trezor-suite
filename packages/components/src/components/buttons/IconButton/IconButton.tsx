@@ -41,6 +41,7 @@ export const IconButton = ({
     iconSize,
     isDisabled = false,
     isLoading = false,
+    onClick,
     ...rest
 }: IconButtonProps) => {
     const theme = useTheme();
@@ -56,6 +57,12 @@ export const IconButton = ({
 
     const Loader = <Spinner size={getIconSize(size)} />;
 
+    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (onClick === undefined) return;
+        onClick(e);
+        e.stopPropagation();
+    };
+
     return (
         <Tooltip
             content={label}
@@ -68,6 +75,7 @@ export const IconButton = ({
                 $size={size}
                 disabled={isDisabled || isLoading}
                 $elevation={elevation}
+                onClick={handleClick}
                 {...rest}
             >
                 {!isLoading && icon && IconComponent}

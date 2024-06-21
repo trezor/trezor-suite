@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-import { Button, Column, Tooltip } from '@trezor/components';
+import { Button, Column, HotkeyBadge, Row, Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite';
 import { TrezorDevice, AcquiredDevice, ForegroundAppProps } from 'src/types/suite';
@@ -77,7 +77,10 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                             isDisabled={isLocked}
                             onClick={() => onAddWallet({ walletType: WalletType.PASSPHRASE })}
                         >
-                            <Translation id="TR_ADD_HIDDEN_WALLET" />
+                            <Row gap={spacings.xs}>
+                                <Translation id="TR_ADD_HIDDEN_WALLET" />{' '}
+                                <HotkeyBadge hotkey={['CTRL', 'KEY_P']} />
+                            </Row>
                         </Button>
                     )}
                 </Column>

@@ -1,6 +1,7 @@
-import { createDeviceInstanceThunk, selectDevice } from '@suite-common/wallet-core';
+import { selectDevice } from '@suite-common/wallet-core';
 import { useEvent } from 'react-use';
-import { goto } from 'src/actions/suite/routerActions';
+import { closeModalApp, goto } from 'src/actions/suite/routerActions';
+import { addWalletThunk } from 'src/actions/wallet/addWalletThunk';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 
 export const useAppShortcuts = () => {
@@ -12,8 +13,9 @@ export const useAppShortcuts = () => {
 
         // press CMD + P to show PassphraseModal
         if (modKey && e.key === 'p' && device) {
-            dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
-            e.preventDefault(); // prevent default behavior
+            dispatch(addWalletThunk({ walletType: 'passphrase' }));
+            dispatch(closeModalApp());
+            e.preventDefault();
         }
 
         // press CMD + D to show SwitchDevice
@@ -25,7 +27,7 @@ export const useAppShortcuts = () => {
                     },
                 }),
             );
-            e.preventDefault(); // prevent default behavior
+            e.preventDefault();
         }
     });
 };

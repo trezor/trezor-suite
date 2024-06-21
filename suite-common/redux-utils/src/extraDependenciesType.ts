@@ -56,6 +56,8 @@ export type ExtraDependencies = {
                 }
             >;
         }>;
+        openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
+        addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType }>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
