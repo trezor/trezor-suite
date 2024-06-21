@@ -1,4 +1,4 @@
-import { Button, H3, Text } from '@trezor/components';
+import { Button, H3, Column, Text } from '@trezor/components';
 
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
@@ -27,12 +27,14 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
     return (
         <SwitchDeviceRenderer isCancelable={false} data-test="@passphrase-mismatch">
             <CardWithDevice device={device} isCloseButtonVisible={false}>
-                <H3 margin={{ top: 12 }}>
-                    <Translation id="TR_PASSPHRASE_MISMATCH" />
-                </H3>
-                <Text color="textSubdued">
-                    <Translation id="TR_PASSPHRASE_MISMATCH_DESCRIPTION" />
-                </Text>
+                <Column gap={8} margin={{ bottom: 32 }} alignItems="center">
+                    <H3 margin={{ top: 12 }}>
+                        <Translation id="TR_PASSPHRASE_MISMATCH" />
+                    </H3>
+                    <Text variant="tertiary">
+                        <Translation id="TR_PASSPHRASE_MISMATCH_DESCRIPTION" />
+                    </Text>
+                </Column>
 
                 <Button
                     variant="primary"
