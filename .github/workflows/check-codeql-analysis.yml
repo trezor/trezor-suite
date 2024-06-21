@@ -14,6 +14,7 @@ concurrency:
 
 jobs:
   code-ql-analyze:
+    if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
     name: Analyze with CodeQL
     runs-on: ubuntu-latest
     permissions:
