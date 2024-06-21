@@ -5,7 +5,6 @@ import {
     selectIsDiscoveryAuthConfirmationRequired,
     onPassphraseSubmit,
     selectDeviceModel,
-    cancelPassphraseSelectionThunk,
 } from '@suite-common/wallet-core';
 import { useSelector, useDispatch } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';

@@ -1,16 +1,14 @@
 import { Button, H3, Column, Text } from '@trezor/components';
 
-import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
+import { useDevice, useDispatch } from 'src/hooks/suite';
 import { SwitchDeviceRenderer } from 'src/views/suite/SwitchDevice/SwitchDeviceRenderer';
 import { CardWithDevice } from 'src/views/suite/SwitchDevice/CardWithDevice';
 import { Translation } from '../../../Translation';
-import { selectSuiteSettings } from '../../../../../reducers/suite/suiteReducer';
-import { deviceActions } from '@suite-common/wallet-core';
+import { passwordMismatchResetThunk } from '@suite-common/wallet-core';
 
 export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) => {
     const { isLocked, device } = useDevice();
     const dispatch = useDispatch();
-    const settings = useSelector(selectSuiteSettings);
 
     const isDeviceLocked = isLocked();
 
@@ -19,8 +17,7 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
     }
 
     const onStartOver = () => {
-        dispatch(deviceActions.forgetDevice({ device, settings }));
-        dispatch(deviceActions.selectDevice(device));
+        dispatch(passwordMismatchResetThunk({ device }));
         onCancel();
     };
 

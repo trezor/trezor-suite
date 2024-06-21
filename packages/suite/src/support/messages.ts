@@ -3368,7 +3368,8 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_MISMATCH',
     },
     TR_PASSPHRASE_MISMATCH_DESCRIPTION: {
-        defaultMessage: 'The passphrases didn’t match. For security, start from the beginning and re-enter them carefully.',
+        defaultMessage:
+            'The passphrases didn’t match. For security, start from the beginning and re-enter them carefully.',
         id: 'TR_PASSPHRASE_MISMATCH_DESCRIPTION',
     },
     TR_PASSPHRASE_MISMATCH_START_OVER: {
