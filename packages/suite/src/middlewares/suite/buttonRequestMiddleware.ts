@@ -38,6 +38,7 @@ const buttonRequest =
 
         // firmware bug https://github.com/trezor/trezor-firmware/issues/35
         // ugly hack to make Cardano review modal work
+        // ugly hack to make Ethereum staking and bump fee review modal on specific devices work
         // root cause of this bug is wrong button request ButtonRequest_Other from CardanoSignTx - should be ButtonRequest_SignTx
         if (action.type === UI.REQUEST_BUTTON && action.payload.code === 'ButtonRequest_Other') {
             const {
@@ -46,15 +47,16 @@ const buttonRequest =
                 },
                 router: { route },
             } = api.getState();
-            if (account?.networkType === 'cardano' || account?.networkType === 'ethereum') {
-                if (route?.name === 'wallet-send' || route?.name === 'wallet-staking') {
-                    api.dispatch({
-                        ...action,
-                        payload: { ...action.payload, code: 'ButtonRequest_SignTx' },
-                    });
+            if (
+                ['cardano', 'ethereum'].includes(account?.networkType || '') &&
+                ['wallet-send', 'wallet-staking', 'wallet-index'].includes(route?.name || '')
+            ) {
+                api.dispatch({
+                    ...action,
+                    payload: { ...action.payload, code: 'ButtonRequest_SignTx' },
+                });
 
-                    return action;
-                }
+                return action;
             }
         }
 
