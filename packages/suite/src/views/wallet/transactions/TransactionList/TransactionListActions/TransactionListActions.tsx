@@ -6,7 +6,6 @@ import { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from 're
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { Account } from '@suite-common/wallet-types';
 import { AccountLabels } from '@suite-common/metadata-types';
 
@@ -95,18 +94,16 @@ export const TransactionListActions = ({
 
     return (
         <Wrapper>
-            {isFeatureFlagEnabled('SEARCH_TRANSACTIONS') && (
-                <SearchAction
-                    tooltipText="TR_TRANSACTIONS_SEARCH_TOOLTIP"
-                    placeholder="TR_SEARCH_TRANSACTIONS"
-                    isExpanded={isExpanded}
-                    searchQuery={searchQuery}
-                    setExpanded={setExpanded}
-                    setSearch={setSearch}
-                    onSearch={onSearch}
-                    dataTest="@wallet/accounts/search-icon"
-                />
-            )}
+            <SearchAction
+                tooltipText="TR_TRANSACTIONS_SEARCH_TOOLTIP"
+                placeholder="TR_SEARCH_TRANSACTIONS"
+                isExpanded={isExpanded}
+                searchQuery={searchQuery}
+                setExpanded={setExpanded}
+                setSearch={setSearch}
+                onSearch={onSearch}
+                dataTest="@wallet/accounts/search-icon"
+            />
             {isExportable && (
                 <ExportAction
                     account={account}

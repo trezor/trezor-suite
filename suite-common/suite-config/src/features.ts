@@ -9,7 +9,6 @@ export const FLAGS = {
     RBF: true, // replace by fee feature in the send form
     FILE_SYSTEM_SYNC: false, // File system sync (used for labeling)
     ONION_LOCATION_META: true, // Show TOR onion-location meta tag in page head
-    SEARCH_TRANSACTIONS: true, // Display search option on transactions
     DESKTOP_AUTO_UPDATER: true, // Runs auto updater code on desktop
 } as const;
 
