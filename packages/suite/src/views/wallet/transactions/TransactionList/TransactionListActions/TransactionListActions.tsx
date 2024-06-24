@@ -34,7 +34,6 @@ export const TransactionListActions = ({
     const [isExpanded, setExpanded] = useState(false);
     const [hasFetchedAll, setHasFetchedAll] = useState(false);
 
-    const inputRef = useRef<HTMLInputElement | null>(null);
     const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
@@ -65,32 +64,6 @@ export const TransactionListActions = ({
         },
         [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
     );
-
-    const onSearchKeys = useCallback(
-        (event: KeyboardEvent) => {
-            if (
-                inputRef.current &&
-                (event.ctrlKey || event.metaKey) &&
-                event.key === KEYBOARD_CODE.LETTER_F
-            ) {
-                event.preventDefault();
-                inputRef.current.focus();
-            }
-        },
-        [inputRef],
-    );
-
-    useEffect(() => {
-        setHasFetchedAll(false);
-        setExpanded(false);
-        setSearch('');
-
-        document.addEventListener('keydown', onSearchKeys);
-
-        return () => {
-            document.removeEventListener('keydown', onSearchKeys);
-        };
-    }, [account.symbol, account.index, account.accountType, setSearch, onSearchKeys]);
 
     return (
         <Wrapper>
