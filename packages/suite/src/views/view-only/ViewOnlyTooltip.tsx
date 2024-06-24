@@ -34,6 +34,7 @@ export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
 
     return (
         <Tooltip
+            hasArrow
             isOpen={isViewOnlyModeVisible === true && viewOnlyTooltipClosed === false}
             shift={{ padding: { left: 10 } }}
             zIndex={zIndices.navigationBar}
