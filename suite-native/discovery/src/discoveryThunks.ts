@@ -24,10 +24,10 @@ import { AccountType, Network, NetworkSymbol, getNetworkType } from '@suite-comm
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 import { requestDeviceAccess } from '@suite-native/device-mutex';
 import { analytics, EventType } from '@suite-native/analytics';
-import { isDevelopOrDebugEnv } from '@suite-native/config';
+import { FeatureFlag, selectIsFeatureFlagEnabled } from '@suite-native/feature-flags';
 
 import {
-    selectDisabledDiscoveryNetworkSymbolsForDevelopment,
+    selectEnabledDiscoveryNetworkSymbols,
     selectDiscoveryStartTimeStamp,
     selectDiscoverySupportedNetworks,
     setDiscoveryStartTimestamp,
@@ -526,13 +526,16 @@ export const startDescriptorPreloadedDiscoveryThunk = createThunk(
         }
 
         let supportedNetworks = selectDiscoverySupportedNetworks(getState(), areTestnetsEnabled);
+        const enabledNetworkSymbols = selectEnabledDiscoveryNetworkSymbols(getState());
+        const isCoinEnablingActive = selectIsFeatureFlagEnabled(
+            getState(),
+            FeatureFlag.IsCoinEnablingActive,
+        );
 
-        // For development purposes, you can disable some networks to have quicker discovery in dev utils
-        if (isDevelopOrDebugEnv()) {
-            const disabledNetworkSymbols =
-                selectDisabledDiscoveryNetworkSymbolsForDevelopment(getState());
-            supportedNetworks = supportedNetworks.filter(
-                n => !disabledNetworkSymbols.includes(n.symbol),
+        // If FF is active, Filter out networks that are not enabled
+        if (isCoinEnablingActive) {
+            supportedNetworks = supportedNetworks.filter(n =>
+                enabledNetworkSymbols.includes(n.symbol),
             );
         }
 

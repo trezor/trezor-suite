@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { VStack, Text, HStack, Switch, Card } from '@suite-native/atoms';
 import {
     selectAreTestnetsEnabled,
-    selectDisabledDiscoveryNetworkSymbolsForDevelopment,
+    selectEnabledDiscoveryNetworkSymbols,
     selectDiscoverySupportedNetworks,
-    toggleDisabledDiscoveryNetworkSymbolsForDevelopment,
+    toggleEnabledDiscoveryNetworkSymbols,
 } from '@suite-native/discovery';
 import { DeviceRootState } from '@suite-common/wallet-core';
 import { NetworkSymbol } from '@suite-common/wallet-config';
@@ -15,12 +15,12 @@ export const DiscoveryCoinsFilter = () => {
     const networks = useSelector((state: DeviceRootState) =>
         selectDiscoverySupportedNetworks(state, areTestnetsEnabled),
     );
-    const disabledNetworkSymbols = useSelector(selectDisabledDiscoveryNetworkSymbolsForDevelopment);
+    const enabledNetworkSymbols = useSelector(selectEnabledDiscoveryNetworkSymbols);
 
     const dispatch = useDispatch();
 
     const handleSwitchChange = (network: NetworkSymbol) => {
-        dispatch(toggleDisabledDiscoveryNetworkSymbolsForDevelopment(network));
+        dispatch(toggleEnabledDiscoveryNetworkSymbols(network));
     };
 
     const uniqueNetworkSymbols = [...new Set(networks.map(n => n.symbol))];
@@ -28,14 +28,14 @@ export const DiscoveryCoinsFilter = () => {
     return (
         <Card>
             <VStack spacing="small">
-                <Text variant="titleSmall">Disable discovery of networks</Text>
+                <Text variant="titleSmall">Enable discovery of networks</Text>
                 <VStack>
                     {uniqueNetworkSymbols.map((network: NetworkSymbol) => (
                         <HStack justifyContent="space-between" key={network}>
                             <Text>{network.toUpperCase()}</Text>
                             <Switch
                                 onChange={() => handleSwitchChange(network)}
-                                isChecked={!disabledNetworkSymbols.includes(network)}
+                                isChecked={enabledNetworkSymbols.includes(network)}
                             />
                         </HStack>
                     ))}

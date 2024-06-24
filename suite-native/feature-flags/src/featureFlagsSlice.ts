@@ -8,6 +8,7 @@ export const FeatureFlag = {
     IsPassphraseEnabled: 'isPassphraseEnabled',
     IsSendEnabled: 'isSendEnabled',
     IsRegtestEnabled: 'isRegtestEnabled',
+    IsCoinEnablingActive: 'isCoinEnablingActive',
 } as const;
 export type FeatureFlag = (typeof FeatureFlag)[keyof typeof FeatureFlag];
 
@@ -22,6 +23,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsPassphraseEnabled]: isDebugEnv(),
     [FeatureFlag.IsSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
+    [FeatureFlag.IsCoinEnablingActive]: isDebugEnv(),
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
@@ -29,6 +31,7 @@ export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
     FeatureFlag.IsPassphraseEnabled,
     FeatureFlag.IsSendEnabled,
     FeatureFlag.IsRegtestEnabled,
+    FeatureFlag.IsCoinEnablingActive,
 ];
 
 export const featureFlagsSlice = createSlice({
