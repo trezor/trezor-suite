@@ -1,6 +1,7 @@
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { createCooldown } from '@trezor/utils';
+import { ZIndexValues, zIndices } from '@trezor/theme';
 
 type Direction = 'top' | 'left' | 'right' | 'bottom';
 type Directions = Array<Direction>;
@@ -15,35 +16,30 @@ export type ResizableBoxProps = {
     height?: number;
     minHeight?: number;
     maxHeight?: number;
+    zIndex?: ZIndexValues;
 };
 
-type ResizersProps = {
+type ResizerHandlersProps = {
+    $highlightDirection: Direction | null;
+    $zIndex?: ZIndexValues;
+};
+
+type ResizersProps = ResizerHandlersProps & {
     $width?: number;
     $minWidth?: number;
     $maxWidth?: number;
     $height?: number;
     $minHeight?: number;
     $maxHeight?: number;
-
-    $highlightDirection?: Direction | null;
     $isResizing?: boolean;
 };
 
 const MINIMAL_BOX_SIZE = 1;
-const REACTIVE_AREA_WIDTH = 15;
+const REACTIVE_AREA_WIDTH = 16;
+const BORDER_WIDTH = 4;
 
 const Resizers = styled.div<ResizersProps>(
-    ({
-        $width,
-        $minWidth,
-        $maxWidth,
-        $height,
-        $minHeight,
-        $maxHeight,
-        $highlightDirection,
-        $isResizing,
-        theme,
-    }) => `
+    ({ $width, $minWidth, $maxWidth, $height, $minHeight, $maxHeight, $isResizing }) => `
         ${$width ? `width: ${$width}px;` : 'width: auto;'};
         ${$minWidth && `min-width: ${$minWidth}px;`};
         ${$maxWidth && `max-width: ${$maxWidth}px;`};
@@ -52,67 +48,116 @@ const Resizers = styled.div<ResizersProps>(
         ${$maxHeight && `max-height: ${$maxHeight}px;`};
         box-sizing: border-box;
         position: relative;
+        ${
+            $isResizing &&
+            `user-select: none;
+            -webkit-user-select: none;`
+        };
+    `,
+);
 
-        ${$isResizing && `user-select: none;`};
+const handlersCommonStyles = css`
+    position: absolute;
+
+    &::after {
+        position: absolute;
+        content: '';
+        display: block;
+        pointer-events: none;
+    }
+`;
+
+const TopHandler = styled.div<ResizerHandlersProps>(
+    ({ $highlightDirection, $zIndex, theme }) => `
+        ${handlersCommonStyles};
+        width: 100%;
+        height: ${REACTIVE_AREA_WIDTH}px;
+        cursor: ns-resize;
+        top: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
+        z-index: ${$zIndex};
 
         &::after {
-            content:'';
-            position: absolute;
-            top: 0;
-            left: 0;
-            display:block;
+            top: calc(50% - ${BORDER_WIDTH / 2}px);
             width: 100%;
-            height: 100%;
-            pointer-events: none;
             ${
-                $highlightDirection !== null
-                    ? `border-${$highlightDirection}: 3px solid ${theme.borderFocus};`
-                    : ''
+                $highlightDirection === 'top' &&
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
             };
         }
     `,
 );
 
-const TopHandler = styled.div`
-    position: absolute;
-    width: 100%;
-    height: ${REACTIVE_AREA_WIDTH}px;
-    cursor: ns-resize;
-    top: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
-`;
+const BottomHandler = styled.div<ResizerHandlersProps>(
+    ({ $highlightDirection, $zIndex, theme }) => `
+        ${handlersCommonStyles};
+        width: 100%;
+        height: ${REACTIVE_AREA_WIDTH}px;
+        cursor: ns-resize;
+        bottom: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
+        z-index: ${$zIndex};
 
-const BottomHandler = styled.div`
-    position: absolute;
-    width: 100%;
-    height: ${REACTIVE_AREA_WIDTH}px;
-    cursor: ns-resize;
-    bottom: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
-`;
+        &::after {
+            bottom: calc(50% - ${BORDER_WIDTH / 2}px);
+            width: 100%;
+            ${
+                $highlightDirection === 'bottom' &&
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+            };
+        }
+    `,
+);
 
-const LeftHandler = styled.div`
-    position: absolute;
-    width: ${REACTIVE_AREA_WIDTH}px;
-    height: 100%;
-    bottom: 0;
-    cursor: ew-resize;
-    left: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
-`;
+const LeftHandler = styled.div<ResizerHandlersProps>(
+    ({ $highlightDirection, $zIndex, theme }) => `
+        ${handlersCommonStyles};
+        width: ${REACTIVE_AREA_WIDTH}px;
+        height: 100%;
+        cursor: ew-resize;
+        bottom: 0;
+        left: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
+        z-index: ${$zIndex};
 
-const RightHandler = styled.div`
-    position: absolute;
-    width: ${REACTIVE_AREA_WIDTH}px;
-    height: 100%;
-    bottom: 0;
-    cursor: ew-resize;
-    right: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
-`;
+        &::after {
+            left: calc(50% - ${BORDER_WIDTH / 2}px);
+            height: 100%;
+            ${
+                $highlightDirection === 'left' &&
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+            };
+        }
+    `,
+);
 
-const Child = styled(Resizers)`
+const RightHandler = styled.div<ResizerHandlersProps>(
+    ({ $highlightDirection, $zIndex, theme }) => `
+        ${handlersCommonStyles};
+        width: ${REACTIVE_AREA_WIDTH}px;
+        height: 100%;
+        cursor: ew-resize;
+        bottom: 0;
+        right: ${`-${REACTIVE_AREA_WIDTH / 2}px`};
+        z-index: ${$zIndex};
+
+        &::after {
+            right: calc(50% - ${BORDER_WIDTH / 2}px);
+            height: 100%;
+            ${
+                $highlightDirection === 'right' &&
+                `border-${$highlightDirection}: ${BORDER_WIDTH}px solid ${theme.borderFocus};`
+            };
+        }
+    `,
+);
+
+const Child = styled(Resizers)(
+    ({ $isResizing }) => `
     position: relative;
     width: 100%;
     height: 100%;
     overflow: auto;
-`;
+    ${$isResizing && `overflow: hidden;`};
+`,
+);
 
 const ensureMinimalSize = (size: number): number =>
     size < MINIMAL_BOX_SIZE ? MINIMAL_BOX_SIZE : size;
@@ -132,6 +177,7 @@ export const ResizableBox = ({
     height,
     minHeight = 0,
     maxHeight,
+    zIndex = zIndices.draggableComponent,
 }: ResizableBoxProps) => {
     const resizableBoxRef = useRef<HTMLDivElement>(null);
 
@@ -142,6 +188,7 @@ export const ResizableBox = ({
     const [isResizing, setIsResizing] = useState<boolean>(false);
     const [isHovering, setIsHovering] = useState<boolean>(false);
     const [direction, setDirection] = useState<Direction | null>(null);
+    const [isMaxHeight, setIsMaxHeight] = useState<boolean>(false);
 
     const resizeCooldown = createCooldown(150);
 
@@ -214,37 +261,54 @@ export const ResizableBox = ({
             if (newHeight === 0) {
                 setNewHeight(rect.height);
             }
+
+            setIsMaxHeight(Math.floor(rect.height) === window.innerHeight);
         }
 
         document.onmousemove = event => {
-            if (isResizing === true && direction !== null && resizeCooldown() === true) {
+            if (isResizing && direction !== null && resizeCooldown() === true) {
                 resize(event);
             }
         };
 
         document.onmouseup = () => setIsResizing(false);
-    }, [direction, isResizing, newHeight, newWidth, resizableBoxRef, resize, resizeCooldown]);
+
+        window.onresize = () => {
+            if (isMaxHeight && resizeCooldown() === true) {
+                setNewHeight(maxHeight || window.innerHeight);
+            }
+        };
+    }, [
+        direction,
+        isMaxHeight,
+        isResizing,
+        maxHeight,
+        newHeight,
+        newWidth,
+        resizableBoxRef,
+        resize,
+        resizeCooldown,
+    ]);
 
     const handleMouseOverDirection = (direction: Direction) => {
-        if (isResizing === false) {
+        if (!isResizing) {
             setIsHovering(true);
             setDirection(direction);
         }
     };
 
-    const highlightDirection = () =>
-        isHovering === true || isResizing === true ? direction : null;
+    const highlightDirection = isHovering || isResizing ? direction : null;
 
     const handleMouseOver = (direction: Direction) => () => handleMouseOverDirection(direction);
 
     const handleMouseDown = (direction: Direction) => () => startResizing(direction);
 
     const handleMouseOut = () => {
-        if (isHovering === true) {
+        if (isHovering) {
             setIsHovering(false);
         }
 
-        if (isResizing !== true && direction !== null) {
+        if (!isResizing && direction !== null) {
             setDirection(null);
         }
     };
@@ -254,6 +318,8 @@ export const ResizableBox = ({
             onMouseDown: handleMouseDown(direction),
             onMouseOver: handleMouseOver(direction),
             onMouseOut: handleMouseOut,
+            $highlightDirection: highlightDirection,
+            $zIndex: zIndex,
         };
     };
 
@@ -266,10 +332,13 @@ export const ResizableBox = ({
             $minHeight={minHeight}
             $maxHeight={maxHeight}
             ref={resizableBoxRef}
-            $highlightDirection={highlightDirection()}
+            $highlightDirection={highlightDirection}
             $isResizing={isResizing}
+            $zIndex={zIndex}
         >
-            <Child>{children}</Child>
+            <Child $isResizing={isResizing} $highlightDirection={highlightDirection}>
+                {children}
+            </Child>
             {!isLocked && (
                 <>
                     {directions.includes('top') && <TopHandler {...divsProps('top')} />}

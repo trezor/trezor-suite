@@ -16,7 +16,6 @@ const Wrapper = styled.div`
 const Content = styled.div<{ $color: string }>`
     background: ${({ $color }) => $color};
     padding: 10px;
-    border-radius: 8px;
     font-weight: 900;
     width: 100%;
     height: 100%;

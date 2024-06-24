@@ -11,7 +11,6 @@ const Container = styled.div`
 const Content = styled.div`
     background: green;
     padding: 10px;
-    border-radius: 8px;
     font-weight: 900;
     width: 100%;
     height: 100%;
