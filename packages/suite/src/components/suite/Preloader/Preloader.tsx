@@ -75,7 +75,8 @@ export const Preloader = ({ children }: PreloaderProps) => {
         router.route?.app !== 'settings' &&
         !initialRun &&
         !viewOnlyPromoClosed &&
-        selectedDevice?.connected === true
+        selectedDevice?.connected === true &&
+        selectedDevice?.remember !== true
     ) {
         return <ViewOnlyPromo />;
     }
