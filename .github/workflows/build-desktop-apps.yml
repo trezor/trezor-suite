@@ -60,6 +60,8 @@ jobs:
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{ matrix.platform }} suite-desktop
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
@@ -115,6 +117,8 @@ jobs:
           yarn workspace @trezor/transport-bridge build:lib
 
       - name: Build ${{env.platform}} suite-desktop
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn workspace @trezor/suite-desktop build:${{env.platform}}
           bash packages/suite-desktop-core/scripts/gnupg-sign.sh
