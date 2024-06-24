@@ -5,6 +5,7 @@ import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import {
     selectIsSettingsDesktopAppPromoBannerShown,
+    selectSuiteFlags,
     selectTorState,
 } from 'src/reducers/suite/suiteReducer';
 import { selectEnabledNetworks } from 'src/reducers/wallet/settingsReducer';
@@ -27,12 +28,14 @@ import { EarlyAccess } from './EarlyAccess';
 import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
+import { EnableViewOnly } from './EnableViewOnly';
 
 export const SettingsGeneral = () => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
         selectIsSettingsDesktopAppPromoBannerShown,
     );
 
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
     const desktopUpdate = useSelector(state => state.desktopUpdate);
@@ -84,6 +87,12 @@ export const SettingsGeneral = () => {
                 <ClearStorage />
                 <VersionWithUpdate />
             </SettingsSection>
+
+            {isViewOnlyModeVisible && (
+                <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
+                    <EnableViewOnly />
+                </SettingsSection>
+            )}
 
             {desktopUpdate.enabled && (
                 <SettingsSection

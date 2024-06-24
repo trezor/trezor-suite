@@ -10,7 +10,6 @@ import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { StakeEthCard } from './components/StakeEthCard/StakeEthCard';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { DashboardPassphraseBanner } from './components/DashboardPassphraseBanner';
-import { Column } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
@@ -30,11 +29,9 @@ export const Dashboard = () => {
 
     return (
         <Wrapper data-test="@dashboard/index">
+            <DashboardPassphraseBanner />
             <PortfolioCard />
-            <Column gap={8}>
-                <T3T1PromoBanner />
-                <DashboardPassphraseBanner />
-            </Column>
+            <T3T1PromoBanner />
             <AssetsView />
             {!isViewOnlyModeVisible && <SecurityFeatures />}
             <StakeEthCard />
