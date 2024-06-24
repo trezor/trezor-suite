@@ -27,7 +27,6 @@ import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
-import { EnableViewOnly } from './EnableViewOnly';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
 import { HapticFeedback } from './HapticFeedback';
@@ -134,14 +133,8 @@ export const SettingsDevice = () => {
             )}
 
             {isViewOnlyModeVisible && (
-                <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
-                    <EnableViewOnly />
-                </SettingsSection>
-            )}
-
-            {isViewOnlyModeVisible && (
                 <SettingsSection
-                    title={<Translation id="TR_DEVICE_SETTINGS_APPLICATION" />}
+                    title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
                     icon="APP"
                 >
                     <DefaultWalletLoading />

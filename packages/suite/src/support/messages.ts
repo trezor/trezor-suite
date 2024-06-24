@@ -9285,6 +9285,10 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_APPLICATION',
         defaultMessage: 'Application',
     },
+    TR_DEVICE_SETTINGS_WALLET_LOADING: {
+        id: 'TR_DEVICE_SETTINGS_WALLET_LOADING',
+        defaultMessage: 'Wallet loading',
+    },
     TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE: {
         id: 'TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_TITLE',
         defaultMessage: 'Default wallet loading',

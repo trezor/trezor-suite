@@ -57,10 +57,10 @@ export const DashboardPassphraseBanner = () => {
                     {...bannerAnimationConfig}
                     onAnimationComplete={handleClose}
                 >
-                    <Warning variant="secondary">
+                    <Warning variant="tertiary">
                         <Row justifyContent="space-between" alignItems="center" gap={16} flex={1}>
                             <Column gap={4} alignItems="flex-start" flex={1}>
-                                <H3>
+                                <H3 color="textDefault">
                                     <Translation id="TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE" />
                                 </H3>
                                 <Text color="textDefaultInverted">
