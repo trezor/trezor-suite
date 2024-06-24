@@ -193,19 +193,19 @@ describe('Usb', () => {
             const spy = jest.fn();
             transport.on('transport-update', spy);
 
-            transport.handleDescriptorsChange([{ path: '1', session: null }]);
+            transport.handleDescriptorsChange([{ path: '1', session: null, type: 1 }]);
 
             expect(spy).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    connected: [{ path: '1', session: null }],
+                    connected: [{ path: '1', session: null, type: 1 }],
                     didUpdate: true,
-                    descriptors: [{ path: '1', session: null }],
+                    descriptors: [{ path: '1', session: null, type: 1 }],
                 }),
             );
             transport.handleDescriptorsChange([]);
             expect(spy).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    disconnected: [{ path: '1', session: null }],
+                    disconnected: [{ path: '1', session: null, type: 1 }],
                     didUpdate: true,
                     descriptors: [],
                 }),
@@ -275,7 +275,7 @@ describe('Usb', () => {
             const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
 
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [{ path: '321', session: '1' }]);
+                sessionsClient.emit('descriptors', [{ path: '321', session: '1', type: 1 }]);
             }, 1);
 
             const res = await acquireCall.promise;
@@ -301,7 +301,7 @@ describe('Usb', () => {
             // set some initial descriptors
             const acquireCall = transport.acquire({ input: { path: '123', previous: null } });
             setTimeout(() => {
-                sessionsClient.emit('descriptors', [{ path: '123', session: '2' }]);
+                sessionsClient.emit('descriptors', [{ path: '123', session: '2', type: 1 }]);
             }, 1);
 
             const res = await acquireCall.promise;

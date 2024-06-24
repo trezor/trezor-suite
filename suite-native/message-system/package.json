@@ -7,6 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
@@ -20,10 +21,8 @@
         "@suite-native/atoms": "workspace:*",
         "@suite-native/intl": "workspace:*",
         "@suite-native/link": "workspace:*",
-        "@suite-native/navigation": "workspace:*",
         "@trezor/styles": "workspace:*",
         "@trezor/theme": "workspace:*",
-        "proxy-memoize": "2.0.2",
         "react": "18.2.0",
         "react-native": "0.74.1",
         "react-native-reanimated": "3.11.0",

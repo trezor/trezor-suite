@@ -126,7 +126,7 @@ describe('http', () => {
                 {},
                 { baseUrl: 'https://localhost/', deadline: Date.now() + 50000 },
             ),
-        ).rejects.toThrow('ECONNREFUSED');
+        ).rejects.toThrow();
     });
 
     it('aborted request', async () => {

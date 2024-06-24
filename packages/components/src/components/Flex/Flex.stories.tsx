@@ -9,6 +9,7 @@ import {
 } from './Flex';
 import { spacings } from '@trezor/theme';
 import styled from 'styled-components';
+import { framePropsStory } from '../common/frameProps';
 
 const Container = styled.div`
     width: 100%;
@@ -36,9 +37,9 @@ const args: Partial<FlexProps> = {
     ],
 
     gap: 8,
-    margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
     flexWrap: 'wrap',
     isReversed: false,
+    ...framePropsStory.args,
 };
 const argTypes: Partial<ArgTypes<FlexProps>> = {
     justifyContent: {
@@ -71,11 +72,7 @@ const argTypes: Partial<ArgTypes<FlexProps>> = {
             type: 'select',
         },
     },
-    margin: {
-        table: {
-            category: 'Frame props',
-        },
-    },
+    ...framePropsStory.argTypes,
 };
 
 const meta: Meta = {

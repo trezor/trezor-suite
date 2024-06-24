@@ -25,6 +25,7 @@ import { CoinjoinAccountAction } from 'src/actions/wallet/coinjoinAccountActions
 import { CoinjoinClientAction } from 'src/actions/wallet/coinjoinClientActions';
 import { NETWORKS } from 'src/config/wallet';
 import { CoinmarketInfoAction } from 'src/actions/wallet/coinmarketInfoActions';
+import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
 
 export type Network = ArrayElement<typeof NETWORKS>;
 export type NetworkSymbol = Network['symbol'];
@@ -60,6 +61,9 @@ export type AccountItemType = 'coin' | 'tokens' | 'staking';
 this action union types are bad, we need it only for legacy reason.
 (old redux and redux/toolkit action type compatibility e.g. in middlewares)
  */
+type TokenDefinitionsAction = ReturnType<
+    (typeof tokenDefinitionsActions)[keyof typeof tokenDefinitionsActions]
+>;
 type AccountsAction = ReturnType<(typeof accountsActions)[keyof typeof accountsActions]>;
 type BlockchainAction = ReturnType<(typeof blockchainActions)[keyof typeof blockchainActions]>;
 type DiscoveryAction = ReturnType<(typeof discoveryActions)[keyof typeof discoveryActions]>;
@@ -67,6 +71,7 @@ type StakeAction = ReturnType<(typeof stakeActions)[keyof typeof stakeActions]>;
 type SendFormAction = ReturnType<(typeof sendFormActions)[keyof typeof sendFormActions]>;
 
 export type WalletAction =
+    | TokenDefinitionsAction
     | BlockchainAction
     | ReceiveAction
     | SignVerifyAction

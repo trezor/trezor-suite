@@ -7,10 +7,10 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
-        "@mobily/ts-belt": "^3.13.1",
-        "csstype": "^3.1.2"
+        "@mobily/ts-belt": "^3.13.1"
     }
 }

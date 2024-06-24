@@ -3,17 +3,10 @@
     "compilerOptions": { "outDir": "libDev" },
     "references": [
         { "path": "../../suite-common/icons" },
-        {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
         { "path": "../intl" },
         { "path": "../storage" },
         { "path": "../../packages/env-utils" },
         { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" },
-        { "path": "../../packages/utils" }
+        { "path": "../../packages/theme" }
     ]
 }

@@ -27,9 +27,11 @@ import { SafetyChecks } from './SafetyChecks';
 import { WipeCode } from './WipeCode';
 import { WipeDevice } from './WipeDevice';
 import { ChangeLanguage } from './ChangeLanguage';
-import { EnableViewOnly } from './EnableViewOnly';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { isRecoveryInProgress } from '../../../utils/device/isRecoveryInProgress';
+import { HapticFeedback } from './HapticFeedback';
+import { Brightness } from './Brightness';
+import { DefaultWalletLoading } from './DefaultWalletLoading';
 
 const deviceSettingsUnavailable = (device?: TrezorDevice, transport?: Partial<TransportInfo>) => {
     const noTransportAvailable = transport && !transport.type;
@@ -131,8 +133,11 @@ export const SettingsDevice = () => {
             )}
 
             {isViewOnlyModeVisible && (
-                <SettingsSection title={<Translation id="TR_VIEW_ONLY" />} icon="LINK">
-                    <EnableViewOnly />
+                <SettingsSection
+                    title={<Translation id="TR_DEVICE_SETTINGS_WALLET_LOADING" />}
+                    icon="APP"
+                >
+                    <DefaultWalletLoading />
                 </SettingsSection>
             )}
 
@@ -161,6 +166,8 @@ export const SettingsDevice = () => {
                         <DeviceLabel isDeviceLocked={isDeviceLocked} />
                         <Homescreen isDeviceLocked={isDeviceLocked} />
                         <DisplayRotation isDeviceLocked={isDeviceLocked} />
+                        <Brightness isDeviceLocked={isDeviceLocked} />
+                        <HapticFeedback isDeviceLocked={isDeviceLocked} />
                         {pinProtection && <AutoLock isDeviceLocked={isDeviceLocked} />}
                     </SettingsSection>
                 </>

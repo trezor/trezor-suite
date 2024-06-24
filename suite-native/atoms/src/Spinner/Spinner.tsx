@@ -1,8 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useRef, useState } from 'react';
 
 import Lottie from 'lottie-react-native';
+import LottieView from 'lottie-react-native';
 
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+
+const ANIMATION_SPEED = 1.5;
 
 export type SpinnerLoadingState = 'success' | 'error' | 'idle';
 type SpinnerProps = {
@@ -10,60 +13,51 @@ type SpinnerProps = {
     onComplete?: () => void;
 };
 
-const successSpinnerStyle = prepareNativeStyle(_ => ({
+const spinnerStyle = prepareNativeStyle(_ => ({
     width: 50,
     height: 50,
 }));
 
 const animationsMap = {
-    start: {
-        source: require('./refresh-spinner-start.json'),
-        duration: 2_000,
-    },
-    idle: {
-        source: require('./refresh-spinner-middle.json'),
-        duration: 1_000,
-    },
-    success: {
-        source: require('./refresh-spinner-end-success.json'),
-        duration: 3_000,
-    },
-    error: {
-        source: require('./refresh-spinner-end-warning.json'),
-        duration: 3_000,
-    },
+    start: require('./refresh-spinner-start.json'),
+    idle: require('./refresh-spinner-middle.json'),
+    success: require('./refresh-spinner-end-success.json'),
+    error: require('./refresh-spinner-end-warning.json'),
 };
 type AnimationName = keyof typeof animationsMap;
 
 export const Spinner = ({ loadingState, onComplete }: SpinnerProps) => {
+    const animationRef = useRef<LottieView>(null);
     const [currentAnimation, setCurrentAnimation] = useState<AnimationName>('start');
     const { applyStyle } = useNativeStyles();
 
-    useEffect(() => {
-        // Clear timeout happens straight after the timeout function is called to simplify code because
-        // the timeout is in the if block, meaning it wouldn't be available in the useEffect cleanup function.
+    const handleAnimationFinish = () => {
         if (currentAnimation === 'start') {
-            const timeout = setTimeout(() => {
-                setCurrentAnimation('idle');
-                clearTimeout(timeout);
-            }, animationsMap[currentAnimation].duration);
+            setCurrentAnimation('idle');
         } else if (currentAnimation === 'idle') {
             setCurrentAnimation(loadingState);
-        } else if (currentAnimation === 'success' || currentAnimation === 'error') {
-            const timeout = setTimeout(() => {
-                onComplete?.();
-                clearTimeout(timeout);
-            }, animationsMap[loadingState].duration);
         }
-    }, [currentAnimation, loadingState, onComplete]);
+
+        if (currentAnimation === 'success' || currentAnimation === 'error') {
+            onComplete?.();
+
+            return;
+        }
+
+        // Play the next loop of the animation.
+        animationRef.current?.play();
+    };
 
     return (
         <Lottie
-            source={animationsMap[currentAnimation].source}
             autoPlay
-            loop={currentAnimation === 'idle'}
-            style={applyStyle(successSpinnerStyle)}
             resizeMode="cover"
+            loop={false}
+            ref={animationRef}
+            speed={ANIMATION_SPEED}
+            source={animationsMap[currentAnimation]}
+            onAnimationFinish={handleAnimationFinish}
+            style={applyStyle(spinnerStyle)}
         />
     );
 };

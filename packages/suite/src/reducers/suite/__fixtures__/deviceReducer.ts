@@ -1,6 +1,12 @@
+import { TrezorDevice } from '@suite-common/suite-types';
 import { testMocks } from '@suite-common/test-utils';
-import { authorizeDeviceThunk, deviceActions } from '@suite-common/wallet-core';
+import {
+    ConnectDeviceSettings,
+    authorizeDeviceThunk,
+    deviceActions,
+} from '@suite-common/wallet-core';
 import { DEVICE } from '@trezor/connect';
+import { DeepPartial } from '@trezor/type-utils';
 
 const { getConnectDevice, getSuiteDevice } = testMocks;
 
@@ -8,16 +14,37 @@ const { getConnectDevice, getSuiteDevice } = testMocks;
 const CONNECT_DEVICE = getConnectDevice();
 const SUITE_DEVICE = getSuiteDevice();
 
-const connect = [
+type Fixture<TAction> = {
+    description: string;
+    actions: TAction[];
+    initialState: any;
+    result: DeepPartial<TrezorDevice>[];
+};
+
+const SUITE_SETTINGS: ConnectDeviceSettings = {
+    defaultWalletLoading: 'standard',
+    isViewOnlyModeVisible: false,
+};
+
+const connect: Fixture<
+    | ReturnType<typeof deviceActions.connectDevice>
+    | ReturnType<typeof deviceActions.connectUnacquiredDevice>
+>[] = [
     {
         description: 'Connect device (0 connected, 0 affected)',
         initialState: { devices: [] },
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -39,9 +66,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -69,9 +102,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -94,9 +133,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -125,9 +170,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -159,9 +210,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -191,9 +248,15 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT,
-                payload: getConnectDevice({
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -225,10 +288,16 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT_UNACQUIRED,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -251,10 +320,16 @@ const connect = [
         actions: [
             {
                 type: DEVICE.CONNECT_UNACQUIRED,
-                payload: getConnectDevice({
-                    type: 'unacquired',
-                    path: '1',
-                }),
+                payload: {
+                    device: getConnectDevice({
+                        type: 'unacquired',
+                        path: '1',
+                    }),
+                    settings: {
+                        defaultWalletLoading: 'standard',
+                        isViewOnlyModeVisible: false,
+                    },
+                },
             },
         ],
         result: [
@@ -282,7 +357,7 @@ const disconnect = [
                 payload: getConnectDevice({
                     path: '1',
                 }),
-            },
+            } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [],
     },
@@ -295,7 +370,7 @@ const disconnect = [
             {
                 type: DEVICE.DISCONNECT,
                 payload: CONNECT_DEVICE,
-            },
+            } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [],
     },
@@ -316,7 +391,7 @@ const disconnect = [
                 payload: getConnectDevice({
                     path: '1',
                 }),
-            },
+            } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [
             {
@@ -350,7 +425,7 @@ const disconnect = [
                 payload: getConnectDevice({
                     path: '1',
                 }),
-            },
+            } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [
             {
@@ -393,7 +468,7 @@ const disconnect = [
                 payload: getConnectDevice({
                     path: '1',
                 }),
-            },
+            } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [
             {
@@ -422,7 +497,7 @@ const disconnect = [
                     type: 'unacquired',
                     path: '1',
                 }),
-            },
+            } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [],
     },
@@ -433,13 +508,13 @@ const disconnect = [
             {
                 type: DEVICE.DISCONNECT,
                 payload: CONNECT_DEVICE,
-            },
+            } satisfies ReturnType<typeof deviceActions.deviceDisconnect>,
         ],
         result: [],
     },
 ];
 
-const changed = [
+const changed: Fixture<ReturnType<typeof deviceActions.deviceChanged>>[] = [
     {
         description: `Change status available > occupied (using path)`,
         initialState: {
@@ -592,7 +667,11 @@ const changed = [
     },
 ];
 
-const updateTimestamp = [
+const updateTimestamp: Array<
+    Fixture<ReturnType<typeof deviceActions.selectDevice>> & {
+        ts: number[];
+    }
+> = [
     {
         description: `Select device (1 connected, 1 affected)`,
         initialState: { devices: [SUITE_DEVICE] },
@@ -705,6 +784,7 @@ const updateTimestamp = [
         actions: [
             {
                 type: deviceActions.selectDevice.type,
+                payload: undefined,
             },
         ],
         result: [],
@@ -724,7 +804,7 @@ const updateTimestamp = [
     },
 ];
 
-const changePassphraseMode = [
+const changePassphraseMode: Fixture<ReturnType<typeof deviceActions.updatePassphraseMode>>[] = [
     {
         description: `Receive passphrase mode: true > false`,
         initialState: { devices: [SUITE_DEVICE] },
@@ -815,9 +895,17 @@ const changePassphraseMode = [
             {
                 type: deviceActions.updatePassphraseMode.type,
                 payload: {
-                    device: getConnectDevice({
-                        type: 'unacquired',
-                    }),
+                    device: {
+                        ...getConnectDevice({
+                            type: 'unacquired',
+                        }),
+                        useEmptyPassphrase: false,
+                        connected: true,
+                        available: true,
+                        ts: 1,
+                        buttonRequests: [],
+                        metadata: {},
+                    },
                     hidden: false,
                 },
             },
@@ -844,6 +932,7 @@ const changePassphraseMode = [
     },
 ];
 
+// Todo: this is not working, dunno why: Fixture<ReturnType<typeof authorizeDeviceThunk.fulfilled>>[]
 const authDevice = [
     {
         description: `Auth device`,
@@ -964,7 +1053,7 @@ const authDevice = [
     },
 ];
 
-const forget = [
+const forget: Fixture<ReturnType<typeof deviceActions.forgetDevice>>[] = [
     {
         description: `Forget multiple instances (2 connected, 5 instances, 3 affected, last instance remains with undefined state)`,
         initialState: {
@@ -986,15 +1075,21 @@ const forget = [
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: getSuiteDevice({ instance: 1 }),
+                payload: {
+                    device: getSuiteDevice({ instance: 1 }),
+                    settings: SUITE_SETTINGS,
+                },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: SUITE_DEVICE,
+                payload: { device: SUITE_DEVICE, settings: SUITE_SETTINGS },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: getSuiteDevice({ connected: true, instance: 3 }),
+                payload: {
+                    device: getSuiteDevice({ connected: true, instance: 3 }),
+                    settings: SUITE_SETTINGS,
+                },
             },
         ],
         result: [
@@ -1038,17 +1133,20 @@ const forget = [
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: getSuiteDevice({ instance: 3 }),
+                payload: { device: getSuiteDevice({ instance: 3 }), settings: SUITE_SETTINGS },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: getSuiteDevice(undefined, {
-                    device_id: 'ignored-device-id',
-                }),
+                payload: {
+                    device: getSuiteDevice(undefined, {
+                        device_id: 'ignored-device-id',
+                    }),
+                    settings: SUITE_SETTINGS,
+                },
             },
             {
                 type: deviceActions.forgetDevice.type,
-                payload: SUITE_DEVICE,
+                payload: { device: SUITE_DEVICE, settings: SUITE_SETTINGS },
             },
         ],
         result: [
@@ -1072,9 +1170,12 @@ const forget = [
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: getSuiteDevice({
-                    type: 'unacquired',
-                }),
+                payload: {
+                    device: getSuiteDevice({
+                        type: 'unacquired',
+                    }),
+                    settings: SUITE_SETTINGS,
+                },
             },
         ],
         result: [
@@ -1089,25 +1190,14 @@ const forget = [
         actions: [
             {
                 type: deviceActions.forgetDevice.type,
-                payload: SUITE_DEVICE,
+                payload: { device: SUITE_DEVICE, settings: SUITE_SETTINGS },
             },
         ],
         result: [],
     },
 ];
 
-const remember = [
-    {
-        description: `Remember undefined device`,
-        initialState: { devices: [SUITE_DEVICE] },
-        actions: [
-            {
-                type: deviceActions.rememberDevice.type,
-                payload: {},
-            },
-        ],
-        result: [SUITE_DEVICE],
-    },
+const remember: Fixture<ReturnType<typeof deviceActions.rememberDevice>>[] = [
     {
         description: `Remember unacquired device`,
         initialState: { devices: [SUITE_DEVICE] },
@@ -1116,6 +1206,8 @@ const remember = [
                 type: deviceActions.rememberDevice.type,
                 payload: {
                     device: getSuiteDevice({ type: 'unacquired' }),
+                    remember: false,
+                    forceRemember: undefined,
                 },
             },
         ],
@@ -1130,6 +1222,7 @@ const remember = [
                 payload: {
                     device: SUITE_DEVICE,
                     remember: true,
+                    forceRemember: undefined,
                 },
             },
         ],
@@ -1167,6 +1260,7 @@ const remember = [
                         state: 'abc',
                     }),
                     remember: true,
+                    forceRemember: undefined,
                 },
             },
         ],
@@ -1214,6 +1308,7 @@ const remember = [
                         state: 'abc',
                     }),
                     remember: true,
+                    forceRemember: undefined,
                 },
             },
             {
@@ -1224,6 +1319,7 @@ const remember = [
                         instance: 3,
                     }),
                     remember: true,
+                    forceRemember: undefined,
                 },
             },
         ],

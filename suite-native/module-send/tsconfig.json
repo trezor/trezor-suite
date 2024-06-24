@@ -23,7 +23,6 @@
         { "path": "../formatters" },
         { "path": "../forms" },
         { "path": "../navigation" },
-        { "path": "../../packages/styles" },
         { "path": "../../packages/utils" }
     ]
 }

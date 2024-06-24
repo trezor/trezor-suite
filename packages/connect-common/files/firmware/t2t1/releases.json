@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [2, 7, 2],
+        "min_firmware_version": [2, 0, 8],
+        "min_bootloader_version": [2, 0, 0],
+        "bootloader_version": [2, 1, 4],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR"],
+        "url": "firmware/t2t1/trezor-t2t1-2.7.2.bin",
+        "url_bitcoinonly": "firmware/t2t1/trezor-t2t1-2.7.2-bitcoinonly.bin",
+        "fingerprint": "d64fcf47a8ead6edf0329583e312136d1548d30990c29cfaa2ce7c67197babcc",
+        "fingerprint_bitcoinonly": "cba515383705ec6420c54dd1ffdb33ea7ce4bb04bc6d992c2923880daa53d3e1",
+        "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
+    },
+    {
+        "required": false,
         "version": [2, 7, 0],
         "min_firmware_version": [2, 0, 8],
         "min_bootloader_version": [2, 0, 0],

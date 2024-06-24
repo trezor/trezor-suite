@@ -1,4 +1,5 @@
 import { DeviceModelInternal } from '@trezor/connect';
+
 import {
     MAX_ROWS_PER_PAGE,
     MAX_CHARACTERS_ON_ROW,
@@ -52,10 +53,26 @@ export const parseTextToPagesAndLines = ({
     deviceModel,
     text,
 }: ParseTextToLinesParams): ParseTextToLinesResult => {
+    const getCharsPerRow = (): number => {
+        // T1B1 has varying row length depending on address type.
+        if (deviceModel === DeviceModelInternal.T1B1) {
+            switch (text.length) {
+                // legacy addresses and legacy segwit addresses:
+                case 34:
+                    return 17;
+                // legacy segwit testnet addresses:
+                case 35:
+                    return 18;
+            }
+        }
+
+        return MAX_CHARACTERS_ON_ROW[deviceModel];
+    };
+
     const rowsPerPage = MAX_ROWS_PER_PAGE[deviceModel];
-    const charsPerRow = MAX_CHARACTERS_ON_ROW[deviceModel];
     const offsetForContinuesArrows = CHARACTER_OFFSET_FOR_CONTINUES_ARROW[deviceModel];
     const offsetForNextArrows = CHARACTER_OFFSET_FOR_NEXT_ARROW[deviceModel];
+    const charsPerRow = getCharsPerRow();
 
     const charsOnLastPage = rowsPerPage * charsPerRow - offsetForNextArrows;
 

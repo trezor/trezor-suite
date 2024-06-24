@@ -1,6 +1,6 @@
 {
     "name": "@trezor/connect-web",
-    "version": "9.2.4",
+    "version": "9.2.5-beta.1",
     "author": "Trezor <info@trezor.io>",
     "homepage": "https://github.com/trezor/trezor-suite/tree/develop/packages/connect-web",
     "description": "High-level javascript interface for Trezor hardware wallet in web environment.",
@@ -30,9 +30,10 @@
     "scripts": {
         "predev": "node webpack/generate_dev_cert.js",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest",
-        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
+        "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib && cp ./src/webextension/trezor-usb-permissions.html ./lib/webextension/trezor-usb-permissions.html",
         "dev": "yarn g:rimraf build && TS_NODE_PROJECT=\"tsconfig.lib.json\" yarn webpack --config ./webpack/dev.webpack.config.ts",
         "build:inline": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/inline.webpack.config.ts",
         "build:webextension": "TS_NODE_PROJECT=\"tsconfig.lib.json\" webpack --config ./webpack/prod.webpack.config.ts",
@@ -44,8 +45,7 @@
     "dependencies": {
         "@trezor/connect": "workspace:*",
         "@trezor/connect-common": "workspace:*",
-        "@trezor/utils": "workspace:*",
-        "events": "^3.3.0"
+        "@trezor/utils": "workspace:*"
     },
     "devDependencies": {
         "@babel/preset-typescript": "^7.23.3",

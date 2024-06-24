@@ -55,7 +55,7 @@ export default class SolanaGetAddress extends AbstractMethod<'solanaGetAddress',
 
     get info() {
         if (this.params.length === 1) {
-            return 'Export solana address';
+            return 'Export Solana address';
         }
 
         return 'Export multiple Solana addresses';

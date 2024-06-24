@@ -1,6 +1,6 @@
 import { NetworkSymbol } from '@suite-common/wallet-config';
 
-import { DefinitionType } from '../types';
+import { DefinitionType } from '../tokenDefinitionsTypes';
 
 export const caseContractAddressForNetworkFixtures = [
     {
@@ -92,5 +92,78 @@ export const getSupportedDefinitionTypesFixtures = [
         networkSymbol: 'ltc' as NetworkSymbol,
         features: [],
         result: [],
+    },
+];
+
+export const buildTokenDefinitionsFromStorageFixtures = [
+    {
+        testName: 'Builds token definitions from storage for eth network',
+        storage: [
+            {
+                key: 'eth-coin-hide',
+                value: ['0xA', '0xB'],
+            },
+            {
+                key: 'eth-coin-show',
+                value: ['0xC', '0xD'],
+            },
+            {
+                key: 'eth-nft-hide',
+                value: ['0xE', '0xF'],
+            },
+            {
+                key: 'eth-nft-show',
+                value: ['0xG', '0xH'],
+            },
+        ],
+        result: {
+            eth: {
+                coin: {
+                    error: false,
+                    data: undefined,
+                    isLoading: false,
+                    hide: ['0xA', '0xB'],
+                    show: ['0xC', '0xD'],
+                },
+                nft: {
+                    error: false,
+                    data: undefined,
+                    isLoading: false,
+                    hide: ['0xE', '0xF'],
+                    show: ['0xG', '0xH'],
+                },
+            },
+        },
+    },
+    {
+        testName: 'Builds token definitions from storage for sol network',
+        storage: [
+            {
+                key: 'sol-coin-hide',
+                value: ['0xA', '0xB'],
+            },
+            {
+                key: 'sol-coin-show',
+                value: ['0xC', '0xD'],
+            },
+        ],
+        result: {
+            sol: {
+                coin: {
+                    error: false,
+                    data: undefined,
+                    isLoading: false,
+                    hide: ['0xA', '0xB'],
+                    show: ['0xC', '0xD'],
+                },
+                nft: {
+                    error: false,
+                    data: undefined,
+                    isLoading: false,
+                    hide: [],
+                    show: [],
+                },
+            },
+        },
     },
 ];

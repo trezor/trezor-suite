@@ -6,14 +6,7 @@
             "path": "../../suite-common/suite-types"
         },
         {
-            "path": "../../suite-common/wallet-config"
-        },
-        {
             "path": "../../suite-common/wallet-core"
-        },
-        {
-            "path": "../../suite-common/wallet-types"
-        },
-        { "path": "../../packages/utxo-lib" }
+        }
     ]
 }

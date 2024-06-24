@@ -6,7 +6,9 @@ import { ButtonSize, ButtonVariant } from '../buttonStyleUtils';
 import { IconButton, IconButtonProps } from '../IconButton/IconButton';
 import { Tooltip, TooltipProps } from '../../Tooltip/Tooltip';
 
-const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
+const Container = styled.div<{
+    $variant?: Exclude<ButtonVariant, 'danger'>;
+}>`
     position: relative;
     display: flex;
     align-items: center;
@@ -25,7 +27,8 @@ const Container = styled.div<{ $variant?: Exclude<ButtonVariant, 'danger'> }>`
         border-radius: 0 ${borders.radii.full} ${borders.radii.full} 0;
     }
 
-    > :not(:last-child) {
+    > button:not(:last-child, :is([disabled])),
+    > div:not(:last-child) button:not(:is([disabled])) {
         position: relative;
 
         &::after {
@@ -65,7 +68,6 @@ interface ButtonGroupProps {
     isDisabled?: boolean;
     className?: string;
     children: React.ReactElement<AllowedChildrenPropsType | TooltipProps>[];
-    withTooltips?: boolean;
 }
 
 export const ButtonGroup = ({

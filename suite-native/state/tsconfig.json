@@ -35,7 +35,6 @@
         { "path": "../passphrase" },
         { "path": "../settings" },
         { "path": "../storage" },
-        { "path": "../toasts" },
         { "path": "../../packages/connect" },
         {
             "path": "../../packages/transport-native"

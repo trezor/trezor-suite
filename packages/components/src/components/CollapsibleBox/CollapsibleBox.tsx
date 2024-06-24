@@ -22,10 +22,14 @@ const animationVariants = {
     closed: {
         opacity: 0,
         height: 0,
+        transitionEnd: {
+            display: 'none',
+        },
     },
     expanded: {
         opacity: 1,
         height: 'auto',
+        display: 'block',
     },
 };
 

@@ -1,3 +1,4 @@
+import { DeviceModelInternal } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
 import { SettingsSectionItem } from 'src/components/settings';
@@ -14,6 +15,9 @@ const DISPLAY_ROTATIONS = [
     { label: <Translation id="TR_WEST" />, value: 270 },
 ] as const;
 
+// features.display_rotation cannot be used to determine support because can be defined for devices not supporting rotation (e.g. T2B1).
+const DEVICES_SUPPORTING_ROTATION = [DeviceModelInternal.T2T1, DeviceModelInternal.T3T1];
+
 interface DisplayRotationProps {
     isDeviceLocked: boolean;
 }
@@ -21,11 +25,16 @@ interface DisplayRotationProps {
 export const DisplayRotation = ({ isDeviceLocked }: DisplayRotationProps) => {
     const dispatch = useDispatch();
     const { device } = useDevice();
-    const currentRotation = device?.features?.display_rotation;
 
-    if (typeof currentRotation !== 'number') {
+    const isSupported =
+        device?.features !== undefined &&
+        DEVICES_SUPPORTING_ROTATION.includes(device.features.internal_model);
+
+    if (!isSupported) {
         return null;
     }
+
+    const currentRotation = device?.features?.display_rotation;
 
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.DisplayRotation}>

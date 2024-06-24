@@ -152,6 +152,7 @@ export const InstallBridge = () => {
                         </BridgeDesktopNote>
                     )}
                 </Version>
+                {/* TODO: use flagship when new image available */}
                 <StyledImage image={`BRIDGE_CHECK_TREZOR_${DeviceModelInternal.T2T1}`} />
                 {isLoading ? (
                     <LoaderWrapper data-test="@bridge/loading">

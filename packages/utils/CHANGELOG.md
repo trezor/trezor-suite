@@ -1,3 +1,8 @@
+# 9.0.25-beta.1
+
+-   feat(utils): mergeDeepObject with dot notation (1a5b0e2a0f)
+-   chore(utils): move Throttler util from blockchain-link to utils (78673bd14c)
+
 # 9.0.24
 
 -   chore: BigNumber wrapper (d18ba9a879)

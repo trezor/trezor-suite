@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { IconName } from '@suite-common/icons';
+import { IconName, IconSize } from '@suite-common/icons';
 import { Icon } from '@suite-common/icons/src/webComponents';
 import { ExtendedMessageDescriptor, TranslationKey } from '@suite-common/intl-types';
 import { Elevation, borders, mapElevationToBackground, spacingsPx } from '@trezor/theme';
@@ -11,6 +11,10 @@ import { goto } from 'src/actions/suite/routerActions';
 import { MouseEvent } from 'react';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 import { useElevation } from '@trezor/components';
+
+const StyledIcon = styled(Icon)`
+    pointer-events: none;
+`;
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
@@ -25,12 +29,14 @@ export const NavigationItemBase = styled.div.attrs(() => ({
         color 0.15s,
         background 0.15s;
     cursor: pointer;
-
     border: 1px solid transparent;
     ${getFocusShadowStyle()}
 `;
 
-const Container = styled(NavigationItemBase)<{ $elevation: Elevation; $isActive?: boolean }>`
+const Container = styled(NavigationItemBase)<{
+    $elevation: Elevation;
+    $isActive?: boolean;
+}>`
     ${({ theme, $isActive }) =>
         $isActive
             ? css<{ $elevation: Elevation }>`
@@ -53,6 +59,10 @@ const Container = styled(NavigationItemBase)<{ $elevation: Elevation; $isActive?
               `}
 `;
 
+const Count = styled.div`
+    color: ${({ theme }) => theme.textSubdued};
+`;
+
 export interface NavigationItemProps {
     nameId: TranslationKey;
     icon: IconName;
@@ -63,6 +73,8 @@ export interface NavigationItemProps {
     dataTest?: string;
     className?: string;
     values?: ExtendedMessageDescriptor['values'];
+    iconSize?: IconSize;
+    itemsCount?: number;
 }
 
 export const NavigationItem = ({
@@ -75,6 +87,8 @@ export const NavigationItem = ({
     className,
     values,
     preserveParams,
+    iconSize = 'large',
+    itemsCount,
 }: NavigationItemProps) => {
     const activeRoute = useSelector(selectRouteName);
     const { elevation } = useElevation();
@@ -99,8 +113,9 @@ export const NavigationItem = ({
             tabIndex={0}
             $elevation={elevation}
         >
-            <Icon name={icon} size="large" color="iconSubdued" />
+            <StyledIcon name={icon} size={iconSize} color="iconSubdued" />
             <Translation id={nameId} values={values} />
+            {itemsCount && <Count>{itemsCount}</Count>}
         </Container>
     );
 };

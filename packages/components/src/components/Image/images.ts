@@ -111,6 +111,4 @@ export const PNG_IMAGES = {
     TREZOR_T3T1_GHOST_2x: 'trezor-t3t1-ghost@2x.png',
     TREZOR_SAFE_PROMO_PRODUCTS: 'trezor-safe-promo-products.png',
     TREZOR_SAFE_PROMO_PRODUCTS_2x: 'trezor-safe-promo-products@2x.png',
-    TREZOR_SAFE_PROMO_LOGO: 'trezor-safe-promo-logo.png',
-    TREZOR_SAFE_PROMO_LOGO_2x: 'trezor-safe-promo-logo@2x.png',
 } as const;

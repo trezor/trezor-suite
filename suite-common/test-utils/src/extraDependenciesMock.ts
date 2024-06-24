@@ -65,6 +65,8 @@ export const extraDependenciesMock: ExtraDependencies = {
         addAccountMetadata: mockThunk('addAccountMetadata'),
         findLabelsToBeMovedOrDeleted: mockThunk('findLabelsToBeMovedOrDeleted'),
         moveLabelsForRbfAction: mockThunk('moveLabelsForRbfAction'),
+        addWalletThunk: mockThunk('addWalletThunk'),
+        openSwitchDeviceDialog: mockThunk('openSwitchDeviceDialog'),
     },
     selectors: {
         selectFeeInfo: (networkSymbol: any) =>
@@ -97,6 +99,10 @@ export const extraDependenciesMock: ExtraDependencies = {
             AddressDisplayOptions.CHUNKED,
         ),
         selectSelectedAccountStatus: mockSelector('selectSelectedAccountStatus', 'loaded'),
+        selectSuiteSettings: mockSelector('selectSuiteSettings', {
+            defaultWalletLoading: 'standard',
+            isViewOnlyModeVisible: false,
+        }),
     },
     actions: {
         setAccountAddMetadata: mockAction('setAccountAddMetadata'),
@@ -124,6 +130,7 @@ export const extraDependenciesMock: ExtraDependencies = {
         setDeviceMetadataReducer: mockReducer('setDeviceMetadataReducer'),
         storageLoadDevices: mockReducer('storageLoadDevices'),
         storageLoadFormDrafts: mockReducer('storageLoadFormDrafts'),
+        storageLoadTokenManagement: mockReducer('storageLoadTokenManagement'),
     },
     utils: {
         saveAs: (data, fileName) =>

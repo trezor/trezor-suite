@@ -6,8 +6,12 @@ import { ActionColumn, SectionItem, TextColumn } from 'src/components/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 export const ViewOnlySettings = () => {
-    const { viewOnlyPromoClosed, viewOnlyTooltipClosed, isViewOnlyModeVisible } =
-        useSelector(selectSuiteFlags);
+    const {
+        viewOnlyPromoClosed,
+        viewOnlyTooltipClosed,
+        isViewOnlyModeVisible,
+        isDashboardPassphraseBannerVisible,
+    } = useSelector(selectSuiteFlags);
     const dispatch = useDispatch();
 
     return (
@@ -43,6 +47,23 @@ export const ViewOnlySettings = () => {
                         isChecked={viewOnlyTooltipClosed}
                         onClick={() => {
                             dispatch(setFlag('viewOnlyTooltipClosed', !viewOnlyTooltipClosed));
+                        }}
+                    />
+                </ActionColumn>
+            </SectionItem>
+
+            <SectionItem>
+                <TextColumn title="Set isDashboardPassphraseBannerVisible" />
+                <ActionColumn>
+                    <Checkbox
+                        isChecked={isDashboardPassphraseBannerVisible}
+                        onClick={() => {
+                            dispatch(
+                                setFlag(
+                                    'isDashboardPassphraseBannerVisible',
+                                    !isDashboardPassphraseBannerVisible,
+                                ),
+                            );
                         }}
                     />
                 </ActionColumn>

@@ -18,6 +18,7 @@ import {
     selectDeviceThunk,
     handleDeviceDisconnect,
     createDeviceInstanceThunk,
+    ConnectDeviceSettings,
 } from '@suite-common/wallet-core';
 import { connectInitThunk } from '@suite-common/connect-init';
 import { DEVICE } from '@trezor/connect';
@@ -117,6 +118,11 @@ const initStore = (state: State) => {
     return store;
 };
 
+const SUITE_SETTINGS: ConnectDeviceSettings = {
+    defaultWalletLoading: 'standard',
+    isViewOnlyModeVisible: false,
+};
+
 describe('Suite Actions', () => {
     fixtures.reducerActions.forEach(f => {
         it(f.description, () => {
@@ -142,7 +148,7 @@ describe('Suite Actions', () => {
         it(`selectDevice: ${f.description}`, async () => {
             const state = getInitialState({}, f.state.device);
             const store = initStore(state);
-            await store.dispatch(selectDeviceThunk(f.device));
+            await store.dispatch(selectDeviceThunk({ device: f.device }));
             if (!f.result) {
                 expect(store.getActions().length).toEqual(0);
             } else {
@@ -197,7 +203,7 @@ describe('Suite Actions', () => {
             const actions = filterThunkActionTypes(store.getActions());
             expect(actions.length).toEqual(f.result.length);
             actions.forEach((a, i) => {
-                expect(a.payload).toMatchObject(f.result[i]);
+                expect(a.payload.device).toMatchObject(f.result[i]);
             });
         });
     });
@@ -285,7 +291,10 @@ describe('Suite Actions', () => {
             const state = getInitialState(undefined, f.state.device);
             const store = initStore(state);
             await store.dispatch(
-                createDeviceInstanceThunk({ device: f.state.device.selectedDevice }),
+                createDeviceInstanceThunk({
+                    device: f.state.device.selectedDevice,
+                    useEmptyPassphrase: false,
+                }),
             );
             const action = store.getActions().pop();
             expect(action?.type).toEqual(f.result);
@@ -309,7 +318,9 @@ describe('Suite Actions', () => {
     // just for coverage
     it('misc', () => {
         const SUITE_DEVICE = getSuiteDevice({ path: '1' });
-        expect(deviceActions.forgetDevice(SUITE_DEVICE)).toMatchObject({
+        expect(
+            deviceActions.forgetDevice({ device: SUITE_DEVICE, settings: SUITE_SETTINGS }),
+        ).toMatchObject({
             type: deviceActions.forgetDevice.type,
         });
         expect(suiteActions.setDebugMode({ showDebugMenu: true })).toMatchObject({

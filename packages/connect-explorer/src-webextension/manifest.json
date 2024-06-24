@@ -1,12 +1,13 @@
 {
-    "name": "@trezor/connect-webextension-nextra",
+    "name": "@trezor/connect-webextension",
     "version": "1.0.0",
     "manifest_version": 3,
     "action": {
         "default_popup": "extension-popup.html"
     },
     "background": {
-        "service_worker": "serviceWorker.bundle.js"
+        "service_worker": "serviceWorker.bundle.js",
+        "type": "module"
     },
     "permissions": ["scripting"],
     "host_permissions": ["http://*/*", "https://*/*"]

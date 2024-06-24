@@ -2,14 +2,25 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { Device, DEVICE } from '@trezor/connect';
 import { ButtonRequest, TrezorDevice } from '@suite-common/suite-types';
+import { WalletType } from '@suite-common/wallet-types';
 
 export const DEVICE_MODULE_PREFIX = '@suite/device';
 
-const connectDevice = createAction(DEVICE.CONNECT, (payload: Device) => ({ payload }));
+export type ConnectDeviceSettings = {
+    defaultWalletLoading: WalletType;
+    isViewOnlyModeVisible: boolean;
+};
 
-const connectUnacquiredDevice = createAction(DEVICE.CONNECT_UNACQUIRED, (payload: Device) => ({
+export type DeviceConnectActionPayload = { device: Device; settings: ConnectDeviceSettings };
+
+const connectDevice = createAction(DEVICE.CONNECT, (payload: DeviceConnectActionPayload) => ({
     payload,
 }));
+
+const connectUnacquiredDevice = createAction(
+    DEVICE.CONNECT_UNACQUIRED,
+    (payload: { device: Device; settings: ConnectDeviceSettings }) => ({ payload }),
+);
 
 const deviceChanged = createAction(DEVICE.CHANGED, (payload: Device | TrezorDevice) => ({
     payload,
@@ -34,9 +45,11 @@ const rememberDevice = createAction(
     }),
 );
 
+export type ForgetDeviceActionPayload = { device: TrezorDevice; settings: ConnectDeviceSettings };
+
 const forgetDevice = createAction(
     `${DEVICE_MODULE_PREFIX}/forgetDevice`,
-    (payload: TrezorDevice) => ({
+    (payload: ForgetDeviceActionPayload) => ({
         payload,
     }),
 );

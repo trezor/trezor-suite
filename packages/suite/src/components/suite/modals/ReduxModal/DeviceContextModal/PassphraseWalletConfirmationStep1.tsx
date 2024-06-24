@@ -8,12 +8,12 @@ import { Dispatch } from 'react';
 
 type PassphraseWalletConfirmationStep1Props = {
     setContentType: Dispatch<React.SetStateAction<ContentType>>;
-    onCancel: () => void;
+    onRetry: () => void;
 };
 
 export const PassphraseWalletConfirmationStep1 = ({
     setContentType,
-    onCancel,
+    onRetry,
 }: PassphraseWalletConfirmationStep1Props) => (
     <>
         <PassphraseHeading>
@@ -59,13 +59,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                     <Text typographyStyle="highlight">
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_DESCRIPTION" />
                     </Text>
-                    <Button
-                        isFullWidth
-                        variant="tertiary"
-                        onClick={() => {
-                            onCancel();
-                        }}
-                    >
+                    <Button isFullWidth variant="tertiary" onClick={onRetry}>
                         <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_OPEN_WITH_FUNDS_BUTTON" />
                     </Button>
                 </Column>

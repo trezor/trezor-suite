@@ -12,13 +12,13 @@
         "sign-config": "yarn tsx ./scripts/sign-config.ts",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/redux-utils": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
-        "@suite-common/suite-utils": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/device-utils": "workspace:*",

@@ -7,13 +7,13 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@reduxjs/toolkit": "1.9.5",
         "@suite-common/redux-utils": "workspace:*",
-        "@suite-common/suite-types": "workspace:*",
         "@suite-common/token-definitions": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-constants": "workspace:*",
@@ -26,7 +26,6 @@
         "@suite-native/device": "workspace:*",
         "@suite-native/device-mutex": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/device-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "proxy-memoize": "2.0.2",
         "react": "18.2.0",

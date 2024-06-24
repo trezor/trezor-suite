@@ -1,0 +1,16 @@
+{
+    "ignore-patterns": ["libDev"],
+    "ignores": [
+        "babel*",
+        "karma*",
+        "@babel/*",
+        "@playwright/*",
+        "webpack*",
+        "worker-loader",
+        "node-libs-browser",
+        "rimraf",
+        "tslib",
+        "protobufjs-cli"
+    ],
+    "skip-missing": true
+}

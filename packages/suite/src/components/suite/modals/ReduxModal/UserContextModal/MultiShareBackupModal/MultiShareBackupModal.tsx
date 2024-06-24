@@ -4,8 +4,8 @@ import { selectDevice } from '@suite-common/wallet-core';
 import { Button, ModalProps } from '@trezor/components';
 import {
     HELP_CENTER_KEEPING_SEED_SAFE_URL,
-    HELP_CENTER_MULTI_SHARE_BACKUP_URL,
-    HELP_CENTER_SEED_CARD_URL,
+    TREZOR_SUPPORT_RECOVERY_ISSUES_URL,
+    HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL,
 } from '@trezor/urls';
 
 import { useSelector } from 'src/hooks/suite';
@@ -18,10 +18,18 @@ import { MultiShareBackupStep5Done } from './MultiShareBackupStep5Done';
 import { isAdditionalShamirBackupInProgress } from '../../../../../../utils/device/isRecoveryInProgress';
 import { MultiShareBackupStep3VerifyOwnership } from './MultiShareBackupStep3VerifyOwnership';
 import { MultiShareBackupStep4BackupSeed } from './MultiShareBackupStep4BackupSeed';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 type Steps = 'first-info' | 'second-info' | 'verify-ownership' | 'backup-seed' | 'done';
 
-export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) => {
+type MultiShareBackupModalProps = {
+    onCancel: () => void;
+};
+
+type StepConfig = Partial<ModalProps> &
+    Required<Pick<ModalProps, 'isCancelable' | 'heading' | 'children' | 'hasBackdropCancel'>>;
+
+export const MultiShareBackupModal = ({ onCancel }: MultiShareBackupModalProps) => {
     const device = useSelector(selectDevice);
 
     const isInBackupMode =
@@ -33,16 +41,34 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
     const [isChecked2, setIsChecked2] = useState(false);
     const [isSubmitted, setIsSubmitted] = useState(false);
 
+    const learnMoreClicked = () => {
+        analytics.report({
+            type: EventType.SettingsMultiShareBackup,
+            payload: { action: 'learn-more' },
+        });
+    };
+
+    const handleCancel = () => {
+        if (step !== 'done') {
+            analytics.report({
+                type: EventType.SettingsMultiShareBackup,
+                payload: { action: 'close-modal' },
+            });
+        }
+
+        onCancel();
+    };
+
     const closeWithCancelOnDevice = () => {
         TrezorConnect.cancel('cancel');
-        onCancel();
+        handleCancel();
     };
 
     if (device === undefined) {
         return;
     }
 
-    const getStepConfig = (): Partial<ModalProps> => {
+    const getStepConfig = (): StepConfig => {
         switch (step) {
             case 'first-info':
                 const goToStepNextStep = () => {
@@ -68,9 +94,15 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                             <Button onClick={goToStepNextStep}>
                                 <Translation id="TR_CREATE_MULTI_SHARE_BACKUP" />
                             </Button>
-                            <LearnMoreButton url={HELP_CENTER_SEED_CARD_URL} size="medium" />
+                            <LearnMoreButton
+                                url={HELP_CENTER_UPGRADING_TO_MULTI_SHARE_URL}
+                                size="medium"
+                                onClick={learnMoreClicked}
+                            />
                         </>
                     ),
+                    isCancelable: true,
+                    hasBackdropCancel: true,
                 };
 
             case 'second-info':
@@ -90,13 +122,18 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                         setStep('backup-seed');
                         TrezorConnect.backupDevice().then(response => {
                             if (response.success) {
+                                analytics.report({
+                                    type: EventType.SettingsMultiShareBackup,
+                                    payload: { action: 'done' },
+                                });
+
                                 setStep('done');
                             } else {
-                                onCancel();
+                                handleCancel();
                             }
                         });
                     } else {
-                        onCancel();
+                        handleCancel();
                     }
                 };
 
@@ -108,12 +145,14 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                             <Button onClick={enterBackup}>
                                 <Translation id="TR_ENTER_EXISTING_BACKUP" />
                             </Button>
-                            <LearnMoreButton url={HELP_CENTER_MULTI_SHARE_BACKUP_URL} size="medium">
+                            <LearnMoreButton url={TREZOR_SUPPORT_RECOVERY_ISSUES_URL} size="medium">
                                 <Translation id="TR_DONT_HAVE_BACKUP" />
                             </LearnMoreButton>
                         </>
                     ),
                     onBackClick: () => setStep('first-info'),
+                    isCancelable: true,
+                    hasBackdropCancel: true,
                 };
 
             case 'verify-ownership':
@@ -121,6 +160,8 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                     children: <MultiShareBackupStep3VerifyOwnership />,
                     heading: <Translation id="TR_CONFIRM_ON_TREZOR" />,
                     onCancel: closeWithCancelOnDevice,
+                    isCancelable: false, // There is a bug in FW, that prevents cancel during recovery-check
+                    hasBackdropCancel: false,
                 };
 
             case 'backup-seed':
@@ -128,6 +169,8 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                     children: <MultiShareBackupStep4BackupSeed />,
                     heading: <Translation id="TR_CONFIRM_ON_TREZOR" />,
                     onCancel: closeWithCancelOnDevice,
+                    isCancelable: true,
+                    hasBackdropCancel: false, // It is hard to get here, we don't want to cancel it by miss-click
                 };
 
             case 'done':
@@ -136,7 +179,7 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                     children: <MultiShareBackupStep5Done />,
                     bottomBarComponents: (
                         <>
-                            <Button onClick={onCancel}>
+                            <Button onClick={handleCancel}>
                                 <Translation id="TR_GOT_IT_BUTTON" />
                             </Button>
                             <LearnMoreButton url={HELP_CENTER_KEEPING_SEED_SAFE_URL} size="medium">
@@ -144,9 +187,11 @@ export const MultiShareBackupModal = ({ onCancel }: { onCancel: () => void }) =>
                             </LearnMoreButton>
                         </>
                     ),
+                    isCancelable: true,
+                    hasBackdropCancel: true,
                 };
         }
     };
 
-    return <Modal isCancelable onCancel={onCancel} {...getStepConfig()}></Modal>;
+    return <Modal onCancel={handleCancel} {...getStepConfig()}></Modal>;
 };

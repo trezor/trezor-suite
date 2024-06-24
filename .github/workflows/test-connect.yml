@@ -22,7 +22,7 @@ on:
       - "docker/**"
       - "submodules/trezor-common/**"
       - "yarn.lock"
-      - ".github/workflows/connect-test.yml"
+      - ".github/workflows/test-connect.yml"
       - ".github/workflows/template-connect-test-params.yml"
       - "docker/docker-connect-test.sh"
       - "docker/docker-compose.connect-test.yml"

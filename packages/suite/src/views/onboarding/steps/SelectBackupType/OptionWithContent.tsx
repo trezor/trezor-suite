@@ -1,4 +1,4 @@
-import { Radio, Row, variables, Text, Icon, useElevation } from '@trezor/components';
+import { Radio, Row, variables, Text, Icon, useElevation, Tooltip } from '@trezor/components';
 import { BackupType } from '../../../../reducers/onboarding/onboardingReducer';
 import { ReactNode, forwardRef } from 'react';
 import { Translation } from 'src/components/suite';
@@ -20,7 +20,7 @@ export const OptionText = styled.div`
     justify-content: center;
 `;
 
-export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean }>`
+export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean; $disabled?: boolean }>`
     display: flex;
     flex-direction: row;
 
@@ -36,6 +36,8 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean }>`
 
     align-items: center;
     cursor: pointer;
+
+    color: ${({ $disabled, theme }) => ($disabled ? theme.textSubdued : undefined)};
 
     ${({ $hasHoverInteraction }) =>
         $hasHoverInteraction === true
@@ -59,7 +61,7 @@ export const OptionStyled = styled.div<{ $hasHoverInteraction?: boolean }>`
                       border-radius: ${borders.radii.xs};
                   }
               `
-            : ''}
+            : ''};
 `;
 
 const DownIconCircle = styled.div<{ $elevation: Elevation }>`
@@ -89,11 +91,27 @@ type OptionProps = {
     onSelect: () => void;
     isChecked: boolean;
     'data-test'?: string;
+    disabled?: boolean;
 };
 
-const Option = ({ children, onSelect, isChecked, 'data-test': dataTest }: OptionProps) => (
-    <OptionStyled onClick={onSelect} $hasHoverInteraction={true}>
-        <Radio isChecked={isChecked} onClick={onSelect} data-test={dataTest} />
+const Option = ({
+    children,
+    onSelect,
+    isChecked,
+    'data-test': dataTest,
+    disabled,
+}: OptionProps) => (
+    <OptionStyled
+        onClick={disabled ? undefined : onSelect}
+        $hasHoverInteraction={!disabled}
+        $disabled={disabled}
+    >
+        <Radio
+            isChecked={isChecked}
+            onClick={onSelect}
+            data-test={dataTest}
+            isDisabled={disabled}
+        />
         {children}
     </OptionStyled>
 );
@@ -127,8 +145,10 @@ type OptionWithContentProps = {
     value: BackupType;
     selected: BackupType;
     onSelect: (value: BackupType) => void;
-    children: ReactNode;
+    children?: ReactNode;
     tags: ReactNode;
+    disabled?: boolean;
+    tooltip?: ReactNode;
 };
 
 export const OptionWithContent = ({
@@ -137,27 +157,29 @@ export const OptionWithContent = ({
     value,
     children,
     tags,
+    disabled,
+    tooltip,
 }: OptionWithContentProps) => {
     const { isMobileLayout } = useLayoutSize();
 
-    return (
+    const inner = (
         <Option
             onSelect={() => onSelect(value)}
             isChecked={selected === value}
             data-test={`@onboarding/select-seed-type-${value}`}
+            disabled={disabled}
         >
             <OptionText>
                 <Row alignItems="center">
-                    <Text
-                        variant={selected === value ? undefined : 'tertiary'}
-                        typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}
-                    >
+                    <Text typographyStyle={isMobileLayout ? 'highlight' : 'titleSmall'}>
                         <Translation id={typesToLabelMap[value]} />
                     </Text>
                     {tags}
                 </Row>
-                {children}
+                <Text variant="tertiary">{children}</Text>
             </OptionText>
         </Option>
     );
+
+    return tooltip !== undefined ? <Tooltip content={tooltip}>{inner}</Tooltip> : inner;
 };

@@ -60,6 +60,8 @@ export const AccountItemsGroup = ({
 
     const tokensFiatBalance = getTokensFiatBalance(account, localCurrency, rates, tokens);
 
+    const tokensRoutes = ['wallet-tokens-coins', 'wallet-tokens-hidden'];
+
     return (
         <Section $selected={selected}>
             <AccountItem
@@ -95,7 +97,7 @@ export const AccountItemsGroup = ({
                     <AccountItem
                         account={account}
                         type="tokens"
-                        isSelected={selected && routeName === 'wallet-tokens'}
+                        isSelected={selected && tokensRoutes.includes(routeName || '')}
                         formattedBalance={account.formattedBalance}
                         isGroup
                         isGroupSelected={selected}

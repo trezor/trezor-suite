@@ -52,9 +52,8 @@ module.exports = {
         schemes,
     },
     publish: {
-        provider: 'github',
-        repo: 'trezor-suite',
-        owner: 'trezor',
+        provider: 'generic',
+        url: 'https://data.trezor.io/suite/releases/desktop/latest',
     },
     dmg: {
         sign: false,
@@ -111,6 +110,7 @@ module.exports = {
         target: ['dmg', 'zip'],
     },
     win: {
+        publisherName: ['SatoshiLabs, s.r.o.', 'Trezor Company s.r.o.'],
         extraResources: [
             {
                 from: 'build/static/bin/bridge/win-${arch}',
@@ -129,6 +129,7 @@ module.exports = {
         artifactName: 'Trezor-Suite-${version}-win-${arch}.${ext}',
         target: ['nsis'],
         signDlls: true,
+        sign: '../suite-desktop-core/scripts/sign-windows.ts',
     },
     linux: {
         extraResources: [

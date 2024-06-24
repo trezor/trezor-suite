@@ -18,7 +18,6 @@ const errors: string[] = [];
 
 export const gettingNpmDistributionTags = async (packageName: string) => {
     const npmRegistryUrl = `https://registry.npmjs.org/${packageName}`;
-    console.log(`fetching npm registry info from: ${npmRegistryUrl}`);
     const response = await fetch(npmRegistryUrl);
     const data = await response.json();
     if (data.error) {
@@ -26,6 +25,22 @@ export const gettingNpmDistributionTags = async (packageName: string) => {
     }
 
     return data['dist-tags'];
+};
+
+export const getNpmRemoteGreatestVersion = async (moduleName: string) => {
+    try {
+        const distributionTags = await gettingNpmDistributionTags(moduleName);
+
+        const versionArray: string[] = Object.values(distributionTags);
+        const greatestVersion = versionArray.reduce((max, current) => {
+            return semver.gt(current, max) ? current : max;
+        });
+
+        return greatestVersion;
+    } catch (error) {
+        console.error('error:', error);
+        throw new Error('Not possible to get remote greatest version');
+    }
 };
 
 export const checkPackageDependencies = async (
@@ -156,4 +171,13 @@ export const commit = async ({ path, message }: { path: string; message: string 
 
 export const comment = async ({ prNumber, body }: { prNumber: string; body: string }) => {
     await exec('gh', ['pr', 'comment', `${prNumber}`, '--body', body]);
+};
+
+export const getLocalVersion = (packageName: string) => {
+    const packageJsonPath = path.join(ROOT, 'packages', packageName, 'package.json');
+    if (!fs.existsSync(packageJsonPath)) {
+        throw new Error(`package.json not found for package: ${packageName}`);
+    }
+    const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
+    return packageJson.version;
 };

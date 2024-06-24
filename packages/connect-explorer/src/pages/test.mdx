@@ -1,0 +1,46 @@
+import { Button } from '@trezor/components';
+import TrezorConnect from '@trezor/connect-web';
+
+import * as trezorConnectActions from '../actions/trezorConnectActions';
+import { useActions } from '../hooks';
+
+export const InitButton = ({ label, behavior }) => {
+    const actions = useActions({
+        onSubmitInit: trezorConnectActions.onSubmitInit,
+    });
+
+    return (
+        <Button onClick={actions.onSubmitInit} data-test="@testpage/init">
+          Init
+        </Button>
+    );
+
+};
+
+export const subsequentCalls = async () => {
+    const res1 = await TrezorConnect.getFeatures();
+    console.log('Explorer - getFeatures finished', res1);
+    const res2 = await TrezorConnect.getPublicKey({
+        path: 'm/44/0/0/0',
+    });
+    console.log('Explorer - getPublicKey finished', res2);
+};
+
+export const subsequentCallsWithError = async () => {
+    const res1 = await TrezorConnect.getFeatures();
+    console.log('Explorer - getFeatures finished', res1);
+    const res2 = await TrezorConnect.getPublicKey();
+    console.log('Explorer - getPublicKey finished', res2);
+};
+
+# Test page
+
+Hidden page for testing purposes.
+
+<InitButton />
+<Button onClick={() => subsequentCalls()} data-test="@testpage/subsequentCalls">
+    Subsequent calls
+</Button>
+<Button onClick={() => subsequentCallsWithError()} data-test="@testpage/subsequentCallsWithError">
+    Subsequent calls with error
+</Button>

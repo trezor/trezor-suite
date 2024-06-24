@@ -1,6 +1,6 @@
 {
     "name": "@trezor/blockchain-link-types",
-    "version": "1.0.17",
+    "version": "1.0.18-beta.1",
     "license": "See LICENSE.md in repo root",
     "sideEffects": false,
     "main": "src/index.ts",
@@ -13,6 +13,7 @@
     ],
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "prepublishOnly": "yarn tsx ../../scripts/prepublishNPM.js",
@@ -25,7 +26,6 @@
         "socks-proxy-agent": "6.1.1"
     },
     "devDependencies": {
-        "ripple-lib": "^1.10.1",
         "tsx": "^4.7.0"
     },
     "peerDependencies": {

@@ -7,6 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
         "test-unit:watch": "yarn g:jest -c ../../jest.config.base.js -o --watch"
@@ -18,7 +19,6 @@
         "@suite-common/fiat-services": "workspace:*",
         "@suite-common/metadata-types": "workspace:*",
         "@suite-common/suite-config": "workspace:*",
-        "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/suite-utils": "workspace:*",
         "@suite-common/test-utils": "workspace:*",
@@ -33,13 +33,9 @@
         "@trezor/urls": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
-        "pdfmake": "^0.2.9",
         "react": "18.2.0",
         "react-hook-form": "^7.50.1",
         "trezor-address-validator": "^0.4.4",
         "web3-utils": "^4.2.3"
-    },
-    "devDependencies": {
-        "@types/pdfmake": "^0.2.9"
     }
 }

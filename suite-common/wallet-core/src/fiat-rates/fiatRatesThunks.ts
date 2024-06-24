@@ -32,7 +32,7 @@ type UpdateTxsFiatRatesThunkPayload = {
 export const updateTxsFiatRatesThunk = createThunk(
     `${FIAT_RATES_MODULE_PREFIX}/updateTxsRates`,
     async ({ account, txs, localCurrency }: UpdateTxsFiatRatesThunkPayload, { getState }) => {
-        if (txs?.length === 0 || isTestnet(account.symbol)) return;
+        if (txs?.length === 0 || isTestnet(account.symbol)) return { account, rates: [] };
 
         const isElectrumBackend = selectIsElectrumBackendSelected(getState(), account.symbol);
 
@@ -81,7 +81,7 @@ export const updateTxsFiatRatesThunk = createThunk(
             );
         }
 
-        return rates;
+        return { account, rates };
     },
 );
 

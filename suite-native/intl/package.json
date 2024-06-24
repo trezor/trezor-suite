@@ -9,11 +9,11 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "react": "18.2.0",
-        "react-intl": "^6.6.2",
-        "react-native": "0.74.1"
+        "react-intl": "^6.6.2"
     }
 }

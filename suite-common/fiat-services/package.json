@@ -7,6 +7,7 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js"
     },
@@ -15,7 +16,6 @@
         "@suite-common/wallet-config": "workspace:*",
         "@suite-common/wallet-types": "workspace:*",
         "@trezor/connect": "workspace:*",
-        "@trezor/env-utils": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0"
     }

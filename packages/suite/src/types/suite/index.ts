@@ -9,7 +9,7 @@ import {
 } from '@suite-common/wallet-core';
 import { analyticsActions } from '@suite-common/analytics';
 import type { ObjectValues } from '@trezor/type-utils';
-import type { UiEvent, DeviceEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
+import type { UiEvent, TransportEvent, BlockchainEvent } from '@trezor/connect';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { messageSystemActions } from '@suite-common/message-system';
 import { deviceAuthenticityActions } from '@suite-common/device-authenticity';
@@ -47,7 +47,7 @@ export type {
     TrezorDevice,
 } from '@suite-common/suite-types';
 
-type TrezorConnectEvents = TransportEvent | UiEvent | DeviceEvent | BlockchainEvent;
+type TrezorConnectEvents = TransportEvent | UiEvent | BlockchainEvent;
 
 export type TransactionAction = ReturnType<
     (typeof transactionsActions)[keyof typeof transactionsActions]
@@ -68,7 +68,7 @@ type DeviceAuthenticityAction = ReturnType<
 
 // all actions from all apps used to properly type Dispatch.
 export type Action =
-    | TrezorConnectEvents
+    | TrezorConnectEvents // Todo: This should not be here, actions shall be defined independently from Connect Events (and they shall be mapped onto them)
     | RouterAction
     | ResizeAction
     | StorageAction

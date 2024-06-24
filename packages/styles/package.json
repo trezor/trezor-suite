@@ -6,6 +6,7 @@
     "main": "src/index",
     "sideEffects": false,
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js"
@@ -24,7 +25,6 @@
         "fela-plugin-placeholder-prefixer": "^12.2.1",
         "fela-plugin-unit": "^12.2.1",
         "fela-sort-media-query-mobile-first": "^12.2.1",
-        "fela-utils": "^12.2.1",
         "polished": "^4.3.1",
         "react": "18.2.0",
         "react-fela": "^12.2.1",

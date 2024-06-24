@@ -180,4 +180,11 @@ export type UserContextPayload =
       }
     | {
           type: 'everstake';
+      }
+    | {
+          type: 'copy-contract-address';
+          contract: string;
+      }
+    | {
+          type: 'passphrase-mismatch-warning';
       };

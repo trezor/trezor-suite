@@ -4,12 +4,23 @@ import { RefreshControl } from 'react-native';
 
 import { FlashList } from '@shopify/flash-list';
 
-import { fetchAndUpdateAccountThunk, selectIsLoadingTransactions } from '@suite-common/wallet-core';
+import {
+    fetchAllTransactionsForAccountThunk,
+    fetchAndUpdateAccountThunk,
+    FiatRatesRootState,
+    selectIsLoadingAccountTransactions,
+    TransactionsRootState,
+} from '@suite-common/wallet-core';
 import { AccountKey, TokenAddress } from '@suite-common/wallet-types';
 import { groupTransactionsByDate, MonthKey } from '@suite-common/wallet-utils';
 import { Box, Loader } from '@suite-native/atoms';
-import { EthereumTokenTransfer, WalletAccountTransaction } from '@suite-native/ethereum-tokens';
+import {
+    EthereumTokenTransfer,
+    selectAccountOrTokenAccountTransactions,
+    WalletAccountTransaction,
+} from '@suite-native/ethereum-tokens';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
+import { SettingsSliceRootState } from '@suite-native/settings';
 
 import { TransactionsEmptyState } from '../TransactionsEmptyState';
 import { TokenTransferListItem } from './TokenTransferListItem';
@@ -17,9 +28,7 @@ import { TransactionListGroupTitle } from './TransactionListGroupTitle';
 import { TransactionListItem } from './TransactionListItem';
 
 type AccountTransactionProps = {
-    transactions: WalletAccountTransaction[];
     areTokensIncluded: boolean;
-    fetchMoreTransactions: (pageToFetch: number, perPage: number) => void;
     listHeaderComponent: JSX.Element;
     accountKey: string;
     tokenContract?: TokenAddress;
@@ -104,49 +113,53 @@ const renderSectionHeader = ({ section: { monthKey } }: RenderSectionHeaderParam
 export const TX_PER_PAGE = 25;
 
 export const TransactionList = ({
-    transactions,
     areTokensIncluded,
     listHeaderComponent,
-    fetchMoreTransactions,
     accountKey,
     tokenContract,
 }: AccountTransactionProps) => {
+    const dispatch = useDispatch();
+    const [isRefreshing, setIsRefreshing] = useState(false);
+
     const {
         applyStyle,
         utils: { colors },
     } = useNativeStyles();
-    const isLoadingTransactions = useSelector(selectIsLoadingTransactions);
-    const dispatch = useDispatch();
-    const [isRefreshing, setIsRefreshing] = useState(false);
+    const isLoadingTransactions = useSelector((state: TransactionsRootState) =>
+        selectIsLoadingAccountTransactions(state, accountKey),
+    );
+    const transactions = useSelector(
+        (state: TransactionsRootState & FiatRatesRootState & SettingsSliceRootState) =>
+            selectAccountOrTokenAccountTransactions(
+                state,
+                accountKey,
+                tokenContract ?? null,
+                areTokensIncluded,
+            ),
+    );
+    const isLoaderVisible = isLoadingTransactions && transactions.length === 0;
 
-    const initialPageNumber = Math.ceil((transactions.length || 1) / TX_PER_PAGE);
-    const [page, setPage] = useState(initialPageNumber);
+    const fetchTransactions = useCallback(() => {
+        return dispatch(fetchAllTransactionsForAccountThunk({ accountKey }));
+    }, [accountKey, dispatch]);
 
     useEffect(() => {
-        // it's okay to hardcode 1 because this is initial fetch and in case transactions are already loaded, nothing will happen anyway
-        // because of the check in fetchMoreTransactionsThunk
-        fetchMoreTransactions(1, TX_PER_PAGE);
-    }, [fetchMoreTransactions]);
-
-    const handleOnEndReached = useCallback(async () => {
-        try {
-            await fetchMoreTransactions(page + 1, TX_PER_PAGE);
-            setPage((currentPage: number) => currentPage + 1);
-        } catch (e) {
-            // TODO handle error state (show retry button or something
-        }
-    }, [fetchMoreTransactions, page]);
+        fetchTransactions();
+    }, [fetchTransactions]);
 
     const handleOnRefresh = useCallback(async () => {
         try {
             setIsRefreshing(true);
-            await dispatch(fetchAndUpdateAccountThunk({ accountKey }));
+            await Promise.allSettled([
+                dispatch(fetchAndUpdateAccountThunk({ accountKey })),
+                fetchTransactions(),
+            ]);
         } catch (e) {
             // Do nothing
         }
         // It's usually too fast so loading indicator only flashes for a moment, which is not nice
         setTimeout(() => setIsRefreshing(false), 1500);
-    }, [dispatch, accountKey]);
+    }, [dispatch, accountKey, fetchTransactions]);
 
     const data = useMemo((): TransactionListItem[] => {
         const accountTransactionsByMonth = groupTransactionsByDate(transactions, 'month');
@@ -207,8 +220,6 @@ export const TransactionList = ({
         [data, accountKey, areTokensIncluded],
     );
 
-    if (isLoadingTransactions) return <Loader />;
-
     return (
         <Box style={applyStyle(sectionListStyle)}>
             <FlashList<TransactionListItem>
@@ -217,8 +228,8 @@ export const TransactionList = ({
                 contentContainerStyle={applyStyle(sectionListContainerStyle)}
                 ListEmptyComponent={<TransactionsEmptyState accountKey={accountKey} />}
                 ListHeaderComponent={listHeaderComponent}
-                onEndReached={handleOnEndReached}
-                estimatedItemSize={70}
+                ListFooterComponent={isLoaderVisible ? <Loader /> : null}
+                estimatedItemSize={25}
                 refreshControl={
                     <RefreshControl
                         refreshing={isRefreshing}

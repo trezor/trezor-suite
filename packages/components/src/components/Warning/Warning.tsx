@@ -14,10 +14,11 @@ import {
 } from '@trezor/theme';
 import { UIVariant } from '../../config/types';
 import { useElevation } from '../..';
+import { FrameProps, TransientFrameProps, withFrameProps } from '../common/frameProps';
 
 export type WarningVariant = Extract<
     UIVariant,
-    'primary' | 'info' | 'warning' | 'destructive' | 'tertiary'
+    'primary' | 'secondary' | 'info' | 'warning' | 'destructive' | 'tertiary'
 >;
 
 export interface WarningProps {
@@ -27,6 +28,7 @@ export interface WarningProps {
     withIcon?: boolean;
     icon?: IconType;
     filled?: boolean;
+    margin?: FrameProps['margin'];
 }
 
 type MapArgs = {
@@ -38,6 +40,7 @@ type MapArgs = {
 const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'backgroundPrimarySubtleOnElevation0',
+        secondary: 'backgroundNeutralBold',
         info: 'backgroundAlertBlueSubtleOnElevation0',
         warning: 'backgroundAlertYellowSubtleOnElevation0',
         destructive: 'backgroundAlertRedSubtleOnElevation0',
@@ -50,6 +53,7 @@ const mapVariantToBackgroundColor = ({ $variant, theme, $elevation }: MapArgs): 
 const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'textPrimaryDefault',
+        secondary: 'textDefaultInverted',
         info: 'textAlertBlue',
         warning: 'textAlertYellow',
         destructive: 'textAlertRed',
@@ -61,6 +65,7 @@ const mapVariantToTextColor = ({ $variant, theme }: MapArgs): CSSColor => {
 const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
     const colorMap: Record<WarningVariant, Color> = {
         primary: 'iconPrimaryDefault',
+        secondary: 'iconDefaultInverted',
         info: 'iconAlertBlue',
         warning: 'iconAlertYellow',
         destructive: 'iconAlertRed',
@@ -73,6 +78,7 @@ const mapVariantToIconColor = ({ $variant, theme }: MapArgs): CSSColor => {
 const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconType => {
     const iconMap: Record<WarningVariant, IconType> = {
         primary: 'LIGHTBULB',
+        secondary: 'INFO',
         info: 'INFO',
         warning: 'WARNING',
         destructive: 'WARNING',
@@ -82,7 +88,7 @@ const mapVariantToIcon = ({ $variant }: Pick<MapArgs, '$variant'>): IconType => 
     return iconMap[$variant];
 };
 
-type WrapperParams = {
+type WrapperParams = TransientFrameProps & {
     $variant: WarningVariant;
     $withIcon?: boolean;
     $elevation: Elevation;
@@ -106,6 +112,8 @@ const Wrapper = styled.div<WrapperParams>`
     padding: ${spacingsPx.sm} ${spacingsPx.lg};
     width: 100%;
 
+    ${withFrameProps}
+
     ${variables.SCREEN_QUERY.MOBILE} {
         align-items: stretch;
         flex-direction: column;
@@ -120,6 +128,7 @@ export const Warning = ({
     withIcon,
     icon,
     filled = true,
+    margin,
 }: WarningProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
@@ -131,6 +140,7 @@ export const Warning = ({
             className={className}
             $elevation={elevation}
             $filled={filled}
+            $margin={margin}
         >
             {withIcon && (
                 <Icon

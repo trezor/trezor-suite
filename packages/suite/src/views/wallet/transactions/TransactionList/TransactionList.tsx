@@ -2,7 +2,10 @@ import { useMemo, useState, useEffect, useRef } from 'react';
 import styled from 'styled-components';
 import useDebounce from 'react-use/lib/useDebounce';
 
-import { fetchTransactionsThunk } from '@suite-common/wallet-core';
+import {
+    fetchAllTransactionsForAccountThunk,
+    fetchTransactionsPageThunk,
+} from '@suite-common/wallet-core';
 import {
     groupTransactionsByDate,
     advancedSearchTransactions,
@@ -77,12 +80,9 @@ export const TransactionList = ({
     useEffect(() => {
         if (anchor && !hasFetchedAll) {
             dispatch(
-                fetchTransactionsThunk({
+                fetchAllTransactionsForAccountThunk({
                     accountKey: account.key,
-                    page: 2,
-                    perPage: getTxsPerPage(account.networkType),
                     noLoading: true,
-                    recursive: true,
                 }),
             );
             setHasFetchedAll(true);
@@ -107,7 +107,7 @@ export const TransactionList = ({
         setSelectedPage(page);
 
         if (!isSearching) {
-            dispatch(fetchTransactionsThunk({ accountKey: account.key, page, perPage }));
+            dispatch(fetchTransactionsPageThunk({ accountKey: account.key, page, perPage }));
         }
 
         if (sectionRef.current) {

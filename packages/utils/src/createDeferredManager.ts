@@ -11,7 +11,7 @@ type DeferredManagerOptions = {
     initialId?: number;
 };
 
-type DeferredManager<T> = {
+export type DeferredManager<T> = {
     /** How many pending promises are there */
     length: () => number;
     /** ID of the next created promise (for specific use case, should be removed in the future) */

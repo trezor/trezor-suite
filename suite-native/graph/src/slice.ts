@@ -61,7 +61,7 @@ export const graphSlice = createSlice({
     },
     extraReducers: builder => {
         builder.addCase(deviceActions.forgetDevice, (state, action) => {
-            const deviceState = action.payload.state;
+            const deviceState = action.payload.device.state;
             if (deviceState) {
                 state.accountToGraphTimeframeMap = filterObjectKeys(
                     state.accountToGraphTimeframeMap,

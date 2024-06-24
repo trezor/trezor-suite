@@ -14,6 +14,7 @@ import {
     deviceActions,
     selectDeviceByState,
     selectHistoricFiatRates,
+    updateTxsFiatRatesThunk,
 } from '@suite-common/wallet-core';
 import { isDeviceRemembered } from '@suite-common/suite-utils';
 import { messageSystemActions } from '@suite-common/message-system';
@@ -32,6 +33,8 @@ import { serializeDiscovery } from 'src/utils/suite/storage';
 import type { AppState, Action as SuiteAction, Dispatch } from 'src/types/suite';
 import type { WalletAction } from 'src/types/wallet';
 import { sendFormActions } from '@suite-common/wallet-core';
+import { tokenDefinitionsActions } from '@suite-common/token-definitions/src/tokenDefinitionsActions';
+import { TokenManagementAction } from '@suite-common/token-definitions';
 
 const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
     db.onBlocking = () => api.dispatch({ type: STORAGE.ERROR, payload: 'blocking' });
@@ -89,12 +92,25 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             ) {
                 const { account } = action.payload;
                 const device = findAccountDevice(account, selectDevices(api.getState()));
-                const historicRates = selectHistoricFiatRates(api.getState());
                 // update only transactions for remembered device
                 if (isDeviceRemembered(device)) {
-                    storageActions.removeAccountHistoricRates(account.key);
                     storageActions.removeAccountTransactions(account);
                     api.dispatch(storageActions.saveAccountTransactions(account));
+                }
+            }
+
+            if (
+                isAnyOf(
+                    transactionsActions.removeTransaction,
+                    updateTxsFiatRatesThunk.fulfilled,
+                )(action)
+            ) {
+                const { account } = action.payload;
+                const device = findAccountDevice(account, selectDevices(api.getState()));
+                const historicRates = selectHistoricFiatRates(api.getState());
+                // update only historic rates for remembered device
+                if (isDeviceRemembered(device)) {
+                    storageActions.removeAccountHistoricRates(account.key);
                     if (historicRates) {
                         api.dispatch(
                             storageActions.saveAccountHistoricRates(account.key, historicRates),
@@ -157,8 +173,25 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
             }
 
             if (deviceActions.forgetDevice.match(action)) {
-                api.dispatch(storageActions.forgetDevice(action.payload));
-                api.dispatch(storageActions.forgetDeviceMetadataError(action.payload));
+                api.dispatch(storageActions.forgetDevice(action.payload.device));
+                api.dispatch(storageActions.forgetDeviceMetadataError(action.payload.device));
+            }
+
+            if (tokenDefinitionsActions.setTokenStatus.match(action)) {
+                api.dispatch(
+                    storageActions.saveTokenManagement(
+                        action.payload.networkSymbol,
+                        action.payload.type,
+                        TokenManagementAction.HIDE,
+                    ),
+                );
+                api.dispatch(
+                    storageActions.saveTokenManagement(
+                        action.payload.networkSymbol,
+                        action.payload.type,
+                        TokenManagementAction.SHOW,
+                    ),
+                );
             }
 
             if (deviceActions.updateSelectedDevice.match(action)) {
@@ -194,6 +227,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.ONION_LINKS:
                 case SUITE.SET_THEME:
                 case SUITE.SET_ADDRESS_DISPLAY_TYPE:
+                case SUITE.SET_DEFAULT_WALLET_LOADING:
                 case SUITE.SET_AUTODETECT:
                 case SUITE.DEVICE_AUTHENTICITY_OPT_OUT:
                 case SUITE.EVM_CONFIRM_EXPLANATION_MODAL:

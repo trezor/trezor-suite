@@ -73,27 +73,42 @@ const initStore = (state: State) => {
 describe('redirectMiddleware', () => {
     describe('redirects on DEVICE.CONNECT event', () => {
         let goto: any;
+
         beforeEach(() => {
             goto = jest.spyOn(routerActions, 'goto');
         });
+
         afterEach(() => {
             goto.mockClear();
         });
+
         it('DEVICE.CONNECT mode=initialize', () => {
             const store = initStore(getInitialState());
-            store.dispatch({
+
+            const action: ReturnType<typeof deviceActions.connectDevice> = {
                 type: DEVICE.CONNECT,
-                payload: getSuiteDevice({ mode: 'initialize' }),
-            });
+                payload: {
+                    device: getSuiteDevice({ mode: 'initialize' }),
+                    settings: { isViewOnlyModeVisible: true, defaultWalletLoading: 'standard' },
+                },
+            };
+
+            store.dispatch(action);
             expect(goto).toHaveBeenNthCalledWith(1, 'suite-start');
         });
 
         it('DEVICE.CONNECT firmware=required', () => {
             const store = initStore(getInitialState());
-            store.dispatch({
+
+            const action: ReturnType<typeof deviceActions.connectDevice> = {
                 type: DEVICE.CONNECT,
-                payload: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
-            });
+                payload: {
+                    device: getSuiteDevice({ mode: 'normal', firmware: 'required' }),
+                    settings: { isViewOnlyModeVisible: true, defaultWalletLoading: 'standard' },
+                },
+            };
+
+            store.dispatch(action);
             expect(goto).toHaveBeenNthCalledWith(1, 'firmware-index');
         });
 

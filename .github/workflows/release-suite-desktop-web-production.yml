@@ -1,0 +1,118 @@
+name: "[Release] publish suite-desktop and suite-web production"
+
+permissions:
+  id-token: write # for fetching the OIDC token
+  contents: read # for actions/checkout
+
+on:
+  workflow_dispatch:
+    inputs:
+      publishWebProduction:
+        description: "Publish Suite web production."
+        required: false
+        type: boolean
+        default: false
+      publishDesktopProduction:
+        description: "Publish Suite desktop production"
+        required: false
+        type: boolean
+        default: false
+      desktopReleaseChannel:
+        description: "Release channel for Suite desktop auto-update"
+        required: false
+        type: choice
+        options:
+          - canary
+          - latest
+      updateStagingPercentage:
+        description: "Suite desktop auto-update percentage"
+        required: false
+        type: boolean
+        default: false
+      setStagingPercentage:
+        description: "Number between 0 and 100."
+        required: false
+        type: string
+
+jobs:
+  sync-canary-suite-desktop:
+    if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'canary' && github.repository == 'trezor/trezor-suite-release' }}
+    name: "Syncing suite-desktop canary"
+    environment: suite-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
+          aws-region: eu-central-1
+
+      - name: Sync suite-desktop canary
+        run: |
+          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/canary/ s3://data.trezor.io/suite/releases/desktop/canary/
+          aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/canary/*"
+
+  sync-latest-suite-desktop:
+    if: ${{ github.event.inputs.publishDesktopProduction == 'true' && github.event.inputs.desktopReleaseChannel == 'latest' && github.repository == 'trezor/trezor-suite-release' }}
+    name: "Syncing suite-desktop latest"
+    environment: suite-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
+          aws-region: eu-central-1
+
+      - name: Sync suite-desktop latest
+        run: |
+          aws s3 sync --delete s3://staging-data.trezor.io/suite/releases/desktop/latest/ s3://data.trezor.io/suite/releases/desktop/latest/
+          aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/latest/*"
+
+  sync-staging-website:
+    if: ${{ github.event.inputs.publishWebProduction == 'true' && github.repository == 'trezor/trezor-suite-release' }}
+    name: "Syncing suite-web staging to production"
+    environment: suite-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
+          aws-region: eu-central-1
+
+      - name: Sync suite-web staging to production
+        run: |
+          aws s3 sync s3://staging-suite.trezor.io s3://suite.trezor.io
+          aws cloudfront create-invalidation --distribution-id E4TDVEWU4P4CY --paths "/*"
+
+  update-prod-staging-percentage:
+    if: ${{ github.event.inputs.updateStagingPercentage == 'true' && github.repository == 'trezor/trezor-suite-release' }}
+    name: "Update staging percentage"
+    environment: suite-production
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
+          aws-region: eu-central-1
+
+      - name: Update staging percentage
+        run: |
+          aws s3 cp s3://data.trezor.io/suite/releases/desktop/latest/latest.yml .
+          aws s3 cp s3://data.trezor.io/suite/releases/desktop/latest/latest-mac.yml .
+          aws s3 cp s3://data.trezor.io/suite/releases/desktop/latest/latest-linux.yml .
+          aws s3 cp s3://data.trezor.io/suite/releases/desktop/latest/latest-linux-arm64.yml .
+          ./ci/scripts/set-staging-percentage.sh ${{ github.event.inputs.setStagingPercentage }}
+          aws s3 cp latest.yml s3://data.trezor.io/suite/releases/desktop/latest/latest.yml
+          aws s3 cp latest-mac.yml s3://data.trezor.io/suite/releases/desktop/latest/latest-mac.yml
+          aws s3 cp latest-linux.yml s3://data.trezor.io/suite/releases/desktop/latest/latest-linux.yml
+          aws s3 cp latest-linux-arm64.yml s3://data.trezor.io/suite/releases/desktop/latest/latest-linux-arm64.yml
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation --distribution-id E1ERY5K2OTKKI1 --paths "/suite/releases/desktop/latest/*"

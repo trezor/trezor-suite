@@ -100,15 +100,15 @@ const sentryMiddleware =
                 setSentryContext('suite-ready', getSuiteReadyPayload(state));
                 break;
             case DEVICE.CONNECT: {
-                const { features, mode } = action.payload;
+                const { features, mode } = action.payload.device;
 
                 if (!features || !mode) return;
 
                 setSentryContext(deviceContextName, {
                     mode,
-                    firmware: getFirmwareVersion(action.payload),
-                    isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
-                    bootloader: getBootloaderVersion(action.payload),
+                    firmware: getFirmwareVersion(action.payload.device),
+                    isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
+                    bootloader: getBootloaderVersion(action.payload.device),
                     model: selectDevice(state)?.features?.internal_model,
                 });
                 break;

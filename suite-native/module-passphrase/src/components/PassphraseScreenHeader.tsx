@@ -1,7 +1,7 @@
 import { useDispatch } from 'react-redux';
 import { useState } from 'react';
 
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 import {
     BottomSheet,
@@ -36,8 +36,6 @@ const buttonWrapperStyle = prepareNativeStyle(() => ({
 }));
 
 export const PassphraseScreenHeader = () => {
-    const route = useRoute();
-
     const { applyStyle } = useNativeStyles();
 
     const navigation = useNavigation<NavigationProp>();
@@ -56,15 +54,7 @@ export const PassphraseScreenHeader = () => {
         });
     };
 
-    const handlePress = () => {
-        if (route.name === PassphraseStackRoutes.PassphraseConfirmOnTrezor) {
-            setShouldShowWarningBottomSheet(true);
-        } else {
-            handleClose();
-        }
-    };
-
-    const handleCloseBottomSheet = () => setShouldShowWarningBottomSheet(false);
+    const toggleBottomSheet = () => setShouldShowWarningBottomSheet(!shouldShowWarningBottomSheet);
 
     return (
         <ScreenHeaderWrapper>
@@ -74,9 +64,9 @@ export const PassphraseScreenHeader = () => {
                 colorScheme="tertiaryElevation1"
                 accessibilityRole="button"
                 accessibilityLabel="close"
-                onPress={handlePress}
+                onPress={toggleBottomSheet}
             />
-            <BottomSheet isVisible={shouldShowWarningBottomSheet} onClose={handleCloseBottomSheet}>
+            <BottomSheet isVisible={shouldShowWarningBottomSheet} onClose={toggleBottomSheet}>
                 <VStack justifyContent="center" alignItems="center" padding="small" spacing="large">
                     <Text variant="titleSmall" textAlign="center">
                         <Translation id="modulePassphrase.confirmOnDevice.warningSheet.title" />
@@ -85,7 +75,7 @@ export const PassphraseScreenHeader = () => {
                         <Button colorScheme="redBold" onPress={handleClose}>
                             <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
                         </Button>
-                        <Button colorScheme="redElevation0" onPress={handleCloseBottomSheet}>
+                        <Button colorScheme="redElevation0" onPress={toggleBottomSheet}>
                             <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
                         </Button>
                     </VStack>

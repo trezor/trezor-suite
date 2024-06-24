@@ -7,10 +7,12 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@reduxjs/toolkit": "1.9.5",
+        "@sentry/react-native": "5.22.3",
         "@suite-common/analytics": "workspace:*",
         "@suite-common/logger": "workspace:*",
         "@suite-common/message-system": "workspace:*",
@@ -30,7 +32,6 @@
         "@suite-native/passphrase": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@suite-native/storage": "workspace:*",
-        "@suite-native/toasts": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/transport-native": "workspace:*",
         "@trezor/utils": "workspace:*",

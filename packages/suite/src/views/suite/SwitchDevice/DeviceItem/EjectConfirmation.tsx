@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useDispatch } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { H3, Button, Text } from '@trezor/components';
 import { Translation } from 'src/components/suite';
 import { deviceActions } from '@suite-common/wallet-core';
@@ -7,6 +7,7 @@ import { analytics, EventType } from '@trezor/suite-analytics';
 import { AcquiredDevice } from '@suite-common/suite-types';
 import { MouseEventHandler, ReactNode } from 'react';
 import { spacingsPx } from '@trezor/theme';
+import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
 
 const Container = styled.div`
     margin: 0 ${spacingsPx.xxs};
@@ -43,8 +44,12 @@ const EjectConfirmationContainer = ({
     instance,
 }: EjectConfirmationContainerProps) => {
     const dispatch = useDispatch();
+
+    const settings = useSelector(selectSuiteSettings);
+
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice(instance));
+        dispatch(deviceActions.forgetDevice({ device: instance, settings }));
+
         analytics.report({
             type: EventType.SwitchDeviceEject,
         });

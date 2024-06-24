@@ -1,13 +1,15 @@
 [
     {
         "required": false,
-        "version": [2, 7, 1],
-        "min_firmware_version": [2, 7, 1],
-        "min_bootloader_version": [2, 1, 1],
-        "url": "",
-        "url_bitcoinonly": "",
-        "fingerprint": "",
-        "fingerprint_bitcoinonly": "",
-        "changelog": ""
+        "version": [2, 7, 2],
+        "min_firmware_version": [2, 7, 2],
+        "min_bootloader_version": [2, 1, 6],
+        "bootloader_version": [2, 1, 6],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR"],
+        "url": "firmware/t3t1/trezor-t3t1-2.7.2.bin",
+        "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.7.2-bitcoinonly.bin",
+        "fingerprint": "4daa5fd3c4c92ee0d76855997dde09a7ee25f4165b118c521ab10957c5fc92b0",
+        "fingerprint_bitcoinonly": "246cca86b0a8cfcac6b7e6b3fcf55f543a8a9c9fd1f8ff88cd0de00640cb25eb",
+        "changelog": "* Introducing repeated backups. \n* Multi-share backups can now have any number of shares. \n* Added support for Cardano Conway certificates [Universal fw only]."
     }
 ]

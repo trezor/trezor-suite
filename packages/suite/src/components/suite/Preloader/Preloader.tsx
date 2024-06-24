@@ -19,6 +19,7 @@ import { PrerequisitesGuide } from '../PrerequisitesGuide/PrerequisitesGuide';
 import { LoggedOutLayout } from '../layouts/LoggedOutLayout';
 import { WelcomeLayout } from '../layouts/WelcomeLayout/WelcomeLayout';
 import { ViewOnlyPromo } from 'src/views/view-only/ViewOnlyPromo';
+import { selectDevice } from '@suite-common/wallet-core';
 
 const getFullscreenApp = (route: AppState['router']['route']): FC | undefined => {
     switch (route?.app) {
@@ -43,7 +44,7 @@ export const Preloader = ({ children }: PreloaderProps) => {
     const router = useSelector(state => state.router);
     const prerequisite = useSelector(selectPrerequisite);
     const isLoggedOut = useSelector(selectIsLoggedOut);
-
+    const selectedDevice = useSelector(selectDevice);
     const { initialRun, viewOnlyPromoClosed, isViewOnlyModeVisible } =
         useSelector(selectSuiteFlags);
 
@@ -73,7 +74,8 @@ export const Preloader = ({ children }: PreloaderProps) => {
         isViewOnlyModeVisible &&
         router.route?.app !== 'settings' &&
         !initialRun &&
-        !viewOnlyPromoClosed
+        !viewOnlyPromoClosed &&
+        selectedDevice?.connected === true
     ) {
         return <ViewOnlyPromo />;
     }

@@ -16,7 +16,7 @@ import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/p
 import { RouterRootState, selectRouter } from './routerReducer';
 import { Network } from '@suite-common/wallet-config';
 import { SuiteThemeVariant } from '@trezor/suite-desktop-api';
-import { AddressDisplayOptions } from '@suite-common/wallet-types';
+import { AddressDisplayOptions, WalletType } from '@suite-common/wallet-types';
 
 export interface SuiteRootState {
     suite: SuiteState;
@@ -58,11 +58,12 @@ export interface Flags {
     securityStepsHidden: boolean; // dashboard UI
     dashboardGraphHidden: boolean; // dashboard UI
     dashboardAssetsGridMode: boolean; // dashboard UI
-    showDashboardT2B1PromoBanner: boolean;
+    showDashboardT3T1PromoBanner: boolean;
     showSettingsDesktopAppPromoBanner: boolean;
     stakeEthBannerClosed: boolean; // banner in account view (Overview tab) presenting ETH staking feature
     showDashboardStakingPromoBanner: boolean;
     isViewOnlyModeVisible: boolean;
+    isDashboardPassphraseBannerVisible: boolean;
     viewOnlyPromoClosed: boolean;
     viewOnlyTooltipClosed: boolean;
 }
@@ -84,6 +85,7 @@ export interface SuiteSettings {
     autodetect: AutodetectSettings;
     isDeviceAuthenticityCheckDisabled: boolean;
     addressDisplayType: AddressDisplayOptions;
+    defaultWalletLoading: WalletType;
 }
 
 export interface SuiteState {
@@ -115,13 +117,14 @@ const initialState: SuiteState = {
         securityStepsHidden: false,
         dashboardGraphHidden: false,
         dashboardAssetsGridMode: true,
-        showDashboardT2B1PromoBanner: true,
+        showDashboardT3T1PromoBanner: true,
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
         showDashboardStakingPromoBanner: true,
         isViewOnlyModeVisible: false,
         viewOnlyPromoClosed: false,
         viewOnlyTooltipClosed: false,
+        isDashboardPassphraseBannerVisible: true,
     },
     evmSettings: {
         confirmExplanationModalClosed: {},
@@ -148,6 +151,7 @@ const initialState: SuiteState = {
             theme: true,
         },
         addressDisplayType: AddressDisplayOptions.CHUNKED,
+        defaultWalletLoading: WalletType.STANDARD,
     },
 };
 
@@ -236,6 +240,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_ADDRESS_DISPLAY_TYPE:
                 draft.settings.addressDisplayType = action.option;
+                break;
+
+            case SUITE.SET_DEFAULT_WALLET_LOADING:
+                draft.settings.defaultWalletLoading = action.option;
                 break;
 
             case SUITE.SET_AUTODETECT:
@@ -354,8 +362,8 @@ export const selectPrerequisite = (state: SuiteRootState & RouterRootState & Dev
     return prerequisite;
 };
 
-export const selectIsDashboardT2B1PromoBannerShown = (state: SuiteRootState) =>
-    state.suite.flags.showDashboardT2B1PromoBanner;
+export const selectIsDashboardT3T1PromoBannerShown = (state: SuiteRootState) =>
+    state.suite.flags.showDashboardT3T1PromoBanner;
 
 export const selectIsSettingsDesktopAppPromoBannerShown = (state: SuiteRootState) =>
     state.suite.flags.showSettingsDesktopAppPromoBanner;
@@ -364,5 +372,10 @@ export const selectIsLoggedOut = (state: SuiteRootState & DeviceRootState) =>
     state.suite.flags.initialRun || state.device?.selectedDevice?.mode !== 'normal';
 
 export const selectSuiteFlags = (state: SuiteRootState) => state.suite.flags;
+
+export const selectSuiteSettings = (state: SuiteRootState) => ({
+    defaultWalletLoading: state.suite.settings.defaultWalletLoading,
+    isViewOnlyModeVisible: state.suite.flags.isViewOnlyModeVisible,
+});
 
 export default suiteReducer;

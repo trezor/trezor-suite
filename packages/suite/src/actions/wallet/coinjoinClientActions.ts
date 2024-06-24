@@ -646,7 +646,6 @@ const signCoinjoinTx =
                             useEmptyPassphrase: device?.useEmptyPassphrase,
                             inputs: tx.inputs,
                             outputs: tx.outputs,
-                            // @ts-expect-error wait for fw protobuf update
                             coinjoinRequest: tx.coinjoinRequest,
                             coin: network,
                             preauthorized: true,

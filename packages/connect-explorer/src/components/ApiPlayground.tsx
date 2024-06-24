@@ -44,11 +44,9 @@ const CollapsibleBoxStyled = styled(CollapsibleBox)`
     border: 0;
 
     /* CollapsibleBox content, fix for nested sticky elements */
-    > div:nth-child(2) {
-        > div {
-            overflow: hidden scroll;
-            max-height: calc(100vh - 200px);
-        }
+    & ${CollapsibleBox.Content} {
+        overflow: hidden scroll;
+        max-height: calc(100vh - 200px);
     }
 `;
 

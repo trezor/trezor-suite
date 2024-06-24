@@ -1,14 +1,58 @@
-| Package                          | Stable | Canary |
-| -------------------------------- | ------ | ------ |
-| npm @trezor/connect              | 9.2.4  | -      |
-| npm @trezor/connect-web          | 9.2.4  | -      |
-| npm @trezor/connect-webextension | 9.2.4  | -      |
+|             Package              | Stable |    Canary    |
+| :------------------------------: | :----: | :----------: |
+|       npm @trezor/connect        | 9.2.4  | 9.2.5-beta.1 |
+|     npm @trezor/connect-web      | 9.2.4  | 9.2.5-beta.1 |
+| npm @trezor/connect-webextension | 9.2.4  | 9.2.5-beta.1 |
 
-| Deployment          | Stable | Canary |
-| ------------------- | ------ | ------ |
-| connect.trezor.io/9 | 9.2.4  | -      |
+|     Deployment     | Stable |    Canary    |
+| :----------------: | :----: | :----------: |
+| connect.trezor.io/ | 9.2.4  | 9.2.5-beta.1 |
 
-User the persistent link connect.trezor.io/9 to access the latest stable version of Connect Explorer.
+Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
+
+# 9.2.5-beta.1
+
+Improved reliability of popup handshake mechanism.
+Improved compatibility with webextensions using TrezorConnect inside offscreen (eg. Metamask).
+Cardano: support Conway certificates, increase minimum supported FW to 2.6.0 to clean up legacy code.
+Minor fixes in Connect Explorer and documentation.
+
+-   feat(connect): Add tag 258 support (90bf3a7)
+-   feat(connect): Conway certificates (ab003ce)
+-   feat(connect): applySettings - accept all validated params (65809d8)
+-   fix(connect): immediate switch from custom to default backend (b8348ca)
+-   fix(connect): remove getPublicKey coinInfo fallback (fb446f2)
+-   chore(connect): add new TS3 CA pubkeys and update timestamp (35486ba)
+-   chore(connect): update fw version number for cardano (d737d3c)
+-   chore(connect): center changelog version table (93fab15)
+-   chore(connect): change name in changelog table (bbc5499)
+-   chore(connect): remove canary from changelog
+
+## connect-web
+
+-   close on popup cancellation, legacy mode for handshake
+-   check if chrome.tabs really available in webextension env
+
+## connect-iframe
+
+-   handshake handling issues
+
+## connect-explorer
+
+-   remove nextra reference from webextension, show amountUnit in signTransaction and fix favicon path
+
+## connect-popup
+
+-   temporary workaround for CONTENT_SCRIPT_LOADED and handling of CONTENT_SCRIPT_LOADED
+
+## Dependencies update
+
+-   npm-release: @trezor/blockchain-link 2.1.31-beta.1
+-   npm-release: @trezor/blockchain-link-types 1.0.18-beta.1
+-   npm-release: @trezor/transport 1.1.30-beta.1
+-   npm-release: @trezor/protobuf 1.0.14-beta.1
+-   npm-release: @trezor/protocol 1.0.10-beta.1
+-   npm-release: @trezor/utils 9.0.25-beta.1
 
 # 9.2.4
 

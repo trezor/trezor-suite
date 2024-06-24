@@ -15,7 +15,7 @@ concurrency:
 
 jobs:
   build:
-    if: startsWith(github.repository, 'trezor/trezor-suite')
+    if: github.repository == 'trezor/trezor-suite' || github.repository == 'trezor/trezor-suite-private'
     name: Install and build
     environment: develop-suite-native
     runs-on: ubuntu-latest

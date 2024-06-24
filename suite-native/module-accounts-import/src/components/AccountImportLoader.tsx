@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Animated, {
     useAnimatedStyle,
     withDelay,
@@ -40,6 +40,7 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
     const [lineHeight1, setLineHeight1] = useState(0);
     const [lineHeight2, setLineHeight2] = useState(0);
     const [lineHeight3, setLineHeight3] = useState(0);
+    const [hasTextAnimationFinished, setHasTextAnimationFinished] = useState(false);
     const animatedTextStyle = useAnimatedStyle(() => ({
         transform: [
             {
@@ -53,10 +54,23 @@ export const AccountImportLoader = ({ loadingState, onComplete }: AccountImportL
         ],
     }));
 
+    useEffect(() => {
+        const timeout = setTimeout(() => {
+            setHasTextAnimationFinished(true);
+        }, 3 * LINE_VISIBILITY_DURATION);
+
+        return () => {
+            clearTimeout(timeout);
+        };
+    }, []);
+
+    // Spinner should not stop spinning before the text animation is finished.
+    const spinnerLoadingState = hasTextAnimationFinished ? loadingState : 'idle';
+
     return (
         <Box style={applyStyle(loaderContainerStyle)}>
             <Box marginBottom="large">
-                <Spinner loadingState={loadingState} onComplete={onComplete} />
+                <Spinner loadingState={spinnerLoadingState} onComplete={onComplete} />
             </Box>
             <Box style={applyStyle(textContainerStyle)}>
                 <Animated.View style={animatedTextStyle}>

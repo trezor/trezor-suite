@@ -25,6 +25,9 @@ import { selectCoinjoinAccountByKey } from 'src/reducers/wallet/coinjoinReducer'
 
 import { STORAGE } from './constants';
 import { MetadataState } from '@suite-common/metadata-types';
+import { NetworkSymbol } from '@suite-common/wallet-config';
+import { DefinitionType, TokenManagementAction } from '@suite-common/token-definitions';
+import { selectSuiteSettings } from '../../reducers/suite/suiteReducer';
 
 export type StorageAction = NonNullable<PreloadStoreAction>;
 export type StorageLoadAction = Extract<StorageAction, { type: typeof STORAGE.LOAD }>;
@@ -331,6 +334,21 @@ export const saveSuiteSettings = () => async (_dispatch: Dispatch, getState: Get
     );
 };
 
+export const saveTokenManagement =
+    (networkSymbol: NetworkSymbol, type: DefinitionType, status: TokenManagementAction) =>
+    async (_dispatch: Dispatch, getState: GetState) => {
+        if (!(await db.isAccessible())) return;
+        const { tokenDefinitions } = getState();
+        const tokenDefinitionsType = tokenDefinitions[networkSymbol]?.[type];
+        const data = tokenDefinitionsType?.[status];
+
+        const key = `${networkSymbol}-${type}-${status}`;
+
+        await db.removeItemByPK('tokenManagement', key);
+
+        return data ? db.addItem('tokenManagement', data, key, true) : undefined;
+    };
+
 export const saveAnalytics = () => async (_dispatch: Dispatch, getState: GetState) => {
     if (!(await db.isAccessible())) return;
 
@@ -435,10 +453,12 @@ export const removeDatabase = () => async (dispatch: Dispatch, getState: GetStat
     if (!(await db.isAccessible())) return;
 
     const devices = selectDevices(getState());
+    const settings = selectSuiteSettings(getState());
+
     const rememberedDevices = devices.filter(d => d.remember);
     // forget all remembered devices
     rememberedDevices.forEach(d => {
-        dispatch(deviceActions.forgetDevice(d));
+        dispatch(deviceActions.forgetDevice({ device: d, settings }));
     });
     await db.removeDatabase();
     dispatch(

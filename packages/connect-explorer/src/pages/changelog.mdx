@@ -9,6 +9,9 @@ import rehypeSectionize from '@hbsnow/rehype-sectionize';
 import remarkGfm from 'remark-gfm';
 import remarkGemoji from 'remark-gemoji';
 
+import { spacings } from '@trezor/theme';
+import { CollapsibleBox } from '@trezor/components';
+
 export const getStaticProps = ({ params }) => {
     return fetch(
         `https://raw.githubusercontent.com/trezor/trezor-suite/${process.env.COMMIT_HASH}/packages/connect/CHANGELOG.md`,
@@ -22,23 +25,35 @@ export const getStaticProps = ({ params }) => {
                 /([a-f0-9]{7,10})([\),])/g,
                 `[\$1](https://github.com/trezor/trezor-suite/commit/\$1)$2`,
             );
-            content = `## Version overview\n\n` + content;
+            const versionOverviewContent = content.substring(0, content.indexOf('##'));
+            const changelogContent = content.substring(content.indexOf('##'));
 
-            return content;
+            return [`## Version overview\n\n` + versionOverviewContent, changelogContent];
         })
-        .then(content => serialize(content, {
+        .then(content => Promise.all(content.map(it=>serialize(it, {
             mdxOptions: {
                 remarkPlugins: [remarkGfm, remarkGemoji],
                 rehypePlugins: [[rehypeSectionize]],
             },
-        }))
-        .then(changelog => ({
+        }))))
+        .then(([versionOverview, changelog]) => ({
             props: {
                 ssg: {
+                    versionOverview,
                     changelog,
                 },
             },
         }));
+
+};
+
+export const VersionOverview = () => {
+    const data = useData();
+    const { versionOverview } = data;
+
+    return (
+        <MDXRemote {...versionOverview} />
+    );
 
 };
 
@@ -51,5 +66,17 @@ export const Changelog = () => {
     );
 
 };
+
+<VersionOverview />
+
+<CollapsibleBox heading="What is a Canary Release?" margin={{ top: spacings.md }}>
+    Canary releases are beta versions available before the stable release. They provide early access to new features, improvements, and (hot)fixes, allowing developers to test their applications with the latest changes. Unlike stable versions, which are extensively tested and released less frequently, canary versions are released more often to address immediate needs, such as critical fixes or compatibility updates required by specific third-party applications or implementations.
+
+    ### Why Use Canary Releases?
+    *Immediate fixes*: If your application encounters a critical issue with the current stable release, a canary version might already have the necessary fix, allowing you to resolve problems more quickly.
+
+    *Feedback Opportunity*: Using canary releases allows you to provide feedback on new features and fixes, influencing the final stable release and ensuring it works smoothly with your application. If you encounter any issue, bug, or incompatibility introduced in a Canary release, report it by creating [a new issue in our repository](https://github.com/trezor/trezor-suite/issues/new/choose).
+
+</CollapsibleBox>
 
 <Changelog />

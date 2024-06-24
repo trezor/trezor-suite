@@ -69,9 +69,6 @@ export class SessionsBackground extends TypedEmitter<{
                 case 'handshake':
                     result = this.handshake();
                     break;
-                case 'enumerateIntent':
-                    result = await this.enumerateIntent();
-                    break;
                 case 'enumerateDone':
                     result = await this.enumerateDone(message.payload);
                     break;
@@ -118,24 +115,12 @@ export class SessionsBackground extends TypedEmitter<{
     private handshake() {
         return this.success(undefined);
     }
-    /**
-     * enumerate intent
-     * - caller wants to enumerate usb
-     * - basically "wait for unlocked and lock"
-     */
-    async enumerateIntent() {
-        await this.waitInQueue();
-
-        return this.success({ sessions: this.descriptors });
-    }
 
     /**
      * enumerate done
-     * - caller will not be touching usb anymore
-     * - caller informs about disconnected devices so that they may be removed from sessions list
+     * - caller informs about current descriptors
      */
     private enumerateDone(payload: EnumerateDoneRequest) {
-        this.clearLock();
         const disconnectedDevices = this.filterDisconnectedDevices(
             Object.values(this.descriptors),
             payload.descriptors.map(d => d.path), // which paths are occupied paths after last interface read
@@ -262,7 +247,7 @@ export class SessionsBackground extends TypedEmitter<{
 
         // to ensure that communication with device will not get stuck forever,
         // lock times out:
-        // - if cleared by client (enumerateIntent, enumerateDone)
+        // - if cleared by client (enumerateDone)
         // - after n second automatically
         const timeout = setTimeout(() => {
             dfd.resolve(undefined);

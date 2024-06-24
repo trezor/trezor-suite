@@ -40,12 +40,16 @@ export const walletPersistTransform = createTransform<InboundState, OutboundStat
             devicesStatesNotRemembered,
         );
 
+        const transactionFetchStatusDetail = filterObjectKeys(
+            inboundState.transactions?.fetchStatusDetail,
+            devicesStatesNotRemembered,
+        );
+
         return {
             accounts,
             transactions: {
-                isLoading: false,
-                error: null,
                 transactions,
+                fetchStatusDetail: transactionFetchStatusDetail,
             },
         };
     },

@@ -150,8 +150,9 @@ However, if you're creating a Google Chrome extension you must complete one addi
 
 ## Google Chrome WebUSB
 
-Chrome extension requires a special `trezor-usb-permissions.html` file served from the root of your extension. You can get the file [here](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/src/webextension/trezor-usb-permissions.html).
+Chrome extension requires a special `trezor-usb-permissions.html` file served from the root of your extension. You can get the file [here](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/src/webextension/trezor-usb-permissions.html) or from the NPM package in the `lib/webextension/` directory.
+
+This page imports a script that needs to be placed inside your extension at `vendor/trezor-usb-permissions.js`. You can obtain the script [here](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/src/webextension/trezor-usb-permissions.js) or in the same directory from the NPM package.
+This directory could be changed, but then you need to remember to change script src accordingly inside `trezor-usb-permissions.html` file.
 
 This page will be displayed in case where user is using Trezor without `Trezor Bridge` installed and `navigator.usb` is available.
-
-Lastly, you have to place [this](https://github.com/trezor/trezor-suite/blob/develop/packages/connect-web/src/webextension/trezor-usb-permissions.js) Javascript file into your `vendor/` directory. This directory could be changed, but then you need to remember to change script src accordingly inside `trezor-usb-permissions.html` file.

@@ -8,14 +8,13 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c ../../jest.config.native.js",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@mobily/ts-belt": "^3.13.1",
         "@suite-native/toasts": "workspace:*",
-        "@trezor/connect": "workspace:*",
         "expo-clipboard": "6.0.3",
-        "react": "18.2.0",
-        "react-native": "0.74.1"
+        "react": "18.2.0"
     }
 }

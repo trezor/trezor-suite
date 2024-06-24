@@ -24,7 +24,6 @@
   "EVENT_WALLET_CREATED": "Uusi lompakko luotu",
   "FEE": "Siirtomaksu",
   "FEE_LEVEL_CUSTOM": "Mukautettu",
-  "FEE_LEVEL_ECONOMY": "Talous",
   "FEE_LEVEL_HIGH": "Korkea",
   "FEE_LEVEL_LOW": "Alhainen",
   "FEE_LEVEL_NORMAL": "Normaali",

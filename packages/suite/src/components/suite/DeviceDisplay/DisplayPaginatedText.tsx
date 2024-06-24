@@ -1,8 +1,10 @@
 import styled from 'styled-components';
+
 import { Icon } from '@trezor/components';
+import { DeviceModelInternal } from '@trezor/connect';
+
 import { ResultRow, parseTextToPagesAndLines } from './parseTextToPagesAndLines';
 import { DeviceDisplayText } from './DeviceDisplayText';
-import { DeviceModelInternal } from '@trezor/connect';
 import { DisplayPageSeparator } from './DisplayPageSeparator';
 
 const StyledNextIcon = styled(Icon)<{ $isPixelType: boolean }>`

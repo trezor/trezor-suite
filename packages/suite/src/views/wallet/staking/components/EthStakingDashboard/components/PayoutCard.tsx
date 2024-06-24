@@ -45,7 +45,7 @@ export const PayoutCard = ({
                     {payout === undefined ? (
                         <Translation
                             id="TR_STAKE_MAX_REWARD_DAYS"
-                            values={{ days: BACKUP_REWARD_PAYOUT_DAYS }}
+                            values={{ count: BACKUP_REWARD_PAYOUT_DAYS }}
                         />
                     ) : (
                         <Translation id="TR_STAKE_DAYS" values={{ count: payout }} />

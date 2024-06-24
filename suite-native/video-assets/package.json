@@ -8,11 +8,11 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "generate-videos": "yarn g:tsx ./scripts/generateVideos.ts"
     },
     "dependencies": {
-        "@suite-native/atoms": "workspace:*",
         "@trezor/styles": "workspace:*",
         "expo-av": "14.0.5",
         "prettier": "3.2.5",

@@ -1,18 +1,21 @@
 import styled from 'styled-components';
 import { breakpointMediaQueries } from '@trezor/styles';
-import { useLayout } from 'src/hooks/suite';
+import { useLayout, useSelector } from 'src/hooks/suite';
 import { AssetsView } from './components/AssetsView';
 import PortfolioCard from './components/PortfolioCard';
 import SecurityFeatures from './components/SecurityFeatures';
 import { PromoBanner } from './components/PromoBanner';
-import { T2B1PromoBanner } from './components/T2B1PromoBanner';
+import { T3T1PromoBanner } from './components/T3T1PromoBanner';
 import { PageHeader } from 'src/components/suite/layouts/SuiteLayout';
 import { StakeEthCard } from './components/StakeEthCard/StakeEthCard';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
+import { DashboardPassphraseBanner } from './components/DashboardPassphraseBanner';
+import { spacingsPx } from '@trezor/theme';
 
 const Wrapper = styled.div`
     display: flex;
     flex-direction: column;
-    gap: 64px;
+    gap: ${spacingsPx.xxxxl};
 
     ${breakpointMediaQueries.below_sm} {
         /* for the promo banner */
@@ -22,13 +25,15 @@ const Wrapper = styled.div`
 
 export const Dashboard = () => {
     useLayout('Home', PageHeader);
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
 
     return (
         <Wrapper data-test="@dashboard/index">
+            <DashboardPassphraseBanner />
             <PortfolioCard />
-            <T2B1PromoBanner />
+            <T3T1PromoBanner />
             <AssetsView />
-            <SecurityFeatures />
+            {!isViewOnlyModeVisible && <SecurityFeatures />}
             <StakeEthCard />
             <PromoBanner />
         </Wrapper>

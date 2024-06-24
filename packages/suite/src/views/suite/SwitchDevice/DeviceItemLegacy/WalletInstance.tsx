@@ -24,6 +24,7 @@ import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer'
 import { useWalletLabeling } from '../../../../components/suite/labeling/WalletLabeling';
 import { METADATA_LABELING } from 'src/actions/suite/constants';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
+import { selectSuiteSettings } from '../../../../reducers/suite/suiteReducer';
 
 const InstanceType = styled.div`
     display: flex;
@@ -90,6 +91,8 @@ export const WalletInstance = ({
     const rates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const editing = useSelector(state => state.metadata.editing);
+    const settings = useSelector(selectSuiteSettings);
+
     const dispatch = useDispatch();
 
     const { FiatAmountFormatter } = useFormatters();
@@ -111,7 +114,7 @@ export const WalletInstance = ({
 
     const handleRememberChange = () => dispatch(toggleRememberDevice({ device: instance }));
     const handleEject = () => {
-        dispatch(deviceActions.forgetDevice(instance));
+        dispatch(deviceActions.forgetDevice({ device: instance, settings }));
         analytics.report({
             type: EventType.SwitchDeviceEject,
         });

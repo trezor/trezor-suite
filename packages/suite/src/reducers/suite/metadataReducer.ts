@@ -105,8 +105,8 @@ const metadataReducer = (state = initialState, action: Action): MetadataState =>
                 }
                 break;
             case deviceActions.forgetDevice.type:
-                if (action.payload.state) {
-                    delete draft.error?.[action.payload.state];
+                if (action.payload.device.state) {
+                    delete draft.error?.[action.payload.device.state];
                 }
 
             // no default

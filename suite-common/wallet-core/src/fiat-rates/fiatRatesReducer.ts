@@ -86,7 +86,7 @@ export const prepareFiatRatesReducer = createReducerWithExtraDeps(
             .addCase(updateTxsFiatRatesThunk.fulfilled, (state, action) => {
                 if (!action.payload) return;
 
-                action.payload.forEach(fiatRate => {
+                action.payload.rates.forEach(fiatRate => {
                     const { tickerId, rates } = fiatRate;
                     const { localCurrency } = action.meta.arg;
                     const fiatRateKey = getFiatRateKeyFromTicker(tickerId, localCurrency);

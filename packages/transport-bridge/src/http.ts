@@ -1,6 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import url from 'url';
+import stringify from 'json-stable-stringify';
 
 import {
     HttpServer,
@@ -64,13 +65,21 @@ export class TrezordNode {
     private resolveListenSubscriptions(descriptors: Descriptor[]) {
         this.descriptors = descriptors;
 
+        this.logger?.debug(
+            `http: resolving listen subscriptions. n of subscriptions: ${this.listenSubscriptions.length}`,
+        );
+
         if (!this.listenSubscriptions.length) {
             return;
         }
 
         const [affected, unaffected] = arrayPartition(this.listenSubscriptions, subscription => {
-            return JSON.stringify(subscription.descriptors) !== JSON.stringify(this.descriptors);
+            return stringify(subscription.descriptors) !== stringify(this.descriptors);
         });
+
+        this.logger?.debug(
+            `http: affected subscriptions ${affected.length}. unaffected subscriptions ${unaffected.length}`,
+        );
 
         affected.forEach(subscription => {
             subscription.res.end(str(this.descriptors));
@@ -81,6 +90,9 @@ export class TrezordNode {
     public start() {
         // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
         sessionsClient.on('descriptors', descriptors => {
+            this.logger?.debug(
+                `http: sessionsClient reported descriptors: ${JSON.stringify(descriptors)}`,
+            );
             this.throttler.throttle('resolve-listen-subscriptions', () => {
                 return this.resolveListenSubscriptions(descriptors);
             });
@@ -276,14 +288,12 @@ export class TrezordNode {
             ]);
 
             app.get('/status-data', [
-                async (_req, res) => {
-                    const enumerateResult = await this.api.enumerate();
-
+                (_req, res) => {
                     const props = {
                         intro: `To download full logs go to http://127.0.0.1:${this.port}/logs`,
                         version: this.version,
-                        devices: enumerateResult.success ? enumerateResult.payload.descriptors : [],
-                        logs: this.logger.getLog().slice(-20),
+                        devices: this.descriptors,
+                        logs: this.logger.getLog(),
                     };
 
                     res.end(str(props));

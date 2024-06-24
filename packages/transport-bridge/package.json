@@ -7,6 +7,7 @@
     "sideEffects": false,
     "scripts": {
         "test:unit": "yarn g:jest",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "build:node:bin": "yarn esbuild ./src/bin.ts --bundle --outfile=dist/bin.js --platform=node --target=node18 --external:usb",
@@ -19,6 +20,7 @@
         "build:lib": "yarn build:js"
     },
     "devDependencies": {
+        "@types/json-stable-stringify": "^1",
         "esbuild": "^0.20.0",
         "html-webpack-plugin": "^5.6.0",
         "pkg": "^5.8.1",
@@ -31,6 +33,7 @@
         "@trezor/theme": "workspace:*",
         "@trezor/transport": "workspace:*",
         "@trezor/utils": "workspace:*",
+        "json-stable-stringify": "^1.1.1",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-intl": "^6.6.2",

@@ -8,7 +8,7 @@ const { getSuiteDevice } = testMocks;
 const SUITE_DEVICE = getSuiteDevice();
 const connected = { connected: true, available: true };
 
-const getStatus = [
+const getStatus: Array<{ device: TrezorDevice; status: string }> = [
     {
         device: SUITE_DEVICE,
         status: 'disconnected',
@@ -56,11 +56,6 @@ const getStatus = [
     {
         device: getSuiteDevice({ type: 'unreadable' }),
         status: 'unreadable',
-    },
-    {
-        // @ts-expect-error: invalid type
-        device: getSuiteDevice({ type: 'unknown' }),
-        status: 'unknown',
     },
 ];
 

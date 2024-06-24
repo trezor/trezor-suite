@@ -8,6 +8,7 @@ type SwitchDeviceModalProps = {
     onBackClick?: () => void;
     onCancel?: () => void;
     'data-test'?: string;
+    isAnimationEnabled?: boolean;
 };
 
 const Container = styled.div`
@@ -31,6 +32,7 @@ const initial = {
 export const SwitchDeviceModal = ({
     children,
     onCancel,
+    isAnimationEnabled,
     'data-test': dataTest = '@modal',
 }: SwitchDeviceModalProps) => {
     useEvent('keydown', (e: KeyboardEvent) => {
@@ -46,7 +48,7 @@ export const SwitchDeviceModal = ({
         >
             <DeviceItemsWrapper>
                 <motion.div
-                    initial={initial}
+                    initial={isAnimationEnabled ? initial : false}
                     exit={initial}
                     animate={{
                         width: 369,

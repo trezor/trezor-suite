@@ -8,6 +8,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c ../../jest.config.native.js",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
@@ -33,7 +34,6 @@
         "@suite-native/navigation": "workspace:*",
         "@suite-native/settings": "workspace:*",
         "@trezor/styles": "workspace:*",
-        "@trezor/theme": "workspace:*",
         "proxy-memoize": "2.0.2",
         "react": "18.2.0",
         "react-native": "0.74.1",

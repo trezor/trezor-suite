@@ -43,6 +43,7 @@
         "g:rimraf": "cd $INIT_CWD && rimraf",
         "g:tsc": "cd $INIT_CWD && tsc",
         "g:tsx": "cd $INIT_CWD && tsx",
+        "g:depcheck": "cd $INIT_CWD && depcheck",
         "_______ Nx testing _______": "Nx wrapped commands for testing, linting, type checking...",
         "nx:build:libs": "yarn nx affected --target=build:lib",
         "nx:type-check": "yarn nx affected --target=type-check",
@@ -57,6 +58,7 @@
         "check-workspace-resolutions": "yarn tsx ./scripts/check-workspace-resolutions.ts",
         "generate-package": "yarn tsx ./scripts/generatePackage.js",
         "deps": "rimraf **/node_modules && yarn",
+        "depcheck": "yarn nx affected --target=depcheck",
         "message-system-sign-config": "yarn workspace @suite-common/message-system sign-config",
         "format": "yarn nx format:write",
         "format:all": "yarn prettier --write \"**/*.{js,ts,tsx,mdx,md,html,json,yml,yaml}\"",
@@ -74,7 +76,7 @@
         "refs": "yarn update-project-references",
         "types": "yarn type-check",
         "messages": "yarn message-system-sign-config",
-        "validate": "yarn verify-project-references && yarn lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions",
+        "validate": "yarn verify-project-references && yarn lint:js && yarn nx:lint:styles && yarn nx:build:libs && yarn nx:type-check && yarn nx:test-unit && yarn check-workspace-resolutions && yarn depcheck",
         "a": "yarn native:android",
         "ios": "yarn native:ios",
         "p": "yarn native:prebuild",
@@ -100,7 +102,7 @@
         "electron": "27.3.8",
         "webpack": "^5.90.1",
         "html-webpack-plugin": "^5.6.0",
-        "@types/node": "18.17.15",
+        "@types/node": "20.12.7",
         "@types/react": "18.2.55",
         "@sentry/types": "7.92.0",
         "bn.js": "5.2.1"
@@ -118,13 +120,14 @@
         "@babel/runtime": "^7.23.9",
         "@suite-common/wallet-types": "workspace:*",
         "@types/jest": "29.5.12",
-        "@types/node": "18.17.15",
+        "@types/node": "20.12.7",
         "@types/prettier": "^3.0.0",
         "@types/semver": "^7.5.6",
         "@types/tar": "^6.1.11",
         "@typescript-eslint/eslint-plugin": "^6.21.0",
         "@typescript-eslint/parser": "^6.21.0",
         "babel-jest": "29.7.0",
+        "depcheck": "^1.4.7",
         "eslint": "^8.56.0",
         "eslint-plugin-chai-friendly": "^0.7.4",
         "eslint-plugin-cypress": "^2.15.1",
@@ -161,5 +164,5 @@
             "built": true
         }
     },
-    "packageManager": "yarn@4.1.1"
+    "packageManager": "yarn@4.2.2"
 }

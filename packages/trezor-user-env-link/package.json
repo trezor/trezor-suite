@@ -6,12 +6,13 @@
     "main": "src/index",
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
         "@trezor/utils": "workspace:*",
         "cross-fetch": "^4.0.0",
-        "ws": "^8.16.0"
+        "ws": "^8.17.1"
     },
     "devDependencies": {
         "@types/ws": "^8.5.5"

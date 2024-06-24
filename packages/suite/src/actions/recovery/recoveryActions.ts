@@ -9,6 +9,7 @@ import { Dispatch, GetState } from 'src/types/suite';
 import { WordCount } from 'src/types/recovery';
 import { DEFAULT_PASSPHRASE_PROTECTION } from 'src/constants/suite/device';
 import { isRecoveryInProgress } from '../../utils/device/isRecoveryInProgress';
+import { selectSuiteFlags } from '../../reducers/suite/suiteReducer';
 
 export type SeedInputStatus =
     | 'initial'
@@ -96,6 +97,8 @@ const checkSeed = () => async (dispatch: Dispatch, getState: GetState) => {
 const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
     const { advancedRecovery, wordsCount } = getState().recovery;
     const device = selectDevice(getState());
+    const { isViewOnlyModeVisible } = selectSuiteFlags(getState());
+
     if (!device?.features) {
         return;
     }
@@ -128,7 +131,8 @@ const recoverDevice = () => async (dispatch: Dispatch, getState: GetState) => {
         },
     });
 
-    if (response.success && DEFAULT_PASSPHRASE_PROTECTION) {
+    // Todo: delete this whole IF once we remove Legacy part and ViewOnly will be default
+    if (!isViewOnlyModeVisible && response.success && DEFAULT_PASSPHRASE_PROTECTION) {
         // We call recoverDevice from onboarding
         // Uninitialized device has disabled passphrase protection thus useEmptyPassphrase is set to true.
         // It means that when user finished the onboarding process a standard wallet is automatically

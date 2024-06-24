@@ -44,7 +44,7 @@ export const DeviceManagerContent = () => {
     const dispatch = useDispatch();
 
     const handleSelectDevice = (selectedDevice: TrezorDevice) => {
-        dispatch(selectDeviceThunk(selectedDevice));
+        dispatch(selectDeviceThunk({ device: selectedDevice }));
         setIsChangeDeviceRequested(false);
         setIsDeviceManagerVisible(false);
 
@@ -71,7 +71,7 @@ export const DeviceManagerContent = () => {
             customSwitchRightView={
                 !isPortfolioTrackerDevice && (
                     <DevicesToggleButton
-                        deviceButtonState={isChangeDeviceRequested ? 'open' : 'closed'}
+                        isOpened={isChangeDeviceRequested}
                         onDeviceButtonTap={toggleIsChangeDeviceRequested}
                     />
                 )

@@ -7,8 +7,11 @@ import {
     createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 
+import { verifyPassphraseOnEmptyWalletThunk } from './passphraseThunks';
+
 type PassphraseState = {
     error: AuthorizeDeviceError | CreateDeviceInstanceError | null;
+    isVefifyingPassphraseOnEmptyWallet: boolean;
 };
 
 type PassphraseRootState = {
@@ -17,6 +20,7 @@ type PassphraseRootState = {
 
 const passphraseInitialState: PassphraseState = {
     error: null,
+    isVefifyingPassphraseOnEmptyWallet: false,
 };
 
 export const passphraseSlice = createSlice({
@@ -25,6 +29,18 @@ export const passphraseSlice = createSlice({
     reducers: {},
     extraReducers: builder => {
         builder
+            .addCase(verifyPassphraseOnEmptyWalletThunk.pending.type, state => {
+                state.isVefifyingPassphraseOnEmptyWallet = true;
+            })
+            .addMatcher(
+                isAnyOf(
+                    verifyPassphraseOnEmptyWalletThunk.fulfilled,
+                    verifyPassphraseOnEmptyWalletThunk.rejected,
+                ),
+                state => {
+                    state.isVefifyingPassphraseOnEmptyWallet = false;
+                },
+            )
             .addMatcher(
                 isAnyOf(authorizeDeviceThunk.pending, createDeviceInstanceThunk.pending),
                 state => {
@@ -50,5 +66,8 @@ export const selectPassphraseError = (state: PassphraseRootState) => state.passp
 export const selectPassphraseDuplicateError = (state: PassphraseRootState) => {
     return state.passphrase.error?.error === 'passphrase-duplicate' ? state.passphrase.error : null;
 };
+
+export const selectIsVerifyingPassphraseOnEmptyWallet = (state: PassphraseRootState) =>
+    state.passphrase.isVefifyingPassphraseOnEmptyWallet;
 
 export const passphraseReducer = passphraseSlice.reducer;

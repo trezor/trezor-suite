@@ -50,7 +50,7 @@ type ConnectVersionMatrix = {
 
 const tableToMarkdown = (table: ConnectVersionMatrix[], type: 'Package' | 'Deployment') => {
     let markdown = `| ${type} | Stable | Canary |\n`;
-    markdown += '| ------- | ------ | ------ |\n';
+    markdown += '| :----: | :----: | :----:|\n';
 
     table.forEach(row => {
         markdown += `| ${row.package} | ${row.stable} | ${row.canary} |\n`;
@@ -205,7 +205,7 @@ const bumpConnect = async () => {
             '--title',
             `${commitMessage}`,
             '--body-file',
-            'docs/releases/connect-release.md',
+            'docs/releases/connect-bump-version.md',
             '--base',
             'develop',
             '--head',

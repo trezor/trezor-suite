@@ -1,5 +1,6 @@
 import { Meta, StoryObj } from '@storybook/react';
 import { Card as CardComponent } from './Card';
+import { framePropsStory } from '../common/frameProps';
 
 const meta: Meta = {
     title: 'Misc/Card',
@@ -12,7 +13,7 @@ export const Card: StoryObj = {
         children: 'Some content',
         label: '',
         paddingType: 'normal',
-        margin: { top: undefined, right: undefined, bottom: undefined, left: undefined },
+        ...framePropsStory.args,
     },
     argTypes: {
         paddingType: {
@@ -21,10 +22,6 @@ export const Card: StoryObj = {
                 type: 'radio',
             },
         },
-        margin: {
-            table: {
-                category: 'Frame props',
-            },
-        },
+        ...framePropsStory.argTypes,
     },
 };

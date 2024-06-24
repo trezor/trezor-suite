@@ -64,6 +64,7 @@ export const getStatus = (device: TrezorDevice) => {
     if (device.type === 'unacquired') {
         return 'unacquired';
     }
+
     if (device.type === 'unreadable') {
         return 'unreadable';
     }

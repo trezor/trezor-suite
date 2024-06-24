@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, HStack, Loader, Text } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import {
+    ConnectDeviceSettings,
     DeviceRootState,
     DiscoveryRootState,
     deviceActions,
@@ -68,8 +69,13 @@ export const WalletRow = ({ device }: WalletRowProps) => {
         }
 
         if (!device.connected && device.remember) {
+            const settings: ConnectDeviceSettings = {
+                defaultWalletLoading: 'standard',
+                isViewOnlyModeVisible: false,
+            };
+
             // disconnected device, view-only is being disabled so it can be forgotten
-            dispatch(deviceActions.forgetDevice(device));
+            dispatch(deviceActions.forgetDevice({ device, settings }));
         } else {
             // device is connected or become remembered
             dispatch(toggleRememberDevice({ device }));

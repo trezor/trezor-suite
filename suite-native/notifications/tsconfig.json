@@ -20,7 +20,6 @@
         { "path": "../navigation" },
         { "path": "../theme" },
         { "path": "../transactions" },
-        { "path": "../../packages/styles" },
-        { "path": "../../packages/theme" }
+        { "path": "../../packages/styles" }
     ]
 }

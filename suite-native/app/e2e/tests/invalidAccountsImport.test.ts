@@ -7,6 +7,12 @@ import { onAccountImport } from '../pageObjects/accountImportActions';
 import { onMyAssets } from '../pageObjects/myAssetsActions';
 import { onTabBar } from '../pageObjects/tabBarActions';
 
+const goToBtcImportXpubScreen = async () => {
+    await onTabBar.navigateToMyAssets();
+    await onMyAssets.addAccount();
+    await onAccountImport.selectCoin({ networkSymbol: 'btc' });
+};
+
 describe('Import invalid accounts', () => {
     beforeAll(async () => {
         await openApp({ newInstance: true });
@@ -16,11 +22,10 @@ describe('Import invalid accounts', () => {
     beforeEach(async () => {
         await restartApp();
         await appIsFullyLoaded();
+        await goToBtcImportXpubScreen();
     });
     it('Import an already imported XPUB', async () => {
         // add first account
-        await onTabBar.navigateToMyAssets();
-        await onMyAssets.addAccount();
         await onAccountImport.importAccount({
             networkSymbol: 'btc',
             xpub: xpubs.btc.legacySegwit,
@@ -28,9 +33,7 @@ describe('Import invalid accounts', () => {
         });
 
         // try to add account with same xpub
-        await onTabBar.navigateToMyAssets();
-        await onMyAssets.addAccount();
-        await onAccountImport.selectCoin({ networkSymbol: 'btc' });
+        await goToBtcImportXpubScreen();
         await onAccountImport.submitXpub({ xpub: xpubs.btc.legacySegwit, isValid: true });
 
         await detoxExpect(element(by.id('@account-import/summary/account-already-imported')));
@@ -39,8 +42,6 @@ describe('Import invalid accounts', () => {
     it('Import BTC receive address', async () => {
         const btcReceiveAddress = 'bc1qunyzxr3gfcg7ggxp5vpxwm3q7t3xc52rcaupu4';
 
-        await onTabBar.navigateToMyAssets();
-        await onMyAssets.addAccount();
         await onAccountImport.selectCoin({ networkSymbol: 'btc' });
         await onAccountImport.submitXpub({ xpub: btcReceiveAddress, isValid: false });
 

@@ -1,30 +1,38 @@
+import {
+    Elevation,
+    borders,
+    mapElevationToBackground,
+    mapElevationToBorder,
+    spacingsPx,
+} from '@trezor/theme';
 import { ButtonHTMLAttributes } from 'react';
 import styled from 'styled-components';
+import { useElevation } from '../../ElevationContext/ElevationContext';
 
-const Button = styled.button`
+const Button = styled.button<{ $elevation: Elevation }>`
     max-width: 100px;
     height: 60px;
     transition: all 0.2s;
     position: relative;
     cursor: pointer;
-    margin: 4px;
+    margin: ${spacingsPx.xxs};
 
     width: 100%;
 
-    border-radius: 5px;
-    border: 1px solid ${({ theme }) => theme.BG_GREY};
-    background: ${({ theme }) => theme.BG_GREY};
+    border-radius: ${borders.radii.xxs};
+    border: 1px solid ${mapElevationToBorder};
+    background: ${mapElevationToBackground};
 
     &:first-child {
-        margin-left: 0;
+        margin-left: ${spacingsPx.zero};
     }
 
     &:last-child {
-        margin-right: 0;
+        margin-right: ${spacingsPx.zero};
     }
 
     &:hover {
-        background: ${({ theme }) => theme.BG_LIGHT_GREEN};
+        background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
     }
 
     &::before {
@@ -33,13 +41,13 @@ const Button = styled.button`
         content: ' ';
         position: absolute;
         border-radius: 100%;
-        background: ${({ theme }) => theme.TYPE_DARK_GREY};
+        background: ${({ theme }) => theme.textDefault};
         top: calc(50% - 3px);
         left: calc(50% - 3px);
     }
 
     &:hover::before {
-        background: ${({ theme }) => theme.TYPE_GREEN};
+        background: ${({ theme }) => theme.textSecondaryHighlight};
     }
 `;
 
@@ -47,4 +55,8 @@ export interface PinButtonProps extends Pick<ButtonHTMLAttributes<HTMLButtonElem
     'data-value': string;
 }
 
-export const PinButton = (props: PinButtonProps) => <Button type="button" {...props} />;
+export const PinButton = (props: PinButtonProps) => {
+    const { elevation } = useElevation();
+
+    return <Button type="button" $elevation={elevation} {...props} />;
+};

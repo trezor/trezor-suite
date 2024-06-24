@@ -18,9 +18,10 @@ import guide from './guideReducer';
 import protocol from './protocolReducer';
 
 const analytics = prepareAnalyticsReducer(extraDependencies);
-// Type annotation as workaround for typecheck error "The inferred type of 'default' cannot be named..."
+// Type annotation as workaround for type-check error "The inferred type of 'default' cannot be named..."
 const messageSystem: Reducer = prepareMessageSystemReducer(extraDependencies);
 const device = prepareDeviceReducer(extraDependencies);
+
 export default {
     suite,
     router,

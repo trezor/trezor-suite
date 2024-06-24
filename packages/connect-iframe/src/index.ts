@@ -20,7 +20,7 @@ import {
     CoreRequestMessage,
     CoreEventMessage,
 } from '@trezor/connect';
-import { Core, initCore } from '@trezor/connect/src/core';
+import { initCoreState } from '@trezor/connect/src/core';
 import { DataManager } from '@trezor/connect/src/data/DataManager';
 import { config } from '@trezor/connect/src/data/config';
 import { initLog, LogWriter } from '@trezor/connect/src/utils/debug';
@@ -34,7 +34,7 @@ import { analytics, EventType } from '@trezor/connect-analytics';
 import LogWorker from './sharedLoggerWorker';
 import { initLogWriterWithWorker } from './sharedLoggerUtils';
 
-let _core: Core | undefined;
+const coreManager = initCoreState();
 
 // custom log
 const _log = initLog('IFrame');
@@ -50,6 +50,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     // ignore messages from myself (chrome bug?)
     if (event.source === window || !event.data) return;
     const { data } = event;
+    const core = coreManager.getCore();
     const id = 'id' in data && typeof data.id === 'number' ? data.id : 0;
 
     const fail = (error: string) => {
@@ -67,7 +68,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
 
     // respond to call
     // TODO: instead of error _core should be initialized automatically
-    if (!_core && data.type === IFRAME.CALL) {
+    if (!core && data.type === IFRAME.CALL) {
         fail('Core not initialized yet!');
 
         return;
@@ -93,15 +94,19 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             }
             // reassign to current MessagePort
             [_popupMessagePort] = event.ports;
+            _popupMessagePort.onmessage = message => handleMessage(message);
         }
 
-        if (!_core) {
+        if (!core) {
             fail('POPUP.HANDSHAKE: Core not initialized');
 
             return;
         }
 
-        const transport = _core.getTransportInfo();
+        // Handle immediately, before other logic
+        core.handleMessage({ type: POPUP.HANDSHAKE });
+
+        const transport = core.getTransportInfo();
         const settings = DataManager.getSettings();
 
         postMessage(
@@ -111,7 +116,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
             }),
         );
         _log.debug('loading current method');
-        const method = await _core.getCurrentMethod();
+        const method = await core.getCurrentMethod();
 
         if (method?.info) {
             postMessage(
@@ -143,6 +148,8 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
                 transportVersion: transport?.version,
             },
         });
+
+        return;
     }
 
     // clear reference to popup MessagePort
@@ -192,9 +199,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     }
 
     // pass data to Core
-    if (_core) {
-        _core.handleMessage(message);
-    }
+    coreManager.getCore()?.handleMessage(message);
 };
 
 // Communication with 3rd party window and Trezor Popup.
@@ -207,8 +212,9 @@ const postMessage = (message: CoreEventMessage) => {
 
     // popup handshake is resolved automatically
     if (!usingPopup) {
-        if (_core && message.type === UI.REQUEST_UI_WINDOW) {
-            _core.handleMessage({ type: POPUP.HANDSHAKE });
+        const core = coreManager.getCore();
+        if (core && message.type === UI.REQUEST_UI_WINDOW) {
+            core.handleMessage({ type: POPUP.HANDSHAKE });
 
             return;
         }
@@ -308,7 +314,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
             _popupMessagePort = new BroadcastChannel(broadcastID);
             _popupMessagePort.onmessage = message => handleMessage(message);
         } catch (error) {
-            // tell the popup to use MessageChannel fallback communication (thru IFRAME.LOADED > POPUP.INIT)
+            // popup will use MessageChannel fallback communication
         }
     }
 
@@ -325,7 +331,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 
     try {
         // initialize core
-        _core = await initCore(parsedSettings, postMessage, logWriterFactory);
+        await coreManager.getOrInitCore(parsedSettings, postMessage, logWriterFactory);
         postMessage(
             createIFrameMessage(IFRAME.LOADED, {
                 useBroadcastChannel: !!_popupMessagePort,
@@ -339,7 +345,5 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 
 window.addEventListener('message', handleMessage, false);
 window.addEventListener('beforeunload', () => {
-    if (_core) {
-        _core.dispose();
-    }
+    coreManager.getCore()?.dispose();
 });

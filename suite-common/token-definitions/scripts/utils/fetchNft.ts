@@ -1,6 +1,6 @@
 /* eslint-disable no-console */
 import { NFTS_PER_PAGE, NFT_LIST_URL } from '../constants';
-import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/types';
+import { AdvancedTokenStructure, SimpleTokenStructure } from '../../src/tokenDefinitionsTypes';
 import { NftData } from '../types';
 
 const fetchNftPage = async (page: number, assetPlatformId: string): Promise<NftData[]> => {

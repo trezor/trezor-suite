@@ -75,6 +75,7 @@ export type SuiteAnalyticsEvent =
     | {
           type: EventType.DeviceUpdateFirmware;
           payload: {
+              model: string;
               fromBlVersion: string;
               fromFwVersion: string;
               toFwVersion?: string;
@@ -87,6 +88,7 @@ export type SuiteAnalyticsEvent =
           payload: Partial<Omit<OnboardingAnalytics, 'startTime'>> & {
               duration: number;
               device: string;
+              unitPackaging: number;
           };
       }
     | {
@@ -280,11 +282,29 @@ export type SuiteAnalyticsEvent =
               value: 0 | 90 | 180 | 270;
           };
       }
+    | {
+          type: EventType.SettingsDeviceChangeHapticFeedback;
+          payload: {
+              value: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsDeviceChangeBrightness;
+          payload: {
+              value?: number;
+          };
+      }
     | { type: EventType.SettingsDeviceWipe }
     | {
           type: EventType.SettingsDeviceChangePassphraseProtection;
           payload: {
               use_passphrase: boolean;
+          };
+      }
+    | {
+          type: EventType.SettingsDeviceDefaultWalletLoading;
+          payload: {
+              defaultWalletLoading: 'standard' | 'passphrase';
           };
       }
     | {
@@ -413,8 +433,14 @@ export type SuiteAnalyticsEvent =
           };
       }
     | {
-          type: EventType.T2B1DashboardPromo;
+          type: EventType.T3T1DashboardPromo;
           payload: {
-              action: 'shop' | 'close';
+              action: 'preorder' | 'close';
+          };
+      }
+    | {
+          type: EventType.SettingsMultiShareBackup;
+          payload: {
+              action: 'start' | 'done' | 'learn-more' | 'close-modal';
           };
       };

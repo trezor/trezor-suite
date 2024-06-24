@@ -67,8 +67,13 @@ export enum EventType {
     SettingsDeviceChangeLabel = 'settings/device/change-label',
     SettingsDeviceUpdateAutoLock = 'settings/device/update-auto-lock',
     SettingsDeviceChangeOrientation = 'settings/device/change-orientation',
+    SettingsDeviceChangeHapticFeedback = 'settings/device/change-haptic-feedback',
+    SettingsDeviceChangeBrightness = 'settings/device/change-brightness',
+    SettingsMultiShareBackup = 'settings/device/multi-share-backup',
     SettingsDeviceWipe = 'settings/device/wipe',
     SettingsDeviceChangePassphraseProtection = 'settings/device/change-passphrase-protection',
+    SettingsDeviceDefaultWalletLoading = 'settings/device/default-wallet-type',
+
     SettingsGeneralChangeLanguage = 'settings/general/change-language',
     SettingsGeneralChangeTheme = 'settings/general/change-theme',
     SettingsGeneralAddressDisplayType = 'settings/general/address-display-type',
@@ -86,5 +91,6 @@ export enum EventType {
 
     GetDesktopApp = 'promo/desktop',
     GetMobileApp = 'promo/mobile',
-    T2B1DashboardPromo = 'promo/t2b1-dashboard',
+
+    T3T1DashboardPromo = 'promo/t3t1-dashboard',
 }

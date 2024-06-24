@@ -67,7 +67,7 @@ export const TransactionRenderer = ({ render: View, ...props }: TransactionRende
                 onClick: () => {
                     const deviceToSelect = accountDevice || device;
                     if (deviceToSelect?.id !== currentDevice?.id) {
-                        dispatch(selectDeviceThunk(deviceToSelect));
+                        dispatch(selectDeviceThunk({ device: deviceToSelect }));
                     }
                     const txAnchor = getTxAnchor(tx?.txid);
                     dispatch(

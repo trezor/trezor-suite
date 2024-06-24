@@ -42,6 +42,7 @@ interface CardWithDeviceProps {
     onCancel?: ForegroundAppProps['onCancel'];
     device: TrezorDevice;
     isCloseButtonVisible?: boolean;
+    onBackButtonClick?: () => void;
 }
 
 export const CardWithDevice = ({
@@ -50,6 +51,7 @@ export const CardWithDevice = ({
     device,
     deviceWarning,
     isCloseButtonVisible = false,
+    onBackButtonClick,
 }: CardWithDeviceProps) => {
     const deviceStatus = deviceUtils.getStatus(device);
 
@@ -64,6 +66,7 @@ export const CardWithDevice = ({
                     onCancel={onCancel}
                     device={device}
                     isCloseButtonVisible={isCloseButtonVisible}
+                    onBackButtonClick={onBackButtonClick}
                 />
 
                 {deviceWarning}

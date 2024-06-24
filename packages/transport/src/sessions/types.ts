@@ -16,11 +16,6 @@ export type Sessions = Record<string, Descriptor>;
 export type HandshakeRequest = Record<string, never>;
 export type HandshakeResponse = BackgroundResponse<undefined>;
 
-export type EnumerateIntentRequest = Record<string, never>;
-export type EnumerateIntentResponse = BackgroundResponse<{
-    descriptors: Descriptor[];
-}>;
-
 export type EnumerateDoneRequest = {
     descriptors: DescriptorApiLevel[];
 };
@@ -88,7 +83,6 @@ export type Params = {
 
 export interface HandleMessageApi {
     handshake: () => HandshakeResponse;
-    enumerateIntent: () => EnumerateIntentResponse;
     enumerateDone: (payload: EnumerateDoneRequest) => EnumerateDoneResponse;
     acquireIntent: (payload: AcquireIntentRequest) => AcquireIntentResponse;
     acquireDone: (payload: AcquireDoneRequest) => AcquireDoneResponse;

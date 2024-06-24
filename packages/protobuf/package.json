@@ -1,6 +1,6 @@
 {
     "name": "@trezor/protobuf",
-    "version": "1.0.13",
+    "version": "1.0.14-beta.1",
     "license": "See LICENSE.md in repo root",
     "repository": {
         "type": "git",
@@ -26,6 +26,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c ../../jest.config.base.js",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "build:lib": "yarn g:rimraf ./lib && yarn g:tsc --build tsconfig.lib.json && ../../scripts/replace-imports.sh ./lib",
         "update:schema": "yarn workspace @trezor/schema-utils codegen $(pwd)/src/messages.ts > src/messages-schema.ts && yarn g:eslint --fix src/messages-schema.ts && yarn g:prettier --write src/messages-schema.ts",
@@ -35,7 +36,6 @@
     },
     "dependencies": {
         "@trezor/schema-utils": "workspace:*",
-        "long": "^4.0.0",
         "protobufjs": "7.2.6"
     },
     "devDependencies": {

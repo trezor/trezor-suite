@@ -74,23 +74,25 @@ const analyticsMiddleware =
                 });
                 break;
             case DEVICE.CONNECT: {
-                const { features, mode } = action.payload;
+                const {
+                    device: { features, mode },
+                } = action.payload;
 
                 if (!features || !mode) return;
 
-                if (!isDeviceInBootloaderMode(action.payload)) {
+                if (!isDeviceInBootloaderMode(action.payload.device)) {
                     analytics.report({
                         type: EventType.DeviceConnect,
                         payload: {
                             mode,
-                            firmware: getFirmwareVersion(action.payload),
-                            firmwareRevision: getFirmwareRevision(action.payload),
-                            bootloaderHash: getBootloaderHash(action.payload),
+                            firmware: getFirmwareVersion(action.payload.device),
+                            firmwareRevision: getFirmwareRevision(action.payload.device),
+                            bootloaderHash: getBootloaderHash(action.payload.device),
                             backup_type: features.backup_type || 'Bip39',
                             pin_protection: features.pin_protection,
                             passphrase_protection: features.passphrase_protection,
                             totalInstances: selectDevicesCount(state),
-                            isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload),
+                            isBitcoinOnly: hasBitcoinOnlyFirmware(action.payload.device),
                             totalDevices: getPhysicalDeviceCount(selectDevices(state)),
                             language: features.language,
                             model: features.internal_model,
@@ -101,8 +103,8 @@ const analyticsMiddleware =
                         type: EventType.DeviceConnect,
                         payload: {
                             mode: 'bootloader',
-                            firmware: getFirmwareVersion(action.payload),
-                            bootloader: getBootloaderVersion(action.payload),
+                            firmware: getFirmwareVersion(action.payload.device),
+                            bootloader: getBootloaderVersion(action.payload.device),
                         },
                     });
                 }

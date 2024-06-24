@@ -3,6 +3,7 @@ import {
     transactionsInitialState,
     transactionsActions,
     prepareTransactionsReducer,
+    fetchTransactionsPageThunk,
 } from '@suite-common/wallet-core';
 import { transactions, accounts } from '../__fixtures__/transactionConstants';
 
@@ -112,28 +113,53 @@ describe('transaction reducer', () => {
             reducer(
                 { ...transactionsInitialState },
                 {
-                    type: transactionsActions.fetchInit.type,
+                    type: fetchTransactionsPageThunk.pending.type,
+                    meta: { arg: { accountKey: 'someAccountKey', page: 1 } },
                 },
             ),
-        ).toEqual({ ...transactionsInitialState, isLoading: true });
+        ).toEqual({
+            ...transactionsInitialState,
+            fetchStatusDetail: {
+                someAccountKey: {
+                    status: 'loading',
+                    error: null,
+                },
+            },
+        });
     });
 
     it('fetch success', () => {
         expect(
             reducer(undefined, {
-                type: transactionsActions.fetchSuccess.type,
+                type: fetchTransactionsPageThunk.fulfilled.type,
+                meta: { arg: { accountKey: 'someAccountKey', page: 1 } },
             }),
-        ).toEqual({ ...transactionsInitialState, isLoading: false });
+        ).toEqual({
+            ...transactionsInitialState,
+            fetchStatusDetail: {
+                someAccountKey: {
+                    status: 'idle',
+                    error: null,
+                },
+            },
+        });
     });
 
     it('fetch error', () => {
         expect(
             reducer(undefined, {
-                type: transactionsActions.fetchError.type,
-                payload: {
+                type: fetchTransactionsPageThunk.rejected.type,
+                meta: { arg: { accountKey: 'someAccountKey', page: 1 } },
+                error: 'Some error',
+            }),
+        ).toEqual({
+            ...transactionsInitialState,
+            fetchStatusDetail: {
+                someAccountKey: {
+                    status: 'error',
                     error: 'Some error',
                 },
-            }),
-        ).toEqual({ ...transactionsInitialState, isLoading: false, error: 'Some error' });
+            },
+        });
     });
 });

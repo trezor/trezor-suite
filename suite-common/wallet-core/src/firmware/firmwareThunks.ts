@@ -1,4 +1,9 @@
-import { hasBitcoinOnlyFirmware, isBitcoinOnlyDevice } from '@trezor/device-utils';
+import {
+    getBootloaderVersion,
+    getFirmwareVersion,
+    hasBitcoinOnlyFirmware,
+    isBitcoinOnlyDevice,
+} from '@trezor/device-utils';
 import { isDesktop } from '@trezor/env-utils';
 import { resolveStaticPath } from '@suite-common/suite-utils';
 import { analytics, EventType } from '@trezor/suite-analytics';
@@ -147,6 +152,29 @@ export const firmwareUpdate = createThunk(
             // Firmware language should only be set during the initial firmware installation.
             language: device.firmware === 'none' ? targetTranslationLanguage : undefined,
         });
+
+        // condition to satisfy TS
+        if (device.features) {
+            const targetProperties = binary
+                ? {}
+                : {
+                      toFwVersion: device?.firmwareRelease?.release.version.join('.'),
+                      toBtcOnly: toBitcoinOnlyFirmware,
+                  };
+            analytics.report({
+                type: EventType.DeviceUpdateFirmware,
+                payload: {
+                    model: device.features.internal_model,
+                    fromFwVersion:
+                        device?.firmware === 'none' ? 'none' : getFirmwareVersion(device),
+                    fromBlVersion: getBootloaderVersion(device),
+                    error: !firmwareUpdateResponse.success
+                        ? firmwareUpdateResponse.payload.error
+                        : '',
+                    ...targetProperties,
+                },
+            });
+        }
 
         if (!firmwareUpdateResponse.success) {
             dispatch(firmwareActions.setStatus('error'));

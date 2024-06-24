@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 import { Image, Text } from '@trezor/components';
 import { borders, spacings, spacingsPx } from '@trezor/theme';
-import { ESHOP_KEEP_METAL_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
+import { ESHOP_KEEP_METAL_SINGLE_SHARE_URL, HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
 
 import { Translation, TrezorLink } from 'src/components/suite';
 import { BackupInstructionsCard } from './BackupInstructionsCard';
@@ -68,7 +68,10 @@ export const createSharesInstruction: InstructionBaseConfig = {
                                 </TrezorLink>
                             ),
                             keepLink: chunks => (
-                                <TrezorLink href={ESHOP_KEEP_METAL_URL} variant="underline">
+                                <TrezorLink
+                                    href={ESHOP_KEEP_METAL_SINGLE_SHARE_URL}
+                                    variant="underline"
+                                >
                                     {chunks}
                                 </TrezorLink>
                             ),

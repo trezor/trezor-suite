@@ -8,6 +8,7 @@
     "scripts": {
         "lint:js": "yarn g:eslint '**/*.{ts,tsx,js}'",
         "test:unit": "yarn g:jest -c=../../jest.config.base.js",
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
@@ -17,14 +18,11 @@
         "@suite-common/suite-constants": "workspace:*",
         "@suite-common/suite-types": "workspace:*",
         "@suite-common/wallet-config": "workspace:*",
-        "@suite-common/wallet-core": "workspace:*",
-        "@suite-common/wallet-types": "workspace:*",
         "@suite-common/wallet-utils": "workspace:*",
         "@trezor/connect": "workspace:*",
         "@trezor/utils": "workspace:*",
         "date-fns": "^2.30.0",
         "react": "18.2.0",
-        "react-intl": "^6.6.2",
-        "react-redux": "8.0.7"
+        "react-intl": "^6.6.2"
     }
 }

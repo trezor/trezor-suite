@@ -3,6 +3,7 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
+        "depcheck": "yarn g:depcheck",
         "type-check": "yarn g:tsc --build",
         "run:analytics": "tsx githubAnalytics.ts"
     },
@@ -18,7 +19,6 @@
         "yargs": "17.7.2"
     },
     "devDependencies": {
-        "@types/fs-extra": "^11.0.4",
         "@types/prettier": "^3.0.0"
     }
 }

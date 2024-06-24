@@ -1,8 +1,16 @@
 import { testMocks } from '@suite-common/test-utils';
 
+import type { TransactionsState } from '../transactionsReducer';
+import type { transactionsActions } from '../transactionsActions';
+
 const ACCOUNT = testMocks.getWalletAccount();
 
-export const addTransaction = [
+export const addTransaction: {
+    description: string;
+    initialState: Partial<TransactionsState>;
+    actionPayload: ReturnType<typeof transactionsActions.addTransaction>['payload'];
+    result: Partial<TransactionsState>;
+}[] = [
     {
         description: 'tx exists and will NOT be replaced',
         initialState: {
@@ -147,5 +155,38 @@ export const addTransaction = [
             transactions: [testMocks.getWalletTransaction({ txid: '00' })],
         },
         result: { [ACCOUNT.key]: [testMocks.getWalletTransaction({ txid: '00' })] },
+    },
+];
+
+export const removeTransaction: {
+    description: string;
+    initialState: Partial<TransactionsState>;
+    actionPayload: ReturnType<typeof transactionsActions.removeTransaction>['payload'];
+    result: Partial<TransactionsState>;
+}[] = [
+    {
+        description: 'tx will be removed from existing account',
+        initialState: {
+            transactions: {
+                [ACCOUNT.key]: [testMocks.getWalletTransaction()],
+            },
+        },
+        actionPayload: {
+            account: ACCOUNT,
+            txs: [testMocks.getWalletTransaction()],
+        },
+        result: { [ACCOUNT.key]: [] },
+    },
+    {
+        description:
+            'removing tx from nonexistent account, must NOT add accountKey into transactions',
+        initialState: {
+            transactions: {},
+        },
+        actionPayload: {
+            account: ACCOUNT,
+            txs: [testMocks.getWalletTransaction()],
+        },
+        result: {},
     },
 ];

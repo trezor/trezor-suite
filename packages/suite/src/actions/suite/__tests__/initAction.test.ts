@@ -16,7 +16,12 @@ import {
     preloadFeeInfoThunk,
     initStakeDataThunk,
     periodicCheckStakeDataThunk,
+    updateMissingTxFiatRatesThunk,
 } from '@suite-common/wallet-core';
+import {
+    initTokenDefinitionsThunk,
+    periodicCheckTokenDefinitionsThunk,
+} from '@suite-common/token-definitions';
 import { analyticsActions, prepareAnalyticsReducer } from '@suite-common/analytics';
 import TrezorConnect from '@trezor/connect';
 
@@ -33,10 +38,6 @@ import type { AppState } from 'src/types/suite';
 import { extraDependencies } from 'src/support/extraDependencies';
 
 import { appChanged } from '../suiteActions';
-import {
-    initTokenDefinitionsThunk,
-    periodicCheckTokenDefinitionsThunk,
-} from '@suite-common/token-definitions';
 
 const deviceReducer = prepareDeviceReducer(extraDependencies);
 const analyticsReducer = prepareAnalyticsReducer(extraDependencies);
@@ -116,6 +117,8 @@ const fixtures: Fixture[] = [
             fetchFiatRatesThunk.pending.type,
             fetchFiatRatesThunk.fulfilled.type,
             periodicFetchFiatRatesThunk.fulfilled.type,
+            updateMissingTxFiatRatesThunk.pending.type,
+            updateMissingTxFiatRatesThunk.fulfilled.type,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,
             SUITE.READY,
@@ -158,6 +161,8 @@ const fixtures: Fixture[] = [
             fetchFiatRatesThunk.pending.type,
             fetchFiatRatesThunk.fulfilled.type,
             periodicFetchFiatRatesThunk.fulfilled.type,
+            updateMissingTxFiatRatesThunk.pending.type,
+            updateMissingTxFiatRatesThunk.fulfilled.type,
             appChanged.type,
             ROUTER.LOCATION_CHANGE,
             periodicCheckStakeDataThunk.pending.type,
@@ -201,6 +206,8 @@ const fixtures: Fixture[] = [
             fetchFiatRatesThunk.pending.type,
             fetchFiatRatesThunk.fulfilled.type,
             periodicFetchFiatRatesThunk.fulfilled.type,
+            updateMissingTxFiatRatesThunk.pending.type,
+            updateMissingTxFiatRatesThunk.fulfilled.type,
             ROUTER.LOCATION_CHANGE,
             periodicCheckStakeDataThunk.pending.type,
             initStakeDataThunk.pending.type,

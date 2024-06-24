@@ -12,6 +12,7 @@ import {
     FeeInfo,
     SelectedAccountStatus,
     WalletAccountTransaction,
+    WalletType,
 } from '@suite-common/wallet-types';
 import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Route, TrezorDevice, UserContextPayload } from '@suite-common/suite-types';
@@ -55,6 +56,8 @@ export type ExtraDependencies = {
                 }
             >;
         }>;
+        openSwitchDeviceDialog: SuiteCompatibleThunk<void>;
+        addWalletThunk: SuiteCompatibleThunk<{ walletType: WalletType }>;
     };
     selectors: {
         selectFeeInfo: (networkSymbol: NetworkSymbol) => SuiteCompatibleSelector<FeeInfo>;
@@ -77,6 +80,10 @@ export type ExtraDependencies = {
         selectCheckFirmwareAuthenticity: SuiteCompatibleSelector<boolean>;
         selectAddressDisplayType: SuiteCompatibleSelector<AddressDisplayOptions>;
         selectSelectedAccountStatus: SuiteCompatibleSelector<SelectedAccountStatus['status']>;
+        selectSuiteSettings: SuiteCompatibleSelector<{
+            defaultWalletLoading: WalletType;
+            isViewOnlyModeVisible: boolean;
+        }>;
     };
     // You should only use ActionCreatorWithPayload from redux-toolkit!
     // That means you will need to convert actual action creators in packages/suite to use createAction from redux-toolkit,
@@ -120,6 +127,7 @@ export type ExtraDependencies = {
         setDeviceMetadataReducer: BaseReducer;
         storageLoadDevices: StorageLoadReducer;
         storageLoadFormDrafts: StorageLoadReducer;
+        storageLoadTokenManagement: StorageLoadReducer;
     };
     utils: {
         saveAs: (data: Blob, fileName: string) => void;
@@ -129,4 +137,9 @@ export type ExtraDependencies = {
 
 export type ExtraDependenciesPartial = {
     [K in keyof ExtraDependencies]?: Partial<ExtraDependencies[K]>;
+};
+
+export type CustomThunkAPI = {
+    state: any;
+    extra: ExtraDependencies;
 };

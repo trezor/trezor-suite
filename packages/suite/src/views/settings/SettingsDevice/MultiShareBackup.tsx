@@ -1,4 +1,4 @@
-import { HELP_CENTER_SEED_CARD_URL } from '@trezor/urls';
+import { HELP_CENTER_MULTI_SHARE_BACKUP_URL } from '@trezor/urls';
 import {
     ActionButton,
     ActionColumn,
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectDevice } from '@suite-common/wallet-core';
 import { TrezorDevice } from '@suite-common/suite-types';
 import { goto } from '../../../actions/suite/routerActions';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
 const doesSupportMultiShare = (device: TrezorDevice | undefined): boolean => {
     if (device?.features === undefined) {
@@ -34,18 +35,28 @@ export const MultiShareBackup = () => {
     const device = useSelector(selectDevice);
     const dispatch = useDispatch();
 
-    if (!doesSupportMultiShare(device)) {
+    // "NotAvailable" means, that backup has been already done and thus is not available.
+    const isBackupDone = device?.features?.backup_availability === 'NotAvailable';
+
+    if (!doesSupportMultiShare(device) || !isBackupDone) {
         return;
     }
 
-    const handleClick = () => dispatch(goto('create-multi-share-backup'));
+    const handleClick = () => {
+        analytics.report({
+            type: EventType.SettingsMultiShareBackup,
+            payload: { action: 'start' },
+        });
+
+        dispatch(goto('create-multi-share-backup'));
+    };
 
     return (
         <SectionItem>
             <TextColumn
                 title={<Translation id="TR_MULTI_SHARE_BACKUP" />}
                 description={<Translation id="TR_MULTI_SHARE_BACKUP_DESCRIPTION" />}
-                buttonLink={HELP_CENTER_SEED_CARD_URL}
+                buttonLink={HELP_CENTER_MULTI_SHARE_BACKUP_URL}
             />
             <ActionColumn>
                 <ActionButton

@@ -281,6 +281,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                             session: d.session,
                             path: d.path,
                             product: d.product,
+                            type: d.type,
                         };
                     }
                 });
@@ -433,6 +434,7 @@ export class DeviceList extends TypedEmitter<DeviceListEvents> {
                     session: d.session,
                     path: d.path,
                     product: d.product,
+                    type: d.type,
                 };
                 this.devices[d.path].activitySessionID = d.session;
             }

@@ -6,9 +6,6 @@
             "path": "../../suite-common/redux-utils"
         },
         {
-            "path": "../../suite-common/suite-types"
-        },
-        {
             "path": "../../suite-common/token-definitions"
         },
         {
@@ -32,7 +29,6 @@
         { "path": "../device" },
         { "path": "../device-mutex" },
         { "path": "../../packages/connect" },
-        { "path": "../../packages/device-utils" },
         { "path": "../../packages/utils" }
     ]
 }

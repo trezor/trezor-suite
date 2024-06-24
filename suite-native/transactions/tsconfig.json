@@ -7,13 +7,7 @@
         },
         { "path": "../../suite-common/icons" },
         {
-            "path": "../../suite-common/suite-config"
-        },
-        {
             "path": "../../suite-common/suite-types"
-        },
-        {
-            "path": "../../suite-common/suite-utils"
         },
         {
             "path": "../../suite-common/token-definitions"
@@ -32,7 +26,6 @@
         },
         { "path": "../analytics" },
         { "path": "../atoms" },
-        { "path": "../device-manager" },
         { "path": "../ethereum-tokens" },
         { "path": "../formatters" },
         { "path": "../helpers" },

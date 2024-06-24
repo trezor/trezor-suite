@@ -39,9 +39,12 @@ const eventsMiddleware =
         if (action.type === DEVICE.CONNECT || action.type === DEVICE.CONNECT_UNACQUIRED) {
             // get TrezorDevice from @trezor/connect:Device object
             const devices = selectDevices(api.getState());
-            const device = devices.find(d => d.path === action.payload.path);
+            const device = devices.find(d => d.path === action.payload.device.path);
             if (!device) return action; // this shouldn't happen
-            const seen = deviceUtils.isSelectedDevice(action.payload, selectDevice(api.getState()));
+            const seen = deviceUtils.isSelectedDevice(
+                action.payload.device,
+                selectDevice(api.getState()),
+            );
 
             const toRemove = api
                 .getState()
@@ -87,7 +90,9 @@ const eventsMiddleware =
             const devices = selectDevices(prevState);
             const affectedDevices = deviceActions.forgetDevice.match(action)
                 ? devices.filter(
-                      d => d.path === action.payload.path && d.instance === action.payload.instance,
+                      d =>
+                          d.path === action.payload.device.path &&
+                          d.instance === action.payload.device.instance,
                   )
                 : devices.filter(d => d.path === action.payload.path);
             affectedDevices.forEach(d => {

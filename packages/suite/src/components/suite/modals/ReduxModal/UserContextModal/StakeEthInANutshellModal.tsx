@@ -98,7 +98,7 @@ export const StakeEthInANutshellModal = ({ onCancel }: StakeEthInANutshellModalP
                                 id={translationId}
                                 values={{
                                     symbol: account?.symbol.toUpperCase(),
-                                    days: unstakingPeriod,
+                                    count: unstakingPeriod,
                                 }}
                             />
                         </GreyP>

@@ -2,12 +2,14 @@ import { TransactionList } from 'src/views/wallet/transactions/TransactionList/T
 import { useSelector } from 'src/hooks/suite';
 import {
     selectAccountStakeTypeTransactions,
-    selectIsLoadingTransactions,
+    selectIsLoadingAccountTransactions,
 } from '@suite-common/wallet-core';
 
 export const Transactions = () => {
-    const transactionsIsLoading = useSelector(selectIsLoadingTransactions);
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
+    const transactionsIsLoading = useSelector(state =>
+        selectIsLoadingAccountTransactions(state, selectedAccount.account?.key || null),
+    );
     const stakeTxs = useSelector(state =>
         selectAccountStakeTypeTransactions(state, selectedAccount.account?.key || ''),
     );

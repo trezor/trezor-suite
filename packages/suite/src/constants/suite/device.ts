@@ -16,14 +16,14 @@ export const MAX_ROWS_PER_PAGE: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T1B1]: 4,
     [DeviceModelInternal.T2T1]: 5,
     [DeviceModelInternal.T2B1]: 4,
-    [DeviceModelInternal.T3T1]: 5,
+    [DeviceModelInternal.T3T1]: 7,
 };
 
 export const MAX_CHARACTERS_ON_ROW: Record<DeviceModelInternal, number> = {
     [DeviceModelInternal.T1B1]: 21,
     [DeviceModelInternal.T2T1]: 17, // -1 for the space for the scrollbar (Trezor T only)
     [DeviceModelInternal.T2B1]: 18,
-    [DeviceModelInternal.T3T1]: 17,
+    [DeviceModelInternal.T3T1]: 18,
 };
 
 export const CHARACTER_OFFSET_FOR_CONTINUES_ARROW: Record<DeviceModelInternal, number> = {
