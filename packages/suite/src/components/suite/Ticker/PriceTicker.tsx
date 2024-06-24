@@ -28,7 +28,16 @@ export const PriceTicker = ({ symbol, contractAddress, noEmptyStateTooltip }: Pr
     const emptyStateComponent = noEmptyStateTooltip ? <Empty>—</Empty> : <NoRatesTooltip />;
 
     return (
-        <FiatValue amount="1" symbol={symbol} tokenAddress={contractAddress} showLoadingSkeleton>
+        <FiatValue
+            amount="1"
+            symbol={symbol}
+            tokenAddress={contractAddress}
+            showLoadingSkeleton
+            fiatRateFormatterOptions={{
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 4,
+            }}
+        >
             {({ rate, timestamp }) =>
                 rate && timestamp ? (
                     <LastUpdateTooltip timestamp={timestamp}>

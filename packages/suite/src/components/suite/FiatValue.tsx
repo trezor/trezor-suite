@@ -33,6 +33,7 @@ type FiatValueProps = useFiatFromCryptoValueParams & {
     showApproximationIndicator?: boolean;
     disableHiddenPlaceholder?: boolean;
     fiatAmountFormatterOptions?: FormatNumberOptions;
+    fiatRateFormatterOptions?: FormatNumberOptions;
     shouldConvert?: boolean;
     showLoadingSkeleton?: boolean;
     className?: string;
@@ -62,6 +63,7 @@ export const FiatValue = ({
     showApproximationIndicator,
     disableHiddenPlaceholder,
     fiatAmountFormatterOptions,
+    fiatRateFormatterOptions,
     shouldConvert = true,
     showLoadingSkeleton,
     isLoading,
@@ -102,7 +104,11 @@ export const FiatValue = ({
 
         const fiatRateComponent = rate ? (
             <SameWidthNums>
-                <FiatAmountFormatter currency={localCurrency} value={rate} />
+                <FiatAmountFormatter
+                    currency={localCurrency}
+                    value={rate}
+                    {...fiatRateFormatterOptions}
+                />
             </SameWidthNums>
         ) : null;
         if (!children) return fiatValueComponent;
