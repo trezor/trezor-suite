@@ -1,6 +1,6 @@
 # @trezor/connect-webextension
 
-[![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/connect-test.yml)
+[![Build Status](https://github.com/trezor/trezor-suite/actions/workflows/test-connect.yml/badge.svg)](https://github.com/trezor/trezor-suite/actions/workflows/test-connect.yml)
 [![NPM](https://img.shields.io/npm/v/@trezor/connect-webextension.svg)](https://www.npmjs.org/package/@trezor/connect-webextension)
 [![Known Vulnerabilities](https://snyk.io/test/github/trezor/connect-webextension/badge.svg?targetFile=package.json)](https://snyk.io/test/github/trezor/trezor-suite?targetFile=packages/connect-webextension/package.json)
 
@@ -87,4 +87,5 @@ To ensure your extension is displayed with its name rather than its ID, you need
 -   `yarn workspace @trezor/connect-iframe build:core-module`
 -   `yarn workspace @trezor/connect-popup dev`
 
-After completing these steps, you can import from @trezor/connect-webextension or directly use the built file `build/trezor-connect-webextension.js`. The popup will run on your localhost, and you can specify it in the TrezorConnect.init({ connectSrc: ... }).
+After completing these steps, you can import from @trezor/connect-webextension or directly use the built file `build/trezor-connect-webextension.js`.
+The popup will run on your localhost, and you can specify it in the `TrezorConnect.init({ connectSrc: ... })`.
