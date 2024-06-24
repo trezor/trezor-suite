@@ -5,6 +5,7 @@ icon: LIGHTNING
 
 import { Cards, Card, Steps } from 'nextra/components';
 import styled from 'styled-components';
+import Link from 'next/link';
 
 import { spacings, spacingsPx } from '@trezor/theme';
 import {
@@ -136,6 +137,14 @@ export const ExampleHeading = styled.h3`
         <SdkName>Node.js</SdkName>
         <SdkTag></SdkTag>
         <Button 
+            as={Link}
+            variant="tertiary" 
+            size="small" 
+            icon="ARTICLE" 
+            href="/readme/connect">
+            README
+        </Button>
+        <Button 
             as="a" 
             variant="tertiary" 
             size="small" 
@@ -220,6 +229,14 @@ export const ExampleHeading = styled.h3`
         <IconWeb />
         <SdkName>Web</SdkName>
         <SdkTag>DOM required</SdkTag>
+        <Button 
+            as={Link}
+            variant="tertiary" 
+            size="small" 
+            icon="ARTICLE" 
+            href="/readme/connect-web">
+            README
+        </Button>
         <Button 
             as="a" 
             variant="tertiary" 
@@ -317,6 +334,14 @@ export const ExampleHeading = styled.h3`
         <IconExtension />
         <SdkName>Web extension</SdkName>
         <SdkTag>Using service worker</SdkTag>
+        <Button 
+            as={Link}
+            variant="tertiary" 
+            size="small" 
+            icon="ARTICLE" 
+            href="/readme/connect-webextension">
+            README
+        </Button>
         <Button 
             as="a" 
             variant="tertiary" 
