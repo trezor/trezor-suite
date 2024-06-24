@@ -1,0 +1,54 @@
+import { RemoteContent } from 'nextra/data';
+import { buildDynamicMDX, buildDynamicMeta } from 'nextra/remote';
+import rehypeSectionize from '@hbsnow/rehype-sectionize';
+import remarkGemoji from 'remark-gemoji';
+
+export const getStaticPaths = () => {
+    const packages = ["connect", "connect-web", "connect-webextension"]
+    const paths = packages.map((name) => ({
+        params: {
+            name,
+        },
+    }));
+
+    return {
+        paths,
+        fallback: false,
+    };
+
+};
+
+export const getStaticProps = ({ params }) => {
+    const { name } = params
+
+    return fetch(
+        `https://raw.githubusercontent.com/trezor/trezor-suite/${process.env.COMMIT_HASH}/packages/${name}/README.md`, //
+    )
+        .then(res => res.text())
+        .then(content => {
+            // Reduce headings by one level
+            content = content.replace(/^(#+)/gm, '$1#');
+            // Add links to commit hashes
+            content = content.replace(
+                /([a-f0-9]{7,10})([\),])/g,
+                `[\$1](https://github.com/trezor/trezor-suite/commit/\$1)$2`,
+            );
+            content = `---\ntitle: ${name}\n---\n${content}`;
+
+            return content;
+        })
+        .then(async content => ({
+            props: {
+                ...(await buildDynamicMDX(content, {
+                    mdxOptions: {
+                        remarkPlugins: [remarkGemoji],
+                        rehypePlugins: [[rehypeSectionize]],
+                    },
+                })),
+                ...(await buildDynamicMeta())
+            },
+        }));
+
+};
+
+<RemoteContent />
