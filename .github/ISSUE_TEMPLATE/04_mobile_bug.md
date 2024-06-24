@@ -4,7 +4,7 @@ about: Something does not work as expected.
 title: ''
 labels: bug, mobile
 assignees: ''
-projects: "trezor/Suite Mobile"
+projects: 'trezor/Suite Mobile'
 ---
 
 **Describe the bug**
