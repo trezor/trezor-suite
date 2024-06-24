@@ -24,9 +24,10 @@ const UnverifiedTokens = styled.div`
 
 interface HiddenTokensTableProps {
     selectedAccount: SelectedAccountLoaded;
+    searchQuery: string;
 }
 
-export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) => {
+export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokensTableProps) => {
     const { account, network } = selectedAccount;
 
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
@@ -38,6 +39,13 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
           )
         : [];
 
+    const filteredTokens = getTokens(
+        sortedTokens,
+        account.symbol,
+        isDebug,
+        coinDefinitions,
+        searchQuery,
+    );
     const tokens = getTokens(sortedTokens, account.symbol, isDebug, coinDefinitions);
 
     const hiddenTokensCount = tokens.hidden.length;
@@ -52,8 +60,9 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
                 <TokenList
                     account={account}
                     tokenStatusType={TokenManagementAction.SHOW}
-                    tokens={tokens.hidden}
+                    tokens={filteredTokens.hidden}
                     network={network}
+                    searchQuery={searchQuery}
                 />
             )}
             {unverifiedTokensCount > 0 && (
@@ -66,8 +75,9 @@ export const HiddenTokensTable = ({ selectedAccount }: HiddenTokensTableProps) =
                         account={account}
                         hideRates
                         tokenStatusType={TokenManagementAction.SHOW}
-                        tokens={tokens.unverified}
+                        tokens={filteredTokens.unverified}
                         network={network}
+                        searchQuery={searchQuery}
                     />
                 </UnverifiedTokens>
             )}

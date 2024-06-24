@@ -72,10 +72,8 @@ export const SearchAction = ({
 
     const openAndSelect = useCallback(() => {
         setExpanded(true);
-        if (searchQuery !== '' && inputRef.current) {
-            inputRef.current.select();
-        }
-    }, [setExpanded, searchQuery]);
+        inputRef.current?.select();
+    }, [setExpanded]);
 
     const onBlur = useCallback(() => {
         if (searchQuery === '') {

@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
@@ -12,11 +13,19 @@ import { useSelector } from 'src/hooks/suite';
 import { NavigationItem } from '../../../../../components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { SearchAction } from 'src/components/wallet/SearchAction';
+
+const Wrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: ${spacingsPx.md};
+`;
 
 const List = styled.div`
     display: flex;
+    align-items: center;
     gap: ${spacingsPx.xxs};
-    margin-bottom: ${spacingsPx.md};
 `;
 
 const NavListItem = styled(NavigationItem)`
@@ -51,9 +60,17 @@ const Divider = () => {
 
 interface TokensLayoutNavigationProps {
     selectedAccount: SelectedAccountLoaded;
+    searchQuery: string;
+    setSearchQuery: Dispatch<SetStateAction<string>>;
 }
 
-export const TokensLayoutNavigation = ({ selectedAccount }: TokensLayoutNavigationProps) => {
+export const TokensLayoutNavigation = ({
+    selectedAccount,
+    searchQuery,
+    setSearchQuery,
+}: TokensLayoutNavigationProps) => {
+    const [isExpanded, setExpanded] = useState(false);
+
     const routeName = useSelector(state => state.router.route?.name);
     const coinDefinitions = useSelector(state =>
         selectCoinDefinitions(state, selectedAccount.account.symbol),
@@ -90,20 +107,32 @@ export const TokensLayoutNavigation = ({ selectedAccount }: TokensLayoutNavigati
     );
 
     return (
-        <List>
-            <Item
-                route="wallet-tokens-coins"
-                title="TR_COINS"
-                icon="tokens"
-                count={tokens.shown.length}
+        <Wrapper>
+            <List>
+                <Item
+                    route="wallet-tokens-coins"
+                    title="TR_COINS"
+                    icon="tokens"
+                    count={tokens.shown.length}
+                />
+                <Divider />
+                <Item
+                    route="wallet-tokens-hidden"
+                    title="TR_HIDDEN"
+                    icon="eyeClosed"
+                    count={tokens.unverified.length + tokens.hidden.length}
+                />
+            </List>
+            <SearchAction
+                tooltipText="TR_TOKENS_SEARCH_TOOLTIP"
+                placeholder="TR_SEARCH_TOKENS"
+                isExpanded={isExpanded}
+                searchQuery={searchQuery}
+                setExpanded={setExpanded}
+                setSearch={setSearchQuery}
+                onSearch={e => setSearchQuery(e.target.value)}
+                dataTest="@wallet/accounts/search-icon"
             />
-            <Divider />
-            <Item
-                route="wallet-tokens-hidden"
-                title="TR_HIDDEN"
-                icon="eyeClosed"
-                count={tokens.unverified.length + tokens.hidden.length}
-            />
-        </List>
+        </Wrapper>
     );
 };

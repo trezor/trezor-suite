@@ -17,9 +17,10 @@ import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 interface CoinsTableProps {
     selectedAccount: SelectedAccountLoaded;
+    searchQuery: string;
 }
 
-export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
+export const CoinsTable = ({ selectedAccount, searchQuery }: CoinsTableProps) => {
     const fiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
 
@@ -36,15 +37,16 @@ export const CoinsTable = ({ selectedAccount }: CoinsTableProps) => {
     );
     const sortedTokens = tokensWithRates.sort(sortTokensWithRates);
 
-    const tokens = getTokens(sortedTokens, account.symbol, isDebug, coinDefinitions);
+    const tokens = getTokens(sortedTokens, account.symbol, isDebug, coinDefinitions, searchQuery);
 
-    return tokens.shown.length > 0 ? (
+    return tokens.shown.length > 0 || searchQuery ? (
         <TokenList
             account={account}
             hideRates={isTestnet(account.symbol)}
             tokenStatusType={TokenManagementAction.HIDE}
             tokens={tokens.shown}
             network={network}
+            searchQuery={searchQuery}
         />
     ) : (
         <NoTokens

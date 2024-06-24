@@ -6895,6 +6895,14 @@ export default defineMessages({
         id: 'TR_FEE_RATE',
         defaultMessage: 'Fee rate',
     },
+    TR_SEARCH_TOKENS: {
+        id: 'TR_SEARCH_TOKENS',
+        defaultMessage: 'Search tokens',
+    },
+    TR_TOKENS_SEARCH_TOOLTIP: {
+        id: 'TR_TOKENS_SEARCH_TOOLTIP',
+        defaultMessage: 'Search by token name, symbol or contract address.',
+    },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
         defaultMessage: 'Search transactions',
