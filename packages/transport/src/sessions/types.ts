@@ -1,5 +1,6 @@
 import type { AcquireInput } from '../transports/abstract';
 import type {
+    AnyError,
     Descriptor,
     DescriptorApiLevel,
     ResultWithTypedError,
@@ -8,7 +9,9 @@ import type {
 } from '../types';
 import * as ERRORS from '../errors';
 
-type BackgroundResponseWithError<T, E> = ResultWithTypedError<T, E> & { id: number };
+type BackgroundResponseWithError<T, E extends AnyError> = ResultWithTypedError<T, E> & {
+    id: number;
+};
 type BackgroundResponse<T> = Success<T> & { id: number };
 
 export type Sessions = Record<string, Descriptor>;

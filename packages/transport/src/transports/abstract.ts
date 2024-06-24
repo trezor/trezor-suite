@@ -252,7 +252,15 @@ export abstract class AbstractTransport extends TypedEmitter<{
      * For transports with native access (webusb), this informs lower transport layer
      * that device is not going to be used anymore
      */
-    abstract releaseDevice(path: string): AsyncResultWithTypedError<void, string>;
+    abstract releaseDevice(
+        path: string,
+    ): AsyncResultWithTypedError<
+        void,
+        | typeof ERRORS.UNEXPECTED_ERROR
+        | typeof ERRORS.DEVICE_NOT_FOUND
+        | typeof ERRORS.INTERFACE_UNABLE_TO_CLOSE_DEVICE
+        | typeof ERRORS.WRONG_ENVIRONMENT
+    >;
 
     /**
      * Encode data and write it to transport layer
