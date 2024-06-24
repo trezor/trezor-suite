@@ -1,20 +1,30 @@
 import TrezorConnect from '@trezor/connect';
 import { ButtonProps, Button } from '@trezor/components';
-import { Translation } from './Translation';
+import { Translation, TranslationKey } from './Translation';
 
-export const WebUsbButton = (props: Omit<ButtonProps, 'children'>) => (
+interface WebUsbButtonProps extends Omit<ButtonProps, 'children' | 'icon'> {
+    translationId?: TranslationKey;
+    icon?: ButtonProps['icon'] | false;
+}
+
+export const WebUsbButton = ({
+    translationId = 'TR_CHECK_FOR_DEVICES',
+    icon = 'SEARCH',
+    size = 'tiny',
+    ...rest
+}: WebUsbButtonProps) => (
     <div data-test="web-usb-button">
         <Button
-            {...props}
-            icon="SEARCH"
+            {...rest}
+            icon={icon === false ? undefined : icon}
+            size={size}
             variant="primary"
             onClick={e => {
                 e.stopPropagation();
                 TrezorConnect.requestWebUSBDevice();
             }}
-            size="tiny"
         >
-            <Translation id="TR_CHECK_FOR_DEVICES" />
+            <Translation id={translationId} />
         </Button>
     </div>
 );

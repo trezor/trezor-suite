@@ -8,6 +8,17 @@ import { OnboardingStepBox } from 'src/components/onboarding';
 import { TrezorDevice } from 'src/types/suite';
 import { selectIsActionAbortable } from 'src/reducers/suite/suiteReducer';
 import { useSelector } from 'src/hooks/suite/useSelector';
+import styled from 'styled-components';
+import { spacingsPx } from '@trezor/theme';
+
+const SelectDevice = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: ${spacingsPx.lg};
+    color: ${({ theme }) => theme.TYPE_LIGHT_GREY};
+`;
 
 interface FirmwareInstallationProps {
     cachedDevice?: TrezorDevice;
@@ -43,7 +54,12 @@ export const FirmwareInstallation = ({
             // Once in bootloader mode and once in normal mode. Without 2nd pairing step would get stuck at waiting for
             // a reboot in case of fresh device which is, from the start, in bootloader mode (thus first time paired as a bootloader device).
             // Suite won't detect such a restarted device, which will be now in normal mode, till it is paired again.
-            return <WebUsbButton />;
+            return (
+                <SelectDevice>
+                    <Translation id="TR_SELECT_TREZOR_TO_CONTINUE" />
+                    <WebUsbButton translationId="TR_SELECT_TREZOR" size="medium" icon={false} />
+                </SelectDevice>
+            );
         }
         if (status === 'done') {
             return (

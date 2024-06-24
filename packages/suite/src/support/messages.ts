@@ -9417,4 +9417,12 @@ export default defineMessages({
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON',
         defaultMessage: 'Manage',
     },
+    TR_SELECT_TREZOR: {
+        id: 'TR_SELECT_TREZOR',
+        defaultMessage: 'Select Trezor',
+    },
+    TR_SELECT_TREZOR_TO_CONTINUE: {
+        id: 'TR_SELECT_TREZOR_TO_CONTINUE',
+        defaultMessage: 'Please select your Trezor to continue.',
+    },
 });
