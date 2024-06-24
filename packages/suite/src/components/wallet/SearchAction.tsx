@@ -1,23 +1,11 @@
-import {
-    useState,
-    useCallback,
-    useRef,
-    useEffect,
-    Dispatch,
-    SetStateAction,
-    ChangeEvent,
-    KeyboardEvent,
-} from 'react';
+import { useCallback, useRef, Dispatch, SetStateAction, KeyboardEvent, ChangeEvent } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 import { Input, Icon, KEYBOARD_CODE, motionEasing } from '@trezor/components';
-import { useDispatch } from 'src/hooks/suite';
-import { useTranslation } from 'src/hooks/suite/useTranslation';
-import { notificationsActions } from '@suite-common/toast-notifications';
-import { Account } from 'src/types/wallet';
-import { TooltipSymbol, Translation } from 'src/components/suite';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
-import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { borders, spacingsPx } from '@trezor/theme';
+
+import { useTranslation } from 'src/hooks/suite/useTranslation';
+import { TooltipSymbol, Translation } from 'src/components/suite';
+import { TranslationKey } from '@suite-common/intl-types';
 
 const Container = styled.div`
     display: flex;
@@ -58,19 +46,28 @@ const SearchIcon = styled(Icon)`
 `;
 
 export interface SearchProps {
-    account: Account;
+    tooltipText: TranslationKey;
+    placeholder: TranslationKey;
+    isExpanded: boolean;
     searchQuery: string;
+    setExpanded: Dispatch<SetStateAction<boolean>>;
     setSearch: Dispatch<SetStateAction<string>>;
-    setSelectedPage: Dispatch<SetStateAction<number>>;
+    onSearch: (event: ChangeEvent<HTMLInputElement>) => void;
+    dataTest?: string;
 }
 
-export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage }: SearchProps) => {
-    const [isExpanded, setExpanded] = useState(false);
-    const [hasFetchedAll, setHasFetchedAll] = useState(false);
-
+export const SearchAction = ({
+    tooltipText,
+    placeholder,
+    isExpanded,
+    searchQuery,
+    setExpanded,
+    setSearch,
+    onSearch,
+    dataTest,
+}: SearchProps) => {
     const theme = useTheme();
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const dispatch = useDispatch();
     const { translationString } = useTranslation();
 
     const openAndSelect = useCallback(() => {
@@ -97,76 +94,16 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
         [setSearch],
     );
 
-    const onSearch = useCallback(
-        async ({ target }: ChangeEvent<HTMLInputElement>) => {
-            setSelectedPage(1);
-            setSearch(target.value);
-
-            if (!hasFetchedAll) {
-                setHasFetchedAll(true);
-
-                try {
-                    await dispatch(
-                        fetchAllTransactionsForAccountThunk({
-                            accountKey: account.key,
-                            noLoading: true,
-                        }),
-                    );
-                } catch (err) {
-                    dispatch(
-                        notificationsActions.addToast({
-                            type: 'error',
-                            error: translationString('TR_SEARCH_FAIL'),
-                        }),
-                    );
-                }
-            }
-        },
-        [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
-    );
-
-    const onSearchKeys = useCallback(
-        (event: KeyboardEvent) => {
-            if (
-                inputRef.current &&
-                (event.ctrlKey || event.metaKey) &&
-                event.key === KEYBOARD_CODE.LETTER_F
-            ) {
-                event.preventDefault();
-                inputRef.current.focus();
-            }
-        },
-        [inputRef],
-    );
-
-    useEffect(() => {
-        setHasFetchedAll(false);
-        setExpanded(false);
-        setSearch('');
-
-        // @ts-expect-error
-        document.addEventListener('keydown', onSearchKeys);
-
-        return () => {
-            // @ts-expect-error
-            document.removeEventListener('keydown', onSearchKeys);
-        };
-    }, [account.symbol, account.index, account.accountType, setSearch, onSearchKeys]);
-
-    if (!isFeatureFlagEnabled('SEARCH_TRANSACTIONS')) {
-        return null;
-    }
-
     return (
         <Container>
             <StyledTooltipSymbol
-                content={<Translation id="TR_TRANSACTIONS_SEARCH_TOOLTIP" />}
+                content={<Translation id={tooltipText} />}
                 $isExpanded={isExpanded}
             />
 
             <StyledInput
                 $isExpanded={isExpanded}
-                data-test="@wallet/accounts/search-icon"
+                data-test={dataTest}
                 size="small"
                 innerRef={inputRef}
                 innerAddon={
@@ -177,7 +114,7 @@ export const SearchAction = ({ account, searchQuery, setSearch, setSelectedPage 
                         onClick={!isExpanded ? openAndSelect : undefined}
                     />
                 }
-                placeholder={isExpanded ? translationString('TR_SEARCH_TRANSACTIONS') : undefined}
+                placeholder={isExpanded ? translationString(placeholder) : undefined}
                 onChange={onSearch}
                 onBlur={onBlur}
                 onKeyDown={onKeyDown}
