@@ -9281,6 +9281,7 @@ __metadata:
     "@suite-native/config": "workspace:*"
     "@suite-native/device": "workspace:*"
     "@suite-native/device-mutex": "workspace:*"
+    "@suite-native/feature-flags": "workspace:*"
     "@trezor/connect": "workspace:*"
     "@trezor/utils": "workspace:*"
     proxy-memoize: "npm:2.0.2"
