@@ -1,0 +1,102 @@
+import { CommonParamsLink } from '../../../components/CommonParamsLink';
+import { ApiPlayground } from '../../../components/ApiPlayground';
+
+<ApiPlayground options={[{ title: 'No payload', method: 'getFeatures' }]} />
+
+# Get Features
+
+Return features of a device, which show the device's capabilities, version and other information.
+
+### Params
+
+<CommonParamsLink />
+
+No other parameters.
+
+## Example
+
+Get the features of a device.
+
+```javascript
+const features = await TrezorConnect.getFeatures();
+```
+
+### Result
+
+[Device type](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/src/types/device.ts)
+
+```javascript
+{
+  "id": 1,
+  "success": true,
+  "payload": {
+    "vendor": "trezor.io",
+    "major_version": 2,
+    "minor_version": 7,
+    "patch_version": 0,
+    "bootloader_mode": null,
+    "device_id": "XXXXXXXXXXXXXXXXXXXXXXXX",
+    "pin_protection": false,
+    "passphrase_protection": true,
+    "language": "en-US",
+    "label": null,
+    "initialized": true,
+    "revision": "...",
+    "bootloader_hash": null,
+    "imported": null,
+    "unlocked": true,
+    "_passphrase_cached": null,
+    "firmware_present": null,
+    "backup_availability": "NotAvailable",
+    "flags": 0,
+    "model": "Safe 3",
+    "fw_major": null,
+    "fw_minor": null,
+    "fw_patch": null,
+    "fw_vendor": "Trezor",
+    "unfinished_backup": false,
+    "no_backup": false,
+    "recovery_status": "Nothing",
+    "capabilities": [
+      "Capability_Bitcoin",
+      "Capability_Bitcoin_like",
+      "Capability_Binance",
+      "Capability_Cardano",
+      "Capability_Crypto",
+      "Capability_Ethereum",
+      "Capability_Monero",
+      "Capability_Ripple",
+      "Capability_Stellar",
+      "Capability_Tezos",
+      "Capability_U2F",
+      "Capability_Shamir",
+      "Capability_ShamirGroups",
+      "Capability_PassphraseEntry",
+      "Capability_Solana",
+      "Capability_Translations"
+    ],
+    "backup_type": "Bip39",
+    "sd_card_present": false,
+    "sd_protection": false,
+    "wipe_code_protection": false,
+    "session_id": "...",
+    "passphrase_always_on_device": false,
+    "safety_checks": "Strict",
+    "auto_lock_delay_ms": 600000,
+    "display_rotation": 0,
+    "experimental_features": false,
+    "busy": false,
+    "homescreen_format": "ToiG",
+    "hide_passphrase_from_host": false,
+    "internal_model": "T2B1",
+    "unit_color": 1,
+    "unit_btconly": false,
+    "homescreen_width": 128,
+    "homescreen_height": 64,
+    "bootloader_locked": true,
+    "language_version_matches": true,
+    "unit_packaging": null,
+    "haptic_feedback": null
+  }
+}
+```
