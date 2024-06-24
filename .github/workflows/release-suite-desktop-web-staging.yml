@@ -107,7 +107,6 @@ jobs:
           VERSION=$(jq -r .suiteVersion packages/suite/package.json)
           gh release create --repo trezor/trezor-suite --draft v${VERSION}  --title "v${VERSION}" ./Trezor-Suite* latest*
 
-
   suite-desktop-autoupdate-release:
     if: github.repository == 'trezor/trezor-suite-release'
     name: Release suite-desktop auto-update to staging data.trezor.io
@@ -130,7 +129,7 @@ jobs:
           path: ./trezor-suite-files
 
       - name: Upload suite-desktop to staging-data.trezor.io canary
-      # uploads the files to the staging bucket canary  folder (canary does not have staging percentage set)
+        # uploads the files to the staging bucket canary  folder (canary does not have staging percentage set)
         run: |
           aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/releases/desktop/canary
 

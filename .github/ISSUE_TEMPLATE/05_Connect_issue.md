@@ -4,5 +4,5 @@ about: New issue for Connect.
 title: ''
 labels: connect
 assignees: ''
-projects: 
+projects:
 ---
