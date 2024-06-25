@@ -14,9 +14,7 @@ describe('T2T1 - Device settings', () => {
      * 3. verify it by clicking on the close btn
      * 4. change the trezor's name via its input
      * 5. verify the name from top left wallet overview btn
-     * 6. enable the passphrase protection
-     * 7. verify that the passphrase input is now enabled
-     * 8. change the device's rotation
+     * 6. change the device's rotation
      */
     it('change all possible device settings', () => {
         //
@@ -54,17 +52,6 @@ describe('T2T1 - Device settings', () => {
 
         // verify the name change
         cy.getTestElement('@menu/switch-device').contains(newDeviceName);
-
-        // enable passphrase protection
-        cy.log('turn on passphrase protection');
-        cy.getTestElement('@settings/device/passphrase-switch')
-            .click({ force: true })
-            .getConfirmActionOnDeviceModal();
-        cy.task('pressYes');
-        cy.getConfirmActionOnDeviceModal().should('not.exist');
-
-        // verify enabling
-        cy.getTestElement('@settings/device/passphrase-switch').find('input').should('be.checked');
 
         // change display rotation
         cy.log('change display rotation');

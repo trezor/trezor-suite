@@ -16,12 +16,14 @@ import { PassphraseDescription } from './PassphraseDescription';
 import { PassphraseWalletConfirmation } from './PassphraseWalletConfirmation';
 import { PassphraseHeading } from './PassphraseHeading';
 import TrezorConnect from '@trezor/connect';
+import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 
 interface PassphraseModalProps {
     device: TrezorDevice;
 }
 
 export const PassphraseModal = ({ device }: PassphraseModalProps) => {
+    const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const [submitted, setSubmitted] = useState(false);
 
     const authConfirmation =
@@ -56,13 +58,15 @@ export const PassphraseModal = ({ device }: PassphraseModalProps) => {
 
     const onSubmit = useCallback(
         (value: string, passphraseOnDevice?: boolean) => {
-            setSubmitted(true);
+            if (!isViewOnlyModeVisible) {
+                setSubmitted(true);
+            }
             dispatch(onPassphraseSubmit({ value, passphraseOnDevice: !!passphraseOnDevice }));
         },
-        [setSubmitted, dispatch],
+        [dispatch, setSubmitted, isViewOnlyModeVisible],
     );
 
-    if (submitted) {
+    if (!isViewOnlyModeVisible && submitted) {
         return null;
     }
 

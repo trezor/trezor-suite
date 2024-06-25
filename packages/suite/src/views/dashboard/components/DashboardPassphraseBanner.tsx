@@ -57,7 +57,7 @@ export const DashboardPassphraseBanner = () => {
                     {...bannerAnimationConfig}
                     onAnimationComplete={handleClose}
                 >
-                    <Warning variant="tertiary">
+                    <Warning variant="tertiary" icon="ASTERISK" withIcon>
                         <Row justifyContent="space-between" alignItems="center" gap={16} flex={1}>
                             <Column gap={4} alignItems="flex-start" flex={1}>
                                 <H3 color="textDefault">

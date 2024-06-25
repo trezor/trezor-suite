@@ -437,11 +437,16 @@ export const authConfirm = createThunk(
                 response.payload.error === 'auth-confirm-cancel' ||
                 response.payload.error === 'auth-confirm-retry'
             ) {
+                const settings = extra.selectors.selectSuiteSettings(getState());
+
                 // needs await to propagate all actions
-                await dispatch(createDeviceInstanceThunk({ device, useEmptyPassphrase: false }));
+                if (!settings.isViewOnlyModeVisible) {
+                    await dispatch(
+                        createDeviceInstanceThunk({ device, useEmptyPassphrase: false }),
+                    );
+                }
 
                 // forget previous empty wallet
-                const settings = extra.selectors.selectSuiteSettings(getState());
                 dispatch(deviceActions.forgetDevice({ device, settings }));
 
                 if (

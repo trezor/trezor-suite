@@ -42,7 +42,6 @@ export const PassphraseWalletConfirmationStep2 = ({
         </Warning>
         <Button
             isFullWidth
-            variant="tertiary"
             onClick={() => {
                 setContentType('step3');
             }}

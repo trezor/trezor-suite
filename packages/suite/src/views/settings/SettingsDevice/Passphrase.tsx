@@ -28,6 +28,9 @@ export const Passphrase = ({ isDeviceLocked }: PassphraseProps) => {
         });
     };
 
+    // We don't want to let users disable passphrase anymore. But we should allow users with disabled passphrase to turn it on.
+    if (passphraseProtection === true) return null;
+
     return (
         <SettingsSectionItem anchorId={SettingsAnchor.Passphrase}>
             <TextColumn
