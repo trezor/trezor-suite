@@ -132,7 +132,7 @@ export const PassphraseModalLegacy = ({ device }: PassphraseModalProps) => {
         );
     }
 
-    // creating a hidden wallet
+    // creating a passphrase wallet
     if (!noPassphraseOffer) {
         return (
             <TinyModal
@@ -160,7 +160,7 @@ export const PassphraseModalLegacy = ({ device }: PassphraseModalProps) => {
         );
     }
 
-    // show 2-column modal for selecting between standard and hidden wallets
+    // show 2-column modal for selecting between standard and passphrase wallets
     return (
         <SmallModal
             headingSize="large"

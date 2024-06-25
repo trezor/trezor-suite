@@ -2,11 +2,11 @@ import { isAndroid } from '@trezor/env-utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { Card } from '../Card/Card';
-import { Row } from '../Flex/Flex';
+import { Column, Row } from '../Flex/Flex';
 import { PasswordStrengthIndicator } from './PasswordStrengthIndicator';
 import styled, { useTheme } from 'styled-components';
 import { Input } from '../form/Input/Input';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useKeyPress } from '@trezor/react-utils';
 import { ChangeEvent, MutableRefObject, ReactNode, RefObject } from 'react';
 import { Button } from '../buttons/Button/Button';
@@ -127,78 +127,84 @@ export const PassphraseTypeCardContent = ({
 
     return (
         <Card paddingType="small">
-            {type === 'hidden' && (
-                <>
-                    <Row>
-                        {/* Show passphrase input */}
-                        <Description>
-                            <PassphraseInput
-                                data-test="@passphrase/input"
-                                placeholder={intl.formatMessage({
-                                    defaultMessage: 'Enter passphrase',
-                                    id: 'TR_ENTER_PASSPHRASE',
-                                })}
-                                onChange={onPassphraseChange}
-                                value={displayValue}
-                                hasBottomPadding={false}
-                                innerRef={innerRef}
-                                bottomText={
-                                    isPassphraseTooLong ? (
-                                        // todo: resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325
-                                        <FormattedMessage
-                                            id="TR_PASSPHRASE_TOO_LONG"
-                                            defaultMessage="Passphrase length has exceed the allowed limit."
-                                        />
-                                    ) : null
-                                }
-                                inputState={isPassphraseTooLong ? 'error' : undefined}
-                                autoFocus={!isAndroid()}
-                                innerAddon={
-                                    <Icon
-                                        size={18}
-                                        color={theme.iconSubdued}
-                                        icon={showPassword ? 'HIDE' : 'SHOW'}
-                                        onClick={() => {
-                                            if (
-                                                typeof innerRef.current?.selectionStart === 'number'
-                                            ) {
-                                                caretRef.current = innerRef.current.selectionStart;
-                                            }
-                                            setShowPassword(!showPassword);
-                                        }}
-                                        data-test="@passphrase/show-toggle"
-                                    />
-                                }
-                            />
-                        </Description>
-                    </Row>
-                    {!isPassphraseTooLong && <PasswordStrengthIndicator password={value} />}
-                </>
-            )}
-
-            <AnimatePresence initial={false}>
+            <Column gap={spacings.sm} alignItems="stretch">
                 {type === 'hidden' && (
-                    <Actions>
-                        {/* Submit button */}
-                        {/* Visible in standalone modal for creating a hidden wallet or after a click also in modal for selecting wallet type */}
-                        {(singleColModal || hiddenWalletTouched) && (
-                            <motion.div {...motionConfig.motionAnimation.expand}>
-                                <ActionButton
-                                    data-test={`@passphrase/${
-                                        type === 'hidden' ? 'hidden' : 'standard'
-                                    }/submit-button`}
-                                    isDisabled={isPassphraseEmpty || isPassphraseTooLong}
-                                    variant="primary"
-                                    onClick={() => submit(value)}
-                                    isFullWidth
-                                >
-                                    {submitLabel}
-                                </ActionButton>
-                            </motion.div>
+                    <>
+                        <Row flex={1}>
+                            {/* Show passphrase input */}
+                            <Description>
+                                <PassphraseInput
+                                    data-test="@passphrase/input"
+                                    placeholder={intl.formatMessage({
+                                        defaultMessage: 'Enter passphrase',
+                                        id: 'TR_ENTER_PASSPHRASE',
+                                    })}
+                                    onChange={onPassphraseChange}
+                                    value={displayValue}
+                                    hasBottomPadding={false}
+                                    innerRef={innerRef}
+                                    bottomText={
+                                        isPassphraseTooLong ? (
+                                            // todo: resolve messages sharing https://github.com/trezor/trezor-suite/issues/5325
+                                            <FormattedMessage
+                                                id="TR_PASSPHRASE_TOO_LONG"
+                                                defaultMessage="Passphrase length has exceed the allowed limit."
+                                            />
+                                        ) : null
+                                    }
+                                    inputState={isPassphraseTooLong ? 'error' : undefined}
+                                    autoFocus={!isAndroid()}
+                                    innerAddon={
+                                        <Icon
+                                            size={18}
+                                            color={theme.iconSubdued}
+                                            icon={showPassword ? 'HIDE' : 'SHOW'}
+                                            onClick={() => {
+                                                if (
+                                                    typeof innerRef.current?.selectionStart ===
+                                                    'number'
+                                                ) {
+                                                    caretRef.current =
+                                                        innerRef.current.selectionStart;
+                                                }
+                                                setShowPassword(!showPassword);
+                                            }}
+                                            data-test="@passphrase/show-toggle"
+                                        />
+                                    }
+                                />
+                            </Description>
+                        </Row>
+                        {value && !isPassphraseTooLong && (
+                            <PasswordStrengthIndicator password={value} />
                         )}
-                    </Actions>
+                    </>
                 )}
-            </AnimatePresence>
+
+                <AnimatePresence initial={false}>
+                    {type === 'hidden' && (
+                        <Actions>
+                            {/* Submit button */}
+                            {/* Visible in standalone modal for creating a passphrase wallet or after a click also in modal for selecting wallet type */}
+                            {(singleColModal || hiddenWalletTouched) && (
+                                <motion.div {...motionConfig.motionAnimation.expand}>
+                                    <ActionButton
+                                        data-test={`@passphrase/${
+                                            type === 'hidden' ? 'hidden' : 'standard'
+                                        }/submit-button`}
+                                        isDisabled={isPassphraseEmpty || isPassphraseTooLong}
+                                        variant="primary"
+                                        onClick={() => submit(value)}
+                                        isFullWidth
+                                    >
+                                        {submitLabel}
+                                    </ActionButton>
+                                </motion.div>
+                            )}
+                        </Actions>
+                    )}
+                </AnimatePresence>
+            </Column>
         </Card>
     );
 };

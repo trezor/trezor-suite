@@ -10,7 +10,6 @@ interface WrapperProps {
 
 const Wrapper = styled.div<WrapperProps>`
     display: flex;
-    margin: 8px 0;
     flex: 1;
     height: 5px;
     overflow: hidden;

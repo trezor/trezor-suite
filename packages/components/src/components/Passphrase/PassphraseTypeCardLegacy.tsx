@@ -70,6 +70,10 @@ const IconWrapper = styled.div<{ $type: WalletType }>`
     margin-right: ${spacingsPx.xl};
 `;
 
+const PasswordStrengthIndicatorContainer = styled.div`
+    margin: 8px 0;
+`;
+
 const Col = styled.div`
     display: flex;
     flex-direction: column;
@@ -372,7 +376,11 @@ export const PassphraseTypeCardLegacy = (props: PassphraseTypeCardLegacyProps) =
                             />
                         </InputWrapper>
                     </Row>
-                    {!isTooLong && <PasswordStrengthIndicator password={value} />}
+                    {!isTooLong && (
+                        <PasswordStrengthIndicatorContainer>
+                            <PasswordStrengthIndicator password={value} />
+                        </PasswordStrengthIndicatorContainer>
+                    )}
                 </>
             )}
             {props.authConfirmation && (

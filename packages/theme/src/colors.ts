@@ -255,7 +255,7 @@ export const colorVariants: Record<ThemeColorVariant, Colors> = {
         borderFocus: palette.darkGray200,
         borderInverted: palette.darkGray000,
         borderSecondary: palette.darkSecondaryGreen800,
-        borderSubtleInverted: '#0000007F',
+        borderSubtleInverted: palette.lightWhiteAlpha400,
         iconAlertBlue: palette.darkAccentBlue700,
         iconAlertRed: palette.darkAccentRed700,
         iconAlertYellow: palette.darkAccentYellow600,

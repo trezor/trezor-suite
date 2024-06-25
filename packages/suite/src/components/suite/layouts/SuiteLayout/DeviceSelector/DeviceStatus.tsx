@@ -2,11 +2,11 @@ import styled from 'styled-components';
 
 import { DeviceModelInternal } from '@trezor/connect';
 import { DeviceDetail } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceDetail';
-import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItemLegacy/DeviceStatusText';
 import { MouseEventHandler } from 'react';
 import { TrezorDevice } from 'src/types/suite';
 import { spacingsPx } from '@trezor/theme';
 import { RotateDeviceImage } from '@trezor/components';
+import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
 
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;

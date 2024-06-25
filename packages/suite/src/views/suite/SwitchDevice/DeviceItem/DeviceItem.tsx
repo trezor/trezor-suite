@@ -73,6 +73,7 @@ export const DeviceItem = ({
                     onSolveIssueClick={onSolveIssueClick}
                 />
             }
+            isFindTrezorVisible
             onCancel={onCancel}
             device={device}
             isCloseButtonVisible={isCloseButtonVisible}

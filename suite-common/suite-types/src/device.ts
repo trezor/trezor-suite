@@ -40,7 +40,7 @@ export interface ExtendedDevice {
     ts: number;
     buttonRequests: ButtonRequest[];
     metadata: DeviceMetadata;
-    walletNumber?: number; // number of hidden wallet intended to be used in UI
+    walletNumber?: number; // number of passphrase wallet intended to be used in UI
     reconnectRequested?: boolean; // currently only after wipeDevice
 }
 

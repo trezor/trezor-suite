@@ -14,15 +14,15 @@ export default defineMessages({
         id: 'TR_404_TITLE',
     },
     TR_ACCESS_HIDDEN_WALLET: {
-        defaultMessage: 'Access Hidden wallet',
+        defaultMessage: 'Access Passphrase wallet',
         id: 'TR_ACCESS_HIDDEN_WALLET',
     },
     TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET: {
-        defaultMessage: 'Access Hidden wallet',
+        defaultMessage: 'Access Passphrase wallet',
         id: 'TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET',
     },
     TR_WALLET_SELECTION_HIDDEN_WALLET: {
-        defaultMessage: 'Hidden wallet',
+        defaultMessage: 'Passphrase wallet',
         id: 'TR_WALLET_SELECTION_HIDDEN_WALLET',
     },
     TR_WALLET_PASSPHRASE_WALLET: {
@@ -139,7 +139,7 @@ export default defineMessages({
         id: 'TR_SELECT_TYPE',
     },
     TR_ADD_HIDDEN_WALLET: {
-        defaultMessage: 'Add hidden wallet',
+        defaultMessage: 'Add passphrase wallet',
         id: 'TR_ADD_HIDDEN_WALLET',
     },
     TR_ADD_WALLET: {
@@ -2389,11 +2389,11 @@ export default defineMessages({
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET: {
-        defaultMessage: 'Confirm empty hidden wallet',
+        defaultMessage: 'Confirm empty passphrase wallet',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
-        defaultMessage: 'Confirm empty Hidden wallet on "{deviceLabel}" device.',
+        defaultMessage: 'Confirm empty Passphrase wallet on "{deviceLabel}" device.',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
     },
     TR_CONFIRM_PASSPHRASE: {
@@ -2401,7 +2401,8 @@ export default defineMessages({
         id: 'TR_CONFIRM_PASSPHRASE',
     },
     TR_CONFIRM_PASSPHRASE_SOURCE: {
-        defaultMessage: 'Confirm empty hidden wallet passphrase source on "{deviceLabel}" device.',
+        defaultMessage:
+            'Confirm empty passphrase wallet passphrase source on "{deviceLabel}" device.',
         id: 'TR_CONFIRM_PASSPHRASE_SOURCE',
     },
     TR_CONFIRMED_TX: {
@@ -3352,7 +3353,7 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_CASE_SENSITIVE',
     },
     TR_PASSPHRASE_HIDDEN_WALLET: {
-        defaultMessage: 'Hidden wallet',
+        defaultMessage: 'Passphrase wallet',
         id: 'TR_PASSPHRASE_HIDDEN_WALLET',
     },
     TR_PASSPHRASE_TOO_LONG: {
@@ -3360,7 +3361,7 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Hidden wallet #{id}',
+        defaultMessage: 'Passphrase wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PASSPHRASE_MISMATCH: {
@@ -3716,12 +3717,12 @@ export default defineMessages({
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY: {
         defaultMessage:
-            'This hidden wallet is empty. To make sure you are in the correct hidden wallet, please type the passphrase again.',
+            'This passphrase wallet is empty. To make sure you are in the correct wallet, please type the passphrase again.',
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
         defaultMessage:
-            'This hidden wallet is empty. To make sure you are in the correct hidden wallet, please re-enter the passphrase on your Trezor.',
+            'This passphrase wallet is empty. To make sure you are in the correct wallet, please re-enter the passphrase on your Trezor.',
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE',
     },
     TR_TO_FIND_YOUR_ACCOUNTS_AND: {
@@ -3855,7 +3856,7 @@ export default defineMessages({
         id: 'TR_VALIDATION',
     },
     TR_WALLET_DUPLICATE_DESC: {
-        defaultMessage: 'The Hidden wallet you are trying to add has been already discovered.',
+        defaultMessage: 'The Passphrase wallet you are trying to add has been already discovered.',
         id: 'TR_WALLET_DUPLICATE_DESC',
     },
     TR_WALLET_DUPLICATE_RETRY: {
@@ -4856,7 +4857,7 @@ export default defineMessages({
     },
     TR_ENABLE_PASSPHRASE_DESCRIPTION: {
         id: 'TR_ENABLE_PASSPHRASE_DESCRIPTION',
-        defaultMessage: 'Allows you to create hidden wallets',
+        defaultMessage: 'Allows you to create passphrase wallets',
     },
     TR_ENABLE_PASSPHRASE: {
         id: 'TR_ENABLE_PASSPHRASE',
@@ -4872,7 +4873,7 @@ export default defineMessages({
     },
     TR_CREATE_HIDDEN_WALLET: {
         id: 'TR_CREATE_HIDDEN_WALLET',
-        defaultMessage: 'Add Hidden wallet',
+        defaultMessage: 'Add Passphrase wallet',
     },
     TR_DISCREET_MODE: {
         id: 'TR_DISCREET_MODE',
@@ -9197,17 +9198,9 @@ export default defineMessages({
         id: 'TR_VIEW_ONLY_PROMO_NOT_NOW',
         defaultMessage: 'Not now',
     },
-    TR_VIEW_ONLY_TOOLTIP_TITLE: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_TITLE',
-        defaultMessage: 'View-only enabled',
-    },
     TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: "You'll see wallet balances after disconnecting Trezor",
-    },
-    TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
-        defaultMessage: 'You can change it here',
+        defaultMessage: 'You can change view only and access passphrase here.',
     },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
@@ -9378,11 +9371,11 @@ export default defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING',
         defaultMessage:
-            'Write it down on paper, keep it away from anything digital, and store it in a safe place. No one can recover it, not even Trezor Support.',
+            '<bold>Create an offline backup</bold> of your <bold>passphrase. It is irrecoverable</bold>, even by Trezor support.',
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
-        defaultMessage: "It's important to first learn how a passphrase works",
+        defaultMessage: "It's important to first learn <a>how a passphrase works</a>",
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',

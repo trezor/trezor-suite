@@ -15,7 +15,7 @@ const Container = styled.div`
 `;
 
 const Description = styled.div`
-    margin: ${spacingsPx.xs} 0;
+    margin: ${spacingsPx.xs} 0 ${spacingsPx.md} 0;
 `;
 
 const Buttons = styled.div`
@@ -59,9 +59,7 @@ const EjectConfirmationContainer = ({
         <Container onClick={onClick}>
             <H3>{title}</H3>
             <Description>
-                <Text variant="tertiary" typographyStyle="label">
-                    {description}
-                </Text>
+                <Text variant="tertiary">{description}</Text>
             </Description>
             <Buttons>
                 <Button

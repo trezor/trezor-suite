@@ -7,6 +7,8 @@ import { spacings, spacingsPx } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { motion } from 'framer-motion';
 import { ForegroundAppProps, TrezorDevice } from 'src/types/suite';
+import { selectDevice } from '@suite-common/wallet-core';
+import { WebUsbIconButton } from 'src/components/suite/WebUsbButton';
 
 const Container = styled.div<{ $isCloseButtonVisible: boolean }>`
     display: flex;
@@ -27,6 +29,7 @@ interface DeviceHeaderProps {
     onCancel?: ForegroundAppProps['onCancel'];
     isCloseButtonVisible: boolean;
     onBackButtonClick?: () => void;
+    isFindTrezorVisible?: boolean;
 }
 
 export const DeviceHeader = ({
@@ -34,9 +37,12 @@ export const DeviceHeader = ({
     device,
     isCloseButtonVisible,
     onBackButtonClick,
+    isFindTrezorVisible = false,
 }: DeviceHeaderProps) => {
+    const selectedDevice = useSelector(selectDevice);
     const transport = useSelector(state => state.suite.transport);
     const isWebUsbTransport = isWebUsb(transport);
+    const isDeviceConnected = selectedDevice?.connected === true;
     const theme = useTheme();
     const deviceModelInternal = device.features?.internal_model;
 
@@ -64,7 +70,13 @@ export const DeviceHeader = ({
             </Row>
 
             <DeviceActions>
-                {isWebUsbTransport && <WebUsbButton variant="tertiary" size="small" />}
+                {isWebUsbTransport &&
+                    isFindTrezorVisible &&
+                    (isDeviceConnected ? (
+                        <WebUsbIconButton variant="tertiary" size="small" />
+                    ) : (
+                        <WebUsbButton variant="primary" size="tiny" />
+                    ))}
                 {isCloseButtonVisible && (
                     <Tooltip delayShow={TOOLTIP_DELAY_LONG} content={<Translation id="TR_CLOSE" />}>
                         <motion.div

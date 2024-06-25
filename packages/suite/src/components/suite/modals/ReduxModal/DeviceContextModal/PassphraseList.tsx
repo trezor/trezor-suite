@@ -1,16 +1,19 @@
 import { spacingsPx, typography } from '@trezor/theme';
 import styled from 'styled-components';
 
-export const PassphraseList = styled.div`
+type Gap = 'small' | 'normal';
+
+export const PassphraseList = styled.div<{ $gap?: Gap }>`
     display: flex;
     flex-direction: column;
-    gap: ${spacingsPx.sm};
-    margin-top: ${spacingsPx.xs};
+    gap: ${({ $gap }) => ($gap === 'small' ? spacingsPx.sm : spacingsPx.md)};
     margin-bottom: ${spacingsPx.md};
-    justify-content: center;
+    justify-items: center;
 `;
+
 export const PassphraseItem = styled.div`
     display: flex;
     ${typography.hint};
-    gap: ${spacingsPx.xs};
+    gap: ${spacingsPx.md};
+    align-items: center;
 `;
