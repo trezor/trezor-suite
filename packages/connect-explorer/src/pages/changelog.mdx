@@ -2,19 +2,27 @@
 icon: LOG
 ---
 
-import { useData } from 'nextra/data';
-import { serialize } from 'next-mdx-remote/serialize';
-import { MDXRemote } from 'next-mdx-remote';
 import rehypeSectionize from '@hbsnow/rehype-sectionize';
 import remarkGfm from 'remark-gfm';
 import remarkGemoji from 'remark-gemoji';
+import useSWR from 'swr';
+import Markdown from 'react-markdown';
+import { useMDXComponents } from '@trezor/connect-explorer-theme';
+import { Callout } from 'nextra/components';
 
 import { spacings } from '@trezor/theme';
 import { CollapsibleBox } from '@trezor/components';
+import { isNewer } from '@trezor/utils/src/versionUtils';
 
-export const getStaticProps = ({ params }) => {
+export const loadNPMVersions = tag => {
+    return fetch(`https://registry.npmjs.org/@trezor/connect/${tag}`)
+        .then(res => res.json())
+        .then(data => data.version);
+};
+
+export const loadChangelog = branch => {
     return fetch(
-        `https://raw.githubusercontent.com/trezor/trezor-suite/${process.env.COMMIT_HASH}/packages/connect/CHANGELOG.md`,
+        `https://raw.githubusercontent.com/trezor/trezor-suite/${branch}/packages/connect/CHANGELOG.md`,
     )
         .then(res => res.text())
         .then(content => {
@@ -25,58 +33,75 @@ export const getStaticProps = ({ params }) => {
                 /([a-f0-9]{7,10})([\),])/g,
                 `[\$1](https://github.com/trezor/trezor-suite/commit/\$1)$2`,
             );
-            const versionOverviewContent = content.substring(0, content.indexOf('##'));
-            const changelogContent = content.substring(content.indexOf('##'));
+            const versionOverview =  `## Version overview\n\n` + content.substring(0, content.indexOf('##'));
+            const changelog = content.substring(content.indexOf('##'));
 
-            return [`## Version overview\n\n` + versionOverviewContent, changelogContent];
-        })
-        .then(content => Promise.all(content.map(it=>serialize(it, {
-            mdxOptions: {
-                remarkPlugins: [remarkGfm, remarkGemoji],
-                rehypePlugins: [[rehypeSectionize]],
-            },
-        }))))
-        .then(([versionOverview, changelog]) => ({
-            props: {
-                ssg: {
-                    versionOverview,
-                    changelog,
-                },
-            },
-        }));
+            return { versionOverview, changelog };
+        });
 
 };
 
-export const VersionOverview = () => {
-    const data = useData();
-    const { versionOverview } = data;
+export const loadData = async () => {
+    const [latest, beta] = await Promise.all([
+        loadNPMVersions('latest'),
+        loadNPMVersions('beta'),
+    ]);
+    const isBetaNewer = isNewer(beta.split('-')[0], latest);
+    const newestVersion = isBetaNewer ? beta : latest;
+
+    return loadChangelog(`release/connect/${newestVersion}`);
+
+};
+
+export const MarkdownCustom = ({ children }) => {
+    const components = useMDXComponents();
 
     return (
-        <MDXRemote {...versionOverview} />
+        <Markdown
+            components={components}
+            remarkPlugins={[remarkGfm, remarkGemoji]}
+            rehypePlugins={[rehypeSectionize]}
+        >
+            {children}
+        </Markdown>
     );
 
 };
 
 export const Changelog = () => {
-    const data = useData();
-    const { changelog } = data;
+    const { data, error } = useSWR("changelog", loadData);
+    
+    if (!data) return <>Loading...</>;
+    if (error) return <Callout>
+        <MarkdownCustom>An error occurred while loading the changelog. Please [view it on GitHub](https://github.com/trezor/trezor-suite/blob/develop/packages/connect/CHANGELOG.md).</MarkdownCustom>
+    </Callout>;
+    
+    const { changelog, versionOverview } = data;
 
     return (
-        <MDXRemote {...changelog} />
+        <>
+            <MarkdownCustom>{versionOverview}</MarkdownCustom>
+
+            <CollapsibleBox heading="What is a Canary Release?" margin={{ top: spacings.md }}>
+                <MarkdownCustom>
+                    Canary releases are beta versions available before the stable release. They provide early access to new features, improvements, and (hot)fixes, allowing developers to test their applications with the latest changes. Unlike stable versions, which are extensively tested and released less frequently, canary versions are released more often to address immediate needs, such as critical fixes or compatibility updates required by specific third-party applications or implementations.
+                </MarkdownCustom>
+
+                <MarkdownCustom>
+                    ### Why Use Canary Releases?
+                </MarkdownCustom>
+                <MarkdownCustom>
+                    *Immediate fixes*: If your application encounters a critical issue with the current stable release, a canary version might already have the necessary fix, allowing you to resolve problems more quickly.
+                </MarkdownCustom>
+                <MarkdownCustom>
+                    *Feedback Opportunity*: Using canary releases allows you to provide feedback on new features and fixes, influencing the final stable release and ensuring it works smoothly with your application. If you encounter any issue, bug, or incompatibility introduced in a Canary release, report it by creating [a new issue in our repository](https://github.com/trezor/trezor-suite/issues/new/choose).
+                </MarkdownCustom>
+            </CollapsibleBox>
+
+            <MarkdownCustom>{changelog}</MarkdownCustom>
+        </>
     );
 
 };
-
-<VersionOverview />
-
-<CollapsibleBox heading="What is a Canary Release?" margin={{ top: spacings.md }}>
-    Canary releases are beta versions available before the stable release. They provide early access to new features, improvements, and (hot)fixes, allowing developers to test their applications with the latest changes. Unlike stable versions, which are extensively tested and released less frequently, canary versions are released more often to address immediate needs, such as critical fixes or compatibility updates required by specific third-party applications or implementations.
-
-    ### Why Use Canary Releases?
-    *Immediate fixes*: If your application encounters a critical issue with the current stable release, a canary version might already have the necessary fix, allowing you to resolve problems more quickly.
-
-    *Feedback Opportunity*: Using canary releases allows you to provide feedback on new features and fixes, influencing the final stable release and ensuring it works smoothly with your application. If you encounter any issue, bug, or incompatibility introduced in a Canary release, report it by creating [a new issue in our repository](https://github.com/trezor/trezor-suite/issues/new/choose).
-
-</CollapsibleBox>
 
 <Changelog />
