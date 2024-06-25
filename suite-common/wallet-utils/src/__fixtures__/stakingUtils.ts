@@ -143,3 +143,73 @@ export const getAccountAutocompoundBalanceFixtures = [
         expectedBalance: '0',
     },
 ];
+
+export const getAccountTotalStakingBalanceFixtures = [
+    {
+        description: 'Ethereum account with valid Everstake pool',
+        account: {
+            networkType: 'ethereum',
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '1000000000000000000', // 1 Ether in wei
+                        claimableAmount: '500000000000000000', // 0.5 Ether in wei
+                        depositedBalance: '3000000000000000000', // 3 Ether in wei
+                        pendingBalance: '100000000000000000', // 0.1 Ether in wei
+                        pendingDepositedBalance: '200000000000000000', // 0.2 Ether in wei
+                        restakedReward: '150000000000000000', // 0.15 Ether in wei
+                        withdrawTotalAmount: '500000000000000000', // 0.5 Ether in wei
+                    },
+                ],
+            },
+        },
+        expectedBalance: '1.8', // 1 + 0.1 + 0.2 + 0.5 Ether
+    },
+    {
+        description: 'Ethereum account with zero balances',
+        account: {
+            networkType: 'ethereum',
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '0',
+                        claimableAmount: '0',
+                        depositedBalance: '0',
+                        pendingBalance: '0',
+                        pendingDepositedBalance: '0',
+                        restakedReward: '0',
+                        withdrawTotalAmount: '0',
+                    },
+                ],
+            },
+        },
+        expectedBalance: '0',
+    },
+    {
+        description: 'Ethereum account without Everstake pool',
+        account: {
+            networkType: 'ethereum',
+            misc: {
+                stakingPools: [],
+            },
+        },
+        expectedBalance: '0',
+    },
+    {
+        description: 'Non-Ethereum network with Everstake pool',
+        account: {
+            networkType: 'bitcoin',
+            misc: {
+                stakingPools: [
+                    {
+                        name: 'Everstake',
+                        autocompoundBalance: '1000000000000000000',
+                    },
+                ],
+            },
+        },
+        expectedBalance: '0',
+    },
+];

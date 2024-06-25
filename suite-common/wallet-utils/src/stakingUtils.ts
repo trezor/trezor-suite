@@ -42,3 +42,13 @@ export const getAccountAutocompoundBalance = (account?: Account) => {
 
     return pool?.autocompoundBalance ?? '0';
 };
+
+export const getAccountTotalStakingBalance = (account?: Account) => {
+    const pool = getAccountEverstakeStakingPool(account);
+
+    return new BigNumber(pool?.autocompoundBalance ?? '0')
+        .plus(pool?.pendingBalance ?? '0')
+        .plus(pool?.pendingDepositedBalance ?? '0')
+        .plus(pool?.withdrawTotalAmount ?? '0')
+        .toFixed();
+};
