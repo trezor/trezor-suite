@@ -1,3 +1,8 @@
+# 1.0.19-beta.1
+
+-   fix(blockchain-link): omit solana foreign tx effects (80836ddb90)
+-   chore(suite): depcheck enabled (2206f19f2e)
+
 # 1.0.18
 
 -   chore: BigNumber wrapper (d18ba9a879)
