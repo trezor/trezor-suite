@@ -6,12 +6,13 @@ import { sync } from 'glob';
 import webpack from 'webpack';
 import childProcess from 'child_process';
 import TerserPlugin from 'terser-webpack-plugin';
+import { sentryWebpackPlugin } from '@sentry/webpack-plugin';
 
 import uriSchemes from '../../suite-desktop/uriSchemes.json';
 import { suiteVersion } from '../../suite/package.json';
 import pkg from '../../suite-desktop/package.json';
 
-const { NODE_ENV, IS_CODESIGN_BUILD } = process.env;
+const { NODE_ENV, IS_CODESIGN_BUILD, SENTRY_AUTH_TOKEN } = process.env;
 
 const PROJECT = 'desktop';
 
@@ -39,6 +40,7 @@ const sentryRelease = `${suiteVersion}.${PROJECT}${
 /* **** ENTRY POINTS **** */
 
 const source = path.join(__dirname, '..', 'src');
+const dist = path.join(__dirname, '../../suite-desktop/dist');
 
 const threadPath = path.join(source, 'threads');
 const threads = sync(`${threadPath}/**/*.ts`).map(
@@ -55,6 +57,7 @@ const devDependencies = Object.keys(pkg.devDependencies);
 const config: webpack.Configuration = {
     target: 'electron-main',
     mode: isDev ? 'development' : 'production',
+    devtool: 'source-map',
     entry: ['app', 'preload', ...threads].reduce(
         (prev, cur) => ({
             ...prev,
@@ -71,7 +74,7 @@ const config: webpack.Configuration = {
 
             return '[name].js';
         },
-        path: path.resolve(__dirname, '../../suite-desktop/dist'),
+        path: dist,
         publicPath: './',
         library: { type: 'umd' },
     },
@@ -147,6 +150,20 @@ const config: webpack.Configuration = {
             'process.env.NODE_BACKEND': JSON.stringify('js'),
             'process.env.WS_NO_BUFFER_UTIL': true, // ignore bufferutils import in ws lib (https://github.com/trezor/trezor-suite/pull/11225)
         }),
+        ...(!isDev && SENTRY_AUTH_TOKEN
+            ? [
+                  sentryWebpackPlugin({
+                      telemetry: false,
+                      org: 'satoshilabs',
+                      project: 'trezor-suite',
+                      authToken: SENTRY_AUTH_TOKEN,
+                      release: { name: sentryRelease },
+                      sourcemaps: {
+                          assets: path.join(dist, '**'),
+                      },
+                  }),
+              ]
+            : []),
     ],
 
     // We are using WASM package - it's much faster (https://github.com/Emurgo/cardano-serialization-lib)
