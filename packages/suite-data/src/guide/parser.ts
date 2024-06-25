@@ -21,12 +21,12 @@ export class Parser {
 
     /** Returns if given path is a root Node. */
 
-    private isRootNode = (path: string): boolean => {
+    private isRootNode = (path: string): boolean => 
         // Handle the special case of the root of a locale
         // which doesn't contain a README.md.
         // Strip last 3 chars because locale (always two letters) and separator.
-        return path.slice(0, -3) === this.source;
-    };
+         path.slice(0, -3) === this.source
+    ;
 
     /** Returns a title of given directory. */
     private parseDirTitle(path: string): string {

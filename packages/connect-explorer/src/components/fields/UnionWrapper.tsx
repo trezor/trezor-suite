@@ -27,8 +27,7 @@ interface UnionWrapperProps {
     children: React.ReactNode;
 }
 
-export const UnionWrapper = ({ field, onChange, children }: UnionWrapperProps) => {
-    return (
+export const UnionWrapper = ({ field, onChange, children }: UnionWrapperProps) => (
         <Wrapper>
             <UnionHeader>
                 <p>Union</p>
@@ -41,4 +40,3 @@ export const UnionWrapper = ({ field, onChange, children }: UnionWrapperProps) =
             {children}
         </Wrapper>
     );
-};

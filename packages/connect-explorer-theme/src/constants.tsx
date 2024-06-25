@@ -332,8 +332,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
     },
     sidebar: {
         defaultMenuCollapseLevel: 1,
-        titleComponent: ({ title, icon }) => {
-            return (
+        titleComponent: ({ title, icon }) => (
                 <div
                     style={{
                         alignItems: 'center',
@@ -344,8 +343,7 @@ export const DEFAULT_THEME: DocsThemeConfig = {
                     {icon && <Icon icon={icon as IconType} size={16} color="currentColor" />}
                     {title}
                 </div>
-            );
-        },
+            ),
         toggleButton: false,
     },
     themeSwitch: {

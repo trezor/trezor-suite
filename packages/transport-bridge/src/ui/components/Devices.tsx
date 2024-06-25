@@ -9,8 +9,7 @@ export interface DevicesProps {
     devices: Descriptor[];
 }
 
-export const Devices = ({ devices }: DevicesProps) => {
-    return (
+export const Devices = ({ devices }: DevicesProps) => (
         <>
             <H2>
                 <Translation id="devices" />
@@ -27,4 +26,3 @@ export const Devices = ({ devices }: DevicesProps) => {
             </Card>
         </>
     );
-};

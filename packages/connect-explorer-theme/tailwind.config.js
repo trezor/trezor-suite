@@ -2,12 +2,10 @@ const colors = require('tailwindcss/colors');
 
 const makePrimaryColor =
     l =>
-    ({ opacityValue }) => {
-        return (
+    ({ opacityValue }) => (
             `hsl(var(--nextra-primary-hue) var(--nextra-primary-saturation) ${l}%` +
             (opacityValue ? ` / ${opacityValue})` : ')')
         );
-    };
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {

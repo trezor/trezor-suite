@@ -40,11 +40,9 @@ export const PassphraseFormScreen = () => {
 
     const cardHeight = useSharedValue(ALERT_CARD_HEIGHT);
 
-    const animationStyle = useAnimatedStyle(() => {
-        return {
+    const animationStyle = useAnimatedStyle(() => ({
             height: withTiming(cardHeight.value, { duration: ANIMATION_DURATION }),
-        };
-    });
+        }));
 
     const handleAnimation = () => (cardHeight.value = 0);
 

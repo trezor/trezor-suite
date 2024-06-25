@@ -4,8 +4,7 @@ import { Log, LogMessage as UtilsLogMessage } from '@trezor/utils';
 export const convertILoggerToLog = (
     iLogger: ILogger,
     { serviceName }: { serviceName: string },
-): Log => {
-    return {
+): Log => ({
         log: (msg: string) => iLogger.info(serviceName, msg),
         info: (msg: string) => iLogger.info(serviceName, msg),
         debug: (msg: string) => iLogger.debug(serviceName, msg),
@@ -20,13 +19,10 @@ export const convertILoggerToLog = (
         setWriter: (_logWriter: any) => {},
         addMessage: (_msg: UtilsLogMessage) => {},
         logWriter: undefined,
-        getLog: (): UtilsLogMessage[] => {
-            return iLogger.getLog().map(log => ({
+        getLog: (): UtilsLogMessage[] => iLogger.getLog().map(log => ({
                 message: [log.text],
                 prefix: '',
                 level: log.level,
                 timestamp: log.date.getTime(),
-            }));
-        },
-    };
-};
+            })),
+    });

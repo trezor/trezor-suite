@@ -249,13 +249,11 @@ export const ResizableBox = ({
         }
     };
 
-    const divsProps = (direction: Direction) => {
-        return {
+    const divsProps = (direction: Direction) => ({
             onMouseDown: handleMouseDown(direction),
             onMouseOver: handleMouseOver(direction),
             onMouseOut: handleMouseOut,
-        };
-    };
+        });
 
     return (
         <Resizers

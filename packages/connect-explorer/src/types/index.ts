@@ -75,6 +75,4 @@ export interface FieldWithUnion<Value> extends FieldCommon {
 
 export type Field<Value> = FieldBasic<Value> | FieldWithBundle<Value> | FieldWithUnion<Value>;
 
-export const isFieldBasic = <T>(field: Field<T>): field is FieldBasic<T> => {
-    return field.type !== 'array' && field.type !== 'union';
-};
+export const isFieldBasic = <T>(field: Field<T>): field is FieldBasic<T> => field.type !== 'array' && field.type !== 'union';

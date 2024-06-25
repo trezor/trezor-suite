@@ -12,13 +12,11 @@ const serializeDevice = (device: TrezorDevice) => ({
 });
 
 export const devicePersistTransform = createTransform<TrezorDevice[], Readonly<TrezorDevice[]>>(
-    inboundState => {
-        return pipe(
+    inboundState => pipe(
             inboundState,
             A.filter(device => !!device.remember),
             A.map(serializeDevice),
-        );
-    },
+        ),
     undefined,
     { whitelist: ['devices'] },
 );

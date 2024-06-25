@@ -5,8 +5,7 @@ import { ActionColumn, TextColumn } from 'src/components/suite';
 import { isTranslationMode, setTranslationMode } from 'src/utils/suite/l10n';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-export const TranslationMode = () => {
-    return (
+export const TranslationMode = () => (
         <SettingsSectionItem anchorId={SettingsAnchor.TranslationMode}>
             <TextColumn
                 title="Translation mode"
@@ -20,4 +19,3 @@ export const TranslationMode = () => {
             </ActionColumn>
         </SettingsSectionItem>
     );
-};

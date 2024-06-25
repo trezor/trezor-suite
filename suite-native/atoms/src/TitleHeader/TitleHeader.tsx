@@ -17,8 +17,7 @@ export const TitleHeader = ({
     subtitle,
     titleVariant = 'titleSmall',
     textAlign = 'left',
-}: TitleHeaderProps) => {
-    return (
+}: TitleHeaderProps) => (
         <VStack alignItems={textAlign === 'center' ? 'center' : 'flex-start'}>
             {title && (
                 <Text variant={titleVariant} textAlign={textAlign}>
@@ -32,4 +31,3 @@ export const TitleHeader = ({
             )}
         </VStack>
     );
-};

@@ -639,8 +639,7 @@ const onCall = async (message: IFrameCallMessage) => {
         // Persist internal state only in case of core in popup
         // Currently also only for webextension until we asses security implications
         if (useCoreInPopup && env === 'webextension') {
-            storage.saveForOrigin(store => {
-                return {
+            storage.saveForOrigin(store => ({
                     ...store,
                     preferredDevice: store.preferredDevice
                         ? {
@@ -649,8 +648,7 @@ const onCall = async (message: IFrameCallMessage) => {
                               internalStateExpiration: Date.now() + 1000 * 60 * 15, // 15 minutes
                           }
                         : undefined,
-                };
-            }, origin);
+                }), origin);
         }
     });
 
@@ -1223,6 +1221,4 @@ const disableWebUSBTransport = async () => {
 /**
  * State initialization
  */
-export const initCoreState = () => {
-    return initCoreManager(new Core());
-};
+export const initCoreState = () => initCoreManager(new Core());

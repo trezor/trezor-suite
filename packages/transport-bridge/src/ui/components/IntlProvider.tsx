@@ -7,8 +7,7 @@ interface IntlProviderProps {
     messages: Record<string, string>;
 }
 
-export const IntlProvider = ({ children, locale, messages }: IntlProviderProps) => {
-    return (
+export const IntlProvider = ({ children, locale, messages }: IntlProviderProps) => (
         <IntlProviderComponent
             locale={locale}
             messages={messages}
@@ -19,4 +18,3 @@ export const IntlProvider = ({ children, locale, messages }: IntlProviderProps) 
             {children}
         </IntlProviderComponent>
     );
-};

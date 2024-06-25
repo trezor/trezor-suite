@@ -88,8 +88,7 @@ export const Snowflake: React.FC<{
         );
     }, []);
 
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
+    const animatedStyle = useAnimatedStyle(() => ({
             fontSize: size,
             left: offset,
             transform: [
@@ -100,8 +99,7 @@ export const Snowflake: React.FC<{
                     translateY: interpolate(translateY.value, [0, 1], [0, windowHeight]),
                 },
             ],
-        };
-    });
+        }));
 
     if (props.glyph === 'btc') {
         return (

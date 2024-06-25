@@ -12,8 +12,7 @@ import remarkGemoji from 'remark-gemoji';
 import { spacings } from '@trezor/theme';
 import { CollapsibleBox } from '@trezor/components';
 
-export const getStaticProps = ({ params }) => {
-    return fetch(
+export const getStaticProps = ({ params }) => fetch(
         `https://raw.githubusercontent.com/trezor/trezor-suite/${process.env.COMMIT_HASH}/packages/connect/CHANGELOG.md`,
     )
         .then(res => res.text())
@@ -44,8 +43,6 @@ export const getStaticProps = ({ params }) => {
                 },
             },
         }));
-
-};
 
 export const VersionOverview = () => {
     const data = useData();

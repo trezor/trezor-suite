@@ -1,8 +1,6 @@
 import { DeviceModelInternal } from '../types';
 
-const isDeviceModel = (model: string): model is DeviceModelInternal => {
-    return Object.values(DeviceModelInternal).includes(model as DeviceModelInternal);
-};
+const isDeviceModel = (model: string): model is DeviceModelInternal => Object.values(DeviceModelInternal).includes(model as DeviceModelInternal);
 
 const firmwareAssets: Record<DeviceModelInternal, NodeRequire> = {
     [DeviceModelInternal.T1B1]: require('@trezor/connect-common/files/firmware/t1b1/releases.json'),

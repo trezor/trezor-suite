@@ -19,15 +19,13 @@ const FIXTURES: [string, (keyof typeof ARGS)[], any][] = [
     ],
 ];
 
-jest.mock('electron', () => {
-    return {
+jest.mock('electron', () => ({
         app: {
             commandLine: {
                 getSwitchValue: (arg: keyof typeof ARGS) => ARGS[arg],
             },
         },
-    };
-});
+    }));
 
 describe('process state patch', () => {
     FIXTURES.map(([name, args, value]) => {

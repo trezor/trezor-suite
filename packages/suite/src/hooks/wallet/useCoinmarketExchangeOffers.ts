@@ -319,11 +319,9 @@ export const useOffers = ({ selectedAccount }: UseCoinmarketExchangeFormProps) =
         }
     };
 
-    useEffect(() => {
-        return () => {
+    useEffect(() => () => {
             dispatch(clearQuoteRequest());
-        };
-    }, [clearQuoteRequest, dispatch]);
+        }, [clearQuoteRequest, dispatch]);
 
     return {
         callInProgress,

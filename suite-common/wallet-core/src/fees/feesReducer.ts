@@ -30,12 +30,10 @@ const initialState = networksCompatibility.reduce((state, network) => {
 }, {} as FeesState);
 
 export const feesReducer = createReducer(initialState, builder => {
-    builder.addCase(blockchainActions.updateFee, (state, { payload }) => {
-        return {
+    builder.addCase(blockchainActions.updateFee, (state, { payload }) => ({
             ...state,
             ...payload,
-        };
-    });
+        }));
 });
 
 export const selectNetworkFeeInfo = (state: FeesRootState, networkSymbol?: NetworkSymbol) =>

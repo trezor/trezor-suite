@@ -4,11 +4,9 @@ import { createSingleInstanceThunk } from '../createSingleInstanceThunk';
 
 describe('createSingleInstanceThunk', () => {
     // Test thunk for asynchronous action
-    const fakeAsyncThunkPayloadCreator = jest.fn((param: number) => {
-        return new Promise<number>(resolve => {
+    const fakeAsyncThunkPayloadCreator = jest.fn((param: number) => new Promise<number>(resolve => {
             setTimeout(() => resolve(param), 100); // Resolve after 100 ms
-        });
-    });
+        }));
 
     const singleInstanceThunk = createSingleInstanceThunk<number, number>(
         'test/thunk',

@@ -171,9 +171,7 @@ export function Menu({
             <SelectWrapper>
                 <Select
                     value={methodsOptions.find(d => d.value === activeCoin)}
-                    onChange={({ value }) => {
-                        return setActiveCoin(value);
-                    }}
+                    onChange={({ value }) => setActiveCoin(value)}
                     options={methodsOptions}
                     formatOptionLabel={option => (
                         <Option>

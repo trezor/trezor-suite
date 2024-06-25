@@ -29,13 +29,9 @@ const StyledModal = styled(Modal)`
     }
 `;
 
-const isStakeState = (state: SendState | StakeState): state is StakeState => {
-    return 'data' in state;
-};
+const isStakeState = (state: SendState | StakeState): state is StakeState => 'data' in state;
 
-const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState => {
-    return 'ethereumStakeType' in form;
-};
+const isStakeForm = (form: FormState | StakeFormState): form is StakeFormState => 'ethereumStakeType' in form;
 
 interface TransactionReviewModalContentProps {
     decision: Deferred<boolean, string | number | undefined> | undefined;

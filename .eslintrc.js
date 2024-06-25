@@ -52,6 +52,7 @@ module.exports = {
                 allowArrowFunctions: true,
             },
         ],
+        "arrow-body-style": ["error", "as-needed"],
         // Fix for TypeScript.
         'react/jsx-filename-extension': [
             'error',

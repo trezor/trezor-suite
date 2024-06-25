@@ -41,8 +41,7 @@ export const DeviceStatus = ({
     device,
     handleRefreshClick,
     walletLabel,
-}: DeviceStatusProps) => {
-    return (
+}: DeviceStatusProps) => (
         <Container>
             <DeviceWrapper $isLowerOpacity={deviceNeedsRefresh}>
                 <StyledRotateDeviceImage
@@ -64,4 +63,3 @@ export const DeviceStatus = ({
             )}
         </Container>
     );
-};

@@ -53,8 +53,7 @@ type TextProps = {
     typographyStyle?: TypographyStyle;
 } & ExclusiveColorOrVariant;
 
-export const Text = ({ variant, color, children, className, typographyStyle }: TextProps) => {
-    return (
+export const Text = ({ variant, color, children, className, typographyStyle }: TextProps) => (
         <StyledText
             {...(variant !== undefined ? { $variant: variant } : { $color: color })}
             className={className}
@@ -63,4 +62,3 @@ export const Text = ({ variant, color, children, className, typographyStyle }: T
             {children}
         </StyledText>
     );
-};

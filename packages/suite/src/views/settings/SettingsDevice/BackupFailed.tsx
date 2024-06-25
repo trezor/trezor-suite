@@ -4,8 +4,7 @@ import { SettingsSectionItem } from 'src/components/settings';
 import { ActionButton, ActionColumn, TextColumn, Translation } from 'src/components/suite';
 import { SettingsAnchor } from 'src/constants/suite/anchors';
 
-export const BackupFailed = () => {
-    return (
+export const BackupFailed = () => (
         <SettingsSectionItem anchorId={SettingsAnchor.BackupFailed}>
             <TextColumn
                 title={<Translation id="TR_BACKUP_RECOVERY_SEED_FAILED_TITLE" />}
@@ -19,4 +18,3 @@ export const BackupFailed = () => {
             </ActionColumn>
         </SettingsSectionItem>
     );
-};

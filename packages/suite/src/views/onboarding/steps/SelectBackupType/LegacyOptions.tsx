@@ -10,8 +10,7 @@ type LegacyOptionsProps = {
     defaultType: BackupType;
 };
 
-export const LegacyOptions = ({ defaultType, onSelect, selected }: LegacyOptionsProps) => {
-    return (
+export const LegacyOptions = ({ defaultType, onSelect, selected }: LegacyOptionsProps) => (
         <>
             <OptionWithContent
                 onSelect={onSelect}
@@ -42,4 +41,3 @@ export const LegacyOptions = ({ defaultType, onSelect, selected }: LegacyOptions
             />
         </>
     );
-};

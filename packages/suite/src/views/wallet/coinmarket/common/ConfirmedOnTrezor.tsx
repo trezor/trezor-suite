@@ -25,8 +25,7 @@ interface ConfirmedOnTrezorProps {
     device?: TrezorDevice;
 }
 
-export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => {
-    return (
+export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => (
         <Confirmed>
             <StyledRotateDeviceImage
                 deviceModel={device?.features?.internal_model}
@@ -38,4 +37,3 @@ export const ConfirmedOnTrezor = ({ device }: ConfirmedOnTrezorProps) => {
             <Translation id="TR_BUY_CONFIRMED_ON_TREZOR" />
         </Confirmed>
     );
-};

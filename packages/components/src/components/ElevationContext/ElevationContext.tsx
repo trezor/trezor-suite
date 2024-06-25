@@ -38,14 +38,12 @@ export const ElevationContext = ({
     children,
     baseElevation,
     direction = 'up',
-}: ElevationContextProps) => {
-    return (
+}: ElevationContextProps) => (
         <ElevationReactContext.Provider value={{ elevation: baseElevation, direction }}>
             {DEBUG && <DebugNumber>{baseElevation}</DebugNumber>}
             {children}
         </ElevationReactContext.Provider>
     );
-};
 
 export const useElevation = (forceElevation?: Elevation) => {
     const { elevation, direction } = useContext(ElevationReactContext);

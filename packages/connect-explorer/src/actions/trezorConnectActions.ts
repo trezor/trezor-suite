@@ -37,11 +37,11 @@ export const onConnectOptionChange = (option: string, value: any) => ({
     },
 });
 
-const isRelativePath = (path: string) => {
+const isRelativePath = (path: string) => 
     // This regex checks if the path starts with a scheme (like http://, https://, file://, etc.)
     // or an absolute path indicator (like //)
-    return !/^(?:[a-z]+:)?\/\//i.test(path);
-};
+     !/^(?:[a-z]+:)?\/\//i.test(path)
+;
 
 export const init =
     (options: Partial<Parameters<(typeof TrezorConnect)['init']>[0]> = {}) =>

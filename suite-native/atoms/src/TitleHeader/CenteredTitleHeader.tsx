@@ -4,8 +4,7 @@ export const CenteredTitleHeader = ({
     title,
     subtitle,
     titleVariant = 'titleSmall',
-}: TitleHeaderProps) => {
-    return (
+}: TitleHeaderProps) => (
         <TitleHeader
             titleVariant={titleVariant}
             title={title}
@@ -13,4 +12,3 @@ export const CenteredTitleHeader = ({
             textAlign="center"
         />
     );
-};

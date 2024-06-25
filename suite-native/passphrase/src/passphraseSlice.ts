@@ -63,9 +63,7 @@ export const passphraseSlice = createSlice({
 
 export const selectPassphraseError = (state: PassphraseRootState) => state.passphrase.error;
 
-export const selectPassphraseDuplicateError = (state: PassphraseRootState) => {
-    return state.passphrase.error?.error === 'passphrase-duplicate' ? state.passphrase.error : null;
-};
+export const selectPassphraseDuplicateError = (state: PassphraseRootState) => state.passphrase.error?.error === 'passphrase-duplicate' ? state.passphrase.error : null;
 
 export const selectIsVerifyingPassphraseOnEmptyWallet = (state: PassphraseRootState) =>
     state.passphrase.isVefifyingPassphraseOnEmptyWallet;

@@ -78,8 +78,7 @@ export const groupAccountsByNetworkAccountType = A.groupBy((account: Account) =>
     return `${networkName} ${formattedAccountType} accounts`;
 });
 
-export const sortAccountsByNetworksAndAccountTypes = (accounts: readonly Account[]) => {
-    return A.sort(accounts, (a, b) => {
+export const sortAccountsByNetworksAndAccountTypes = (accounts: readonly Account[]) => A.sort(accounts, (a, b) => {
         const aOrder = discoverySupportedNetworks.indexOf(a.symbol) ?? Number.MAX_SAFE_INTEGER;
         const bOrder = discoverySupportedNetworks.indexOf(b.symbol) ?? Number.MAX_SAFE_INTEGER;
 
@@ -94,4 +93,3 @@ export const sortAccountsByNetworksAndAccountTypes = (accounts: readonly Account
 
         return aOrder - bOrder;
     });
-};

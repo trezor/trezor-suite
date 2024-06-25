@@ -11,10 +11,8 @@ const StyledLink = styled(Link)`
     text-decoration: underline;
 `;
 
-export const CommonParamsLink = () => {
-    return (
+export const CommonParamsLink = () => (
         <Floating>
             Including <StyledLink href="/details/commonParams">CommonParams</StyledLink>
         </Floating>
     );
-};

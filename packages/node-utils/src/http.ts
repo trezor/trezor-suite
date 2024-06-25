@@ -322,10 +322,10 @@ const checkOrigin = ({
     }
 
     if (origin) {
-        isOriginAllowed = origins.some(o => {
+        isOriginAllowed = origins.some(o => 
             // match from the end to allow subdomains
-            return new URL(origin).hostname.endsWith(new URL(o).hostname);
-        });
+             new URL(origin).hostname.endsWith(new URL(o).hostname)
+        );
     }
     if (!isOriginAllowed) {
         logger.warn(`Origin rejected for ${pathname}`);

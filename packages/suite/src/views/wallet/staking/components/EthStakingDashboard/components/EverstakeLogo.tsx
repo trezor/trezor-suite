@@ -11,8 +11,7 @@ interface EverstakeLogoProps {
     color?: string;
 }
 
-export const EverstakeLogo = ({ width = 103, height = 17, color = '#000' }: EverstakeLogoProps) => {
-    return (
+export const EverstakeLogo = ({ width = 103, height = 17, color = '#000' }: EverstakeLogoProps) => (
         <Wrapper $width={width} $height={height}>
             <svg viewBox="0 0 250 44" fill={color} xmlns="http://www.w3.org/2000/svg">
                 <path
@@ -22,4 +21,3 @@ export const EverstakeLogo = ({ width = 103, height = 17, color = '#000' }: Ever
             </svg>
         </Wrapper>
     );
-};

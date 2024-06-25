@@ -2,8 +2,7 @@ import { Icon, Text } from '@trezor/components';
 import { PassphraseList, PassphraseItem } from './PassphraseList';
 import { Translation } from 'src/components/suite/Translation';
 
-export const PassphraseDescription = () => {
-    return (
+export const PassphraseDescription = () => (
         <PassphraseList>
             <PassphraseItem>
                 <Icon icon="INFO" size={16} />
@@ -25,4 +24,3 @@ export const PassphraseDescription = () => {
             </PassphraseItem>
         </PassphraseList>
     );
-};

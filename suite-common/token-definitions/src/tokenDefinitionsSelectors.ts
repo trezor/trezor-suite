@@ -43,18 +43,15 @@ export const selectFilterKnownTokens = (
     state: TokenDefinitionsRootState,
     networkSymbol: NetworkSymbol,
     tokens: TokenInfo[],
-) => {
-    return tokens.filter(token =>
+) => tokens.filter(token =>
         selectCoinDefinition(state, networkSymbol, token.contract as TokenAddress),
     );
-};
 
 export const selectValidTokensByDeviceStateAndNetworkSymbol = (
     state: TokenDefinitionsRootState,
     accounts: Account[],
     networkSymbol: NetworkSymbol,
-): TokenInfo[] => {
-    return pipe(
+): TokenInfo[] => pipe(
         accounts,
         A.map(account => account.tokens),
         A.flat,
@@ -70,4 +67,3 @@ export const selectValidTokensByDeviceStateAndNetworkSymbol = (
         ),
         F.toMutable,
     );
-};

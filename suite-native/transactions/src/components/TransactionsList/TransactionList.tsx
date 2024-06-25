@@ -139,9 +139,7 @@ export const TransactionList = ({
     );
     const isLoaderVisible = isLoadingTransactions && transactions.length === 0;
 
-    const fetchTransactions = useCallback(() => {
-        return dispatch(fetchAllTransactionsForAccountThunk({ accountKey }));
-    }, [accountKey, dispatch]);
+    const fetchTransactions = useCallback(() => dispatch(fetchAllTransactionsForAccountThunk({ accountKey })), [accountKey, dispatch]);
 
     useEffect(() => {
         fetchTransactions();

@@ -37,11 +37,7 @@ export const getFiatRateKeyFromTicker = (
 export const roundTimestampToNearestPastHour = (timestamp: Timestamp): Timestamp =>
     (Math.floor(timestamp / ONE_HOUR_IN_SECONDS) * ONE_HOUR_IN_SECONDS) as Timestamp;
 
-export const roundTimestampsToNearestPastHour = (timestamps: Timestamp[]): Timestamp[] => {
-    return timestamps.map(timestamp => {
-        return roundTimestampToNearestPastHour(timestamp);
-    });
-};
+export const roundTimestampsToNearestPastHour = (timestamps: Timestamp[]): Timestamp[] => timestamps.map(timestamp => roundTimestampToNearestPastHour(timestamp));
 
 const combineFiatRates = (fiatRates: RatesByTimestamps, accountRates: RatesByTimestamps) => {
     for (let fiatRate in accountRates) {

@@ -118,9 +118,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
     );
     const dispatch = useDispatch();
 
-    const sortedTokens = useMemo(() => {
-        return tokensWithRates.sort(sortTokensWithRates);
-    }, [tokensWithRates]);
+    const sortedTokens = useMemo(() => tokensWithRates.sort(sortTokensWithRates), [tokensWithRates]);
 
     const tokenInputName = `outputs.${outputId}.token` as const;
     const amountInputName = `outputs.${outputId}.amount` as const;

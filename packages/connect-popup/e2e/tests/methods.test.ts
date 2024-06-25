@@ -150,11 +150,9 @@ filteredFixtures.forEach(f => {
 
         log(f.url, 'checking method name set');
         // In React shadow DOM, so we use evaluate to get the method name
-        const methodName = await popup.evaluate(() => {
-            return (document as Document)
+        const methodName = await popup.evaluate(() => (document as Document)
                 ?.querySelector('#react')
-                ?.shadowRoot?.querySelector("aside[data-test='@info-panel'] h2")?.textContent;
-        });
+                ?.shadowRoot?.querySelector("aside[data-test='@info-panel'] h2")?.textContent);
         expect(methodName).not.toBe(undefined);
         expect(methodName).not.toBe('');
 

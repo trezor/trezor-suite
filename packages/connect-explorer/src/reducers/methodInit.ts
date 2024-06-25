@@ -165,13 +165,11 @@ export const getMethodState = (methodConfig?: Partial<MethodState>) => {
 };
 
 // Get method state from TypeBox schema
-export const getMethodStateFromSchema = (method: keyof typeof TrezorConnect, schema: TSchema) => {
-    return {
+export const getMethodStateFromSchema = (method: keyof typeof TrezorConnect, schema: TSchema) => ({
         ...getMethodState({
             name: method,
             fields: schemaToFields(schema),
             submitButton: 'Submit',
         }),
         schema,
-    };
-};
+    });

@@ -19,8 +19,7 @@ interface EnterOnTrezorButtonProps {
     deviceModel?: DeviceModelInternal;
 }
 
-export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezorButtonProps) => {
-    return (
+export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezorButtonProps) => (
         <Card
             paddingType="small"
             onClick={() => submit(value, true)}
@@ -36,4 +35,3 @@ export const EnterOnTrezorButton = ({ submit, value, deviceModel }: EnterOnTrezo
             </Row>
         </Card>
     );
-};

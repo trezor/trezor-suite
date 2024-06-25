@@ -9,8 +9,7 @@ export const ConfirmOnTrezorBottomSheet = ({
 }: {
     isOpened: boolean;
     onClose: () => void;
-}) => {
-    return (
+}) => (
         <BottomSheet
             isVisible={isOpened}
             onClose={onClose}
@@ -32,4 +31,3 @@ export const ConfirmOnTrezorBottomSheet = ({
             </VStack>
         </BottomSheet>
     );
-};

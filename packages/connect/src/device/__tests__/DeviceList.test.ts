@@ -6,15 +6,13 @@ const { createTestTransport } = global.JestMocks;
 
 const getDeviceListParams = (
     partialSettings: Partial<ConstructorParameters<typeof DeviceList>[0]['settings']>,
-): ConstructorParameters<typeof DeviceList>[0] => {
-    return {
+): ConstructorParameters<typeof DeviceList>[0] => ({
         settings: {
             ...parseConnectSettings({}),
             ...partialSettings,
         },
         messages: DataManager.getProtobufMessages(),
-    };
-};
+    });
 
 const createDeviceList = (deviceListParams: ConstructorParameters<typeof DeviceList>[0]) => {
     const list = new DeviceList(deviceListParams);
@@ -44,17 +42,17 @@ const waitForNthEventOfType = (
     emitter: { on: (...args: any[]) => any },
     type: string,
     number: number,
-) => {
+) => 
     // wait for all device-connect events
-    return new Promise<void>(resolve => {
+     new Promise<void>(resolve => {
         let i = 0;
         emitter.on(type, () => {
             if (++i === number) {
                 resolve();
             }
         });
-    });
-};
+    })
+;
 
 describe('DeviceList', () => {
     beforeAll(async () => {
@@ -193,12 +191,10 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (unreadable device)', async () => {
         const transport = createTestTransport({
-            read: () => {
-                return Promise.resolve({
+            read: () => Promise.resolve({
                     success: true,
                     payload: Buffer.from('3f23230002000000060a046d656f77', 'hex'), // proto.Success
-                });
-            },
+                }),
         });
 
         const { list, eventsSpy } = createDeviceList(
@@ -221,9 +217,7 @@ describe('DeviceList', () => {
 
     it('.init() with pendingTransportEvent (multiple acquired devices)', async () => {
         const transport = createTestTransport({
-            enumerate: () => {
-                return { success: true, payload: [{ path: '1' }, { path: '2' }, { path: '3' }] };
-            },
+            enumerate: () => ({ success: true, payload: [{ path: '1' }, { path: '2' }, { path: '3' }] }),
         });
         const { list, eventsSpy } = createDeviceList(
             getDeviceListParams({ transports: [transport] }),
@@ -327,9 +321,7 @@ describe('DeviceList', () => {
     it('multiple devices connected after .init()', async () => {
         let onChangeCallback = (..._args: any[]) => {};
         const transport = createTestTransport({
-            enumerate: () => {
-                return { success: true, payload: [] };
-            },
+            enumerate: () => ({ success: true, payload: [] }),
             on: (eventName: string, callback: typeof onChangeCallback) => {
                 if (eventName === 'transport-interface-change') {
                     onChangeCallback = callback;

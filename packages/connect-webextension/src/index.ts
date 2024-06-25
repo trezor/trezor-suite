@@ -16,9 +16,7 @@ const extendLifetime = () => {
     // https://developer.chrome.com/blog/longer-esw-lifetimes
     // https://developer.chrome.com/docs/extensions/develop/migrate/to-service-workers#keep-sw-alive
     // https://stackoverflow.com/questions/66618136/persistent-service-worker-in-chrome-extension
-    chrome.runtime.onMessage.addListener(() => {
-        return false;
-    });
+    chrome.runtime.onMessage.addListener(() => false);
 };
 
 class CoreInPopupWebextension extends CoreInPopup {

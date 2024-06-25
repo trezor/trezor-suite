@@ -2,11 +2,9 @@ import { A, D, O } from '@mobily/ts-belt';
 
 import { DeviceRootState } from '@suite-common/wallet-core';
 
-export const selectDeviceStatesNotRemembered = (state: DeviceRootState) => {
-    return A.filterMap(state.device.devices, device =>
+export const selectDeviceStatesNotRemembered = (state: DeviceRootState) => A.filterMap(state.device.devices, device =>
         device.remember || !device.state ? O.None : O.Some(device.state),
     );
-};
 
 export const filterObjectKeys = <O extends Record<string, any>>(
     obj: O,

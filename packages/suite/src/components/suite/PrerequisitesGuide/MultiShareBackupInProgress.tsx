@@ -1,7 +1,6 @@
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 
-export const MultiShareBackupInProgress = () => {
-    return (
+export const MultiShareBackupInProgress = () => (
         <TroubleshootingTips
             label={<Translation id="TR_MULTI_SHARE_BACKUP_IN_PROGRESS" />}
             items={[
@@ -13,4 +12,3 @@ export const MultiShareBackupInProgress = () => {
             ]}
         />
     );
-};

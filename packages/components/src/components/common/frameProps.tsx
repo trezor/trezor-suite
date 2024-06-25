@@ -16,8 +16,7 @@ export type FrameProps = {
 
 export type TransientFrameProps = TransientProps<FrameProps>;
 
-export const withFrameProps = ({ $margin, $maxWidth }: TransientFrameProps) => {
-    return css`
+export const withFrameProps = ({ $margin, $maxWidth }: TransientFrameProps) => css`
         ${$margin &&
         css`
             ${$margin.top ? `margin-top: ${$margin.top}px;` : ''}
@@ -31,7 +30,6 @@ export const withFrameProps = ({ $margin, $maxWidth }: TransientFrameProps) => {
             max-width: ${$maxWidth};
         `};
     `;
-};
 
 export const framePropsStory = {
     args: {

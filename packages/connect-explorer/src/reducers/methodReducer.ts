@@ -39,9 +39,7 @@ const findFieldsNested = (
 };
 
 // Find a field in the schema
-const findField = (state: MethodState, field: Field<any>) => {
-    return findFieldsNested(state.fields, field);
-};
+const findField = (state: MethodState, field: Field<any>) => findFieldsNested(state.fields, field);
 
 // Update field value
 const onFieldChange = (state: MethodState, _field: Field<any>, value: any) => {
