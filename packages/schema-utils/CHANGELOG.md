@@ -1,3 +1,8 @@
+# 1.0.5-beta.1
+
+-   chore(suite): depcheck enabled (2206f19f2e)
+-   feat(suite): Add adding a new shamir group into an existing setup (e9a0425183)
+
 # 1.0.4-beta.1
 
 -   feat(connect-explorer-nextra): method json params editor (09086d0f1a)
