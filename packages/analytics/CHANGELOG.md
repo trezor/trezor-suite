@@ -1,3 +1,7 @@
+# 1.0.18-beta.1
+
+-   chore(suite): depcheck enabled (2206f19f2e)
+
 # 1.0.17-beta.1
 
 -   fix(suite-native): coin discovery analytics objectless structure (#11992) (7bd1a2bea0)
