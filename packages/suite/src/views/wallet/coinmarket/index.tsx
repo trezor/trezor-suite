@@ -99,7 +99,7 @@ export const CoinmarketFormInputInner = styled.div`
     position: relative;
 `;
 
-export const CoinmarketFormInputLabel = styled.label`
+export const CoinmarketFormInputLabelWrapper = styled.label`
     display: block;
     padding-bottom: ${spacingsPx.xs};
     ${typography.body}

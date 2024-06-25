@@ -1,15 +1,15 @@
 import { Button } from '@trezor/components';
-import { CoinmarketFormInputLabel } from '../..';
 import styled from 'styled-components';
 import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
-import CoinmarketFormOfferItem from './CoinmarketFormOfferItem';
 import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useState } from 'react';
 import CoinmarketFormOfferCryptoAmount from './CoinmarketFormOfferCryptoAmount';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Translation } from 'src/components/suite';
+import CoinmarketFormOfferItem from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferItem';
+import { CoinmarketFormInputLabelWrapper } from 'src/views/wallet/coinmarket';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
@@ -64,9 +64,9 @@ const CoinmarketFormOffer = () => {
 
     return (
         <>
-            <CoinmarketFormInputLabel>
+            <CoinmarketFormInputLabelWrapper>
                 <Translation id="TR_COINMARKET_YOU_GET" />
-            </CoinmarketFormInputLabel>
+            </CoinmarketFormInputLabelWrapper>
             <CoinmarketFormOfferCryptoAmount
                 amount={
                     !state.isLoadingOrInvalid && bestQuote?.receiveStringAmount

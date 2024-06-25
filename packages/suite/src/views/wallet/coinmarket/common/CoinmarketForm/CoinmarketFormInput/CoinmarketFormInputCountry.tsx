@@ -1,10 +1,4 @@
 import { Controller } from 'react-hook-form';
-import {
-    CoinmarketFormInput,
-    CoinmarketFormInputLabel,
-    CoinmarketFormOption,
-    CoinmarketFormOptionLabel,
-} from '../../..';
 import { Flag, Select } from '@trezor/components';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { CountryOption } from 'src/types/wallet/coinmarketCommonTypes';
@@ -12,8 +6,14 @@ import { getCountryLabelParts } from 'src/utils/wallet/coinmarket/coinmarketUtil
 import styled from 'styled-components';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { Translation } from 'src/components/suite';
 import { spacingsPx } from '@trezor/theme';
+import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import {
+    CoinmarketFormInput,
+    CoinmarketFormOption,
+    CoinmarketFormOptionLabel,
+} from 'src/views/wallet/coinmarket';
 
 const FlagContainer = styled.div`
     position: relative;
@@ -33,16 +33,14 @@ const FlagWrapper = styled(Flag)`
     object-position: 50% 50%;
 `;
 
-const CoinmarketFormInputCountry = () => {
+const CoinmarketFormInputCountry = ({ className, label }: CoinmarketFormInputProps) => {
     const { control, setAmountLimits, defaultCountry } =
         useCoinmarketFormContext<CoinmarketTradeBuyType>();
     const countrySelect = 'countrySelect';
 
     return (
-        <CoinmarketFormInput>
-            <CoinmarketFormInputLabel>
-                <Translation id="TR_COINMARKET_COUNTRY" />
-            </CoinmarketFormInputLabel>
+        <CoinmarketFormInput className={className}>
+            <CoinmarketFormInputLabel label={label} />
             <Controller
                 name={countrySelect}
                 defaultValue={defaultCountry}
