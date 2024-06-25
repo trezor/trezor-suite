@@ -36,7 +36,7 @@ interface CoinmarketFormOfferItemProps {
     bestQuote: BuyTrade | undefined;
     isFormLoading: boolean;
     isFormInvalid: boolean;
-    providers: any;
+    providers: CoinmarketUtilsProvidersProps;
 }
 
 const CoinmarketFormOfferItem = ({

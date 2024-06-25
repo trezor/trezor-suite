@@ -147,6 +147,14 @@ export interface CoinmarketCryptoListProps {
     cryptoName: string | null; // full name
 }
 
+export type CoinmarketUtilsProvidersProps = {
+    [name: string]: {
+        logo: string;
+        companyName: string;
+        brandName?: string;
+    };
+};
+
 export interface CoinmarketBuildOptionsProps {
     symbolsInfo: CryptoSymbolInfo[] | undefined;
     cryptoCurrencies: Set<CryptoSymbol>;
