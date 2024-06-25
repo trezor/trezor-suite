@@ -60,6 +60,10 @@ export const getPrerequisiteName = ({ router, device, transport }: GetPrerequisi
 
     // device firmware update required
     if (device.firmware === 'required') return 'firmware-required';
+
+    if (device.hashCheckedFailed) {
+        return 'hash-check-failed';
+    }
 };
 
 export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[] => {
@@ -77,6 +81,7 @@ export const getExcludedPrerequisites = (router: RouterState): PrerequisiteType[
             'firmware-missing',
             'firmware-required',
             'multi-share-backup-in-progress',
+            'hash-check-failed',
         ];
     }
 

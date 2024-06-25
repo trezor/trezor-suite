@@ -110,10 +110,12 @@ export const goto =
 
         const { suite, router } = getState();
         const hasRouterLock = suite.locks.includes(SUITE.LOCK_TYPE.ROUTER);
+
         if (hasRouterLock) {
             dispatch(suiteActions.lockRouter(false));
         }
         const unlocked = dispatch(onBeforePopState());
+
         if (!unlocked) return;
 
         const urlBase = getPrefixedURL(getRoute(routeName, params));

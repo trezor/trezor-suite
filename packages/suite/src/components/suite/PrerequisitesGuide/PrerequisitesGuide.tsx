@@ -25,6 +25,7 @@ import { DeviceUpdateRequired } from './DeviceUpdateRequired';
 import { DeviceDisconnectRequired } from './DeviceDisconnectRequired';
 import { selectPrerequisite } from 'src/reducers/suite/suiteReducer';
 import { MultiShareBackupInProgress } from './MultiShareBackupInProgress';
+import { HashCheckFailed } from './HashCheckFailed';
 
 const Wrapper = styled.div`
     display: flex;
@@ -80,6 +81,8 @@ export const PrerequisitesGuide = ({ allowSwitchDevice }: PrerequisitesGuideProp
                     return <DeviceUpdateRequired />;
                 case 'multi-share-backup-in-progress':
                     return <MultiShareBackupInProgress />;
+                case 'hash-check-failed':
+                    return <HashCheckFailed />;
 
                 case undefined:
                     return <></>;

@@ -81,6 +81,11 @@ export const removeButtonRequests = createAction(
     }),
 );
 
+const hasCheckFailed = createAction(
+    `${DEVICE_MODULE_PREFIX}/hasCheckFailed`,
+    (payload: { device: TrezorDevice }) => ({ payload }),
+);
+
 export const deviceActions = {
     connectDevice,
     connectUnacquiredDevice,
@@ -95,4 +100,5 @@ export const deviceActions = {
     selectDevice,
     updateSelectedDevice,
     removeButtonRequests,
+    hasCheckFailed,
 };

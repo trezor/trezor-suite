@@ -35,6 +35,7 @@ export interface ExtendedDevice {
 
     authConfirm?: boolean; // device cannot be used because passphrase was not confirmed
     authFailed?: boolean; // device cannot be used because authorization process failed
+    hashCheckedFailed?: boolean;
 
     instance?: number;
     ts: number;

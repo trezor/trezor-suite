@@ -8883,6 +8883,7 @@ __metadata:
     date-fns: "npm:^2.30.0"
     proxy-memoize: "npm:2.0.2"
     react-hook-form: "npm:^7.50.1"
+    semver: "npm:^7.6.0"
     web3-utils: "npm:^4.2.3"
   languageName: unknown
   linkType: soft

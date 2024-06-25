@@ -6,6 +6,8 @@ export interface CheckFirmwareAuthenticityResponse {
     valid: boolean;
 }
 
+export type CheckFirmwareAuthenticityParams = CommonParams & { baseUrl?: string };
+
 export declare function checkFirmwareAuthenticity(
-    params: CommonParams,
+    params: CheckFirmwareAuthenticityParams,
 ): Response<CheckFirmwareAuthenticityResponse>;
