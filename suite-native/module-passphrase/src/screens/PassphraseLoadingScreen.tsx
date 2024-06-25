@@ -60,9 +60,14 @@ export const PassphraseLoadingScreen = () => {
         <PassphraseScreenWrapper>
             <VStack flex={1} justifyContent="center" alignItems="center" spacing="extraLarge">
                 <Spinner loadingState={loadingResult} onComplete={handleSuccess} />
-                <Text variant="titleSmall" textAlign="center">
-                    <Translation id="modulePassphrase.loadingTitle" />
-                </Text>
+                <VStack spacing="extraSmall">
+                    <Text variant="titleSmall" textAlign="center">
+                        <Translation id="modulePassphrase.loading.title" />
+                    </Text>
+                    <Text variant="body" textAlign="center" color="textSubdued">
+                        <Translation id="modulePassphrase.loading.subtitle" />
+                    </Text>
+                </VStack>
             </VStack>
         </PassphraseScreenWrapper>
     );

@@ -673,7 +673,10 @@ export const en = {
             title: 'Continue on Trezor',
             subtitle: 'Enter your passphrase on your Trezor',
         },
-        loadingTitle: 'Checking passphrase wallet for balances & transactions',
+        loading: {
+            title: 'Checking passphrase wallet for balances & transactions',
+            subtitle: 'This might take up to a minute.',
+        },
         confirmOnDevice: {
             title: 'Confirm passphrase\non your Trezor.',
             description: 'Go to your device and confirm the passphrase you’ve entered.',
@@ -696,7 +699,7 @@ export const en = {
                 button: 'Try again',
             },
             confirmEmptyWalletSheet: {
-                title: 'Passphrase best practises',
+                title: 'Passphrase best practices',
                 list: {
                     backup: 'Write it down on paper & keep it away from anything digital (no cloud, USB, internet, phone).',
                     store: 'Store it in a secure location, separate from both your wallet backup and Trezor device.',
