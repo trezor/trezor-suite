@@ -4,7 +4,7 @@ import { Account } from 'src/types/wallet';
 import { borders, spacingsPx } from '@trezor/theme';
 import { useSelector } from 'src/hooks/suite';
 import { selectCurrentFiatRates } from '@suite-common/wallet-core';
-import { getAccountAutocompoundBalance, getTokensFiatBalance } from '@suite-common/wallet-utils';
+import { getAccountTotalStakingBalance, getTokensFiatBalance } from '@suite-common/wallet-utils';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
 
@@ -52,7 +52,7 @@ export const AccountItemsGroup = ({
     tokens,
     dataTestKey,
 }: AccountItemsGroupProps) => {
-    const autocompoundBalance = getAccountAutocompoundBalance(account);
+    const stakingBalance = getAccountTotalStakingBalance(account);
 
     const routeName = useSelector(selectRouteName);
     const localCurrency = useSelector(selectLocalCurrency);
@@ -85,7 +85,7 @@ export const AccountItemsGroup = ({
                         account={account}
                         type="staking"
                         isSelected={selected && routeName === 'wallet-staking'}
-                        formattedBalance={autocompoundBalance}
+                        formattedBalance={stakingBalance}
                         isGroup
                         isGroupSelected={selected}
                     />

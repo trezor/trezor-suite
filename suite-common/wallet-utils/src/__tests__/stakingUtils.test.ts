@@ -1,9 +1,14 @@
 import { Account } from '@suite-common/wallet-types';
 
-import { getAccountAutocompoundBalance, getAccountEverstakeStakingPool } from '../stakingUtils';
+import {
+    getAccountAutocompoundBalance,
+    getAccountTotalStakingBalance,
+    getAccountEverstakeStakingPool,
+} from '../stakingUtils';
 import {
     getAccountAutocompoundBalanceFixtures,
     getAccountEverstakeStakingPoolFixtures,
+    getAccountTotalStakingBalanceFixtures,
 } from '../__fixtures__/stakingUtils';
 
 describe('getAccountEverstakeStakingPool', () => {
@@ -19,6 +24,15 @@ describe('getAccountAutocompoundBalance', () => {
     getAccountAutocompoundBalanceFixtures.forEach(({ description, account, expectedBalance }) => {
         it(description, () => {
             const result = getAccountAutocompoundBalance(account as unknown as Account);
+            expect(result).toEqual(expectedBalance);
+        });
+    });
+});
+
+describe('getAccountTotalStakingBalance', () => {
+    getAccountTotalStakingBalanceFixtures.forEach(({ description, account, expectedBalance }) => {
+        it(description, () => {
+            const result = getAccountTotalStakingBalance(account as unknown as Account);
             expect(result).toEqual(expectedBalance);
         });
     });

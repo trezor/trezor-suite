@@ -37,6 +37,8 @@ import {
 import { toFiatCurrency } from './fiatConverterUtils';
 import { getFiatRateKey } from './fiatRatesUtils';
 
+import { getAccountTotalStakingBalance } from '@suite-common/wallet-utils';
+
 export const isEthereumAccountSymbol = (symbol: NetworkSymbol) => symbol === 'eth';
 
 export const isUtxoBased = (account: Account) =>
@@ -588,6 +590,12 @@ export const getTokensFiatBalance = (
     return totalBalance.toFixed();
 };
 
+export const getStakingFiatBalance = (account: Account, rate: number | undefined) => {
+    const balanceInEther = getAccountTotalStakingBalance(account);
+
+    return toFiatCurrency(balanceInEther, rate, 2);
+};
+
 export const getAccountFiatBalance = (
     account: Account,
     localCurrency: string,
@@ -598,6 +606,7 @@ export const getAccountFiatBalance = (
         localCurrency as FiatCurrencyCode,
     );
     const coinFiatRate = rates?.[coinFiatRateKey];
+
     if (!coinFiatRate?.rate) return null;
 
     let totalBalance = new BigNumber(0);
@@ -608,8 +617,12 @@ export const getAccountFiatBalance = (
     // sum fiat value of all tokens
     const tokensBalance = getTokensFiatBalance(account, localCurrency, rates, account.tokens);
 
+    // account staking balance
+    const stakingBalance = getStakingFiatBalance(account, coinFiatRate.rate);
+
     totalBalance = totalBalance.plus(accountBalance ?? 0);
     totalBalance = totalBalance.plus(tokensBalance ?? 0);
+    totalBalance = totalBalance.plus(stakingBalance ?? 0);
 
     return totalBalance.toFixed();
 };
