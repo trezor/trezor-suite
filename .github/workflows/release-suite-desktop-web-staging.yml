@@ -176,6 +176,7 @@ jobs:
         env:
           ASSET_PREFIX: /web
           STAGING_SUITE_SERVER_URL: https://staging-suite.trezor.io
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib

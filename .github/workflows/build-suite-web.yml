@@ -61,6 +61,7 @@ jobs:
         env:
           ASSET_PREFIX: /suite-web/${{ steps.extract_branch.outputs.branch }}/web
           DESKTOP_APP_NAME: "Trezor-Suite"
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: |
           yarn message-system-sign-config
           yarn workspace @trezor/suite-data build:lib
