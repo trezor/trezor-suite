@@ -18,7 +18,6 @@ import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
 import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
-import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
 import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
@@ -98,13 +97,7 @@ const useCoinmarketBuyForm = ({
     const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const isLoading = !buyInfo || !buyInfo?.buyInfo;
-    const noProviders =
-        !isLoading &&
-        (buyInfo?.buyInfo?.providers.length === 0 ||
-            !(
-                networkToCryptoSymbol(account.symbol) &&
-                buyInfo?.supportedCryptoCurrencies.has(networkToCryptoSymbol(account.symbol)!)
-            ));
+    const noProviders = !isLoading && buyInfo?.buyInfo?.providers.length === 0;
 
     // form initialization
     const {

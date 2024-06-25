@@ -38,28 +38,15 @@ export const useCoinmarketBuyFormDefaultValues = (
         [suggestedFiatCurrency],
     );
     const defaultValues = useMemo(
-        () =>
-            buyInfo
-                ? {
-                      fiatInput:
-                          buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(
-                              suggestedFiatCurrency,
-                          ),
-                      cryptoInput: undefined,
-                      currencySelect: defaultCurrency,
-                      cryptoSelect: defaultCrypto,
-                      countrySelect: defaultCountry,
-                      paymentMethod: defaultPaymentMethod,
-                  }
-                : undefined,
-        [
-            buyInfo,
-            defaultCountry,
-            defaultCrypto,
-            defaultCurrency,
-            suggestedFiatCurrency,
-            defaultPaymentMethod,
-        ],
+        () => ({
+            fiatInput: defaultFiatCurrencies.get('czk'),
+            cryptoInput: undefined,
+            currencySelect: defaultCurrency,
+            cryptoSelect: defaultCrypto,
+            countrySelect: defaultCountry,
+            paymentMethod: defaultPaymentMethod,
+        }),
+        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod],
     );
 
     return {
