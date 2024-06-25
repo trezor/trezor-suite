@@ -1,3 +1,10 @@
+# 0.0.34-beta.1
+
+-   chore(connect-common): edit firmware changelogs (3637a56cf7)
+-   fix(connect-common): firmware release url (0166df50e6)
+-   chore(connect-common): update firmware binaries to 2.7.2 (63923287e8)
+-   chore(connect-common): T3T1 support (9d0adae993)
+
 # 0.0.33-beta.1
 
 -   chore(connect): bump required fw to 1.8.1/2.1.0 (2f14ff6703)
