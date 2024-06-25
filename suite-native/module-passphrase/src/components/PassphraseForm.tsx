@@ -13,7 +13,12 @@ import {
 import { Button, Card, VStack, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import { deviceActions, onPassphraseSubmit, selectDevice } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    onPassphraseSubmit,
+    selectDevice,
+    selectHasDevicePassphraseEntryCapability,
+} from '@suite-common/wallet-core';
 import {
     PassphraseStackParamList,
     PassphraseStackRoutes,
@@ -54,6 +59,9 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
     const { applyStyle } = useNativeStyles();
 
     const device = useSelector(selectDevice);
+    const hasDevicePassphraseEntryCapability = useSelector(
+        selectHasDevicePassphraseEntryCapability,
+    );
 
     const navigation = useNavigation<NavigationProp>();
 
@@ -108,7 +116,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                             </Button>
                         </Animated.View>
                     )}
-                    {!isDirty && !isInputFocused && (
+                    {!isDirty && !isInputFocused && hasDevicePassphraseEntryCapability && (
                         <Animated.View entering={FadeIn} exiting={FadeOut}>
                             <VStack>
                                 <TextDivider
