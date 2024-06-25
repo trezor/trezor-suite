@@ -24,7 +24,7 @@ export type CoinmarketBuyFormProps = {
 };
 
 export type CoinmarketBuyFormDefaultValuesProps = {
-    defaultValues: CoinmarketBuyFormProps | undefined;
+    defaultValues: CoinmarketBuyFormProps;
     defaultCountry: Option;
     defaultCurrency: Option;
     defaultPaymentMethod: CoinmarketPaymentMethodListProps;
