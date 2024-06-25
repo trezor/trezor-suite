@@ -100,7 +100,7 @@ export const Passphrase = (props: PassphraseProps) => {
                         title={
                             <FormattedMessage
                                 id="TR_WALLET_SELECTION_HIDDEN_WALLET"
-                                defaultMessage="Hidden wallet"
+                                defaultMessage="Passphrase wallet"
                             />
                         }
                         description={
@@ -112,7 +112,7 @@ export const Passphrase = (props: PassphraseProps) => {
                         submitLabel={
                             <FormattedMessage
                                 id="TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET"
-                                defaultMessage="Access Hidden wallet"
+                                defaultMessage="Access Passphrase wallet"
                             />
                         }
                         type="hidden"

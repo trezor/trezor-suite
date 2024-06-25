@@ -9382,7 +9382,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
-        defaultMessage: "It's important to first learn how a passphrase works",
+        defaultMessage: "It's important to first learn <link>how a passphrase works</link>",
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',

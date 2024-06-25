@@ -1,6 +1,8 @@
 import { Icon, Text } from '@trezor/components';
 import { PassphraseList, PassphraseItem } from './PassphraseList';
 import { Translation } from 'src/components/suite/Translation';
+import { TrezorLink } from 'src/components/suite/TrezorLink';
+import { HELP_CENTER_PASSPHRASE_URL } from '@trezor/urls';
 
 export const PassphraseDescription = () => {
     return (
@@ -8,7 +10,20 @@ export const PassphraseDescription = () => {
             <PassphraseItem>
                 <Icon icon="INFO" size={16} />
                 <Text>
-                    <Translation id="TR_PASSPHRASE_DESCRIPTION_ITEM1" />
+                    <Translation
+                        values={{
+                            link: chunks => (
+                                <TrezorLink
+                                    type="hint"
+                                    variant="nostyle"
+                                    href={HELP_CENTER_PASSPHRASE_URL}
+                                >
+                                    {chunks}
+                                </TrezorLink>
+                            ),
+                        }}
+                        id="TR_PASSPHRASE_DESCRIPTION_ITEM1"
+                    />
                 </Text>
             </PassphraseItem>
             <PassphraseItem>

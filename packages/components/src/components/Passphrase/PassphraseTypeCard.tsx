@@ -96,9 +96,9 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
 
     const canSubmit = (singleColModal || type === 'hidden') && !isPassphraseTooLong;
 
-    // Trigger submit on pressing Enter in case of single col modal (creating/confirming hidden wallet)
-    // In case of two-col modal (selecting between standard and hidden wallet)
-    // only the hidden wallet part handle the enter press.
+    // Trigger submit on pressing Enter in case of single col modal (creating/confirming passphrase wallet)
+    // In case of two-col modal (selecting between standard and passphrase wallet)
+    // only the passphrase wallet part handle the enter press.
     useEffect(() => {
         if (enterPressed && canSubmit) {
             submit(value);
@@ -130,7 +130,7 @@ export const PassphraseTypeCard = (props: PassphraseTypeCardProps) => {
             <Item>
                 {!singleColModal && (
                     // only used to show options in modal where user selects wallet type
-                    // single col modal such as one for creating hidden wallet shows only input and submit button
+                    // single col modal such as one for creating passphrase wallet shows only input and submit button
                     <>
                         <PassphraseTypeCardHeading
                             type={type}
