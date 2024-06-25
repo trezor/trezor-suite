@@ -40,7 +40,11 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { ExtendedMessageDescriptor } from 'src/types/suite';
 
 export type UseCoinmarketProps = WithSelectedAccountLoadedProps;
+export type UseCoinmarketCommonProps = UseCoinmarketProps & {
+    type: CoinmarketTradeType;
+};
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
+    type: CoinmarketTradeType;
     offFirstRequest?: boolean;
 };
 

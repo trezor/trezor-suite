@@ -44,6 +44,7 @@ const useCoinmarketBuyForm = ({
     selectedAccount,
     offFirstRequest, // if true, use draft as initial values
 }: UseCoinmarketFormProps): CoinmarketBuyFormContextProps => {
+    const type = 'buy';
     const dispatch = useDispatch();
     const { addressVerified, buyInfo, isFromRedirect, quotes, quotesRequest } = useSelector(
         state => state.wallet.coinmarket.buy,
@@ -57,7 +58,7 @@ const useCoinmarketBuyForm = ({
         setCallInProgress,
         setSelectedQuote,
         checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeBuyType>({ selectedAccount });
+    } = useCoinmarketCommonOffers<CoinmarketTradeBuyType>({ selectedAccount, type });
     const { paymentMethods, getPaymentMethods, getQuotesByPaymentMethod } =
         useCoinmarketPaymentMethod<CoinmarketTradeBuyType>();
     const {
@@ -452,7 +453,7 @@ const useCoinmarketBuyForm = ({
     }, []);
 
     return {
-        type: 'buy',
+        type,
         form: {
             state: {
                 isFormLoading,
