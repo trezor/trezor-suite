@@ -10,7 +10,6 @@ import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
 import { exportTransactionsThunk } from 'src/actions/wallet/exportTransactionsActions';
 import { ExportFileType } from '@suite-common/wallet-types';
 import { Account } from 'src/types/wallet';
-import { isFeatureFlagEnabled } from '@suite-common/suite-utils';
 import { getTitleForNetwork, getTitleForCoinjoinAccount } from '@suite-common/wallet-utils';
 import { selectLabelingDataForSelectedAccount } from 'src/reducers/suite/metadataReducer';
 import { AccountLabels } from '@suite-common/metadata-types';
@@ -94,10 +93,6 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
             accountMetadata,
         ],
     );
-
-    if (!isFeatureFlagEnabled('EXPORT_TRANSACTIONS')) {
-        return null;
-    }
 
     const dataTest = '@wallet/accounts/export-transactions';
 
