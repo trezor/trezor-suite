@@ -1,3 +1,9 @@
+# 1.0.18-beta.1
+
+-   chore(suite): depcheck enabled (2206f19f2e)
+-   chore(env-utils): make `expo-constants` optional peer dependency (b51e9e07f5)
+-   fix(env-utils): move publicKey from `@suite-common/wallet-constants` (0d54971f34)
+
 # 1.0.15
 
 -   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
