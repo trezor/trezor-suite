@@ -9197,17 +9197,9 @@ export default defineMessages({
         id: 'TR_VIEW_ONLY_PROMO_NOT_NOW',
         defaultMessage: 'Not now',
     },
-    TR_VIEW_ONLY_TOOLTIP_TITLE: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_TITLE',
-        defaultMessage: 'View-only enabled',
-    },
     TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: "You'll see wallet balances after disconnecting Trezor",
-    },
-    TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO: {
-        id: 'TR_VIEW_ONLY_TOOLTIP_CHANGE_INFO',
-        defaultMessage: 'You can change it here',
+        defaultMessage: 'You can change view only and access passphrase here.',
     },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
@@ -9378,11 +9370,11 @@ export default defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING',
         defaultMessage:
-            'Write it down on paper, keep it away from anything digital, and store it in a safe place. No one can recover it, not even Trezor Support.',
+            '<bold>Create an offline backup</bold> of your <bold>passphrase. It is irrecoverable</bold>, even by Trezor support.',
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
-        defaultMessage: "It's important to first learn <link>how a passphrase works</link>",
+        defaultMessage: "It's important to first learn <a>how a passphrase works</a>",
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',

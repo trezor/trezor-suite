@@ -25,6 +25,7 @@ const Wrapper = styled.div<{ $isAnimationTriggered?: boolean }>`
     border-radius: ${borders.radii.sm};
     border: 1px solid transparent;
     transition: ${focusStyleTransition};
+    white-space: nowrap;
 
     ${getFocusShadowStyle()};
 

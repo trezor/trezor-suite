@@ -1,5 +1,5 @@
 import TrezorConnect from '@trezor/connect';
-import { ButtonProps, Button } from '@trezor/components';
+import { ButtonProps, Button, IconButton, Tooltip } from '@trezor/components';
 import { Translation, TranslationKey } from './Translation';
 
 interface WebUsbButtonProps extends Omit<ButtonProps, 'children' | 'icon'> {
@@ -7,10 +7,16 @@ interface WebUsbButtonProps extends Omit<ButtonProps, 'children' | 'icon'> {
     icon?: ButtonProps['icon'] | false;
 }
 
+const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.stopPropagation();
+    TrezorConnect.requestWebUSBDevice();
+};
+
 export const WebUsbButton = ({
     translationId = 'TR_CHECK_FOR_DEVICES',
     icon = 'SEARCH',
     size = 'tiny',
+    variant = 'primary',
     ...rest
 }: WebUsbButtonProps) => (
     <div data-test="web-usb-button">
@@ -18,13 +24,31 @@ export const WebUsbButton = ({
             {...rest}
             icon={icon === false ? undefined : icon}
             size={size}
-            variant="primary"
-            onClick={e => {
-                e.stopPropagation();
-                TrezorConnect.requestWebUSBDevice();
-            }}
+            variant={variant}
+            onClick={handleClick}
         >
             <Translation id={translationId} />
         </Button>
     </div>
 );
+
+export const WebUsbIconButton = ({
+    translationId = 'TR_CHECK_FOR_DEVICES',
+    size = 'tiny',
+    variant = 'primary',
+    ...rest
+}: WebUsbButtonProps) => {
+    return (
+        <div data-test="web-usb-button">
+            <Tooltip content={<Translation id={translationId} />}>
+                <IconButton
+                    {...rest}
+                    icon="SEARCH"
+                    variant={variant}
+                    size={size}
+                    onClick={handleClick}
+                />
+            </Tooltip>
+        </div>
+    );
+};

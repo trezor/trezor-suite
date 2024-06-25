@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { Text, Radio, Icon, useElevation } from '@trezor/components';
 import { Elevation, borders, mapElevationToBorder, spacingsPx, typography } from '@trezor/theme';
@@ -58,12 +58,13 @@ export const ViewOnlyRadio = ({
     dataTest,
 }: ViewOnlyRadioProps) => {
     const { elevation } = useElevation();
+    const theme = useTheme();
 
     return (
         <Item onClick={onClick} $elevation={elevation} $isChecked={isChecked}>
             <Left>
                 <Title>{title}</Title>
-                <Text typographyStyle="hint" color="subdued">
+                <Text typographyStyle="hint" color={theme.textSubdued}>
                     {children}
                 </Text>
             </Left>
@@ -78,6 +79,7 @@ export const ViewOnlyRadios = ({
     setContentType,
 }: ViewOnlyRadiosProps) => {
     const { device } = useDevice();
+    const theme = useTheme();
 
     const isDeviceConnected = device?.connected && device?.available;
     const handleConfirm = (newValue: boolean) => {
@@ -121,7 +123,7 @@ export const ViewOnlyRadios = ({
             </ViewOnlyRadio>
 
             <SendCoinsInfo>
-                <Icon icon="INFO" size={12} />
+                <Icon icon="INFO" size={12} color={theme.iconSubdued} />
                 <Translation id="TR_VIEW_ONLY_SEND_COINS_INFO" />
             </SendCoinsInfo>
         </Container>

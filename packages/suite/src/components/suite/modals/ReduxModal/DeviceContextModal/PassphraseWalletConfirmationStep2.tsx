@@ -38,7 +38,9 @@ export const PassphraseWalletConfirmationStep2 = ({
                 </PassphraseItem>
             </PassphraseList>
             <Warning>
-                <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
+                <Text variant="warning" typographyStyle="callout">
+                    <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP2_WARNING" />
+                </Text>
             </Warning>
         </Card>
 
