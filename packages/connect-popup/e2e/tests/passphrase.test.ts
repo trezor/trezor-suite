@@ -209,6 +209,7 @@ test('introduce passphrase successfully next time should not ask for it', async 
     await TrezorUserEnvLink.api.pressYes();
 
     // Wait for submit button
+    await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     // todo: this is stinky. without this timeout submit button sometimes does not react, needs investigation
@@ -262,6 +263,7 @@ test('introduce passphrase successfully reload 3rd party it should ask again for
     await explorerPage.reload();
 
     // Wait for submit button
+    await waitAndClick(explorerPage, ['@api-playground/collapsible-box']);
     await findElementByDataTest(explorerPage, '@submit-button');
 
     // Click on submit button
@@ -338,6 +340,7 @@ test('passphrase mismatch', async ({ page }) => {
     await TrezorUserEnvLink.api.pressYes();
 
     // Wait for element in connect-explorer before reloading it.
+    await waitAndClick(page, ['@api-playground/collapsible-box']);
     await findElementByDataTest(page, '@submit-button');
 
     // Reload page to force to ask for passphrase again.
