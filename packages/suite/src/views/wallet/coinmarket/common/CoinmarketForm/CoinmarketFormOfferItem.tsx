@@ -1,10 +1,10 @@
 import { Badge, Spinner } from '@trezor/components';
 import { borders, spacingsPx, typography } from '@trezor/theme';
 import styled from 'styled-components';
-import { CoinmarketUtilsProvider } from '../CoinmarketUtils/CoinmarketUtilsProvider';
-
 import { BuyTrade } from 'invity-api';
 import { Translation } from 'src/components/suite';
+import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketUtilsProvider } from 'src/views/wallet/coinmarket/common/CoinmarketUtils/CoinmarketUtilsProvider';
 
 const CoinmarketFormOfferItemWrapper = styled.div`
     display: flex;
@@ -37,6 +37,7 @@ interface CoinmarketFormOfferItemProps {
     isFormLoading: boolean;
     isFormInvalid: boolean;
     providers: CoinmarketUtilsProvidersProps;
+    isBestRate?: boolean;
 }
 
 const CoinmarketFormOfferItem = ({
@@ -44,6 +45,7 @@ const CoinmarketFormOfferItem = ({
     isFormLoading,
     isFormInvalid,
     providers,
+    isBestRate,
 }: CoinmarketFormOfferItemProps) => {
     if (!bestQuote || isFormLoading) {
         if (isFormLoading && !isFormInvalid) {
@@ -73,9 +75,11 @@ const CoinmarketFormOfferItem = ({
     return (
         <CoinmarketFormOfferItemWrapper>
             <CoinmarketUtilsProvider providers={providers} exchange={bestQuote?.exchange} />
-            <Badge variant="primary" size="small">
-                <Translation id="TR_COINMARKET_BEST_RATE" />
-            </Badge>
+            {isBestRate && (
+                <Badge variant="primary" size="small">
+                    <Translation id="TR_COINMARKET_BEST_RATE" />
+                </Badge>
+            )}
         </CoinmarketFormOfferItemWrapper>
     );
 };
