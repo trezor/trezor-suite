@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AppTabsRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     HomeStackRoutes,
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -18,8 +18,8 @@ import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
-import { DeviceT3T1Svg } from '../assets/DeviceT3T1Svg';
-import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
+import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
+import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 
 const buttonWrapperStyle = prepareNativeStyle(_ => ({
     width: '100%',
@@ -30,8 +30,8 @@ const cardStyle = prepareNativeStyle(_ => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -46,7 +46,7 @@ export const PassphraseEnterOnTrezorScreen = () => {
 
     useEffect(() => {
         if (isDiscoveryActive) {
-            navigation.navigate(PassphraseStackRoutes.PassphraseLoading);
+            navigation.navigate(ConnectDeviceStackRoutes.PassphraseLoading);
         }
     }, [isDiscoveryActive, navigation]);
 

@@ -27,7 +27,7 @@ import { useAlert } from '@suite-native/alerts';
 import { useOpenLink } from '@suite-native/link';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
-import { PIN_HELP_URL } from '../constants/pinFormConstants';
+import { PIN_HELP_URL } from '../../constants/pinFormConstants';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
     ConnectDeviceStackParamList,

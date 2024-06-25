@@ -7,8 +7,8 @@ import { Translation, useTranslate } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 
-import { PassphraseForm } from '../components/PassphraseForm';
-import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
+import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
+import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 
 const ANIMATION_DURATION = 300;
 const ALERT_CARD_HEIGHT = 204;

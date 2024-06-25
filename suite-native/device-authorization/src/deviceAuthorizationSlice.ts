@@ -38,6 +38,7 @@ export const deviceAuthorizationSlice = createSlice({
                     state.hasDeviceRequestedPin = false;
                 }
 
+                // @ts-expect-error Actions are not typed properly
                 if (action.payload.code !== 'ButtonRequest_Other') {
                     state.hasDeviceRequestedPassphrase = false;
                 }
@@ -54,5 +55,8 @@ export const selectDeviceRequestedPin = (state: DeviceAuthorizationRootState) =>
 
 export const selectDeviceRequestedPassphrase = (state: DeviceAuthorizationRootState) =>
     state.deviceAuthorization.hasDeviceRequestedPassphrase;
+
+export const selectDeviceRequestedAuthorization = (state: DeviceAuthorizationRootState) =>
+    selectDeviceRequestedPassphrase(state) || selectDeviceRequestedPin(state);
 
 export const deviceAuthorizationReducer = deviceAuthorizationSlice.reducer;

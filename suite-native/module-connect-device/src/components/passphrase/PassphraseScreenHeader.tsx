@@ -13,9 +13,9 @@ import {
 } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     HomeStackRoutes,
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToTabCompositeProps,
@@ -25,8 +25,8 @@ import { Translation } from '@suite-native/intl';
 import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
 type NavigationProp = StackToTabCompositeProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 

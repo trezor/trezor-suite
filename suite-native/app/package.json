@@ -55,7 +55,6 @@
         "@suite-native/module-dev-utils": "workspace:*",
         "@suite-native/module-home": "workspace:*",
         "@suite-native/module-onboarding": "workspace:*",
-        "@suite-native/module-passphrase": "workspace:*",
         "@suite-native/module-receive": "workspace:*",
         "@suite-native/module-send": "workspace:*",
         "@suite-native/module-settings": "workspace:*",

@@ -4,9 +4,9 @@ import { Image, VStack } from '@suite-native/atoms';
 import { DeviceModelInternal } from '@trezor/connect';
 import { selectDeviceModel } from '@suite-common/wallet-core';
 
-import { ConnectDeviceSreenView } from '../components/ConnectDeviceSreenView';
-import { PinForm } from '../components/PinForm';
-import { PinOnDevice, deviceImageMap } from '../components/PinOnDevice';
+import { ConnectDeviceSreenView } from '../../components/connect/ConnectDeviceSreenView';
+import { PinForm } from '../../components/connect/PinForm';
+import { PinOnDevice, deviceImageMap } from '../../components/connect/PinOnDevice';
 
 export const PinScreen = () => {
     const deviceModel = useSelector(selectDeviceModel);

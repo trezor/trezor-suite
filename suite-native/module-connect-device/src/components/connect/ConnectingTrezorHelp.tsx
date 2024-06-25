@@ -6,7 +6,7 @@ import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
 import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 
-import { PIN_HELP_URL } from '../constants/pinFormConstants';
+import { PIN_HELP_URL } from '../../constants/pinFormConstants';
 
 export const ConnectingTrezorHelp = () => {
     const [isHelperBottomSheetVisible, setIsHelperBottomSheetVisible] = useState(false);

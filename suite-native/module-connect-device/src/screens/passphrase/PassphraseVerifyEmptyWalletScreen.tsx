@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useCallback, useEffect } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -7,9 +7,9 @@ import { isFulfilled } from '@reduxjs/toolkit';
 import { useAlert } from '@suite-native/alerts';
 import {
     AppTabsRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     HomeStackRoutes,
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToTabCompositeProps,
@@ -21,14 +21,13 @@ import {
     retryPassphraseAuthenticationThunk,
     verifyPassphraseOnEmptyWalletThunk,
 } from '@suite-native/passphrase';
-import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 
-import { PassphraseForm } from '../components/PassphraseForm';
-import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
+import { PassphraseForm } from '../../components/passphrase/PassphraseForm';
+import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 
 type NavigationProp = StackToTabCompositeProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -63,7 +62,7 @@ export const PassphraseVerifyEmptyWalletScreen = () => {
                     <Translation id="modulePassphrase.emptyPassphraseWallet.verifyEmptyWallet.passphraseMismatchAlert.primaryButton" />
                 ),
                 onPressPrimaryButton: () => {
-                    navigation.navigate(PassphraseStackRoutes.PassphraseForm);
+                    navigation.navigate(ConnectDeviceStackRoutes.PassphraseForm);
                     dispatch(retryPassphraseAuthenticationThunk());
                 },
                 primaryButtonVariant: 'redBold',

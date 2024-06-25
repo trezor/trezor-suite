@@ -6,17 +6,20 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Image, Box, Text } from '@suite-native/atoms';
 import { DeviceModelInternal } from '@trezor/connect';
-import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
+import {
+    selectDeviceRequestedPin,
+    selectDeviceRequestedPassphrase,
+} from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
 export const deviceImageMap: Record<DeviceModelInternal, string> = {
-    [DeviceModelInternal.T1B1]: require('../assets/pin-t1b1.png'),
-    [DeviceModelInternal.T2T1]: require('../assets/pin-t2t1.png'),
-    [DeviceModelInternal.T2B1]: require('../assets/pin-t2b1.png'),
-    [DeviceModelInternal.T3T1]: require('../assets/pin-t3t1.png'),
+    [DeviceModelInternal.T1B1]: require('../../assets/connect/pin-t1b1.png'),
+    [DeviceModelInternal.T2T1]: require('../../assets/connect/pin-t2t1.png'),
+    [DeviceModelInternal.T2B1]: require('../../assets/connect/pin-t2b1.png'),
+    [DeviceModelInternal.T3T1]: require('../../assets/connect/pin-t3t1.png'),
 };
 
 const wrapperStyle = prepareNativeStyle(utils => ({
@@ -41,14 +44,15 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
     const navigation = useNavigation();
 
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
+    const hasDeviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
     const { applyStyle } = useNativeStyles();
 
     const handleSuccess = useCallback(() => {
-        if (navigation.canGoBack()) {
-            console.log('pin on device go back');
+        if (navigation.canGoBack() && !hasDeviceRequestedPassphrase) {
+            // console.log('pin on device go back', navigation.getState());
             navigation.goBack();
         }
-    }, [navigation]);
+    }, [hasDeviceRequestedPassphrase, navigation]);
 
     useEffect(() => {
         // hasDeviceRequestedPin is false when the user unlocks the device again

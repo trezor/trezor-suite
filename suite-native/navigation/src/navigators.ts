@@ -17,7 +17,6 @@ import {
     OnboardingStackRoutes,
     ConnectDeviceStackRoutes,
     AddCoinAccountStackRoutes,
-    PassphraseStackRoutes,
     SendStackRoutes,
 } from './routes';
 
@@ -122,16 +121,14 @@ export type ConnectDeviceStackParamList = {
     [ConnectDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
     [ConnectDeviceStackRoutes.PinMatrix]: undefined;
     [ConnectDeviceStackRoutes.ConnectingDevice]: undefined;
-};
 
-export type PassphraseStackParamList = {
-    [PassphraseStackRoutes.PassphraseForm]: undefined;
-    [PassphraseStackRoutes.PassphraseConfirmOnTrezor]: undefined;
-    [PassphraseStackRoutes.PassphraseLoading]: undefined;
-    [PassphraseStackRoutes.PassphraseEmptyWallet]: undefined;
-    [PassphraseStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
-    [PassphraseStackRoutes.PassphraseEnterOnTrezor]: undefined;
-    [PassphraseStackRoutes.PassphraseEnableOnDevice]: undefined;
+    [ConnectDeviceStackRoutes.PassphraseForm]: undefined;
+    [ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor]: undefined;
+    [ConnectDeviceStackRoutes.PassphraseLoading]: undefined;
+    [ConnectDeviceStackRoutes.PassphraseEmptyWallet]: undefined;
+    [ConnectDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
+    [ConnectDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
+    [ConnectDeviceStackRoutes.PassphraseEnableOnDevice]: undefined;
 };
 
 export type RootStackParamList = {
@@ -150,6 +147,6 @@ export type RootStackParamList = {
     [RootStackRoutes.AccountDetail]: AccountDetailParams;
     [RootStackRoutes.DeviceInfo]: undefined;
     [RootStackRoutes.AddCoinAccountStack]: NavigatorScreenParams<AddCoinAccountStackParamList>;
-    [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
+    // [RootStackRoutes.PassphraseStack]: NavigatorScreenParams<PassphraseStackParamList>;
     [RootStackRoutes.SendStack]: NavigatorScreenParams<SendStackParamList>;
 };

@@ -16,7 +16,7 @@ import {
 } from '@suite-common/wallet-core';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 
-import { ConnectDeviceScreenHeader } from '../components/ConnectDeviceScreenHeader';
+import { ConnectDeviceScreenHeader } from '../../components/connect/ConnectDeviceScreenHeader';
 
 const ANIMATION_HEIGHT = Dimensions.get('screen').height * 0.6;
 

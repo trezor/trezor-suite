@@ -20,7 +20,6 @@ import { ReceiveModalScreen } from '@suite-native/receive';
 import { ConnectDeviceStackNavigator } from '@suite-native/module-connect-device';
 import { AddCoinAccountStackNavigator } from '@suite-native/module-add-accounts';
 import { DeviceInfoModalScreen, useHandleDeviceConnection } from '@suite-native/device';
-import { PassphraseStackNavigator } from '@suite-native/module-passphrase';
 import { SendStackNavigator } from '@suite-native/module-send';
 
 import { AppTabNavigator } from './AppTabNavigator';
@@ -87,14 +86,14 @@ export const RootStackNavigator = () => {
                     animation: 'slide_from_bottom',
                 }}
             />
-            <RootStack.Screen
+            {/* <RootStack.Screen
                 name={RootStackRoutes.PassphraseStack}
                 component={PassphraseStackNavigator}
                 options={{
                     ...stackNavigationOptionsConfig,
                     animation: 'slide_from_bottom',
                 }}
-            />
+            /> */}
             <RootStack.Screen name={RootStackRoutes.SendStack} component={SendStackNavigator} />
         </RootStack.Navigator>
     );

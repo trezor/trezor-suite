@@ -1,5 +1,5 @@
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -13,10 +13,13 @@ import {
 import { Button, Card, VStack, TextDivider } from '@suite-native/atoms';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import { onPassphraseSubmit } from '@suite-common/wallet-core';
 import {
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    onPassphraseSubmit,
+    selectHasDevicePassphraseEntryCapability,
+} from '@suite-common/wallet-core';
+import {
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -41,8 +44,8 @@ const cardStyle = prepareNativeStyle(_ => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes.PassphraseForm,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 
@@ -54,6 +57,10 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
     const { applyStyle } = useNativeStyles();
 
     const navigation = useNavigation<NavigationProp>();
+
+    const hasDevicePassphraseEntryCapability = useSelector(
+        selectHasDevicePassphraseEntryCapability,
+    );
 
     const form = useForm<PassphraseFormValues>({
         validation: passphraseFormSchema,
@@ -70,7 +77,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
-        navigation.push(PassphraseStackRoutes.PassphraseConfirmOnTrezor);
+        navigation.push(ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor);
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
         reset();
     });
@@ -105,7 +112,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
                             </Button>
                         </Animated.View>
                     )}
-                    {!isDirty && !isInputFocused && (
+                    {!isDirty && !isInputFocused && hasDevicePassphraseEntryCapability && (
                         <Animated.View entering={FadeIn} exiting={FadeOut}>
                             <VStack>
                                 <TextDivider

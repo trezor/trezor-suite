@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
@@ -16,8 +16,8 @@ import { Translation } from '@suite-native/intl';
 import { retryPassphraseAuthenticationThunk } from '@suite-native/passphrase';
 import { deviceActions, selectDevice } from '@suite-common/wallet-core';
 
-import { EmptyWalletInfoSheet } from '../components/EmptyWalletInfoSheet';
-import { PassphraseContentScreenWrapper } from '../components/PassphraseContentScreenWrapper';
+import { EmptyWalletInfoSheet } from '../../components/passphrase/EmptyWalletInfoSheet';
+import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
 
 const imageStyle = prepareNativeStyle(() => ({
     width: 124.45,
@@ -43,8 +43,8 @@ const textStyle = prepareNativeStyle<{ widthPercentage: number }>((_, { widthPer
 }));
 
 type NavigationProp = StackToTabCompositeProps<
-    PassphraseStackParamList,
-    PassphraseStackRoutes,
+    ConnectDeviceStackParamList,
+    ConnectDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -64,7 +64,7 @@ export const PassphraseEmptyWalletScreen = () => {
     };
 
     const handleTryAgain = () => {
-        navigation.navigate(PassphraseStackRoutes.PassphraseForm);
+        navigation.navigate(ConnectDeviceStackRoutes.PassphraseForm);
         dispatch(
             deviceActions.removeButtonRequests({
                 device,
@@ -81,7 +81,7 @@ export const PassphraseEmptyWalletScreen = () => {
             <Card style={applyStyle(cardStyle)}>
                 <VStack alignItems="center" spacing="medium" style={applyStyle(cardContentStyle)}>
                     <Image
-                        source={require('../assets/questionMarks.png')}
+                        source={require('../../assets/passphrase/questionMarks.png')}
                         style={applyStyle(imageStyle)}
                     />
                     <Text variant="highlight" textAlign="center">
