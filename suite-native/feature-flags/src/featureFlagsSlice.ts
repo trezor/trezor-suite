@@ -23,7 +23,7 @@ export const featureFlagsInitialState: FeatureFlagsState = {
     [FeatureFlag.IsPassphraseEnabled]: isDebugEnv(),
     [FeatureFlag.IsSendEnabled]: isAndroid() && isDevelopOrDebugEnv(),
     [FeatureFlag.IsRegtestEnabled]: isDebugEnv() || isDetoxTestBuild(),
-    [FeatureFlag.IsCoinEnablingActive]: isDebugEnv(),
+    [FeatureFlag.IsCoinEnablingActive]: false,
 };
 
 export const featureFlagsPersistedKeys: Array<keyof FeatureFlagsState> = [
