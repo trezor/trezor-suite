@@ -59,6 +59,7 @@ describe('Use regtest to test pending transactions', () => {
                 // however, after a while it is replaced by a standard pending transaction
                 cy.getTestElement(`@transaction-item/0/heading`).click({
                     scrollBehavior: 'bottom',
+                    timeout: 60000,
                 });
                 // count has not changed
                 cy.getTestElement('@transaction-group/pending/count').contains(index + 1);
