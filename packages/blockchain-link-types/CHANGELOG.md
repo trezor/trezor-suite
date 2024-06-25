@@ -1,3 +1,8 @@
+# 1.0.18-beta.2
+
+-   chore(suite): unused package dependencies removed (f7907e1496)
+-   chore(suite): depcheck enabled (2206f19f2e)
+
 # 1.0.18-beta.1
 
 -   refactor(suite): signed transaction data stored in redux send form state (2ea31ab5d6)
