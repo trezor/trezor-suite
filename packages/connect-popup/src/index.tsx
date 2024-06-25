@@ -168,7 +168,7 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
 
     // When success we can close popup.
     if (data.success) {
-        window.close();
+        window.closeWindow();
     }
 
     if (!data.success && typeof data.payload === 'object') {
@@ -187,7 +187,7 @@ const handleResponseEvent = (data: MethodResponseMessage) => {
             case 'Method_PermissionsNotGranted':
             case 'Method_Cancel':
                 // User canceled process, close popup.
-                window.close();
+                window.closeWindow();
                 break;
             default:
                 fail({
@@ -586,7 +586,6 @@ addWindowEventListener('message', handleInitMessage, false);
 addWindowEventListener('message', handleLogMessage, false);
 
 // global method used in html-inline elements
-// @ts-expect-error not defined in window
 window.closeWindow = () => {
     setTimeout(() => {
         window.postMessage(
@@ -600,5 +599,5 @@ window.closeWindow = () => {
             window.location.origin,
         );
         window.close();
-    }, 100);
+    }, 300);
 };

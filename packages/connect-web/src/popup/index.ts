@@ -1,7 +1,7 @@
 // origin: https://github.com/trezor/connect/blob/develop/src/js/popup/PopupManager.js
 
 import EventEmitter from 'events';
-import { createDeferred, Deferred } from '@trezor/utils';
+import { createDeferred, Deferred, scheduleAction } from '@trezor/utils';
 import { POPUP, IFRAME, UI, CoreEventMessage, IFrameLoaded } from '@trezor/connect/src/events';
 import type { ConnectSettings } from '@trezor/connect/src/types';
 import { getOrigin } from '@trezor/connect/src/utils/urlUtils';
@@ -273,16 +273,26 @@ export class PopupManager extends EventEmitter {
     private injectContentScript = (tabId: number) => {
         chrome.permissions.getAll(permissions => {
             if (permissions.permissions?.includes('scripting')) {
-                chrome.scripting
-                    .executeScript({
-                        target: { tabId },
-                        // content script is injected into body of func in build time.
-                        func: () => {
-                            // <!--content-script-->
-                        },
-                    })
-                    .then(() => this.logger.debug('content script injected'))
-                    .catch(error => this.logger.error('content script injection error', error));
+                // Retry due to Firefox where the content script is sometimes not injected on the first try
+                scheduleAction(
+                    () =>
+                        chrome.scripting
+                            .executeScript({
+                                target: { tabId },
+                                // content script is injected into body of func in build time.
+                                func: () => {
+                                    // <!--content-script-->
+                                },
+                            })
+                            .then(() => {
+                                this.logger.debug('content script injected');
+                            })
+                            .catch(error => {
+                                this.logger.error('content script injection error', error);
+                                throw error;
+                            }),
+                    { attempts: new Array(3).fill({ timeout: 100 }) },
+                );
             } else {
                 // When permissions for `scripting` are not provided 3rd party integrations have include content-script.js manually.
             }

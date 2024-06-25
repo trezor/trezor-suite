@@ -18,6 +18,13 @@ const channel = new WindowServiceWorkerChannel({
 const messagesQueue: any[] = [];
 let channelReady = false;
 
+/**
+ * Firefox enforces some restrictions on the content script that force us to use clones of objects when passing them between the content script and the background script
+ */
+function clone(obj: any) {
+    return JSON.parse(JSON.stringify(obj));
+}
+
 /*
  * Passing messages from popup to service worker
  */
@@ -40,7 +47,7 @@ window.addEventListener('message', event => {
 
     if (event.source === window && event.data) {
         if (channelReady) {
-            channel.postMessage(event.data, { usePromise: false });
+            channel.postMessage(clone(event.data), { usePromise: false });
         } else {
             messagesQueue.push(event.data);
         }
@@ -54,13 +61,13 @@ channel.init().then(() => {
      * Passing messages from service worker to popup
      */
     channel.on('message', message => {
-        window.postMessage(message, window.location.origin);
+        window.postMessage(clone(message), window.location.origin);
     });
 
     // Send messages that have gathered before the channel was initialized
     while (messagesQueue.length > 0) {
         const message = messagesQueue.shift();
-        channel.postMessage(message, { usePromise: false });
+        channel.postMessage(clone(message), { usePromise: false });
     }
 
     window.addEventListener('beforeunload', () => {
