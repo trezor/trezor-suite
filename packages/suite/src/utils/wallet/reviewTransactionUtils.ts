@@ -9,6 +9,7 @@ import { Account } from 'src/types/wallet/index';
 import { getShortFingerprint, isCardanoTx } from '@suite-common/wallet-utils';
 import { ReviewOutput } from 'src/types/wallet/transaction';
 import { StakeFormState } from '@suite-common/wallet-types';
+import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 export const getOutputState = (index: number, buttonRequestsCount: number) => {
     if (index === buttonRequestsCount - 1) return 'active';
@@ -260,7 +261,12 @@ const constructNewFlow = ({
                     outputs.push(tokenOutput);
                 }
 
-                outputs.push({ type: 'address', value: o.address });
+                // user should not confirm address for staking, just text which is type address for staking
+                // type data for unstaking, claming and bumping fee
+                if (!getTxStakeNameByDataHex(outputs[0]?.value)) {
+                    outputs.push({ type: 'address', value: o.address });
+                }
+
                 if (!isSolana && !isUpdatedEthereumSendFlow) {
                     outputs.push({
                         type: 'amount',

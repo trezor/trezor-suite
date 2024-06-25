@@ -17,7 +17,6 @@ import type { Account } from 'src/types/wallet';
 import { StakeType } from '@suite-common/wallet-types';
 import { useDisplayMode, useTranslation } from 'src/hooks/suite';
 import { TranslationKey } from '@suite-common/intl-types';
-import { selectTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 const getFeeLabel = (networkType: Account['networkType']) => {
     switch (networkType) {
@@ -110,8 +109,6 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
 
         let outputLines: OutputElementLine[];
 
-        const replaceTxStakeType = selectTxStakeNameByDataHex(outputValue);
-
         if (type === 'fee-replace') {
             outputLines = [
                 {
@@ -157,14 +154,19 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     plainValue: true,
                 },
             ];
-        } else if (type === 'data' && replaceTxStakeType) {
+        } else if (['data', 'address'].includes(type) && ethereumStakeType) {
             const displayModeStringsMap = getDisplayModeStringsMap();
 
             outputLines = [
                 {
                     id: 'data',
-                    label: <Translation id="DATA_ETH" />,
-                    value: translationString(displayModeStringsMap[replaceTxStakeType].value, {
+                    label: translationString(
+                        displayModeStringsMap[ethereumStakeType].confirmLabel,
+                        {
+                            symbol: symbol.toUpperCase(),
+                        },
+                    ),
+                    value: translationString(displayModeStringsMap[ethereumStakeType].value, {
                         symbol: symbol.toUpperCase(),
                     }),
                     plainValue: true,
@@ -195,22 +197,6 @@ export const TransactionReviewOutput = forwardRef<HTMLDivElement, TransactionRev
                     id: 'contract',
                     label: outputLabel,
                     value: outputValue,
-                    plainValue: true,
-                },
-            ];
-        } else if (type === 'address' && ethereumStakeType) {
-            const displayModeStringsMap = getDisplayModeStringsMap();
-
-            outputLines = [
-                {
-                    id: 'address',
-                    label: outputLabel,
-                    value: translationString(displayModeStringsMap[ethereumStakeType].value, {
-                        symbol: symbol.toUpperCase(),
-                    }),
-                    confirmLabel: (
-                        <Translation id={displayModeStringsMap[ethereumStakeType].confirmLabel} />
-                    ),
                     plainValue: true,
                 },
             ];
