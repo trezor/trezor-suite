@@ -1,3 +1,7 @@
+# 1.0.6-beta.1
+
+-   chore(suite): depcheck enabled (2206f19f2e)
+
 # 1.0.5
 
 -   chore: update typescript and use global tsc (84bc9b8bd)
