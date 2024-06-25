@@ -33,17 +33,23 @@ export const DeviceDisplay = ({ address, displayMode }: DeviceDisplayProps) => {
 
     const isPixelType = [DeviceModelInternal.T1B1, DeviceModelInternal.T2B1].includes(deviceModel);
 
+    const processedAddress = address.startsWith('bitcoincash:')
+        ? address.replace('bitcoincash:', '')
+        : address;
+
     const displayModeMap: Record<DisplayMode, ReactNode> = {
-        [DisplayMode.CHUNKS]: <DisplayChunks address={address} isPixelType={isPixelType} />,
+        [DisplayMode.CHUNKS]: (
+            <DisplayChunks address={processedAddress} isPixelType={isPixelType} />
+        ),
         [DisplayMode.PAGINATED_TEXT]: (
             <DisplayPaginatedText
                 deviceModel={deviceModel}
-                text={address.replace('bitcoincash:', '')}
+                text={processedAddress}
                 isPixelType={isPixelType}
             />
         ),
         [DisplayMode.SINGLE_WRAPPED_TEXT]: (
-            <DisplaySinglePageWrapText isPixelType={isPixelType} text={address} />
+            <DisplaySinglePageWrapText isPixelType={isPixelType} text={processedAddress} />
         ),
     };
 
