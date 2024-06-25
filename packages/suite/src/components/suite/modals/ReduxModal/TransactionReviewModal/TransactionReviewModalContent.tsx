@@ -16,6 +16,7 @@ import { TransactionReviewOutputList } from './TransactionReviewOutputList/Trans
 import { TransactionReviewEvmExplanation } from './TransactionReviewEvmExplanation';
 import { DeviceModelInternal } from '@trezor/connect';
 import { spacings } from '@trezor/theme';
+import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
 
 const StyledModal = styled(Modal)`
     ${Modal.Body} {
@@ -88,9 +89,10 @@ export const TransactionReviewModalContent = ({
         precomposedTx,
     });
 
+    // for bump fee we have to analyze tx data which are in outputs[0]
     const ethereumStakeType = isStakeForm(precomposedForm)
         ? precomposedForm.ethereumStakeType
-        : null;
+        : getTxStakeNameByDataHex(outputs[0]?.value);
 
     // omit other button requests (like passphrase)
     const buttonRequests = device.buttonRequests.filter(

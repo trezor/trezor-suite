@@ -1,45 +1,31 @@
 import { StakeType } from '@suite-common/wallet-types';
 
-export const isStakeTx = (signature: string | undefined) => {
-    if (!signature) return false;
-
-    // Stake signature
-    return signature === '0x3a29dbae';
-};
-
-export const isUnstakeTx = (signature: string | undefined) => {
-    if (!signature) return false;
-
-    // Unstake signature
-    return signature === '0x76ec871c';
-};
-
-export const isClaimTx = (signature: string | undefined) => {
-    if (!signature) return false;
-
-    // Claim signature
-    return signature === '0x33986ffa';
-};
-
-export const isStakeTypeTx = (signature: string | undefined) => {
-    if (!signature) return false;
-
-    return isStakeTx(signature) || isUnstakeTx(signature) || isClaimTx(signature);
-};
+// Define signature constants
+const STAKE_SIGNATURE = '0x3a29dbae';
+const UNSTAKE_SIGNATURE = '0x76ec871c';
+const CLAIM_SIGNATURE = '0x33986ffa';
 
 export const signatureToStakeNameMap: { [key: string]: StakeType } = {
-    '0x3a29dbae': 'stake',
-    '0x76ec871c': 'unstake',
-    '0x33986ffa': 'claim',
+    [STAKE_SIGNATURE]: 'stake',
+    [UNSTAKE_SIGNATURE]: 'unstake',
+    [CLAIM_SIGNATURE]: 'claim',
 };
 
-export const getSignatureByEthereumDataHex = (dataHex: string) => {
-    const signature = '0x' + dataHex.slice(0, 8);
+export const isStakeTx = (signature: string | undefined) =>
+    signature?.toLowerCase() === STAKE_SIGNATURE;
 
-    return signature;
-};
+export const isUnstakeTx = (signature: string | undefined) =>
+    signature?.toLowerCase() === UNSTAKE_SIGNATURE;
 
-export const selectTxStakeNameByDataHex = (dataHex: string | undefined): StakeType | null => {
+export const isClaimTx = (signature: string | undefined) =>
+    signature?.toLowerCase() === CLAIM_SIGNATURE;
+
+export const isStakeTypeTx = (signature: string | undefined) =>
+    isStakeTx(signature) || isUnstakeTx(signature) || isClaimTx(signature);
+
+export const getSignatureByEthereumDataHex = (dataHex: string) => `0x${dataHex.slice(0, 8)}`;
+
+export const getTxStakeNameByDataHex = (dataHex: string | undefined): StakeType | null => {
     if (!dataHex) return null;
     const signature = getSignatureByEthereumDataHex(dataHex);
 
