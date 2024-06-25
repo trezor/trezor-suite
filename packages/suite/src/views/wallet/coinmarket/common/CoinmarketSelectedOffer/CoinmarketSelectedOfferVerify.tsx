@@ -109,7 +109,7 @@ const CoinmarketSelectedOfferVerify = () => {
                         />
                     </CustomLabel>
                     <CoinmarketSelectedOfferVerifyOptions
-                        receiveNetwork={receiveNetwork}
+                        receiveNetwork={receiveNetwork ?? currency}
                         selectedAccountOption={selectedAccountOption}
                         selectAccountOptions={selectAccountOptions}
                         onChangeAccount={onChangeAccount}
