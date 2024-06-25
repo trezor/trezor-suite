@@ -1,3 +1,7 @@
+# 2.0.11-beta.1
+
+-   chore(utxo-lib): remove create-hash dependency (840ecb5b0f)
+
 # 2.0.9
 
 -   fix(utxo-lib): support checksums in descriptor parsing (4db4c2e903)
