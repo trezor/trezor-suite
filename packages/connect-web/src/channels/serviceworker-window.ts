@@ -78,6 +78,12 @@ export class ServiceWorkerWindowChannel<
                 if (webextensionId) {
                     whitelist.push(`chrome-extension://${webextensionId}`);
                 }
+                // For Firefox the webextensionId is different from the URL
+                const webextensionUrl = chrome?.runtime?.getURL('');
+                if (webextensionUrl) {
+                    // Without trailing slash
+                    whitelist.push(webextensionUrl.slice(0, -1));
+                }
 
                 if (!origin) {
                     this.logger?.error(

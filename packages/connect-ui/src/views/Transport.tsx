@@ -14,7 +14,7 @@ export const Transport = () => (
         your Trezor device and your internet browser."
         image={<Image imageSrc={imageSrc} />}
         buttons={
-            <Link variant="nostyle" href={SUITE_BRIDGE_URL} onClick={() => window.close()}>
+            <Link variant="nostyle" href={SUITE_BRIDGE_URL} onClick={() => window.closeWindow()}>
                 <Button variant="primary" icon="EXTERNAL_LINK" iconAlignment="right">
                     Install Bridge
                 </Button>
