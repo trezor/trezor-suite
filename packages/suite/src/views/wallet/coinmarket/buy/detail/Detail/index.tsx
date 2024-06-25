@@ -73,7 +73,6 @@ const CoinmarketDetail = () => {
                 {showSuccess && <PaymentSuccessful account={account} />}
             </StyledCard>
             <CoinmarketSelectedOfferInfo
-                account={account}
                 selectedQuote={trade.data}
                 transactionId={trade.key}
                 providers={info?.providerInfos}

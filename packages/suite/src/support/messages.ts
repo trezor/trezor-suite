@@ -1675,6 +1675,10 @@ export default defineMessages({
         defaultMessage: 'Other currencies',
         id: 'TR_COINMARKET_CRYPTO_CATEGORY_E',
     },
+    TR_COINMARKET_TOKEN_NETWORK: {
+        defaultMessage: '{tokenName} on {networkName} network',
+        id: 'TR_COINMARKET_TOKEN_NETWORK',
+    },
     TR_ADDRESS_MODAL_CLIPBOARD: {
         defaultMessage: 'Copy address',
         id: 'TR_ADDRESS_MODAL_CLIPBOARD',

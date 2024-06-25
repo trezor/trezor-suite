@@ -10,6 +10,8 @@ import { CoinmarketBuyFormDefaultValuesProps } from 'src/types/coinmarket/coinma
 import { CoinmarketPaymentMethodListProps } from 'src/types/coinmarket/coinmarket';
 import { FiatCurrencyCode } from 'invity-api';
 import { formDefaultCurrency } from 'src/constants/wallet/coinmarket/formDefaults';
+import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import { defaultCryptoCurrency } from 'src/constants/wallet/coinmarket/cryptoCurrencies';
 
 export const useCoinmarketBuyFormDefaultValues = (
     accountSymbol: Account['symbol'],
@@ -39,14 +41,21 @@ export const useCoinmarketBuyFormDefaultValues = (
     );
     const defaultValues = useMemo(
         () => ({
-            fiatInput: defaultFiatCurrencies.get('czk'),
+            fiatInput: buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(suggestedFiatCurrency),
             cryptoInput: undefined,
             currencySelect: defaultCurrency,
             cryptoSelect: defaultCrypto,
             countrySelect: defaultCountry,
             paymentMethod: defaultPaymentMethod,
         }),
-        [defaultCountry, defaultCrypto, defaultCurrency, defaultPaymentMethod],
+        [
+            buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies,
+            defaultCountry,
+            defaultCrypto,
+            defaultCurrency,
+            defaultPaymentMethod,
+            suggestedFiatCurrency,
+        ],
     );
 
     return {

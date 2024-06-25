@@ -22,7 +22,7 @@ const StyledCard = styled(Card)`
 `;
 
 export const CoinmarketSelectedOffer = () => {
-    const { account, selectedQuote, buyInfo } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
+    const { selectedQuote, buyInfo } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
 
     if (!selectedQuote) return null;
 
@@ -33,7 +33,6 @@ export const CoinmarketSelectedOffer = () => {
             </StyledCard>
             <CoinmarketSelectedOfferInfo
                 selectedQuote={selectedQuote}
-                account={account}
                 providers={buyInfo?.providerInfos}
             />
         </Wrapper>

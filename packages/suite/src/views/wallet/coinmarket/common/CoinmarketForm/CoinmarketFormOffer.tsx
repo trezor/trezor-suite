@@ -9,8 +9,8 @@ import CoinmarketFormOfferCryptoAmount from './CoinmarketFormOfferCryptoAmount';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Translation } from 'src/components/suite';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import { CoinmarketFormInputLabel } from 'src/views/wallet/coinmarket';
 import CoinmarketFormOfferItem from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferItem';
+import { CoinmarketFormInputLabelWrapper } from 'src/views/wallet/coinmarket';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
