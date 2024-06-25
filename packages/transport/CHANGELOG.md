@@ -1,3 +1,9 @@
+# 1.1.30-beta.2
+
+-   chore(transport): remove enumeration intent signaling (ef5b83e6f1)
+-   feat(transport): make descriptor.type required (6b8a46b3be)
+-   fix(transport-bridge): pass type to listen,stable stringify comparison (667dc4a26b)
+
 # 1.1.30-beta.1
 
 -   chore(transport): add more logs (4eeed40ad6)
