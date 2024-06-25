@@ -185,12 +185,13 @@ const config: webpack.Configuration = {
         ...(!isDev && sentryAuthToken
             ? [
                   sentryWebpackPlugin({
+                      telemetry: false,
                       org: 'satoshilabs',
                       project: 'trezor-suite',
                       authToken: sentryAuthToken,
                       release: { name: sentryRelease, cleanArtifacts: true },
                       sourcemaps: {
-                          assets: path.join(getPathForProject(project), 'build'),
+                          assets: path.join(getPathForProject(project), 'build', '**'),
                           ignore: ['static/connect'], // connect does not contain source maps for now
                       },
                   }),
