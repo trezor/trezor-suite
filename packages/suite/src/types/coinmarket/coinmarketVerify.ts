@@ -26,7 +26,7 @@ export interface CoinmarketGetTranslationIdsProps {
 export interface CoinmarketVerifyAccountReturnProps {
     form: UseFormReturn<CoinmarketVerifyFormProps>;
     accountAddress: AccountAddress | Pick<AccountAddress, 'path' | 'address'> | undefined;
-    receiveNetwork: NetworkSymbol | undefined;
+    receiveNetwork: NetworkSymbol | CryptoSymbol | undefined;
     selectAccountOptions: CoinmarketVerifyFormAccountOptionProps[];
     selectedAccountOption?: CoinmarketVerifyFormAccountOptionProps;
     getTranslationIds: (
