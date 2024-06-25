@@ -17,6 +17,7 @@ export type TrezorConnectAction =
     | { type: typeof DEVICE.DISCONNECT; device: TrezorConnectDevice }
     | { type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTIONS; payload: ConnectOptions }
     | { type: typeof ACTIONS.ON_HANDSHAKE_CONFIRMED }
+    | { type: typeof ACTIONS.ON_INIT_ERROR; payload: string }
     | {
           type: typeof ACTIONS.ON_CHANGE_CONNECT_OPTION;
           payload: { option: Field<any>; value: any };
@@ -41,6 +42,23 @@ const isRelativePath = (path: string) => {
     // This regex checks if the path starts with a scheme (like http://, https://, file://, etc.)
     // or an absolute path indicator (like //)
     return !/^(?:[a-z]+:)?\/\//i.test(path);
+};
+
+const testLoadingScript = (src: string) => {
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = src;
+        script.type = 'module';
+        script.onload = data => {
+            document.body.removeChild(script);
+            resolve(data);
+        };
+        script.onerror = error => {
+            document.body.removeChild(script);
+            reject(error);
+        };
+        document.body.appendChild(script);
+    });
 };
 
 export const init =
@@ -91,6 +109,22 @@ export const init =
         }
 
         if (options.connectSrc) {
+            // Check if has trailing slash
+            if (options.connectSrc.slice(-1) !== '/') {
+                options.connectSrc += '/';
+            }
+            try {
+                // Verify if valid by loading core.js, if this file exists we can assume the connectSrc is valid
+                await testLoadingScript(options.connectSrc + 'js/core.js');
+            } catch (err) {
+                dispatch({
+                    type: ACTIONS.ON_INIT_ERROR,
+                    payload: `Invalid connectSrc: ${options.connectSrc}`,
+                });
+
+                return;
+            }
+
             window.__TREZOR_CONNECT_SRC = options.connectSrc;
         }
 
@@ -122,7 +156,7 @@ export const init =
         try {
             await TrezorConnect.init(connectOptions);
         } catch (err) {
-            console.log('ERROR', err);
+            dispatch({ type: ACTIONS.ON_INIT_ERROR, payload: err.message });
 
             return;
         }

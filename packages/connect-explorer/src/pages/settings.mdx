@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 import { Button } from '@trezor/components';
+import { Callout } from 'nextra/components';
 
 import * as trezorConnectActions from '../actions/trezorConnectActions';
 import { useSelector, useActions } from '../hooks';
@@ -19,6 +20,10 @@ export const ConfirmationMessage = styled.div`
     font-weight: bold;
 `;
 
+export const ErrorMessage = styled(ConfirmationMessage)`
+    color: red;
+`;
+
 export const Settings = () => {
     const connectOptions = useSelector(state => ({
         trustedHost: state.connect?.options?.trustedHost,
@@ -26,6 +31,7 @@ export const Settings = () => {
         useCoreInPopup: state?.connect?.options?.useCoreInPopup,
     }));
 
+    const initError = useSelector(state => state.connect?.initError);
     const isHandshakeConfirmed = useSelector(state => state.connect?.isHandshakeConfirmed || false);
     const actions = useActions({
         onSubmitInit: trezorConnectActions.onSubmitInit,
@@ -60,6 +66,11 @@ export const Settings = () => {
             <Button onClick={actions.onSubmitInit} data-test="@submit-button">
                 {submitButton}
             </Button>
+            {initError && (
+                <ErrorMessage data-test="@settings/init-error">
+                    Init error: {initError}
+                </ErrorMessage>
+            )}
             {isHandshakeConfirmed && (
                 <ConfirmationMessage data-test="@settings/handshake-confirmed">
                     Handshake confirmed!
@@ -71,6 +82,11 @@ export const Settings = () => {
 };
 
 ## Settings
+
+<Callout type="error">
+    **Developers only!** This page is for development purposes only. If you don't know what you are
+    doing, don't change these settings.
+</Callout>
 
 Options for `TrezorConnect` initialization.
 

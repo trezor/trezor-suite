@@ -24,5 +24,6 @@ export const ON_CHANGE_CONNECT_OPTIONS = 'action__on_change_connect_options';
 export const ON_CHANGE_CONNECT_OPTION = 'action__on_change_connect_option';
 
 export const ON_HANDSHAKE_CONFIRMED = 'action__on_handshake_confirmed';
+export const ON_INIT_ERROR = 'action__on_init_error';
 
 export { SET_SCHEMA, SET_METHOD } from './methodActions';
