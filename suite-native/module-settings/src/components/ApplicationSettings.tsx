@@ -8,6 +8,7 @@ import {
     RootStackParamList,
     RootStackRoutes,
 } from '@suite-native/navigation';
+import { FeatureFlag, useFeatureFlag } from '@suite-native/feature-flags';
 
 import { SettingsSection } from './SettingsSection';
 import { SettingsSectionItem } from './SettingsSectionItem';
@@ -15,6 +16,7 @@ import { isDevButtonVisibleAtom } from './ProductionDebug';
 
 export const ApplicationSettings = () => {
     const isDevButtonVisible = useAtomValue(isDevButtonVisibleAtom);
+    const [isUsbDeviceConnectFeatureEnabled] = useFeatureFlag(FeatureFlag.IsDeviceConnectEnabled);
 
     const navigation =
         useNavigation<
@@ -57,12 +59,14 @@ export const ApplicationSettings = () => {
                 subtitle="Analytics, Discreet mode, Biometrics"
                 onPress={() => handleNavigation(SettingsStackRoutes.SettingsPrivacyAndSecurity)}
             />
-            <SettingsSectionItem
-                title="View-only"
-                iconName="bookmark"
-                subtitle="Check balances without your Trezor"
-                onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
-            />
+            {isUsbDeviceConnectFeatureEnabled && (
+                <SettingsSectionItem
+                    title="View-only"
+                    iconName="bookmark"
+                    subtitle="Check balances without your Trezor"
+                    onPress={() => handleNavigation(SettingsStackRoutes.SettingsViewOnly)}
+                />
+            )}
         </SettingsSection>
     );
 };
