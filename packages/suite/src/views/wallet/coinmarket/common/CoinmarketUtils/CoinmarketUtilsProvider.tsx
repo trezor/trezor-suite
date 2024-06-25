@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { Translation } from 'src/components/suite';
 import { spacingsPx, typography } from '@trezor/theme';
 import invityAPI from 'src/services/suite/invityAPI';
+import { CoinmarketUtilsProvidersProps } from 'src/types/coinmarket/coinmarket';
 
 const IconWrap = styled.div`
     display: flex;
@@ -25,13 +26,7 @@ const IconText = styled.div`
 interface CoinmarketUtilsProviderProps {
     exchange?: string;
     className?: string;
-    providers?: {
-        [name: string]: {
-            logo: string;
-            companyName: string;
-            brandName?: string;
-        };
-    };
+    providers?: CoinmarketUtilsProvidersProps;
 }
 
 export const CoinmarketUtilsProvider = ({
