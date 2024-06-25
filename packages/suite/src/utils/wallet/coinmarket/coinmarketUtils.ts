@@ -24,9 +24,12 @@ import {
     CoinmarketOptionsGroupProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
+    CoinmarketTradeDetailType,
+    CoinmarketTradeType,
     CryptoCategoryType,
 } from 'src/types/coinmarket/coinmarket';
 import { v4 as uuidv4 } from 'uuid';
+import { BigNumber } from '@trezor/utils';
 import CryptoCategories, {
     CryptoCategoryA,
     CryptoCategoryB,
@@ -289,6 +292,27 @@ export function processSellAndBuyQuotes<T extends CoinmarketTradeBuySellType>(
 
     return quotes;
 }
+
+export const getBestRatedQuote = (
+    quotes: CoinmarketTradeDetailType[] | undefined,
+    type: CoinmarketTradeType,
+): CoinmarketTradeDetailType | undefined => {
+    const quotesFiltered = quotes?.filter(item => item.rate && item.rate !== 0);
+    const bestRatedQuotes = quotesFiltered
+        ? [...quotesFiltered].sort((a, b) => {
+              // ascending to rate for buy - lower rate more crypto client receives
+              if (type === 'buy') {
+                  return new BigNumber(a.rate ?? 0).minus(new BigNumber(b.rate ?? 0)).toNumber();
+              }
+
+              // descending to rate for sell/exchange - higher rate more crypto/fiat client receives
+              return new BigNumber(b.rate ?? 0).minus(new BigNumber(a.rate ?? 0)).toNumber();
+          })
+        : null;
+    const bestRatedQuote = bestRatedQuotes?.[0];
+
+    return bestRatedQuote;
+};
 
 export const coinmarketBuildCryptoOptions = ({
     symbolsInfo,
