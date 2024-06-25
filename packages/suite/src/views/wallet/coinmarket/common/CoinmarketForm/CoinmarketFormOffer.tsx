@@ -5,12 +5,14 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { getProvidersInfoProps } from 'src/utils/wallet/coinmarket/coinmarketTypingUtils';
 import { useState } from 'react';
-import CoinmarketFormOfferCryptoAmount from './CoinmarketFormOfferCryptoAmount';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { Translation } from 'src/components/suite';
 import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import CoinmarketFormOfferItem from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferItem';
 import { CoinmarketFormInputLabelWrapper } from 'src/views/wallet/coinmarket';
+import CoinmarketFormOfferCryptoAmount from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormOfferCryptoAmount';
+import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import { BuyTrade, CryptoSymbol } from 'invity-api';
 
 const CoinmarketFormOfferHeader = styled.div`
     display: flex;
@@ -56,16 +58,19 @@ const CoinmarketFormOffer = () => {
     const {
         quotes,
         goToOffers,
+        getValues,
         selectQuote,
         form: { state },
-        getValues,
+        type,
     } = context;
     const { providers } = getProvidersInfoProps(context);
-    const bestQuote = quotes?.[0];
-    const selectedCrypto = getValues('cryptoSelect');
+    const bestScoredQuote = quotes?.[0];
+    const bestRatedQuote = getBestRatedQuote(quotes, type);
 
-    const receiveCurrency = bestQuote?.receiveCurrency
-        ? cryptoToCoinSymbol(bestQuote?.receiveCurrency)
+    const selectedCrypto = getValues('cryptoSelect');
+    // FIXME: for exchange and sell
+    const receiveCurrency = (bestRatedQuote as BuyTrade)?.receiveCurrency
+        ? cryptoToCoinSymbol((bestRatedQuote as BuyTrade).receiveCurrency as CryptoSymbol)
         : null;
 
     return (
@@ -75,8 +80,8 @@ const CoinmarketFormOffer = () => {
             </CoinmarketFormInputLabelWrapper>
             <CoinmarketFormOfferCryptoAmount
                 amount={
-                    !state.isLoadingOrInvalid && bestQuote?.receiveStringAmount
-                        ? bestQuote?.receiveStringAmount
+                    !state.isLoadingOrInvalid && bestScoredQuote?.receiveStringAmount
+                        ? bestScoredQuote?.receiveStringAmount
                         : '0'
                 }
                 symbol={
@@ -101,15 +106,16 @@ const CoinmarketFormOffer = () => {
                 </CoinmarketFormOfferHeaderButton>
             </CoinmarketFormOfferHeader>
             <CoinmarketFormOfferItem
-                bestQuote={bestQuote}
+                bestQuote={bestScoredQuote}
                 isFormLoading={state.isFormLoading}
                 isFormInvalid={state.isFormInvalid}
                 providers={providers}
+                isBestRate={bestRatedQuote?.orderId === bestScoredQuote?.orderId}
             />
             <Button
                 onClick={() => {
-                    if (bestQuote) {
-                        selectQuote(bestQuote);
+                    if (bestScoredQuote) {
+                        selectQuote(bestScoredQuote);
                     }
                 }}
                 type="button"
@@ -118,7 +124,7 @@ const CoinmarketFormOffer = () => {
                     top: spacings.xxl,
                 }}
                 isFullWidth
-                isDisabled={state.isLoadingOrInvalid || !bestQuote}
+                isDisabled={state.isLoadingOrInvalid || !bestScoredQuote}
             >
                 <Translation id="TR_BUY" />
             </Button>

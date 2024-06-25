@@ -108,16 +108,17 @@ const StyledButton = styled(Button)`
 
 export interface CoinmarketOffersItemProps {
     quote: CoinmarketTradeDetailMapProps[keyof CoinmarketTradeDetailMapProps];
+    isBestRate: boolean;
 }
 
-const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
+const CoinmarketOffersItem = ({ quote, isBestRate }: CoinmarketOffersItemProps) => {
     const context = useCoinmarketOffersContext();
     const { callInProgress, type } = context;
     const { providers } = getProvidersInfoProps(context);
     const cryptoAmountProps = getCryptoQuoteAmountProps(quote, context);
     const { exchange } = quote;
     const { tag, infoNote } = getTagAndInfoNote(quote);
-    const tagsExist = tag !== '';
+    const tagsExist = tag !== '' || isBestRate;
 
     const selectQuote = context.selectQuote as (
         quote: CoinmarketTradeDetailMapProps[typeof type],
@@ -129,9 +130,14 @@ const CoinmarketOffersItem = ({ quote }: CoinmarketOffersItemProps) => {
         <OfferWrap margin={{ top: spacings.md }}>
             <Offer>
                 <OfferColumn1>
-                    {tag && (
+                    {tagsExist && (
                         <OfferBadgeWrap>
-                            <OfferBadge variant="tertiary">{tag}</OfferBadge>
+                            {isBestRate && (
+                                <OfferBadge variant="primary">
+                                    <Translation id="TR_COINMARKET_BEST_RATE" />
+                                </OfferBadge>
+                            )}
+                            {tag && <OfferBadge variant="tertiary">{tag}</OfferBadge>}
                             {infoNote && <OfferBadgeInfo>{infoNote}</OfferBadgeInfo>}
                         </OfferBadgeWrap>
                     )}
