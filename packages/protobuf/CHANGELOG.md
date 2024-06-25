@@ -1,3 +1,8 @@
+# 1.0.14-beta.2
+
+-   chore(suite): unused package dependencies removed (f7907e1496)
+-   chore(suite): depcheck enabled (2206f19f2e)
+
 # 1.0.14-beta.1
 
 -   feat(suite): Add adding a new shamir group into an existing setup (e9a0425183)
