@@ -83,7 +83,7 @@ const updateConnectChangelog = async (
             },
         ];
 
-        const connectExplorerTable = [{ package: 'connect.trezor.io/9', stable, canary }];
+        const connectExplorerTable = [{ package: 'connect.trezor.io/', stable, canary }];
 
         const markdownNpmTable = tableToMarkdown(npmTable, 'Package');
         const markdownConnectExplorerTable = tableToMarkdown(connectExplorerTable, 'Deployment');
