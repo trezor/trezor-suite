@@ -11111,6 +11111,7 @@ __metadata:
     "@playwright/browser-webkit": "npm:^1.41.2"
     "@playwright/test": "npm:^1.41.2"
     "@sentry/electron": "npm:^4.17.0"
+    "@sentry/webpack-plugin": "npm:^2.14.0"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/sentry": "workspace:*"
     "@suite-common/suite-types": "workspace:*"
