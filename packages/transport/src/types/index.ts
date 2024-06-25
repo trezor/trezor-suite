@@ -1,4 +1,4 @@
-import { DEVICE_TYPE } from '../api/abstract';
+import type { DEVICE_TYPE } from '../api/abstract';
 
 export * from './apiCall';
 
