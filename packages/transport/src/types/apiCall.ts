@@ -1,4 +1,4 @@
-import { PROTOCOL_MALFORMED } from '@trezor/protocol';
+import type { PROTOCOL_MALFORMED } from '@trezor/protocol';
 
 import * as ERRORS from '../errors';
 
