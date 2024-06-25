@@ -22,12 +22,13 @@ import CryptoCategories from 'src/constants/wallet/coinmarket/cryptoCategories';
 import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 import {
     CoinmarketFormInput,
-    CoinmarketFormInputLabel,
     CoinmarketFormOption,
     CoinmarketFormOptionLabel,
     CoinmarketFormOptionLabelLong,
     CoinmarketFormOptionNetwork,
 } from 'src/views/wallet/coinmarket';
+import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
 
 const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
     height: 18px;
@@ -39,7 +40,7 @@ const CoinmarketFormOptionIcon = styled(CoinmarketFormOptionTokenLogo)`
     margin-right: ${spacingsPx.xs};
 `;
 
-const CoinmarketFormInputAccount = () => {
+const CoinmarketFormInputAccount = ({ className, label }: CoinmarketFormInputProps) => {
     const { selectedAccount } = useSelector(state => state.wallet);
     const { shouldSendInSats } = useBitcoinAmountUnit(selectedAccount.account?.symbol);
     const { elevation } = useElevation();

@@ -90,10 +90,10 @@ export type CoinmarketPaymentMethodHookProps<T extends CoinmarketTradeType> = {
     ) => CoinmarketTradeDetailMapProps[T][] | undefined;
 };
 
-export type CoinmarketFormInputLabelProps = {
+export interface CoinmarketFormInputLabelProps {
     label?: ExtendedMessageDescriptor['id'];
-};
+}
 
-export type CoinmarketFormInputProps = CoinmarketFormInputLabelProps & {
+export interface CoinmarketFormInputProps extends CoinmarketFormInputLabelProps {
     className?: string;
-};
+}

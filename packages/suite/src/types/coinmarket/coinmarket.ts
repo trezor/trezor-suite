@@ -44,7 +44,6 @@ export type UseCoinmarketCommonProps = UseCoinmarketProps & {
     type: CoinmarketTradeType;
 };
 export type UseCoinmarketFormProps = UseCoinmarketProps & {
-    type: CoinmarketTradeType;
     offFirstRequest?: boolean;
 };
 

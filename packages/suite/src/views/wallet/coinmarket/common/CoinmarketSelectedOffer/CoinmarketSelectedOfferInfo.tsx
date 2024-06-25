@@ -6,11 +6,14 @@ import {
     CoinmarketProviderInfo,
     CoinmarketTransactionId,
 } from 'src/views/wallet/coinmarket/common';
-import { Account } from 'src/types/wallet';
-import { Translation, AccountLabeling } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import { CoinmarketCryptoAmount } from 'src/views/wallet/coinmarket/common/CoinmarketCryptoAmount';
 import { CoinmarketFiatAmount } from 'src/views/wallet/coinmarket/common/CoinmarketFiatAmount';
-import { cryptoToCoinSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
+import {
+    cryptoToCoinSymbol,
+    cryptoToNetworkSymbol,
+    isCryptoSymbolToken,
+} from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
 import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
 
 const Wrapper = styled.div`
@@ -30,6 +33,10 @@ const Header = styled.div`
     margin-bottom: 5px;
     padding: 15px 24px;
     max-width: 340px;
+`;
+
+const HeaderLogo = styled(CoinmarketCoinImage)`
+    width: 24px;
 `;
 
 const AccountText = styled.div`
@@ -109,14 +116,12 @@ interface CoinmarketSelectedOfferInfoProps {
     providers?: {
         [name: string]: BuyProviderInfo;
     };
-    account: Account;
 }
 
 export const CoinmarketSelectedOfferInfo = ({
     selectedQuote,
     transactionId,
     providers,
-    account,
 }: CoinmarketSelectedOfferInfoProps) => {
     const {
         receiveStringAmount,
@@ -128,13 +133,29 @@ export const CoinmarketSelectedOfferInfo = ({
         fiatStringAmount,
     } = selectedQuote;
 
+    const currency = receiveCurrency ? cryptoToCoinSymbol(receiveCurrency) : receiveCurrency;
+    const network =
+        receiveCurrency && isCryptoSymbolToken(receiveCurrency)
+            ? cryptoToNetworkSymbol(receiveCurrency)?.toUpperCase()
+            : null;
+
     return (
         <Wrapper data-test="@coinmarket/offer/info">
             <Info>
                 <Header>
-                    <CoinmarketCoinImage symbol={selectedQuote.receiveCurrency} />
+                    <HeaderLogo symbol={currency} />
                     <AccountText>
-                        <AccountLabeling account={account} />
+                        {network ? (
+                            <Translation
+                                id="TR_COINMARKET_TOKEN_NETWORK"
+                                values={{
+                                    tokenName: currency,
+                                    networkName: network,
+                                }}
+                            />
+                        ) : (
+                            currency
+                        )}
                     </AccountText>
                 </Header>
                 <Row>
@@ -156,17 +177,11 @@ export const CoinmarketSelectedOfferInfo = ({
                     </LeftColumn>
                     <RightColumn>
                         <Dark>
-                            <InvityCoinLogo
-                                symbol={
-                                    receiveCurrency
-                                        ? cryptoToCoinSymbol(receiveCurrency)
-                                        : receiveCurrency
-                                }
-                            />
+                            <InvityCoinLogo symbol={currency} />
                             <Amount>
                                 <CoinmarketCryptoAmount
                                     amount={receiveStringAmount}
-                                    symbol={cryptoToCoinSymbol(receiveCurrency!)}
+                                    symbol={currency}
                                 />
                             </Amount>
                         </Dark>
