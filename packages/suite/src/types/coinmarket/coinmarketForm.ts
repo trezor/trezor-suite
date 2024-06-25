@@ -4,15 +4,15 @@ import {
     CoinmarketPaymentMethodProps,
     CoinmarketTradeDetailMapProps,
     CoinmarketTradeType,
-} from './coinmarket';
-
+} from 'src/types/coinmarket/coinmarket';
 import type { Account, Network } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
 import type { BuyTrade, FiatCurrencyCode } from 'invity-api';
-import { AmountLimits, DefaultCountryOption, Option } from '../wallet/coinmarketCommonTypes';
-import { AppState } from '../suite';
 import { Timer } from '@trezor/react-utils';
+import { AppState } from 'src/reducers/store';
+import { ExtendedMessageDescriptor } from 'src/types/suite';
+import { AmountLimits, DefaultCountryOption, Option } from 'src/types/wallet/coinmarketCommonTypes';
 
 export type CoinmarketBuyFormProps = {
     fiatInput?: string;
@@ -88,4 +88,12 @@ export type CoinmarketPaymentMethodHookProps<T extends CoinmarketTradeType> = {
         quotes: CoinmarketTradeDetailMapProps[T][] | undefined,
         currentPaymentMethod: CoinmarketPaymentMethodProps,
     ) => CoinmarketTradeDetailMapProps[T][] | undefined;
+};
+
+export type CoinmarketFormInputLabelProps = {
+    label?: ExtendedMessageDescriptor['id'];
+};
+
+export type CoinmarketFormInputProps = CoinmarketFormInputLabelProps & {
+    className?: string;
 };
