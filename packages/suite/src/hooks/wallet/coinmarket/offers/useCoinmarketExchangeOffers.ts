@@ -27,6 +27,7 @@ import { useCoinmarketRecomposeAndSign } from 'src/hooks/wallet/useCoinmarketRec
 export const useCoinmarketExchangeOffers = ({
     selectedAccount,
 }: UseCoinmarketProps): CoinmarketExchangeOffersContextProps => {
+    const type = 'exchange';
     const dispatch = useDispatch();
     const {
         callInProgress,
@@ -37,7 +38,7 @@ export const useCoinmarketExchangeOffers = ({
         setCallInProgress,
         setSelectedQuote,
         checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount });
+    } = useCoinmarketCommonOffers<CoinmarketTradeExchangeType>({ selectedAccount, type });
     const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
     const [receiveAccount, setReceiveAccount] = useState<Account | undefined>();
@@ -305,6 +306,7 @@ export const useCoinmarketExchangeOffers = ({
     };
 
     return {
+        type,
         callInProgress,
         confirmTrade,
         sendTransaction,
@@ -326,6 +328,5 @@ export const useCoinmarketExchangeOffers = ({
         receiveAccount,
         setReceiveAccount,
         getQuotes,
-        type: 'exchange',
     };
 };

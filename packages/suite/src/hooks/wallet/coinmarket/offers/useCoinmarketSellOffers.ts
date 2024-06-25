@@ -38,6 +38,7 @@ import {
 export const useCoinmarketSellOffers = ({
     selectedAccount,
 }: UseCoinmarketProps): CoinmarketSellOffersContextProps => {
+    const type = 'sell';
     const {
         callInProgress,
         account,
@@ -47,7 +48,7 @@ export const useCoinmarketSellOffers = ({
         setCallInProgress,
         setSelectedQuote,
         checkQuotesTimer,
-    } = useCoinmarketCommonOffers<CoinmarketTradeSellType>({ selectedAccount });
+    } = useCoinmarketCommonOffers<CoinmarketTradeSellType>({ selectedAccount, type });
     const { network } = selectedAccount;
     const { shouldSendInSats } = useBitcoinAmountUnit(account.symbol);
 
@@ -313,6 +314,7 @@ export const useCoinmarketSellOffers = ({
     };
 
     return {
+        type,
         sendTransaction,
         callInProgress,
         selectedQuote,
@@ -330,6 +332,5 @@ export const useCoinmarketSellOffers = ({
         sellInfo,
         needToRegisterOrVerifyBankAccount,
         getQuotes,
-        type: 'sell',
     };
 };
