@@ -37,18 +37,16 @@ export const WebUsbIconButton = ({
     size = 'tiny',
     variant = 'primary',
     ...rest
-}: WebUsbButtonProps) => {
-    return (
-        <div data-test="web-usb-button">
-            <Tooltip content={<Translation id={translationId} />}>
-                <IconButton
-                    {...rest}
-                    icon="SEARCH"
-                    variant={variant}
-                    size={size}
-                    onClick={handleClick}
-                />
-            </Tooltip>
-        </div>
-    );
-};
+}: WebUsbButtonProps) => (
+    <div data-test="web-usb-button">
+        <Tooltip content={<Translation id={translationId} />}>
+            <IconButton
+                {...rest}
+                icon="SEARCH"
+                variant={variant}
+                size={size}
+                onClick={handleClick}
+            />
+        </Tooltip>
+    </div>
+);

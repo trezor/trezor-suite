@@ -17,23 +17,19 @@ type DeviceStatusVisible = {
     device: TrezorDevice;
 };
 
-const DeviceStatusVisible = ({ connected, walletLabel }: DeviceStatusVisible) => {
-    return (
-        <DeviceConnectionText
-            variant={connected ? 'primary' : 'tertiary'}
-            icon={connected ? 'LINK' : 'UNLINK'}
-            data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
-        >
-            {walletLabel ? (
-                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
-                    {walletLabel}
-                </TruncateWithTooltip>
-            ) : (
-                <Translation id={connected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
-            )}
-        </DeviceConnectionText>
-    );
-};
+const DeviceStatusVisible = ({ connected, walletLabel }: DeviceStatusVisible) => (
+    <DeviceConnectionText
+        variant={connected ? 'primary' : 'tertiary'}
+        icon={connected ? 'LINK' : 'UNLINK'}
+        data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
+    >
+        {walletLabel ? (
+            <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>{walletLabel}</TruncateWithTooltip>
+        ) : (
+            <Translation id={connected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
+        )}
+    </DeviceConnectionText>
+);
 
 export const DeviceStatusText = ({
     device,
