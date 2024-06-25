@@ -29,9 +29,6 @@ export const en = {
         },
     },
     moduleHome: {
-        graph: {
-            title: 'My portfolio balance',
-        },
         emptyState: {
             device: {
                 title: 'Your wallet is empty',

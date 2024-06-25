@@ -7,7 +7,6 @@ import { Box, DiscreetTextTrigger, HStack, Text, VStack } from '@suite-native/at
 import { FiatBalanceFormatter } from '@suite-native/formatters';
 import { GraphDateFormatter, percentageDiff, PriceChangeIndicator } from '@suite-native/graph';
 import { FiatGraphPoint, FiatGraphPointWithCryptoBalance } from '@suite-common/graph';
-import { Translation } from '@suite-native/intl';
 import { selectIsDeviceDiscoveryActive, selectIsDeviceAuthorized } from '@suite-common/wallet-core';
 
 const emptyGraphPoint: FiatGraphPointWithCryptoBalance = {
@@ -62,9 +61,6 @@ export const PortfolioGraphHeader = () => {
     return (
         <Box>
             <VStack spacing="extraSmall" alignItems="center">
-                <Text color="textSubdued" variant="hint">
-                    <Translation id="moduleHome.graph.title" />
-                </Text>
                 {!isLoading && (
                     <>
                         <Box justifyContent="center" alignItems="center" style={{ width: '100%' }}>
