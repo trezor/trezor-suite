@@ -290,7 +290,7 @@ export function processSellAndBuyQuotes<T extends CoinmarketTradeBuySellType>(
     return quotes;
 }
 
-export const coinmarketBuiltCryptoOptions = ({
+export const coinmarketBuildCryptoOptions = ({
     symbolsInfo,
     cryptoCurrencies,
 }: CoinmarketBuildOptionsProps) => {

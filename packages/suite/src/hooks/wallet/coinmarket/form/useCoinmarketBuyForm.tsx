@@ -34,7 +34,6 @@ import * as coinmarketBuyActions from 'src/actions/wallet/coinmarketBuyActions';
 import * as routerActions from 'src/actions/suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
-import defaultFiatCurrencies from 'src/constants/wallet/coinmarket/fiatCurrencies';
 import { SET_MODAL_CRYPTO_CURRENCY } from 'src/actions/wallet/constants/coinmarketCommonConstants';
 import useCoinmarketPaymentMethod from 'src/hooks/wallet/coinmarket/form/useCoinmarketPaymentMethod';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -430,7 +429,7 @@ const useCoinmarketBuyForm = ({
                             : buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(
                                   suggestedFiatCurrency,
                               ),
-                });
+                } as CoinmarketBuyFormProps);
             }
         },
         200,
