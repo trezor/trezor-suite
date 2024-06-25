@@ -1,8 +1,8 @@
-import { Spinner } from '@trezor/components';
-import { borders, spacingsPx, zIndices } from '@trezor/theme';
+import { Spinner, useElevation } from '@trezor/components';
+import { Elevation, borders, mapElevationToBackground, spacingsPx, zIndices } from '@trezor/theme';
 import styled from 'styled-components';
 
-const CoinmarketFormInputLoaderWrapper = styled.div`
+const CoinmarketFormInputLoaderWrapper = styled.div<{ $elevation: Elevation }>`
     display: flex;
     align-items: center;
     position: absolute;
@@ -10,15 +10,17 @@ const CoinmarketFormInputLoaderWrapper = styled.div`
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: ${({ theme }) => theme.backgroundSurfaceElevation0};
+    background-color: ${({ theme, $elevation }) => mapElevationToBackground({ theme, $elevation })};
     border-radius: ${borders.radii.sm};
     z-index: ${zIndices.base};
     padding: 0 ${spacingsPx.md};
 `;
 
 const CoinmarketFormInputLoader = () => {
+    const { elevation } = useElevation();
+
     return (
-        <CoinmarketFormInputLoaderWrapper>
+        <CoinmarketFormInputLoaderWrapper $elevation={elevation}>
             <Spinner size={24} isGrey={false} />
         </CoinmarketFormInputLoaderWrapper>
     );

@@ -1,31 +1,22 @@
 import { Controller } from 'react-hook-form';
-import {
-    CoinmarketFormInput,
-    CoinmarketFormInputInner,
-    CoinmarketFormInputLabel,
-    CoinmarketFormOption,
-    CoinmarketFormOptionLabel,
-} from '../../..';
 import { Select } from '@trezor/components';
 import {
     CoinmarketPaymentMethodListProps,
     CoinmarketTradeBuyType,
 } from 'src/types/coinmarket/coinmarket';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
-import { CoinmarketPaymentPlainType } from '../../CoinmarketPaymentPlainType';
-import { ExtendedMessageDescriptor } from '@suite-common/intl-types';
-import { Translation } from 'src/components/suite';
-import CoinmarketFormInputLoader from './CoinmarketFormInputLoader';
+import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import {
+    CoinmarketFormInput,
+    CoinmarketFormInputInner,
+    CoinmarketFormOption,
+    CoinmarketFormOptionLabel,
+} from 'src/views/wallet/coinmarket';
+import { CoinmarketPaymentPlainType } from 'src/views/wallet/coinmarket/common/CoinmarketPaymentPlainType';
+import CoinmarketFormInputLoader from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLoader';
 
-interface CoinmarketFormInputPaymentMethodProps {
-    className?: string;
-    label?: ExtendedMessageDescriptor['id'];
-}
-
-const CoinmarketFormInputPaymentMethod = ({
-    className,
-    label,
-}: CoinmarketFormInputPaymentMethodProps) => {
+const CoinmarketFormInputPaymentMethod = ({ className, label }: CoinmarketFormInputProps) => {
     const {
         control,
         paymentMethods,
@@ -37,11 +28,7 @@ const CoinmarketFormInputPaymentMethod = ({
 
     return (
         <CoinmarketFormInput className={className}>
-            {label && (
-                <CoinmarketFormInputLabel>
-                    <Translation id={label} />
-                </CoinmarketFormInputLabel>
-            )}
+            <CoinmarketFormInputLabel label={label} />
             <CoinmarketFormInputInner>
                 <Controller
                     name="paymentMethod"

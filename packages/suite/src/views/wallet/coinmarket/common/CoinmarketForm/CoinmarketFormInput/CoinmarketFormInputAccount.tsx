@@ -4,21 +4,21 @@ import {
     getNetworkName,
     networkToCryptoSymbol,
 } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
-import {
-    CoinmarketFormInput,
-    CoinmarketFormInputLabel,
-    CoinmarketFormOption,
-    CoinmarketFormOptionLabel,
-    CoinmarketFormOptionLabelLong,
-} from '../../..';
 import { Controller } from 'react-hook-form';
 import { CoinLogo, Select } from '@trezor/components';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
-import { Translation } from 'src/components/suite';
-import CoinmarketCoinImage from '../../CoinmarketCoinImage';
 import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
+import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
+import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import CoinmarketCoinImage from 'src/views/wallet/coinmarket/common/CoinmarketCoinImage';
+import {
+    CoinmarketFormInput,
+    CoinmarketFormOption,
+    CoinmarketFormOptionLabel,
+    CoinmarketFormOptionLabelLong,
+} from 'src/views/wallet/coinmarket';
 
 const CoinmarketFormOptionTokenLogo = styled(CoinmarketCoinImage)`
     height: 18px;
@@ -30,7 +30,7 @@ const CoinmarketFormOptionIcon = styled.div`
     margin-right: ${spacingsPx.xs};
 `;
 
-const CoinmarketFormInputAccount = () => {
+const CoinmarketFormInputAccount = ({ label, className }: CoinmarketFormInputProps) => {
     const account = useSelector(state => state.wallet.selectedAccount.account);
     const { shouldSendInSats } = useBitcoinAmountUnit(account?.symbol);
     const { control } = useCoinmarketFormContext<CoinmarketTradeBuyType>();
@@ -47,10 +47,8 @@ const CoinmarketFormInputAccount = () => {
     ];
 
     return (
-        <CoinmarketFormInput>
-            <CoinmarketFormInputLabel>
-                <Translation id="TR_COINMARKET_YOU_BUY" />
-            </CoinmarketFormInputLabel>
+        <CoinmarketFormInput className={className}>
+            <CoinmarketFormInputLabel label={label} />
             <Controller
                 name="cryptoSelect"
                 defaultValue={cryptoList[0]}

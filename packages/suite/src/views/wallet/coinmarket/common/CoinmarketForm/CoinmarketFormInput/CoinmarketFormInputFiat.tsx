@@ -1,13 +1,8 @@
 import { useSelector, useTranslation } from 'src/hooks/suite';
-import {
-    CoinmarketFormInput,
-    CoinmarketFormInputLabel,
-    CoinmarketFormOption,
-    CoinmarketFormOptionLabel,
-} from '../../..';
+import { CoinmarketFormInput, CoinmarketFormOption, CoinmarketFormOptionLabel } from '../../..';
 import { Controller } from 'react-hook-form';
 import { Select } from '@trezor/components';
-import { NumberInput, Translation } from 'src/components/suite';
+import { NumberInput } from 'src/components/suite';
 import { validateDecimals, validateMin } from 'src/utils/suite/validation';
 import { getInputState } from '@suite-common/wallet-utils';
 import { buildFiatOption } from 'src/utils/wallet/coinmarket/coinmarketUtils';
@@ -17,8 +12,10 @@ import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCo
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useDidUpdate } from '@trezor/react-utils';
 import { FiatCurrencyOption } from 'src/types/wallet/coinmarketCommonTypes';
+import CoinmarketFormInputLabel from 'src/views/wallet/coinmarket/common/CoinmarketForm/CoinmarketFormInput/CoinmarketFormInputLabel';
+import { CoinmarketFormInputProps } from 'src/types/coinmarket/coinmarketForm';
 
-const CoinmarketFormInputFiat = () => {
+const CoinmarketFormInputFiat = ({ label, className }: CoinmarketFormInputProps) => {
     const { translationString } = useTranslation();
     const account = useSelector(state => state.wallet.selectedAccount.account);
     const {
@@ -66,10 +63,8 @@ const CoinmarketFormInputFiat = () => {
     if (!account) return null;
 
     return (
-        <CoinmarketFormInput>
-            <CoinmarketFormInputLabel>
-                <Translation id="TR_COINMARKET_YOU_PAY" />
-            </CoinmarketFormInputLabel>
+        <CoinmarketFormInput className={className}>
+            <CoinmarketFormInputLabel label={label} />
             <NumberInput
                 name={fiatInput}
                 onChange={() => {

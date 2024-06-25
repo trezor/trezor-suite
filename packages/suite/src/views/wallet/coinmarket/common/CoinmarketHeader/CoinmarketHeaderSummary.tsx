@@ -6,7 +6,6 @@ import { spacingsPx } from '@trezor/theme';
 import { SCREEN_QUERY } from '@trezor/components/src/config/variables';
 import { CoinmarketCryptoAmountProps } from 'src/types/coinmarket/coinmarketOffers';
 import {
-    isCoinmarketBuyOffers,
     isCoinmarketExchangeOffers,
     isCoinmarketSellOffers,
     useCoinmarketOffersContext,
@@ -48,26 +47,6 @@ const CoinmarketHeaderSummary = ({
     return (
         <SummaryWrap className={className}>
             <SummaryRow>
-                {isCoinmarketBuyOffers(context) && (
-                    <>
-                        <TextWrap>
-                            <CoinmarketFiatAmount
-                                amount={sendAmount ?? ''}
-                                currency={sendCurrency}
-                            />
-                        </TextWrap>
-                        <StyledIcon icon="ARROW_RIGHT_LONG" />
-                        {receiveCurrency && (
-                            <TextWrap>
-                                <CoinmarketCryptoAmount
-                                    symbol={cryptoToCoinSymbol(receiveCurrency)}
-                                    displayLogo
-                                />
-                            </TextWrap>
-                        )}
-                    </>
-                )}
-
                 {isCoinmarketSellOffers(context) && (
                     <>
                         {receiveCurrency && (
