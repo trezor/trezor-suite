@@ -709,6 +709,12 @@ export const selectDeviceByState = (state: DeviceRootState, deviceState: string)
 export const selectDeviceUnavailableCapabilities = (state: DeviceRootState) =>
     state.device.selectedDevice?.unavailableCapabilities;
 
+export const selectDeviceCapabilities = (state: DeviceRootState) =>
+    selectDeviceFeatures(state)?.capabilities;
+
+export const selectHasDevicePassphraseEntryCapability = (state: DeviceRootState) =>
+    !!selectDeviceCapabilities(state)?.includes('Capability_PassphraseEntry');
+
 export const selectDeviceStatus = (state: DeviceRootState) => {
     const device = selectDevice(state);
 
