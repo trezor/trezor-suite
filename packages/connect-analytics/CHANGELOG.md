@@ -1,3 +1,7 @@
+# 1.0.16-beta.1
+
+-   chore(suite): depcheck enabled (2206f19f2e)
+
 # 1.0.14
 
 -   chore: TS project references for build:libs + buildless utxo-lib (#11526) (4d857722fe)
