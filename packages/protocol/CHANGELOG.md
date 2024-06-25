@@ -1,3 +1,7 @@
+# 1.0.10-beta.2
+
+-   chore(suite): depcheck enabled (2206f19f2e)
+
 # 1.0.10-beta.1
 
 -   chore(protocol): add a logging message in case of empty buffer (c5dd5749a7)
