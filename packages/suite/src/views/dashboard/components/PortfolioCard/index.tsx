@@ -46,7 +46,7 @@ const Wrapper = styled.div`
 `;
 
 const PortfolioCard = memo(() => {
-    const currentRiatRates = useSelector(selectCurrentFiatRates);
+    const currentFiatRates = useSelector(selectCurrentFiatRates);
     const localCurrency = useSelector(selectLocalCurrency);
     const { discovery, getDiscoveryStatus, isDiscoveryRunning } = useDiscovery();
     const accounts = useFastAccounts();
@@ -54,7 +54,7 @@ const PortfolioCard = memo(() => {
     const dispatch = useDispatch();
 
     const isDeviceEmpty = useMemo(() => accounts.every(a => a.empty), [accounts]);
-    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, currentRiatRates).toString();
+    const fiatAmount = getTotalFiatBalance(accounts, localCurrency, currentFiatRates).toString();
 
     const discoveryStatus = getDiscoveryStatus();
 
