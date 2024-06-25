@@ -16,7 +16,7 @@ class MyAssetsActions {
         accDetail?: 'detail' | 'receive';
     }) {
         const newScreenElement =
-            accDetail === 'detail' ? '@screen/AccountDetail' : '@screen/Receive';
+            accDetail === 'detail' ? '@screen/AccountDetail' : '@screen/ReceiveModal';
         await element(by.text(accountName)).tap();
         await detoxExpect(element(by.id(newScreenElement))).toBeVisible();
     }

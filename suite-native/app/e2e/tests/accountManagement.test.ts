@@ -62,6 +62,13 @@ describe('Account management', () => {
         await detoxExpect(element(by.text(accountName))).not.toExist();
     });
 
+    /**
+     * 1. Import BTC SegWit account
+     * 2. Navigate to receive screen
+     * 3. Show address
+     * 4. Copy address
+     * 5. Check if address is copied to clipboard by verifying the toast message
+     */
     it.only('Generate btc address and copy it to clipboard', async () => {
         const accountName = 'BTC SegWit';
         await onHome.tapSyncCoinsButton();
@@ -74,5 +81,6 @@ describe('Account management', () => {
         await onTabBar.navigateToReceive();
         await onMyAssets.openAccountDetail({ accountName, accDetail: 'receive' });
         await onReceiveScreen.showAddress();
+        await onReceiveScreen.copyAddress();
     });
 });

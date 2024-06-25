@@ -30,7 +30,7 @@ export const ToastRenderer = () => {
                 topSafeAreaInset,
             })}
         >
-            <VStack alignItems="center">
+            <VStack alignItems="center" testID="@toastWrap">
                 {toasts.map(toast => (
                     <Toast toast={toast} key={toast.id} />
                 ))}
