@@ -4,11 +4,83 @@
 |     npm @trezor/connect-web      | 9.2.4  | 9.2.5-beta.2 |
 | npm @trezor/connect-webextension | 9.2.4  | 9.2.5-beta.2 |
 
-|     Deployment      | Stable |    Canary    |
-| :-----------------: | :----: | :----------: |
-| connect.trezor.io/9 | 9.2.4  | 9.2.5-beta.2 |
+|     Deployment     | Stable |    Canary    |
+| :----------------: | :----: | :----------: |
+| connect.trezor.io/ | 9.2.4  | 9.2.5-beta.2 |
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
+
+# 9.2.5-beta.2
+
+-   fix(connect): race condition when closing and opening popup subsequently (e0e51c7)
+-   chore(connect): implement required descriptor.type (9ef657f)
+-   docs(connect): Explorer landing page update (7db29e9)
+-   fix(connect): deviceList may become undefined after init transport (firefox) (322651b)
+-   fix(connect): Core with pending initialization (3f8e405)
+-   fix(connect): preserve DEVICE.ACQUIRED listeners after unsuccessful workflow (4cede4e)
+-   fix(connect): don't save state with legacy passphrase (af90317)
+-   feat(connect): new T3T1 colors (0797090)
+-   chores: 583fbd0, a27a385, 6c789d2
+
+## connect-explorer
+
+-   readme pages (be0f933)
+-   getFeatures (0f9d057)
+-   don't change affected fields in manual mode (2c7143e)
+-   canary release explanation in changelog (6cf1eae)
+-   theme: steps colors (1f7a9e4)
+-   delete deprecated webusb parameter from init docs (a92429e)
+-   zoomable and dark mode illustrations (8d55ed1)
+-   some attributes were not passed trough the proxy (5cb6a26)
+-   MTT content max height (c8796b4)
+-   add links in changelog page (8dabb30)
+
+## connect-web
+
+-   publish trezor-usb-permissions.html in NPM (c8628ea)
+-   refactor into classes (fc7a45b)
+-   core-in-popup mode (52891f3)
+-   passphrase missmatch resets the flow now (d55ff1c)
+
+## connect-webextension
+
+-   stop publishing Trezor connect webextension proxy since it is for Trezor internal testing with connect-explorer (5df3ae0)
+-   use bundled build as package main (fff7eaf)
+
+## connect-examples
+
+-   Improve the mv3 sw example to be make it easier for 3rd parties to understand how to integrate connect-webextension (884ec96, a0c0706)
+
+## connect-common
+
+-   edit firmware changelogs (3637a56)
+-   firmware release url (0166df5)
+-   update firmware binaries to 2.7.2 (6392328)
+-   T3T1 support (9d0adae)
+
+## connect-ui
+
+-   install bridge title align (19c5781)
+
+## Dependencies update
+
+-   bump ws from 8.16.0 to 8.17.1 (bc5b787)
+
+-   npm-release: @trezor/blockchain-link 2.1.31-beta.2
+-   npm-release: @trezor/blockchain-link-utils 1.0.19-beta.1
+-   npm-release: @trezor/blockchain-link-types 1.0.18-beta.2
+-   npm-release: @trezor/type-utils 1.0.6-beta.1
+-   npm-release: @trezor/connect-analytics 1.0.16-beta.1
+-   npm-release: @trezor/analytics 1.0.18-beta.1
+-   npm-release: @trezor/connect-common 0.0.34-beta.1
+-   npm-release: @trezor/env-utils 1.0.18-beta.1
+-   npm-release: @trezor/transport 1.1.30-beta.2
+-   npm-release: @trezor/protobuf 1.0.14-beta.2
+-   npm-release: @trezor/schema-utils 1.0.5-beta.1
+-   npm-release: @trezor/protocol 1.0.10-beta.2
+-   npm-release: @trezor/utxo-lib 2.0.11-beta.1
+-   npm-release: @trezor/utils 9.0.25-beta.2
+-   npm-release: @trezor/connect 9.2.5-beta.2
 
 # 9.2.5-beta.1
 
