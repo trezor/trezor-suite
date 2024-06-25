@@ -1,3 +1,7 @@
+# 9.0.25-beta.2
+
+-   chore(connect-web): refactor into classes (fc7a45b19d)
+
 # 9.0.25-beta.1
 
 -   feat(utils): mergeDeepObject with dot notation (1a5b0e2a0f)
