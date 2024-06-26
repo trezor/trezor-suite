@@ -14,7 +14,7 @@ import { Descriptor, Session } from '@trezor/transport/src/types';
 import { Log, arrayPartition, Throttler } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
-import { sessionsClient, createApi } from './core';
+import { createApi } from './core';
 
 const defaults = {
     port: 21325,
@@ -59,6 +59,7 @@ export class TrezordNode {
         this.listenSubscriptions = [];
 
         this.api = createApi(api, this.logger);
+
         this.assetPrefix = assetPrefix;
     }
 
@@ -104,7 +105,7 @@ export class TrezordNode {
 
     public start() {
         // whenever sessions module reports changes to descriptors (including sessions), resolve affected /listen subscriptions
-        sessionsClient.on('descriptors', descriptors => {
+        this.api.sessionsClient.on('descriptors', descriptors => {
             this.logger?.debug(
                 `http: sessionsClient reported descriptors: ${JSON.stringify(descriptors)}`,
             );
@@ -408,7 +409,7 @@ export class TrezordNode {
         // send empty descriptors (imitate that all devices have disconnected)
         this.resolveListenSubscriptions([]);
         this.throttler.dispose();
-        sessionsClient.removeAllListeners('descriptors');
+        this.api.sessionsClient.removeAllListeners('descriptors');
         this.api.dispose();
 
         return this.server?.stop();
