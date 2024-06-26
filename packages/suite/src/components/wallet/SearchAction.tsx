@@ -108,7 +108,7 @@ export const SearchAction = ({
                     <SearchIcon
                         icon="SEARCH"
                         size={16}
-                        color={theme.iconSubdued}
+                        color={theme.iconDefault}
                         onClick={!isExpanded ? openAndSelect : undefined}
                     />
                 }
