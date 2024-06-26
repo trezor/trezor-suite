@@ -5755,10 +5755,6 @@ export default defineMessages({
         id: 'TR_TOKENS_ADD',
         defaultMessage: 'Add token',
     },
-    TR_TOKENS_ADD_WITH_RECEIVE: {
-        id: 'TR_TOKENS_ADD_WITH_RECEIVE',
-        defaultMessage: 'Add tokens with receive',
-    },
     TR_TOKENS_EMPTY: {
         id: 'TR_TOKENS_EMPTY',
         defaultMessage: 'No tokens... yet.',
@@ -5773,7 +5769,7 @@ export default defineMessages({
     },
     TR_ADD_TOKEN_TITLE: {
         id: 'TR_ADD_TOKEN_TITLE',
-        defaultMessage: 'Add ERC20 token',
+        defaultMessage: 'Add token',
     },
     TR_ADD_TOKEN_DESCRIPTION: {
         id: 'TR_ADD_TOKEN_DESCRIPTION',

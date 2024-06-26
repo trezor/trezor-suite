@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState, ChangeEvent } from 'react';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import { analytics, EventType } from '@trezor/suite-analytics';
 
-import { Input, Button, Paragraph } from '@trezor/components';
+import { Input, Button } from '@trezor/components';
 import { addToken } from 'src/actions/wallet/tokenActions';
 import { Modal } from 'src/components/suite';
 import { Translation } from 'src/components/suite/Translation';
@@ -11,14 +11,6 @@ import { tryGetAccountIdentity, isAddressValid } from '@suite-common/wallet-util
 import { Account } from 'src/types/wallet';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
-import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
-
-const StyledP = styled(Paragraph)`
-    color: ${({ theme }) => theme.textSubdued};
-    text-align: left;
-    margin-bottom: ${spacingsPx.lg};
-`;
 
 interface AddTokenModalProps {
     onCancel: () => void;
@@ -135,9 +127,6 @@ export const AddTokenModal = ({ onCancel }: AddTokenModalProps) => {
                 </Button>
             }
         >
-            <StyledP typographyStyle="hint">
-                <Translation id="TR_ADD_TOKEN_DESCRIPTION" />
-            </StyledP>
             <Input
                 label={<Translation id="TR_ADD_TOKEN_LABEL" />}
                 value={contractAddress}
