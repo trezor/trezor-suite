@@ -9,10 +9,13 @@ import {
     getTagAndInfoNote,
     buildCryptoOption,
     processSellAndBuyQuotes,
+    getBestRatedQuote,
     coinmarketBuildCryptoOptions,
 } from '../coinmarketUtils';
 import { accountBtc, accountEth, coinDefinitions } from '../__fixtures__/coinmarketUtils';
-import { ALTERNATIVE_QUOTES, MIN_MAX_QUOTES_OK } from '../__fixtures__/buyUtils';
+import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
+import * as SELL_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/sellUtils';
+import * as EXCHANGE_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/exchangeUtils';
 import { CryptoSymbol, CryptoSymbolInfo } from 'invity-api';
 import {
     CryptoCategoryA,
@@ -182,7 +185,7 @@ describe('coinmarket utils', () => {
     });
 
     it('processSellAndBuyQuotes', () => {
-        const quotes = [...MIN_MAX_QUOTES_OK, ...ALTERNATIVE_QUOTES];
+        const quotes = [...BUY_FIXTURE.MIN_MAX_QUOTES_OK, ...BUY_FIXTURE.ALTERNATIVE_QUOTES];
 
         expect(processSellAndBuyQuotes([])).toStrictEqual([]);
         expect(processSellAndBuyQuotes(quotes).length).toStrictEqual(
@@ -193,6 +196,24 @@ describe('coinmarket utils', () => {
                     q.paymentId,
             ).length,
         );
+    });
+
+    describe('getBestRatedQuote', () => {
+        it('buy trades (shuffled with error)', () => {
+            expect(getBestRatedQuote(BUY_FIXTURE.MIN_MAX_QUOTES_OK, 'buy')).toStrictEqual(
+                BUY_FIXTURE.MIN_MAX_QUOTES_OK[1],
+            );
+        });
+        it('sell trades', () => {
+            expect(getBestRatedQuote(SELL_FIXTURE.MIN_MAX_QUOTES_OK, 'sell')).toStrictEqual(
+                SELL_FIXTURE.MIN_MAX_QUOTES_OK[0],
+            );
+        });
+        it('exchange trades (shuffled)', () => {
+            expect(getBestRatedQuote(EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK, 'exchange')).toStrictEqual(
+                EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK[EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK.length - 1],
+            );
+        });
     });
 
     it('function coinmarketBuildCryptoOptions', () => {
