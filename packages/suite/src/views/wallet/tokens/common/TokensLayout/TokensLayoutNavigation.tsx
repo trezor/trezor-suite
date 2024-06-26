@@ -7,19 +7,26 @@ import { IconName } from '@suite-common/icons';
 import { SelectedAccountLoaded } from '@suite-common/wallet-types';
 import { selectCoinDefinitions } from '@suite-common/token-definitions';
 import { Elevation, borders, spacingsPx, mapElevationToBorder, typography } from '@trezor/theme';
-import { useElevation, variables } from '@trezor/components';
+import { IconButton, useElevation, variables } from '@trezor/components';
+import { EventType, analytics } from '@trezor/suite-analytics';
 
-import { useSelector } from 'src/hooks/suite';
+import { useDispatch, useSelector } from 'src/hooks/suite';
 import { NavigationItem } from '../../../../../components/suite/layouts/SuiteLayout/Sidebar/NavigationItem';
 import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 import { SearchAction } from 'src/components/wallet/SearchAction';
+import { openModal } from 'src/actions/suite/modalActions';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: ${spacingsPx.md};
+`;
+
+const Actions = styled.div`
+    display: flex;
+    align-items: center;
 `;
 
 const List = styled.div`
@@ -69,6 +76,8 @@ export const TokensLayoutNavigation = ({
     searchQuery,
     setSearchQuery,
 }: TokensLayoutNavigationProps) => {
+    const { account } = selectedAccount;
+
     const [isExpanded, setExpanded] = useState(false);
 
     const routeName = useSelector(state => state.router.route?.name);
@@ -76,6 +85,7 @@ export const TokensLayoutNavigation = ({
         selectCoinDefinitions(state, selectedAccount.account.symbol),
     );
     const isDebug = useSelector(selectIsDebugModeActive);
+    const dispatch = useDispatch();
 
     const tokens = getTokens(
         selectedAccount.account.tokens || [],
@@ -83,6 +93,7 @@ export const TokensLayoutNavigation = ({
         isDebug,
         coinDefinitions,
     );
+    const showAddToken = ['ethereum'].includes(account.networkType) && isDebug;
 
     const Item = ({
         route,
@@ -106,6 +117,16 @@ export const TokensLayoutNavigation = ({
         />
     );
 
+    const handleAddToken = () => {
+        if (account.symbol) {
+            analytics.report({
+                type: EventType.AccountsActions,
+                payload: { symbol: account.symbol, action: 'add-token' },
+            });
+        }
+        dispatch(openModal({ type: 'add-token' }));
+    };
+
     return (
         <Wrapper>
             <List>
@@ -123,16 +144,26 @@ export const TokensLayoutNavigation = ({
                     count={tokens.unverified.length + tokens.hidden.length}
                 />
             </List>
-            <SearchAction
-                tooltipText="TR_TOKENS_SEARCH_TOOLTIP"
-                placeholder="TR_SEARCH_TOKENS"
-                isExpanded={isExpanded}
-                searchQuery={searchQuery}
-                setExpanded={setExpanded}
-                setSearch={setSearchQuery}
-                onSearch={e => setSearchQuery(e.target.value)}
-                dataTest="@wallet/accounts/search-icon"
-            />
+            <Actions>
+                <SearchAction
+                    tooltipText="TR_TOKENS_SEARCH_TOOLTIP"
+                    placeholder="TR_SEARCH_TOKENS"
+                    isExpanded={isExpanded}
+                    searchQuery={searchQuery}
+                    setExpanded={setExpanded}
+                    setSearch={setSearchQuery}
+                    onSearch={e => setSearchQuery(e.target.value)}
+                    dataTest="@wallet/accounts/search-icon"
+                />
+                {showAddToken && (
+                    <IconButton
+                        icon="PLUS"
+                        size="small"
+                        variant="tertiary"
+                        onClick={handleAddToken}
+                    />
+                )}
+            </Actions>
         </Wrapper>
     );
 };

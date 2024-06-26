@@ -9,15 +9,13 @@ import {
     IconProps,
 } from '@trezor/components';
 import { spacingsPx } from '@trezor/theme';
-import { getNetwork, hasNetworkFeatures } from '@suite-common/wallet-utils';
+import { hasNetworkFeatures } from '@suite-common/wallet-utils';
 import { WalletParams } from 'src/types/wallet';
 import { Translation } from 'src/components/suite/Translation';
 import { useDevice, useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { AppNavigationTooltip } from 'src/components/suite/AppNavigation/AppNavigationTooltip';
-import { openModal } from 'src/actions/suite/modalActions';
 import { selectSelectedAccount } from 'src/reducers/wallet/selectedAccountReducer';
-import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
 
 const Container = styled.div`
     display: flex;
@@ -38,15 +36,12 @@ export const HeaderActions = () => {
     const account = useSelector(selectSelectedAccount);
     const routerParams = useSelector(state => state.router.params) as WalletParams;
     const selectedAccount = useSelector(state => state.wallet.selectedAccount);
-    const isDebug = useSelector(selectIsDebugModeActive);
 
     const dispatch = useDispatch();
     const { device } = useDevice();
     const layoutSize = useSelector(state => state.resize.size);
     const isMobileLayout = layoutSize === 'TINY';
 
-    const network = getNetwork(routerParams?.symbol || '');
-    const networkType = account?.networkType || network?.networkType || '';
     const accountType = account?.accountType || routerParams?.accountType || '';
 
     const goToWithAnalytics = (...[routeName, options]: Parameters<typeof goto>) => {
@@ -60,20 +55,6 @@ export const HeaderActions = () => {
     };
 
     const additionalActions: ActionItem[] = [
-        {
-            id: 'wallet-add-token',
-            callback: () => {
-                if (account?.symbol) {
-                    analytics.report({
-                        type: EventType.AccountsActions,
-                        payload: { symbol: account.symbol, action: 'add-token' },
-                    });
-                }
-                dispatch(openModal({ type: 'add-token' }));
-            },
-            title: <Translation id="TR_TOKENS_ADD_WITH_RECEIVE" />,
-            isHidden: ['ethereum'].includes(networkType) ? !isDebug : true,
-        },
         {
             id: 'wallet-sign-verify',
             callback: () => {
