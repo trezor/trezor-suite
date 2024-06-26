@@ -4,6 +4,7 @@ import { SettingsLayout, SettingsSection } from 'src/components/settings';
 import { Translation } from 'src/components/suite';
 import { useLayoutSize, useSelector } from 'src/hooks/suite';
 import {
+    selectIsDebugModeActive,
     selectIsSettingsDesktopAppPromoBannerShown,
     selectSuiteFlags,
     selectTorState,
@@ -29,12 +30,14 @@ import { BitcoinAmountUnit } from './BitcoinAmountUnit';
 import { DesktopSuiteBanner } from './DesktopSuiteBanner';
 import { AddressDisplay } from './AddressDisplay';
 import { EnableViewOnly } from './EnableViewOnly';
+import { Experimental } from './Experimental';
 
 export const SettingsGeneral = () => {
     const shouldShowSettingsDesktopAppPromoBanner = useSelector(
         selectIsSettingsDesktopAppPromoBannerShown,
     );
 
+    const isDebug = useSelector(selectIsDebugModeActive);
     const { isViewOnlyModeVisible } = useSelector(selectSuiteFlags);
     const { isTorEnabled } = useSelector(selectTorState);
     const enabledNetworks = useSelector(selectEnabledNetworks);
@@ -94,12 +97,13 @@ export const SettingsGeneral = () => {
                 </SettingsSection>
             )}
 
-            {desktopUpdate.enabled && (
+            {(desktopUpdate.enabled || isDebug) && (
                 <SettingsSection
                     title={<Translation id="TR_EXPERIMENTAL_FEATURES" />}
                     icon="EXPERIMENTAL"
                 >
-                    <EarlyAccess />
+                    {desktopUpdate.enabled && <EarlyAccess />}
+                    {isDebug && <Experimental />}
                 </SettingsSection>
             )}
         </SettingsLayout>
