@@ -3,7 +3,7 @@ import { NETWORKS } from 'src/config/wallet';
 import TrezorConnect, { TokenInfo } from '@trezor/connect';
 import regional from 'src/constants/wallet/coinmarket/regional';
 import { TrezorDevice } from 'src/types/suite';
-import { CryptoSymbol } from 'invity-api';
+import { BuyTrade, CryptoSymbol, SellFiatTrade } from 'invity-api';
 import {
     cryptoToCoinSymbol,
     cryptoToNetworkSymbol,
@@ -24,6 +24,7 @@ import {
     CoinmarketOptionsGroupProps,
     CoinmarketTradeBuySellDetailMapProps,
     CoinmarketTradeBuySellType,
+    CoinmarketTradeDetailMapProps,
     CoinmarketTradeDetailType,
     CoinmarketTradeType,
     CryptoCategoryType,
@@ -276,22 +277,33 @@ export const getDefaultCountry = (country: string = regional.unknownCountry) => 
     };
 };
 
-// fill ids and remove alternative quotes
-export function processSellAndBuyQuotes<T extends CoinmarketTradeBuySellType>(
-    allQuotes: CoinmarketTradeBuySellDetailMapProps[T][] | undefined,
-): CoinmarketTradeBuySellDetailMapProps[T][] {
+export const filterQuotesAccordingTags = <T extends CoinmarketTradeBuySellType>(
+    allQuotes: CoinmarketTradeBuySellDetailMapProps[T][],
+) => {
+    return allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
+};
+
+// fill orderId for all and paymentId for sell and buy
+export const addIdsToQuotes = <T extends CoinmarketTradeType>(
+    allQuotes: CoinmarketTradeDetailMapProps[T][] | undefined,
+    type: CoinmarketTradeType,
+): CoinmarketTradeDetailMapProps[T][] => {
     if (!allQuotes) allQuotes = [];
+
     allQuotes.forEach(q => {
-        q.orderId = uuidv4();
+        const sellBuyQuote = ['buy', 'sell'].includes(type)
+            ? (q as BuyTrade | SellFiatTrade)
+            : null;
 
-        if (!q.paymentId) {
-            q.paymentId = uuidv4();
+        if (sellBuyQuote && !sellBuyQuote.paymentId) {
+            sellBuyQuote.paymentId = uuidv4();
         }
-    });
-    const quotes = allQuotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency'));
 
-    return quotes;
-}
+        q.orderId = uuidv4();
+    });
+
+    return allQuotes;
+};
 
 export const getBestRatedQuote = (
     quotes: CoinmarketTradeDetailType[] | undefined,

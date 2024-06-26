@@ -21,8 +21,9 @@ import {
 import { goto } from 'src/actions/suite/routerActions';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import {
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
     getUnusedAddressFromAccount,
-    processSellAndBuyQuotes,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import type { TradeSell } from 'src/types/wallet/coinmarketCommonTypes';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
@@ -81,11 +82,13 @@ export const useCoinmarketSellOffers = ({
                     return;
                 }
 
-                setInnerQuotes(
-                    getFilteredSuccessQuotes<CoinmarketTradeSellType>(
-                        processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes),
-                    ),
-                );
+                const quoteWithIds = addIdsToQuotes<CoinmarketTradeSellType>(allQuotes, 'sell');
+                const filteredQuotes =
+                    filterQuotesAccordingTags<CoinmarketTradeSellType>(quoteWithIds);
+                const successQuotes =
+                    getFilteredSuccessQuotes<CoinmarketTradeSellType>(filteredQuotes);
+
+                setInnerQuotes(successQuotes);
             } else {
                 setInnerQuotes(undefined);
             }
