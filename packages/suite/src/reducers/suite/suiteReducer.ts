@@ -11,6 +11,7 @@ import type { OAuthServerEnvironment } from 'src/types/suite/metadata';
 import { ensureLocale } from 'src/utils/suite/l10n';
 import type { Locale } from 'src/config/suite/languages';
 import { SUITE, STORAGE } from 'src/actions/suite/constants';
+import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import { Action, Lock, TorBootstrap, TorStatus } from 'src/types/suite';
 import { getExcludedPrerequisites, getPrerequisiteName } from 'src/utils/suite/prerequisites';
 import { RouterRootState, selectRouter } from './routerReducer';
@@ -86,6 +87,7 @@ export interface SuiteSettings {
     isDeviceAuthenticityCheckDisabled: boolean;
     addressDisplayType: AddressDisplayOptions;
     defaultWalletLoading: WalletType;
+    experimental?: ExperimentalFeature[];
 }
 
 export interface SuiteState {
@@ -205,6 +207,10 @@ const suiteReducer = (state: SuiteState = initialState, action: Action): SuiteSt
 
             case SUITE.SET_DEBUG_MODE:
                 draft.settings.debug = { ...draft.settings.debug, ...action.payload };
+                break;
+
+            case SUITE.SET_EXPERIMENTAL_FEATURES:
+                draft.settings.experimental = action.payload;
                 break;
 
             case SUITE.SET_FLAG:
@@ -377,5 +383,9 @@ export const selectSuiteSettings = (state: SuiteRootState) => ({
     defaultWalletLoading: state.suite.settings.defaultWalletLoading,
     isViewOnlyModeVisible: state.suite.flags.isViewOnlyModeVisible,
 });
+
+export const selectHasExperimentalFeature =
+    (feature: ExperimentalFeature) => (state: SuiteRootState) =>
+        state.suite.settings.experimental?.includes(feature) ?? false;
 
 export default suiteReducer;

@@ -224,6 +224,7 @@ const storageMiddleware = (api: MiddlewareAPI<Dispatch, AppState>) => {
                 case SUITE.SET_LANGUAGE:
                 case SUITE.SET_FLAG:
                 case SUITE.SET_DEBUG_MODE:
+                case SUITE.SET_EXPERIMENTAL_FEATURES:
                 case SUITE.ONION_LINKS:
                 case SUITE.SET_THEME:
                 case SUITE.SET_ADDRESS_DISPLAY_TYPE:

@@ -30,3 +30,4 @@ export const LOCK_TYPE = {
     UI: 3, // restricted most of the UI actions (buttons, keyboard etc.)
 } as const;
 export const REQUEST_DEVICE_RECONNECT = '@suite/request-device-reconnect';
+export const SET_EXPERIMENTAL_FEATURES = '@suite/set-experimental-features';
