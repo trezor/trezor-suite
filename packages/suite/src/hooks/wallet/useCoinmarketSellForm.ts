@@ -34,7 +34,8 @@ import {
 import {
     getComposeAddressPlaceholder,
     mapTestnetSymbol,
-    processSellAndBuyQuotes,
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
 } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { getAmountLimits } from 'src/utils/wallet/coinmarket/sellUtils';
 import { useFormDraft } from 'src/hooks/wallet/useFormDraft';
@@ -353,7 +354,9 @@ export const useCoinmarketSellForm = ({
             if (limits) {
                 setAmountLimits(limits);
             } else {
-                const quotes = processSellAndBuyQuotes<CoinmarketTradeSellType>(allQuotes);
+                const quotes = filterQuotesAccordingTags<CoinmarketTradeSellType>(
+                    addIdsToQuotes<CoinmarketTradeSellType>(allQuotes, 'sell'),
+                );
                 dispatch(saveQuotes(quotes));
                 navigateToSellOffers();
             }

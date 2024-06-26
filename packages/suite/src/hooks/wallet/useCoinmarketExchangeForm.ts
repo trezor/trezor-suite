@@ -35,7 +35,10 @@ import {
     FIAT_INPUT,
     FIAT_CURRENCY,
 } from 'src/types/wallet/coinmarketExchangeForm';
-import { getComposeAddressPlaceholder } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    addIdsToQuotes,
+    getComposeAddressPlaceholder,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     getAmountLimits,
     getSuccessQuotesOrdered,
@@ -56,7 +59,7 @@ import { networkToCryptoSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolU
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { selectLocalCurrency } from 'src/reducers/wallet/settingsReducer';
 import { TokenAddress } from '@suite-common/wallet-types';
-import { UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
+import { CoinmarketTradeExchangeType, UseCoinmarketProps } from 'src/types/coinmarket/coinmarket';
 import { BigNumber } from '@trezor/utils';
 
 export const ExchangeFormContext = createContext<ExchangeFormContextValues | null>(null);
@@ -373,7 +376,10 @@ export const useCoinmarketExchangeForm = ({
                 if (limits) {
                     setAmountLimits(limits);
                 } else {
-                    const successQuotes = getSuccessQuotesOrdered(allQuotes, exchangeInfo);
+                    const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
+                        getSuccessQuotesOrdered(allQuotes, exchangeInfo),
+                        'exchange',
+                    );
                     dispatch(saveQuotes(successQuotes));
                     navigateToExchangeOffers();
                 }
