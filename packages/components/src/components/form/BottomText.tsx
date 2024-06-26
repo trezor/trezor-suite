@@ -10,14 +10,14 @@ import { InputState } from './inputTypes';
 export const BOTTOM_TEXT_MIN_HEIGHT = 26; // 1 line of text + top padding
 
 const slideDown = keyframes`
-    from {
-        opacity: 0;
-        transform: translateY(-2px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+from {
+    opacity: 0;
+    transform: translateY(-2px);
+}
+to {
+    opacity: 1;
+    transform: translateY(0);
+}
 `;
 
 export const Container = styled.div<{ $inputState?: InputState; $isDisabled?: boolean }>`
@@ -36,25 +36,31 @@ interface BottomTextProps {
     inputState?: InputState;
     isDisabled?: boolean;
     icon?: IconName;
+    withIcon?: boolean;
     children: ReactNode;
 }
-
 export const BottomText = ({
     inputState,
     isDisabled,
-    icon = 'warningCircle',
     children,
+    icon,
+    withIcon,
 }: BottomTextProps) => {
     const theme = useTheme();
+    const iconMap = {
+        error: 'warningCircle',
+        warning: 'warningCircle',
+    } as const satisfies Record<InputState, IconName>;
 
     const iconColor: Color | CSSColor = isDisabled
         ? 'iconDisabled'
         : getInputStateTextColor(inputState, theme);
 
+    const iconName = icon || (inputState && iconMap[inputState]);
+
     return (
         <Container $inputState={inputState} $isDisabled={isDisabled}>
-            {icon && <Icon name={icon} size="medium" color={iconColor} />}
-
+            {withIcon && iconName && <Icon name={iconName} size="medium" color={iconColor} />}
             {children}
         </Container>
     );

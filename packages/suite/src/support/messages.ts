@@ -2016,6 +2016,10 @@ export default defineMessages({
         description: 'Placeholder in seed input asking user to pay attention to his device',
         id: 'TR_CHECK_YOUR_DEVICE',
     },
+    TR_CHECKSUM_CONVERSION_INFO: {
+        defaultMessage: 'Converted to checksum',
+        id: 'TR_CHECKSUM_CONVERSION_INFO',
+    },
     TR_CLEAR_ALL: {
         defaultMessage: 'Clear all',
         description: 'Clear form button',
@@ -2186,6 +2190,18 @@ export default defineMessages({
     TR_EDIT: {
         defaultMessage: 'Edit',
         id: 'TR_EDIT',
+    },
+    TR_ETH_ADDRESS_CHECKSUMMED_INFO: {
+        defaultMessage: 'Your address was automatically checksummed. Learn more...',
+        id: 'TR_ETH_ADDRESS_CHECKSUMMED_INFO',
+    },
+    TR_ETH_ADDRESS_CONVERTED_CHECKSUM: {
+        defaultMessage: 'Address converted to checksum format.',
+        id: 'TR_ETH_ADDRESS_CONVERTED_CHECKSUM',
+    },
+    TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED: {
+        defaultMessage: 'Your address was not used and is not checksummed, please double-check.',
+        id: 'TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED',
     },
     TR_NEEDS_ATTENTION_BOOTLOADER: {
         defaultMessage: 'Trezor is in Bootloader mode.',

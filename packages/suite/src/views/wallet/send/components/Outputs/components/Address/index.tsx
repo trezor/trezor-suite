@@ -8,6 +8,7 @@ import { scanOrRequestSendFormThunk } from 'src/actions/wallet/send/sendFormThun
 import { useDevice, useDispatch, useTranslation } from 'src/hooks/suite';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { getProtocolInfo } from 'src/utils/suite/protocol';
+import TrezorConnect from '@trezor/connect';
 import {
     isAddressValid,
     isAddressDeprecated,
@@ -20,7 +21,7 @@ import { PROTOCOL_TO_NETWORK } from 'src/constants/suite/protocol';
 import { notificationsActions } from '@suite-common/toast-notifications';
 
 import type { Output } from '@suite-common/wallet-types';
-import { InputError } from 'src/components/wallet';
+import { InputError, InputChecksumInfo } from 'src/components/wallet';
 
 const Container = styled.div`
     position: relative;
@@ -51,6 +52,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const [addressDeprecatedUrl, setAddressDeprecatedUrl] = useState<
         AddressDeprecatedUrl | undefined
     >(undefined);
+    const [hasAddressChecksummed, setHasAddressChecksummed] = useState<boolean | undefined>();
     const dispatch = useDispatch();
     const { device } = useDevice();
     const {
@@ -66,7 +68,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         setDraftSaveRequest,
     } = useSendFormContext();
     const { translationString } = useTranslation();
-
     const { descriptor, networkType, symbol } = account;
     const inputName = `outputs.${outputId}.address` as const;
     // NOTE: compose errors are always associated with the amount.
@@ -81,7 +82,13 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     const address = watch(inputName);
     const options = getDefaultValue('options', []);
     const broadcastEnabled = options.includes('broadcast');
-    const inputState = getInputState(addressError);
+    const getInputErrorState = () => {
+        if (addressError) {
+            return getInputState(addressError);
+        }
+
+        return undefined;
+    };
 
     const handleQrClick = useCallback(async () => {
         const uri = await dispatch(scanOrRequestSendFormThunk()).unwrap();
@@ -89,7 +96,6 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
         if (typeof uri !== 'string') {
             return;
         }
-
         const protocol = getProtocolInfo(uri);
 
         if (protocol) {
@@ -142,10 +148,12 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 break;
             case 'checksum':
                 return {
-                    onClick: () =>
+                    onClick: () => {
                         setValue(inputName, toChecksumAddress(address), {
                             shouldValidate: true,
-                        }),
+                        });
+                        setHasAddressChecksummed(true);
+                    },
                     text: translationString('TR_CONVERT_TO_CHECKSUM_ADDRESS'),
                 };
 
@@ -163,7 +171,10 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     };
 
     const { ref: inputRef, ...inputField } = register(inputName, {
-        onChange: () => composeTransaction(amountInputName),
+        onChange: () => {
+            composeTransaction(amountInputName);
+            setHasAddressChecksummed(false);
+        },
         required: translationString('RECIPIENT_IS_NOT_SET'),
         validate: {
             deprecated: (value: string) => {
@@ -198,9 +209,30 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                 }
             },
             // eth addresses are valid without checksum but Trezor displays them as checksummed
-            checksum: (value: string) => {
-                if (networkType === 'ethereum' && !checkAddressCheckSum(value)) {
-                    return translationString('RECIPIENT_IS_NOT_VALID');
+            checksum: async (address: string) => {
+                if (networkType === 'ethereum') {
+                    const params = {
+                        descriptor: address,
+                        coin: symbol,
+                    };
+
+                    //1.If the address is used but unchecksummed, then Suite will automatically convert the address to the correct checksummed form and inform the user as described in the OP.
+                    const result = await TrezorConnect.getAccountInfo(params); //TODO handle error
+                    if (result.success) {
+                        if (result.payload.history.total !== 0 && !checkAddressCheckSum(address)) {
+                            setValue(inputName, toChecksumAddress(address), {
+                                shouldValidate: true,
+                            });
+                            setHasAddressChecksummed(true);
+                        }
+                        //2. if the address is not checksummed at all and not found in blockbook
+                        //offer to checksum it with a button
+                        if (result.payload.history.total == 0) {
+                            if (address === address.toLowerCase()) {
+                                return translationString('TR_ETH_ADDRESS_NOT_USED_NOT_CHECKSUMMED');
+                            }
+                        }
+                    }
                 }
             },
             rippleToSelf: (value: string) => {
@@ -222,10 +254,28 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
     });
     const addressBottomText = isAddressWithLabel ? addressLabelComponent : null;
 
+    const getBottomText = () => {
+        if (addressError) {
+            return (
+                <InputError message={addressError.message} button={getValidationButtonProps()} />
+            );
+        }
+        if (hasAddressChecksummed) {
+            return (
+                <InputChecksumInfo
+                    message="TR_CHECKSUM_CONVERSION_INFO"
+                    tooltipContent="TR_ETH_ADDRESS_CHECKSUMMED_INFO"
+                />
+            );
+        }
+
+        return addressBottomText;
+    };
+
     return (
         <Container>
             <Input
-                inputState={inputState}
+                inputState={getInputErrorState()}
                 innerAddon={
                     metadataEnabled && broadcastEnabled ? (
                         <MetadataLabelingWrapper>
@@ -287,16 +337,7 @@ export const Address = ({ output, outputId, outputsCount }: AddressProps) => {
                         />
                     ) : undefined
                 }
-                bottomText={
-                    addressError ? (
-                        <InputError
-                            message={addressError.message}
-                            button={getValidationButtonProps()}
-                        />
-                    ) : (
-                        addressBottomText
-                    )
-                }
+                bottomText={getBottomText()}
                 data-test={inputName}
                 defaultValue={addressValue}
                 maxLength={formInputsMaxLength.address}
