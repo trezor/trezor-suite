@@ -19,7 +19,10 @@ import { CRYPTO_INPUT } from 'src/types/wallet/coinmarketSellForm';
 import { AmountLimits } from 'src/types/wallet/coinmarketCommonTypes';
 import { useCoinmarketBuyFormDefaultValues } from './useCoinmarketBuyFormDefaultValues';
 import { CoinmarketTradeBuyType, UseCoinmarketFormProps } from 'src/types/coinmarket/coinmarket';
-import { processSellAndBuyQuotes } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import {
     CoinmarketBuyFormContextProps,
     CoinmarketBuyFormProps,
@@ -209,7 +212,9 @@ const useCoinmarketBuyForm = ({
                 }
 
                 // processed quotes and without alternative quotes
-                const quotesDefault = processSellAndBuyQuotes<CoinmarketTradeBuyType>(allQuotes);
+                const quotesDefault = filterQuotesAccordingTags<CoinmarketTradeBuyType>(
+                    addIdsToQuotes<CoinmarketTradeBuyType>(allQuotes, 'buy'),
+                );
                 // without errors
                 const quotesSuccess =
                     getFilteredSuccessQuotes<CoinmarketTradeBuyType>(quotesDefault) ?? [];

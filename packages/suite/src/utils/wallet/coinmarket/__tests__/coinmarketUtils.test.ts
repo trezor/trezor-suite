@@ -8,9 +8,10 @@ import {
     getSendCryptoOptions,
     getTagAndInfoNote,
     buildCryptoOption,
-    processSellAndBuyQuotes,
     getBestRatedQuote,
     coinmarketBuildCryptoOptions,
+    addIdsToQuotes,
+    filterQuotesAccordingTags,
 } from '../coinmarketUtils';
 import { accountBtc, accountEth, coinDefinitions } from '../__fixtures__/coinmarketUtils';
 import * as BUY_FIXTURE from 'src/utils/wallet/coinmarket/__fixtures__/buyUtils';
@@ -184,17 +185,29 @@ describe('coinmarket utils', () => {
         });
     });
 
-    it('processSellAndBuyQuotes', () => {
-        const quotes = [...BUY_FIXTURE.MIN_MAX_QUOTES_OK, ...BUY_FIXTURE.ALTERNATIVE_QUOTES];
+    it('filterQuotesAccordingTags', () => {
+        const quotes = [
+            ...BUY_FIXTURE.MIN_MAX_QUOTES_OK,
+            ...BUY_FIXTURE.ALTERNATIVE_QUOTES,
+            ...SELL_FIXTURE.MIN_MAX_QUOTES_HIGH,
+        ];
 
-        expect(processSellAndBuyQuotes([])).toStrictEqual([]);
-        expect(processSellAndBuyQuotes(quotes).length).toStrictEqual(
-            quotes.filter(
-                q =>
-                    (!q.tags || !q.tags.includes('alternativeCurrency')) &&
-                    q.orderId &&
-                    q.paymentId,
-            ).length,
+        expect(filterQuotesAccordingTags([])).toStrictEqual([]);
+        expect(filterQuotesAccordingTags(quotes).length).toStrictEqual(
+            quotes.filter(q => !q.tags || !q.tags.includes('alternativeCurrency')).length,
+        );
+    });
+
+    it('addIdsToQuotes', () => {
+        const quotes = [...BUY_FIXTURE.MIN_MAX_QUOTES_OK];
+        const quotesExchange = [...EXCHANGE_FIXTURE.MIN_MAX_QUOTES_OK];
+
+        expect(addIdsToQuotes([], 'buy')).toStrictEqual([]);
+        expect(addIdsToQuotes(quotes, 'buy').length).toStrictEqual(
+            quotes.filter(q => q.orderId && q.paymentId).length,
+        );
+        expect(addIdsToQuotes(quotesExchange, 'exchange').length).toStrictEqual(
+            quotesExchange.filter(q => q.orderId).length,
         );
     });
 

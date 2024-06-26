@@ -5,7 +5,6 @@ import {
     isCoinmarketExchangeOffers,
     useCoinmarketOffersContext,
 } from 'src/hooks/wallet/coinmarket/offers/useCoinmarketCommonOffers';
-import { BuyTrade, SellFiatTrade } from 'invity-api';
 import { getBestRatedQuote } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 
 const CoinmarketOffers = () => {
@@ -28,21 +27,11 @@ const CoinmarketOffers = () => {
                 <CoinmarketOffersEmpty />
             ) : (
                 quotes.map(quote => {
-                    const typedQuote = quote as BuyTrade | SellFiatTrade;
-                    const paymentMethod = typedQuote?.paymentMethod
-                        ? `-${typedQuote?.paymentMethod}`
-                        : '';
-                    const fiatCurrency = typedQuote?.fiatCurrency
-                        ? `-${typedQuote?.fiatCurrency}`
-                        : '';
-
-                    const key = `${quote.exchange}${paymentMethod}${fiatCurrency}`;
-
                     return (
                         <CoinmarketOffersItem
-                            key={key}
+                            key={quote?.orderId}
                             quote={quote}
-                            isBestRate={bestRatedQuote?.orderId === quote.orderId}
+                            isBestRate={bestRatedQuote?.orderId === quote?.orderId}
                         />
                     );
                 })

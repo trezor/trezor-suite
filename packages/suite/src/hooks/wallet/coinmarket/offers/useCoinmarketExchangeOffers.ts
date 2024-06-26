@@ -8,7 +8,10 @@ import invityAPI from 'src/services/suite/invityAPI';
 import { useActions, useDispatch, useSelector } from 'src/hooks/suite';
 import * as coinmarketExchangeActions from 'src/actions/wallet/coinmarketExchangeActions';
 import { Account } from 'src/types/wallet';
-import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
+import {
+    addIdsToQuotes,
+    getUnusedAddressFromAccount,
+} from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { useCoinmarketNavigation } from 'src/hooks/wallet/useCoinmarketNavigation';
 import { useBitcoinAmountUnit } from 'src/hooks/wallet/useBitcoinAmountUnit';
 import { cryptoToNetworkSymbol } from 'src/utils/wallet/coinmarket/cryptoSymbolUtils';
@@ -88,7 +91,10 @@ export const useCoinmarketExchangeOffers = ({
 
                     return;
                 }
-                const successQuotes = getSuccessQuotesOrdered(allQuotes, exchangeInfo);
+                const successQuotes = addIdsToQuotes<CoinmarketTradeExchangeType>(
+                    getSuccessQuotesOrdered(allQuotes, exchangeInfo),
+                    'exchange',
+                );
                 setInnerQuotes(successQuotes);
             } else {
                 setInnerQuotes(undefined);
