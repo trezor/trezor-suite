@@ -10,12 +10,11 @@ import { NetworkSymbol } from '@suite-common/wallet-config';
 import { Ethereum } from '@everstake/wallet-sdk';
 import { fromWei, numberToHex, toWei } from 'web3-utils';
 import { getEthereumEstimateFeeParams, sanitizeHex } from '@suite-common/wallet-utils';
-import TrezorConnect, { EthereumTransaction } from '@trezor/connect';
+import TrezorConnect, { EthereumTransaction, Success } from '@trezor/connect';
 import { BigNumber } from '@trezor/utils/src/bigNumber';
-import { ValidatorsQueue } from '@suite-common/wallet-core';
+import { STAKE_GAS_LIMIT_RESERVE, ValidatorsQueue } from '@suite-common/wallet-core';
+import { BlockchainEstimatedFee } from '@trezor/connect/src/types/api/blockchainEstimateFee';
 
-// Gas reserve ensuring txs are processed
-const GAS_RESERVE = 220000;
 // source is a required parameter for some functions in the Everstake Wallet SDK.
 // This parameter is used for some contract calls.
 // It is a constant which allows the SDK to define which app calls its functions.
@@ -37,6 +36,12 @@ export const getEthNetworkForWalletSdk = (symbol: NetworkSymbol) => {
 
     return ethNetworks[symbol as keyof typeof ethNetworks];
 };
+
+const getAdjustedGasLimitConsumption = (estimatedFee: Success<BlockchainEstimatedFee>) =>
+    new BigNumber(estimatedFee.payload.levels[0].feeLimit || '')
+        .plus(STAKE_GAS_LIMIT_RESERVE)
+        .integerValue(BigNumber.ROUND_DOWN)
+        .toNumber();
 
 type StakeTxBaseArgs = {
     from: string;
@@ -81,14 +86,12 @@ const stake = async ({
             throw new Error(estimatedFee.payload.error);
         }
 
-        const gasConsumption = Number(estimatedFee.payload.levels[0].feeLimit);
-
         // Create the transaction
         return {
             from,
             to: contractPoolAddress,
             value: amountWei,
-            gasLimit: gasConsumption + GAS_RESERVE,
+            gasLimit: getAdjustedGasLimitConsumption(estimatedFee),
             data,
         };
     } catch (e) {
@@ -158,14 +161,12 @@ const unstake = async ({
             throw new Error(estimatedFee.payload.error);
         }
 
-        const gasConsumption = Number(estimatedFee.payload.levels[0].feeLimit);
-
         // Create the transaction
         return {
             from,
             value: '0',
             to: contractPoolAddress,
-            gasLimit: gasConsumption + GAS_RESERVE,
+            gasLimit: getAdjustedGasLimitConsumption(estimatedFee),
             data,
         };
     } catch (error) {
@@ -225,13 +226,11 @@ const claimWithdrawRequest = async ({ from, symbol, identity }: StakeTxBaseArgs)
             throw new Error(estimatedFee.payload.error);
         }
 
-        const gasConsumption = Number(estimatedFee.payload.levels[0].feeLimit);
-
         return {
             from,
             to: contractAccountingAddress,
             value: '0',
-            gasLimit: gasConsumption + GAS_RESERVE,
+            gasLimit: getAdjustedGasLimitConsumption(estimatedFee),
             data,
         };
     } catch (error) {

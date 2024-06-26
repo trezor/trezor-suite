@@ -30,6 +30,8 @@ import { selectDevice } from '../device/deviceReducer';
 import { selectTransactions } from '../transactions/transactionsReducer';
 import { ComposeTransactionThunkArguments, SignTransactionThunkArguments } from './sendFormTypes';
 import { SEND_MODULE_PREFIX } from './sendFormConstants';
+import { getTxStakeNameByDataHex } from '@suite-common/suite-utils';
+import { STAKE_GAS_LIMIT_RESERVE } from '../stake/stakeTypes';
 
 const calculate = (
     availableBalance: string,
@@ -139,18 +141,13 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
             },
         });
 
-        let customFeeLimit: string | undefined;
-
+        let customFeeLimit: BigNumber;
         if (estimatedFee.success) {
-            customFeeLimit = estimatedFee.payload.levels[0].feeLimit;
-            if (formValues.ethereumAdjustGasLimit && customFeeLimit) {
-                customFeeLimit = new BigNumber(customFeeLimit)
-                    .multipliedBy(new BigNumber(formValues.ethereumAdjustGasLimit))
-                    .toFixed(0);
-            }
+            customFeeLimit = new BigNumber(estimatedFee.payload.levels[0].feeLimit || '');
         } else {
-            customFeeLimit = tokenInfo ? ERC20_BACKUP_GAS_LIMIT : ETH_BACKUP_GAS_LIMIT;
-
+            customFeeLimit = new BigNumber(
+                tokenInfo ? ERC20_BACKUP_GAS_LIMIT : ETH_BACKUP_GAS_LIMIT,
+            );
             dispatch(
                 notificationsActions.addToast({
                     type: 'estimated-fee-error',
@@ -158,12 +155,23 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
             );
         }
 
+        // increase gas limit, this flow is used only for Invity
+        if (formValues.ethereumAdjustGasLimit) {
+            customFeeLimit = customFeeLimit.multipliedBy(formValues.ethereumAdjustGasLimit);
+        }
+
+        // increase gas limit for staking, this flow is used only during bump fee
+        const isStakeEthTx = !!getTxStakeNameByDataHex(formValues.ethereumDataHex);
+        if (isStakeEthTx) {
+            customFeeLimit = customFeeLimit.plus(STAKE_GAS_LIMIT_RESERVE);
+        }
+
         // FeeLevels are read-only
         const levels = customFeeLimit ? feeInfo.levels.map(l => ({ ...l })) : feeInfo.levels;
         const predefinedLevels = levels.filter(l => l.label !== 'custom');
         // update predefined levels with customFeeLimit (gasLimit from data size or erc20 transfer)
-        if (customFeeLimit) {
-            predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit));
+        if (customFeeLimit.gt(0)) {
+            predefinedLevels.forEach(l => (l.feeLimit = customFeeLimit.toFixed(0)));
         }
         // in case when selectedFee is set to 'custom' construct this FeeLevel from values
         if (formValues.selectedFee === 'custom') {
@@ -191,7 +199,9 @@ export const composeEthereumSendFormTransactionThunk = createThunk(
             const tx = wrappedResponse[key];
             if (tx.type !== 'error') {
                 tx.max = tx.max ? formatAmount(tx.max, decimals) : undefined;
-                tx.estimatedFeeLimit = customFeeLimit;
+                tx.estimatedFeeLimit = !customFeeLimit.isNaN()
+                    ? customFeeLimit.toFixed(0)
+                    : undefined;
             }
             if (tx.type === 'error' && tx.error === 'AMOUNT_NOT_ENOUGH_CURRENCY_FEE') {
                 tx.errorMessage = {
