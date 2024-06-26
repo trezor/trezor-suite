@@ -5466,6 +5466,19 @@ export default defineMessages({
         defaultMessage: 'Experimental features',
         description: 'Section title for Early Access program so far',
     },
+    TR_EXPERIMENTAL_FEATURES_ALLOW: {
+        id: 'TR_EXPERIMENTAL_FEATURES_ALLOW',
+        defaultMessage: 'Allow experimental features',
+    },
+    TR_EXPERIMENTAL_FEATURES_WARNING: {
+        id: 'TR_EXPERIMENTAL_FEATURES_WARNING',
+        defaultMessage: 'There is no guarantee of long-term support of these features.',
+    },
+    TR_EXPERIMENTAL_FEATURES_DESCRIPTION: {
+        id: 'TR_EXPERIMENTAL_FEATURES_DESCRIPTION',
+        defaultMessage:
+            'Allows you to select which experimental, cutting edge and/or unstable features you want to enable in Trezor Suite.',
+    },
     TR_EARLY_ACCESS: {
         id: 'TR_EARLY_ACCESS',
         defaultMessage: 'Early Access Program',
