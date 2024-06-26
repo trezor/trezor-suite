@@ -24,7 +24,16 @@ export const AccountSubpageName = ({
 }: AccountSubpageNameProps) => {
     const dispatch = useDispatch();
 
-    const handleBackClick = () => dispatch(goto(backRoute, { preserveParams: true }));
+    const handleBackClick = () =>
+        dispatch(
+            goto(backRoute, {
+                params: {
+                    symbol: selectedAccount.symbol,
+                    accountIndex: selectedAccount.index,
+                    accountType: selectedAccount.accountType,
+                },
+            }),
+        );
 
     return (
         <Container>

@@ -4,7 +4,7 @@ import { Select } from '@trezor/components';
 import styled from 'styled-components';
 import { useSendFormContext } from 'src/hooks/wallet';
 import { Account } from 'src/types/wallet';
-import { Output } from '@suite-common/wallet-types';
+import { Output, WalletParams } from '@suite-common/wallet-types';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { updateFiatRatesThunk, selectCurrentFiatRates } from '@suite-common/wallet-core';
 import { Timestamp, TokenAddress } from '@suite-common/wallet-types';
@@ -106,6 +106,8 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         toggleOption,
         composeTransaction,
         watch,
+        setValue,
+        setDraftSaveRequest,
     } = useSendFormContext();
     const coinDefinitions = useSelector(state => selectCoinDefinitions(state, account.symbol));
     const localCurrency = useSelector(selectLocalCurrency);
@@ -117,6 +119,7 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
         fiatRates,
     );
     const dispatch = useDispatch();
+    const routerParams = useSelector(state => state.router.params) as WalletParams;
 
     const sortedTokens = useMemo(() => {
         return tokensWithRates.sort(sortTokensWithRates);
@@ -143,6 +146,13 @@ export const TokenSelect = ({ output, outputId }: TokenSelectProps) => {
 
     const values = getValues();
     const fiatCurrency = values?.outputs?.[0]?.currency;
+
+    useEffect(() => {
+        if (routerParams?.contractAddress) {
+            setValue(tokenInputName, routerParams.contractAddress, { shouldValidate: true });
+            setDraftSaveRequest(true);
+        }
+    }, [routerParams?.contractAddress, setValue, tokenInputName, setDraftSaveRequest]);
 
     return (
         <Controller

@@ -242,7 +242,12 @@ export const TokenList = ({
                                             label: <Translation id="TR_NAV_SEND" />,
                                             onClick: () => {
                                                 goToWithAnalytics('wallet-send', {
-                                                    preserveParams: true,
+                                                    params: {
+                                                        symbol: account.symbol,
+                                                        accountIndex: account.index,
+                                                        accountType: account.accountType,
+                                                        contractAddress: token.contract,
+                                                    },
                                                 });
                                             },
                                             isDisabled: token.balance === '0',
@@ -347,7 +352,12 @@ export const TokenList = ({
                                         icon="SEND"
                                         onClick={() => {
                                             goToWithAnalytics('wallet-send', {
-                                                preserveParams: true,
+                                                params: {
+                                                    symbol: account.symbol,
+                                                    accountIndex: account.index,
+                                                    accountType: account.accountType,
+                                                    contractAddress: token.contract,
+                                                },
                                             });
                                         }}
                                     />
