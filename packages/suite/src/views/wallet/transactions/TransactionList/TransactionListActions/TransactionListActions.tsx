@@ -1,14 +1,25 @@
 import styled from 'styled-components';
 
-import { SearchAction, SearchProps } from './SearchAction';
-import { ExportAction, ExportActionProps } from './ExportAction';
+import { SearchAction } from 'src/components/wallet/SearchAction';
+import { ExportAction } from './ExportAction';
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from 'react';
+import { useDispatch, useTranslation } from 'src/hooks/suite';
+import { notificationsActions } from '@suite-common/toast-notifications';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
+import { Account } from '@suite-common/wallet-types';
+import { AccountLabels } from '@suite-common/metadata-types';
 
 const Wrapper = styled.div`
     display: flex;
     align-items: center;
 `;
 
-interface TransactionListActionsProps extends SearchProps, ExportActionProps {
+interface TransactionListActionsProps {
+    account: Account;
+    searchQuery: string;
+    setSearch: Dispatch<SetStateAction<string>>;
+    setSelectedPage: Dispatch<SetStateAction<number>>;
+    accountMetadata: AccountLabels;
     isExportable?: boolean;
 }
 
@@ -19,20 +30,60 @@ export const TransactionListActions = ({
     setSelectedPage,
     accountMetadata,
     isExportable = true,
-}: TransactionListActionsProps) => (
-    <Wrapper>
-        <SearchAction
-            account={account}
-            searchQuery={searchQuery}
-            setSearch={setSearch}
-            setSelectedPage={setSelectedPage}
-        />
-        {isExportable && (
-            <ExportAction
-                account={account}
+}: TransactionListActionsProps) => {
+    const [isExpanded, setExpanded] = useState(false);
+    const [hasFetchedAll, setHasFetchedAll] = useState(false);
+
+    const dispatch = useDispatch();
+    const { translationString } = useTranslation();
+
+    const onSearch = useCallback(
+        async ({ target }: ChangeEvent<HTMLInputElement>) => {
+            setSelectedPage(1);
+            setSearch(target.value);
+
+            if (!hasFetchedAll) {
+                setHasFetchedAll(true);
+
+                try {
+                    await dispatch(
+                        fetchAllTransactionsForAccountThunk({
+                            accountKey: account.key,
+                            noLoading: true,
+                        }),
+                    );
+                } catch (err) {
+                    dispatch(
+                        notificationsActions.addToast({
+                            type: 'error',
+                            error: translationString('TR_SEARCH_FAIL'),
+                        }),
+                    );
+                }
+            }
+        },
+        [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
+    );
+
+    return (
+        <Wrapper>
+            <SearchAction
+                tooltipText="TR_TRANSACTIONS_SEARCH_TOOLTIP"
+                placeholder="TR_SEARCH_TRANSACTIONS"
+                isExpanded={isExpanded}
                 searchQuery={searchQuery}
-                accountMetadata={accountMetadata}
+                setExpanded={setExpanded}
+                setSearch={setSearch}
+                onSearch={onSearch}
+                dataTest="@wallet/accounts/search-icon"
             />
-        )}
-    </Wrapper>
-);
+            {isExportable && (
+                <ExportAction
+                    account={account}
+                    searchQuery={searchQuery}
+                    accountMetadata={accountMetadata}
+                />
+            )}
+        </Wrapper>
+    );
+};

@@ -71,6 +71,7 @@ export const getTokens = (
     symbol: NetworkSymbol,
     isDebug: boolean,
     coinDefinitions?: TokenDefinition,
+    searchQuery?: string,
 ) => {
     const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
 
@@ -84,6 +85,15 @@ export const getTokens = (
         const isKnown = isTokenDefinitionKnown(coinDefinitions?.data, symbol, token.contract);
         const isHidden = coinDefinitions?.hide.includes(token.contract);
         const isShown = coinDefinitions?.show.includes(token.contract);
+
+        const query = searchQuery ? searchQuery.toLowerCase() : '';
+        const matchesQuery =
+            !searchQuery ||
+            token.symbol?.toLowerCase().includes(query) ||
+            token.name?.toLowerCase().includes(query) ||
+            token.contract.toLowerCase().includes(query);
+
+        if (!matchesQuery) return;
 
         if (!hasCoinDefinitions || (isKnown && !isHidden) || isShown) {
             shown.push(token);
