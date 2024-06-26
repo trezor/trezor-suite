@@ -12,20 +12,20 @@ import { Session } from '@trezor/transport/src/types';
 import { Log } from '@trezor/utils';
 import { AbstractApi } from '@trezor/transport/src/api/abstract';
 
-const abortController = new AbortController();
-export const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
-
-export const sessionsClient = new SessionsClient({
-    requestFn: args => sessionsBackground.handleMessage(args),
-    registerBackgroundCallbacks: () => {},
-});
-
-sessionsBackground.on('descriptors', descriptors => {
-    sessionsClient.emit('descriptors', descriptors);
-});
-
 export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => {
     let api: AbstractApi;
+
+    const abortController = new AbortController();
+    const sessionsBackground = new SessionsBackground({ signal: abortController.signal });
+
+    const sessionsClient = new SessionsClient({
+        requestFn: args => sessionsBackground.handleMessage(args),
+        registerBackgroundCallbacks: () => {},
+    });
+
+    sessionsBackground.on('descriptors', descriptors => {
+        sessionsClient.emit('descriptors', descriptors);
+    });
 
     if (typeof apiArg === 'string') {
         api =
@@ -269,5 +269,6 @@ export const createApi = (apiArg: 'usb' | 'udp' | AbstractApi, logger?: Log) => 
         send,
         receive,
         dispose,
+        sessionsClient,
     };
 };
