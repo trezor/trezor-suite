@@ -15,11 +15,100 @@ export type ThpDeviceProperties = {
     pairing_methods: ThpPairingMethod[];
 };
 
+export type ThpHandshakeCompletionReqNoisePayload = {
+    host_pairing_credential?: string;
+};
+
+// ThpCreateNewSession replacement
+// either passphrase or on_device needs to be present
+export type ThpCreateNewSession = { derive_cardano?: boolean } & (
+    | { passphrase: string; on_device?: undefined }
+    | { passphrase?: undefined; on_device: boolean }
+);
+
+export type ThpPairingRequest = {
+    host_name: string;
+};
+
+export type ThpPairingRequestApproved = {};
+
+export type ThpSelectMethod = {
+    selected_pairing_method: ThpPairingMethod;
+};
+
+export type ThpPairingPreparationsFinished = {};
+
+export type ThpCodeEntryCommitment = {
+    commitment: string;
+};
+
+export type ThpCodeEntryChallenge = {
+    challenge: string;
+};
+
+export type ThpCodeEntryCpaceTrezor = {
+    cpace_trezor_public_key: string;
+};
+
+export type ThpCodeEntryCpaceHostTag = {
+    cpace_host_public_key: string;
+    tag: string;
+};
+
+export type ThpCodeEntrySecret = {
+    secret: string;
+};
+
+export type ThpQrCodeTag = {
+    tag: string;
+};
+
+export type ThpQrCodeSecret = {
+    secret: string;
+};
+
+export type ThpNfcTagHost = {
+    tag: string;
+};
+
+export type ThpNfcTagTrezor = {
+    tag: string;
+};
+
+export type ThpCredentialRequest = {
+    host_static_pubkey: string;
+    autoconnect: boolean;
+    credential?: string;
+};
+
 export type ThpCredentialResponse = {
     trezor_static_pubkey: string;
     credential: string;
 };
 
+export type ThpEndRequest = {};
+
+export type ThpEndResponse = {};
+
 export type ThpProtobufMessageType = {
     ThpDeviceProperties: ThpDeviceProperties;
+    ThpHandshakeCompletionReqNoisePayload: ThpHandshakeCompletionReqNoisePayload;
+    ThpCreateNewSession: ThpCreateNewSession;
+    ThpPairingRequest: ThpPairingRequest;
+    ThpPairingRequestApproved: ThpPairingRequestApproved;
+    ThpSelectMethod: ThpSelectMethod;
+    ThpPairingPreparationsFinished: ThpPairingPreparationsFinished;
+    ThpCodeEntryCommitment: ThpCodeEntryCommitment;
+    ThpCodeEntryChallenge: ThpCodeEntryChallenge;
+    ThpCodeEntryCpaceTrezor: ThpCodeEntryCpaceTrezor;
+    ThpCodeEntryCpaceHostTag: ThpCodeEntryCpaceHostTag;
+    ThpCodeEntrySecret: ThpCodeEntrySecret;
+    ThpQrCodeTag: ThpQrCodeTag;
+    ThpQrCodeSecret: ThpQrCodeSecret;
+    ThpNfcTagHost: ThpNfcTagHost;
+    ThpNfcTagTrezor: ThpNfcTagTrezor;
+    ThpCredentialRequest: ThpCredentialRequest;
+    ThpCredentialResponse: ThpCredentialResponse;
+    ThpEndRequest: ThpEndRequest;
+    ThpEndResponse: ThpEndResponse;
 };

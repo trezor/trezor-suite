@@ -32,11 +32,54 @@ export type ThpCreateChannelResponse = {
     handshakeHash: Buffer;
 };
 
+export type ThpHandshakeInitRequest = {
+    key: Buffer;
+};
+
+export type ThpHandshakeInitResponse = {
+    handshakeHash: Buffer;
+    trezorEphemeralPubkey: Buffer;
+    trezorEncryptedStaticPubkey: Buffer;
+    trezorMaskedStaticPubkey: Buffer;
+    tag: Buffer;
+    hostEncryptedStaticPubkey: Buffer;
+    hostKey: Buffer;
+    trezorKey: Buffer;
+};
+
+export type ThpHandshakeCompletionRequest = {
+    hostPubkey: Buffer;
+    encryptedPayload: Buffer;
+};
+
+export type ThpHandshakeCompletionResponse = {
+    state: 0 | 1;
+    tag: Buffer;
+};
+
 export type ThpMessageType = ThpProtobufMessageType & {
     ThpError: ThpError;
     ThpAck: ThpAck;
     ThpCreateChannelRequest: ThpCreateChannelRequest;
     ThpCreateChannelResponse: ThpCreateChannelResponse;
+    ThpHandshakeInitRequest: ThpHandshakeInitRequest;
+    ThpHandshakeInitResponse: ThpHandshakeInitResponse;
+    ThpHandshakeCompletionRequest: ThpHandshakeCompletionRequest;
+    ThpHandshakeCompletionResponse: ThpHandshakeCompletionResponse;
+};
+
+export type ThpHandshakeCredentials = {
+    pairingMethods: ThpDeviceProperties['pairing_methods'];
+    handshakeHash: Buffer;
+    handshakeCommitment: Buffer;
+    codeEntryChallenge: Buffer;
+    trezorEncryptedStaticPubkey: Buffer;
+    hostEncryptedStaticPubkey: Buffer;
+    staticKey: Buffer;
+    hostStaticPublicKey: Buffer;
+    hostKey: Buffer;
+    trezorKey: Buffer;
+    trezorCpacePublicKey: Buffer;
 };
 
 export type ThpCredentials = ThpCredentialResponse & { autoconnect?: boolean };
