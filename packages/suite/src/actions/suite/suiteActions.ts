@@ -9,6 +9,7 @@ import { deviceActions } from '@suite-common/wallet-core';
 import { TorStatus } from 'src/types/suite';
 import { isOnionUrl } from 'src/utils/suite/tor';
 import * as modalActions from 'src/actions/suite/modalActions';
+import { ExperimentalFeature } from 'src/constants/suite/experimental';
 import type { Locale } from 'src/config/suite/languages';
 import type { Dispatch, GetState, AppState, TorBootstrap } from 'src/types/suite';
 import {
@@ -73,7 +74,8 @@ export type SuiteAction =
           type: typeof SUITE.SET_AUTODETECT;
           payload: Partial<AutodetectSettings>;
       }
-    | { type: typeof deviceActions.requestDeviceReconnect.type };
+    | { type: typeof deviceActions.requestDeviceReconnect.type }
+    | { type: typeof SUITE.SET_EXPERIMENTAL_FEATURES; payload?: ExperimentalFeature[] };
 
 export const appChanged = createAction(
     SUITE.APP_CHANGED,
