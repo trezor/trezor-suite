@@ -79,7 +79,7 @@ export const AddWalletButton = ({ device, instances, onCancel }: AddWalletButton
                         >
                             <Row gap={spacings.xs}>
                                 <Translation id="TR_ADD_HIDDEN_WALLET" />{' '}
-                                <HotkeyBadge hotkey={['CTRL', 'KEY_P']} />
+                                <HotkeyBadge hotkey={['ALT', 'KEY_P']} />
                             </Row>
                         </Button>
                     )}
