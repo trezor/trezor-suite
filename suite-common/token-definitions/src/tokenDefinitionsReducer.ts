@@ -65,6 +65,25 @@ export const prepareTokenDefinitionsReducer = createReducerWithExtraDeps(
             .addCase(tokenDefinitionsActions.setTokenStatus, (state, action) => {
                 const { networkSymbol, type, contractAddress, status } = action.payload;
 
+                if (!state[networkSymbol]) {
+                    state[networkSymbol] = {
+                        coin: {
+                            error: false,
+                            data: undefined,
+                            isLoading: true,
+                            hide: [],
+                            show: [],
+                        },
+                        nft: {
+                            error: false,
+                            data: undefined,
+                            isLoading: true,
+                            hide: [],
+                            show: [],
+                        },
+                    };
+                }
+
                 const definitions = state[networkSymbol];
 
                 if (definitions) {
