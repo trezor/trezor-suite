@@ -37,6 +37,7 @@ import { SettingsGeneral } from 'src/views/settings/SettingsGeneral/SettingsGene
 import { SettingsCoins } from 'src/views/settings/SettingsCoins/SettingsCoins';
 import { SettingsDebug } from 'src/views/settings/SettingsDebug/SettingsDebug';
 import { SettingsDevice } from 'src/views/settings/SettingsDevice/SettingsDevice';
+import PasswordManager from 'src/views/password-manager';
 
 const components: { [key: string]: ComponentType<any> } = {
     'suite-index': Dashboard,
@@ -70,6 +71,8 @@ const components: { [key: string]: ComponentType<any> } = {
     'wallet-coinmarket-savings-payment-info': WalletCoinmarketSavingsPaymentInfo,
     'wallet-coinmarket-savings-overview': WalletCoinmarketSavingsOverview,
     'wallet-coinmarket-redirect': WalletCoinmarketRedirect,
+
+    'password-manager-index': PasswordManager,
 
     'settings-index': SettingsGeneral,
     'settings-coins': SettingsCoins,

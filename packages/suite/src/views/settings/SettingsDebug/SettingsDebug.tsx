@@ -14,7 +14,6 @@ import { DeviceAuthenticity } from './DeviceAuthenticity';
 import { Devkit } from './Devkit';
 import { Transport } from './Transport';
 import { TransportBackends } from './TransportBackends';
-import { PasswordManager } from './PasswordManager/PasswordManager';
 import { ViewOnlySettings } from './ViewOnlySettings';
 import { TriggerHighlight } from './TriggerHighlight';
 import { Backends } from './Backends';
@@ -64,9 +63,6 @@ export const SettingsDebug = () => {
             </SettingsSection>
             <SettingsSection title="Backends">
                 <Backends />
-            </SettingsSection>
-            <SettingsSection title="Password manager">
-                <PasswordManager />
             </SettingsSection>
             <SettingsSection title="View only">
                 <ViewOnlySettings />
