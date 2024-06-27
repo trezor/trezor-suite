@@ -58,6 +58,11 @@ export const routes = [
         isFullscreenApp: true,
     },
     {
+        name: 'password-manager-index',
+        pattern: '/password-manager',
+        app: 'password-manager',
+    },
+    {
         name: 'settings-index',
         pattern: '/settings',
         app: 'settings',

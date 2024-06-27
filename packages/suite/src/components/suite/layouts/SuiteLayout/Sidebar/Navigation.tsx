@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
+import { useSelector } from 'src/hooks/suite';
+import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
+import { ExperimentalFeature } from 'src/constants/suite/experimental';
 
 const Nav = styled.nav`
     display: flex;
@@ -10,6 +13,14 @@ const Nav = styled.nav`
     gap: ${spacingsPx.xxs};
     margin: ${spacingsPx.xs};
 `;
+
+const PasswordManagerNavItem = (props: NavigationItemProps) => {
+    const passwordManagerExperimentalFeature = useSelector(
+        selectHasExperimentalFeature(ExperimentalFeature.PasswordManager),
+    );
+
+    return passwordManagerExperimentalFeature ? <NavigationItem {...props} /> : null;
+};
 
 const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationItemProps> }> = [
     {
@@ -29,6 +40,14 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         goToRoute: 'settings-index',
         routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
         dataTest: '@suite/menu/settings',
+    },
+    {
+        nameId: 'TR_PASSWORD_MANAGER',
+        icon: 'ghost',
+        goToRoute: 'password-manager-index',
+        routes: ['password-manager-index'],
+        dataTest: '@suite/menu/password-manager',
+        CustomComponent: PasswordManagerNavItem,
     },
 ];
 
