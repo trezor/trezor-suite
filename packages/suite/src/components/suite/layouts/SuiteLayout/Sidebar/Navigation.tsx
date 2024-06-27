@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import { spacingsPx } from '@trezor/theme';
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
+import { useSelector } from 'src/hooks/suite';
+import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
+import { ExperimentalFeature } from 'src/constants/suite/experimental';
 
 const Nav = styled.nav`
     display: flex;
@@ -30,14 +33,34 @@ const navItems: Array<NavigationItemProps & { CustomComponent?: FC<NavigationIte
         routes: ['settings-index', 'settings-device', 'settings-coins', 'settings-debug'],
         dataTest: '@suite/menu/settings',
     },
+    {
+        nameId: 'TR_PASSWORD_MANAGER',
+        icon: 'ghost',
+        goToRoute: 'password-manager-index',
+        routes: ['password-manager-index'],
+        dataTest: '@suite/menu/password-manager',
+    },
 ];
 
-export const Navigation = () => (
-    <Nav>
-        {navItems.map(item => {
-            const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+export const Navigation = () => {
+    const passwordManagerExperimentalFeature = useSelector(
+        selectHasExperimentalFeature(ExperimentalFeature.PasswordManager),
+    );
 
-            return <Component key={item.nameId} {...item} />;
-        })}
-    </Nav>
-);
+    return (
+        <Nav>
+            {navItems
+                .filter(item => {
+                    if (item.goToRoute === 'password-manager-index') {
+                        return passwordManagerExperimentalFeature;
+                    }
+                    return true;
+                })
+                .map(item => {
+                    const Component = item.CustomComponent ? item.CustomComponent : NavigationItem;
+
+                    return <Component key={item.nameId} {...item} />;
+                })}
+        </Nav>
+    );
+};

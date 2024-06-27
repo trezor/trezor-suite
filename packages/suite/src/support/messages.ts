@@ -3574,6 +3574,10 @@ export default defineMessages({
         defaultMessage: 'Entered wrong PIN',
         id: 'TR_WRONG_PIN_ENTERED',
     },
+    TR_PASSWORD_MANAGER: {
+        defaultMessage: 'Password manager',
+        id: 'TR_PASSWORD_MANAGER',
+    },
     TR_SETTINGS: {
         defaultMessage: 'Settings',
         id: 'TR_SETTINGS',

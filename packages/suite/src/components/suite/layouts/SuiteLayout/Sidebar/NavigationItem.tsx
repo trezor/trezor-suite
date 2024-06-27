@@ -108,7 +108,7 @@ export const NavigationItem = ({
         <Container
             $isActive={isActive || isActiveRoute}
             onClick={handleClick}
-            data-test={dataTest! !== undefined ? dataTest : `@suite/menu/${goToRoute}`}
+            data-test={dataTest || `@suite/menu/${goToRoute}`}
             className={className}
             tabIndex={0}
             $elevation={elevation}
