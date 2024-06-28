@@ -43,13 +43,13 @@ export const AccountNavigation = () => {
             isHidden: false,
         },
         {
-            id: 'wallet-details',
+            id: 'wallet-tokens-coins',
             callback: () => {
-                goToWithAnalytics('wallet-details', { preserveParams: true });
+                goToWithAnalytics('wallet-tokens-coins', { preserveParams: true });
             },
-            title: <Translation id="TR_NAV_DETAILS" />,
-            isHidden: !['cardano', 'bitcoin'].includes(networkType),
-            'data-test': `@wallet/menu/wallet-details`,
+            title: <Translation id="TR_NAV_TOKENS" />,
+            isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
+            activeRoutes: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
         },
         {
             id: 'wallet-staking',
@@ -60,13 +60,13 @@ export const AccountNavigation = () => {
             isHidden: !hasNetworkFeatures(account, 'staking'),
         },
         {
-            id: 'wallet-tokens-coins',
+            id: 'wallet-details',
             callback: () => {
-                goToWithAnalytics('wallet-tokens-coins', { preserveParams: true });
+                goToWithAnalytics('wallet-details', { preserveParams: true });
             },
-            title: <Translation id="TR_NAV_TOKENS" />,
-            isHidden: !['cardano', 'ethereum', 'solana'].includes(networkType),
-            activeRoutes: ['wallet-tokens-coins', 'wallet-tokens-hidden'],
+            title: <Translation id="TR_NAV_DETAILS" />,
+            isHidden: !['cardano', 'bitcoin'].includes(networkType),
+            'data-test': `@wallet/menu/wallet-details`,
         },
     ];
 
