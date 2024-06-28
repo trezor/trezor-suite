@@ -12,6 +12,9 @@
         },
         { "path": "../../suite-common/sentry" },
         {
+            "path": "../../suite-common/suite-constants"
+        },
+        {
             "path": "../../suite-common/suite-types"
         },
         {
