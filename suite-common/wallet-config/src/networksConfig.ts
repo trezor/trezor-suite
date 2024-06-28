@@ -100,7 +100,7 @@ export const networks = {
             address: 'https://etc1.trezor.io/address/',
             queryString: '',
         },
-        features: ['sign-verify', 'tokens'],
+        features: ['sign-verify', 'tokens', 'coin-definitions'],
         label: 'TR_INCLUDING_TOKENS',
         customBackends: ['blockbook'],
         accountTypes: {},
