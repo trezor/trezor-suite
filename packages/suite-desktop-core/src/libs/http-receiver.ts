@@ -2,6 +2,7 @@ import * as url from 'url';
 
 import { xssFilters } from '@trezor/utils';
 import { HttpServer, allowReferers } from '@trezor/node-utils';
+import { trezorLogo } from '@suite-common/suite-constants';
 
 import { HTTP_ORIGINS_DEFAULT } from './constants';
 import { convertILoggerToLog } from '../utils/IloggerToLog';
@@ -21,16 +22,42 @@ interface Events {
     'spend/message': (event: Partial<MessageEvent>) => void;
 }
 
-const applyTemplate = (content: string, options?: TemplateOptions) => {
+const applyTemplate = (content = 'You may now close this window.', options?: TemplateOptions) => {
     const template = `
         <!DOCTYPE html>
         <html>
             <head>
                 <title>${options?.title ?? 'Trezor Suite'}</title>
                 ${options?.script || ''}
+                <style>
+                    body, html {
+                      width: 100%;
+                      height: 100%;
+                      margin: 0;
+                      padding: 0;
+                      font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+                      display: flex;
+                      flex-direction: column;
+                      justify-content: center;
+                      align-items: center;
+                    }
+                    a {
+                        text-decoration: none;
+                        cursor: pointer;
+                        color: #171717;
+                        font-weight: 500;
+                        display: inline-flex;
+                        align-items: center;
+                    }
+                    a:hover {
+                      text-decoration: underline;
+                    }
+                </style>
             </head>
             <body>
+                <img style="margin-bottom:40px" alt="trezor logo" src="data:image/png;base64, ${trezorLogo}" />
                 ${content}
+                <a style="margin-top:40px" href="trezorsuite://">Go back to Trezor Suite</a>
             </body>
         </html>
     `;
@@ -68,7 +95,7 @@ export const createHttpReceiver = () => {
                     }
                 </script>
             `;
-            const template = applyTemplate('You may now close this window.', { script });
+            const template = applyTemplate(undefined, { script });
             response.end(template);
         },
     ]);
@@ -81,7 +108,7 @@ export const createHttpReceiver = () => {
                 httpReceiver.emit('buy/redirect', query.p.toString());
             }
 
-            const template = applyTemplate('You may now close this window.');
+            const template = applyTemplate();
             response.end(template);
         },
     ]);
@@ -126,7 +153,7 @@ export const createHttpReceiver = () => {
                 httpReceiver.emit('sell/redirect', query.p.toString());
             }
 
-            const template = applyTemplate('You may now close this window.');
+            const template = applyTemplate();
             response.end(template);
         },
     ]);
@@ -143,8 +170,6 @@ export const createHttpReceiver = () => {
                                 height: 100%;
                                 margin: 0;
                                 padding: 0;
-                                display: flex;
-                                justify-content: center;
                                 font-family: sans-serif;
                                 display: flex;
                                 flex-direction: column;
@@ -207,7 +232,7 @@ export const createHttpReceiver = () => {
                 data: Array.isArray(query.data) ? query.data.join(',') : query.data,
             });
 
-            const template = applyTemplate('You may now close this window.');
+            const template = applyTemplate();
             response.end(template);
         },
     ]);

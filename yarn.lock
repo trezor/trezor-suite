@@ -8725,7 +8725,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-common/suite-constants@workspace:*, @suite-common/suite-constants@workspace:suite-common/suite-constants":
+"@suite-common/suite-constants@workspace:*, @suite-common/suite-constants@workspace:^, @suite-common/suite-constants@workspace:suite-common/suite-constants":
   version: 0.0.0-use.local
   resolution: "@suite-common/suite-constants@workspace:suite-common/suite-constants"
   dependencies:
@@ -11126,6 +11126,7 @@ __metadata:
     "@sentry/webpack-plugin": "npm:^2.14.0"
     "@suite-common/message-system": "workspace:*"
     "@suite-common/sentry": "workspace:*"
+    "@suite-common/suite-constants": "workspace:^"
     "@suite-common/suite-types": "workspace:*"
     "@suite-common/suite-utils": "workspace:*"
     "@suite-common/wallet-config": "workspace:*"
