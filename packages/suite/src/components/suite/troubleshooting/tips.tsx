@@ -63,7 +63,7 @@ const BridgeInstall = () => {
     return (
         <Wrapper>
             <Translation
-                id="TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION"
+                id="TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_DESCRIPTION"
                 values={{
                     a: chunks => (
                         <TrezorLink variant="underline" onClick={handleClick}>
@@ -106,7 +106,7 @@ export const TROUBLESHOOTING_TIP_BRIDGE_STATUS = {
 
 export const TROUBLESHOOTING_TIP_BRIDGE_INSTALL = {
     key: 'bridge-install',
-    heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_TITLE" />,
+    heading: <Translation id="TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_TITLE" />,
     description: <BridgeInstall />,
     hide: !isWeb(),
 };

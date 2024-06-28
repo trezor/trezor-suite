@@ -1,6 +1,6 @@
 import { testMocks } from '@suite-common/test-utils';
 
-import { getProtocolInfo, isProtocolScheme } from 'src/utils/suite/protocol';
+import { getProtocolInfo, isPaymentRequestProtocolScheme } from 'src/utils/suite/protocol';
 import * as fixtures from '../__fixtures__/protocol';
 
 jest.doMock('@trezor/suite-analytics', () => testMocks.getAnalytics());
@@ -13,10 +13,10 @@ describe('getProtocolInfo', () => {
     });
 });
 
-describe('isProtocolScheme', () => {
-    fixtures.isProtocolScheme.forEach(f => {
+describe('isPaymentRequestProtocolScheme', () => {
+    fixtures.isPaymentRequestProtocolScheme.forEach(f => {
         it(f.description, () => {
-            expect(isProtocolScheme(f.scheme)).toEqual(f.result);
+            expect(isPaymentRequestProtocolScheme(f.scheme)).toEqual(f.result);
         });
     });
 });

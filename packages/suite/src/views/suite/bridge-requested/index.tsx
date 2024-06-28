@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { DATA_URL, HELP_CENTER_TOR_URL } from '@trezor/urls';
+import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
 import { Translation, TrezorLink, Modal, Metadata } from 'src/components/suite';
-import { Button, Paragraph, variables } from '@trezor/components';
+import { Button, Paragraph, Link, variables, Spinner } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
-import { isWeb } from '@trezor/env-utils';
+import { isDesktop, isWeb } from '@trezor/env-utils';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectTorState } from 'src/reducers/suite/suiteReducer';
 import { isWebUsb } from 'src/utils/suite/transport';
@@ -41,22 +41,17 @@ const Footer = styled.div`
     }
 `;
 
-const Version = styled.div<{ $show: boolean }>`
-    visibility: ${({ $show }) => ($show ? 'visible' : 'hidden')};
-    margin-top: 10px;
-    font-size: ${variables.FONT_SIZE.SMALL};
-`;
-
 const Col = styled.div<{ $justify?: string }>`
     display: flex;
     flex: 1;
     justify-content: ${({ $justify }) => $justify};
 `;
 
-export const InstallBridge = () => {
+export const BridgeRequested = () => {
     const [isSuiteDesktopRunning, setIsSuiteDesktopRunning] = useState<boolean | undefined>(
         undefined,
     );
+    const [isBridgeRunning, setIsBridgeRunning] = useState<boolean | undefined>(undefined);
     const [confirmGoToWallet, setConfirmGoToWallet] = useState(false);
 
     const { isTorEnabled } = useSelector(selectTorState);
@@ -68,19 +63,6 @@ export const InstallBridge = () => {
         latestVersion: transport?.bridge ? transport.bridge.version.join('.') : null,
         uri: DATA_URL,
     };
-
-    useEffect(() => {
-        fetch('http://localhost:21335')
-            .then(res => setIsSuiteDesktopRunning(res.ok))
-            .catch(() => setIsSuiteDesktopRunning(false));
-
-        // fetch('http://localhost:21325')
-        //     .then(res => setIsBridgeRunning(res.ok))
-        //     .catch(() => setIsBridgeRunning(false));
-    });
-
-    console.log('transport', transport);
-    console.log('isWebusb', isWebUsb(transport));
 
     const goToWallet = () => dispatch(goto('wallet-index'));
 
@@ -111,12 +93,11 @@ export const InstallBridge = () => {
 
     if (transport?.type === 'BridgeTransport') {
         // not 100%, this is true only for latest suite-desktop release
-        const isBundled = transport?.bridge?.version?.[0] === 3;
 
         return (
             <Modal
                 heading={'Bridge'}
-                description={`Trezor Bridge is a http server is running. ${isBundled ? 'Bundled' : 'Standalone'} version: ${transport?.bridge?.version.join('.')} `}
+                description={`Bridge was requested by another application. Keep this in background and all will be good. Nobody needs to get hurt`}
             >
                 <Metadata title="Bridge | Trezor Suite" />
 
@@ -135,57 +116,5 @@ export const InstallBridge = () => {
             </Modal>
         );
     }
-
-    return (
-        <Modal
-            heading={'Bridge'}
-            description={
-                'To guarantee the best support for various 3rd party applications, run your Trezor Suite application in the background.'
-            }
-            data-test="@modal/bridge"
-        >
-            <Metadata title="Bridge | Trezor Suite" />
-
-            <Content>
-                <Version $show={!!data.currentVersion}>
-                    <Translation
-                        id="TR_TREZOR_BRIDGE_RUNNING_VERSION"
-                        values={{ version: data.currentVersion }}
-                    />
-                </Version>
-
-                <>
-                    {isSuiteDesktopRunning && 'Suite desktop is running'}
-
-                    <div>
-                        <Button
-                            // href="trezorsuite://bridge-requested-by-a-3rd-party"
-                            onClick={() => {
-                                if (isWebUsb(transport)) {
-                                    console.log('calling disable webusb');
-                                    TrezorConnect.disableWebUSB();
-                                }
-
-                                window.open('trezorsuite://bridge-requested-by-a-3rd-party');
-                            }}
-                        >
-                            Open Trezor Suite desktop app
-                        </Button>
-                    </div>
-
-                    {/* {isWebUsb(transport) && (
-                        <Button onClick={TrezorConnect.disableWebUSB}>Disable WebUSB</Button>
-                    )} */}
-                </>
-                {isWeb() && isTorEnabled && (
-                    <Paragraph>
-                        <TrezorLink href={HELP_CENTER_TOR_URL}>
-                            <Translation id="TR_TOR_BRIDGE" />
-                        </TrezorLink>
-                    </Paragraph>
-                )}
-            </Content>
-            <Footer></Footer>
-        </Modal>
-    );
+    return null;
 };

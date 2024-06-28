@@ -13,6 +13,7 @@ import type { ForegroundAppRoute } from 'src/types/suite';
 import { selectSuiteFlags } from 'src/reducers/suite/suiteReducer';
 import { FunctionComponent } from 'react';
 import { MultiShareBackupModal } from '../ReduxModal/UserContextModal/MultiShareBackupModal/MultiShareBackupModal';
+import { BridgeRequested } from 'src/views/suite/bridge-requested';
 
 // would not work if defined directly in the switch
 const FirmwareType = () => <FirmwareUpdate shouldSwitchFirmwareType />;
@@ -23,7 +24,9 @@ const getForegroundApp = (app: ForegroundAppRoute['app'], isViewOnlyModeVisible:
         'firmware-type': FirmwareType,
         'firmware-custom': FirmwareCustom,
         version: Version,
+        // todo rename
         bridge: InstallBridge,
+        'bridge-requested': BridgeRequested,
         udev: UdevRules,
         'switch-device': isViewOnlyModeVisible ? SwitchDevice : SwitchDeviceLegacy,
         recovery: Recovery,

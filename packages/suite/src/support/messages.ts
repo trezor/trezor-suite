@@ -4447,9 +4447,9 @@ export default defineMessages({
         id: 'TR_TREZOR_BRIDGE_DOWNLOAD',
         defaultMessage: 'Trezor Bridge Download',
     },
-    TR_CURRENTLY_INSTALLED_TREZOR: {
-        id: 'TR_CURRENTLY_INSTALLED_TREZOR',
-        defaultMessage: 'Currently installed: Trezor Bridge {version}',
+    TR_TREZOR_BRIDGE_RUNNING_VERSION: {
+        id: 'TR_TREZOR_BRIDGE_RUNNING_VERSION',
+        defaultMessage: 'Trezor Bridge running version {version}',
     },
     TR_OUTDATED_BRIDGE_DESKTOP: {
         id: 'TR_OUTDATED_BRIDGE_DESKTOP',
@@ -7564,6 +7564,14 @@ export default defineMessages({
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_INSTALL_DESCRIPTION',
         defaultMessage: '<a>Download Trezor Bridge</a>',
     },
+    TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_TITLE: {
+        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_TITLE',
+        defaultMessage: 'You may also run Trezor Suite in background',
+    },
+    TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_DESCRIPTION: {
+        id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_BACKGROUND_DESCRIPTION',
+        defaultMessage: '<a>See intructions</a>',
+    },
     TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE: {
         id: 'TR_TROUBLESHOOTING_TIP_BRIDGE_USE_TITLE',
         defaultMessage:
@@ -9474,5 +9482,9 @@ export default defineMessages({
     TR_SELECT_TREZOR_TO_CONTINUE: {
         id: 'TR_SELECT_TREZOR_TO_CONTINUE',
         defaultMessage: 'Select your Trezor to continue.',
+    },
+    TR_RUN_TREZOR_SUITE_ON_BACKGROUND: {
+        id: 'TR_RUN_TREZOR_SUITE_ON_BACKGROUND',
+        defaultMessage: 'Run Trezor Suite in the background',
     },
 });
