@@ -5751,10 +5751,6 @@ export default defineMessages({
         id: 'TR_TOKENS',
         defaultMessage: 'Tokens',
     },
-    TR_TOKENS_ADD: {
-        id: 'TR_TOKENS_ADD',
-        defaultMessage: 'Add token',
-    },
     TR_TOKENS_EMPTY: {
         id: 'TR_TOKENS_EMPTY',
         defaultMessage: 'No tokens... yet.',
