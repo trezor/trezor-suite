@@ -4,6 +4,7 @@ import type {
     BlockfrostTransaction,
     BlockfrostAccountInfo,
     ParseAssetResult,
+    AssetBalance,
 } from '@trezor/blockchain-link-types/src/blockfrost';
 import type { VinVout } from '@trezor/blockchain-link-types/src/blockbook';
 import type {
@@ -91,20 +92,33 @@ export const parseAsset = (hex: string): ParseAssetResult => {
     };
 };
 
+export const transformToken = (token: AssetBalance) => {
+    const { policyId, assetName } = parseAsset(token.unit);
+
+    const symbol = token.ticker || assetName || formatTokenSymbol(token.fingerprint!);
+
+    return {
+        name: token.name || symbol,
+        contract: policyId,
+        symbol,
+        decimals: token.decimals,
+        fingerprint: token.fingerprint!,
+        unit: token.unit,
+    };
+};
+
 export const transformTokenInfo = (
     tokens: BlockfrostAccountInfo['tokens'],
 ): TokenInfo[] | undefined => {
-    if (!tokens || !Array.isArray(tokens)) return undefined;
-    const info = tokens.map(token => {
-        const { assetName } = parseAsset(token.unit);
+    if (!tokens || !Array.isArray(tokens)) {
+        return undefined;
+    }
 
+    const info = tokens.map(token => {
         return {
             type: 'BLOCKFROST',
-            name: token.fingerprint!, // this is safe as fingerprint is defined for all tokens except lovelace and lovelace is never included in account.tokens
-            contract: token.unit,
-            symbol: assetName || formatTokenSymbol(token.fingerprint!),
             balance: token.quantity,
-            decimals: token.decimals,
+            ...transformToken(token),
         };
     });
 
@@ -134,9 +148,10 @@ export const filterTokenTransfers = (
         output.amount
             .filter(a => a.unit !== 'lovelace')
             .forEach(asset => {
-                const token = asset.unit;
-                const inputs = transformInputOutput(tx.txUtxos.inputs, token);
-                const outputs = transformInputOutput(tx.txUtxos.outputs, token);
+                const tokenUnit = asset.unit;
+
+                const inputs = transformInputOutput(tx.txUtxos.inputs, tokenUnit);
+                const outputs = transformInputOutput(tx.txUtxos.outputs, tokenUnit);
                 const outgoing = filterTargets(myAddresses, inputs); // inputs going from account address
                 const incoming = filterTargets(myAddresses, outputs); // outputs to account address
                 const isChange = accountAddress.change.find(a => a.address === output.address);
@@ -145,7 +160,7 @@ export const filterTokenTransfers = (
 
                 const incomingForOutput = filterTargets(
                     myNonChangeAddresses,
-                    transformInputOutput([output], token),
+                    transformInputOutput([output], tokenUnit),
                 );
 
                 let amount = '0';
@@ -160,18 +175,14 @@ export const filterTokenTransfers = (
                 // fingerprint is always defined on tokens
                 if (amount === '0' || !asset.fingerprint) return null;
 
-                const { assetName } = parseAsset(token);
                 transfers.push({
+                    ...transformToken(asset),
                     type,
-                    name: asset.fingerprint,
-                    symbol: assetName || formatTokenSymbol(asset.fingerprint),
-                    contract: asset.unit,
-                    decimals: asset.decimals,
                     amount: amount.toString(),
                     from:
                         type === 'sent' || type === 'self'
                             ? tx.address
-                            : tx.txUtxos.inputs.find(i => i.amount.find(a => a.unit === token))
+                            : tx.txUtxos.inputs.find(i => i.amount.find(a => a.unit === tokenUnit))
                                   ?.address || '',
                     to: type === 'recv' ? tx.address : output.address,
                 });

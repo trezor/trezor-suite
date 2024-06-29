@@ -128,6 +128,7 @@ export const transformUserOutputs = [
                 unit: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
                 quantity: '100',
                 decimals: 0,
+                contract: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522',
             },
         ],
         symbol: 'ada',
@@ -155,7 +156,7 @@ export const transformUserOutputs = [
                     value: 'usd',
                     label: 'USD',
                 },
-                token: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
+                token: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522',
                 label: '',
             },
             {
@@ -219,10 +220,12 @@ export const formatMaxOutputAmount = [
             symbol: 'ada',
             tokens: [
                 {
-                    contract: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
+                    contract: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522',
+                    unit: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
                     balance: '500000',
                     decimals: 5,
-                    name: 'asset1pwhywk7x54g739z3dqs245q62yu47vjh8gapjv',
+                    fingerprint: 'asset1pwhywk7x54g739z3dqs245q62yu47vjh8gapjv',
+                    name: 'Nuts',
                     symbol: 'NUTS',
                     type: 'BLOCKFROST',
                 },
@@ -240,7 +243,7 @@ export const formatMaxOutputAmount = [
             setMax: true,
             assets: [
                 {
-                    unit: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
+                    unit: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522',
                     quantity: '',
                 },
             ],
@@ -249,12 +252,14 @@ export const formatMaxOutputAmount = [
             symbol: 'ada',
             tokens: [
                 {
-                    contract: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
+                    contract: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf3916522',
                     balance: '500000',
                     decimals: 5,
-                    name: 'asset1pwhywk7x54g739z3dqs245q62yu47vjh8gapjv',
+                    fingerprint: 'asset1pwhywk7x54g739z3dqs245q62yu47vjh8gapjv',
+                    name: 'Nuts',
                     symbol: 'NUTS',
                     type: 'BLOCKFROST',
+                    unit: '57fca08abbaddee36da742a839f7d83a7e1d2419f1507fcbf391652243484f43',
                 },
             ],
         },

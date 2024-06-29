@@ -160,12 +160,14 @@ export interface TokenAccount {
 
 export interface TokenInfo {
     type: string; // token type: ERC20...
-    contract: string; // token address
+    contract: string; // token address, policy id for ADA
     balance?: string; // token balance
     name?: string; // token name
     symbol?: string; // token symbol
     decimals: number; // token decimals or 0
     accounts?: TokenAccount[]; // token accounts for solana
+    unit?: string; // Cardano policy id + encoded asset name
+    fingerprint?: string; // Cardano starting with "asset"
     // transfers: number, // total transactions?
 }
 

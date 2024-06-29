@@ -208,11 +208,11 @@ export interface UtxosData extends AddressUtxoContent {
     blockInformation: BlockContent;
 }
 export interface AssetBalance {
-    /** The unit of the value */
-    unit: string;
-    /** The quantity of the unit */
+    unit: string; // policy id + encoded name
     quantity: string;
     decimals: number;
+    ticker: string | null; // symbol
+    name: string | null;
     fingerprint?: string; // defined for all assets except lovelace
 }
 
