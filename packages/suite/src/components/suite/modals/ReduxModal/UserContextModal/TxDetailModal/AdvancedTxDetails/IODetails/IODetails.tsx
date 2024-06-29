@@ -18,7 +18,6 @@ import { Icon, CollapsibleBox, useElevation } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
-import { useExplorerTxUrl } from 'src/hooks/suite/useExplorerTxUrl';
 import { IOAddress } from '../../IOAddress';
 
 export const blurFix = css`
@@ -158,16 +157,15 @@ const IOGridRow = ({
     vinvout: { isAccountOwned, addresses, value },
     isPhishingTransaction,
 }: IOGridRow) => {
+    const network = useSelector(state => state.wallet.selectedAccount.network);
     const anonymity = addresses?.length && anonymitySet?.[addresses[0]];
-
-    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl();
 
     return (
         <GridItem $isAccountOwned={isAccountOwned}>
             <IOAddress
                 txAddress={addresses?.length ? addresses[0] : ''}
-                explorerUrl={explorerTxUrl}
-                explorerUrlQueryString={explorerUrlQueryString}
+                explorerUrl={network?.explorer.address}
+                explorerUrlQueryString={network?.explorer.queryString}
                 shouldAllowCopy={!isPhishingTransaction}
             />
 
@@ -234,15 +232,15 @@ const GridRowGroupComponent = ({
     isPhishingTransaction,
 }: GridRowGroupComponentProps) => {
     const theme = useTheme();
-    const { explorerTxUrl, explorerUrlQueryString } = useExplorerTxUrl();
+    const network = useSelector(state => state.wallet.selectedAccount.network);
 
     return (
         <RowGrid>
             <RowGridItem>
                 <IOAddress
                     txAddress={from}
-                    explorerUrl={explorerTxUrl}
-                    explorerUrlQueryString={explorerUrlQueryString}
+                    explorerUrl={network?.explorer.address}
+                    explorerUrlQueryString={network?.explorer.queryString}
                     shouldAllowCopy={!isPhishingTransaction}
                 />
                 <br />
@@ -258,8 +256,8 @@ const GridRowGroupComponent = ({
             <RowGridItem>
                 <IOAddress
                     txAddress={to}
-                    explorerUrl={explorerTxUrl}
-                    explorerUrlQueryString={explorerUrlQueryString}
+                    explorerUrl={network?.explorer.address}
+                    explorerUrlQueryString={network?.explorer.queryString}
                     shouldAllowCopy={!isPhishingTransaction}
                 />
             </RowGridItem>
@@ -428,7 +426,7 @@ const IOSectionColumn = ({ tx, inputs, outputs, isPhishingTransaction }: IOSecti
                     <div>
                         {inputs.map(input => (
                             <IOGridRow
-                                key={input.n}
+                                key={`input-${input.n}`}
                                 anonymitySet={anonymitySet}
                                 tx={tx}
                                 vinvout={input}
@@ -444,7 +442,7 @@ const IOSectionColumn = ({ tx, inputs, outputs, isPhishingTransaction }: IOSecti
                     <div>
                         {outputs.map(output => (
                             <IOGridRow
-                                key={output.n}
+                                key={`output-${output.n}`}
                                 anonymitySet={anonymitySet}
                                 tx={tx}
                                 vinvout={output}
