@@ -282,7 +282,7 @@ export const networks = {
         bip43Path: "m/1852'/1815'/i'",
         decimals: 6,
         testnet: false,
-        features: ['tokens', 'staking' /* coin-definitions */],
+        features: ['tokens', 'staking', 'coin-definitions'],
         explorer: {
             tx: 'https://cexplorer.io/tx/',
             address: 'https://cexplorer.io/address/',
