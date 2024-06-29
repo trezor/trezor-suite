@@ -15,6 +15,7 @@ import {
 } from '@suite-common/wallet-utils';
 import { updateAll } from './utils';
 import { DeviceModelInternal, FirmwareType } from '@trezor/connect';
+import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 type WalletWithBackends = {
     backends?: Partial<{
@@ -831,13 +832,55 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
     if (oldVersion < 46) {
         db.createObjectStore('tokenManagement');
-    }
 
-    if (oldVersion < 47) {
         await updateAll(transaction, 'devices', device => {
             device.passwords = {};
 
             return device;
+        });
+
+        await updateAll(transaction, 'accounts', account => {
+            if (account.networkType === 'cardano') {
+                account.tokens = account.tokens?.map(token => {
+                    const { policyId } = parseAsset(token.contract);
+
+                    return {
+                        balance: token.balance,
+                        contract: policyId,
+                        name: token.symbol,
+                        symbol: token.symbol,
+                        decimals: token.decimals,
+                        fingerprint: token.name,
+                        unit: token.contract,
+                        type: token.type,
+                    };
+                });
+            }
+
+            return account;
+        });
+
+        await updateAll(transaction, 'txs', tx => {
+            if (['ada', 'tada'].includes(tx.tx.symbol)) {
+                tx.tx.tokens = tx.tx.tokens?.map(token => {
+                    const { policyId } = parseAsset(token.contract);
+
+                    return {
+                        amount: token.amount,
+                        contract: policyId,
+                        decimals: token.decimals,
+                        from: token.from,
+                        name: token.symbol || '',
+                        symbol: token.symbol,
+                        fingerprint: token.name,
+                        to: token.to,
+                        type: token.type,
+                        unit: token.contract,
+                    };
+                });
+            }
+
+            return tx;
         });
     }
 };
