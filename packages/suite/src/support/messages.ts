@@ -2453,10 +2453,19 @@ export default defineMessages({
         defaultMessage: "This isn't your receive address.",
         id: 'TR_NOT_YOUR_RECEIVE_ADDRRESS',
     },
-    TR_COPY_CONTRACT_ADDRESS: {
+    TR_COPY_ADDRESS_CONTRACT: {
         defaultMessage: 'Never send funds to a contract address.',
-        id: 'TR_COPY_CONTRACT_ADDRESS',
+        id: 'TR_COPY_ADDRESS_CONTRACT',
     },
+    TR_COPY_ADDRESS_FINGERPRINT: {
+        defaultMessage: 'Never send funds to a fingerprint address.',
+        id: 'TR_COPY_ADDRESS_FINGERPRINT',
+    },
+    TR_COPY_ADDRESS_POLICY_ID: {
+        defaultMessage: 'Never send funds to a policy id address.',
+        id: 'TR_COPY_ADDRESS_POLICY_ID',
+    },
+
     TR_CREATE_BACKUP: {
         defaultMessage: 'Create backup',
         id: 'TR_CREATE_BACKUP',
@@ -6971,6 +6980,14 @@ export default defineMessages({
     TR_CONTRACT_ADDRESS: {
         id: 'TR_CONTRACT_ADDRESS',
         defaultMessage: 'Contract address:',
+    },
+    TR_POLICY_ID_ADDRESS: {
+        id: 'TR_POLICY_ID_ADDRESS',
+        defaultMessage: 'Policy ID:',
+    },
+    TR_FINGERPRINT_ADDRESS: {
+        id: 'TR_FINGERPRINT_ADDRESS',
+        defaultMessage: 'Fingerprint:',
     },
     TR_ANALYZE_IN_BLOCKBOOK: {
         id: 'TR_ANALYZE_IN_BLOCKBOOK',
