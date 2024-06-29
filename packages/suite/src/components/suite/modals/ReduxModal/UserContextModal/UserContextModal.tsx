@@ -38,7 +38,7 @@ import {
     StakeModal,
     UnstakeModal,
     ClaimModal,
-    CopyContractAddressModal,
+    CopyAddressModal,
 } from 'src/components/suite/modals';
 import type { AcquiredDevice } from 'src/types/suite';
 import { openXpubModal, showXpub } from 'src/actions/wallet/publicKeyActions';
@@ -220,8 +220,14 @@ export const UserContextModal = ({
             return <ClaimModal onCancel={onCancel} />;
         case 'everstake':
             return <EverstakeModal onCancel={onCancel} />;
-        case 'copy-contract-address':
-            return <CopyContractAddressModal onCancel={onCancel} contract={payload.contract} />;
+        case 'copy-address':
+            return (
+                <CopyAddressModal
+                    onCancel={onCancel}
+                    address={payload.address}
+                    addressType={payload.addressType}
+                />
+            );
         case 'passphrase-mismatch-warning':
             return <PassphraseMismatchModal onCancel={onCancel} />;
         default:

@@ -1,5 +1,5 @@
 import { Deferred } from '@trezor/utils';
-import { Account, WalletAccountTransaction } from '@suite-common/wallet-types';
+import { Account, AddressType, WalletAccountTransaction } from '@suite-common/wallet-types';
 import { RequestEnableTorResponse } from '@suite-common/suite-config';
 
 import { Route } from './route';
@@ -182,8 +182,9 @@ export type UserContextPayload =
           type: 'everstake';
       }
     | {
-          type: 'copy-contract-address';
-          contract: string;
+          type: 'copy-address';
+          addressType: AddressType;
+          address: string;
       }
     | {
           type: 'passphrase-mismatch-warning';

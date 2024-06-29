@@ -6,21 +6,34 @@ import { Translation } from 'src/components/suite';
 import { useDispatch } from 'src/hooks/suite/useDispatch';
 import { Button } from '@trezor/components';
 import { DialogModal } from '../Modal/DialogRenderer';
+import { AddressType } from '@suite-common/wallet-types';
 
 const StyledModal = styled(DialogModal)`
     width: 600px;
 `;
 
-interface CopyContractAddressModalProps {
-    contract: string;
+const getAddressTypeText = (addressType: AddressType) => {
+    switch (addressType) {
+        case 'contract':
+            return 'TR_COPY_ADDRESS_CONTRACT';
+        case 'fingerprint':
+            return 'TR_COPY_ADDRESS_FINGERPRINT';
+        case 'policyId':
+            return 'TR_COPY_ADDRESS_POLICY_ID';
+    }
+};
+
+interface CopyAddressModalProps {
+    address: string;
     onCancel: () => void;
+    addressType: AddressType;
 }
 
-export const CopyContractAddressModal = ({ contract, onCancel }: CopyContractAddressModalProps) => {
+export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddressModalProps) => {
     const dispatch = useDispatch();
 
-    const onCopyContractAddress = () => {
-        const result = copyToClipboard(contract);
+    const onCopyAddress = () => {
+        const result = copyToClipboard(address);
         if (typeof result !== 'string') {
             dispatch(notificationsActions.addToast({ type: 'copy-to-clipboard' }));
         }
@@ -33,10 +46,10 @@ export const CopyContractAddressModal = ({ contract, onCancel }: CopyContractAdd
             onCancel={onCancel}
             icon="warningTriangleLight"
             bodyHeading={<Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />}
-            text={<Translation id="TR_COPY_CONTRACT_ADDRESS" />}
+            text={<Translation id={getAddressTypeText(addressType)} />}
             bottomBarComponents={
                 <>
-                    <Button variant="destructive" onClick={onCopyContractAddress}>
+                    <Button variant="destructive" onClick={onCopyAddress}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                     </Button>
                     <Button variant="primary" onClick={onCancel}>

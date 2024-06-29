@@ -30,6 +30,7 @@ import { showAddress } from 'src/actions/wallet/receiveActions';
 import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmarketUtils';
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectDevice } from '@suite-common/wallet-core';
+import { GroupedMenuItems } from '@trezor/components/src/components/Dropdown/Menu';
 
 const Table = styled(Card)`
     word-break: break-all;
@@ -113,7 +114,7 @@ const ContractAddress = styled.div`
 
 const StyledIcon = styled(Icon)`
     display: inline-block;
-    margin-left: ${spacingsPx.xs};
+    margin-left: ${spacingsPx.xxs};
 `;
 
 const NoResults = styled.div`
@@ -121,6 +122,15 @@ const NoResults = styled.div`
     padding: ${spacingsPx.lg};
     text-align: center;
 `;
+
+const getTokenExplorerUrl = (network: Network, token: EnhancedTokenInfo) => {
+    const explorerUrl =
+        network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
+
+    const contractAddress = network.networkType === 'cardano' ? token.fingerprint : token.contract;
+
+    return `${explorerUrl}${contractAddress}${network.explorer.queryString}`;
+};
 
 interface TokenListProps {
     account: Account;
@@ -171,10 +181,6 @@ export const TokenList = ({
     };
 
     const isReceiveButtonDisabled = isDeviceLocked || !!device.authConfirm;
-
-    const explorerUrl =
-        network.networkType === 'cardano' ? network.explorer.token : network.explorer.account;
-    const explorerUrlQueryString = network.explorer.queryString;
 
     return (
         <Table paddingType="none">
@@ -247,94 +253,130 @@ export const TokenList = ({
                         <Cell $isActions>
                             <Dropdown
                                 alignMenu="bottom-right"
-                                items={[
-                                    {
-                                        key: 'export',
-                                        options: [
-                                            {
-                                                label: <Translation id="TR_NAV_SEND" />,
-                                                onClick: () => {
-                                                    goToWithAnalytics('wallet-send', {
-                                                        params: {
-                                                            symbol: account.symbol,
-                                                            accountIndex: account.index,
-                                                            accountType: account.accountType,
-                                                        },
-                                                    });
+                                items={
+                                    [
+                                        {
+                                            key: 'export',
+                                            options: [
+                                                {
+                                                    label: <Translation id="TR_NAV_SEND" />,
+                                                    onClick: () => {
+                                                        goToWithAnalytics('wallet-send', {
+                                                            params: {
+                                                                symbol: account.symbol,
+                                                                accountIndex: account.index,
+                                                                accountType: account.accountType,
+                                                            },
+                                                        });
+                                                    },
+                                                    isDisabled: token.balance === '0',
+                                                    isHidden:
+                                                        tokenStatusType ===
+                                                        TokenManagementAction.HIDE
+                                                            ? !isMobileLayout
+                                                            : true,
                                                 },
-                                                isDisabled: token.balance === '0',
-                                                isHidden:
-                                                    tokenStatusType === TokenManagementAction.HIDE
-                                                        ? !isMobileLayout
-                                                        : true,
-                                            },
-                                            {
-                                                label: <Translation id="TR_NAV_RECEIVE" />,
-                                                onClick: onReceive,
-                                                isDisabled: isReceiveButtonDisabled,
-                                                isHidden:
-                                                    tokenStatusType === TokenManagementAction.HIDE
-                                                        ? !isMobileLayout
-                                                        : true,
-                                            },
-                                            {
-                                                label: (
-                                                    <Translation
-                                                        id={
-                                                            tokenStatusType ===
-                                                            TokenManagementAction.SHOW
-                                                                ? 'TR_UNHIDE_TOKEN'
-                                                                : 'TR_HIDE_TOKEN'
-                                                        }
-                                                    />
-                                                ),
-                                                onClick: () =>
-                                                    dispatch(
-                                                        tokenDefinitionsActions.setTokenStatus({
-                                                            networkSymbol: network.symbol,
-                                                            contractAddress: token.contract,
-                                                            status: tokenStatusType,
-                                                            type: DefinitionType.COIN,
-                                                        }),
-                                                    ),
-                                                isHidden:
-                                                    tokenStatusType ===
-                                                        TokenManagementAction.SHOW &&
-                                                    !isMobileLayout,
-                                            },
-                                            {
-                                                label: <Translation id="TR_VIEW_IN_EXPLORER" />,
-                                                onClick: () => {
-                                                    window.open(
-                                                        `${explorerUrl}${token.contract}${explorerUrlQueryString}`,
-                                                        '_blank',
-                                                    );
+                                                {
+                                                    label: <Translation id="TR_NAV_RECEIVE" />,
+                                                    onClick: onReceive,
+                                                    isDisabled: isReceiveButtonDisabled,
+                                                    isHidden:
+                                                        tokenStatusType ===
+                                                        TokenManagementAction.HIDE
+                                                            ? !isMobileLayout
+                                                            : true,
                                                 },
-                                            },
-                                        ],
-                                    },
-                                    {
-                                        key: 'footer',
-                                        label: translationString('TR_CONTRACT_ADDRESS'),
-                                        options: [
-                                            {
-                                                label: (
-                                                    <ContractAddress>
-                                                        {token.contract}
-                                                        <StyledIcon icon="COPY" size={14} />
-                                                    </ContractAddress>
-                                                ),
-                                                onClick: () =>
-                                                    dispatch(
-                                                        openModal({
-                                                            type: 'copy-contract-address',
-                                                            contract: token.contract,
-                                                        }),
+                                                {
+                                                    label: (
+                                                        <Translation
+                                                            id={
+                                                                tokenStatusType ===
+                                                                TokenManagementAction.SHOW
+                                                                    ? 'TR_UNHIDE_TOKEN'
+                                                                    : 'TR_HIDE_TOKEN'
+                                                            }
+                                                        />
                                                     ),
-                                            },
-                                        ],
-                                    },
-                                ]}
+                                                    onClick: () =>
+                                                        dispatch(
+                                                            tokenDefinitionsActions.setTokenStatus({
+                                                                networkSymbol: network.symbol,
+                                                                contractAddress: token.contract,
+                                                                status: tokenStatusType,
+                                                                type: DefinitionType.COIN,
+                                                            }),
+                                                        ),
+                                                    isHidden:
+                                                        tokenStatusType ===
+                                                            TokenManagementAction.SHOW &&
+                                                        !isMobileLayout,
+                                                },
+                                                {
+                                                    label: <Translation id="TR_VIEW_IN_EXPLORER" />,
+                                                    onClick: () => {
+                                                        window.open(
+                                                            getTokenExplorerUrl(network, token),
+                                                            '_blank',
+                                                        );
+                                                    },
+                                                },
+                                            ],
+                                        },
+                                        {
+                                            key: 'contract-address',
+                                            label: translationString(
+                                                network.networkType === 'cardano'
+                                                    ? 'TR_POLICY_ID_ADDRESS'
+                                                    : 'TR_CONTRACT_ADDRESS',
+                                            ),
+                                            options: [
+                                                {
+                                                    label: (
+                                                        <ContractAddress>
+                                                            {token.contract}
+                                                            <StyledIcon icon="COPY" size={14} />
+                                                        </ContractAddress>
+                                                    ),
+                                                    onClick: () =>
+                                                        dispatch(
+                                                            openModal({
+                                                                type: 'copy-address',
+                                                                addressType:
+                                                                    network.networkType ===
+                                                                    'cardano'
+                                                                        ? 'policyId'
+                                                                        : 'contract',
+                                                                address: token.contract,
+                                                            }),
+                                                        ),
+                                                },
+                                            ],
+                                        },
+                                        token.fingerprint && {
+                                            key: 'fingerprint',
+                                            label: translationString('TR_FINGERPRINT_ADDRESS'),
+                                            options: [
+                                                {
+                                                    label: (
+                                                        <ContractAddress>
+                                                            {token.fingerprint}
+                                                            <StyledIcon icon="COPY" size={14} />
+                                                        </ContractAddress>
+                                                    ),
+                                                    onClick: () =>
+                                                        dispatch(
+                                                            openModal({
+                                                                type: 'copy-address',
+                                                                addressType: 'fingerprint',
+                                                                address:
+                                                                    token.fingerprint as string,
+                                                            }),
+                                                        ),
+                                                },
+                                            ],
+                                        },
+                                    ].filter(category => category) as GroupedMenuItems[]
+                                }
                             />
                             {!isMobileLayout &&
                                 (tokenStatusType === TokenManagementAction.SHOW ? (
