@@ -284,9 +284,10 @@ export const networks = {
         testnet: false,
         features: ['tokens', 'staking' /* coin-definitions */],
         explorer: {
-            tx: 'https://explorer.blockfrost.dev/transaction/',
-            account: 'https://explorer.blockfrost.dev/account/',
-            token: 'https://explorer.blockfrost.dev/token/',
+            tx: 'https://cexplorer.io/tx/',
+            address: 'https://cexplorer.io/address/',
+            account: 'https://cexplorer.io/address/',
+            token: 'https://cexplorer.io/asset/',
             queryString: '',
         },
         support: {
@@ -510,9 +511,10 @@ export const networks = {
         testnet: true,
         features: ['tokens', 'staking'],
         explorer: {
-            tx: 'https://testnet-explorer.blockfrost.dev/transaction/',
-            account: 'https://testnet-explorer.blockfrost.dev/account/',
-            token: 'https://testnet-explorer.blockfrost.dev/token/',
+            tx: 'https://preview.cexplorer.io/tx/',
+            address: 'https://preview.cexplorer.io/address/',
+            account: 'https://preview.cexplorer.io/address/',
+            token: 'https://preview.cexplorer.io/asset/',
             queryString: '',
         },
         support: {
