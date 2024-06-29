@@ -51,6 +51,8 @@ export interface TokenTransfer {
     decimals: number;
     value?: string;
     multiTokenValues?: MultiTokenValue[];
+    fingerprint?: string;
+    unit?: string;
 }
 export interface Vout {
     value?: string;
