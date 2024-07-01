@@ -62,6 +62,11 @@ describe('settings reducer', () => {
 
     it('COINMARKET_BUY.SAVE_BUY_INFO', () => {
         const buyInfo: BuyInfo = {
+            buyInfo: {
+                country: 'cz',
+                providers: [],
+                defaultAmountsOfFiatCurrencies: new Map([['usd', '1000']]),
+            },
             providerInfos: {},
             supportedCryptoCurrencies: new Set(['BTC', 'ETH']),
             supportedFiatCurrencies: new Set(['usd']),
