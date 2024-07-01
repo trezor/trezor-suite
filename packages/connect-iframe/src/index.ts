@@ -50,7 +50,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     // ignore messages from myself (chrome bug?)
     if (event.source === window || !event.data) return;
     const { data } = event;
-    const core = coreManager.getCore();
+    const core = coreManager.get();
     const id = 'id' in data && typeof data.id === 'number' ? data.id : 0;
 
     const fail = (error: string) => {
@@ -199,7 +199,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
     }
 
     // pass data to Core
-    coreManager.getCore()?.handleMessage(message);
+    coreManager.get()?.handleMessage(message);
 };
 
 // Communication with 3rd party window and Trezor Popup.
@@ -212,7 +212,7 @@ const postMessage = (message: CoreEventMessage) => {
 
     // popup handshake is resolved automatically
     if (!usingPopup) {
-        const core = coreManager.getCore();
+        const core = coreManager.get();
         if (core && message.type === UI.REQUEST_UI_WINDOW) {
             core.handleMessage({ type: POPUP.HANDSHAKE });
 
@@ -331,7 +331,7 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 
     try {
         // initialize core
-        await coreManager.getOrInitCore(parsedSettings, postMessage, logWriterFactory);
+        await coreManager.getOrInit(parsedSettings, postMessage, logWriterFactory);
         postMessage(
             createIFrameMessage(IFRAME.LOADED, {
                 useBroadcastChannel: !!_popupMessagePort,
@@ -345,5 +345,5 @@ const init = async (payload: IFrameInit['payload'], origin: string) => {
 
 window.addEventListener('message', handleMessage, false);
 window.addEventListener('beforeunload', () => {
-    coreManager.getCore()?.dispose();
+    coreManager.get()?.dispose();
 });

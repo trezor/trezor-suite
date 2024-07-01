@@ -461,7 +461,7 @@ const initCoreInPopup = async (
         }
     };
     const coreManager = initCoreState();
-    const core: Core = await coreManager.getOrInitCore(
+    const core: Core = await coreManager.getOrInit(
         { ...payload.settings, trustedHost: false },
         onCoreEvent,
         logWriterFactory,
