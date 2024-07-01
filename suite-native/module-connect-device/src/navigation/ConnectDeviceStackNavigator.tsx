@@ -7,7 +7,7 @@ import {
     ConnectDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { useDetectDeviceError, useReportDeviceConnectToAnalytics } from '@suite-native/device';
 
 import { ConnectAndUnlockDeviceScreen } from '../screens/ConnectAndUnlockDeviceScreen';

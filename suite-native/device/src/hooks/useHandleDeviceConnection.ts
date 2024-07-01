@@ -14,13 +14,13 @@ import {
 } from '@suite-native/navigation';
 import {
     selectIsPortfolioTrackerDevice,
-    selectDeviceRequestedPin,
     selectIsDeviceConnected,
     selectIsDeviceConnectedAndAuthorized,
     selectIsNoPhysicalDeviceConnected,
     selectIsDeviceUsingPassphrase,
     authorizeDeviceThunk,
 } from '@suite-common/wallet-core';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { selectIsOnboardingFinished } from '@suite-native/settings';
 import { requestPrioritizedDeviceAccess } from '@suite-native/device-mutex';
 import { useIsBiometricsOverlayVisible } from '@suite-native/biometrics';

@@ -1,10 +1,10 @@
 import { BackHandler } from 'react-native';
 import { useCallback, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import { useNavigation } from '@react-navigation/native';
 
-import TrezorConnect, { DeviceModelInternal } from '@trezor/connect';
+import TrezorConnect from '@trezor/connect';
 import {
     ConnectDeviceStackParamList,
     ConnectDeviceStackRoutes,
@@ -14,12 +14,7 @@ import {
 import { Box, IconButton, ScreenHeaderWrapper } from '@suite-native/atoms';
 import { useAlert } from '@suite-native/alerts';
 import { Translation } from '@suite-native/intl';
-import {
-    selectDevice,
-    selectDeviceModel,
-    removeButtonRequests,
-    selectIsDeviceDiscoveryActive,
-} from '@suite-common/wallet-core';
+import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 
 import { ConnectingTrezorHelp } from './ConnectingTrezorHelp';
 
@@ -37,11 +32,8 @@ export const ConnectDeviceScreenHeader = ({
     shouldDisplayCancelButton = true,
 }: ConnectDeviceScreenHeaderProps) => {
     const navigation = useNavigation<NavigationProp>();
-    const dispatch = useDispatch();
     const { showAlert, hideAlert } = useAlert();
 
-    const device = useSelector(selectDevice);
-    const deviceModel = useSelector(selectDeviceModel);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const handleCancel = useCallback(() => {
@@ -61,21 +53,11 @@ export const ConnectDeviceScreenHeader = ({
             });
         } else {
             TrezorConnect.cancel('pin-cancelled');
-
-            dispatch(
-                removeButtonRequests({
-                    device,
-                    buttonRequestCode:
-                        deviceModel === DeviceModelInternal.T1B1
-                            ? 'PinMatrixRequestType_Current'
-                            : 'ButtonRequest_PinEntry',
-                }),
-            );
             if (navigation.canGoBack()) {
                 navigation.goBack();
             }
         }
-    }, [device, deviceModel, dispatch, isDiscoveryActive, navigation, showAlert, hideAlert]);
+    }, [hideAlert, isDiscoveryActive, navigation, showAlert]);
 
     // Handle hardware back button press same as cancel button
     useEffect(() => {

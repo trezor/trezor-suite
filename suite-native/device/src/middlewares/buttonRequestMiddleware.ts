@@ -19,6 +19,7 @@ export const prepareButtonRequestMiddleware = createMiddlewareWithExtraDeps(
 
         if (action.type === UI.REQUEST_BUTTON) {
             const { device: _, ...request } = action.payload;
+
             dispatch(
                 deviceActions.addButtonRequest({
                     device: selectDevice(getState()),

@@ -53,6 +53,9 @@
         { "path": "suite-native/blockchain" },
         { "path": "suite-native/config" },
         { "path": "suite-native/device" },
+        {
+            "path": "suite-native/device-authorization"
+        },
         { "path": "suite-native/device-manager" },
         { "path": "suite-native/device-mutex" },
         { "path": "suite-native/discovery" },

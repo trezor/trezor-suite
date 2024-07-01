@@ -1,4 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { Dimensions } from 'react-native';
 import { useCallback, useEffect } from 'react';
 
@@ -6,14 +6,9 @@ import { useNavigation } from '@react-navigation/native';
 
 import { Image, Box, Text } from '@suite-native/atoms';
 import { DeviceModelInternal } from '@trezor/connect';
-import {
-    removeButtonRequests,
-    selectDevice,
-    selectDeviceRequestedPin,
-} from '@suite-common/wallet-core';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
-import TrezorConnect, { UI_REQUEST } from '@trezor/connect';
 
 const SCREEN_HEIGHT = Dimensions.get('screen').height;
 
@@ -43,10 +38,8 @@ type PinOnDeviceProps = {
 };
 
 export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
-    const dispatch = useDispatch();
     const navigation = useNavigation();
 
-    const device = useSelector(selectDevice);
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const { applyStyle } = useNativeStyles();
 
@@ -54,8 +47,7 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
         if (navigation.canGoBack()) {
             navigation.goBack();
         }
-        dispatch(removeButtonRequests({ device, buttonRequestCode: 'ButtonRequest_PinEntry' }));
-    }, [navigation, dispatch, device]);
+    }, [navigation]);
 
     useEffect(() => {
         // hasDeviceRequestedPin is false when the user unlocks the device again
@@ -65,12 +57,6 @@ export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
             handleSuccess();
         }
     }, [hasDeviceRequestedPin, handleSuccess]);
-
-    useEffect(() => {
-        TrezorConnect.on(UI_REQUEST.CLOSE_UI_WINDOW, handleSuccess);
-
-        return () => TrezorConnect.off(UI_REQUEST.CLOSE_UI_WINDOW, handleSuccess);
-    }, [handleSuccess]);
 
     return (
         <Box style={applyStyle(wrapperStyle)}>

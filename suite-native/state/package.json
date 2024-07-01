@@ -25,6 +25,7 @@
         "@suite-native/blockchain": "workspace:*",
         "@suite-native/config": "workspace:*",
         "@suite-native/device": "workspace:*",
+        "@suite-native/device-authorization": "workspace:*",
         "@suite-native/discovery": "workspace:*",
         "@suite-native/feature-flags": "workspace:*",
         "@suite-native/graph": "workspace:*",

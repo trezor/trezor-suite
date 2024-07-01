@@ -1,5 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 
+import { deviceAuthorizationReducer } from '@suite-native/device-authorization';
 import {
     feesReducer,
     prepareAccountsReducer,
@@ -139,6 +140,7 @@ export const prepareRootReducers = async () => {
             featureFlags: featureFlagsPersistedReducer,
             graph: graphReducer,
             device: devicePersistedReducer,
+            deviceAuthorization: deviceAuthorizationReducer,
             logs: logsSlice.reducer,
             notifications: notificationsReducer,
             discoveryConfig: discoveryConfigPersistedReducer,

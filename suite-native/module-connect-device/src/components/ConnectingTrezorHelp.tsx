@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import { BottomSheet, IconButton, Text, VStack } from '@suite-native/atoms';
 import { Translation } from '@suite-native/intl';
 import { Link } from '@suite-native/link';
-import { selectDeviceRequestedPin } from '@suite-common/wallet-core';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 
 import { PIN_HELP_URL } from '../constants/pinFormConstants';
 
