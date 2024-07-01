@@ -76,15 +76,15 @@ jobs:
 
       - name: Set daily matrix
         id: set-matrix-daily
-        run: echo "dailyMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js daily)" >> $GITHUB_OUTPUT
+        run: echo "dailyMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js daily)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-other-devices
-        run: echo "otherDevicesMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
+        run: echo "otherDevicesMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js otherDevices)" >> $GITHUB_OUTPUT
 
       - name: Set other devices matrix
         id: set-matrix-legacy-canary-firmware
-        run: echo "legacyCanaryFirmwareMatrix=$(node ./ci/scripts/connect-test-matrix-generator.js legacyCanaryFirmware)" >> $GITHUB_OUTPUT
+        run: echo "legacyCanaryFirmwareMatrix=$(node ./scripts/ci/connect-test-matrix-generator.js legacyCanaryFirmware)" >> $GITHUB_OUTPUT
 
   connect-daily:
     needs: [build, set-matrix]

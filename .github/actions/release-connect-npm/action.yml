@@ -57,7 +57,7 @@ runs:
 
     - name: Check version
       shell: bash
-      run: node ./ci/scripts/check-version.js ${{ inputs.packageName }} ${{ inputs.deploymentType }}
+      run: node ./scripts/ci/check-version.js ${{ inputs.packageName }} ${{ inputs.deploymentType }}
 
     - name: Set NPM token
       shell: bash

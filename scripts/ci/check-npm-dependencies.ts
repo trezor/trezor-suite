@@ -2,7 +2,7 @@
  * yarn tsx check-npm-dependencies.ts <package_name> <semver>
  *
  * This script checks the dependencies for the specified package to ensure they match expected criteria.
- * It is used to verify the output of ci/scripts/connect-bump-versions.ts. */
+ * It is used to verify the output of scripts/ci/connect-bump-versions.ts. */
 const { promisify } = require('util');
 const fs = require('fs');
 const path = require('path');
@@ -16,15 +16,17 @@ const packagesPath = path.join(rootPath, 'packages');
 const args = process.argv.slice(2);
 
 if (args.length < 2)
-    throw new Error('Usage: yarn tsx check-npm-dependencies.ts <package_name> <semver>');
+    throw new Error('Usage: yarn tsx check-npm-dependencies.ts <packageName> <semanticVersion>');
 
-const [packageName, semver] = args;
+const [packageName, semanticVersion] = args;
 const allowedSemvers = ['patch', 'minor', 'prerelease'];
-if (!allowedSemvers.includes(semver)) {
-    throw new Error(`Provided semver '${semver}' must be one of ${allowedSemvers.join(', ')}`);
+if (!allowedSemvers.includes(semanticVersion)) {
+    throw new Error(
+        `Provided semanticVersion '${semanticVersion}' must be one of ${allowedSemvers.join(', ')}`,
+    );
 }
 
-const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
+const currentDeploymentType = semanticVersion === 'prerelease' ? 'canary' : 'stable';
 
 (async () => {
     const packages = await readdir(packagesPath, {
@@ -35,7 +37,7 @@ const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
         throw new Error(`provided package name: ${packageName} must be one of ${packages}`);
     }
 
-    const checkResult = await checkPackageDependencies(packageName, deploymentType);
+    const checkResult = await checkPackageDependencies(packageName, currentDeploymentType);
 
     if (checkResult.errors.length > 0) {
         const errorMessage = `Deps error. one of the dependencies likely needs to be published for the first time: ${checkResult.errors.join(
@@ -46,6 +48,6 @@ const deploymentType = semver === 'prerelease' ? 'canary' : 'stable';
 
     console.log('checkResult', checkResult);
     console.log(
-        `All dependencies for ${packageName} are correct for a ${deploymentType} deployment.`,
+        `All dependencies for ${packageName} are correct for a ${currentDeploymentType} deployment.`,
     );
 })();

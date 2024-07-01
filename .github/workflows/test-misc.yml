@@ -50,7 +50,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - run: ./ci/scripts/find_duplicates.sh ./packages/suite-data/files ${{ matrix.extension }}
+      - run: ./scripts/ci/find_duplicates.sh ./packages/suite-data/files ${{ matrix.extension }}
 
   install-connect:
     runs-on: ubuntu-latest
