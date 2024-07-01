@@ -111,6 +111,7 @@ export const BridgeRequested = () => {
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
                         </StyledButton>
+                        <StyledButton>Keep running in background</StyledButton>
                     </Col>
                 </Footer>
             </Modal>
