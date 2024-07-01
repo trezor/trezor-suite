@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled, { css } from 'styled-components';
 
 import { TranslationKey } from '@suite-common/intl-types';
@@ -126,6 +126,11 @@ export const TokensLayoutNavigation = ({
         }
         dispatch(openModal({ type: 'add-token' }));
     };
+
+    useEffect(() => {
+        setSearchQuery('');
+        setExpanded(false);
+    }, [account.symbol, account.index, account.accountType, setSearchQuery]);
 
     return (
         <Wrapper>
