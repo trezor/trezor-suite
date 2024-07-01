@@ -74,6 +74,7 @@ class AccountsPage {
                     .children()
                     .should('have.length', 2);
             });
+        cy.getTestElement('@wallet/accounts/search-icon').clear();
     }
 
     scrolltoBottomAccountspage() {
