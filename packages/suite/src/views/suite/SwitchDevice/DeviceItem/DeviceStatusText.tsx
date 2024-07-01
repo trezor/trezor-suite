@@ -1,41 +1,52 @@
-import { TrezorDevice } from '@suite-common/suite-types';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { TOOLTIP_DELAY_LONG, TruncateWithTooltip } from '@trezor/components';
 import React, { MouseEventHandler } from 'react';
 import { Translation } from 'src/components/suite';
 import { DeviceConnectionText } from './DeviceConnectionText';
+import { selectLabelingDataForWallet } from 'src/reducers/suite/metadataReducer';
+import { useSelector } from 'src/hooks/suite';
+import { useWalletLabeling } from 'src/components/suite/labeling/WalletLabeling';
+import { TrezorDevice } from '@suite-common/suite-types';
 
 type DeviceStatusTextProps = {
-    device: TrezorDevice;
     onRefreshClick?: MouseEventHandler;
-    walletLabel?: string;
+    device: TrezorDevice;
 };
 
 type DeviceStatusVisible = {
     connected: boolean;
-    walletLabel?: string;
     device: TrezorDevice;
 };
 
-const DeviceStatusVisible = ({ connected, walletLabel }: DeviceStatusVisible) => (
-    <DeviceConnectionText
-        variant={connected ? 'primary' : 'tertiary'}
-        icon={connected ? 'LINK' : 'UNLINK'}
-        data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
-    >
-        {walletLabel ? (
-            <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>{walletLabel}</TruncateWithTooltip>
-        ) : (
-            <Translation id={connected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
-        )}
-    </DeviceConnectionText>
-);
+const DeviceStatusVisible = ({ device, connected }: DeviceStatusVisible) => {
+    const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
 
-export const DeviceStatusText = ({
-    device,
-    onRefreshClick,
-    walletLabel,
-}: DeviceStatusTextProps) => {
+    const { defaultAccountLabelString } = useWalletLabeling();
+
+    const defaultWalletLabel =
+        device !== undefined ? defaultAccountLabelString({ device }) : undefined;
+    const isWalletLabelEmpty = walletLabel === undefined || walletLabel.trim() === '';
+
+    const walletText = isWalletLabelEmpty ? defaultWalletLabel : walletLabel;
+
+    return (
+        <DeviceConnectionText
+            variant={connected ? 'primary' : 'tertiary'}
+            icon={connected ? 'LINK' : 'UNLINK'}
+            data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
+        >
+            {walletLabel ? (
+                <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
+                    {walletText}
+                </TruncateWithTooltip>
+            ) : (
+                <Translation id={connected ? 'TR_CONNECTED' : 'TR_DISCONNECTED'} />
+            )}
+        </DeviceConnectionText>
+    );
+};
+
+export const DeviceStatusText = ({ onRefreshClick, device }: DeviceStatusTextProps) => {
     const { connected } = device;
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
@@ -53,5 +64,5 @@ export const DeviceStatusText = ({
         );
     }
 
-    return <DeviceStatusVisible connected={connected} walletLabel={walletLabel} device={device} />;
+    return <DeviceStatusVisible connected={connected} device={device} />;
 };

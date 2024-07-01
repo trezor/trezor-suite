@@ -18,10 +18,12 @@ export const useWalletLabeling = () => {
     const { translationString } = useTranslation();
 
     const defaultAccountLabelString = useCallback(
-        ({ device }: { device: TrezorDevice }) =>
-            device.useEmptyPassphrase
-                ? translationString('TR_NO_PASSPHRASE_WALLET')
-                : translationString('TR_PASSPHRASE_WALLET', { id: device.walletNumber }),
+        ({ device }: { device: TrezorDevice }) => {
+            if (device.useEmptyPassphrase) return translationString('TR_NO_PASSPHRASE_WALLET');
+            if (!device.walletNumber) return undefined;
+
+            return translationString('TR_PASSPHRASE_WALLET', { id: device.walletNumber });
+        },
         [translationString],
     );
 
