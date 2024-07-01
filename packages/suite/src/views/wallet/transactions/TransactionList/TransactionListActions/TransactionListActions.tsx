@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 import { SearchAction } from 'src/components/wallet/SearchAction';
 import { ExportAction } from './ExportAction';
-import { ChangeEvent, Dispatch, SetStateAction, useCallback, useState } from 'react';
+import { ChangeEvent, Dispatch, SetStateAction, useCallback, useEffect, useState } from 'react';
 import { useDispatch, useTranslation } from 'src/hooks/suite';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
@@ -64,6 +64,12 @@ export const TransactionListActions = ({
         },
         [account, dispatch, hasFetchedAll, setSearch, setSelectedPage, translationString],
     );
+
+    useEffect(() => {
+        setHasFetchedAll(false);
+        setExpanded(false);
+        setSearch('');
+    }, [account.symbol, account.index, account.accountType, setSearch]);
 
     return (
         <Wrapper>
