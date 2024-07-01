@@ -166,6 +166,7 @@
   "TOAST_COPY_TO_CLIPBOARD": "Panoya kopyalandı",
   "TOAST_DEVICE_WIPED": "Cihaz başarıyla silindi",
   "TOAST_DISCOVERY_ERROR": "Hesap bulma hatası: {error}",
+  "TOAST_ESTIMATED_FEE_ERROR": "Ağdan ücret tahmini başarısız oldu. Yedek değer kullanılıyor.",
   "TOAST_GENERIC_ERROR": "Hata: {error}",
   "TOAST_PIN_CHANGED": "PIN kodu başarıyla değiştirildi",
   "TOAST_QR_INCORRECT_ADDRESS": "QR kodu bu hesap için geçersiz adres içeriyor",
