@@ -312,7 +312,6 @@ module.exports = {
                 'packages/suite-web/**/*',
                 'packages/transport/**/*',
                 'packages/utxo-lib/**/*',
-                'ci/scripts/**/*',
                 'scripts/**/*',
                 'docs/**/*',
             ],

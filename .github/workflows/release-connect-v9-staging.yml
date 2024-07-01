@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  # Version should have been bumped by now thanks to ./ci/scripts/connect-release-init-npm.js
+  # Version should have been bumped by now thanks to ./scripts/ci/connect-release-init-npm.js
   extract-version:
     runs-on: ubuntu-latest
     outputs:
@@ -27,7 +27,7 @@ jobs:
 
       - name: Extract connect version
         id: set-version
-        run: echo "version=$(node ./ci/scripts/get-connect-version.js)" >> $GITHUB_OUTPUT
+        run: echo "version=$(node ./scripts/ci/get-connect-version.js)" >> $GITHUB_OUTPUT
 
   check-version-match:
     runs-on: ubuntu-latest

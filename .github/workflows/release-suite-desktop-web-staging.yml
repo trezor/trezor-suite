@@ -137,7 +137,7 @@ jobs:
 
       - name: Set staging percentage
         working-directory:
-        run: cd ./trezor-suite-files && ../ci/scripts/set-staging-percentage.sh 20
+        run: cd ./trezor-suite-files && ../scripts/ci/set-staging-percentage.sh 20
 
       - name: Upload suite-desktop to staging-data.trezor.io latest
         run: |

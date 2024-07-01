@@ -21,7 +21,7 @@ jobs:
 
       - name: Extract connect version
         id: set-version
-        run: echo "version=$(node ./ci/scripts/get-connect-version.js)" >> $GITHUB_OUTPUT
+        run: echo "version=$(node ./scripts/ci/get-connect-version.js)" >> $GITHUB_OUTPUT
 
   sanity-check-version-match:
     runs-on: ubuntu-latest
@@ -58,7 +58,7 @@ jobs:
         # We want this job to be successfully complete when "no-packages-to-release" since it means that
         # there are no dependencies to release so we can continue with "deploy-npm-connect"
         run: |
-          packages=$(yarn tsx ./ci/scripts/get-connect-dependencies-to-release.ts)
+          packages=$(yarn tsx ./scripts/ci/get-connect-dependencies-to-release.ts)
           if [ "$packages" == "[]" ]; then
             echo "packagesNeedRelease=[\"no-packages-to-release\"]" >> $GITHUB_OUTPUT
           else
@@ -67,7 +67,7 @@ jobs:
 
       - name: Determine Deployment Type from version in branch
         id: determine-deployment-type
-        run: echo "deploymentType=$(yarn tsx ./ci/scripts/determine-deployment-type.ts ${{ needs.extract-version.outputs.version }})" >> $GITHUB_OUTPUT
+        run: echo "deploymentType=$(yarn tsx ./scripts/ci/determine-deployment-type.ts ${{ needs.extract-version.outputs.version }})" >> $GITHUB_OUTPUT
 
       - name: Sanity Check - All Packages Same Deployment Type
         # We do not run this sanity check when no-packages-to-release.
@@ -76,7 +76,7 @@ jobs:
           PACKAGES: ${{ steps.set-packages-need-release.outputs.packagesNeedRelease }}
           DEPLOYMENT_TYPE: ${{ steps.determine-deployment-type.outputs.deploymentType }}
         run: |
-          yarn tsx ./ci/scripts/check-packages-same-deployment-type.ts '${{ env.PACKAGES }}' "${{ env.DEPLOYMENT_TYPE }}"
+          yarn tsx ./scripts/ci/check-packages-same-deployment-type.ts '${{ env.PACKAGES }}' "${{ env.DEPLOYMENT_TYPE }}"
 
   deploy-npm-connect-dependencies:
     name: Deploy NPM ${{ needs.identify-release-packages.outputs.deploymentType }} ${{ matrix.package }}
