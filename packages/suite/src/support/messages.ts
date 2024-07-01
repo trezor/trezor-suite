@@ -14,15 +14,15 @@ export default defineMessages({
         id: 'TR_404_TITLE',
     },
     TR_ACCESS_HIDDEN_WALLET: {
-        defaultMessage: 'Access Passphrase wallet',
+        defaultMessage: 'Access Hidden wallet',
         id: 'TR_ACCESS_HIDDEN_WALLET',
     },
     TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET: {
-        defaultMessage: 'Access Passphrase wallet',
+        defaultMessage: 'Access Hidden wallet',
         id: 'TR_WALLET_SELECTION_ACCESS_HIDDEN_WALLET',
     },
     TR_WALLET_SELECTION_HIDDEN_WALLET: {
-        defaultMessage: 'Passphrase wallet',
+        defaultMessage: 'Hidden wallet',
         id: 'TR_WALLET_SELECTION_HIDDEN_WALLET',
     },
     TR_WALLET_PASSPHRASE_WALLET: {
@@ -139,7 +139,7 @@ export default defineMessages({
         id: 'TR_SELECT_TYPE',
     },
     TR_ADD_HIDDEN_WALLET: {
-        defaultMessage: 'Add passphrase wallet',
+        defaultMessage: 'Add hidden wallet',
         id: 'TR_ADD_HIDDEN_WALLET',
     },
     TR_ADD_WALLET: {
@@ -2389,11 +2389,11 @@ export default defineMessages({
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET: {
-        defaultMessage: 'Confirm empty passphrase wallet',
+        defaultMessage: 'Confirm empty hidden wallet',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
-        defaultMessage: 'Confirm empty Passphrase wallet on "{deviceLabel}" device.',
+        defaultMessage: 'Confirm empty Hidden wallet on "{deviceLabel}" device.',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
     },
     TR_CONFIRM_PASSPHRASE: {
@@ -2401,8 +2401,7 @@ export default defineMessages({
         id: 'TR_CONFIRM_PASSPHRASE',
     },
     TR_CONFIRM_PASSPHRASE_SOURCE: {
-        defaultMessage:
-            'Confirm empty passphrase wallet passphrase source on "{deviceLabel}" device.',
+        defaultMessage: 'Confirm empty hidden wallet passphrase source on "{deviceLabel}" device.',
         id: 'TR_CONFIRM_PASSPHRASE_SOURCE',
     },
     TR_CONFIRMED_TX: {
@@ -2569,7 +2568,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION: {
         defaultMessage:
-            'It is possible to install custom firmware for your Trezor device if needed. Installing custom firmware will erase its memory and may make it unusable. Never use this process unless you really know what you are doing.',
+            "It's possible to install custom firmware on your Trezor device, but doing so will erase its memory and may render it unusable. Only proceed if you are certain of what you are doing.",
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION',
     },
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
@@ -2716,7 +2715,7 @@ export default defineMessages({
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK',
     },
     TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING: {
-        defaultMessage: 'The time before the device locks automatically.',
+        defaultMessage: 'Set the time before your device locks automatically.',
         id: 'TR_DEVICE_SETTINGS_AUTO_LOCK_SUBHEADING',
     },
     TR_DEVICE_SETTINGS_AFTER_DELAY: {
@@ -3357,7 +3356,7 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_CASE_SENSITIVE',
     },
     TR_PASSPHRASE_HIDDEN_WALLET: {
-        defaultMessage: 'Passphrase wallet',
+        defaultMessage: 'Hidden wallet',
         id: 'TR_PASSPHRASE_HIDDEN_WALLET',
     },
     TR_PASSPHRASE_TOO_LONG: {
@@ -3365,7 +3364,7 @@ export default defineMessages({
         id: 'TR_PASSPHRASE_TOO_LONG',
     },
     TR_PASSPHRASE_WALLET: {
-        defaultMessage: 'Passphrase wallet #{id}',
+        defaultMessage: 'Hidden wallet #{id}',
         id: 'TR_PASSPHRASE_WALLET',
     },
     TR_PASSPHRASE_MISMATCH: {
@@ -3374,7 +3373,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_MISMATCH_DESCRIPTION: {
         defaultMessage:
-            'The passphrases didn’t match. For security, start from the beginning and re-enter them carefully.',
+            "The passphrases didn't match. For security, start over and re-enter them correctly.",
         id: 'TR_PASSPHRASE_MISMATCH_DESCRIPTION',
     },
     TR_PASSPHRASE_MISMATCH_START_OVER: {
@@ -3721,12 +3720,12 @@ export default defineMessages({
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY: {
         defaultMessage:
-            'This passphrase wallet is empty. To make sure you are in the correct wallet, please type the passphrase again.',
+            'This hidden wallet is empty. To make sure you are in the correct hidden wallet, please type the passphrase again.',
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
         defaultMessage:
-            'This passphrase wallet is empty. To make sure you are in the correct wallet, please re-enter the passphrase on your Trezor.',
+            'This hidden wallet is empty. To make sure you are in the correct hidden wallet, please re-enter the passphrase on your Trezor.',
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE',
     },
     TR_TO_FIND_YOUR_ACCOUNTS_AND: {
@@ -3860,7 +3859,7 @@ export default defineMessages({
         id: 'TR_VALIDATION',
     },
     TR_WALLET_DUPLICATE_DESC: {
-        defaultMessage: 'The Passphrase wallet you are trying to add has been already discovered.',
+        defaultMessage: 'The Hidden wallet you are trying to add has been already discovered.',
         id: 'TR_WALLET_DUPLICATE_DESC',
     },
     TR_WALLET_DUPLICATE_RETRY: {
@@ -3889,7 +3888,7 @@ export default defineMessages({
     },
     TR_WIPING_YOUR_DEVICE: {
         defaultMessage:
-            'Factory reset wipes the device memory, erasing all information including the wallet backup and PIN. Only perform a factory reset if you have your wallet backup, which can restore access to your funds.',
+            'Factory reset wipes the device memory, erasing all information including the wallet backup and PIN. Only perform a factory reset if you have your wallet backup, which is needed to restore access to your funds.',
         id: 'TR_WIPING_YOUR_DEVICE',
     },
     TR_WORDS: {
@@ -4861,7 +4860,7 @@ export default defineMessages({
     },
     TR_ENABLE_PASSPHRASE_DESCRIPTION: {
         id: 'TR_ENABLE_PASSPHRASE_DESCRIPTION',
-        defaultMessage: 'Allows you to create passphrase wallets',
+        defaultMessage: 'Allows you to create hidden wallets',
     },
     TR_ENABLE_PASSPHRASE: {
         id: 'TR_ENABLE_PASSPHRASE',
@@ -4877,7 +4876,7 @@ export default defineMessages({
     },
     TR_CREATE_HIDDEN_WALLET: {
         id: 'TR_CREATE_HIDDEN_WALLET',
-        defaultMessage: 'Add Passphrase wallet',
+        defaultMessage: 'Add Hidden wallet',
     },
     TR_DISCREET_MODE: {
         id: 'TR_DISCREET_MODE',
@@ -5427,8 +5426,7 @@ export default defineMessages({
     },
     TR_FIRMWARE_NEW_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_NEW_FW_DESCRIPTION',
-        defaultMessage:
-            'New firmware is now available. Update your device now or choose to do it later.',
+        defaultMessage: 'New firmware is now available. Update your device now.',
     },
     TR_FIRMWARE_REINSTALL_FW_DESCRIPTION: {
         id: 'TR_FIRMWARE_REINSTALL_FW_DESCRIPTION',
@@ -5571,7 +5569,7 @@ export default defineMessages({
     LOG_DESCRIPTION: {
         id: 'LOG_DESCRIPTION',
         defaultMessage:
-            'In case of communication with our support team, the log contains all necessary technical info.',
+            'This log contains essential technical information about Trezor Suite and may be needed when contacting Trezor Support.',
     },
     TR_RESTORE_EXISTING_WALLET: {
         id: 'TR_RESTORE_EXISTING_WALLET',
@@ -5769,7 +5767,7 @@ export default defineMessages({
     },
     TR_ADD_TOKEN_TITLE: {
         id: 'TR_ADD_TOKEN_TITLE',
-        defaultMessage: 'Add token',
+        defaultMessage: 'Add ERC20 token',
     },
     TR_ADD_TOKEN_DESCRIPTION: {
         id: 'TR_ADD_TOKEN_DESCRIPTION',
@@ -8951,7 +8949,7 @@ export default defineMessages({
     TR_STAKE_UNSTAKING_TAKES: {
         id: 'TR_STAKE_UNSTAKING_TAKES',
         defaultMessage:
-            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send it.',
+            'Unstaking currently takes {count, plural, one {# day} other {# days}}. Once completed, you can trade or send your funds.',
     },
     TR_STAKE_ETH_REWARDS_EARN: {
         id: 'TR_STAKE_ETH_REWARDS_EARN',
@@ -9204,7 +9202,7 @@ export default defineMessages({
     },
     TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: 'You can change view only and access passphrase here.',
+        defaultMessage: "You'll see wallet balances after disconnecting Trezor",
     },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
@@ -9292,7 +9290,8 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_DESC: {
         id: 'TR_DEVICE_SETTINGS_DEFAULT_WALLET_LOADING_DESC',
-        defaultMessage: 'Select passphrase to open passphrase dialog after opening Suite',
+        defaultMessage:
+            'Select "Passphrase" to open the passphrase entry dialog when you open Trezor Suite',
     },
     TR_DEFAULT_WALLET_LOADING_STANDARD: {
         id: 'TR_DEFAULT_WALLET_LOADING_STANDARD',
@@ -9375,11 +9374,11 @@ export default defineMessages({
     TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING: {
         id: 'TR_PASSPHRASE_WALLET_CONFIRMATION_STEP3_WARNING',
         defaultMessage:
-            '<bold>Create an offline backup</bold> of your <bold>passphrase. It is irrecoverable</bold>, even by Trezor support.',
+            'Write it down on paper, keep it away from anything digital, and store it in a safe place. No one can recover it, not even Trezor Support.',
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM1: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM1',
-        defaultMessage: "It's important to first learn <a>how a passphrase works</a>",
+        defaultMessage: "It's important to first learn how a passphrase works",
     },
     TR_PASSPHRASE_DESCRIPTION_ITEM2: {
         id: 'TR_PASSPHRASE_DESCRIPTION_ITEM2',
@@ -9408,11 +9407,11 @@ export default defineMessages({
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_TITLE',
-        defaultMessage: 'Do you primarily use passphrase?',
+        defaultMessage: 'Do you primarily use a passphrase?',
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_DESCRIPTION',
-        defaultMessage: 'Enable showing passphrase entry dialog right when you open Suite.',
+        defaultMessage: 'Enable the passphrase entry dialog to open when you open Trezor Suite.',
     },
     TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON: {
         id: 'TR_CONNECT_DEVICE_PASSPHRASE_BANNER_BUTTON',
