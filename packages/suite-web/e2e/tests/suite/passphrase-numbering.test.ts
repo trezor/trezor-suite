@@ -9,8 +9,6 @@ describe('Passphrase numbering', () => {
         cy.task('applySettings', { passphrase_always_on_device: false });
 
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/');
-        cy.passThroughInitialRun();
     });
 
     it('hidden wallet numbering', () => {
@@ -18,6 +16,14 @@ describe('Passphrase numbering', () => {
         const passphraseTwo = 'meow{enter}';
         const passphraseThree = 'abc{enter}';
 
+        // first go to a page that does not trigger discovery
+        cy.prefixedVisit('/settings');
+        cy.passThroughInitialRun();
+        // device in the top left menu was not authorized yet, we don't know whether it is a standard wallet or a hidden one
+        cy.getTestElement('@deviceStatus-connected').should('not.contain', 'Hidden wallet #');
+
+        // continue with screens that require device authorization
+        cy.getTestElement('@suite/menu/suite-index').click();
         cy.getTestElement('@passphrase-type/standard').click();
         cy.getTestElement('@dashboard/loading', { timeout: 30000 });
         cy.getTestElement('@dashboard/loading', { timeout: 30000 }).should('not.exist');
@@ -98,6 +104,9 @@ describe('Passphrase numbering', () => {
     // https://github.com/trezor/trezor-suite/issues/3133
     it('when user adds hidden wallet first (no pre-existing standard wallet)', () => {
         const passphrase = 'abc{enter}';
+
+        cy.prefixedVisit('/');
+        cy.passThroughInitialRun();
 
         cy.getTestElement('@passphrase-type/hidden').click();
         cy.getTestElement('@passphrase/input').type(passphrase);
