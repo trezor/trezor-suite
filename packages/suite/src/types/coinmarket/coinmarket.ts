@@ -16,6 +16,7 @@ import {
     CryptoSymbol,
     ExchangeTrade,
     ExchangeTradeStatus,
+    FiatCurrencyCode,
     SavingsTradeItemStatus,
     SellFiatTrade,
     SellTradeStatus,
@@ -115,3 +116,5 @@ export interface CoinmarketCryptoListProps extends Option {
     cryptoSymbol: CryptoSymbol | undefined;
     cryptoName: (typeof networks)[keyof typeof networks]['name'];
 }
+
+export type CoinmarketFiatCurrenciesProps = Map<FiatCurrencyCode, string>;
