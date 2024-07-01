@@ -8,15 +8,11 @@ export const selectDeviceStatesNotRemembered = (state: DeviceRootState) => {
     );
 };
 
-export const filterObjectKeys = <O extends Record<string, any>>(
+export const filterKeysByPartialMatch = <O extends Record<string, unknown>>(
     obj: O,
     filterKeys: readonly string[],
 ): O =>
-    D.keys(obj).reduce((result, key) => {
-        const isKeyFiltered = filterKeys.some(filterKey => key.toString().includes(filterKey));
-        if (isKeyFiltered) {
-            return result;
-        } else {
-            return { ...result, [key]: obj[key] };
-        }
-    }, {} as O);
+    D.filterWithKey(
+        obj,
+        (key, _) => !filterKeys.some(filterKey => key.toString().includes(filterKey)),
+    ) as O;
