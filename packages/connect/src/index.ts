@@ -50,7 +50,7 @@ const onCoreEvent = (message: CoreEventMessage) => {
     const { event, type, payload } = message;
 
     if (type === UI.REQUEST_UI_WINDOW) {
-        coreManager.getCore()?.handleMessage({ type: POPUP.HANDSHAKE });
+        coreManager.get()?.handleMessage({ type: POPUP.HANDSHAKE });
 
         return;
     }
@@ -107,27 +107,27 @@ const initSettings = (settings: Partial<ConnectSettings> = {}) => {
 };
 
 const init = async (settings: Partial<ConnectSettings> = {}) => {
-    if (coreManager.getCore() || coreManager.getInitPromise()) {
+    if (coreManager.get() || coreManager.getPending()) {
         throw ERRORS.TypedError('Init_AlreadyInitialized');
     }
 
     initSettings(settings);
 
     if (!_settings.lazyLoad) {
-        await coreManager.getOrInitCore(_settings, onCoreEvent);
+        await coreManager.getOrInit(_settings, onCoreEvent);
     }
 };
 
 const initCore = () => {
     initSettings({ lazyLoad: false });
 
-    return coreManager.getOrInitCore(_settings, onCoreEvent);
+    return coreManager.getOrInit(_settings, onCoreEvent);
 };
 
 const call: CallMethod = async params => {
     let core;
     try {
-        core = coreManager.getCore() ?? (await coreManager.getInitPromise()) ?? (await initCore());
+        core = coreManager.get() ?? (await coreManager.getPending()) ?? (await initCore());
     } catch (error) {
         return createErrorMessage(error);
     }
@@ -150,7 +150,7 @@ const call: CallMethod = async params => {
 };
 
 const uiResponse = (response: UiResponseEvent) => {
-    const core = coreManager.getCore();
+    const core = coreManager.get();
     if (!core) {
         throw ERRORS.TypedError('Init_NotInitialized');
     }
@@ -160,7 +160,7 @@ const uiResponse = (response: UiResponseEvent) => {
 const requestLogin = async (params: any) => {
     if (typeof params.callback === 'function') {
         const { callback } = params;
-        const core = coreManager.getCore();
+        const core = coreManager.get();
 
         // TODO: set message listener only if _core is loaded correctly
         const loginChallengeListener = async (event: MessageEvent<CoreEventMessage>) => {
@@ -197,7 +197,7 @@ const requestLogin = async (params: any) => {
 };
 
 const cancel = (error?: string) => {
-    const core = coreManager.getCore();
+    const core = coreManager.get();
     if (!core) {
         throw ERRORS.TypedError('Runtime', 'postMessage: _core not found');
     }

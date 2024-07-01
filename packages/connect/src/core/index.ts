@@ -1253,13 +1253,4 @@ const disposeCore = (core: Core) => {
 /**
  * State initialization
  */
-export const initCoreState = () => {
-    const { get, getPending, getOrInit, dispose } = createLazy(initCore, disposeCore);
-
-    return {
-        getCore: get,
-        getInitPromise: getPending,
-        getOrInitCore: getOrInit,
-        dispose,
-    };
-};
+export const initCoreState = () => createLazy(initCore, disposeCore);
