@@ -38,7 +38,6 @@ import * as routerActions from 'src/actions/suite/routerActions';
 import { notificationsActions } from '@suite-common/toast-notifications';
 import { isDesktop } from '@trezor/env-utils';
 import useCoinmarketPaymentMethod from './useCoinmarketPaymentMethod';
-import defaultFiatCurrencies from 'src/constants/wallet/coinmarket/fiatCurrencies';
 
 const useCoinmarketBuyForm = ({
     selectedAccount,
@@ -106,6 +105,13 @@ const useCoinmarketBuyForm = ({
             ));
 
     // form initialization
+    const {
+        defaultValues,
+        defaultCountry,
+        defaultCurrency,
+        defaultPaymentMethod,
+        suggestedFiatCurrency,
+    } = useCoinmarketBuyFormDefaultValues(account.symbol, buyInfo, paymentMethods);
     const { saveDraft, getDraft, removeDraft } =
         useFormDraft<CoinmarketBuyFormProps>('coinmarket-buy');
     const draft = getDraft(account.key);
@@ -115,12 +121,10 @@ const useCoinmarketBuyForm = ({
               fiatInput:
                   draft.fiatInput && draft.fiatInput !== ''
                       ? draft.fiatInput
-                      : defaultFiatCurrencies.get('czk'),
+                      : buyInfo?.buyInfo?.defaultAmountsOfFiatCurrencies.get(suggestedFiatCurrency),
           }
         : null;
     const isDraft = !!draftUpdated || !!offFirstRequest;
-    const { defaultValues, defaultCountry, defaultCurrency, defaultPaymentMethod } =
-        useCoinmarketBuyFormDefaultValues(account.symbol, buyInfo, paymentMethods);
     const methods = useForm<CoinmarketBuyFormProps>({
         mode: 'onChange',
         defaultValues: isDraft && draftUpdated ? draftUpdated : defaultValues,
@@ -422,7 +426,9 @@ const useCoinmarketBuyForm = ({
                     fiatInput:
                         values.fiatInput !== ''
                             ? values.fiatInput
-                            : defaultFiatCurrencies.get('czk'),
+                            : buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(
+                                  suggestedFiatCurrency,
+                              ),
                 });
             }
         },

@@ -7,6 +7,7 @@ import type {
     PaymentFrequency,
     SellVoucherTrade as SpendTrade,
     SavingsTradeItem,
+    FiatCurrencyCode,
 } from 'invity-api';
 import type { FlagProps } from '@trezor/components';
 
@@ -32,6 +33,10 @@ export type Option = { value: string; label: string };
 export type CountryOption = { value: FlagProps['country']; label: string };
 export type DefaultCountryOption = { value: string; label: string };
 export type TranslationOption = { value: string; label?: ReactElement };
+export type FiatCurrencyOption = {
+    value: FiatCurrencyCode;
+    label: string;
+};
 
 export type PaymentFrequencyOption = Option & { label: JSX.Element };
 

@@ -59,6 +59,10 @@ describe('Coinmarket Buy Actions', () => {
         const buyList = {
             country: 'CZ',
             suggestedFiatCurrency: 'CZK',
+            defaultAmountsOfFiatCurrencies: {
+                eur: 100,
+                czk: 2500,
+            },
             providers: [
                 {
                     name: 'simplecoin-sandbox',
@@ -94,6 +98,10 @@ describe('Coinmarket Buy Actions', () => {
             expect(store.getState().wallet.coinmarket.buy.buyInfo).toEqual({
                 buyInfo: {
                     country: 'CZ',
+                    defaultAmountsOfFiatCurrencies: new Map([
+                        ['eur', '100'],
+                        ['czk', '2500'],
+                    ]),
                     providers: [
                         {
                             companyName: 'Simplecoin',

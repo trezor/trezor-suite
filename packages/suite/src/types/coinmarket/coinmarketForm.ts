@@ -9,7 +9,7 @@ import {
 import type { Account, Network } from 'src/types/wallet';
 import type { BuyInfo } from 'src/actions/wallet/coinmarketBuyActions';
 import type { UseFormReturn, FormState as ReactHookFormState } from 'react-hook-form';
-import type { BuyTrade } from 'invity-api';
+import type { BuyTrade, FiatCurrencyCode } from 'invity-api';
 import { AmountLimits, DefaultCountryOption, Option } from '../wallet/coinmarketCommonTypes';
 import { AppState } from '../suite';
 import { Timer } from '@trezor/react-utils';
@@ -28,6 +28,7 @@ export type CoinmarketBuyFormDefaultValuesProps = {
     defaultCountry: Option;
     defaultCurrency: Option;
     defaultPaymentMethod: CoinmarketPaymentMethodListProps;
+    suggestedFiatCurrency: FiatCurrencyCode;
 };
 
 type CoinmarketOffersBuyProps = {

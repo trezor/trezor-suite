@@ -16,6 +16,7 @@ import { fiatCurrencies } from '@suite-common/suite-config';
 import { useCoinmarketFormContext } from 'src/hooks/wallet/coinmarket/form/useCoinmarketCommonForm';
 import { CoinmarketTradeBuyType } from 'src/types/coinmarket/coinmarket';
 import { useDidUpdate } from '@trezor/react-utils';
+import { FiatCurrencyOption } from 'src/types/wallet/coinmarketCommonTypes';
 
 const CoinmarketFormInputFiat = () => {
     const { translationString } = useTranslation();
@@ -88,9 +89,15 @@ const CoinmarketFormInputFiat = () => {
                         render={({ field: { onChange, value } }) => (
                             <Select
                                 value={value}
-                                onChange={(selected: any) => {
+                                onChange={(selected: FiatCurrencyOption) => {
                                     onChange(selected);
                                     setAmountLimits(undefined);
+                                    setValue(
+                                        fiatInput,
+                                        buyInfo?.buyInfo.defaultAmountsOfFiatCurrencies.get(
+                                            selected.value,
+                                        ),
+                                    );
                                 }}
                                 options={Object.keys(fiatCurrencies)
                                     .filter(c => buyInfo?.supportedFiatCurrencies.has(c))
