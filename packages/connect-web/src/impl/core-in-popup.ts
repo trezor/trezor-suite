@@ -197,20 +197,20 @@ export class CoreInPopup implements ConnectFactoryDependencies {
     }
 }
 
-const methods = new CoreInPopup();
+const impl = new CoreInPopup();
 
 // Exported to enable using directly
 export const TrezorConnect = factory({
     // Bind all methods due to shadowing `this`
-    eventEmitter: methods.eventEmitter,
-    init: methods.init.bind(methods),
-    call: methods.call.bind(methods),
-    manifest: methods.manifest.bind(methods),
-    requestLogin: methods.requestLogin.bind(methods),
-    uiResponse: methods.uiResponse.bind(methods),
-    renderWebUSBButton: methods.renderWebUSBButton.bind(methods),
-    disableWebUSB: methods.disableWebUSB.bind(methods),
-    requestWebUSBDevice: methods.requestWebUSBDevice.bind(methods),
-    cancel: methods.cancel.bind(methods),
-    dispose: methods.dispose.bind(methods),
+    eventEmitter: impl.eventEmitter,
+    init: impl.init.bind(impl),
+    call: impl.call.bind(impl),
+    manifest: impl.manifest.bind(impl),
+    requestLogin: impl.requestLogin.bind(impl),
+    uiResponse: impl.uiResponse.bind(impl),
+    renderWebUSBButton: impl.renderWebUSBButton.bind(impl),
+    disableWebUSB: impl.disableWebUSB.bind(impl),
+    requestWebUSBDevice: impl.requestWebUSBDevice.bind(impl),
+    cancel: impl.cancel.bind(impl),
+    dispose: impl.dispose.bind(impl),
 });
