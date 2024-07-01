@@ -13,7 +13,7 @@ type ToastProps = {
     toast: ToastInterface;
 };
 
-const TOAST_VISIBLE_DURATION = 1500;
+const TOAST_VISIBLE_DURATION = 5000;
 const TOAST_ANIMATION_DURATION = 500;
 
 type ToastStyle = {

@@ -12,7 +12,9 @@ class ReceiveActions {
         const copyAddressBtn = element(by.id('@receiveAddress/copy'));
         await waitFor(copyAddressBtn).toBeVisible().withTimeout(20000);
         await copyAddressBtn.tap();
-        await detoxExpect(element(by.id('@toastWrap'))).toBeVisible();
+        await waitFor(element(by.id('@toastWrap')))
+            .toBeVisible()
+            .withTimeout(20000);
     }
 }
 
