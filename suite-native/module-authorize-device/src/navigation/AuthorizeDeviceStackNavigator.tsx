@@ -3,8 +3,8 @@ import { useSelector } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
 import { selectDeviceRequestedAuthorization } from '@suite-native/device-authorization';
@@ -22,9 +22,9 @@ import { PassphraseVerifyEmptyWalletScreen } from '../screens/passphrase/Passphr
 import { PassphraseEnableOnDeviceScreen } from '../screens/passphrase/PassphraseEnableOnDeviceScreen';
 import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
 
-export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackParamList>();
+export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
 
-export const ConnectDeviceStackNavigator = () => {
+export const AuthorizeDeviceStackNavigator = () => {
     const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);
 
     useDetectDeviceError();
@@ -32,56 +32,56 @@ export const ConnectDeviceStackNavigator = () => {
     useHandleDuplicatePassphrase();
 
     return (
-        <ConnectDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
+        <AuthorizeDeviceStack.Navigator screenOptions={stackNavigationOptionsConfig}>
             {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate
                 // directly to the next screen without jumping back and forth.
                 !hasDeviceRequestedAuthorization && (
-                    <ConnectDeviceStack.Group>
-                        <ConnectDeviceStack.Screen
-                            name={ConnectDeviceStackRoutes.ConnectingDevice}
+                    <AuthorizeDeviceStack.Group>
+                        <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.ConnectingDevice}
                             component={ConnectingDeviceScreen}
                         />
-                        <ConnectDeviceStack.Screen
-                            name={ConnectDeviceStackRoutes.ConnectAndUnlockDevice}
+                        <AuthorizeDeviceStack.Screen
+                            name={AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice}
                             component={ConnectAndUnlockDeviceScreen}
                         />
-                    </ConnectDeviceStack.Group>
+                    </AuthorizeDeviceStack.Group>
                 )
             }
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PinMatrix}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PinMatrix}
                 component={PinScreen}
             />
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PassphraseForm}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseForm}
                 component={PassphraseFormScreen}
             />
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor}
                 component={PassphraseConfirmOnTrezorScreen}
             />
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PassphraseLoading}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseLoading}
                 component={PassphraseLoadingScreen}
             />
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PassphraseEmptyWallet}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseEmptyWallet}
                 component={PassphraseEmptyWalletScreen}
             />
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PassphraseVerifyEmptyWallet}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet}
                 component={PassphraseVerifyEmptyWalletScreen}
             />
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PassphraseEnterOnTrezor}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor}
                 component={PassphraseEnterOnTrezorScreen}
             />
-            <ConnectDeviceStack.Screen
-                name={ConnectDeviceStackRoutes.PassphraseEnableOnDevice}
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice}
                 component={PassphraseEnableOnDeviceScreen}
             />
-        </ConnectDeviceStack.Navigator>
+        </AuthorizeDeviceStack.Navigator>
     );
 };

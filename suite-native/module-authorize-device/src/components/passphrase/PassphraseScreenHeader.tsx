@@ -13,8 +13,8 @@ import {
 } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -29,8 +29,8 @@ import {
 import TrezorConnect from '@trezor/connect';
 
 type NavigationProp = StackToTabCompositeProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList
 >;
 

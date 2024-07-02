@@ -5,8 +5,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToTabCompositeProps,
 } from '@suite-native/navigation';
@@ -43,8 +43,8 @@ const textStyle = prepareNativeStyle<{ widthPercentage: number }>((_, { widthPer
 }));
 
 type NavigationProp = StackToTabCompositeProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -64,7 +64,7 @@ export const PassphraseEmptyWalletScreen = () => {
     };
 
     const handleTryAgain = () => {
-        navigation.navigate(ConnectDeviceStackRoutes.PassphraseForm);
+        navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseForm);
         dispatch(
             deviceActions.removeButtonRequests({
                 device,

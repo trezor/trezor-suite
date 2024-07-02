@@ -15,7 +15,7 @@ import {
     AccountsStackRoutes,
     DevUtilsStackRoutes,
     OnboardingStackRoutes,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackRoutes,
     AddCoinAccountStackRoutes,
     SendStackRoutes,
 } from './routes';
@@ -117,24 +117,24 @@ export type AddCoinAccountStackParamList = {
     };
 };
 
-export type ConnectDeviceStackParamList = {
-    [ConnectDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
-    [ConnectDeviceStackRoutes.PinMatrix]: undefined;
-    [ConnectDeviceStackRoutes.ConnectingDevice]: undefined;
+export type AuthorizeDeviceStackParamList = {
+    [AuthorizeDeviceStackRoutes.ConnectAndUnlockDevice]: undefined;
+    [AuthorizeDeviceStackRoutes.PinMatrix]: undefined;
+    [AuthorizeDeviceStackRoutes.ConnectingDevice]: undefined;
 
-    [ConnectDeviceStackRoutes.PassphraseForm]: undefined;
-    [ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor]: undefined;
-    [ConnectDeviceStackRoutes.PassphraseLoading]: undefined;
-    [ConnectDeviceStackRoutes.PassphraseEmptyWallet]: undefined;
-    [ConnectDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
-    [ConnectDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
-    [ConnectDeviceStackRoutes.PassphraseEnableOnDevice]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseForm]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseLoading]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseEmptyWallet]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice]: undefined;
 };
 
 export type RootStackParamList = {
     [RootStackRoutes.AppTabs]: NavigatorScreenParams<AppTabsParamList>;
     [RootStackRoutes.Onboarding]: NavigatorScreenParams<AppTabsParamList>;
-    [RootStackRoutes.ConnectDeviceStack]: NavigatorScreenParams<ConnectDeviceStackParamList>;
+    [RootStackRoutes.AuthorizeDeviceStack]: NavigatorScreenParams<AuthorizeDeviceStackParamList>;
     [RootStackRoutes.AccountsImport]: NavigatorScreenParams<AccountsImportStackParamList>;
     [RootStackRoutes.ReceiveModal]: AccountDetailParams;
     [RootStackRoutes.AccountSettings]: { accountKey: AccountKey };

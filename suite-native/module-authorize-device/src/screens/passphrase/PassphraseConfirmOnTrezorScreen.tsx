@@ -4,8 +4,8 @@ import { useEffect } from 'react';
 import { useNavigation } from '@react-navigation/native';
 
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -24,8 +24,8 @@ import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor,
     RootStackParamList
 >;
 
@@ -42,7 +42,7 @@ export const PassphraseConfirmOnTrezorScreen = () => {
 
     useEffect(() => {
         if (isDeviceConnectedAndAuthorized && isDiscoveryActive) {
-            navigation.navigate(ConnectDeviceStackRoutes.PassphraseLoading);
+            navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseLoading);
             dispatch(
                 deviceActions.removeButtonRequests({
                     device,

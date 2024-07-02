@@ -5,8 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -22,8 +22,8 @@ import TrezorConnect from '@trezor/connect';
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.PassphraseForm,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 

@@ -8,8 +8,8 @@ import {
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
 } from '@suite-native/navigation';
 import { selectDeviceState } from '@suite-common/wallet-core';
 import { selectDeviceRequestedPassphrase } from '@suite-native/device-authorization';
@@ -17,8 +17,8 @@ import { selectDeviceRequestedPassphrase } from '@suite-native/device-authorizat
 import { selectIsVerifyingPassphraseOnEmptyWallet } from './passphraseSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.PassphraseForm,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 
@@ -34,14 +34,14 @@ export const useHandleDeviceRequestsPassphrase = () => {
     const handleRequestPassphrase = useCallback(() => {
         // If the passphrase request was while verifying empty passphrase wallet, we handle it separately in the screen
         if (!isVefifyingPassphraseOnEmptyWallet && !deviceState) {
-            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                screen: ConnectDeviceStackRoutes.PassphraseForm,
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
             });
         }
         // Feature requests passphrase
         if (!isVefifyingPassphraseOnEmptyWallet && deviceState) {
-            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                screen: ConnectDeviceStackRoutes.PassphraseForm,
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
             });
         }
     }, [deviceState, isVefifyingPassphraseOnEmptyWallet, navigation]);
@@ -53,7 +53,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
     }, [deviceRequestedPassphrase, handleRequestPassphrase]);
 
     const handleRequestPassphraseOnDevice = useCallback(() => {
-        navigation.navigate(ConnectDeviceStackRoutes.PassphraseEnterOnTrezor);
+        navigation.navigate(AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor);
     }, [navigation]);
 
     useEffect(() => {

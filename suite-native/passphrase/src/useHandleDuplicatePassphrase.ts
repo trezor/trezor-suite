@@ -7,8 +7,8 @@ import { useAlert } from '@suite-native/alerts';
 import { switchDuplicatedDevice } from '@suite-common/wallet-core';
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -20,8 +20,8 @@ import { useTranslate } from '@suite-native/intl';
 import { selectPassphraseDuplicateError } from './passphraseSlice';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList
 >;
 

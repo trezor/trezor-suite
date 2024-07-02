@@ -18,8 +18,8 @@ import {
     selectHasDevicePassphraseEntryCapability,
 } from '@suite-common/wallet-core';
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList,
     StackToStackCompositeNavigationProps,
 } from '@suite-native/navigation';
@@ -44,8 +44,8 @@ const cardStyle = prepareNativeStyle(_ => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.PassphraseForm,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 
@@ -77,7 +77,7 @@ export const PassphraseForm = ({ inputLabel, onFocus }: PassphraseFormProps) => 
 
     const handleCreateHiddenWallet = handleSubmit(({ passphrase }) => {
         dispatch(onPassphraseSubmit({ value: passphrase, passphraseOnDevice: false }));
-        navigation.push(ConnectDeviceStackRoutes.PassphraseConfirmOnTrezor);
+        navigation.push(AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor);
         // Reset values so when user comes back to this screen, it's clean (for example if try again is triggered later in the flow)
         reset();
     });

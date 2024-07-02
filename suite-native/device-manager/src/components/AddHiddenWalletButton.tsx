@@ -12,8 +12,8 @@ import {
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Icon } from '@suite-common/icons';
 import {
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList,
     RootStackRoutes,
     StackToStackCompositeNavigationProps,
@@ -27,8 +27,8 @@ const textStyle = prepareNativeStyle(_ => ({
 }));
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes.PassphraseForm,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes.PassphraseForm,
     RootStackParamList
 >;
 
@@ -52,8 +52,8 @@ export const AddHiddenWalletButton = () => {
 
         // Create device instance thunk already handles passphrase enabling, so we just redirect to this screen and wait for success / error
         if (!isPassphraseEnabledOnDevice) {
-            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                screen: ConnectDeviceStackRoutes.PassphraseEnableOnDevice,
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice,
             });
         }
     };

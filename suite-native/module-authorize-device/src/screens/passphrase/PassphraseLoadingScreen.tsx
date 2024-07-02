@@ -6,8 +6,8 @@ import { useNavigation } from '@react-navigation/native';
 import { VStack, Text, Spinner, SpinnerLoadingState } from '@suite-native/atoms';
 import {
     AppTabsRoutes,
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     HomeStackRoutes,
     RootStackParamList,
     RootStackRoutes,
@@ -23,8 +23,8 @@ import { setIsCreatingNewWalletInstance } from '@suite-native/passphrase';
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
 
 type NavigationProp = StackToStackCompositeNavigationProps<
-    ConnectDeviceStackParamList,
-    ConnectDeviceStackRoutes,
+    AuthorizeDeviceStackParamList,
+    AuthorizeDeviceStackRoutes,
     RootStackParamList
 >;
 
@@ -56,8 +56,8 @@ export const PassphraseLoadingScreen = () => {
             dispatch(setIsCreatingNewWalletInstance(false));
         } else if (isDeviceAccountless && !isDiscoveryActive) {
             setLoadingResult('success');
-            navigation.navigate(RootStackRoutes.ConnectDeviceStack, {
-                screen: ConnectDeviceStackRoutes.PassphraseEmptyWallet,
+            navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
+                screen: AuthorizeDeviceStackRoutes.PassphraseEmptyWallet,
             });
         }
     };
