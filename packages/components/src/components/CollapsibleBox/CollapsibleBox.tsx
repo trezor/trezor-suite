@@ -88,6 +88,7 @@ type CollapsibleBoxContentProps = CollapsibleBoxManagedProps;
 
 const Container = styled.div<TransientFrameProps>`
     flex: 1;
+    width: 100%;
 
     ${withFrameProps}
 `;
