@@ -1,4 +1,4 @@
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -18,6 +18,7 @@ import {
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
+import { setIsCreatingNewWalletInstance } from '@suite-native/passphrase';
 
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
 
@@ -29,8 +30,12 @@ type NavigationProp = StackToStackCompositeNavigationProps<
 
 export const PassphraseLoadingScreen = () => {
     const navigation = useNavigation<NavigationProp>();
+
+    const dispatch = useDispatch();
+
     const isDeviceAccountless = useSelector(selectIsDeviceAccountless);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
+
     const [loadingResult, setLoadingResult] = useState<SpinnerLoadingState>('idle');
 
     useEffect(() => {
@@ -48,6 +53,7 @@ export const PassphraseLoadingScreen = () => {
                     screen: HomeStackRoutes.Home,
                 },
             });
+            dispatch(setIsCreatingNewWalletInstance(false));
         } else if (isDeviceAccountless && !isDiscoveryActive) {
             setLoadingResult('success');
             navigation.navigate(RootStackRoutes.ConnectDeviceStack, {

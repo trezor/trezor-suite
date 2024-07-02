@@ -1,4 +1,4 @@
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 
 import { useNavigation } from '@react-navigation/native';
@@ -22,7 +22,11 @@ import {
 } from '@suite-native/navigation';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { Translation } from '@suite-native/intl';
-import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
+import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    selectIsCreatingNewPassphraseWallet,
+} from '@suite-native/passphrase';
+import TrezorConnect from '@trezor/connect';
 
 type NavigationProp = StackToTabCompositeProps<
     ConnectDeviceStackParamList,
@@ -44,6 +48,8 @@ export const PassphraseScreenHeader = () => {
 
     const [shouldShowWarningBottomSheet, setShouldShowWarningBottomSheet] = useState(false);
 
+    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
+
     const handleClose = () => {
         dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
         navigation.navigate(RootStackRoutes.AppTabs, {
@@ -54,7 +60,16 @@ export const PassphraseScreenHeader = () => {
         });
     };
 
-    const toggleBottomSheet = () => setShouldShowWarningBottomSheet(!shouldShowWarningBottomSheet);
+    const toggleBottomSheet = () => {
+        if (isCreatingNewWalletInstance) {
+            setShouldShowWarningBottomSheet(!shouldShowWarningBottomSheet);
+        } else {
+            TrezorConnect.cancel();
+            if (navigation.canGoBack()) {
+                navigation.goBack();
+            }
+        }
+    };
 
     return (
         <ScreenHeaderWrapper>

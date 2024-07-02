@@ -7,10 +7,7 @@ import {
     ConnectDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import {
-    // selectDeviceRequestedAuthorization,
-    selectDeviceRequestedPin,
-} from '@suite-native/device-authorization';
+import { selectDeviceRequestedAuthorization } from '@suite-native/device-authorization';
 import { useDetectDeviceError, useReportDeviceConnectToAnalytics } from '@suite-native/device';
 import { useHandleDuplicatePassphrase } from '@suite-native/passphrase';
 
@@ -28,8 +25,7 @@ import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/Passphras
 export const ConnectDeviceStack = createNativeStackNavigator<ConnectDeviceStackParamList>();
 
 export const ConnectDeviceStackNavigator = () => {
-    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
-    // const deviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);
+    const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);
 
     useDetectDeviceError();
     useReportDeviceConnectToAnalytics();
@@ -41,7 +37,7 @@ export const ConnectDeviceStackNavigator = () => {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate
                 // directly to the next screen without jumping back and forth.
-                !hasDeviceRequestedPin && (
+                !hasDeviceRequestedAuthorization && (
                     <ConnectDeviceStack.Group>
                         <ConnectDeviceStack.Screen
                             name={ConnectDeviceStackRoutes.ConnectingDevice}
@@ -58,7 +54,6 @@ export const ConnectDeviceStackNavigator = () => {
                 name={ConnectDeviceStackRoutes.PinMatrix}
                 component={PinScreen}
             />
-
             <ConnectDeviceStack.Screen
                 name={ConnectDeviceStackRoutes.PassphraseForm}
                 component={PassphraseFormScreen}

@@ -1,4 +1,4 @@
-import { createSlice, isAnyOf } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit';
 
 import {
     AuthorizeDeviceError,
@@ -12,6 +12,7 @@ import { verifyPassphraseOnEmptyWalletThunk } from './passphraseThunks';
 type PassphraseState = {
     error: AuthorizeDeviceError | CreateDeviceInstanceError | null;
     isVefifyingPassphraseOnEmptyWallet: boolean;
+    isCreatingNewWalletInstance: boolean;
 };
 
 type PassphraseRootState = {
@@ -21,12 +22,17 @@ type PassphraseRootState = {
 const passphraseInitialState: PassphraseState = {
     error: null,
     isVefifyingPassphraseOnEmptyWallet: false,
+    isCreatingNewWalletInstance: false,
 };
 
 export const passphraseSlice = createSlice({
     name: 'passphrase',
     initialState: passphraseInitialState,
-    reducers: {},
+    reducers: {
+        setIsCreatingNewWalletInstance: (state, { payload }: PayloadAction<boolean>) => {
+            state.isCreatingNewWalletInstance = payload;
+        },
+    },
     extraReducers: builder => {
         builder
             .addCase(verifyPassphraseOnEmptyWalletThunk.pending.type, state => {
@@ -39,14 +45,13 @@ export const passphraseSlice = createSlice({
                 ),
                 state => {
                     state.isVefifyingPassphraseOnEmptyWallet = false;
+                    state.isCreatingNewWalletInstance = false;
                 },
             )
-            .addMatcher(
-                isAnyOf(authorizeDeviceThunk.pending, createDeviceInstanceThunk.pending),
-                state => {
-                    state.error = null;
-                },
-            )
+            .addMatcher(isAnyOf(createDeviceInstanceThunk.pending), state => {
+                state.error = null;
+                state.isCreatingNewWalletInstance = true;
+            })
             .addMatcher(
                 isAnyOf(authorizeDeviceThunk.rejected, createDeviceInstanceThunk.rejected),
                 (state, { payload }) => {
@@ -55,6 +60,7 @@ export const passphraseSlice = createSlice({
                         payload?.error === 'passphrase-enabling-cancelled'
                     ) {
                         state.error = payload;
+                        state.isCreatingNewWalletInstance = false;
                     }
                 },
             );
@@ -69,5 +75,10 @@ export const selectPassphraseDuplicateError = (state: PassphraseRootState) => {
 
 export const selectIsVerifyingPassphraseOnEmptyWallet = (state: PassphraseRootState) =>
     state.passphrase.isVefifyingPassphraseOnEmptyWallet;
+
+export const selectIsCreatingNewPassphraseWallet = (state: PassphraseRootState) =>
+    state.passphrase.isCreatingNewWalletInstance;
+
+export const { setIsCreatingNewWalletInstance } = passphraseSlice.actions;
 
 export const passphraseReducer = passphraseSlice.reducer;
