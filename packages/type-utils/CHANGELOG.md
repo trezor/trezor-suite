@@ -1,3 +1,7 @@
+# 1.1.0
+
+-   fix(type-utils): add build:lib command (3fdffb2578)
+
 # 1.0.6-beta.1
 
 -   chore(suite): depcheck enabled (2206f19f2e)
