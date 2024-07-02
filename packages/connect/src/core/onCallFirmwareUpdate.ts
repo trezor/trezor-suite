@@ -358,6 +358,8 @@ export const onCallFirmwareUpdate = async ({
                       language: targetLanguage,
                       version: device.firmwareRelease.release.version,
                       internal_model: device.features.internal_model,
+                  }).catch(() => {
+                      // silent, language data is not critical, it can be updated any time later and it indeed happens inside device.updateFeatures
                   })
                 : null;
 
