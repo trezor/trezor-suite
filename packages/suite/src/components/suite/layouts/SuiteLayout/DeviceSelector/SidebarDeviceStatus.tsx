@@ -1,5 +1,5 @@
 import { MouseEventHandler } from 'react';
-import { acquireDevice, selectDevice } from '@suite-common/wallet-core';
+import { acquireDevice, selectDevice, selectDevices } from '@suite-common/wallet-core';
 import * as deviceUtils from '@suite-common/suite-utils';
 import { TrezorDevice } from 'src/types/suite';
 import { useDispatch, useSelector } from '../../../../../hooks/suite';
@@ -19,7 +19,7 @@ const needsRefresh = (device?: TrezorDevice) => {
 
 export const SidebarDeviceStatus = () => {
     const selectedDevice = useSelector(selectDevice);
-
+    const devices = useSelector(selectDevices);
     const dispatch = useDispatch();
 
     const deviceNeedsRefresh = needsRefresh(selectedDevice);
@@ -36,6 +36,11 @@ export const SidebarDeviceStatus = () => {
     if (!selectedDevice || !selectedDeviceModelInternal) {
         return null;
     }
+    const instances = deviceUtils.getDeviceInstances(selectedDevice, devices);
+    const instancesWithState = instances.filter(i => i.state);
+
+    const isConnectionShown =
+        instancesWithState.length === 1 && selectedDevice.useEmptyPassphrase === true;
 
     return (
         <DeviceStatus
@@ -43,6 +48,7 @@ export const SidebarDeviceStatus = () => {
             deviceNeedsRefresh={deviceNeedsRefresh}
             device={selectedDevice}
             handleRefreshClick={handleRefreshClick}
+            forceConnectionInfo={isConnectionShown}
         />
     );
 };

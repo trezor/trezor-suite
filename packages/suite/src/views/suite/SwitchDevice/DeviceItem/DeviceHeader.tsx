@@ -30,6 +30,7 @@ interface DeviceHeaderProps {
     isCloseButtonVisible: boolean;
     onBackButtonClick?: () => void;
     isFindTrezorVisible?: boolean;
+    forceConnectionInfo: boolean;
 }
 
 export const DeviceHeader = ({
@@ -38,6 +39,7 @@ export const DeviceHeader = ({
     isCloseButtonVisible,
     onBackButtonClick,
     isFindTrezorVisible = false,
+    forceConnectionInfo,
 }: DeviceHeaderProps) => {
     const selectedDevice = useSelector(selectDevice);
     const transport = useSelector(state => state.suite.transport);
@@ -65,7 +67,11 @@ export const DeviceHeader = ({
                 )}
 
                 {deviceModelInternal && (
-                    <DeviceStatus deviceModel={deviceModelInternal} device={device} />
+                    <DeviceStatus
+                        deviceModel={deviceModelInternal}
+                        device={device}
+                        forceConnectionInfo={forceConnectionInfo}
+                    />
                 )}
             </Row>
 

@@ -11,14 +11,16 @@ import { TrezorDevice } from '@suite-common/suite-types';
 type DeviceStatusTextProps = {
     onRefreshClick?: MouseEventHandler;
     device: TrezorDevice;
+    forceConnectionInfo: boolean;
 };
 
 type DeviceStatusVisible = {
     connected: boolean;
     device: TrezorDevice;
+    forceConnectionInfo: boolean;
 };
 
-const DeviceStatusVisible = ({ device, connected }: DeviceStatusVisible) => {
+const DeviceStatusVisible = ({ device, connected, forceConnectionInfo }: DeviceStatusVisible) => {
     const { walletLabel } = useSelector(state => selectLabelingDataForWallet(state, device.state));
 
     const { defaultAccountLabelString } = useWalletLabeling();
@@ -35,7 +37,7 @@ const DeviceStatusVisible = ({ device, connected }: DeviceStatusVisible) => {
             icon={connected ? 'LINK' : 'UNLINK'}
             data-test={connected ? '@deviceStatus-connected' : '@deviceStatus-disconnected'}
         >
-            {walletLabel ? (
+            {walletText && !forceConnectionInfo ? (
                 <TruncateWithTooltip delayShow={TOOLTIP_DELAY_LONG}>
                     {walletText}
                 </TruncateWithTooltip>
@@ -46,7 +48,11 @@ const DeviceStatusVisible = ({ device, connected }: DeviceStatusVisible) => {
     );
 };
 
-export const DeviceStatusText = ({ onRefreshClick, device }: DeviceStatusTextProps) => {
+export const DeviceStatusText = ({
+    onRefreshClick,
+    device,
+    forceConnectionInfo,
+}: DeviceStatusTextProps) => {
     const { connected } = device;
     const deviceStatus = deviceUtils.getStatus(device);
     const needsAttention = deviceUtils.deviceNeedsAttention(deviceStatus);
@@ -64,5 +70,11 @@ export const DeviceStatusText = ({ onRefreshClick, device }: DeviceStatusTextPro
         );
     }
 
-    return <DeviceStatusVisible connected={connected} device={device} />;
+    return (
+        <DeviceStatusVisible
+            connected={connected}
+            device={device}
+            forceConnectionInfo={forceConnectionInfo}
+        />
+    );
 };
