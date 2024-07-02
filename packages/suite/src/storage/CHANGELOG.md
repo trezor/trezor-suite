@@ -1,12 +1,10 @@
 # Storage changelog
 
-## 47
-
--   added `device.passwords`
-
 ## 46
 
 -   added `tokenManagement`
+-   added `device.passwords`
+-   migrate Cardano accounts to a new structure
 
 ## 45
 
