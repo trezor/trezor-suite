@@ -2389,7 +2389,7 @@ export default defineMessages({
         id: 'TR_CONFIRM_ACTION_ON_YOUR',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET: {
-        defaultMessage: 'Confirm empty passphrase wallet',
+        defaultMessage: 'Confirm empty Passphrase wallet',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET',
     },
     TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON: {
@@ -7463,7 +7463,7 @@ export default defineMessages({
     TR_ONBOARDING_COINS_STEP_DESCRIPTION: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION',
         defaultMessage:
-            'Select which coins to show in Trezor Suite. You can change this setting anytime. Some coins are ERC20 tokens and can be used by enabling Ethereum below.',
+            'Select which coins to show in Trezor Suite. You can change this setting anytime.',
     },
     TR_ONBOARDING_COINS_STEP_DESCRIPTION_BITCOIN_ONLY: {
         id: 'TR_ONBOARDING_COINS_STEP_DESCRIPTION_BITCOIN_ONLY',

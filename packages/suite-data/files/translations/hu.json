@@ -578,7 +578,6 @@
   "TR_CONVERT_TO_CHECKSUM_ADDRESS": "Konvertálás ellenőző összeget is tartalmazó címre",
   "TR_CONVERT_TO_LOWERCASE": "Kisbetűssé konvertálás",
   "TR_COPY_AND_CLOSE": "Másol & Bezár",
-  "TR_COPY_CONTRACT_ADDRESS": "Soha ne küldj pénzt egy szerződés címére.",
   "TR_COPY_SIGNED_MESSAGE": "Aláírt üzenet másolása",
   "TR_COPY_TO_CLIPBOARD": "Másolás",
   "TR_COPY_TO_CLIPBOARD_TX_ID": "Másolás",
