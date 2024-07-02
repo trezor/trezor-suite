@@ -113,6 +113,7 @@ export const RecoveryStep = () => {
                 heading={<Translation id="TR_RECOVER_YOUR_WALLET_FROM" />}
                 description={pickByDeviceModel(deviceModelInternal, {
                     default: <Translation id="TR_RECOVER_SUBHEADING_TOUCH" />,
+                    [DeviceModelInternal.T1B1]: null,
                     [DeviceModelInternal.T2B1]: <Translation id="TR_RECOVER_SUBHEADING_BUTTONS" />,
                 })}
                 device={device}
