@@ -57,9 +57,8 @@ describe('Use regtest to test pending transactions', () => {
                 // pre-pending is immediately created and placed in "pending transactions group"
                 cy.getTestElement('@transaction-item/0/prepending/heading');
                 // however, after a while it is replaced by a standard pending transaction
-                cy.getTestElement(`@transaction-item/0/heading`).click({
+                cy.getTestElement(`@transaction-item/0/heading`, { timeout: 60000 }).click({
                     scrollBehavior: 'bottom',
-                    timeout: 60000,
                 });
                 // count has not changed
                 cy.getTestElement('@transaction-group/pending/count').contains(index + 1);
