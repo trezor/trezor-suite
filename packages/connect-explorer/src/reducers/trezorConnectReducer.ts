@@ -8,6 +8,7 @@ type ConnectState = {
     selectedDevice?: string;
     options?: Parameters<(typeof TrezorConnect)['init']>[0];
     isHandshakeConfirmed: boolean;
+    isInitSuccess: boolean;
     initError?: string;
 };
 
@@ -16,6 +17,7 @@ const initialState: ConnectState = {
     selectedDevice: undefined,
     options: undefined,
     isHandshakeConfirmed: false,
+    isInitSuccess: false,
     initError: undefined,
 };
 
@@ -98,6 +100,7 @@ export default function connect(state: ConnectState = initialState, action: Acti
             return {
                 ...state,
                 initError: undefined,
+                isInitSuccess: true,
                 options: action.payload,
             };
         case ACTIONS.ON_HANDSHAKE_CONFIRMED:
@@ -109,6 +112,7 @@ export default function connect(state: ConnectState = initialState, action: Acti
             return {
                 ...state,
                 initError: action.payload,
+                isInitSuccess: false,
             };
         default:
             return state;
