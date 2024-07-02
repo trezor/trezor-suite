@@ -24,13 +24,19 @@ const HelperIcon = styled.div`
     align-items: center;
 `;
 
-const EapIcon = styled(HelperIcon)<{ $isEapEnabled: boolean }>`
-    background-color: ${({ theme, $isEapEnabled }) =>
-        $isEapEnabled ? '#8247E5' : theme.backgroundAlertYellowBold};
+const ExperimentalIcon = styled(HelperIcon)<{ $isEapEnabled: boolean; $isExperimental: boolean }>`
+    background: ${({ theme, $isEapEnabled, $isExperimental }) => {
+        if (!$isExperimental) return '#7D4CE0';
+        else if (!$isEapEnabled) return theme.backgroundAlertYellowBold;
+        else return `linear-gradient(45deg, #7D4CE0, ${theme.backgroundAlertYellowBold})`;
+    }};
 
     &:hover {
-        background-color: ${({ theme, $isEapEnabled }) =>
-            $isEapEnabled ? '#551ab8' : theme.iconAlertYellow};
+        background: ${({ theme, $isEapEnabled, $isExperimental }) => {
+            if (!$isExperimental) return '#6e38dc';
+            else if (!$isEapEnabled) return theme.iconAlertYellow;
+            else return `linear-gradient(45deg, #6e38dc, ${theme.iconAlertYellow})`;
+        }};
     }
 `;
 
@@ -40,7 +46,8 @@ const DebugModeIcon = styled(HelperIcon)`
 
 export const HelperIcons = () => {
     const isEapEnabled = useSelector(state => state.desktopUpdate.allowPrerelease);
-    const allowPrerelease = useSelector(state => state.desktopUpdate.allowPrerelease);
+    const isExperimental = useSelector(state => !!state.suite.settings.experimental);
+    const showExperimental = isEapEnabled || isExperimental;
     const showDebugMode = useSelector(state => state.suite.settings.debug.showDebugMenu);
     const { translationString } = useTranslation();
     const dispatch = useDispatch();
@@ -50,16 +57,27 @@ export const HelperIcons = () => {
         dispatch(goto('settings-index', { anchor: SettingsAnchor.EarlyAccess }));
     };
 
-    if (!allowPrerelease && !showDebugMode) return null;
+    if (!showExperimental && !showDebugMode) return null;
+
+    const experimentalTooltip = (
+        <>
+            {isEapEnabled && <p>{translationString('TR_EARLY_ACCESS')}</p>}
+            {isExperimental && <p>{translationString('TR_EXPERIMENTAL_FEATURES')}</p>}
+        </>
+    );
 
     return (
         <Container>
-            {allowPrerelease && (
-                <EapIcon onClick={handleEapClick} $isEapEnabled={isEapEnabled}>
-                    <Tooltip cursor="pointer" content={translationString('TR_EARLY_ACCESS')}>
+            {showExperimental && (
+                <ExperimentalIcon
+                    onClick={handleEapClick}
+                    $isEapEnabled={isEapEnabled}
+                    $isExperimental={isExperimental}
+                >
+                    <Tooltip cursor="pointer" content={experimentalTooltip}>
                         <Icon icon="EXPERIMENTAL" size={16} color={theme.iconOnSecondary} />
                     </Tooltip>
-                </EapIcon>
+                </ExperimentalIcon>
             )}
             {showDebugMode && (
                 <DebugModeIcon>
