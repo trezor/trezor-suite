@@ -9224,7 +9224,7 @@ export default defineMessages({
     },
     TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: "You'll see wallet balances after disconnecting Trezor",
+        defaultMessage: 'You can change view-only and access passphrase here.',
     },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
