@@ -70,6 +70,7 @@ export const CardWithDevice = ({
                     device={device}
                     isCloseButtonVisible={isCloseButtonVisible}
                     onBackButtonClick={onBackButtonClick}
+                    forceConnectionInfo
                 />
 
                 {deviceWarning}
