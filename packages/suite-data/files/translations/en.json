@@ -264,7 +264,7 @@
   "TR_ADDRESS_MODAL_TITLE_EXCHANGE": "{networkCurrencyName} receive address on {networkName} network",
   "TR_ADDRESS_PHISHING_WARNING": "To prevent phishing attacks, you should verify the address on your Trezor. {claim}",
   "TR_ADD_ACCOUNT": "Add account",
-  "TR_ADD_HIDDEN_WALLET": "Add Passphrase wallet",
+  "TR_ADD_HIDDEN_WALLET": "Passphrase wallet",
   "TR_ADD_NETWORK_ACCOUNT": "Add {network} account",
   "TR_ADD_NEW_BLOCKBOOK_BACKEND": "Add new",
   "TR_ADD_TOKEN_ADDRESS_DUPLICATE": "Token address is already added",
