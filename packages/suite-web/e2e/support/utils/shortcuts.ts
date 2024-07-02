@@ -12,6 +12,9 @@ export const passThroughInitialRun = () => {
         .click()
         .getTestElement('@onboarding/exit-app-button')
         .click();
+    // view-only mode quick workaround
+    // TODO: refactor using data-tests
+    cy.get('[class^="ViewOnlyPromoContent__ButtonsContainer"]').contains('button', 'Yes').click();
 };
 
 export const passThroughAuthenticityCheck = () => {
