@@ -227,6 +227,7 @@ export const TokenList = ({
                                 <StyledFormattedCryptoAmount
                                     value={token.balance}
                                     symbol={token.symbol}
+                                    isBalance
                                 />
                             </Amount>
                         </Cell>
