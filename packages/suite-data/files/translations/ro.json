@@ -1079,7 +1079,6 @@
   "TR_THIS_HIDDEN_WALLET_IS_EMPTY": "Acest portofel ascuns este gol. Pentru a vă asigura că vă aflați în portofelul ascuns corect, vă rugăm să introduceți din nou fraza de acces.",
   "TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE": "Acest portofel ascuns este gol. Pentru a vă asigura că vă aflați în portofelul ascuns corect, vă rugăm să introduceți din nou fraza de acces pe Trezor.",
   "TR_TOKENS": "Tokenuri",
-  "TR_TOKENS_ADD": "Adăugare token",
   "TR_TOKENS_EMPTY": "Nici un token... încă.",
   "TR_TOO_LONG": "Mesajul este prea lung",
   "TR_TOR": "Tor",

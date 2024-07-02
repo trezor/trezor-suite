@@ -1322,7 +1322,6 @@
   "TR_THIS_INSTANCE_IS_BLOCKING": "Цей екземпляр блокує оновлення бази даних",
   "TR_TODAY_DATE": "Сьогодні {date}",
   "TR_TOKENS": "Токени",
-  "TR_TOKENS_ADD": "Додати токен",
   "TR_TOKENS_EMPTY": "Токенів поки що немає",
   "TR_TOO_LONG": "Повідомлення надто довге",
   "TR_TOR": "Tor",
