@@ -58,6 +58,7 @@ export const getSuiteReadyPayload = (state: AppState) => ({
     theme: state.suite.settings.theme.variant,
     suiteVersion: process.env.VERSION || '',
     earlyAccessProgram: state.desktopUpdate.allowPrerelease,
+    experimentalFeatures: state.suite.settings.experimental,
     browserName: getBrowserName(),
     browserVersion: getBrowserVersion(),
     osName: getOsName(),
