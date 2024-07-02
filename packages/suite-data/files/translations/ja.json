@@ -578,7 +578,6 @@
   "TR_CONVERT_TO_CHECKSUM_ADDRESS": "チェックサムアドレスに変換",
   "TR_CONVERT_TO_LOWERCASE": "小文字に変換",
   "TR_COPY_AND_CLOSE": "コピーして閉じる",
-  "TR_COPY_CONTRACT_ADDRESS": "コントラクトアドレスには絶対に資金を送らないでください。",
   "TR_COPY_SIGNED_MESSAGE": "署名済のメッセージをコピー",
   "TR_COPY_TO_CLIPBOARD": "コピー",
   "TR_COPY_TO_CLIPBOARD_TX_ID": "コピー",
