@@ -12,7 +12,7 @@ export const useAppShortcuts = () => {
         const modKey = e.metaKey; // CMD or Ctrl key
 
         // press CMD + P to show PassphraseModal
-        if (modKey && e.key === 'p' && device) {
+        if (device?.connected && modKey && e.key === 'p' && device) {
             dispatch(addWalletThunk({ walletType: 'passphrase' }));
             dispatch(closeModalApp());
             e.preventDefault();
