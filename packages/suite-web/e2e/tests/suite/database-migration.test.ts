@@ -113,7 +113,9 @@ describe('Database migration', () => {
 
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@deviceStatus-disconnected');
-        cy.contains(hiddenWalletSelector, 'Hidden wallet #1').find('input').should('be.checked');
+        cy.contains(hiddenWalletSelector, 'Passphrase wallet #1')
+            .find('input')
+            .should('be.checked');
         cy.getTestElement('@modal/close-button').click();
 
         cy.get('[data-test^="@metadata/outputLabel"]').first().should('be.visible');
