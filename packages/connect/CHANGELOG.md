@@ -10,8 +10,23 @@
 
 Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to access the latest stable version of Connect Explorer.
 
-# 9.2.5-beta.2
+# 9.3.0
 
+Improved reliability of popup handshake mechanism.
+Improved compatibility with webextensions using TrezorConnect inside offscreen (eg. Metamask).
+Cardano: support Conway certificates, increase minimum supported FW to 2.6.0 to clean up legacy code.
+Minor fixes in Connect Explorer and documentation.
+
+-   feat(connect): Add tag 258 support (90bf3a7)
+-   feat(connect): Conway certificates (ab003ce)
+-   feat(connect): applySettings - accept all validated params (65809d8)
+-   fix(connect): immediate switch from custom to default backend (b8348ca)
+-   fix(connect): remove getPublicKey coinInfo fallback (fb446f2)
+-   chore(connect): add new TS3 CA pubkeys and update timestamp (35486ba)
+-   chore(connect): update fw version number for cardano (d737d3c)
+-   chore(connect): center changelog version table (93fab15)
+-   chore(connect): change name in changelog table (bbc5499)
+-   chore(connect): remove canary from changelog
 -   fix(connect): race condition when closing and opening popup subsequently (e0e51c7)
 -   chore(connect): implement required descriptor.type (9ef657f)
 -   docs(connect): Explorer landing page update (7db29e9)
@@ -34,6 +49,7 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 -   some attributes were not passed trough the proxy (5cb6a26)
 -   MTT content max height (c8796b4)
 -   add links in changelog page (8dabb30)
+-   remove nextra reference from webextension, show amountUnit in signTransaction and fix favicon path
 
 ## connect-web
 
@@ -41,11 +57,17 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 -   refactor into classes (fc7a45b)
 -   core-in-popup mode (52891f3)
 -   passphrase missmatch resets the flow now (d55ff1c)
+-   close on popup cancellation, legacy mode for handshake
+-   check if chrome.tabs really available in webextension env
+
+## connect-iframe
+
+-   handshake handling issues
 
 ## connect-webextension
 
--   stop publishing Trezor connect webextension proxy since it is for Trezor internal testing with connect-explorer (5df3ae0)
--   use bundled build as package main (fff7eaf)
+-   stop publishing Trezor connect webextension proxy (5df3ae0)
+-   bundle content script to work properly with ES6 modules (fff7eaf)
 
 ## connect-examples
 
@@ -58,6 +80,10 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 -   update firmware binaries to 2.7.2 (6392328)
 -   T3T1 support (9d0adae)
 
+## connect-popup
+
+-   temporary workaround for CONTENT_SCRIPT_LOADED and handling of CONTENT_SCRIPT_LOADED
+
 ## connect-ui
 
 -   install bridge title align (19c5781)
@@ -66,65 +92,20 @@ Use the persistent link [connect.trezor.io/9](https://connect.trezor.io/9/) to a
 
 -   bump ws from 8.16.0 to 8.17.1 (bc5b787)
 
--   npm-release: @trezor/blockchain-link 2.1.31-beta.2
--   npm-release: @trezor/blockchain-link-utils 1.0.19-beta.1
--   npm-release: @trezor/blockchain-link-types 1.0.18-beta.2
--   npm-release: @trezor/type-utils 1.0.6-beta.1
--   npm-release: @trezor/connect-analytics 1.0.16-beta.1
--   npm-release: @trezor/analytics 1.0.18-beta.1
--   npm-release: @trezor/connect-common 0.0.34-beta.1
--   npm-release: @trezor/env-utils 1.0.18-beta.1
--   npm-release: @trezor/transport 1.1.30-beta.2
--   npm-release: @trezor/protobuf 1.0.14-beta.2
--   npm-release: @trezor/schema-utils 1.0.5-beta.1
--   npm-release: @trezor/protocol 1.0.10-beta.2
--   npm-release: @trezor/utxo-lib 2.0.11-beta.1
--   npm-release: @trezor/utils 9.0.25-beta.2
--   npm-release: @trezor/connect 9.2.5-beta.2
-
-# 9.2.5-beta.1
-
-Improved reliability of popup handshake mechanism.
-Improved compatibility with webextensions using TrezorConnect inside offscreen (eg. Metamask).
-Cardano: support Conway certificates, increase minimum supported FW to 2.6.0 to clean up legacy code.
-Minor fixes in Connect Explorer and documentation.
-
--   feat(connect): Add tag 258 support (90bf3a7)
--   feat(connect): Conway certificates (ab003ce)
--   feat(connect): applySettings - accept all validated params (65809d8)
--   fix(connect): immediate switch from custom to default backend (b8348ca)
--   fix(connect): remove getPublicKey coinInfo fallback (fb446f2)
--   chore(connect): add new TS3 CA pubkeys and update timestamp (35486ba)
--   chore(connect): update fw version number for cardano (d737d3c)
--   chore(connect): center changelog version table (93fab15)
--   chore(connect): change name in changelog table (bbc5499)
--   chore(connect): remove canary from changelog
-
-## connect-web
-
--   close on popup cancellation, legacy mode for handshake
--   check if chrome.tabs really available in webextension env
-
-## connect-iframe
-
--   handshake handling issues
-
-## connect-explorer
-
--   remove nextra reference from webextension, show amountUnit in signTransaction and fix favicon path
-
-## connect-popup
-
--   temporary workaround for CONTENT_SCRIPT_LOADED and handling of CONTENT_SCRIPT_LOADED
-
-## Dependencies update
-
--   npm-release: @trezor/blockchain-link 2.1.31-beta.1
--   npm-release: @trezor/blockchain-link-types 1.0.18-beta.1
--   npm-release: @trezor/transport 1.1.30-beta.1
--   npm-release: @trezor/protobuf 1.0.14-beta.1
--   npm-release: @trezor/protocol 1.0.10-beta.1
--   npm-release: @trezor/utils 9.0.25-beta.1
+-   npm-release: @trezor/blockchain-link 2.2.0
+-   npm-release: @trezor/blockchain-link-utils 1.1.0
+-   npm-release: @trezor/blockchain-link-types 1.1.0
+-   npm-release: @trezor/type-utils 1.1.0
+-   npm-release: @trezor/connect-analytics 1.1.0
+-   npm-release: @trezor/analytics 1.1.0
+-   npm-release: @trezor/connect-common 0.1.0
+-   npm-release: @trezor/env-utils 1.1.0
+-   npm-release: @trezor/transport 1.2.0
+-   npm-release: @trezor/protobuf 1.1.0
+-   npm-release: @trezor/schema-utils 1.1.0
+-   npm-release: @trezor/protocol 1.1.0
+-   npm-release: @trezor/utxo-lib 2.1.0
+-   npm-release: @trezor/utils 9.1.0
 
 # 9.2.4
 
