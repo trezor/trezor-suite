@@ -1,4 +1,4 @@
-# 1.1.30-beta.2
+# 1.2.0
 
 -   chore(transport): remove enumeration intent signaling (ef5b83e6f1)
 -   feat(transport): make descriptor.type required (6b8a46b3be)
