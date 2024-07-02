@@ -139,7 +139,7 @@ export default defineMessages({
         id: 'TR_SELECT_TYPE',
     },
     TR_ADD_HIDDEN_WALLET: {
-        defaultMessage: 'Add Passphrase wallet',
+        defaultMessage: 'Passphrase wallet',
         id: 'TR_ADD_HIDDEN_WALLET',
     },
     TR_ADD_WALLET: {
@@ -9224,7 +9224,7 @@ export default defineMessages({
     },
     TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: 'You can change view-only and access passphrase here.',
+        defaultMessage: "You'll see wallet balances after disconnecting Trezor",
     },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
