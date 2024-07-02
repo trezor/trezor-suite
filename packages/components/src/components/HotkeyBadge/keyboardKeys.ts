@@ -5,7 +5,7 @@ export const keyboardKeys = {
     SHIFT: { code: 16, value: 'Shift' },
     CTRL: { code: 17, value: 'Ctrl', valueMac: '⌘' },
     CMD: { code: 17, value: '⌘' },
-    ALT: { code: 18, value: 'Alt', valueMac: 'Option' },
+    ALT: { code: 18, value: 'Alt', valueMac: '⌥' },
     PAUSE: { code: 19, value: 'Pause' },
     CAPS_LOCK: { code: 20, value: 'Caps Lock' },
     ESCAPE: { code: 27, value: 'Escape' },
