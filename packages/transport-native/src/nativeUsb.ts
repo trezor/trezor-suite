@@ -34,4 +34,10 @@ export class NativeUsbTransport extends AbstractApiTransport {
             signal,
         });
     }
+
+    public listen() {
+        this.api.listen();
+
+        return super.listen();
+    }
 }
