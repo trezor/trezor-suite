@@ -8,6 +8,7 @@ import {
 import styled from 'styled-components';
 import { ElevationDown, useElevation } from '../ElevationContext/ElevationContext';
 import { Keys, keyboardKeys } from './keyboardKeys';
+import { Fragment } from 'react';
 
 export const Container = styled.div<{ $elevation: Elevation; $isActive: boolean }>`
     display: flex;
@@ -45,10 +46,10 @@ const Component = ({ isActive = true, hotkey }: HotkeyBadgeProps) => {
                 const value = isMac ? macValue : keyObject.value;
 
                 return (
-                    <>
-                        <span key={`hotkey-${key}-${index}`}>{value.toUpperCase()}</span>
+                    <Fragment key={`hotkey-${key}-${index}`}>
+                        <span>{value.toUpperCase()}</span>
                         {isNotLast && <Plus />}
-                    </>
+                    </Fragment>
                 );
             })}
         </Container>
