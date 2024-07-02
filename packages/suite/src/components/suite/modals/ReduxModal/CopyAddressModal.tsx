@@ -45,14 +45,15 @@ export const CopyAddressModal = ({ address, onCancel, addressType }: CopyAddress
             isCancelable
             onCancel={onCancel}
             icon="warningTriangleLight"
+            iconVariant="warning"
             bodyHeading={<Translation id="TR_NOT_YOUR_RECEIVE_ADDRRESS" />}
             text={<Translation id={getAddressTypeText(addressType)} />}
             bottomBarComponents={
                 <>
-                    <Button variant="destructive" onClick={onCopyAddress}>
+                    <Button variant="warning" onClick={onCopyAddress}>
                         <Translation id="TR_COPY_TO_CLIPBOARD" />
                     </Button>
-                    <Button variant="primary" onClick={onCancel}>
+                    <Button variant="tertiary" onClick={onCancel}>
                         <Translation id="TR_CANCEL" />
                     </Button>
                 </>
