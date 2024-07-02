@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 
 import { getMainnets } from '@suite-common/wallet-config';
-import { spacingsPx, typography } from '@trezor/theme';
+import { spacings, spacingsPx, typography } from '@trezor/theme';
 import { Account } from 'src/types/wallet';
 import { Translation } from 'src/components/suite';
-import { Card, CoinLogo, variables } from '@trezor/components';
+import { Card, CoinLogo, Row, variables } from '@trezor/components';
 import { TradeBoxMenu } from './TradeBoxMenu';
 import { TradeBoxPrices } from './TradeBoxPrices';
 
@@ -39,11 +39,6 @@ const Right = styled.div`
     display: flex;
 `;
 
-const CoinWrapper = styled.div`
-    display: flex;
-    gap: ${spacingsPx.xs};
-`;
-
 const Coin = styled.div`
     display: flex;
     flex-direction: column;
@@ -76,13 +71,13 @@ export const TradeBox = ({ account }: TradeBoxProps) => {
             </Title>
             <StyledCard>
                 <Left>
-                    <CoinWrapper>
+                    <Row gap={spacings.xs} alignItems="center">
                         <CoinLogo size={24} symbol={network.symbol} />
                         <Coin>
                             <CoinName>{network.name}</CoinName>
                             <CoinSymbol>{network.symbol.toUpperCase()}</CoinSymbol>
                         </Coin>
-                    </CoinWrapper>
+                    </Row>
                     <TradeBoxPrices account={account} />
                 </Left>
                 <Right>
