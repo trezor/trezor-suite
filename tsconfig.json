@@ -80,7 +80,7 @@
             "path": "suite-native/module-add-accounts"
         },
         {
-            "path": "suite-native/module-connect-device"
+            "path": "suite-native/module-authorize-device"
         },
         {
             "path": "suite-native/module-dev-utils"

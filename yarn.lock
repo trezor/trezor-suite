@@ -9041,7 +9041,7 @@ __metadata:
     "@suite-native/module-accounts-import": "workspace:*"
     "@suite-native/module-accounts-management": "workspace:*"
     "@suite-native/module-add-accounts": "workspace:*"
-    "@suite-native/module-connect-device": "workspace:*"
+    "@suite-native/module-authorize-device": "workspace:*"
     "@suite-native/module-dev-utils": "workspace:*"
     "@suite-native/module-home": "workspace:*"
     "@suite-native/module-onboarding": "workspace:*"
@@ -9571,9 +9571,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@suite-native/module-connect-device@workspace:*, @suite-native/module-connect-device@workspace:suite-native/module-connect-device":
+"@suite-native/module-authorize-device@workspace:*, @suite-native/module-authorize-device@workspace:suite-native/module-authorize-device":
   version: 0.0.0-use.local
-  resolution: "@suite-native/module-connect-device@workspace:suite-native/module-connect-device"
+  resolution: "@suite-native/module-authorize-device@workspace:suite-native/module-authorize-device"
   dependencies:
     "@react-navigation/native": "npm:6.1.17"
     "@react-navigation/native-stack": "npm:6.9.26"
