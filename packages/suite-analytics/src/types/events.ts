@@ -20,6 +20,7 @@ export type SuiteAnalyticsEvent =
               theme: string;
               suiteVersion: string;
               earlyAccessProgram: boolean;
+              experimentalFeatures?: string[];
               browserName: string;
               browserVersion: string;
               osName: string;
