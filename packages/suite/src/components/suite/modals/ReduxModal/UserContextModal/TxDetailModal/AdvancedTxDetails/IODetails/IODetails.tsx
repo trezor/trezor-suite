@@ -1,20 +1,13 @@
 import { ReactElement, ReactNode } from 'react';
 import styled, { css, useTheme } from 'styled-components';
 
-import {
-    Elevation,
-    borders,
-    mapElevationToBackground,
-    mapElevationToBorder,
-    spacingsPx,
-    typography,
-} from '@trezor/theme';
+import { Elevation, spacingsPx, spacings, typography } from '@trezor/theme';
 import { WalletAccountTransaction } from '@suite-common/wallet-types';
 import { formatAmount, formatNetworkAmount, isNftTokenTransfer } from '@suite-common/wallet-utils';
 import { FormattedCryptoAmount, Translation } from 'src/components/suite';
 import { useSelector } from 'src/hooks/suite/useSelector';
 import { AnonymitySet, TokenTransfer } from '@trezor/blockchain-link';
-import { Icon, CollapsibleBox, useElevation } from '@trezor/components';
+import { Icon, CollapsibleBox, useElevation, Divider } from '@trezor/components';
 import { UtxoAnonymity } from 'src/components/wallet';
 import { AnalyzeInExplorerBanner } from './AnalyzeInExplorerBanner';
 import { FormattedNftAmount } from 'src/components/suite/FormattedNftAmount';
@@ -34,38 +27,15 @@ const Wrapper = styled.div`
 `;
 
 const StyledCollapsibleBox = styled(CollapsibleBox)<{ $elevation: Elevation }>`
-    background: none;
-    box-shadow: none;
-    border-radius: 0;
-    margin-bottom: 0;
-    padding-bottom: ${spacingsPx.md};
-    text-align: left;
     overflow: auto;
-    ${blurFix}
-
-    & + & {
-        border-top: 1px solid ${mapElevationToBorder};
-
-        padding-top: ${spacingsPx.md};
-    }
 
     ${CollapsibleBox.Header} {
         padding: ${spacingsPx.md} 0;
-        border-radius: ${borders.radii.sm};
-        ${blurFix}
-
-        &:hover {
-            background-color: ${mapElevationToBackground};
-        }
-    }
-
-    ${CollapsibleBox.Heading} {
-        color: ${({ theme }) => theme.textDefault};
     }
 
     ${CollapsibleBox.Content} {
-        padding: ${spacingsPx.xs} 0 0;
         border: none;
+        padding-bottom: ${spacingsPx.md};
     }
 `;
 
@@ -476,7 +446,9 @@ const CollapsibleIOSection = ({
             $elevation={elevation}
             heading={heading}
             defaultIsOpen={opened}
-            paddingType="large"
+            paddingType="none"
+            fillType="none"
+            hasDivider={false}
         >
             <IOSectionColumn
                 tx={tx}
@@ -540,6 +512,7 @@ export const IODetails = ({ tx, isPhishingTransaction }: IODetailsProps) => {
                     inputs={tx.details.vin?.filter(vin => vin.isAccountOwned)}
                     outputs={tx.details.vout?.filter(vout => vout.isAccountOwned)}
                 />
+                <Divider margin={{ top: spacings.xs, bottom: spacings.xxs }} />
                 <CollapsibleIOSection
                     heading={<Translation id="TR_OTHER_INPUTS_AND_OUTPUTS" />}
                     tx={tx}
