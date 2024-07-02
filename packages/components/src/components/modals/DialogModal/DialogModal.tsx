@@ -10,11 +10,19 @@ const BodyHeading = styled.div`
     ${typography.titleMedium}
 `;
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(Icon)<{ iconVariant: 'success' | 'warning' }>`
     width: 80px;
     height: 80px;
     margin-bottom: ${spacingsPx.md};
-    background: ${({ theme }) => theme.backgroundPrimarySubtleOnElevation1};
+    background: ${({ theme, iconVariant }) => {
+        switch (iconVariant) {
+            case 'warning':
+                return theme.backgroundAlertYellowSubtleOnElevation1;
+            case 'success':
+            default:
+                return theme.backgroundPrimarySubtleOnElevation1;
+        }
+    }};
     border-radius: ${borders.radii.full};
 `;
 
@@ -38,6 +46,7 @@ export interface DialogModalProps extends PickedModalProps {
     headerHeading?: ReactNode;
     bodyHeading?: ReactNode;
     icon?: IconName;
+    iconVariant?: 'success' | 'warning';
     text?: ReactNode;
 }
 
@@ -45,11 +54,12 @@ export const DialogModal = ({
     headerHeading,
     bodyHeading,
     icon,
+    iconVariant = 'success',
     text,
     ...rest
 }: DialogModalProps) => (
     <Modal heading={headerHeading} {...rest}>
-        {icon && <StyledIcon name={icon} size="extraLarge" />}
+        {icon && <StyledIcon name={icon} size="extraLarge" iconVariant={iconVariant} />}
         {bodyHeading && <BodyHeading>{bodyHeading}</BodyHeading>}
         <Text> {text}</Text>
     </Modal>
