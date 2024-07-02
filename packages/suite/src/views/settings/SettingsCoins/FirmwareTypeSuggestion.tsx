@@ -19,6 +19,8 @@ const Row = styled.div`
 
 const StyledButton = styled(Button)`
     display: inline;
+    position: relative;
+    top: 5px;
 `;
 
 const Description = styled.div`
@@ -43,7 +45,12 @@ const FirmwareTypeSuggestionDescription = () => {
                 id={translationId}
                 values={{
                     button: chunks => (
-                        <StyledButton variant="tertiary" size="tiny" onClick={goToFirmwareType}>
+                        <StyledButton
+                            margin={{ left: 2, right: 2 }}
+                            variant="tertiary"
+                            size="tiny"
+                            onClick={goToFirmwareType}
+                        >
                             {chunks}
                         </StyledButton>
                     ),
