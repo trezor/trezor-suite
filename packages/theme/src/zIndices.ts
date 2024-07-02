@@ -11,7 +11,7 @@ export const zIndices = {
     discoveryProgress: 41,
 
     modal: 40, // above other suite content to disable interacting with it
-    draggableComponent: 35, // sidebar, above other content to be visible when dragged, resized
+    draggableComponent: 30, // sidebar, above other content to be visible when dragged, resized
     navigationBar: 30,
     expandableNavigationHeader: 21, // above EXPANDABLE_NAVIGATION to cover its box-shadow
     expandableNavigation: 20, // above PAGE_HEADER to spread over it
