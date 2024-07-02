@@ -1,4 +1,4 @@
-# 1.0.18-beta.2
+# 1.1.0
 
 -   chore(suite): unused package dependencies removed (f7907e1496)
 -   chore(suite): depcheck enabled (2206f19f2e)
