@@ -1718,7 +1718,6 @@
   "TR_TODAY_DATE": "Сегодня, {date}",
   "TR_TOKEN": "Токен",
   "TR_TOKENS": "Токены",
-  "TR_TOKENS_ADD": "Добавить токен",
   "TR_TOKENS_EMPTY": "Токенов нет... пока.",
   "TR_TOKEN_TRANSFERS": " {standard} Передача токенов",
   "TR_TOKEN_UNRECOGNIZED_BY_TREZOR": "Нераспознанные токены",
