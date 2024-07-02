@@ -1,4 +1,4 @@
-# 0.0.34-beta.1
+# 0.1.0
 
 -   chore(connect-common): edit firmware changelogs (3637a56cf7)
 -   fix(connect-common): firmware release url (0166df50e6)
