@@ -1,9 +1,6 @@
-# 2.1.31-beta.2
+# 2.2.0
 
 -   chore(deps): bump ws from 8.16.0 to 8.17.1 (bc5b787f3e)
-
-# 2.1.31-beta.1
-
 -   chore(utils): move Throttler util from blockchain-link to utils (78673bd14c)
 
 # 2.1.30
