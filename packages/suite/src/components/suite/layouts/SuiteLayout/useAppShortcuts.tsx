@@ -9,17 +9,17 @@ export const useAppShortcuts = () => {
     const dispatch = useDispatch();
 
     useEvent('keydown', e => {
-        const modKey = e.metaKey; // CMD or Ctrl key
+        const { altKey } = e;
 
-        // press CMD + P to show PassphraseModal
-        if (device?.connected && modKey && e.key === 'p' && device) {
+        // press ALT + P to show PassphraseModal
+        if (device?.connected && altKey && e.code === 'KeyP' && device) {
             dispatch(addWalletThunk({ walletType: 'passphrase' }));
             dispatch(closeModalApp());
             e.preventDefault();
         }
 
-        // press CMD + D to show SwitchDevice
-        if (modKey && e.key === 'd' && device) {
+        // press ALT + D to show SwitchDevice
+        if (altKey && e.code === 'KeyD' && device) {
             dispatch(
                 goto('suite-switch-device', {
                     params: {
