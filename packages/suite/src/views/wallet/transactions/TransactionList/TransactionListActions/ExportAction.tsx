@@ -54,18 +54,25 @@ export const ExportAction = ({ account, searchQuery, accountMetadata }: ExportAc
 
             setIsExportRunning(true);
             try {
-                await dispatch(
+                const allTransactions = await dispatch(
                     fetchAllTransactionsForAccountThunk({
                         accountKey: account.key,
                         noLoading: true,
                     }),
                 );
+
+                // Sort transactions in chronological order (oldest first)
+                const sortedTransactions = allTransactions.sort(
+                    (a, b) => a.blockTime - b.blockTime,
+                );
+
                 const accountName = accountLabel || getAccountTitle();
                 await dispatch(
                     exportTransactionsThunk({
                         account,
                         accountName,
                         type,
+                        transactions: sortedTransactions, // Pass the sorted transactions
                         searchQuery,
                         accountMetadata,
                     }),
