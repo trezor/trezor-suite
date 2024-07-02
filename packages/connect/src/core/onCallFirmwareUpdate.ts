@@ -125,10 +125,14 @@ const waitForReconnectedDevice = async (
     return reconnectedDevice;
 };
 
-const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
+const getInstallationParams = (device: Device, params: Params) => {
+    const btcOnly = params.btcOnly ?? device.firmwareType === 'bitcoin-only';
+
     // we can detect support properly only if device was not connected in bootloader mode
     if (!device.features.bootloader_mode) {
-        const version = binary ? parseFirmwareHeaders(Buffer.from(binary)).version : undefined;
+        const version = params.binary
+            ? parseFirmwareHeaders(Buffer.from(params.binary)).version
+            : undefined;
         const isUpdatingToNewerVersion = !version
             ? device.firmwareRelease?.isNewer
             : isNewer(version, [
@@ -136,8 +140,10 @@ const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
                   device.features.minor_version,
                   device.features.patch_version,
               ]);
+        const isUpdatingToEqualFirmwareType = (device.firmwareType === 'bitcoin-only') === btcOnly;
 
-        const upgrade = device.atLeast('2.6.3') && isUpdatingToNewerVersion;
+        const upgrade =
+            device.atLeast('2.6.3') && isUpdatingToNewerVersion && isUpdatingToEqualFirmwareType;
         const manual = !device.atLeast(['1.10.0', '2.6.0']) && !upgrade;
         const language = device.atLeast('2.7.0');
 
@@ -148,6 +154,7 @@ const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
             upgrade,
             /** Language update is supported */
             language,
+            btcOnly,
         };
     } else {
         // if device connected initially in bootloader mode:
@@ -157,6 +164,7 @@ const getInstallationParams = (device: Device, binary?: ArrayBuffer) => {
             manual: false,
             upgrade: false,
             language: false,
+            btcOnly,
         };
     }
 };
@@ -168,13 +176,12 @@ const getBinaryHelper = (
     params: Params,
     log: Log,
     postMessage: PostMessage,
+    btcOnly: boolean,
     intermediaryVersion?: IntermediaryVersion,
 ) => {
     if (!device.firmwareRelease) {
         throw ERRORS.TypedError('Runtime', 'device.firmwareRelease is not set');
     }
-    const btcOnly =
-        params.btcOnly || (params.btcOnly === undefined && device.firmwareType === 'bitcoin-only');
 
     log.debug(
         'onCallFirmwareUpdate loading binary',
@@ -305,8 +312,13 @@ export const onCallFirmwareUpdate = async ({
 
     registerEvents(device, postMessage);
 
-    const { manual, upgrade, language } = getInstallationParams(device, params.binary);
-    log.debug('onCallFirmwareUpdate', 'installation params', { manual, upgrade, language });
+    const { manual, upgrade, language, btcOnly } = getInstallationParams(device, params);
+    log.debug('onCallFirmwareUpdate', 'installation params', {
+        manual,
+        upgrade,
+        language,
+        btcOnly,
+    });
 
     const binary =
         params.binary ||
@@ -315,6 +327,7 @@ export const onCallFirmwareUpdate = async ({
             params,
             log,
             postMessage,
+            btcOnly,
             device.firmwareRelease.intermediaryVersion,
         ));
 
@@ -341,7 +354,6 @@ export const onCallFirmwareUpdate = async ({
         );
     } else {
         // Device supports automatic reboot to bootloader, load translation data and do it
-
         const rebootParams = upgrade
             ? {
                   boot_command: PROTO.BootCommand.INSTALL_UPGRADE,
@@ -430,7 +442,7 @@ export const onCallFirmwareUpdate = async ({
         );
 
         stripped = stripFwHeaders(
-            await getBinaryHelper(reconnectedDevice, params, log, postMessage),
+            await getBinaryHelper(reconnectedDevice, params, log, postMessage, btcOnly),
         );
         // note: fw major_version 1 requires calling initialize before calling FirmwareErase. Without it device would not respond
         await reconnectedDevice.initialize(false, false);
