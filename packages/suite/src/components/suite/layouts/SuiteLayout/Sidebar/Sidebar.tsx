@@ -17,25 +17,31 @@ const Container = styled.nav<{ $elevation: Elevation }>`
     border-right: 1px solid ${mapElevationToBorder};
 `;
 
+const Wrapper = styled.div`
+    display: flex;
+`;
+
 export const Sidebar = () => {
     const { elevation } = useElevation();
 
     return (
-        <ResizableBox
-            directions={['right']}
-            width={SIDEBAR_WIDTH_NUMERIC}
-            minWidth={230}
-            maxWidth={400}
-            zIndex={zIndices.draggableComponent}
-        >
-            <Container $elevation={elevation}>
-                <ElevationUp>
-                    <DeviceSelector />
-                    <Navigation />
-                    <AccountsMenu />
-                    <QuickActions />
-                </ElevationUp>
-            </Container>
-        </ResizableBox>
+        <Wrapper>
+            <ResizableBox
+                directions={['right']}
+                width={SIDEBAR_WIDTH_NUMERIC}
+                minWidth={230}
+                maxWidth={400}
+                zIndex={zIndices.draggableComponent}
+            >
+                <Container $elevation={elevation}>
+                    <ElevationUp>
+                        <DeviceSelector />
+                        <Navigation />
+                        <AccountsMenu />
+                        <QuickActions />
+                    </ElevationUp>
+                </Container>
+            </ResizableBox>
+        </Wrapper>
     );
 };
