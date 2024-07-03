@@ -10,7 +10,7 @@
         "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.0-bitcoinonly.bin",
         "fingerprint": "bd199ce0934769aca5c3a91f71fd48e533d88c8cf087b76ac49db415fa08c286",
         "fingerprint_bitcoinonly": "3dc847cc396fe83f5a324242097a4cf97fc64acf90516efcfcf23b6d3103a992",
-        "changelog": "* Improve communication with Optiga secure element."
+        "changelog": "* Added tutorial flow. \n* Added Animated device label on homescreen/lockscreen. \n* Added word counter during wallet creation. \n* Improved change homescreen flow. \n* Improved swipe behavior and animations. \n* Increased Optiga read timeout to avoid spurious RSODs. \n* Fixed swipe back from address QR code screen. \n* Fixed device authenticity check. \n* Removed CoSi functionality."
     },
     {
         "required": false,
