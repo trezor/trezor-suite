@@ -1,4 +1,6 @@
 import { selectDevice } from '@suite-common/wallet-core';
+import { getFirmwareVersion } from '@trezor/device-utils';
+import { versionUtils } from '@trezor/utils';
 
 import { AnyStepId, AnyPath, Step } from 'src/types/onboarding';
 import { GetState } from 'src/types/suite';
@@ -15,7 +17,15 @@ export const isStepUsed = (step: Step, getState: GetState): boolean => {
     if (
         deviceModelInternal &&
         Array.isArray(step.supportedModels) &&
-        !step.supportedModels.includes(deviceModelInternal)
+        !(
+            step.supportedModels.includes(deviceModelInternal) ||
+            step.supportedModels.some(
+                it =>
+                    typeof it === 'object' &&
+                    it.model === deviceModelInternal &&
+                    versionUtils.isNewerOrEqual(getFirmwareVersion(device), it.minFwVersion),
+            )
+        )
     ) {
         return false;
     }

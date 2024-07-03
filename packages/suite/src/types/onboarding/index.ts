@@ -2,13 +2,18 @@ import { DeviceModelInternal } from '@trezor/connect';
 import * as STEP from 'src/constants/onboarding/steps';
 import { PrerequisiteType } from 'src/utils/suite/prerequisites';
 
-export interface Step {
+type ModelWithFirmwareVersion = {
+    model: DeviceModelInternal;
+    minFwVersion: `${number}.${number}.${number}`;
+};
+
+export type Step = {
     id: AnyStepId;
     stepGroup: number | undefined;
     prerequisites?: (PrerequisiteType | 'device-different')[];
     path?: AnyPath[];
-    supportedModels?: DeviceModelInternal[];
-}
+    supportedModels?: (DeviceModelInternal | ModelWithFirmwareVersion)[];
+};
 
 // todo: remove, improve typing
 export type AnyStepId =
