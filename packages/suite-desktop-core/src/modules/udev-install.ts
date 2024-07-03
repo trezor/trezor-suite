@@ -2,6 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { spawn } from 'child_process';
 
+import { validateIpcMessage } from '@trezor/ipc-proxy';
+
 import { app, ipcMain } from '../typed-electron';
 
 import type { Module } from './index';
@@ -23,7 +25,9 @@ const fileExists = async (filePath: string) => {
 export const SERVICE_NAME = 'udev';
 
 export const init: Module = () => {
-    ipcMain.handle('udev/install', async () => {
+    ipcMain.handle('udev/install', async ipcEvent => {
+        validateIpcMessage(ipcEvent);
+
         const { logger, resourcesPath } = global;
         const resourceRules = path.join(resourcesPath, `bin/udev/${FILE_NAME}`);
         const userRules = path.join(app.getPath('userData'), FILE_NAME);

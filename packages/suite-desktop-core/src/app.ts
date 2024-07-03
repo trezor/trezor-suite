@@ -3,6 +3,7 @@ import { app, BrowserWindow } from 'electron';
 
 import { isDevEnv } from '@suite-common/suite-utils';
 import type { HandshakeClient } from '@trezor/suite-desktop-api';
+import { validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { ipcMain } from './typed-electron';
 import { APP_NAME } from './libs/constants';
@@ -165,7 +166,11 @@ const init = async () => {
             }));
 
     // repeated during app lifecycle (e.g. Ctrl+R)
-    ipcMain.handle('handshake/load-modules', (_, payload) => loadModulesResponse(payload));
+    ipcMain.handle('handshake/load-modules', (ipcEvent, payload) => {
+        validateIpcMessage(ipcEvent);
+
+        return loadModulesResponse(payload);
+    });
 
     // Tor module initializes separated from general `initModules` because Tor is different
     // since it is allowed to fail and then the user decides whether to `try again` or `disable`.
@@ -176,7 +181,11 @@ const init = async () => {
         mainThreadEmitter,
     });
 
-    ipcMain.handle('handshake/load-tor-module', () => loadTorModule());
+    ipcMain.handle('handshake/load-tor-module', ipcEvent => {
+        validateIpcMessage(ipcEvent);
+
+        return loadTorModule();
+    });
 
     const statePatch = processStatePatch();
     // load and wait for handshake message from renderer

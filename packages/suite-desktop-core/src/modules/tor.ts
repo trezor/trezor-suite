@@ -9,6 +9,7 @@ import { TorStatus, BootstrapTorEvent, HandshakeTorModule } from '@trezor/suite-
 import { BootstrapEvent } from '@trezor/request-manager';
 import TrezorConnect from '@trezor/connect';
 import { getFreePort } from '@trezor/node-utils';
+import { validateIpcMessage } from '@trezor/ipc-proxy';
 
 import { TorProcess, TorProcessStatus } from '../libs/processes/TorProcess';
 import { app, ipcMain } from '../typed-electron';
@@ -122,7 +123,9 @@ const load = async ({ mainWindow, store, mainThreadEmitter }: Dependencies) => {
         persistSettings(shouldEnableTor);
     };
 
-    ipcMain.handle('tor/toggle', async (_: unknown, shouldEnableTor: boolean) => {
+    ipcMain.handle('tor/toggle', async (ipcEvent, shouldEnableTor: boolean) => {
+        validateIpcMessage(ipcEvent);
+
         logger.info('tor', `Toggling ${shouldEnableTor ? 'ON' : 'OFF'}`);
 
         try {
