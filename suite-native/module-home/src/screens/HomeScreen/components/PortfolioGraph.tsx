@@ -51,7 +51,7 @@ export const PortfolioGraph = forwardRef<PortfolioGraphRef>((_props, ref) => {
     );
 
     return (
-        <VStack spacing="large">
+        <VStack spacing="large" testID="@home/portfolio/graph">
             <PortfolioGraphHeader />
             <Graph
                 points={graphPoints}

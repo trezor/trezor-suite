@@ -46,7 +46,7 @@ describe('Go through onboarding and connect Trezor.', () => {
                 .toBeVisible()
                 .withTimeout(10000); // communication between connected Trezor and app takes some time.
 
-            await detoxExpect(element(by.text('Bitcoin'))).toBeVisible();
+            await detoxExpect(element(by.id('@home/portfolio/graph'))); // discovery finished or at least started and graph is visible
         } else {
             await detoxExpect(element(by.text('Hi there!'))).toBeVisible();
             await detoxExpect(element(by.text('Get started'))).toBeVisible();
