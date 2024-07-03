@@ -2112,7 +2112,7 @@
   "TR_VIEW_ONLY_RADIOS_ENABLED_DESCRIPTION": "Balances & transactions <strong>remain visible</strong> in app even after Trezor is disconnected.",
   "TR_VIEW_ONLY_RADIOS_ENABLED_TITLE": "Enabled",
   "TR_VIEW_ONLY_SEND_COINS_INFO": "You always need to connect Trezor to move coins.",
-  "TR_VIEW_ONLY_TOOLTIP_DESCRIPTION": "You'll see wallet balances after disconnecting Trezor",
+  "TR_VIEW_ONLY_TOOLTIP_DESCRIPTION": "You can change view only and access passphrase here.",
   "TR_WAIT_FOR_REBOOT": "Restarting Trezor",
   "TR_WALLET": "Accounts",
   "TR_WALLET_DUPLICATE_DESC": "The Passphrase wallet you are trying to add has been already discovered.",
