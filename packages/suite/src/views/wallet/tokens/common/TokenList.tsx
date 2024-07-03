@@ -31,6 +31,7 @@ import { getUnusedAddressFromAccount } from 'src/utils/wallet/coinmarket/coinmar
 import { openModal } from 'src/actions/suite/modalActions';
 import { selectDevice } from '@suite-common/wallet-core';
 import { GroupedMenuItems } from '@trezor/components/src/components/Dropdown/Menu';
+import { formatTokenSymbol } from 'src/utils/wallet/tokenUtils';
 
 const Table = styled(Card)`
     word-break: break-all;
@@ -218,7 +219,7 @@ export const TokenList = ({
                             <Amount>
                                 {!hideRates && (
                                     <StyledFiatValue
-                                        amount={token.balance || '1'}
+                                        amount={token.balance || ''}
                                         symbol={network.symbol}
                                         tokenAddress={token.contract as TokenAddress}
                                         showLoadingSkeleton
@@ -226,7 +227,7 @@ export const TokenList = ({
                                 )}
                                 <StyledFormattedCryptoAmount
                                     value={token.balance}
-                                    symbol={token.symbol}
+                                    symbol={formatTokenSymbol(token.symbol || '')}
                                     isBalance
                                 />
                             </Amount>
