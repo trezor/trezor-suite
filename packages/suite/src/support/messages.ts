@@ -2396,6 +2396,10 @@ export default defineMessages({
         defaultMessage: 'Confirm empty Passprase wallet on "{deviceLabel}" device.',
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
     },
+    TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION: {
+        defaultMessage: 'Please enter your passphrase to authorize this action.',
+        id: 'TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION',
+    },
     TR_CONFIRM_PASSPHRASE: {
         defaultMessage: 'Confirm passphrase',
         id: 'TR_CONFIRM_PASSPHRASE',
