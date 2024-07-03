@@ -1,5 +1,5 @@
 import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
-import { AsyncResultWithTypedError, DescriptorApiLevel } from '../types';
+import { DescriptorApiLevel } from '../types';
 import {
     CONFIGURATION_ID,
     ENDPOINT_ID,
@@ -184,18 +184,7 @@ export class UsbApi extends AbstractApi {
         }
     }
 
-    public async read(
-        path: string,
-        signal?: AbortSignal,
-    ): AsyncResultWithTypedError<
-        ArrayBuffer,
-        | typeof ERRORS.DEVICE_NOT_FOUND
-        | typeof ERRORS.INTERFACE_UNABLE_TO_OPEN_DEVICE
-        | typeof ERRORS.INTERFACE_DATA_TRANSFER
-        | typeof ERRORS.DEVICE_DISCONNECTED_DURING_ACTION
-        | typeof ERRORS.ABORTED_BY_SIGNAL
-        | typeof ERRORS.UNEXPECTED_ERROR
-    > {
+    public async read(path: string, signal?: AbortSignal) {
         const device = this.findDevice(path);
         if (!device) {
             return this.error({ error: ERRORS.DEVICE_NOT_FOUND });
