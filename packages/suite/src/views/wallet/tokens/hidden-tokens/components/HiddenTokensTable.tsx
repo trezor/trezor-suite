@@ -5,10 +5,12 @@ import { getTokens } from 'src/utils/wallet/tokenUtils';
 import { useSelector } from 'src/hooks/suite';
 import { NoTokens } from '../../common/NoTokens';
 import { TokenList } from '../../common/TokenList';
-import { QuestionTooltip, Translation } from 'src/components/suite';
+import { Translation } from 'src/components/suite';
 import styled from 'styled-components';
-import { spacingsPx } from '@trezor/theme';
+import { spacings, spacingsPx } from '@trezor/theme';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
+import { H3, Icon } from '@trezor/components';
+import { Text, Row } from '@trezor/components';
 
 const Wrapper = styled.div`
     display: flex;
@@ -19,7 +21,10 @@ const Wrapper = styled.div`
 const UnverifiedTokens = styled.div`
     display: flex;
     flex-direction: column;
-    gap: ${spacingsPx.md};
+`;
+
+const UnrecognizedTokensWrapper = styled.div`
+    margin-left: ${spacingsPx.sm};
 `;
 
 interface HiddenTokensTableProps {
@@ -67,10 +72,21 @@ export const HiddenTokensTable = ({ selectedAccount, searchQuery }: HiddenTokens
             )}
             {unverifiedTokensCount > 0 && (
                 <UnverifiedTokens>
-                    <QuestionTooltip
-                        label="TR_TOKEN_UNRECOGNIZED_BY_TREZOR"
-                        tooltip="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP"
-                    />
+                    <UnrecognizedTokensWrapper>
+                        <H3>
+                            <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR" />
+                        </H3>
+                        <Row
+                            alignItems="center"
+                            gap={spacings.xxs}
+                            margin={{ bottom: spacings.xl, top: spacings.xxs }}
+                        >
+                            <Icon variant="tertiary" size={16} icon="WARNING" />
+                            <Text variant="tertiary" typographyStyle="hint">
+                                <Translation id="TR_TOKEN_UNRECOGNIZED_BY_TREZOR_TOOLTIP" />
+                            </Text>
+                        </Row>
+                    </UnrecognizedTokensWrapper>
                     <TokenList
                         account={account}
                         hideRates
