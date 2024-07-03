@@ -64,6 +64,8 @@ export const ConnectDevicePromptManager = ({
     // todo: move to some hook or something
 
     if (!transport?.type) {
+        // todo: onboarding has a different NoTransport component?
+
         // No transport layer available to communicate with the device => we should offer downloading the Bridge. (Eg. firefox user without bridge installed)
         // It shouldn't happen in Chrome and desktop app as bridge is built-in and there should be WebUSB as a fallback
         // In normal circumstances transport.type is "BridgeTransport" or "WebUsbTransport".

@@ -71,7 +71,7 @@ const getMessageId = ({
 }) => {
     switch (prerequisite) {
         case 'transport-bridge':
-            return 'TR_TREZOR_BRIDGE_IS_NOT_RUNNING';
+            return 'TR_NO_TRANSPORT';
         case 'device-bootloader':
             return 'TR_DEVICE_CONNECTED_BOOTLOADER';
         default: {

@@ -53,6 +53,7 @@ const Col = styled.div<{ $justify?: string }>`
     justify-content: ${({ $justify }) => $justify};
 `;
 
+// it actually changes to "Install suite desktop"
 export const InstallBridge = () => {
     const [isSuiteDesktopRunning, setIsSuiteDesktopRunning] = useState<boolean | undefined>(
         undefined,
@@ -109,6 +110,8 @@ export const InstallBridge = () => {
         );
     }
 
+    // if bridge is running, user will never be directed to this page, but since this page is accessible directly over /bridge url
+    // it makes sense to show some meaningful information here
     if (transport?.type === 'BridgeTransport') {
         // not 100%, this is true only for latest suite-desktop release
         const isBundled = transport?.bridge?.version?.[0] === 3;
@@ -130,10 +133,34 @@ export const InstallBridge = () => {
                         >
                             <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
                         </StyledButton>
+
+                        <Button
+                            // href="trezorsuite://bridge-requested-by-a-3rd-party"
+                            onClick={() => {
+                                if (isWebUsb(transport)) {
+                                    console.log('calling disable webusb');
+                                    TrezorConnect.disableWebUSB();
+                                }
+
+                                window.open('trezorsuite://bridge-requested-by-a-3rd-party');
+                            }}
+                        >
+                            Use desktop app instead
+                        </Button>
                     </Col>
                 </Footer>
             </Modal>
         );
+    }
+
+    // again, if webusb is running, user should never be directed to this page. for cases of direct access to /bridge url, display some info as well.
+    if (transport?.type === 'WebUsbTransport') {
+        <Modal
+            heading="Transport - Webusb"
+            description="Cool,  you are using webusb. No action needed"
+
+            // todo: back button (or modal should have close button)
+        ></Modal>;
     }
 
     return (
@@ -158,6 +185,7 @@ export const InstallBridge = () => {
                     {isSuiteDesktopRunning && 'Suite desktop is running'}
 
                     <div>
+                        {!isSuiteDesktopRunning && <Button>Download Suite Desktop</Button>}
                         <Button
                             // href="trezorsuite://bridge-requested-by-a-3rd-party"
                             onClick={() => {
@@ -172,18 +200,7 @@ export const InstallBridge = () => {
                             Open Trezor Suite desktop app
                         </Button>
                     </div>
-
-                    {/* {isWebUsb(transport) && (
-                        <Button onClick={TrezorConnect.disableWebUSB}>Disable WebUSB</Button>
-                    )} */}
                 </>
-                {isWeb() && isTorEnabled && (
-                    <Paragraph>
-                        <TrezorLink href={HELP_CENTER_TOR_URL}>
-                            <Translation id="TR_TOR_BRIDGE" />
-                        </TrezorLink>
-                    </Paragraph>
-                )}
             </Content>
             <Footer></Footer>
         </Modal>

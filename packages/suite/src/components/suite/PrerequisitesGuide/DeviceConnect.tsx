@@ -13,6 +13,7 @@ interface DeviceConnectProps {
 }
 
 export const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
+    console.log('DeviceConnect meow');
     const items = isWebUsbTransport
         ? [
               TROUBLESHOOTING_TIP_UDEV,
@@ -21,6 +22,7 @@ export const DeviceConnect = ({ isWebUsbTransport }: DeviceConnectProps) => {
               TROUBLESHOOTING_TIP_BRIDGE_USE,
           ]
         : [
+              // todo:
               TROUBLESHOOTING_TIP_BRIDGE_STATUS,
               TROUBLESHOOTING_TIP_UDEV,
               TROUBLESHOOTING_TIP_CABLE,

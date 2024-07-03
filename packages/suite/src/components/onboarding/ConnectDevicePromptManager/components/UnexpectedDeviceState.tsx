@@ -1,7 +1,7 @@
 import { Translation, TroubleshootingTips } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
-    TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
 } from 'src/components/suite/troubleshooting/tips';
 import { pickByDeviceModel } from '@trezor/device-utils';
 import { DeviceModelInternal } from '@trezor/connect';
@@ -23,7 +23,8 @@ export const UnexpectedDeviceState = ({
             <>
                 <TroubleshootingTips
                     label={<Translation id="TR_YOUR_DEVICE_IS_CONNECTED_BUT_UNREADABLE" />}
-                    items={[TROUBLESHOOTING_TIP_BRIDGE_STATUS, TROUBLESHOOTING_TIP_BRIDGE_INSTALL]}
+                    // todo:
+                    items={[TROUBLESHOOTING_TIP_BRIDGE_STATUS, TROUBLESHOOTING_TIP_SUITE_DESKTOP]}
                 />
 
                 {/* <Button onClick={() => TrezorConnect.disableWebUSB()}>

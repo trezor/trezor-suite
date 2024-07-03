@@ -1,14 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import styled from 'styled-components';
-import { DATA_URL, HELP_CENTER_TOR_URL, GITHUB_BRIDGE_CHANGELOG_URL } from '@trezor/urls';
-import { Translation, TrezorLink, Modal, Metadata } from 'src/components/suite';
-import { Button, Paragraph, Link, variables, Spinner } from '@trezor/components';
+import { Translation, Modal, Metadata } from 'src/components/suite';
+import { Button, variables } from '@trezor/components';
 import { goto } from 'src/actions/suite/routerActions';
-import { isDesktop, isWeb } from '@trezor/env-utils';
-import { useDispatch, useSelector } from 'src/hooks/suite';
-import { selectTorState } from 'src/reducers/suite/suiteReducer';
-import { isWebUsb } from 'src/utils/suite/transport';
-import TrezorConnect from '@trezor/connect';
+import { useDispatch } from 'src/hooks/suite';
 
 const Content = styled.div`
     display: flex;
@@ -47,22 +42,13 @@ const Col = styled.div<{ $justify?: string }>`
     justify-content: ${({ $justify }) => $justify};
 `;
 
+/**
+ * This component renders only in desktop version
+ */
 export const BridgeRequested = () => {
-    const [isSuiteDesktopRunning, setIsSuiteDesktopRunning] = useState<boolean | undefined>(
-        undefined,
-    );
-    const [isBridgeRunning, setIsBridgeRunning] = useState<boolean | undefined>(undefined);
     const [confirmGoToWallet, setConfirmGoToWallet] = useState(false);
 
-    const { isTorEnabled } = useSelector(selectTorState);
-    const transport = useSelector(state => state.suite.transport);
     const dispatch = useDispatch();
-
-    const data = {
-        currentVersion: transport?.type === 'BridgeTransport' ? transport!.version : null,
-        latestVersion: transport?.bridge ? transport.bridge.version.join('.') : null,
-        uri: DATA_URL,
-    };
 
     const goToWallet = () => dispatch(goto('wallet-index'));
 
@@ -70,7 +56,9 @@ export const BridgeRequested = () => {
         return (
             <Modal
                 heading={'Bridge'}
-                description={'You sure? device might only be used by a single application at time'}
+                description={
+                    'You sure? device might only be used by a single application at time. So if you have some work in progress using another application with your Trezor device maybe finish it first.'
+                }
                 data-test="@modal/bridge"
             >
                 <Metadata title="Bridge | Trezor Suite" />
@@ -91,31 +79,29 @@ export const BridgeRequested = () => {
         );
     }
 
-    if (transport?.type === 'BridgeTransport') {
-        // not 100%, this is true only for latest suite-desktop release
+    return (
+        <Modal
+            heading={'Bridge'}
+            description={`Trezor Suite application was requested by another application in order to make connection with your Trezor device possible.
+                     Keep this in background and all will be good. Nobody needs to get hurt`}
+        >
+            <Metadata title="Bridge | Trezor Suite" />
 
-        return (
-            <Modal
-                heading={'Bridge'}
-                description={`Bridge was requested by another application. Keep this in background and all will be good. Nobody needs to get hurt`}
-            >
-                <Metadata title="Bridge | Trezor Suite" />
+            <Footer>
+                <Col>
+                    <StyledButton
+                        icon="ARROW_LEFT"
+                        variant="tertiary"
+                        onClick={() => setConfirmGoToWallet(true)}
+                        data-test="@bridge/goto/wallet-index"
+                    >
+                        <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
+                    </StyledButton>
 
-                <Footer>
-                    <Col $justify="flex-start">
-                        <StyledButton
-                            icon="ARROW_LEFT"
-                            variant="tertiary"
-                            onClick={() => setConfirmGoToWallet(true)}
-                            data-test="@bridge/goto/wallet-index"
-                        >
-                            <Translation id="TR_TAKE_ME_BACK_TO_WALLET" />
-                        </StyledButton>
-                        <StyledButton>Keep running in background</StyledButton>
-                    </Col>
-                </Footer>
-            </Modal>
-        );
-    }
-    return null;
+                    {/* TODO; implement */}
+                    <StyledButton>Keep running in background</StyledButton>
+                </Col>
+            </Footer>
+        </Modal>
+    );
 };

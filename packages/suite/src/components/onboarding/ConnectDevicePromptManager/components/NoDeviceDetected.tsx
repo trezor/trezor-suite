@@ -2,7 +2,7 @@ import { Translation } from 'src/components/suite/Translation';
 import { TroubleshootingTips } from 'src/components/suite';
 import {
     TROUBLESHOOTING_TIP_BRIDGE_STATUS,
-    TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+    TROUBLESHOOTING_TIP_SUITE_DESKTOP,
     TROUBLESHOOTING_TIP_UDEV,
     TROUBLESHOOTING_TIP_CABLE,
     TROUBLESHOOTING_TIP_USB,
@@ -17,8 +17,9 @@ export const NoDeviceDetected = ({ offerWebUsb }: NoDeviceDetectedProps) => (
     <TroubleshootingTips
         label={<Translation id="TR_STILL_DONT_SEE_YOUR_TREZOR" />}
         items={[
+            // todo:
             TROUBLESHOOTING_TIP_BRIDGE_STATUS,
-            TROUBLESHOOTING_TIP_BRIDGE_INSTALL,
+            TROUBLESHOOTING_TIP_SUITE_DESKTOP,
             TROUBLESHOOTING_TIP_UDEV,
             TROUBLESHOOTING_TIP_CABLE,
             TROUBLESHOOTING_TIP_USB,
