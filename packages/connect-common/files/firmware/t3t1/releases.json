@@ -1,6 +1,19 @@
 [
     {
         "required": false,
+        "version": [2, 8, 0],
+        "min_firmware_version": [2, 7, 2],
+        "min_bootloader_version": [2, 1, 6],
+        "bootloader_version": [2, 1, 6],
+        "translations": ["cs-CZ", "de-DE", "es-ES", "fr-FR"],
+        "url": "firmware/t3t1/trezor-t3t1-2.8.0.bin",
+        "url_bitcoinonly": "firmware/t3t1/trezor-t3t1-2.8.0-bitcoinonly.bin",
+        "fingerprint": "bd199ce0934769aca5c3a91f71fd48e533d88c8cf087b76ac49db415fa08c286",
+        "fingerprint_bitcoinonly": "3dc847cc396fe83f5a324242097a4cf97fc64acf90516efcfcf23b6d3103a992",
+        "changelog": "* Improve communication with Optiga secure element."
+    },
+    {
+        "required": false,
         "version": [2, 7, 2],
         "min_firmware_version": [2, 7, 2],
         "min_bootloader_version": [2, 1, 6],
