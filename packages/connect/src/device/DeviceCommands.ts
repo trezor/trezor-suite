@@ -121,11 +121,7 @@ export class DeviceCommands {
         return this.typedCall('UnlockPath', 'UnlockedPathRequest', params);
     }
 
-    private async getPublicKey(params: Messages.GetPublicKey, unlockPath?: Messages.UnlockPath) {
-        if (unlockPath) {
-            await this.unlockPath(unlockPath);
-        }
-
+    private async getPublicKey(params: Messages.GetPublicKey) {
         const response = await this.typedCall('GetPublicKey', 'PublicKey', {
             address_n: params.address_n,
             coin_name: params.coin_name || 'Bitcoin',
@@ -141,15 +137,15 @@ export class DeviceCommands {
     // Validation of xpub
     async getHDNode(
         params: Messages.GetPublicKey,
-        options: {
+        {
+            coinInfo,
+            validation = true,
+        }: {
             coinInfo: BitcoinNetworkInfo;
             validation?: boolean;
-            unlockPath?: Messages.UnlockPath;
         },
     ) {
         const path = params.address_n;
-        const { coinInfo, unlockPath } = options;
-        const validation = typeof options.validation === 'boolean' ? options.validation : true;
 
         let network: Network | null = null;
 
@@ -174,15 +170,12 @@ export class DeviceCommands {
 
         let publicKey: Messages.PublicKey;
         if (params.show_display || !validation) {
-            publicKey = await this.getPublicKey(params, unlockPath);
+            publicKey = await this.getPublicKey(params);
         } else {
             const suffix = 0;
             const childPath = path.concat([suffix]);
-            const resKey = await this.getPublicKey(params, unlockPath);
-            const childKey = await this.getPublicKey(
-                { ...params, address_n: childPath },
-                unlockPath,
-            );
+            const resKey = await this.getPublicKey(params);
+            const childKey = await this.getPublicKey({ ...params, address_n: childPath });
             publicKey = hdnodeUtils.xpubDerive(resKey, childKey, suffix, network, coinInfo.network);
         }
 

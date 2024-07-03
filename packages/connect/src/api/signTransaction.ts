@@ -268,7 +268,6 @@ export default class SignTransaction extends AbstractMethod<'signTransaction', P
                 params.outputs,
                 response.serializedTx,
                 params.coinInfo,
-                params.unlockPath,
             );
 
             if (bitcoinTx.hasWitnesses()) {

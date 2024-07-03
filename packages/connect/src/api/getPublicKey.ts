@@ -92,9 +92,14 @@ export default class GetPublicKey extends AbstractMethod<'getPublicKey', Params[
         const cmd = this.device.getCommands();
         for (let i = 0; i < this.params.length; i++) {
             const { coinInfo, unlockPath, ...batch } = this.params[i];
+
+            if (unlockPath) {
+                await cmd.unlockPath(unlockPath);
+            }
+
             // if coinInfo is not provided, use fallback (see above in init method)
             const coinInfoFallback = coinInfo ?? getBitcoinNetwork('btc')!;
-            const response = await cmd.getHDNode(batch, { coinInfo: coinInfoFallback, unlockPath });
+            const response = await cmd.getHDNode(batch, { coinInfo: coinInfoFallback });
             responses.push(response);
 
             if (this.hasBundle) {
