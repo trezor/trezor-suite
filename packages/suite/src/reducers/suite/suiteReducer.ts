@@ -121,7 +121,7 @@ const initialState: SuiteState = {
         showSettingsDesktopAppPromoBanner: true,
         stakeEthBannerClosed: false,
         showDashboardStakingPromoBanner: true,
-        isViewOnlyModeVisible: false,
+        isViewOnlyModeVisible: true,
         viewOnlyPromoClosed: false,
         viewOnlyTooltipClosed: false,
         isDashboardPassphraseBannerVisible: true,
