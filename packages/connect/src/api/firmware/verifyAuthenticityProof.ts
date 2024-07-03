@@ -51,6 +51,42 @@ interface AuthenticityProofData extends PROTO.AuthenticityProof {
 
 export const getRandomChallenge = () => crypto.randomBytes(32);
 
+// Check that this certificate is a valid Trezor CA.
+// KeyUsage must be present and allow certificate signing.
+// BasicConstraints must be present, have the cA flag and a pathLenConstraint.
+// Any unrecognized non-critical extension is allowed. Any unrecognized critical extension is disallowed.
+const validateCaCertExtensions = (cert: ReturnType<typeof parseCertificate>, pathLen: number) => {
+    let hasKeyUsage,
+        hasBasicConstraints = false;
+    cert.tbsCertificate.extensions.forEach(ext => {
+        if (ext.key === 'keyUsage') {
+            if (ext.keyCertSign !== '1') {
+                throw new Error(`CA keyCertSign not set`);
+            }
+            hasKeyUsage = true;
+        } else if (ext.key === 'basicConstraints') {
+            if (!ext.cA) {
+                throw new Error(`CA basicConstraints.cA not set`);
+            }
+            if (typeof ext.pathLenConstraint != 'number') {
+                throw new Error('CA basicConstraints.pathLenConstraint not set');
+            }
+            if (ext.pathLenConstraint < pathLen) {
+                throw new Error('Issuer was not permitted to issue certificate');
+            }
+            hasBasicConstraints = true;
+        } else if (ext.critical) {
+            throw new Error(`Unknown critical extension ${ext.key} in CA certificate`);
+        }
+    });
+
+    if (!hasKeyUsage || !hasBasicConstraints) {
+        throw new Error(
+            `CA missing extensions keyUsage: ${hasKeyUsage}, basicConstraints: ${hasBasicConstraints}`,
+        );
+    }
+};
+
 export const verifyAuthenticityProof = async ({
     certificates,
     signature,
@@ -65,16 +101,22 @@ export const verifyAuthenticityProof = async ({
     }
     const { caPubKeys, debug } = modelConfig;
 
-    // 1. parse x509 CA certificate from AuthenticityProof
-    const caCert = parseCertificate(new Uint8Array(Buffer.from(certificates[1], 'hex')));
+    // 1. parse all x509 certificates received from AuthenticityProof
+    const [deviceCert, caCert] = certificates.map((c, i) => {
+        const cert = parseCertificate(new Uint8Array(Buffer.from(c, 'hex')));
+        if (i === 0) {
+            // deviceCert is always at index 0
+            return cert;
+        }
+        validateCaCertExtensions(cert, i - 1);
+
+        return cert;
+    });
+
+    // 2. validate that CA certificate was created using one of rootPubkeys
     const caPubKey = Buffer.from(caCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes).toString(
         'hex',
     );
-
-    // 2. parse x509 DEVICE certificate from AuthenticityProof
-    const deviceCert = parseCertificate(new Uint8Array(Buffer.from(certificates[0], 'hex')));
-
-    // 3. validate that CA certificate was created using one of rootPubkeys
     const rootPubKeys = allowDebugKeys
         ? modelConfig.rootPubKeys.concat(debug?.rootPubKeys || [])
         : modelConfig.rootPubKeys;
@@ -109,7 +151,7 @@ export const verifyAuthenticityProof = async ({
         };
     }
 
-    // 4. validate DEVICE certificate subject (Trezor features internal_model)
+    // 3. validate DEVICE certificate subject (Trezor features internal_model)
     const [subject] = deviceCert.tbsCertificate.subject;
     // subject algorithm (OID) https://www.alvestrand.no/objectid/2.5.4.3.html
     if (!subject.parameters || subject.algorithm !== '2.5.4.3') {
@@ -125,14 +167,14 @@ export const verifyAuthenticityProof = async ({
         };
     }
 
-    // 5. validate that DEVICE certificate was created using pubKey from CA certificate
+    // 4. validate that DEVICE certificate was created using pubKey from CA certificate
     const isDeviceCertValid = await verifySignature(
         Buffer.from(caCert.tbsCertificate.subjectPublicKeyInfo.bits.bytes),
         deviceCert.tbsCertificate.asn1.raw,
         deviceCert.signatureValue.bits.bytes,
     );
 
-    // 6. validate that the signature from AuthenticityProof was created using prefixed challenge **and** DEVICE certificate pubKey
+    // 5. validate that the signature from AuthenticityProof was created using prefixed challenge **and** DEVICE certificate pubKey
     const challengePrefix = Buffer.from('AuthenticateDevice:');
     const prefixedChallenge = Buffer.concat([
         bufferUtils.getChunkSize(challengePrefix.length),
