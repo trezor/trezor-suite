@@ -14,7 +14,10 @@ const backupStep: Step = {
     id: STEP.ID_BACKUP_STEP,
     path: [],
     stepGroup: 1,
-    supportedModels: [DeviceModelInternal.T2B1],
+    supportedModels: [
+        DeviceModelInternal.T2B1,
+        { model: DeviceModelInternal.T3T1, minFwVersion: '2.8.0' },
+    ],
 };
 
 const stateMock = {
@@ -37,7 +40,7 @@ describe('steps', () => {
             expect(findNextStep(firmwareStep.id, stepsMock)).toEqual(backupStep);
         });
 
-        it('should throw on improrper use (no more step exists)', () => {
+        it('should throw on improper use (no more step exists)', () => {
             expect(() => findNextStep(backupStep.id, stepsMock)).toThrow('no next step exists');
         });
     });
@@ -90,6 +93,39 @@ describe('steps', () => {
                     device: {
                         selectedDevice: {
                             features: { internal_model: DeviceModelInternal.T1B1 },
+                        },
+                    },
+                })),
+            ).toEqual(false);
+        });
+
+        it('should exclude steps not supported by firmware', () => {
+            expect(
+                isStepUsed(backupStep, () => ({
+                    ...stateMock,
+                    device: {
+                        selectedDevice: {
+                            features: {
+                                internal_model: DeviceModelInternal.T3T1,
+                                major_version: 2,
+                                minor_version: 8,
+                                patch_version: 0,
+                            },
+                        },
+                    },
+                })),
+            ).toEqual(true);
+            expect(
+                isStepUsed(backupStep, () => ({
+                    ...stateMock,
+                    device: {
+                        selectedDevice: {
+                            features: {
+                                internal_model: DeviceModelInternal.T3T1,
+                                major_version: 2,
+                                minor_version: 7,
+                                patch_version: 2,
+                            },
                         },
                     },
                 })),
