@@ -1,5 +1,7 @@
 import { BrowserWindow, dialog } from 'electron';
 
+import { validateIpcMessage } from '@trezor/ipc-proxy';
+
 import { ipcMain } from './typed-electron';
 import { APP_SRC } from './libs/constants';
 
@@ -39,7 +41,11 @@ export const hangDetect = (
         ipcMain.handleOnce('handshake/client', () => {
             clearTimeout(timeout);
             // always resolve repeated handshakes from renderer (e.g. Ctrl+R)
-            ipcMain.handle('handshake/client', () => Promise.resolve({}));
+            ipcMain.handle('handshake/client', ipcEvent => {
+                validateIpcMessage(ipcEvent);
+
+                return Promise.resolve({});
+            });
             resolve('success');
 
             return Promise.resolve({ statePatch });

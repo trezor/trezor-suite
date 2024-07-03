@@ -1,5 +1,7 @@
 import { EventEmitter } from 'events';
 
+import { validateIpcMessage } from './validateIpcMessage';
+
 interface EventEmitterApi {
     on: (event: any, listener: (...args: any[]) => any) => any;
     off?: (event: any, listener: (...args: any[]) => any) => any;
@@ -41,7 +43,13 @@ interface IpcMainHandlers<Api> {
     '/invoke': Parameters<ApiUnion<Api>>; // methodName, ...params
 }
 
-interface ElectronIpcMainEvent {
+export interface ElectionIpcMainInvokeEvent {
+    senderFrame: {
+        url: string;
+    };
+}
+
+export interface ElectronIpcMainEvent {
     // reply: (channel: string, response: any) => any; // in electron it's defined as `Function`
     // eslint-disable-next-line @typescript-eslint/ban-types
     reply: Function; // in electron it's defined as `Function`
@@ -52,12 +60,15 @@ interface ElectronIpcMain<Api> {
         channel: `${Key}${K}`,
         listener: (event: ElectronIpcMainEvent, args: IpcMainEvents<Api>[K]) => void,
     ): any;
-    on(channel: string, listener: (event: any, ...args: any[]) => void): any; // just to type compatibility with original Electron.IpcMain
+    on(channel: string, listener: (event: ElectionIpcMainInvokeEvent, ...args: any[]) => void): any; // just to type compatibility with original Electron.IpcMain
     handle<K extends keyof IpcMainHandlers<Api>, Key extends string>(
         channel: `${Key}${K}`,
-        listener: (event: any, args: IpcMainHandlers<Api>[K]) => void, // event: Electron.IpcMainInvokeEvent not used, not worth typing
+        listener: (event: ElectionIpcMainInvokeEvent, args: IpcMainHandlers<Api>[K]) => void,
     ): any;
-    handle(channel: string, listener: (event: any, ...args: any[]) => void): any;
+    handle(
+        channel: string,
+        listener: (event: ElectionIpcMainInvokeEvent, ...args: any[]) => void,
+    ): any;
     removeAllListeners: (event?: string) => any;
     eventNames: () => (string | symbol)[];
     removeHandler: (name: string) => any;
@@ -76,7 +87,9 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
 ) => {
     debug?.info(SERVICE_NAME, `Init ipc interface ${channel}`);
     // Handle creation event from proxy-generator and creates actual interface instance
-    ipcMain.handle(`${channel}/create`, async (_, [instancePrefix, constructorParams]) => {
+    ipcMain.handle(`${channel}/create`, async (ipcEvent, [instancePrefix, constructorParams]) => {
+        validateIpcMessage(ipcEvent);
+
         debug?.info(SERVICE_NAME, `Create ipc chanel ${instancePrefix}`);
         const { onRequest, onAddListener, onRemoveListener } = await onCreateInstance(
             ...constructorParams,
@@ -123,7 +136,9 @@ export const createIpcProxyHandler = <Api extends EventEmitterApi>(
             }
         });
 
-        ipcMain.handle(`${instancePrefix}/invoke`, async (_, params) => {
+        ipcMain.handle(`${instancePrefix}/invoke`, async (ipcEventInvoke, params) => {
+            validateIpcMessage(ipcEventInvoke);
+
             const payload = await onRequest(...params);
 
             return payload;

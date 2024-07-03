@@ -1,6 +1,8 @@
 /**
  * Local web server for handling requests to app
  */
+import { validateIpcMessage } from '@trezor/ipc-proxy';
+
 import { app, ipcMain } from '../typed-electron';
 import { createHttpReceiver } from '../libs/http-receiver';
 
@@ -53,9 +55,11 @@ export const init: Module = ({ mainWindow }) => {
         });
 
         // when httpReceiver was asked to provide current address for given pathname
-        ipcMain.handle('server/request-address', (_, pathname) =>
-            receiver.getRouteAddress(pathname),
-        );
+        ipcMain.handle('server/request-address', (ipcEvent, pathname) => {
+            validateIpcMessage(ipcEvent);
+
+            return receiver.getRouteAddress(pathname);
+        });
 
         logger.info(SERVICE_NAME, 'Starting server');
         await receiver.start();

@@ -593,7 +593,6 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
             extra.actionTypes.setDeviceMetadataPasswords,
             extra.reducers.setDeviceMetadataPasswordsReducer,
         )
-
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
         .addMatcher(
             isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),

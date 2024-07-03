@@ -1,5 +1,13 @@
 import { EventEmitter } from 'events';
 
+import { ElectionIpcMainInvokeEvent } from '../proxy-handler';
+
+const ipcMainEvent: ElectionIpcMainInvokeEvent = {
+    senderFrame: {
+        url: 'http://localhost:8000/',
+    },
+};
+
 class IpcRendererMock extends EventEmitter {
     send(event: string, args: any[]) {
         this.emit('__send', event, args);
@@ -28,7 +36,7 @@ class IpcMainMock extends EventEmitter {
                     {
                         // [Electron.IpcMainEvent]
                         reply: (event2: string, response: any) => {
-                            this.renderer.emit(event2, '[Electron.IpcMainEvent]', response);
+                            this.renderer.emit(event2, ipcMainEvent, response);
                         },
                     },
                     args,
@@ -41,7 +49,7 @@ class IpcMainMock extends EventEmitter {
                     reject(new Error(`Method ${event} not handled`));
                 }
                 try {
-                    const result = await this.invokes[event]('[Electron.IpcMainEvent]', ...args);
+                    const result = await this.invokes[event](ipcMainEvent, ...args);
                     resolve(result);
                 } catch (error) {
                     reject(error);
