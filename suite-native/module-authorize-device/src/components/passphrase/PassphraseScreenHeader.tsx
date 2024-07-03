@@ -1,5 +1,6 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { BackHandler } from 'react-native';
 
 import { useNavigation } from '@react-navigation/native';
 
@@ -27,6 +28,7 @@ import {
     selectIsCreatingNewPassphraseWallet,
 } from '@suite-native/passphrase';
 import TrezorConnect from '@trezor/connect';
+import { useAuthorizationGoBack } from '@suite-native/device-authorization';
 
 type NavigationProp = StackToTabCompositeProps<
     AuthorizeDeviceStackParamList,
@@ -50,25 +52,35 @@ export const PassphraseScreenHeader = () => {
 
     const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
 
+    const { handleGoBack } = useAuthorizationGoBack();
+
+    const handleCancel = useCallback(() => {
+        if (isCreatingNewWalletInstance) {
+            setShouldShowWarningBottomSheet(!shouldShowWarningBottomSheet);
+        } else {
+            TrezorConnect.cancel();
+            handleGoBack();
+        }
+    }, [handleGoBack, isCreatingNewWalletInstance, shouldShowWarningBottomSheet]);
+
+    useEffect(() => {
+        const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+            handleCancel();
+
+            return true;
+        });
+
+        return () => subscription.remove();
+    }, [handleCancel]);
+
     const handleClose = () => {
-        dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
         navigation.navigate(RootStackRoutes.AppTabs, {
             screen: AppTabsRoutes.HomeStack,
             params: {
                 screen: HomeStackRoutes.Home,
             },
         });
-    };
-
-    const toggleBottomSheet = () => {
-        if (isCreatingNewWalletInstance) {
-            setShouldShowWarningBottomSheet(!shouldShowWarningBottomSheet);
-        } else {
-            TrezorConnect.cancel();
-            if (navigation.canGoBack()) {
-                navigation.goBack();
-            }
-        }
+        dispatch(cancelPassphraseAndSelectStandardDeviceThunk());
     };
 
     return (
@@ -79,9 +91,13 @@ export const PassphraseScreenHeader = () => {
                 colorScheme="tertiaryElevation1"
                 accessibilityRole="button"
                 accessibilityLabel="close"
-                onPress={toggleBottomSheet}
+                onPress={handleCancel}
             />
-            <BottomSheet isVisible={shouldShowWarningBottomSheet} onClose={toggleBottomSheet}>
+            <BottomSheet
+                isVisible={shouldShowWarningBottomSheet}
+                onClose={handleCancel}
+                isCloseDisplayed={false}
+            >
                 <VStack justifyContent="center" alignItems="center" padding="small" spacing="large">
                     <Text variant="titleSmall" textAlign="center">
                         <Translation id="modulePassphrase.confirmOnDevice.warningSheet.title" />
@@ -90,7 +106,7 @@ export const PassphraseScreenHeader = () => {
                         <Button colorScheme="redBold" onPress={handleClose}>
                             <Translation id="modulePassphrase.confirmOnDevice.warningSheet.primaryButton" />
                         </Button>
-                        <Button colorScheme="redElevation0" onPress={toggleBottomSheet}>
+                        <Button colorScheme="redElevation0" onPress={handleCancel}>
                             <Translation id="modulePassphrase.confirmOnDevice.warningSheet.secondaryButton" />
                         </Button>
                     </VStack>

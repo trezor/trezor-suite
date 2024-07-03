@@ -129,6 +129,7 @@ export type AuthorizeDeviceStackParamList = {
     [AuthorizeDeviceStackRoutes.PassphraseVerifyEmptyWallet]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnterOnTrezor]: undefined;
     [AuthorizeDeviceStackRoutes.PassphraseEnableOnDevice]: undefined;
+    [AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm]: undefined;
 };
 
 export type RootStackParamList = {

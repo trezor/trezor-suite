@@ -1,62 +1,42 @@
-import { useEffect } from 'react';
-import { useSelector } from 'react-redux';
+import { useCallback, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { useNavigation } from '@react-navigation/native';
-
-import {
-    AppTabsRoutes,
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes,
-    HomeStackRoutes,
-    RootStackParamList,
-    RootStackRoutes,
-    Screen,
-    StackToStackCompositeNavigationProps,
-} from '@suite-native/navigation';
+import { Screen } from '@suite-native/navigation';
 import { CenteredTitleHeader, IconButton, ScreenHeaderWrapper, VStack } from '@suite-native/atoms';
 import { Translation, useTranslate } from '@suite-native/intl';
-import { selectPassphraseError } from '@suite-native/passphrase';
+import { resetError, selectPassphraseError } from '@suite-native/passphrase';
 import { useToast } from '@suite-native/toasts';
 import TrezorConnect from '@trezor/connect';
+import { useAuthorizationGoBack } from '@suite-native/device-authorization';
 
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
-
-type NavigationProp = StackToStackCompositeNavigationProps<
-    AuthorizeDeviceStackParamList,
-    AuthorizeDeviceStackRoutes.PassphraseForm,
-    RootStackParamList
->;
 
 export const PassphraseEnableOnDeviceScreen = () => {
     const passphraseError = useSelector(selectPassphraseError);
 
-    const navigation = useNavigation<NavigationProp>();
+    const dispatch = useDispatch();
 
     const { showToast } = useToast();
     const { translate } = useTranslate();
 
+    const { handleGoBack } = useAuthorizationGoBack();
+
+    const handleClose = useCallback(() => {
+        TrezorConnect.cancel();
+        dispatch(resetError());
+        handleGoBack();
+    }, [dispatch, handleGoBack]);
+
     useEffect(() => {
         if (passphraseError?.error === 'passphrase-enabling-cancelled') {
-            navigation.navigate(RootStackRoutes.AppTabs, {
-                screen: AppTabsRoutes.HomeStack,
-                params: {
-                    screen: HomeStackRoutes.Home,
-                },
-            });
+            handleClose();
             showToast({
                 variant: 'error',
                 icon: 'warningTriangleLight',
                 message: translate('modulePassphrase.enablePassphrase.cancelledError'),
             });
         }
-    }, [navigation, passphraseError, showToast, translate]);
-
-    const handleClose = () => {
-        if (navigation.canGoBack()) {
-            navigation.goBack();
-        }
-        TrezorConnect.cancel();
-    };
+    }, [dispatch, handleClose, handleGoBack, passphraseError, showToast, translate]);
 
     return (
         <Screen

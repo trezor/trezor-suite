@@ -2,6 +2,8 @@
     "extends": "../../tsconfig.base.json",
     "compilerOptions": { "outDir": "libDev" },
     "references": [
+        { "path": "../navigation" },
+        { "path": "../passphrase" },
         { "path": "../../packages/connect" }
     ]
 }

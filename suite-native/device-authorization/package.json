@@ -11,7 +11,12 @@
         "type-check": "yarn g:tsc --build"
     },
     "dependencies": {
+        "@react-navigation/native": "6.1.17",
         "@reduxjs/toolkit": "1.9.5",
-        "@trezor/connect": "workspace:*"
+        "@suite-native/navigation": "workspace:*",
+        "@suite-native/passphrase": "workspace:*",
+        "@trezor/connect": "workspace:*",
+        "react": "18.2.0",
+        "react-redux": "8.0.7"
     }
 }

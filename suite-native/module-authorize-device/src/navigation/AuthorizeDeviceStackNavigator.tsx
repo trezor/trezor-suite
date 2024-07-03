@@ -7,7 +7,7 @@ import {
     AuthorizeDeviceStackRoutes,
     stackNavigationOptionsConfig,
 } from '@suite-native/navigation';
-import { selectDeviceRequestedAuthorization } from '@suite-native/device-authorization';
+import { selectDeviceRequestedPin } from '@suite-native/device-authorization';
 import { useDetectDeviceError, useReportDeviceConnectToAnalytics } from '@suite-native/device';
 import { useHandleDuplicatePassphrase } from '@suite-native/passphrase';
 
@@ -21,11 +21,12 @@ import { PassphraseEnterOnTrezorScreen } from '../screens/passphrase/PassphraseE
 import { PassphraseVerifyEmptyWalletScreen } from '../screens/passphrase/PassphraseVerifyEmptyWalletScreen';
 import { PassphraseEnableOnDeviceScreen } from '../screens/passphrase/PassphraseEnableOnDeviceScreen';
 import { PassphraseConfirmOnTrezorScreen } from '../screens/passphrase/PassphraseConfirmOnTrezorScreen';
+import { PassphraseFeatureUnlockFormScreen } from '../screens/passphrase/PassphraseFeatureUnlockFormScreen';
 
 export const AuthorizeDeviceStack = createNativeStackNavigator<AuthorizeDeviceStackParamList>();
 
 export const AuthorizeDeviceStackNavigator = () => {
-    const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);
+    const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
 
     useDetectDeviceError();
     useReportDeviceConnectToAnalytics();
@@ -37,7 +38,7 @@ export const AuthorizeDeviceStackNavigator = () => {
                 // For proper screen transitions on both cancel and success PIN entry
                 // we need to remove those screens from the stack so we can navigate
                 // directly to the next screen without jumping back and forth.
-                !hasDeviceRequestedAuthorization && (
+                !hasDeviceRequestedPin && (
                     <AuthorizeDeviceStack.Group>
                         <AuthorizeDeviceStack.Screen
                             name={AuthorizeDeviceStackRoutes.ConnectingDevice}
@@ -57,6 +58,10 @@ export const AuthorizeDeviceStackNavigator = () => {
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseForm}
                 component={PassphraseFormScreen}
+            />
+            <AuthorizeDeviceStack.Screen
+                name={AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm}
+                component={PassphraseFeatureUnlockFormScreen}
             />
             <AuthorizeDeviceStack.Screen
                 name={AuthorizeDeviceStackRoutes.PassphraseConfirmOnTrezor}

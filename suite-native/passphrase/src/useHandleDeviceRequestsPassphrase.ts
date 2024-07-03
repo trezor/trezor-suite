@@ -41,7 +41,7 @@ export const useHandleDeviceRequestsPassphrase = () => {
         // Feature requests passphrase
         if (!isVefifyingPassphraseOnEmptyWallet && deviceState) {
             navigation.navigate(RootStackRoutes.AuthorizeDeviceStack, {
-                screen: AuthorizeDeviceStackRoutes.PassphraseForm,
+                screen: AuthorizeDeviceStackRoutes.PassphraseFeatureUnlockForm,
             });
         }
     }, [deviceState, isVefifyingPassphraseOnEmptyWallet, navigation]);

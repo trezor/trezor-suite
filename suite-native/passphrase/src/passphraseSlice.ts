@@ -7,7 +7,10 @@ import {
     createDeviceInstanceThunk,
 } from '@suite-common/wallet-core';
 
-import { verifyPassphraseOnEmptyWalletThunk } from './passphraseThunks';
+import {
+    cancelPassphraseAndSelectStandardDeviceThunk,
+    verifyPassphraseOnEmptyWalletThunk,
+} from './passphraseThunks';
 
 type PassphraseState = {
     error: AuthorizeDeviceError | CreateDeviceInstanceError | null;
@@ -29,6 +32,9 @@ export const passphraseSlice = createSlice({
     name: 'passphrase',
     initialState: passphraseInitialState,
     reducers: {
+        resetError: state => {
+            state.error = null;
+        },
         setIsCreatingNewWalletInstance: (state, { payload }: PayloadAction<boolean>) => {
             state.isCreatingNewWalletInstance = payload;
         },
@@ -63,7 +69,10 @@ export const passphraseSlice = createSlice({
                         state.isCreatingNewWalletInstance = false;
                     }
                 },
-            );
+            )
+            .addMatcher(isAnyOf(cancelPassphraseAndSelectStandardDeviceThunk.pending), state => {
+                state.isCreatingNewWalletInstance = false;
+            });
     },
 });
 
@@ -79,6 +88,6 @@ export const selectIsVerifyingPassphraseOnEmptyWallet = (state: PassphraseRootSt
 export const selectIsCreatingNewPassphraseWallet = (state: PassphraseRootState) =>
     state.passphrase.isCreatingNewWalletInstance;
 
-export const { setIsCreatingNewWalletInstance } = passphraseSlice.actions;
+export const { setIsCreatingNewWalletInstance, resetError } = passphraseSlice.actions;
 
 export const passphraseReducer = passphraseSlice.reducer;

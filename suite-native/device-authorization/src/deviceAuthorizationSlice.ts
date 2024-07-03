@@ -1,6 +1,7 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, isAnyOf } from '@reduxjs/toolkit';
 
 import { UI } from '@trezor/connect';
+import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
 
 import { isPinButtonRequestCode } from './utils';
 
@@ -45,6 +46,9 @@ export const deviceAuthorizationSlice = createSlice({
             })
             .addCase(UI.CLOSE_UI_WINDOW, state => {
                 state.hasDeviceRequestedPin = false;
+                state.hasDeviceRequestedPassphrase = false;
+            })
+            .addMatcher(isAnyOf(cancelPassphraseAndSelectStandardDeviceThunk.pending), state => {
                 state.hasDeviceRequestedPassphrase = false;
             });
     },

@@ -49,6 +49,7 @@ export enum AuthorizeDeviceStackRoutes {
     PassphraseVerifyEmptyWallet = 'PassphraseVerifyEmptyWallet',
     PassphraseEnterOnTrezor = 'PassphraseEnterOnTrezor',
     PassphraseEnableOnDevice = 'PassphraseEnableOnDevice',
+    PassphraseFeatureUnlockForm = 'PassphraseFeatureUnlockForm',
 }
 
 export enum DevUtilsStackRoutes {

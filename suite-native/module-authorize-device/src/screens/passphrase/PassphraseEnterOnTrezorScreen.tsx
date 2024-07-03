@@ -17,6 +17,7 @@ import { selectIsDeviceDiscoveryActive } from '@suite-common/wallet-core';
 import { Translation } from '@suite-native/intl';
 import { prepareNativeStyle, useNativeStyles } from '@trezor/styles';
 import { cancelPassphraseAndSelectStandardDeviceThunk } from '@suite-native/passphrase';
+import { useAuthorizationSuccess } from '@suite-native/device-authorization';
 
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 import { PassphraseContentScreenWrapper } from '../../components/passphrase/PassphraseContentScreenWrapper';
@@ -43,6 +44,10 @@ export const PassphraseEnterOnTrezorScreen = () => {
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
 
     const navigation = useNavigation<NavigationProp>();
+
+    // If this screen was present during authorizing device with passphrase for some feature,
+    // on success, this hook will close the stack and go back
+    useAuthorizationSuccess();
 
     useEffect(() => {
         if (isDiscoveryActive) {

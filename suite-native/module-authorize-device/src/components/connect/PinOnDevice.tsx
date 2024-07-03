@@ -41,15 +41,17 @@ type PinOnDeviceProps = {
 };
 
 export const PinOnDevice = ({ deviceModel }: PinOnDeviceProps) => {
-    const navigation = useNavigation();
-
     const hasDeviceRequestedPin = useSelector(selectDeviceRequestedPin);
     const hasDeviceRequestedPassphrase = useSelector(selectDeviceRequestedPassphrase);
+
     const { applyStyle } = useNativeStyles();
 
+    const navigation = useNavigation();
+
     const handleSuccess = useCallback(() => {
+        // If pin was shown during call to device and after unlocking, device asks for passphrase,
+        // we ignore this and let passphrase handle the success / failure.
         if (navigation.canGoBack() && !hasDeviceRequestedPassphrase) {
-            // console.log('pin on device go back', navigation.getState());
             navigation.goBack();
         }
     }, [hasDeviceRequestedPassphrase, navigation]);

@@ -9203,8 +9203,13 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@suite-native/device-authorization@workspace:suite-native/device-authorization"
   dependencies:
+    "@react-navigation/native": "npm:6.1.17"
     "@reduxjs/toolkit": "npm:1.9.5"
+    "@suite-native/navigation": "workspace:*"
+    "@suite-native/passphrase": "workspace:*"
     "@trezor/connect": "workspace:*"
+    react: "npm:18.2.0"
+    react-redux: "npm:8.0.7"
   languageName: unknown
   linkType: soft
 

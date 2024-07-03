@@ -17,8 +17,7 @@ import {
     selectIsDeviceConnectedAndAuthorized,
     selectIsDeviceDiscoveryActive,
 } from '@suite-common/wallet-core';
-import { selectDeviceRequestedAuthorization } from '@suite-native/device-authorization';
-import { selectIsCreatingNewPassphraseWallet } from '@suite-native/passphrase';
+import { useAuthorizationSuccess } from '@suite-native/device-authorization';
 
 import { DeviceT3T1Svg } from '../../assets/passphrase/DeviceT3T1Svg';
 import { PassphraseScreenWrapper } from '../../components/passphrase/PassphraseScreenWrapper';
@@ -37,8 +36,10 @@ export const PassphraseConfirmOnTrezorScreen = () => {
     const isDeviceConnectedAndAuthorized = useSelector(selectIsDeviceConnectedAndAuthorized);
     const isDiscoveryActive = useSelector(selectIsDeviceDiscoveryActive);
     const device = useSelector(selectDevice);
-    const hasDeviceRequestedAuthorization = useSelector(selectDeviceRequestedAuthorization);
-    const isCreatingNewWalletInstance = useSelector(selectIsCreatingNewPassphraseWallet);
+
+    // If this screen was present during authorizing device with passphrase for some feature,
+    // on success, this hook will close the stack and go back
+    useAuthorizationSuccess();
 
     useEffect(() => {
         if (isDeviceConnectedAndAuthorized && isDiscoveryActive) {
@@ -51,12 +52,6 @@ export const PassphraseConfirmOnTrezorScreen = () => {
             );
         }
     }, [device, dispatch, isDeviceConnectedAndAuthorized, isDiscoveryActive, navigation]);
-
-    useEffect(() => {
-        if (!hasDeviceRequestedAuthorization && !isCreatingNewWalletInstance) {
-            navigation.goBack();
-        }
-    }, [hasDeviceRequestedAuthorization, isCreatingNewWalletInstance, navigation]);
 
     return (
         <PassphraseScreenWrapper>
