@@ -1,8 +1,12 @@
 import UDP from 'dgram';
 import { isNotUndefined } from '@trezor/utils';
 
-import { AbstractApi, AbstractApiConstructorParams, DEVICE_TYPE } from './abstract';
-import { ResultWithTypedError } from '../types';
+import {
+    AbstractApi,
+    AbstractApiAwaitedResult,
+    AbstractApiConstructorParams,
+    DEVICE_TYPE,
+} from './abstract';
 
 import * as ERRORS from '../errors';
 
@@ -37,14 +41,7 @@ export class UdpApi extends AbstractApi {
     public write(path: string, buffer: Buffer, signal?: AbortSignal) {
         const [hostname, port] = path.split(':');
 
-        return new Promise<
-            ResultWithTypedError<
-                undefined,
-                | typeof ERRORS.INTERFACE_DATA_TRANSFER
-                | typeof ERRORS.UNEXPECTED_ERROR
-                | typeof ERRORS.ABORTED_BY_SIGNAL
-            >
-        >(resolve => {
+        return new Promise<AbstractApiAwaitedResult<'write'>>(resolve => {
             signal?.addEventListener('abort', () => {
                 resolve(
                     this.error({
@@ -77,14 +74,7 @@ export class UdpApi extends AbstractApi {
     public read(_path: string, signal?: AbortSignal) {
         this.communicating = true;
 
-        return new Promise<
-            ResultWithTypedError<
-                ArrayBuffer,
-                | typeof ERRORS.INTERFACE_DATA_TRANSFER
-                | typeof ERRORS.ABORTED_BY_TIMEOUT
-                | typeof ERRORS.ABORTED_BY_SIGNAL
-            >
-        >(resolve => {
+        return new Promise<AbstractApiAwaitedResult<'read'>>(resolve => {
             const onClear = () => {
                 // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 this.interface.removeListener('error', onError);
