@@ -63,11 +63,16 @@ export const checkFirmwareHashAndFailSuiteIfInvalidThunk = createThunk<
     CheckFirmwareHashThunkParams,
     { rejectValue: { error: string } }
 >(`${FIRMWARE_MODULE_PREFIX}/checkFirmwareHashThunk`, async ({ device }, { dispatch }) => {
+    dispatch(deviceActions.updateHashCheckStatus({ device, status: 'running' }));
+
     const result = await dispatch(validateFirmwareHashThunk({ device }));
 
     if (result.payload === undefined || result.payload.success !== 'valid') {
         console.log('___FAAAAAIL', result.payload);
 
-        dispatch(deviceActions.hasCheckFailed({ device }));
+        dispatch(deviceActions.updateHashCheckStatus({ device, status: 'failed' }));
+    } else {
+        console.log('___OOOOOOOOOOOOOOK', result.payload);
+        dispatch(deviceActions.updateHashCheckStatus({ device, status: 'ok' }));
     }
 });

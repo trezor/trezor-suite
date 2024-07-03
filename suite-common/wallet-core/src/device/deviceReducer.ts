@@ -331,11 +331,15 @@ const changePassphraseMode = (
     }
 };
 
-const hashCheckFailed = (draft: State, device: TrezorDevice) => {
+const updateHashCheckStatus = (
+    draft: State,
+    device: TrezorDevice,
+    status: TrezorDevice['hashCheckStatus'],
+) => {
     if (!device || !device.features) return;
     const index = deviceUtils.findInstanceIndex(draft.devices, device);
     if (!draft.devices[index]) return;
-    draft.devices[index].hashCheckedFailed = true;
+    draft.devices[index].hashCheckStatus = status;
 };
 
 /**
@@ -601,8 +605,8 @@ export const prepareDeviceReducer = createReducerWithExtraDeps(initialState, (bu
         )
 
         .addCase(extra.actionTypes.storageLoad, extra.reducers.storageLoadDevices)
-        .addCase(deviceActions.hasCheckFailed, (state, { payload }) =>
-            hashCheckFailed(state, payload.device),
+        .addCase(deviceActions.updateHashCheckStatus, (state, { payload }) =>
+            updateHashCheckStatus(state, payload.device, payload.status),
         )
         .addMatcher(
             isAnyOf(createDeviceInstanceThunk.fulfilled, createImportedDeviceThunk.fulfilled),

@@ -18,6 +18,7 @@ import { createMiddlewareWithExtraDeps } from '@suite-common/redux-utils';
 import { SUITE, ROUTER, MODAL } from 'src/actions/suite/constants';
 import * as walletSettingsActions from 'src/actions/settings/walletSettingsActions';
 import { getApp } from 'src/utils/suite/router';
+// import { checkFirmwareHashAndFailSuiteIfInvalidThunk } from '@suite-common/wallet-core/src/firmware/checkFirmwareHashThunk';
 
 export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
     async (action, { dispatch, next, getState }) => {
@@ -32,8 +33,23 @@ export const prepareDiscoveryMiddleware = createMiddlewareWithExtraDeps(
             dispatch(discoveryActions.removeDiscovery(action.payload.device.state));
         }
 
-        // do not close user context modals during discovery
+        const deviceForHashCheck = selectDevice(getState());
+
+        if (
+            deviceForHashCheck &&
+            deviceForHashCheck.hashCheckStatus === undefined &&
+            prevDiscovery &&
+            prevDiscovery.status >= DiscoveryStatus.STOPPING
+        ) {
+            console.log('yolo....');
+
+            // await dispatch(
+            //     checkFirmwareHashAndFailSuiteIfInvalidThunk({ device: deviceForHashCheck }),
+            // );
+        }
+
         if (action.type === UI.CLOSE_UI_WINDOW && discoveryIsRunning) {
+            // do not close user context modals during discovery
             const { modal } = prevState;
             if (modal.context === MODAL.CONTEXT_USER) {
                 return action;
