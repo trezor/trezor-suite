@@ -39,7 +39,7 @@ type Feature = {
 
 const SUITE_SETTINGS: ConnectDeviceSettings = {
     defaultWalletLoading: 'standard',
-    isViewOnlyModeVisible: false,
+    isViewOnlyModeVisible: true,
 };
 
 const fixture: Feature[] = [

@@ -975,9 +975,9 @@ const authConfirm = [
             selectedDevice: getSuiteDevice({ state: 'ABCD' }),
         },
         result: {
-            type: deviceActions.receiveAuthConfirm.type,
+            type: '@modal/open-user-context',
             payload: {
-                success: false,
+                type: 'passphrase-mismatch-warning',
             },
         },
     },

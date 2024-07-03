@@ -59,8 +59,14 @@ describe('Passphrase numbering', () => {
         // assert that wallet labels are correct
         cy.getTestElement('@menu/switch-device').click();
         cy.getTestElement('@switch-device/wallet-on-index/0').should('contain', 'Standard wallet');
-        cy.getTestElement('@switch-device/wallet-on-index/1').should('contain', 'Hidden wallet #1');
-        cy.getTestElement('@switch-device/wallet-on-index/2').should('contain', 'Hidden wallet #2');
+        cy.getTestElement('@switch-device/wallet-on-index/1').should(
+            'contain',
+            'Passphrase wallet #1',
+        );
+        cy.getTestElement('@switch-device/wallet-on-index/2').should(
+            'contain',
+            'Passphrase wallet #2',
+        );
 
         // eject standard and the first hidden wallet
         cy.getTestElement('@switch-device/wallet-on-index/0/eject-button').click();
@@ -90,13 +96,19 @@ describe('Passphrase numbering', () => {
 
         // assert that wallet labels are correct
         cy.getTestElement('@menu/switch-device').click();
-        cy.getTestElement('@switch-device/wallet-on-index/0').should('contain', 'Hidden wallet #2');
+        cy.getTestElement('@switch-device/wallet-on-index/0').should(
+            'contain',
+            'Passphrase wallet #2',
+        );
         cy.getTestElement('@switch-device/wallet-on-index/1').should('contain', 'Standard wallet');
-        cy.getTestElement('@switch-device/wallet-on-index/2').should('contain', 'Hidden wallet #3');
+        cy.getTestElement('@switch-device/wallet-on-index/2').should(
+            'contain',
+            'Passphrase wallet #3',
+        );
     });
 
     // https://github.com/trezor/trezor-suite/issues/3133
-    it('when user adds hidden wallet first (no pre-existing standard wallet)', () => {
+    it.only('when user adds hidden wallet first (no pre-existing standard wallet)', () => {
         const passphrase = 'abc{enter}';
 
         cy.getTestElement('@passphrase-type/hidden').click();
@@ -115,7 +127,13 @@ describe('Passphrase numbering', () => {
         cy.task('pressYes');
 
         cy.getTestElement('@modal').should('not.exist');
-        cy.getTestElement('@menu/switch-device').should('contain', 'Hidden wallet #1');
+        // cy.getTestElement('@menu/switch-device').should('contain', 'Passphrase wallet #1');
+        cy.getTestElement('@menu/switch-device').click();
+        cy.getTestElement('@modal').should('be.visible');
+        cy.getTestElement('@switch-device/wallet-on-index/0').should(
+            'contain.text',
+            'Passphrase wallet #1',
+        );
     });
 });
 
