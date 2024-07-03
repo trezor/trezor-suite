@@ -197,13 +197,110 @@ jobs:
           cd packages/suite-web
           ./scripts/s3sync.sh staging-suite
 
-  create-test-release:
+  create-test-releases:
     if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == true
-    name: Create test release
+    name: Create test versions for autoupdate sudite-desktop
+    environment: suite-production
+    needs:
+      - suite-desktop
+      - suite-desktop-github-release
+      - suite-desktop-autoupdate-release
+      - build-web
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-sign
+            platform: linux
+          - os: macos-sign
+            platform: mac
+          - os: macos-sign-win-token
+            platform: win
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: recursive
+      - name: Install node and yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+
+      - name: Install deps and build libs
+        run: |
+          yarn install --immutable
+          yarn message-system-sign-config
+          yarn workspace @trezor/suite-data build:lib
+          yarn workspace @trezor/transport-bridge build:lib
+
+      - name: Prepare versions for autoupdate
+        id: prepare-versions
+        run: |
+          sed -E 's/"suiteVersion": "2([0-9]+\.[0-9]+\.[0-9]+)"/"suiteVersion": "0\1"/' packages/suite/package.json > version0.json
+          sed -E 's/"suiteVersion": "2([0-9]+\.[0-9]+\.[0-9]+)"/"suiteVersion": "3\1"/' packages/suite/package.json > version3.json
+          echo "VERSION0=$(jq -r .suiteVersion version0.json)" >> $GITHUB_OUTPUT
+          echo "VERSION3=$(jq -r .suiteVersion version3.json)" >> $GITHUB_OUTPUT
+
+      - name: Build ${{ matrix.platform }} suite-desktop autoupdate version 0x.x.x
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          mv version0.json packages/suite/package.json
+          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
+          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
+          mv packages/suite-desktop/build-electron/* .
+
+      - name: Upload suite-desktop autoupdate version 0x.x.x artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: AUTOUPDATE-TEST-suite-desktop-${{steps.prepare-versions.outputs.VERSION0}}-${{ matrix.platform }}
+          path: |
+            Trezor-Suite*
+            latest*.yml
+          retention-days: 3
+
+      - name: Build ${{ matrix.platform }} suite-desktop autoupdate version 3x.x.x
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: |
+          mv version3.json packages/suite/package.json
+          yarn workspace @trezor/suite-desktop build:${{ matrix.platform }}
+          bash packages/suite-desktop-core/scripts/gnupg-sign.sh
+          mv packages/suite-desktop/build-electron/* .
+
+      - name: Upload suite-desktop autoupdate version 3x.x.x artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: AUTOUPDATE-TEST-suite-desktop-${{steps.prepare-versions.outputs.VERSION3}}-${{ matrix.platform }}
+          path: |
+            Trezor-Suite*
+            latest*.yml
+          retention-days: 1
+
+  suite-desktop-autoupdate-test-upload:
+    if: github.repository == 'trezor/trezor-suite-release' && github.event.inputs.createTestRelease == true
+    name: Upload suite-desktop autoupdate test versions
     environment: suite-production
     runs-on: ubuntu-latest
+    needs: create-test-releases
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
-      #TODO! finis the action to update version build app ad deploy it for testing autoupdate. This will only run if the input createTestRelease is set to true.
-      - run: echo "Creating test release"
+      - name: Configure aws credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::538326561891:role/gh_actions_suite_production
+          aws-region: eu-central-1
+      - name: Download suite-desktop apps
+        uses: actions/download-artifact@v4
+        with:
+          pattern: AUTOUPDATE-TEST-suite-desktop-34-*
+          merge-multiple: true
+          path: ./trezor-suite-files
+
+      - name: Upload suite-desktop auto-update test version
+        run: |
+          aws s3 sync --delete ./trezor-suite-files s3://staging-data.trezor.io/suite/autoupdate-test/desktop
