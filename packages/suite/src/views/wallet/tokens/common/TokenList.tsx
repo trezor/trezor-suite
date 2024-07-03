@@ -299,6 +299,7 @@ export const TokenList = ({
                                                             }
                                                         />
                                                     ),
+                                                    icon: 'EYE_CLOSED',
                                                     onClick: () =>
                                                         dispatch(
                                                             tokenDefinitionsActions.setTokenStatus({
@@ -315,6 +316,7 @@ export const TokenList = ({
                                                 },
                                                 {
                                                     label: <Translation id="TR_VIEW_IN_EXPLORER" />,
+                                                    icon: 'EXTERNAL_LINK',
                                                     onClick: () => {
                                                         window.open(
                                                             getTokenExplorerUrl(network, token),
