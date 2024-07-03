@@ -137,6 +137,11 @@ export const WalletInstance = ({
         }
     };
 
+    const isViewOnlyRendered = contentType === 'default' && enabled && discoveryProcess;
+    const isEjectConfirmationRendered = contentType === 'eject-confirmation';
+    const isDisablingViewOnlyEjectsWalletRendered =
+        contentType === 'disabling-view-only-ejects-wallet';
+
     return (
         <RelativeContainer>
             <EjectButton setContentType={setContentType} dataTest={dataTestBase} />
@@ -200,25 +205,29 @@ export const WalletInstance = ({
                     </InstanceTitle>
                 </Col>
 
-                <DividerWrapper>
-                    <Divider />
-                </DividerWrapper>
+                {(isViewOnlyRendered ||
+                    isEjectConfirmationRendered ||
+                    isDisablingViewOnlyEjectsWalletRendered) && (
+                    <DividerWrapper>
+                        <Divider />
+                    </DividerWrapper>
+                )}
 
-                {contentType === 'default' && enabled && discoveryProcess && (
+                {isViewOnlyRendered && (
                     <ViewOnly
                         dataTest={dataTestBase}
                         setContentType={setContentType}
                         instance={instance}
                     />
                 )}
-                {contentType === 'ejectConfirmation' && (
+                {isEjectConfirmationRendered && (
                     <EjectConfirmation
                         instance={instance}
                         onClick={stopPropagation}
                         onCancel={onEjectCancelClick}
                     />
                 )}
-                {contentType === 'disabling-view-only-ejects-wallet' && (
+                {isDisablingViewOnlyEjectsWalletRendered && (
                     <EjectConfirmationDisableViewOnly
                         instance={instance}
                         onClick={stopPropagation}

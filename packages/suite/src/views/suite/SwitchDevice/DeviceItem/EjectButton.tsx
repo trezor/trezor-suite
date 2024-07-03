@@ -23,7 +23,7 @@ export const EjectButton = ({ setContentType, dataTest }: EjectButtonProps) => {
     const theme = useTheme();
 
     const onEjectClick = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-        setContentType('ejectConfirmation');
+        setContentType('eject-confirmation');
         e.stopPropagation();
     };
 
