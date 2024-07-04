@@ -32,6 +32,7 @@ export const Sidebar = () => {
                 minWidth={230}
                 maxWidth={400}
                 zIndex={zIndices.draggableComponent}
+                updateHeightOnWindowResize
             >
                 <Container $elevation={elevation}>
                     <ElevationUp>
