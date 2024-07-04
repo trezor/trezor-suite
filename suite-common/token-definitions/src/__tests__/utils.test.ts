@@ -1,21 +1,21 @@
 import {
-    caseContractAddressForNetworkFixtures,
+    getContractAddressForNetworkFixtures,
     getSupportedDefinitionTypesFixtures,
     isTokenDefinitionKnownFixtures,
     buildTokenDefinitionsFromStorageFixtures,
 } from '../__fixtures__/utils';
 import {
     buildTokenDefinitionsFromStorage,
-    caseContractAddressForNetwork,
+    getContractAddressForNetwork,
     getSupportedDefinitionTypes,
     isTokenDefinitionKnown,
 } from '../tokenDefinitionsUtils';
 
-describe('caseContractAddressForNetwork', () => {
-    caseContractAddressForNetworkFixtures.forEach(
+describe('getContractAddressForNetwork', () => {
+    getContractAddressForNetworkFixtures.forEach(
         ({ testName, networkSymbol, contractAddress, expected }) => {
             test(testName, () => {
-                const result = caseContractAddressForNetwork(networkSymbol, contractAddress);
+                const result = getContractAddressForNetwork(networkSymbol, contractAddress);
                 expect(result).toBe(expected);
             });
         },
