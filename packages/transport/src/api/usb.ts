@@ -432,7 +432,7 @@ export class UsbApi extends AbstractApi {
         try {
             this.logger?.debug(`usb: loadSerialNumber`);
 
-            await this.abortableMethod(device.open, signal);
+            await this.abortableMethod(() => device.open(), signal);
             // load serial number.
             await this.abortableMethod(
                 () =>
@@ -442,7 +442,7 @@ export class UsbApi extends AbstractApi {
                 signal,
             );
             this.logger?.debug(`usb: loadSerialNumber done, serialNumber: ${device.serialNumber}`);
-            await this.abortableMethod(device.close, signal);
+            await this.abortableMethod(() => device.close(), signal);
         } catch (err) {
             this.logger?.error(`usb: loadSerialNumber error: ${err.message}`);
             throw err;
