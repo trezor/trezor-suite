@@ -2397,7 +2397,7 @@ export default defineMessages({
         id: 'TR_CONFIRM_EMPTY_HIDDEN_WALLET_ON',
     },
     TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION: {
-        defaultMessage: 'Please enter your passphrase to authorize this action.',
+        defaultMessage: 'Enter your passphrase to authorize this action.',
         id: 'TR_CONFIRM_PASSPHRASE_WITHOUT_ADVICE_DESCRIPTION',
     },
     TR_CONFIRM_PASSPHRASE: {
@@ -2467,7 +2467,7 @@ export default defineMessages({
         id: 'TR_COPY_ADDRESS_FINGERPRINT',
     },
     TR_COPY_ADDRESS_POLICY_ID: {
-        defaultMessage: 'Never send funds to a policy id address.',
+        defaultMessage: 'Never send funds to a policy ID address.',
         id: 'TR_COPY_ADDRESS_POLICY_ID',
     },
     TR_CREATE_BACKUP: {
@@ -2581,7 +2581,7 @@ export default defineMessages({
     },
     TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION: {
         defaultMessage:
-            "It's possible to install custom firmware on your Trezor device, but doing so will erase its memory and may render it unusable. Only proceed if you are certain of what you are doing.",
+            "It's possible to install custom firmware on your Trezor device, but doing so will erase its memory and may render it unusable. Only proceed if you are certain of what you're doing.",
         id: 'TR_DEVICE_SETTINGS_CUSTOM_FIRMWARE_DESCRIPTION',
     },
     TR_DEVICE_SETTINGS_DEVICE_EDIT_LABEL: {
@@ -3386,7 +3386,7 @@ export default defineMessages({
     },
     TR_PASSPHRASE_MISMATCH_DESCRIPTION: {
         defaultMessage:
-            "The passphrases didn't match. For security, start over and re-enter them correctly.",
+            "The passphrases didn't match. For security, start over and enter them correctly.",
         id: 'TR_PASSPHRASE_MISMATCH_DESCRIPTION',
     },
     TR_PASSPHRASE_MISMATCH_START_OVER: {
@@ -3733,12 +3733,12 @@ export default defineMessages({
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY: {
         defaultMessage:
-            'This Passphrase wallet is empty. To make sure you are in the correct wallet, please type the passphrase again.',
+            'This Passphrase wallet is empty. To make sure you are in the correct wallet, enter the passphrase again.',
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY',
     },
     TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE: {
         defaultMessage:
-            'This Passphrase wallet is empty. To make sure you are in the correct wallet, please re-enter the passphrase on your Trezor.',
+            'This Passphrase wallet is empty. To make sure you are in the correct wallet, enter the passphrase on your Trezor.',
         id: 'TR_THIS_HIDDEN_WALLET_IS_EMPTY_SOURCE',
     },
     TR_TO_FIND_YOUR_ACCOUNTS_AND: {
@@ -4725,12 +4725,12 @@ export default defineMessages({
     TR_VIEW_ONLY_CALL_TO_ACTION: {
         id: 'TR_VIEW_ONLY_CALL_TO_ACTION',
         defaultMessage:
-            'View balances in the app even <primary>after Trezor is disconnected?</primary>',
+            'Enable view-only to check balances <primary>after you disconnect your Trezor</primary>',
     },
     TR_VIEW_ONLY_EXPLANATION: {
         id: 'TR_VIEW_ONLY_EXPLANATION',
         defaultMessage:
-            "You'll still need to connect your <secondLine>Trezor to send or trade coins</secondLine>",
+            'To send or trade coins, <secondLine>simply reconnect your device</secondLine>',
     },
     RECEIVE_TITLE: {
         id: 'RECEIVE_TITLE',
@@ -6913,7 +6913,7 @@ export default defineMessages({
     },
     TR_TOKENS_SEARCH_TOOLTIP: {
         id: 'TR_TOKENS_SEARCH_TOOLTIP',
-        defaultMessage: 'Search by token name, symbol or contract address.',
+        defaultMessage: 'Search by token, symbol, or contract address.',
     },
     TR_SEARCH_TRANSACTIONS: {
         id: 'TR_SEARCH_TRANSACTIONS',
@@ -9220,15 +9220,15 @@ export default defineMessages({
     },
     TR_VIEW_ONLY_PROMO_YES: {
         id: 'TR_VIEW_ONLY_PROMO_YES',
-        defaultMessage: 'Yes',
+        defaultMessage: 'Enable',
     },
     TR_VIEW_ONLY_PROMO_NOT_NOW: {
         id: 'TR_VIEW_ONLY_PROMO_NOT_NOW',
-        defaultMessage: 'Not now',
+        defaultMessage: 'Skip',
     },
     TR_VIEW_ONLY_TOOLTIP_DESCRIPTION: {
         id: 'TR_VIEW_ONLY_TOOLTIP_DESCRIPTION',
-        defaultMessage: 'You can change view only and access passphrase here.',
+        defaultMessage: 'Change view-only and access passphrase here.',
     },
     TR_GOT_IT_BUTTON: {
         id: 'TR_GOT_IT_BUTTON',
@@ -9449,6 +9449,6 @@ export default defineMessages({
     },
     TR_SELECT_TREZOR_TO_CONTINUE: {
         id: 'TR_SELECT_TREZOR_TO_CONTINUE',
-        defaultMessage: 'Please select your Trezor to continue.',
+        defaultMessage: 'Select your Trezor to continue.',
     },
 });
