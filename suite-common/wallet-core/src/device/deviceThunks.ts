@@ -451,9 +451,12 @@ export const authConfirm = createThunk(
 
                 if (
                     response.payload.error === 'auth-confirm-retry' &&
-                    settings.isViewOnlyModeVisible
+                    settings.isViewOnlyModeVisible &&
+                    device.type === 'acquired'
                 ) {
-                    dispatch(extra.thunks.addWalletThunk({ walletType: WalletType.PASSPHRASE }));
+                    dispatch(
+                        extra.thunks.addWalletThunk({ walletType: WalletType.PASSPHRASE, device }),
+                    );
                 }
 
                 return;
