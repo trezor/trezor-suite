@@ -14,7 +14,6 @@ import {
     BLOCKCHAIN_EVENT,
     TRANSPORT,
     parseMessage,
-    createUiMessage,
     createErrorMessage,
     UiResponseEvent,
     CoreEventMessage,
@@ -174,6 +173,18 @@ export class CoreInIframe implements ConnectFactoryDependencies {
 
         await iframe.init(this._settings);
 
+        if (this._settings.coreMode === 'auto') {
+            // Checking bridge availability
+            const { promiseId, promise } = this._messagePromises.create();
+            this._log.debug('coreMode = auto, Checking bridge availability');
+            iframe.postMessage({ id: promiseId, type: TRANSPORT.GET_INFO });
+            const response = await promise;
+            this._log.debug('Bridge availability response', response);
+            if (response.payload === undefined) {
+                throw ERRORS.TypedError('Transport_Missing');
+            }
+        }
+
         // sharedLogger can be disable but it is enable by default.
         if (this._settings.sharedLogger !== false) {
             // connect-web is running in third-party domain so we use iframe to pass logs to shared worker.
@@ -193,19 +204,13 @@ export class CoreInIframe implements ConnectFactoryDependencies {
             if (!this._popupManager) {
                 this._popupManager = this.initPopupManager();
             }
-            this._popupManager.request();
 
             // auto init with default settings
             try {
                 await this.init(this._settings);
             } catch (error) {
                 if (this._popupManager) {
-                    // Catch fatal iframe errors (not loading)
-                    if (['Init_IframeBlocked', 'Init_IframeTimeout'].includes(error.code)) {
-                        this._popupManager.postMessage(createUiMessage(UI.IFRAME_FAILURE));
-                    } else {
-                        this._popupManager.clear();
-                    }
+                    this._popupManager.clear();
                 }
 
                 return createErrorMessage(error);

@@ -64,6 +64,12 @@ export interface TransportRequestWebUSBDevice {
     payload?: undefined;
 }
 
+export interface TransportGetInfo {
+    id: number;
+    type: typeof TRANSPORT.GET_INFO;
+    payload?: undefined;
+}
+
 export type TransportEventMessage = TransportEvent & { event: typeof TRANSPORT_EVENT };
 
 export type TransportEventListenerFn = (

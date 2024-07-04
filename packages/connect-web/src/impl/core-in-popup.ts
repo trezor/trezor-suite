@@ -130,26 +130,26 @@ export class CoreInPopup implements ConnectFactoryDependencies {
             await this._popupManager.request();
         }
 
-        await this._popupManager.channel.init();
-
-        if (this._settings.env === 'webextension') {
-            // In webextension we init based on the popup promise
-            // In core this is handled in the popup manager
-            await this._popupManager.popupPromise?.promise;
-
-            this._popupManager.channel.postMessage({
-                type: POPUP.INIT,
-                payload: {
-                    settings: this._settings,
-                    useCore: true,
-                },
-            });
-        }
-
-        await this._popupManager.handshakePromise?.promise;
-
-        // post message to core in popup
         try {
+            await this._popupManager.channel.init();
+
+            if (this._settings.env === 'webextension') {
+                // In webextension we init based on the popup promise
+                // In core this is handled in the popup manager
+                await this._popupManager.popupPromise?.promise;
+
+                this._popupManager.channel.postMessage({
+                    type: POPUP.INIT,
+                    payload: {
+                        settings: this._settings,
+                        useCore: true,
+                    },
+                });
+            }
+
+            await this._popupManager.handshakePromise?.promise;
+
+            // post message to core in popup
             const response = await this._popupManager.channel.postMessage({
                 type: IFRAME.CALL,
                 payload: params,

@@ -1,99 +1,14 @@
 import { ConnectFactoryDependencies, factory } from '@trezor/connect/src/factory';
 import { CoreInIframe } from './impl/core-in-iframe';
 import { CoreInPopup } from './impl/core-in-popup';
+import ProxyEventEmitter from './utils/proxy-event-emitter';
 import type { ConnectSettings, Manifest } from '@trezor/connect/src/types';
 import EventEmitter from 'events';
-import { CallMethodPayload } from '@trezor/connect';
+import { CallMethodPayload } from '@trezor/connect/src/events';
 
 type TrezorConnectType = 'core-in-popup' | 'iframe';
 
-class ProxyEventEmitter implements EventEmitter {
-    private eventEmitters: EventEmitter[];
-
-    constructor(eventEmitters: EventEmitter[]) {
-        this.eventEmitters = eventEmitters;
-    }
-
-    emit(eventName: string | symbol, ...args: any[]): boolean {
-        this.eventEmitters.forEach(emitter => emitter.emit(eventName, ...args));
-
-        return true;
-    }
-
-    on(eventName: string | symbol, listener: (...args: any[]) => void): this {
-        this.eventEmitters.forEach(emitter => emitter.on(eventName, listener));
-
-        return this;
-    }
-
-    off(eventName: string | symbol, listener: (...args: any[]) => void): this {
-        this.eventEmitters.forEach(emitter => emitter.off(eventName, listener));
-
-        return this;
-    }
-
-    once(eventName: string | symbol, listener: (...args: any[]) => void): this {
-        this.eventEmitters.forEach(emitter => emitter.once(eventName, listener));
-
-        return this;
-    }
-
-    addListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-        this.eventEmitters.forEach(emitter => emitter.addListener(eventName, listener));
-
-        return this;
-    }
-
-    prependListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-        this.eventEmitters.forEach(emitter => emitter.prependListener(eventName, listener));
-
-        return this;
-    }
-
-    prependOnceListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-        this.eventEmitters.forEach(emitter => emitter.prependOnceListener(eventName, listener));
-
-        return this;
-    }
-
-    removeAllListeners(event?: string | symbol | undefined): this {
-        this.eventEmitters.forEach(emitter => emitter.removeAllListeners(event));
-
-        return this;
-    }
-
-    removeListener(eventName: string | symbol, listener: (...args: any[]) => void): this {
-        this.eventEmitters.forEach(emitter => emitter.removeListener(eventName, listener));
-
-        return this;
-    }
-
-    setMaxListeners(n: number): this {
-        this.eventEmitters.forEach(emitter => emitter.setMaxListeners(n));
-
-        return this;
-    }
-
-    eventNames(): (string | symbol)[] {
-        return this.eventEmitters[0].eventNames();
-    }
-
-    getMaxListeners(): number {
-        return this.eventEmitters[0].getMaxListeners();
-    }
-
-    listenerCount(eventName: string | symbol, listener?: FunctionConstructor | undefined) {
-        return this.eventEmitters[0].listenerCount(eventName, listener);
-    }
-
-    rawListeners(eventName: string | symbol) {
-        return this.eventEmitters[0].rawListeners(eventName);
-    }
-
-    listeners(eventName: string | symbol) {
-        return this.eventEmitters[0].listeners(eventName);
-    }
-}
+const IFRAME_ERRORS = ['Init_IframeBlocked', 'Init_IframeTimeout', 'Transport_Missing'];
 
 /**
  * Implementation of TrezorConnect that can dynamically switch between iframe and core-in-popup implementations
@@ -104,6 +19,8 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
     private currentTarget: TrezorConnectType = 'iframe';
     private coreInIframeImpl: CoreInIframe;
     private coreInPopupImpl: CoreInPopup;
+
+    private lastSettings?: Partial<ConnectSettings>;
 
     public constructor() {
         this.coreInIframeImpl = new CoreInIframe();
@@ -118,22 +35,65 @@ export class TrezorConnectDynamicImpl implements ConnectFactoryDependencies {
         return this.currentTarget === 'iframe' ? this.coreInIframeImpl : this.coreInPopupImpl;
     }
 
-    public manifest(data: Manifest) {
-        this.getTarget().manifest(data);
+    private async switchTarget(target: TrezorConnectType) {
+        if (this.currentTarget === target) {
+            return;
+        }
+
+        await this.getTarget().dispose();
+        this.currentTarget = target;
+        await this.getTarget().init(this.lastSettings);
     }
 
-    public init(settings: Partial<ConnectSettings> = {}) {
-        if (settings.useCoreInPopup) {
+    public manifest(manifest: Manifest) {
+        this.lastSettings = {
+            ...this.lastSettings,
+            manifest,
+        };
+
+        this.getTarget().manifest(manifest);
+    }
+
+    public async init(settings: Partial<ConnectSettings> = {}) {
+        if (settings.useCoreInPopup || settings.coreMode === 'popup') {
             this.currentTarget = 'core-in-popup';
         } else {
             this.currentTarget = 'iframe';
         }
 
-        return this.getTarget().init(settings);
+        // Save settings for later use
+        this.lastSettings = settings;
+
+        // Initialize the target
+        try {
+            return await this.getTarget().init(settings);
+        } catch (error) {
+            // Handle iframe errors by switching to core-in-popup
+            if (settings.coreMode === 'auto' && IFRAME_ERRORS.includes(error.code)) {
+                await this.switchTarget('core-in-popup');
+
+                return await this.getTarget().init(settings);
+            }
+
+            throw error;
+        }
     }
 
-    public call(params: CallMethodPayload) {
-        return this.getTarget().call(params);
+    public async call(params: CallMethodPayload) {
+        const response = await this.getTarget().call(params);
+        if (!response.success) {
+            // Handle iframe errors by switching to core-in-popup
+            if (
+                this.lastSettings?.coreMode === 'auto' &&
+                IFRAME_ERRORS.includes(response.payload.code)
+            ) {
+                await this.switchTarget('core-in-popup');
+
+                return await this.getTarget().call(params);
+            }
+        }
+
+        return response;
     }
 
     public requestLogin(params: any) {

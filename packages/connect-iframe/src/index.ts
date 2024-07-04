@@ -192,6 +192,7 @@ const handleMessage = async (event: MessageEvent<CoreRequestMessage>) => {
         // UI.CHANGE_SETTINGS,
         UI.LOGIN_CHALLENGE_RESPONSE,
         TRANSPORT.DISABLE_WEBUSB,
+        TRANSPORT.GET_INFO,
     ];
 
     if (!isTrustedDomain && safeMessages.indexOf(message.type) === -1) {

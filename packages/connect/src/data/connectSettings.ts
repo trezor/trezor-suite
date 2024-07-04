@@ -137,6 +137,13 @@ export const parseConnectSettings = (input: Partial<ConnectSettings> = {}) => {
         settings.useCoreInPopup = input.useCoreInPopup;
     }
 
+    if (
+        typeof input.coreMode === 'string' &&
+        ['auto', 'popup', 'iframe'].includes(input.coreMode)
+    ) {
+        settings.coreMode = input.coreMode;
+    }
+
     if (typeof input._extendWebextensionLifetime === 'boolean') {
         settings._extendWebextensionLifetime = input._extendWebextensionLifetime;
     }

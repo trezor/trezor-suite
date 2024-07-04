@@ -7,6 +7,7 @@ import type {
     TransportEventMessage,
     TransportDisableWebUSB,
     TransportRequestWebUSBDevice,
+    TransportGetInfo,
 } from './transport';
 import type { UiEventMessage } from './ui-request';
 import type { UiResponseEvent } from './ui-response';
@@ -19,6 +20,7 @@ export type CoreRequestMessage =
     | PopupAnalyticsResponse
     | TransportDisableWebUSB
     | TransportRequestWebUSBDevice
+    | TransportGetInfo
     | UiResponseEvent
     | IFrameInit
     | IFrameCallMessage
