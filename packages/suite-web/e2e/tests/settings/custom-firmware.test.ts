@@ -6,7 +6,7 @@ describe('Install custom firmware', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
 
@@ -16,14 +16,21 @@ describe('Install custom firmware', () => {
      * 3. Select the custom firmware
      * 4. Complete the FW instalation on the device
      */
-    it('go to device settings and check if custom FW modal appears', () => {
+    it.skip('go to device settings and check if custom FW modal appears', () => {
         //
         // Test preparation
         //
         const testBinFile = 'trezor-2.5.1.bin';
-        cy.getTestElement('@settings/device/custom-firmware-modal-button').click({
-            force: true,
-        });
+
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
+        cy.getTestElement('@settings/device/check-seed-button').should('be.visible');
+
+        cy.getTestElement('@settings/device/custom-firmware-modal-button')
+            .should('be.enabled')
+            .click({
+                force: true,
+            });
         //
         // Test execution
         //

@@ -20,8 +20,9 @@ describe('Settings changes persist when device disconnected', () => {
 
         cy.task('stopEmu');
 
+        cy.getTestElement('@warning/trezorNotConnected').should('be.visible');
+
         // Open settings
-        cy.getTestElement('@connect-device-prompt');
         cy.getTestElement('@suite/menu/settings', { timeout: 30000 }).click();
         cy.getTestElement('@settings/menu/device').click();
         cy.getTestElement('@settings/device/disconnected-device-banner').should('exist');

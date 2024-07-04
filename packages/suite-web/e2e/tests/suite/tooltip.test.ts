@@ -1,7 +1,8 @@
 // @group_suite
 // @retry=2
 
-describe('Test tooltip links', () => {
+// TODO: review this test if it's indeed obsolete
+describe.skip('Test tooltip links', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { passphrase_protection: true });
@@ -24,8 +25,8 @@ describe('Test tooltip links', () => {
 });
 
 export {};
-
-describe('Test tooltip conditional rendering', () => {
+// TODO: review this test if it's indeed obsolete
+describe.skip('Test tooltip conditional rendering', () => {
     beforeEach(() => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });

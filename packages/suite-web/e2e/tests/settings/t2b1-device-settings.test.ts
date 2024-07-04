@@ -28,7 +28,7 @@ describe('T2B1 - Device settings', () => {
      * 6. change the device's background
      * 7. change the device's rotation
      */
-    it.only('change all possible device settings', () => {
+    it('change all possible device settings', () => {
         //
         // Test preparation & constants
         //
@@ -39,10 +39,20 @@ describe('T2B1 - Device settings', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
 
-        // navigate to device settings page
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
+        // pass through initial run and device auth check
+        cy.prefixedVisit('/');
+        cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
+            .click()
+            .getTestElement('@onboarding/exit-app-button')
+            .click();
         cy.passThroughAuthenticityCheck();
+        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
+            .should('be.visible')
+            .click();
+        // navigate to device settings page
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         //
         // Test execution
@@ -82,18 +92,28 @@ describe('T2B1 - Device settings', () => {
 
     it('backup in settings', () => {
         cy.task('startEmu', startEmuOpts);
-        cy.task('setupEmu', { needs_backup: true });
+        cy.task('setupEmu', { needs_backup: false });
         cy.task('startBridge');
 
-        // navigate to device settings page
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
+        // pass through initial run and device auth check
+        cy.prefixedVisit('/');
+        cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
+            .click()
+            .getTestElement('@onboarding/exit-app-button')
+            .click();
         cy.passThroughAuthenticityCheck();
+        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
+            .should('be.visible')
+            .click();
+        // navigate to device settings page
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
-        cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
+        cy.getTestElement('@settings/device/check-seed-button').should('be.enabled');
         cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
-        cy.getTestElement('@settings/device/create-backup-button').click({ scrollBehavior: false });
-        cy.getTestElement('@backup');
+        cy.getTestElement('@settings/device/check-seed-button').click({ scrollBehavior: false });
+        cy.getTestElement('@modal');
     });
 
     it('wipe device', () => {
@@ -101,10 +121,20 @@ describe('T2B1 - Device settings', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
 
-        // navigate to device settings page
-        cy.prefixedVisit('/settings/device');
-        cy.passThroughInitialRun();
+        // pass through initial run and device auth check
+        cy.prefixedVisit('/');
+        cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
+            .click()
+            .getTestElement('@onboarding/exit-app-button')
+            .click();
         cy.passThroughAuthenticityCheck();
+        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 15000 })
+            .should('be.visible')
+            .click();
+        // navigate to device settings page
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();
         cy.getTestElement('@wipe/checkbox-1').click();

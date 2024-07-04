@@ -45,6 +45,7 @@ export const PassphraseMismatchModal = ({ onCancel }: { onCancel: () => void }) 
                     onClick={onStartOver}
                     isDisabled={isDeviceLocked}
                     isFullWidth
+                    data-test="@passphrase-mismatch/start-over"
                 >
                     <Translation id="TR_PASSPHRASE_MISMATCH_START_OVER" />
                 </Button>

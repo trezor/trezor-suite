@@ -159,6 +159,7 @@ export const AssetsView = () => {
                                 icon="PLUS"
                                 size="small"
                                 onClick={goToCoinsSettings}
+                                data-test="@dashboard/assets/enable-more-coins"
                             >
                                 <Translation id="TR_ENABLE_MORE_COINS" />
                             </StyledAddAccountButton>

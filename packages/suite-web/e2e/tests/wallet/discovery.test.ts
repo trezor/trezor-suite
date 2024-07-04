@@ -1,6 +1,8 @@
 // @group_wallet
 // @retry=2
 
+
+
 // discovery should end within this time frame
 const DISCOVERY_LIMIT = 1000 * 60 * 2;
 
@@ -25,8 +27,11 @@ describe('Discovery', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/coins');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.discoveryShouldFinish(); 
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
     });
 
     it('go to wallet settings page, activate all coins and see that there is equal number of records on dashboard', () => {

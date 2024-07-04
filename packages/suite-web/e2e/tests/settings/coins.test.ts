@@ -12,7 +12,7 @@ describe('Coin Settings', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/coins');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
 
         requests = [];
@@ -43,6 +43,9 @@ describe('Coin Settings', () => {
             // 'dsol', FIXME: disabled till available in trezor-user-env
         ];
 
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
+
         // only btc is selected by default;
         cy.getTestElement('@settings/wallet/network/btc').should(
             'have.attr',
@@ -59,18 +62,24 @@ describe('Coin Settings', () => {
             );
         });
 
+        // // this helps with unstable click to btc
+        cy.contains('span', 'Got it!').should('be.visible').click();
+        cy.wait(500);
         // disable Bitcoin
         cy.getTestElement('@settings/wallet/network/btc').click({ force: true });
-
+        cy.getTestElement('@settings/wallet/network/btc').should(
+            'have.attr',
+            'data-active',
+            'false',
+        );
         // check dashboard with all coins disabled
         cy.getTestElement('@suite/menu/suite-index').click();
 
-        // discovery empty banner on dashboard
-        cy.getTestElement('@exception/discovery-empty').matchImageSnapshot(
-            'coin-settings-disabled-all-dashboard',
-        );
-        cy.getTestElement('@exception/discovery-empty/primary-button').click();
+        // check that there is no assets grid
+        cy.get('[class^="AssetsView__Grid"] > [class^="Card"]').should('not.exist');
 
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/wallet').click();
         // just do some clicking on switches and check result
         ['btc', ...defaultUnchecked].forEach(network => {
             cy.getTestElement(`@settings/wallet/network/${network}`).should(

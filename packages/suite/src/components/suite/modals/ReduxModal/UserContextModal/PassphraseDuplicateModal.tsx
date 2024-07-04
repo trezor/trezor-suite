@@ -23,9 +23,9 @@ export const PassphraseDuplicateModal = ({ device, duplicate }: PassphraseDuplic
     const handleAuthorizeDevice = () => dispatch(authorizeDeviceThunk());
 
     return (
-        <SwitchDeviceRenderer isCancelable={false} data-test="@passphrase-duplicate">
-            <CardWithDevice device={device} isFullHeaderVisible={false}>
-                <H3 margin={{ top: 12 }}>
+        <SwitchDeviceRenderer isCancelable={false}>
+            <CardWithDevice device={device} isCloseButtonVisible={false}>
+                <H3 margin={{ top: 12 }} data-test="@passphrase-duplicate-header">
                     <Translation id="TR_WALLET_DUPLICATE_TITLE" />
                 </H3>
                 <Text color="textSubdued">

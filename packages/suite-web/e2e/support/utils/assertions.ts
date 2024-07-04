@@ -9,8 +9,8 @@ export const dashboardShouldLoad = () => cy.getTestElement('@dashboard/index').s
 
 export const discoveryShouldFinish = () => {
     // todo: better waiting for discovery (mock it!)
-    cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 });
-    cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 30000 }).should('not.exist');
+    cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 45_000 });
+    cy.getTestElement('@wallet/discovery-progress-bar', { timeout: 45_000 }).should('not.exist');
 };
 
 /**

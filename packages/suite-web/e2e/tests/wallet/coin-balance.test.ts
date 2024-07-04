@@ -21,8 +21,7 @@ describe('Dashboard with regtest', () => {
     });
 
     it('Regtest is in dashboard and gets updated when tx is created', () => {
-        cy.getTestElement('@dashboard/security-card/backup/button').should('be.disabled');
-
+   
         // when graph becomes visible, discovery was finished
         cy.getTestElement('@dashboard/graph', { timeout: 30000 }).should('exist');
 

@@ -9,11 +9,13 @@ import { Dispatch } from 'react';
 type PassphraseWalletConfirmationStep1Props = {
     setContentType: Dispatch<React.SetStateAction<ContentType>>;
     onRetry: () => void;
+    dataTest: string;
 };
 
 export const PassphraseWalletConfirmationStep1 = ({
     setContentType,
     onRetry,
+    dataTest,
 }: PassphraseWalletConfirmationStep1Props) => (
     <>
         <PassphraseHeading>
@@ -31,6 +33,7 @@ export const PassphraseWalletConfirmationStep1 = ({
                                 variant="info"
                                 iconAlignment="right"
                                 icon="EXTERNAL_LINK"
+                                data-test={dataTest}
                             >
                                 <Translation id="TR_PASSPHRASE_WALLET_CONFIRMATION_STEP1_HINT_LINK" />
                             </Button>

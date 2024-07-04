@@ -13,8 +13,9 @@ describe('Overview and transactions check', () => {
         cy.task('startBridge');
 
         cy.viewport(1980, 1440).resetDb();
-        cy.prefixedVisit('/accounts');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@account-menu/btc/normal/0').click();
         cy.discoveryShouldFinish();
     });
     /* Test case
