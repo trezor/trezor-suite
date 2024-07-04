@@ -3,7 +3,7 @@ import { BigNumber } from '@trezor/utils/src/bigNumber';
 import { Account, Rate, TokenAddress, RatesByKey } from '@suite-common/wallet-types';
 import { TokenInfo } from '@trezor/connect';
 import { getFiatRateKey } from '@suite-common/wallet-utils';
-import { NetworkSymbol } from '@suite-common/wallet-config';
+import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import {
     EnhancedTokenInfo,
@@ -73,6 +73,8 @@ export const getTokens = (
     coinDefinitions?: TokenDefinition,
     searchQuery?: string,
 ) => {
+    const hasCoinDefinitions = getNetworkFeatures(symbol).includes('coin-definitions');
+
     const shown: EnhancedTokenInfo[] = [];
     const hidden: EnhancedTokenInfo[] = [];
     const unverified: EnhancedTokenInfo[] = [];
@@ -93,12 +95,14 @@ export const getTokens = (
 
         if (!matchesQuery) return;
 
-        if ((isKnown && !isHidden) || isShown) {
+        if (isShown) {
             shown.push(token);
-        } else if (!isKnown && !isShown) {
+        } else if (hasCoinDefinitions && !isKnown) {
             unverified.push(token);
-        } else if (isKnown && isHidden) {
+        } else if (isHidden) {
             hidden.push(token);
+        } else {
+            shown.push(token);
         }
     });
 
