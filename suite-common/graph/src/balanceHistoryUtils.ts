@@ -103,8 +103,8 @@ const getAccountBalanceHistoryRipple = ({
         if (summaryMap.has(blockTime)) {
             const summary = summaryMap.get(blockTime)!;
             summary.txs += 1;
-            summary.received = amount.plus(receivedDrops);
-            summary.sent = amount.plus(sentDrops);
+            summary.received = summary.received.plus(receivedDrops);
+            summary.sent = summary.sent.plus(sentDrops);
         } else {
             summaryMap.set(blockTime, {
                 time: blockTime,
