@@ -281,8 +281,15 @@ export const fetchTransactionsPageThunk = createThunk(
             suppressBackupWarning: true,
         });
 
+        // Account might have changed during async getAccountInfo call, so we fetch current state
+        const currentAccount = selectAccountByKey(getState(), accountKey);
+
+        if (!currentAccount) {
+            throw new Error(`Account not found: ${accountKey}`);
+        }
+
         if (result && result.success) {
-            const updateAction = accountsActions.updateAccount(account, result.payload);
+            const updateAction = accountsActions.updateAccount(currentAccount, result.payload);
             const updatedAccount = updateAction.payload;
             const updatedTransactions = result.payload.history.transactions || [];
 
