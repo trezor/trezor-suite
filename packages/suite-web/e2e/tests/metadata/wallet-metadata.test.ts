@@ -11,12 +11,11 @@ const provider = 'dropbox';
 
 const mnemonic = 'all all all all all all all all all all all all';
 // state corresponding to all seed
-const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:0';
+const standardWalletState = 'mvbu1Gdy8SUjTenqerxUaZyYjmveZvt33q@355C817510C0EABF2F147145:1';
 // state corresponding to "wallet for drugs"
 const firstHiddenWalletState = 'myBrmyzvN5Wa4oeYrL7t8EYU1Ch5Q6vp47@355C817510C0EABF2F147145:1';
 // state corresponding to "C"
 const secondHiddenWalletState = 'mkx2Uqi3fmLHh8AHpQvAErTM3MZpzrmFr2@355C817510C0EABF2F147145:2';
-
 describe('Metadata - wallet labeling', () => {
     beforeEach(() => {
         cy.viewport(1440, 2560).resetDb();
@@ -28,6 +27,7 @@ describe('Metadata - wallet labeling', () => {
             cy.task('startEmu', { wipe: true });
             cy.task('setupEmu', {
                 mnemonic,
+                passphrase_protection: true,
             });
             cy.task('startBridge');
             cy.task('metadataStartProvider', provider);
@@ -62,8 +62,8 @@ describe('Metadata - wallet labeling', () => {
             cy.getTestElement('@metadata/input').clear().type('wallet for drugs{enter}');
 
             cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
-            cy.getConfirmActionOnDeviceModal();
-            cy.task('pressYes');
+            // cy.getConfirmActionOnDeviceModal();
+            // cy.task('pressYes');
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
             cy.getTestElement('@passphrase/input').should('not.exist');

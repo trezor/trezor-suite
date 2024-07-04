@@ -7,11 +7,12 @@ describe('ApplicationLog', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
 
     it('there is a button in application setting that opens modal with application logs', () => {
+        cy.getTestElement('@suite/menu/settings').click();
         cy.getTestElement('@settings/menu/general').click({
             scrollBehavior: false,
         });

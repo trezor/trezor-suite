@@ -108,7 +108,7 @@ describe('Passphrase numbering', () => {
     });
 
     // https://github.com/trezor/trezor-suite/issues/3133
-    it.only('when user adds hidden wallet first (no pre-existing standard wallet)', () => {
+    it('when user adds hidden wallet first (no pre-existing standard wallet)', () => {
         const passphrase = 'abc{enter}';
 
         cy.getTestElement('@passphrase-type/hidden').click();

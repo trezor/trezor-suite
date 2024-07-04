@@ -7,7 +7,7 @@ describe('Check notification toast', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu', { needs_backup: false });
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
     });
 
@@ -23,13 +23,12 @@ describe('Check notification toast', () => {
      * 5. Check that toast notification is rendered.
      */
     it('Check notification toast', () => {
-        //
-        // Test preparation
-        //
-        // Test execution
-        //
         cy.log('turn on passphrase protection');
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
+        cy.getTestElement('@settings/device/safety-checks-button').should('be.enabled');
         cy.getTestElement('@settings/device/passphrase-switch')
+            .should('be.visible')
             .click({ force: true })
             .getConfirmActionOnDeviceModal();
         cy.task('pressYes');

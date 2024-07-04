@@ -77,7 +77,7 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
                 <ViewOnlyRadios
                     isViewOnlyActive={isViewOnly}
                     toggleViewOnly={handleRememberChange}
-                    dataTest={`${dataTest}/view-only-radio`}
+                    data-test={`${dataTest}/view-only-radio`}
                     setContentType={setContentType}
                     device={instance}
                 />

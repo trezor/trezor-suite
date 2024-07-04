@@ -13,7 +13,10 @@ describe('Passphrase', () => {
         // note that versions before 2.3.1 don't have passphrase caching, this means that returning
         // back to passphrase that was used before in the session would require to type the passphrase again
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', { mnemonic: 'all all all all all all all all all all all all' });
+        cy.task('setupEmu', {
+            mnemonic: 'all all all all all all all all all all all all',
+            passphrase_protection: true,
+        });
         cy.task('startBridge');
 
         cy.viewport(1440, 2560).resetDb();

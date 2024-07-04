@@ -86,7 +86,10 @@ export const QuickActions = () => {
             <HelperIcons />
             <ActionsContainer>
                 {!isCustomBackendIconVisible && !isTorIconVisible ? (
-                    <DescreetContainer onClick={handleDiscreetModeClick}>
+                    <DescreetContainer
+                        onClick={handleDiscreetModeClick}
+                        data-test="@quickActions/hideBalances"
+                    >
                         <Icon size={16} icon={isDiscreetModeActive ? 'HIDE' : 'SHOW'} />
                         <Label>{translationString(translationLabel)} </Label>
                     </DescreetContainer>

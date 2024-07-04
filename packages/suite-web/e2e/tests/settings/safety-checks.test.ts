@@ -7,8 +7,10 @@ describe('Safety Checks Settings', () => {
         cy.task('setupEmu');
         cy.task('startBridge');
         cy.viewport(1440, 2560).resetDb();
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
     });
 
     it('There is button in device settings, that opens safety checks modal.', () => {

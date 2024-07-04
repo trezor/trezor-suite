@@ -22,16 +22,14 @@ describe('Dashboard', () => {
 
     /*
      * 1. navigate to 'Dashboard' page
-     * 2. scroll to Security checks section
-     * 3. Enable discreet mode
-     * 4. check that status of Discreet mode
+     * 2. Enable discreet mode
+     * 3. check that status of Discreet mode
      */
     it('Discreet mode checkbox', () => {
         const discreetPartialClass = 'HiddenPlaceholder';
 
         cy.discoveryShouldFinish();
-        cy.getTestElement('@dashboard/security-card/discreet/button').click();
-
+        cy.getTestElement('@quickActions/hideBalances').click();
         cy.getTestElement('@wallet/coin-balance/value-btc')
             .parent()
             .parent()

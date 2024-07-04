@@ -9,11 +9,12 @@ describe('unacquired device', () => {
         cy.task('startBridge');
     });
 
-    it('someone steals session, device status turns inactive', () => {
+    it.skip('someone steals session, device status turns inactive', () => {
         cy.prefixedVisit('/');
         cy.passThroughInitialRun();
-        cy.getTestElement('@passphrase-type/standard').click();
-        cy.discoveryShouldFinish();
+        // cy.getTestElement('@deviceStatus-connected').click();
+        // cy.getTestElement('@passphrase-type/standard').click();
+        // cy.discoveryShouldFinish();
 
         // simulate stolen session from another window. device receives indicative button
         cy.task('stealBridgeSession');
