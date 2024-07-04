@@ -42,15 +42,18 @@ export class UdpApi extends AbstractApi {
         const [hostname, port] = path.split(':');
 
         return new Promise<AbstractApiAwaitedResult<'write'>>(resolve => {
-            signal?.addEventListener('abort', () => {
+            const listener = () => {
                 resolve(
                     this.error({
                         error: ERRORS.ABORTED_BY_SIGNAL,
                     }),
                 );
-            });
+            };
+            signal?.addEventListener('abort', listener);
 
             this.interface.send(buffer, Number.parseInt(port, 10), hostname, err => {
+                signal?.removeEventListener('abort', listener);
+
                 if (signal?.aborted) {
                     return;
                 }
@@ -75,13 +78,13 @@ export class UdpApi extends AbstractApi {
         this.communicating = true;
 
         return new Promise<AbstractApiAwaitedResult<'read'>>(resolve => {
+            /* eslint-disable @typescript-eslint/no-use-before-define */
             const onClear = () => {
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 this.interface.removeListener('error', onError);
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
                 this.interface.removeListener('message', onMessage);
+                signal?.removeEventListener('abort', onAbort);
             };
-
+            /* eslint-enable @typescript-eslint/no-use-before-define */
             const onError = (err: Error) => {
                 this.logger?.error(err.message);
 
@@ -126,21 +129,22 @@ export class UdpApi extends AbstractApi {
         }
 
         const pinged = new Promise<boolean>(resolve => {
+            /* eslint-disable @typescript-eslint/no-use-before-define */
+            const onClear = () => {
+                this.interface.removeListener('error', onError);
+                this.interface.removeListener('message', onMessage);
+                clearTimeout(timeout);
+                signal?.removeEventListener('abort', onError);
+            };
+            /* eslint-enable @typescript-eslint/no-use-before-define */
             const onError = () => {
                 resolve(false);
-                this.interface.removeListener('error', onError);
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                this.interface.removeListener('message', onMessage);
-                // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                clearTimeout(timeout);
+                onClear();
             };
             const onMessage = (message: Buffer, _info: UDP.RemoteInfo) => {
                 if (message.toString() === 'PONGPONG') {
                     resolve(true);
-                    this.interface.removeListener('error', onError);
-                    this.interface.removeListener('message', onMessage);
-                    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-                    clearTimeout(timeout);
+                    onClear();
                 }
             };
 
