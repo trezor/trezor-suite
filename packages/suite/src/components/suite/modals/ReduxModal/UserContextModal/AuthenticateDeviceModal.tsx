@@ -7,13 +7,13 @@ import { onCancel, openModal } from 'src/actions/suite/modalActions';
 import { DeviceAuthenticationExplainer, Modal, Translation } from 'src/components/suite';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { selectIsDebugModeActive } from 'src/reducers/suite/suiteReducer';
-import { selectDeviceAuthenticity } from '@suite-common/wallet-core';
+import { selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 
 export const AuthenticateDeviceModal = () => {
     const [isLoading, setIsLoading] = useState(false);
     const dispatch = useDispatch();
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
-    const deviceAuthenticity = useSelector(selectDeviceAuthenticity);
+    const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
 
     const handleClick = async () => {
         setIsLoading(true);
@@ -22,7 +22,7 @@ export const AuthenticateDeviceModal = () => {
 
         setIsLoading(false);
 
-        if (deviceAuthenticity?.valid === false) {
+        if (selectedDeviceAuthenticity?.valid === false) {
             dispatch(openModal({ type: 'authenticate-device-fail' }));
         }
     };

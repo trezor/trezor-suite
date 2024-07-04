@@ -2,7 +2,12 @@ import { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { getConnectedDeviceStatus } from '@suite-common/suite-utils';
-import { deviceActions, selectDevice, selectDevices } from '@suite-common/wallet-core';
+import {
+    deviceActions,
+    selectDevice,
+    selectDeviceAuthenticity,
+    selectDevices,
+} from '@suite-common/wallet-core';
 import { Icon, Tooltip, variables, H2, useElevation } from '@trezor/components';
 import { DeviceModelInternal } from '@trezor/connect';
 import { TREZOR_RESELLERS_URL, TREZOR_URL } from '@trezor/urls';
@@ -300,7 +305,7 @@ const SecurityCheckContent = ({
 export const SecurityCheck = () => {
     const device = useSelector(selectDevice);
     const devices = useSelector(selectDevices);
-    const allDevicesAutheticity = useSelector(state => state.device.deviceAuthenticity);
+    const deviceAuthenticity = useSelector(selectDeviceAuthenticity);
     const dispatch = useDispatch();
     const [isAuthenticityCheckStep, setIsAuthenticityCheckStep] = useState(false);
     const { goToSuite } = useOnboarding();
@@ -316,7 +321,7 @@ export const SecurityCheck = () => {
                 device.features?.internal_model &&
                 isAuthenticationSupportedMap[device.features.internal_model] &&
                 device.id &&
-                !allDevicesAutheticity?.[device.id],
+                !deviceAuthenticity?.[device.id],
         );
 
         if (nextDeviceToAuthenticate !== undefined) {

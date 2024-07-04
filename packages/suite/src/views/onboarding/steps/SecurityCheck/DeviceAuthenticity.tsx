@@ -2,7 +2,7 @@ import { useState } from 'react';
 import styled from 'styled-components';
 
 import { checkDeviceAuthenticityThunk } from '@suite-common/device-authenticity';
-import { selectDevice, selectDeviceAuthenticity } from '@suite-common/wallet-core';
+import { selectDevice, selectSelectedDeviceAuthenticity } from '@suite-common/wallet-core';
 import { variables } from '@trezor/components';
 
 import { OnboardingButtonCta, OnboardingStepBox } from 'src/components/onboarding';
@@ -28,7 +28,7 @@ type DeviceAuthenticityProps = {
 
 export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
     const device = useSelector(selectDevice);
-    const deviceAuthenticity = useSelector(selectDeviceAuthenticity);
+    const selectedDeviceAuthenticity = useSelector(selectSelectedDeviceAuthenticity);
     const isDebugModeActive = useSelector(selectIsDebugModeActive);
     const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
@@ -39,8 +39,8 @@ export const DeviceAuthenticity = ({ goToNext }: DeviceAuthenticityProps) => {
     const isWaitingForConfirmation = device.buttonRequests.some(
         request => request.code === 'ButtonRequest_Other',
     );
-    const isCheckFailed = isSubmitted && deviceAuthenticity?.valid === false;
-    const isCheckSuccessful = isSubmitted && deviceAuthenticity?.valid;
+    const isCheckFailed = isSubmitted && selectedDeviceAuthenticity?.valid === false;
+    const isCheckSuccessful = isSubmitted && selectedDeviceAuthenticity?.valid;
 
     const getHeadingText = () => {
         if (isCheckSuccessful) {
