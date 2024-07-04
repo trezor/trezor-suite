@@ -170,10 +170,15 @@ export const Fiat = ({ output, outputId, labelHoverRight, labelRight }: FiatProp
         };
     }
 
-    const renderCurrencySelect = ({ field: { onChange, value } }: CallbackParams) => (
+    const renderCurrencySelect = ({
+        field: { onChange, value: selectedOption },
+    }: CallbackParams) => (
         <Select
-            options={buildCurrencyOptions(value)}
-            value={value}
+            options={buildCurrencyOptions(selectedOption)}
+            value={{
+                label: selectedOption.label.toUpperCase(),
+                value: selectedOption.value,
+            }}
             isClearable={false}
             isSearchable
             minValueWidth="58px"
