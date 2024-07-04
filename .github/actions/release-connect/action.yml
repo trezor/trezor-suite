@@ -132,7 +132,7 @@ runs:
       if: inputs.uploadArtifacts == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: connect-example-webextension
+        name: connect-example-webextension-${{ inputs.serverHostname }}-${{ github.run_attempt }}-${{ github.run_id }}
         path: |
           packages/connect-examples/webextension-mv2/build
           packages/connect-examples/webextension-mv3/build
@@ -142,6 +142,6 @@ runs:
       if: inputs.uploadArtifacts == 'true'
       uses: actions/upload-artifact@v4
       with:
-        name: connect-explorer-webextension
+        name: connect-explorer-webextension-${{ inputs.serverHostname }}-${{ github.run_attempt }}-${{ github.run_id }}
         path: |
           packages/connect-explorer/build-webextension
