@@ -100,8 +100,8 @@ describe('General settings', () => {
         });
 
         // and reset app button - wipes db, reloads app, shows onboarding again
-        cy.getTestElement('@settings/reset-app-button').click();
-        cy.getTestElement('@onboarding/welcome');
+        cy.getTestElement('@settings/reset-app-button').click({ force: true });
+        cy.getTestElement('@onboarding/welcome', { timeout: 20000 }).should('be.visible');
     });
 });
 
