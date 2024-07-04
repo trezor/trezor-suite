@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { spacingsPx, zIndices } from '@trezor/theme';
+import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
@@ -13,7 +13,9 @@ import { Translation } from 'src/components/suite';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
-import { useScrollShadow } from '@trezor/components';
+import { Column, useScrollShadow } from '@trezor/components';
+import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
+import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 
 const Wrapper = styled.div`
     display: flex;
@@ -68,15 +70,25 @@ export const AccountsMenu = () => {
     return (
         <Wrapper>
             <MenuHeader>
-                <Row>
-                    {!isEmpty && <AccountSearchBox />}
-                    <AddAccountButton
-                        isFullWidth={isEmpty}
-                        data-testid="@account-menu/add-account"
-                        device={device}
-                    />
-                </Row>
-
+                <ExpandedSidebarOnly>
+                    <Row>
+                        {!isEmpty && <AccountSearchBox />}
+                        <AddAccountButton
+                            isFullWidth={isEmpty}
+                            data-testid="@account-menu/add-account"
+                            device={device}
+                        />
+                    </Row>
+                </ExpandedSidebarOnly>
+                <CollapsedSidebarOnly>
+                    <Column alignItems="center" margin={{ bottom: spacings.sm }}>
+                        <AddAccountButton
+                            isFullWidth={isEmpty}
+                            data-testid="@account-menu/add-account"
+                            device={device}
+                        />
+                    </Column>
+                </CollapsedSidebarOnly>
                 <CoinsFilter />
             </MenuHeader>
 

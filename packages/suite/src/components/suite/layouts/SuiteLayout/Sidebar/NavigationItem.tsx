@@ -9,7 +9,9 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { MouseEvent } from 'react';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
-import { Icon, IconName, IconSize, useElevation } from '@trezor/components';
+import { Tooltip, useElevation, Icon, IconName, IconSize } from '@trezor/components';
+import { ExpandedSidebarOnly } from './ExpandedSidebarOnly';
+import { CollapsedSidebarOnly } from './CollapsedSidebarOnly';
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
@@ -96,12 +98,11 @@ export const NavigationItem = ({
             dispatch(goto(goToRoute, preserveParams === true ? { preserveParams } : undefined));
         }
     };
-
+    const theme = useTheme();
     const isActiveRoute = routes?.some(route => route === activeRoute);
 
-    const theme = useTheme();
-
-    return (
+    const Title = () => <Translation id={nameId} values={values} />;
+    const NavItem = () => (
         <Container
             $isActive={isActive || isActiveRoute}
             onClick={handleClick}
@@ -111,8 +112,23 @@ export const NavigationItem = ({
             $elevation={elevation}
         >
             <Icon name={icon} size={iconSize} color={theme.iconSubdued} pointerEvents="none" />
-            <Translation id={nameId} values={values} />
+            <ExpandedSidebarOnly>
+                <Title />
+            </ExpandedSidebarOnly>
             {itemsCount && <Count>{itemsCount}</Count>}
         </Container>
+    );
+
+    return (
+        <>
+            <ExpandedSidebarOnly>
+                <NavItem />
+            </ExpandedSidebarOnly>
+            <CollapsedSidebarOnly>
+                <Tooltip content={<Title />} placement="right" hasArrow>
+                    <NavItem />
+                </Tooltip>
+            </CollapsedSidebarOnly>
+        </>
     );
 };

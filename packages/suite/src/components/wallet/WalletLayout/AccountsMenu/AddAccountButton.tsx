@@ -3,7 +3,7 @@ import { TrezorDevice } from 'src/types/suite';
 import { useDiscovery, useDispatch } from 'src/hooks/suite';
 import { openModal } from 'src/actions/suite/modalActions';
 
-import { Tooltip, ButtonProps, IconButton, Button } from '@trezor/components';
+import { Tooltip, ButtonProps, IconButton, Button, TOOLTIP_DELAY_NORMAL } from '@trezor/components';
 import { DiscoveryStatus } from '@suite-common/wallet-constants';
 
 const getExplanationMessage = (device: TrezorDevice | undefined, discoveryIsRunning: boolean) => {
@@ -92,6 +92,7 @@ export const AddAccountButton = ({
                 content={tooltipMessage}
                 placement="bottom"
                 cursor="not-allowed"
+                delayShow={TOOLTIP_DELAY_NORMAL}
             >
                 {ButtonComponent}
             </Tooltip>

@@ -12,6 +12,7 @@ import { TrafficLightOffset } from '../../../TrafficLightOffset';
 
 const Container = styled.nav<{ $elevation: Elevation }>`
     display: flex;
+    container-type: inline-size;
     flex-direction: column;
     flex: 0 0 auto;
     height: 100%;
@@ -41,11 +42,12 @@ export const Sidebar = () => {
             <ResizableBox
                 directions={['right']}
                 width={sidebarWidth}
-                minWidth={230}
-                maxWidth={400}
+                minWidth={84}
+                maxWidth={600}
                 zIndex={zIndices.draggableComponent}
                 updateHeightOnWindowResize
                 onWidthResizeEnd={setSidebarWidth}
+                disabledWidthInterval={[84, 240]}
             >
                 <Container $elevation={elevation}>
                     <ElevationUp>

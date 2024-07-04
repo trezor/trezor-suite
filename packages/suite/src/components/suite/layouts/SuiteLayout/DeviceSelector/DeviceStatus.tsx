@@ -7,6 +7,8 @@ import { TrezorDevice } from 'src/types/suite';
 import { spacingsPx } from '@trezor/theme';
 import { RotateDeviceImage } from '@trezor/components';
 import { DeviceStatusText } from 'src/views/suite/SwitchDevice/DeviceItem/DeviceStatusText';
+import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
+import { isCollapsedSidebar } from '../Sidebar/consts';
 
 type DeviceStatusProps = {
     deviceModel: DeviceModelInternal;
@@ -21,6 +23,10 @@ const Container = styled.div`
     gap: ${spacingsPx.md};
     flex: 1;
     align-items: center;
+
+    @container ${isCollapsedSidebar} {
+        justify-content: center;
+    }
 `;
 
 const DeviceWrapper = styled.div<{ $isLowerOpacity: boolean }>`
@@ -54,15 +60,17 @@ export const DeviceStatus = ({
                 />
             </DeviceWrapper>
 
-            {device && (
-                <DeviceDetail label={device.label}>
-                    <DeviceStatusText
-                        onRefreshClick={handleRefreshClick}
-                        device={device}
-                        forceConnectionInfo={forceConnectionInfo}
-                    />
-                </DeviceDetail>
-            )}
+            <ExpandedSidebarOnly>
+                {device && (
+                    <DeviceDetail label={device.label}>
+                        <DeviceStatusText
+                            onRefreshClick={handleRefreshClick}
+                            device={device}
+                            forceConnectionInfo={forceConnectionInfo}
+                        />
+                    </DeviceDetail>
+                )}
+            </ExpandedSidebarOnly>
         </Container>
     );
 };
