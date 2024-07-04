@@ -846,12 +846,12 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
                     return {
                         balance: token.balance,
-                        contract: policyId,
+                        contract: token.contract,
                         name: token.symbol,
                         symbol: token.symbol,
                         decimals: token.decimals,
                         fingerprint: token.name,
-                        unit: token.contract,
+                        policyId,
                         type: token.type,
                     };
                 });
@@ -867,7 +867,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
 
                     return {
                         amount: token.amount,
-                        contract: policyId,
+                        contract: token.contract,
                         decimals: token.decimals,
                         from: token.from,
                         name: token.symbol || '',
@@ -875,7 +875,7 @@ export const migrate: OnUpgradeFunc<SuiteDBSchema> = async (
                         fingerprint: token.name,
                         to: token.to,
                         type: token.type,
-                        unit: token.contract,
+                        policyId,
                     };
                 });
             }

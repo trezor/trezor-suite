@@ -99,11 +99,11 @@ export const transformToken = (token: AssetBalance) => {
 
     return {
         name: token.name || symbol,
-        contract: policyId,
+        contract: token.unit,
         symbol,
         decimals: token.decimals,
         fingerprint: token.fingerprint!,
-        unit: token.unit,
+        policyId,
     };
 };
 

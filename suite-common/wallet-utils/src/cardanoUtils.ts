@@ -70,17 +70,13 @@ export const transformUserOutputs = (
             output.amount === '' ? undefined : networkAmountToSatoshi(output.amount, symbol);
         const tokenDecimals = accountTokens?.find(t => t.contract === output.token)?.decimals ?? 0;
 
-        // Token unit was previously contract address, it is "policy id + encoded asset name"
-        // However, unit was not compatible with fiat rates, token definitions and explorer which use just policy id
-        const tokenUnit = accountTokens?.find(t => t.contract === output.token)?.unit;
-
         return {
             address: output.address === '' ? undefined : output.address,
             amount: output.token ? undefined : amount,
             assets: output.token
                 ? [
                       {
-                          unit: tokenUnit!, // always available for Cardano
+                          unit: output.token,
                           quantity: output.amount
                               ? amountToSatoshi(output.amount, tokenDecimals)
                               : '0',
