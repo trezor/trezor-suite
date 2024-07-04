@@ -92,17 +92,20 @@ export const useGraphForSingleAccount = ({
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         useGetTimeFrameForHistoryHours(accountGraphTimeframe);
 
-    const accounts = useMemo(() => {
-        if (!account) return [];
+    const identity = account ? tryGetAccountIdentity(account) : undefined;
+    const accounts = useMemo<AccountItem[]>(() => {
+        if (!account?.symbol) return [];
 
         return [
             {
                 coin: account.symbol,
                 descriptor: account.descriptor,
-                identity: tryGetAccountIdentity(account),
+                accountKey: account.key,
+                identity,
             },
-        ] as AccountItem[];
-    }, [account]);
+        ];
+        // We need to specify all dependicies here, because whole account will be updated very often will could result in endless rerendering.
+    }, [identity, account?.symbol, account?.descriptor, account?.key]);
 
     useWatchTimeframeChangeForAnalytics(accountGraphTimeframe, account?.symbol);
 
@@ -139,12 +142,13 @@ export const useGraphForAllDeviceAccounts = ({ fiatCurrency }: CommonUseGraphPar
     const { startOfTimeFrameDate, endOfTimeFrameDate } =
         useGetTimeFrameForHistoryHours(portfolioGraphTimeframe);
 
-    const accountItems = useMemo(
+    const accountItems = useMemo<AccountItem[]>(
         () =>
             accounts.map(account => ({
                 coin: account.symbol,
                 descriptor: account.descriptor,
                 identity: tryGetAccountIdentity(account),
+                accountKey: account.key,
             })),
         [accounts],
     );

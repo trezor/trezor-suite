@@ -1,17 +1,17 @@
+import { useDispatch } from 'react-redux';
+
 import { A, D, G, pipe } from '@mobily/ts-belt';
 import { fromUnixTime, getUnixTime } from 'date-fns';
 
-import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
 import { FiatCurrencyCode } from '@suite-common/suite-config';
 import { NetworkSymbol, getNetworkType } from '@suite-common/wallet-config';
 import { formatNetworkAmount } from '@suite-common/wallet-utils';
 import { AccountBalanceHistory as AccountMovementHistory } from '@trezor/blockchain-link';
 import TrezorConnect from '@trezor/connect';
-import { getFiatRatesForTimestamps } from '@suite-common/fiat-services';
-import {
-    AccountBalanceHistory,
-    TransactionCacheEngine,
-} from '@suite-common/transaction-cache-engine';
+import { BigNumber } from '@trezor/utils/src/bigNumber';
+import { fetchAllTransactionsForAccountThunk } from '@suite-common/wallet-core';
+import { AccountKey } from '@suite-common/wallet-types';
 
 import { NUMBER_OF_POINTS } from './constants';
 import {
@@ -22,6 +22,10 @@ import {
     mergeMultipleFiatBalanceHistories,
 } from './graphUtils';
 import { AccountItem, FiatGraphPoint, FiatGraphPointWithCryptoBalance } from './types';
+import {
+    AccountBalanceHistory,
+    getAccountBalanceHistoryFromTransactions,
+} from './balanceHistoryUtils';
 
 export const addBalanceForAccountMovementHistory = (
     data: AccountMovementHistory[] | AccountBalanceHistory[],
@@ -87,12 +91,16 @@ const getAccountBalanceHistory = async ({
     descriptor,
     endOfTimeFrameDate,
     forceRefetch,
+    dispatch,
+    accountKey,
 }: {
     coin: NetworkSymbol;
     identity?: string;
     descriptor: string;
     endOfTimeFrameDate: Date;
     forceRefetch?: boolean;
+    dispatch: ReturnType<typeof useDispatch>;
+    accountKey: AccountKey;
 }): Promise<AccountHistoryBalancePoint[]> => {
     const endTimeFrameTimestamp = getUnixTime(endOfTimeFrameDate);
     const cacheKey = `${coin}-${descriptor}-${endTimeFrameTimestamp}`;
@@ -103,9 +111,15 @@ const getAccountBalanceHistory = async ({
 
     const getBalanceHistory = async () => {
         if (getNetworkType(coin) === 'ripple') {
-            return TransactionCacheEngine.getAccountBalanceHistory({
+            const allTransactions = await dispatch(
+                fetchAllTransactionsForAccountThunk({
+                    accountKey,
+                }),
+            ).unwrap();
+
+            return getAccountBalanceHistoryFromTransactions({
+                transactions: allTransactions,
                 coin,
-                descriptor,
             });
         }
         const connectBalanceHistory = await TrezorConnect.blockchainGetAccountBalanceHistory({
@@ -205,6 +219,7 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     fiatCurrency,
     forceRefetch,
     isElectrumBackend,
+    dispatch,
 }: {
     accounts: AccountItem[];
     startOfTimeFrameDate: Date | null;
@@ -213,15 +228,18 @@ export const getMultipleAccountBalanceHistoryWithFiat = async ({
     fiatCurrency: FiatCurrencyCode;
     forceRefetch?: boolean;
     isElectrumBackend: boolean;
+    dispatch: ReturnType<typeof useDispatch>;
 }): Promise<FiatGraphPoint[] | FiatGraphPointWithCryptoBalance[]> => {
     const accountsWithBalanceHistory = await Promise.all(
-        accounts.map(({ coin, descriptor, identity }) =>
+        accounts.map(({ coin, descriptor, identity, accountKey }) =>
             getAccountBalanceHistory({
                 coin,
                 descriptor,
                 identity,
                 endOfTimeFrameDate,
                 forceRefetch,
+                dispatch,
+                accountKey,
             })
                 .then(balanceHistory => ({
                     coin,

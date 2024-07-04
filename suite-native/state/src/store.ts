@@ -24,7 +24,7 @@ const middlewares: Middleware[] = [
 const enhancers: Array<StoreEnhancer<any, any>> = [];
 
 if (__DEV__) {
-    enhancers.push(devToolsEnhancer({ maxAge: 150 })!);
+    enhancers.push(devToolsEnhancer({ maxAge: 150, trace: true })!);
 }
 
 export const initStore = async () =>
