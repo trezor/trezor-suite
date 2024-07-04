@@ -6,6 +6,7 @@ import { spacingsPx } from '@trezor/theme';
 
 import { useSelector } from 'src/hooks/suite';
 import { selectHasExperimentalFeature } from 'src/reducers/suite/suiteReducer';
+import { isCollapsedSidebar } from './consts';
 
 import { NavigationItem, NavigationItemProps } from './NavigationItem';
 import { NotificationDropdown } from './NotificationDropdown';
@@ -15,6 +16,11 @@ const Nav = styled.nav`
     flex-direction: column;
     gap: ${spacingsPx.xxs};
     margin: ${spacingsPx.xs};
+    align-items: stretch;
+
+    @container ${isCollapsedSidebar} {
+        align-items: center;
+    }
 `;
 
 const PasswordManagerNavItem = (props: NavigationItemProps) => {

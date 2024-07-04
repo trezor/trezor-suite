@@ -30,11 +30,6 @@ const StyledNavigationItem = styled(NavigationItem)`
         `}
 `;
 
-// eslint-disable-next-line local-rules/no-override-ds-component
-const StyledDropdown = styled(Dropdown)`
-    width: 100%;
-`;
-
 export const NotificationDropdown = (props: NavigationItemProps) => {
     const dropdownRef = useRef<DropdownRef>();
 
@@ -58,7 +53,7 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
     );
 
     return (
-        <StyledDropdown
+        <Dropdown
             onToggle={handleToggleChange}
             ref={dropdownRef}
             alignMenu="right-top"
@@ -70,6 +65,6 @@ export const NotificationDropdown = (props: NavigationItemProps) => {
             }
         >
             {isToggled => <StyledNavigationItem {...props} isActive={isToggled} />}
-        </StyledDropdown>
+        </Dropdown>
     );
 };

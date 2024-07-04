@@ -12,12 +12,14 @@ import {
 } from '@trezor/theme';
 import { getFocusShadowStyle } from '@trezor/components/src/utils/utils';
 import { Route } from '@suite-common/suite-types';
-import { Icon, IconName, IconSize, useElevation, Paragraph } from '@trezor/components';
+import { Icon, IconName, IconSize, useElevation, Paragraph,Tooltip } from '@trezor/components';
 
 import { Translation } from 'src/components/suite/Translation';
 import { useDispatch, useSelector } from 'src/hooks/suite';
 import { goto } from 'src/actions/suite/routerActions';
 import { selectRouteName } from 'src/reducers/suite/routerReducer';
+import { ExpandedSidebarOnly } from './ExpandedSidebarOnly';
+import { CollapsedSidebarOnly } from './CollapsedSidebarOnly';
 
 export const NavigationItemBase = styled.div.attrs(() => ({
     tabIndex: 0,
@@ -113,12 +115,11 @@ export const NavigationItem = ({
             dispatch(goto(goToRoute, preserveParams === true ? { preserveParams } : undefined));
         }
     };
-
+    const theme = useTheme();
     const isActiveRoute = routes?.some(route => route === activeRoute);
 
-    const theme = useTheme();
-
-    return (
+    const Title = () => <Translation id={nameId} values={values} />;
+    const NavItem = () => (
         <Container
             $isActive={isActive || isActiveRoute}
             onClick={handleClick}
@@ -131,7 +132,9 @@ export const NavigationItem = ({
         >
             <Icon name={icon} size={iconSize} color={theme.iconSubdued} pointerEvents="none" />
             <Paragraph typographyStyle={typographyStyle}>
-                <Translation id={nameId} values={values} />
+                <ExpandedSidebarOnly>
+                    <Translation id={nameId} values={values} />
+                </ExpandedSidebarOnly>
             </Paragraph>
             {itemsCount && (
                 <Paragraph variant="tertiary" typographyStyle={typographyStyle}>
@@ -139,5 +142,18 @@ export const NavigationItem = ({
                 </Paragraph>
             )}
         </Container>
+    );
+
+    return (
+        <>
+            <ExpandedSidebarOnly>
+                <NavItem />
+            </ExpandedSidebarOnly>
+            <CollapsedSidebarOnly>
+                <Tooltip content={<Title />} placement="right" hasArrow>
+                    <NavItem />
+                </Tooltip>
+            </CollapsedSidebarOnly>
+        </>
     );
 };

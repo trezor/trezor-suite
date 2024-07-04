@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-
 import styled, { css } from 'styled-components';
-
 import { selectDevicesCount, selectDevice } from '@suite-common/wallet-core';
 import type { Timeout } from '@trezor/type-utils';
 import { borders, spacingsPx } from '@trezor/theme';
@@ -14,6 +12,7 @@ import { useDispatch, useSelector } from 'src/hooks/suite';
 import { ViewOnlyTooltip } from 'src/views/view-only/ViewOnlyTooltip';
 
 import { SidebarDeviceStatus } from './SidebarDeviceStatus';
+import { ExpandedSidebarOnly } from '../Sidebar/ExpandedSidebarOnly';
 
 const CaretContainer = styled.div`
     background: transparent;
@@ -56,6 +55,7 @@ const InnerContainer = styled.div`
     align-items: center;
     cursor: pointer;
     gap: ${spacingsPx.md};
+    min-height: 42px;
     -webkit-app-region: no-drag;
 `;
 
@@ -118,11 +118,13 @@ export const DeviceSelector = () => {
                 >
                     <SidebarDeviceStatus />
 
-                    {selectedDevice && selectedDevice.state && (
-                        <CaretContainer>
-                            <Icon size={20} name="caretCircleDown" />
-                        </CaretContainer>
-                    )}
+                    <ExpandedSidebarOnly>
+                        {selectedDevice && selectedDevice.state && (
+                            <CaretContainer>
+                                <Icon size={20} name="caretCircleDown" />
+                            </CaretContainer>
+                        )}
+                    </ExpandedSidebarOnly>
                 </InnerContainer>
             </ViewOnlyTooltip>
         </Wrapper>

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { spacings, spacingsPx, zIndices } from '@trezor/theme';
 import { selectDevice } from '@suite-common/wallet-core';
 import { getFailedAccounts, sortByCoin } from '@suite-common/wallet-utils';
-import { useScrollShadow, Row } from '@trezor/components';
+import { useScrollShadow, Row,Column } from '@trezor/components';
 
 import { useDiscovery, useSelector } from 'src/hooks/suite';
 import { Translation } from 'src/components/suite';
@@ -16,6 +16,8 @@ import { CoinsFilter } from './CoinsFilter';
 import { AccountsList } from './AccountsList';
 import { AccountsMenuNotice } from './AccountsMenuNotice';
 import { RefreshAfterDiscoveryNeeded } from './RefreshAfterDiscoveryNeeded';
+import { ExpandedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/ExpandedSidebarOnly';
+import { CollapsedSidebarOnly } from '../../../suite/layouts/SuiteLayout/Sidebar/CollapsedSidebarOnly';
 
 const Wrapper = styled.div`
     display: flex;
@@ -63,14 +65,25 @@ export const AccountsMenu = () => {
     return (
         <Wrapper>
             <Header>
-                <Row justifyContent="space-between" gap={spacings.xs}>
-                    {!isEmpty && <AccountSearchBox />}
-                    <AddAccountButton
-                        isFullWidth={isEmpty}
-                        data-testid="@account-menu/add-account"
-                        device={device}
-                    />
-                </Row>
+                <ExpandedSidebarOnly>
+                    <Row justifyContent="space-between" gap={spacings.xs}>
+                        {!isEmpty && <AccountSearchBox />}
+                        <AddAccountButton
+                            isFullWidth={isEmpty}
+                            data-testid="@account-menu/add-account"
+                            device={device}
+                        />
+                    </Row>
+                </ExpandedSidebarOnly>
+                <CollapsedSidebarOnly>
+                    <Column alignItems="center" margin={{ bottom: spacings.sm }}>
+                        <AddAccountButton
+                            isFullWidth={isEmpty}
+                            data-testid="@account-menu/add-account"
+                            device={device}
+                        />
+                    </Column>
+                </CollapsedSidebarOnly>
                 <CoinsFilter />
             </Header>
             <ShadowContainer>
