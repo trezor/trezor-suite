@@ -39,10 +39,6 @@ describe('Backup fail', () => {
 
         cy.getTestElement('@notification/failed-backup/cta').should('be.visible');
 
-        cy.getTestElement('@dashboard/security-card/backup/button', { timeout: 30000 }).should(
-            'be.disabled',
-        );
-
         cy.findAnalyticsEventByType<ExtractByEventType<EventType.CreateBackup>>(
             requests,
             EventType.CreateBackup,

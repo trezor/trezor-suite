@@ -205,10 +205,20 @@ const Buttons = () => {
 
     return (
         <ButtonsContainer>
-            <Button variant="primary" isFullWidth onClick={onYes}>
+            <Button
+                variant="primary"
+                isFullWidth
+                onClick={onYes}
+                data-test="@onbarding/viewOnly/enable"
+            >
                 <Translation id="TR_VIEW_ONLY_PROMO_YES" />
             </Button>
-            <Button variant="tertiary" isFullWidth onClick={onNo}>
+            <Button
+                variant="tertiary"
+                isFullWidth
+                onClick={onNo}
+                data-test="@onbarding/viewOnly/skip"
+            >
                 <Translation id="TR_VIEW_ONLY_PROMO_NOT_NOW" />
             </Button>
         </ButtonsContainer>

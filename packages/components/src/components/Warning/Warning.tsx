@@ -29,6 +29,7 @@ export interface WarningProps {
     icon?: IconType;
     filled?: boolean;
     margin?: FrameProps['margin'];
+    'data-test'?: string;
 }
 
 type MapArgs = {
@@ -129,6 +130,7 @@ export const Warning = ({
     icon,
     filled = true,
     margin,
+    dataTest,
 }: WarningProps) => {
     const theme = useTheme();
     const { elevation } = useElevation();
@@ -141,6 +143,7 @@ export const Warning = ({
             $elevation={elevation}
             $filled={filled}
             $margin={margin}
+            data-test={dataTest}
         >
             {withIcon && (
                 <Icon

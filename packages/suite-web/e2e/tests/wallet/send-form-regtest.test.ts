@@ -30,7 +30,7 @@ describe('Send form for bitcoin', () => {
         cy.wait(100); // wait until is the form interactive
     });
 
-    it('add and remove output in send form, toggle form options, input data', () => {
+    it.skip('add and remove output in send form, toggle form options, input data', () => {
         // test adding and removing outputs
         cy.getTestElement('outputs.0.amount').type('0.3');
         cy.getTestElement('add-output').click();

@@ -77,7 +77,12 @@ export const ViewOnlyTooltip = ({ children }: ViewOnlyTooltipProps) => {
                             <Translation id="TR_VIEW_ONLY_TOOLTIP_DESCRIPTION" />
                         </Text>
                     </Content>
-                    <Button variant="tertiary" size="small" onClick={handleClose}>
+                    <Button
+                        variant="tertiary"
+                        size="small"
+                        onClick={handleClose}
+                        data-test="@viewOnlyTooltip/gotIt"
+                    >
                         <Translation id="TR_GOT_IT_BUTTON" />
                     </Button>
                 </Notification>

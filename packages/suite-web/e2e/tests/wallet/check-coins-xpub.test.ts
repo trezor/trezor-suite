@@ -17,6 +17,7 @@ describe('Check coins XPUB', () => {
         cy.prefixedVisit('/accounts');
         cy.passThroughInitialRun();
         cy.discoveryShouldFinish();
+        cy.getTestElement('@account-menu/normal/group').click();
     });
 
     afterEach(() => {

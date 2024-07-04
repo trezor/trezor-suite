@@ -8,13 +8,12 @@ import { EventPayload, Requests } from '../types';
 export const toggleDeviceMenu = () => cy.getTestElement('@menu/switch-device').click();
 
 export const passThroughInitialRun = () => {
-    cy.getTestElement('@analytics/continue-button', { timeout: 40000 })
+    cy.getTestElement('@analytics/continue-button', { timeout: 30_000 })
         .click()
         .getTestElement('@onboarding/exit-app-button')
         .click();
-    // view-only mode quick workaround
-    // TODO: refactor using data-tests
-    cy.get('[class^="ViewOnlyPromoContent__ButtonsContainer"]').contains('button', 'Yes').click();
+    cy.getTestElement('@onbarding/viewOnly/enable').click();
+    cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 }).should('be.visible').click();
 };
 
 export const passThroughAuthenticityCheck = () => {
@@ -151,5 +150,42 @@ export const enterPinOnBlindMatrix = (pinEntryNumber: string) => {
         const index = state.matrix.indexOf(pinEntryNumber) + 1;
         cy.getTestElement(`@pin/input/${index}`).click();
         cy.getTestElement('@pin/submit-button').click();
+    });
+};
+
+export const addHiddenWallet = (passphrase: string) => {
+    cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
+    cy.getTestElement('@passphrase/input').type(passphrase);
+    cy.getTestElement('@passphrase/hidden/submit-button').click();
+
+    cy.task('pressYes');
+    cy.task('pressYes');
+    cy.getTestElement('@passphrase-confirmation/step1-open-unused-wallet-button', {
+        timeout: 15_000,
+    }).click();
+    cy.getTestElement('@passphrase-confirmation/step2-button').click();
+
+    cy.getTestElement('@passphrase/input', { timeout: 10000 }).type(passphrase);
+    cy.getTestElement('@passphrase/hidden/submit-button').click();
+    cy.task('pressYes');
+    cy.task('pressYes');
+
+    cy.getTestElement('@dashboard/loading').should('not.exist');
+};
+
+export const changeViewOnlyState = (walletIndex: number, desiredState: 'enabled' | 'disabled') => {
+    // get the wallet container
+    cy.getTestElement(`@switch-device/wallet-on-index/${walletIndex}`).then(walletContainer => {
+        // check if change is even necessary
+        if (!walletContainer.find(`[data-test="@viewOnlyStatus/${desiredState}"]`).length) {
+            // if it is, open view-only settings container and change the state
+            cy.wrap(walletContainer).find('[data-test="@collapsible-box/icon-collapsed"]').click();
+            cy.wrap(walletContainer)
+                .find('[data-test="@collapsible-box/body"]')
+                .should('be.visible');
+            cy.wrap(walletContainer).find(`[data-test$="/${desiredState}"]`).click();
+            // close it to match the initial state
+            cy.wrap(walletContainer).find('[data-test="@collapsible-box/icon-expanded"]').click();
+        }
     });
 };

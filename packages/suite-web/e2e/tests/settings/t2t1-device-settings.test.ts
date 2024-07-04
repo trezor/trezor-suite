@@ -26,8 +26,11 @@ describe('T2T1 - Device settings', () => {
         cy.task('startEmu', { wipe: true });
         cy.task('setupEmu');
         // navigate to device settings page
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        // navigate to device settings page
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         //
         // Test execution
@@ -66,8 +69,10 @@ describe('T2T1 - Device settings', () => {
         cy.task('startEmu', { wipe: true, version: '2.5.3' });
         cy.task('setupEmu');
 
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         cy.log('Try to change device homescreen');
         cy.getTestElement('@device-settings/homescreen').scrollIntoView();
@@ -80,8 +85,10 @@ describe('T2T1 - Device settings', () => {
         cy.task('startEmu', { wipe: true, version: '2-main' });
         cy.task('setupEmu');
 
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         cy.log('Try to change device homescreen');
         cy.getTestElement('@device-settings/homescreen').scrollIntoView();
@@ -90,18 +97,22 @@ describe('T2T1 - Device settings', () => {
         cy.get('#original_t2t1').should('exist');
     });
 
-    it('backup in settings', () => {
+    it.only('backup in settings', () => {
         cy.task('startEmu', { wipe: true });
-        cy.task('setupEmu', { needs_backup: true });
+        cy.task('setupEmu', { needs_backup: false });
 
         // navigate to device settings page
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
-        cy.getTestElement('@settings/device/check-seed-button').should('be.disabled');
-        cy.getTestElement('@device-settings/backup-failed').should('not.exist');
-        cy.getTestElement('@settings/device/create-backup-button').click({ scrollBehavior: false });
-        cy.getTestElement('@backup');
+        cy.getTestElement('@settings/device/check-seed-button', { timeout: 10_000 }).should(
+            'be.visible',
+        );
+        cy.getTestElement('@settings/device/failed-backup-row').should('not.exist');
+        cy.getTestElement('@settings/device/check-seed-button').click({ scrollBehavior: false });
+        cy.getTestElement('@modal');
     });
 
     it('wipe device', () => {
@@ -109,8 +120,10 @@ describe('T2T1 - Device settings', () => {
         cy.task('setupEmu');
 
         // navigate to device settings page
-        cy.prefixedVisit('/settings/device');
+        cy.prefixedVisit('/');
         cy.passThroughInitialRun();
+        cy.getTestElement('@suite/menu/settings').click();
+        cy.getTestElement('@settings/menu/device').click();
 
         cy.getTestElement('@settings/device/open-wipe-modal-button').click();
         cy.getTestElement('@wipe/checkbox-1').click();

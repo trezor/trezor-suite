@@ -25,8 +25,9 @@ describe(
             cy.viewport(1440, 2560).resetDb();
         });
 
+        //TODO: this test case will require substantial refactoring as the "remember wallet" has been changed with the view-only mode
         providers.forEach(f => {
-            it(f.provider, () => {
+            it.skip(f.provider, () => {
                 // prepare test
                 cy.task('stopBridge');
                 cy.task('startEmu', { wipe: true });

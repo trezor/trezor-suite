@@ -51,6 +51,7 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
 
     return (
         <ViewOnlyContainer
+            data-test={`@viewOnlyStatus/${isViewOnly ? 'enabled' : 'disabled'}`}
             onClick={e => {
                 e.stopPropagation();
             }}
@@ -77,7 +78,7 @@ export const ViewOnly = ({ setContentType, instance, dataTest }: ViewOnlyProps) 
                 <ViewOnlyRadios
                     isViewOnlyActive={isViewOnly}
                     toggleViewOnly={handleRememberChange}
-                    dataTest={`${dataTest}/view-only-radio`}
+                    data-test="@viewOnly/radios"
                     setContentType={setContentType}
                     device={instance}
                 />

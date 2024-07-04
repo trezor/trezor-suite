@@ -45,12 +45,15 @@ describe('Analytics Toggle - Enablement and Disablement', () => {
 
         // finish onboarding
         cy.getTestElement('@onboarding/exit-app-button').click();
+        cy.getTestElement('@onbarding/viewOnly/enable').click();
+        cy.getTestElement('@viewOnlyTooltip/gotIt', { timeout: 10_000 })
+            .should('be.visible')
+            .click();
 
         // reload app (important, app needs time to save initialRun flag into storage) to change session id
         cy.getTestElement('@suite/loading').should('not.exist');
         cy.discoveryShouldFinish();
         cy.safeReload();
-        cy.discoveryShouldFinish();
 
         // go to settings, analytics should not enabled and no additional analytics requests should be fired
         cy.getTestElement('@suite/menu/settings').click();

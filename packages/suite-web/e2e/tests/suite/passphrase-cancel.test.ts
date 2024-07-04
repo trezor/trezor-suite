@@ -18,7 +18,10 @@ describe('Passphrase cancel', () => {
             cy.task('startBridge');
             cy.prefixedVisit('/');
             cy.passThroughInitialRun();
+            cy.discoveryShouldFinish();
 
+            cy.getTestElement('@menu/switch-device').click();
+            cy.getTestElement('@switch-device/add-hidden-wallet-button').click();
             cy.getTestElement('@passphrase/input').type('abc');
             cy.getTestElement('@passphrase/hidden/submit-button').click();
             cy.getTestElement('@suite/modal/confirm-action-on-device');

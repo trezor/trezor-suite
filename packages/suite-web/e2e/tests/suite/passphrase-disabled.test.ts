@@ -4,7 +4,11 @@
 const DEFAULT_STANDARD_WALLET_LABEL = 'Standard wallet';
 const DEFAULT_HIDDEN_WALLET_LABEL = 'Hidden wallet #';
 
-describe('Suite switch wallet modal', () => {
+// TODO: refactor this test using this tc:
+// add a passphrase wallet,
+// turn off passphrase (need to be done outside of suite, I see that in device settings this option has disappeared once it is turned on).
+// try to access account of a passphrase wallet and see that this is well handled
+describe.skip('Suite switch wallet modal', () => {
     beforeEach(() => {
         cy.viewport(1440, 2560).resetDb();
         cy.task('startBridge');
