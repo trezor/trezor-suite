@@ -1,9 +1,38 @@
-import { test, expect, firefox, chromium, Page } from '@playwright/test';
+import { test, expect, firefox, chromium, Page, BrowserContext } from '@playwright/test';
 import { TrezorUserEnvLink } from '@trezor/trezor-user-env-link';
 import { waitAndClick, log, formatUrl } from '../support/helpers';
 
 const url = process.env.URL || 'http://localhost:8088/';
 
+// different origin URL for testing cross-origin requests
+const simulatedCrossOrigin = 'https://connect.trezor.io/9/';
+
+const handleSimulatedCrossOrigin = (context: BrowserContext) => {
+    context.route('**/*', async route => {
+        // proxy request to simulatedCrossOrigin to the real URL
+        if (route.request().url().startsWith(simulatedCrossOrigin)) {
+            const newUrl = route.request().url().replace(simulatedCrossOrigin, url);
+
+            const request = await fetch(newUrl, {
+                method: route.request().method(),
+                headers: route.request().headers(),
+                body: route.request().postData(),
+            });
+
+            const body = await request.text();
+
+            return route.fulfill({
+                status: request.status,
+                headers: Object.fromEntries(request.headers.entries()),
+                body,
+            });
+        }
+
+        route.continue();
+    });
+};
+
+let page: Page;
 let popup: Page;
 
 test.beforeAll(async () => {
@@ -21,15 +50,51 @@ const fixtures = [
     },
     {
         browser: chromium,
-        description: `iframe and host different origins: false -> bridge`,
-        queryString: '?trezor-connect-src=https://connect.trezor.io/9/',
+        description: `iframe and host different origins: iframe mode -> bridge`,
+        queryString: `?trezor-connect-src=${simulatedCrossOrigin}`,
+        before: handleSimulatedCrossOrigin,
         expect: () => expect(popup.getByRole('heading', { name: 'Install Bridge' })).toBeVisible(),
     },
     {
         browser: chromium,
         description: `iframe and host same origins`,
         queryString: '',
-        expect: () => popup.locator('text==Pair devices >> visible=true').isVisible(),
+        expect: () =>
+            expect(popup.getByText('Connect Trezor to continue').first()).toBeVisible({
+                timeout: 10000,
+            }),
+    },
+    {
+        browser: chromium,
+        description: `iframe and host different origins: auto mode -> popup`,
+        queryString: `?trezor-connect-src=${simulatedCrossOrigin}&core-mode=auto`,
+        before: handleSimulatedCrossOrigin,
+        expect: async () => {
+            await expect(popup.getByText('Connect Trezor to continue').first()).toBeVisible({
+                timeout: 30000,
+            });
+            await expect(page.locator('iframe')).not.toBeAttached();
+        },
+    },
+    {
+        browser: chromium,
+        description: `iframe blocked -> fallback to popup`,
+        queryString: '?core-mode=auto',
+        before: (context: BrowserContext) => {
+            context.route('**/*', route => {
+                // block iframe
+                if (route.request().url().includes('iframe.html')) {
+                    return route.abort();
+                }
+                route.continue();
+            });
+        },
+        expect: async () => {
+            await expect(popup.getByText('Connect Trezor to continue').first()).toBeVisible({
+                timeout: 30000,
+            });
+            await expect(page.locator('iframe')).not.toBeAttached();
+        },
     },
 ];
 
@@ -40,7 +105,9 @@ fixtures.forEach(f => {
         log('launching browser');
         const browserInstance = await f.browser.launch();
         const context = await browserInstance.newContext();
-        const page = await context.newPage();
+        page = await context.newPage();
+
+        await f.before?.(context);
 
         log(`going to: ${url}${f.queryString}#/method/verifyMessage`);
         await page.goto(formatUrl(url, `methods/bitcoin/verifyMessage/${f.queryString}`));
@@ -49,8 +116,6 @@ fixtures.forEach(f => {
         await page.waitForSelector("button[data-test='@submit-button']", {
             state: 'visible',
         });
-
-        await page.locator("button[data-test='@submit-button']");
 
         log('opening popup');
         [popup] = await Promise.all([

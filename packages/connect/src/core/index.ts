@@ -1069,6 +1069,10 @@ export class Core extends EventEmitter {
                 _deviceList?.enumerate();
                 break;
 
+            case TRANSPORT.GET_INFO:
+                postMessage(createResponseMessage(message.id, true, this.getTransportInfo()));
+                break;
+
             // messages from UI (popup/modal...)
             case UI.RECEIVE_DEVICE:
             case UI.RECEIVE_CONFIRMATION:
@@ -1177,7 +1181,11 @@ export class Core extends EventEmitter {
         }
 
         try {
-            if (!DataManager.getSettings('transportReconnect')) {
+            if (
+                !DataManager.getSettings('transportReconnect') ||
+                // in auto core mode, we have to wait to check if transport is available
+                DataManager.getSettings('coreMode') === 'auto'
+            ) {
                 // try only once, if it fails kill and throw initialization error
                 await initDeviceList(false);
             } else {

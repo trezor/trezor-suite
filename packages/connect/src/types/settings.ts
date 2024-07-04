@@ -37,6 +37,7 @@ export interface ConnectSettings {
     proxy?: Proxy;
     sharedLogger?: boolean;
     useCoreInPopup?: boolean;
+    coreMode?: 'auto' | 'popup' | 'iframe';
     /* _extendWebextensionLifetime features makes the service worker in @trezor/connect-webextension stay alive longer */
     _extendWebextensionLifetime?: boolean;
 }

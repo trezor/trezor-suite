@@ -138,8 +138,12 @@ export const init =
         const urlParams = new URLSearchParams(window.location.search);
         const useCoreInPopup = urlParams.get('core-in-popup') === 'true';
 
+        // Get default coreMode from URL params (?core-mode=auto)
+        const coreMode = (urlParams.get('core-mode') as ConnectOptions['coreMode']) || 'iframe';
+
         const connectOptions = {
             useCoreInPopup,
+            coreMode,
             transportReconnect: true,
             popup: true,
             debug: true,

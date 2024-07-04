@@ -29,4 +29,5 @@ export const TRANSPORT = {
     UPDATE: 'transport-update',
     DISABLE_WEBUSB: 'transport-disable_webusb',
     REQUEST_DEVICE: 'transport-request_device',
+    GET_INFO: 'transport-get_info',
 } as const;

@@ -29,6 +29,7 @@ export const Settings = () => {
         trustedHost: state.connect?.options?.trustedHost,
         connectSrc: state.connect?.options?.connectSrc,
         useCoreInPopup: state?.connect?.options?.useCoreInPopup,
+        coreMode: state?.connect?.options?.coreMode,
     }));
 
     const initError = useSelector(state => state.connect?.initError);
@@ -52,6 +53,17 @@ export const Settings = () => {
             type: 'checkbox',
             key: 'useCoreInPopup',
             value: connectOptions?.useCoreInPopup || false,
+        },
+        {
+            name: 'coreMode',
+            type: 'select',
+            key: 'coreMode',
+            value: connectOptions?.coreMode || 'iframe',
+            data: [
+                { value: 'auto', label: 'Auto' },
+                { value: 'iframe', label: 'Iframe' },
+                { value: 'popup', label: 'Popup' },
+            ],
         },
         {
             name: 'connectSrc',
