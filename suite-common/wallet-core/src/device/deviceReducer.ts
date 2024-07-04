@@ -758,10 +758,13 @@ export const selectDeviceSupportedNetworks = (state: DeviceRootState) => {
 export const selectDeviceById = (state: DeviceRootState, deviceId: TrezorDevice['id']) =>
     state.device.devices.find(device => device.id === deviceId);
 
-export const selectDeviceAuthenticity = (state: DeviceRootState) => {
-    const device = selectDevice(state);
+export const selectDeviceAuthenticity = (state: DeviceRootState) => state.device.deviceAuthenticity;
 
-    return device?.id ? state.device.deviceAuthenticity?.[device.id] : undefined;
+export const selectSelectedDeviceAuthenticity = (state: DeviceRootState) => {
+    const device = selectDevice(state);
+    const deviceAuthenticity = selectDeviceAuthenticity(state);
+
+    return device?.id ? deviceAuthenticity?.[device.id] : undefined;
 };
 
 export const selectIsPortfolioTrackerDevice = (state: DeviceRootState) => {
