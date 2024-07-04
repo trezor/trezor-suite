@@ -1,4 +1,5 @@
 import { NetworkSymbol, getNetworkFeatures } from '@suite-common/wallet-config';
+import { parseAsset } from '@trezor/blockchain-link-utils/src/blockfrost';
 
 import {
     DefinitionType,
@@ -8,10 +9,23 @@ import {
     TokenManagementStorage,
 } from './tokenDefinitionsTypes';
 
-export const caseContractAddressForNetwork = (
+export const getContractAddressForNetwork = (
     networkSymbol: NetworkSymbol,
     contractAddress: string,
-) => (networkSymbol === 'sol' ? contractAddress : contractAddress.toLowerCase());
+) => {
+    switch (networkSymbol) {
+        case 'sol':
+        case 'dsol':
+            return contractAddress;
+        case 'ada':
+        case 'tada':
+            const { policyId } = parseAsset(contractAddress);
+
+            return policyId.toLowerCase();
+        default:
+            return contractAddress.toLowerCase();
+    }
+};
 
 export const isTokenDefinitionKnown = (
     tokenDefinitions: SimpleTokenStructure | undefined,
@@ -19,7 +33,7 @@ export const isTokenDefinitionKnown = (
     contractAddress: string,
 ) =>
     Array.isArray(tokenDefinitions)
-        ? tokenDefinitions?.includes(caseContractAddressForNetwork(networkSymbol, contractAddress))
+        ? tokenDefinitions?.includes(getContractAddressForNetwork(networkSymbol, contractAddress))
         : false;
 
 export const getSupportedDefinitionTypes = (networkSymbol: NetworkSymbol) => {
