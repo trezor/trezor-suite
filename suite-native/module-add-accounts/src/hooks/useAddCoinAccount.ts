@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import { CommonActions, useNavigation } from '@react-navigation/native';
 import { A, pipe } from '@mobily/ts-belt';
+import { isRejected } from '@reduxjs/toolkit';
 
 import { AccountType, NetworkSymbol, networks } from '@suite-common/wallet-config';
 import { Account } from '@suite-common/wallet-types';
@@ -194,7 +195,7 @@ export const useAddCoinAccount = () => {
         }
 
         // Do not allow adding more than 10 accounts of the same type
-        if (accounts.length >= LIMIT) {
+        if (accounts.filter(account => account.visible).length >= LIMIT) {
             showTooManyAccountsAlert();
 
             return false;
@@ -289,6 +290,11 @@ export const useAddCoinAccount = () => {
 
         const network = getNetworkToAdd({ networkSymbol, accountType });
 
+        //If the account already exists, but is invisible, make it visible
+        if (firstHiddenEmptyAccount) {
+            dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
+        }
+
         navigateToSuccessorScreen({
             flowType,
             networkSymbol,
@@ -296,20 +302,14 @@ export const useAddCoinAccount = () => {
             accountIndex: firstHiddenEmptyAccount?.index ?? accounts.length,
         });
 
-        if (firstHiddenEmptyAccount) {
-            dispatch(accountsActions.changeAccountVisibility(firstHiddenEmptyAccount));
-        }
+        const newAccountResult = await dispatch(
+            addAndDiscoverNetworkAccountThunk({
+                network,
+                deviceState: device.state,
+            }),
+        );
 
-        const account =
-            firstHiddenEmptyAccount ||
-            (await dispatch(
-                addAndDiscoverNetworkAccountThunk({
-                    network,
-                    deviceState: device.state,
-                }),
-            ).unwrap());
-
-        if (!account) {
+        if (isRejected(newAccountResult)) {
             let screen = AppTabsRoutes.HomeStack;
             if (flowType === 'accounts') {
                 screen = AppTabsRoutes.AccountsStack;

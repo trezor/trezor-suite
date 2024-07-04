@@ -49,6 +49,12 @@ const DISCOVERY_BATCH_SIZE_PER_COIN: Partial<Record<NetworkSymbol, number>> = {
     etc: 1,
 };
 
+export const discoveryErrors = {
+    accountNotFound: 'discovery-no-account',
+    descriptorsNotFound: 'discovery-no-descriptors',
+    accountLimitReached: 'discovery-account-limit',
+};
+
 const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
     if (coin in DISCOVERY_BATCH_SIZE_PER_COIN) {
         return DISCOVERY_BATCH_SIZE_PER_COIN[coin]!;
@@ -59,27 +65,38 @@ const getBatchSizeByCoin = (coin: NetworkSymbol): number => {
 
 type DiscoveryDescriptorItem = DiscoveryItem & { descriptor: string };
 
-const fetchBundleDescriptorsThunk = createThunk(
+const fetchBundleDescriptorsThunk = createThunk<
+    DiscoveryDescriptorItem[],
+    DiscoveryItem[],
+    { rejectValue: string }
+>(
     `${DISCOVERY_MODULE_PREFIX}/fetchBundleDescriptorsThunk`,
-    async (bundle: DiscoveryItem[], { getState }) => {
+    async (bundle, { getState, rejectWithValue, fulfillWithValue }) => {
         const device = selectDevice(getState());
 
-        const { success, payload } = await TrezorConnect.getAccountDescriptor({
+        const result = await TrezorConnect.getAccountDescriptor({
             bundle,
             skipFinalReload: true,
             device,
             useEmptyPassphrase: device?.useEmptyPassphrase,
         });
 
-        if (success && payload)
-            return pipe(
-                payload,
-                A.filter(G.isNotNullable),
-                A.map(bundleItem => bundleItem.descriptor),
-                A.zipWith(bundle, (descriptor, bundleItem) => ({ ...bundleItem, descriptor })),
-            ) as DiscoveryDescriptorItem[];
+        if (!result.success) {
+            return rejectWithValue(result.payload.error);
+        }
 
-        return [];
+        if (result.success && result.payload) {
+            return fulfillWithValue(
+                pipe(
+                    result.payload ?? [],
+                    A.filter(G.isNotNullable),
+                    A.map(bundleItem => bundleItem.descriptor),
+                    A.zipWith(bundle, (descriptor, bundleItem) => ({ ...bundleItem, descriptor })),
+                ) as DiscoveryDescriptorItem[],
+            );
+        }
+
+        return rejectWithValue(discoveryErrors.descriptorsNotFound);
     },
 );
 
@@ -274,18 +291,16 @@ const discoverAccountsByDescriptorThunk = createThunk(
     },
 );
 
-export const addAndDiscoverNetworkAccountThunk = createThunk(
+export const addAndDiscoverNetworkAccountThunk = createThunk<
+    Account,
+    {
+        network: Network;
+        deviceState: string;
+    },
+    { rejectValue: string }
+>(
     `${DISCOVERY_MODULE_PREFIX}/addAndDiscoverNetworkAccountThunk`,
-    async (
-        {
-            network,
-            deviceState,
-        }: {
-            network: Network;
-            deviceState: string;
-        },
-        { dispatch, getState },
-    ): Promise<Account | undefined> => {
+    async ({ network, deviceState }, { dispatch, getState, rejectWithValue, fulfillWithValue }) => {
         const accountType = network.accountType ?? NORMAL_ACCOUNT_TYPE;
 
         const accounts = selectDeviceAccountsForNetworkSymbolAndAccountType(
@@ -297,7 +312,7 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
         const index = accounts.length;
 
         if (index > LIMIT) {
-            return undefined;
+            return rejectWithValue(discoveryErrors.accountLimitReached);
         }
 
         const accountPath = network.bip43Path.replace('i', index.toString());
@@ -322,11 +337,11 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
         });
 
         if (!deviceAccessResponse.success) {
-            return undefined;
+            return rejectWithValue(deviceAccessResponse.error);
         }
 
         if (deviceAccessResponse.payload.length < 1) {
-            return undefined;
+            return rejectWithValue(discoveryErrors.accountNotFound);
         }
 
         const descriptor = deviceAccessResponse.payload[0];
@@ -346,7 +361,11 @@ export const addAndDiscoverNetworkAccountThunk = createThunk(
             network.symbol,
         );
 
-        return account ?? undefined;
+        if (!account) {
+            return rejectWithValue(discoveryErrors.accountNotFound);
+        }
+
+        return fulfillWithValue(account);
     },
 );
 
