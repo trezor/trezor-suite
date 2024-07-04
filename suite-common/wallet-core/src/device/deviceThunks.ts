@@ -114,27 +114,8 @@ export const createDeviceInstanceThunk = createThunk<
     { rejectValue: CreateDeviceInstanceError }
 >(
     `${DEVICE_MODULE_PREFIX}/createDeviceInstance`,
-    async (
-        { device, useEmptyPassphrase = false },
-        { dispatch, getState, rejectWithValue, fulfillWithValue },
-    ) => {
+    ({ device, useEmptyPassphrase = false }, { getState, rejectWithValue, fulfillWithValue }) => {
         if (!device.features) return rejectWithValue({ error: 'features-unavailable' });
-        if (!device.features.passphrase_protection) {
-            const response = await TrezorConnect.applySettings({
-                device,
-                use_passphrase: true,
-            });
-
-            if (!response.success) {
-                dispatch(
-                    notificationsActions.addToast({ type: 'error', error: response.payload.error }),
-                );
-
-                return rejectWithValue({ error: 'passphrase-enabling-cancelled' });
-            }
-
-            dispatch(notificationsActions.addToast({ type: 'settings-applied' }));
-        }
 
         const devices = selectDevices(getState());
 
